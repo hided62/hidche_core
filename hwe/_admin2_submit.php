@@ -106,7 +106,7 @@ switch($btn) {
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
         $text = "특기 부여!";
 
-        foreach($db->query("SELECT `no`,leader,power,intel,dex0,dex10,dex20,dex30,dex40 FROM general WHERE `no` IN %li", $genlist) as $general){    
+        foreach($db->query("SELECT `no`,leadership,strength,intel,dex0,dex10,dex20,dex30,dex40 FROM general WHERE `no` IN %li", $genlist) as $general){    
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
 

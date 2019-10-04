@@ -280,7 +280,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     <div class="input-group-prepend">
                         <span class="input-group-text">무력</span>
                     </div>
-                    <input type="number" class="form-control form_power" value="50" min="1" max="300" step="1">
+                    <input type="number" class="form-control form_strength" value="50" min="1" max="300" step="1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">지력</span>
                     </div>

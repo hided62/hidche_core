@@ -101,11 +101,11 @@ class GameUnitDetail implements iAction{
         else if($this->armType == GameUnitConst::T_MISC){
             $ratio = $general->getIntel(true, true, true) +
                 $general->getLeadership(true, true, true) + 
-                $general->getPower(true, true, true);
+                $general->getStrength(true, true, true);
             $ratio = $ratio*2/3 - 40;
         }
         else{
-            $ratio = $general->getPower(true, true, true)*2 - 40;
+            $ratio = $general->getStrength(true, true, true)*2 - 40;
         }
         if($ratio < 10){
             $ratio = 10;
@@ -144,12 +144,12 @@ class GameUnitDetail implements iAction{
         else if($this->armType == GameUnitConst::T_MISC){
             $mainstat = $general->getIntel(false, true, true, false) +
             $general->getLeadership(false, true, true, false) +
-            $general->getPower(false, true, true, false);
+            $general->getStrength(false, true, true, false);
             $mainstat /= 3;
             $coef = 0.4;
         }
         else{
-            $mainstat = $general->getPower(false, true, true, false);
+            $mainstat = $general->getStrength(false, true, true, false);
             $coef = 0.5;
         }
 

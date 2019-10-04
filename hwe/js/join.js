@@ -1,148 +1,148 @@
 
 jQuery(function($){
-    var $leader = $('#leader');
-    var $power = $('#power');
+    var $leadership = $('#leadership');
+    var $strength = $('#strength');
     var $intel = $('#intel');
     
     function abilityRand(){
-        var leader = Math.random()*65 + 10;
-        var power = Math.random()*65 + 10;
+        var leadership = Math.random()*65 + 10;
+        var strength = Math.random()*65 + 10;
         var intel = Math.random()*65 + 10;
-        var rate = leader + power + intel;
+        var rate = leadership + strength + intel;
     
-        leader = Math.floor(leader / rate * defaultStatTotal);
-        power = Math.floor(power / rate * defaultStatTotal);
+        leadership = Math.floor(leadership / rate * defaultStatTotal);
+        strength = Math.floor(strength / rate * defaultStatTotal);
         intel = Math.floor(intel / rate * defaultStatTotal);
         
     
-        while(leader+power+intel < defaultStatTotal){
-            leader+=1;
+        while(leadership+strength+intel < defaultStatTotal){
+            leadership+=1;
         }
         
-        if(leader > defaultStatMax || power > defaultStatMax || intel > defaultStatMax || leader < defaultStatMin || power < defaultStatMin || intel < defaultStatMin){
+        if(leadership > defaultStatMax || strength > defaultStatMax || intel > defaultStatMax || leadership < defaultStatMin || strength < defaultStatMin || intel < defaultStatMin){
             return abilityRand();
         }
     
-        $leader.val(leader);
-        $power.val(power);
+        $leadership.val(leadership);
+        $strength.val(strength);
         $intel.val(intel);
     }
     
     
     function abilityLeadpow(){
-        var leader = Math.random() * 6;
-        var power = Math.random() * 6;
+        var leadership = Math.random() * 6;
+        var strength = Math.random() * 6;
         var intel = Math.random() * 1;
-        var rate = leader + power + intel;
+        var rate = leadership + strength + intel;
     
-        leader = Math.floor(leader / rate * defaultStatTotal);
-        power = Math.floor(power / rate * defaultStatTotal);
+        leadership = Math.floor(leadership / rate * defaultStatTotal);
+        strength = Math.floor(strength / rate * defaultStatTotal);
         intel = Math.floor(intel / rate * defaultStatTotal);
         
-        while(leader+power+intel < defaultStatTotal){
-            power+=1;
+        while(leadership+strength+intel < defaultStatTotal){
+            strength+=1;
         }
         
         if(intel < defaultStatMin){
-            leader -= defaultStatMin - intel;
+            leadership -= defaultStatMin - intel;
             intel = defaultStatMin;
         }
         
-        if(leader > defaultStatMax){
-            power += leader - defaultStatMax;
-            leader = defaultStatMax;
+        if(leadership > defaultStatMax){
+            strength += leadership - defaultStatMax;
+            leadership = defaultStatMax;
         }
         
-        if(power > defaultStatMax){
-            leader += power - defaultStatMax;
-            power = defaultStatMax;
+        if(strength > defaultStatMax){
+            leadership += strength - defaultStatMax;
+            strength = defaultStatMax;
         }
 
-        if(leader > defaultStatMax){
-            intel += leader - defaultStatMax;
-            leader = defaultStatMax;
+        if(leadership > defaultStatMax){
+            intel += leadership - defaultStatMax;
+            leadership = defaultStatMax;
         }
     
-        $leader.val(leader);
-        $power.val(power);
+        $leadership.val(leadership);
+        $strength.val(strength);
         $intel.val(intel);
     }
     
     function abilityLeadint(){
-        var leader = Math.random() * 6;
-        var power = Math.random() * 1;
+        var leadership = Math.random() * 6;
+        var strength = Math.random() * 1;
         var intel = Math.random() * 6;
-        var rate = leader + power + intel;
+        var rate = leadership + strength + intel;
     
-        leader = Math.floor(leader / rate * defaultStatTotal);
-        power = Math.floor(power / rate * defaultStatTotal);
+        leadership = Math.floor(leadership / rate * defaultStatTotal);
+        strength = Math.floor(strength / rate * defaultStatTotal);
         intel = Math.floor(intel / rate * defaultStatTotal);
     
-        while(leader+power+intel < defaultStatTotal){
+        while(leadership+strength+intel < defaultStatTotal){
             intel+=1;
         }
     
-        if(power < defaultStatMin){
-            leader -= defaultStatMin - power;
-            power = defaultStatMin;
+        if(strength < defaultStatMin){
+            leadership -= defaultStatMin - strength;
+            strength = defaultStatMin;
         }
         
-        if(leader > defaultStatMax){
-            intel += leader - defaultStatMax;
-            leader = defaultStatMax;
+        if(leadership > defaultStatMax){
+            intel += leadership - defaultStatMax;
+            leadership = defaultStatMax;
         }
         
         if(intel > defaultStatMax){
-            leader += intel - defaultStatMax;
+            leadership += intel - defaultStatMax;
             intel = defaultStatMax;
         }
 
-        if(leader > defaultStatMax){
-            power += leader - defaultStatMax;
-            leader = defaultStatMax;
+        if(leadership > defaultStatMax){
+            strength += leadership - defaultStatMax;
+            leadership = defaultStatMax;
         }
     
-        $leader.val(leader);
-        $power.val(power);
+        $leadership.val(leadership);
+        $strength.val(strength);
         $intel.val(intel);
     }
     
     function abilityPowint(){
-        var leader = Math.random() * 1;
-        var power = Math.random() * 6;
+        var leadership = Math.random() * 1;
+        var strength = Math.random() * 6;
         var intel = Math.random() * 6;
-        var rate = leader + power + intel;
+        var rate = leadership + strength + intel;
     
-        leader = Math.floor(leader / rate * defaultStatTotal);
-        power = Math.floor(power / rate * defaultStatTotal);
+        leadership = Math.floor(leadership / rate * defaultStatTotal);
+        strength = Math.floor(strength / rate * defaultStatTotal);
         intel = Math.floor(intel / rate * defaultStatTotal);
     
-        while(leader+power+intel < defaultStatTotal){
+        while(leadership+strength+intel < defaultStatTotal){
             intel+=1;
         }
     
-        if(leader < defaultStatMin){
-            power -= defaultStatMin - leader;
-            leader = defaultStatMin;
+        if(leadership < defaultStatMin){
+            strength -= defaultStatMin - leadership;
+            leadership = defaultStatMin;
         }
         
-        if(power > defaultStatMax){
-            intel += power - defaultStatMax;
-            power = defaultStatMax;
+        if(strength > defaultStatMax){
+            intel += strength - defaultStatMax;
+            strength = defaultStatMax;
         }
         
         if(intel > defaultStatMax){
-            power += intel - defaultStatMax;
+            strength += intel - defaultStatMax;
             intel = defaultStatMax;
         }
 
-        if(power > defaultStatMax){
-            leader += power - defaultStatMax;
-            power = defaultStatMax;
+        if(strength > defaultStatMax){
+            leadership += strength - defaultStatMax;
+            strength = defaultStatMax;
         }
     
-        $leader.val(leader);
-        $power.val(power);
+        $leadership.val(leadership);
+        $strength.val(strength);
         $intel.val(intel);
     }
     
@@ -182,7 +182,7 @@ jQuery(function($){
             alert('장수 이름이 너무 깁니다!');
             return false;
         }
-        var currentStatTotal = parseInt($leader.val()) + parseInt($power.val()) + parseInt($intel.val());
+        var currentStatTotal = parseInt($leadership.val()) + parseInt($strength.val()) + parseInt($intel.val());
         if(currentStatTotal < defaultStatTotal){
             if(!confirm('현재 능력치 총합은 {0}으로, {1}보다 낮습니다. 장수 생성을 진행할까요?'.format(currentStatTotal, defaultStatTotal))){
                 return false;

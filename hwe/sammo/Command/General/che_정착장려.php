@@ -24,7 +24,7 @@ use \sammo\Constraint\ConstraintHelper;
 
 class che_정착장려 extends Command\GeneralCommand{
     static protected $cityKey = 'pop';
-    static protected $statKey = 'leader';
+    static protected $statKey = 'leadership';
     static protected $actionKey = '인구';
     static protected $actionName = '정착 장려';
 
@@ -74,7 +74,7 @@ class che_정착장려 extends Command\GeneralCommand{
     protected function calcBaseScore():float{
         $general = $this->generalObj;
 
-        if(static::$statKey == 'leader'){
+        if(static::$statKey == 'leadership'){
             $score = $general->getLeadership(true, true, true, false);
         }
         else{

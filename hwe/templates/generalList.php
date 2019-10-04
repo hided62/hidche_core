@@ -24,8 +24,8 @@
     data-is-npc="<?=$general['npc']>=2?'true':'false'?>"
     data-general-wounded="<?=$general['injury']?>"
     data-general-name="<?=$general['name']?>"
-    data-general-leadership="<?=$general['leader']?>"
-    data-general-power="<?=$general['power']?>"
+    data-general-leadership="<?=$general['leadership']?>"
+    data-general-strength="<?=$general['strength']?>"
     data-general-intel="<?=$general['intel']?>"
     data-general-level="<?=$general['expLevelText']?>"
     data-general-leadership-bonus="<?=$general['lbonus']?>"
@@ -37,7 +37,7 @@
 >
     <td class='i_name center'><span class='t_name'><?=$general['nameText']?></span><br
     >Lv <span class='t_explevel'><?=$general['expLevelText']?></span></td>
-    <td class='i_stat center'><?=$general['leaderText']?>∥<?=$general['powerText']?>∥<?=$general['intelText']?></td>
+    <td class='i_stat center'><?=$general['leadershipText']?>∥<?=$general['strengthText']?>∥<?=$general['intelText']?></td>
     <td class='i_troop center'><?=$general['troopText']?></td>
     <td class='i_gold center'><?=$general['gold']?></td>
     <td class='i_rice center'><?=$general['rice']?></td>

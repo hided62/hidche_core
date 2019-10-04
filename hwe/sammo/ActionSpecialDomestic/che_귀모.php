@@ -15,7 +15,7 @@ class che_귀모 implements iAction{
     static $selectWeight = 2.5;
     static $type = [
         SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_POWER,
+        SpecialityConst::STAT_STRENGTH,
         SpecialityConst::STAT_INTEL
     ];
 

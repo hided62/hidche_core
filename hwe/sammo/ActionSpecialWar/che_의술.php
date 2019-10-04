@@ -22,7 +22,7 @@ class che_의술 implements iAction{
     static $selectWeight = 2;
     static $type = [
         SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_POWER,
+        SpecialityConst::STAT_STRENGTH,
         SpecialityConst::STAT_INTEL
     ];
 

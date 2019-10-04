@@ -188,12 +188,12 @@ if($city['trade'] === null) {
     $city['trade'] = "- ";
 }
 
-$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
+$query = "select npc,mode,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 
 $generals = $db->query(
-    'SELECT npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
+    'SELECT npc,mode,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
     $city['city']
 );
 
@@ -244,12 +244,12 @@ for($j=0; $j < $gencount; $j++) {
     $name = $general['name'];
     $nameText = formatName($name, $general['npc']);
 
-    $leadership = $general['leader'];
-    $power = $general['power'];
+    $leadership = $general['leadership'];
+    $strength = $general['strength'];
     $intel = $general['intel'];
 
     $leadershipText = formatWounded($leadership, $general['injury']);
-    $powerText = formatWounded($power, $general['injury']);
+    $strengthText = formatWounded($strength, $general['injury']);
     $intelText = formatWounded($intel, $general['injury']);
 
     $level = $general['level'];
@@ -313,8 +313,8 @@ for($j=0; $j < $gencount; $j++) {
         'leadershipBonusText'=>$leadershipBonusText,
         'level'=>$level,
         'levelText'=>$levelText,
-        'power'=>$power,
-        'powerText'=>$powerText,
+        'strength'=>$strength,
+        'strengthText'=>$strengthText,
         'intel'=>$intel,
         'intelText'=>$intelText,
         'defenceMode'=>$defenceMode,

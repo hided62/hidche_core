@@ -204,7 +204,7 @@ function command_11($turn, $command, bool $is모병 = false) {
     $userID = Session::getUserID();
 
     $me = $db->queryFirstRow(
-        'SELECT no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold 
+        'SELECT no,nation,level,personal,special2,level,city,crew,horse,injury,leadership,crewtype,gold 
         from general where owner=%i',
         $userID
     );
@@ -231,8 +231,8 @@ function command_11($turn, $command, bool $is모병 = false) {
         $ownRegions[$city['region']] = 1;
     }
 
-    $leader = getGeneralLeadership($me, true, true, true);
-    $fullLeader = getGeneralLeadership($me, false, true, true);
+    $leadership = getGeneralLeadership($me, true, true, true);
+    $fullLeadershipship = getGeneralLeadership($me, false, true, true);
     $abil = getTechAbil($tech);
 
     $armTypes = [];
@@ -315,8 +315,8 @@ function command_11($turn, $command, bool $is모병 = false) {
         'commandName'=>$commandName,
         'techLevelText'=>getTechCall($tech),
         'tech'=>$tech,
-        'leader'=>$leader,
-        'fullLeader'=>$fullLeader,
+        'leadership'=>$leadership,
+        'fullLeadership'=>$fullLeadership,
         'crewType'=>GameUnitConst::byId($me['crewtype'])->id,
         'crewTypeName'=>GameUnitConst::byId($me['crewtype'])->name,
         'crew'=>$me['crew'],

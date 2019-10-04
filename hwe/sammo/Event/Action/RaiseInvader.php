@@ -96,7 +96,7 @@ class RaiseInvader extends \sammo\Event\Action{
 
         $specAvg = $this->specAvg;
         if($specAvg < 0){
-            $specAvg = $db->queryFirstField('SELECT avg(sum(`leader` + `power` + `intel`)) from general where npc < 9');
+            $specAvg = $db->queryFirstField('SELECT avg(sum(`leadership` + `strength` + `intel`)) from general where npc < 9');
             $specAvg /= -1 * $this->specAvg;
         }
 

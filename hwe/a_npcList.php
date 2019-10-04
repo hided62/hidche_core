@@ -62,14 +62,14 @@ foreach (getAllNationStaticInfo() as $nation) {
 
 switch ($type) {//FIXME: $query 처리 부실
     default:
-    case  1: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by binary(name)"; break;
-    case  2: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by nation"; break;
-    case  3: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by sum desc"; break;
-    case  4: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by leader"; break;
-    case  5: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by power"; break;
-    case  6: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by intel"; break;
-    case  7: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by experience"; break;
-    case  8: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by dedication"; break;
+    case  1: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by binary(name)"; break;
+    case  2: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by nation"; break;
+    case  3: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by sum desc"; break;
+    case  4: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by leadership"; break;
+    case  5: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by strength"; break;
+    case  6: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by intel"; break;
+    case  7: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by experience"; break;
+    case  8: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by dedication"; break;
 }
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($genresult);
@@ -111,8 +111,8 @@ for ($j=0; $j < $gencount; $j++) {
         <td align=center>".displayCharInfo($general['personal'])."</td>
         <td align=center>".displaySpecialDomesticInfo($general['special'])." / ".displaySpecialWarInfo($general['special2'])."</td>
         <td align=center>{$general['sum']}</td>
-        <td align=center>{$general['leader']}</td>
-        <td align=center>{$general['power']}</td>
+        <td align=center>{$general['leadership']}</td>
+        <td align=center>{$general['strength']}</td>
         <td align=center>{$general['intel']}</td>
         <td align=center>{$general['experience']}</td>
         <td align=center>{$general['dedication']}</td>

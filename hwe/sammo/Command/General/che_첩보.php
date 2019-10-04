@@ -175,7 +175,7 @@ class che_첩보 extends Command\GeneralCommand{
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar('leader2', 1);
+        $general->increaseVar('leadership2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);

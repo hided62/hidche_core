@@ -5,11 +5,11 @@ namespace sammo;
 function calcSabotageAttackScore(string $statType, array $general, array $nation):array{
     setLeadershipBonus($general, $nation['level']);
 
-    if($statType === 'leader'){
+    if($statType === 'leadership'){
         $genScore = getGeneralLeadership($general, true, true, true);
     }
-    else if($statType === 'power'){
-        $genScore = getGeneralPower($general, true, true, true);
+    else if($statType === 'strength'){
+        $genScore = getGeneralStrength($general, true, true, true);
     }
     else if($statType === 'intel'){
         $genScore = getGeneralIntel($general, true, true, true);
@@ -70,10 +70,10 @@ function calcSabotageDefendScore(string $statType, array $generalList, array $ci
     foreach ($generalList as $general) {
         setLeadershipBonus($general, $nation['level']);
         
-        if ($statType === 'leader') {
+        if ($statType === 'leadership') {
             $maxGenScore = max($maxGenScore, getGeneralLeadership($general, true, true, true));
-        } elseif ($statType === 'power') {
-            $maxGenScore = max($maxGenScore, getGeneralPower($general, true, true, true));
+        } elseif ($statType === 'strength') {
+            $maxGenScore = max($maxGenScore, getGeneralStrength($general, true, true, true));
         } elseif ($statType === 'intel') {
             $maxGenScore = max($maxGenScore, getGeneralIntel($general, true, true, true));
         } else {
@@ -161,7 +161,7 @@ function process_32(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
+    $generalList = $db->query('SELECT `no`,leadership,horse,strength,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
 
     [
         $srcGenScore,
@@ -265,7 +265,7 @@ function process_33(&$general) {
 
     $date = substr($general['turntime'],11,5);
     $sabotageName = '탈취';
-    $statType = 'power';
+    $statType = 'strength';
 
     [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
     $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
@@ -298,7 +298,7 @@ function process_33(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
+    $generalList = $db->query('SELECT `no`,leadership,horse,strength,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
 
     [
         $srcGenScore,
@@ -436,7 +436,7 @@ function process_34(&$general) {
 
     $date = substr($general['turntime'],11,5);
     $sabotageName = '파괴';
-    $statType = 'power';
+    $statType = 'strength';
 
     [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
     $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
@@ -467,7 +467,7 @@ function process_34(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
+    $generalList = $db->query('SELECT `no`,leadership,horse,strength,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
 
     [
         $srcGenScore,
@@ -574,7 +574,7 @@ function process_35(&$general) {
 
     $date = substr($general['turntime'],11,5);
     $sabotageName = '선동';
-    $statType = 'leader';
+    $statType = 'leadership';
 
     [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
     $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
@@ -607,7 +607,7 @@ function process_35(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
+    $generalList = $db->query('SELECT `no`,leadership,horse,strength,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
     [
         $srcGenScore,
         $srcSpecialScore,

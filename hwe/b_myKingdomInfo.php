@@ -68,7 +68,7 @@ for($j=0; $j < $citycount; $j++) {
     $maxpop += $city['pop2'];
 }
 
-$query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general where nation='{$nation['nation']}'";
+$query = "select sum(crew) as totcrew,sum(leadership)*100 as maxcrew from general where nation='{$nation['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 

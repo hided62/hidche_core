@@ -17,7 +17,7 @@ class che_기병 implements iAction{
     static $selectWeight = 1;
     static $type = [
         SpecialityConst::STAT_LEADERSHIP | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_CAVALRY,
-        SpecialityConst::STAT_POWER | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_CAVALRY
+        SpecialityConst::STAT_STRENGTH | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_CAVALRY
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

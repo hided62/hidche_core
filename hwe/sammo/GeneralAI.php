@@ -14,7 +14,7 @@ class GeneralAI{
     protected $baseDevelCost;
 
     protected $leadership;
-    protected $power;
+    protected $strength;
     protected $intel;
 
     protected $dipState;
@@ -67,7 +67,7 @@ class GeneralAI{
         ];
 
         $this->leadership = $general->getLeadership(true, true, true, true);
-        $this->power = $general->getPower(true, true, true, true);
+        $this->strength = $general->getStrength(true, true, true, true);
         $this->intel = $general->getIntel(true, true, true, true);
 
         $this->calcGenType();
@@ -82,14 +82,14 @@ class GeneralAI{
 
     protected function calcGenType(){
         $leadership = $this->leadership;
-        $power = $this->power;
-        $intel = $this->intel;
+        $strength = Util::valueFit($this->strength, 1);
+        $intel = Util::valueFit($this->intel, 1);
 
         //무장
-        if ($power >= $intel) {
+        if ($strength >= $intel) {
             $genType = self::t무장;
-            if ($intel >= $power * 0.8) {  //무지장
-                if(Util::randBool($intel / $power / 2)){
+            if ($intel >= $strength * 0.8) {  //무지장
+                if(Util::randBool($intel / $strength / 2)){
                     $genType |= self::t지장;
                 }
                 
@@ -97,8 +97,8 @@ class GeneralAI{
             //지장
         } else {
             $genType = self::t지장;
-            if ($power >= $intel * 0.8 && Util::randBool(0.2)) {  //지무장
-                if(Util::randBool($power / $intel / 2)){
+            if ($strength >= $intel * 0.8 && Util::randBool(0.2)) {  //지무장
+                if(Util::randBool($strength / $intel / 2)){
                     $genType |= self::t무장;
                 }
             }
@@ -172,7 +172,7 @@ class GeneralAI{
 
         $genType = $this->genType;
         $leadership = $this->leadership;
-        $power = $this->power;
+        $strength = $this->strength;
         $intel = $this->intel;
 
         $cityFull = false;
@@ -198,7 +198,7 @@ class GeneralAI{
             if($develRate['secu'] < 0.99){
                 $commandObj = buildGeneralCommandClass('che_치안강화', $general, $env);
                 if($commandObj->isRunnable()){
-                    $commandList['che_치안강화'] = $power / 3;
+                    $commandList['che_치안강화'] = $strength / 3;
                     if(in_array($city['front'], [1,3])){
                         $commandList['che_치안강화'] /= 2;
                     }
@@ -207,13 +207,13 @@ class GeneralAI{
             if($develRate['def'] < 0.99){
                 $commandObj = buildGeneralCommandClass('che_수비강화', $general, $env);
                 if($commandObj->isRunnable()){
-                    $commandList['che_수비강화'] = $power / 3;
+                    $commandList['che_수비강화'] = $strength / 3;
                 }
             }
             if($develRate['wall'] < 0.99){
                 $commandObj = buildGeneralCommandClass('che_성벽보수', $general, $env);
                 if($commandObj->isRunnable()){
-                    $commandList['che_성벽보수'] = $power / 3;
+                    $commandList['che_성벽보수'] = $strength / 3;
                     if(in_array($city['front'], [1,3])){
                         $commandList['che_성벽보수'] /= 2;
                     }
@@ -292,7 +292,7 @@ class GeneralAI{
 
         $genType = $this->genType;
         $leadership = $this->leadership;
-        $power = $this->power;
+        $strength = $this->strength;
         $intel = $this->intel;
 
         $tech = $nation['tech'];
@@ -557,7 +557,7 @@ class GeneralAI{
         $npcCivilGenerals = [];
         $npcWarGenerals = [];
         
-        foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level`, troop FROM general WHERE nation = %i', $nationID) as $rawNationGeneral) {
+        foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leadership, `strength`, intel, killturn, crew, train, atmos, `level`, troop FROM general WHERE nation = %i', $nationID) as $rawNationGeneral) {
 
             $nationGeneral = (object)$rawNationGeneral;
             $cityID = $nationGeneral->city;
@@ -580,7 +580,7 @@ class GeneralAI{
             if($nationGeneral->npc<2 && $nationGeneral->killturn >= 5){
                 $userGenerals[] = $nationGeneral;
             }
-            else if($nationGeneral->leader>=40 && $nationGeneral->killturn >= 5){
+            else if($nationGeneral->leadership>=40 && $nationGeneral->killturn >= 5){
                 $npcWarGenerals[] = $nationGeneral;
             }
             else{
@@ -656,7 +656,7 @@ class GeneralAI{
             $isWarUser = null;
             
             foreach($userGenerals as $compUser){
-                if($compUser['leader'] >= 50){
+                if($compUser['leadership'] >= 50){
                     $isWarUser = true;
                     break;
                 }
@@ -711,9 +711,9 @@ class GeneralAI{
             $compNpcWar = Util::array_last($npcWarGenerals);
             $compNpcCivil = Util::array_last($npcCivilGenerals);
             
-            $compUserRes = $compUser->$resName??0;
-            $compNpcWarRes = $compNpcWar->$resName*5??0;
-            $compNpcCivilRes = $compNpcCivil->$resName*10??0;
+            $compUserRes = $compUser?$compUser->$resName:0;
+            $compNpcWarRes = $compNpcWar?$compNpcWar->$resName*5:0;
+            $compNpcCivilRes = $compNpcCivil?$compNpcCivil->$resName*10:0;
     
             [$compRes, $targetGeneral] = max(
                 [$compNpcCivilRes, $compNpcCivil],
@@ -945,7 +945,7 @@ class GeneralAI{
                 if(!$generalCity['front']){
                     continue;
                 }
-                if($generalCity['pop'] - 33000 > $nationGeneral->leader){
+                if($generalCity['pop'] - 33000 > $nationGeneral->leadership){
                     continue;
                 }
                 if($nationGeneral->troop != 0){
@@ -960,7 +960,7 @@ class GeneralAI{
                 $popTrial = 5;
                 for($popTrial = 0; $popTrial < 5; $popTrial++){
                     $targetCity = $nationCities[Util::choiceRandom($backupCitiesID)];
-                    if($targetCity['pop'] < 33000 + $nationGeneral->leader){
+                    if($targetCity['pop'] < 33000 + $nationGeneral->leadership){
                         continue;
                     }
                     if (Util::randBool($targetCity['pop'] / $targetCity['pop2'])) {
@@ -1054,7 +1054,7 @@ class GeneralAI{
             case '거병_견문': //거병이나 견문
                 // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
                 $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
-                $ratio = ($general->getVar('leader') + $general->getVar('power') + $general->getVar('intel')) / 3;
+                $ratio = ($general->getVar('leadership') + $general->getVar('strength') + $general->getVar('intel')) / 3;
                 if($env['startyear']+2 > $env['year'] && $prop < $ratio && Util::randBool(0.014) && $general->getVar('makelimit') == 0) {
                     //거병
                     $command = 'che_거병';
@@ -1133,7 +1133,7 @@ class GeneralAI{
 
         $genType = $this->genType;
         $leadership = $this->leadership;
-        $power = $this->power;
+        $strength = $this->strength;
         $intel = $this->intel;
 
         $startYear = $env['startyear'];
@@ -1384,7 +1384,7 @@ class GeneralAI{
                return null;
             }
 
-            $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leader) FROM general WHERE nation = %i AND city = %i AND leader > 40', $nationID, $cityID);
+            $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leadership) FROM general WHERE nation = %i AND city = %i AND leadership > 40', $nationID, $cityID);
             if(
                 $city['pop'] > 30000 + $general->getLeadership(false) * 100 * 1.3 &&
                 Util::randBool(($city['pop'] - 30000) / $sumLeadershipInCity * 100)
@@ -1723,7 +1723,7 @@ class GeneralAI{
         
         if(!$userChief){
             $candUserChief = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND level = 1 AND killturn > %i AND npc < 2 AND belong >= %i ORDER BY leader DESC LIMIT 1',
+                'SELECT no FROM general WHERE nation = %i AND level = 1 AND killturn > %i AND npc < 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
                 $nationID,
                 $minKillturn,
                 $maxBelong
@@ -1738,7 +1738,7 @@ class GeneralAI{
 
         if(!key_exists(11, $chiefCandidate)){
             $candChiefHead = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND level = 1 AND npc >= 2 AND belong >= %i ORDER BY leader DESC LIMIT 1',
+                'SELECT no FROM general WHERE nation = %i AND level = 1 AND npc >= 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
                 $nationID,
                 $maxBelong
             );
@@ -1750,8 +1750,8 @@ class GeneralAI{
 
         if($minChiefLevel < 11){
             //무장 수뇌 후보
-            $candChiefPower = $db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation = %i AND power >= %i AND level = 1 AND belong >= %i ORDER BY power DESC LIMIT %i',
+            $candChiefStrength = $db->queryFirstColumn(
+                'SELECT no FROM general WHERE nation = %i AND strength >= %i AND level = 1 AND belong >= %i ORDER BY strength DESC LIMIT %i',
                 $nationID,
                 GameConst::$chiefStatMin,
                 $maxBelong, 12 - $minChiefLevel
@@ -1766,7 +1766,7 @@ class GeneralAI{
             );
             //무력, 지력이 모두 높은 장수를 고려하여..
             
-            $iterCandChiefPower = new \ArrayIterator($candChiefPower);
+            $iterCandChiefStrength = new \ArrayIterator($candChiefStrength);
             $iterCandChiefIntel = new \ArrayIterator($candChiefIntel);
 
             foreach(range(10, $minChiefLevel, -1) as $cheifLevel){
@@ -1775,7 +1775,7 @@ class GeneralAI{
                 }
 
                 /** @var \ArrayIterator $iterCurrentType */
-                $iterCurrentType = ($cheifLevel % 2 == 0)?$iterCandChiefPower:$iterCandChiefIntel;
+                $iterCurrentType = ($cheifLevel % 2 == 0)?$iterCandChiefStrength:$iterCandChiefIntel;
                 $candidate = $iterCurrentType->current();
 
                 while(key_exists($candidate, $promoted)){

@@ -82,13 +82,13 @@ $rawDefenderNation = $query['defenderNation'];
 $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
-        'intel', 'intel2', 'book', 'power', 'power2', 'weap', 'injury', 'leader', 'leader2', 'horse', 'item', 
+        'intel', 'intel2', 'book', 'strength', 'strength2', 'weap', 'injury', 'leadership', 'leadership2', 'horse', 'item', 
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
         'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar'
     ],
     'integer'=>[
         'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
-        'intel', 'intel2', 'book', 'power', 'power2', 'weap', 'injury', 'leader', 'leader2', 'horse', 'item',
+        'intel', 'intel2', 'book', 'strength', 'strength2', 'weap', 'injury', 'leadership', 'leadership2', 'horse', 'item',
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
         'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew'
     ],
@@ -97,8 +97,8 @@ $generalCheck = [
         ['nation', 1],
         ['crew', 0],
         ['intel', 0],
-        ['power', 0],
-        ['leader', 0],
+        ['strength', 0],
+        ['leadership', 0],
         ['experience', 0],
         ['gold', 0],
         ['rice', 0],

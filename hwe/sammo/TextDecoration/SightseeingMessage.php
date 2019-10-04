@@ -7,7 +7,7 @@ class SightseeingMessage{
     const IncExp            =    0x1;
     const IncHeavyExp       =    0x2;
     const IncLeadership     =   0x10;
-    const IncPower          =   0x20;
+    const IncStrength          =   0x20;
     const IncIntel          =   0x40;
     const IncGold           =  0x100;
     const IncRice           =  0x200;
@@ -39,7 +39,7 @@ class SightseeingMessage{
                 '백성들에게 현인의 가르침을 설파했습니다.',
                 '어느 집의 도망친 가축을 되찾아 주었습니다.',
             ]], 2],
-            [[self::IncHeavyExp|self::IncPower,[
+            [[self::IncHeavyExp|self::IncStrength,[
                 '동네 장사와 힘겨루기를 하여 멋지게 이겼습니다.',
                 '어느 집의 무너진 울타리를 고쳐주었습니다.',
             ]], 2],
@@ -74,10 +74,10 @@ class SightseeingMessage{
             [[self::IncHeavyExp|self::Wounded|self::HeavyWounded,[
                 '위기에 빠진 사람을 구하다가 죽을뻔 했습니다.',
             ]], 1],
-            [[self::IncHeavyExp|self::IncPower|self::IncGold,[
+            [[self::IncHeavyExp|self::IncStrength|self::IncGold,[
                 '산적과 싸워 금 <C>:goldAmount:</>을 빼앗았습니다.',
             ]], 1],
-            [[self::IncHeavyExp|self::IncPower|self::IncRice,[
+            [[self::IncHeavyExp|self::IncStrength|self::IncRice,[
                 '호랑이를 잡아 고기 <C>:riceAmount:</>을 얻었습니다.',
                 '곰을 잡아 고기 <C>:riceAmount:</>을 얻었습니다.',
             ]], 1],

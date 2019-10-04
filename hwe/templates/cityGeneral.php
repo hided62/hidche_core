@@ -4,7 +4,7 @@
     data-general-wounded="<?=$wounded?>"
     data-general-name="<?=$this->e($name)?>"
     data-general-leadership="<?=$leadership?>"
-    data-general-power="<?=$power?>"
+    data-general-strength="<?=$strength?>"
     data-general-intel="<?=$intel?>"
     data-general-level="<?=$level?>"
     data-general-leadership-bonus="<?=$leadershipBonus?>"
@@ -23,7 +23,7 @@
     <td height="64"><img class='generalIcon' width='64' height='64' src='<?=$iconPath?>'></td>
     <td><?=$nameText?></td>
     <td><?=$leadershipText?><?=$leadershipBonusText?></td>
-    <td><?=$powerText?></td>
+    <td><?=$strengthText?></td>
     <td><?=$intelText?></td>
     <td class="general_level"><?=$levelText?></td>
 <?php if($ourGeneral): ?>

@@ -6,7 +6,7 @@ use \sammo\General;
 class BaseStatItem extends BaseItem{
 
     protected $statNick = '통솔';
-    protected $statType = 'leader';
+    protected $statType = 'leadership';
     protected $statValue = 1;
     protected $cost = 1000;
     protected $rawName = '노기';
@@ -14,14 +14,15 @@ class BaseStatItem extends BaseItem{
     protected $buyable = true;
     
     protected const ITEM_TYPE = [
-        '명마'=>['통솔', 'leader'],
-        '무기'=>['무력', 'power'],
+        '명마'=>['통솔', 'leadership'],
+        '무기'=>['무력', 'strength'],
         '서적'=>['지력', 'intel']
     ];
 
     public function __construct(){
         $nameTokens = explode('_', static::class);
         $this->statValue = (int)$nameTokens[-1];
+        assert(is_numeric($this->statValue));
         $this->rawName = $nameTokens[-2];
         [$this->statNick, $this->statType] = static::ITEM_TYPE[$nameTokens[-3]];
 

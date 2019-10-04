@@ -145,7 +145,7 @@ class Nation{
         //군주가 없는지 확인
         $hasRuler = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i AND level=12', $this->id);
         if(!$hasRuler){
-            $newRuler = $db->queryFirstField('SELECT `no` FROM general WHERE nation=%i ORDER BY leader+power+intel DESC LIMIT 1', $this->id);
+            $newRuler = $db->queryFirstField('SELECT `no` FROM general WHERE nation=%i ORDER BY leadership+strength+intel DESC LIMIT 1', $this->id);
             $db->update('general',['level'=>12], 'no=%i', $newRuler);
         }
 

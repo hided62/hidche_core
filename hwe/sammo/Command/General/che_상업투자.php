@@ -32,8 +32,8 @@ class che_상업투자 extends Command\GeneralCommand{
     public function getCommandDetailTitle():string{
         $name = $this->getName();
         $statTypeBase = [
-            'leader'=>'통솔경험',
-            'power'=>'무력경험',
+            'leadership'=>'통솔경험',
+            'strength'=>'무력경험',
             'intel'=>'지력경험',
         ];
         $statType = $statTypeBase[static::$statKey];
@@ -100,10 +100,10 @@ class che_상업투자 extends Command\GeneralCommand{
         if(static::$statKey == 'intel'){
             $score = $general->getIntel(true, true, true, false);
         }
-        else if(static::$statKey == 'power'){
-            $score = $general->getPower(true, true, true, false);
+        else if(static::$statKey == 'strength'){
+            $score = $general->getStrength(true, true, true, false);
         }
-        else if(static::$statKey == 'leader'){
+        else if(static::$statKey == 'leadership'){
             $score = $general->getLeadership(true, true, true, false);
         }
         else{

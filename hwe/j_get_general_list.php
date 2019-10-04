@@ -42,7 +42,7 @@ else{
 
 $session->setReadOnly();
 
-$rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,name2,injury,leader,power,intel,experience,dedication,level,killturn,connect from general');
+$rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,name2,injury,leadership,strength,intel,experience,dedication,level,killturn,connect from general');
 
 $ownerNameList = [];
 if($gameStor->isunited){
@@ -53,7 +53,7 @@ if($gameStor->isunited){
 
 $generalList = [];
 foreach($rawGeneralList as $rawGeneral){
-    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$name2,$injury,$leader,$power,$intel,$experience,$dedication,$level,$killturn,$connect] = $rawGeneral;
+    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$name2,$injury,$leadership,$strength,$intel,$experience,$dedication,$level,$killturn,$connect] = $rawGeneral;
 
     if(key_exists($owner, $ownerNameList)){
         $name2 = $ownerNameList[$owner];
@@ -75,9 +75,9 @@ foreach($rawGeneralList as $rawGeneral){
         $name,
         $npc==1?$name2:null,
         $injury,
-        $leader,
+        $leadership,
         $lbonus,
-        $power,
+        $strength,
         $intel,
         getExpLevel($experience),
         getHonor($experience),

@@ -18,7 +18,7 @@ class che_돌격 implements iAction{
     static $selectWeight = 1;
     static $type = [
         SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_POWER
+        SpecialityConst::STAT_STRENGTH
     ];
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){

@@ -20,7 +20,7 @@ class ReqGeneralCrewMargin extends Constraint{
             throw new \InvalidArgumentException("{$this->arg} is invalid crewtype");
         }
 
-        foreach(['leader','power','intel','crew','crewtype','nation','level'] as $key){
+        foreach(['leadership','strength','intel','crew','crewtype','nation','level'] as $key){
             if(!key_exists($key, $this->general)){
                 if(!$throwExeception){return false; }
                 throw new \InvalidArgumentException("require {$key} in general");

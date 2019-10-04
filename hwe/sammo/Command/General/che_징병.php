@@ -190,7 +190,7 @@ class che_징병 extends Command\GeneralCommand{
         $general->increaseVar('dedication', $ded);
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
-        $general->increaseVar('leader2', 1);
+        $general->increaseVar('leadership2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);

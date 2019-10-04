@@ -181,8 +181,8 @@ switch($type) {
     case  4: $query .= " order by A.rice desc"; break;
     case  5: $query .= " order by avg(B.gold) desc"; break;
     case  6: $query .= " order by avg(B.rice) desc"; break;
-    case  7: $query .= " order by avg(B.leader) desc"; break;
-    case  8: $query .= " order by avg(B.power) desc"; break;
+    case  7: $query .= " order by avg(B.leadership) desc"; break;
+    case  8: $query .= " order by avg(B.strength) desc"; break;
     case  9: $query .= " order by avg(B.intel) desc"; break;
     case 10: $query .= " order by avg(B.explevel) desc"; break;
     case 11: $query .= " order by avg(B.connect) desc"; break;
@@ -201,8 +201,8 @@ for($i=0; $i < $nationCount; $i++) {
     $query = "select COUNT(*) as cnt,
                     ROUND(AVG(gold)) as avgg,
                     ROUND(AVG(rice)) as avgr,
-                    SUM(leader) as leader,  ROUND(AVG(leader), 1) as avgl,
-                                            ROUND(AVG(power), 1) as avgp,
+                    SUM(leadership) as leadership,  ROUND(AVG(leadership), 1) as avgl,
+                                            ROUND(AVG(strength), 1) as avgs,
                                             ROUND(AVG(intel), 1) as avgi,
                                             ROUND(AVG(explevel), 1) as avge,
                     SUM(crew) as crew
@@ -227,7 +227,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center style=background-color:{$nation['color']};color:".newColor($nation['color']).";>{$nation['name']}</td>
         <td align=center>&nbsp;{$nation['connect']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['con']}&nbsp;</td>
-        <td align=center>&nbsp;{$nation['power']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['strength']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['tech']}&nbsp;</td>
@@ -237,7 +237,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$gen['avgg']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['avgr']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['avgl']}&nbsp;</td>
-        <td align=center>&nbsp;{$gen['avgp']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avgs']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['avgi']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['avge']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['dex0']}&nbsp;</td>
@@ -245,7 +245,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$nation['dex20']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['dex30']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['dex40']}&nbsp;</td>
-        <td align=center>&nbsp;{$gen['crew']}/{$gen['leader']}00&nbsp;</td>
+        <td align=center>&nbsp;{$gen['crew']}/{$gen['leadership']}00&nbsp;</td>
         <td align=center>&nbsp;{$city['pop']}/{$city['pop2']}&nbsp;</td>
         <td align=center>&nbsp;".round($city['trust'],1)."%&nbsp;</td>
         <td align=center>&nbsp;{$city['agri']}%&nbsp;</td>

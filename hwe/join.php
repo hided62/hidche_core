@@ -127,11 +127,11 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         </tr>
         <tr>
             <td width=498 align=right id=bg1>통솔</td>
-            <td colspan=2><input type="number" name="leader" id="leader" value="50"></td>
+            <td colspan=2><input type="number" name="leadership" id="leadership" value="50"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>무력</td>
-            <td colspan=2><input type="number" name="power" id="power" value="50"></td>
+            <td colspan=2><input type="number" name="strength" id="strength" value="50"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>지력</td>

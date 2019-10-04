@@ -200,7 +200,7 @@ class General implements iAction{
     /**
      * 장수의 스탯을 계산해옴
      * 
-     * @param string $statName 스탯값, leadership, power, intel 가능
+     * @param string $statName 스탯값, leadership, strength, intel 가능
      * @param bool $withInjury 부상값 사용 여부
      * @param bool $withItem 아이템 적용 여부
      * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
@@ -217,11 +217,11 @@ class General implements iAction{
         }
 
         if($withStatAdjust){
-            if($statName === 'power'){
+            if($statName === 'strength'){
                 $statValue *= Util::round($this->getStatValue('intel', $withInjury, $withItem, false, false) / 4);
             }
             else if($statName === 'intel'){
-                $statValue *= Util::round($this->getStatValue('power', $withInjury, $withItem, false, false) / 4);
+                $statValue *= Util::round($this->getStatValue('strength', $withInjury, $withItem, false, false) / 4);
             }
         }
 
@@ -252,11 +252,11 @@ class General implements iAction{
     }
 
     function getLeadership($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return $this->getStatValue('leader', $withInjury, $withItem, $withStatAdjust, $useFloor);
+        return $this->getStatValue('leadership', $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
-    function getPower($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return $this->getStatValue('power', $withInjury, $withItem, $withStatAdjust, $useFloor);
+    function getStrength($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
+        return $this->getStatValue('strength', $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
     function getIntel($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
@@ -349,8 +349,8 @@ class General implements iAction{
 
         $generalName = $this->getName();
 
-        $this->multiplyVarWithLimit('leader', 0.85, 10);
-        $this->multiplyVarWithLimit('power', 0.85, 10);
+        $this->multiplyVarWithLimit('leadership', 0.85, 10);
+        $this->multiplyVarWithLimit('strength', 0.85, 10);
         $this->multiplyVarWithLimit('intel', 0.85, 10);
         $this->setVar('injury', 0);
         $this->multiplyVar('experience', 0.5);
@@ -398,8 +398,8 @@ class General implements iAction{
         $limit = GameConst::$upgradeLimit;
 
         $table = [
-            ['통솔', 'leader'],
-            ['무력', 'power'],
+            ['통솔', 'leadership'],
+            ['무력', 'strength'],
             ['지력', 'intel'],
         ];
 
@@ -616,7 +616,7 @@ class General implements iAction{
         ];
         $fullColumn = [
             'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'nations', 'city', 'troop', 'injury', 'affinity', 
-            'leader', 'leader2', 'power', 'power2', 'intel', 'intel2', 'weap', 'book', 'horse', 'item', 
+            'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weap', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',

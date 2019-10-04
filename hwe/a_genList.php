@@ -89,8 +89,8 @@ foreach (getAllNationStaticInfo() as $nation) {
 
 [$orderKey, $orderDesc] = [
     1=>['nation', false],
-    2=>['leader', true],
-    3=>['power', true],
+    2=>['leadership', true],
+    3=>['strength', true],
     4=>['intel', true],
     5=>['experience', true],
     6=>['dedication', true],
@@ -105,7 +105,7 @@ foreach (getAllNationStaticInfo() as $nation) {
     15=>['npc', true],
 ][$type];
 
-$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by %b %l', $orderKey, $orderDesc?'desc':'');
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,level,killturn,connect from general order by %b %l', $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center width=1000 class='tb_layout bg0'>
@@ -137,15 +137,15 @@ foreach($generalList as $general){
     }
 
     if ($general['injury'] > 0) {
-        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
-        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
+        $leadership = intdiv($general['leadership'] * (100 - $general['injury']), 100);
+        $strength = intdiv($general['strength'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-        $leader = "<font color=red>{$leader}</font>{$lbonusText}";
-        $power = "<font color=red>{$power}</font>";
+        $leadership = "<font color=red>{$leadership}</font>{$lbonusText}";
+        $strength = "<font color=red>{$strength}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general['leader']}{$lbonusText}";
-        $power = "{$general['power']}";
+        $leadership = "{$general['leadership']}{$lbonusText}";
+        $strength = "{$general['strength']}";
         $intel = "{$general['intel']}";
     }
 
@@ -169,9 +169,9 @@ foreach($generalList as $general){
     echo "
     <tr data-general-id='{$general['no']}' 
         data-general-wounded='{$general['injury']}' 
-        data-general-leadership='{$general['leader']}'
+        data-general-leadership='{$general['leadership']}'
         data-general-leadership-bonus='{$lbonus}'
-        data-general-power='{$general['power']}'
+        data-general-strength='{$general['strength']}'
         data-general-intel='{$general['intel']}'
         data-is-npc='".($general['npc']>=2?'true':'false')."'
     >
@@ -187,8 +187,8 @@ foreach($generalList as $general){
         <td align=center>";
     echo getLevel($general['level']);
     echo "</td>
-        <td align=center>$leader</td>
-        <td align=center>$power</td>
+        <td align=center>$leadership</td>
+        <td align=center>$strength</td>
         <td align=center>$intel</td>
         <td align=center>{$general['killturn']}</td>
         <td align=center>{$general['connect']}";

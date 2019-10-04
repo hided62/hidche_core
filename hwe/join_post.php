@@ -8,25 +8,25 @@ $v = new Validator($_POST + $_GET);
 $v
 ->rule('required', [
     'name',
-    'leader',
-    'power',
+    'leadership',
+    'strength',
     'intel'
 ])
 ->rule('integer', [
-    'leader',
-    'power',
+    'leadership',
+    'strength',
     'intel',
     'character',
 ])
 ->rule('stringWidthBetween', 'name', 1, 18)
 ->rule('min', [
-    'leader',
-    'power',
+    'leadership',
+    'strength',
     'intel'
 ], GameConst::$defaultStatMin)
 ->rule('max', [
-    'leader',
-    'power',
+    'leadership',
+    'strength',
     'intel'
 ], GameConst::$defaultStatMax)
 ->rule('min', 'character', 0)
@@ -50,8 +50,8 @@ $name       = StringUtil::textStrip($name);
 $pic        = (int)Util::getReq('pic', 'bool', 0);
 $character  = Util::getReq('character', 'int', 0);
 
-$leader = Util::getReq('leader', 'int', 50);
-$power = Util::getReq('power', 'int', 50);
+$leadership = Util::getReq('leadership', 'int', 50);
+$strength = Util::getReq('strength', 'int', 50);
 $intel = Util::getReq('intel', 'int', 50);
 
 $join = Util::getReq('join'); //쓸모 없음
@@ -110,7 +110,7 @@ if (mb_strwidth($name) > 18) {
       </script>");
     exit;
 }
-if ($leader + $power + $intel > GameConst::$defaultStatTotal) {
+if ($leadership + $strength + $intel > GameConst::$defaultStatTotal) {
     echo("<script>
       window.alert('능력치가 ".GameConst::$defaultStatTotal."을 넘어섰습니다. 다시 가입해주세요!')
       history.go(-1)
@@ -132,16 +132,16 @@ if (!$city) {
     $city = $db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1");
 }
 
-$pleader = 0;
-$ppower = 0;
+$pleadershipship = 0;
+$pstrength = 0;
 $pintel = 0;
 for ($statBonusCnt = 3 + mt_rand(0, 2); $statBonusCnt > 0; $statBonusCnt--) {
-    switch (Util::choiceRandomUsingWeight([$leader, $power, $intel])) {
+    switch (Util::choiceRandomUsingWeight([$leadership, $strength, $intel])) {
     case 0:
-        $pleader++;
+        $pleadership++;
         break;
     case 1:
-        $ppower++;
+        $pstrength++;
         break;
     case 2:
         $pintel++;
@@ -149,20 +149,20 @@ for ($statBonusCnt = 3 + mt_rand(0, 2); $statBonusCnt > 0; $statBonusCnt--) {
     }
 }
 
-$leader = $leader + $pleader;
-$power = $power + $ppower;
+$leadership = $leadership + $pleadership;
+$strength = $strength + $pstrength;
 $intel = $intel + $pintel;
 
 $admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year']);
 $relYear = Util::valueFit($admin['year'] - $admin['startyear'], 0);
 
-$age = 20 + ($pleader + $ppower + $pintel) * 2 - (mt_rand(0, 1));
+$age = 20 + ($pleadership + $pstrength + $pintel) * 2 - (mt_rand(0, 1));
 // 아직 남았고 천재등록상태이면 특기 부여
 if ($genius) {
     $specage2 = $age;
     $special2 = SpecialityConst::pickSpecialWar([
-        'leader'=>$leader,
-        'power'=>$power,
+        'leadership'=>$leadership,
+        'strength'=>$strength,
         'intel'=>$intel,
         'dex0'=>0,
         'dex10'=>0,
@@ -230,8 +230,8 @@ $db->insert('general', [
     'city' => $city,
     'troop' => 0,
     'affinity' => $affinity,
-    'leader' => $leader,
-    'power' => $power,
+    'leadership' => $leadership,
+    'strength' => $strength,
     'intel' => $intel,
     'experience' => $experience,
     'dedication' => 0,
@@ -288,7 +288,7 @@ $mylog[] = "<C>●</>삼국지 모의전투 PHP의 세계에 오신 것을 환�
 $mylog[] = "<C>●</>처음 하시는 경우에는 <D>도움말</>을 참고하시고,";
 $mylog[] = "<C>●</>문의사항이 있으시면 게시판에 글을 남겨주시면 되겠네요~";
 $mylog[] = "<C>●</>부디 즐거운 삼모전 되시길 바랍니다 ^^";
-$mylog[] = "<C>●</>통솔 <C>$pleader</> 무력 <C>$ppower</> 지력 <C>$pintel</> 의 보너스를 받으셨습니다.";
+$mylog[] = "<C>●</>통솔 <C>$pleadership</> 무력 <C>$pstrength</> 지력 <C>$pintel</> 의 보너스를 받으셨습니다.";
 $mylog[] = "<C>●</>연령은 <C>$age</>세로 시작합니다.";
 if ($genius) {
     $mylog[] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGeneralSpecialWarName($special2)."</> 특기를 가지게 됩니다!";

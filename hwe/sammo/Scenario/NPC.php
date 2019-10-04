@@ -20,7 +20,7 @@ class NPC{
     public $nationID; 
     public $locatedCity; 
     public $leadership; 
-    public $power; 
+    public $strength; 
     public $intel; 
     public $level;
     public $birth; 
@@ -63,7 +63,7 @@ class NPC{
         int $nationID, 
         $locatedCity,
         int $leadership, 
-        int $power, 
+        int $strength, 
         int $intel, 
         int $level = 0,
         int $birth = 160, 
@@ -78,7 +78,7 @@ class NPC{
         $this->nationID = $nationID;
         $this->locatedCity = $locatedCity;
         $this->leadership = $leadership;
-        $this->power = $power;
+        $this->strength = $strength;
         $this->intel = $intel;
         $this->level = $level;
         $this->birth = $birth;
@@ -90,8 +90,8 @@ class NPC{
         $this->rice = GameConst::$defaultRice;
 
         $general = [
-            'leader'=>$leadership,
-            'power'=>$power,
+            'leadership'=>$leadership,
+            'strength'=>$strength,
             'intel'=>$intel
         ];
 
@@ -307,8 +307,8 @@ class NPC{
             'picture'=>$picturePath,
             'nation'=>$nationID,
             'city'=>$city,
-            'leader'=>$this->leadership,
-            'power'=>$this->power,
+            'leadership'=>$this->leadership,
+            'strength'=>$this->strength,
             'intel'=>$this->intel,
             'experience'=>$experience,
             'dedication'=>$dedication,

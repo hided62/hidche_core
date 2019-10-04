@@ -196,7 +196,7 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "
             <select name=outlist size=1 style=color:white;background-color:black;>";
 
-    $query = "select no,npc,name,level,leader,power,intel,killturn from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
+    $query = "select no,npc,name,level,leadership,strength,intel,killturn from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -206,7 +206,7 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
             continue;
         }
         echo "
-                <option value={$general['no']}>{$general['name']} <small>({$general['leader']}/{$general['power']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
+                <option value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }
 
     echo "
@@ -272,11 +272,11 @@ echo "
 ";
 
 $queries = [];
-$queries[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
 $queries[9]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
 $queries[7]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
 $queries[5]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
 
 for($i=10; $i >= $lv; $i--) {
@@ -390,7 +390,7 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {

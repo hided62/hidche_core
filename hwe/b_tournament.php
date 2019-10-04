@@ -28,10 +28,10 @@ if ($con >= 2) {
 
 switch ($admin['tnmt_type']) {
 default: throw new \RuntimeException('invalid tnmt_type');
-case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "tot"; $tp2 = "종합"; $tp3 = "total"; break;
-case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "ldr"; $tp2 = "통솔"; $tp3 = "leader"; break;
-case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "pwr"; $tp2 = "무력"; $tp3 = "power"; break;
-case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "지력"; $tp3 = "intel"; break;
+case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "total"; $tp2 = "종합"; $tp3 = "total"; break;
+case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "leadership"; $tp2 = "통솔"; $tp3 = "leadership"; break;
+case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "strength"; $tp2 = "무력"; $tp3 = "strength"; break;
+case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "intel"; $tp2 = "지력"; $tp3 = "intel"; break;
 }
 
 ?>
@@ -115,7 +115,7 @@ if ($session->userGrade >= 5) {
     case 1:
         echo "<select name=gen size=1 style=color:white;background-color:black;>";
 
-        $query = "select no,name,npc,tnmt,leader,power,intel,leader+power+intel as total from general where tournament=0 and gold>='{$admin['develcost']}' order by {$tp3} desc";
+        $query = "select no,name,npc,tnmt,leadership,strength,intel,leadership+strength+intel as total from general where tournament=0 and gold>='{$admin['develcost']}' order by {$tp3} desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         $genCount = MYDB_num_rows($result);
 
@@ -442,7 +442,7 @@ for ($i=0; $i < 8; $i++) {
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
-    $query = "select npc,name,ldr,pwr,itl,ldr+pwr+itl as tot,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$grp' order by gd desc, gl desc, seq";
+    $query = "select npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$grp' order by gd desc, gl desc, seq";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     for ($k=1; $k <= 4; $k++) {
         $general = MYDB_fetch_array($result);
@@ -468,7 +468,7 @@ for ($i=0; $i < 8; $i++) {
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
-    $query = "select npc,name,ldr,pwr,itl,ldr+pwr+itl as tot,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$grp' order by gd desc, gl desc, seq";
+    $query = "select npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$grp' order by gd desc, gl desc, seq";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     for ($k=1; $k <= 8; $k++) {
         $general = MYDB_fetch_array($result);

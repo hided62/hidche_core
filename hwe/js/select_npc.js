@@ -2,7 +2,7 @@ var templateGeneralCard =
 '<div class="general_card">\
     <h4 class="bg1 with_border"><%name%></h4>\
     <h4><img src="<%iconPath%>" height=64 width=64></h4>\
-    <p><%leader%> / <%power%> / <%intel%><br>\
+    <p><%leadership%> / <%strength%> / <%intel%><br>\
     <%nation%><br>\
     <%personalText%><br>\
     <%specialText%> / <%special2Text%></p>\
@@ -31,8 +31,8 @@ var templateGeneralRow =
     <td><%dedication%></td>\
     <td><%level%></td>\
     <td><%total%></td>\
-    <td><%leader%></td>\
-    <td><%power%></td>\
+    <td><%leadership%></td>\
+    <td><%strength%></td>\
     <td><%intel%></td>\
     <td><%killturn%></td>\
 </tr>';
@@ -111,8 +111,8 @@ function printGenerals(value){
     });
 
     pick.sort(function(lhs, rhs){
-        var lsum = lhs.leader+lhs.power+lhs.intel;
-        var rsum = rhs.leader+rhs.power+rhs.intel;
+        var lsum = lhs.leadership+lhs.strength+lhs.intel;
+        var rsum = rhs.leadership+rhs.strength+rhs.intel;
         return lsum - rsum;
     });
     
@@ -181,9 +181,9 @@ function printGeneralList(value){
             name:general[9],
             name2:general[10],
             injury:general[11],
-            leader:general[12],
+            leadership:general[12],
             lbonus:general[13],
-            power:general[14],
+            strength:general[14],
             intel:general[15],
             explevel:general[16],
             experience:general[17],
@@ -222,7 +222,7 @@ function printGeneralList(value){
         }
 
 
-        general.total = general.leader + general.power + general.intel;
+        general.total = general.leadership + general.strength + general.intel;
         general.iconPath = getIconPath(general.imgsvr, general.picture);
 
         general.specialDomesticWithTooltip = TemplateEngine(templateSpecial, {
@@ -253,8 +253,8 @@ function printGeneralList(value){
         if(lhs.total != rhs.total){
             return rhs.total - lhs.total;
         }
-        if(lhs.leader != rhs.leader){
-            return rhs.leader - lhs.total;
+        if(lhs.leadership != rhs.leadership){
+            return rhs.leadership - lhs.total;
         }
         
         if(lhs.name < rhs.name){

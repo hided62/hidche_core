@@ -103,7 +103,7 @@ switch ($type) {
 }
 
 $generals = $db->query(
-    'SELECT npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
+    'SELECT npc,mode,no,level,troop,city,injury,leadership,strength,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
     $me['nation'],
     $orderSQL
 );
@@ -140,20 +140,20 @@ foreach ($generals as &$general) {
     $general['lbonusText'] = $lbonusText;
 
     if ($general['injury'] > 0) {
-        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
-        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
+        $leadership = intdiv($general['leadership'] * (100 - $general['injury']), 100);
+        $strength = intdiv($general['strength'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-        $leader = "<font color=red>{$leader}</font>{$lbonusText}";
-        $power = "<font color=red>{$power}</font>";
+        $leadership = "<font color=red>{$leadership}</font>{$lbonusText}";
+        $strength = "<font color=red>{$strength}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general['leader']}{$lbonusText}";
-        $power = "{$general['power']}";
+        $leadership = "{$general['leadership']}{$lbonusText}";
+        $strength = "{$general['strength']}";
         $intel = "{$general['intel']}";
     }
 
-    $general['leaderText'] = $leader;
-    $general['powerText'] = $power;
+    $general['leadershipText'] = $leadership;
+    $general['strengthText'] = $strength;
     $general['intelText'] = $intel;
 
     $general['expLevelText'] = getExpLevel($general['experience']);

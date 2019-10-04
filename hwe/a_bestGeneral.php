@@ -127,12 +127,12 @@ $types = [
         return $v; 
     }],
     ["일 기 토 승 률", "percent", function($v){
-        $totalCnt = $v['tpw']+$v['tpd']+$v['tpl'];
+        $totalCnt = $v['tsw']+$v['tsd']+$v['tsl'];
         if($totalCnt < 50){
             $v['value'] = 0;
         }
         else{
-            $v['value'] = $v['tpw']/max(1, $totalCnt);
+            $v['value'] = $v['tsw']/max(1, $totalCnt);
         }
         return $v;
     }],

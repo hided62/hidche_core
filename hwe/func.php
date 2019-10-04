@@ -274,7 +274,7 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leader)*100 as maxcrew from general where nation='{$nation['nation']}'";    // 장수 목록
+    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leadership)*100 as maxcrew from general where nation='{$nation['nation']}'";    // 장수 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -635,7 +635,7 @@ function generalInfo($no) {
 
     $show_img_level = $gameStor->show_img_level;
 
-    $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leader,leader2,power,power2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
+    $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leadership,leadership2,strength,strength2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -684,19 +684,19 @@ function generalInfo($no) {
         $city = MYDB_fetch_array($result);
         $level = $city['name']." ".$level;
     }
-    $call = getCall($general['leader'], $general['power'], $general['intel']);
+    $call = getCall($general['leadership'], $general['strength'], $general['intel']);
     $typename = GameUnitConst::byId($general['crewtype'])->name;
     $weapname = getItemName($general['weap']);
     $bookname = getItemName($general['book']);
     $horsename = getItemName($general['horse']);
     $itemname = displayItemInfo($general['item']);
     if($general['injury'] > 0) {
-        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
-        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
+        $leadership = intdiv($general['leadership'] * (100 - $general['injury']), 100);
+        $strength = intdiv($general['strength'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
     } else {
-        $leader = $general['leader'];
-        $power = $general['power'];
+        $leadership = $general['leadership'];
+        $strength = $general['strength'];
         $intel = $general['intel'];
     }
     if($general['injury'] > 60)     { $color = "<font color=red>";     $injury = "위독"; }
@@ -748,11 +748,11 @@ function generalInfo($no) {
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>
-        <td style='text-align:center;'>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($general['leader2']), 20)."</td>
+        <td style='text-align:center;'>&nbsp;{$color}{$leadership}</font>{$lbonus}&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['leadership2']), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>무력</b></td>
-        <td style='text-align:center;'>&nbsp;{$color}{$power}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($general['power2']), 20)."</td>
+        <td style='text-align:center;'>&nbsp;{$color}{$strength}</font>&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['strength2']), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>지력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
         <td style='text-align:center;' width=45>".bar(expStatus($general['intel2']), 20)."</td>
@@ -1319,7 +1319,7 @@ function addAge() {
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     if($admin['year'] >= $admin['startyear']+3) {
-        foreach($db->query('SELECT no,name,nation,leader,power,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general){
+        foreach($db->query('SELECT no,name,nation,leadership,strength,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general){
             $special = SpecialityConst::pickSpecialDomestic($general);
             $specialClass = getGeneralSpecialDomesticClass($special);
             $specialText = $specialClass::$name;
@@ -1332,7 +1332,7 @@ function addAge() {
             pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
         }
 
-        foreach($db->query('SELECT no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
+        foreach($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
             $special2 = SpecialityConst::pickSpecialWar($general);
             $specialClass = getGeneralSpecialWarClass($special2);
             $specialText = $specialClass::$name;
@@ -1424,7 +1424,7 @@ function CheckHall($no) {
     dex0,dex10,dex20,dex30,dex40,
     ttw/(ttw+ttd+ttl) as ttrate, ttw+ttd+ttl as tt,
     tlw/(tlw+tld+tll) as tlrate, tlw+tld+tll as tl,
-    tpw/(tpw+tpd+tpl) as tprate, tpw+tpd+tpl as tp,
+    tsw/(tsw+tsd+tsl) as tprate, tsw+tsd+tsl as ts,
     tiw/(tiw+tid+til) as tirate, tiw+tid+til as ti,
     betgold, betwin, betwingold, betwingold/betgold as betrate
     from general where no=%i', $no);
@@ -1455,7 +1455,7 @@ function CheckHall($no) {
         //토너승률인데 50회 미만시 스킵
         if($typeName === 'tlrate' && $general['tl'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($typeName === 'tprate' && $general['tp'] < 50) { continue; }
+        if($typeName === 'tsrate' && $general['ts'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
         if($typeName === 'tirate' && $general['ti'] < 50) { continue; }
         //수익률인데 1000미만시 스킵
@@ -1752,25 +1752,25 @@ function uniqueItem($general, $log, $vote=0) {
 
 function checkAbilityEx(int $generalID, ActionLogger $actLog){
     $db = DB::db();
-    $general = $db->queryFirstRow('SELECT leader,leader2,power,power2,intel,intel2 FROM general WHERE no = %i',$generalID);
+    $general = $db->queryFirstRow('SELECT leadership,leadership2,strength,strength2,intel,intel2 FROM general WHERE no = %i',$generalID);
 
     if(!$general){
         return;
     }
 
-    if($general['leader2'] < 0){
+    if($general['leadership2'] < 0){
         $db->update('general',[
-            'leader2'=>$db->sqleval('leader2 + %i', GameConst::$upgradeLimit),
-            'leader'=>$db->sqleval('leader - 1')
+            'leadership2'=>$db->sqleval('leadership2 + %i', GameConst::$upgradeLimit),
+            'leadership'=>$db->sqleval('leadership - 1')
         ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
         return;
     }
 
-    if($general['power2'] < 0){
+    if($general['strength2'] < 0){
         $db->update('general',[
-            'power2'=>$db->sqleval('power2 + %i', GameConst::$upgradeLimit),
-            'power'=>$db->sqleval('power - 1')
+            'strength2'=>$db->sqleval('strength2 + %i', GameConst::$upgradeLimit),
+            'strength'=>$db->sqleval('strength - 1')
         ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
         return;
@@ -1785,19 +1785,19 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         return;
     }
 
-    if($general['leader2'] >= GameConst::$upgradeLimit){
+    if($general['leadership2'] >= GameConst::$upgradeLimit){
         $db->update('general',[
-            'leader2'=>$db->sqleval('leader2 - %i', GameConst::$upgradeLimit),
-            'leader'=>$db->sqleval('leader + 1')
+            'leadership2'=>$db->sqleval('leadership2 - %i', GameConst::$upgradeLimit),
+            'leadership'=>$db->sqleval('leadership + 1')
         ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<S>통솔</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
 
-    if($general['power2'] >= GameConst::$upgradeLimit){
+    if($general['strength2'] >= GameConst::$upgradeLimit){
         $db->update('general',[
-            'power2'=>$db->sqleval('power2 - %i', GameConst::$upgradeLimit),
-            'power'=>$db->sqleval('power + 1')
+            'strength2'=>$db->sqleval('strength2 - %i', GameConst::$upgradeLimit),
+            'strength'=>$db->sqleval('strength + 1')
         ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<S>무력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
@@ -1819,29 +1819,29 @@ function checkAbility($general, $log) {
 
     $limit = GameConst::$upgradeLimit;
 
-    $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='{$general['no']}'";
+    $query = "select no,leadership,leadership2,strength,strength2,intel,intel2 from general where no='{$general['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    if($general['leader2'] < 0) {
-        $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='{$general['no']}'";
+    if($general['leadership2'] < 0) {
+        $query = "update general set leadership2='$limit'+leadership2,leadership=leadership-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general['leader2'] >= $limit) {
-        $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='{$general['no']}'";
+    } elseif($general['leadership2'] >= $limit) {
+        $query = "update general set leadership2=leadership2-'$limit',leadership=leadership+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[] = "<C>●</><S>통솔</>이 <C>1</> 올랐습니다!";
     }
 
-    if($general['power2'] < 0) {
-        $query = "update general set power2='$limit'+power2,power=power-1 where no='{$general['no']}'";
+    if($general['strength2'] < 0) {
+        $query = "update general set strength2='$limit'+strength2,strength=strength-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general['power2'] >= $limit) {
-        $query = "update general set power2=power2-'$limit',power=power+1 where no='{$general['no']}'";
+    } elseif($general['strength2'] >= $limit) {
+        $query = "update general set strength2=strength2-'$limit',strength=strength+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[] = "<C>●</><S>무력</>이 <C>1</> 올랐습니다!";

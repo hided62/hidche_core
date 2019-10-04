@@ -330,9 +330,9 @@ function process_29(&$general) {
         if(!$found_npc) {
             $exp = 100;
             $ded = 70;
-            switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
-            case 0: $general['leader2'] += 1; break;
-            case 1: $general['power2'] += 1; break;
+            switch(Util::choiceRandomUsingWeight([$general['leadership'], $general['power'], $general['intel']])) {
+            case 0: $general['leadership2'] += 1; break;
+            case 1: $general['strength2'] += 1; break;
             case 2: $general['intel2'] += 1; break;
             }
             $log[] = "<C>●</>{$admin['month']}월:인재를 찾을 수 없었습니다. <1>$date</>";
@@ -340,9 +340,9 @@ function process_29(&$general) {
             // 탐색 성공
             $exp = 200;
             $ded = 300;
-            switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
-            case 0: $general['leader2'] += 3; break;
-            case 1: $general['power2'] += 3; break;
+            switch(Util::choiceRandomUsingWeight([$general['leadership'], $general['power'], $general['intel']])) {
+            case 0: $general['leadership2'] += 3; break;
+            case 1: $general['strength2'] += 3; break;
             case 2: $general['intel2'] += 3; break;
             }
 
@@ -383,7 +383,7 @@ function process_29(&$general) {
             $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다!";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
-            $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) as dex_t, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
+            $avgGen = $db->queryFirstRow('SELECT max(leadership+power+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) as dex_t, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
 
             $dexTotal = $avgGen['dex_t'];
 
@@ -392,39 +392,39 @@ function process_29(&$general) {
             $stat_tier3 = GameConst::$defaultStatMin + rand()%6;
             $stat_tier2 = GameConst::$defaultStatTotal - $stat_tier1 - $stat_tier3;
             $type = Util::choiceRandomUsingWeight([
-                'power0'=>2,
-                'power1'=>2,
-                'power2'=>2,
+                'strength0'=>2,
+                'strength1'=>2,
+                'strength2'=>2,
                 'intel'=>6,
                 'neutral'=>3
             ]);
             switch($type){
-            case 'power0':
-                $leader = $stat_tier1;
+            case 'strength0':
+                $leadership = $stat_tier1;
                 $power = $stat_tier2;
                 $intel = $stat_tier3;
                 $dexVal = [$dexTotal*5/8, $dexTotal/8, $dexTotal/8, $dexTotal/8];
                 break;
-            case 'power1':
-                $leader = $stat_tier1;
+            case 'strength1':
+                $leadership = $stat_tier1;
                 $power = $stat_tier2;
                 $intel = $stat_tier3;
                 $dexVal = [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8];
                 break;
-            case 'power2':
-                $leader = $stat_tier1;
+            case 'strength2':
+                $leadership = $stat_tier1;
                 $power = $stat_tier2;
                 $intel = $stat_tier3;
                 $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8];
                 break;
             case 'intel':
-                $leader = $stat_tier1;
+                $leadership = $stat_tier1;
                 $power = $stat_tier3;
                 $intel = $stat_tier2;
                 $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal/8, $dexTotal*5/8];
                 break;
             default:
-                $leader = $stat_tier3;
+                $leadership = $stat_tier3;
                 $power = $stat_tier1;
                 $intel = $stat_tier2;
                 $dexVal = [$dexTotal/4, $dexTotal/4, $dexTotal/4, $dexTotal/4];
@@ -432,26 +432,26 @@ function process_29(&$general) {
             }
 
             // 국내 최고능치 기준으로 랜덤성 스케일링
-            if($avgGen['lpi'] > 210) {
-                $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
-                $power = Util::round($power * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
-                $intel = Util::round($intel * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
-            } elseif($avgGen['lpi'] > 180) {
-                $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
-                $power = Util::round($power * $avgGen['lpi'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
-                $intel = Util::round($intel * $avgGen['lpi'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
+            if($avgGen['stat_sum'] > 210) {
+                $leadership = Util::round($leadership * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
+                $power = Util::round($power * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
+                $intel = Util::round($intel * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
+            } elseif($avgGen['stat_sum'] > 180) {
+                $leadership = Util::round($leadership * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
+                $power = Util::round($power * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
+                $intel = Util::round($intel * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
             } else {
-                $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
-                $power = Util::round($power * $avgGen['lpi'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
-                $intel = Util::round($intel * $avgGen['lpi'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
+                $leadership = Util::round($leadership * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
+                $power = Util::round($power * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
+                $intel = Util::round($intel * $avgGen['stat_sum'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
             }
             $over1 = 0;
             $over2 = 0;
             $over3 = 0;
             // 너무 높은 능치는 다른 능치로 분산
-            if($leader > 90) {
-                $over1 = rand() % ($leader - 90) + 5;
-                $leader -= $over1;
+            if($leadership > 90) {
+                $over1 = rand() % ($leadership - 90) + 5;
+                $leadership -= $over1;
             }
             if($power > 90) {
                 $over2 = rand() % ($power - 90) + 5;
@@ -468,8 +468,8 @@ function process_29(&$general) {
                 $power = $power + $over1 + $over2 + $over3;
             }
             // 너무 높은 능치는 제한
-            if($leader > 95) {
-                $leader = 95;
+            if($leadership > 95) {
+                $leadership = 95;
             }
             if($power > 95) {
                 $power = 95;
@@ -499,14 +499,14 @@ function process_29(&$general) {
             @MYDB_query("
                 insert into general (
                     npcid,npc,npc_org,affinity,name,picture,nation,
-                    city,leader,power,intel,experience,dedication,
+                    city,leadership,power,intel,experience,dedication,
                     level,gold,rice,crew,crewtype,train,atmos,tnmt,
                     weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                     makelimit,bornyear,deadyear,
                     dex0, dex10, dex20, dex30, dex40
                 ) values (
                     '$npccount','$npc','$npc','$affinity','$name','$picture','$scoutNation',
-                    '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
+                    '{$general['city']}','$leadership','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
                     '$scoutLevel','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',
                     '0','$bornyear','$deadyear',
@@ -534,7 +534,7 @@ function process_29(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
-        $query = "update general set resturn='SUCCESS',term='0',gold='$gold',leader2='{$general['leader2']}',power2='{$general['power2']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',term='0',gold='$gold',leadership2='{$general['leadership2']}',strength2='{$general['strength2']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);

@@ -91,7 +91,7 @@ class che_귀환 extends Command\GeneralCommand{
 
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar('leader2', 1);
+        $general->increaseVar('leadership2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);

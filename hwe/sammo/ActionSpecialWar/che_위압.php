@@ -19,7 +19,7 @@ class che_위압 implements iAction{
     static $selectWeight = 1;
     static $type = [
         SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_POWER
+        SpecialityConst::STAT_STRENGTH
     ];
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{

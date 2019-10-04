@@ -7,16 +7,16 @@ use Constraint\Constraint;
  * 내정 커맨드 사용시 성공 확률 계산
  * 
  * @param array $general 장수 정보
- * @param string $type 내정 커맨드 타입, 'leader' = 통솔 기반, 'power' = 무력 기반, 'intel' = 지력 기반
+ * @param string $type 내정 커맨드 타입, 'leadership' = 통솔 기반, 'strength' = 무력 기반, 'intel' = 지력 기반
  * 
  * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
 function CriticalRatioDomestic(General $general, string $type) {
-    $leader = $general->getLeadership(false, true, true, false);
-    $power = $general->getPower(false, true, true, false);
+    $leadership = $general->getLeadership(false, true, true, false);
+    $strength = $general->getStrength(false, true, true, false);
     $intel = $general->getIntel(false, true, true, false);
 
-    $avg = ($leader+$power+$intel) / 3;
+    $avg = ($leadership+$strength+$intel) / 3;
     /*
     * 능력치가 높아질 수록 성공 확률 감소. 실패 확률도 감소
 
@@ -30,8 +30,8 @@ function CriticalRatioDomestic(General $general, string $type) {
       505050(50%,50%), 107070(50%,50%)
     */
     switch($type) {
-    case 'leader': $ratio = $avg / $leader; break;
-    case 'power': $ratio = $avg / $power;  break;
+    case 'leadership': $ratio = $avg / $leadership; break;
+    case 'strength': $ratio = $avg / $strength;  break;
     case 'intel': $ratio = $avg / $intel; break;
     default:
         throw new MustNotBeReachedException();

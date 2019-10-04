@@ -76,7 +76,7 @@ class Scenario{
 
             list(
                 $affinity, $name, $picturePath, $nationName, $locatedCity, 
-                $leadership, $power, $intel, $level, $birth, $death, $ego,
+                $leadership, $strength, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
@@ -99,7 +99,7 @@ class Scenario{
                 $nationID, 
                 $locatedCity, 
                 $leadership, 
-                $power, 
+                $strength, 
                 $intel, 
                 $level, 
                 $birth, 
@@ -117,7 +117,7 @@ class Scenario{
 
             list(
                 $affinity, $name, $picturePath, $nationName, $locatedCity, 
-                $leadership, $power, $intel, $level, $birth, $death, $ego,
+                $leadership, $strength, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
@@ -140,7 +140,7 @@ class Scenario{
                 $nationID, 
                 $locatedCity, 
                 $leadership, 
-                $power, 
+                $strength, 
                 $intel, 
                 $level, 
                 $birth, 
@@ -159,7 +159,7 @@ class Scenario{
 
             list(
                 $affinity, $name, $picturePath, $nationName, $locatedCity, 
-                $leadership, $power, $intel, $level, $birth, $death, $ego,
+                $leadership, $strength, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
@@ -182,7 +182,7 @@ class Scenario{
                 $nationID, 
                 $locatedCity, 
                 $leadership, 
-                $power, 
+                $strength, 
                 $intel, 
                 $level, 
                 $birth, 

@@ -420,7 +420,7 @@ function postUpdateMonthly() {
                 sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop2+agri2+comm2+secu2+wall2+def2)/100
             ) from city where nation=A.nation and supply=1
         ))
-        +(select sum(leader+power+intel) from general where nation=A.nation)
+        +(select sum(leadership+strength+intel) from general where nation=A.nation)
         +(select round(sum(dex0+dex10+dex20+dex30+dex40)/1000) from general where nation=A.nation)
         +(select round(sum(experience+dedication)/100) from general where nation=A.nation)
         +(select round(avg(connect)) from general where nation=A.nation)
@@ -1059,7 +1059,7 @@ function checkStatistic() {
 
     $nationGeneralInfos = Util::convertArrayToDict(
         $db->query(
-            'SELECT nation, sum(leader+power+intel) as abil,sum(gold+rice) as goldrice,
+            'SELECT nation, sum(leadership+strength+intel) as abil,sum(gold+rice) as goldrice,
             sum(dex0+dex10+dex20+dex30) as dex,sum(experience+dedication) as expded
             from general GROUP BY nation'
         ),

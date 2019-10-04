@@ -98,8 +98,8 @@ class che_인재탐색 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog("인재를 찾을 수 없었습니다. <1>$date</>");
 
             $incStat = Util::choiceRandomUsingWeight([
-                'leader2'=>$general->getLeadership(false, false, false, false),
-                'power2'=>$general->getPower(false, false, false, false),
+                'leadership2'=>$general->getLeadership(false, false, false, false),
+                'strength2'=>$general->getStrength(false, false, false, false),
                 'intel2'=>$general->getIntel(false, false, false, false)
             ]);
             [$reqGold, $reqRice] = $this->getCost();
@@ -148,45 +148,45 @@ class che_인재탐색 extends Command\GeneralCommand{
         }
 
         $avgGen = $db->queryFirstRow(
-            'SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp,
+            'SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp,
             avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40
             from general where nation=%i',
             $nationID
         );
 
         if($pickType == '무'){
-            $leader = $subStat;
-            $power = $mainStat;
+            $leadership = $subStat;
+            $strength = $mainStat;
             $intel = $otherStat;
         }
         else if($pickType == '지'){
-            $leader = $subStat;
-            $power = $otherStat;
+            $leadership = $subStat;
+            $strength = $otherStat;
             $intel = $mainStat;
         }
         else{
-            $leader = $otherStat;
-            $power = $subStat;
+            $leadership = $otherStat;
+            $strength = $subStat;
             $intel = $mainStat;
         }
 
         // 국내 최고능치 기준으로 랜덤성 스케일링
-        $maxLPI = $avgGen['lpi'];
+        $maxLPI = $avgGen['stat_sum'];
         if($maxLPI > 210) {
-            $leader *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-            $power *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
+            $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
+            $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
             $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
         } elseif($maxLPI > 180) {
-            $leader *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-            $power *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-            $intel *= $avgGen['lpi'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
+            $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
+            $strength *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
+            $intel *= $avgGen['stat_sum'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
         } else {
-            $leader *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-            $power *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
+            $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
+            $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
             $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
         }
-        $leader = Util::round($leader);
-        $power = Util::round($power);
+        $leadership = Util::round($leadership);
+        $strength = Util::round($strength);
         $intel = Util::round($intel);
 
         $isOurNation = $this->nation['scout'] == 0;
@@ -199,8 +199,8 @@ class che_인재탐색 extends Command\GeneralCommand{
             null,
             $isOurNation?$nationID:0,
             $general->getCityID(),
-            $leader,
-            $power,
+            $leadership,
+            $strength,
             $intel,
             $isOurNation?1:0,
             $age,
@@ -245,8 +245,8 @@ class che_인재탐색 extends Command\GeneralCommand{
         $logger->pushGeneralHistoryLog("<Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
         $incStat = Util::choiceRandomUsingWeight([
-            'leader2'=>$general->getLeadership(false, false, false, false),
-            'power2'=>$general->getPower(false, false, false, false),
+            'leadership2'=>$general->getLeadership(false, false, false, false),
+            'strength2'=>$general->getStrength(false, false, false, false),
             'intel2'=>$general->getIntel(false, false, false, false)
         ]);
         [$reqGold, $reqRice] = $this->getCost();

@@ -32,10 +32,10 @@ if ($con >= 2) {
 
 switch ($admin['tnmt_type']) {
 default: throw new \RuntimeException('Invalid tnmt_type');break;
-case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "tot"; $tp2 = "종합"; $tp3 = "total"; break;
-case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "ldr"; $tp2 = "통솔"; $tp3 = "leader"; break;
-case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "pwr"; $tp2 = "무력"; $tp3 = "power"; break;
-case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "지력"; $tp3 = "intel"; break;
+case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "total"; $tp2 = "종합"; $tp3 = "total"; break;
+case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "leadership"; $tp2 = "통솔"; $tp3 = "leadership"; break;
+case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "strength"; $tp2 = "무력"; $tp3 = "strength"; break;
+case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "intel"; $tp2 = "지력"; $tp3 = "intel"; break;
 }
 
 $str1 = getTournament($admin['tournament']);
@@ -401,8 +401,8 @@ if ($admin['tournament'] == 6) {
 
 $type1 = array("전 력 전", "통 솔 전", "일 기 토", "설 전");
 $type2 = array("종합", "통솔", "무력", "지력");
-$type3 = array("tt", "tl", "tp", "ti");
-$type4 = array("total", "leader", "power", "intel");
+$type3 = array("tt", "tl", "ts", "ti");
+$type4 = array("total", "leadership", "strength", "intel");
 
 for ($i=0; $i < 4; $i++) {
     $grp = $i;
@@ -412,7 +412,7 @@ for ($i=0; $i < 4; $i++) {
                 <tr><td colspan=9 align=center style=color:white;background-color:black;><font size=4>{$type1[$i]}</font></td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$type2[$i]}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>";
 
-    $query = "select npc,name,leader,power,intel,leader+power+intel as total,{$type3[$i]}p as prize,{$type3[$i]}w+{$type3[$i]}d+{$type3[$i]}l as game,{$type3[$i]}w as win,{$type3[$i]}d as draw,{$type3[$i]}l as lose,{$type3[$i]}g as gl from general order by gl desc, game desc, win desc, draw desc, lose, no limit 0,30";
+    $query = "select npc,name,leadership,strength,intel,leadership+strength+intel as total,{$type3[$i]}p as prize,{$type3[$i]}w+{$type3[$i]}d+{$type3[$i]}l as game,{$type3[$i]}w as win,{$type3[$i]}d as draw,{$type3[$i]}l as lose,{$type3[$i]}g as gl from general order by gl desc, game desc, win desc, draw desc, lose, no limit 0,30";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     for ($k=1; $k <= 30; $k++) {
         $general = MYDB_fetch_array($result);

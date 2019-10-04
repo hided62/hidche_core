@@ -6,7 +6,7 @@ use Constraint\Constraint;
 /**
  * 장수의 통솔을 받아옴
  * 
- * @param array $general 장수 정보, leader, injury, lbonus, horse 사용
+ * @param array $general 장수 정보, leadership, injury, lbonus, horse 사용
  * @param bool $withInjury 부상값 사용 여부
  * @param bool $withItem 아이템 적용 여부
  * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
@@ -18,7 +18,7 @@ function getGeneralLeadership($general, $withInjury, $withItem, $withStatAdjust,
 	if($general === null){
 		return 0;
 	}
-    $leadership = $general['leader'];
+    $leadership = $general['leadership'];
     if($withInjury){
         $leadership *= (100 - $general['injury']) / 100;
     }
@@ -58,7 +58,7 @@ function getGeneralLeadership($general, $withInjury, $withItem, $withStatAdjust,
  * 
  * @return int|float 계산된 능력치
  */
-function getGeneralPower($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+function getGeneralStrength($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
 	if($general === null){
 		return 0;
 	}
@@ -107,7 +107,7 @@ function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $use
     }
 
     if($withStatAdjust){
-        $intel += Util::round(getGeneralPower($general, $withInjury, $withItem, false, false) / 4);
+        $intel += Util::round(getGeneralStrength($general, $withInjury, $withItem, false, false) / 4);
     }
     
     if($useFloor){
@@ -120,16 +120,16 @@ function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $use
  * 내정 커맨드 사용시 성공 확률 계산
  * 
  * @param array $general 장수 정보
- * @param int|string $type 내정 커맨드 타입, 0|'leader' = 통솔 기반, 1|'power' = 무력 기반, 2|'intel' = 지력 기반
+ * @param int|string $type 내정 커맨드 타입, 0|'leadership' = 통솔 기반, 1|'power' = 무력 기반, 2|'intel' = 지력 기반
  * 
  * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
 function CriticalRatioDomestic(&$general, $type) {
-    $leader = getGeneralLeadership($general, false, true, true, false);
-    $power = getGeneralPower($general, false, true, true, false);
+    $leadership = getGeneralLeadership($general, false, true, true, false);
+    $power = getGeneralStrength($general, false, true, true, false);
     $intel = getGeneralIntel($general, false, true, true, false);
 
-    $avg = ($leader+$power+$intel) / 3;
+    $avg = ($leadership+$power+$intel) / 3;
     /*
     * 능력치가 높아질 수록 성공 확률 감소. 실패 확률도 감소
 
@@ -143,8 +143,8 @@ function CriticalRatioDomestic(&$general, $type) {
       505050(50%,50%), 107070(50%,50%)
     */
     switch($type) {
-    case 'leader':
-    case 0: $ratio = $avg / $leader; break;
+    case 'leadership':
+    case 0: $ratio = $avg / $leadership; break;
     case 'power':
     case 1: $ratio = $avg / $power;  break;
     case 'intel':
@@ -507,8 +507,8 @@ function process_4(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
         $general['rice'] -= $admin['develcost'] * 2;
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -558,7 +558,7 @@ function process_5(&$general, $type) {
         if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
         $trust = $city['trust'] / 100;
 
-        $score = getGeneralPower($general, true, true, true, false) * $trust;
+        $score = getGeneralStrength($general, true, true, true, false) * $trust;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -607,8 +607,8 @@ function process_5(&$general, $type) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 자금 하락, 무력 경험     경험, 공헌 상승
         $general['gold'] -= $admin['develcost'];
-        $general['power2']++;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['strength2']++;
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',strength2='{$general['strength2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -697,8 +697,8 @@ function process_7(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
         $general['rice'] -= $admin['develcost'] * 2;
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -747,7 +747,7 @@ function process_8(&$general) {
         if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
         $trust = $city['trust'] / 100;
 
-        $score = getGeneralPower($general, true, true, true, false) * $trust;
+        $score = getGeneralStrength($general, true, true, true, false) * $trust;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -795,8 +795,8 @@ function process_8(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 자금 하락, 무력 경험     경험, 공헌 상승
         $general['gold'] -= $admin['develcost'];
-        $general['power2']++;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['strength2']++;
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',strength2='{$general['strength2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -837,7 +837,7 @@ function process_9(&$general) {
         else                { $dtype = 1; $stype = "쌀"; }
 
         $score = getGeneralLeadership($general, true, true, true) 
-            + getGeneralPower($general, true, true, true) 
+            + getGeneralStrength($general, true, true, true) 
             + getGeneralIntel($general, true, true, true);
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
@@ -874,14 +874,14 @@ function process_9(&$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
+        switch(Util::choiceRandomUsingWeight([$general['leadership'], $general['power'], $general['intel']])) {
             case 0:
-                $general['leader2']++;
-                $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                $general['leadership2']++;
+                $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
                 break;
             case 1:
-                $general['power2']++;
-                $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                $general['strength2']++;
+                $query = "update general set resturn='SUCCESS',strength2='{$general['strength2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
                 break;
             case 2:
                 $general['intel2']++;
@@ -1048,10 +1048,10 @@ function process_11(&$general, $type) {
     ], 'city = %i', $general['city']);
 
     // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
-    $general['leader2']++;
+    $general['leadership2']++;
     $db->update('general', [
         'resturn'=>'SUCCESS',
-        'leader2'=>$general['leader2'],
+        'leadership2'=>$general['leadership2'],
         'crewtype'=>$crewTypeObj->id,
         'crew'=>$general['crew'],
         'train'=>$train,
@@ -1120,8 +1120,8 @@ function process_13(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 경험치 상승        // 공헌도, 명성 상승
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -1177,8 +1177,8 @@ function process_14(&$general) {
         // 사기치 변경        // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
         $score += $general['atmos'];
         if($score > GameConst::$maxAtmosByCommand) { $score = GameConst::$maxAtmosByCommand; }
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -1249,8 +1249,8 @@ function process_15(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         // 훈련,사기치 변경        // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
-        $general['leader2']+=3;
-        $query = "update general set resturn='SUCCESS',term='0',atmos='95',train='95',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']+=3;
+        $query = "update general set resturn='SUCCESS',term='0',atmos='95',train='95',gold='$gold',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -1412,13 +1412,13 @@ function process_21(&$general) {
         $exp = CharExperience($exp, $general['personal']);
 
         // 이동, 경험치 상승, 명성 상승, 사기 감소
-        $general['leader2']++;
+        $general['leadership2']++;
         $db->update('general',[
             'resturn'=>'SUCCESS',
             'gold'=>$db->sqleval('gold - %i',$admin['develcost']),
             'city'=>$destCity->id,
             'atmos'=>$db->sqleval('atmos*0.95'),
-            'leader2'=>$general['leader2'],
+            'leadership2'=>$general['leadership2'],
             'experience'=>$db->sqleval('experience + %i',$exp)
         ], 'no = %i', $general['no']);
 
@@ -1497,8 +1497,8 @@ function process_26(&$general) {
         $query = "update general set city='{$general['city']}' where troop='{$general['troop']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 경험치 명성 공헌 상승
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -1564,8 +1564,8 @@ function process_28(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 경험치 상승        // 명성,공헌 상승
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -1616,8 +1616,8 @@ function process_30(&$general) {
         $exp = CharExperience($exp, $general['personal']);
 
         // 이동, 경험치 상승, 명성 상승, 병력/사기/훈련 감소
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',city='$destination',crew=crew*0.95,atmos=atmos*0.9,train=train*0.95,leader2='{$general['leader2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',city='$destination',crew=crew*0.95,atmos=atmos*0.9,train=train*0.95,leadership2='{$general['leadership2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         if($general['level'] == 12) {
@@ -1747,10 +1747,10 @@ function process_31(&$general) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        $general['leader2']++;
+        $general['leadership2']++;
         $general['gold'] -= $admin['develcost']*3;
         $general['rice'] -= $admin['develcost']*3;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 
@@ -1898,8 +1898,8 @@ function process_42(&$general) {
     case 5:
         $log[] = "<C>●</>{$admin['month']}월:동네 장사와 힘겨루기를 하여 멋지게 이겼습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
-        $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2'] += 2;
+        $query = "update general set resturn='SUCCESS',strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 6:
@@ -1911,8 +1911,8 @@ function process_42(&$general) {
     case 7:
         $log[] = "<C>●</>{$admin['month']}월:산적과 싸워 금 <C>300</>을 빼앗았습니다. <1>$date</>";
         // 자금 상승        // 경험치 상승        // 명성 상승
-        $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',gold=gold+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2'] += 2;
+        $query = "update general set resturn='SUCCESS',gold=gold+300,strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 8:
@@ -1926,31 +1926,31 @@ function process_42(&$general) {
     case 9:
         $log[] = "<C>●</>{$admin['month']}월:호랑이를 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
         // 군량 상승        // 경험치 상승
-        $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',rice=rice+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2'] += 2;
+        $query = "update general set resturn='SUCCESS',rice=rice+300,strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 10:
         $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['strength2']--;
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',strength2='{$general['strength2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 11:
         $log[] = "<C>●</>{$admin['month']}월:곰을 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
         // 군량 상승        // 경험치 상승        // 명성 상승
-        $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',rice=rice+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2'] += 2;
+        $query = "update general set resturn='SUCCESS',rice=rice+300,strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 12:
         $log[] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['strength2']--;
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',strength2='{$general['strength2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 13:
@@ -1969,8 +1969,8 @@ function process_42(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구해주다가 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2']--;
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 16:
@@ -2013,46 +2013,46 @@ function process_42(&$general) {
     case 21:
         $log[] = "<C>●</>{$admin['month']}월:백성들에게 현인의 가르침을 설파했습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
-        $general['leader2'] += 2;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['leadership2'] += 2;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 22:
         $log[] = "<C>●</>{$admin['month']}월:어느 집의 무너진 울타리를 고쳐주었습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
-        $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2'] += 2;
+        $query = "update general set resturn='SUCCESS',strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 23:
         $log[] = "<C>●</>{$admin['month']}월:어느 집의 도망친 가축을 되찾아 주었습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
-        $general['leader2'] += 2;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['leadership2'] += 2;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 24:
         $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['strength2']--;
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',strength2='{$general['strength2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 25:
         $log[] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['strength2']--;
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',strength2='{$general['strength2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 26:
         $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구하다가 죽을뻔 했습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 50 + 30;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $general['strength2']--;
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',strength2='{$general['strength2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     default:
@@ -2147,8 +2147,8 @@ function process_43(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         // 경험치 상승        // 공헌도, 명성 상승
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -2236,8 +2236,8 @@ function process_44(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         // 경험치 상승        // 공헌도, 명성 상승
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $general['leadership2']++;
+        $query = "update general set resturn='SUCCESS',leadership2='{$general['leadership2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);
@@ -2462,15 +2462,15 @@ function process_49(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 경험치 상승
-        switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
+        switch(Util::choiceRandomUsingWeight([$general['leadership'], $general['power'], $general['intel']])) {
         case 0:
-            $general['leader2']++;
-            $query = "update general set leader2='{$general['leader2']}' where no='{$general['no']}'";
+            $general['leadership2']++;
+            $query = "update general set leadership2='{$general['leadership2']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             break;
         case 1:
-            $general['power2']++;
-            $query = "update general set power2='{$general['power2']}' where no='{$general['no']}'";
+            $general['strength2']++;
+            $query = "update general set strength2='{$general['strength2']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             break;
         case 2:

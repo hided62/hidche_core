@@ -161,8 +161,8 @@ class che_군량매매 extends Command\GeneralCommand{
         $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $incStat = Util::choiceRandomUsingWeight([
-            'leader2'=>$general->getLeadership(false, false, false, false),
-            'power2'=>$general->getPower(false, false, false, false),
+            'leadership2'=>$general->getLeadership(false, false, false, false),
+            'strength2'=>$general->getStrength(false, false, false, false),
             'intel2'=>$general->getIntel(false, false, false, false)
         ]);
 

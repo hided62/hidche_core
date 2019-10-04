@@ -77,7 +77,7 @@ $(function(){
                     장수.국가 = 국가;
                     장수.벌점 = parseInt($tds.eq(-1).text());
                     장수.통 = parseInt($this.data('general-leadership'));
-                    장수.무 = parseInt($this.data('general-power'));
+                    장수.무 = parseInt($this.data('general-strength'));
                     장수.지 = parseInt($this.data('general-intel'));
                     장수.삭턴 = parseInt($tds.eq(-2).text());
                     장수.종류 = getUserType(장수.통, 장수.무, 장수.지);

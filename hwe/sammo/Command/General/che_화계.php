@@ -49,11 +49,11 @@ class che_화계 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $nation = $this->nation;
 
-        if($statType === 'leader'){
+        if($statType === 'leadership'){
             $genScore = $general->getLeadership();
         }
-        else if($statType === 'power'){
-            $genScore = $general->getPower();
+        else if($statType === 'strength'){
+            $genScore = $general->getStrength();
         }
         else if($statType === 'intel'){
             $genScore = $general->getIntel();
@@ -80,11 +80,11 @@ class che_화계 extends Command\GeneralCommand{
                 continue;
             }
 
-            if($statType === 'leader'){
+            if($statType === 'leadership'){
                 $genScore = $destGeneral->getLeadership();
             }
-            else if($statType === 'power'){
-                $genScore = $destGeneral->getPower();
+            else if($statType === 'strength'){
+                $genScore = $destGeneral->getStrength();
             }
             else if($statType === 'intel'){
                 $genScore = $destGeneral->getIntel();
@@ -218,7 +218,7 @@ class che_화계 extends Command\GeneralCommand{
         [$year, $month] = [$env['year'], $env['month']];
         
         foreach($db->query(
-            'SELECT `no`,name,city,nation,level,leader,horse,power,weap,intel,book,item,last_turn,injury,special,special2 FROM general WHERE city = %i',
+            'SELECT `no`,name,city,nation,level,leadership,horse,strength,weap,intel,book,item,last_turn,injury,special,special2 FROM general WHERE city = %i',
             $destCityID,
             $destNationID
         ) as $rawDestCityGeneral){

@@ -156,9 +156,9 @@ jQuery(function($){
         setVal('.form_exp_level', data.explevel);
         setVal('.form_injury', data.injury);
 
-        setVal('.form_leadership', data.leader);
+        setVal('.form_leadership', data.leadership);
         setVal('.form_general_horse', data.horse);
-        setVal('.form_power', data.power);
+        setVal('.form_strength', data.strength);
         setVal('.form_general_weap', data.weap);
         setVal('.form_intel', data.intel);
         setVal('.form_general_book', data.book);
@@ -203,9 +203,9 @@ jQuery(function($){
             level:getInt('.form_general_level'),
             explevel:getInt('.form_exp_level'),
 
-            leader:getInt('.form_leadership'),
+            leadership:getInt('.form_leadership'),
             horse:getInt('.form_general_horse'),
-            power:getInt('.form_power'),
+            strength:getInt('.form_strength'),
             weap:getInt('.form_general_weap'),
             intel:getInt('.form_intel'),
             book:getInt('.form_general_book'),
@@ -365,8 +365,8 @@ jQuery(function($){
             city: (generalData.no)<=1 ? 1 : 3,
             turntime:'2018-08-26 12:00',
             special:defaultSpecialDomestic,
-            leader2:0,
-            power2:0,
+            leadership2:0,
+            strength2:0,
             intel2:0,
             
             gold:10000,

@@ -85,8 +85,8 @@ $nationLevel = DB::db()->queryFirstField('select level from nation where nation 
     1=>['level', true],
     2=>['dedication', true],
     3=>['experience', true],
-    4=>['leader', true],
-    5=>['power', true],
+    4=>['leadership', true],
+    5=>['strength', true],
     6=>['intel', true],
     7=>['gold', true],
     8=>['rice', true],
@@ -99,7 +99,7 @@ $nationLevel = DB::db()->queryFirstField('select level from nation where nation 
     15=>['npc', true],
 ][$type];
 
-$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc?'desc':'');
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center class='tb_layout bg0'>
@@ -130,15 +130,15 @@ foreach($generalList as $general){
     }
 
     if($general['injury'] > 0) {
-        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
-        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
+        $leadership = intdiv($general['leadership'] * (100 - $general['injury']), 100);
+        $strength = intdiv($general['strength'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-        $leader = "<font color=red>{$leader}</font>{$lbonus}";
-        $power = "<font color=red>{$power}</font>";
+        $leadership = "<font color=red>{$leadership}</font>{$lbonus}";
+        $strength = "<font color=red>{$strength}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general['leader']}{$lbonus}";
-        $power = "{$general['power']}";
+        $leadership = "{$general['leadership']}{$lbonus}";
+        $strength = "{$general['strength']}";
         $intel = "{$general['intel']}";
     }
 
@@ -159,8 +159,8 @@ foreach($generalList as $general){
         <td align=center>".getDed($general['dedication'])."</td>
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getBill($general['dedication'])."</td>
-        <td align=center>$leader</td>
-        <td align=center>$power</td>
+        <td align=center>$leadership</td>
+        <td align=center>$strength</td>
         <td align=center>$intel</td>
         <td align=center>{$general['gold']}</td>
         <td align=center>{$general['rice']}</td>

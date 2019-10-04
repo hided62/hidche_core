@@ -124,9 +124,9 @@ class WarUnitGeneral extends WarUnit{
         if($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
             $general->increaseVar('intel2', $value);
         } elseif($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
-            $general->increaseVar('leader2', $value);
+            $general->increaseVar('leadership2', $value);
         } else {
-            $general->increaseVar('power2', $value);
+            $general->increaseVar('strength2', $value);
         }
     }
 

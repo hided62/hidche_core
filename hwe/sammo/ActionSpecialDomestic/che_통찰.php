@@ -14,7 +14,7 @@ class che_통찰 implements iAction{
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_POWER
+        SpecialityConst::STAT_STRENGTH
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

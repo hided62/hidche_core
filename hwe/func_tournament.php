@@ -309,8 +309,8 @@ function fillLowGenAll() {
         'no'=>0,
         'npc'=>2,
         'name'=>'무명장수',
-        'leader'=>10,
-        'power'=>10,
+        'leadership'=>10,
+        'strength'=>10,
         'intel'=>10,
         'explevel'=>10
     ];
@@ -335,7 +335,7 @@ function fillLowGenAll() {
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
     $freeJoiners = $db->query(
-        'SELECT no,npc,name,leader,power,intel,explevel,horse,weap,book from general where tnmt=1 and tournament=0 order by rand() limit %d',
+        'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weap,book from general where tnmt=1 and tournament=0 order by rand() limit %d',
         $toBeFilledCnt
     );
 
@@ -349,9 +349,9 @@ function fillLowGenAll() {
             'no'=>$general['no'],
             'npc'=>$general['npc'],
             'name'=>$general['name'],
-            'ldr'=>$general['leader'],
-            'pwr'=>$general['power'],
-            'itl'=>$general['intel'],
+            'leadership'=>$general['leadership'],
+            'strength'=>$general['strength'],
+            'intel'=>$general['intel'],
             'lvl'=>$general['explevel'],
             'grp'=>$grpIdx,
             'grp_no'=>$grpCnt,
@@ -486,9 +486,9 @@ function selection($tnmt_type, $tnmt, $phase) {
         'no'=>$general['no'],
         'npc'=>$general['npc'],
         'name'=>$general['name'],
-        'ldr'=>$general['ldr'],
-        'pwr'=>$general['pwr'],
-        'itl'=>$general['itl'],
+        'leadership'=>$general['leadership'],
+        'strength'=>$general['strength'],
+        'intel'=>$general['intel'],
         'lvl'=>$general['lvl'],
         'grp'=>$grp,
         'grp_no'=>$grp_no,
@@ -573,9 +573,9 @@ function final16set() {
             'no'=>$general['no'],
             'npc'=>$general['npc'],
             'name'=>$general['name'],
-            'ldr'=>$general['ldr'],
-            'pwr'=>$general['pwr'],
-            'itl'=>$general['itl'],
+            'leadership'=>$general['leadership'],
+            'strength'=>$general['strength'],
+            'intel'=>$general['intel'],
             'lvl'=>$general['lvl'],
             'grp'=>$newGrp,
             'grp_no'=>$newGrp_no,
@@ -617,9 +617,9 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
         'no'=>$general['no'],
         'npc'=>$general['npc'],
         'name'=>$general['name'],
-        'ldr'=>$general['ldr'],
-        'pwr'=>$general['pwr'],
-        'itl'=>$general['itl'],
+        'leadership'=>$general['leadership'],
+        'strength'=>$general['strength'],
+        'intel'=>$general['intel'],
         'lvl'=>$general['lvl'],
         'grp'=>$newGrp,
         'grp_no'=>$newGrp_no,
@@ -649,7 +649,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
     switch($tnmt_type) {
     case 0: $tp = "전력전"; $tp2 = "tt"; break;
     case 1: $tp = "통솔전"; $tp2 = "tl"; break;
-    case 2: $tp = "일기토"; $tp2 = "tp"; break;
+    case 2: $tp = "일기토"; $tp2 = "ts"; break;
     case 3: $tp = "설전";   $tp2 = "ti"; break;
     }
 
@@ -830,11 +830,11 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
 
     eraseTnmtFightLog($group);
 
-    $query = "select *,(ldr+pwr+itl)*7/15 as tot,h,w,b from tournament where grp='$group' and grp_no='$g1'";
+    $query = "select *,(leadership+strength+intel)*7/15 as total,h,w,b from tournament where grp='$group' and grp_no='$g1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen1 = MYDB_fetch_array($result);
 
-    $query = "select *,(ldr+pwr+itl)*7/15 as tot,h,w,b from tournament where grp='$group' and grp_no='$g2'";
+    $query = "select *,(leadership+strength+intel)*7/15 as total,h,w,b from tournament where grp='$group' and grp_no='$g2'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($result);
 
@@ -842,10 +842,10 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     else           { $turn = 100; }
 
     
-    if($tnmt_type == 1) { $tp = "ldr"; $tp2 = "tl"; }
-    elseif($tnmt_type == 2) { $tp = "pwr"; $tp2 = "tp"; }
-    elseif($tnmt_type == 3) { $tp = "itl"; $tp2 = "ti"; }
-    else /*$tnmt_type == 0*/{ $tp = "tot"; $tp2 = "tt"; } 
+    if($tnmt_type == 1) { $tp = "leadership"; $tp2 = "tl"; }
+    elseif($tnmt_type == 2) { $tp = "strength"; $tp2 = "ts"; }
+    elseif($tnmt_type == 3) { $tp = "intel"; $tp2 = "ti"; }
+    else /*$tnmt_type == 0*/{ $tp = "total"; $tp2 = "tt"; } 
 
     $e1 = $energy1 = Util::round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
     $e2 = $energy2 = Util::round($gen2[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);

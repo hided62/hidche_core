@@ -18,7 +18,7 @@ class che_공성 implements iAction{
     static $selectWeight = 1;
     static $type = [
         SpecialityConst::STAT_LEADERSHIP | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_SIEGE,
-        SpecialityConst::STAT_POWER | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_SIEGE,
+        SpecialityConst::STAT_STRENGTH | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_SIEGE,
         SpecialityConst::STAT_INTEL | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_SIEGE,
     ];
 

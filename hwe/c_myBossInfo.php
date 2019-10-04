@@ -41,7 +41,7 @@ if($btn == "임명") {
         $general = [];
     }
     else{
-        $general = $db->queryFirstRow('SELECT `no`,nation,`level`,leader,`power`,intel FROM general WHERE no = %i', $genlist);
+        $general = $db->queryFirstRow('SELECT `no`,nation,`level`,leadership,`strength`,intel FROM general WHERE no = %i', $genlist);
     }
 
     if($genlist != 0 && !$general){
@@ -262,11 +262,11 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
         if($genlist != 0) {
             $valid = 0;
             switch($level) {
-            case 10: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case 10: if($general['strength'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
             case  9: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
-            case  8: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  8: if($general['strength'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
             case  7: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
-            case  6: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  6: if($general['strength'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
             case  5: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
             default: $valid = 1; break;
             }
@@ -321,7 +321,7 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
     if($genlist != 0) {
         $valid = 0;
         switch($level) {
-        case  4: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+        case  4: if($general['strength'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
         case  3: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
         default: $valid = 1; break;
         }

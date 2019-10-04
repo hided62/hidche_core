@@ -7,7 +7,7 @@ class SpecialityConst{
     const DISABLED = 0x1;
 
     const STAT_LEADERSHIP = 0x2;
-    const STAT_POWER = 0x4;
+    const STAT_STRENGTH = 0x4;
     const STAT_INTEL = 0x8;
 
     const ARMY_FOOTMAN = 0x100;
@@ -33,13 +33,13 @@ class SpecialityConst{
         'che_상재' => ['상재', 1, [self::STAT_INTEL]],
         'che_발명' => ['발명', 1, [self::STAT_INTEL]],
 
-        'che_축성' => ['축성', 1, [self::STAT_POWER]],
-        'che_수비' => ['수비', 1, [self::STAT_POWER]],
-        'che_통찰' => ['통찰', 1, [self::STAT_POWER]],
+        'che_축성' => ['축성', 1, [self::STAT_STRENGTH]],
+        'che_수비' => ['수비', 1, [self::STAT_STRENGTH]],
+        'che_통찰' => ['통찰', 1, [self::STAT_STRENGTH]],
 
         'che_인덕' => ['인덕', 1, [self::STAT_LEADERSHIP]],
 
-        'che_귀모' => ['귀모', -2.5, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_귀모' => ['귀모', -2.5, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
     ];
 
     const WAR = [
@@ -53,33 +53,33 @@ class SpecialityConst{
 
         'che_보병' => ['보병', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_FOOTMAN,
-            self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_FOOTMAN
+            self::STAT_STRENGTH | self::REQ_DEXTERITY | self::ARMY_FOOTMAN
         ]],
         'che_궁병' => ['궁병', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_ARCHER,
-            self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_ARCHER
+            self::STAT_STRENGTH | self::REQ_DEXTERITY | self::ARMY_ARCHER
             ]],
         'che_기병' => ['기병', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_CAVALRY,
-            self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_CAVALRY
+            self::STAT_STRENGTH | self::REQ_DEXTERITY | self::ARMY_CAVALRY
         ]],
         'che_공성' => ['공성', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_SIEGE,
-            self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_SIEGE,
+            self::STAT_STRENGTH | self::REQ_DEXTERITY | self::ARMY_SIEGE,
             self::STAT_INTEL | self::REQ_DEXTERITY | self::ARMY_SIEGE
         ]],
 
-        'che_돌격' => ['돌격', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
-        'che_무쌍' => ['무쌍', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
-        'che_견고' => ['견고', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
-        'che_위압' => ['위압', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
+        'che_돌격' => ['돌격', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH]],
+        'che_무쌍' => ['무쌍', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH]],
+        'che_견고' => ['견고', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH]],
+        'che_위압' => ['위압', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH]],
 
-        'che_저격' => ['저격', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        'che_필살' => ['필살', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        'che_징병' => ['징병', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        'che_의술' => ['의술', -2, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        'che_격노' => ['격노', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        'che_척사' => ['척사', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_저격' => ['저격', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
+        'che_필살' => ['필살', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
+        'che_징병' => ['징병', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
+        'che_의술' => ['의술', -2, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
+        'che_격노' => ['격노', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
+        'che_척사' => ['척사', 1, [self::STAT_LEADERSHIP, self::STAT_STRENGTH, self::STAT_INTEL]],
     ];
 
     public static function getInvDomestic(string $name){
@@ -117,15 +117,15 @@ class SpecialityConst{
     private static function calcCondGeneric(array $general) : int {
         $myCond = 0;
 
-        $leader = $general['leader']??50;
-        $power = $general['power']??50;
+        $leadership = $general['leadership']??50;
+        $strength = $general['strength']??50;
         $intel = $general['intel']??50;
         
-        if ($leader * 0.95 > $power && $leader * 0.95 > $intel) {
+        if ($leadership * 0.95 > $strength && $leadership * 0.95 > $intel) {
             $myCond |= self::STAT_LEADERSHIP;
         }
-        else if($power >= $intel){
-            $myCond |= self::STAT_POWER;
+        else if($strength >= $intel){
+            $myCond |= self::STAT_STRENGTH;
         }
         else {
             $myCond |= self::STAT_INTEL;

@@ -12,7 +12,7 @@ use \sammo\{
 class che_탈취 extends che_화계{
     static protected $actionName = '탈취';
 
-    static protected $statType = 'power';
+    static protected $statType = 'strength';
     static protected $injuryGeneral = false;
 
     protected function affectDestCity(int $injuryCount){

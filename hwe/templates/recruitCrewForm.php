@@ -17,7 +17,7 @@
     <tr>
         <td colspan=11 align=center class='bg2'>
             현재 기술력 : <?=$techLevelText?>
-            현재 통솔 : <?=$leader?><?=($leader!=$fullLeader)?"({$fullLeader})":''?>
+            현재 통솔 : <?=$leadership?><?=($leadership!=$fullLeadership)?"({$fullLeadership})":''?>
             현재 병종 : <?=$crewTypeName?>
             현재 병사 : <?=$crew?>
             현재 자금 : <?=$gold?>
@@ -87,8 +87,8 @@
 </form>
 <script>
 var currentTech = <?=$tech?>;
-var leader = <?=$leader?>;
-var fullLeader = <?=$fullLeader?>;
+var leadership = <?=$leadership?>;
+var fullLeadership = <?=$fullLeadership?>;
 var currentCrewType = <?=$crewType?>;
 var currentCrew = <?=$crew?>;
 var currentGold = <?=$gold?>;
@@ -131,7 +131,7 @@ $(function(){
         var crewtype = parseInt($parent.data('crewtype'));
         var $input = $parent.find('.form_double:eq(0)');
 
-        var fillValue = Math.round(leader / 2);
+        var fillValue = Math.round(leadership / 2);
         $formCrewtype.val(crewtype);
         $input.val(fillValue).change();
         return false;
@@ -143,9 +143,9 @@ $(function(){
         var crewtype = parseInt($parent.data('crewtype'));
         var $input = $parent.find('.form_double:eq(0)');
 
-        var fillValue = Math.ceil((leader*100 - currentCrew)/100);
+        var fillValue = Math.ceil((leadership*100 - currentCrew)/100);
         if(crewtype != currentCrewType){
-            fillValue = leader;
+            fillValue = leadership;
         }
         $formCrewtype.val(crewtype);
         $input.val(fillValue).change();
@@ -158,7 +158,7 @@ $(function(){
         var crewtype = parseInt($parent.data('crewtype'));
         var $input = $parent.find('.form_double:eq(0)');
 
-        var fillValue = fullLeader + 15;
+        var fillValue = fullLeadership + 15;
         $formCrewtype.val(crewtype);
         $input.val(fillValue).change();
         return false;
