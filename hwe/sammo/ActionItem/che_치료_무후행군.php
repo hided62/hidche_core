@@ -7,11 +7,11 @@ use \sammo\GeneralTriggerCaller;
 
 class che_치료_무후행군 extends \sammo\BaseItem{
 
-    protected static $id = 8;
-    protected static $name = '무후행군(치료)';
-    protected static $info = '[군사] 턴 실행 전 부상 회복.';
-    protected static $cost = 200;
-    protected static $consumable = false;
+    protected $id = 8;
+    protected $name = '무후행군(치료)';
+    protected $info = '[군사] 턴 실행 전 부상 회복.';
+    protected $cost = 200;
+    protected $consumable = false;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller(

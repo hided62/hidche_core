@@ -5,11 +5,11 @@ use \sammo\General;
 
 class che_훈련_이강주 extends \sammo\BaseItem{
 
-    protected static $id = 13;
-    protected static $name = '이강주(훈련)';
-    protected static $info = '[전투] 훈련 보정 +10';
-    protected static $cost = 200;
-    protected static $consumable = false;
+    protected $id = 13;
+    protected $name = '이강주(훈련)';
+    protected $info = '[전투] 훈련 보정 +10';
+    protected $cost = 200;
+    protected $consumable = false;
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'bonusTrain'){

@@ -6,13 +6,13 @@ use \sammo\BaseWarUnitTrigger;
 
 class che_훈련_청주 extends \sammo\BaseItem{
 
-    protected static $id = 4;
-    protected static $name = '청주(훈련)';
-    protected static $info = '[전투] 훈련 +6. 1회용';
-    protected static $cost = 1000;
-    protected static $consumable = true;
-    protected static $buyable = true;
-    protected static $reqSecu = 1000;
+    protected $id = 4;
+    protected $name = '청주(훈련)';
+    protected $info = '[전투] 훈련 +6. 1회용';
+    protected $cost = 1000;
+    protected $consumable = true;
+    protected $buyable = true;
+    protected $reqSecu = 1000;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(

@@ -4,6 +4,6 @@ use \sammo\iAction;
 use \sammo\General;
 
 class che_명마_13_적로 extends \sammo\BaseStatItem{
-    protected static $cost = 200;
-    protected static $buyable = false;
+    protected $cost = 200;
+    protected $buyable = false;
 }

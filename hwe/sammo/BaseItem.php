@@ -7,13 +7,13 @@ use \sammo\General;
 class BaseItem implements iAction{
     use \sammo\DefaultAction;
 
-    protected static $id = 0;
-    protected static $name = '-';
-    protected static $info = '';
-    protected static $cost = null;
-    protected static $consumable = false;
-    protected static $buyable = false;
-    protected static $reqSecu = 0;
+    protected $id = 0;
+    protected $name = '-';
+    protected $info = '';
+    protected $cost = null;
+    protected $consumable = false;
+    protected $buyable = false;
+    protected $reqSecu = 0;
 
     function getID(){
         return $this->id;
@@ -36,7 +36,7 @@ class BaseItem implements iAction{
     }
 
     function getReqSecu(){
-        return static::$reqSecu;
+        return $this->reqSecu;
     }
 
     function isValidTurnItem(string $actionType, string $command):bool{

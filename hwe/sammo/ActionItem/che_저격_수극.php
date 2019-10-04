@@ -10,13 +10,13 @@ use \sammo\BaseWarUnitTrigger;
 
 class che_저격_수극 extends \sammo\BaseItem{
 
-    protected static $id = 2;
-    protected static $name = '수극(저격)';
-    protected static $info = '[전투] 전투 개시 전 20% 확률로 저격 시도. 1회용';
-    protected static $cost = 1000;
-    protected static $consumable = true;
-    protected static $buyable = true;
-    protected static $reqSecu = 1000;
+    protected $id = 2;
+    protected $name = '수극(저격)';
+    protected $info = '[전투] 전투 개시 전 20% 확률로 저격 시도. 1회용';
+    protected $cost = 1000;
+    protected $consumable = true;
+    protected $buyable = true;
+    protected $reqSecu = 1000;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(

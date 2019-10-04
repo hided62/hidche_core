@@ -5,13 +5,13 @@ use \sammo\General;
 
 class BaseStatItem extends BaseItem{
 
-    protected static $statNick = '통솔';
-    protected static $statType = 'leader';
-    protected static $statValue = 1;
-    protected static $cost = 1000;
-    protected static $rawName = '노기';
-    protected static $consumable = false;
-    protected static $buyable = true;
+    protected $statNick = '통솔';
+    protected $statType = 'leader';
+    protected $statValue = 1;
+    protected $cost = 1000;
+    protected $rawName = '노기';
+    protected $consumable = false;
+    protected $buyable = true;
     
     protected const ITEM_TYPE = [
         '명마'=>['통솔', 'leader'],

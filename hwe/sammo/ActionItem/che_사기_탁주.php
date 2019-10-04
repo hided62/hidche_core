@@ -6,13 +6,13 @@ use \sammo\BaseWarUnitTrigger;
 
 class che_사기_탁주 extends \sammo\BaseItem{
 
-    protected static $id = 3;
-    protected static $name = '탁주(사기)';
-    protected static $info = '[전투] 사기 +6. 1회용';
-    protected static $cost = 1000;
-    protected static $consumable = true;
-    protected static $buyable = true;
-    protected static $reqSecu = 1000;
+    protected $id = 3;
+    protected $name = '탁주(사기)';
+    protected $info = '[전투] 사기 +6. 1회용';
+    protected $cost = 1000;
+    protected $consumable = true;
+    protected $buyable = true;
+    protected $reqSecu = 1000;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
