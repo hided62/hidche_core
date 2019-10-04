@@ -1163,7 +1163,7 @@ function checkStatistic() {
 
     $crewtypeHistsStr = join(', ', array_map(function($histPair){
         [$histKey, $cnt] = $histPair;
-        return GameUnitConst::byID($hisKey)->getShortName().'('.$cnt.')';
+        return GameUnitConst::byID($histKey)->getShortName().'('.$cnt.')';
     }, Util::convertDictToArray($crewtypeHists)));
     
     $db->insert('statistic', [

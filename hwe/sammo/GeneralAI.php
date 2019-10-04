@@ -147,7 +147,11 @@ class GeneralAI{
             $this->dipState = self::d직전;
         }
 
-        if(in_array($this->dipState, [self::d평화, self::d선포]) && $env['startyear'] + 2 == $env['year'] && $env['month'] > 5){
+        if(
+            in_array($this->dipState, [self::d평화, self::d선포]) ||
+            $env['year'] >= $env['startyear'] + 3 ||
+            ($env['year'] && $env['startyear'] + 2 && $env['month'] > 5)
+        ){
             $this->dipState = self::d징병;
         }
 
@@ -881,7 +885,7 @@ class GeneralAI{
                 if($nationGeneral->rice < 700 * $tech){
                     continue;
                 }
-                if($generalCity->front){
+                if($generalCity['front']){
                     continue;
                 }
                 if($nationGeneral->train * $nationGeneral->atmos < 75 * 75){

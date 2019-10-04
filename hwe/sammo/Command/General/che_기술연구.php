@@ -36,7 +36,7 @@ class che_기술연구 extends che_상업투자{
         $general = $this->generalObj;
 
         $this->setCity();
-        $this->setNation();
+        $this->setNation(['tech']);
         
         [$reqGold, $reqRice] = $this->getCost();
 

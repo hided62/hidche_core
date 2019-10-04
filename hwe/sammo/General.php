@@ -252,7 +252,7 @@ class General implements iAction{
     }
 
     function getLeadership($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return $this->getStatValue('leadership', $withInjury, $withItem, $withStatAdjust, $useFloor);
+        return $this->getStatValue('leader', $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
     function getPower($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{

@@ -88,9 +88,8 @@ function displaySpecialDomesticInfo(?string $type):string{
     ]);
 }
 
-function displayItemInfo(?int $type):string{
-    $info = getItemInfo($type);
-    $text = getItemName($type);
+function displayItemInfo(?string $type):string{
+    [$text, $info] = getItemInfo($type);
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
