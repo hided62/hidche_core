@@ -129,7 +129,7 @@ echo"
 foreach($generalList as $general){
     $nation = $nationname[$general['nation']];
 
-    $lbonus = calcLeadershipBonus($general['level'], $nationlevel[$general['nation']]);
+    $lbonus = calcLeadershipBonus($general['level'], $nationlevel[$general['nation']]??0);
     if ($lbonus > 0) {
         $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {

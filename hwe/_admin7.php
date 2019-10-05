@@ -74,28 +74,29 @@ $sel[$type] = "selected";
         <select name=gen size=1>
 <?php
 switch($type) {
-    case 0: $query = "select no,name from general order by turntime desc"; break;
-    case 1: $query = "select no,name from general order by recwar desc"; break;
-    case 2: $query = "select no,name from general order by npc,binary(name)"; break;
-    case 3: $query = "select no,name from general order by warnum desc"; break;
+    case 0: $query = "select no,name,nation,turntime from general order by turntime desc"; break;
+    case 1: $query = "select no,name,nation,turntime from general order by recwar desc"; break;
+    case 2: $query = "select no,name,nation,turntime from general order by npc,binary(name)"; break;
+    case 3: $query = "select no,name,nation,turntime from general order by warnum desc"; break;
 }
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
 for($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
+    
     // 선택 없으면 맨 처음 장수
     if($gen == 0) {
         $gen = $general['no'];
     }
-    if($gen == $general['no']) {
-        echo "
-            <option selected value={$general['no']}>{$general['name']}</option>";
-    } else {
-        echo "
-            <option value={$general['no']}>{$general['name']}</option>";
-    }
+
+    $selected = $gen == $general['no']?'selected':'';
+    $nationName = getNationStaticInfo($general['nation'])['name'];
+    $turntime = substr($general['turntime'], 11, 10);
+    echo "<option {$selected} value={$general['no']}>{$nationName} - {$general['name']} ($turntime)</option>\n";
+    
 }
+$generalObj = General::createGeneralObjFromDB($gen);
 ?>
         </select>
         <input type=submit name=btn value='조회하기'>
@@ -109,7 +110,7 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($gen); generalInfo2($gen); ?>
+            <?php generalInfo($generalObj); generalInfo2($generalObj); ?>
         </td>
         <td valign=top>&nbsp;
         </td>

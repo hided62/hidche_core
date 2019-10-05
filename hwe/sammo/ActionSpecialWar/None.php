@@ -9,7 +9,7 @@ class None implements iAction{
 
     protected $id = 0;
     protected $name = '-';
-    protected $info = null;
+    protected $info = '';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 0;

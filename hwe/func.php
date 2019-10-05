@@ -729,8 +729,8 @@ function generalInfo(General $generalObj) {
 function generalInfo2(General $generalObj) {
     $general = $generalObj->getRaw();
 
-    $general['winrate'] = round($general['winrate'], 2);
-    $general['killrate'] = round($general['killrate'], 2);
+    $general['winrate'] = round($general['killnum']/max($general['warnum'],1), 2);
+    $general['killrate'] = round($general['killcrew']/max($general['deathcrew'],1), 2);
 
     $experienceBonus = $generalObj->onCalcStat($generalObj, 'experience', 10000) - 10000;
     if($experienceBonus > 0){

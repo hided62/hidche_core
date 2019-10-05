@@ -650,7 +650,7 @@ class General implements iAction{
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
-            'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset',
+            'warnum', 'firenum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset',
             'specage', 'specage2', 'con', 'connect'
         ];
 
