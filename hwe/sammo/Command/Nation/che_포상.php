@@ -83,7 +83,7 @@ class che_포상 extends Command\NationCommand{
             $this->runnableConstraints[] = ConstraintHelper::ReqNationGold(1);
         }
         else{
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1+GameConst::$baserice);
+            $this->runnableConstraints[] = ConstraintHelper::ReqNationRice(1+GameConst::$baserice);
         }
     }
     
@@ -119,7 +119,7 @@ class che_포상 extends Command\NationCommand{
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, $nation[$resKey]);
+        $amount = Util::valueFit($amount, 0, $nation[$resKey] - ($isGold?GameConst::$basegold:GameConst::$baserice));
         $amountText = number_format($amount, 0);
         
         $logger = $general->getLogger();

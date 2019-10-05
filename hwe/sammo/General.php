@@ -589,9 +589,6 @@ class General implements iAction{
             $caller->merge($iObj->getBattleInitSkillTriggerList($unit));
         }
 
-        if($caller->isEmpty()){
-            return null;
-        }
         return $caller;
     }
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
@@ -619,9 +616,6 @@ class General implements iAction{
             $caller->merge($iObj->getBattlePhaseSkillTriggerList($unit));
         }
 
-        if($caller->isEmpty()){
-            return null;
-        }
         return $caller;
     }
 

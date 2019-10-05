@@ -65,10 +65,10 @@ class che_헌납 extends Command\GeneralCommand{
             ConstraintHelper::SuppliedCity(),
         ];
         if($this->arg['isGold']){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(GameConst::$generalMinimumGold);
         }
         else{
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(GameConst::$generalMinimumRice);
         }
 
     }

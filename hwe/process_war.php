@@ -17,7 +17,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
             'level'=>0,
             'gold'=>0,
             'rice'=>2000,
-            'type'=>0,
+            'type'=>GameConst::$neutralNationType,
             'tech'=>0,
             'gennum'=>1     
         ];
@@ -108,7 +108,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.6)
     ], 'city=%i', $rawDefenderCity['city']);
 
-    $attackerIncTech = buildNationTypeClass($rawAttackerNation['type'])->onCalacDomestic('기술', 'score', $attacker->getDead() * 0.01);
+    $attackerIncTech = buildNationTypeClass($rawAttackerNation['type'])->onCalcDomestic('기술', 'score', $attacker->getDead() * 0.01);
     $defenderIncTech = buildNationTypeClass($rawDefenderNation['type'])->onCalcDomestic('기술', 'score', $attacker->getKilled() * 0.01);
 
     $attackerGenCnt = $rawAttackerNation['gennum'];

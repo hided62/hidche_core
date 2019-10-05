@@ -60,7 +60,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         return $env;
     }
 
-    abstract protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):void;
+    abstract protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool;
 
     public function processConsumableItem():bool{
         if(!($this->raiseType & static::TYPE_ITEM)){

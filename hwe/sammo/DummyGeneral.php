@@ -9,6 +9,7 @@ class DummyGeneral extends General{
             'city'=>0,
             'nation'=>0,
             'level'=>0,
+            'crewtype'=>-1
         ];
 
         $this->raw = $raw;
@@ -18,6 +19,14 @@ class DummyGeneral extends General{
         if($initLogger){
             $this->initLogger(1, 1);
         }
+    }
+
+    public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller();
+    }
+
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller();
     }
 
     function applyDB($db):bool{

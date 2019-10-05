@@ -281,7 +281,7 @@ class GeneralAI{
         }
 
         $commandList['che_물자조달'] = (
-            (GameConst::$minNationalGold + GameConst::$minNationalRice + 10000) / 
+            (GameConst::$minNationalGold + GameConst::$minNationalRice + 24*5*$env['develcost']) / 
             Util::valueFit($nation['gold'] + $nation['rice'], (GameConst::$defaultGold + GameConst::$defaultRice)/2)
         ) * 10;
 
@@ -1435,7 +1435,7 @@ class GeneralAI{
                 return null;
             }
 
-            $frontCities = $db->query('SELECT city, front, officer4 FROM city WHERE nation=%i AND front > 0 AND supply = 1');
+            $frontCities = $db->query('SELECT city, front, officer4 FROM city WHERE nation=%i AND front > 0 AND supply = 1', $nationID);
 
             if(!$frontCities){
                 //접경이 아직 없음

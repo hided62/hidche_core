@@ -128,7 +128,8 @@ class che_출병 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         //TODO: 장기적으로 통합해야함
-        processWar($general, $general->getStaticNation(), $this->destCity);
+        $attackerNation = $db->queryFirstRow('SELECT nation, name, color, type, level, capital, tech from nation WHERE nation = %i', $attackerNationID);
+        processWar($general, $attackerNation, $this->destCity);
 
         tryUniqueItemLottery($general);
         $general->applyDB($db);

@@ -118,7 +118,7 @@ class che_몰수 extends Command\NationCommand{
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, $general->getVar[$resKey]);
+        $amount = Util::valueFit($amount, 0, ($general->getVar[$resKey]- $isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice));
         $amountText = number_format($amount, 0);
 
         if($destGeneral->getVar('npc') >= 2 && Util::randBool(0.01)){

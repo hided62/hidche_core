@@ -13,6 +13,7 @@ class WarUnitCity extends WarUnit{
         $general->setVar('city', $raw['city']);
         $general->setVar('nation', $raw['nation']);
         $general->initLogger($year, $month);
+        $this->general = $general;
         $this->raw = $raw;
         $this->rawNation = $rawNation;
 

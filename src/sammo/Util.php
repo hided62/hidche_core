@@ -438,6 +438,9 @@ class Util extends \utilphp\util
      */
     public static function valueFit($value, $min = null, $max = null)
     {
+        if($max !== null && $min !== null && $max < $min){
+            return $min;
+        }
         if ($min !== null && $value < $min) {
             return $min;
         }

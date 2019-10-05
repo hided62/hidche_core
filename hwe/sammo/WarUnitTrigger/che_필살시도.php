@@ -6,6 +6,7 @@ use sammo\WarUnitCity;
 use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
+use sammo\Util;
 
 class che_필살시도 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
@@ -25,7 +26,7 @@ class che_필살시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        $this->activateSkill('특수', '필살시도', '필살');
+        $self->activateSkill('특수', '필살시도', '필살');
 
         
         return true;

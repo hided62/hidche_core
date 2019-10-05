@@ -85,10 +85,10 @@ class che_증여 extends Command\GeneralCommand{
             ConstraintHelper::FriendlyDestGeneral()
         ];
         if($this->arg['isGold']){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(GameConst::$generalMinimumGold);
         }
         else{
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(GameConst::$generalMinimumRice);
         }
 
     }
@@ -121,7 +121,7 @@ class che_증여 extends Command\GeneralCommand{
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, $general->getVar($resKey));
+        $amount = Util::valueFit($amount, 0, $general->getVar($resKey) - ($isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice));
         $amountText = number_format($amount, 0);
         
         $logger = $general->getLogger();

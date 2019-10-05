@@ -138,7 +138,7 @@ class WarUnit{
     }
 
     function getLogger():ActionLogger{
-        return $this->general->logger;
+        return $this->getGeneral()->getLogger();
     }
 
     function getKilled():int{
@@ -219,7 +219,7 @@ class WarUnit{
 
         $myAtt = $this->getComputedAttack();
         $opDef = $oppose->getComputedDefence();
-        // 감소할 병사 수
+        // 감소할 병사 
         $warPower = GameConst::$armperphase + $myAtt - $opDef;
         $opposeWarPowerMultiply = 1.0;
 

@@ -6,6 +6,7 @@ use \sammo\SpecialityConst;
 use \sammo\WarUnit;
 use \sammo\BaseWarUnitTrigger;
 use \sammo\WarUnitTriggerCaller;
+use sammo\WarUnitTrigger\WarActivateSkills;
 
 class che_돌격 implements iAction{
     use \sammo\DefaultAction;

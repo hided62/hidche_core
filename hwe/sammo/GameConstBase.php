@@ -98,6 +98,9 @@ class GameConstBase
     /** @var int 시작시 쌀 */
     public static $defaultRice = 1000;
 
+    public static $generalMinimumGold = 0;
+    public static $generalMinimumRice = 500;
+
     /** @var int 최대 턴 */
     public static $maxTurn = 30;
     public static $maxChiefTurn = 12;

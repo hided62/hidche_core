@@ -121,7 +121,6 @@ for($i=1; $i <= $count; $i++) {
         <td align=center>접률</td>
         <td align=center>단접</td>
         <td align=center>국력</td>
-        <td align=center>단합</td>
         <td align=center>장수</td>
         <td align=center>속령</td>
         <td align=center>기술</td>
@@ -213,6 +212,7 @@ for($i=0; $i < $nationCount; $i++) {
     $query = "select COUNT(*) as cnt,
                     SUM(pop) as pop,    SUM(pop2) as pop2,
                     ROUND(SUM(pop)/SUM(pop2)*100, 2) as rate,
+                    trust,
                     ROUND(SUM(agri)/SUM(agri2)*100, 2) as agri,
                     ROUND(SUM(comm)/SUM(comm2)*100, 2) as comm,
                     ROUND(SUM(secu)/SUM(secu2)*100, 2) as secu,
@@ -227,7 +227,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center style=background-color:{$nation['color']};color:".newColor($nation['color']).";>{$nation['name']}</td>
         <td align=center>&nbsp;{$nation['connect']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['con']}&nbsp;</td>
-        <td align=center>&nbsp;{$nation['strength']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['power']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['tech']}&nbsp;</td>
@@ -247,7 +247,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$nation['dex40']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['crew']}/{$gen['leadership']}00&nbsp;</td>
         <td align=center>&nbsp;{$city['pop']}/{$city['pop2']}&nbsp;</td>
-        <td align=center>&nbsp;".round($city['trust'],1)."%&nbsp;</td>
+        <td align=center>&nbsp;".round($city['pop']/$city['pop2']*100,1)."%&nbsp;</td>
         <td align=center>&nbsp;{$city['agri']}%&nbsp;</td>
         <td align=center>&nbsp;{$city['comm']}%&nbsp;</td>
         <td align=center>&nbsp;{$city['secu']}%&nbsp;</td>
