@@ -66,7 +66,7 @@ class che_물자조달 extends Command\GeneralCommand{
         $db = DB::db();
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         [$resName, $resKey] = Util::choiceRandom([
             ['금', 'gold'],

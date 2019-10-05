@@ -49,10 +49,10 @@ class WarUnitGeneral extends WarUnit{
         $this->general->increaseVar('warnum', 1);
 
         if($this->isAttacker){
-            $general->updateVar('recwar', $general->getVar('turntime'));
+            $general->updateVar('recwar', $general->getTurnTime());
         }
         else if($oppose !== null){
-            $general->updateVar('recwar', $oppose->getVar('turntime'));
+            $general->updateVar('recwar', $oppose->getTurnTime());
         }
     }
 

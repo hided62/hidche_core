@@ -18,7 +18,7 @@ class che_탈취 extends che_화계{
     protected function affectDestCity(int $injuryCount){
         $general = $this->generalObj;
         $nationID = $general->getNationID();
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $logger = $general->getLogger();
 

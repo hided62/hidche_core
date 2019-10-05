@@ -35,6 +35,12 @@ class General implements iAction{
     protected $lastTurn = null;
     protected $resultTurn = null;
 
+    const TURNTIME_FULL_MS = -1;
+    const TURNTIME_FULL = 0;
+    const TURNTIME_HMS = 1;
+    const TURNTIME_HM = 2;
+
+
     /**
      * @param array $raw DB row값.
      * @param null|array $city DB city 테이블의 row값
@@ -84,6 +90,15 @@ class General implements iAction{
             $month,
             false
         );
+    }
+
+    function getTurnTime(int $short=self::TURNTIME_FULL_MS){
+        return [
+            self::TURNTIME_FULL_MS=>function($turntime){return $turntime;},
+            self::TURNTIME_FULL=>function($turntime){return substr($turntime, 0, 19);},
+            self::TURNTIME_HMS=>function($turntime){return substr($turntime, 11, 8);},
+            self::TURNTIME_HM=>function($turntime){return substr($turntime, 11, 5);},
+        ][$short]($this->getVar('turntime'));
     }
 
     function deleteItem(string $itemKey='item'){

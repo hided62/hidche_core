@@ -67,7 +67,7 @@ class che_귀환 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
         $generalID = $general->getID();
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $generalLevel = $general->getVar('level');
         $target = null;

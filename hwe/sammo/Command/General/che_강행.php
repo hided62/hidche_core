@@ -93,7 +93,7 @@ class che_강행 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $destCityName = $this->destCity['name'];
         $destCityID = $this->destCity['city'];

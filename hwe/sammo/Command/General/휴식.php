@@ -33,7 +33,7 @@ class 휴식 extends Command\GeneralCommand{
     public function run():bool{
         $general = $this->generalObj;
         $logger = $general->getLogger();
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
         $general->setResultTurn(new LastTurn());

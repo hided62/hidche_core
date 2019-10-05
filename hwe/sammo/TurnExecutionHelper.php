@@ -47,7 +47,7 @@ class TurnExecutionHelper
             return false;
         }
 
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
         $logger = $general->getLogger();
         if($blocked == 2){
             $general->increaseVarWithLimit('killturn', -1, 0);
@@ -76,7 +76,7 @@ class TurnExecutionHelper
         while(true){
             $failReason = $commandObj->testRunnable();
             if($failReason){
-                $date = substr($general->getVar('turntime'),11,5);
+                $date = $general->getTurnTime($general::TURNTIME_HM);
                 $failString = $commandObj->getFailString();
                 $text = "{$failString} <1>{$date}</>";
                 $general->getLogger()->pushGeneralActionLog($text);
@@ -110,7 +110,7 @@ class TurnExecutionHelper
         while(true){
             $failReason = $commandObj->testRunnable();
             if($failReason){
-                $date = substr($general->getVar('turntime'),11,5);
+                $date = $general->getTurnTime($general::TURNTIME_HM);
                 $failString = $commandObj->getFailString();
                 $text = "{$failString} <1>{$date}</>";
                 $general->getLogger()->pushGeneralActionLog($text);
@@ -194,7 +194,7 @@ class TurnExecutionHelper
             $general->rebirth();
         }
 
-        $turntime = addTurn($general->getVar('turntime'), $gameStor->turnterm);
+        $turntime = addTurn($general->getTurnTime(), $gameStor->turnterm);
         $general->setVar('turntime', $turntime);
 
     }
@@ -267,7 +267,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             pullNationCommand($general->getVar('nation'), $general->getVar('level'));
             pullGeneralCommand($general->getID());
 
-            $currentTurn = $general->getVar('turntime');
+            $currentTurn = $general->getTurnTime();
             $general->increaseVarWithLimit('myset', 1, null, 3);
 
             $turnObj->updateTurnTime();
@@ -280,7 +280,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
     }
 
     static public function executeAllCommand(){
-        if(!timeover()) { return; }
+        //if(!timeover()) { return; }
 
         $db = DB::db();
 
@@ -395,10 +395,9 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             // 다음달로 넘김
             $prevTurn = $nextTurn;
             $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
+            $gameStor->turntime = $prevTurn;
         }
 
-        // 이시각까지는 업데이트 완료했음
-        $gameStor->turntime = $prevTurn;
         // 그 시각 년도,월 저장
         turnDate($prevTurn);
         // 현재시간의 월턴시간 이후 분단위 장수 처리

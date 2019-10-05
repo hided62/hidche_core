@@ -84,7 +84,7 @@ class che_기술연구 extends che_상업투자{
 
         $logger = $general->getLogger();
 
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $score *= CriticalScoreEx($pick);
         $score = Util::round($score);

@@ -98,7 +98,7 @@ class che_군량매매 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
         $tradeRate = $this->city['trade'];
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $buyRice = $this->arg['buyRice'];
 

@@ -630,4 +630,74 @@ class Util extends \utilphp\util
             return "`{$value}`";
         }, $array));
     }
+
+    public static function joinYearMonth(int $year, int $month):int{
+        return $year * 12 + $month - 1;
+    }
+
+    /**
+     * 변수의 값을 첫번째 값부터 비교해서 대소를 반환
+     * 길이가 다른 경우, 앞의 결과를 먼저 비교한 뒤, 짧은쪽의 값을 null으로 가정하여 길이 처리
+     */
+    public static function arrayCompare(iterable $lhs, iterable $rhs, ?callable $comp=null){
+        $lhsIter = new \Iterator($lhs);
+        $rhsIter = new \Iterator($rhs);
+
+        while($lhsIter->valid() && $rhsIter->valid()){
+            $lhsVal = $lhsIter->current();
+            $rhsVal = $rhsIter->current();
+
+            if($comp !== null){
+                $compResult = $comp($lhsVal, $rhsVal);
+            }
+            else{
+                $compResult = $lhsVal <=> $rhsVal;
+            }
+
+            if($compResult !== 0){
+                return $compResult;
+            }
+
+            $lhsIter->next();
+            $rhsIter->next();
+        }
+
+        $rhsVal = null;
+        while($lhsIter->valid()){
+            $lhsVal = $lhsIter->current();
+
+            if($comp !== null){
+                $compResult = $comp($lhsVal, $rhsVal);
+            }
+            else{
+                $compResult = $lhsVal <=> $rhsVal;
+            }
+
+            if($compResult !== 0){
+                return $compResult;
+            }
+
+            $lhsIter->next();
+        }
+
+        $lhsVal = null;
+        while($rhsIter->valid()){
+            $rhsVal = $rhsIter->current();
+
+            if($comp !== null){
+                $compResult = $comp($lhsVal, $rhsVal);
+            }
+            else{
+                $compResult = $lhsVal <=> $rhsVal;
+            }
+
+            if($compResult !== 0){
+                return $compResult;
+            }
+
+            $rhsIter->next();
+        }
+
+        return 0;
+    }
 };

@@ -93,7 +93,7 @@ class che_첩보 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $destCity = $this->destCity;
 

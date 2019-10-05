@@ -215,7 +215,7 @@ function processWar_NG(
 
     $attacker->useBattleInitItem();
     
-    $date = substr($attacker->getVar('turntime'),11,5);
+    $date = $attacker->getGeneral()->getTurnTime(General::TURNTIME_HM);
 
     $attackerNationUpdate = [];
     $defenderNationUpdate = [];

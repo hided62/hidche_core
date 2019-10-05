@@ -72,7 +72,7 @@ class che_전투태세 extends Command\GeneralCommand{
         $db = DB::db();
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $lastTurn = $general->getLastTurn();
         $turnResult = new LastTurn(static::getName(), $this->arg);

@@ -77,7 +77,7 @@ foreach($nationTurnList as $level=>$turnList){
     }
     $nationTurnBrief[$level] = [
         'name'=>$general->getName(),
-        'turnTime'=>substr($general->getVar('turntime'), 11, 5),
+        'turnTime'=>$general->getTurnTime($general::TURNTIME_HM),
         'levelText'=>getLevelText($general->getVar('level'), $nationLevel),
         'npcType'=>$general->getVar('npc'),
         'turn'=>getNationTurnBrief($general, $turnList)

@@ -106,7 +106,7 @@ class che_선전포고 extends Command\NationCommand{
 
         $general = $this->generalObj;
         $generalName = $general->getName();
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $nation = $this->nation;
         $nationID = $nation['nation'];
@@ -158,7 +158,7 @@ class che_선전포고 extends Command\NationCommand{
             $src,
             $dest,
             $text,
-            new \DateTime($general->getVar('turntime')),
+            new \DateTime($general->getTurnTime()),
             new \DateTime('9999-12-31'),
             []
         );

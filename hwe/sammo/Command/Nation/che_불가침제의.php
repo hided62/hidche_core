@@ -120,7 +120,7 @@ class che_불가침제의 extends Command\NationCommand{
 
         $general = $this->generalObj;
         $generalName = $general->getName();
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $nation = $this->nation;
         $nationID = $nation['nation'];

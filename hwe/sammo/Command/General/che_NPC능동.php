@@ -81,7 +81,7 @@ class che_NPC능동 extends Command\GeneralCommand{
 
         $logger = $general->getLogger();
 
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         if($this->arg['optionText'] == '순간이동'){
             $destCityID = $this->arg['destCityID'];

@@ -14,7 +14,7 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-use function sammo\getNationTypeClass;
+use function sammo\buildNationTypeClass;
 use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
 use function sammo\getAllNationStaticInfo;
@@ -68,7 +68,7 @@ class che_거병 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $generalName = $general->getName();
         $josaYi = JosaUtil::pick($generalName, '이');

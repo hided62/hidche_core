@@ -93,7 +93,7 @@ class che_헌납 extends Command\GeneralCommand{
         $db = DB::db();
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];

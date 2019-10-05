@@ -99,7 +99,7 @@ class che_출병 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $attackerNationID = $general->getNationID();
         $defenderNationID = $this->destCity['nation'];
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $defenderCityName = $this->destCity['name'];
         $defenderCityID = $this->destCity['city'];

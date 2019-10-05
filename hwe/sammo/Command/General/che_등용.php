@@ -112,7 +112,7 @@ class che_등용 extends Command\GeneralCommand{
         $db = DB::db();
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $logger = $general->getLogger();
 
@@ -120,7 +120,7 @@ class che_등용 extends Command\GeneralCommand{
         $destGeneralID = $this->destGeneralObj->getID();
         
 
-        $msg = ScoutMessage::buildScoutMessage($general->getID(), $destGeneralID, $reason, new \DateTime($general->getVar('turntime')));
+        $msg = ScoutMessage::buildScoutMessage($general->getID(), $destGeneralID, $reason, new \DateTime($general->getTurnTime()));
         if($msg){
             $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>에게 등용 권유 서신을 보냈습니다. <1>$date</>");
             $msg->send(true);

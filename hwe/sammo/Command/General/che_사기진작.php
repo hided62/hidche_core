@@ -69,7 +69,7 @@ class che_사기진작 extends Command\GeneralCommand{
         $db = DB::db();
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $score = Util::round($general->getLeadership() * 100 / $general->getVar('crew') * GameConst::$atmosDelta);
         $scoreText = number_format($score, 0);

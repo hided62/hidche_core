@@ -153,7 +153,7 @@ class che_화계 extends Command\GeneralCommand{
 
     protected function affectDestCity(int $injuryCount){
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $logger = $general->getLogger();
 
@@ -198,7 +198,7 @@ class che_화계 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $destCity = $this->destCity;
 

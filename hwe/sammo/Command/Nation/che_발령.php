@@ -104,7 +104,7 @@ class che_발령 extends Command\NationCommand{
 
         $general = $this->generalObj;
         $generalName = $general->getName();
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $destCity = $this->destCity;
         $destCityID = $destCity['city'];

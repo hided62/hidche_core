@@ -116,6 +116,12 @@ class GeneralAI{
         $nationID = $this->general->getNationID();
         $env = $this->env;
 
+        if(Util::joinYearMonth($env['year'], $env['month']) <= Util::joinYearMonth($env['startyear']+2, 5)){
+            $this->dipState = self::d평화;
+            $this->attackable = false;
+            return;
+        }
+
         $frontStatus = $db->queryFirstField('SELECT max(front) FROM city WHERE nation=%i AND supply=1', $nationID);
         // 공격가능도시 있으면
         $this->attackable = ($frontStatus !== null)?$frontStatus:false;

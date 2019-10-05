@@ -19,7 +19,7 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-use function sammo\getNationTypeClass;
+use function sammo\buildNationTypeClass;
 use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
 use function sammo\newColor;
@@ -54,7 +54,7 @@ class che_건국 extends Command\GeneralCommand{
         }
 
         try{
-            $nationTypeClass = getNationTypeClass($nationType);
+            $nationTypeClass = buildNationTypeClass($nationType);
         }
         catch(InvalidArgumentException $e){
             return false;
@@ -115,7 +115,7 @@ class che_건국 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $date = substr($general->getVar('turntime'),11,5);
+        $date = $general->getTurnTime($general::TURNTIME_HM);
         $generalName = $general->getName();
         $josaYi = JosaUtil::pick($generalName, '이');
 
