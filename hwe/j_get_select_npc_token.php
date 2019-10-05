@@ -93,7 +93,7 @@ $weight = [];
 foreach($db->query('SELECT `no`, `name`, leadership, strength, intel, nation, imgsvr, picture, personal, special, special2 FROM general WHERE npc=2') as $general){
     $general['special'] = buildGeneralSpecialDomesticClass($general['special'])->getName();
     $general['special2'] = buildGeneralSpecialWarClass($general['special2'])->getName();
-    $general['personal'] = (getPersonalityClass($general['personal']));
+    $general['personal'] = buildPersonalityClass($general['personal'])->getName();
     $general['nation'] = getNationStaticInfo($general['nation'])['name'];
     $candidates[$general['no']] = $general + ['keepCnt'=>KEEP_CNT];
     $allStat = $general['leadership'] + $general['strength'] + $general['intel'];

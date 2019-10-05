@@ -105,18 +105,6 @@ function displaySpecialDomesticInfo(?string $type):string{
     ]);
 }
 
-function displayItemInfo(?string $type):string{
-    [$text, $info] = getItemInfo($type);
-
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
-
-    return $templates->render('tooltip', [
-        'text'=>$text,
-        'info'=>$info,
-    ]);
-}
-
-
 function allButton() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

@@ -300,25 +300,9 @@ class WarUnit{
         throw new NotInheritedMethodException();
     }
 
-    function useBattleInitItem():bool{
-        return false;
-    }
-
     function beginPhase():void{
         $this->clearActivatedSkill();
         $this->computeWarPower();
-    }
-
-    function checkBattleBeginSkill(){
-        yield true;
-    }
-
-    function checkBattleBeginItem():bool{
-        return false;
-    }
-
-    function applyBattleBeginSkillAndItem():bool{
-        return false;
     }
 
     function hasActivatedSkill(string $skillName):bool{

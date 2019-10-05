@@ -111,18 +111,18 @@ $generalCheck = [
     'between'=>[
         ['train', [40, GameConst::$maxTrainByWar]],
         ['atmos', [40, GameConst::$maxAtmosByWar]],
-        ['book', [0, 26]],
-        ['weapon', [0, 26]],
-        ['horse', [0, 26]],
-        ['item', [0, 26]],
         ['explevel', [0, 300]],
         ['injury', [0, 80]],
         ['level', [1, 12]]
     ],
     'in'=>[
         ['personal', array_keys(getCharacterList())],
-        ['special2', array_merge(array_keys(SpecialityConst::WAR), [0])],
+        ['special2', array_merge(array_keys(SpecialityConst::WAR), ['None'])],
         ['crewtype', array_keys(GameUnitConst::all())],
+        ['horse', array_keys(GameConst::$allItems['horse'])],
+        ['weapon', array_keys(GameConst::$allItems['weapon'])],
+        ['book', array_keys(GameConst::$allItems['book'])],
+        ['item', array_keys(GameConst::$allItems['item'])],
     ]
 ];
 

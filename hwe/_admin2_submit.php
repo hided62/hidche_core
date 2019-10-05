@@ -216,7 +216,7 @@ switch($btn) {
         break;
     case "무기지급":
 
-        if($item == 0) {
+        if($item == 'None') {
             $text = "무기 회수!";
         }
         else { 
@@ -240,7 +240,7 @@ switch($btn) {
         }
         break;
     case "책지급":
-        if($item == 0) {
+        if($item == 'None') {
             $text = "책 회수!";
         }
         else { 
@@ -252,7 +252,7 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($item == 0){
+        if($item == 'None'){
             $db->update('general', [
                 'book'=>'None'
             ], '`no` IN %li', $genlist);
@@ -264,7 +264,7 @@ switch($btn) {
         }
         break;
     case "말지급":
-        if($item == 0) {
+        if($item == 'None') {
             $text = "말 회수!";
         }
         else { 
@@ -276,7 +276,7 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($item == 0){
+        if($item == 'None'){
             $db->update('general', [
                 'horse'=>'None'
             ], '`no` IN %li', $genlist);
@@ -288,7 +288,7 @@ switch($btn) {
         }
         break;
     case "도구지급":
-        if($item == 0) {
+        if($item == 'None') {
             $text = "특수도구 회수!";
         }
         else { 
@@ -300,7 +300,7 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($item == 0){
+        if($item == 'None'){
             $db->update('general', [
                 'item'=>'None'
             ], '`no` IN %li', $genlist);

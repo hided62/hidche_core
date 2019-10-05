@@ -15,9 +15,6 @@ use \sammo\{
 
 use function \sammo\{
     tryUniqueItemLottery,
-    getItemCost, 
-    getItemInfo,
-    getItemName
 };
 
 use \sammo\Constraint\Constraint;

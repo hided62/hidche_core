@@ -15,8 +15,6 @@ use \sammo\{
 
 use function \sammo\{
     tryUniqueItemLottery,
-    getItemCost,
-    getItemInfo,
     getItemName,
     buildItemClass
 };
@@ -80,8 +78,8 @@ class che_장비매매 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
-        if($itemCode == 0){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralValue($itemType, $itemTypeName, '>=', 1);
+        if($itemCode === 'None'){
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralValue($itemType, $itemTypeName, '!=', 'None');
         }
         else if($itemCode == $general->getVar($itemType)){
             $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 가지고 있습니다.');
@@ -98,8 +96,9 @@ class che_장비매매 extends Command\GeneralCommand{
         }
         
         $itemCode = $this->arg['itemCode'];
+        $itemObj = buildItemClass($itemCode);
 
-        $reqGold = getItemCost($itemCode);
+        $reqGold = $itemObj->getCost();
         return [$reqGold, 0];
     }
     
@@ -124,17 +123,16 @@ class che_장비매매 extends Command\GeneralCommand{
         $itemType = $this->arg['itemType'];
         $itemCode = $this->arg['itemCode'];
 
-        if($itemCode == 'None'){
+        if($itemCode === 'None'){
             $buying = false;
             $itemCode = $general->getVar($itemType);
-            $cost = getItemCost($itemCode);
         }
         else{
             $buying = true;
-            $cost = $this->getCost()[0];
         }
-
-        $itemName = getItemName($itemCode);
+        $itemObj = buildItemClass($itemCode);
+        $cost = $itemObj->getCost();
+        $itemName = $itemObj->getName();
 
         $josaUl = JosaUtil::pick($itemName, '을');
 
@@ -148,7 +146,7 @@ class che_장비매매 extends Command\GeneralCommand{
         else{
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 판매했습니다. <1>$date</>");
             $general->increaseVarWithLimit('gold', $cost / 2);
-            $general->setVar($itemType, 0);
+            $general->deleteItem($itemType);
         }
 
         $exp = 10;

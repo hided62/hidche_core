@@ -99,7 +99,6 @@ function getNationType(?string $type) {
     $nationClass = buildNationTypeClass($type);
     $text = $nationClass->getName();
     $text = join(' ', StringUtil::splitString($text));
-    $cache[$type] = $text;
 
     return $text;
 }
@@ -627,23 +626,6 @@ function isConsumable(?string $item) : bool{
     }
     $itemClass = buildItemClass($item);
     return $itemClass->isConsumable();
-}
-
-function getItemInfo(?string $item):?array{
-    if($item === null){
-        return ['-', null];
-    }
-
-    $itemClass = buildItemClass($item);
-    return [$itemClass->getName(), $itemClass->getInfo()];
-}
-
-function getItemCost(?string $item) : int {
-    if($item === null){
-        return 0;
-    }
-    $itemClass = buildItemClass($item);
-    return $itemClass->getCost();
 }
 
 function getNameColor(int $npcType):?string{

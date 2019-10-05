@@ -101,8 +101,17 @@ class General implements iAction{
         ][$short]($this->getVar('turntime'));
     }
 
+    function setItem(string $itemKey='item', ?string $itemCode){
+        if($itemCode === null){
+            $this->deleteItem($itemKey);
+        }
+
+        $this->setVar($itemKey, $itemCode);
+        $this->itemObjs[$itemKey] = buildItemClass($itemCode);
+    }
+
     function deleteItem(string $itemKey='item'){
-        $this->setVar($itemKey, 0);
+        $this->setVar($itemKey, 'None');
         $this->itemObjs[$itemKey] = new ActionItem\None();
     }
 

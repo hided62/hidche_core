@@ -403,7 +403,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         // 현재시간의 월턴시간 이후 분단위 장수 처리
 
         [$executionOver, $currentTurn] = static::executeGeneralCommandUntil(
-            $nextTurn, $limitActionTime, $gameStor->year, $gameStor->month
+            $date, $limitActionTime, $gameStor->year, $gameStor->month
         );
 
         if($currentTurn !== null){

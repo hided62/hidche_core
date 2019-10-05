@@ -213,7 +213,7 @@ function processWar_NG(
 
     $logger = $attacker->getLogger();
 
-    $attacker->useBattleInitItem();
+    //$attacker->useBattleInitItem();
     
     $date = $attacker->getGeneral()->getTurnTime(General::TURNTIME_HM);
 
@@ -286,7 +286,7 @@ function processWar_NG(
                 $logger->pushGeneralActionLog("{$attackerCrewTypeName}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
             }
 
-            $defender->useBattleInitItem();
+            //$defender->useBattleInitItem();
 
             $attacker->setOppose($defender);
             $defender->setOppose($attacker);
