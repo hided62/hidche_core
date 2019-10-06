@@ -270,7 +270,7 @@ else if($session->userGrade == 4){
     <tr>
         <td style='width:650px;' align=right>
             <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　반복&amp;수정<b>→</b></font>
-            <select name=sel size=1 style=color:white;background-color:black;font-size:13px;>
+            <select id='repeatAmount' name=sel size=1 style=color:white;background-color:black;font-size:13px;>
                 <option value=1>1턴</option>
                 <option value=2>2턴</option>
                 <option value=3>3턴</option>
@@ -283,13 +283,25 @@ else if($session->userGrade == 4){
                 <option value=10>10턴</option>
                 <option value=11>11턴</option>
                 <option value=12>12턴</option>
-            </select><input type=button style='background-color:<?=GameConst::$basecolor2?>;color:white;width:70px;font-size:13px;margin-left:1ch;margin-right:2ch;' value='반복' onclick='refreshing(this, 2,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px; value='▼미루기' onclick='refreshing(this, 2,1)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px; value='▲당기기' onclick='refreshing(this, 2,2)'>
-        </td>
+            </select
+            ><input type=button value='반복' id='repeatTurn'
+                style='background-color:<?=GameConst::$basecolor2?>;color:white;width:70px;font-size:13px;margin-left:1ch;margin-right:2ch;'
+            ><input type=button value='▼미루기' id='pushTurn'
+                style='background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px;'
+            ><input type=button value='▲당기기' id='pullTurn' 
+                style='background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px;'
+        ></td>
     </tr>
     <tr>
-        <td align=right style="'width:650px;border:none;">
+        <td align=right style="'width:650px;border:none;"><br>
             <?php printCommandTable($generalObj)?>
-            <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button id='do_refresh' style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로비로' onclick="location.replace('../')"><br>
+            <input type=button value='실 행' id="reserveTurn"
+                style='background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px;'
+            ><input type=button value='갱 신' id='refreshPage'
+                style='background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px;'
+            ><input type=button value='로비로' onclick="location.replace('../')" 
+                style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px;
+            >
         </td>
     </tr>
 </table>

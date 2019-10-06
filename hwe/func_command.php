@@ -29,7 +29,8 @@ function pushGeneralCommand(int $generalID, int $turnCnt=1){
         return;
     }
     if($turnCnt < 0){
-        pullGeneralCommand($generalID, -$turnCnt);   
+        pullGeneralCommand($generalID, -$turnCnt);
+        return;
     }
     if($turnCnt >= GameConst::$maxTurn){
         return;
@@ -39,13 +40,13 @@ function pushGeneralCommand(int $generalID, int $turnCnt=1){
 
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
-    ], 'general_id=%i', $generalID);
+    ], 'general_id=%i ORDER BY turn_idx DESC', $generalID);
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxTurn),
         'action'=>'휴식',
         'arg'=>'{}',
         'brief'=>'휴식'
-    ], 'general_id=%i AND turn_idx >= %i ORDER BY turn_idx ASC', $generalID, GameConst::$maxTurn);
+    ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxTurn);
 }
 
 function pullGeneralCommand(int $generalID, int $turnCnt=1){
@@ -54,6 +55,7 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
     }
     if($turnCnt < 0){
         pushGeneralCommand($generalID, -$turnCnt);
+        return;
     }
     if($turnCnt >= GameConst::$maxTurn){
         return;
@@ -84,6 +86,7 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
     }
     if($turnCnt < 0){
         pullNationCommand($nationID, $level, -$turnCnt);   
+        return;
     }
     if($turnCnt >= GameConst::$maxChiefTurn){
         return;
@@ -114,6 +117,7 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     }
     if($turnCnt < 0){
         pushNationCommand($nationID, $level, -$turnCnt);
+        return;
     }
     if($turnCnt >= GameConst::$maxChiefTurn){
         return;
@@ -208,7 +212,9 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
         if(!is_int($turnIdx) || $turnIdx < 0 || $turnIdx >= GameConst::$maxTurn){
             return [
                 'result'=>false,
-                'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx
+                'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx,
+                'test'=>'turnIdx',
+                'target'=>$turnIdx,
             ];
         }
     }
@@ -217,7 +223,9 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
     if($argBasicTestResult !== null){
         return [
             'result'=>false,
-            'reason'=>'턴이 입력되지 않았습니다.'
+            'reason'=>'턴이 입력되지 않았습니다.',
+            'test'=>'checkCommandArg',
+            'target'=>'arg'
         ];
     }
 
@@ -233,28 +241,34 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
         return [
             'result'=>false,
             'reason'=>$e->getMessage(),
+            'test'=>'build',
+            'target'=>'arg'
         ];
     }
     catch (\Exception $e){
         return [
             'result'=>false,
-            'reason'=>$e->getCode().$e->getMessage()
+            'reason'=>$e->getCode().$e->getMessage(),
+            'test'=>'build',
+            'target'=>'arg'
         ];
     }
 
     if(!$commandObj->isArgValid()){
         return [
             'result'=>false,
-            'arg_test'=>false,
-            'reason'=>'올바르지 않은 argument'
+            'reason'=>'올바르지 않은 argument',
+            'test'=>'isArgValid',
+            'target'=>'arg'
         ];
     }
 
     if(!$commandObj->isReservable()){
         return [
             'result'=>false,
-            'arg_test'=>true,
-            'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable()
+            'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable(),
+            'test'=>'isReservable',
+            'target'=>'command'
         ];
     }
 
@@ -263,7 +277,6 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
     _setGeneralCommand($generalID, $turnList, $command, $arg, $brief);
     return [
         'result'=>true,
-        'arg_test'=>true,
         'reason'=>'success'
     ];
 }
@@ -274,7 +287,9 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
         if(!is_int($turnIdx) || $turnIdx < 0 || $turnIdx >= GameConst::$maxChiefTurn){
             return [
                 'result'=>false,
-                'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx
+                'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx,
+                'test'=>'turnIdx',
+                'target'=>$turnIdx,
             ];
         }
     }
@@ -283,7 +298,9 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
     if($argBasicTestResult !== null){
         return [
             'result'=>false,
-            'reason'=>'턴이 입력되지 않았습니다.'
+            'reason'=>'턴이 입력되지 않았습니다.',
+            'test'=>'checkCommandArg',
+            'target'=>'arg'
         ];
     }
 
@@ -306,32 +323,40 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
         return [
             'result'=>false,
             'reason'=>$e->getMessage(),
+            'test'=>'build',
+            'target'=>'arg'
         ];
     }
     catch (\Exception $e){
         return [
             'result'=>false,
-            'reason'=>$e->getCode().$e->getMessage()
+            'reason'=>$e->getCode().$e->getMessage(),
+            'test'=>'build',
+            'target'=>'arg'
         ];
     }
 
     if(!$commandObj->isArgValid()){
         return [
             'result'=>false,
-            'arg_test'=>false,
-            'reason'=>'올바르지 않은 argument'
+            'reason'=>'올바르지 않은 argument',
+            'test'=>'isArgValid',
+            'target'=>'arg'
         ];
     }
 
     if(!$commandObj->isReservable()){
         return [
             'result'=>false,
-            'arg_test'=>true,
-            'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable()
+            'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable(),
+            'test'=>'isReservable',
+            'target'=>'command'
         ];
     }
 
-    _setNationCommand($general->getNationID(), $general->getVar('level'), $turnList, $command, $arg);
+    $brief = $commandObj->getBrief();
+
+    _setNationCommand($general->getNationID(), $general->getVar('level'), $turnList, $command, $arg, $brief);
     return [
         'result'=>true,
         'arg_test'=>true,

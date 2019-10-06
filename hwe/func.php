@@ -430,6 +430,7 @@ function printCommandTable(General $generalObj) {
 <select id='generalCommandList' name='commandtype' size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
 <?php
 
+    //보정(Pros,Cons) 여부.
     $getCompensateClassName = function($value){
         if($value > 0){
             return 'compensatePositive';
@@ -452,7 +453,7 @@ function printCommandTable(General $generalObj) {
             }
 ?>
 <option 
-    class='commandBasic <?=$commandObj->getCompensationStyle()?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
+    class='commandBasic <?=$getCompensateClassName($commandObj->getCompensationStyle())?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
     value='<?=Util::getClassNameFromObj($commandObj)?>'
     data-reqArg='<?=($commandObj::$reqArg)?'true':'false'?>'
 ><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->isReservable()?'':'(불가)'?></option>

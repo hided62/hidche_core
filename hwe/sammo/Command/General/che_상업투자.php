@@ -84,6 +84,13 @@ class che_상업투자 extends Command\GeneralCommand{
         
         return [$reqGold, $reqRice];
     }
+
+    
+    public function getCompensationStyle():?int{
+        $develCost = $this->env['develcost'];
+        $reqGold = $this->getCost()[0];
+        return $develCost <=>$reqGold;
+    }
     
     public function getPreReqTurn():int{
         return 0;

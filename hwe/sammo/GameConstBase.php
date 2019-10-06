@@ -196,7 +196,7 @@ class GameConstBase
         ]
     ];
 
-    /** @var array[string] 선택 가능한 커맨드 */
+    /** @var array 선택 가능한 커맨드 */
     public static $availableGeneralCommand = [
         ''=>[
             '휴식',

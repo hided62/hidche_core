@@ -224,7 +224,6 @@ abstract class BaseCommand{
         //0 : Neutral
         //-1 : Negative
         //null : can't calculate
-        //TODO: 구현
         return 0;
     }
     

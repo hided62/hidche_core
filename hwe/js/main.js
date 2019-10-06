@@ -1,6 +1,6 @@
 jQuery(function($){
 
-$('#do_refresh').click(function(){
+$('#refreshPage').click(function(){
     document.location.reload();
     return false;
 });
@@ -56,17 +56,64 @@ function myclock() {
         return;
     }
 
-    /*
-    if(!$clock.attr('data-time-diff')){
-        var base_clock = moment($clock.attr('data-server-time'));
-        $clock.attr('data-time-diff', base_clock.diff(now_clock));
-    }
-    */
-
     var game_clock = now_clock.add(parseInt($clock.data('time-diff')), 'milliseconds');
 
     $('#clock').val(game_clock.format('YYYY-MM-DD HH:mm:ss'));
 }
+
+function pushTurn(pushAmount){
+    $.post({
+        url:'j_turn.php',
+        dataType:'json',
+        data:{
+            amount:pushAmount
+        }
+    }).then(function(data){
+        if(!data.result){
+            alert(data.reason);
+        }
+        reloadCommandList();
+    }, errUnknown);
+}
+
+$('#pullTurn').click(function(){
+    pushTurn(-parseInt($('#repeatAmount').val())); 
+});
+
+$('#pushTurn').click(function(){
+    pushTurn(parseInt($('#repeatAmount').val())); 
+});
+
+
+function reserveTurn(turnList, command){
+    console.log(turnList, command);
+    $.post({
+        url:'j_set_general_command.php',
+        dataType:'json',
+        data:{
+            action:command,
+            turnList:turnList
+        }
+    }).then(function(data){
+        if(!data.result){
+            alert(data.reason);
+        }
+        reloadCommandList();
+    }, errUnknown);
+}
+
+$('#reserveTurn').click(function(){
+    var turnList = $('#generalTurnSelector').val().map(function(v){return parseInt(v);});
+    var $command = $('#generalCommandList option:selected');
+    /*if($command.data('reqarg')){
+        alert('TODO!');
+    }
+    else*/{
+        reserveTurn(turnList, $command.val());
+    }
+    
+})
+
 
 setInterval(myclock, 500);
 reloadCommandList();

@@ -62,6 +62,12 @@ class che_주민선정 extends Command\GeneralCommand{
         
         return [$reqGold, $reqRice];
     }
+
+    public function getCompensationStyle():?int{
+        $develCost = $this->env['develcost'] * 2;
+        $reqGold = $this->getCost()[1];
+        return $develCost <=>$reqGold;
+    }
     
     public function getPreReqTurn():int{
         return 0;
