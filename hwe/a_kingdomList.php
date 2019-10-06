@@ -9,13 +9,10 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("세력일람", 2);
 
-$query = "select con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
@@ -43,97 +40,39 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
     <tr><td>세 력 일 람<br><?=closeButton()?></td></tr>
 </table>
 <?php
-$query = "select nation,name,color,level,type,power,gennum,capital from nation order by power desc";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$count = MYDB_num_rows($result);
 
-for($i=1; $i <= $count; $i++) {
-    $nation = MYDB_fetch_array($result);   //국가정보
+$nations = getAllNationStaticInfo();
+uasort($nations, function($lhs, $rhs){return $rhs['power']<=>$lhs['power'];});
 
-    $query = "select city,name from city where nation='{$nation['nation']}'"; // 도시 이름 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
+foreach($db->query('SELECT npc,name,city,nation,level,penalty,permission FROM general ORDER BY dedication DESC') as $general){
+    $nationID = $general['nation'];
+    if(!key_exists('generals', $nations[$nationID])){
+        $nations[$nationID]['generals'] = [];
+    }
+    $nations[$nationID]['generals'][] = $general;
+}
 
-    $query = "select npc,name,city from general where nation='{$nation['nation']}' and level='12'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level12 = MYDB_fetch_array($genresult);
+foreach ($db->queryAllLists('SELECT city, name, nation FROM city') as [$cityID, $cityName, $nationID]) {
+    if(!key_exists('cities', $nations[$nationID])){
+        $nations[$nationID]['cities'] = [];
+    }
+    $nations[$nationID]['cities'][$cityID] = $cityName;
+}
 
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='11'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level11 = MYDB_fetch_array($genresult);
+foreach ($nations as $nation) {
+    if ($nation['nation'] == 0) {
+        continue;
+    }
+    $generals = $nation['generals'];
 
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='10'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level10 = MYDB_fetch_array($genresult);
-
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='9'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level9 = MYDB_fetch_array($genresult);
-
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='8'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level8 = MYDB_fetch_array($genresult);
-
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='7'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level7 = MYDB_fetch_array($genresult);
-
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='6'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level6 = MYDB_fetch_array($genresult);
-
-    $query = "select npc,name from general where nation='{$nation['nation']}' and level='5'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level5 = MYDB_fetch_array($genresult);
-
-    $query = "select npc,name from general where nation='{$nation['nation']}' and npc != 5 order by dedication desc";    // 장수 목록
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($genresult);
-
-    if($level12['name'] == "") { $l12 = "-"; }
-    elseif($level12['npc'] >= 2) { $l12 = "<font color=cyan>{$level12['name']}</font>"; }
-    elseif($level12['npc'] == 1) { $l12 = "<font color=skyblue>{$level12['name']}</font>"; }
-    else { $l12 = $level12['name']; }
-
-    if($level11['name'] == "") { $l11 = "-"; }
-    elseif($level11['npc'] >= 2) { $l11 = "<font color=cyan>{$level11['name']}</font>"; }
-    elseif($level11['npc'] == 1) { $l11 = "<font color=skyblue>{$level11['name']}</font>"; }
-    else { $l11 = $level11['name']; }
-
-    if($level10['name'] == "") { $l10 = "-"; }
-    elseif($level10['npc'] >= 2) { $l10 = "<font color=cyan>{$level10['name']}</font>"; }
-    elseif($level10['npc'] == 1) { $l10 = "<font color=skyblue>{$level10['name']}</font>"; }
-    else { $l10 = $level10['name']; }
-
-    if($level9['name'] == "") { $l9 = "-"; }
-    elseif($level9['npc'] >= 2) { $l9 = "<font color=cyan>{$level9['name']}</font>"; }
-    elseif($level9['npc'] == 1) { $l9 = "<font color=skyblue>{$level9['name']}</font>"; }
-    else { $l9 = $level9['name']; }
-
-    if($level8['name'] == "") { $l8 = "-"; }
-    elseif($level8['npc'] >= 2) { $l8 = "<font color=cyan>{$level8['name']}</font>"; }
-    elseif($level8['npc'] == 1) { $l8 = "<font color=skyblue>{$level8['name']}</font>"; }
-    else { $l8 = $level8['name']; }
-
-    if($level7['name'] == "") { $l7 = "-"; }
-    elseif($level7['npc'] >= 2) { $l7 = "<font color=cyan>{$level7['name']}</font>"; }
-    elseif($level7['npc'] == 1) { $l7 = "<font color=skyblue>{$level7['name']}</font>"; }
-    else { $l7 = $level7['name']; }
-
-    if($level6['name'] == "") { $l6 = "-"; }
-    elseif($level6['npc'] >= 2) { $l6 = "<font color=cyan>{$level6['name']}</font>"; }
-    elseif($level6['npc'] == 1) { $l6 = "<font color=skyblue>{$level6['name']}</font>"; }
-    else { $l6 = $level6['name']; }
-
-    if($level5['name'] == "") { $l5 = "-"; }
-    elseif($level5['npc'] >= 2) { $l5 = "<font color=cyan>{$level5['name']}</font>"; }
-    elseif($level5['npc'] == 1) { $l5 = "<font color=skyblue>{$level5['name']}</font>"; }
-    else { $l5 = $level5['name']; }
-
-    $generals = $db->query('SELECT no,nation,npc,name,level,penalty,permission FROM general WHERE nation=%i ORDER BY no ASC', $nation['nation']);
+    $chiefs = [];
     $ambassadors = [];
     $auditors = [];
     foreach($generals as $general){
+        $generalLevel = $general['level'];
+        if($generalLevel >= 5){
+            $chiefs[$generalLevel] = $general;
+        }
         $generalPermission = checkSecretPermission($general, false);
         if($generalPermission == 4){
             $ambassadors[] = $general['name'];
@@ -156,28 +95,19 @@ for($i=1; $i <= $count; $i++) {
         <td width=80 align=center id=bg1>국 력</td>
         <td width=170 align=center>{$nation['power']}</td>
         <td width=80 align=center id=bg1>장수 / 속령</td>
-        <td width=170 align=center>".count($generals)." / {$citycount}</td>
-    </tr>
-    <tr>
-        <td align=center id=bg1>".getLevelText(12, $nation['level'])."</td>
-        <td align=center>$l12</td>
-        <td align=center id=bg1>".getLevelText(11, $nation['level'])."</td>
-        <td align=center>$l11</td>
-        <td align=center id=bg1>".getLevelText(10, $nation['level'])."</td>
-        <td align=center>$l10</td>
-        <td align=center id=bg1>".getLevelText( 9, $nation['level'])."</td>
-        <td align=center>$l9</td>
-    </tr>
-    <tr>
-        <td align=center id=bg1>".getLevelText( 8, $nation['level'])."</td>
-        <td align=center>$l8</td>
-        <td align=center id=bg1>".getLevelText( 7, $nation['level'])."</td>
-        <td align=center>$l7</td>
-        <td align=center id=bg1>".getLevelText( 6, $nation['level'])."</td>
-        <td align=center>$l6</td>
-        <td align=center id=bg1>".getLevelText( 5, $nation['level'])."</td>
-        <td align=center>$l5</td>
-    </tr>
+        <td width=170 align=center>".count($generals)." / ".count($nation['cities'])."</td>
+    ";
+    for($chiefLevel = 12; $chiefLevel >= 5; $chiefLevel--){
+        if($chiefLevel % 4 == 0){
+            echo '</tr><tr>';
+        }
+        $chief = $chiefs[$chiefLevel]??['name'=>'-','npc'=>0];
+        $levelText = getLevelText($chiefLevel, $nation['level']);
+        $chiefText = getColoredName($chief['name'], $chief['npc']);
+        echo "<td class='center bg1'>{$levelText}</td>
+        <td class='center'>{$chiefText}</td>";
+    }
+    echo "</tr>
     <tr>
         <td align=center id=bg1>외교권자</td><td colspan=5>";
     echo join(', ', $ambassadors);
@@ -189,20 +119,17 @@ for($i=1; $i <= $count; $i++) {
     if($nation['level'] > 0) {
         echo "속령 일람 : ";
 
-        for($j=0; $j < $citycount; $j++) {
-            $city = MYDB_fetch_array($cityresult);
-            if($city['city'] == $nation['capital']) {
-                echo "<font color=cyan>[{$city['name']}]</font>, ";
+        foreach($nation['cities'] as $cityID => $cityName) {
+            if($cityID == $nation['capital']) {
+                echo "<font color=cyan>[{$cityName}]</font>, ";
             } else {
-                echo "{$city['name']}, ";
+                echo "{$cityName}, ";
             }
         }
     } else {
-        $query = "select name from city where city='{$level12['city']}'";   // 군주 위치 도시 이름
-        $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $city = MYDB_fetch_array($cityResult);
+        $cityName = CityConst::byID($chiefs[12]['city'])->name;
 
-        echo "현재 위치 : <font color=yellow>{$city['name']}</font>";
+        echo "현재 위치 : <font color=yellow>{$cityName}</font>";
     }
     echo"
         </td>
@@ -222,14 +149,6 @@ for($i=1; $i <= $count; $i++) {
 }
 
 //재야
-$query = "select npc,name from general where nation='0'";    // 장수 목록
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($genresult);
-
-$query = "select name from city where nation='0'"; // 도시 이름 목록
-$cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$citycount = MYDB_num_rows($cityresult);
-
 echo "
 <table align=center width=1000 class='tb_layout bg2'>
     <tr>
@@ -238,26 +157,23 @@ echo "
     <tr>
         <td width=498 align=center>&nbsp;</td>
         <td width=123 align=center id=bg1>장 수</td>
-        <td width=123 align=center>{$gencount}</td>
+        <td width=123 align=center>".count($nations[0]['generals'])."</td>
         <td width=123 align=center id=bg1>속 령</td>
-        <td width=123 align=center>{$citycount}</td>
+        <td width=123 align=center>".count($nations[0]['cities'])."</td>
     </tr>
     <tr>
         <td colspan=5> 속령 일람 : ";
-for($j=0; $j < $citycount; $j++) {
-    $city = MYDB_fetch_array($cityresult);
-    echo "{$city['name']}, ";
+foreach($nations[0]['cities'] as $cityName) {
+    echo "{$cityName}, ";
 }
 echo"
         </td>
     </tr>
     <tr>
         <td colspan=5> 장수 일람 : ";
-    for($j=0; $j < $gencount; $j++) {
-        $general = MYDB_fetch_array($genresult);
-        if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}</font>, "; }
-        elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}</font>, "; }
-        else { echo "{$general['name']}, "; }
+    foreach($nations[0]['generals'] as $general) {
+        $generalText = getColoredName($general['name'], $general['npc']);
+        echo "{$generalText}, "; 
     }
     echo"
         </td>

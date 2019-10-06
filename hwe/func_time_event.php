@@ -14,25 +14,25 @@ function processSpring() {
     //인구 증가
     popIncrease();
     // 1월엔 무조건 내정 1% 감소
-    $query = "update city set dead=0,agri=agri*0.99,comm=comm*0.99,secu=secu*0.99,def=def*0.99,wall=wall*0.99";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city',[
+        'dead'=>0,
+        'agri'=>$db->sqleval('agri * 0.99'),
+        'comm'=>$db->sqleval('comm * 0.99'),
+        'secu'=>$db->sqleval('secu * 0.99'),
+        'def'=>$db->sqleval('def * 0.99'),
+        'wall'=>$db->sqleval('wall * 0.99'),
+    ],true);
 
+    // > 10000 유지비 3%, > 1000 유지비 1%
     // 유지비 1%
-    $query = "update general set gold=gold*0.99 where gold>1000 and gold<=10000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 3%
-    $query = "update general set gold=gold*0.97 where gold>10000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'gold'=>$db->sqleval('IF(gold > 10000, gold * 0.97, gold * 0.99)')
+    ], 'gold > 1000');
 
-    // 유지비 1%
-    $query = "update nation set gold=gold*0.99 where gold>1000 and gold<=10000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 3%
-    $query = "update nation set gold=gold*0.97 where gold>10000 and gold<=100000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 5%
-    $query = "update nation set gold=gold*0.95 where gold>100000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    // > 100000 유지비 5%, > 100000 유지비 3%, > 1000 유지비 1%
+    $db->update('nation', [
+        'gold'=>$db->sqleval('IF(gold > 100000, gold * 0.95, IF(gold > 10000, gold * 0.97, gold * 0.99))')
+    ], 'gold > 1000');
 
     $admin = $gameStor->getValues(['year', 'month']);
 

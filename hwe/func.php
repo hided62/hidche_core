@@ -36,6 +36,10 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
     if ($nationID === null) {
        return null;
     }
+    if($nationID === -1 && $nationList !== null){
+        return $nationList;
+    }
+
     if($nationID === 0){
         return [
             'nation'=>0,
@@ -44,14 +48,18 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
             'type'=>GameConst::$neutralNationType,
             'level'=>0,
             'capital'=>0,
-            'gennum'=>1
+            'gennum'=>1,
+            'power'=>1
         ];
     }
 
     if($nationList === null){
-        $nationAll = DB::db()->query("select nation, name, color, type, level, capital, gennum from nation");
+        $nationAll = DB::db()->query("select nation, name, color, type, level, capital, gennum, power from nation");
         $nationList = Util::convertArrayToDict($nationAll, "nation");
-        $nationList[-1] = $nationAll;
+    }
+
+    if($nationID === -1){
+        return $nationList;
     }
 
     if(isset($nationList[$nationID])){

@@ -518,6 +518,7 @@ function postUpdateMonthly() {
     }
     // 작위 업데이트
     updateNationState();
+    refreshNationStaticInfo();
     // 천통여부 검사
     checkEmperior();
     //토너먼트 개시
@@ -942,8 +943,6 @@ function updateNationState() {
                 }
             }
             $db->insertIgnore('nation_turn', $turnRows);
-            
-            refreshNationStaticInfo();
         }
 
         $assemblerCnt = $assemblerCnts[$nation['nation']]??0;
@@ -983,7 +982,6 @@ function updateNationState() {
                 $assemblerCnt += 1;
                 $gameStor->assembler_id = $lastAssemblerID;
             }
-            refreshNationStaticInfo();
         }
             
     }
@@ -1261,37 +1259,13 @@ function checkEmperior() {
     $poprate = round($city['totalpop']/$city['maxpop']*100, 2);
     $poprate .= " %";
 
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='12'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level12 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='11'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level11 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='10'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level10 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='9'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level9 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='8'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level8 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='7'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level7 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='6'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level6 = MYDB_fetch_array($genresult);
-
-    $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='5'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $level5 = MYDB_fetch_array($genresult);
+    $chiefs = Util::convertArrayToDict(
+        $db->query(
+            'SELECT name,picture,belong,level FROM general WHERE nation=%i AND level >= 5',
+            $nation['nation']
+        ),
+        'level'
+    );
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
     $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
@@ -1407,22 +1381,22 @@ function checkEmperior() {
         'poprate'=>$poprate,
         'gold'=>$nation['gold'],
         'rice'=>$nation['rice'],
-        'l12name'=>$level12['name'],
-        'l12pic'=>$level12['picture'],
-        'l11name'=>$level11['name'],
-        'l11pic'=>$level11['picture'],
-        'l10name'=>$level10['name'],
-        'l10pic'=>$level10['picture'],
-        'l9name'=>$level9['name'],
-        'l9pic'=>$level9['picture'],
-        'l8name'=>$level8['name'],
-        'l8pic'=>$level8['picture'],
-        'l7name'=>$level7['name'],
-        'l7pic'=>$level7['picture'],
-        'l6name'=>$level6['name'],
-        'l6pic'=>$level6['picture'],
-        'l5name'=>$level5['name'],
-        'l5pic'=>$level5['picture'],
+        'l12name'=>$chiefs[12]['name'],
+        'l12pic'=>$chiefs[12]['picture'],
+        'l11name'=>$chiefs[11]['name'],
+        'l11pic'=>$chiefs[11]['picture'],
+        'l10name'=>$chiefs[10]['name'],
+        'l10pic'=>$chiefs[10]['picture'],
+        'l9name'=>$chiefs[9]['name'],
+        'l9pic'=>$chiefs[9]['picture'],
+        'l8name'=>$chiefs[8]['name'],
+        'l8pic'=>$chiefs[8]['picture'],
+        'l7name'=>$chiefs[7]['name'],
+        'l7pic'=>$chiefs[7]['picture'],
+        'l6name'=>$chiefs[6]['name'],
+        'l6pic'=>$chiefs[6]['picture'],
+        'l5name'=>$chiefs[5]['name'],
+        'l5pic'=>$chiefs[5]['picture'],
         'tiger'=>$tigerstr,
         'eagle'=>$eaglestr,
         'gen'=>$gen,

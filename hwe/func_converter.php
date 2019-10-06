@@ -638,12 +638,12 @@ function getNameColor(int $npcType):?string{
     return null;
 }
 function getColoredName(string $name, int $npcType):string{
-    $color = nameColor($npcType);
+    $color = getNameColor($npcType);
     if($color === null){
         return $name;
     }
     //TODO: font 폐기.
-    return "<font color='{$color}'>{$name}</font>";
+    return "<span style='color:{$color}'>{$name}</span>";
 }
 
 function ConvertLog(?string $str, $type=1) : string {
