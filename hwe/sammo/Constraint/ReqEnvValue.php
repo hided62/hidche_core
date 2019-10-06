@@ -23,11 +23,11 @@ class ReqEnvValue extends Constraint{
         }
 
         if(count($this->arg) == 4){
-            [$this->key, $this->reqVal, $comp, $this->msg] = $this->arg;
+            [$this->key, $comp, $this->reqVal, $this->msg] = $this->arg;
 
             if(!in_array($comp, ['>', '>=', '==', '<=', '<', '!=', '===', '!=='])){
                 if(!$throwExeception){return false; }
-                throw new \InvalidArgumentException("invalid comparator");
+                throw new \InvalidArgumentException("invalid comparator($comp)");
             }
         }
         else{

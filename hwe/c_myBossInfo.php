@@ -217,7 +217,7 @@ if($btn == "추방") {
         if($admin['year'] < $admin['startyear']+3) {
             //초반엔 군주 부상 증가(엔장 임관지양)
             $db->update('general', [
-                'injury'=>$db->sqleval('injury + 1'),
+                'injury'=>$db->sqleval('least(injury + 1, %i)', 80),
             ], 'no=%i', $ruler['no']);
 
             $db->update('nation', [

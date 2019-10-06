@@ -571,7 +571,7 @@ class Util extends \utilphp\util
      *
      * @param array $items 선택하고자 하는 배열
      *
-     * @return object 선택된 value값.
+     * @return int|float|string|object 선택된 value값.
      */
     public static function choiceRandom(array $items)
     {

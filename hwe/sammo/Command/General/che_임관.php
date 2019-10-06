@@ -160,6 +160,7 @@ class che_임관 extends Command\GeneralCommand{
         $db->update('nation', [
             'gennum'=>$db->sqleval('gennum + 1')
         ], 'nation=%i', $destNationID);
+        \sammo\refreshNationStaticInfo();
 
         $relYear = $env['year'] - $env['startyear'];
         if($general->getVar('npc') == 1 || $relYear >= 3){

@@ -22,7 +22,7 @@ class che_전투치료시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        $this->activateSkill('치료');
+        $self->activateSkill('치료');
 
         
         return true;

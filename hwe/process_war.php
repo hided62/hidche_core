@@ -34,7 +34,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
     $defenderList = [];
-    foreach ($db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,strength,strength2,weapon,injury,leadership,leadership2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,defence_train FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
+    foreach ($db->query('SELECT no,name,nation,turntime,personal,special,special2,crew,crewtype,atmos,train,intel,intel2,book,strength,strength2,weapon,injury,leadership,leadership2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,defence_train FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
         $defenderList[] = new General($rawGeneral, $rawDefenderCity, $year, $month);
     }
 
@@ -142,8 +142,14 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
         $defenderIncTech /= 4;
     }
 
-    $updateAttackerNation['tech'] += $attackerIncTech / max(GameConst::$initialNationGenLimit, $rawAttackerNation['gennum']);
-    $updateDefenderNation['tech'] += $defenderIncTech / max(GameConst::$initialNationGenLimit, $rawDefenderNation['gennum']);
+    $updateAttackerNation['tech'] = $db->sqleval(
+        'tech + %d',
+        $attackerIncTech / max(GameConst::$initialNationGenLimit, $rawAttackerNation['gennum'])
+    );
+    $updateDefenderNation['tech'] = $db->sqleval(
+        'tech + %d',
+        $defenderIncTech / max(GameConst::$initialNationGenLimit, $rawDefenderNation['gennum'])
+    );
 
     $db->update('nation', $updateAttackerNation, 'nation=%i', $attackerNationID);
     $db->update('nation', $updateDefenderNation, 'nation=%i', $defenderNationID);
@@ -702,17 +708,13 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     
     $db->update('city', $query, 'city=%i', (int)$city['city']);
     //전방설정
-    if($renewFront){
-        foreach(getAllNationStaticInfo() as $nation){
-            if($nation['level'] <= 0){
-                continue;
-            }
-            SetNationFront($nation['nation']);
-        }
-    }
-    else{
-        SetNationFront($destnation['nation']);
-        SetNationFront($conquerNation);
+
+    $nearNationsID = $db->queryFirstColumn(
+        'SELECT distinct(nation) FROM city WHERE nation != 0 AND city IN %li',
+        array_merge(array_keys(CityConst::byID($city['city'])->path), [$city['city']])
+    );
+    foreach($nearNationsID as $nationNationID){
+        SetNationFront($nationNationID);
     }
 
     pushGenLog($general, $log);

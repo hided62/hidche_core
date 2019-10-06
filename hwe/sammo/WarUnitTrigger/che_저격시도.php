@@ -6,6 +6,7 @@ use sammo\WarUnitCity;
 use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
+use sammo\Util;
 
 class che_저격시도 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
@@ -37,7 +38,7 @@ class che_저격시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        $this->activateSkill('저격');
+        $self->activateSkill('저격');
         $selfEnv['woundMin'] = $this->woundMin;
         $selfEnv['woundMax'] = $this->woundMax;
 

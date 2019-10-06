@@ -127,13 +127,20 @@ class GeneralAI{
         $this->attackable = ($frontStatus !== null)?$frontStatus:false;
 
         $warTarget = $db->queryAllLists(
-            'SELECT you, state FROM diplomacy WHERE me = %i AND (state = 1 OR (state = 0 AND term < 5))',
+            'SELECT you, state FROM diplomacy WHERE me = %i AND (state = 0 OR (state = 1 AND term < 5))',
             $nationID
         );
 
+        $onWar = false;
         $warTargetNation = [];
         foreach($warTarget as [$warNationID, $warState]){
-            $warTargetNation[$warNationID] = $warState==0?2:1;
+            if($warState == 0){
+                $onWar = true;
+                $warTargetNation[$warNationID] = 2;
+            }
+            else{
+                $warTargetNation[$warNationID] = 1;
+            }
         }
         $warTargetNation[0] = 0;
         $this->warTargetNation = $warTargetNation;
@@ -153,19 +160,13 @@ class GeneralAI{
             $this->dipState = self::d직전;
         }
 
-        if(
-            in_array($this->dipState, [self::d평화, self::d선포]) ||
-            $env['year'] >= $env['startyear'] + 3 ||
-            ($env['year'] && $env['startyear'] + 2 && $env['month'] > 5)
-        ){
-            $this->dipState = self::d징병;
-        }
-
         if($this->attackable){
             //전쟁으로 인한 attackable인가?
-            $onWar = $db->queryFirstField('SELECT you FROM diplomacy WHERE me = %i AND state=0 LIMIT 1', $nationID) !== null;
             if($onWar){
                 $this->dipState = self::d전쟁;
+            }
+            else{
+                $this->dipState = self::d징병;
             }
         }
     }
@@ -194,8 +195,8 @@ class GeneralAI{
         ];
 
         // 우선 선정
-        if($develRate['trust'] < 0.95 && Util::randBool($leadership / 40)){
-            return ['che_선정', null];
+        if($develRate['trust'] < 1 && Util::randBool($leadership / 60)){
+            return ['che_주민선정', null];
         }
 
         $commandList = [];
@@ -248,7 +249,14 @@ class GeneralAI{
             if(!TechLimit($env['startyear'], $env['year'], $nation['tech'])){
                 $commandObj = buildGeneralCommandClass('che_기술연구', $general, $env);
                 if($commandObj->isRunnable()){
-                    $commandList['che_기술연구'] = $intel / 4;
+                    if(!TechLimit($env['startyear'], $env['year'], $nation['tech']+1000)){
+                        //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
+                        $commandList['che_기술연구'] = $intel;
+                    }
+                    else{
+                        $commandList['che_기술연구'] = $intel / 4;
+                    }
+                    
                 }
             }
         }
@@ -256,7 +264,7 @@ class GeneralAI{
             if($develRate['trust'] < 1){
                 $commandObj = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($commandObj->isRunnable()){
-                    $commandList['che_주민선정'] = $leadership / 2;
+                    $commandList['che_주민선정'] = power($leadership * 2, 1 / ($develRate['trust'] + 0.001));
                 }
             }
             if($develRate['pop'] < 0.99){
@@ -283,7 +291,7 @@ class GeneralAI{
         $commandList['che_물자조달'] = (
             (GameConst::$minNationalGold + GameConst::$minNationalRice + 24*5*$env['develcost']) / 
             Util::valueFit($nation['gold'] + $nation['rice'], (GameConst::$defaultGold + GameConst::$defaultRice)/2)
-        ) * 10;
+        );
 
         return [Util::choiceRandomUsingWeight($commandList), null];
     }
@@ -507,6 +515,8 @@ class GeneralAI{
         }
 
         if($generalObj->getVar('level') == 12 && $this->dipState == self::d평화 && !$this->attackable){
+            
+
             $targetNationID = $this->findWarTarget();
             if($targetNationID !== null){
                 return ['che_선전포고', ['destNationID'=>$targetNationID]];
@@ -1357,7 +1367,7 @@ class GeneralAI{
         $db = DB::db();
 
         $general = $this->getGeneralObj();
-        if(!$this->attackable && in_array($this->dipState, [self::d평화, self::d선포])){
+        if(!$this->attackable && $this->dipState == self::d평화){
             if($this->dipState == self::d평화 && $general->getVar('crew')>=1000 && Util::randBool(0.25)){
                 return ['che_소집해제', null];
             }
@@ -1516,7 +1526,7 @@ class GeneralAI{
         $db = DB::db();
 
         if($city['front'] <= 1){
-            throw new \RuntimeException('출병 불가');
+            throw new \RuntimeException('출병 불가'.$cityID);
         }
 
         $attackableNations = [];
@@ -1533,6 +1543,10 @@ class GeneralAI{
             $attackableNations,
             $nearCities
         );
+
+        if(count($attackableCities) == 0){
+            throw new \RuntimeException('출병 불가'.$cityID.var_export($attackableNations, true).var_export($nearCities, true));
+        }
 
         return ['che_출병', ['destCityID'=>Util::choiceRandom($attackableCities)]];
     }
@@ -1656,7 +1670,7 @@ class GeneralAI{
         $nationID = $this->nation['nation'];
 
         $this->devRate = $db->queryFirstRow(
-            'SELECT sum(pop)/sum(pop2)*100 as pop_p,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as all_p from city where nation=%i',
+            'SELECT sum(pop)/sum(pop2) as pop_p,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2)) as all_p from city where nation=%i',
             $nationID
         );
         return $this->devRate;
@@ -1676,7 +1690,7 @@ class GeneralAI{
         }
 
         $devRate = $this->getNationDevelopedRate();
-        if(($devRate['pop_p'] + $devRate['all_p']) / 2 < 80){
+        if(($devRate['pop_p'] + $devRate['all_p']) / 2 < 0.8){
             return null;
         }
 
@@ -1829,9 +1843,9 @@ class GeneralAI{
 
             $avg = ($devRate['pop_p'] + $devRate['all_p']) / 2;
 
-            if($avg > 95) $rate = 25;
-            elseif($avg > 70) $rate = 20;
-            elseif($avg > 50) $rate = 15;
+            if($avg > 0.95) $rate = 25;
+            elseif($avg > 0.70) $rate = 20;
+            elseif($avg > 0.50) $rate = 15;
             else $rate = 10;
 
             $db->update('nation', [

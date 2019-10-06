@@ -34,7 +34,7 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
 
-        $this->setNation(['gennum']);
+        $this->setNation(['gennum', 'scout']);
         $env = $this->env;
         
         [$reqGold, $reqRice] = $this->getCost();

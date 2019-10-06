@@ -8,13 +8,16 @@ use \sammo\{
     GameConst,
     LastTurn,
     GameUnitConst,
-    Command
+    Command,
+    MessageTarget,
+    Message
 };
 
 use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
-    CriticalScoreEx
+    CriticalScoreEx,
+    GetImageURL
 };
 
 use \sammo\Constraint\Constraint;
@@ -70,7 +73,7 @@ class che_몰수 extends Command\NationCommand{
         $this->setCity();
         $this->setNation(['gold', 'rice']);
 
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'npc', 'nation'], 1);
         $this->setDestGeneral($destGeneral);
 
         $relYear = $env['year'] - $env['startyear'];
@@ -118,7 +121,7 @@ class che_몰수 extends Command\NationCommand{
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, ($general->getVar[$resKey]- $isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice));
+        $amount = Util::valueFit($amount, 0, ($general->getVar($resKey)- $isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice));
         $amountText = number_format($amount, 0);
 
         if($destGeneral->getVar('npc') >= 2 && Util::randBool(0.01)){

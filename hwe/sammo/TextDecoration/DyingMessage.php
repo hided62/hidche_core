@@ -97,7 +97,7 @@ class DyingMessage{
         $this->general = $general;
         $this->name = $general->getName();
         $this->npc = $general->getVar('npc');
-        if($general['owner'] > 0 && $general->getVar('startage') - $general->getVar('age') > 1){
+        if($general->getVar('owner') > 0 && $general->getVar('startage') - $general->getVar('age') > 1){
             $this->realName = $general->getVar('name2');
         }
     }

@@ -348,19 +348,7 @@ function preUpdateMonthly() {
 
     //첩보-1
     foreach($db->queryAllLists("SELECT nation, spy FROM nation WHERE spy!='' AND spy!='{}'") as [$nationNo, $rawSpy]){
-        if (strpos($rawSpy, '|') !== false || is_numeric($rawSpy)) {
-           //TODO: 0.8 버전 이후에는 삭제할 것. 이후 버전은 json으로 변경됨.
-           $spyInfo = [];
-           foreach(explode('|', $rawSpy) as $value){
-               $value = intval($value);
-               $cityNo = intdiv($value, 10);
-               $remainMonth = $value % 10;
-               $spyInfo[$cityNo] = $remainMonth;
-           }
-        }
-        else{
-            $spyInfo = Json::decode($rawSpy);
-        }
+        $spyInfo = Json::decode($rawSpy);
 
         foreach($spyInfo as $cityNo => $remainMonth){
             if($remainMonth <= 1){

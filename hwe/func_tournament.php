@@ -854,8 +854,8 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
 
     foreach([$gen1, $gen2] as $gen){
         $horse = buildItemClass($gen['h']);
-        $weapon = buildItemCalss($gen['w']);
-        $book = buildItemCalss($gen['b']);
+        $weapon = buildItemClass($gen['w']);
+        $book = buildItemClass($gen['b']);
 
         //아이템 로그
         if(!$horse->isBuyable() && ($tnmt_type == 0 || $tnmt_type == 1)) {

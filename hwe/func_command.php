@@ -159,9 +159,9 @@ function checkCommandArg(?array $arg):?string{
         return null;
     }
     $defaultCheck = [
-        'string'=>[
+        /*'string'=>[
             'nationName', 'optionText', 'itemType', 'nationType'
-        ],
+        ],*/
         'integer'=>[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
             'amount', 'colorType', 'itemCode'

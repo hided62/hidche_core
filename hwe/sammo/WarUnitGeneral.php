@@ -52,7 +52,7 @@ class WarUnitGeneral extends WarUnit{
             $general->updateVar('recwar', $general->getTurnTime());
         }
         else if($oppose !== null){
-            $general->updateVar('recwar', $oppose->getTurnTime());
+            $general->updateVar('recwar', $oppose->getGeneral()->getTurnTime());
         }
     }
 

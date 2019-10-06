@@ -238,7 +238,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                     $general->getVar('level')
                 )??[];
                 $hasNationTurn = true;
-                $nationCommand = $rawNationTurn['action'];
+                $nationCommand = $rawNationTurn['action']??null;
                 $nationArg = Json::decode($rawNationTurn['arg']??null);
             }
 
@@ -410,13 +410,6 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $gameStor->turntime = $currentTurn;
         }
         
-
-        // 부상 과도 제한
-        //TODO: 없애고, 부상 자체가 80 이상 넘지 않도록 처리
-        $db->update('general', [
-            'injury'=>80
-        ], 'injury>%i', 80);
-
         //토너먼트 처리
         processTournament();
         //거래 처리

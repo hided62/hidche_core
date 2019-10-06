@@ -32,7 +32,7 @@ class che_위압시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        $this->activateSkill('위압');
+        $self->activateSkill('위압');
         return true;
     }
 }

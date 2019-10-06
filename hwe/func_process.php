@@ -1,8 +1,6 @@
 <?php
 namespace sammo;
 
-use Constraint\Constraint;
-
 /**
  * 내정 커맨드 사용시 성공 확률 계산
  * 

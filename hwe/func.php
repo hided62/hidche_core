@@ -43,12 +43,13 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
             'color'=>'#000000',
             'type'=>GameConst::$neutralNationType,
             'level'=>0,
-            'capital'=>0
+            'capital'=>0,
+            'gennum'=>1
         ];
     }
 
     if($nationList === null){
-        $nationAll = DB::db()->query("select nation, name, color, type, level, capital from nation");
+        $nationAll = DB::db()->query("select nation, name, color, type, level, capital, gennum from nation");
         $nationList = Util::convertArrayToDict($nationAll, "nation");
         $nationList[-1] = $nationAll;
     }

@@ -112,6 +112,7 @@ class che_하야 extends Command\GeneralCommand{
             'rice'=>$db->sqleval('rice + %i', $lostRice),
             'gennum'=>$db->sqleval('gennum - 1')
         ], 'nation=%i', $nationID);
+        \sammo\refreshNationStaticInfo();
 
         $general->setVar('nation', 0);
         $general->setVar('level', 0);

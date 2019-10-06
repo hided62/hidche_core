@@ -71,7 +71,7 @@ class che_귀환 extends Command\GeneralCommand{
 
         $generalLevel = $general->getVar('level');
         $target = null;
-        if(2 <= $generalLevel && 4 <= $generalLevel){
+        if(2 <= $generalLevel && $generalLevel <= 4){
             $target = $db->queryFirstList(
                 'SELECT city, name FROM city WHERE %b=%i AND nation = %i',
                 'officer'.$general->getVar('level'), $generalID, $general->getNationID()

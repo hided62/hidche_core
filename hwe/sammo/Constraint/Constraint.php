@@ -26,6 +26,8 @@ abstract class Constraint{
     protected $nation = null;
     protected $arg = null;
 
+    protected $env = null;
+
     protected $cmd_arg = null;
 
     protected $destGeneral = null;
@@ -59,6 +61,11 @@ abstract class Constraint{
     }
     public function setArg($arg){
         $this->arg = $arg;
+        $this->tested = false;
+        $this->reason = null;
+    }
+    public function setEnv($env){
+        $this->env = $env;
         $this->tested = false;
         $this->reason = null;
     }
@@ -182,7 +189,7 @@ abstract class Constraint{
         return $this->reason;
     }
 
-    public static function testAll(array $constraintPacks, array $input):?string{
+    public static function testAll(array $constraintPacks, array $input, array $env):?string{
         foreach($constraintPacks as $constraintArgs){
             if (!$constraintArgs){
                 continue;
@@ -194,7 +201,7 @@ abstract class Constraint{
             $constraint = call_user_func($method,$input);
 
             assert($constraint instanceof Constraint);
-            
+            $constraint->setEnv($env);
             if(count($constraintArgs) == 2){
                 $arg = $constraintArgs[1];
                 $constraint->setArg($arg);

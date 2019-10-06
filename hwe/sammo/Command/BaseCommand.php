@@ -252,7 +252,7 @@ abstract class BaseCommand{
             'destNation'=>$this->destNation,
         ];
 
-        $this->reasonNotReservable = Constraint::testAll($this->reservableConstraints??[], $constraintInput);
+        $this->reasonNotReservable = Constraint::testAll($this->reservableConstraints??[], $constraintInput, $this->env);
         $this->reservable = $this->reasonNotReservable === null;
         return $this->reasonNotReservable;
     }
@@ -288,7 +288,7 @@ abstract class BaseCommand{
             'destNation'=>$this->destNation,
         ];
 
-        $this->reasonNotRunnable = Constraint::testAll($this->runnableConstraints??[], $constraintInput);
+        $this->reasonNotRunnable = Constraint::testAll($this->runnableConstraints??[], $constraintInput, $this->env);
         $this->runnable = $this->reasonNotRunnable === null;
         return $this->reasonNotRunnable;
         
