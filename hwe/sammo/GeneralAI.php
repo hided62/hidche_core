@@ -1791,13 +1791,13 @@ class GeneralAI{
             $iterCandChiefStrength = new \ArrayIterator($candChiefStrength);
             $iterCandChiefIntel = new \ArrayIterator($candChiefIntel);
 
-            foreach(range(10, $minChiefLevel, -1) as $cheifLevel){
-                if(key_exists($cheifLevel, $chiefCandidate)){
+            foreach(range(10, $minChiefLevel, -1) as $chiefLevel){
+                if(key_exists($chiefLevel, $chiefCandidate)){
                     continue;
                 }
 
                 /** @var \ArrayIterator $iterCurrentType */
-                $iterCurrentType = ($cheifLevel % 2 == 0)?$iterCandChiefStrength:$iterCandChiefIntel;
+                $iterCurrentType = ($chiefLevel % 2 == 0)?$iterCandChiefStrength:$iterCandChiefIntel;
                 $candidate = $iterCurrentType->current();
 
                 while(key_exists($candidate, $promoted)){
@@ -1809,15 +1809,15 @@ class GeneralAI{
                 }
 
                 if($candidate){
-                    $chiefCandidate[$cheifLevel] = $candidate;
-                    $promoted[$candidate] = $cheifLevel;
+                    $chiefCandidate[$chiefLevel] = $candidate;
+                    $promoted[$candidate] = $chiefLevel;
                 }
                 
             }
 
             foreach($chiefCandidate as $chiefLevel=>$chiefID){
                 $db->update('general', [
-                    'level'=>$cheifLevel
+                    'level'=>$chiefLevel
                 ], 'no=%i',$chiefID);
             }
         }
