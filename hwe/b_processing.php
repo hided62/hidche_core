@@ -5,41 +5,72 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 
-$commandType = Util::getReq('commandtype', 'string');
-$turnList = Util::getReq('turn', 'array_int');
+$commandType = Util::getReq('command', 'string');
+$turnList = array_map('intval', explode('_', Util::getReq('turnList', 'string', '0')));
+$isChiefTurn = Util::getReq('is_chief', 'bool', false);
 
-if(!$turn || $commandtype === null){
-    header('location:index.php', true, 303);
+function die_redirect(){
+    global $isChiefTurn;
+    if(!$isChiefTurn){
+        header('location:index.php', true, 303);
+    }
+    else{
+        header('location:b_chiefcenter.php', true, 303);
+    }
     die();
+}
+
+if(!$turnList || !$commandType){
+    die_redirect();
+}
+if(!is_array($turnList)){
+    die_redirect();
 }
 
 $session = Session::requireGameLogin()->setReadOnly();
 
 $db = DB::db();
 
+if(!$isChiefTurn && !in_array($commandType, Util::array_flatten(GameConst::$availableGeneralCommand))){
+    die_redirect();
+}
+
+if($isChiefTurn && !in_array($commandType, Util::array_flatten(GameConst::$availableChiefCommand))){
+    die_redirect();
+}
+
 $gameStor = KVStorage::getStorage($db, 'game_env')->turnOnCache();
 $env = $gameStor->getValues(['init_year','init_month','startyear','year','month','show_img_level','join_mode','maxnation']);
 $general = General::createGeneralObjFromDB($session->generalID);
-$commandObj = buildGeneralCommandClass($commandType, $general, $env);
 
-if($general->getVar('level') < 5 && ($commandObj instanceof Command\NationCommand)){
-    header('location:index.php', true, 303);
-    die();
+if(!$isChiefTurn){
+    $commandObj = buildGeneralCommandClass($commandType, $general, $env);
 }
+else{
+    if($general->getVar('level') < 5){
+        die_redirect();
+    }
+    $commandObj = buildNationCommandClass($commandType, $general, $env, new LastTurn());
+}
+
 
 if($commandObj->isArgValid()){
     //인자가 필요없는 타입의 경우 processing에서 '전혀' 처리하지 않음!
-    header('location:index.php', true, 303);
-    die();
+    die_redirect();
 }
 
-[$jsList, $cssList] = $commandObj->getResourceFiles();
+if(!$commandObj->isReservable()){
+    die_redirect();
+}
+
+$jsList = $commandObj->getJSFiles();
+$cssList = $commandObj->getCSSFiles();
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<title><?=$name?></title>
+<title><?=$commandObj->getName()?></title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
@@ -49,9 +80,13 @@ if($commandObj->isArgValid()){
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
+<?=WebUtil::printJS('js/processing.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';
+window.command = '<?=$commandType?>';
+window.turnList = [<?=join(', ',$turnList)?>];
+window.isChiefTurn = <?=$isChiefTurn?'true':'false'?>;
 </script>
 <?php
 foreach($jsList as $js){
@@ -76,19 +111,14 @@ foreach($cssList as $css){
     <input type=button value='돌아가기' onclick="history.back();"><br>
 </td></tr></table>
 
-<div class="tb_layout bg0" style="width:100px;margin:auto;">
-<form method='post' id='submitForm'>
-<input type='hidden' name='command' value='<?=$commandType?>'>
-<?php foreach($turnList as $turnIdx): ?>
-    <input type=hidden name='turn[]' value=<?=$turnIdx?>>
-<?php endforeach; ?>
+<div class="tb_layout bg0" style="width:1000px;margin:auto;padding-bottom:2em;border:solid 1px gray;">
 <?=$commandObj->getForm()?>
-</form>
 </div>
 
 <table class="tb_layout bg0" style="width:1000px;margin:auto;">
     <tr><td>
     <input type=button value='돌아가기' onclick="history.back();"><br>
+    <?=banner()?>
 </td></tr></table>
 
 

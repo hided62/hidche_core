@@ -206,10 +206,11 @@ function checkCommandArg(?array $arg):?string{
     return null;
 }
 
-function setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null):array{
-    $turnList = array_unique($turnList);
-    foreach($turnList as $turnIdx){
-        if(!is_int($turnIdx) || $turnIdx < 0 || $turnIdx >= GameConst::$maxTurn){
+function setGeneralCommand(int $generalID, array $rawTurnList, string $command, ?array $arg = null):array{
+    
+    $turnList = [];
+    foreach($rawTurnList as $turnIdx){
+        if(!is_int($turnIdx) || $turnIdx < -3 || $turnIdx >= GameConst::$maxTurn){
             return [
                 'result'=>false,
                 'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx,
@@ -217,7 +218,29 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
                 'target'=>$turnIdx,
             ];
         }
+        if($turnIdx >= 0){
+            $turnList[$turnIdx] = true;
+        }
+        else if($turnIdx == -1){
+            //홀수
+            for ($subIdx = 1; $subIdx < GameConst::$maxTurn; $subIdx+=2) {
+               $turnList[$subIdx] = true;
+            }
+        }
+        else if($turnIdx == -2){
+            //짝수
+            for ($subIdx = 0; $subIdx < GameConst::$maxTurn; $subIdx+=2) {
+                $turnList[$subIdx] = true;
+            }
+        }
+        else if($turnIdx == -3){
+            //모두
+            for ($subIdx = 0; $subIdx < GameConst::$maxTurn; $subIdx++) {
+                $turnList[$subIdx] = true;
+            }
+        }
     }
+    $turnList = array_keys($turnList);
 
     $argBasicTestResult = checkCommandArg($arg);
     if($argBasicTestResult !== null){

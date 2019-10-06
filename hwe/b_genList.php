@@ -158,15 +158,7 @@ foreach ($generals as &$general) {
 
     $general['expLevelText'] = getExpLevel($general['experience']);
 
-    if ($general['npc'] >= 2) {
-        $name = "<font color=cyan>{$general['name']}</font>";
-    } elseif ($general['npc'] == 1) {
-        $name = "<font color=skyblue>{$general['name']}</font>";
-    } else {
-        $name =  $general['name'];
-    }
-    //TODO: npc 코드를 일원화
-    $general['nameText'] = $name;
+    $general['nameText'] = getColoredName($general['name'], $general['npc']);
 
     $general['modeText'] = formatDefenceTrain($general['defence_train']);
     $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name??'-';

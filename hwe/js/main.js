@@ -105,13 +105,17 @@ function reserveTurn(turnList, command){
 $('#reserveTurn').click(function(){
     var turnList = $('#generalTurnSelector').val().map(function(v){return parseInt(v);});
     var $command = $('#generalCommandList option:selected');
-    /*if($command.data('reqarg')){
-        alert('TODO!');
+    if($command.data('reqarg')){
+        $.redirect(
+            "b_processing.php", {
+                command: $command.val(),
+                turnList: turnList.join('_')
+        }, "GET"); 
     }
-    else*/{
+    else{
         reserveTurn(turnList, $command.val());
     }
-    
+    return false;
 })
 
 

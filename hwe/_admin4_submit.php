@@ -63,7 +63,6 @@ switch($btn) {
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "메세지 전달":
-    //TODO:새 갠메 시스템으로 변경
         $date = TimeUtil::now();
         $src = MessageTarget::buildQuick($session->generalID);
         for($i=0; $i < count($genlist); $i++) {

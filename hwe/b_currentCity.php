@@ -133,13 +133,6 @@ if($myNation['level'] > 0) {
     if($rawSpy == ''){
         $spyCities = [];
     }
-    else if(strpos($rawSpy, '|') !== false || is_numeric($rawSpy)){
-        //TODO: 0.8 버전 이후에는 삭제할 것. 이후 버전은 json으로 변경됨.
-        $spyCities = array_map(function($val){
-            $val = intval($val);
-            return intdiv($val, 10);
-        }, explode('|', $myNation['spy']));
-    }
     else{
         $spyCities = array_keys(Json::decode($rawSpy));
     }
