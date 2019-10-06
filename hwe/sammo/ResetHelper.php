@@ -278,6 +278,7 @@ class ResetHelper{
                     'turn_idx'=>$turnIdx,
                     'action'=>'휴식',
                     'arg'=>null,
+                    'brief'=>'휴식'
                 ];
             }
             $db->insert('general_turn', $turnRows);

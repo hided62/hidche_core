@@ -1177,7 +1177,8 @@ class GeneralAI{
                 //NOTE: 부대 편성에 보여야 하므로 이것만 DB에 직접 접근함.
                 $db->update('general_turn', [
                     'action'=>'che_집합',
-                    'arg'=>'{}'
+                    'arg'=>'{}',
+                    'brief'=>'집합'
                 ], 'general_ID=%i AND turn_idx < 6', $general->getID());
             }
     
@@ -1402,6 +1403,7 @@ class GeneralAI{
 
             $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leadership) FROM general WHERE nation = %i AND city = %i AND leadership > 40', $nationID, $cityID);
             if(
+                $sumLeadershipInCity > 0 &&
                 $city['pop'] > 30000 + $general->getLeadership(false) * 100 * 1.3 &&
                 Util::randBool(($city['pop'] - 30000) / $sumLeadershipInCity * 100)
             ){

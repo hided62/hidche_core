@@ -58,7 +58,8 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         $db->update('general_turn', [
             'action'=>'휴식',
-            'arg'=>'{}'
+            'arg'=>'{}',
+            'brief'=>'휴식'
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "메세지 전달":

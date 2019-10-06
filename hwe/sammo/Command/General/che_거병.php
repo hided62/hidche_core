@@ -139,6 +139,7 @@ class che_거병 extends Command\GeneralCommand{
                     'turn_idx'=>$turnIdx,
                     'action'=>'휴식',
                     'arg'=>null,
+                    'brief'=>'휴식',
                 ];
             }
             

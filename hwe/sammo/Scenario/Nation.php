@@ -158,6 +158,7 @@ class Nation{
                     'turn_idx'=>$turnIdx,
                     'action'=>'휴식',
                     'arg'=>'{}',
+                    'brief'=>'휴식',
                 ];
             }
         }

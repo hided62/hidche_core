@@ -111,14 +111,14 @@ $generals = $db->query(
 $generalTurnList = [];
 
 foreach($db->queryAllLists(
-    'SELECT general_id, turn_idx, action, arg FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+    'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
     array_column($generals, 'no')
-    ) as [$generalID, $turnIdx, $action, $arg]
+    ) as [$generalID, $turnIdx, $brief]
 ){
     if(!key_exists($generalID, $generalTurnList)){
         $generalTurnList[$generalID] = [];
     }
-    $generalTurnList[$generalID][$turnIdx] = [$action, Json::decode($arg)];
+    $generalTurnList[$generalID][$turnIdx] = $brief;
 }
 
 $genCntEff = 0;
@@ -173,11 +173,7 @@ foreach ($generals as &$general) {
 
     
     if ($general['npc'] < 2) {
-        $generalObj = new General($general, null, null, null, false);
-        $turnBrief = getGeneralTurnBrief($genralObj, $generalTurnList[$generalObj->getID()]);
-        $turntext = [];
-
-        foreach($turnBrief as $turnRawIdx=>$turn){
+        foreach($generalTurnList[$generalObj->getID()] as $turnRawIdx=>$turn){
             $turn = StringUtil::subStringForWidth($turn, 0, 41);
             $turnIdx = $turnRawIdx+1;
             $turntext[] = "&nbsp;$turnIdx : $turn";

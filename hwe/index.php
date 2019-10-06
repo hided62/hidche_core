@@ -241,12 +241,25 @@ else if($session->userGrade == 4){
         <td style='width:700px;height:520px;' colspan=2>
             <?=getMapHtml($mapTheme)?>
         </td>
-        <td style='width:300px;overflow-y:scroll' rowspan=4>
-            <div id="reservedCommandList">
-                <div id="reservedCommandHeader">
-                </div>
-                <ul id="reservedCommandList">
-                </ul>
+        <td style='width:300px;vertical-align:top;' rowspan=4>
+            <div id="reservedCommandList" style='overflow-y:scroll;height:700px;'>
+                <table width="300" class="tb_layout b2">
+                    <thead>
+                        <tr height="24"><td colspan="4" class="center bg0"
+                            ><strong>- 명령 목록 - </strong><input value="<?=TimeUtil::now(false)?>" type="text" id="clock" size="19" style="background-color:black;color:white;border-style:none;"
+                        ></td></tr>
+                    </thead>
+                    <tbody class="center" style="font-weight:bold">
+<?php for($turnIdx = 0; $turnIdx < GameConst::$maxTurn; $turnIdx++): ?>
+                        <tr height='28' id="command_<?=$turnIdx?>"
+                            ><td width="24" class='idx_pad center bg0'><?=$turnIdx+1?></td
+                            ><td height='24' class='month_pad center bg1' style='min-width:70px;white-space:nowrap;overflow:hidden;'></td
+                            ><td width='42' class='time_pad center' style='background-color:black;white-space:nowrap;overflow:hidden;'></td
+                            ><td width='165' class='turn_pad center bg2' style='white-space:nowrap;overflow:hidden;font-weight:lighter'></td
+                        ></tr>
+<?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
         </td>
     </tr>

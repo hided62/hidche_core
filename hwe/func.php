@@ -569,10 +569,10 @@ function generalInfo(General $generalObj) {
     }
     else{
         $troopCity = $db->queryFirstField('SELECT city FROM general WHERE no=%i', $generalObj->getVar('troop'));
-        $troopTurn = $db->queryFirstField('SELECT `action` FROM general_turn WHERE general_id = %i AND turn_idx = 0', $generalObj->getVar('troop'));
+        $troopTurn = $db->queryFirstField('SELECT `brief` FROM general_turn WHERE general_id = %i AND turn_idx = 0', $generalObj->getVar('troop'));
         $troopInfo = $db->queryFirstField('SELECT name FROM troop WHERE troop_leader = %i', $generalObj->getVar('troop'));
     
-        if($troopTurn == 'che_집합'){
+        if($troopTurn == '집합'){
             $troopInfo = "<strike style='color:gray;'>{$troopInfo}</strike>";
         }
         else if($troopCity != $generalObj->getCityID()){

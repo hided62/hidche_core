@@ -43,7 +43,8 @@ function pushGeneralCommand(int $generalID, int $turnCnt=1){
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxTurn),
         'action'=>'휴식',
-        'arg'=>'{}'
+        'arg'=>'{}',
+        'brief'=>'휴식'
     ], 'general_id=%i AND turn_idx >= %i ORDER BY turn_idx ASC', $generalID, GameConst::$maxTurn);
 }
 
@@ -63,7 +64,8 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxTurn),
         'action'=>'휴식',
-        'arg'=>'{}'
+        'arg'=>'{}',
+        'brief'=>'휴식'
     ], 'general_id=%i AND turn_idx < %i', $generalID, $turnCnt);
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
@@ -95,7 +97,8 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
     $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',
-        'arg'=>'{}'
+        'arg'=>'{}',
+        'brief'=>'휴식'
     ], 'nation_id=%i AND level=%i AND turn_idx >= %i ORDER BY turn_idx ASC', $nationID, $level, GameConst::$maxChiefTurn);
 }
 
@@ -121,14 +124,15 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',
-        'arg'=>'{}'
+        'arg'=>'{}',
+        'brief'=>'휴식',
     ], 'nation_id=%i AND level=%i AND turn_idx < %i', $nationID, $level, $turnCnt);
     $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
     ], 'nation_id=%i AND level=%i ORDER BY turn_idx ASC', $nationID, $level);
 }
 
-function _setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null) {
+function _setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg, string $brief) {
     if(!$turnList){
         return;
     }
@@ -137,11 +141,12 @@ function _setGeneralCommand(int $generalID, array $turnList, string $command, ?a
 
     $db->update('general_turn', [
         'action'=>$command,
-        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT)
+        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT),
+        'brief'=>$brief
     ], 'general_id = %i AND turn_idx IN %li', $generalID, $turnList);
 }
 
-function _setNationCommand(int $nationID, int $level, array $turnList, string $command, ?array $arg = null) {
+function _setNationCommand(int $nationID, int $level, array $turnList, string $command, ?array $arg, string $brief) {
     if(!$turnList){
         return;
     }
@@ -150,7 +155,8 @@ function _setNationCommand(int $nationID, int $level, array $turnList, string $c
 
     $db->update('nation_turn', [
         'action'=>$command,
-        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT)
+        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT),
+        'brief'=>$brief
     ], 'nation_id = %i AND level = %i AND turn_idx IN %li', $nationID, $level, $turnList);
 }
 
@@ -252,7 +258,9 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
         ];
     }
 
-    _setGeneralCommand($generalID, $turnList, $command, $arg);
+    $brief = $commandObj->getBrief();
+
+    _setGeneralCommand($generalID, $turnList, $command, $arg, $brief);
     return [
         'result'=>true,
         'arg_test'=>true,

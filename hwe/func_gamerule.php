@@ -697,7 +697,8 @@ function checkMerge() {
         if($npcList){
             $db->update('general_turn', [
                 'action'=>'che_하야',
-                'arg'=>null
+                'arg'=>null,
+                'brief'=>'하야',
             ], 'general_id IN %li AND turn_idx = 0');
         }
         
@@ -854,7 +855,8 @@ function checkSurrender() {
         if($npcList){
             $db->update('general_turn', [
                 'action'=>'che_하야',
-                'arg'=>null
+                'arg'=>null,
+                'brief'=>'하야',
             ], 'general_id IN %li AND turn_idx = 0');
         }
 
@@ -939,6 +941,7 @@ function updateNationState() {
                         'turn_idx'=>$turnIdx,
                         'action'=>'휴식',
                         'arg'=>null,
+                        'brief'=>'휴식'
                     ];
                 }
             }

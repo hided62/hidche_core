@@ -144,6 +144,7 @@ CREATE TABLE `general_turn` (
 	`turn_idx` INT(4) NOT NULL,
 	`action` VARCHAR(16) NOT NULL,
 	`arg` TEXT NULL DEFAULT NULL,
+	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`),
 	INDEX `action` (`action`, `turn_idx`, `general_id`)
@@ -204,6 +205,7 @@ CREATE TABLE `nation_turn` (
 	`turn_idx` INT(4) NOT NULL,
 	`action` VARCHAR(16) NOT NULL,
 	`arg` TEXT NULL DEFAULT NULL,
+	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `nation` (`nation_id`, `level`, `turn_idx`),
 	INDEX `action` (`action`, `turn_idx`, `nation_id`, `level`)

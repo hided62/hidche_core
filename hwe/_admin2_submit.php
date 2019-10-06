@@ -29,6 +29,14 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $src = MessageTarget::buildQuick($session->generalID);
 
+$genObjList = [];
+$env = [];
+if($genlist){
+    foreach($genlist as $genID){
+        $genObjList[$genID] = General::createGeneralObjFromDB($genID);
+    }
+    $env = $gameStor->cacheAll();
+}
 switch($btn) {
     case "전체 접속허용":
         $db->update('general', [
@@ -99,7 +107,8 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         $db->update('general_turn', [
             'action'=>'휴식',
-            'arg'=>'{}'
+            'arg'=>'{}',
+            'brief'=>'휴식',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "특기 부여":
@@ -314,17 +323,20 @@ switch($btn) {
     case "하야입력":
         $db->update('general_turn', [
             'action'=>'che_하야',
-            'arg'=>'{}'
+            'arg'=>'{}',
+            'brief'=>'하야',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "방랑해산":
         $db->update('general_turn', [
             'action'=>'che_방랑',
-            'arg'=>'{}'
+            'arg'=>'{}',
+            'brief'=>'방랑',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         $db->update('general_turn', [
             'action'=>'che_해산',
-            'arg'=>'{}'
+            'arg'=>'{}',
+            'brief'=>'해산',
         ], 'general_id IN %li AND turn_idx = 1', $genlist);
         break;
     case "00턴":

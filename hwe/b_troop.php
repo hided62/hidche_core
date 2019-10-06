@@ -43,14 +43,14 @@ if($troops){
     );
 
     foreach($db->queryAllLists(
-        'SELECT general_id, turn_idx, action, arg FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+        'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
         array_column($troopLeaders, 'no')
-        ) as [$generalID, $turnIdx, $action, $arg]
+        ) as [$generalID, $turnIdx, $brief]
     ){
         if(!key_exists($generalID, $generalTurnList)){
             $generalTurnList[$generalID] = [];
         }
-        $generalTurnList[$generalID][$turnIdx] = [$action, Json::decode($arg)];
+        $generalTurnList[$generalID][$turnIdx] = $brief;
     }
     
     foreach($troopLeaders as $troopLeader){
@@ -60,13 +60,12 @@ if($troops){
         $troopLeader['cityText'] = CityConst::byID($troopLeader['city'])->name;
 
         $turnText = [];
-        foreach($generalTurnList[$troopLeader['no']] as $rawTurnIdx => [$action, $arg]){
-            $actionName = getGeneralCommandClass($action)::getName();
-            if($actionName != '집합'){
-                $actionName = '~';
+        foreach($generalTurnList[$troopLeader['no']] as $rawTurnIdx => $brief){
+            if($brief != '집합'){
+                $brief = '~';
             }
             $turnIdx = $rawTurnIdx + 1;
-            $turnText[] = "{$turnIdx} : {$actionName}";
+            $turnText[] = "{$turnIdx} : {$brief}";
         }
         $troopLeader['turnText'] = join('<br>', $turnText);
         $troops[$troopLeader['troop']]['leader'] = $troopLeader;

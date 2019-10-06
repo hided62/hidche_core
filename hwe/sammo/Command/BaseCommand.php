@@ -215,6 +215,10 @@ abstract class BaseCommand{
         return static::getName();
     }
 
+    public function getRawClassName():string{
+        return static::class;
+    }
+
     public function getCompensationStyle():?int{
         //1 : Positive
         //0 : Neutral

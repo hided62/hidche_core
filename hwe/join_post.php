@@ -262,6 +262,7 @@ foreach(range(0, GameConst::$maxTurn - 1) as $turnIdx){
         'turn_idx'=>$turnIdx,
         'action'=>'휴식',
         'arg'=>null,
+        'brief'=>'휴식'
     ];
 }
 $db->insert('general_turn', $turnRows);
