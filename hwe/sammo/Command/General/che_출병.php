@@ -65,6 +65,13 @@ class che_출병 extends Command\GeneralCommand{
         ];
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        //[$reqGold, $reqRice] = $this->getCost();
+
+        return "{$name}(통솔경험, 병종숙련, 군량↓)";
+    }
+
     public function getCost():array{
         return [0, Util::round($this->generalObj->getVar('crew')/100)];
     }

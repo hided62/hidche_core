@@ -39,6 +39,12 @@ class che_소집해제 extends Command\GeneralCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+
+        return "{$name}(병사↓, 인구↑)";
+    }
+
     public function getCost():array{
         return [0, 0];
     }

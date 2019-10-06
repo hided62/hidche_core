@@ -46,6 +46,10 @@ class che_물자조달 extends Command\GeneralCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        return "{$this->getName()}(랜덤경험)";
+    }
+
     public function getCost():array{
         return [0, 0];
     }

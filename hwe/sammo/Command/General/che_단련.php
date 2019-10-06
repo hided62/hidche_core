@@ -48,6 +48,21 @@ class che_단련 extends Command\GeneralCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        [$reqGold, $reqRice] = $this->getCost();
+
+        $title = "{$name}(병종숙련";
+        if($reqGold > 0){
+            $title .= ", 자금{$reqGold}";
+        }
+        if($reqRice > 0){
+            $title .= ", 군량{$reqRice}";
+        }
+        $title .= ')';
+        return $title;
+    }
+
     public function getCost():array{
         $env = $this->env;
         return [$env['develcost'], $env['develcost']];

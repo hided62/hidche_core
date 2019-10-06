@@ -55,6 +55,27 @@ class che_정착장려 extends Command\GeneralCommand{
         $this->reqRice = $reqRice;
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        $statTypeBase = [
+            'leadership'=>'통솔경험',
+            'strength'=>'무력경험',
+            'intel'=>'지력경험',
+        ];
+        $statType = $statTypeBase[static::$statKey];
+        [$reqGold, $reqRice] = $this->getCost();
+
+        $title = "{$name}({$statType}";
+        if($reqGold > 0){
+            $title .= ", 자금{$reqGold}";
+        }
+        if($reqRice > 0){
+            $title .= ", 군량{$reqRice}";
+        }
+        $title .= ')';
+        return $title;
+    }
+
     public function getCost():array{
         $develCost = $this->env['develcost'] * 2;
         $reqGold = 0;

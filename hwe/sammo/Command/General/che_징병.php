@@ -111,6 +111,10 @@ class che_징병 extends Command\GeneralCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        return "{$this->getName()}(통솔경험)";
+    }
+
     public function getCost():array{
         if(!$this->isArgValid){
             return [0, 0];

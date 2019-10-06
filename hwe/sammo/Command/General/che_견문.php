@@ -37,6 +37,11 @@ class che_견문 extends Command\GeneralCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        return "{$name}(자금?, 군량?, 경험치?)";
+    }
+
     public function getCost():array{
         return [0, 0];
     }

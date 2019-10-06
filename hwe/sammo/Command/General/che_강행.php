@@ -59,6 +59,21 @@ class che_강행 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
     }
+
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        [$reqGold, $reqRice] = $this->getCost();
+
+        $title = "{$name}(통솔경험";
+        if($reqGold > 0){
+            $title .= ", 자금{$reqGold}";
+        }
+        if($reqRice > 0){
+            $title .= ", 군량{$reqRice}";
+        }
+        $title .= ', 병력,훈련,사기↓)';
+        return $title;
+    }
     
     public function getCost():array{
         $env = $this->env;

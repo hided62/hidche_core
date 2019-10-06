@@ -48,6 +48,13 @@ class che_사기진작 extends Command\GeneralCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        //[$reqGold, $reqRice] = $this->getCost();
+
+        return "{$name}(통솔경험, 자금↓)";
+    }
+
     public function getCost():array{
         $general = $this->generalObj;
         return [Util::round($general->getVar('crew')/100), 0];

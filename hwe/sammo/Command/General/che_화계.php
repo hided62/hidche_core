@@ -127,6 +127,27 @@ class che_화계 extends Command\GeneralCommand{
         ];
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        $statTypeBase = [
+            'leadership'=>'통솔경험',
+            'strength'=>'무력경험',
+            'intel'=>'지력경험',
+        ];
+        $statType = $statTypeBase[static::$statType];
+        [$reqGold, $reqRice] = $this->getCost();
+
+        $title = "{$name}({$statType}";
+        if($reqGold > 0){
+            $title .= ", 자금{$reqGold}";
+        }
+        if($reqRice > 0){
+            $title .= ", 군량{$reqRice}";
+        }
+        $title .= ')';
+        return $title;
+    }
+
     public function getCost():array{
         $env = $this->env;
         $cost = $env['develcost'] * 5;
