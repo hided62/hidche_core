@@ -44,8 +44,11 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 $nations = getAllNationStaticInfo();
 uasort($nations, function($lhs, $rhs){return $rhs['power']<=>$lhs['power'];});
 
+$nations[0] = getNationStaticInfo(0);
+
 foreach($db->query('SELECT npc,name,city,nation,level,penalty,permission FROM general ORDER BY dedication DESC') as $general){
     $nationID = $general['nation'];
+    
     if(!key_exists('generals', $nations[$nationID])){
         $nations[$nationID]['generals'] = [];
     }
@@ -61,6 +64,7 @@ foreach ($db->queryAllLists('SELECT city, name, nation FROM city') as [$cityID, 
 
 foreach ($nations as $nation) {
     if ($nation['nation'] == 0) {
+        //재야 도시, 장수
         continue;
     }
     $generals = $nation['generals'];
@@ -159,11 +163,11 @@ echo "
         <td width=123 align=center id=bg1>장 수</td>
         <td width=123 align=center>".count($nations[0]['generals'])."</td>
         <td width=123 align=center id=bg1>속 령</td>
-        <td width=123 align=center>".count($nations[0]['cities'])."</td>
+        <td width=123 align=center>".count($nations[0]['cities']??[])."</td>
     </tr>
     <tr>
         <td colspan=5> 속령 일람 : ";
-foreach($nations[0]['cities'] as $cityName) {
+foreach($nations[0]['cities']??[] as $cityName) {
     echo "{$cityName}, ";
 }
 echo"
