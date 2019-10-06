@@ -1148,7 +1148,7 @@ function checkDelay() {
         $threshold = 3;
     }
     else{
-        $threshold = 6;
+        $threshold = 20;//TODO:디버깅용. 꼭 고칠것. 원래 값은 6이었음.
     }
     //지연 해야할 밀린 턴 횟수
     $iter = intdiv($timeMinDiff, $term);
