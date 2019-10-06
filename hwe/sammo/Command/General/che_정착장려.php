@@ -58,7 +58,7 @@ class che_정착장려 extends Command\GeneralCommand{
     public function getCost():array{
         $develCost = $this->env['develcost'] * 2;
         $reqGold = 0;
-        $reqRice = $this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        $reqRice = Util::round($this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost));
         
         return [$reqGold, $reqRice];
     }

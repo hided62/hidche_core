@@ -79,7 +79,7 @@ class che_상업투자 extends Command\GeneralCommand{
 
     public function getCost():array{
         $develCost = $this->env['develcost'];
-        $reqGold = $this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        $reqGold = Util::round($this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost));
         $reqRice = 0;
         
         return [$reqGold, $reqRice];
