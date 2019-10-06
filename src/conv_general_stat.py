@@ -75,13 +75,13 @@ def extractNationList(nationSheet):
 
         nationChiefInfo[name] = {}
         if len(row) >= 10:
-            cheif0 = str(row[9])
-            if cheif0:
-                nationChiefInfo[name][cheif0] = 12
+            chief0 = str(row[9])
+            if chief0:
+                nationChiefInfo[name][chief0] = 12
         if len(row) >= 11:
-            cheif1 = str(row[10])
-            if cheif1:
-                nationChiefInfo[name][cheif1] = 11
+            chief1 = str(row[10])
+            if chief1:
+                nationChiefInfo[name][chief1] = 11
         
         
         cities = list(map(str.strip, row[8].split(',')))
@@ -190,9 +190,9 @@ def extractGeneralList(generalSheet, nationList={}, nationChiefInfo={}):
             row.pop()
 
         if level and row[3] in nationChiefInfo:
-            nationCheifDetail = nationChiefInfo[row[3]]
-            if row[1] in nationCheifDetail:
-                level = nationCheifDetail[row[1]]
+            nationChiefDetail = nationChiefInfo[row[3]]
+            if row[1] in nationChiefDetail:
+                level = nationChiefDetail[row[1]]
         
         row.insert(8, level)
         json_general_list.append(row)
