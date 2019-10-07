@@ -174,7 +174,7 @@ function checkCommandArg(?array $arg):?string{
         ],*/
         'integer'=>[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
-            'amount', 'colorType', 'itemCode'
+            'amount', 'colorType',
         ],
         'boolean'=>[
             'isGold', 'buyRice',
@@ -184,7 +184,6 @@ function checkCommandArg(?array $arg):?string{
         ],
         'min'=>[
             ['year', 0],
-            ['itemCode', 0],
             ['destGeneralID', 1],
             ['destCityID', 1],
             ['destNationID', 1],

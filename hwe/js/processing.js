@@ -30,13 +30,13 @@ $('#commonSubmit').click(function(){
     //checkCommandArg 참고
     var availableArgumentList = {
         'string':[
-            'nationName', 'optionText', 'itemType', 'nationType',
+            'nationName', 'optionText', 'itemType', 'nationType', 'itemCode',
         ],
         'int':[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
-            'amount', 'colorType', 'itemCode',
+            'amount', 'colorType', 
             'month',
-            'year', 'itemCode', 'destGeneralID', 'destCityID', 'destNationID', 'amount', 'crewType',
+            'year', 'destGeneralID', 'destCityID', 'destNationID', 'amount', 'crewType',
         ],
         'boolean':[
             'isGold', 'buyRice',

@@ -88,6 +88,13 @@ class che_강행 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        $josaRo = JosaUtil::pick($destCityName, '로');
+        return "【{$destCityName}】{$josaRo} {$commandName}";
+    }
+
     public function getFailString():string{
         $commandName = $this->getName();
         $failReason = $this->testRunnable();
@@ -160,21 +167,24 @@ class che_강행 extends Command\GeneralCommand{
 
     public function getForm(): string
     {
+        $currentCityID = $this->generalObj->getCityID();
+
         $form = [];
         $form[] = \sammo\getMapHtml();
+        $currentCityName = CityConst::byID($currentCityID)->name;
 
         $form[] = <<<EOT
 선택된 도시로 강행합니다.<br>
 최대 3칸내 도시로만 강행이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+{$currentCityName} => <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
 EOT;
         $form[] = \sammo\optionsForCities();
-        $form[] = '</select>';
-        $form[] = '<input type=submit value="강행">';
-        $form[] = printCitiesBasedOnDistance($this->generalObj->getCityID(), 3);
+        $form[] = '</select> <input type=button id="commonSubmit" value="강행">';
+        $form[] = '';
+        $form[] = printCitiesBasedOnDistance($currentCityID, 3);
         
-        return join("\n",$form);
+        return join("<br>\n",$form);
     }
 
     

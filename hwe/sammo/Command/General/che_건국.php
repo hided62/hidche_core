@@ -35,13 +35,13 @@ class che_건국 extends Command\GeneralCommand{
         }
         $nationName = $this->arg['nationName']??null;
         $nationType = $this->arg['nationType']??null;
-        $nationColor = $this->arg['nationColor']??null;
+        $colorType = $this->arg['colorType']??null;
 
-        if($nationName === null || $nationType === null || $nationColor === null){
+        if($nationName === null || $nationType === null || $colorType === null){
             return false;
         }
 
-        if(!is_string($nationName) || !is_string($nationType) || !is_int($nationColor)){
+        if(!is_string($nationName) || !is_string($nationType) || !is_int($colorType)){
             return false;
         }
 
@@ -49,7 +49,7 @@ class che_건국 extends Command\GeneralCommand{
             return false;
         }
 
-        if(!key_exists($nationColor, GetNationColors())){
+        if(!key_exists($colorType, GetNationColors())){
             return false;
         }
 
@@ -63,7 +63,7 @@ class che_건국 extends Command\GeneralCommand{
         $this->arg = [
             'nationName'=>$nationName,
             'nationType'=>$nationType,
-            'nationColor'=>$nationColor
+            'colorType'=>$colorType
         ];
 
         return true;
@@ -76,7 +76,7 @@ class che_건국 extends Command\GeneralCommand{
 
         $nationName = $this->arg['nationName'];
         $nationType = $this->arg['nationType'];
-        $nationColor = $this->arg['nationColor'];
+        $colorType = $this->arg['colorType'];
 
         $this->setCity();
         $this->setNation(['gennum']);
@@ -84,11 +84,11 @@ class che_건국 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
+            ConstraintHelper::BeLord(),
+            ConstraintHelper::WanderingNation(),
             ConstraintHelper::ReqNationValue('gennum', '수하 장수', '>=', 2),
             ConstraintHelper::BeOpeningPart($relYear),
-            ConstraintHelper::WanderingNation(),
             ConstraintHelper::CheckNationNameDuplicate($nationName),
-            ConstraintHelper::BeLord(),
             ConstraintHelper::AllowJoinAction(),
             ConstraintHelper::ConstructableCity(),
         ];
@@ -121,7 +121,7 @@ class che_건국 extends Command\GeneralCommand{
 
         $nationName = $this->arg['nationName'];
         $nationType = $this->arg['nationType'];
-        $nationColor = GetNationColors()[$this->arg['nationColor']];
+        $colorType = GetNationColors()[$this->arg['colorType']];
 
         $cityName = $this->city['name'];
 
@@ -157,7 +157,7 @@ class che_건국 extends Command\GeneralCommand{
 
         $db->update('nation', [
             'name'=>$nationName,
-            'color'=>$nationColor,
+            'color'=>$colorType,
             'level'=>1,
             'type'=>$nationType,
             'capital'=>$general->getCityID()
@@ -225,7 +225,7 @@ class che_건국 extends Command\GeneralCommand{
         $form[] = <<<EOT
 <br>
 국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
-색깔 : <select class='formInput' name='nationColor' id='nationColor' size='1'>
+색깔 : <select class='formInput' name='colorType' id='colorType' size='1'>
 EOT;
         foreach(GetNationColors() as $idx=>$color) {
             /*
@@ -247,7 +247,7 @@ EOT;
 
         }
         $form[] = '</select>';
-        $form[] = '<input type="submit" value="건국">';
+        $form[] = '<input type=button id="commonSubmit" value="'.$this->getName().'">';
         
         return join("\n",$form);
     }

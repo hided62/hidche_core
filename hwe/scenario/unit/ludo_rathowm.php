@@ -85,7 +85,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2], 
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8], 
             ["공격을 포기하고 오직 방어에만 집중합니다."],
-            null
+            null, null
         ],
         [ 
             217008, self::T_FOOTMAN, '메이드병', 
