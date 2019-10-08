@@ -73,6 +73,13 @@ class che_헌납 extends Command\GeneralCommand{
 
     }
 
+    public function getBrief(): string
+    {
+        $resText = $this->arg['isGold']?'금':'쌀';
+        $name = $this->getName();
+        return "{$resText} {$this->arg['amount']}을 {$name}";
+    }
+
     public function getCommandDetailTitle():string{
         $name = $this->getName();
         return "{$name}(통솔경험)";
@@ -137,42 +144,38 @@ class che_헌납 extends Command\GeneralCommand{
 
     public function getForm(): string
     {
-        //TODO: 암행부처럼 보여야...
-        $form = [];
-
-        $form[] = <<<EOT
-        자신의 자금이나 군량을 국가 재산으로 헌납합니다.<br>
-<select class='formInput' name="isGold" id="isGold" size='1' style='color:white;background-color:black;'>
-    <option value="true">금</option>
-    <option value="false">쌀</option>
+        ob_start();
+?>
+자신의 자금이나 군량을 국가 재산으로 헌납합니다.<br>
+<select id='isGold' name="isGold" size=1 style=color:white;background-color:black>
+    <option value='true'>금</option>
+    <option value='false'>쌀</option>
 </select>
-</select>
-<select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
-    <option value=1>100</option>
-    <option value=2>200</option>
-    <option value=3>300</option>
-    <option value=4>400</option>
-    <option value=5>500</option>
-    <option value=6>600</option>
-    <option value=7>700</option>
-    <option value=8>800</option>
-    <option value=9>900</option>
-    <option value=10>1000</option>
-    <option value=12>1200</option>
-    <option value=15>1500</option>
-    <option value=20>2000</option>
-    <option value=25>2500</option>
-    <option value=30>3000</option>
-    <option value=40>4000</option>
-    <option value=50>5000</option>
-    <option value=60>6000</option>
-    <option value=70>7000</option>
-    <option value=80>8000</option>
-    <option value=90>9000</option>
-    <option value=100>10000</option>
-</select>
-<input type="submit" value="헌납">
-EOT;
-        return join("\n",$form);
+<select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
+    <option value=100>100</option>
+    <option value=200>200</option>
+    <option value=300>300</option>
+    <option value=400>400</option>
+    <option value=500>500</option>
+    <option value=600>600</option>
+    <option value=700>700</option>
+    <option value=800>800</option>
+    <option value=900>900</option>
+    <option value=1000>1000</option>
+    <option value=1200>1200</option>
+    <option value=1500>1500</option>
+    <option value=2000>2000</option>
+    <option value=2500>2500</option>
+    <option value=3000>3000</option>
+    <option value=4000>4000</option>
+    <option value=5000>5000</option>
+    <option value=6000>6000</option>
+    <option value=7000>7000</option>
+    <option value=8000>8000</option>
+    <option value=9000>9000</option>
+    <option value=10000>10000</option>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<?php
+        return ob_get_clean();
     }
 }

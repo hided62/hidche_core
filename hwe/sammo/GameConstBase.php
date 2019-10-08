@@ -226,6 +226,7 @@ class GameConstBase
             'che_이동',
             'che_강행',
             'che_인재탐색',
+            'che_등용',
             'che_집합',
             'che_귀환',
             'che_임관',

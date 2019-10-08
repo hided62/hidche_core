@@ -166,22 +166,21 @@ class che_이동 extends Command\GeneralCommand{
     public function getForm(): string
     {
         $currentCityID = $this->generalObj->getCityID();
-
-        $form = [];
-        $form[] = \sammo\getMapHtml();
         $currentCityName = CityConst::byID($currentCityID)->name;
 
-        $form[] = <<<EOT
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
 선택된 도시로 이동합니다.<br>
 인접 도시로만 이동이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
-{$currentCityName} => <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-EOT;
-        $form[] = \sammo\optionsForCities();
-        $form[] = '</select> <input type=button id="commonSubmit" value="이동">';
-        $form[] = '';
-        $form[] = printCitiesBasedOnDistance($currentCityID, 1);
-        
-        return join("<br>\n",$form);
+<?=$currentCityName?> => <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<br>
+<?=printCitiesBasedOnDistance($currentCityID, 1)?>
+<?php
+        return ob_get_clean();
     }
 }

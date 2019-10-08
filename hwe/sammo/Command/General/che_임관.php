@@ -7,13 +7,15 @@ use \sammo\{
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    Json
 };
 
 
 use function \sammo\{
     tryUniqueItemLottery,
-    getInvitationList
+    getInvitationList,
+    getNationStaticInfo,
 };
 
 use \sammo\Constraint\Constraint;
@@ -93,7 +95,7 @@ class che_임관 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
-            ConstraintHelper::ReqEnvValue('join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::AllowJoinDestNation($relYear),
@@ -111,6 +113,13 @@ class che_임관 extends Command\GeneralCommand{
 
     public function getPostReqTurn():int{
         return 0;
+    }
+
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
+        $josaRo = JosaUtil::pick($destNationName, '로');
+        return "【{$destNationName}】{$josaRo} {$commandName}";
     }
 
     public function run():bool{
@@ -153,7 +162,7 @@ class che_임관 extends Command\GeneralCommand{
             $general->setVar('city', $this->destGeneralObj->getCityID());
         }
         else{
-            $targetCityID = $db->queryFirstField('SELECT city FROM nation WHERE nation = %i AND level=12', $destNationID);
+            $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND level=12', $destNationID);
             $general->setVar('city', $targetCityID);
         }
 
@@ -187,18 +196,13 @@ class che_임관 extends Command\GeneralCommand{
 
         $env = $this->env;
 
-        $joinedNations = Json::decode($db->queryFirstField('SELECT nations FROM general WHERE no = %i', $generalObj->getID()));
+        $joinedNations = \sammo\Json::decode($db->queryFirstField('SELECT nations FROM general WHERE no = %i', $generalObj->getID()));
 
         $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation');
         shuffle($nationList);
 
-        $onlyRandom = $env['join_mode'] == 'onlyRandom';
-
         foreach($nationList as &$nation){
-            if ($onlyRandom && TimeUtil::IsRangeMonth($env['init_year'], $env['init_month'], 1, $env['year'], $env['month']) && $nation['gennum'] >= GameConst::$initialNationGenLimitForRandInit) {
-                $nation['availableJoin'] = false;
-            }
-            else if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
+            if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
                 $nation['availableJoin'] = false;
             }
             else if($nation['scout'] == 1) {
@@ -213,26 +217,22 @@ class che_임관 extends Command\GeneralCommand{
             }
         }
         unset($nation);
-
-        $form[] = <<<EOT
+        ob_start(); 
+?>
 국가에 임관합니다.<br>
 이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
 바로 군주의 위치로 이동합니다.<br>
 임관할 국가를 목록에서 선택하세요.<br>   
 <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-EOT;
-        foreach($nationList as $nation){
-            $css = "color:{$nation['color']};";
-            if(!$nation['availableJoin']){
-                $css.= 'background-color:red;';
-            }
-            $form[] = "<option value='{$nation['nation']}' style='$css'>【 {$nation['name']} 】</option>";
-        }
-        $form[] = <<<EOT
-</select>
-<input type=submit value='임관'>
-EOT;
-        $form[] = getInvitationList($nationList);
-        return join("\n",$form);
+<?php foreach($nationList as $nation): ?>
+    <option 
+        value='<?=$nation['nation']?>' 
+        style='color:<?=$nation['color']?><?=$nation['availableJoin']?'':'background-color:red;'?>'
+    >【<?=$nation['name']?> 】</option>
+<?php endforeach; ?>
+<input type=button id="commonSubmit" value="<?=$this->getName()?>">
+<?=getInvitationList($nationList)?>
+<?php
+        return ob_get_clean();
     }
 }

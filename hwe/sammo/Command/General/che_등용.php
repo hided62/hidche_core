@@ -58,7 +58,7 @@ class che_등용 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         $this->setCity();
-        $this->setNation();
+        $this->setNation(['gennum', 'scout']);
 
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
         $this->setDestGeneral($destGeneral);
@@ -153,14 +153,7 @@ class che_등용 extends Command\GeneralCommand{
     public function getForm(): string
     {
         $db = DB::db();
-        $form = [];
 
-        $form[] = <<<EOT
-재야나 타국의 장수를 등용합니다.<br>
-서신은 개인 메세지로 전달됩니다.<br>
-등용할 장수를 목록에서 선택하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-EOT;
         $destGenerals = [];
         $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
         foreach($destRawGenerals as $destGeneral){
@@ -172,25 +165,28 @@ EOT;
         }
 
         $nationList = array_merge([0=>getNationStaticInfo(0)], getAllNationStaticInfo());
-        foreach($nationList as $destNation){
-            $form[] = "<option style='color:{$destNation['color']}'>【 {$destNation['name']} 】</option>";
-            $destNationID = $destNation['nation'];
-            if(!key_exists($destNationID, $destGenerals)){
-                continue;
-            }
 
-            foreach($destGenerals[$destNationID] as $destGeneral){
-                $nameColor = \sammo\getNameColor($destGeneral['npc']);
-                if($nameColor){
-                    $nameColor = " style='color:{$nameColor}'";
-                }
-                $form[] = "<option value='{$destGeneral['no']}' {$nameColor}>{$destGeneral['name']}</option>";
+        ob_start();
+?>
+재야나 타국의 장수를 등용합니다.<br>
+서신은 개인 메세지로 전달됩니다.<br>
+등용할 장수를 목록에서 선택하세요.<br>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+<?php foreach($nationList as $destNation): ?>
+    <optgroup style='color:<?=$destNation['color']?>'>【<?=$destNation['name']?>】
+<?php   foreach($destGenerals[$destNation['nation']]??[] as $destGeneral):
+            $nameColor = \sammo\getNameColor($destGeneral['npc']);
+            if($nameColor){
+                $nameColor = " style='color:{$nameColor}'";
             }
-        }
+?>
+            <option value='<?=$destGeneral['no']?>' <?=$nameColor?>><?=$destGeneral['name']?></option>
+<?php   endforeach; ?>
+    </optgroup>
+<?php endforeach; ?>
 
-        $form[] = '</select>';
-        $form[] = '<input type="submit" value="등용">';
-        
-        return join("\n",$form);
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+        <?php
+                return ob_get_clean();
     }
 }

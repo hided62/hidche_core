@@ -94,6 +94,13 @@ class che_건국 extends Command\GeneralCommand{
         ];
     }
 
+    public function getBrief(): string
+    {
+        $nationName = $this->arg['nationName'];
+        $josaUl = JosaUtil::pick($nationName, '을');
+        return "【{$nationName}】{$josaUl} 건국";
+    }
+
     public function getCost():array{
         return [0, 0];
     }
@@ -211,44 +218,42 @@ class che_건국 extends Command\GeneralCommand{
         */
         
 
-        $form = [];
+        ob_start();
+?>
+현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br>
 
-        $form[] = '현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br><br>';
+<?php foreach(GameConst::$availableNationType as $nationType):
+    $nationClass = buildNationTypeClass($nationType);
 
-        foreach(GameConst::$availableNationType as $nationType){
-            $nationClass = buildNationTypeClass($nationType);
-
-            [$name, $pros, $cons] = [$nationClass->getName(), $nationClass::$pros, $nationClass::$cons];
-            $form[] = "- $name : <span style='color:cyan;'>{$pros}</span> <span style='color:magenta;'>{$cons}</span><br>";
-
-        }
-        $form[] = <<<EOT
+    [$name, $pros, $cons] = [$nationClass->getName(), $nationClass::$pros, $nationClass::$cons]; 
+?>
+            
+    - <?=$name?> : <span style='color:cyan;'><?=$pros?></span> <span style='color:magenta;'><?=$cons?></span><br>
+<?php endforeach; ?>
 <br>
 국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
 색깔 : <select class='formInput' name='colorType' id='colorType' size='1'>
-EOT;
-        foreach(GetNationColors() as $idx=>$color) {
+
+<?php foreach(GetNationColors() as $idx=>$color): 
             /*
             if($colorUsed[$color] > 0){
                 continue;
             }
             */
-            $form[] = "<option value={$idx} style='background-color:{$color};color:".newColor($color)."';>국가명</option>";
-        }
-        $form[] = <<<EOT
+?>
+    <option value="<?=$idx?>" style='background-color:<?=$color?>;color:<?=newColor($color)?>';>국가명</option>
+<?php endforeach; ?>
 </select>
 성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
-EOT;
-        foreach(GameConst::$availableNationType as $nationType){
-            $nationClass = buildNationTypeClass($nationType);
 
-            $name = $nationClass->getName();
-            $form[] = "<option value='{$nationType}' style=background-color:black;color:white;>{$name}</option>";
-
-        }
-        $form[] = '</select>';
-        $form[] = '<input type=button id="commonSubmit" value="'.$this->getName().'">';
-        
-        return join("\n",$form);
+<?php foreach(GameConst::$availableNationType as $nationType):
+        $nationTypeName = buildNationTypeClass($nationType)->getName(); 
+?>
+    <option value='<?=$nationType?>' style=background-color:black;color:white;><?=$nationTypeName?></option>
+<?php endforeach; ?>
+</select>
+<input type=button id="commonSubmit" value="<?=$this->getName()?>">
+<?php
+        return ob_get_clean();
     }
 }

@@ -14,12 +14,12 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        if(!key_exists('scout', $this->nation)){
+        if(!key_exists('scout', $this->destNation)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException("require scout in nation");
         }
 
-        if(!key_exists('gennum', $this->nation)){
+        if(!key_exists('gennum', $this->destNation)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException("require gennum in nation");
         }
@@ -50,7 +50,7 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        $joinedNations = Json::decode($this->general['nations']);
+        $joinedNations = \sammo\Json::decode($this->general['nations']);
         if(in_array($this->destNation['nation'], $joinedNations)){
             $this->reason = "이미 임관했었던 국가입니다.";
             return false;

@@ -430,7 +430,7 @@ class GeneralAI{
 
             if($targetNpcWarGeneral->$resName < $reqMoney){
                 //국고 1/5과 '충분한 금액'의 기하평균
-                $payAmount = sqrt($enoughMoney - $reqMoney, $remainResource[$resName] / 5);
+                $payAmount = sqrt(($enoughMoney - $reqMoney) * ($remainResource[$resName] / 5));
                 if ($remainResource[$resName] >= $payAmount / 2) {
                     $candidateCommand[] = [
                         ['che_포상', [
@@ -454,7 +454,7 @@ class GeneralAI{
 
             if($targetNpcWarGeneral->$resName < $reqMoney){
                 //국고와 '충분한 금액'의 기하평균
-                $payAmount = sqrt($enoughMoney - $reqMoney, $remainResource[$resName]);
+                $payAmount = sqrt(($enoughMoney - $reqMoney) * $remainResource[$resName]);
 
                 if($remainResource[$resName] >= $payAmount / 2){
                     $candidateCommand[] = [
@@ -672,7 +672,7 @@ class GeneralAI{
             $isWarUser = null;
             
             foreach($userGenerals as $compUser){
-                if($compUser['leadership'] >= 50){
+                if($compUser->leadership >= 50){
                     $isWarUser = true;
                     break;
                 }
@@ -686,7 +686,7 @@ class GeneralAI{
                 break;
             }
 
-            $compRes = $compUser[$resName];
+            $compRes = $compUser->$resName;
 
             $work = false;
             if(!$isWarUser){
@@ -697,7 +697,7 @@ class GeneralAI{
                 $work = true;
             }
             
-            if((($isWarUser || $resName == 'gold') && $compUser[$resName] < 21000) || ($compUser[$resName] < 5000)){
+            if((($isWarUser || $resName == 'gold') && $compUser->$resName < 21000) || ($compUser->$resName < 5000)){
                 if($work){
                     $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 3000)*10 + 10);
                     $commandList[] = [['che_포상', [

@@ -159,33 +159,29 @@ class che_증여 extends Command\GeneralCommand{
     {
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
-        $form = [];
 
-        $form[] = <<<EOT
+        $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        ob_start();
+?>
 자신의 자금이나 군량을 다른 장수에게 증여합니다.<br>
 장수를 선택하세요.<br>
 <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-EOT;
-        $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
-        foreach($destRawGenerals as $destGeneral){
-            $nameColor = \sammo\getNameColor($destGeneral['npc']);
-            if($nameColor){
-                $nameColor = " style='color:{$nameColor}'";
-            }
-
-            $name = $destGeneral['name'];
-            if($destGeneral['level'] >= 5){
-                $name = "*{$name}*";
-            }
-
-            $form[] = "<option value='{$destGeneral['no']}' {$nameColor}>{$name}(금:{$destGeneral['gold']}, 쌀:{$destGeneral['rice']})</option>";
-        }
-        $form[] = <<<EOT
+<?php foreach($destRawGenerals as $destGeneral):
+    $color = \sammo\getNameColor($destGeneral['npc']);
+    if($color){
+        $color = " style='color:{$color}'";
+    }
+    $name = $destGeneral['name'];
+    if($destGeneral['level'] >= 5){
+        $name = "*{$name}*";
+    }
+?>
+    <option value='<?=$destGeneral['no']?>' <?=$color?>><?=$name?>(금:<?=$destGeneral['gold']?>, 쌀:<?=$destGeneral['rice']?>)</option>
+<?php endforeach; ?>
 </select>
 <select class='formInput' name="isGold" id="isGold" size='1' style='color:white;background-color:black;'>
     <option value="true">금</option>
     <option value="false">쌀</option>
-</select>
 </select>
 <select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
     <option value=1>100</option>
@@ -210,9 +206,8 @@ EOT;
     <option value=80>8000</option>
     <option value=90>9000</option>
     <option value=100>10000</option>
-</select>
-<input type="submit" value="증여">
-EOT;
-        return join("\n",$form);
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<?php
+        return ob_get_clean();
     }
 }

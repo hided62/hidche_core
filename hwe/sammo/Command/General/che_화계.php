@@ -12,7 +12,8 @@ use \sammo\{
 
 
 use function \sammo\{
-    searchDistance
+    searchDistance,
+    printCitiesBasedOnDistance
 };
 
 use \sammo\Constraint\Constraint;
@@ -320,22 +321,23 @@ class che_화계 extends Command\GeneralCommand{
 
     public function getForm(): string
     {
-        $form = [];
-        $form[] = \sammo\getMapHtml();
+        $currentCityID = $this->generalObj->getCityID();
+        $commandName = $this->getName();
+        $josaUl = JosaUtil::pick($commandName, '을');
 
-        $josaUl = JosaUtil::pick($this->getName(), '을');
-
-        $form[] = <<<EOT
-선택된 도시에 {$this->getName()}{$josaUl} 실행합니다.<br>
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
+선택된 도시에 <?=$commandName?><?=$josaUl?> 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-EOT;
-        $form[] = \sammo\optionsForCities();
-        $form[] = '</select>';
-        $form[] = "<input type=submit value='{$this->getName()}>";
-        $form[] = printCitiesBasedOnDistance($this->generalObj->getCityID(), 2);
-        
-        return join("\n",$form);
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<br>
+<?=printCitiesBasedOnDistance($currentCityID, 2)?>
+<?php
+        return ob_get_clean();
     }
 
     

@@ -40,6 +40,7 @@ class che_군량매매 extends Command\GeneralCommand{
         if(!is_bool($buyRice)){
             return false;
         }
+        $buyRice = boolval($buyRice);
         $amount = $this->arg['amount']??null;
         if(!is_int($amount)){
             return false;
@@ -51,6 +52,12 @@ class che_군량매매 extends Command\GeneralCommand{
             'amount'=>$amount
         ];
         return true;
+    }
+
+    public function getBrief(): string
+    {
+        $buyRiceText = $this->arg['buyRice']?'구입':'판매';
+        return "군량 {$this->arg['amount']}을 {$buyRiceText}";
     }
 
     protected function init(){
@@ -172,6 +179,43 @@ class che_군량매매 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         return true;
+    }
+
+    public function getForm(): string
+    {
+        ob_start();
+?>
+자신의 군량을 사거나 팝니다.<br>
+<select id='buyRice' name="buyRice" size=1 style=color:white;background-color:black>
+    <option value='false'>팜</option>
+    <option value='true'>삼</option>
+</select>
+<select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
+    <option value=100>100</option>
+    <option value=200>200</option>
+    <option value=300>300</option>
+    <option value=400>400</option>
+    <option value=500>500</option>
+    <option value=600>600</option>
+    <option value=700>700</option>
+    <option value=800>800</option>
+    <option value=900>900</option>
+    <option value=1000>1000</option>
+    <option value=1200>1200</option>
+    <option value=1500>1500</option>
+    <option value=2000>2000</option>
+    <option value=2500>2500</option>
+    <option value=3000>3000</option>
+    <option value=4000>4000</option>
+    <option value=5000>5000</option>
+    <option value=6000>6000</option>
+    <option value=7000>7000</option>
+    <option value=8000>8000</option>
+    <option value=9000>9000</option>
+    <option value=10000>10000</option>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<?php
+        return ob_get_clean();
     }
 
     

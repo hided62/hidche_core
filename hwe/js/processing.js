@@ -54,7 +54,14 @@ $('#commonSubmit').click(function(){
             return parseInt($obj.eq(0).val());
         },
         'boolean':function($obj){
-            return !!($obj.eq(0).val());
+            switch ($obj.eq(0).val().toLowerCase()) {
+            case "true": case "yes": case "1":
+                return true;
+            case "false": case "no": case "0":
+                return false;
+            default:
+                throw new Error ("Boolean.parse: Cannot convert string to boolean.");
+            }
         },
         'integerArray':function($obj){
             return $obj.map(function(){

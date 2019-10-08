@@ -31,11 +31,11 @@ trait LazyVarUpdater{
     }
 
     function updateVar(string $key, $value){
-        if($this->raw[$key] === $value){
-            return;
-        }
         if(!key_exists($key, $this->updatedVar)){
             $this->updatedVar[$key] = $this->raw[$key];
+        }
+        if($this->raw[$key] === $value){
+            return;
         }
         $this->raw[$key] = $value;
     }
