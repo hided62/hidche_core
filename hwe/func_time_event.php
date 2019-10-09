@@ -572,6 +572,7 @@ function disaster() {
     $logger->flush();
 
     if (!$isGood) {
+        $generalListByCity = Util::arrayGroupBy($db->query('SELECT no, nation, city, injury, crew, atmos, train FROM general WHERE city IN %li', Util::squeezeFromArray($targetCityList, 'city')), 'city');
         //NOTE: 쿼리 1번이지만 복잡하기 vs 쿼리 여러번이지만 조금 더 깔끔하기
         foreach ($targetCityList as $city) {
             $affectRatio = Util::valueFit($city['secu'] / $city['secu2'] / 0.8, 0, 1);
@@ -588,6 +589,14 @@ function disaster() {
                 'wall'=>$db->sqleval('wall * %d', $affectRatio),
             ], 'city = %i', $city['city']);
             
+            $generalList = array_map(
+                function($rawGeneral) use ($city, $year, $month){
+                    return new General($rawGeneral, $city, $year, $month, false);
+                }, 
+                $generalListByCity[$city['city']]
+            );
+
+            SabotageInjury($generalList, '재난');
         }
     }
     else{
@@ -606,14 +615,7 @@ function disaster() {
                 'wall'=>$db->sqleval('greatest(wall * %d, wall2)', $affectRatio),
             ], 'city = %i', $city['city']);
 
-            $generalList = array_map(
-                function($rawGeneral) use ($city, $year, $month){
-                    return new General($rawGeneral, $city, $year, $month, false);
-                }, 
-                $db->query('SELECT no, nation, city, injury, crew, atmos, train FROM general WHERE city = %i', $city['city'])
-            );
-
-            SabotageInjury($generalList, '재난');
+            
         }
     }
 
