@@ -314,7 +314,7 @@ function preUpdateMonthly() {
     $gameStor->develcost = $develcost;
 
     //매달 사망자 수입 결산
-    processDeadIncome($ratio);
+    processWarIncome($ratio);
 
     //계략, 전쟁표시 해제
     $query = "update city set state=0 where state=31 or state=33";

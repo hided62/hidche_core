@@ -1863,10 +1863,16 @@ class GeneralAI{
         $env = $this->env;
 
         $nationID = $nation['nation'];
+
+        $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
+        $dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
+
+        $goldIncome  = getGoldIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+        $warIncome  = getWarGoldIncome($nation['type'], $cityList);
+        $income = $goldIncome + $warIncome;
+
+        $outcome = getOutcome(100, $dedicationList);
     
-        $incomeList = getGoldIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $nation['type']);
-        $income = $nation['gold'] + $incomeList[0] + $incomeList[1];
-        $outcome = getGoldOutcome($nation['nation'], 100);    // 100%의 지급량
         $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
     
         if($bill < 20)  { $bill = 20; }
@@ -1886,9 +1892,15 @@ class GeneralAI{
 
         $nationID = $nation['nation'];
 
-        $incomeList = getRiceIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $nation['type']);
-        $income = $nation['rice'] + $incomeList[0] + $incomeList[1];
-        $outcome = getRiceOutcome($nation['nation'], 100);    // 100%의 지급량
+        $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
+        $dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
+
+        $riceIncome = getRiceIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+        $wallIncome = getWallIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+        $income = $riceIncome + $wallIncome;
+
+        $outcome = getOutcome(100, $dedicationList);
+    
         $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
 
         if($bill < 20)  { $bill = 20; }

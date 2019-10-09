@@ -3,6 +3,7 @@
 namespace sammo;
 
 class ActionLogger{
+    //TODO: global을 따로 뗴어내고, 장수 Logger를 상속해서 받는 형식으로.
     protected $generalId;
     protected $nationId;
     protected $autoFlush;

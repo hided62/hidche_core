@@ -15,7 +15,8 @@ increaseRefresh("내무부", 1);
 
 $me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
 
-$nation = $db->queryFirstRow('SELECT msg, scoutmsg FROM nation WHERE nation = %i', $me['nation']);
+$nationID = $me['nation'];
+$nation = $db->queryFirstRow('SELECT nation,name,color,type,gold,rice,bill,rate,scout,war,secretlimit,msg,scoutmsg FROM nation WHERE nation = %i', $nationID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -89,111 +90,88 @@ var scoutmsg = <?=Json::encode($nation['scoutmsg']??'')?>;
 <?php
 $admin = $gameStor->getValues(['year','month']);
 
-$query = "select nation,name,color,power,gennum from nation order by power desc";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$nationcount = MYDB_num_rows($result);
-for ($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($result);
+$cityCntList = Util::convertPairArrayToDict($db->queryAllLists('SELECT nation, count(city) FROM city GROUP BY nation'));
+$dipStateList = Util::convertArrayToDict($db->query('SELECT you,state,term FROM diplomacy WHERE me = %i', $nationID), 'you');
 
+
+foreach(getAllNationStaticInfo() as $staticNation):
     //속령수
-    $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nation['nation']);
+    $staticNationID = $staticNation['nation'];
+    $cityCnt = $cityCntList[$staticNation['nation']];
 
-    // 아국표시
-    if ($nation['nation'] == $me['nation']) {
-        echo "
-    <tr>
-        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td>
-        <td align=center>{$nation['power']}</td>
-        <td align=center>{$nation['gennum']}</td>
-        <td align=center>$citycount</td>
-        <td align=center>-</td>
-        <td align=center>-</td>
-        <td align=center>-</td>
-    </tr>";
+    $dipStateText = '-';
+    $dipTermText = '-';
+    $dipEndDateText = '-';
+    if($staticNationID !== $nationID){
+        $diplomacyState = $dipStateList[$staticNationID];
 
-        continue;
+        $dipStateText = [
+            0 => "<font color=red>교 전</font>",
+            1 => "<font color=magenta>선포중</font>",
+            2 => "통 상",
+            3 => "<font color=cyan>통합수락중</font>",
+            4 => "<font color=cyan>통합제의중</font>",
+            5 => "<font color=cyan>합병수락중</font>",
+            6 => "<font color=cyan>합병제의중</font>",
+            7 => "<font color=green>불가침</font>",    
+        ][$diplomacyState['state']];
+
+        if($diplomacyState['term']){
+            $dipEndMonth = $admin['month'] + $diplomacyState['term'] - 1;
+            $dipEndYear = $admin['year'] + intdiv($dipEndMonth, 12);
+            $dipEndMonth = $dipEndMonth % 12 + 1;
+            
+            $dipTermText = $diplomacyState['term'].'개월';
+            $dipEndDateText = "{$dipEndYear}年 {$dipEndMonth}月";
+        }
     }
+?>
 
-    $dip = $db->queryFirstRow('SELECT state,term FROM diplomacy WHERE me = %i AND you = %i', $me['nation'], $nation['nation']);
-
-    
-    switch ($dip['state']) {
-        case 0: $state = "<font color=red>교 전</font>"; break;
-        case 1: $state = "<font color=magenta>선포중</font>"; break;
-        case 2: $state = "통 상"; break;
-        case 3: $state = "<font color=cyan>통합수락중</font>"; break;
-        case 4: $state = "<font color=cyan>통합제의중</font>"; break;
-        case 5: $state = "<font color=cyan>합병수락중</font>"; break;
-        case 6: $state = "<font color=cyan>합병제의중</font>"; break;
-        case 7: $state = "<font color=green>불가침</font>"; break;
-    }
-
-    $term = $admin['year'] * 12 + $admin['month'] + $dip['term'];
-    $year = intdiv($term, 12);
-    $month = $term % 12;
-
-    if ($month == 0) {
-        $month = 12;
-        $year--;
-    }
-
-    $date = TimeUtil::now();
-
-    echo "
-    <tr>
-        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td>
-        <td align=center>{$nation['power']}</td>
-        <td align=center>{$nation['gennum']}</td>
-        <td align=center>$citycount</td>
-        <td align=center>$state</td>";
-    if ($dip['term'] != 0) {
-        echo"
-        <td align=center>{$dip['term']} 개월</td>
-        <td align=center>{$year}年 {$month}月</td>";
-    } else {
-        echo"
-        <td align=center>-</td>
-        <td align=center>-</td>";
-    }
-    echo "</tr>";
-}
-echo "
+<tr>
+    <td class='center' style='color:<?=newColor($staticNation['color'])?>;background-color:<?=$staticNation['color']?>'><?=$staticNation['name']?></td>
+    <td class='center'><?=$staticNation['power']?></td>
+    <td class='center'><?=$staticNation['gennum']?></td>
+    <td class='center'><?=$cityCnt?></td>
+    <td class='center'><?=$dipStateText?></td>
+    <td class='center'><?=$dipTermText?></td>
+    <td class='center'><?=$dipEndDateText?></td>
+</tr>
+<?php endforeach; ?>
 </table>
-";
 
-$query = "select nation,name,color,type,gold,rice,bill,rate,scout,war,secretlimit from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$nation = MYDB_fetch_array($result);
+<?php
+// 수입 연산
+$cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
+$dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
 
-$admin = $gameStor->getValues(['gold_rate','rice_rate']);
-// 금 수지
-$deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
+$goldIncome  = getGoldIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$warIncome  = getWarGoldIncome($nation['type'], $cityList);
+$totalGoldIncome = $goldIncome + $warIncome;
 
-$goldincomeList  = getGoldIncome($nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type']);
-$goldincome  = $goldincomeList[0] + $goldincomeList[1] + $deadIncome;
-$goldoutcome = getGoldOutcome($nation['nation'], $nation['bill']);
-$riceincomeList = getRiceIncome($nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type']);
-$riceincome  = $riceincomeList[0] + $riceincomeList[1];
-$riceoutcome = getRiceOutcome($nation['nation'], $nation['bill']);
+$riceIncome = getRiceIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$wallIncome = getWallIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$totalRiceIncome = $riceIncome + $wallIncome;
 
+$outcome = getOutcome($nation['bill'], $dedicationList);
 
-$budgetgold = $nation['gold'] + $goldincome - $goldoutcome + $deadIncome;
-$budgetrice = $nation['rice'] + $riceincome - $riceoutcome;
-$budgetgolddiff = $goldincome - $goldoutcome + $deadIncome;
-$budgetricediff = $riceincome - $riceoutcome;
+$budgetgold = $nation['gold'] + $totalGoldIncome - $outcome;
+$budgetrice = $nation['rice'] + $totalRiceIncome - $outcome;
+$budgetgolddiff = $totalGoldIncome - $outcome;
+$budgetricediff = $totalRiceIncome - $outcome;
+
 if ($budgetgolddiff > 0) {
-    $budgetgolddiff = "+{$budgetgolddiff}";
+    $budgetgolddiff = '+'.number_format($budgetgolddiff);
 } else {
-    $budgetgolddiff = "$budgetgolddiff";
+    $budgetgolddiff = number_format($budgetgolddiff);
 }
 if ($budgetricediff > 0) {
-    $budgetricediff = "+{$budgetricediff}";
+    $budgetricediff = '+'.number_format($budgetricediff);
 } else {
-    $budgetricediff = "$budgetricediff";
+    $budgetricediff = number_format($budgetricediff);
 }
 
 ?>
-<table align=center width=1000 class='tb_layout bg0'>
+<table width=1000 class='tb_layout bg0 center'>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메시지</td></tr>
@@ -236,33 +214,33 @@ if ($budgetricediff > 0) {
                 </tr>
                 <tr>
                     <td width=248 align=right class=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center><?=$nation['gold']?></td>
+                    <td width=248 align=center><?=number_format($nation['gold'])?></td>
                     <td width=248 align=right class=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center><?=$nation['rice']?></td>
+                    <td width=248 align=center><?=number_format($nation['rice'])?></td>
                 </tr>
                 <tr>
                     <td align=right class=bg1>단기수입&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+<?=$deadIncome?></td>
+                    <td align=center>+<?=number_format($warIncome)?></td>
                     <td align=right class=bg1>둔전수입&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+<?=$riceincomeList[1]?></td>
+                    <td align=center>+<?=number_format($wallIncome)?></td>
                 </tr>
                 <tr>
                     <td align=right class=bg1>세 금&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+<?=$goldincomeList[0]?></td>
+                    <td align=center>+<?=number_format($goldIncome)?></td>
                     <td align=right class=bg1>세 곡&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+<?=$riceincomeList[0]?></td>
+                    <td align=center>+<?=number_format($riceIncome)?></td>
                 </tr>
                 <tr>
                     <td align=right class=bg1>수입 / 지출&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+<?=$goldincome?> / -<?=$goldoutcome?></td>
+                    <td align=center>+<?=number_format($totalGoldIncome)?> / -<?=number_format($outcome)?></td>
                     <td align=right class=bg1>수입 / 지출&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+<?=$riceincome?> / -<?=$riceoutcome?></td>
+                    <td align=center>+<?=number_format($totalRiceIncome)?> / -<?=number_format($outcome)?></td>
                 </tr>
                 <tr>
                     <td align=right class=bg1>국고 예산&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center><?=$budgetgold?> (<?=$budgetgolddiff?>)</td>
+                    <td align=center><?=number_format($budgetgold)?> (<?=$budgetgolddiff?>)</td>
                     <td align=right class=bg1>병량 예산&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center><?=$budgetrice?> (<?=$budgetricediff?>)</td>
+                    <td align=center><?=number_format($budgetrice)?> (<?=$budgetricediff?>)</td>
                 </tr>
                 <tr>
                     <td align=right class=bg1>세율 (5 ~ 30%)&nbsp;&nbsp;&nbsp;</td>

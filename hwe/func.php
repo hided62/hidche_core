@@ -1784,14 +1784,10 @@ function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
     return false;
 }
 
-function SabotageInjuryEx(array $cityGeneralList, bool $isSabotage):int{
+function SabotageInjury(array $cityGeneralList, string $reason):int{
     $injuryCount = 0;
-    if($isSabotage){
-        $text = '<M>계략</>으로 인해 <R>부상</>을 당했습니다.';
-    }
-    else{
-        $text = '<M>재난</>으로 인해 <R>부상</>을 당했습니다.';
-    }
+    $josaRo = JosaUtil::pick($reason, '로');
+    $text = "<M>{$reason}</>{$josaRo} 인해 <R>부상</>을 당했습니다.";
 
     $db = DB::db();
 
@@ -1810,42 +1806,6 @@ function SabotageInjuryEx(array $cityGeneralList, bool $isSabotage):int{
         $general->applyDB($db);
 
         $injuryCount += 1;
-    }
-
-    return $injuryCount;
-}
-
-function SabotageInjury($city, $type=0) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-    $log = [];
-
-    $injuryCount = 0;
-
-    $admin = $gameStor->getValues(['year', 'month']);
-
-    $query = "select no,name,nation from general where city='$city'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
-    if($type == 0) {
-        $log[0] = "<C>●</>{$admin['month']}월:<M>계략</>으로 인해 <R>부상</>을 당했습니다.";
-    } else {
-        $log[0] = "<C>●</>{$admin['month']}월:<M>재난</>으로 인해 <R>부상</>을 당했습니다.";
-    }
-    for($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($result);
-
-        $injury = rand() % 100;
-        if($injury < 30) {  // 부상률 30%
-            $injury = intdiv($injury, 2) + 1;   // 부상 1~16
-
-            $query = "update general set crew=crew*0.98,atmos=atmos*0.98,train=train*0.98,injury=injury+'$injury' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            pushGenLog($general, $log);
-            $injuryCount += 1;
-        }
     }
 
     return $injuryCount;

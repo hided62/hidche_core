@@ -284,6 +284,14 @@ class Util extends \utilphp\util
         return $result;
     }
 
+    public static function convertPairArrayToDict($arr){
+        $result = [];
+        foreach($arr as [$key, $val]){
+            $result[$key] = $val;
+        }
+        return $result;
+    }
+
     public static function convertDictToArray($dict, bool $withKey=true)
     {
         $result = [];
@@ -295,6 +303,15 @@ class Util extends \utilphp\util
             else{
                 $result[] = $value;
             }
+        }
+        
+        return $result;
+    }
+
+    public static function squeezeFromArray(array $dict, string $key){
+        $result = [];
+        foreach($dict as $dictKey=>$value){
+            $result[$dictKey] = $value[$key];
         }
         
         return $result;

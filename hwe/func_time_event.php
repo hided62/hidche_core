@@ -9,7 +9,6 @@ namespace sammo;
 function processSpring() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     //인구 증가
     popIncrease();
@@ -41,24 +40,25 @@ function processSpring() {
 
 function processGoldIncome() {
     $db = DB::db();
-    $connect=$db->get();
     $gameStor = new KVStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['year','month','gold_rate']);
+    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
     $adminLog = [];
 
-    $query = "select name,nation,gold,rate_tmp,bill,type from nation";
-    $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($nationresult);
+
+    $nationList = $db->query('SELECT name,nation,capital,gold,rate_tmp,bill,type from nation');
+    $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
+    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,gold,level,dedication,city FROM general'), 'nation');
 
     //국가별 처리
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($nationresult);
+    foreach($nationList as $nation) {
+        $nationID = $nation['nation'];
 
-        $incomeList = getGoldIncome($nation['nation'], $nation['rate_tmp'], $admin['gold_rate'], $nation['type']);
-        $income = $incomeList[0] + $incomeList[1];
-        $originoutcome = getGoldOutcome($nation['nation'], 100);    // 100%의 지급량
-        $outcome = Util::round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
+        $generalRawList = $generalRawListByNation[$nationID];
+        $income = getGoldIncome($nation['level'], $nation['type'], $nation['rate_tmp'], $nation['capital'], $cityListByNation[$nationID]);
+        $originoutcome = getOutcome(100, $generalRawList);
+        $outcome= Util::round($nation['bill'] / 100 * $originoutcome);
+
         // 실제 지급량 계산
         $nation['gold'] += $income;
         // 기본량도 안될경우
@@ -85,297 +85,254 @@ function processGoldIncome() {
             ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
 
-        $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
-        $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $corecount = MYDB_num_rows($coreresult);
-        $corelog = ["<C>●</>이번 수입은 금 <C>$income</>입니다."];
-        for($j=0; $j < $corecount; $j++) {
-            $coregen = MYDB_fetch_array($coreresult);
-            pushGenLog($coregen, $corelog);
-        }
+        $incomeLog = "<C>●</>이번 수입은 금 <C>$income</>입니다.";
 
-        $query = "update nation set gold='{$nation['gold']}' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "select no,name,nation,dedication,gold from general where nation='{$nation['nation']}' AND npc != 5";
-        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($genresult);
+        $db->update('nation', [
+            'gold'=>$nation['gold']
+        ], 'nation=%i', $nationID);
 
         // 각 장수들에게 지급
-        for($j=0; $j < $gencount; $j++) {
-            $general = MYDB_fetch_array($genresult);
-            $gold = Util::round(getBill($general['dedication'])*$ratio);
-            $general['gold'] += $gold;
-
-            $query = "update general set gold='{$general['gold']}' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            pushGenLog($general, ["<C>●</>봉급으로 금 <C>$gold</>을 받았습니다."]);
+        foreach ($generalRawList as $rawGeneral) {
+            $generalObj = new General($rawGeneral, null, $year, $month, false);
+            $gold = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
+            $generalObj->increaseVar('gold', $gold);
+            
+            $logger = $generalObj->getLogger();
+            if($generalObj->getVar('level') > 4){
+                $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
+            }
+            $logger->pushGeneralActionLog("봉급으로 금 <C>$gold</>을 받았습니다.", $logger::PLAIN);
+            $generalObj->applyDB($db);
         }
     }
 
-    pushWorldHistory(["<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다."], $admin['year'], $admin['month']);
+    $logger = new ActionLogger(0, 0, $year, $month);
+    $logger->pushGlobalHistoryLog('<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.');
+    $logger->flush();
+
     pushAdminLog($adminLog);
 }
 
 function popIncrease() {
     $db = DB::db();
-    $connect=$db->get();
-
-    $rate = [];
-    $type = [];
-
-    $query = "select nation,rate_tmp,type from nation";
-    $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($nationresult);
-
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($nationresult);
-        $rate[$nation['nation']] = $nation['rate_tmp'];
-        $type[$nation['nation']] = $nation['type'];
-    }
-
-    $query = "select * from city where supply='1'"; // 도시 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
-
-    // 인구 및 민심
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($cityresult);
-
-        $pop = $city['pop'];
-        if($city['nation'] == 0) {
-            $pop = $city['pop'];  // 공백지는 증가하지 않게
-            $citytrust = 50;
-
-            $ratio = 0.99;   // 공백지는 수비 빼고 약간씩 감소
-            $agri = intval($city['agri'] * $ratio);
-            $comm = intval($city['comm'] * $ratio);
-            $secu = intval($city['secu'] * $ratio);
-            $def  = $city['def'];
-            $wall = $city['wall'];
-        } else {
-            $ratio = (20 - $rate[$city['nation']])/200;  // 20일때 0% 0일때 10% 100일때 -40%
-            $agri = $city['agri'] + intval($city['agri'] * $ratio);  //내정도 증감
-            $comm = $city['comm'] + intval($city['comm'] * $ratio);
-            $secu = $city['secu'] + intval($city['secu'] * $ratio);
-            $def  = $city['def']  + intval($city['def']  * $ratio);
-            $wall = $city['wall'] + intval($city['wall'] * $ratio);
-            $ratio = (30 - $rate[$city['nation']])/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
-            if($ratio >= 0) {
-                // 국가보정
-                if($type[$city['nation']] == 4 || $type[$city['nation']] == 6 || $type[$city['nation']] == 7 || $type[$city['nation']] == 8 || $type[$city['nation']] == 12 || $type[$city['nation']] == 13) { $ratio *= 1.2; }
-                if($type[$city['nation']] == 1 || $type[$city['nation']] == 3) { $ratio *= 0.8; }
-                $ratio *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
-            } else {
-                // 국가보정
-                if($type[$city['nation']] == 4 || $type[$city['nation']] == 6 || $type[$city['nation']] == 7 || $type[$city['nation']] == 8 || $type[$city['nation']] == 12 || $type[$city['nation']] == 13) { $ratio *= 0.8; }
-                if($type[$city['nation']] == 1 || $type[$city['nation']] == 3) { $ratio *= 1.2; }
-                $ratio *= (1 - $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 경감
-            }
-
-            $pop = $city['pop'] + (int)($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
-
-            $ratio = round($ratio*100, 2);
-            $citytrust = $city['trust'];
-            $citytrust = $citytrust + (20 - $rate[$city['nation']]);
-            $citytrust = Util::valueFit($citytrust, 0, 100);
-        }
-        if($pop > $city['pop2']) { $pop = $city['pop2']; }
-        if($pop < 0) { $pop = 0; }
-        if($agri > $city['agri2']) { $agri = $city['agri2']; }
-        if($comm > $city['comm2']) { $comm = $city['comm2']; }
-        if($secu > $city['secu2']) { $secu = $city['secu2']; }
-        if($def > $city['def2']) { $def= $city['def2']; }
-        if($wall > $city['wall2']) { $wall = $city['wall2']; }
-
-        //시세
-        $query = "update city set pop='$pop',trust='$citytrust',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='{$city['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    }
-}
-
-function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $level2 = [];
-    $level3 = [];
-    $level4 = [];
     
+    $nationList = $db->queryAllLists('SELECT nation,rate_tmp,type FROM nation');
+    
+    // 인구 및 민심
 
-    $query = "select no,city from general where nation='$nationNo' and level=4"; // 태수
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($j=0; $j < $count; $j++) {
-        $gen = MYDB_fetch_array($result);
-        $level4[$gen['no']] = $gen['city'];
+    $db->update('city', [
+        'trust'=>50,
+        'agri'=>$db->sqleval('agri * 0.99'),
+        'comm'=>$db->sqleval('comm * 0.99'),
+        'secu'=>$db->sqleval('secu * 0.99'),
+        'def'=>$db->sqleval('def * 0.99'),
+        'wall'=>$db->sqleval('wall * 0.99'),
+    ], 'nation=0');
+
+    foreach($nationList as [$nationID, $taxRate, $nationType]){
+        $nationTypeObj = buildNationTypeClass($nationType);
+
+        
+        $popRatio = (30 - $taxRate)/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
+        $popRatio = $nationTypeObj->onCalcNationalIncome('pop', $popRatio);
+
+        $updateVar = [];
+        if($popRatio >= 0){
+            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 + secu / secu2 / 10)))', 5000, $popRatio);
+        }
+        else{
+            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 - secu / secu2 / 10)))', 5000, $popRatio);
+        }
+
+        $genericRatio = (20 - $taxRate) / 200; // 20일때 0% 0일때 10% 100일때 -40%
+        foreach(['agri', 'comm', 'secu', 'def', 'wall'] as $key){
+            $updateVar[$key] = $db->sqleval('least(%b, %b * (1 + %d))', $key.'2', $key, $genericRatio);
+        }
+
+        $trustDiff = 20 - $taxRate;
+        $updateVar['trust'] = $db->sqleval('greatest(0, least(100, trust + %i))', $trustDiff);
+
+        $db->update('city', $updateVar, 'nation = %i AND supply = 1', $nationID);
     }
-    $query = "select no,city from general where nation='$nationNo' and level=3"; // 군사
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($j=0; $j < $count; $j++) {
-        $gen = MYDB_fetch_array($result);
-        $level3[$gen['no']] = $gen['city'];
-    }
-    $query = "select no,city from general where nation='$nationNo' and level=2"; // 종사
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($j=0; $j < $count; $j++) {
-        $gen = MYDB_fetch_array($result);
-        $level2[$gen['no']] = $gen['city'];
-    }
-
-    $nation = getNationStaticInfo($nationNo);
-
-    $query = "select * from city where nation='$nationNo' and supply='1'"; // 도시 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
-
-    //총 수입 구함
-    $income = [0, 0];  // income[0] : 세수, income[1] : 수비병 세수
-    for($j=0; $j < $citycount; $j++) {
-        $city = MYDB_fetch_array($cityresult);
-
-        //민충 0~100 : 50~100 수입
-        $ratio = $city['trust'] / 2 + 50;
-        $tax1 = ($city['pop'] * $city['comm'] / $city['comm2'] * $ratio / 1000) / 3;
-        $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
-        //도시 관직 추가 세수
-        if(Util::array_get($level4[$city['officer4']]) == $city['city']) { $tax1 *= 1.05;  }
-        if(Util::array_get($level3[$city['officer3']]) == $city['city']) { $tax1 *= 1.05;  }
-        if(Util::array_get($level2[$city['officer2']]) == $city['city']) { $tax1 *= 1.05;  }
-        //수도 추가 세수 130%~105%
-        if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); };
-
-        $income[0] += $tax1;
-    }
-    $income[0] *= ($rate / 20);
-
-    // 국가보정
-    if($type == 1)                                              { $income[0] *= 1.1; $income[1] *= 1.1; }
-    if($type == 9 || $type == 10 || $type == 11)                { $income[0] *= 0.9; $income[1] *= 0.9; }
-
-    $income[0] = Util::round($income[0] * ($admin_rate/100));
-    $income[1] = Util::round($income[1] * ($admin_rate/100));
-
-    return $income;
 }
 
-function processDeadIncome($admin_rate) {
+function calcCityWarGoldIncome(array $rawCity, iAction $nationType):int{
+    if($rawCity['supply'] == 0){
+        return 0;
+    }
+
+    $warIncome = $rawCity['dead'] / 10;
+    $warIncome = Util::round($nationType->onCalcNationalIncome('gold', $warIncome));
+    return $warIncome;
+}
+
+function calcCityGoldIncome(array $rawCity, int $officerCnt, bool $isCapital, int $nationLevel, iAction $nationType):int{
+    if($rawCity['supply'] == 0){
+        return 0;
+    }
+
+    $trustRatio = $rawCity['trust'] / 200 + 0.5;//0.5 ~ 1
+
+    $cityIncome = $rawCity['pop'] * $rawCity['comm'] / $rawCity['comm2'] * $trustRatio / 30;
+    $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
+    $cityIncome *= pow(1.05, $officerCnt);
+    if($isCapital){
+        $cityIncome *= 1 + 1/(3*$nationLevel);
+    }
+    $cityIncome = Util::round($nationType->onCalcNationalIncome('gold', $cityIncome));
+
+    return $cityIncome;
+}
+
+function calcCityRiceIncome(array $rawCity, int $officerCnt, bool $isCapital, int $nationLevel, iAction $nationType):int{
+    if($rawCity['supply'] == 0){
+        return 0;
+    }
+
+    $trustRatio = $rawCity['trust'] / 200 + 0.5;//0.5 ~ 1
+
+    $cityIncome = $rawCity['pop'] * $rawCity['agri'] / $rawCity['agri'] * $trustRatio / 30;
+    $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
+    $cityIncome *= pow(1.05, $officerCnt);
+    if($isCapital){
+        $cityIncome *= 1 + 1/(3*$nationLevel);
+    }
+    $cityIncome = Util::round($nationType->onCalcNationalIncome('rice', $cityIncome));
+
+    return $cityIncome;
+}
+
+function calcCityWallRiceIncome(array $rawCity, int $officerCnt, bool $isCapital, int $nationLevel, iAction $nationType):int{
+    if($rawCity['supply'] == 0){
+        return 0;
+    }
+
+    $wallIncome = $rawCity['def'] * $rawCity['wall'] / $rawCity['wall2'] / 3;
+    $wallIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
+    $wallIncome *= pow(1.05, $officerCnt);
+    if($isCapital){
+        $wallIncome *= 1 + 1/(3*$nationLevel);
+    }
+
+    $wallIncome = Util::round($nationType->onCalcNationalIncome('rice', $wallIncome));
+
+    return $wallIncome;
+}
+
+function getGoldIncome(int $nationLevel, string $nationType, float $taxRate, int $capitalID, array $cityList){
     $db = DB::db();
-    $connect=$db->get();
+
+    $officers = [];
+    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)') as [$genID, $cityID]){
+        $officers[$genID] = $cityID;
+    }
+
+    $nationTypeObj = buildNationTypeClass($nationType);
+
+    $cityIncome = 0;
+    foreach($cityList as $rawCity){
+        $cityID = $rawCity['city'];
+        foreach ([2,3,4] as $officerLevel) {
+            $officerCnt = 0;
+            if($officers[$rawCity['officer'.$officerLevel]] == $cityID){
+                $officerCnt += 1;
+            }
+        }
+
+        $cityIncome += calcCityGoldIncome($rawCity, $officerCnt, $capitalID == $cityID, $nationLevel, $nationTypeObj);
+    }
+
+    $cityIncome *= ($taxRate / 20);
+    
+    return $cityIncome;
+}
+
+function processWarIncome() {
+    $db = DB::db();
+
+    $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
 
     foreach(getAllNationStaticInfo() as $nation){
         if($nation['level'] <= 0){
             continue;
         }
-        $income = getDeadIncome($nation['nation'], $nation['type'], $admin_rate);
-
-//  단기수입 금만적용
-//        $query = "update nation set gold=gold+'$income',rice=rice+'$income' where nation='{$nation['nation']}'";
-        $query = "update nation set gold=gold+'$income' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $nationID = $nation['nation'];
+        $income = getWarGoldIncome($nation['type'], $cityListByNation[$nationID]);
+        $db->update('nation', [
+            'gold'=>$db->sqleval('gold + %i', $income)
+        ], 'nation=%i', $nationID);
     }
+
     // 10%수입, 20%부상병
-    $query = "update city set pop=pop+dead*0.2,dead='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city', [
+        'pop'=>$db->sqleval('pop + dead * %d', 0.2),
+        'dead'=>0
+    ], true);
 }
 
-function getDeadIncome($nation, $type, $admin_rate) {
-    $db = DB::db();
-    $connect=$db->get();
+function getWarGoldIncome(string $nationType, $cityList){
+    $nationTypeObj = buildNationTypeClass($nationType);
 
-    $query = "select dead from city where nation='$nation' and dead>'0' and supply='1'"; // 도시 목록
-    $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityCount = MYDB_num_rows($cityResult);
-
-    $income = 0;    // 단기수입
-    if($cityCount > 0) {
-        for($k=0; $k < $cityCount; $k++) {
-            $city = MYDB_fetch_array($cityResult);
-
-            $income += $city['dead'];
-        }
-        $income /= 10;
-
-        // 국가보정
-        if($type == 1)                { $income *= 1.1; }
-        if($type == 9 || $type == 10) { $income *= 0.9; }
-
-        $income = Util::round($income * $admin_rate / 100);
-    }
-    return $income;
-}
-
-function getGoldOutcome($nation, $bill) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $query = "select dedication from general where nation='$nation' AND npc != 5"; // 장수 목록
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($genresult);
-
-    //총 지출 구함
-    $outcome = 0;
-    for($j=0; $j < $gencount; $j++) {
-        $general = MYDB_fetch_array($genresult);
-        $outcome += getBill($general['dedication']);
+    $cityIncome = 0;
+    foreach($cityList as $rawCity){
+        $cityIncome += calcCityWarGoldIncome($rawCity, $nationTypeObj);
     }
 
-    $outcome = Util::round($outcome * $bill / 100);
-
-    return $outcome;
+    return $cityIncome;
 }
+
+
 
 //7월마다 실행
 function processFall() {
     $db = DB::db();
-    $connect=$db->get();
 
     //인구 증가
     popIncrease();
+    
     // 7월엔 무조건 내정 1% 감소
-    $query = "update city set dead=0,agri=agri*0.99,comm=comm*0.99,secu=secu*0.99,def=def*0.99,wall=wall*0.99";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city',[
+        'dead'=>0,
+        'agri'=>$db->sqleval('agri * 0.99'),
+        'comm'=>$db->sqleval('comm * 0.99'),
+        'secu'=>$db->sqleval('secu * 0.99'),
+        'def'=>$db->sqleval('def * 0.99'),
+        'wall'=>$db->sqleval('wall * 0.99'),
+    ],true);
 
-    // 유지비 3%
-    $query = "update general set rice=rice*0.97 where rice>10000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+    // > 10000 유지비 3%, > 1000 유지비 1%
     // 유지비 1%
-    $query = "update general set rice=rice*0.99 where rice>1000 and rice<=10000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 5%
-    $query = "update nation set rice=rice*0.95 where rice>100000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 3%
-    $query = "update nation set rice=rice*0.97 where rice>10000 and rice<=100000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 1%
-    $query = "update nation set rice=rice*0.99 where rice>2000 and rice<=10000";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'rice'=>$db->sqleval('IF(rice > 10000, rice * 0.97, rice * 0.99)')
+    ], 'rice > 1000');
+
+    // > 100000 유지비 5%, > 100000 유지비 3%, > 1000 유지비 1%
+    $db->update('nation', [
+        'rice'=>$db->sqleval('IF(rice > 100000, rice * 0.95, IF(rice > 10000, rice * 0.97, rice * 0.99))')
+    ], 'rice > 1000');
 }
 
 function processRiceIncome() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    $admin = $gameStor->getValues(['year','month','rice_rate']);
+    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
     $adminLog = [];
 
-    $query = "select name,nation,rice,rate_tmp,bill,type from nation";
-    $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($nationresult);
+    $nationList = $db->query('SELECT name,nation,capital,rice,rate_tmp,bill,type from nation');
+    $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
+    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,level,dedication,city FROM general'), 'nation');
 
     //국가별 처리
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($nationresult);
+    foreach($nationList as $nation) {
+        $nationID = $nation['nation'];
 
-        $incomeList = getRiceIncome($nation['nation'], $nation['rate_tmp'], $admin['rice_rate'], $nation['type']);
-        $income = $incomeList[0] + $incomeList[1];
-        $originoutcome = getRiceOutcome($nation['nation'], 100);    // 100%의 지급량
-        $outcome = Util::round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
+        $generalRawList = $generalRawListByNation[$nationID];
+        $income = getRiceIncome($nation['level'], $nation['type'], $nation['rate_tmp'], $nation['capital'], $cityListByNation[$nationID]);
+        $income += getWallIncome($nation['level'], $nation['type'], $nation['rate_tmp'], $nation['capital'], $cityListByNation[$nationID]);
+        $originoutcome = getOutcome(100, $generalRawList);
+        $outcome= Util::round($nation['bill'] / 100 * $originoutcome);
 
         // 실제 지급량 계산
         $nation['rice'] += $income;
@@ -403,123 +360,98 @@ function processRiceIncome() {
             ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
 
-        $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
-        $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $corecount = MYDB_num_rows($coreresult);
-        $corelog = ["<C>●</>이번 수입은 쌀 <C>$income</>입니다."];
-        for($j=0; $j < $corecount; $j++) {
-            $coregen = MYDB_fetch_array($coreresult);
-            pushGenLog($coregen, $corelog);
-        }
+        $incomeLog = "<C>●</>이번 수입은 쌀 <C>$income</>입니다.";
 
-        $query = "update nation set rice='{$nation['rice']}' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "select no,name,nation,dedication,rice from general where nation='{$nation['nation']}' AND npc != 5";
-        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($genresult);
+        $db->update('nation', [
+            'rice'=>$nation['rice']
+        ], 'nation=%i', $nationID);
 
         // 각 장수들에게 지급
-        for($j=0; $j < $gencount; $j++) {
-            $general = MYDB_fetch_array($genresult);
-            $rice = Util::round(getBill($general['dedication'])*$ratio);
-            $general['rice'] += $rice;
-
-            $query = "update general set rice='{$general['rice']}' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            pushGenLog($general, ["<C>●</>봉급으로 쌀 <C>$rice</>을 받았습니다."]);
+        foreach ($generalRawList as $rawGeneral) {
+            $generalObj = new General($rawGeneral, null, $year, $month, false);
+            $rice = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
+            $generalObj->increaseVar('rice', $rice);
+            
+            $logger = $generalObj->getLogger();
+            if($generalObj->getVar('level') > 4){
+                $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
+            }
+            $logger->pushGeneralActionLog("봉급으로 쌀 <C>$rice</>을 받았습니다.", $logger::PLAIN);
+            $generalObj->applyDB($db);
         }
     }
 
-    pushWorldHistory(["<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다."], $admin['year'], $admin['month']);
+    $logger = new ActionLogger(0, 0, $year, $month);
+    $logger->pushGlobalHistoryLog('<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.');
+    $logger->flush();
+
     pushAdminLog($adminLog);
 }
 
-function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
+function getRiceIncome(int $nationLevel, string $nationType, float $taxRate, int $capitalID, array $cityList) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $level2 = [];
-    $level3 = [];
-    $level4 = [];
-
-    $query = "select no,city from general where nation='$nationNo' and level=4"; // 태수
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($j=0; $j < $count; $j++) {
-        $gen = MYDB_fetch_array($result);
-        $level4[$gen['no']] = $gen['city'];
-    }
-    $query = "select no,city from general where nation='$nationNo' and level=3"; // 군사
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($j=0; $j < $count; $j++) {
-        $gen = MYDB_fetch_array($result);
-        $level3[$gen['no']] = $gen['city'];
-    }
-    $query = "select no,city from general where nation='$nationNo' and level=2"; // 종사
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($j=0; $j < $count; $j++) {
-        $gen = MYDB_fetch_array($result);
-        $level2[$gen['no']] = $gen['city'];
+    $officers = [];
+    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)') as [$genID, $cityID]){
+        $officers[$genID] = $cityID;
     }
 
-    $nation = getNationStaticInfo($nationNo);
+    $nationTypeObj = buildNationTypeClass($nationType);
 
-    $query = "select * from city where nation='$nationNo' and supply='1'"; // 도시 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
+    $cityIncome = 0;
+    foreach($cityList as $rawCity){
+        $cityID = $rawCity['city'];
+        foreach ([2,3,4] as $officerLevel) {
+            $officerCnt = 0;
+            if($officers[$rawCity['officer'.$officerLevel]] == $cityID){
+                $officerCnt += 1;
+            }
+        }
 
-    //총 수입 구함
-    $income = [0, 0];  // income[0] : 세수, income[1] : 수비병 세수
-    for($j=0; $j < $citycount; $j++) {
-        $city = MYDB_fetch_array($cityresult);
-
-        //민충 0~100 : 50~100 수입
-        $ratio = $city['trust'] / 2 + 50;
-        $tax1 = ($city['pop'] * $city['agri'] / $city['agri2'] * $ratio / 1000) / 3;
-        $tax2 = $city['def'] * $city['wall'] / $city['wall2'] / 3;
-        $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
-        $tax2 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
-        //도시 관직 추가 세수
-        if(Util::array_get($level4[$city['officer4']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if(Util::array_get($level3[$city['officer3']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if(Util::array_get($level2[$city['officer2']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        //수도 추가 세수 130%~105%
-        if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
-        $income[0] += $tax1;
-        $income[1] += $tax2;
+        $cityIncome += calcCityRiceIncome($rawCity, $officerCnt, $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
-    $income[0] *= ($rate / 20);
 
-    // 국가보정
-    if($type == 8)                              { $income[0] *= 1.1; $income[1] *= 1.1; }
-    if($type == 2 || $type == 4 || $type == 13) { $income[0] *= 0.9; $income[1] *= 0.9; }
-
-    $income[0] = Util::round($income[0] * ($admin_rate/100));
-    $income[1] = Util::round($income[1] * ($admin_rate/100));
-
-    return $income;
+    $cityIncome *= ($taxRate / 20);
+    
+    return $cityIncome;
 }
 
-function getRiceOutcome($nation, $bill) {
+function getWallIncome(int $nationLevel, string $nationType, float $taxRate, int $capitalID, array $cityList) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $query = "select dedication from general where nation='$nation' AND npc != 5"; // 장수 목록
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($genresult);
+    $officers = [];
+    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)') as [$genID, $cityID]){
+        $officers[$genID] = $cityID;
+    }
 
+    $nationTypeObj = buildNationTypeClass($nationType);
+
+    $cityIncome = 0;
+    foreach($cityList as $rawCity){
+        $cityID = $rawCity['city'];
+        foreach ([2,3,4] as $officerLevel) {
+            $officerCnt = 0;
+            if($officers[$rawCity['officer'.$officerLevel]] == $cityID){
+                $officerCnt += 1;
+            }
+        }
+
+        $cityIncome += calcCityWallRiceIncome($rawCity, $officerCnt, $capitalID == $cityID, $nationLevel, $nationTypeObj);
+    }
+
+    $cityIncome *= ($taxRate / 20);
+    
+    return $cityIncome;
+}
+
+function getOutcome(float $billRate, array $generalList) {
     //총 지출 구함
     $outcome = 0;
-    for($j=0; $j < $gencount; $j++) {
-        $general = MYDB_fetch_array($genresult);
+    foreach($generalList as $general){
         $outcome += getBill($general['dedication']);
     }
 
-    $outcome = Util::round($outcome * $bill / 100);
+    $outcome = Util::round($outcome * $billRate / 100);
 
     return $outcome;
 }
@@ -529,18 +461,17 @@ function tradeRate() {
 
     foreach($db->query('SELECT city,level FROM city') as $city){
         //시세
-        switch($city['level']) {
-        case 1: $per =   0; break;
-        case 2: $per =   0; break;
-        case 3: $per =   0; break;
-        case 4: $per = 0.2; break;
-        case 5: $per = 0.4; break;
-        case 6: $per = 0.6; break;
-        case 7: $per = 0.8; break;
-        case 8: $per =   1; break;
-        default:$per =   0; break;
-        }
-        if($per > 0 && Util::randBool($per)) {
+        $prob = [
+            1=>0,
+            2=>0,
+            3=>0,
+            4=>0.2,
+            5=>0.4,
+            6=>0.6,
+            7=>0.8,
+            8=>1
+        ][$city['level']];
+        if($prob > 0 && Util::randBool($prob)) {
             $trade = Util::randRangeInt(95, 105);
         } else {
             $trade = null;
@@ -554,172 +485,136 @@ function tradeRate() {
 function disaster() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
+    [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
     //재난표시 초기화
-    $query = "update city set state=0 where state<=10";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city',[
+        'state'=>0,
+    ], 'state <= 10');
 
     // 초반 3년은 스킵
-    if($admin['startyear'] + 3 > $admin['year']) return;
-    
-    $query = "select city,name,secu,secu2 from city"; // 도시 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
+    if($startYear + 3 > $year) return;
 
-    $disastertype = rand() % 4;
-    $isgood = 0;
-    if($admin['month'] == 4 && $disastertype == 3) { $isgood = 1; }
-    if($admin['month'] == 7 && $disastertype == 3) { $isgood = 1; }
+    $boomingRate = [
+        1=>0,
+        4=>0.25,
+        7=>0.25,
+        10=>0
+    ];
 
-    $disastercity = [];
-    $disasterratio = [];
-    $disastername = [];
+    $isGood = Util::randBool($boomingRate[$month]);
 
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($cityresult);
+
+    $targetCityList = [];
+
+    foreach($db->query('SELECT city,name,secu,secu2 FROM city') as $city){
         //호황 발생 도시 선택 ( 기본 2% )
         //재해 발생 도시 선택 ( 기본 6% )
-        if($isgood == 1) { $ratio = 2 + Util::round($city['secu']/$city['secu2']*5); }    // 2 ~ 7%
-        else { $ratio = 6 - Util::round($city['secu']/$city['secu2']*5); }    // 1 ~ 6%
+        if($isGood){
+            $raiseProp = 0.02 + ($city['secu'] / $city['secu2']) * 0.05; // 2 ~ 7%
+        }
+        else {
+            $raiseProp = 0.06 - ($city['secu'] / $city['secu2']) * 0.05; // 1 ~ 6%
+        }    
 
-        if(rand()%100+1 < $ratio) {
-            $disastercity[] = $city['city'];
-            $disasterratio[] = Util::valueFit($city['secu'] / 0.8 / $city['secu2'], 0, 1);
-            $disastername[] = $city['name'];
+        if(Util::randBool($raiseProp)) {
+            $targetCityList[] = $city;
         }
     }
 
-    $disastername = "<G><b>".join(' ', $disastername)."</b></>";
-    $disaster = [];
+    if(!$targetCityList){
+        return;
+    }
 
-    //재해 처리
-    if(count($disastercity)) {
-        $state = 0;
-        switch($admin['month']) {
-        //봄
-        case 1:
-            switch($disastertype) {
-            case 0:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 역병이 발생하여 도시가 황폐해지고 있습니다.";
-                $state = 4;
-                break;
-            case 1:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
-                $state = 5;
-                break;
-            case 2:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 추위가 풀리지 않아 얼어죽는 백성들이 늘어나고 있습니다.";
-                $state = 3;
-                break;
-            case 3:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
-                $state = 9;
-                break;
-            }
-            break;
-        //여름
-        case 4:
-            switch($disastertype) {
-            case 0:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 홍수로 인해 피해가 급증하고 있습니다.";
-                $state = 7;
-                break;
-            case 1:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
-                $state = 5;
-                break;
-            case 2:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 태풍으로 인해 피해가 속출하고 있습니다.";
-                $state = 6;
-                break;
-            case 3:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【호황】</b></>{$disastername}에 호황으로 도시가 번창하고 있습니다.";
-                $state = 2;
-                $isGood = 1;
-                break;
-            }
-            break;
-        //가을
-        case 7:
-            switch($disastertype) {
-            case 0:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 메뚜기 떼가 발생하여 도시가 황폐해지고 있습니다.";
-                $state = 8;
-                break;
-            case 1:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
-                $state = 5;
-                break;
-            case 2:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 흉년이 들어 굶어죽는 백성들이 늘어나고 있습니다.";
-                $state = 8;
-                break;
-            case 3:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【풍작】</b></>{$disastername}에 풍작으로 도시가 번창하고 있습니다.";
-                $state = 1;
-                $isGood = 1;
-                break;
-            }
-            break;
-        //겨울
-        case 10:
-            switch($disastertype) {
-            case 0:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 혹한으로 도시가 황폐해지고 있습니다.";
-                $state = 3;
-                break;
-            case 1:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
-                $state = 5;
-                break;
-            case 2:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 눈이 많이 쌓여 도시가 황폐해지고 있습니다.";
-                $state = 3;
-                break;
-            case 3:
-                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
-                $state = 9;
-                break;
-            }
-            break;
+    $targetCityNames = "<G><b>".join(' ', Util::squeezeFromArray($targetCityList, 'name'))."</b></>";
+    $disasterTextList = [
+        1 => [
+            ['재난', 4, '역병이 발생하여 도시가 황폐해지고 있습니다.'],
+            ['재난', 5, '지진으로 피해가 속출하고 있습니다.'],
+            ['재난', 3, '추위가 풀리지 않아 얼어죽는 백성들이 늘어나고 있습니다.'],
+            ['재난', 9, '황건적이 출현해 도시를 습격하고 있습니다.'],
+        ],
+        4 => [
+            ['재난', 7, '홍수로 인해 피해가 급증하고 있습니다.'],
+            ['재난', 5, '지진으로 피해가 속출하고 있습니다.'],
+            ['재난', 6, '태풍으로 인해 피해가 속출하고 있습니다.'],
+        ],
+        7 => [
+            ['재난', 8, '메뚜기 떼가 발생하여 도시가 황폐해지고 있습니다.'],
+            ['재난', 5, '지진으로 피해가 속출하고 있습니다.'],
+            ['재난', 8, '흉년이 들어 굶어죽는 백성들이 늘어나고 있습니다.'],
+        ],
+        10 => [
+            ['재난', 3, '혹한으로 도시가 황폐해지고 있습니다.'],
+            ['재난', 5, '지진으로 피해가 속출하고 있습니다.'],
+            ['재난', 3, '눈이 많이 쌓여 도시가 황폐해지고 있습니다.'],
+            ['재난', 9, '황건적이 출현해 도시를 습격하고 있습니다.'],
+        ]
+    ];
+
+    $boomingTextList = [
+        1 => null,
+        4 => [
+            ['호황', 2, '호황으로 도시가 번창하고 있습니다.'],
+        ],
+        7 => [
+            ['풍작', 1, '풍작으로 도시가 번창하고 있습니다.'],
+        ],
+        10 => null
+    ];
+
+    [$logTitle, $stateCode, $logBody] = Util::choiceRandom(($isGood?$boomingTextList:$disasterTextList)[$month]);
+
+    $logger = new ActionLogger(0, 0, $year, $month, false);
+
+    $logger->pushGlobalHistoryLog("<M><b>【{$logTitle}】</b></>{$targetCityNames}에 {$logBody}");
+    $logger->flush();
+
+    if ($isGood) {
+        //NOTE: 쿼리 1번이지만 복잡하기 vs 쿼리 여러번이지만 조금 더 깔끔하기
+        foreach ($targetCityList as $city) {
+            $affectRatio = Util::valueFit($city['secu'] / $city['secu2'] / 0.8, 0, 1);
+            $affectRatio = 0.8 + $affectRatio * 0.15;
+
+            $db->update('city', [
+                'state'=>$stateCode,
+                'pop'=>$db->sqleval('pop * %d', $affectRatio),
+                'trust'=>$db->sqleval('trust * %d', $affectRatio),
+                'agri'=>$db->sqleval('agri * %d', $affectRatio),
+                'comm'=>$db->sqleval('comm * %d', $affectRatio),
+                'secu'=>$db->sqleval('secu * %d', $affectRatio),
+                'def'=>$db->sqleval('def * %d', $affectRatio),
+                'wall'=>$db->sqleval('wall * %d', $affectRatio),
+            ], 'city = %i', $city['city']);
+            
         }
-        
-        if($isgood == 0) {
-            for($i=0; $i < count($disastercity); $i++) {
-                $ratio = 15 * $disasterratio[$i];
-                $ratio = (80 + $ratio) / 100.0; // 치안률 따라서 80~95%
-        
-                $query = "update city set state='$state',pop=pop*{$ratio},trust=trust*{$ratio},agri=agri*{$ratio},comm=comm*{$ratio},secu=secu*{$ratio},def=def*{$ratio},wall=wall*{$ratio} where city='$disastercity[$i]'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        
-                SabotageInjury($disastercity[$i], 1);
-            }
-        } else {
-            for($i=0; $i < count($disastercity); $i++) {
-                $ratio = 4 * $disasterratio[$i];
-                $ratio = (101 + $ratio) / 100.0; // 치안률 따라서 101~105%
-        
-                $city = getCity($disastercity[$i]);
-                $city['pop'] *= $ratio;   $city['trust'] *= $ratio;  $city['agri'] *= $ratio;
-                $city['comm'] *= $ratio;  $city['secu'] *= $ratio;  $city['def'] *= $ratio;
-                $city['wall'] *= $ratio;
-        
-                if($city['pop'] > $city['pop2']) { $city['pop'] = $city['pop2']; }
-                if($city['trust'] > 100) { $city['trust'] = 100; }
-                if($city['agri'] > $city['agri2']) { $city['agri'] = $city['agri2']; }
-                if($city['comm'] > $city['comm2']) { $city['comm'] = $city['comm2']; }
-                if($city['secu'] > $city['secu2']) { $city['secu'] = $city['secu2']; }
-                if($city['def'] > $city['def2']) { $city['def'] = $city['def2']; }
-                if($city['wall'] > $city['wall2']) { $city['wall'] = $city['wall2']; }
-        
-                $query = "update city set state='$state',pop='{$city['pop']}',trust='{$city['trust']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}',def='{$city['def']}',wall='{$city['wall']}' where city='$disastercity[$i]'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            }
+    }
+    else{
+        foreach ($targetCityList as $city) {
+            $affectRatio = Util::valueFit($city['secu'] / $city['secu2'] / 0.8, 0, 1);
+            $affectRatio = 1.01 + $affectRatio * 0.04;
+
+            $db->update('city', [
+                'state'=>$stateCode,
+                'pop'=>$db->sqleval('greatest(pop * %d, pop2)', $affectRatio),
+                'trust'=>$db->sqleval('greatest(trust * %d, 100)', $affectRatio),
+                'agri'=>$db->sqleval('greatest(agri * %d, agri2)', $affectRatio),
+                'comm'=>$db->sqleval('greatest(comm * %d, comm2)', $affectRatio),
+                'secu'=>$db->sqleval('greatest(secu * %d, secu2)', $affectRatio),
+                'def'=>$db->sqleval('greatest(def * %d, def2)', $affectRatio),
+                'wall'=>$db->sqleval('greatest(wall * %d, wall2)', $affectRatio),
+            ], 'city = %i', $city['city']);
+
+            $generalList = array_map(
+                function($rawGeneral) use ($city, $year, $month){
+                    return new General($rawGeneral, $city, $year, $month, false);
+                }, 
+                $db->query('SELECT no, nation, city, injury, crew, atmos, train FROM general WHERE city = %i', $city['city'])
+            );
+
+            SabotageInjury($generalList, '재난');
         }
     }
 
-    pushWorldHistory($disaster, $admin['year'], $admin['month']);
 }

@@ -9,15 +9,12 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("세력정보", 1);
 
-$query = "select no,nation,level from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$nationID = $db->queryFirstField('SELECT nation FROM general WHERE owner=%i', $userID);
 
-if($me['level'] == 0) {
+if($nationID == 0) {
     echo "재야입니다.";
     exit();
 }
@@ -45,121 +42,115 @@ if($me['level'] == 0) {
 </table>
 <br>
 <?php
-$query = "select nation from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
 
-$query = "select nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);   //국가정보
+$nation = $db->queryFirstRow('SELECT nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital FROM nation WHERE natoin=%i', $nationID);   //국가정보
+$cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
 
-$query = "select city,name,pop,pop2 from city where nation='{$nation['nation']}'"; // 도시 이름 목록
-$cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$citycount = MYDB_num_rows($cityresult);
+$currPop = 0;
+$maxPop = 0;
+$cityNames = [];
 
-$totalpop = 0;
-$maxpop = 0;
-$cityname = [];
-for($j=0; $j < $citycount; $j++) {
-    $city = MYDB_fetch_array($cityresult);
-    if($city['city'] == $nation['capital']) { $cityname[$j] = "<font color=cyan>[{$city['name']}]</font>"; }
-    else { $cityname[$j] = $city['name']; }
-    $totalpop += $city['pop'];
-    $maxpop += $city['pop2'];
+foreach($cityList as $city){
+    $currPop += $city['pop'];
+    $maxPop += $city['pop2'];
+    if($city['city'] == $nation['capital']){
+        $cityNames[] = "<span style='color:cyan;'>{$city['name']}</span>";
+    }
+    else{
+        $cityNames[] = $city['name'];
+    }
 }
 
-$query = "select sum(crew) as totcrew,sum(leadership)*100 as maxcrew from general where nation='{$nation['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$general = MYDB_fetch_array($result);
+[$currCrew, $maxCrew] = $db->queryFirstList('SELECT sum(crew), sum(leadership)*100 FROM general WHERE nation=%i AND npc != 5', $nation['nation']);
+$dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
 
-$admin = $gameStor->getValues(['gold_rate','rice_rate']);
-// 금 수지
-$deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
+$goldIncome  = getGoldIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$warIncome  = getWarGoldIncome($nation['type'], $cityList);
+$totalGoldIncome = $goldIncome + $warIncome;
 
-$goldincomeList  = getGoldIncome($nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type']);
-$goldincome  = $goldincomeList[0] + $goldincomeList[1] + $deadIncome;
-$goldoutcome = getGoldOutcome($nation['nation'], $nation['bill']);
-$riceincomeList = getRiceIncome($nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type']);
-$riceincome  = $riceincomeList[0] + $riceincomeList[1];
-$riceoutcome = getRiceOutcome($nation['nation'], $nation['bill']);
+$riceIncome = getRiceIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$wallIncome = getWallIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$totalRiceIncome = $riceIncome + $wallIncome;
 
+$outcome = getOutcome($nation['bill'], $dedicationList);
 
-$budgetgold = $nation['gold'] + $goldincome - $goldoutcome + $deadIncome;
-$budgetrice = $nation['rice'] + $riceincome - $riceoutcome;
-$budgetgolddiff = $goldincome - $goldoutcome + $deadIncome;
-$budgetricediff = $riceincome - $riceoutcome;
-if($budgetgolddiff > 0) { $budgetgolddiff = "+{$budgetgolddiff}"; }
-else { $budgetgolddiff = "$budgetgolddiff"; }
-if($budgetricediff > 0) { $budgetricediff = "+{$budgetricediff}"; }
-else { $budgetricediff = "$budgetricediff"; }
+$budgetgold = $nation['gold'] + $totalGoldIncome - $outcome;
+$budgetrice = $nation['rice'] + $totalRiceIncome - $outcome;
+$budgetgolddiff = $totalGoldIncome - $outcome;
+$budgetricediff = $totalRiceIncome - $outcome;
 
+if ($budgetgolddiff > 0) {
+    $budgetgolddiff = '+'.number_format($budgetgolddiff);
+} else {
+    $budgetgolddiff = number_format($budgetgolddiff);
+}
+if ($budgetricediff > 0) {
+    $budgetricediff = '+'.number_format($budgetricediff);
+} else {
+    $budgetricediff = number_format($budgetricediff);
+}
+
+?>
 echo "
 <table align=center width=1000 class='tb_layout bg2'>
     <tr>
-        <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ";echo $me['nation']==0?"공 백 지":"{$nation['name']}";echo " 】</td>
+        <td colspan=8 align=center style='color:<?=newColor($nation['color'])?>; bgcolor=<?=$nation['color']?>'>【<?=$nation['name']?>】</td>
     </tr>
     <tr>
         <td width=98 align=center id=bg1>총주민</td>
-        <td width=198 align=center>{$totalpop}/{$maxpop}</td>
+        <td width=198 align=center><?=number_format($currPop)?>/<?=number_format($maxPop)?></td>
         <td width=98 align=center id=bg1>총병사</td>
-        <td width=198 align=center>{$general['totcrew']}/{$general['maxcrew']}</td>
+        <td width=198 align=center><?=number_format($currCrew)?>/<?=number_format($maxCrew)?></td>
         <td width=98 align=center id=bg1>국 력</td>
-        <td width=298 align=center colspan=3>{$nation['power']}</td>
+        <td width=298 align=center colspan=3><?=$nation['power']?></td>
     </tr>
     <tr>
         <td align=center id=bg1>국 고</td>
-        <td align=center>"; echo $nation['gold']==0?"-":"{$nation['gold']}"; echo "</td>
+        <td align=center><?=number_format($nation['gold'])?></td>
         <td align=center id=bg1>병 량</td>
-        <td align=center>"; echo $nation['rice']==0?"-":"{$nation['rice']}"; echo "</td>
+        <td align=center><?=number_format($nation['rice'])?></td>
         <td align=center id=bg1>세 율</td>
-        <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"{$nation['rate']} %"; echo "</td>
+        <td align=center colspan=3><?=$nation['rate']?> %</td>
         </td>
     </tr>
     <tr>
         <td align=center id=bg1>세금/단기</td>
-        <td align=center>+$goldincomeList[0] / +$deadIncome</td>
+        <td align=center>+<?=number_format($goldIncome)?> / +<?=number_format($warIncome)?></td>
         <td align=center id=bg1>세곡/둔전</td>
-        <td align=center>+$riceincomeList[0] / +$riceincomeList[1]</td>
+        <td align=center>+<?=number_format($$riceIncome)?> / +<?=number_format($$wallIncome)?></td>
         <td align=center id=bg1>지급률</td>
-        <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"{$nation['bill']} %"; echo "</td>
+        <td align=center colspan=3><?=$nation['bill']?> %</td>
     </tr>
     <tr>
         <td align=center id=bg1>수입/지출</td>
-        <td align=center>+$goldincome / -$goldoutcome</td>
+        <td align=center>+<?=number_format($totalGoldIncome)?> / -<?=number_format($outcome)?></td>
         <td align=center id=bg1>수입/지출</td>
-        <td align=center>+$riceincome / -$riceoutcome</td>
+        <td align=center>+<?=number_format($totalRiceIncome)?> / -<?=number_format($outcome)?></td>
         <td align=center id=bg1>속 령</td>
-        <td width=98 align=center>$citycount</td>
+        <td width=98 align=center><?=count($cityList)?></td>
         <td width=98 align=center id=bg1>장 수</td>
-        <td width=98 align=center>{$nation['gennum']}</td>
+        <td width=98 align=center><?=$nation['gennum']?></td>
     </tr>
     <tr>
         <td align=center id=bg1>국고 예산</td>
-        <td align=center>{$budgetgold} ({$budgetgolddiff})</td>
+        <td align=center><?=number_format($budgetgold)?> (<?=$budgetgolddiff?>)</td>
         <td align=center id=bg1>병량 예산</td>
-        <td align=center>{$budgetrice} ({$budgetricediff})</td>
+        <td align=center><?=number_format($budgetrice)?> (<?=$budgetricediff?>)</td>
         <td align=center id=bg1>기술력</td>
-        <td align=center>".floor($nation['tech'])."</td>
+        <td align=center><?=number_format(floor($nation['tech']))?></td>
         <td align=center id=bg1>작 위</td>
-        <td align=center>".getNationLevel($nation['level'])."</td>
+        <td align=center><?=getNationLevel($nation['level'])?></td>
     </tr>
     <tr>
         <td align=center valign=top id=bg1> 속령일람 :</td>
-        <td colspan=7>";
-for($j=0; $j < $citycount; $j++) {
-    echo "$cityname[$j], ";
-}
-echo"
-        </td>
+        <td colspan=7><?=join(', ', $cityNames)?></td>
     </tr>
     <tr>
         <td align=center valign=top id=bg1>국가열전</td>
-        <td colspan=7 id=bg0>".ConvertLog($nation['history'])."</td>
+        <td colspan=7 id=bg0><?=ConvertLog($nation['history'])?></td>
     </tr>
 </table>
-<br>";
-
-?>
+<br>
 
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
