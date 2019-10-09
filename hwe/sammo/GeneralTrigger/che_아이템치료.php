@@ -19,11 +19,11 @@ class che_아이템치료 extends BaseGeneralTrigger{
             $general->updateVar('injury', 0);
             $general->activateSkill('pre.부상경감', 'pre.치료');
             $itemObj = $general->getItem();
-            $itemName = $itemObj->$name;
+            $itemName = $itemObj->getName();
             $josaUl = JosaUtil::pick($itemName, '을');
-            $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용하여 치료합니다!", ActionLogger::PLAIN);
+            $general->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용하여 치료합니다!", ActionLogger::PLAIN);
 
-            if($itemObj::$consumable && $itemObj->isConsumableNow('GeneralTrigger', 'che_아이템치료')){
+            if($itemObj->isConsumableNow('GeneralTrigger', 'che_아이템치료')){
                 $general->deleteItem();
             }
         }

@@ -18,11 +18,4 @@ class che_계략_삼략 extends \sammo\BaseItem{
         
         return $value;
     }
-
-    function isConsumableNow(string $actionType, string $command):bool{
-        if($actionType == 'GeneralCommand' && $command == '계략'){
-            return true;
-        }
-        return false;
-    }
 }
