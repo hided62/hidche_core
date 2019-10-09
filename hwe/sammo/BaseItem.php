@@ -34,7 +34,7 @@ class BaseItem implements iAction{
         return $this->reqSecu;
     }
 
-    function isValidTurnItem(string $actionType, string $command):bool{
+    function isConsumableNow(string $actionType, string $command):bool{
         return false;
     }
 }

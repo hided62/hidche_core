@@ -67,6 +67,10 @@ class GameUnitDetail implements iAction{
 
     }
 
+    public function getInfo():string{
+        return join("\n<br>", $this->info);
+    }
+
     public function getShortName():string{
         return StringUtil::subStringForWidth($this->name, 0, 4);
     }

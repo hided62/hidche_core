@@ -21,10 +21,11 @@ class BaseStatItem extends BaseItem{
 
     public function __construct(){
         $nameTokens = explode('_', static::class);
-        $this->statValue = (int)$nameTokens[-1];
+        $tokenLen = count($nameTokens);
+        $this->statValue = (int)$nameTokens[$tokenLen-2];
         assert(is_numeric($this->statValue));
-        $this->rawName = $nameTokens[-2];
-        [$this->statNick, $this->statType] = static::ITEM_TYPE[$nameTokens[-3]];
+        $this->rawName = $nameTokens[$tokenLen-1];
+        [$this->statNick, $this->statType] = static::ITEM_TYPE[$nameTokens[$tokenLen-3]];
 
         $this->id = $this->statValue;
         $this->name = sprintf('%s(+%d)',$this->rawName, $this->statValue);

@@ -23,7 +23,7 @@ class che_아이템치료 extends BaseGeneralTrigger{
             $josaUl = JosaUtil::pick($itemName, '을');
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용하여 치료합니다!", ActionLogger::PLAIN);
 
-            if($itemObj::$consumable && $itemObj->isValidTurnItem('GeneralTrigger', 'che_아이템치료')){
+            if($itemObj::$consumable && $itemObj->isConsumableNow('GeneralTrigger', 'che_아이템치료')){
                 $general->deleteItem();
             }
         }

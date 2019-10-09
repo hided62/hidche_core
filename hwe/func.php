@@ -592,11 +592,11 @@ function generalInfo(General $generalObj) {
     }
 
     $call = getCall(...$generalObj->getVars('leadership', 'strength', 'intel'));
-    $typename = $generalObj->getCrewTypeObj()->name;
-    $weaponname = $generalObj->getItem('weapon')->getName();
-    $bookname = $generalObj->getItem('book')->getName();
-    $horsename = $generalObj->getItem('horse')->getName();
-    $itemname = $generalObj->getItem('item')->getName();
+    $crewTypeInfo = displayiActionObjInfo($generalObj->getCrewTypeObj());
+    $weaponInfo = displayiActionObjInfo($generalObj->getItem('weapon'));
+    $bookInfo = displayiActionObjInfo($generalObj->getItem('book'));
+    $horseInfo = displayiActionObjInfo($generalObj->getItem('horse'));
+    $itemInfo = displayiActionObjInfo($generalObj->getItem('item'));
 
     $leadership = $generalObj->getLeadership(true, false, false);
     $strength = $generalObj->getStrength(true, false, false);
@@ -681,11 +681,11 @@ function generalInfo(General $generalObj) {
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>명마</b></td>
-        <td style='text-align:center;' colspan=2><font size=1>$horsename</font></td>
+        <td style='text-align:center;' colspan=2><font size=1>$horseInfo</font></td>
         <td style='text-align:center;' class='bg1'><b>무기</b></td>
-        <td style='text-align:center;' colspan=2><font size=1>$weaponname</font></td>
+        <td style='text-align:center;' colspan=2><font size=1>$weaponInfo</font></td>
         <td style='text-align:center;' class='bg1'><b>서적</b></td>
-        <td style='text-align:center;' colspan=2><font size=1>$bookname</font></td>
+        <td style='text-align:center;' colspan=2><font size=1>$bookInfo</font></td>
     </tr>
     <tr>
         <td height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
@@ -694,11 +694,11 @@ function generalInfo(General $generalObj) {
         <td style='text-align:center;' class='bg1'><b>군량</b></td>
         <td style='text-align:center;' colspan=2>{$generalObj->getVar('rice')}</td>
         <td style='text-align:center;' class='bg1'><b>도구</b></td>
-        <td style='text-align:center;' colspan=2><font size=1>$itemname</font></td>
+        <td style='text-align:center;' colspan=2><font size=1>$itemInfo</font></td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>병종</b></td>
-        <td style='text-align:center;' colspan=2>$typename</td>
+        <td style='text-align:center;' colspan=2>{$crewTypeInfo}</td>
         <td style='text-align:center;' class='bg1'><b>병사</b></td>
         <td style='text-align:center;' colspan=2>{$generalObj->getVar('crew')}</td>
         <td style='text-align:center;' class='bg1'><b>성격</b></td>

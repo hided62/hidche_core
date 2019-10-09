@@ -8,6 +8,9 @@ trait DefaultAction{
     }
 
     public function getInfo():string{
+        if($this->info === null){
+            return '';
+        }
         return $this->info;
     }
 

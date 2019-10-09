@@ -19,7 +19,7 @@ class che_치료_무후행군 extends \sammo\BaseItem{
         );
     }
 
-    function isValidTurnItem(string $actionType, string $command):bool{
+    function isConsumableNow(string $actionType, string $command):bool{
         if($actionType == 'GeneralTrigger' && $command == 'che_아이템치료'){
             return true;
         }

@@ -21,7 +21,7 @@ class che_계략_이추 extends \sammo\BaseItem{
         return $value;
     }
 
-    function isValidTurnItem(string $actionType, string $command):bool{
+    function isConsumableNow(string $actionType, string $command):bool{
         if($actionType == 'GeneralCommand' && $command == '계략'){
             return true;
         }
