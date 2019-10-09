@@ -23,9 +23,7 @@ $query = "select no,nation,level,con,turntime,belong,permission,penalty from gen
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$query = "select level from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$nation = MYDB_fetch_array($result);
+$nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation=%i', $me['nation']);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -47,7 +45,6 @@ $sel = [];
 $sel[$type] = "selected";
 
 $templates = new \League\Plates\Engine('templates');
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -130,7 +127,7 @@ foreach ($generals as &$general) {
         $genCntEff += 1;
     }
 
-    $lbonus = calcLeadershipBonus($general['level'], $nationlevel[$general['nation']]);
+    $lbonus = calcLeadershipBonus($general['level'], $nationLevel);
     if ($lbonus > 0) {
         $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {
@@ -165,7 +162,7 @@ foreach ($generals as &$general) {
 
     
     if ($general['npc'] < 2) {
-        foreach($generalTurnList[$generalObj->getID()] as $turnRawIdx=>$turn){
+        foreach($generalTurnList[$general['no']] as $turnRawIdx=>$turn){
             $turn = StringUtil::subStringForWidth($turn, 0, 41);
             $turnIdx = $turnRawIdx+1;
             $turntext[] = "&nbsp;$turnIdx : $turn";

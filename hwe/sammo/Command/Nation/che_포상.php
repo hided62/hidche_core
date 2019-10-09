@@ -119,7 +119,11 @@ class che_포상 extends Command\NationCommand{
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, $nation[$resKey] - ($isGold?GameConst::$basegold:GameConst::$baserice));
+        $amount = Util::valueFit(
+            $amount, 
+            0, 
+            $nation[$resKey] - ($isGold?GameConst::$basegold:GameConst::$baserice)
+        );
         $amountText = number_format($amount, 0);
         
         $logger = $general->getLogger();

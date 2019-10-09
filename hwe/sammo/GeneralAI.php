@@ -413,7 +413,7 @@ class GeneralAI{
                     ['che_포상', [
                         'destGeneralID' => $this->npcCivilGenerals[0]->id,
                         'isGold'=>$resName=='gold',
-                        'amount'=>$this->baseDevelCost
+                        'amount'=>round($this->baseDevelCost,-2)
                     ]],
                     1
                 ];
@@ -430,7 +430,7 @@ class GeneralAI{
 
             if($targetNpcWarGeneral->$resName < $reqMoney){
                 //국고 1/5과 '충분한 금액'의 기하평균
-                $payAmount = sqrt(($enoughMoney - $reqMoney) * ($remainResource[$resName] / 5));
+                $payAmount = sqrt(($enoughMoney - $targetNpcWarGeneral->$resName) * ($remainResource[$resName] / 5));
                 if ($remainResource[$resName] >= $payAmount / 2) {
                     $candidateCommand[] = [
                         ['che_포상', [
@@ -454,7 +454,7 @@ class GeneralAI{
 
             if($targetNpcWarGeneral->$resName < $reqMoney){
                 //국고와 '충분한 금액'의 기하평균
-                $payAmount = sqrt(($enoughMoney - $reqMoney) * $remainResource[$resName]);
+                $payAmount = sqrt(($enoughMoney - $targetNpcWarGeneral->$resName) * $remainResource[$resName]);
 
                 if($remainResource[$resName] >= $payAmount / 2){
                     $candidateCommand[] = [
@@ -476,7 +476,7 @@ class GeneralAI{
             $enoughMoney = $this->baseDevelCost * 1.5;
             
             if($targetNpcCivilGeneral->$resName >= $tooMuchMoney){
-                $returnAmount = $this->npcCivilGenerals - $enoughMoney;
+                $returnAmount = $targetNpcCivilGeneral->$resName - $enoughMoney;
                 $candidateCommand[] = [
                     ['che_몰수', [
                         'destGeneralID' => $targetNpcCivilGeneral->id,
@@ -699,7 +699,8 @@ class GeneralAI{
             
             if((($isWarUser || $resName == 'gold') && $compUser->$resName < 21000) || ($compUser->$resName < 5000)){
                 if($work){
-                    $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 3000)*10 + 10);
+                    //TODO: 새로 구현한 코드로 이전
+                    $amount = min(10000, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 3000)*1000 + 1000);
                     $commandList[] = [['che_포상', [
                         'destGeneralID'=>$userGenerals[0]->no,
                         'isGold'=>$resName=='gold',
@@ -707,7 +708,7 @@ class GeneralAI{
                     ]], 10]; // 금,쌀 1000단위 포상
                 }
                 else{
-                    $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
+                    $amount = min(10000, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*1000 + 1000);
                     $commandList[] = [['che_포상', [
                         'destGeneralID'=>$userGenerals[0]->no,
                         'isGold'=>$resName=='gold',
@@ -739,10 +740,10 @@ class GeneralAI{
     
             if($targetGeneral){
                 if($targetGeneral === $compNpcCivil){
-                    $amount = intdiv($targetGeneral->$resName - $minRes * 3, 100);
+                    $amount = round($targetGeneral->$resName - $minRes * 3, -2);
                 }
                 else{
-                    $amount = min(100, intdiv($targetGeneral->$resName, 5000)*10 + 10);
+                    $amount = min(10000, intdiv($targetGeneral->$resName, 5000)*1000 + 1000);
                 }
                 
                 if($amount > 0){
