@@ -625,12 +625,9 @@ class Util extends \utilphp\util
         }
         //.이 들어간 경우에는 분리해서 묶어야함.
         return join(',', array_map(function($value){
-            $value = trim($value, " \t\r\n\0\x0b`");
+            $value = preg_replace('/\s/', '', $value);
             if(strpos($value, '.') !== false){
                 $value = explode('.', $value);
-                $value = array_map(function($str){
-                    return trim($value, " \t\r\n\0\x0b`");
-                }, $value);
                 $value = join('`.`', $value);
             }
             return "`{$value}`";

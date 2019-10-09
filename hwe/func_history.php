@@ -16,7 +16,7 @@ function pushRawFileLog($path, $lines){
         $lines = [$lines];
     }
     $text = join("\n", $lines)."\n";
-    file_put_contents($path, $text, FILE_APPEND);
+    file_put_contents($path, $text, FILE_APPEND | LOCK_EX);
 }
 
 function getRawFileLogRecent(string $path, int $count, $expectedLineLength=null){

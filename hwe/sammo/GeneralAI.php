@@ -1577,7 +1577,7 @@ class GeneralAI{
             return ['che_건국', [
                 'nationName'=>"㉿".mb_substr($general->getName(), 1),
                 'nationType'=>$nationType,
-                'nationColor'=>$nationColor
+                'colorType'=>$nationColor
             ]];
 
         }
