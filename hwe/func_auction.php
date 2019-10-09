@@ -32,9 +32,9 @@ function registerAuction() {
         if($cost <= $amount*0.8) { $cost = $amount*0.8; }
         if($cost >= $amount*1.2) { $cost = $amount*1.2; }
 
-        $amount = Util::round($amount / 10) * 10;
-        $cost = Util::round($cost / 10) * 10;
-        $topv = Util::round($topv / 10) * 10;
+        $amount = Util::round($amount, -1);
+        $cost = Util::round($cost, -1);
+        $topv = Util::round($topv, -1);
 
         $term = 3 + rand() % 10;
         $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
@@ -54,9 +54,9 @@ function registerAuction() {
         if($cost <= $amount*0.8) { $cost = $amount*0.8; }
         if($cost >= $amount*1.2) { $cost = $amount*1.2; }
 
-        $amount = Util::round($amount / 10) * 10;
-        $cost = Util::round($cost / 10) * 10;
-        $topv = Util::round($topv / 10) * 10;
+        $amount = Util::round($amount, -1);
+        $cost = Util::round($cost, -1);
+        $topv = Util::round($topv, -1);
 
         $term = 3 + rand() % 10;
         $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);

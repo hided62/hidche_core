@@ -46,10 +46,10 @@ $btCount = $tradeCount + $bidCount;
 
 $unit = $turnterm * 60;
 
-$amount = Util::round($amount / 10) * 10;
-$cost = Util::round($cost / 10) * 10;
-$topv = Util::round($topv / 10) * 10;
-$value = Util::round($value / 10) * 10;
+$amount = Util::round($amount, -1);
+$cost = Util::round($cost, -1);
+$topv = Util::round($topv, -1);
+$value = Util::round($value, -1);
 if ($term > 24) {
     $term = 24;
 }

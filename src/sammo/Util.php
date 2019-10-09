@@ -7,17 +7,20 @@ class Util extends \utilphp\util
     /**
      * int 값 반환을 강제하는 부동소수점 반올림
      * @param int|float $value
+     * @param int       $pos    반올림 자리수, 0 이하의 '음수만'
      */
-    public static function round($value) : int{
-        return intval(round($value));
+    public static function round($value, $pos=0) : int{
+        assert($pos <= 0, 'Util::round는 음수만 입력 가능');
+        return intval(round($value, $pos));
     }
 
     /**
      * int 값으로 강제로 설정하는 부동소수점 반올림
      * @param int|float $value
+     * @param int       $pos    반올림 자리수, 0 이하의 '음수만'
      */
-    public static function setRound(&$value) : void{
-        $value = static::round($value);
+    public static function setRound(&$value, $pos=0) : void{
+        $value = static::round($value, $pos);
     }
 
     private static function _parseReq($value, string $type)

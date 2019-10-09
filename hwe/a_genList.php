@@ -163,7 +163,7 @@ foreach($generalList as $general){
         $name = $name.'<br><small>('.$ownerNameList[$general['owner']].')</small>';
     }
 
-    $general['connect'] = Util::round($general['connect'] / 10) * 10;
+    $general['connect'] = Util::round($general['connect'], -1);
 
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "

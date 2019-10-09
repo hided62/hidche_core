@@ -740,7 +740,7 @@ class GeneralAI{
     
             if($targetGeneral){
                 if($targetGeneral === $compNpcCivil){
-                    $amount = round($targetGeneral->$resName - $minRes * 3, -2);
+                    $amount = Util::round($targetGeneral->$resName - $minRes * 3, -2);
                 }
                 else{
                     $amount = min(10000, intdiv($targetGeneral->$resName, 5000)*1000 + 1000);
