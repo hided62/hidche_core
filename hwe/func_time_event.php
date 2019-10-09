@@ -571,7 +571,7 @@ function disaster() {
     $logger->pushGlobalHistoryLog("<M><b>【{$logTitle}】</b></>{$targetCityNames}에 {$logBody}");
     $logger->flush();
 
-    if ($isGood) {
+    if (!$isGood) {
         //NOTE: 쿼리 1번이지만 복잡하기 vs 쿼리 여러번이지만 조금 더 깔끔하기
         foreach ($targetCityList as $city) {
             $affectRatio = Util::valueFit($city['secu'] / $city['secu2'] / 0.8, 0, 1);
