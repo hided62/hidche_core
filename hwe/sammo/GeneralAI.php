@@ -388,18 +388,16 @@ class GeneralAI{
         $gold -= $obj훈련->getCost()[0] * 2;
         $gold -= $obj사기진작->getCost()[0] * 2;
 
-        $cost = getCost($type) * getTechCost($tech);
+        $cost = $general->getCrewTypeObj()->costWithTech($tech);
         $cost = $general->onCalcDomestic('징병', 'cost', $cost);
     
         $crew = intdiv($gold, $cost);
-        if($leadership*100 < $crew) { $crew = $leadership; }
         $crew *= 100;
 
-        $arg = [
+        return ['che_징병', [
             'crewType'=>$type,
-            'amountCrew'=>$crew
-        ];
-        return ['che_징병', $arg];
+            'amount'=>$crew
+        ]];
     }
 
     public function getPayTurnCandidates(string $resName):array{
@@ -1350,10 +1348,10 @@ class GeneralAI{
         //총 통솔의 절반을 징병하는 것을 기준으로 함
         $general = $this->getGeneralObj();
         $tech = $this->nation['tech'];
-        $crewType = GameUnitConst::byID($general->getVar('crewtype'));
+        $crewType = $general->getCrewTypeObj();
         $baseArmCost = $crewType->costWithTech(
             $tech,
-            $general->getLeadership(false) / 2
+            $general->getLeadership(false) * 50
         );//기본 병종
         $baseArmCost = $general->onCalcDomestic('징병', 'cost', $baseArmCost);
         $baseArmRice = $general->getLeadership(false) / 2 * $crewType->rice * getTechCost($tech);

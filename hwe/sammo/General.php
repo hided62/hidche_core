@@ -40,6 +40,25 @@ class General implements iAction{
     const TURNTIME_HMS = 1;
     const TURNTIME_HM = 2;
 
+    protected $calcCache = [];
+
+    protected static $prohibitedDirectUpdateVars = [
+        //Reason: iAction
+        'leadership'=>1,
+        'power'=>1,
+        'intel'=>1,
+        'nation'=>2,
+        'level'=>1,
+        //NOTE: levelObj로 인해 국가의 '레벨'이 바뀌는 것도 조심해야 하나, 국가 레벨의 변경은 월 초/말에만 일어남.
+        'special'=>1,
+        'special2'=>1,
+        'personal'=>1,
+        'horse'=>1,
+        'weapon'=>1,
+        'book'=>1,
+        'item'=>1
+    ];
+
 
     /**
      * @param array $raw DB row값.
@@ -236,14 +255,23 @@ class General implements iAction{
      * 
      * @param string $statName 스탯값, leadership, strength, intel 가능
      * @param bool $withInjury 부상값 사용 여부
-     * @param bool $withItem 아이템 적용 여부
-     * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
+     * @param bool $withIActionObj 아이템, 특성, 성격 등 보정치 적용 여부
+     * @param bool $withStatAdjust 능력치간 보정 사용 여부
      * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
      * 
      * @return int|float 계산된 능력치
      */
 
-    protected function getStatValue(string $statName, $withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
+    protected function getStatValue(string $statName, $withInjury = true, $withIActionObj = true, $withStatAdjust = true, $useFloor = true):float{
+        $cKey = "{$statName}_{$withInjury}_{$withIActionObj}_{$withStatAdjust}";
+        if(key_exists($cKey, $this->calcCache)){
+            $statValue = $this->calcCache[$cKey];
+            if($useFloor){
+                return Util::toInt($statValue);
+            }
+            return $statValue;
+        }
+
         $statValue = $this->getVar($statName);
 
         if($withInjury){
@@ -252,26 +280,26 @@ class General implements iAction{
 
         if($withStatAdjust){
             if($statName === 'strength'){
-                $statValue += Util::round($this->getStatValue('intel', $withInjury, $withItem, false, false) / 4);
+                $statValue += Util::round($this->getStatValue('intel', $withInjury, $withIActionObj, false, false) / 4);
             }
             else if($statName === 'intel'){
-                $statValue += Util::round($this->getStatValue('strength', $withInjury, $withItem, false, false) / 4);
+                $statValue += Util::round($this->getStatValue('strength', $withInjury, $withIActionObj, false, false) / 4);
             }
         }
 
-        foreach([
-            $this->nationType,
-            $this->levelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj
-        ] as $actionObj){
-            if($actionObj !== null){
-                $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
+        if($withIActionObj){
+            foreach([
+                $this->nationType,
+                $this->levelObj,
+                $this->specialDomesticObj,
+                $this->specialWarObj,
+                $this->personalityObj
+            ] as $actionObj){
+                if($actionObj !== null){
+                    $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
+                }
             }
-        }
-
-        if($withItem){
+        
             foreach($this->itemObjs as $actionObj){
                 if($actionObj !== null){
                     $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
@@ -279,22 +307,25 @@ class General implements iAction{
             }
         }
 
+        $this->calcCache[$cKey] = $statValue;
+
         if($useFloor){
             return Util::toInt($statValue);
         }
+        
         return $statValue;
     }
 
-    function getLeadership($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return $this->getStatValue('leadership', $withInjury, $withItem, $withStatAdjust, $useFloor);
+    function getLeadership($withInjury = true, $withIActionObj = true, $withStatAdjust = true, $useFloor = true):float{
+        return $this->getStatValue('leadership', $withInjury, $withIActionObj, $withStatAdjust, $useFloor);
     }
 
-    function getStrength($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return $this->getStatValue('strength', $withInjury, $withItem, $withStatAdjust, $useFloor);
+    function getStrength($withInjury = true, $withIActionObj = true, $withStatAdjust = true, $useFloor = true):float{
+        return $this->getStatValue('strength', $withInjury, $withIActionObj, $withStatAdjust, $useFloor);
     }
 
-    function getIntel($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return $this->getStatValue('intel', $withInjury, $withItem, $withStatAdjust, $useFloor);
+    function getIntel($withInjury = true, $withIActionObj = true, $withStatAdjust = true, $useFloor = true):float{
+        return $this->getStatValue('intel', $withInjury, $withIActionObj, $withStatAdjust, $useFloor);
     }
 
     function addDex(GameUnitDetail $crewType, float $exp, bool $affectTrainAtmos=false){
@@ -323,6 +354,18 @@ class General implements iAction{
         $dexType = "dex{$ntype}";
 
         $this->increaseVar($dexType, $exp);
+    }
+
+    function updateVar(string $key, $value){
+        if(!key_exists($key, $this->updatedVar)){
+            $this->updatedVar[$key] = $this->raw[$key];
+            $this->calcCache = [];
+        }
+        if($this->raw[$key] === $value){
+            return;
+        }
+        $this->raw[$key] = $value;
+        $this->calcCache = [];
     }
 
     /**
