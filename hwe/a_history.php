@@ -86,6 +86,8 @@ if ($month <= 0) {
     $month += 12;
 }
 
+$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
+
 ?>
 <!DOCTYPE html>
 <html>
