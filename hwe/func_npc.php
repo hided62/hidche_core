@@ -6,6 +6,7 @@ class AIAllowedAction{
     public $develop = true;
     public $warp = true;
 
+    public $recruitLowestCivil = false;
     public $randomRecruit = true;
     public $recruit = true;
     public $recruit_high = false;
@@ -41,6 +42,8 @@ class AIAllowedAction{
         $this->buySellRice = true;
 
         $this->staffAction = false;
+
+        $this->recruitLowestCivil = true;
 
         foreach($aiOptions as $key=>$value){
             assert($value);
@@ -168,7 +171,6 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     [$startyear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
     $relYear = Util::valueFit($year-$startyear, 0);
 
-    $type = 0;
     switch($genType) {
     case 0: //무장
     case 2: //무내정장
@@ -229,7 +231,7 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     }
 
     if($types){
-        if(!$allowedAction->randomRecruit && in_array($currentCrewType, $types) && $type != GameUnitConst::DEFAULT_CREWTYPE){
+        if(!$allowedAction->randomRecruit && in_array($currentCrewType, $types) && ($currentCrewType != GameUnitConst::DEFAULT_CREWTYPE && $currentCrewType != $types[0])){
             $type = $currentCrewType;
         }
         else{
@@ -277,7 +279,7 @@ function processAI($no, &$reduce_turn) {
     }
 
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,horse,weap,book,item,special,special2,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -385,6 +387,9 @@ function processAI($no, &$reduce_turn) {
         'rice'=>0,
         'tech'=>0,
     ];
+
+    setLeadershipBonus($general, $nation['level']);
+    $leadership = getGeneralLeadership($general, false, true, true, true);
 
     $coreCommand = array();
     if($general['level'] >= 5) {
@@ -926,18 +931,17 @@ function processAI($no, &$reduce_turn) {
                 $ratio2 = Util::round($genCount2 / $genCount * 100);
                 $ratio3 = rand() % 100;
                 // 전체 인구 대비 확률로 현지에서 징병
-                if($city['pop'] > 40000 && 100 + $ratio - $ratio2 > $ratio3) {
+                $minRecruitPop = 30000 + max($allowedAction->recruitLowestCivil?0:20000, $leadership * 100);
+                if($city['pop'] >= $minRecruitPop && 100 + $ratio - $ratio2 > $ratio3) {
                     $command = EncodeCommand(0, 0, 0, 11);  //인구 되면 징병
                 } else{
-                    // 인구 안되면 4만 이상인 도시로 워프
-                    $query = "select city from city where nation='{$general['nation']}' and pop>40000 and supply='1' order by rand() limit 0,1";
-                    $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
-                    $cityCount = MYDB_num_rows($result);
-                    if($cityCount > 0 && $allowedAction->warp) {
+                    $warpCityID = $db->queryFirstField('SELECT city FROM city WHERE nation=%i AND pop>=%i AND supply=1 ORDER BY rand() limit 1', $general['nation'], $minRecruitPop);
+                    if($warpCityID && $allowedAction->warp) {
                         $selCity = MYDB_fetch_array($result);
                         //워프
-                        $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
-                        MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
+                        $db->update('general', [
+                            'city'=>$warpCityID
+                        ], 'no=%i', $general['no']);
 
                         $command = EncodeCommand(0, 0, 0, 50);  //요양
                         $query = "update general set turn0='$command' where no='{$general['no']}'";
@@ -1034,7 +1038,7 @@ function processAI($no, &$reduce_turn) {
         return;
     case EncodeCommand(0, 0, 0, 11): //징병
         if ($allowedAction->recruit) {
-            SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40'], $general['crewtype'], $allowedAction);
+            SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $leadership, $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40'], $general['crewtype'], $allowedAction);
         }
         else{
             $db->update('general', [
@@ -1462,7 +1466,7 @@ function NPCStaffWork($general, $nation, $dipState){
             if(!$generalCity['front']){
                 continue;
             }
-            if($generalCity['pop'] - 33000 > $nationGeneral['leader']){
+            if($generalCity['pop'] - 33000 > $nationGeneral['leader'] * 100){
                 continue;
             }
             if($nationGeneral['troop'] != 0){
@@ -1477,7 +1481,7 @@ function NPCStaffWork($general, $nation, $dipState){
             $popTrial = 5;
             for($popTrial = 0; $popTrial < 5; $popTrial++){
                 $targetCity = $nationCities[Util::choiceRandom($backupCitiesID)];
-                if($targetCity['pop'] < 33000 + $nationGeneral['leader']){
+                if($targetCity['pop'] < 33000 + $nationGeneral['leader'] * 100){
                     continue;
                 }
                 if (Util::randBool($targetCity['pop'] / $targetCity['pop2'])) {
