@@ -2565,8 +2565,17 @@ function process_58(&$general) {
 
         $cutDex = Util::toInt($fromOrigDex * 0.3);
         $fromNewDex = $fromOrigDex - $cutDex;
+
+        if($fromDexIdx == $toDexIdx){
+            $toOrigDex = $fromNewDex;
+        }
+
         $addDex = Util::toInt($cutDex * 2 / 3);
         $toNewDex = $toOrigDex + $addDex;
+
+        if($fromDexIdx == $toDexIdx){
+            $fromNewDex = $toNewDex;
+        }
 
         $exp = 10;
         $exp = CharExperience($exp, $general['personal']);
