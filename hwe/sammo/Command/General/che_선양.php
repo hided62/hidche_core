@@ -131,5 +131,31 @@ class che_선양 extends Command\GeneralCommand{
         return true;
     }
 
-    
+    public function getForm(): string
+    {
+        //TODO: 암행부처럼 보여야...
+        $db = DB::db();
+
+        $destRawGenerals = $db->query('SELECT no,name,level,npc FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        ob_start();
+?>
+군주의 자리를 다른 장수에게 물려줍니다.<br>
+장수를 선택하세요.<br>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+<?php foreach($destRawGenerals as $destGeneral):
+    $color = \sammo\getNameColor($destGeneral['npc']);
+    if($color){
+        $color = " style='color:{$color}'";
+    }
+    $name = $destGeneral['name'];
+    if($destGeneral['level'] >= 5){
+        $name = "*{$name}*";
+    }
+?>
+    <option value='<?=$destGeneral['no']?>' <?=$color?>><?=$name?></option>
+<?php endforeach; ?>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<?php
+        return ob_get_clean();
+    }
 }

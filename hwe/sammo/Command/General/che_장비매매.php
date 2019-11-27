@@ -168,49 +168,47 @@ class che_장비매매 extends Command\GeneralCommand{
 
         $citySecu = $db->queryFirstField('SELECT secu FROM city WHERE city = %i', $this->generalObj->getCityID());
         $gold = $this->generalObj->getVar('gold');
-        $form[] = <<<EOT
+
+        ob_start();
+?>
 <script>
 function updateItemType(){
     $('#itemType').val($('#itemCode option:selected').data('itemType'));
 }
 </script>
-EOT;
-        $form[] = '<input type="hidden" class="formInput" name="itemType" id="itemType" value="item">';
-        $form[] = <<<EOT
+<input type="hidden" class="formInput" name="itemType" id="itemType" value="item">
 장비를 구입하거나 매각합니다.<br>
 현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
-현재 도시 치안 : {$citySecu} &nbsp;&nbsp;&nbsp;현재 자금 : {$gold}<br>
+현재 도시 치안 : <?=$citySecu?> &nbsp;&nbsp;&nbsp;현재 자금 : <?=$gold?><br>
 장비 : <select class='formInput' name="itemCode" id="itemCode" onchange='updateItemType();' size='1' style='color:white;background-color:black;'>
-EOT;
-        foreach(GameConst::$allItems as $itemType=>$itemCategories){
-            //매각
-            $typeName = static::$itemMap[$itemType];
-            $form[] = "<option value='None' data-itemType='{$itemType}' style='color:skyblue'>_____{$typeName}매각(반값)____</option>";
-
-            //구입
-            foreach($itemCategories as $itemCode=>$cnt){
-                if($cnt > 0){
-                    continue;
-                }
-                $itemClass = buildItemClass($itemCode);
-                if(!$itemClass->isBuyable()){
-                    continue;
-                }
-                $itemName = $itemClass->getName();
-                $reqSecu = $itemClass->getReqSecu();
-                $reqGold = $itemClass->getCost();
-                $css = '';
-                if($reqSecu < $citySecu){
-                    $css = 'color:red;';
-                }
-                $form[] = "<option value='{$itemCode}' data-itemType='{$itemType}' style='{$css}'>{$itemName} 가격: {$reqGold}</option>";
+<?php foreach(GameConst::$allItems as $itemType=>$itemCategories): 
+    //매각
+    $typeName = static::$itemMap[$itemType];
+?>
+    <option value='None' data-itemType='<?=$itemType?>' style='color:skyblue'>_____<?=$typeName?>매각(반값)____</option>
+        //구입
+    <?php foreach($itemCategories as $itemCode=>$cnt) :
+            if($cnt > 0){
+                continue;
             }
-        }
-        $form[] = <<<EOT
+            $itemClass = buildItemClass($itemCode);
+            if(!$itemClass->isBuyable()){
+                continue;
+            }
+            $itemName = $itemClass->getName();
+            $reqSecu = $itemClass->getReqSecu();
+            $reqGold = $itemClass->getCost();
+            $css = '';
+            if($reqSecu < $citySecu){
+                $css = 'color:red;';
+            }
+?>
+        <option value='<?=$itemCode?>' data-itemType='<?=$itemType?>' style='<?=$css?>'><?=$itemName?> 가격: <?=$reqGold?></option>
+    <?php endforeach; ?>
+<?php endforeach; ?>
 </select>
 <input type=submit value=거래>
-EOT;
-        
-        return join("\n",$form);
+<?php
+        return ob_get_clean();
     }
 }
