@@ -1273,7 +1273,6 @@ function process_15(&$general) {
 function process_16(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $log = [];
     $alllog = [];
@@ -1282,70 +1281,132 @@ function process_16(&$general) {
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
-    $query = "select nation,war,sabotagelimit,tech from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $nation = $db->queryFirstRow('SELECT nation,war,sabotagelimit,tech from nation where nation=%i', $general['nation']);
+    $city = $db->queryFirstRow('SELECT nation,supply from city where city=%i', $general['city']);
 
     $command = DecodeCommand($general['turn0']);
-    $destination = $command[1];
+    $finalTarget = $command[1];
+    $finalDestCityName = CityConst::byID($finalTarget)->name;
 
-    $query = "select * from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
-
-    $query = "select nation,sabotagelimit,tech from nation where nation='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dnation = MYDB_fetch_array($result);
-
-    $query = "select state from diplomacy where me='{$general['nation']}' and you='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dip = MYDB_fetch_array($result);
-
-    if(key_exists($destination, CityConst::byID($general['city'])->path)){
-        $nearCity = true;
-    }
-    else{
-        $nearCity = false;
-    }
-
-    $josaRo = JosaUtil::pick($destcity['name'], '로');
     if($admin['year'] < $admin['startyear']+3) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-//    } elseif($city['supply'] == 0) {
-//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif(!$nearCity) {
-        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($general['crew'] <= 0) {
-        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($general['rice'] <= Util::round($general['crew']/100)) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($dip['state'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:교전중인 국가가 아닙니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:본국에서만 출병가능합니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($nation['war'] == 1) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 전쟁 금지입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
-    } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:본국입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    } 
+    
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+    if($general['crew'] <= 0) {
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+    
+    if($general['rice'] <= Util::round($general['crew']/100)) {
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+
+    if($nation['war'] == 1) {
+        $log[] = "<C>●</>{$admin['month']}월:현재 전쟁 금지입니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+
+    if($general['nation'] != $city['nation']) {
+        $log[] = "<C>●</>{$admin['month']}월:본국에서만 출병가능합니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+
+    if($general['city'] == $finalTarget){
+        $log[] = "<C>●</>{$admin['month']}월:이미 도착했습니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+    
+
+    $allowedNationList = $db->queryFirstColumn('SELECT you FROM diplomacy WHERE state = 0 AND me = %i', $general['nation']);
+    $allowedNationList[] = $general['nation'];
+
+    $distanceList = searchDistanceListToDest($general['city'], $finalTarget, $allowedNationList);
+
+    if(!$distanceList){
+        $log[] = "<C>●</>{$admin['month']}월:경로에 도달할 방법이 없습니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
+    }
+
+    $candidateCities = [];
+
+    $minDist = array_key_first($distanceList);
+    do {
+        //1: 최단 거리 도시 중 공격 대상이 있는가 확인
+        //2: 최단 거리 + 1 도시 중 공격 대상이 있는가 확인
+        foreach($distanceList as $dist => $distCitiesInfo){
+            if($dist > $minDist + 1){
+                break;
+            }
+            $currDist = $dist;
+            foreach($distCitiesInfo as [$distCityID, $distCityNation]){
+                if($distCityNation !== $general['nation']){
+                    $candidateCities[] = $distCityID;
+                }
+            }
+
+            if($candidateCities){
+                break 2;
+            }
+        }
+
+        //3: 최단 거리 도시 중 아군 도시 선택
+        foreach($distanceList[$minDist] as [$distCityID, $distCityNation]){
+            if($distCityNation === $general['nation']){
+                $candidateCities[] = $distCityID;
+            }
+        }
+    }while(false);
+    
+    $destCityID = (int)Util::choiceRandom($candidateCities);
+    $destCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $destCityID);
+
+    if($general['nation'] == $destCity['nation']) {
+        $log[] = "<C>●</>{$admin['month']}월:경로에 적국 도시가 없습니다. <G><b>{$finalDestCityName}</b></> 방향으로 출병 실패. <1>$date</>";
+        $general['turn0'] = EncodeCommand(0, 0, $destCityID, 26);
         pushGenLog($general, $log);
         process_21($general);
         return;
-    } else {
-        // 전쟁 표시
-        $query = "update city set state=43,term=3 where city='{$destcity['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
-        // 전투 처리
-        processWar($general, $destcity);
-        $log = uniqueItem($general, $log);
     }
+
+    $destCityName = CityConst::byID($destCityID)->name;
+    if($finalTarget !== $destCityID){
+        $josaRo = JosaUtil::pick($finalDestCityName, '로');
+        $josaUl = JosaUtil::pick($destCityName, '을');
+        if($minDist == $currDist){
+            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$finalDestCityName}</b></>{$josaRo} 가기 위해 <G><b>{$destCityName}</b></>{$josaUl} 거쳐야 합니다. <1>$date</>";
+        }
+        else{
+            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$finalDestCityName}</b></>{$josaRo} 가는 도중 <G><b>{$destCityName}</b></>{$josaUl} 거치기로 합니다. <1>$date</>";
+        }
+        
+        pushGenLog($general, $log);
+        $log = [];
+    }
+    
+    // 전쟁 표시
+    $db->update('city', [
+        'state'=>43,
+        'term'=>3
+    ], 'city = %i', $destCityID);
+    // 숙련도 증가
+    addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
+    // 전투 처리
+    processWar($general, $destCity);
+    $log = uniqueItem($general, $log);
 
     pushGenLog($general, $log);
 }

@@ -392,7 +392,8 @@ function command_16($turn, $command) {
 
     echo getMapHtml();
     echo "<br>
-선택된 도시로 침공을 합니다.<br>
+선택된 도시를 향해 침공을 합니다.<br>
+침공 경로에 적군의 도시가 있다면 전투를 벌입니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
 {$currentcity['name']} =>
