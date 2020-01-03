@@ -1332,6 +1332,7 @@ function process_16(&$general) {
 
     $allowedNationList = $db->queryFirstColumn('SELECT you FROM diplomacy WHERE state = 0 AND me = %i', $general['nation']);
     $allowedNationList[] = $general['nation'];
+    $allowedNationList[] = 0;
 
     $distanceList = searchDistanceListToDest($general['city'], $finalTarget, $allowedNationList);
 
@@ -1343,7 +1344,7 @@ function process_16(&$general) {
 
     $candidateCities = [];
 
-    $minDist = array_key_first($distanceList);
+    $minDist = \array_key_first($distanceList);
     do {
         //1: 최단 거리 도시 중 공격 대상이 있는가 확인
         //2: 최단 거리 + 1 도시 중 공격 대상이 있는가 확인
