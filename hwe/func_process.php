@@ -1344,7 +1344,7 @@ function process_16(&$general) {
 
     $candidateCities = [];
 
-    $minDist = \array_key_first($distanceList);
+    $minDist = Util::array_first_key($distanceList);
     do {
         //1: 최단 거리 도시 중 공격 대상이 있는가 확인
         //2: 최단 거리 + 1 도시 중 공격 대상이 있는가 확인
