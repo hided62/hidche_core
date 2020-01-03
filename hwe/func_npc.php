@@ -1006,7 +1006,7 @@ function processAI($no, &$reduce_turn) {
                         $cityCnt = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1', $general['nation']);
                         $citySelect = Util::randRangeInt(0, Util::toInt($cityCnt/5));
 
-                        $selCity = $db->queryFirstField('SELECT city, ,(def+wall)/(def2+wall2) as dev from city where nation=%i and supply=1 order by dev limit %i,1',$general['nation'], $citySelect);
+                        $selCity = $db->queryFirstField('SELECT city, (def+wall)/(def2+wall2) as dev from city where nation=%i and supply=1 order by dev limit %i,1',$general['nation'], $citySelect);
                     }
 
                     if($general['city'] != $selCity) {
