@@ -415,8 +415,6 @@ function command_16($turn, $command) {
 </form>
 ";
 
-    printCitiesBasedOnDistance($currentcity['city'], 1);
-
     ender();
 }
 
