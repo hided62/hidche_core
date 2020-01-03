@@ -982,31 +982,36 @@ function processAI($no, &$reduce_turn) {
                     }
                 }
                 if(count($target) == 0 && $allowedAction->warp) {
-                    //전방 도시 선택, 30% 확률로 태수 있는 전방으로 워프
-                    if(rand()%100 < 30) {
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by gen1 desc,rand() limit 0,1";
-                    } else {
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by rand() limit 0,1";
+                    //전방 도시 선택, 태수, 군사, 시중이 배정되어 있으면 이동 확률 증가
+                    $warpCities = $db->queryAllLists('SELECT city, gen1, gen2, gen3 FROM city WHERE nation = %i AND supply = 1 AND front > 0', $general['nation']);
+                    $warpCandidates = [];
+                    foreach($warpCities as [$cityID, $gen1, $gen2, $gen3]){
+                        $score = 1;
+                        if($gen1){
+                            $score += 1;
+                        }
+                        if($gen2){
+                            $score += 1;
+                        }
+                        if($gen3){
+                            $score += 1;
+                        }
+                        $warpCandidates[$cityID] = $score;
                     }
-                    $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                    $cityCount = MYDB_num_rows($result);
-                    if($cityCount == 0) {
+                    if($warpCandidates){
+                        $selCity = Util::choiceRandomUsingWeight($warpCandidates);
+                    }
+                    else{
                         //도시 수, 랜덤(상위 20%) 선택, 저개발 도시 선택
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1'";
-                        $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                        $cityCount = MYDB_num_rows($result);
-                        $citySelect = rand() % (Util::round($cityCount/5) + 1);
+                        $cityCnt = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1', $general['nation']);
+                        $citySelect = Util::randRangeInt(0, Util::toInt($cityCnt/5));
 
-                        $query = "select city,(def+wall)/(def2+wall2) as dev from city where nation='{$general['nation']}' and supply='1' order by dev limit {$citySelect},1";
-                        $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                        $selCity = MYDB_fetch_array($result);
-                    } else {
-                        $selCity = MYDB_fetch_array($result);
+                        $selCity = $db->queryFirstField('SELECT city, ,(def+wall)/(def2+wall2) as dev from city where nation=%i and supply=1 order by dev limit %i,1',$general['nation'], $citySelect);
                     }
 
-                    if($general['city'] != $selCity['city']) {
+                    if($general['city'] != $selCity) {
                         //워프
-                        $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
+                        $query = "update general set city='{$selCity}' where no='{$general['no']}'";
                         MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
                         $command = EncodeCommand(0, 0, 0, 50);  //요양
@@ -1064,7 +1069,6 @@ function NPCStaffWork($general, $nation, $dipState){
 
     $nationCities = [];
     $frontCitiesID = [];
-    $frontImportantCitiesID = [];
     $supplyCitiesID = [];
     $backupCitiesID = [];
 
@@ -1086,10 +1090,18 @@ function NPCStaffWork($general, $nation, $dipState){
         if($nationCity['supply']){
             $supplyCitiesID[] = $cityID;
             if($nationCity['front']){
-                $frontCitiesID[] = $cityID;
+                $score = 1;
                 if($nationCity['gen1']){
-                    $frontImportantCitiesID[] = $cityID;
+                    $score += 1;
                 }
+                if($nationCity['gen2']){
+                    $score += 1;
+                }
+                if($nationCity['gen3']){
+                    $score += 1;
+                }
+                $frontCitiesID[$cityID] = $score;
+                
             }
             else{
                 $backupCitiesID[] = $cityID;
@@ -1097,7 +1109,6 @@ function NPCStaffWork($general, $nation, $dipState){
         }
     }
     Util::shuffle_assoc($nationCities);
-    shuffle($frontCitiesID);
     shuffle($supplyCitiesID);
 
     $nationGenerals = [];
@@ -1155,7 +1166,7 @@ function NPCStaffWork($general, $nation, $dipState){
         $lostGeneral = $nationGenerals[$lostGeneralID];
         if($lostGeneral['npc'] < 2){
             if($dipState >= 3 && $frontCitiesID){
-                $selCityID = Util::choiceRandom($frontCitiesID);
+                $selCityID = Util::choiceRandomUsingWeight($frontCitiesID);
             }
             else{
                 $selCityID = Util::choiceRandom($supplyCitiesID);
@@ -1307,7 +1318,7 @@ function NPCStaffWork($general, $nation, $dipState){
             continue;
         }
         if($dipState >= 3 && $frontCitiesID){
-            $selCityID = Util::choiceRandom($frontCitiesID);
+            $selCityID = Util::choiceRandomUsingWeight($frontCitiesID);
         }
         else{
             $selCityID = Util::choiceRandom($supplyCitiesID);
@@ -1425,12 +1436,7 @@ function NPCStaffWork($general, $nation, $dipState){
                 $score *= 4;
             }
     
-            if(Util::randBool(0.3) && $frontImportantCitiesID){
-                $targetCityID = Util::choiceRandom($frontImportantCitiesID);
-            }
-            else{
-                $targetCityID = Util::choiceRandom($frontCitiesID);
-            }
+            $targetCityID = Util::choiceRandomUsingWeight($frontCitiesID);
             
             $command = EncodeCommand(0, $nationGeneral['no'], $targetCityID, 27);
 
