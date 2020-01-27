@@ -19,8 +19,6 @@ use Psr\Log\NullLogger;
  * Factory provides method to create locks.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
- *
- * @deprecated "Symfony\Component\Lock\Factory" is deprecated since Symfony 4.4 and will be removed in 5.0 use "Symfony\Component\Lock\LockFactory" instead
  */
 class Factory implements LoggerAwareInterface
 {
@@ -28,7 +26,7 @@ class Factory implements LoggerAwareInterface
 
     private $store;
 
-    public function __construct(PersistingStoreInterface $store)
+    public function __construct(StoreInterface $store)
     {
         $this->store = $store;
 
@@ -38,9 +36,9 @@ class Factory implements LoggerAwareInterface
     /**
      * Creates a lock for the given resource.
      *
-     * @param string     $resource    The resource to lock
-     * @param float|null $ttl         Maximum expected lock duration in seconds
-     * @param bool       $autoRelease Whether to automatically release the lock or not when the lock instance is destroyed
+     * @param string $resource    The resource to lock
+     * @param float  $ttl         Maximum expected lock duration in seconds
+     * @param bool   $autoRelease Whether to automatically release the lock or not when the lock instance is destroyed
      *
      * @return Lock
      */

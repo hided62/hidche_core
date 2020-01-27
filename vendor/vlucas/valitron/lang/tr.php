@@ -10,7 +10,6 @@ return array(
     'length'        => "en az %d adet uzunluğunda olmalı",
     'min'           => "en az böyle olmalı %s",
     'max'           => "bundan daha fazla olmalı %s",
-    'listContains'  => "geçersiz değer içeriyor",
     'in'            => "geçersiz değer içeriyor",
     'notIn'         => "geçersiz değer içeriyor",
     'ip'            => "geçerli bir IP adresi değil",
