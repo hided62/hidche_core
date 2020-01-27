@@ -11,7 +11,7 @@
         "sergeytsalkov/meekrodb": "^2.3",
         "league/plates": "^3.3",
         "guzzlehttp/guzzle": "^6.3",
-        "leafo/scssphp": "^0.7.5",
+        "scssphp/scssphp": "^1.0",
         "monolog/monolog": "^1.23",
         "firephp/firephp-core": "^0.4.0",
         "vlucas/valitron": "^1.4",
@@ -40,6 +40,10 @@
         "files":[
             "f_config/config.php"
         ]
+    },
+    "config": {
+        "platform": {
+            "php": "7.2"
+        }
     }
-    
 }
