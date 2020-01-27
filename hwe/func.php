@@ -271,6 +271,11 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
+    if(!$nation){
+        $nation = getNationStaticInfo(0);
+        $nation['tech'] = 0;
+    }
+
     $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
@@ -341,6 +346,7 @@ function myNationInfo() {
 
     $techCall = getTechCall($nation['tech']);
 
+    
     if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $nation['tech'] = "<font color=magenta>{$nation['tech']}</font>"; }
     else { $nation['tech'] = "<font color=limegreen>{$nation['tech']}</font>"; }
 
