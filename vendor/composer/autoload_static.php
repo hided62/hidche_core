@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
 {
     public static $files = array (
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
@@ -31,6 +32,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'S' => 
         array (
             'Symfony\\Component\\Lock\\' => 23,
+            'ScssPhp\\ScssPhp\\' => 16,
         ),
         'P' => 
         array (
@@ -47,7 +49,6 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'L' => 
         array (
             'League\\Plates\\' => 14,
-            'Leafo\\ScssPhp\\' => 14,
         ),
         'G' => 
         array (
@@ -73,6 +74,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'Symfony\\Component\\Lock\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/lock',
+        ),
+        'ScssPhp\\ScssPhp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
         ),
         'Psr\\Log\\' => 
         array (
@@ -101,10 +106,6 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'League\\Plates\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
-        ),
-        'Leafo\\ScssPhp\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/leafo/scssphp/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -143,21 +144,42 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'DBTransaction' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'FB' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
         'FirePHP' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
+        'HTMLPurifier_AttrDef_Float' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/Float.php',
+        'HTMLPurifier_AttrDef_HTML5_ARel' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML5/ARel.php',
+        'HTMLPurifier_AttrDef_HTML5_Datetime' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML5/Datetime.php',
+        'HTMLPurifier_AttrDef_HTML5_Duration' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML5/Duration.php',
+        'HTMLPurifier_AttrDef_HTML5_Week' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML5/Week.php',
+        'HTMLPurifier_AttrDef_HTML5_YearlessDate' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML5/YearlessDate.php',
         'HTMLPurifier_AttrDef_HTML_Bool2' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML/Bool2.php',
-        'HTMLPurifier_AttrDef_Regexp' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/Regexp.php',
-        'HTMLPurifier_ChildDef_Details' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Details.php',
-        'HTMLPurifier_ChildDef_Figure' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Figure.php',
-        'HTMLPurifier_ChildDef_Media' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Media.php',
-        'HTMLPurifier_ChildDef_Picture' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Picture.php',
+        'HTMLPurifier_AttrTransform_HTML5_Dialog' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrTransform/HTML5/Dialog.php',
+        'HTMLPurifier_AttrTransform_HTML5_Progress' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrTransform/HTML5/Progress.php',
+        'HTMLPurifier_AttrTransform_HTML5_Script' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrTransform/HTML5/Script.php',
+        'HTMLPurifier_ChildDef_HTML5_Abstract' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Abstract.php',
+        'HTMLPurifier_ChildDef_HTML5_Details' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Details.php',
+        'HTMLPurifier_ChildDef_HTML5_Fieldset' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Fieldset.php',
+        'HTMLPurifier_ChildDef_HTML5_Figure' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Figure.php',
+        'HTMLPurifier_ChildDef_HTML5_Media' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Media.php',
+        'HTMLPurifier_ChildDef_HTML5_Picture' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Picture.php',
+        'HTMLPurifier_ChildDef_HTML5_Script' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Script.php',
+        'HTMLPurifier_ChildDef_HTML5_Time' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/HTML5/Time.php',
         'HTMLPurifier_HTML5Config' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTML5Config.php',
         'HTMLPurifier_HTML5Definition' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTML5Definition.php',
+        'HTMLPurifier_HTMLModule_HTML5_Bdo' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Bdo.php',
+        'HTMLPurifier_HTMLModule_HTML5_Edit' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Edit.php',
+        'HTMLPurifier_HTMLModule_HTML5_Forms' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Forms.php',
+        'HTMLPurifier_HTMLModule_HTML5_Hypertext' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Hypertext.php',
+        'HTMLPurifier_HTMLModule_HTML5_Iframe' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Iframe.php',
+        'HTMLPurifier_HTMLModule_HTML5_Interactive' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Interactive.php',
+        'HTMLPurifier_HTMLModule_HTML5_List' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/List.php',
+        'HTMLPurifier_HTMLModule_HTML5_Media' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Media.php',
+        'HTMLPurifier_HTMLModule_HTML5_Ruby' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Ruby.php',
+        'HTMLPurifier_HTMLModule_HTML5_SafeScripting' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/SafeScripting.php',
+        'HTMLPurifier_HTMLModule_HTML5_Scripting' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Scripting.php',
+        'HTMLPurifier_HTMLModule_HTML5_Text' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Text.php',
         'MeekroDB' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBEval' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBException' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'WhereClause' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
-        'kakao\\KakaoKey' => __DIR__ . '/../..' . '/d_setting/KakaoKey.php',
-        'sammo\\RootDB' => __DIR__ . '/../..' . '/d_setting/RootDB.php',
-        'sammo\\ServConfig' => __DIR__ . '/../..' . '/d_setting/ServConfig.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

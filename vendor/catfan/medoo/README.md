@@ -6,9 +6,11 @@
     <a href="https://packagist.org/packages/catfan/medoo"><img alt="Total Downloads" src="https://poser.pugx.org/catfan/medoo/downloads"></a>
     <a href="https://packagist.org/packages/catfan/medoo"><img alt="Latest Stable Version" src="https://poser.pugx.org/catfan/medoo/v/stable"></a>
     <a href="https://packagist.org/packages/catfan/medoo"><img alt="License" src="https://poser.pugx.org/catfan/medoo/license"></a>
+    <a href="https://opencollective.com/medoo"><img alt="Backers on Open Collective" src="https://opencollective.com/Medoo/backers/badge.svg"></a>
+    <a href="https://opencollective.com/medoo"><img alt="Sponsors on Open Collective" src="https://opencollective.com/Medoo/sponsors/badge.svg"> </a>
 </p>
 
-> The Lightest PHP database framework to accelerate development
+> The lightweight PHP database framework to accelerate development
 
 ## Features
 
@@ -26,7 +28,7 @@
 
 ## Requirement
 
-PHP 5.4+ and PDO extension installed
+PHP 5.4+ and PDO extension installed, recommend PHP 7.0+
 
 ## Get Started
 
@@ -34,7 +36,7 @@ PHP 5.4+ and PDO extension installed
 
 Add Medoo to composer.json configuration file.
 ```
-$ composer require catfan/Medoo
+$ composer require catfan/medoo
 ```
 
 And update the composer
@@ -43,7 +45,7 @@ $ composer update
 ```
 
 ```php
-// If you installed via composer, just use this code to requrie autoloader on the top of your projects.
+// If you installed via composer, just use this code to require autoloader on the top of your projects.
 require 'vendor/autoload.php';
 
 // Using Medoo namespace
