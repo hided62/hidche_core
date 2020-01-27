@@ -11,10 +11,11 @@
 
 <table class='tb_layout' style='margin:auto;'>
 <thead>
+    <tr><td colspan=11><div style='float:right'><input type='checkbox' id="show_unavailable_troops">불가능한 병종 표시</input></div>
     <?php if($commandName=='모병'): ?>
-    <tr><td colspan=11><div style='float:right'><input type='checkbox' id="show_unavailable_troops">불가능한 병종 표시</input></div><div style='text-align:center;'>모병은 가격 2배의 자금이 소요됩니다.</div>
-</td></tr>
+    <div style='text-align:center;'>모병은 가격 2배의 자금이 소요됩니다.</div>
     <?php endif; ?>
+    </td></tr>
     <tr>
         <td colspan=11 align=center class='bg2'>
             현재 기술력 : <?=$techLevelText?>
