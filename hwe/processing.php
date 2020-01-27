@@ -244,9 +244,8 @@ function command_11($turn, $command, bool $is모병 = false) {
         
         foreach(GameUnitConst::byType($armType) as $unit){
             $crewObj = new \stdClass;
-            if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
-                continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
-            }
+            $crewObj->showDefault = 'true';
+            
 
             $crewObj->id = $unit->id;
             
@@ -255,6 +254,11 @@ function command_11($turn, $command, bool $is모병 = false) {
             }
             else{
                 $crewObj->bgcolor = 'limegreen';
+            }
+
+            if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
+                $crewObj->showDefault = 'false';
+                $crewObj->bgcolor = 'red';
             }
     
             $crewObj->baseRice = $unit->rice * getTechCost($tech);

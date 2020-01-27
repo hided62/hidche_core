@@ -12,7 +12,8 @@
 <table class='tb_layout' style='margin:auto;'>
 <thead>
     <?php if($commandName=='모병'): ?>
-    <tr><td align=center colspan=11>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
+    <tr><td colspan=11><div style='float:right'><input type='checkbox' id="show_unavailable_troops">불가능한 병종 표시</input></div><div style='text-align:center;'>모병은 가격 2배의 자금이 소요됩니다.</div>
+</td></tr>
     <?php endif; ?>
     <tr>
         <td colspan=11 align=center class='bg2'>
@@ -43,6 +44,7 @@
     <?php foreach($armTypeCrews as $crewObj): ?>
         <tr 
             id="crewType<?=$crewObj->id?>"
+            class="show_default_<?=$crewObj->showDefault?>"
             style='height:64px;background-color:<?=$crewObj->bgcolor?>' 
             data-rice="<?=$crewObj->baseRice?>"
             data-cost="<?=$crewObj->baseCost?>"
@@ -177,5 +179,16 @@ $(function(){
     });
 
     $('.btn_fill').click();
+
+    $('#show_unavailable_troops').change(function(){
+        var show = $('#show_unavailable_troops').is(":checked");
+        if(show){
+            $('.show_default_false').show();
+        }
+        else{
+            $('.show_default_false').hide();
+        }
+    });
+    $('.show_default_false').hide();
 });
 </script>
