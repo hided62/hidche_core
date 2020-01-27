@@ -20,14 +20,14 @@ final class Key
 {
     private $resource;
     private $expiringTime;
-    private $state = [];
+    private $state = array();
 
     public function __construct(string $resource)
     {
         $this->resource = $resource;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return $this->resource;
     }
@@ -60,7 +60,7 @@ final class Key
     /**
      * @param float $ttl the expiration delay of locks in seconds
      */
-    public function reduceLifetime(float $ttl)
+    public function reduceLifetime($ttl)
     {
         $newTime = microtime(true) + $ttl;
 
@@ -74,12 +74,15 @@ final class Key
      *
      * @return float|null Remaining lifetime in seconds. Null when the key won't expire.
      */
-    public function getRemainingLifetime(): ?float
+    public function getRemainingLifetime()
     {
         return null === $this->expiringTime ? null : $this->expiringTime - microtime(true);
     }
 
-    public function isExpired(): bool
+    /**
+     * @return bool
+     */
+    public function isExpired()
     {
         return null !== $this->expiringTime && $this->expiringTime <= microtime(true);
     }
