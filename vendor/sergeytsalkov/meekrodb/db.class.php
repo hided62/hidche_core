@@ -125,13 +125,16 @@ class MeekroDB {
   public $param_char = '%';
   public $named_param_seperator = '_';
   public $success_handler = false;
+  /** @var callable|bool */
   public $error_handler = true;
   public $throw_exception_on_error = false;
+  /** @var callable|null */
   public $nonsql_error_handler = null;
   public $throw_exception_on_nonsql_error = false;
   public $nested_transactions = false;
   public $usenull = true;
   public $ssl = array('key' => '', 'cert' => '', 'ca_cert' => '', 'ca_path' => '', 'cipher' => '');
+  /** @var array<int,int|float|string|bool> */
   public $connect_options = array(MYSQLI_OPT_CONNECT_TIMEOUT => 30);
   
   // internal
@@ -642,6 +645,8 @@ class MeekroDB {
           'code' => $db->errno
         ));
       }
+
+      echo $sql."<br>\n";
       
       if ($this->throw_exception_on_error) {
         $e = new MeekroDBException($db->error, $sql, $db->errno);

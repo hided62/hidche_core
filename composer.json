@@ -6,17 +6,12 @@
        "GPL-2.0-or-later",
        "proprietary"
     ],
-    "config": {
-        "platform": {
-            "php": "7.3"
-        }
-    },
     "require": {
         "brandonwamboldt/utilphp": "^1.1",
         "sergeytsalkov/meekrodb": "^2.3",
         "league/plates": "^3.3",
         "guzzlehttp/guzzle": "^6.3",
-        "scssphp/scssphp": "^1.0",
+        "leafo/scssphp": "^0.7.5",
         "monolog/monolog": "^1.23",
         "firephp/firephp-core": "^0.4.0",
         "vlucas/valitron": "^1.4",

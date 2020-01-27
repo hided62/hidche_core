@@ -282,7 +282,7 @@ class util
      * concisely access an index which may or may not exist without
      * raising a warning.
      *
-     * @param  array  $var     Array value to access
+     * @param  mixed  $var     Array value to access
      * @param  mixed  $default Default value to return if the key is not
      *                         present in the array
      * @return mixed
