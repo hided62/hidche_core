@@ -1,0 +1,13 @@
+{
+    "title":"【공백지】 무주공산",
+    "startYear":180,
+    "map":{
+        "mapName":"miniche_clean"
+    },
+    "history":[
+    ],
+    "const": {
+        "expandCityDefaultCost": 30000,
+        "expandCityCostCoef": 250
+    }
+}

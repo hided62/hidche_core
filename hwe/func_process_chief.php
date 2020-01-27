@@ -1078,7 +1078,7 @@ function process_67(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $amount = $admin['develcost'] * 500 + 60000;   // 7만~13만
+    $amount = $admin['develcost'] * GameConst::$expandCityCostCoef + GameConst::$expandCityDefaultCost;   // 7만~13만
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 67) {
@@ -1180,7 +1180,7 @@ function process_68(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $amount = $admin['develcost'] * 500 + 30000;   // 4만~10만
+    $amount = $admin['develcost'] * GameConst::$expandCityCostCoef + GameConst::$expandCityDefaultCost / 2;   // 4만~10만
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 68) {

@@ -800,7 +800,7 @@ function CoreCommandTable() {
     commandGroup("====== 특 수 ======");
     addCommand("초토화", 65, $valid);
     addCommand("천도/3턴(금쌀{$develcost}0)", 66, $valid);
-    $cost = $develcost * 500 + 60000;   // 7만~13만
+    $cost = $develcost * GameConst::$expandCityCostCoef + GameConst::$expandCityDefaultCost;   // 7만~13만
     addCommand("증축/6턴(금쌀{$cost})", 67, $valid);
     addCommand("감축/6턴", 68, $valid);
     commandGroup("", 1);
