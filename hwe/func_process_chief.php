@@ -1074,7 +1074,7 @@ function process_67(&$general) {
     $command = DecodeCommand($nation["l{$general['level']}turn0"]);
     $which = $command[1];
 
-    $query = "select city,name,nation,level from city where city='$which'";
+    $query = "select city,name,nation,level,front from city where city='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
@@ -1089,10 +1089,11 @@ function process_67(&$general) {
         $code = 100 + 67;
     }
 
-    if($nation['capital'] != $general['city']) {
-        $log[] = "<C>●</>{$admin['month']}월:수도에서 실행해야 합니다. 증축 실패. <1>$date</>";
-    } elseif($nation['capital'] != $destcity['city']) {
-        $log[] = "<C>●</>{$admin['month']}월:수도만 가능합니다. 증축 실패. <1>$date</>";
+    if($destcity['nation'] != $general['nation']){
+        $log[] = "<C>●</>{$admin['month']}월:아군 도시가 아닙니다. 증축 실패. <1>$date</>";
+    }
+    else if($nation['capital'] != $destcity['city'] && $destcity['front'] == 1) {
+        $log[] = "<C>●</>{$admin['month']}월:접경 도시 증축은 수도만 가능합니다. 증축 실패. <1>$date</>";
     } elseif($destcity['level'] <= 3) {
         $log[] = "<C>●</>{$admin['month']}월:수진, 진, 관문은 불가능합니다. 증축 실패. <1>$date</>";
     } elseif($destcity['level'] >= 8) {
@@ -1103,8 +1104,8 @@ function process_67(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 증축 실패. <1>$date</>";
     } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$baserice < $amount) {
         $log[] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 증축 실패. <1>$date</>";
-    } elseif($term < 6) {
-        $log[] = "<C>●</>{$admin['month']}월:증축중... ({$term}/6) <1>$date</>";
+    } elseif($term < 3) {
+        $log[] = "<C>●</>{$admin['month']}월:증축중... ({$term}/3) <1>$date</>";
 
         $query = "update nation set l{$general['level']}term={$code} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1130,7 +1131,7 @@ function process_67(&$general) {
         $query = "update nation set l{$general['level']}term='0',capset='1',gold=gold-'$amount',rice=rice-'$amount' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        //수도 증축
+        //증축
         $db->update('city', [
             'upgrading'=>$db->sqleval('upgrading+1'),
             'level'=>$db->sqleval('level+1'),
@@ -1165,7 +1166,7 @@ function process_68(&$general) {
 
     $admin = $gameStor->getValues(['year','month','develcost']);
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
+    $query = "select nation,supply,front from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
@@ -1190,12 +1191,12 @@ function process_68(&$general) {
         $term = 1;
         $code = 100 + 68;
     }
-
-    if($nation['capital'] != $general['city']) {
-        $log[] = "<C>●</>{$admin['month']}월:수도에서 실행해야 합니다. 감축 실패. <1>$date</>";
-    } elseif($nation['capital'] != $destcity['city']) {
-        $log[] = "<C>●</>{$admin['month']}월:수도만 가능합니다. 감축 실패. <1>$date</>";
-    } elseif($destcity['upgrading'] <= 0) {
+    if($destcity['nation'] != $general['nation']){
+        $log[] = "<C>●</>{$admin['month']}월:아군 도시가 아닙니다. 감축 실패. <1>$date</>";
+    }
+    else if($nation['capital'] != $destcity['city'] && $destcity['front'] == 1) {
+        $log[] = "<C>●</>{$admin['month']}월:접경 도시 감축은 수도만 가능합니다. 감축 실패. <1>$date</>";
+    } elseif($destcity['level'] == 5) {
         $log[] = "<C>●</>{$admin['month']}월:증축된 도시가 아닙니다. 감축 실패. <1>$date</>";
     } elseif($destcity['level'] <= 4) {
         $log[] = "<C>●</>{$admin['month']}월:수, 진, 관문, 이성은 불가능합니다. 감축 실패. <1>$date</>";
@@ -1203,8 +1204,8 @@ function process_68(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 감축 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 감축 실패. <1>$date</>";
-    } elseif($term < 6) {
-        $log[] = "<C>●</>{$admin['month']}월:감축중... ({$term}/6) <1>$date</>";
+    } elseif($term < 3) {
+        $log[] = "<C>●</>{$admin['month']}월:감축중... ({$term}/3) <1>$date</>";
 
         $query = "update nation set l{$general['level']}term={$code} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
