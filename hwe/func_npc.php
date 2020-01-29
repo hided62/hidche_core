@@ -162,15 +162,17 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     $cities = [];
     $regions = [];
 
-    foreach($db->queryAllLists('SELECT city, region FROM city WHERE nation = %i', $nationID) as [$cityID, $regionID]){
-        $cities[$cityID] = true;
-        $regions[$regionID] = true;
+    foreach(CityConst::all() as $city){
+        $cities[$city->id] = 1;
+        $regions[$city->region] = 1;
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$startyear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
     $relYear = Util::valueFit($year-$startyear, 0);
 
+    $chosenCrewType = null;
+    $maxCost = 0;
     switch($genType) {
     case 0: //무장
     case 2: //무내정장
@@ -193,28 +195,52 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
             }
         }
 
-        
-
-        $types = [];
         switch($sel) {
         case 0:
             foreach(GameUnitConst::byType(GameUnitConst::T_FOOTMAN) as $crewtype){
-                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $types[] = $crewtype->id;
+                if(!$crewtype->isValid($cities, $regions, $relYear, $tech)){
+                    continue;                    
+                }
+                if($chosenCrewType === null){
+                    $chosenCrewType = $crewtype->id;
+                    $maxCost = $crewtype->cost;
+                }
+
+                if($maxCost < $crewtype->cost){
+                    $chosenCrewType = $crewtype->id;
+                    $maxCost = $crewtype->cost;   
                 }
             }
             break;
         case 1:
             foreach(GameUnitConst::byType(GameUnitConst::T_ARCHER) as $crewtype){
-                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $types[] = $crewtype->id;
+                if(!$crewtype->isValid($cities, $regions, $relYear, $tech)){
+                    continue;                    
+                }
+                if($chosenCrewType === null){
+                    $chosenCrewType = $crewtype->id;
+                    $maxCost = $crewtype->cost;
+                }
+
+                if($maxCost < $crewtype->cost){
+                    $chosenCrewType = $crewtype->id;
+                    $maxCost = $crewtype->cost;   
                 }
             }
             break;
         case 2:
             foreach(GameUnitConst::byType(GameUnitConst::T_CAVALRY) as $crewtype){
-                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $types[] = $crewtype->id;
+                if(!$crewtype->isValid($cities, $regions, $relYear, $tech)){
+                    continue;                    
+                }
+                if($chosenCrewType === null){
+                    $chosenCrewType = $crewtype->id;
+                    $maxCost = $crewtype->cost;
+                }
+
+                if($maxCost < $crewtype->cost){
+                    $chosenCrewType = $crewtype->id;
+                    $maxCost = $crewtype->cost;   
                 }
             }
             break;
@@ -223,19 +249,28 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     case 1: //지장
     case 3: //지내정장
         foreach(GameUnitConst::byType(GameUnitConst::T_WIZARD) as $crewtype){
-            if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                $types[] = $crewtype->id;
+            if(!$crewtype->isValid($cities, $regions, $relYear, $tech)){
+                continue;                    
+            }
+            if($chosenCrewType === null){
+                $chosenCrewType = $crewtype->id;
+                $maxCost = $crewtype->cost;
+            }
+
+            if($maxCost < $crewtype->cost){
+                $chosenCrewType = $crewtype->id;
+                $maxCost = $crewtype->cost;   
             }
         }
         break;
     }
 
-    if($types){
-        if(!$allowedAction->randomRecruit && in_array($currentCrewType, $types) && ($currentCrewType != GameUnitConst::DEFAULT_CREWTYPE && $currentCrewType != $types[0])){
+    if($chosenCrewType){
+        if(!$allowedAction->randomRecruit && $currentCrewType != GameUnitConst::DEFAULT_CREWTYPE){
             $type = $currentCrewType;
         }
         else{
-            $type = Util::choiceRandom($types);
+            $type = $chosenCrewType;
         }
         
     }
@@ -254,10 +289,10 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     if($leader < $crew) { $crew = $leader; }
 
     if($allowedAction->recruit_high && $crew * $cost * 6 < $gold){
-        $command = EncodeCommand(0, $type, $crew, 12);
+        $command = EncodeCommand(0, $type, $crew, 19);
     }
     else{
-        $command = EncodeCommand(0, $type, $crew, 11);
+        $command = EncodeCommand(0, $type, $crew, 18);
     }
 
     $query = "update general set turn0='$command' where no='$no'";
