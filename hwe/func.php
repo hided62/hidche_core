@@ -667,6 +667,8 @@ function commandTable() {
     }
     commandGroup("", 1);
     commandGroup("======= 개 인 ========");
+    addCommand("내정 특기 초기화/3턴", 38);
+    addCommand("전투 특기 초기화/3턴", 39);
     if($me['level'] >= 1) {
         addCommand("단련(자금$develcost, 군량$develcost)", 41);
         addCommand("숙련전환(통솔경험, 자금$develcost, 군량$develcost)", 58);
