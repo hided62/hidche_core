@@ -67,6 +67,16 @@ function getTurn(array $general, $type, $font=1) {
                 $double = $command[1];
                 $str[$i] = "【{$third}】 {$double}00명 모병";
                 break;
+            case 18: //무작위 징병
+                $third = GameUnitConst::byID($command[2])->name;
+                $double = $command[1];
+                $str[$i] = "【{$third}】 {$double}00명 무작위 징병";
+                break;
+            case 19: //무작위 모병
+                $third = GameUnitConst::byID($command[2])->name;
+                $double = $command[1];
+                $str[$i] = "【{$third}】 {$double}00명 무작위 모병";
+                break;
             case 13: //훈련
                 $str[$i] = "훈련";
                 break;
@@ -606,6 +616,9 @@ function processCommand($no, $reduceTurn) {
             case 15: process_15($general); break; //전투태세
             case 16: process_16($general); break; //전쟁
             case 17: process_17($general); break; //소집해제
+
+            case 18: process_18($general, 1); break; //징병
+            case 19: process_18($general, 2); break; //모병
 
             case 21: process_21($general); break; //이동
             case 22: process_22($general); break; //등용

@@ -60,6 +60,9 @@ switch($commandtype) {
     case 16: command_16(    $turn, 16); break; //전쟁
     case 17: command_Single($turn, 17); break; //소집해제
 
+    case 18: command_18(    $turn, 18, false); break; //무작위 징병
+    case 19: command_18(    $turn, 19, true); break; //무작위 모병
+
     case 21: command_21(    $turn, 21); break; //이동
     case 22: command_22(    $turn, 22); break; //등용 //TODO:등용장 재 디자인
     case 23: command_23(    $turn, 23); break; //포상
@@ -421,6 +424,154 @@ function command_16($turn, $command) {
 
     ender();
 }
+
+
+function command_18($turn, $command, bool $is모병 = false) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $userID = Session::getUserID();
+
+    $me = $db->queryFirstRow(
+        'SELECT no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold 
+        from general where owner=%i',
+        $userID
+    );
+
+    [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $me['nation']);
+    if(!$nationLevel){
+        $nationLevel = 0;
+    }
+
+    if(!$tech){
+        $tech = 0;
+    }
+
+    $lbonus = setLeadershipBonus($me, $nationLevel);
+
+    $ownCities = [];
+    $ownRegions = [];
+    [$year, $startyear] = $gameStor->getValuesAsArray(['year','startyear']);
+
+    $relativeYear = $year - $startyear;
+
+    foreach(CityConst::all() as $city){
+        $ownCities[$city->id] = 1;
+        $ownRegions[$city->region] = 1;
+    }
+
+    $leader = getGeneralLeadership($me, true, true, true);
+    $fullLeader = getGeneralLeadership($me, false, true, true);
+    $abil = getTechAbil($tech);
+
+    $armTypes = [];
+
+
+    foreach(GameUnitConst::allType() as $armType => $armName){
+        $armTypeCrews = [];
+        
+        foreach(GameUnitConst::byType($armType) as $unit){
+            $crewObj = new \stdClass;
+            $crewObj->showDefault = 'true';
+            
+
+            $crewObj->id = $unit->id;
+            
+            if($unit->reqTech == 0){
+                $crewObj->bgcolor = 'green';
+            }
+            else{
+                $crewObj->bgcolor = 'limegreen';
+            }
+
+            if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
+                continue;
+            }
+    
+            $crewObj->baseRice = $unit->rice * getTechCost($tech);
+            $crewObj->baseCost = CharCost($unit->costWithTech($tech), $me['personal']);
+
+            $armType = $unit->armType;
+            if($me['special2'] == 50 && $armType == GameUnitConst::T_FOOTMAN){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 51 && $armType == GameUnitConst::T_ARCHER){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 52 && $armType == GameUnitConst::T_CAVALRY){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 53 && $armType == GameUnitConst::T_WIZARD){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 54 && $armType == GameUnitConst::T_SIEGE){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 72) { 
+                $crewObj->baseCost *= 0.5; 
+            }
+    
+            $crewObj->name = $unit->name;
+            $crewObj->attack = $unit->attack + $abil;
+            $crewObj->defence = $unit->defence + $abil;
+            $crewObj->speed = $unit->speed;
+            $crewObj->avoid = $unit->avoid;
+            if($gameStor->show_img_level < 2) { 
+                $crewObj->img = ServConfig::$sharedIconPath."/default.jpg"; 
+            }
+            else{
+                $crewObj->img = ServConfig::$gameImagePath."/weap".$unit->id.".png";
+            }
+            
+            $crewObj->baseRiceShort = round($crewObj->baseRice, 1);
+            $crewObj->baseCostShort = round($crewObj->baseCost, 1);
+    
+            $crewObj->info = join('<br>', $unit->info);
+
+            if(count($armTypeCrews) == 0){
+                $armTypeCrews[] = $crewObj;
+            }
+            else{
+                $compCrewObj = $armTypeCrews[0];
+                $compCrewObj->baseRiceShort = max($crewObj->baseRiceShort, $compCrewObj->baseRiceShort);
+                $compCrewObj->baseCostShort = max($crewObj->baseCostShort, $compCrewObj->baseCostShort);
+
+                $compCrewObj->baseRice = max($crewObj->baseRice, $compCrewObj->baseRice);
+                $compCrewObj->baseCost = max($crewObj->baseCost, $compCrewObj->baseCost);
+            }
+
+            
+        }
+        $armTypes[] = [$armName, $armTypeCrews];
+    }
+    if($is모병){
+        $commandName = '무작위 모병';
+        starter("무작위 모병");
+    }
+    else{
+        $commandName = '무작위 징병';
+        starter("무작위 징병");
+    }
+
+    $templates = new \League\Plates\Engine('templates');
+    echo $templates->render('recruitCrewForm_rand', [
+        'command'=>$command,
+        'commandName'=>$commandName,
+        'techLevelText'=>getTechCall($tech),
+        'tech'=>$tech,
+        'leader'=>$leader,
+        'fullLeader'=>$fullLeader,
+        'crewType'=>GameUnitConst::byId($me['crewtype'])->id,
+        'crewTypeName'=>GameUnitConst::byId($me['crewtype'])->name,
+        'crew'=>$me['crew'],
+        'gold'=>$me['gold'],
+        'turn'=>$turn,
+        'armTypes'=>$armTypes,
+    ]);
+
+
+    ender();
+}
+
 
 function command_21($turn, $command) {
     $db = DB::db();

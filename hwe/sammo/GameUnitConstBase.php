@@ -336,7 +336,9 @@ class GameUnitConstBase{
     }
 
     
-
+    /**
+     * @return \sammo\GameUnitDetail[]
+     */
     public static function byType(int $type): array{
         static::_generate();
         if(!key_exists($type, static::$constType)){
