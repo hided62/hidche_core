@@ -58,12 +58,10 @@ class AIAllowedAction{
                 $this->recruit_high = true;
             case 'recruit': 
                 $this->recruit = true;
-                $this->changeWarCondition = true;
                 break;
             case 'train':
                 $this->train = true;
                 $this->atmos = true;
-                $this->changeWarCondition = true;
                 break;
             case 'battle':
                 $this->battle = true;
@@ -279,7 +277,7 @@ function processAI($no, &$reduce_turn) {
     }
 
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,horse,weap,book,item,special,special2,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,horse,weap,book,item,special,special2,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -458,17 +456,8 @@ function processAI($no, &$reduce_turn) {
     $resrc = $tech * 700;//XXX: 왜 700이지?
 
     if($allowedAction->changeWarCondition){
-        if($general['atmos'] >= 90 && $general['train'] >= 90) {
-            if($general['mode'] == 0) {
-                $query = "update general set mode=1 where no='{$general['no']}'";
-                MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
-            }
-        } else {
-            if($general['mode'] == 1) {
-                $query = "update general set mode=0 where no='{$general['no']}'";
-                MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
-            }
-        }
+        $query = "update general set mode=2 where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
     }
     
 
@@ -952,16 +941,8 @@ function processAI($no, &$reduce_turn) {
                     }
                 }
             } elseif($general['crew'] >= 1000 && $general['train'] < 90 && $allowedAction->train) {
-                if($general['atmos'] >= 90 && $general['train'] >= 60 && $general['mode'] == 0) {
-                    $query = "update general set mode=1 where no='{$general['no']}'";
-                    MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
-                }
                 $command = EncodeCommand(0, 0, 0, 13);  //훈련
             } elseif($general['crew'] >= 1000 && $general['atmos'] < 90 && $allowedAction->atmos) {
-                if($general['atmos'] >= 60 && $general['train'] >= 90 && $general['mode'] == 0) {
-                    $query = "update general set mode=1 where no='{$general['no']}'";
-                    MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
-                }
                 $command = EncodeCommand(0, 0, 0, 14);  //사기진작
             } elseif($dipState <= 3) {
                 $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1);   // 준비는 됐으나 아직 선포중이면 내정, 조달
