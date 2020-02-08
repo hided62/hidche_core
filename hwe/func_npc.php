@@ -277,7 +277,7 @@ function processAI($no, &$reduce_turn) {
     }
 
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,horse,weap,book,item,special,special2,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,horse,weap,book,item,special,special2,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -455,7 +455,7 @@ function processAI($no, &$reduce_turn) {
     $tech = getTechCost($nation['tech']);
     $resrc = $tech * 700;//XXX: 왜 700이지?
 
-    if($allowedAction->changeWarCondition){
+    if($allowedAction->changeWarCondition && $general['mode'] != 2){
         $query = "update general set mode=2 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
     }
