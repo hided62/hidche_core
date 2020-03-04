@@ -2634,7 +2634,7 @@ function command_82($turn, $command) {
 
     starter("국호변경");
 
-    if($nation && $nation['level'] == 7 && !$nationAux['used_82']??0){
+    if($nation && $nation['level'] == 7 && !($nationAux['used_82']??0)){
 ?>
 나라의 이름을 바꿉니다. 황제가 된 후 1회 가능합니다.<br>
 

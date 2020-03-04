@@ -832,7 +832,7 @@ function CoreCommandTable() {
     } else {
         addCommand("국기 변경", 81, 0);
     }
-    if($nation['level']==7 && !$nationAux['used_82']??0){
+    if($nation['level']==7 && !($nationAux['used_82']??0)){
         addCommand("국호 변경", 82, 1);
     }
     else{
