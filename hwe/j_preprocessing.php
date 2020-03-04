@@ -82,6 +82,9 @@ switch($commandtype) {
 //    case 34: command_34($turn, 34); break; //파괴
 //    case 35: command_35($turn, 35); break; //선동
 
+    case 38: command_Single($turn, 38); break; //내특 초기화
+    case 39: command_Single($turn, 39); break; //전특 초기화
+
     case 41: command_Single($turn, 41); break; //단련
     case 42: command_Single($turn, 42); break; //견문
 //    case 43: command_43(    $turn, 43); break; //증여

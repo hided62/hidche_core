@@ -1858,6 +1858,55 @@ function process_31(&$general) {
     pushGenLog($general, $log);
 }
 
+function process_38(&$general, string $specName, string $specTypeKey, string $specAgeKey) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['year', 'month']);
+
+    $genAux = Json::decode($general['aux']);
+
+    
+    if($general['term']%100 == 38) {
+        $term = intdiv($general['term'], 100) + 1;
+        $code = $term * 100 + 38;
+    } else {
+        $term = 1;
+        $code = 100 + 38;
+    }
+
+    if($genAux['used_38_'.$specTypeKey]??0){
+        $log[] = "<C>●</>{$admin['month']}월:이미 {$specName}을 초기화했습니다. {$specName} 초기화 실패. <1>$date</>";
+    }
+    else if(!$general[$specTypeKey]) {
+        $log[] = "<C>●</>{$admin['month']}월:{$specName}를 갖고 있지 않습니다. {$specName} 초기화 실패. <1>$date</>";
+    } elseif($term < 3) {
+        $log[] = "<C>●</>{$admin['month']}월:새로운 적성을 찾는 중... ({$term}/3) <1>$date</>";
+
+        $query = "update general set resturn='ONGOING',term={$code} where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    } else {
+        
+        $genAux['used_38_'.$specTypeKey] = 1;
+        $general[$specAgeKey]=20;
+        $db->update('general', [
+            'resturn'=>'SUCCESS',
+            'term'=>0,
+            $specTypeKey=>0,
+            $specAgeKey=>$db->sqleval('age+1'),
+            'aux'=>Json::encode($genAux)
+        ], 'no = %i', $general['no']);
+
+        $log[] = "<C>●</>{$admin['month']}월:새로운 {$specName}를 가질 준비가 되었습니다. <1>$date</>";
+    }
+
+    pushGenLog($general, $log);
+}
+
 function process_41(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
