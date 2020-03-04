@@ -124,6 +124,7 @@ switch($commandtype) {
 //    case 78: command_78($turn, 78); break; //급습
 
 //    case 81: command_81($turn, 81); break; //국기변경
+//    case 82: command_82($turn, 82); break; //국호변경
 
 //    case 99: command_99($turn); break; //수뇌부 후식
     default: command_Other($turn, $commandtype); break;

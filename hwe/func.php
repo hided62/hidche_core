@@ -759,9 +759,10 @@ function CoreCommandTable() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select level,can_change_flag from nation where nation='{$me['nation']}'";
+    $query = "select level,can_change_flag,aux from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
+    $nationAux = Json::decode($nation['aux']);
 
     $query = "select no from general where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -830,6 +831,12 @@ function CoreCommandTable() {
         addCommand("국기 변경", 81, 1);
     } else {
         addCommand("국기 변경", 81, 0);
+    }
+    if($nation['level']==7 && !$nationAux['used_82']??0){
+        addCommand("국호 변경", 82, 1);
+    }
+    else{
+        addCommand("국호 변경", 82, 0);
     }
     commandGroup("", 1);
     echo "

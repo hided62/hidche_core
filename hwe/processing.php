@@ -117,6 +117,7 @@ switch($commandtype) {
     case 77: command_77($turn, 77); break; //이호경식
     case 78: command_78($turn, 78); break; //급습
     case 81: command_81($turn, 81); break; //국기변경
+    case 82: command_82($turn, 82); break; //국호변경
     case 99: command_99($turn); break; //수뇌부 휴식
     
     default:command_Single($turn, 0); break; //휴식
@@ -2619,4 +2620,37 @@ function command_81($turn, $command) {
 </form>
 ";
     ender(1);
+}
+
+function command_82($turn, $command) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $userID = Session::getUserID();
+    $nationID = $db->queryFirstField('SELECT nation FROM general WHERE owner = %i', $userID);
+    $nation = $db->queryFirstRow('SELECT level,aux FROM nation WHERE nation = %i', $nationID);
+    $nationAux = Json::decode($nation['aux']??'{}');
+
+    starter("국호변경");
+
+    if($nation && $nation['level'] == 7 && !$nationAux['used_82']??0){
+?>
+나라의 이름을 바꿉니다. 황제가 된 후 1회 가능합니다.<br>
+
+<form name=form1 action=c_double.php method=post>
+국명 : <input type=text name=name size=18 maxlength=9 style=text-align:right;color:white;background-color:black>
+
+<input type=submit value='국호 변경'>
+<input type=hidden name=command value=<?=$command?>>
+<?php
+        for($i=0; $i < count($turn); $i++) {
+            echo "<input type=hidden name=turn[] value=$turn[$i]>";
+        }
+
+        echo "</form>";
+    } else {
+        echo "국호 변경이 불가능합니다.<br>";
+    }
+    ender();
 }

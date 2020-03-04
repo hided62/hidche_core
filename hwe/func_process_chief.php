@@ -2477,3 +2477,83 @@ function process_81(&$general) {
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
+
+function process_82(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['year','month']);
+
+    $query = "select nation from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $query = "select nation,name,type,sabotagelimit,aux from nation where nation='{$general['nation']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $nation = MYDB_fetch_array($result);
+    $nationAux = Json::decode($nation['aux']??'{}');
+    $newNationName = $general['makenation'];
+
+    $nationExists = $db->queryFirstField('SELECT nation FROM nation WHERE name = %s', $newNationName);
+    
+    if($nationExists){
+        $log[] = "<C>●</>{$admin['month']}월:이미 같은 국호를 가진 곳이 있습니다. 국호변경 실패. <1>$date</>";
+    }
+    else if($city['nation'] != $general['nation']) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 국호변경 실패. <1>$date</>";
+    } elseif($general['level'] < 5) {
+        $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 국호변경 실패. <1>$date</>";
+    } elseif($nationAux['used_82']??0) {
+        $log[] = "<C>●</>{$admin['month']}월:더이상 변경이 불가능합니다. 국호변경 실패. <1>$date</>";
+    } else {
+        $josaRo = JosaUtil::pick($newNationName, '로');
+        $log[] = "<C>●</>{$admin['month']}월:국호를 <D><b>{$newNationName}{$josaRo}</b></> 변경합니다. <1>$date</>";
+        $exp = 10;
+        $ded = 10;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $josaYi = JosaUtil::pick($general['name'], '이');
+        $josaYiNation = JosaUtil::pick($nation['name'], '이');
+
+        $query = "select no,name from general where nation='{$general['nation']}' and no!='{$general['no']}'";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $cnt = MYDB_num_rows($result);
+        $genlog = ["<C>●</><Y>{$general['name']}</>{$josaYi} 국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경합니다."];
+        for($i=0; $i < $cnt; $i++) {
+            $gen = MYDB_fetch_array($result);
+            pushGenLog($gen, $genlog);
+        }
+
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경합니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【국호변경】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} 국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경합니다.";
+        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경");
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경");
+
+        $nationAux['used_82'] = 1;
+        //국기변경
+        $db->update('nation', [
+            'name'=>$newNationName,
+            'aux'=>Json::encode($nationAux)
+        ], 'nation=%i', $nation['nation']);
+
+        //경험치, 공헌치
+        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        refreshNationStaticInfo();
+    }
+
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushGenLog($general, $log);
+}

@@ -106,6 +106,31 @@ if($command == 61) {
     die();
 } 
 
+// 국호변경
+if($command == 82) {
+    $query = "select no,nation,level from general where owner='{$userID}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $me = MYDB_fetch_array($result);
+    
+    $name = StringUtil::neutralize($name);
+    if($name == "") { $name = "무명"; }
+
+    $db->update('general', [
+        'makenation'=>$name
+    ], 'owner=%i', $userID);
+
+    $count = count($turn);
+    $str = "type=type";
+    for($i=0; $i < $count; $i++) {
+        $str .= ",l{$me['level']}turn{$turn[$i]}='{$comStr}'";
+    }
+    $query = "update nation set {$str} where nation='{$me['nation']}'";
+    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    
+    header('location:b_chiefcenter.php', true, 303);
+    die();
+}
+
 //포상, 몰수, 발령, 항복권고, 원조
 //선전포고, 종전, 파기, 초토화, 천도, 증축, 감축
 //백성동원, 수몰, 허보, 피장파장, 의병모집, 이호경식, 급습
@@ -129,6 +154,8 @@ if($command == 23 || $command == 24 || $command == 27 || $command == 51 || $comm
     header('location:b_chiefcenter.php', true, 303);
     die();  
 }
+
+
 
 //일반 턴
 $query = [];

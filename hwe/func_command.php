@@ -476,6 +476,9 @@ function getCoreTurn($nation, $level) {
 
                 $str[$i] = "【<font color={$color}>국기</font>】를 변경";
                 break;
+            case 82: //국호변경
+                $str[$i] = "국호를 변경";
+                break;
             default:
                 $str[$i] = "????";
                 break;
@@ -552,6 +555,7 @@ function processCommand($no, $reduceTurn) {
                 case 77: process_77($general); break; //이호경식
                 case 78: process_78($general); break; //급습
                 case 81: process_81($general); break; //국기변경
+                case 82: process_82($general); break; //국호변경
                 case 99: break; //수뇌부휴식
             }
 
