@@ -152,6 +152,7 @@ CREATE TABLE `general` (
 	`recturn` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
 	`resturn` VARCHAR(30) NULL DEFAULT '',
 	`penalty` TEXT NULL DEFAULT '',
+	`aux` TEXT NOT NULL DEFAULT '{}',
 	PRIMARY KEY (`no`),
 	INDEX `nation` (`nation`, `npc`),
 	INDEX `city` (`city`),
