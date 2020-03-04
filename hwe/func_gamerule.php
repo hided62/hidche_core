@@ -1316,6 +1316,7 @@ function convForOldGeneral(array $general, int $year, int $month){
 function storeOldGeneral(int $no, int $year, int $month){
     $db = DB::db();
     $general = $db->queryFirstRow('SELECT * FROM general WHERE `no` = %i', $no);
+    $general['aux'] = Json::decode($general['aux']);
     if(!$general){
         return;
     }
