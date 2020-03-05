@@ -144,12 +144,12 @@ foreach(getAllNationStaticInfo() as $staticNation):
 $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
 $dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
 
-$goldIncome  = getGoldIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$goldIncome  = getGoldIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
 $warIncome  = getWarGoldIncome($nation['type'], $cityList);
 $totalGoldIncome = $goldIncome + $warIncome;
 
-$riceIncome = getRiceIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
-$wallIncome = getWallIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$wallIncome = getWallIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
 $totalRiceIncome = $riceIncome + $wallIncome;
 
 $outcome = getOutcome($nation['bill'], $dedicationList);

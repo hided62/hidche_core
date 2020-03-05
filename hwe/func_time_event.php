@@ -46,7 +46,7 @@ function processGoldIncome() {
     $adminLog = [];
 
 
-    $nationList = $db->query('SELECT name,nation,capital,gold,rate_tmp,bill,type from nation');
+    $nationList = $db->query('SELECT name,nation,capital,gold,level,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
     $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,gold,level,dedication,city FROM general'), 'nation');
 
@@ -55,7 +55,7 @@ function processGoldIncome() {
         $nationID = $nation['nation'];
 
         $generalRawList = $generalRawListByNation[$nationID];
-        $income = getGoldIncome($nation['level'], $nation['type'], $nation['rate_tmp'], $nation['capital'], $cityListByNation[$nationID]);
+        $income = getGoldIncome($nationID, $nation['level'], $nation['rate_tmp'], $nation['capital'], $nation['type'], $cityListByNation[$nationID]??[]);
         $originoutcome = getOutcome(100, $generalRawList);
         $outcome= Util::round($nation['bill'] / 100 * $originoutcome);
 
@@ -219,11 +219,15 @@ function calcCityWallRiceIncome(array $rawCity, int $officerCnt, bool $isCapital
     return $wallIncome;
 }
 
-function getGoldIncome(int $nationLevel, string $nationType, float $taxRate, int $capitalID, array $cityList){
+function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $capitalID, string $nationType, ?array $cityList){
+    if(!$cityList){
+        return 0;
+    }
+
     $db = DB::db();
 
     $officers = [];
-    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)') as [$genID, $cityID]){
+    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)', $nationID) as [$genID, $cityID]){
         $officers[$genID] = $cityID;
     }
 
@@ -320,7 +324,7 @@ function processRiceIncome() {
     [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
     $adminLog = [];
 
-    $nationList = $db->query('SELECT name,nation,capital,rice,rate_tmp,bill,type from nation');
+    $nationList = $db->query('SELECT name,level,nation,capital,rice,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
     $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,level,dedication,city FROM general'), 'nation');
 
@@ -329,8 +333,8 @@ function processRiceIncome() {
         $nationID = $nation['nation'];
 
         $generalRawList = $generalRawListByNation[$nationID];
-        $income = getRiceIncome($nation['level'], $nation['type'], $nation['rate_tmp'], $nation['capital'], $cityListByNation[$nationID]);
-        $income += getWallIncome($nation['level'], $nation['type'], $nation['rate_tmp'], $nation['capital'], $cityListByNation[$nationID]);
+        $income = getRiceIncome($nation['nation'], $nation['level'], $nation['rate_tmp'], $nation['capital'], $nation['type'], $cityListByNation[$nationID]??[]);
+        $income += getWallIncome($nation['nation'], $nation['level'], $nation['rate_tmp'], $nation['capital'], $nation['type'], $cityListByNation[$nationID]??[]);
         $originoutcome = getOutcome(100, $generalRawList);
         $outcome= Util::round($nation['bill'] / 100 * $originoutcome);
 
@@ -388,11 +392,15 @@ function processRiceIncome() {
     pushAdminLog($adminLog);
 }
 
-function getRiceIncome(int $nationLevel, string $nationType, float $taxRate, int $capitalID, array $cityList) {
+function getRiceIncome(int $nationID, int $nationLevel, float $taxRate, int $capitalID, string $nationType, ?array $cityList) {
+    if(!$cityList){
+        return 0;
+    }
+
     $db = DB::db();
 
     $officers = [];
-    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)') as [$genID, $cityID]){
+    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)', $nationID) as [$genID, $cityID]){
         $officers[$genID] = $cityID;
     }
 
@@ -403,7 +411,7 @@ function getRiceIncome(int $nationLevel, string $nationType, float $taxRate, int
         $cityID = $rawCity['city'];
         foreach ([2,3,4] as $officerLevel) {
             $officerCnt = 0;
-            if($officers[$rawCity['officer'.$officerLevel]] == $cityID){
+            if($officers[$rawCity['officer'.$officerLevel]]??0 == $cityID){
                 $officerCnt += 1;
             }
         }
@@ -416,11 +424,15 @@ function getRiceIncome(int $nationLevel, string $nationType, float $taxRate, int
     return $cityIncome;
 }
 
-function getWallIncome(int $nationLevel, string $nationType, float $taxRate, int $capitalID, array $cityList) {
+function getWallIncome(int $nationID, int $nationLevel, float $taxRate, int $capitalID, string $nationType, ?array $cityList) {
+    if(!$cityList){
+        return 0;
+    }
+
     $db = DB::db();
 
     $officers = [];
-    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)') as [$genID, $cityID]){
+    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)', $nationID) as [$genID, $cityID]){
         $officers[$genID] = $cityID;
     }
 

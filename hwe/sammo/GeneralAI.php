@@ -53,7 +53,7 @@ class GeneralAI{
         }
         $this->city = $general->getRawCity();
         $this->nation = $db->queryFirstRow(
-            'SELECT nation,level,tech,gold,rice,rate,type,color,name,war FROM nation WHERE nation = %i',
+            'SELECT nation,level,capital,tech,gold,rice,rate,type,color,name,war FROM nation WHERE nation = %i',
             $general->getNationID()
         )??[
             'nation'=>0,
@@ -1865,9 +1865,14 @@ class GeneralAI{
         $nationID = $nation['nation'];
 
         $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
+
+        if(!$cityList){
+            return 20;
+        }
+
         $dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
 
-        $goldIncome  = getGoldIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+        $goldIncome  = getGoldIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $warIncome  = getWarGoldIncome($nation['type'], $cityList);
         $income = $goldIncome + $warIncome;
 
@@ -1893,10 +1898,15 @@ class GeneralAI{
         $nationID = $nation['nation'];
 
         $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
+
+        if(!$cityList){
+            return 20;
+        }
+
         $dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
 
-        $riceIncome = getRiceIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
-        $wallIncome = getWallIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+        $riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+        $wallIncome = getWallIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $income = $riceIncome + $wallIncome;
 
         $outcome = getOutcome(100, $dedicationList);

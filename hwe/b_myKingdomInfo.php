@@ -64,12 +64,12 @@ foreach($cityList as $city){
 [$currCrew, $maxCrew] = $db->queryFirstList('SELECT sum(crew), sum(leadership)*100 FROM general WHERE nation=%i AND npc != 5', $nation['nation']);
 $dedicationList = $db->query('SELECT dedication FROM general WHERE nation=%i AND npc!=5', $nationID);
 
-$goldIncome  = getGoldIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$goldIncome  = getGoldIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
 $warIncome  = getWarGoldIncome($nation['type'], $cityList);
 $totalGoldIncome = $goldIncome + $warIncome;
 
-$riceIncome = getRiceIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
-$wallIncome = getWallIncome($nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
+$wallIncome = getWallIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
 $totalRiceIncome = $riceIncome + $wallIncome;
 
 $outcome = getOutcome($nation['bill'], $dedicationList);
