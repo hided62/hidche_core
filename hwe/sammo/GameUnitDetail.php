@@ -75,6 +75,10 @@ class GameUnitDetail implements iAction{
         return StringUtil::subStringForWidth($this->name, 0, 4);
     }
 
+    public function riceWithTech(int $tech, int $crew=100):float{
+        return $this->rice * getTechCost($tech) * $crew / 100;
+    }
+
     public function costWithTech(int $tech, int $crew=100):float{
         return $this->cost * getTechCost($tech) * $crew / 100;
     }

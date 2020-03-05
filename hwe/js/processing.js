@@ -25,7 +25,7 @@ function reserveTurn(turnList, command, arg){
 
 jQuery(function($){
 
-$('#commonSubmit').click(function(){
+window.submitAction = function(){
 
     //checkCommandArg 참고
     var availableArgumentList = {
@@ -84,7 +84,9 @@ $('#commonSubmit').click(function(){
 
     console.log(argument);
     reserveTurn(turnList, command, argument);
-});
+};
+
+$('#commonSubmit').click(submitAction);
 
 
 });

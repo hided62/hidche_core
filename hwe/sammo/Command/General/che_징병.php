@@ -2,18 +2,20 @@
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil,
+    DB, Util, JosaUtil, Session, KVStorage,
     General, 
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    ServConfig
 };
 
 
 use function \sammo\{
-    function getTechCall,
-    tryUniqueItemLottery
+    getTechCall,
+    tryUniqueItemLottery,
+    getTechAbil
 };
 
 use \sammo\Constraint\Constraint;
@@ -110,6 +112,13 @@ class che_징병 extends Command\GeneralCommand{
             ConstraintHelper::AvailableRecruitCrewType($reqCrewType->id)
         ];
 
+    }
+
+    public function getBrief():string{
+        $crewTypeName = $this->reqCrewType->name;
+        $amount = $this->reqCrew;
+        $commandName = static::getName();
+        return "【{$crewTypeName}】 {$amount}명 {$commandName}";
     }
 
     public function getCommandDetailTitle():string{
@@ -217,14 +226,10 @@ class che_징병 extends Command\GeneralCommand{
     public function getForm(): string
     {
         $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $userID = Session::getUserID();
 
         $general = $this->generalObj;
-    
 
-
-        [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $me['nation']);
+        [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $general->getNationID());
         if(!$nationLevel){
             $nationLevel = 0;
         }
@@ -233,20 +238,20 @@ class che_징병 extends Command\GeneralCommand{
             $tech = 0;
         }
     
-        $lbonus = setLeadershipBonus($me, $nationLevel);
-    
         $ownCities = [];
         $ownRegions = [];
-        [$year, $startyear] = $gameStor->getValuesAsArray(['year','startyear']);
+        $year = $this->env['year'];
+        $startyear = $this->env['startyear'];
     
         $relativeYear = $year - $startyear;
     
-        foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
+        foreach(DB::db()->query('SELECT city, region from city where nation = %i', $general->getNationID()) as $city){
             $ownCities[$city['city']] = 1;
             $ownRegions[$city['region']] = 1;
         }
     
-        $leadership = $general->getLeadership();$fullLeadership = $general->getLeadership(false);
+        $leadership = $general->getLeadership();
+        $fullLeadership = $general->getLeadership(false);
         $abil = getTechAbil($tech);
     
         $armTypes = [];
@@ -256,48 +261,31 @@ class che_징병 extends Command\GeneralCommand{
             
             foreach(GameUnitConst::byType($armType) as $unit){
                 $crewObj = new \stdClass;
-                if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
-                    continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
-                }
-    
+                $crewObj->showDefault = 'true';
+
                 $crewObj->id = $unit->id;
-                
+
                 if($unit->reqTech == 0){
                     $crewObj->bgcolor = 'green';
                 }
                 else{
                     $crewObj->bgcolor = 'limegreen';
                 }
+
+                if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
+                    $crewObj->showDefault = 'false';
+                    $crewObj->bgcolor = 'red';
+                }
         
-                $crewObj->baseRice = $unit->rice * getTechCost($tech);
-                $crewObj->baseCost = CharCost($unit->costWithTech($tech), $me['personal']);
+                $crewObj->baseRice = $general->onCalcDomestic($this->getName(), 'rice', $unit->riceWithTech($tech), ['armType'=>$unit->armType]);
+                $crewObj->baseCost = $general->onCalcDomestic($this->getName(), 'cost', $unit->costWithTech($tech), ['armType'=>$unit->armType]);
     
-                $armType = $unit->armType;
-                if($me['special2'] == 50 && $armType == GameUnitConst::T_FOOTMAN){
-                    $crewObj->baseCost *= 0.9;
-                }
-                else if($me['special2'] == 51 && $armType == GameUnitConst::T_ARCHER){
-                    $crewObj->baseCost *= 0.9;
-                }
-                else if($me['special2'] == 52 && $armType == GameUnitConst::T_CAVALRY){
-                    $crewObj->baseCost *= 0.9;
-                }
-                else if($me['special2'] == 53 && $armType == GameUnitConst::T_WIZARD){
-                    $crewObj->baseCost *= 0.9;
-                }
-                else if($me['special2'] == 54 && $armType == GameUnitConst::T_SIEGE){
-                    $crewObj->baseCost *= 0.9;
-                }
-                else if($me['special2'] == 72) { 
-                    $crewObj->baseCost *= 0.5; 
-                }
-        
                 $crewObj->name = $unit->name;
                 $crewObj->attack = $unit->attack + $abil;
                 $crewObj->defence = $unit->defence + $abil;
                 $crewObj->speed = $unit->speed;
                 $crewObj->avoid = $unit->avoid;
-                if($gameStor->show_img_level < 2) { 
+                if($this->env['show_img_level'] < 2) { 
                     $crewObj->img = ServConfig::$sharedIconPath."/default.jpg"; 
                 }
                 else{
@@ -318,24 +306,10 @@ class che_징병 extends Command\GeneralCommand{
 
         $techLevelText = getTechCall($tech);
 
-        $crew = $general->getRaw('crew');
-        $gold = $general->getRaw('gold');
+        $crew = $general->getVar('crew');
+        $gold = $general->getVar('gold');
         $crewTypeObj = $general->getCrewTypeObj();
 
-
-
-        $templates = new \League\Plates\Engine('templates');
-        return $templates->render('recruitCrewForm', [
-            'crewType'=>GameUnitConst::byId($me['crewtype'])->id,
-            'crewTypeName'=>GameUnitConst::byId($me['crewtype'])->name,
-            'crew'=>$me['crew'],
-            'gold'=>$me['gold'],
-            'turn'=>$turn,
-            'armTypes'=>$armTypes,
-        ]);
-    
-
-        $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
         ob_start();
 ?>
 
@@ -352,9 +326,11 @@ class che_징병 extends Command\GeneralCommand{
 
 <table class='tb_layout' style='margin:auto;'>
 <thead>
+    <tr><td colspan=11><div style='float:right'><input type='checkbox' id="show_unavailable_troops">불가능한 병종 표시</input></div>
     <?php if($commandName=='모병'): ?>
-    <tr><td align=center colspan=11>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
+    <div style='text-align:center;'>모병은 가격 2배의 자금이 소요됩니다.</div>
     <?php endif; ?>
+    </td></tr>
     <tr>
         <td colspan=11 align=center class='bg2'>
             현재 기술력 : <?=$techLevelText?>
@@ -384,6 +360,7 @@ class che_징병 extends Command\GeneralCommand{
     <?php foreach($armTypeCrews as $crewObj): ?>
         <tr 
             id="crewType<?=$crewObj->id?>"
+            class="show_default_<?=$crewObj->showDefault?>"
             style='height:64px;background-color:<?=$crewObj->bgcolor?>' 
             data-rice="<?=$crewObj->baseRice?>"
             data-cost="<?=$crewObj->baseCost?>"
@@ -418,8 +395,8 @@ class che_징병 extends Command\GeneralCommand{
 <?php endforeach; ?>
 </tbody>
 </table>
-<input type='hidden' name='form_amount' class='form_amount' value='1'>
-<input type='hidden' name='form_crewType' class='form_crewType' value='<?=$crewTypeObj->id?>'>
+<input type='hidden' id='amount' value='1'>
+<input type='hidden' id='crewType' value='<?=$crewTypeObj->id?>'>
 <script>
 window.currentTech = <?=$tech?>;
 window.leadership = <?=$leadership?>;

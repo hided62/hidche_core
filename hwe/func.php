@@ -48,8 +48,10 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
             'type'=>GameConst::$neutralNationType,
             'level'=>0,
             'capital'=>0,
-            'gennum'=>1,
-            'power'=>1
+            'gold'=>0,
+            'rice'=>2000,
+            'tech'=>0,
+            'gennum'=>1  
         ];
     }
 

@@ -15,8 +15,8 @@ $(function(){
 
     
     var $postForm = $('#post_form');
-    var $formAmount = $postForm.find('.form_amount');
-    var $formCrewtype = $postForm.find('.form_crewtype');
+    var $formAmount = $('#amount');
+    var $formCrewtype = $('#crewType');
     $('.form_double').on('keyup change',function(e){
         var $this = $(this);
         var $parent = $this.parents('.input_form');
@@ -26,7 +26,7 @@ $(function(){
         $formAmount.val($this.val());
 
         if(e.which === 13){
-            $postForm.submit();
+            submitAction();
         }
         return false;
     });
@@ -77,10 +77,21 @@ $(function(){
         var $input = $parent.find('.form_double');
 
         $formCrewtype.val(crewtype);
-        $formAmount.val($input.val());
+        $formAmount.val($input.val()*100);
 
-        $postForm.submit();
+        submitAction();
     });
 
     $('.btn_fill').click();
+
+    $('#show_unavailable_troops').change(function(){
+        var show = $('#show_unavailable_troops').is(":checked");
+        if(show){
+            $('.show_default_false').show();
+        }
+        else{
+            $('.show_default_false').hide();
+        }
+    });
+    $('.show_default_false').hide();
 });
