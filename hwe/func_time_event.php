@@ -191,7 +191,7 @@ function calcCityRiceIncome(array $rawCity, int $officerCnt, bool $isCapital, in
 
     $trustRatio = $rawCity['trust'] / 200 + 0.5;//0.5 ~ 1
 
-    $cityIncome = $rawCity['pop'] * $rawCity['agri'] / $rawCity['agri'] * $trustRatio / 30;
+    $cityIncome = $rawCity['pop'] * $rawCity['agri'] / $rawCity['agri2'] * $trustRatio / 30;
     $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
     $cityIncome *= pow(1.05, $officerCnt);
     if($isCapital){
@@ -238,7 +238,7 @@ function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
         $cityID = $rawCity['city'];
         foreach ([2,3,4] as $officerLevel) {
             $officerCnt = 0;
-            if($officers[$rawCity['officer'.$officerLevel]] == $cityID){
+            if($officers[$rawCity['officer'.$officerLevel]]??0 == $cityID){
                 $officerCnt += 1;
             }
         }
@@ -261,7 +261,7 @@ function processWarIncome() {
             continue;
         }
         $nationID = $nation['nation'];
-        $income = getWarGoldIncome($nation['type'], $cityListByNation[$nationID]);
+        $income = getWarGoldIncome($nation['type'], $cityListByNation[$nationID]??[]);
         $db->update('nation', [
             'gold'=>$db->sqleval('gold + %i', $income)
         ], 'nation=%i', $nationID);
@@ -274,7 +274,7 @@ function processWarIncome() {
     ], true);
 }
 
-function getWarGoldIncome(string $nationType, $cityList){
+function getWarGoldIncome(string $nationType, array $cityList){
     $nationTypeObj = buildNationTypeClass($nationType);
 
     $cityIncome = 0;
@@ -443,7 +443,7 @@ function getWallIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
         $cityID = $rawCity['city'];
         foreach ([2,3,4] as $officerLevel) {
             $officerCnt = 0;
-            if($officers[$rawCity['officer'.$officerLevel]] == $cityID){
+            if($officers[$rawCity['officer'.$officerLevel]]??0 == $cityID){
                 $officerCnt += 1;
             }
         }
@@ -605,7 +605,7 @@ function disaster() {
                 function($rawGeneral) use ($city, $year, $month){
                     return new General($rawGeneral, $city, $year, $month, false);
                 }, 
-                $generalListByCity[$city['city']]
+                $generalListByCity[$city['city']]??[]
             );
 
             SabotageInjury($generalList, '재난');

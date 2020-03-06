@@ -150,7 +150,7 @@ function cityInfo(General $generalObj) {
     $city['nationTextColor'] = newColor($nation['color']);
     $city['nationColor'] = $nation['color'];
     $city['region'] = CityConst::$regionMap[$city['region']];
-    $city['level'] = CityConst::$levelMap[$city['level']];
+    $city['levelText'] = CityConst::$levelMap[$city['level']];
 
     $officerQuery = [];
     $officerName = [
@@ -1151,7 +1151,7 @@ function checkDelay() {
         $threshold = 3;
     }
     else{
-        $threshold = 20;//TODO:디버깅용. 꼭 고칠것. 원래 값은 6이었음.
+        $threshold = 6;
     }
     //지연 해야할 밀린 턴 횟수
     $iter = intdiv($timeMinDiff, $term);

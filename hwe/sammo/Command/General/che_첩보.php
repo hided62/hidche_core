@@ -49,7 +49,7 @@ class che_첩보 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation(['tech']);
-        $this->setDestCity($this->arg['destCityID'], []);
+        $this->setDestCity($this->arg['destCityID'], null);
         $this->setDestNation($this->destCity['nation'], ['tech']);
 
         [$reqGold, $reqRice] = $this->getCost();
@@ -59,6 +59,11 @@ class che_첩보 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
+    }
+
+    public function getBrief():string{
+        $cityName = $this->destCity['name'];
+        return "【{$cityName}】에 {$this->getName()} 실행";
     }
 
     public function getCommandDetailTitle():string{
@@ -121,7 +126,7 @@ class che_첩보 extends Command\GeneralCommand{
 
         $dist = searchDistance($general->getCityID(), 2, false)[$destCityID]??3;
 
-        $destCityGeneralList = $db->query('SELECT crew, crewtype FROM general WHERE city = %i AND nation = %i');
+        $destCityGeneralList = $db->query('SELECT crew, crewtype FROM general WHERE city = %i AND nation = %i', $destCityID, $destNationID);
         $totalCrew = Util::arraySum($destCityGeneralList, 'crew');
         $totalGenCnt = count($destCityGeneralList);
         $byCrewType = Util::arrayGroupBy($destCityGeneralList, 'crewtype');
@@ -207,21 +212,21 @@ class che_첩보 extends Command\GeneralCommand{
 
     public function getForm(): string
     {
-        $form = [];
-        $form[] = \sammo\getMapHtml();
-
-        $form[] = <<<EOT
+        $currentCityID = $this->generalObj->getCityID();
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
 선택된 도시에 첩보를 실행합니다.<br>
 인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-EOT;
-        $form[] = \sammo\optionsForCities();
-        $form[] = '</select>';
-        $form[] = '<input type=submit value="첩보">';
-        $form[] = printCitiesBasedOnDistance($this->generalObj->getCityID(), 3);
-        
-        return join("\n",$form);
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<br>
+<?=printCitiesBasedOnDistance($currentCityID, 3)?>
+<?php
+                return ob_get_clean();
     }
 
     

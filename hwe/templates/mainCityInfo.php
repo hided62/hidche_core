@@ -1,6 +1,6 @@
 <table style='width:100%;' class='tb_layout bg2'>
-    <tr><td colspan=8 style='text-align:center;height:20px;color:<?=$nationTextColor?>;background-color:<?=$nationColor?>;font-weight:bold;font-size:13px;'>【 <?=$region?> | <?=$level?> 】 <?=$name?></td></tr>
-    <tr><td colspan=8 style='text-align:center;height:20px;color:<?=$nationTextColor?>;background-color:<?=$nationColor?>'><b><?=$nationName?'공 백 지':"지배 국가 【 {$nationName} 】"?></b></td>
+    <tr><td colspan=8 style='text-align:center;height:20px;color:<?=$nationTextColor?>;background-color:<?=$nationColor?>;font-weight:bold;font-size:13px;'>【 <?=$region?> | <?=$levelText?> 】 <?=$name?></td></tr>
+    <tr><td colspan=8 style='text-align:center;height:20px;color:<?=$nationTextColor?>;background-color:<?=$nationColor?>'><b><?=$nationName?"지배 국가 【 {$nationName} 】":'공 백 지'?></b></td>
     </tr>
     <tr>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>주민</b></td>

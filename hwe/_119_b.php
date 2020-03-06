@@ -30,6 +30,15 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 switch($btn) {
 case "분당김":
+    $locked = false;
+    for($i = 0; $i < 10; $i++){
+        if(tryLock()){
+            $locked = true;
+            break;
+        }
+        usleep(500000);
+    }
+    
     $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
     $turntime = (new \DateTimeImmutable($gameStor->turntime))->sub(new \DateInterval("PT{$minute}M"));
     $starttime = (new \DateTimeImmutable($gameStor->starttime))->sub(new \DateInterval("PT{$minute}M"));
@@ -45,8 +54,19 @@ case "분당김":
     $db->update('auction', [
         'expire'=>$db->sqleval('DATE_SUB(expire, INTERVAL %i MINUTE)', $minute)
     ], true);
+    if($locked){
+        unlock();
+    }
     break;
 case "분지연":
+    $locked = false;
+    for($i = 0; $i < 5; $i++){
+        if(tryLock()){
+            $locked = true;
+            break;
+        }
+        sleep(0.5);
+    }
     $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
     $turntime = (new \DateTimeImmutable($gameStor->turntime))->add(new \DateInterval("PT{$minute}M"));
     $starttime = (new \DateTimeImmutable($gameStor->starttime))->add(new \DateInterval("PT{$minute}M"));
@@ -62,6 +82,9 @@ case "분지연":
     $db->update('auction', [
         'expire'=>$db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
     ], true);
+    if($locked){
+        unlock();
+    }
     break;
 case "토너분당김":
     $tnmt_time = new \DateTime($gameStor->tnmt_time);
