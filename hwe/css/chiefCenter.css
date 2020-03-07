@@ -1,5 +1,12 @@
 @charset "UTF-8";
 
+.chiefSubTable{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    text-align:center;
+}
+
 #chiefTurnSelector{
     width:50px;
     color:white;
@@ -7,18 +14,30 @@
     font-size:13px;
 }
 
-
-.chiefTurnTable{
-    display:flex;
-    flex-flow:row nowrap;
+.chiefTurnIdx{
+    flex-grow:1;
+    border-top:solid 0.67px #888888;
+    line-height:21px;
 }
 
-.chiefTurnTable .flexDisplay{
-    justify-content: center;
+.chiefTurnIdxPanel{
+    width:18px;display:flex;flex-flow:column;
+}
+
+.chiefTurnIdxPanel.tail{
+    border-left:solid 0.67px #888888;
+}
+
+.chiefPlate{
+    display:flex;
+    flex-flow:column;
+    border-left:solid 0.67px #888888;
 }
 
 .chiefTurnBox{
-    width:240px;
+    flex-grow: 1;
+    display:flex;
+    flex-flow: row;
 }
 
 .chiefTurnBox .turnHeader{
@@ -26,14 +45,12 @@
     text-align: center;
 }
 
-.chiefTurnBox .turnList{
-    
-}
-
 .chiefNamePlate{
+    border-top:solid 0.67px #888888;
     font-weight: bold;
     text-align: center;
-    
+    flex-grow: 1;
+    line-height:21px;
 }
 
 .turnIdxHeader{
@@ -43,13 +60,19 @@
 }
 
 .chiefTurnTime{
+    border-top:solid 0.67px #888888;
+    border-right:solid 0.67px #888888;
     font-weight: bold;
     background: black;
     text-align: center;
-    width:43px;
+    width:44px;
+    line-height:21px;
 }
 
 .chiefTurnText{
+    border-top:solid 0.67px #888888;
     table-layout: fixed;
     width:192px;
+    line-height:21px;
+    flex-grow: 1;
 }

@@ -17,7 +17,9 @@ $userID = Session::getUserID();
 <title><?=UniqueConst::$serverName?>: 사령부</title>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/moment.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/chiefCenter.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -29,74 +31,80 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 </head>
 
 <body>
-<table align=center width=1000 class='tb_layout bg0'>
-    <tr><td>사 령 부<input id='refreshChiefTurn' type=button value='갱신'><br><?=backButton()?></td></tr>
-</table>
-<table align=center width=1000 class='tb_layout bg0'>
-<thead><tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr></thead>
-<tbody>
-<tr>
-    <td class='bg1 center'>.</td>
-    <td colspan=2 class='bg1 chiefNamePlate level12'>- :</td>
-    <td colspan=2 class='bg1 chiefNamePlate level10'>- :</td>
-    <td colspan=2 class='bg1 chiefNamePlate level8'>- :</td>
-    <td colspan=2 class='bg1 chiefNamePlate level6'>- :</td>
-    <td class='bg1 center'>.</td>
-</tr>
-<?php foreach([12, 10, 8, 6] as $turnIdx): ?>
-    <tr class='turnIdx<?=$turnIdx?>'>
-        <td class='bg0 center turnIdxHeader'><?=($turnIdx+1)?></td>
-        <td class='chiefTurnTime level12'></td>
-        <td class='chiefTurnText level12 bg2'>-</td>
-        <td class='chiefTurnTime level10'></td>
-        <td class='chiefTurnText level10 bg2'>-</td>
-        <td class='chiefTurnTime level8'></td>
-        <td class='chiefTurnText level8 bg2'>-</td>
-        <td class='chiefTurnTime level6'></td>
-        <td class='chiefTurnText level6 bg2'>-</td>
-        <td class='bg0 center turnIdxHeader'><?=($turnIdx+1)?></td>
-    </tr>
+<div id='container' class='tb_layout bg0' style='width:1000px;margin:auto;border:solid 1px #888888;'>
+<div class='tb_layout bg0'>사 령 부<button type='button' id='reloadTable'>갱신</button><br>
+<?=backButton()?></div>
+<div style='background-color:skyblue;text-align:center;'>수뇌부 일정</div>
+<div class="chiefSubTable" style='height:<?=22*(GameConst::$maxChiefTurn+1)?>px;'
+    ><div class='chiefTurnIdxPanel'
+        ><div class='bg1 chiefTurnIdx'>.</div
+<?php foreach(range(1, 12) as $idx):?>
+        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
 <?php endforeach; ?>
-<tr>
-    <td colspan="5" style='text-align:right;'>
-        <?=chiefTurnTable()?>
-    </td>
-    <td colspan="5" style='text-align:left;'>
-        <input id='turnPush' type='hidden' style=background-color:<?=GameConst::$basecolor2?>;color:white;width:58px;font-size:13px; value='미루기▼' onclick='turn(0)'>
-        <input id='turnPull' type='hidden' style=background-color:<?=GameConst::$basecolor2?>;color:white;width:58px;font-size:13px; value='▲당기기' onclick='turn(1)'>
-        <br>
-        <?=chiefCommandTable()?>
-        <input id='setCommand' type='hidden' style='background-color:<?=GameConst::$basecolor2?>;color:white;width:55px;font-size:13px;' value='실 행'>
-    </td>
-</tr>
-<tr>
-    <td class='bg1 center'>.</td>
-    <td colspan=2 class='bg1 chiefNamePlate level12'>- :</td>
-    <td colspan=2 class='bg1 chiefNamePlate level10'>- :</td>
-    <td colspan=2 class='bg1 chiefNamePlate level8'>- :</td>
-    <td colspan=2 class='bg1 chiefNamePlate level6'>- :</td>
-    <td class='bg1 center'>.</td>
-</tr>
-<?php foreach([11, 9, 7, 5] as $turnIdx): ?>
-    <tr class='turnIdx<?=$turnIdx?>'>
-        <td class='bg0 center turnIdxHeader'><?=($turnIdx+1)?></td>
-        <td class='chiefTurnTime level11'></td>
-        <td class='chiefTurnText level11 bg2'>-</td>
-        <td class='chiefTurnTime level9'></td>
-        <td class='chiefTurnText level9 bg2'>-</td>
-        <td class='chiefTurnTime level7'></td>
-        <td class='chiefTurnText level7 bg2'>-</td>
-        <td class='chiefTurnTime level5'></td>
-        <td class='chiefTurnText level5 bg2'>-</td>
-        <td class='bg0 center turnIdxHeader'><?=($turnIdx+1)?></td>
-    </tr>
+    ></div
+<?php foreach([12, 10, 8, 6] as $chiefIdx): ?>
+    ><div class='bg2 chiefPlate' style='flex-grow:1;' id='chief_<?=$chiefIdx?>'
+        ><div class='bg1 chiefNamePlate'><span class='chiefLevelText'>-</span> : <span class='chiefName'>&nbsp;</span></div
+<?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
+        ><div class='chiefTurnBox turn<?=$turnIdx?>'
+            ><div class='chiefTurnTime level<?=$chiefIdx?>'>&nbsp;</div
+            ><div class='chiefTurnText level<?=$chiefIdx?>'>&nbsp;</div
+        ></div
+<?php   endforeach; ?>
+    ></div
 <?php endforeach; ?>
-</tbody>
-</table>
-<table align=center width=1000 class='tb_layout bg0'>
-    <tr><td><?=backButton()?></td></tr>
-    <tr><td><?=banner()?></td></tr>
-</table>
+    ><div class='chiefTurnIdxPanel tail'
+        ><div class='bg1 chiefTurnIdx'>.</div
+<?php foreach(range(1, GameConst::$maxChiefTurn) as $idx):?>
+        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+<?php endforeach; ?>
+    ></div
+></div
+><div id='controlPlate' style='display:flex;flex-flow:row wrap;justify-content:center;'
+    ><div style='width:400px;text-align:right;'
+        ><?=chiefTurnTable()
+    ?></div
+    ><div style='width:400px;display: flex;justify-content: center;flex-direction: column;'
+        ><div
+            ><input type='button' id='turnPush' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='미루기▼' onclick='turn(0)'
+            ><input type='button' id='turnPull' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='▲당기기' onclick='turn(1)'
+        ></div
+        ><div
+            ><?=chiefCommandTable()
+            ?><input type='button' id='setCommand' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='실 행'
+        ></div
+    ></div
+></div
+><div class="chiefSubTable" style='height:<?=22*(GameConst::$maxChiefTurn+1)?>px;'
+    ><div class='chiefTurnIdxPanel'
+        ><div class='bg1 chiefTurnIdx'>.</div
+<?php foreach(range(1, GameConst::$maxChiefTurn) as $idx):?>
+        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+<?php endforeach; ?>
+    ></div
+<?php foreach([11, 9, 7, 5] as $chiefIdx): ?>
+    ><div class='bg2 chiefPlate' style='flex-grow:1;' id='chief_<?=$chiefIdx?>'
+        ><div class='bg1 chiefNamePlate'><span class='chiefLevelText'>-</span> : <span class='chiefName'>&nbsp;</span></div
+<?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
+        ><div class='chiefTurnBox turn<?=$turnIdx?>'
+            ><div class='chiefTurnTime level<?=$chiefIdx?>'>&nbsp;</div
+            ><div class='chiefTurnText level<?=$chiefIdx?>'>&nbsp;</div
+        ></div
+<?php   endforeach; ?>
+    ></div
+<?php endforeach; ?>
+    ><div class='chiefTurnIdxPanel tail'
+        ><div class='bg1 chiefTurnIdx'>.</div
+<?php foreach(range(1, 12) as $idx):?>
+        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+<?php endforeach; ?>
+    ></div
+></div
+><div
+    ><?=backButton()
+    ?><?=banner()
+?></div>
+</div>
 </body>
 </html>
 

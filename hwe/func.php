@@ -490,7 +490,7 @@ function chiefCommandTable() {
     if($citySupply == 0) { $valid = 0; }
 
     echo "
-<select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;'>";
+<select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;display:inline-block;'>";
     commandGroup("====== 휴 식 ======");
     addCommand("휴 식", 99);
     commandGroup("", 1);

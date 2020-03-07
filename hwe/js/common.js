@@ -328,3 +328,13 @@ function br2nl (text) {
     return text.replace(/<\s*\/?br\s*[\/]?>/gi, '\n');
 }
 */
+
+function getNpcColor(npcType){
+    if(npcType >= 2){
+        return 'cyan';
+    }
+    if(npcType == 1){
+        return 'skyblue';
+    }
+    return null;
+}

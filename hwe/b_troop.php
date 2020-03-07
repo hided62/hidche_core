@@ -41,6 +41,7 @@ if($troops){
         'SELECT no,name,picture,imgsvr,turntime,city,troop FROM general WHERE no IN %li',
         array_keys($troops)
     );
+    $generalTurnList = [];
 
     foreach($db->queryAllLists(
         'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
@@ -151,7 +152,7 @@ foreach ($troops as $troopNo=>$troop) {
         <td rowspan=2><?=$troopLeader['turnText']?></td>
     </tr>
     <tr>
-        <td align=center><font size=2>【턴】 <?=substr($troopLeader['turntime'], 14)?></font></td>
+        <td align=center><font size=2>【턴】 <?=substr($troopLeader['turntime'], 14, 5)?></font></td>
         <td align=center><font size=1><?=$troopLeader['name']?></font></td></tr>
     <tr><td colspan=5>
 
@@ -177,7 +178,7 @@ foreach ($troops as $troopNo=>$troop) {
         <?php endif; ?>
         </td>
     </tr>
-    <tr><td align=center><font size=2>【턴】 <?=substr($troopLeader['turntime'], 14)?></font></td>
+    <tr><td align=center><font size=2>【턴】 <?=substr($troopLeader['turntime'], 14, 5)?></font></td>
     <td align=center><font size=1><?=$troopLeader['name']?></font></td></tr>
     <tr><td colspan=5></td></tr>
 <?php endif;

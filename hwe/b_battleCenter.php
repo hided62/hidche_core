@@ -103,18 +103,18 @@ $sel[$type] = "selected";
         대상장수 :
         <select name=gen size=1>
 <?php
+$orderBy = '';
 switch ($type) {
     default:
-    case 0: $query = "select no,name,npc from general where nation='{$me['nation']}' order by turntime desc"; break;
-    case 1: $query = "select no,name,npc from general where nation='{$me['nation']}' order by recwar desc"; break;
-    case 2: $query = "select no,name,npc from general where nation='{$me['nation']}' order by npc,binary(name)"; break;
-    case 3: $query = "select no,name,npc from general where nation='{$me['nation']}' order by warnum desc"; break;
+    case 0: $orderBy = 'order by turntime desc'; break;
+    case 1: $orderBy = 'order by recwar desc'; break;
+    case 2: $orderBy = 'order by npc,binary(name)'; break;
+    case 3: $orderBy = 'order by warnum desc'; break;
 }
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$gencount = MYDB_num_rows($result);
+
+$generals = $db->query('SELECT no,name,npc FROM general WHERE nation = %i %l', $me['nation'], $orderBy);
 $npc = 0;
-for ($i=0; $i < $gencount; $i++) {
-    $general = MYDB_fetch_array($result);
+foreach($generals as $general){
     // 선택 없으면 맨 처음 장수
     if ($gen == 0) {
         $gen = $general['no'];
@@ -130,6 +130,7 @@ for ($i=0; $i < $gencount; $i++) {
             <option value={$general['no']}>{$general['name']}</option>";
     }
 }
+$showGeneral = General::createGeneralObjFromDB($gen);
 ?>
         </select>
         <input type=submit name=btn value='조회하기'>
@@ -143,7 +144,7 @@ for ($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($gen); generalInfo2($gen); ?>
+            <?php generalInfo($showGeneral); generalInfo2($showGeneral); ?>
         </td>
         <td valign=top>
             <?=getGeneralHistoryAll($gen)?>

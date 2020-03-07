@@ -15,7 +15,7 @@ increaseRefresh("사령부", 1);
 $me = $db->queryFirstRow('SELECT no,nation,level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
 
 $nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation = %i', $me['nation']);
-
+$nationID = $me['nation'];
 $con = checkLimit($me['con']);
 if($con >= 2) { 
     Json::die([
@@ -49,7 +49,7 @@ $lv = getNationChiefLevel($nationLevel);
 $turn = [];
 
 $generals = [];
-foreach($db->query('SELECT no,name,turntime,npc,city,nation,level FROM general WHERE nation = %i AND level >= 5') as $rawGeneral){
+foreach($db->query('SELECT no,name,turntime,npc,city,nation,level FROM general WHERE nation = %i AND level >= 5',$nationID) as $rawGeneral){
     $generals[$rawGeneral['level']] = new General($rawGeneral, null, $year, $month, false);
 }
 
@@ -77,7 +77,7 @@ foreach($nationTurnList as $level=>$turnList){
     }
     $nationTurnBrief[$level] = [
         'name'=>$general->getName(),
-        'turnTime'=>$general->getTurnTime($general::TURNTIME_HM),
+        'turnTime'=>$general->getTurnTime($general::TURNTIME_FULL),
         'levelText'=>getLevelText($general->getVar('level'), $nationLevel),
         'npcType'=>$general->getVar('npc'),
         'turn'=>getNationTurnBrief($general, $turnList)
@@ -91,5 +91,6 @@ Json::die([
     'reason'=>'success',
     'date'=>$date,
     'nationTurnBrief'=>$nationTurnBrief,
-    'isChief'=>($me['level'] > 4)
+    'isChief'=>($me['level'] > 4),
+    'turnTerm'=>$turnterm
 ]);
