@@ -472,7 +472,60 @@ function printCommandTable(General $generalObj) {
 <?php
 }
 
-function chiefCommandTable() {
+function chiefCommandTable(General $generalObj) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $userID = Session::getUserID();
+
+    $gameStor->turnOnCache();
+    $env = $gameStor->getAll();
+
+?>
+<select id='chiefCommandList' name='commandtype' size=1 style='height:20px;color:white;background-color:black;font-size:13px;display:inline-block;'>";
+<?php
+
+    //보정(Pros,Cons) 여부.
+    $getCompensateClassName = function($value){
+        if($value > 0){
+            return 'compensatePositive';
+        }
+        else if($value < 0){
+            return 'compensateNegative';
+        }
+        return 'compensateNeutral';
+    };
+
+    foreach(GameConst::$availableChiefCommand as $commandCategory => $commandList){
+        if($commandCategory){
+            commandGroup("======= {$commandCategory} =======");
+        }
+
+        foreach($commandList as $commandClassName){
+            $commandObj = buildNationCommandClass($commandClassName, $generalObj, $env, new LastTurn());
+            if(!$commandObj->canDisplay()){
+                continue;
+            }
+?>
+<option 
+    class='commandBasic <?=$getCompensateClassName($commandObj->getCompensationStyle())?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
+    value='<?=Util::getClassNameFromObj($commandObj)?>'
+    data-reqArg='<?=($commandObj::$reqArg)?'true':'false'?>'
+><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->isReservable()?'':'(불가)'?></option>
+<?php
+        }
+
+        if($commandCategory){
+            commandGroup('', 1);
+        }
+    }
+
+?>
+</select>
+<?php
+}
+
+
+function chiefCommandTable_old() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $userID = Session::getUserID();

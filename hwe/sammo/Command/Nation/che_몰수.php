@@ -101,6 +101,16 @@ class che_몰수 extends Command\NationCommand{
         return 0;
     }
 
+    public function getBrief():string{
+        $isGold = $this->arg['isGold'];
+        $amount = $this->arg['amount'];
+        $amountText = number_format($amount, 0);
+        $resName = $isGold?'금':'쌀';
+        $destGeneral = $this->destGeneralObj;
+        $commandName = $this->getName();
+        return "【{$destGeneral->getName()}】 {$resName} $amountText {$commandName}";
+    }
+
 
     public function run():bool{
         if(!$this->isRunnable()){
@@ -174,14 +184,9 @@ class che_몰수 extends Command\NationCommand{
     {
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
-        $form = [];
 
-        $form[] = <<<EOT
-장수의 자금이나 군량을 몰수합니다.<br>
-몰수한것은 국가재산으로 귀속됩니다.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-EOT;
         $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destGeneralList = [];
         foreach($destRawGenerals as $destGeneral){
             $nameColor = \sammo\getNameColor($destGeneral['npc']);
             if($nameColor){
@@ -193,9 +198,28 @@ EOT;
                 $name = "*{$name}*";
             }
 
-            $form[] = "<option value='{$destGeneral['no']}' {$nameColor}>{$name}(금:{$destGeneral['gold']}, 쌀:{$destGeneral['rice']})</option>";
+            $destGeneralList[] = [
+                'no'=>$destGeneral['no'],
+                'color'=>$nameColor,
+                'name'=>$name,
+                'gold'=>$destGeneral['gold'],
+                'rice'=>$destGeneral['rice']
+            ];
         }
-        $form[] = <<<EOT
+
+        $amountList = [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            12, 15, 20, 25,
+            30, 40, 50, 60, 70, 80, 90, 100
+        ];
+        ob_start();
+?>
+장수의 자금이나 군량을 몰수합니다.<br>
+몰수한것은 국가재산으로 귀속됩니다.<br>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+<?php foreach($destGeneralList as $destGeneral): ?>
+<option value='<?=$destGeneral['no']?>' <?=$destGeneral['color']?>><?=$destGeneral['name']?>(금:<?=$destGeneral['gold']?>, 쌀:<?=$destGeneral['rice']?>)</option>
+<?php endforeach; ?>
 </select>
 <select class='formInput' name="isGold" id="isGold" size='1' style='color:white;background-color:black;'>
     <option value="true">금</option>
@@ -203,31 +227,12 @@ EOT;
 </select>
 </select>
 <select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
-    <option value=1>100</option>
-    <option value=2>200</option>
-    <option value=3>300</option>
-    <option value=4>400</option>
-    <option value=5>500</option>
-    <option value=6>600</option>
-    <option value=7>700</option>
-    <option value=8>800</option>
-    <option value=9>900</option>
-    <option value=10>1000</option>
-    <option value=12>1200</option>
-    <option value=15>1500</option>
-    <option value=20>2000</option>
-    <option value=25>2500</option>
-    <option value=30>3000</option>
-    <option value=40>4000</option>
-    <option value=50>5000</option>
-    <option value=60>6000</option>
-    <option value=70>7000</option>
-    <option value=80>8000</option>
-    <option value=90>9000</option>
-    <option value=100>10000</option>
-</select>
-<input type="submit" value="몰수">
-EOT;
-        return join("\n",$form);
+<?php foreach($amountList as $amount): ?>
+    <option value='<?=$amount?>'><?=$amount?>00</option>
+<?php endforeach; ?>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<?php
+        return ob_get_clean();
     }
 }

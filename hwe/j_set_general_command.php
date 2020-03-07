@@ -16,7 +16,7 @@ if(!is_array($turnList) || !$turnList){
     Json::die([
         'result'=>false,
         'reason'=>'턴이 입력되지 않았습니다.',
-        'test'=>'post'
+        'test'=>'post',
     ]);
 }
 

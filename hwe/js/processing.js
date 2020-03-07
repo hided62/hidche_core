@@ -1,6 +1,13 @@
 function reserveTurn(turnList, command, arg){
+    var target;
+    if(isChiefTurn){
+        target = 'j_set_chief_command.php';
+    }
+    else{
+        target = 'j_set_general_command.php';
+    }
     $.post({
-        url:'j_set_general_command.php',
+        url:target,
         dataType:'json',
         data:{
             action:command,
@@ -35,8 +42,7 @@ window.submitAction = function(){
         'int':[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
             'amount', 'colorType', 
-            'month',
-            'year', 'destGeneralID', 'destCityID', 'destNationID', 'amount', 'crewType',
+            'year', 'month',
         ],
         'boolean':[
             'isGold', 'buyRice',

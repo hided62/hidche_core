@@ -94,9 +94,43 @@ function reloadTable(){
     }, errUnknown);
 }
 
+function reserveTurn(turnList, command){
+    console.log(turnList, command);
+    $.post({
+        url:'j_set_chief_command.php',
+        dataType:'json',
+        data:{
+            action:command,
+            turnList:turnList
+        }
+    }).then(function(data){
+        if(!data.result){
+            alert(data.reason);
+        }
+        reloadTable();
+    }, errUnknown);
+}
 
 jQuery(function($){
-    chiefTableObj= genChiefTableObj();
-    $('#reloadTable').click(reloadTable);
-    reloadTable();
+
+chiefTableObj= genChiefTableObj();
+reloadTable();
+$('#reloadTable').click(reloadTable);
+$('#setCommand').click(function(){
+    var turnList = $('#chiefTurnSelector').val().map(function(v){return parseInt(v);});
+    var $command = $('#chiefCommandList option:selected');
+    if($command.data('reqarg')){
+        $.redirect(
+            "b_processing.php", {
+                command: $command.val(),
+                turnList: turnList.join('_'),
+                is_chief: true
+        }, "GET"); 
+    }
+    else{
+        reserveTurn(turnList, $command.val());
+    }
+    return false;
+});
+    
 })

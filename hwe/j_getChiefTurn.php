@@ -57,18 +57,18 @@ $nationTurnList = [];
 
 foreach(
     $db->queryAllLists(
-        'SELECT level, turn_idx, action, arg FROM nation_turn WHERE nation_id = %i ORDER BY level DESC, turn_idx ASC',
+        'SELECT level, turn_idx, action, arg, brief FROM nation_turn WHERE nation_id = %i ORDER BY level DESC, turn_idx ASC',
         $me['nation']
-    ) as [$level, $turn_idx, $action, $arg]
+    ) as [$level, $turn_idx, $action, $arg, $brief]
 ){
     if(!key_exists($level, $nationTurnList)){
         $nationTurnList[$level] = [];
     }
-    $nationTurnList[$level][$turn_idx] = [$action, Json::decode($arg)];
+    $nationTurnList[$level][$turn_idx] = $brief;
 }
 
 $nationTurnBrief = [];
-foreach($nationTurnList as $level=>$turnList){
+foreach($nationTurnList as $level=>$turnBrief){
     if(!key_exists($level, $generals)){
         $general = Util::array_first($generals);
     }
@@ -80,7 +80,7 @@ foreach($nationTurnList as $level=>$turnList){
         'turnTime'=>$general->getTurnTime($general::TURNTIME_FULL),
         'levelText'=>getLevelText($general->getVar('level'), $nationLevel),
         'npcType'=>$general->getVar('npc'),
-        'turn'=>getNationTurnBrief($general, $turnList)
+        'turn'=>$turnBrief
     ];
 }
 

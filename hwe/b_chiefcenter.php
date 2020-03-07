@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
-
+$generalObj = General::createGeneralObjFromDB($session->generalID);
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,6 +17,7 @@ $userID = Session::getUserID();
 <title><?=UniqueConst::$serverName?>: 사령부</title>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
 <?=WebUtil::printJS('../e_lib/moment.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/chiefCenter.js')?>
@@ -47,8 +48,8 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
         ><div class='bg1 chiefNamePlate'><span class='chiefLevelText'>-</span> : <span class='chiefName'>&nbsp;</span></div
 <?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
         ><div class='chiefTurnBox turn<?=$turnIdx?>'
-            ><div class='chiefTurnTime level<?=$chiefIdx?>'>&nbsp;</div
-            ><div class='chiefTurnText level<?=$chiefIdx?>'>&nbsp;</div
+            ><div class='chiefTurnTime'>&nbsp;</div
+            ><div class='chiefTurnText'>&nbsp;</div
         ></div
 <?php   endforeach; ?>
     ></div
@@ -70,7 +71,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
             ><input type='button' id='turnPull' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='▲당기기' onclick='turn(1)'
         ></div
         ><div
-            ><?=chiefCommandTable()
+            ><?=chiefCommandTable($generalObj)
             ?><input type='button' id='setCommand' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='실 행'
         ></div
     ></div
@@ -87,8 +88,8 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
         ><div class='bg1 chiefNamePlate'><span class='chiefLevelText'>-</span> : <span class='chiefName'>&nbsp;</span></div
 <?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
         ><div class='chiefTurnBox turn<?=$turnIdx?>'
-            ><div class='chiefTurnTime level<?=$chiefIdx?>'>&nbsp;</div
-            ><div class='chiefTurnText level<?=$chiefIdx?>'>&nbsp;</div
+            ><div class='chiefTurnTime'>&nbsp;</div
+            ><div class='chiefTurnText'>&nbsp;</div
         ></div
 <?php   endforeach; ?>
     ></div

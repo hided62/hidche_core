@@ -94,6 +94,14 @@ class che_발령 extends Command\NationCommand{
         return 0;
     }
 
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destGeneralName = $this->destGeneralObj->getName();
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        $josaRo = JosaUtil::pick($destCityName, '로');
+        return "【{$destGeneralName}】【{$destCityName}】{$josaRo} {$commandName}";
+    }
+
 
     public function run():bool{
         if(!$this->isRunnable()){
@@ -138,18 +146,10 @@ class che_발령 extends Command\NationCommand{
 
     public function getForm(): string
     {
-        $form = [];
-        $form[] = \sammo\getMapHtml();
-
         $db = DB::db();
 
-        $form[] = <<<EOT
-선택된 도시로 아국 장수를 발령합니다.<br>
-아국 도시로만 발령이 가능합니다.<br>
-목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-EOT;
         $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destGeneralList = [];
         foreach($destRawGenerals as $destGeneral){
             $nameColor = \sammo\getNameColor($destGeneral['npc']);
             if($nameColor){
@@ -161,16 +161,30 @@ EOT;
                 $name = "*{$name}*";
             }
 
-            $form[] = "<option value='{$destGeneral['no']}' {$nameColor}>{$name}(금:{$destGeneral['gold']}, 쌀:{$destGeneral['rice']})</option>";
+            $destGeneralList[] = [
+                'no'=>$destGeneral['no'],
+                'color'=>$nameColor,
+                'name'=>$name,
+                'gold'=>$destGeneral['gold'],
+                'rice'=>$destGeneral['rice']
+            ];
         }
-        $form[] = <<<EOT
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
+선택된 도시로 아국 장수를 발령합니다.<br>
+아국 도시로만 발령이 가능합니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+<?php foreach($destGeneralList as $destGeneral): ?>
+<option value='<?=$destGeneral['no']?>' <?=$destGeneral['color']?>><?=$destGeneral['name']?>(금:<?=$destGeneral['gold']?>, 쌀:<?=$destGeneral['rice']?>)</option>
+<?php endforeach; ?>
 </select>
 <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-EOT;
-        $form[] = \sammo\optionsForCities();
-        $form[] = '</select>';
-        $form[] = '<input type=submit value="발령">';
-        
-        return join("\n",$form);
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<?php
+        return ob_get_clean();
     }
 }
