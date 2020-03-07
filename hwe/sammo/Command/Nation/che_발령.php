@@ -26,6 +26,9 @@ class che_발령 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         //NOTE: 사망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('destGeneralID', $this->arg)){
             return false;

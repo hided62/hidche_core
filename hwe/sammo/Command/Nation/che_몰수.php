@@ -28,6 +28,9 @@ class che_몰수 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         //NOTE: 사망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('isGold', $this->arg)){
             return false;
@@ -73,7 +76,7 @@ class che_몰수 extends Command\NationCommand{
         $this->setCity();
         $this->setNation(['gold', 'rice']);
 
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'npc', 'nation'], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'npc', 'nation', 'imgsvr', 'picture'], 1);
         $this->setDestGeneral($destGeneral);
 
         $relYear = $env['year'] - $env['startyear'];
@@ -131,7 +134,12 @@ class che_몰수 extends Command\NationCommand{
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, ($general->getVar($resKey)- $isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice));
+        $amount = Util::valueFit(
+            $amount,
+            0,
+            ($destGeneral->getVar($resKey) - 
+                ($isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice))
+        );
         $amountText = number_format($amount, 0);
 
         if($destGeneral->getVar('npc') >= 2 && Util::randBool(0.01)){
@@ -144,12 +152,12 @@ class che_몰수 extends Command\NationCommand{
             ];
             $text = Util::choiceRandom($npcTexts);
             $src = new MessageTarget(
-                $general->getID(), 
-                $general->getName(),
+                $destGeneral->getID(), 
+                $destGeneral->getName(),
                 $nationID,
                 $nation['name'],
                 $nation['color'],
-                GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
+                GetImageURL($destGeneral->getVar('imgsvr'), $destGeneral->getVar('picture'))
             );
             $msg = new Message(
                 Message::MSGTYPE_PUBLIC, 
@@ -165,7 +173,7 @@ class che_몰수 extends Command\NationCommand{
         
         $logger = $general->getLogger();
 
-        $destGeneral->increaseVarWithLimit($resKey, -$amount);
+        $destGeneral->increaseVarWithLimit($resKey, -$amount, 0);
         $db->update('nation', [
             $resKey=>$db->sqleval('%b + %i', $resKey, $amount)
         ], 'nation=%i', $nationID);
@@ -228,7 +236,7 @@ class che_몰수 extends Command\NationCommand{
 </select>
 <select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
 <?php foreach($amountList as $amount): ?>
-    <option value='<?=$amount?>'><?=$amount?>00</option>
+    <option value='<?=$amount?>00'><?=$amount?>00</option>
 <?php endforeach; ?>
 </select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
 <br>

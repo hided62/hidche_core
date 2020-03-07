@@ -75,10 +75,9 @@ function reloadTable(){
             var turnTimeObj = moment(chiefInfo.turnTime);
             var turnList = plateObj.turn;
             $.each(chiefInfo.turn, function(turnIdx, turnText){
-                turnTimeObj = turnTimeObj.add(turnTerm, 'minute');
                 turnList[turnIdx].turnTime.text(turnTimeObj.format('hh:mm'));
                 turnList[turnIdx].turnText.text(turnText);
-                
+                turnTimeObj = turnTimeObj.add(turnTerm, 'minute');
             });
         });
 

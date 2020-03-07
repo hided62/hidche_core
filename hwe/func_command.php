@@ -74,6 +74,40 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
     ], 'general_id=%i ORDER BY turn_idx ASC', $generalID);
 }
 
+function repeatGeneralCommand(int $generalId, int $turnCnt){
+    if($turnCnt <= 0){
+        return;
+    }
+    if($turnCnt >= GameConst::$maxTurn){
+        return;
+    }
+
+    $db = DB::db();
+
+    $reqTurn = $turnCnt;
+    if($turnCnt * 2 > GameConst::$maxTurn){
+        $reqTurn = GameConst::$maxTurn - $turnCnt;
+    }
+
+    $turnList = $db->query('SELECT turn_idx, `action`, arg, brief FROM general_turn WHERE general_id=%i AND turn_idx < %i', $generalId, $reqTurn);
+    foreach($turnList as $turnItem){
+        $turnIdx = $turnItem['turn_idx'];
+        $nextTurnIdx = $turnIdx+$turnCnt;
+        $turnTarget = [];
+        while($nextTurnIdx < GameConst::$maxTurn){
+            //NOTE: range(15, 24, 12) 가 PHP에선 에러다. 그러니 직접 짠다. 
+            $turnTarget[] = $nextTurnIdx;
+            $nextTurnIdx += $turnCnt;
+        }
+        
+        $db->update('general_turn', [
+            'action'=>$turnItem['action'],
+            'arg'=>$turnItem['arg'],
+            'brief'=>$turnItem['brief']
+        ], 'general_id=%i AND turn_idx IN %li', $generalId, $turnTarget);
+    }
+}
+
 function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
     if($nationID == 0){
         return;

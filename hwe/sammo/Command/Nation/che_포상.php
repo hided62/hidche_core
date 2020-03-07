@@ -25,6 +25,9 @@ class che_포상 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         //NOTE: 사망 직전에 '포상' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('isGold', $this->arg)){
             return false;
@@ -201,7 +204,7 @@ class che_포상 extends Command\NationCommand{
 </select>
 <select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
 <?php foreach($amountList as $amount): ?>
-    <option value='<?=$amount?>'><?=$amount?>00</option>
+    <option value='<?=$amount?>00'><?=$amount?>00</option>
 <?php endforeach; ?>
 </select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
 <br>

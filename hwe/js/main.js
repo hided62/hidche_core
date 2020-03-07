@@ -76,12 +76,32 @@ function pushTurn(pushAmount){
     }, errUnknown);
 }
 
+function repeatTurn(repeatAmount){
+    $.post({
+        url:'j_turn.php',
+        dataType:'json',
+        data:{
+            amount:repeatAmount,
+            is_repeat:true
+        }
+    }).then(function(data){
+        if(!data.result){
+            alert(data.reason);
+        }
+        reloadCommandList();
+    }, errUnknown);
+}
+
 $('#pullTurn').click(function(){
     pushTurn(-parseInt($('#repeatAmount').val())); 
 });
 
 $('#pushTurn').click(function(){
     pushTurn(parseInt($('#repeatAmount').val())); 
+});
+
+$('#repeatTurn').click(function(){
+    repeatTurn(parseInt($('#repeatAmount').val())); 
 });
 
 

@@ -11,6 +11,7 @@ $session = Session::requireGameLogin([])->setReadOnly();
 $generalID = $session->generalID;
 
 $turnAmount = Util::getReq('amount', 'int');
+$isRepeat = Util::getReq('is_repeat', 'bool', false);
 
 if($turnAmount == null){
     Json::die([
@@ -26,7 +27,13 @@ if(abs($turnAmount) >= GameConst::$maxTurn){
     ]);
 }
 
-pushGeneralCommand($generalID, $turnAmount);
+if($isRepeat){
+    repeatGeneralCommand($generalID, $turnAmount);
+}
+else{
+    pushGeneralCommand($generalID, $turnAmount);
+}
+
 Json::die([
     'result'=>true,
     'reason'=>'success',

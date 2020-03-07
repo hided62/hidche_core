@@ -27,6 +27,9 @@ class che_선전포고 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         //NOTE: 멸망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 국가여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('destNationID', $this->arg)){
             return false;

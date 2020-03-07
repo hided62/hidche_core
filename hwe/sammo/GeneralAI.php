@@ -765,7 +765,7 @@ class GeneralAI{
             }
     
             if($compNpcWar && $compNpcWar->$resName < 21000){
-                $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
+                $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10)*100;
                 $commandList[] = [['che_몰수', [
                     'destGeneralID'=>$compNpcWar->no,
                     'isGold'=>$resName=='gold',
