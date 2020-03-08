@@ -74,7 +74,7 @@ class che_증여 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
 
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'nation'], 1);
         $this->setDestGeneral($destGeneral);
         
         $this->runnableConstraints=[

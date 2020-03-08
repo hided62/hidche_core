@@ -1811,6 +1811,71 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
     }
 }
 
+/**
+ * $from 으로 지정한 도시의 인접 도시와 $to 도시의 최단 거리를 계산해 줌
+ * @param $from 기준 도시 코드
+ * @param $to 대상 도시 코드
+ * @param $linkNationList 경로에 해당하는 국가 리스트
+ * @return array  $dist=>[cityID, $nation] 배열 가장 앞이 가장 가까움
+ */
+function searchDistanceListToDest(int $from, int $to, array $linkNationList) {
+    $queue = new \SplQueue();
+
+    $cities = [];
+
+    $db = DB::db();
+
+    //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까 
+    $allowedCityList = [];
+    foreach($db->queryAllLists(
+        'SELECT city, nation FROM city WHERE nation IN %li',
+        $linkNationList
+    ) as [$cityID, $nationID]){
+        $allowedCityList[$cityID] = $nationID;
+    }
+
+    $remainFromCities = [];
+    foreach(array_keys(CityConst::byID($from)->path) as $fromCityID){
+        if(key_exists($fromCityID, $allowedCityList)){
+            $remainFromCities[$fromCityID] = true;
+        }
+    }
+
+    if(!key_exists($to, $allowedCityList)){
+        return [];
+    }
+
+    $result = [];
+    $queue->enqueue([$to, 0]);
+
+    while(!empty($remainFromCities) && !$queue->isEmpty()){
+        list($cityID, $dist) = $queue->dequeue();
+        if(key_exists($cityID, $cities)){
+            continue;
+        }
+
+        $cities[$cityID] = $dist;
+
+        if(key_exists($cityID, $remainFromCities)){
+            unset($remainFromCities[$cityID]);
+            $result[$dist][] = [$cityID, $allowedCityList[$cityID]];
+        }
+
+        foreach(array_keys(CityConst::byID($cityID)->path) as $connCityID){
+            if($allowedCityList !== null && !key_exists($connCityID, $allowedCityList)){
+                continue;
+            }
+            if(key_exists($connCityID, $cities)){
+                continue;
+            }
+            $queue->enqueue([$connCityID, $dist+1]);
+            
+        }
+    }
+
+    return $result;
+}
+
 function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
     if($nation1 === $nation2){
         return false;

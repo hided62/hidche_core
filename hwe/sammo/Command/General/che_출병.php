@@ -55,13 +55,14 @@ class che_출병 extends Command\GeneralCommand{
         
         $this->runnableConstraints=[
             ConstraintHelper::NotOpeningPart($relYear),
-            ConstraintHelper::NearCity(1),
+            ConstraintHelper::NotSameDestCity(),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::ReqGeneralCrew(),
             ConstraintHelper::ReqGeneralRice($reqRice),
             ConstraintHelper::AllowWar(),
-            ConstraintHelper::BattleGroundCity(true),
+            ConstraintHelper::HasRoute(),
+            //ConstraintHelper::BattleGroundCity(true),
         ];
     }
 
@@ -108,16 +109,71 @@ class che_출병 extends Command\GeneralCommand{
         $defenderNationID = $this->destCity['nation'];
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $defenderCityName = $this->destCity['name'];
-        $defenderCityID = $this->destCity['city'];
-        $josaRo = JosaUtil::pick($defenderCityName, '로');
+        $attackerCityID = $general->getCityID();
+
+        
+        $finalTargetCityID = $this->destCity['city'];
+        $finalTargetCityName = $this->destCity['name'];
+        
 
         $logger = $general->getLogger();
 
+        $allowedNationList = $db->queryFirstColumn('SELECT you FROM diplomacy WHERE state = 0 AND me = %i', $attackerNationID);
+        $allowedNationList[] = $attackerNationID;
+        $allowedNationList[] = 0;
+
+        $distanceList = \sammo\searchDistanceListToDest($attackerCityID, $finalTargetCityID, $allowedNationList);
+
+        $candidateCities = [];
+
+        $minDist = Util::array_first_key($distanceList);
+        do {
+            //1: 최단 거리 도시 중 공격 대상이 있는가 확인
+            //2: 최단 거리 + 1 도시 중 공격 대상이 있는가 확인
+            foreach($distanceList as $dist => $distCitiesInfo){
+                if($dist > $minDist + 1){
+                    break;
+                }
+                $currDist = $dist;
+                foreach($distCitiesInfo as [$distCityID, $distCityNation]){
+                    if($distCityNation !== $attackerNationID){
+                        $candidateCities[] = $distCityID;
+                    }
+                }
+
+                if($candidateCities){
+                    break 2;
+                }
+            }
+
+            //3: 최단 거리 도시 중 아군 도시 선택
+            foreach($distanceList[$minDist] as [$distCityID, $distCityNation]){
+                if($distCityNation === $attackerNationID){
+                    $candidateCities[] = $distCityID;
+                }
+            }
+        }while(false);
+        
+        $defenderCityID = (int)Util::choiceRandom($candidateCities);
+        $defenderCityName = $this->destCity['name'];
+        $this->setDestCity($defenderCityID, null);
+        $josaRo = JosaUtil::pick($defenderCityName, '로');
+
         if($attackerNationID == $defenderNationID){
             $logger->pushGeneralActionLog("본국입니다. <G><b>{$defenderCityName}</b></>{$josaRo} 으로 이동합니다. <1>$date</>");    
-            $this->alternative = new che_이동($general, $this->env, $this->arg);
+            $this->alternative = new che_이동($general, $this->env, ['destCityID'=>$defenderCityID]);
             return false;
+        }
+
+        if($finalTargetCityID !== $defenderCityID){
+            $josaRo = JosaUtil::pick($finalTargetCityName, '로');
+            $josaUl = JosaUtil::pick($defenderCityName, '을');
+            if($minDist == $currDist){
+                $logger->pushGeneralActionLog("<G><b>{$finalTargetCityName}</b></>{$josaRo} 가기 위해 <G><b>{$defenderCityName}</b></>{$josaUl} 거쳐야 합니다. <1>$date</>");
+            }
+            else{
+                $logger->pushGeneralActionLog("<G><b>{$finalTargetCityName}</b></>{$josaRo} 가는 도중 <G><b>{$defenderCityName}</b></>{$josaUl} 거치기로 합니다. <1>$date</>");
+            }
         }
 
         $db->update('city', [
@@ -142,6 +198,30 @@ class che_출병 extends Command\GeneralCommand{
         $general->applyDB($db);
         
         return true;
+    }
+
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
+    public function getForm(): string
+    {
+        $srcCityName = \sammo\CityConst::byID($this->generalObj->getCityID())->name;
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
+선택된 도시를 향해 침공을 합니다.<br>
+침공 경로에 적군의 도시가 있다면 전투를 벌입니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<?=$srcCityName?> =><select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<?php
+                return ob_get_clean();
     }
 
     

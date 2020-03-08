@@ -88,6 +88,10 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
+    static function HasRoute():array{
+        return [__FUNCTION__];
+    }
+
     static function MustBeNPC():array{
         return [__FUNCTION__];
     }
