@@ -255,7 +255,7 @@ else if($session->userGrade == 4){
                             ><td width="24" class='idx_pad center bg0'><?=$turnIdx+1?></td
                             ><td height='24' class='month_pad center bg1' style='min-width:70px;white-space:nowrap;overflow:hidden;'></td
                             ><td width='42' class='time_pad center' style='background-color:black;white-space:nowrap;overflow:hidden;'></td
-                            ><td width='165' class='turn_pad center bg2' style='white-space:nowrap;overflow:hidden;font-weight:lighter'></td
+                            ><td width='165' class='turn_pad center bg2'><span class='turn_text'></span></td
                         ></tr>
 <?php endfor; ?>
                     </tbody>

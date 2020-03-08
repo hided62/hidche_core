@@ -20,8 +20,9 @@ function genChiefTableObj(){
         for(var turnIdx=0;turnIdx<maxChiefTurn;turnIdx++){
             var $turn = $plate.find('.turn{0}'.format(turnIdx+1));
             var $turnTime = $turn.find('.chiefTurnTime');
+            var $turnPad = $turn.find('.chiefTurnPad');
             var $turnText = $turn.find('.chiefTurnText');
-            turn.push({turnTime:$turnTime,turnText:$turnText});
+            turn.push({turnTime:$turnTime,turnPad:$turnPad,turnText:$turnText});
         }
         objTable[chiefIdx] = {
             levelText: $levelText,
@@ -76,7 +77,13 @@ function reloadTable(){
             var turnList = plateObj.turn;
             $.each(chiefInfo.turn, function(turnIdx, turnText){
                 turnList[turnIdx].turnTime.text(turnTimeObj.format('hh:mm'));
-                turnList[turnIdx].turnText.text(turnText);
+                turnList[turnIdx].turnText.text(turnText).css('font-size', '13px');
+                var oWidth = turnList[turnIdx].turnPad.innerWidth();
+                var iWidth = turnList[turnIdx].turnText.outerWidth();
+                if(iWidth > oWidth * 0.95){
+                    var newFontSize = 13 * oWidth / iWidth * 0.9;
+                    turnList[turnIdx].turnText.css('font-size', '{0}px'.format(newFontSize));
+                }
                 turnTimeObj = turnTimeObj.add(turnTerm, 'minute');
             });
         });

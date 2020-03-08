@@ -49,7 +49,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 <?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
         ><div class='chiefTurnBox turn<?=$turnIdx?>'
             ><div class='chiefTurnTime'>&nbsp;</div
-            ><div class='chiefTurnText'>&nbsp;</div
+            ><div class='chiefTurnPad'><span class='chiefTurnText'>&nbsp;</span></div
         ></div
 <?php   endforeach; ?>
     ></div
@@ -89,7 +89,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 <?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
         ><div class='chiefTurnBox turn<?=$turnIdx?>'
             ><div class='chiefTurnTime'>&nbsp;</div
-            ><div class='chiefTurnText'>&nbsp;</div
+            ><div class='chiefTurnPad'><span class='chiefTurnText'>&nbsp;</span></div
         ></div
 <?php   endforeach; ?>
     ></div

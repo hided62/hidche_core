@@ -86,3 +86,15 @@ color:white;
 #sidebar button{
     /*width:100px;*/
 }
+
+.turn_pad{
+    white-space:nowrap;
+    font-weight:lighter;
+    max-width: 162px;
+    width: 162px;
+
+}
+
+.turn_pad .turn_text{
+    display:inline-block;
+}

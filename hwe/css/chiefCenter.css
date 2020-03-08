@@ -38,6 +38,7 @@
     flex-grow: 1;
     display:flex;
     flex-flow: row;
+    max-height:22px;
 }
 
 .chiefTurnBox .turnHeader{
@@ -69,10 +70,11 @@
     line-height:21px;
 }
 
-.chiefTurnText{
+.chiefTurnPad{
     border-top:solid 0.67px #888888;
     table-layout: fixed;
     width:192px;
     line-height:21px;
     flex-grow: 1;
+    white-space:nowrap;
 }

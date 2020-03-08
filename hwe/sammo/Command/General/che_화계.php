@@ -163,6 +163,12 @@ class che_화계 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        return "【{$destCityName}】에 {$commandName}실행";
+    }
+
     public function getFailString():string{
         $commandName = $this->getName();
         $failReason = $this->testRunnable();

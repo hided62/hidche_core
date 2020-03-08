@@ -35,7 +35,17 @@ function reloadCommandList(){
             
             $tr.find('.time_pad').text(nextTurnTime.format('HH:mm'));
             $tr.find('.month_pad').text('{0}年 {1}月'.format(year, month));
-            $tr.find('.turn_pad').text(turnInfo.brief);
+            var $turn_pad = $tr.find('.turn_pad');
+            var $turn_text = $turn_pad.find('.turn_text');
+            $turn_text.text(turnInfo.brief).css('font-size','13px');
+
+            var oWidth = $turn_pad.innerWidth();
+            var iWidth = $turn_text.outerWidth();
+            if(iWidth > oWidth * 0.95){
+                var newFontSize = 13 * oWidth / iWidth * 0.9;
+                $turn_text.css('font-size', '{0}px'.format(newFontSize));
+            }
+            
             nextTurnTime.add(data.turnTerm, 'minutes');
             month+=1;
             if(month >= 13){
@@ -44,6 +54,8 @@ function reloadCommandList(){
             }
         });
         console.log(data);
+
+        
     });
 }
 
@@ -137,7 +149,6 @@ $('#reserveTurn').click(function(){
     }
     return false;
 })
-
 
 setInterval(myclock, 500);
 reloadCommandList();

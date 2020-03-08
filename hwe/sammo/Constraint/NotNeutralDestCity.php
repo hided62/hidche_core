@@ -2,7 +2,7 @@
 
 namespace sammo\Constraint;
 
-class NotBeNeutral extends Constraint{
+class NotNeutralDestCity extends Constraint{
     const REQ_VALUES = Constraint::REQ_DEST_CITY;
 
     public function checkInputValues(bool $throwExeception=true):bool{
