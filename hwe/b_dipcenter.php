@@ -16,7 +16,7 @@ increaseRefresh("내무부", 1);
 $me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
 
 $nationID = $me['nation'];
-$nation = $db->queryFirstRow('SELECT nation,name,color,type,gold,rice,bill,rate,scout,war,secretlimit,msg,scoutmsg FROM nation WHERE nation = %i', $nationID);
+$nation = $db->queryFirstRow('SELECT nation,level,name,color,type,gold,rice,bill,rate,scout,war,secretlimit,msg,scoutmsg,capital FROM nation WHERE nation = %i', $nationID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -171,7 +171,7 @@ if ($budgetricediff > 0) {
 }
 
 ?>
-<table width=1000 class='tb_layout bg0 center'>
+<table width=1000 class='tb_layout bg0' style='margin:auto;'>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메시지</td></tr>

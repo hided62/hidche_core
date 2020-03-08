@@ -56,7 +56,7 @@ class che_건국 extends Command\GeneralCommand{
         try{
             $nationTypeClass = buildNationTypeClass($nationType);
         }
-        catch(InvalidArgumentException $e){
+        catch(\InvalidArgumentException $e){
             return false;
         }
         
@@ -140,7 +140,7 @@ class che_건국 extends Command\GeneralCommand{
         $nationTypeName = $nationTypeClass->getName();
 
 
-        $logger->pushGeneralActionLog("<D><b>{$nationName}</></>{$josaUl} 건국하였습니다. <1>$date</>");
+        $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaUl} 건국하였습니다. <1>$date</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$cityName}</b></>에 국가를 건설하였습니다.");
 
         $josaNationYi = JosaUtil::pick($nationName, '이');

@@ -104,6 +104,14 @@ class che_등용 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getBrief(): string
+    {
+        $destGeneralName = $this->destGeneralObj->getName();
+        $name = $this->getName();
+        $josaUl = JosaUtil::pick($name, '을');
+        return "【{$destGeneralName}】{$josaUl} {$name}";
+    }
+
     public function run():bool{
         if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

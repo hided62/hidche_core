@@ -110,6 +110,14 @@ class che_증여 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getBrief(): string
+    {
+        $destGeneralName = $this->destGeneralObj->getName();
+        $resText = $this->arg['isGold']?'금':'쌀';
+        $name = $this->getName();
+        return "【{$destGeneralName}】에게 {$resText} {$this->arg['amount']}을 {$name}";
+    }
+
     public function run():bool{
         if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
