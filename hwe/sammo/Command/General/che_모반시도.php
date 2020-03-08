@@ -33,6 +33,7 @@ class che_모반시도 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
 
+        $this->setCity();
         $this->setNation();
         
         $this->runnableConstraints=[

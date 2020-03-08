@@ -12,7 +12,9 @@ use \sammo\{
 
 
 use function \sammo\{
-    tryUniqueItemLottery
+    tryUniqueItemLottery,
+    getInvitationList,
+    getNationStaticInfo
 };
 
 use \sammo\Constraint\Constraint;
@@ -24,17 +26,17 @@ use sammo\MustNotBeReachedException;
 
 class che_랜덤임관 extends Command\GeneralCommand{
     static protected $actionName = '랜덤임관';
-    static public $reqArg = true;
+    static public $reqArg = false;
 
     protected function argTest():bool{
         if($this->arg === null){
-            return false;
+            return true;
         }
         $destNationIDList = $this->arg['destNationIDList']??null;
         //null은 에러, []는 정상
 
         if($destNationIDList === null || !is_array($destNationIDList)){
-            return false;
+            return true;
         }
         if($destNationIDList && Util::isDict($destNationIDList)){
             return false;
@@ -69,7 +71,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
             ConstraintHelper::AllowJoinAction(),
         ];
 
-        if($this->arg['destNationIDList']){
+        if($this->arg['destNationIDList']??false){
             $this->runnableConstraints[] = ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']);
         }
     }
@@ -269,5 +271,4 @@ class che_랜덤임관 extends Command\GeneralCommand{
         return true;
     }
 
-    
 }
