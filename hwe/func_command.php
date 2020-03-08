@@ -130,7 +130,7 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
 
     $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
-    ], 'nation_id=%i AND level=%i', $nationID, $level);
+    ], 'nation_id=%i AND level=%i ORDER BY turn_idx DESC', $nationID, $level);
     $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',

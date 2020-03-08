@@ -67,8 +67,8 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
     ?></div
     ><div style='width:400px;display: flex;justify-content: center;flex-direction: column;'
         ><div
-            ><input type='button' id='turnPush' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='미루기▼' onclick='turn(0)'
-            ><input type='button' id='turnPull' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='▲당기기' onclick='turn(1)'
+            ><input type='button' id='turnPush' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='미루기▼'
+            ><input type='button' id='turnPull' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='▲당기기'
         ></div
         ><div
             ><?=chiefCommandTable($generalObj)

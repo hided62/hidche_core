@@ -117,6 +117,21 @@ function reserveTurn(turnList, command){
     }, errUnknown);
 }
 
+function pushTurn(turnCnt){
+    $.post({
+        url:'j_chief_turn.php',
+        dataType:'json',
+        data:{
+            amount:turnCnt
+        }
+    }).then(function(data){
+        if(!data.result){
+            alert(data.reason);
+        }
+        reloadTable();
+    }, errUnknown);
+}
+
 jQuery(function($){
 
 chiefTableObj= genChiefTableObj();
@@ -137,6 +152,14 @@ $('#setCommand').click(function(){
         reserveTurn(turnList, $command.val());
     }
     return false;
+});
+
+$('#turnPush').click(function(){
+    pushTurn(1);
+});
+
+$('#turnPull').click(function(){
+    pushTurn(-1);
 });
     
 })

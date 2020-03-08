@@ -75,7 +75,7 @@ function myclock() {
 
 function pushTurn(pushAmount){
     $.post({
-        url:'j_turn.php',
+        url:'j_general_turn.php',
         dataType:'json',
         data:{
             amount:pushAmount
@@ -90,7 +90,7 @@ function pushTurn(pushAmount){
 
 function repeatTurn(repeatAmount){
     $.post({
-        url:'j_turn.php',
+        url:'j_general_turn.php',
         dataType:'json',
         data:{
             amount:repeatAmount,
