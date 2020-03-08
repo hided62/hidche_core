@@ -11,6 +11,7 @@ use \sammo\BaseWarUnitTrigger;
 class che_저격_수극 extends \sammo\BaseItem{
 
     protected $id = 2;
+    protected $rawName = '수극';
     protected $name = '수극(저격)';
     protected $info = '[전투] 전투 개시 전 20% 확률로 저격 시도. 1회용';
     protected $cost = 1000;

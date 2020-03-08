@@ -25,13 +25,6 @@ class che_군량매매 extends Command\GeneralCommand{
     static protected $actionName = '군량매매';
     static public $reqArg = true;
 
-    static $itemMap = [
-        'horse'=>'명마',
-        'weapon'=>'무기',
-        'book'=>'서적',
-        'item'=>'도구',
-    ];
-
     protected function argTest():bool{
         if($this->arg === null){
             return false;

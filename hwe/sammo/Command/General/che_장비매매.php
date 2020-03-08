@@ -15,7 +15,6 @@ use \sammo\{
 
 use function \sammo\{
     tryUniqueItemLottery,
-    getItemName,
     buildItemClass
 };
 
@@ -110,6 +109,24 @@ class che_장비매매 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getBrief():string{
+        $itemType = $this->arg['itemType'];
+        $itemCode = $this->arg['itemCode'];
+
+        if($itemCode === 'None'){
+            $itemTypeName = static::$itemMap[$itemType];
+            $josaUl = JosaUtil::pick($itemTypeName, '을');
+            return "{$itemTypeName}{$josaUl} 판매";
+        }
+
+
+        $itemObj = buildItemClass($itemCode);
+        $itemName = $itemObj->getName();
+        $itemRawName = $itemObj->getRawName();
+        $josaUl = JosaUtil::pick($itemRawName, '을');
+        return "【{$itemName}】{$josaUl} 구입";
+    }
+
     public function run():bool{
         if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -133,8 +150,9 @@ class che_장비매매 extends Command\GeneralCommand{
         $itemObj = buildItemClass($itemCode);
         $cost = $itemObj->getCost();
         $itemName = $itemObj->getName();
+        $itemRawName = $itemObj->getRawName();
 
-        $josaUl = JosaUtil::pick($itemName, '을');
+        $josaUl = JosaUtil::pick($itemRawName, '을');
 
         $logger = $general->getLogger();
 
@@ -173,8 +191,14 @@ class che_장비매매 extends Command\GeneralCommand{
 ?>
 <script>
 function updateItemType(){
-    $('#itemType').val($('#itemCode option:selected').data('itemType'));
+    $('#itemType').val($('#itemCode option:selected').data('item_type'));
 }
+$(function(){
+$('#customSubmit').click(function(){
+    updateItemType();
+    submitAction();
+});
+});
 </script>
 <input type="hidden" class="formInput" name="itemType" id="itemType" value="item">
 장비를 구입하거나 매각합니다.<br>
@@ -186,7 +210,6 @@ function updateItemType(){
     $typeName = static::$itemMap[$itemType];
 ?>
     <option value='None' data-itemType='<?=$itemType?>' style='color:skyblue'>_____<?=$typeName?>매각(반값)____</option>
-        //구입
     <?php foreach($itemCategories as $itemCode=>$cnt) :
             if($cnt > 0){
                 continue;
@@ -199,15 +222,15 @@ function updateItemType(){
             $reqSecu = $itemClass->getReqSecu();
             $reqGold = $itemClass->getCost();
             $css = '';
-            if($reqSecu < $citySecu){
+            if($reqSecu > $citySecu){
                 $css = 'color:red;';
             }
 ?>
-        <option value='<?=$itemCode?>' data-itemType='<?=$itemType?>' style='<?=$css?>'><?=$itemName?> 가격: <?=$reqGold?></option>
+        <option value='<?=$itemCode?>' data-item_type='<?=$itemType?>' style='<?=$css?>'><?=$itemName?> 가격: <?=$reqGold?></option>
     <?php endforeach; ?>
 <?php endforeach; ?>
 </select>
-<input type=submit value=거래>
+<input type=button id="customSubmit" value="<?=$this->getName()?>"><br>
 <?php
         return ob_get_clean();
     }

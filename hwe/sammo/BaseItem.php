@@ -8,6 +8,7 @@ class BaseItem implements iAction{
     use \sammo\DefaultAction;
 
     protected $id = 0;
+    protected $rawName = '-';
     protected $name = '-';
     protected $info = '';
     protected $cost = null;
@@ -17,6 +18,10 @@ class BaseItem implements iAction{
 
     function getID(){
         return $this->id;
+    }
+
+    function getRawName(){
+        return $this->rawName;
     }
     
     function getCost(){

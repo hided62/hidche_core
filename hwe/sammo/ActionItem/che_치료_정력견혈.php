@@ -8,6 +8,7 @@ use \sammo\GeneralTriggerCaller;
 class che_치료_정력견혈 extends \sammo\BaseItem{
 
     protected $id = 11;
+    protected $rawName = '정력견혈';
     protected $name = '정력견혈(치료)';
     protected $info = '[군사] 턴 실행 전 부상 회복.';
     protected $cost = 200;

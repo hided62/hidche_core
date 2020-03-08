@@ -6,6 +6,7 @@ use \sammo\General;
 class che_계략_삼략 extends \sammo\BaseItem{
 
     protected $id = 22;
+    protected $rawName = '삼략';
     protected $name = '삼략(계략)';
     protected $info = '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p';
     protected $cost = 200;

@@ -286,8 +286,9 @@ class che_화계 extends Command\GeneralCommand{
 
         $itemObj = $general->getItem();
         if($itemObj->isConsumableNow('GeneralCommand', '계략') && $itemObj::$consumable){
-            $itemName = $itemObj->name;
-            $josaUl = JosaUtil::pick($itemName, '을');
+            $itemName = $itemObj->getName();
+            $itemRawName = $itemObj->getRawName();
+            $josaUl = JosaUtil::pick($itemRawName, '을');
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
             $general->deleteItem();
         }

@@ -85,7 +85,7 @@ function processGoldIncome() {
             ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
 
-        $incomeLog = "<C>●</>이번 수입은 금 <C>$income</>입니다.";
+        $incomeLog = "이번 수입은 금 <C>$income</>입니다.";
 
         $db->update('nation', [
             'gold'=>$nation['gold']
@@ -364,7 +364,7 @@ function processRiceIncome() {
             ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
 
-        $incomeLog = "<C>●</>이번 수입은 쌀 <C>$income</>입니다.";
+        $incomeLog = "이번 수입은 쌀 <C>$income</>입니다.";
 
         $db->update('nation', [
             'rice'=>$nation['rice']

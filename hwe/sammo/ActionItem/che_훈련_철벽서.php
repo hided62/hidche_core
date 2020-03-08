@@ -6,6 +6,7 @@ use \sammo\General;
 class che_훈련_철벽서 extends \sammo\BaseItem{
 
     protected $id = 17;
+    protected $rawName = '철벽서';
     protected $name = '철벽서(훈련)';
     protected $info = '[전투] 훈련 보정 +14';
     protected $cost = 200;

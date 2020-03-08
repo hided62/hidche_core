@@ -20,7 +20,8 @@ class che_아이템치료 extends BaseGeneralTrigger{
             $general->activateSkill('pre.부상경감', 'pre.치료');
             $itemObj = $general->getItem();
             $itemName = $itemObj->getName();
-            $josaUl = JosaUtil::pick($itemName, '을');
+            $itemRawName = $itemObj->getRawName();
+            $josaUl = JosaUtil::pick($itemRawName, '을');
             $general->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용하여 치료합니다!", ActionLogger::PLAIN);
 
             if($itemObj->isConsumableNow('GeneralTrigger', 'che_아이템치료')){

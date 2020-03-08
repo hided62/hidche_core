@@ -6,6 +6,7 @@ use \sammo\General;
 class che_사기_초선화 extends \sammo\BaseItem{
 
     protected $id = 20;
+    protected $rawName = '초선화';
     protected $name = '초선화(사기)';
     protected $info = '[전투] 사기 보정 +14';
     protected $cost = 200;

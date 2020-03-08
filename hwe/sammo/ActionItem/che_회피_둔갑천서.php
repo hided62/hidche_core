@@ -6,6 +6,7 @@ use \sammo\General;
 class che_회피_둔갑천서 extends \sammo\BaseItem{
 
     protected $id = 26;
+    protected $rawName = '둔갑천서';
     protected $name = '둔갑천서(회피)';
     protected $info = '[전투] 회피 확률 +20%p';
     protected $cost = 200;

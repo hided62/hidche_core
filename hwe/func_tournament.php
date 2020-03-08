@@ -860,56 +860,59 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         //아이템 로그
         if(!$horse->isBuyable() && ($tnmt_type == 0 || $tnmt_type == 1)) {
             $itemName = $horse->getName();
+            $itemRawName = $horse->getRawName();
             switch(rand()%4) {
             case 0: 
-            $josaYi = JosaUtil::pick($itemName, '이');
+            $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 포효합니다!"; break;
             case 1:
-            $josaYi = JosaUtil::pick($itemName, '이');
+            $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 그 위용을 뽐냅니다!"; break;
             case 2:
             $josaYi = JosaUtil::pick($gen['name'], '이');
-            $josaUl = JosaUtil::pick($itemName, '을');
+            $josaUl = JosaUtil::pick($itemRawName, '을');
             $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>{$itemName}</>{$josaUl} 타고 있습니다!"; break;
             case 3:
-            $josaYi = JosaUtil::pick($itemName, '이');
+            $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 갈기를 휘날립니다!"; break;
             }
         }
         if(!$weapon->isBuyable() && ($tnmt_type == 0 || $tnmt_type == 2)) {
             $itemName = $weapon->getName();
+            $itemRawName = $weapon->getRawName();
             switch(rand()%4) {
             case 0:
-            $josaYi = JosaUtil::pick($itemName, '이');
+            $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 번뜩입니다!"; break;
             case 1:
-            $josaYi = JosaUtil::pick($itemName, '이');
+            $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 푸르게 빛납니다!"; break;
             case 2:
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>에서 살기가 느껴집니다!"; break;
             case 3:
-            $josaYi = JosaUtil::pick($itemName, '이');
+            $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 손에는 <S>{$itemName}</>{$josaYi} 쥐어져 있습니다!"; break;
             }
         }
         if(!$book->isBuyable() && ($tnmt_type == 0 || $tnmt_type == 3)) {
             $itemName = $book->getName();
+            $itemRawName = $book->getRawName();
             switch(rand()%4) {
             case 0:
             $josaYi = JosaUtil::pick($gen['name'], '이');
-            $josaUl = JosaUtil::pick(getItemName($gen['b']), '을');
-            $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>".getItemName($gen['b'])."</>{$josaUl} 펼쳐듭니다!"; break;
+            $josaUl = JosaUtil::pick($itemRawName, '을');
+            $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>{$itemName}</>{$josaUl} 펼쳐듭니다!"; break;
             case 1:
             $josaYi = JosaUtil::pick($gen['name'], '이');
-            $josaUl = JosaUtil::pick(getItemName($gen['b']), '을');
-            $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>".getItemName($gen['b'])."</>{$josaUl} 품에서 꺼냅니다!"; break;
+            $josaUl = JosaUtil::pick($itemRawName, '을');
+            $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>{$itemName}</>{$josaUl} 품에서 꺼냅니다!"; break;
             case 2:
             $josaYi = JosaUtil::pick($gen['name'], '이');
-            $josaUl = JosaUtil::pick(getItemName($gen['b']), '을');
-            $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>".getItemName($gen['b'])."</>{$josaUl} 들고 있습니다!"; break;
+            $josaUl = JosaUtil::pick($itemRawName, '을');
+            $log[] = "<S>●</> <Y>{$gen['name']}</>{$josaYi} <S>{$itemName}</>{$josaUl} 들고 있습니다!"; break;
             case 3:
-            $josaYi = JosaUtil::pick(getItemName($gen['b']), '이');
-            $log[] = "<S>●</> <Y>{$gen['name']}</>의 손에는 <S>".getItemName($gen['b'])."</>{$josaYi} 쥐어져 있습니다!"; break;
+            $josaYi = JosaUtil::pick($itemRawName, '이');
+            $log[] = "<S>●</> <Y>{$gen['name']}</>의 손에는 <S>{$itemName}</>{$josaYi} 쥐어져 있습니다!"; break;
             }
         }
     }

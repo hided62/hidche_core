@@ -77,6 +77,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         $self->activateSkill('아이템사용');
         $item = $self->getGeneral()->getItem();
         $itemName = $item->getName();
+        $itemRawName = $item->getRawName();
         $self->activateSkill($itemName);
 
         if (!($this->raiseType & static::TYPE_CONSUMABLE_ITEM)) {
@@ -88,7 +89,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         }
 
         $self->activateSkill('아이템소모');
-        $josaUl = JosaUtil::pick($itemName, '을');
+        $josaUl = JosaUtil::pick($itemRawName, '을');
         $self->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
         $self->general->deleteItem();
 

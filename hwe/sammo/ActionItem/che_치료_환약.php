@@ -8,6 +8,7 @@ use \sammo\GeneralTriggerCaller;
 class che_치료_환약 extends \sammo\BaseItem{
 
     protected $id = 1;
+    protected $rawName = '환약';
     protected $name = '환약(치료)';
     protected $info = '[군사] 턴 실행 전 부상 회복. 1회용';
     protected $cost = 100;

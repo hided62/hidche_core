@@ -1567,8 +1567,10 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
     $nationName = $general->getStaticNation()['name'];
     $generalName = $general->getName();
     $josaYi = JosaUtil::pick($generalName, '이');
-    $itemName = getItemName($itemCode);
-    $josaUl = JosaUtil::pick($itemName, '을');
+    $itemObj = buildItemClass($itemCode);
+    $itemName = $itemObj->getName();
+    $itemRawName = $itemObj->getRawName();
+    $josaUl = JosaUtil::pick($itemRawName, '을');
 
 
     $general->setVar($itemType, $itemCode);
