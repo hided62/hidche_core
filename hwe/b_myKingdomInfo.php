@@ -43,7 +43,7 @@ if($nationID == 0) {
 <br>
 <?php
 
-$nation = $db->queryFirstRow('SELECT nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital FROM nation WHERE natoin=%i', $nationID);   //국가정보
+$nation = $db->queryFirstRow('SELECT nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital FROM nation WHERE nation=%i', $nationID);   //국가정보
 $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
 
 $currPop = 0;
@@ -91,10 +91,9 @@ if ($budgetricediff > 0) {
 }
 
 ?>
-echo "
 <table align=center width=1000 class='tb_layout bg2'>
     <tr>
-        <td colspan=8 align=center style='color:<?=newColor($nation['color'])?>; bgcolor=<?=$nation['color']?>'>【<?=$nation['name']?>】</td>
+        <td colspan=8 align=center style='color:<?=newColor($nation['color'])?>;background-color:<?=$nation['color']?>'>【<?=$nation['name']?>】</td>
     </tr>
     <tr>
         <td width=98 align=center id=bg1>총주민</td>
@@ -117,7 +116,7 @@ echo "
         <td align=center id=bg1>세금/단기</td>
         <td align=center>+<?=number_format($goldIncome)?> / +<?=number_format($warIncome)?></td>
         <td align=center id=bg1>세곡/둔전</td>
-        <td align=center>+<?=number_format($$riceIncome)?> / +<?=number_format($$wallIncome)?></td>
+        <td align=center>+<?=number_format($riceIncome)?> / +<?=number_format($wallIncome)?></td>
         <td align=center id=bg1>지급률</td>
         <td align=center colspan=3><?=$nation['bill']?> %</td>
     </tr>

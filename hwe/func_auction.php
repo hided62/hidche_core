@@ -60,7 +60,7 @@ function registerAuction() {
 
         $term = 3 + rand() % 10;
         $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
-        $query = "insert into auction (type, no1, name1, amount, cost, value, topv, expire) values (1, '0', 'ⓝ상인', '0', '$cost', '$cost', '$topv', '$date')";
+        $query = "insert into auction (type, no1, name1, amount, cost, value, topv, expire) values (1, '0', 'ⓝ상인', '$amount', '$cost', '$cost', '$topv', '$date')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
