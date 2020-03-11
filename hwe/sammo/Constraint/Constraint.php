@@ -209,7 +209,7 @@ abstract class Constraint{
         
 
             if(!$constraint->test()){
-                return $constraint->reason();
+                return [\sammo\Util::getClassNameFromObj($constraint), $constraint->reason()];
             }
         }
 
