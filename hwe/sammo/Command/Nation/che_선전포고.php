@@ -16,6 +16,8 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
+    getAllNationStaticInfo,
+    getNationStaticInfo,
     GetImageURL
 };
 
@@ -73,6 +75,7 @@ class che_선전포고 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestNation(),
+            ConstraintHelper::NearNation(),
             ConstraintHelper::DisallowDiplomacyBetweenStatus([
                 0 => '아국과 이미 교전중입니다.',
                 1 => '아국과 이미 선포중입니다.',
@@ -96,6 +99,12 @@ class che_선전포고 extends Command\NationCommand{
 
     public function getPostReqTurn():int{
         return 0;
+    }
+
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
+        return "【{$destNationName}】에 {$commandName}";
     }
 
 
@@ -126,7 +135,7 @@ class che_선전포고 extends Command\NationCommand{
         $logger = $general->getLogger();
         $destLogger = new ActionLogger(0, $destNationID, $env['year'], $env['month']);
 
-        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>으로 선전 포고 했습니다.<1>$date</>");
+        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>에 선전 포고 했습니다.<1>$date</>");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 선전 포고");
         $destLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국에 선전 포고");
 
@@ -183,10 +192,43 @@ class che_선전포고 extends Command\NationCommand{
 
     public function getForm(): string
     {
-        $form = [];
-        $form[] = \sammo\getMapHtml();
+        $generalObj = $this->generalObj;
+        $nationID = $generalObj->getNationID();
+        $startYear = $this->env['startyear'];
+        $availableYear = $startYear + 1;
+        $nationList = [];
+        foreach(getAllNationStaticInfo() as $destNation){
+            if($destNation['nation'] == $nationID){
+                continue;
+            }
 
+            $testCommand = new static($generalObj, $this->env, $this->getLastTurn(), ['destNationID'=>$destNation['nation']]);
+            if($testCommand->isRunnable()){
+                $destNation['availableWar'] = true;
+            }
+            else{
+                $destNation['availableWar'] = false;
+            }
 
-        return join("\n",$form);
+            $nationList[] = $destNation;
+        }
+
+        ob_start(); 
+?>
+타국에게 선전 포고합니다.<br>
+선전 포고할 국가를 목록에서 선택하세요.<br>
+고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br>
+초반제한 해제 2년전부터 선포가 가능합니다. (<?=$availableYear?>년 1월부터 가능)<br>
+현재 선포가 불가능한 국가는 배경색이 <font color=red>붉은색</font>으로 표시됩니다.<br>
+<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
+<?php foreach($nationList as $nation): ?>
+    <option 
+        value='<?=$nation['nation']?>' 
+        style='color:<?=$nation['color']?>;<?=$nation['availableWar']?'':'background-color:red;'?>'
+    >【<?=$nation['name']?> 】</option>
+<?php endforeach; ?>
+<input type=button id="commonSubmit" value="<?=$this->getName()?>">
+<?php
+        return ob_get_clean();
     }
 }

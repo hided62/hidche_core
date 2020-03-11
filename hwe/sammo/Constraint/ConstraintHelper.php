@@ -104,6 +104,10 @@ class ConstraintHelper{
         return [__FUNCTION__, $distance];
     }
 
+    static function NearNation():array{
+        return [__FUNCTION__];
+    }
+
     static function NotBeNeutral():array{
         return [__FUNCTION__];
     }

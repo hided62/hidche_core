@@ -190,7 +190,6 @@ class che_임관 extends Command\GeneralCommand{
     public function getForm(): string
     {
         $db = DB::db();
-        $form = [];
 
         $generalObj = $this->generalObj;
 
