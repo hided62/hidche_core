@@ -215,6 +215,7 @@ class che_선전포고 extends Command\NationCommand{
 
         ob_start(); 
 ?>
+<?=\sammo\getMapHtml()?><br>
 타국에게 선전 포고합니다.<br>
 선전 포고할 국가를 목록에서 선택하세요.<br>
 고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br>

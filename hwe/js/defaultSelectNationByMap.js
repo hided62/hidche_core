@@ -6,7 +6,11 @@ $(function(){
         neutralView:true,
         useCachedMap:true,
         selectCallback:function(city){
+            var currVal = $target.val();
             $target.val(city.nationId);
+            if($target.val() === null){
+                $target.val(currVal);
+            }
             return false;
         }
     });
