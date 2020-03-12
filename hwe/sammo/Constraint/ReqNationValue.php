@@ -16,14 +16,15 @@ class ReqNationValue extends Constraint{
     protected $keyNick;
     protected $reqVal;
     protected $comp;
+    protected $errMsg;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
-        if(count($this->arg) == 4){
-            [$this->key, $this->keyNick, $comp, $this->reqVal] = $this->arg;
+        if(count($this->arg) == 5){
+            [$this->key, $this->keyNick, $comp, $this->reqVal, $this->errMsg] = $this->arg;
 
             if(!in_array($comp, ['>', '>=', '==', '<=', '<', '!=', '===', '!=='])){
                 if(!$throwExeception){return false; }
@@ -32,7 +33,7 @@ class ReqNationValue extends Constraint{
         }
         else{
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require key, keyNick, comp, reqVal");
+            throw new \InvalidArgumentException("require key, keyNick, comp, reqVal[, errMsg]");
         }
 
         $this->comp = $comp;
@@ -47,7 +48,7 @@ class ReqNationValue extends Constraint{
         if(is_numeric($this->reqVal)){
             $this->isPercent = false;
         }
-        else if(is_str($this->reqVal)){
+        else if(is_string($this->reqVal)){
             $this->reqVal = Util::convPercentStrToFloat($this->reqVal);
             if($this->reqVal === null){
                 if(!$throwExeception){return false; }
@@ -121,7 +122,12 @@ class ReqNationValue extends Constraint{
         }
 
         $josaYi = JosaUtil::pick($keyNick, '이');
-        $this->reason = "{$keyNick}{$josaYi} {$result}";
+        if($this->errMsg){
+            $this->reason = $this->errMsg;
+        }
+        else{
+            $this->reason = "{$keyNick}{$josaYi} {$result}";
+        }
         
         return false;
     }

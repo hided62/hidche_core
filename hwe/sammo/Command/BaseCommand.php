@@ -4,7 +4,8 @@ namespace sammo\Command;
 use \sammo\{
     Util, JosaUtil, DB,
     General, GameConst,
-    ActionLogger
+    ActionLogger,
+    LastTurn
 };
 
 use function \sammo\getNationStaticInfo;
@@ -124,7 +125,7 @@ abstract class BaseCommand{
             return;
         }
 
-        $defaultArgs = ['nation', 'name', 'color', 'type', 'level', 'capital'];
+        $defaultArgs = ['nation', 'name', 'color', 'type', 'level', 'capital', 'gennum'];
         $args = array_unique(array_merge($defaultArgs, $args));
         if($args == $defaultArgs){
             $this->nation = $this->generalObj->getStaticNation();
@@ -293,6 +294,41 @@ abstract class BaseCommand{
         
     }
 
+    public function getTermString():string{
+        $commandName = $this->getName();
+        $term = $this->getResultTurn()->getTerm();
+        $termMax = $this->getPreReqTurn() + 1;
+        return "{$commandName} 수행중... ({$term}/{$termMax})";
+    }
+
+    public function addTermStack():bool{
+        if($this->getPreReqTurn() == 0){
+            return true;
+        }
+
+        $lastTurn = $this->getLastTurn();
+        $commandName = $this->getName();
+        if($lastTurn->getCommand() != $commandName){
+            $this->setResultTurn(new LastTurn(
+                $commandName,
+                $this->arg,
+                1
+            ));
+            return false;
+        }
+
+        if($lastTurn->getTerm() < $this->getPreReqTurn()){
+            $this->setResultTurn(new LastTurn(
+                $commandName,
+                $this->arg,
+                $lastTurn->getTerm() + 1
+            ));
+            return false;
+        }
+
+        return true;
+    }
+
     public function isReservable():bool{
         if($this->reservable !== null){
             return $this->reservable;
@@ -343,5 +379,17 @@ abstract class BaseCommand{
     public function getForm():string{
         throw new \sammo\MustNotBeReachedException();
         return '';
+    }
+
+    public function getLastTurn():LastTurn{
+        return $this->generalObj->getLastTurn();
+    }
+
+    public function setResultTurn(LastTurn $lastTurn){
+        $this->generalObj->setResultTurn($lastTurn);
+    }
+
+    public function getResultTurn():LastTurn{
+        return $this->generalObj->getResultTurn();
     }
 }

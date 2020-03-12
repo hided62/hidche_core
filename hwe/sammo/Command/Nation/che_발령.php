@@ -133,7 +133,7 @@ class che_발령 extends Command\NationCommand{
         $destGeneral->getLogger()->pushGeneralActionLog("<Y>{$generalName}</>에 의해 <G><b>{$destCityName}</b></>{$josaRo} 발령됐습니다. <1>$date</>");
         $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>{$josaUl} <G><b>{$destCityName}</b></>{$josaRo} 발령했습니다. <1>$date</>");
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

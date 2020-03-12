@@ -7,6 +7,10 @@ class ConstraintHelper{
     static function AdhocCallback(callable $callback):array{
         return [__FUNCTION__, $callback];
     }
+
+    static function AllowDiplomacyStatus(int $nationID, array $disallowList, string $errMsg):array{
+        return [__FUNCTION__, [$nationID, $disallowList, $errMsg]];
+    }
     
     static function AllowJoinAction():array{
         return [__FUNCTION__];
@@ -212,8 +216,8 @@ class ConstraintHelper{
         return [__FUNCTION__, $reqRice];
     }
 
-    static function ReqNationValue($key, string $keyNick, string $comp, $reqVal):array{
-        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal]];
+    static function ReqNationValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
     }
 
     static function ReqTroopMembers():array{

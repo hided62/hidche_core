@@ -181,7 +181,7 @@ class che_몰수 extends Command\NationCommand{
         $destGeneral->getLogger()->pushGeneralActionLog("{$resName} {$amountText}을 몰수 당했습니다.", ActionLogger::PLAIN);
         $logger->pushGeneralActionLog("{$destGeneral->getName()}에게서 {$resName} <C>$amountText</>을 몰수했습니다. <1>$date</>");
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

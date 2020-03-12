@@ -27,7 +27,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 class che_불가침제의 extends Command\NationCommand{
-    static protected $actionName = '불가침제의';
+    static protected $actionName = '불가침 제의';
     static public $reqArg = true;
 
     protected function argTest():bool{
@@ -206,7 +206,7 @@ class che_불가침제의 extends Command\NationCommand{
         );
         $msg->send();
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
         $destLogger->flush();
 

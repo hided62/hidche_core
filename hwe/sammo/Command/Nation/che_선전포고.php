@@ -176,7 +176,7 @@ class che_선전포고 extends Command\NationCommand{
         );
         $msg->send();
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
         $destLogger->flush();
 

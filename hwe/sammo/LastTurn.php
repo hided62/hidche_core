@@ -65,4 +65,8 @@ class LastTurn{
         }
         return Json::encode($result);
     }
+
+    function duplicate():LastTurn{
+        return new static($this->command, $this->arg, $this->term);
+    }
 }

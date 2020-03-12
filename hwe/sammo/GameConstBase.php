@@ -280,7 +280,7 @@ class GameConstBase
             //'che_감축',
         ],
         '전략'=>[
-            //'che_필사즉생',
+            'che_필사즉생',
             //'che_백성동원',
             //'che_수몰',
             //'che_허보',

@@ -82,11 +82,21 @@ class TurnExecutionHelper
                 $general->getLogger()->pushGeneralActionLog($text);
                 break;
             }
-            
+
+            if(!$commandObj->addTermStack()){
+                $date = $general->getTurnTime($general::TURNTIME_HM);
+                $termString = $commandObj->getTermString();
+                $text = "{$termString} <1>{$date}</>";
+                $general->getLogger()->pushGeneralActionLog($text);
+                break;
+            }
+
             $result = $commandObj->run();
             if($result){
                 break;
             }
+            
+            
             $alt = $commandObj->getAlternativeCommand();
             if($alt === null){
                 break;
@@ -117,6 +127,14 @@ class TurnExecutionHelper
                 break;
             }
             
+            if(!$commandObj->addTermStack()){
+                $date = $general->getTurnTime($general::TURNTIME_HM);
+                $termString = $commandObj->getTermString();
+                $text = "{$termString} <1>{$date}</>";
+                $general->getLogger()->pushGeneralActionLog($text);
+                break;
+            }
+
             $result = $commandObj->run();
             if($result){
                 break;
@@ -147,7 +165,7 @@ class TurnExecutionHelper
             $general->setVar('killturn', $killTurn);
         }
 
-        return $general->getResultTurn();
+        return $commandObj->getResultTurn();
     }
 
     function updateTurnTime(){
