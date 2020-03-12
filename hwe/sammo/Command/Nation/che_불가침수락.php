@@ -155,7 +155,7 @@ class che_불가침수락 extends Command\NationCommand{
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         $year = $this->arg['year'];
         $month = $this->arg['month'];
-        return "{$year}년 {$month}월까지 ";
+        return "{$year}년 {$month}월 전까지 ";
     }
 
     public function run():bool{
@@ -195,92 +195,16 @@ class che_불가침수락 extends Command\NationCommand{
 
         $josaWa = JosaUtil::pick($destNationName, '와');
         $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaWa} <C>$year</>년 불가침에 성공했습니다.", ActionLogger::PLAIN);
-        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaWa} {$year}년 {$month}월 전까지 불가침 성공");
 
 
         $josaWa = JosaUtil::pick($nationName, '와');
         $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa} <C>$year</>년 불가침에 성공했습니다.", ActionLogger::PLAIN);
-        $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
+        $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} {$year}년 {$month}월 전까지 불가침 성공");
 
         $general->applyDB($db);
         $destLogger->flush();
 
         return true;
-    }
-
-    public function getJSFiles(): array
-    {
-        return [
-            'js/defaultSelectNationByMap.js'
-        ];
-    }
-
-    public function getForm(): string
-    {
-        $generalObj = $this->generalObj;
-        $nationID = $generalObj->getNationID();
-        
-        $db = DB::db();
-
-        $currYear = $this->env['year'];
-
-        $diplomacyStatus = Util::convertArrayToDict(
-            $db->query('SELECT * FROM diplomacy WHERE me = %i', $nationID),
-            'you'
-        );
-
-        $nationList = [];
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['nation'] == $nationID){
-                continue;
-            }
-
-            $testCommand = new static($generalObj, $this->env, $this->getLastTurn(), [
-                'destNationID'=>$destNation['nation'],
-                'year'=>$currYear+1,
-                'month'=>12
-            ]);
-            if(!$testCommand->isRunnable()){
-                $destNation['cssBgColor'] = 'background-color:red;';
-            }
-            else if($diplomacyStatus[$destNation['nation']]['state'] == 7){
-                $destNation['cssBgColor'] = 'background-color:blue;';
-            }
-            else{
-                $destNation['cssBgColor'] = '';
-            }
-
-            $nationList[] = $destNation;
-        }
-
-        ob_start(); 
-?>
-<?=\sammo\getMapHtml()?><br>
-타국에게 불가침을 제의합니다.<br>
-제의할 국가를 목록에서 선택하세요.<br>
-불가침 기한 다음 달부터 선포 가능합니다.<br>
-배경색은 현재 제의가 불가능한 국가는 <font color=red>붉은색</font>, 현재 불가침중인 국가는 <font color=blue>푸른색</font>으로 표시됩니다.<br>
-<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
-        style='color:<?=$nation['color']?>;<?=$nation['cssBgColor']?>'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-</select>에게
-<select class='formInput' name="year" id="year" size='1' style='color:white;background-color:black;'>
-<?php foreach(range($currYear+1, $currYear+20) as $formYear): ?>
-    <option value='<?=$formYear?>'><?=$formYear?></option>
-<?php endforeach; ?>
-</select>년
-<select class='formInput' name="month" id="month" size='1' style='color:white;background-color:black;'>
-<?php foreach(range(1, 12) as $formMonth): ?>
-    <option value='<?=$formMonth?>'><?=$formMonth?></option>
-<?php endforeach; ?>
-</select>월까지 
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
-<?php
-        return ob_get_clean();
     }
 }

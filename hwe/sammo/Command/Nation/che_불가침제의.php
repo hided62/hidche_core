@@ -137,7 +137,7 @@ class che_불가침제의 extends Command\NationCommand{
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         $year = $this->arg['year'];
         $month = $this->arg['month'];
-        return "【{$destNationName}】에게 {$year}년 {$month}월까지 {$commandName}";
+        return "【{$destNationName}】에게 {$year}년 {$month}월 전까지 {$commandName}";
     }
 
 
@@ -195,7 +195,7 @@ class che_불가침제의 extends Command\NationCommand{
             Message::MSGTYPE_DIPLOMACY,
             $src,
             $dest,
-            "{$nationName}와 {$year}년 {$month}월까지 불가침 제의 서신",
+            "{$nationName}와 {$year}년 {$month}월 전까지 불가침 제의 서신",
             $now,
             $validUntil,
             [
@@ -283,7 +283,7 @@ class che_불가침제의 extends Command\NationCommand{
 <?php foreach(range(1, 12) as $formMonth): ?>
     <option value='<?=$formMonth?>'><?=$formMonth?></option>
 <?php endforeach; ?>
-</select>월까지 
+</select>월 전까지 
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">
 <?php
         return ob_get_clean();
