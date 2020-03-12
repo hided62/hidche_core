@@ -40,6 +40,7 @@ class DisallowDiplomacyBetweenStatus extends Constraint{
 
         $db = DB::db();
 
+
         $state = $db->queryFirstField(
             'SELECT state FROM diplomacy WHERE me = %i AND you = %i AND `state` IN %li LIMIT 1', 
             $this->nationID, 
@@ -49,7 +50,7 @@ class DisallowDiplomacyBetweenStatus extends Constraint{
         if($state === null){
             return true;
         }
-        $this->msg = $this->disallowStatus[$state];
+        $this->reason = $this->disallowStatus[$state];
         return false;
     }
 }

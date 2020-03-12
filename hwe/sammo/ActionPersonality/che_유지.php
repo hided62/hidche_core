@@ -7,7 +7,7 @@ class che_유지 implements iAction{
     use \sammo\DefaultAction;
 
     protected $id = 8;
-    protected $name = '안전';
+    protected $name = '유지';
     protected $info = '훈련 -5, 징·모병 비용 -20%';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

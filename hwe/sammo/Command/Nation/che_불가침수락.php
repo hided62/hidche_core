@@ -26,15 +26,15 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_불가침제의 extends Command\NationCommand{
-    static protected $actionName = '불가침제의';
+class che_불가침수락 extends Command\NationCommand{
+    static protected $actionName = '불가침';
     static public $reqArg = true;
 
     protected function argTest():bool{
         if($this->arg === null){
             return false;
         }
-        //NOTE: 멸망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 국가여도 argTest에서 바로 탈락시키지 않음
+
         if(!key_exists('destNationID', $this->arg)){
             return false;
         }
@@ -43,6 +43,20 @@ class che_불가침제의 extends Command\NationCommand{
             return false;
         }
         if($destNationID < 1){
+            return false;
+        }
+
+        if(!key_exists('destGeneralID', $this->arg)){
+            return false;
+        }
+        $destGeneralID = $this->arg['destGeneralID'];
+        if(!is_int($destGeneralID)){
+            return false;
+        }
+        if($destGeneralID <= 0){
+            return false;
+        }
+        if($destGeneralID == $this->generalObj->getID()){
             return false;
         }
 
@@ -65,6 +79,7 @@ class che_불가침제의 extends Command\NationCommand{
 
         $this->arg = [
             'destNationID'=>$destNationID,
+            'destGeneralID'=>$destGeneralID,
             'year'=>$year,
             'month'=>$month,
         ];
@@ -80,7 +95,9 @@ class che_불가침제의 extends Command\NationCommand{
         $this->setCity();
         $this->setNation();
 
-        $this->setDestNation($this->arg['destNationID'], null);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['imgsvr', 'picture'], 1);
+        $this->setDestGeneral($destGeneral);
+        $this->setDestNation($this->arg['destNationID']);
 
         //NOTE: 개월에서 기한으로 바뀜
         $year = $this->arg['year'];
@@ -91,13 +108,13 @@ class che_불가침제의 extends Command\NationCommand{
 
         $nationID = $this->nation['nation'];
 
-        if ($reqMonth < $currentMonth + 12) {
-            $this->reservableConstraints = [
-                ConstraintHelper::AlwaysFail('기한은 1년 이상이어야 합니다.')
-            ];
+        $this->reservableConstraints = [
+            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
+        ];
 
+        if ($reqMonth <= $currentMonth) {
             $this->runnableConstraints = [
-                ConstraintHelper::AlwaysFail('기한은 1년 이상이어야 합니다.')
+                ConstraintHelper::AlwaysFail('이미 기한이 지났습니다.')
             ];
             return;
         }        
@@ -108,6 +125,7 @@ class che_불가침제의 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestNation(),
+            ConstraintHelper::ExistsDestGeneral(),
             ConstraintHelper::DisallowDiplomacyBetweenStatus([
                 0 => '아국과 이미 교전중입니다.',
                 1 => '아국과 이미 선포중입니다.',
@@ -137,9 +155,8 @@ class che_불가침제의 extends Command\NationCommand{
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         $year = $this->arg['year'];
         $month = $this->arg['month'];
-        return "【{$destNationName}】에게 {$year}년 {$month}월까지 {$commandName}";
+        return "{$year}년 {$month}월까지 ";
     }
-
 
     public function run():bool{
         if(!$this->isRunnable()){
@@ -150,8 +167,6 @@ class che_불가침제의 extends Command\NationCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $generalName = $general->getName();
-        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $nation = $this->nation;
         $nationID = $nation['nation'];
@@ -166,47 +181,27 @@ class che_불가침제의 extends Command\NationCommand{
 
         $logger = $general->getLogger();
         $destLogger = new ActionLogger(0, $destNationID, $env['year'], $env['month']);
+        
+        $currentMonth = $env['year'] * 12 + $env['month'] - 1;
+        $reqMonth = $year *12 + $month - 1;
 
-        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>");
+        $db->update('diplomacy',[
+            'state'=>7,
+            'term'=>$reqMonth - $currentMonth
+        ],
+        '(me=%i AND you=%i) OR (you=%i AND me=%i)',
+        $nationID, $destNationID,
+        $nationID, $destNationID);
 
-        // 상대에게 발송
-        $src = new MessageTarget(
-            $general->getID(), 
-            $general->getName(),
-            $nationID,
-            $nationName,
-            $nation['color'],
-            GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
-        );
-        $dest = new MessageTarget(
-            0,
-            '',
-            $destNationID,
-            $destNationName,
-            $destNation['color']
-        );
+        $josaWa = JosaUtil::pick($destNationName, '와');
+        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaWa} <C>$year</>년 불가침에 성공했습니다.", ActionLogger::PLAIN);
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
 
-        $now = new \DateTime($date);
-        $validUntil = new \DateTime($date);
-        $validMinutes = max(30, $env['turnterm']*3);
-        $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
-        $msg = new DiplomaticMessage(
-            Message::MSGTYPE_DIPLOMACY,
-            $src,
-            $dest,
-            "{$nationName}와 {$year}년 {$month}월까지 불가침 제의 서신",
-            $now,
-            $validUntil,
-            [
-                'action'=>DiplomaticMessage::TYPE_NO_AGGRESSION,
-                'year'=>$year,
-                'month'=>$month,
-            ]
-        );
-        $msg->send();
+        $josaWa = JosaUtil::pick($nationName, '와');
+        $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa} <C>$year</>년 불가침에 성공했습니다.", ActionLogger::PLAIN);
+        $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
         $destLogger->flush();
 

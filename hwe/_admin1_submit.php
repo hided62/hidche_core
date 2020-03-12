@@ -64,7 +64,7 @@ switch ($btn) {
     case "30분턴":
     case "60분턴":
     case "120분턴":
-        $admin = $gameStor->getDBValues(['turntime', 'turnterm', 'year', 'startyear', 'month']);
+        $admin = $gameStor->getValues(['turntime', 'turnterm', 'year', 'startyear', 'month']);
         switch ($btn) {
         case   "1분턴": $turnterm = 1; break;
         case   "2분턴": $turnterm = 2; break;

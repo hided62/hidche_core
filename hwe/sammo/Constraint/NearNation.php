@@ -10,16 +10,6 @@ class NearNation extends Constraint{
             return false;
         }
 
-        if(!key_exists('capital', $this->nation)){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require capital in nation");
-        }
-
-        if(!key_exists('capital', $this->destNation)){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require capital in destNation");
-        }
-
         return true;
     }
 
@@ -27,19 +17,14 @@ class NearNation extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        $srcCityID = $this->nation['capital'];
         $srcNationID = $this->nation['nation'];
-
-        $destCityID = $this->destNation['capital'];
         $destNationID = $this->destNation['nation'];
-        
-        $dist = \sammo\searchDistanceListToDest($srcCityID, $destCityID, [$srcNationID, $destNationID]);
 
-        if(!$dist){
+        if(!\sammo\isNeighbor($srcNationID, $destNationID, false)){
             $this->reason = "인접 국가가 아닙니다.";
             return false;
         }
         
-        return false;
+        return true;
     }
 }

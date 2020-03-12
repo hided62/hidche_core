@@ -250,7 +250,7 @@ abstract class BaseCommand{
             'nation'=>$this->nation,
             'cmd_arg'=>$this->arg,
 
-            'destGeneral'=>$this->destGeneralObj->getRaw(),
+            'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
         ];
@@ -270,10 +270,6 @@ abstract class BaseCommand{
         }        
         if($this->runnableConstraints === null){
             throw new \InvalidArgumentException('runnableConstraits가 제대로 설정되지 않았습니다');
-        }
-
-        if(!$this->isReservable()){
-            return $this->testReservable();
         }
 
         if($this->reasonNotRunnable){

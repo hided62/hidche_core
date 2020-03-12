@@ -366,8 +366,18 @@ class Message
         if($this->msgType === self::MSGTYPE_NATIONAL && $this->src->nationID !== $this->dest->nationID){
             return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
         }
-        if($this->msgType === self::MSGTYPE_DIPLOMACY && !key_exists('action', $this->msgOption)){
-            return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
+        if($this->msgType === self::MSGTYPE_DIPLOMACY){
+            if(key_exists('action', $this->msgOption)){
+                $tmp = $this->msgOption;
+                $this->msgOption = null;
+                $retVal = $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
+                $this->msgOption = $tmp;
+                return $retVal;
+            }
+            else{
+                return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
+            }
+            
         }
         return [0, 0];
     }
@@ -411,7 +421,7 @@ class Message
     public function send(bool $sendDestOnly=false):int{
         [$receiverMailbox, $receiveID] = $this->sendToReceiver();
         if(!$receiveID && !$sendDestOnly){
-            return $sendID;
+            throw new \RuntimeException('메시지 전송 불가');
         }
         $this->mailbox = $receiverMailbox;
         $this->isInboxMail = true;

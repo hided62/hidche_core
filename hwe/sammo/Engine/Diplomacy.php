@@ -272,28 +272,6 @@ class Diplomacy{
 
         return $prev;
     }
-
-    public function noAggression(int $when){
-        $chk = $this->checkValidNation();
-        $chk = $this->checkNotWar($chk);
-        $chk = $this->checkAlreadyMerging($chk);
-
-        list($result, $reason) = $chk;
-        if($result !== DiplomaticMessage::ACCEPTED){
-            return $chk;
-        }
-
-        $db = DB::db();
-        $db->update('diplomacy',[
-            'state'=>7,
-            'term'=>$when*12
-        ],
-        '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
-        $this->srcNation['nation'], $this->destNation['nation'],
-        $this->srcNation['nation'], $this->destNation['nation']);
-
-        return $chk;
-    }
     
     public function cancelNA(){
         $chk = $this->checkValidNation();

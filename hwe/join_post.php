@@ -16,7 +16,6 @@ $v
     'leadership',
     'strength',
     'intel',
-    'character',
 ])
 ->rule('stringWidthBetween', 'name', 1, 18)
 ->rule('min', [
@@ -29,8 +28,7 @@ $v
     'strength',
     'intel'
 ], GameConst::$defaultStatMax)
-->rule('min', 'character', 0)
-->rule('max', 'character', 11);
+->rule('in', 'character', GameConst::$availablePersonality);
 
 if (!$v->validate()) {
     MessageBox($v->errorStr());
@@ -48,7 +46,7 @@ $name       = StringUtil::removeSpecialCharacter($name);
 $name       = WebUtil::htmlPurify($name);
 $name       = StringUtil::textStrip($name);
 $pic        = (int)Util::getReq('pic', 'bool', 0);
-$character  = Util::getReq('character', 'int', 0);
+$character  = Util::getReq('character');
 
 $leadership = Util::getReq('leadership', 'int', 50);
 $strength = Util::getReq('strength', 'int', 50);

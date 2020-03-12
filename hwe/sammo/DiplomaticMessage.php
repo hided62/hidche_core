@@ -40,7 +40,7 @@ class DiplomaticMessage extends Message{
             case self::TYPE_STOP_WAR: $this->diplomacyName = '종전'; break;
             case self::TYPE_MERGE: $this->diplomacyName = '통합'; break;
             case self::TYPE_SURRENDER: $this->diplomacyName = '투항'; break;
-            default: throw \RuntimeException('diplomaticType이 올바르지 않음');
+            default: throw new \RuntimeException('diplomaticType이 올바르지 않음');
         }
 
         parent::__construct(...func_get_args());
@@ -74,32 +74,27 @@ class DiplomaticMessage extends Message{
     }
 
     protected function noAggression(){
-        $year = Util::array_get($this->msgOption['year']);
-        if($year < 1 || $year > 30){
-            return [self::INVALID, '올바르지 않은 불가침 서신입니다.'];
+
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr'], 1);
+        
+        $commandObj = buildNationCommandClass('che_불가침수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
+            'destNationID'=>$this->src->nationID,
+            'destGeneralID'=>$this->src->generalID,
+            'year'=>$this->msgOption['year'],
+            'month'=>$this->msgOption['month']
+        ]);
+
+        $this->diplomacyDetail = $commandObj->getBrief();
+
+        if(!$commandObj->isRunnable()){
+            return [self::DECLINED, $commandObj->getFailString()];
         }
 
-        $this->diplomacyDetail = "{$year}년";
+        $commandObj->run();
 
-        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->noAggression($year);
-        if($chk[0] !== self::ACCEPTED){
-            return $chk;
-        }
-
-        $josa = JosaUtil::pick($this->dest->nationName, '와');
-        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>{$josa} <C>$year</>년 불가침에 성공했습니다.";
-
-        $josa = JosaUtil::pick($this->src->nationName, '와');
-        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>{$josa} <C>$year</>년 불가침에 합의했습니다.";
-        pushGenLog(['no'=>$this->dest->generalID], $mylog);
-        pushGenLog(['no'=>$this->src->generalID], $youlog);
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>{$josaWa} {$year}년 불가침 성공");
-        $josaWa = JosaUtil::pick($this->dest->nationName, '와');
-        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaWa} {$year}년 불가침 수락");
-
-        return $chk;
+        return [self::ACCEPTED, ''];
     }
 
     protected function cancelNA(){
@@ -264,7 +259,7 @@ class DiplomaticMessage extends Message{
         //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
 
         if(!$this->id){
-            throw \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
+            throw new \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
         }
 
         
@@ -310,7 +305,7 @@ class DiplomaticMessage extends Message{
                 list($result, $reason) = $this->acceptSurrender();
                 break;
             default: 
-                throw \RuntimeException('diplomaticType이 올바르지 않음');
+                throw new \RuntimeException('diplomaticType이 올바르지 않음');
         }
 
         if($result !== self::ACCEPTED){
@@ -373,7 +368,7 @@ class DiplomaticMessage extends Message{
 
     public function declineMessage(int $receiverID, string &$reason):int{
         if(!$this->id){
-            throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
+            throw new \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }
 
         $db = DB::db();

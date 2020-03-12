@@ -195,7 +195,8 @@ abstract class Constraint{
                 continue;
             }
 
-            $method = __NAMESPACE__.'\\'.$constraintArgs[0].'::build';
+            $constraintName = $constraintArgs[0];
+            $method = __NAMESPACE__.'\\'.$constraintName.'::build';
 
             /** @var \sammo\Constraint\Constraint $contraint */
             $constraint = call_user_func($method,$input);
@@ -209,7 +210,11 @@ abstract class Constraint{
         
 
             if(!$constraint->test()){
-                return [\sammo\Util::getClassNameFromObj($constraint), $constraint->reason()];
+
+                if($constraint->reason() === null){
+                    throw new \RuntimeException('Reason is not set:'.$constraintName);
+                }
+                return [$constraintName, $constraint->reason()];
             }
         }
 

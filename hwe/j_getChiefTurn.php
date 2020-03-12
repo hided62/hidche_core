@@ -70,11 +70,9 @@ foreach(
 $nationTurnBrief = [];
 foreach($nationTurnList as $level=>$turnBrief){
     if(!key_exists($level, $generals)){
-        $general = Util::array_first($generals);
+        continue;
     }
-    else{
-        $general = $generals[$level];
-    }
+    $general = $generals[$level];
     $nationTurnBrief[$level] = [
         'name'=>$general->getName(),
         'turnTime'=>$general->getTurnTime($general::TURNTIME_FULL),
