@@ -68,6 +68,10 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
+    static function DifferentDestNation():array{
+        return [__FUNCTION__];
+    }
+
     static function DisallowDiplomacyBetweenStatus(array $disallowList):array{
         return [__FUNCTION__, $disallowList];
     }
@@ -176,6 +180,10 @@ class ConstraintHelper{
         return [__FUNCTION__, $npcType];
     }
 
+    static function ReqDestNationValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
+    }
+
     static function ReqEnvValue($key, string $comp, $reqVal, string $failMessage):array{
         return [__FUNCTION__, [$key, $comp, $reqVal, $failMessage]];
     }
@@ -204,8 +212,8 @@ class ConstraintHelper{
         return [__FUNCTION__, $maxTrain];
     }
 
-    static function ReqGeneralValue($key, string $keyNick, string $comp, $reqVal):array{
-        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal]];
+    static function ReqGeneralValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
     }
 
     static function ReqNationGold(int $reqGold):array{

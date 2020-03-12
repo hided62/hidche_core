@@ -18,12 +18,12 @@ class General implements iAction{
     protected $raw = [];
     protected $rawCity = null;
 
+    /** @var \sammo\ActionLogger */
     protected $logger;
 
     protected $activatedSkill = [];
     protected $logActivatedSkill = [];
     protected $isFinished = false;
-
 
     protected $nationType = null;
     protected $levelObj = null;
@@ -681,14 +681,14 @@ class General implements iAction{
             'horse', 'weapon', 'book', 'item', 'last_turn'
         ];
         $fullColumn = [
-            'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'nations', 'city', 'troop', 'injury', 'affinity', 
+            'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
             'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
             'warnum', 'firenum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset',
-            'specage', 'specage2', 'con', 'connect', 'owner'
+            'specage', 'specage2', 'con', 'connect', 'owner', 'aux'
         ];
 
         if($column === null){

@@ -59,30 +59,37 @@ class ScoutMessage extends Message{
         //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
 
         if(!$this->id){
-            throw \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
+            throw new \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
         }
 
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        $general = \sammo\General::createGeneralObjFromDB($receiverID, ['npc', 'gold', 'rice', 'experience', 'dedication', 'betray', 'troop', 'aux'], 1);
+
+        $logger = $general->getLogger();
+        
         list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
 
         if($result !== self::ACCEPTED){
-            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 수락 불가."]);
+            $logger->pushGeneralActionLog("{$reason} 등용 수락 불가.");
             if($result === self::DECLINED){
                 $this->_declineMessage();
             }
             return $result;
         }
 
-        $helper = new Engine\Personnel($this->src->nationID, $this->src->generalID);
+        $commandObj = buildGeneralCommandClass('che_등용수락', $general, $gameStor->getAll(true), [
+            'destNationID'=>$this->src->nationID,
+            'destGeneralID'=>$this->src->generalID,
+            'year'=>$this->msgOption['year'],
+            'month'=>$this->msgOption['month']
+        ]);
 
-        list($result, $reason) = $helper->scoutGeneral($receiverID);
-
-        if($result !== self::ACCEPTED){
-            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 수락 불가."]);
-            if($result === self::DECLINED){
-                $this->_declineMessage();
-            }
-            return $result;
+        if(!$commandObj->isRunnable()){
+            $logger->pushGeneralActionLog($commandObj->getFailString());
+            return self::DECLINED;
         }
+
+        $commandObj->run();
 
         //메시지 비 활성화
         $this->msgOption['used'] = true;
@@ -90,27 +97,6 @@ class ScoutMessage extends Message{
         $this->validScout = false;
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
-        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
-        pushGenLog(
-            ['no'=>$this->dest->generalID],
-            ["<C>●</><D>{$this->src->nationName}</>{$josaRo} 망명하여 수도로 이동합니다."]);
-        pushGenLog(
-            ['no'=>$this->src->generalID], 
-            ["<C>●</><Y>{$this->dest->generalName}</> 등용에 성공했습니다."]
-        );
-        pushGeneralHistory(
-            ['no'=>$this->src->generalID],
-            "<C>●</>{$helper->year}년 {$helper->month}월:<Y>{$this->dest->generalName}</> 등용에 성공");
-        pushGeneralHistory(
-            ['no'=>$this->dest->generalID],
-            "<C>●</>{$helper->year}년 {$helper->month}월:<D>{$this->src->nationName}</>{$josaRo} 망명"
-        );
-        pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaRo} <S>망명</>하였습니다."], 
-            $helper->year, 
-            $helper->month
-        );
-
         $newMsg = new Message(
             self::MSGTYPE_PRIVATE, 
             $this->src, 
@@ -151,7 +137,7 @@ class ScoutMessage extends Message{
 
     public function declineMessage(int $receiverID, string &$reason):int{
         if(!$this->id){
-            throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
+            throw new \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }
 
         list($result, $reason) = $this->checkScoutMessageValidation($receiverID);

@@ -10,7 +10,11 @@ class DummyGeneral extends General{
             'nation'=>0,
             'level'=>0,
             'crewtype'=>-1,
-            'turntime'=>'2012-03-04 05:06:07.000000'
+            'turntime'=>'2012-03-04 05:06:07.000000',
+            'experience'=>0,
+            'dedication'=>0,
+            'gold'=>0,
+            'rice'=>0,
         ];
 
         $this->raw = $raw;
@@ -31,6 +35,9 @@ class DummyGeneral extends General{
     }
 
     function applyDB($db):bool{
+        if($this->logger){
+            $this->initLogger(1, 1);
+        }
         return true;
     }
 }

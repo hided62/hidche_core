@@ -3,6 +3,7 @@
 namespace sammo\Constraint;
 use \sammo\DB;
 use \sammo\GameConst;
+use \sammo\Json;
 
 class AllowJoinDestNation extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARRAY_ARG;
@@ -14,9 +15,14 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        if(!key_exists('nations', $this->general)){
+        if(!key_exists('auxVar', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require nations in nation");
+            throw new \InvalidArgumentException("require auxVar in general");
+        }
+
+        if(!key_exists('joinedNations', $this->general['auxVar'])){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException("require joinedNations in general['auxVar']");
         }
 
         if(!is_int($this->arg[0])){
@@ -41,7 +47,7 @@ class AllowJoinDestNation extends Constraint{
         $db = DB::db();
 
         $relYear = $this->arg[0];
-        $notIn = array_merge(Json::decode($this->general['nations']), $this->arg[1]);
+        $notIn = array_merge($this->general['auxVar']['joinedNations'], $this->arg[1]);
         //이걸 호출하는 경우 분명 동일한 쿼리를 한번 더 부를 것. 쿼리 캐시를 기대함
         $nations = $db->queryFirstColumn(
             'SELECT nation, name, gennum, scout FROM nation WHERE scout=0 AND gennum < %i AND no NOT IN %li',

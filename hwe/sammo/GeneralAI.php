@@ -1022,7 +1022,7 @@ class GeneralAI{
         if($general->getVar('npc') == 9) {
             $rulerNation = $db->queryFirstField(
                 'SELECT nation FROM general WHERE `level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1', 
-                Json::decode($general->getVar('nations'))
+                $general->getAuxVar('joinedNations')??[0]
             );
 
             if($rulerNation){

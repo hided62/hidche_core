@@ -25,13 +25,15 @@ abstract class BaseCommand{
         return $this->getName();
     }
 
+    /** @var \sammo\General */
     protected $generalObj = null;
     protected $city = null;
     protected $nation = null;
     protected $arg = null;
     protected $env = null;
 
-    protected $destGeneralObj = null;
+    /** @var \sammo\General */
+    protected $destGeneralObj = null; 
     protected $destCity = null;
     protected $destNation = null;
 

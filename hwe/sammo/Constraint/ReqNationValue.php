@@ -62,6 +62,11 @@ class ReqNationValue extends Constraint{
             $this->isPercent = true;
         }
 
+        if($this->errMsg!==null && !is_string($this->errMsg)){
+            if(!$throwExeception){return false; }
+                throw new \InvalidArgumentException("{$this->errMsg} must be string or null");
+        }
+
         return true;
     }
 
@@ -121,11 +126,11 @@ class ReqNationValue extends Constraint{
             return true;
         }
 
-        $josaYi = JosaUtil::pick($keyNick, '이');
         if($this->errMsg){
             $this->reason = $this->errMsg;
         }
         else{
+            $josaYi = JosaUtil::pick($keyNick, '이');
             $this->reason = "{$keyNick}{$josaYi} {$result}";
         }
         

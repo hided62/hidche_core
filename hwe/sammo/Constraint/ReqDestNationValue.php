@@ -6,10 +6,10 @@ use \sammo\JosaUtil;
 use \sammo\Util;
 
 /**
- * 범용으로 사용 가능한 장수 변수 검사도구
+ * 범용으로 사용 가능한 국가 변수 검사도구
  */
-class ReqGeneralValue extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARRAY_ARG;
+class ReqDestNationValue extends Constraint{
+    const REQ_VALUES = Constraint::REQ_DEST_NATION|Constraint::REQ_ARRAY_ARG;
 
     protected $key;
     protected $maxKey;
@@ -40,9 +40,9 @@ class ReqGeneralValue extends Constraint{
         
         $this->maxKey = $this->key.'2';
 
-        if(!key_exists($this->key, $this->general)){
+        if(!key_exists($this->key, $this->destNation)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require {$this->key} in general");
+            throw new \InvalidArgumentException("require {$this->key} in destNation");
         }
 
         if(is_numeric($this->reqVal)){
@@ -55,9 +55,9 @@ class ReqGeneralValue extends Constraint{
                 throw new \InvalidArgumentException("require valid reqVal(percentStr|numeric) format");
             }
 
-            if(!key_exists($this->maxKey, $this->general)){
+            if(!key_exists($this->maxKey, $this->destNation)){
                 if(!$throwExeception){return false; }
-                throw new \InvalidArgumentException("require {$this->maxKey} in general");
+                throw new \InvalidArgumentException("require {$this->maxKey} in destNation");
             }
             $this->isPercent = true;
         }
@@ -76,7 +76,7 @@ class ReqGeneralValue extends Constraint{
         $keyNick = $this->keyNick;
 
         if ($this->isPercent) {
-            $reqVal = $this->general[$this->maxKey] * $this->reqVal;
+            $reqVal = $this->destNation[$this->maxKey] * $this->reqVal;
         }
         else{
             $reqVal = $this->reqVal;
@@ -120,7 +120,7 @@ class ReqGeneralValue extends Constraint{
         ];
 
         $comp = $compList[$this->comp];
-        $result = ($comp)($this->general[$this->key], $reqVal);
+        $result = ($comp)($this->destNation[$this->key], $reqVal);
 
         if($result === true){
             return true;

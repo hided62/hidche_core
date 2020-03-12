@@ -4,8 +4,13 @@ namespace sammo;
 trait LazyVarUpdater{
     protected $raw = [];
     protected $updatedVar = [];
+    protected $auxUpdated = false;
 
-    function getRaw():array{
+    function getRaw(bool $extractAux=false):array{
+        if($extractAux){
+            $this->getAuxVar('');
+            
+        }
         return $this->raw;
     }
 
@@ -26,8 +31,41 @@ trait LazyVarUpdater{
         return true;
     }
 
+    protected function unpackAux(){
+        if($this->raw['auxVar']??null === null){
+            if(!key_exists('aux', $this->raw)){
+                throw new \RuntimeException('aux is not set');
+            }
+            $this->raw['auxVar'] = Json::decode($this->raw['aux']);
+        }
+    }
+
     function setVar(string $key, $value){
         return $this->updateVar($key, $value);
+    }
+
+    function getAuxVar(string $key){
+        $this->unpackAux();
+        return $this->raw['auxVar'][$key]??null;
+    }
+
+    function setAuxVar(string $key, $var){
+        $oldVar = $this->getAuxVar($key);
+
+        if($var === null){
+            if($oldVar === null){
+                return;
+            }
+            unset($this->auxVar[$key]);
+            $this->auxUpdated = true;
+            return;
+        }
+
+        if($oldVar === $var){
+            return;
+        }
+        $this->raw['auxVar'][$key] = $var;
+        $this->auxUpdated = true;
     }
 
     function updateVar(string $key, $value){
@@ -91,6 +129,10 @@ trait LazyVarUpdater{
     }
 
     function getUpdatedValues():array {
+        if($this->auxUpdated){
+            $this->setVar('aux', Json::encode($this->raw['auxVar']));
+            $this->auxUpdated = false;
+        }
         $updateVals = [];
         foreach(array_keys($this->updatedVar) as $key){
             $updateVals[$key] = $this->raw[$key];
