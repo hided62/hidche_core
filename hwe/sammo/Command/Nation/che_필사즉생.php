@@ -45,9 +45,9 @@ class che_필사즉생 extends Command\NationCommand{
         $this->runnableConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            /*ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
+            ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 0
-            ], '전쟁중이 아닙니다.'),*/
+            ], '전쟁중이 아닙니다.'),
             ConstraintHelper::ReqNationValue('strategic_cmd_limit', '전략기한', '==', 0, '전략기한이 남았습니다.')
         ];
     }
