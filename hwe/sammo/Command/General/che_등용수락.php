@@ -34,7 +34,7 @@ class che_등용수락 extends Command\GeneralCommand{
         if($this->arg === null){
             return false;
         }
-        //NOTE: 사망 직전에 '등용' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
+
         if(!key_exists('destGeneralID', $this->arg)){
             return false;
         }
@@ -48,8 +48,24 @@ class che_등용수락 extends Command\GeneralCommand{
         if($destGeneralID == $this->generalObj->getID()){
             return false;
         }
+
+        if(!key_exists('destNationID', $this->arg)){
+            return false;
+        }
+        $destNationID = $this->arg['destNationID'];
+        if(!is_int($destNationID)){
+            return false;
+        }
+        if($destNationID <= 0){
+            return false;
+        }
+        if($destNationID == $this->generalObj->getNationID()){
+            return false;
+        }
+
         $this->arg = [
-            'destGeneralID'=>$destGeneralID
+            'destGeneralID'=>$destGeneralID,
+            'destNationID'=>$destNationID,
         ];
         return true;
     }
