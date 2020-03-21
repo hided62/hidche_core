@@ -62,7 +62,7 @@ class che_백성동원 extends Command\NationCommand{
     }
     
     public function getPreReqTurn():int{
-        return 2;
+        return 0;
     }
 
     public function getPostReqTurn():int{

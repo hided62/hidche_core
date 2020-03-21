@@ -74,7 +74,7 @@ class che_허보 extends Command\NationCommand{
     }
     
     public function getPreReqTurn():int{
-        return 2;
+        return 1;
     }
 
     public function getPostReqTurn():int{
@@ -146,16 +146,9 @@ class che_허보 extends Command\NationCommand{
         $destNationCityList = $db->queryFirstColumn('SELECT city FROM city WHERE nation = %i AND supply = 1', $destNationID);
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i', $destNationID, $destCityID);
-        $destNationLogged = false;
         foreach(General::createGeneralObjListFromDB($targetGeneralList) as $targetGeneralID => $targetGeneral){
             $targetLogger = $targetGeneral->getLogger();
             $targetLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);
-            if(!$destNationLogged){
-                $targetLogger->pushNationalHistoryLog(
-                    "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동", ActionLogger::PLAIN
-                );
-                $destNationLogged = true;
-            }
 
             $moveCityID = Util::choiceRandom($destNationCityList);
             if($moveCityID == $destCityID){
@@ -164,19 +157,14 @@ class che_허보 extends Command\NationCommand{
             }
 
             $targetGeneral->setVar('city', $moveCityID);
-
             $targetGeneral->applyDB($db);
         }
 
-        if(!$targetGeneralList){
-            //아무도 없었다!
-            $destNationLordID = $db->queryFirstField('SELECT no FROM general WHERE nation=%i AND level=12', $destNationID);
-            $targetLogger = new ActionLogger($destNationLordID, $destNationID, $year, $month);
-            $targetLogger->pushNationalHistoryLog(
-                "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동", ActionLogger::PLAIN
-            );
-            $targetLogger->flush();
-        }
+        $destNationLogger = new ActionLogger(0, $destNationID, $year, $month);
+        $destNationLogger->pushNationalHistoryLog(
+            "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동", ActionLogger::PLAIN
+        );
+        $destNationLogger->flush();
 
 
         $db->update('city', [
