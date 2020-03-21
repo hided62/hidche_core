@@ -4,7 +4,7 @@ namespace sammo\Constraint;
 use \sammo\DB;
 
 class BattleGroundCity extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_DEST_CITY|Constraint::REQ_BOOLEAN_ARG;
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_DEST_CITY;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){

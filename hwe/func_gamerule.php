@@ -543,9 +543,7 @@ function checkWander() {
 
     $wanderers = $db->queryFirstColumn('SELECT general.`no` FROM general LEFT JOIN nation ON general.nation = nation.nation WHERE nation.`level` = 0 AND general.`level` = 12');
 
-    foreach($wanderers as $wandererID){
-        $wanderer = General::createGeneralObjFromDB($wandererID);
-
+    foreach(General::createGeneralObjListFromDB($wanderers) as $wanderer){
         $wanderCmd = buildGeneralCommandClass('che_해산', $wanderer, $admin);
         if($wanderCmd->isRunnable()){
             $logger = $wanderer->getLogger();

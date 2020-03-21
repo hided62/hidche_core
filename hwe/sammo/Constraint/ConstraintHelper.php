@@ -36,8 +36,12 @@ class ConstraintHelper{
         return [__FUNCTION__, $crewTypeID];
     }
 
-    static function BattleGroundCity(bool $ignoreSameNation=false):array{
-        return [__FUNCTION__, $ignoreSameNation];
+    static function AvailableStrategicCommand():array{
+        return [__FUNCTION__];
+    }
+
+    static function BattleGroundCity():array{
+        return [__FUNCTION__];
     }
 
     static function BeChief():array{

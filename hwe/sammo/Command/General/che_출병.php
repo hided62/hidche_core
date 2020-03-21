@@ -62,7 +62,6 @@ class che_출병 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralRice($reqRice),
             ConstraintHelper::AllowWar(),
             ConstraintHelper::HasRoute(),
-            //ConstraintHelper::BattleGroundCity(true),
         ];
     }
 

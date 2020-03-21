@@ -32,9 +32,7 @@ $src = MessageTarget::buildQuick($session->generalID);
 $genObjList = [];
 $env = [];
 if($genlist){
-    foreach($genlist as $genID){
-        $genObjList[$genID] = General::createGeneralObjFromDB($genID);
-    }
+    $genObjList = General::createGeneralObjListFromDB($genlist);
     $env = $gameStor->cacheAll();
 }
 switch($btn) {

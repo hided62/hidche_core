@@ -138,7 +138,6 @@ class che_이동 extends Command\GeneralCommand{
                 ], 'no IN %li', $generalList);
             }
             foreach($generalList as $targetGeneralID){
-                $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);
                 $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
                 $targetLogger->pushGeneralActionLog("방랑군 세력이 <G><b>{$destCityName}</b></>{$josaRo} 이동했습니다.", ActionLogger::PLAIN);
                 $targetLogger->flush();

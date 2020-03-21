@@ -48,7 +48,7 @@ class che_필사즉생 extends Command\NationCommand{
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 0
             ], '전쟁중이 아닙니다.'),
-            ConstraintHelper::ReqNationValue('strategic_cmd_limit', '전략기한', '==', 0, '전략기한이 남았습니다.')
+            ConstraintHelper::AvailableStrategicCommand()
         ];
     }
     
@@ -61,7 +61,11 @@ class che_필사즉생 extends Command\NationCommand{
     }
 
     public function getPostReqTurn():int{
-        return 0;
+        $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
+        $nextTerm = Util::round(sqrt($genCount*4)*10);    
+
+        $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
+        return $nextTerm;
     }
 
     public function run():bool{
@@ -82,18 +86,23 @@ class che_필사즉생 extends Command\NationCommand{
         $logger = $general->getLogger();
         $logger->pushGeneralActionLog("필사즉생 발동! <1>$date</>");
 
-        $exp = 5 * ($this->getPreReqTurn() + 1);
-        $ded = 5 * ($this->getPreReqTurn() + 1);
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
+        $general->increaseVar(
+            'experience',
+            $general->onCalcStat($general,
+            'experience', 5 * ($this->getPreReqTurn() + 1)
+        ));
+        $general->increaseVar(
+            'dedication',
+            $general->onCalcStat($general,
+            'dedication', 5 * ($this->getPreReqTurn() + 1)
+        ));
 
         $josaYi = JosaUtil::pick($generalName, '이');
 
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동하였습니다.";
 
-        foreach($db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID) as $targetGeneralID){
-            $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, ['train', 'atmos'], 1);
+        $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
+        foreach(General::createGeneralObjListFromDB($targetGeneralList, ['train', 'atmos'], 1) as $targetGeneral){
             $targetGeneral->getLogger()->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             if($targetGeneral->getVar('train') < 100){
                 $targetGeneral->setVar('train', 100);
@@ -101,7 +110,6 @@ class che_필사즉생 extends Command\NationCommand{
             if($targetGeneral->getVar('atmos') < 100){
                 $targetGeneral->setVar('atmos', 100);
             } 
-            
             
             $targetGeneral->applyDB($db);
         }

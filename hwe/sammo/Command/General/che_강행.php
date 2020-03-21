@@ -138,8 +138,8 @@ class che_강행 extends Command\GeneralCommand{
                     'city'=>$destCityID
                 ], 'no IN %li and nation=%i', $generalList, $general->getNationID());
             }
+
             foreach($generalList as $targetGeneralID){
-                $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);
                 $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
                 $targetLogger->pushGeneralActionLog("방랑군 세력이 <G><b>{$destCityName}</b></>{$josaRo} 강행했습니다.", ActionLogger::PLAIN);
                 $targetLogger->flush();

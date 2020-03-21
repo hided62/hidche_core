@@ -664,16 +664,7 @@ class General implements iAction{
 
     //TODO:createGeneralObjListFromDB로, 조건으로 select query나 generalIDList가 들어가는 녀석이 필요할 수 있음
 
-    static public function createGeneralObjFromDB(int $generalID, ?array $column=null, int $constructMode=2):self{
-        $db = DB::db();
-        if($constructMode > 0){
-            $gameStor = KVStorage::getStorage($db, 'game_env');
-            [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-        }
-        else{
-            $year = null;
-            $month = null;
-        }
+    static private function mergeQueryColumn(?array $column=null, int $constructMode=2):array{
         $minimumColumn = ['no', 'name', 'city', 'nation', 'level'];
         $defaultEventColumn = [
             'no', 'name', 'city', 'nation', 'level',
@@ -692,14 +683,69 @@ class General implements iAction{
         ];
 
         if($column === null){
-            $column = $fullColumn;
+            return $fullColumn;
         }
         else if($constructMode > 1){
-            $column = array_unique(array_merge($defaultEventColumn, $column));
+            return array_unique(array_merge($defaultEventColumn, $column));
         }
         else{
-            $column = array_unique(array_merge($minimumColumn, $column));
+            return array_unique(array_merge($minimumColumn, $column));
         }
+    }
+
+    /**
+     * @param int[] $generalIDList 
+     * @param null|string[] $column 
+     * @param int $constructMode 
+     * @return \sammo\General[]
+     * @throws MustNotBeReachedException 
+     */
+    static public function createGeneralObjListFromDB(array $generalIDList, ?array $column=null, int $constructMode=2):array{
+        if(!$generalIDList){
+            return [];
+        }
+        
+        $db = DB::db();
+        if($constructMode > 0){
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+            [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+        }
+        else{
+            $year = null;
+            $month = null;
+        }
+        
+        $column = static::mergeQueryColumn($column, $constructMode);
+
+        $rawGenerals = Util::convertArrayToDict(
+            $db->queryFirstRow('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
+            'no'
+        );
+
+        $result = [];
+        foreach($generalIDList as $generalID){
+            if(!key_exists($generalID, $rawGenerals)){
+                $result[$generalID] = new DummyGeneral($constructMode > 0);
+                continue;
+            }
+            $result[$generalID] = new static($rawGenerals[$generalID], null, $year, $month, $constructMode > 1);
+        }
+        
+        return $result;
+    }
+
+    static public function createGeneralObjFromDB(int $generalID, ?array $column=null, int $constructMode=2):self{
+        $db = DB::db();
+        if($constructMode > 0){
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+            [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+        }
+        else{
+            $year = null;
+            $month = null;
+        }
+        
+        $column = static::mergeQueryColumn($column, $constructMode);
 
         $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
         if(!$rawGeneral){
