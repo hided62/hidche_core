@@ -69,6 +69,14 @@ class che_백성동원 extends Command\NationCommand{
             ConstraintHelper::AvailableStrategicCommand()
         ];
     }
+
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        $reqTurn = $this->getPreReqTurn()+1;
+        $postReqTurn = $this->getPostReqTurn();
+
+        return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
+    }
     
     public function getCost():array{
         return [0, 0];

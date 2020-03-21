@@ -8,7 +8,8 @@ use \sammo\{
     GameConst,
     LastTurn,
     GameUnitConst,
-    Command
+    Command,
+    KVStorage
 };
 
 use function \sammo\{
@@ -34,12 +35,10 @@ class che_의병모집 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
 
-        $this->setNation(['gennum', 'scout']);
+        $this->setNation(['strategic_cmd_limit']);
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
         
-        [$reqGold, $reqRice] = $this->getCost();
-
         if($relYear < 3){
             $this->runnableConstraints = [
                 ConstraintHelper::AlwaysFail('현재 초반 제한중입니다.')
@@ -88,9 +87,19 @@ class che_의병모집 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
+        $generalID = $general->getID();
+        $generalName = $general->getName();
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $nationID = $general->getNationID();
+        $year = $this->env['year'];
+        $month = $this->env['month'];
+
+        $nation = $this->nation;
+        $nationID = $nation['nation'];
+        $nationName = $nation['name'];
+
+        $commandName = $this->getName();
+        $josaUl = JosaUtil::pick($commandName, '을');
 
         $genCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc < 2', $nationID);
         $npcCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc = 3', $nationID);
@@ -101,184 +110,150 @@ class che_의병모집 extends Command\GeneralCommand{
         $npcCount = Util::valueFit($npcCount, 1);
         $npcOtherCountScore = Util::round(sqrt($npcOtherCount + 1)) - 1;
 
-        //TODO: 수식 재 설계
-        $randPick = 1 / (sqrt($genCount * $npcCount * $npcCount) + $npcOtherCount);
-
         $logger = $general->getLogger();
+        $logger->pushGeneralActionLog("{$commandName} 발동! <1>$date</>");
 
-        if(!Util::randBool($randPick)){
-            $logger->pushGeneralActionLog("인재를 찾을 수 없었습니다. <1>$date</>");
+        $josaYi = JosaUtil::pick($generalName, '이');
+        $josaYiNation = JosaUtil::pick($nationName, '이');
 
-            $incStat = Util::choiceRandomUsingWeight([
-                'leadership2'=>$general->getLeadership(false, false, false, false),
-                'strength2'=>$general->getStrength(false, false, false, false),
-                'intel2'=>$general->getIntel(false, false, false, false)
-            ]);
-            [$reqGold, $reqRice] = $this->getCost();
-    
-            $exp = 100;
-            $ded = 70;
+        $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
-            $exp = $general->onCalcStat($general, 'experience', $exp);
-            $ded = $general->onCalcStat($general, 'dedication', $ded);
-
-            $general->increaseVarWithLimit('gold', -$reqGold, 0);
-            $general->increaseVarWithLimit('rice', -$reqRice, 0);
-            $general->increaseVar('experience', $exp);
-            $general->increaseVar('dedication', $ded);
-            $general->increaseVar($incStat, 1);
-            $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
-            $general->checkStatChange();
-            tryUniqueItemLottery($general);
-            $general->applyDB($db);
-            return true;
-        }
-        //인간적으로 너무 길어서 끊었다!
-
-        $exp = 200;
-        $ded = 300;
-
-        if($env['scenario'] < 100){
-            $pickTypeList = ['무'=>4, '지'=>6];
-        }
-        else{
-            $pickTypeList = ['무'=>4, '지'=>4, '무지'=>2];
+        $nationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
+        foreach($nationGeneralList as $nationGeneralID){
+            $nationGeneralLogger = new ActionLogger($nationGeneralID, $nationID, $year, $month);
+            $nationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
+            $nationGeneralLogger->flush();
         }
 
-        $pickType = Util::choiceRandomUsingWeightPair($pickTypeList);
+        $logger->pushGeneralHistoryLog("<M>{$commandName}</>{$josaUl} 발동");
+        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <M>{$commandName}</>{$josaUl} 발동");
+        $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <M>{$commandName}</>{$josaUl} 발동하였습니다.");
 
-        $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
-        $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);
-        $subStat = GameConst::$defaultStatTotal - $mainStat - $otherStat;
-        if($subStat < GameConst::$defaultStatMin){
-            $subStat = $otherStat;
-            $otherStat = GameConst::$defaultStatMin;
-            $mainStat = GameConst::$defaultStatTotal - $subStat - $otherStat;
-            if($mainStat){
-                throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
-            }
-        }
+
+        $general->increaseVar(
+            'experience',
+            $general->onCalcStat($general,
+            'experience', 5 * ($this->getPreReqTurn() + 1)
+        ));
+        $general->increaseVar(
+            'dedication',
+            $general->onCalcStat($general,
+            'dedication', 5 * ($this->getPreReqTurn() + 1)
+        ));
+
+        $gameStor = KVStorage::getStorage($db, 'game_env'); //TODO: 차라리 env가 이거여야..?
+
+        $avgGenCnt = $db->queryFirstField('SELECT avg(gennum) FROM nation WHERE level > 0');
+        $createGenCnt = 5 + Util::round($avgGenCnt / 10);
+        $createGenIdx = $gameStor->npccount + 1;
+        $lastCreatGenIdx = $createGenIdx + $createGenCnt;
+
+        $pickTypeList = ['무'=>5, '지'=>5];
 
         $avgGen = $db->queryFirstRow(
             'SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp,
-            avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40
+            avg(dex0+dex10+dex20+dex30) as dex_t, avg(age) as age, avg(dex40) as dex40
             from general where nation=%i',
             $nationID
         );
+        $dexTotal = $avgGen['dex_t'];
 
-        if($pickType == '무'){
-            $leadership = $subStat;
-            $strength = $mainStat;
-            $intel = $otherStat;
+        for(;$createGenIdx <= $lastCreatGenIdx; $createGenIdx++){
+            $pickType = Util::choiceRandomUsingWeightPair($pickTypeList);
+
+            $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
+            $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);
+            $subStat = GameConst::$defaultStatTotal - $mainStat - $otherStat;
+            if($subStat < GameConst::$defaultStatMin){
+                $subStat = $otherStat;
+                $otherStat = GameConst::$defaultStatMin;
+                $mainStat = GameConst::$defaultStatTotal - $subStat - $otherStat;
+                if($mainStat){
+                    throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
+                }
+            }
+    
+            if($pickType == '무'){
+                $leadership = $subStat;
+                $strength = $mainStat;
+                $intel = $otherStat;
+                $dexVal = Util::choiceRandom([
+                    [$dexTotal*5/8, $dexTotal/8, $dexTotal/8, $dexTotal/8],
+                    [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8],
+                    [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8],
+                ]);
+            }
+            else if($pickType == '지'){
+                $leadership = $subStat;
+                $strength = $otherStat;
+                $intel = $mainStat;
+                $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8];
+            }
+            else{
+                $leadership = $otherStat;
+                $strength = $subStat;
+                $intel = $mainStat;
+                $dexVal = [$dexTotal/4, $dexTotal/4, $dexTotal/4, $dexTotal/4];
+            }
+    
+            // 국내 최고능치 기준으로 랜덤성 스케일링
+            $maxLPI = $avgGen['stat_sum'];
+            if($maxLPI > 210) {
+                $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
+                $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
+                $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
+            } elseif($maxLPI > 180) {
+                $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
+                $strength *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
+                $intel *= $avgGen['stat_sum'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
+            } else {
+                $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
+                $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
+                $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
+            }
+            $leadership = Util::round($leadership);
+            $strength = Util::round($strength);
+            $intel = Util::round($intel);
+    
+            $age = $avgGen['age'];
+    
+            $newNPC = new \sammo\Scenario\NPC(
+                Util::randRangeInt(1, 150),
+                "의병장{$createGenIdx}",
+                null,
+                $nationID,
+                $general->getCityID(),
+                $leadership,
+                $strength,
+                $intel,
+                1,
+                $env['year'] - 20,
+                $env['year'] + 6,
+                null,
+                null
+            );
+            $newNPC->killturn = Util::randRangeInt(64, 70);
+            $newNPC->npc = 4;
+            $newNPC->setMoney(100, 100);
+            $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
+            $newNPC->setDex(
+                $dexVal[0],
+                $dexVal[1],
+                $dexVal[2],
+                $dexVal[3],
+                $avgGen['dex40']
+            );
+    
+            $newNPC->build($this->env);
         }
-        else if($pickType == '지'){
-            $leadership = $subStat;
-            $strength = $otherStat;
-            $intel = $mainStat;
-        }
-        else{
-            $leadership = $otherStat;
-            $strength = $subStat;
-            $intel = $mainStat;
-        }
 
-        // 국내 최고능치 기준으로 랜덤성 스케일링
-        $maxLPI = $avgGen['stat_sum'];
-        if($maxLPI > 210) {
-            $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-            $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-            $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-        } elseif($maxLPI > 180) {
-            $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-            $strength *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-            $intel *= $avgGen['stat_sum'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-        } else {
-            $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-            $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-            $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-        }
-        $leadership = Util::round($leadership);
-        $strength = Util::round($strength);
-        $intel = Util::round($intel);
+        $gameStor->npccount = $lastCreatGenIdx;
+        $db->update('nation', [
+            'gennum'=>$db->sqleval('gennum + %i', $createGenCnt)
+        ], 'nation=%i', $nationID);
 
-        $isOurNation = $this->nation['scout'] == 0;
-
-        $age = $env['year'] - 20;
-
-        $newNPC = new \sammo\Scenario\NPC(
-            Util::randRangeInt(1, 150),
-            \sammo\getRandGenName(),
-            null,
-            $isOurNation?$nationID:0,
-            $general->getCityID(),
-            $leadership,
-            $strength,
-            $intel,
-            $isOurNation?1:0,
-            $age,
-            $env['year'] + Util::randRangeInt(10, 50),
-            null,
-            null
-        );
-        $newNPC->npc = 3;
-        $newNPC->setMoney(100, 100);
-        $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
-        $newNPC->setSpecYear(
-            Util::round((80 - $age)/12) + $age,
-            Util::round((80 - $age)/3) + $age
-        );
-        $newNPC->setDex(
-            $avgGen['dex0'],
-            $avgGen['dex10'],
-            $avgGen['dex20'],
-            $avgGen['dex30'],
-            $avgGen['dex40']
-        );
-
-        $newNPC->build($this->env);
-        $npcName = $newNPC->realName;
-        $josaRa = JosaUtil::pick($npcName, '라');
-
-        if($isOurNation){
-            $scoutType = '영입';
-            $db->update('nation', [
-                'gennum'=>$db->sqleval('gennum + 1')
-            ], 'nation=%i', $nationID);
-        }
-        else{
-            $scoutType = '발견';
-        }
-
-        $generalName = $general->getName();
-        $josaYi = JosaUtil::pick($generalName, '이');
-
-        $logger->pushGeneralActionLog("<Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>");
-        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다!");
-        $logger->pushGeneralHistoryLog("<Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}");
-
-        $incStat = Util::choiceRandomUsingWeight([
-            'leadership2'=>$general->getLeadership(false, false, false, false),
-            'strength2'=>$general->getStrength(false, false, false, false),
-            'intel2'=>$general->getIntel(false, false, false, false)
-        ]);
-        [$reqGold, $reqRice] = $this->getCost();
-
-        $exp = 200;
-        $ded = 300;
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
-        $general->increaseVarWithLimit('gold', -$reqGold, 0);
-        $general->increaseVarWithLimit('rice', -$reqRice, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
-        $general->increaseVar($incStat, 3);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        
         $general->applyDB($db);
-        return true;
 
         return true;
     }

@@ -149,8 +149,6 @@ class che_피장파장 extends Command\NationCommand{
             'dedication', 5 * ($this->getPreReqTurn() + 1)
         ));
 
-        $logger = $general->getLogger();
-
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
         $nationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);

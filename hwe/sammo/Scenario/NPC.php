@@ -49,6 +49,8 @@ class NPC{
     protected $experience = null;
     protected $dedication = null;
 
+    public $killturn = null;
+
     //XXX: 코드 못 바꾸나?
     protected $dex0 = 0;
     protected $dex10 = 0;
@@ -294,7 +296,12 @@ class NPC{
 
         $turntime = \sammo\getRandTurn($env['turnterm'], new \DateTimeImmutable($env['turntime']));
 
-        $killturn = ($this->death - $year) * 12 + mt_rand(0, 11);
+        if($this->killturn){
+            $killturn = $this->killturn;
+        }
+        else{
+            $killturn = ($this->death - $year) * 12 + mt_rand(0, 11) + $month - 1;
+        }
 
         $specage = $this->specAge?:$age + 1;
         $specage2 = $this->specAge2?:$age + 1;
