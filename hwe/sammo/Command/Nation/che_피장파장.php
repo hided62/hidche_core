@@ -74,6 +74,14 @@ class che_피장파장 extends Command\NationCommand{
 
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+        $reqTurn = $this->getPreReqTurn()+1;
+        $postReqTurn = $this->getPostReqTurn();
+
+        return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
+    }
+
     public function getCost():array{
         return [0, 0];
     }

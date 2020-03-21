@@ -59,9 +59,9 @@ if($commandObj->isArgValid()){
     die_redirect();
 }
 
-if(!$commandObj->isReservable()){
+/*if(!$commandObj->isReservable()){
     die_redirect();
-}
+}*/
 
 $jsList = $commandObj->getJSFiles();
 $cssList = $commandObj->getCSSFiles();
