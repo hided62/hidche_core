@@ -43,6 +43,8 @@ class che_백성동원 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
+        $this->setDestCity($this->arg['destCityID'], null);
+        $this->setDestNation($this->destCity['nation']);
         
         $this->runnableConstraints=[
             ConstraintHelper::OccupiedCity(),
@@ -50,7 +52,7 @@ class che_백성동원 extends Command\NationCommand{
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 0
             ], '전쟁중이 아닙니다.'),
-            ConstraintHelper::SuppliedDestCity(),
+            ConstraintHelper::OccupiedDestCity(),
             ConstraintHelper::AvailableStrategicCommand()
         ];
     }

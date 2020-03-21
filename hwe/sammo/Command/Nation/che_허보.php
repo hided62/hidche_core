@@ -26,8 +26,8 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;
 
-class che_수몰 extends Command\NationCommand{
-    static protected $actionName = '수몰';
+class che_허보 extends Command\NationCommand{
+    static protected $actionName = '허보';
     static public $reqArg = true;
 
     protected function argTest():bool{
@@ -61,7 +61,10 @@ class che_수몰 extends Command\NationCommand{
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotNeutralDestCity(),
             ConstraintHelper::NotOccupiedDestCity(),
-            ConstraintHelper::BattleGroundCity(),
+            ConstraintHelper::DisallowDiplomacyBetweenStatus(
+                [0, 1],
+                '선포, 전쟁중인 상대국에게만 가능합니다.'
+            ),
             ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
@@ -115,7 +118,7 @@ class che_수몰 extends Command\NationCommand{
         $nationName = $this->nation['name'];
 
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("수몰 발동! <1>$date</>");
+        $logger->pushGeneralActionLog("허보 발동! <1>$date</>");
 
         $general->increaseVar(
             'experience',
@@ -130,7 +133,7 @@ class che_수몰 extends Command\NationCommand{
 
         $josaYi = JosaUtil::pick($generalName, '이');
 
-        $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동하였습니다.";
+        $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동하였습니다.";
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
         foreach($targetGeneralList as $targetGeneralID){
@@ -139,21 +142,42 @@ class che_수몰 extends Command\NationCommand{
             $targetLogger->flush();
         }
 
-        $destBroadcastMessage = "<G><b>{$destCityName}</b></>에 <M>수몰</>이 발동되었습니다.";
+        $destBroadcastMessage = "상대의 <M>허보</>에 당했다! <1>$date</>";
+        $destNationCityList = $db->queryFirstColumn('SELECT city FROM city WHERE nation = %i AND supply = 1', $destNationID);
 
-        $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i', $destNationID);
+        $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i', $destNationID, $destCityID);
         $destNationLogged = false;
-        foreach($targetGeneralList as $targetGeneralID){
-            $targetLogger = new ActionLogger($targetGeneralID, $destNationID, $year, $month);
+        foreach(General::createGeneralObjListFromDB($targetGeneralList) as $targetGeneralID => $targetGeneral){
+            $targetLogger = $targetGeneral->getLogger();
             $targetLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);
             if(!$destNationLogged){
                 $targetLogger->pushNationalHistoryLog(
-                    "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동", ActionLogger::PLAIN
+                    "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동", ActionLogger::PLAIN
                 );
                 $destNationLogged = true;
             }
+
+            $moveCityID = Util::choiceRandom($destNationCityList);
+            if($moveCityID == $destCityID){
+                //현재도시면 다시 랜덤 추첨
+                $moveCityID = Util::choiceRandom($destNationCityList);
+            }
+
+            $targetGeneral->setVar('city', $moveCityID);
+
+            $targetGeneral->applyDB($db);
+        }
+
+        if(!$targetGeneralList){
+            //아무도 없었다!
+            $destNationLordID = $db->queryFirstField('SELECT no FROM general WHERE nation=%i AND level=12', $destNationID);
+            $targetLogger = new ActionLogger($destNationLordID, $destNationID, $year, $month);
+            $targetLogger->pushNationalHistoryLog(
+                "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동", ActionLogger::PLAIN
+            );
             $targetLogger->flush();
         }
+
 
         $db->update('city', [
             'def' => $db->sqleval('def * 0.2'),
@@ -162,9 +186,9 @@ class che_수몰 extends Command\NationCommand{
         
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
-        $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
-        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
-        $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동하였습니다.");
+        $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>허보</>를 발동");
+        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동");
+        $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동하였습니다.");
 
         $db->update('nation', ['strategic_cmd_limit' => $this->getPostReqTurn()], 'nation=%i', $nationID);
 
@@ -179,7 +203,7 @@ class che_수몰 extends Command\NationCommand{
         ob_start();
 ?>
 <?=\sammo\getMapHtml()?><br>
-선택된 도시에 수몰을 발동합니다.<br>
+선택된 도시에 허보를 발동합니다.<br>
 전쟁중인 상대국 도시만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
