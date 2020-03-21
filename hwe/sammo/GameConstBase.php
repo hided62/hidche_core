@@ -288,7 +288,7 @@ class GameConstBase
             'che_수몰',
             'che_허보',
             'che_피장파장',
-            //'che_의병모집',
+            'che_의병모집',
             //'che_이호경식',
             //'che_급습',
         ],

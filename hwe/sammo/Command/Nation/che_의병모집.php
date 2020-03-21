@@ -1,5 +1,5 @@
 <?php
-namespace sammo\Command\General;
+namespace sammo\Command\Nation;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -23,8 +23,9 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_의병모집 extends Command\GeneralCommand{
+class che_의병모집 extends Command\NationCommand{
     static protected $actionName = '의병모집';
+    static public $reqArg = false;
 
     protected function argTest():bool{
         $this->arg = null;
