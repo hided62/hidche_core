@@ -31,8 +31,21 @@ class che_백성동원 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
-        $this->arg = [];
+        if($this->arg === null){
+            return false;
+        }
 
+        if(!key_exists('destCityID', $this->arg)){
+            return false;
+        }
+        if(CityConst::byID($this->arg['destCityID']) === null){
+            return false;
+        }
+        $destCityID = $this->arg['destCityID'];
+
+        $this->arg = [
+            'destCityID'=>$destCityID,
+        ];
         return true;
     }
 
@@ -144,6 +157,14 @@ class che_백성동원 extends Command\NationCommand{
 
         return true;
     }
+
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
 
     public function getForm(): string
     {

@@ -174,6 +174,14 @@ class che_수몰 extends Command\NationCommand{
         return true;
     }
 
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
+
     public function getForm(): string
     {
         ob_start();

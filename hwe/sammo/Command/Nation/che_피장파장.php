@@ -65,9 +65,7 @@ class che_피장파장 extends Command\NationCommand{
         $this->runnableConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotNeutralDestCity(),
-            ConstraintHelper::NotOccupiedDestCity(),
-            ConstraintHelper::DisallowDiplomacyBetweenStatus(
+            ConstraintHelper::AllowDiplomacyBetweenStatus(
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),

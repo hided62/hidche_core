@@ -61,7 +61,7 @@ class che_허보 extends Command\NationCommand{
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotNeutralDestCity(),
             ConstraintHelper::NotOccupiedDestCity(),
-            ConstraintHelper::DisallowDiplomacyBetweenStatus(
+            ConstraintHelper::AllowDiplomacyBetweenStatus(
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
@@ -88,8 +88,7 @@ class che_허보 extends Command\NationCommand{
     public function getBrief():string{
         $commandName = $this->getName();
         $destCityName = CityConst::byID($this->arg['destCityID'])->name;
-        $josaUl = JosaUtil::pick($destCityName, '을');
-        return "【{$destCityName}】{$josaUl} {$commandName}";
+        return "【{$destCityName}】에 {$commandName}";
     }
 
     public function run():bool{
@@ -185,6 +184,14 @@ class che_허보 extends Command\NationCommand{
 
         return true;
     }
+
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
 
     public function getForm(): string
     {
