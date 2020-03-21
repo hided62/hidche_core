@@ -28,7 +28,7 @@ use sammo\Event\Action;
 
 class che_수몰 extends Command\NationCommand{
     static protected $actionName = '수몰';
-    static public $reqArg = false;
+    static public $reqArg = true;
 
     protected function argTest():bool{
         $this->arg = [];
@@ -50,7 +50,8 @@ class che_수몰 extends Command\NationCommand{
             ConstraintHelper::NotNeutralDestCity(),
             ConstraintHelper::NotOccupiedDestCity(),
             ConstraintHelper::BattleGroundCity(),
-            ConstraintHelper::AvailableStrategicCommand()
+            ConstraintHelper::AvailableStrategicCommand(),
+            ConstraintHelper::OccupiedDestCity()
         ];
     }
     
@@ -64,7 +65,7 @@ class che_수몰 extends Command\NationCommand{
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*8)*10);    
+        $nextTerm = Util::round(sqrt($genCount*4)*10);    
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
@@ -148,9 +149,10 @@ class che_수몰 extends Command\NationCommand{
             'wall' => $db->sqleval('wall * 0.2'),
         ], 'city=%i', $destCityID);
         
+        $josaYiNation = JosaUtil::pick($nationName, '이');
 
         $logger->pushGeneralHistoryLog('<M>수몰</>을 발동');
-        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>의 <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
+        $logger->pushNationalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동하였습니다.");
 
         $db->update('nation', ['strategic_cmd_limit' => $this->getPostReqTurn()], 'nation=%i', $nationID);
 
@@ -158,5 +160,21 @@ class che_수몰 extends Command\NationCommand{
         $general->applyDB($db);
 
         return true;
+    }
+
+    public function getForm(): string
+    {
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
+선택된 도시에 수몰을 발동합니다.<br>
+전쟁중인 상대국 도시만 가능합니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<?php
+        return ob_get_clean();
     }
 }

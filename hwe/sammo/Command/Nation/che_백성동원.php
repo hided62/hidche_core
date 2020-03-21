@@ -10,23 +10,25 @@ use \sammo\{
     GameUnitConst,
     Command,
     MessageTarget,
-    Message
+    Message,
+    CityConst
 };
 
 use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    GetImageURL
+    GetImageURL,
+    getNationStaticInfo 
 };
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;
 
-class che_필사즉생 extends Command\NationCommand{
-    static protected $actionName = '필사즉생';
-    static public $reqArg = false;
+class che_백성동원 extends Command\NationCommand{
+    static protected $actionName = '백성동원';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         $this->arg = [];
@@ -48,6 +50,7 @@ class che_필사즉생 extends Command\NationCommand{
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 0
             ], '전쟁중이 아닙니다.'),
+            ConstraintHelper::SuppliedDestCity(),
             ConstraintHelper::AvailableStrategicCommand()
         ];
     }
@@ -62,10 +65,16 @@ class che_필사즉생 extends Command\NationCommand{
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*8)*10);    
+        $nextTerm = Util::round(sqrt($genCount*4)*10);    
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
+    }
+
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        return "【{$destCityName}】에 {$commandName}";
     }
 
     public function run():bool{
@@ -79,12 +88,19 @@ class che_필사즉생 extends Command\NationCommand{
         $generalID = $general->getID();
         $generalName = $general->getName();
         $date = $general->getTurnTime($general::TURNTIME_HM);
-        
+
+        $year = $this->env['year'];
+        $month = $this->env['month'];
+
+        $destCity = $this->destCity;
+        $destCityID = $destCity['city'];
+        $destCityName = $destCity['name'];
+
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("필사즉생 발동! <1>$date</>");
+        $logger->pushGeneralActionLog("백성동원 발동! <1>$date</>");
 
         $general->increaseVar(
             'experience',
@@ -99,39 +115,47 @@ class che_필사즉생 extends Command\NationCommand{
 
         $josaYi = JosaUtil::pick($generalName, '이');
 
-        $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동하였습니다.";
+        $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 하였습니다.";
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach(General::createGeneralObjListFromDB($targetGeneralList, ['train', 'atmos'], 1) as $targetGeneral){
-            $targetGeneral->getLogger()->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
-            if($targetGeneral->getVar('train') < 100){
-                $targetGeneral->setVar('train', 100);
-            }
-            if($targetGeneral->getVar('atmos') < 100){
-                $targetGeneral->setVar('atmos', 100);
-            } 
-            
-            $targetGeneral->applyDB($db);
+        foreach($targetGeneralList as $targetGeneralID){
+            $targetLogger = new ActionLogger($targetGeneralID, $nationID, $year, $month);
+            $targetLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
+            $targetLogger->flush();
         }
 
-        if($general->getVar('train') < 100){
-            $general->setVar('train', 100);
-        }
-        if($general->getVar('atmos') < 100){
-            $general->setVar('atmos', 100);
-        }
-        $logger->pushGeneralHistoryLog('<M>필사즉생</>을 발동');
-        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동");
+        $db->update('city', [
+            'def' => $db->sqleval('GREATEST(def2 * 0.8, def)'),
+            'wall' => $db->sqleval('GREATEST(wall2 * 0.8, wall)'),
+        ], 'city=%i', $destCityID);
 
-        $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*8)*10);    
+        $josaYiNation = JosaUtil::pick($nationName, '이');
+        
 
-        $nextTerm = $general->onCalcStrategic($this->getName(), 'delay', $nextTerm);
-        $db->update('nation', ['strategic_cmd_limit' => $nextTerm], 'nation=%i', $nationID);
+        $logger->pushGeneralHistoryLog('<M>백성동원</>을 발동');
+        $logger->pushNationalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 하였습니다.");
+
+        $db->update('nation', ['strategic_cmd_limit' => $this->getPostReqTurn()], 'nation=%i', $nationID);
 
         $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
 
         return true;
+    }
+
+    public function getForm(): string
+    {
+        ob_start();
+?>
+<?=\sammo\getMapHtml()?><br>
+선택된 도시에 백성을 동원해 성벽을 쌓습니다.<br>
+아국 도시만 가능합니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+<?=\sammo\optionsForCities()?><br>
+</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+<br>
+<?php
+        return ob_get_clean();
     }
 }
