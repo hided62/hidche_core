@@ -19,7 +19,7 @@ use function \sammo\{
     CriticalRatioDomestic, 
     CriticalScoreEx,
     GetImageURL,
-    function getNationStaticInfo
+    getNationStaticInfo 
 };
 
 use \sammo\Constraint\Constraint;
