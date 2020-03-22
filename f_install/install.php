@@ -99,6 +99,38 @@ require(__dir__.'/../vendor/autoload.php');
                     </div>
 
                     <div class="form-group row">
+                        <label for="image_request_key" class="col-sm-4 col-form-label">이미지 갱신 키</label>
+                        <div class="input-group col-sm-8">
+                            <input type="text" class="form-control" name="image_request_key" id="image_request_key" 
+                            placeholder="이미지 서버의 hook/HashKey.php의 값과 동일하게"
+                            value="" />
+                            <div class="input-group-append">
+                                <button id="btn_random_generate_key" class="btn btn-secondary" type="button">랜덤 생성</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="width:100%; border-top: 1px solid lightgray;">
+
+                    <div class="form-group row">
+                        <label for="kakao_rest_key" class="col-sm-4 col-form-label">카카오 API Rest Key</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="kakao_rest_key" id="kakao_rest_key" 
+                            placeholder="카카오톡 API의 Rest Key"
+                            value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="kakao_admin_key" class="col-sm-4 col-form-label">카카오 API Admin Key</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="kakao_admin_key" id="kakao_admin_key" 
+                            placeholder="카카오톡 API의 Admin Key"
+                            value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-8">
                             <button type="submit" 

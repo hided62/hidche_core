@@ -205,6 +205,7 @@ def extractGeneralList(generalSheet, nationList={}, nationChiefInfo={}):
 
 if '환경 변수' in wb.sheet_names():
     config = parseConfig(wb.sheet_by_name('환경 변수'))
+    config['startYear'] -= 3
 else:
     config = {
         'title':'타이틀'

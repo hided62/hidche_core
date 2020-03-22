@@ -156,7 +156,7 @@ class WebUtil
         $config = \HTMLPurifier_HTML5Config::createDefault();
         $config->set('Filter.Custom', array (new \HTMLPurifier_Filter_YouTube()));
         $config->set('HTML.SafeIframe', true);
-        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/)%'); //allow YouTube and Vime
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/)%'); //allow YouTube and Vimeo
         $def = $config->getHTMLDefinition();
         $def->info_global_attr['data-flip'] = new \HTMLPurifier_AttrDef_Text;
         $purifier = new \HTMLPurifier($config);

@@ -3,6 +3,79 @@ namespace sammo;
 
 class TimeUtil
 {
+
+    /** @deprecated */
+    public static function DateToday()
+    {
+        return date('Y-m-d');
+    }
+
+    /** @deprecated */
+    public static function DatetimeNow()
+    {
+        return date('Y-m-d H:i:s');
+    }
+
+    /** @deprecated */
+    public static function DatetimeFromNowDay($day)
+    {
+        return date('Y-m-d H:i:s', strtotime("{$day} days"));
+    }
+
+    /** @deprecated */
+    public static function DatetimeFromNowHour($hour)
+    {
+        return date('Y-m-d H:i:s', strtotime("{$hour} hours"));
+    }
+
+    /** @deprecated */
+    public static function DatetimeFromNowMinute($minute)
+    {
+        return date('Y-m-d H:i:s', strtotime("{$minute} minutes"));
+    }
+
+    /** @deprecated */
+    public static function DatetimeFromNowSecond($second)
+    {
+        return date('Y-m-d H:i:s', strtotime("{$second} seconds"));
+    }
+
+    /** @deprecated */
+    public static function DatetimeFromMinute($date, $minute)
+    {
+        return date('Y-m-d H:i:s', strtotime($date) + $minute*60);
+    }
+
+    /** @deprecated */
+    public static function DatetimeFromSecond($date, $second)
+    {
+        return date('Y-m-d H:i:s', strtotime($date) + $second);
+    }
+
+    /** @deprecated */
+    public static function CutSecond($date)
+    {
+        $date[17] = '0';
+        $date[18] = '0';
+        return $date;
+    }
+
+    /** @deprecated */
+    public static function CutMinute($date)
+    {
+        $date[14] = '0';
+        $date[15] = '0';
+        $date[17] = '0';
+        $date[18] = '0';
+        return $date;
+    }
+
+    /** @deprecated */
+    public static function HourMinuteSecond($second)
+    {
+        return date('H:i:s', strtotime('00:00:00') + $second);
+    }
+
     public static function today()
     {
         $obj = new \DateTime();

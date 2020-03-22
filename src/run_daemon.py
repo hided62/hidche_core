@@ -5,9 +5,11 @@ import time
 import glob
 import urllib.request
 import concurrent.futures
+from datetime import datetime
 
 def run(webPath):
-    print(webPath)
+    now = datetime.now()
+    print(now.strftime("%Y-%m-%d %H:%M:%S"), webPath)
     obj = urllib.request.urlopen(webPath)
     obj.read()
 
@@ -44,15 +46,17 @@ def main():
         
         servList.append(webPath)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(servList)) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,len(servList))) as executor:
         waiters=[]
         for resetPath in autoResetList:
             future = executor.submit(run, resetPath)
             waiters.append(future)
-        for _ in range(4):
+        for idx in range(4):
             for webPath in servList:
                 future = executor.submit(run, webPath)
                 waiters.append(future)
+            if idx == 3:
+                break
             time.sleep(15)
         for future in waiters:
             future.done()

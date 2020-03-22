@@ -11,6 +11,11 @@ $dbName = Util::getReq('db_name');
 $servHost = Util::getReq('serv_host');
 $sharedIconPath = Util::getReq('shared_icon_path');
 $gameImagePath = Util::getReq('game_image_path');
+$imageRequestKey = Util::getReq('image_request_key');
+
+$kakaoRESTKey = Util::getReq('kakao_rest_key', 'string', '');
+$kakaoAdminKey = Util::getReq('kakao_admin_key', 'string', '');
+
 
 if (!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath) {
     Json::die([
@@ -186,6 +191,8 @@ $globalSalt = bin2hex(random_bytes(16));
 
 $sharedIconPath = WebUtil::resolveRelativePath($sharedIconPath, $servHost);
 $gameImagePath = WebUtil::resolveRelativePath($gameImagePath, $servHost);
+$imageRequestPath = WebUtil::resolveRelativePath($gameImagePath.'/../hook/git_pull.php', $servHost);
+$imageKeyInstallPath = WebUtil::resolveRelativePath($gameImagePath.'/../hook/InstallKey.php', $servHost);
 
 $result = Util::generateFileUsingSimpleTemplate(
     __dir__.'/templates/ServConfig.orig.php',
@@ -193,10 +200,16 @@ $result = Util::generateFileUsingSimpleTemplate(
     [
         'serverBasePath'=>$servHost,
         'sharedIconPath'=>$sharedIconPath,
-        'gameImagePath'=>$gameImagePath
+        'gameImagePath'=>$gameImagePath,
+        'imageRequestPath'=>$imageRequestPath,
+        'imageRequestKey'=>$imageRequestKey
     ],
     true
 );
+
+if($imageRequestKey){
+    @file_get_contents($imageKeyInstallPath.'?key='.$imageRequestKey);
+}
 
 if ($result !== true) {
     Json::die([
@@ -263,10 +276,15 @@ $result = Util::generateFileUsingSimpleTemplate(
     ]
 );
 
+$kakaoRedirectURI = WebUtil::resolveRelativePath('oauth_kakao/oauth.php', $servHost.'/');
+
 Util::generateFileUsingSimpleTemplate(
     __dir__.'/templates/KakaoKey.orig.php',
     ROOT.'/d_setting/KakaoKey.php',
     [
+        'REST_API_KEY'=>$kakaoRESTKey,
+        'ADMIN_KEY'=>$kakaoAdminKey,
+        'REDIRECT_URI'=>$kakaoRedirectURI
     ],
     true
 );
@@ -280,5 +298,6 @@ if ($result !== true) {
 
 Json::die([
     'result'=>true,
-    'reason'=>'success'
+    'reason'=>'success',
+    'globalSalt'=>$globalSalt
 ]);

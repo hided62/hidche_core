@@ -7,20 +7,26 @@
 
 * Apache2
   * <code>mpm_event</code> 권장
-* PHP 7.2 이상 
+* PHP 7.3 이상 
   * <code>php-fpm</code> 권장
   * php에서 curl, pdo-sqlite을 실행가능해야 합니다. (기본값: 지원)
   * mysqlnd가 지원되어야합니다. (기본값: 지원)
+  * mysqli
+  * gd
 * MariaDB 10.2.1 이상
-  * MySQL 5.6 이상도 가능하도록 할 예정입니다.
+  * 현재 MySQL은 지원하지 않습니다.
 * <code>git</code>
 * <code>curl</code>
 
-Linux는 Ubuntu 16.04, Windows는 Windows 10에서 XAMPP를 사용한 환경에서 테스트되었습니다.
+Linux는 Ubuntu 16.04, 18.04, Windows는 Windows 10에서 XAMPP를 사용한 환경에서 테스트되었습니다.
 
 Docker를 이용한 설치는 계획중입니다.
 
-## 설치
+## Docker를 이용한 설치
+
+https://storage.hided.net/gogs/devsam/docker 를 참고해 주세요.
+
+## 수동 설치
 
 본 게임은 <code>git</code>을 이용한 업그레이드 시스템을 구현하였으므로, <code>git</code>이 필요합니다.
 또한 웹 서비스 데몬을 운영중인 사용자(일반적으로 <code>www-data</code>, <code>apache</code>)에게 디렉토리 권한이 주어져야합니다.
@@ -30,11 +36,11 @@ Docker를 이용한 설치는 계획중입니다.
 웹 데몬 user가 <code>www-data</code>인 경우 다음과 같이 입력하여 최신 배포버전과 이미지 파일을 얻을 수 있습니다.
 
 ```
-sudo -u www-data git clone ssh://git@storage.hided.net:2525/devsam/core.git
-git clone ssh://git@storage.hided.net:2525/devsam/image.git
+sudo -u www-data git clone https://storage.hided.net/gogs/devsam/core.git
+sudo -u www-data git clone https://storage.hided.net/gogs/devsam/image.git
 ```
 
-> 이미지는 git hook을 이용한 업데이트 기능을 제공하지만 아직 범용성 있는 설계가 되어있진 않습니다.
+> 이미지는 hook/git_hook.php을 통해 동기화되며, 서버 설치 과정에 이미지 갱신 키를 지정하는 것으로 '훼' 서버 업데이트 시 동기화됩니다. 이미지 서버가 게임 서버와 별개여도 동작하나, php와 git을 지원해야합니다.
 
 ### 설치
 
@@ -47,9 +53,9 @@ Database 수는 로그인 관리 서버 1개, 내부 서버 7개로, 총 8개의
 
 ## 카카오로그인 연동
 
-현재 카카오로그인 API KEY를 입력하는 작업이 설치과정에 추가되어있지 않습니다.
+서버 설치 시 카카오 로그인 연동을 위한 API KEY를 입력받습니다.
 
-설치 후 <code>d_setting/KakaoKey.php</code>에서 API키를 입력해야 합니다.
+만약 설치 이후 API KEY를 변경하고자 하는 경우 <code>d_setting/KakaoKey.php</code>에서 API키를 변경해야 합니다.
 
 
 ## 라이선스

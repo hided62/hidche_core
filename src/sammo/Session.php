@@ -312,9 +312,13 @@ class Session
      * 로그인 유저의 전역 grade를 받아옴
      * @return int|null
      */
-    public static function getUserGrade($actionOnError = '..')
+    public static function getUserGrade(bool $requireLogin = false, string $exitPath = '..')
     {
-        $obj = self::requireLogin($actionOnError);
+        if ($requireLogin) {
+            $obj = self::requireLogin($exitPath);
+        } else {
+            $obj = self::getInstance();
+        }
         
         return $obj->userGrade;
     }
@@ -324,9 +328,13 @@ class Session
      *
      * @return int|null
      */
-    public static function getUserID($actionOnError = '..')
+    public static function getUserID(bool $requireLogin = false, string $exitPath = '..')
     {
-        $obj = self::requireLogin($actionOnError);
+        if ($requireLogin) {
+            $obj = self::requireLogin($exitPath);
+        } else {
+            $obj = self::getInstance();
+        }
         
         return $obj->userID;
     }

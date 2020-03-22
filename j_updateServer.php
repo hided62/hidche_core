@@ -58,12 +58,13 @@ if(!$allowUpdate){
     ]);
 }
 
+$src_target = $storage->$server;
+if($src_target){
+    $src_target = $src_target[0];
+}
 
 if(!$allowFullUpdate || !$target){
-    $target = $storage->$server;
-    if($target){
-        $target = $target[0];
-    }
+    $target = $src_target;
 }
 else{
     $target = $request['target'];
@@ -114,6 +115,26 @@ if(!file_exists($server)){
 
 
 if($server == $baseServerName){
+
+    exec("git fetch -q 2>&1", $output);
+    if($output){
+        Json::die([
+            'result'=>false,
+            'reason'=>'git pull 작업 : '.join(', ', $output)
+        ]);
+    }
+
+    if($target != $src_target){
+        $command = sprintf('git checkout %s -q 2>&1', $target);
+        exec($command, $output);
+        if($output){
+            Json::die([
+                'result'=>false,
+                'reason'=>join(', ', $output)
+            ]);
+        }
+    }
+
     exec("git pull -q 2>&1", $output);
     if($output && $output[0] != 'Already up-to-date.'){
         Json::die([
@@ -129,13 +150,44 @@ if($server == $baseServerName){
             'verionGit'=>$version
         ], true
     );
+    
+    if(ServConfig::$imageRequestKey){
+        try {
+            $imagePullPath = ServConfig::getImagePullURI();
+            $pullResult = @file_get_contents($imagePullPath);
+            if($pullResult === false){
+                throw new \ErrorException('Invalid URI');
+            }
+            $pullResult = Json::decode($pullResult);
+            if($pullResult['result']){
+                $imgResult = true;
+                $imgDetail = $pullResult['version'];
+            }
+            else{
+                $imgResult = false;
+                $imgDetail = $pullResult['reason'];
+            }
+        }
+        catch(\Exception $e){
+            $imgResult = false;
+            $imgDetail = $e->getMessage();
+        }
+    }
+    else{
+        $imgResult = true;
+        $imgDetail = 'No key';
+    }
+    
+    
 
-    $storage->$server = [null, $version];
+    $storage->$server = [$target, $version];
 
     Json::die([
         'server'=>$server,
         'result'=>true,
-        'version'=>$version
+        'version'=>$version,
+        'imgResult'=>$imgResult,
+        'imgDetail'=>$imgDetail,
     ]);
 
 }

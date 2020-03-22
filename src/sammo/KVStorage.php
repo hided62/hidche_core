@@ -10,7 +10,7 @@ class KVStorage{
     static private $storageList = [];
 
     static public function getStorage(\MeekroDB $db, string $storNamespace, string $tableName='storage'):self{
-        $obj_id = spl_object_id($db);
+        $obj_id = spl_object_hash($db);
         $fullKey = $obj_id.','.$storNamespace.','.$tableName;
         if(key_exists($fullKey, static::$storageList)){
             return static::$storageList[$fullKey];
