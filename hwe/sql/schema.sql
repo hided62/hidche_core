@@ -135,7 +135,7 @@ CREATE TABLE `general` (
 	INDEX `name` (`name`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM;
+ENGINE=Aria;
 
 CREATE TABLE `general_turn` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -149,7 +149,7 @@ CREATE TABLE `general_turn` (
 	INDEX `action` (`action`, `turn_idx`, `general_id`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM
+ENGINE=Aria
 ;
 
 ###########################################################################
@@ -195,7 +195,7 @@ CREATE TABLE `nation` (
 	`aux` TEXT NOT NULL DEFAULT '{}',
 	PRIMARY KEY (`nation`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `nation_turn` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -209,7 +209,7 @@ CREATE TABLE `nation_turn` (
 	UNIQUE INDEX `nation` (`nation_id`, `level`, `turn_idx`),
 	INDEX `action` (`action`, `turn_idx`, `nation_id`, `level`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ##회의실
 CREATE TABLE `board` (
@@ -225,7 +225,7 @@ CREATE TABLE `board` (
 	PRIMARY KEY (`no`),
 	INDEX `nation_no` (`nation_no`, `is_secret`, `date`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `comment` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
@@ -240,7 +240,7 @@ CREATE TABLE `comment` (
 	INDEX `nation_no` (`nation_no`, `is_secret`, `date`),
 	INDEX `document_no` (`document_no`, `date`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 도시 테이블
@@ -281,7 +281,7 @@ CREATE TABLE `city` (
 	`conflict` VARCHAR(500) NOT NULL DEFAULT '{}',
 	PRIMARY KEY (`city`),
 	INDEX `nation` (`nation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 부대 테이블
@@ -292,7 +292,7 @@ CREATE TABLE `troop` (
 	`nation` INT(6) NOT NULL,
 	`name` VARCHAR(50) NOT NULL,
 	PRIMARY KEY (`troop_leader`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ##  락 테이블
@@ -305,7 +305,7 @@ CREATE TABLE `plock` (
 	PRIMARY KEY (`no`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM
+ENGINE=Aria
 ;
 
 ###########################################################################
@@ -324,7 +324,7 @@ CREATE TABLE `message` (
 	INDEX `by_mailbox` (`mailbox`, `type`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=InnoDB;
+ENGINE=Aria;
 
 ###########################################################################
 ## 명전 테이블
@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `ng_hall` (
 	INDEX `server_show` (`server_id`, `type`, `value`),
 	INDEX `scenario` (`season`, `scenario`, `type`, `value`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 
 ###########################################################################
@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `ng_games` (
 	UNIQUE INDEX `server_id` (`server_id`),
 	INDEX `date` (`date`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 	PRIMARY KEY (`id`),
 	INDEX `server_id` (`server_id`, `nation`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `ng_old_generals` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -394,7 +394,7 @@ CREATE TABLE IF NOT EXISTS `ng_old_generals` (
 	INDEX `by_name` (`server_id`, `name`),
 	INDEX `owner` (`owner`, `server_id`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `emperior` (
 	`no` INT(6) NOT NULL AUTO_INCREMENT,
@@ -440,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `emperior` (
 	`history` MEDIUMTEXT NULL DEFAULT '',
 	`aux` MEDIUMTEXT NULL DEFAULT '' COMMENT 'json',
 	PRIMARY KEY (`no`)
-) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
+) ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 외교 테이블
@@ -456,7 +456,7 @@ create table diplomacy (
 
   PRIMARY KEY (`no`),
   UNIQUE INDEX `me` (`me`, `you`)
-  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `ng_diplomacy` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
@@ -474,7 +474,7 @@ CREATE TABLE `ng_diplomacy` (
 	INDEX `by_nation_src` (`src_nation_id`, `dest_nation_id`, `state`, `date`),
 	INDEX `by_nation_dest` (`dest_nation_id`, `src_nation_id`, `state`, `date`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 토너먼트 테이블
@@ -499,7 +499,7 @@ create table tournament (
   gl   int(2) default 0,
   prmt int(1) default 0,
   PRIMARY KEY (seq)
-  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 거래 테이블
@@ -518,7 +518,7 @@ create table auction (
   expire datetime,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 통계 테이블
@@ -539,7 +539,7 @@ CREATE TABLE `statistic` (
 	`aux` TEXT NULL DEFAULT '' COMMENT 'json',
 	PRIMARY KEY (`no`)
 )
-ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 연감 테이블
@@ -559,7 +559,7 @@ CREATE TABLE IF NOT EXISTS `history` (
 	PRIMARY KEY (`no`),
 	INDEX `server_id` (`server_id`, `year`, `month`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 ###########################################################################
 ## 이벤트 핸들러 테이블
@@ -572,7 +572,7 @@ CREATE TABLE `event` (
   PRIMARY KEY (`id`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=InnoDB;
+ENGINE=Aria;
 
 
 ##전체 이벤트 기록 테이블
@@ -585,7 +585,7 @@ CREATE TABLE `world_history` (
 	INDEX `date` (`year`, `month`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=InnoDB
+ENGINE=Aria
 ;
 
 ##장수 동향 테이블
@@ -598,7 +598,7 @@ CREATE TABLE `general_public_record` (
 	INDEX `date` (`year`, `month`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=InnoDB
+ENGINE=Aria
 ;
 
 ######
@@ -611,7 +611,7 @@ CREATE TABLE IF NOT EXISTS `reserved_open` (
 	INDEX `date` (`date`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM;
+ENGINE=Aria;
 
 ######
 # 장수 선택 토큰
@@ -627,7 +627,7 @@ CREATE TABLE `select_npc_token` (
 	INDEX `valid_until` (`valid_until`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM;
+ENGINE=Aria;
 
 ###################
 # KV storage
@@ -641,4 +641,4 @@ CREATE TABLE IF NOT EXISTS `storage` (
 	UNIQUE INDEX `key` (`namespace`, `key`)
 )
 COLLATE='utf8mb4_general_ci'
-ENGINE=MyISAM;
+ENGINE=Aria;

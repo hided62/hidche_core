@@ -14,7 +14,7 @@ CREATE TABLE `system` (
 	`MDF_DATE` DATETIME NULL DEFAULT NULL,
 	PRIMARY KEY (`NO`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 -- 회원 테이블
 CREATE TABLE `member` (
@@ -45,7 +45,7 @@ CREATE TABLE `member` (
 	UNIQUE INDEX `kauth_id` (`oauth_id`),
 	INDEX `delete_after` (`delete_after`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 -- 로그인 로그 테이블
 CREATE TABLE `member_log` (

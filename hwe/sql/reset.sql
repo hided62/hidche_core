@@ -61,4 +61,4 @@ CREATE TABLE `reserved_open` (
 	INDEX `date` (`date`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM;
+ENGINE=Aria;
