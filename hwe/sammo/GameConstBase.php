@@ -78,6 +78,19 @@ class GameConstBase
     /** @var int 최대 기술 레벨 */
     public static $maxTechLevel = 12;
 
+    /** @var int 최소 인구 증가량 */
+    public static $basePopIncreaseAmount = 5000;
+    /** @var int 증축시 인구 증가량 */
+    public static $expandCityPopIncreaseAmount = 100000;
+    /** @var int 증축시 내정 증가량 */
+    public static $expandCityDevelIncreaseAmount = 2000;
+    /** @var int 증축시 성벽 증가량 */
+    public static $expandCityWallIncreaseAmount = 2000;
+    /** @var int 증축시 최소 비용 */
+    public static $expandCityDefaultCost = 60000;
+    /** @var int 증축시 비용 계수 */
+    public static $expandCityCostCoef = 500;
+
     /** @var int 초기 제한시 장수 제한 */
     public static $initialNationGenLimitForRandInit = 3;
 

@@ -1,0 +1,15 @@
+{
+    "title":"【공백지】 소형β",
+    "startYear":180,
+    "map":{
+        "mapName":"miniche_b"
+    },
+    "history":[
+    ],
+    "const": {
+        "expandCityPopIncreaseAmount": 80000,
+        "expandCityDevelIncreaseAmount": 1350,
+        "expandCityWallIncreaseAmount": 1600,
+        "defaultMaxGeneral":300
+    }
+}

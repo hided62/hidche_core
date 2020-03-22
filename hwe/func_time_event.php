@@ -138,10 +138,10 @@ function popIncrease() {
 
         $updateVar = [];
         if($popRatio >= 0){
-            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 + secu / secu2 / 10)))', 5000, $popRatio);
+            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 + secu / secu2 / 10)))', GameConst::$basePopIncreaseAmount, $popRatio);
         }
         else{
-            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 - secu / secu2 / 10)))', 5000, $popRatio);
+            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 - secu / secu2 / 10)))', GameConst::$basePopIncreaseAmount, $popRatio);
         }
 
         $genericRatio = (20 - $taxRate) / 200; // 20일때 0% 0일때 10% 100일때 -40%

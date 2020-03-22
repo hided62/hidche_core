@@ -89,7 +89,8 @@ $result = ResetHelper::buildScenario(
     $options['show_img_level'],
     $options['tournament_trig'],
     $options['join_mode'],
-    $options['starttime']
+    $options['starttime'],
+    $options['autorun_user']?:null
 );
 
 $result['affected']=1;

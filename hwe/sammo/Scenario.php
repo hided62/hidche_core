@@ -354,7 +354,7 @@ class Scenario{
             'npc_cnt'=>count($this->getNPC()),
             'npcEx_cnt'=>count($this->getNPCex()),
             'npcNeutral_cnt'=>count($this->getNPCneutral()),
-            'nation'=>array_map(function($nation) use ($nationGeneralCnt, $nationGeneralExCnt){
+            'nation'=>array_map(function($nation) use ($nationGeneralCnt, $nationGeneralExCnt, $nationGeneralNeutralCnt){
                 $brief = $nation->getBrief();
                 $brief['generals'] = Util::array_get($nationGeneralCnt[$nation->getID()], 0);
                 $brief['generalsEx'] = Util::array_get($nationGeneralExCnt[$nation->getID()], 0);

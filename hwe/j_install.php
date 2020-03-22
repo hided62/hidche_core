@@ -57,7 +57,8 @@ $v->rule('required', [
     'extend',
     'join_mode',
     'npcmode',
-    'show_img_level'
+    'show_img_level',
+    'autorun_user_minutes'
 ])->rule('integer', [
     'turnterm',
     'sync',
@@ -67,6 +68,7 @@ $v->rule('required', [
     'npcmode',
     'show_img_level',
     'tournament_trig',
+    'autorun_user_minutes'
 ])->rule('in', 'join_mode', ['onlyRandom', 'full']);
 if(!$v->validate()){
     Json::die([
@@ -108,6 +110,30 @@ $npcmode = (int)$_POST['npcmode'];
 $show_img_level = (int)$_POST['show_img_level'];
 $tournament_trig = (int)$_POST['tournament_trig'];
 $join_mode = $_POST['join_mode'];
+$autorun_user_minutes = (int)$_POST['autorun_user_minutes'];
+$autorun_user_options = [];
+foreach(Util::getReq('autorun_user', 'array_string', []) as $autorun_option){
+    $autorun_user_options[$autorun_option] = 1;
+}
+
+if($autorun_user_minutes > 0 && !$autorun_user_options){
+    Json::die([
+        'result'=>false,
+        'reason'=>'적어도 자동 행동 중 하나는 선택을 해야합니다.'
+    ]);
+}
+
+if($autorun_user_minutes < 0){
+    Json::die([
+        'result'=>false,
+        'reason'=>'자동 행동 기한이 0보다 작을 수 없습니다.'
+    ]);
+}
+
+$autorun_user = $autorun_user_minutes?[
+    'limit_minutes'=>$autorun_user_minutes,
+    'options'=>$autorun_user_options
+]:null;
 
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
@@ -143,6 +169,7 @@ if($reserve_open){
         'gameConf'=>$scenarioObj->getGameConf(),
         'join_mode'=>$join_mode,
         'starttime'=>$open_date,
+        'autorun_user'=>$autorun_user
     ];
 
     
@@ -175,5 +202,6 @@ Json::die(ResetHelper::buildScenario(
     $show_img_level,
     $tournament_trig,
     $join_mode,
-    TimeUtil::now()
+    TimeUtil::now(),
+    $autorun_user
 ));

@@ -86,6 +86,8 @@ if ($month <= 0) {
     $month += 12;
 }
 
+$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -101,12 +103,19 @@ if ($month <= 0) {
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS("js/map/theme_{$mapTheme}.js")?>
 <?=WebUtil::printJS('js/map.js')?>
-
+<?=WebUtil::printJS('js/history.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
-
+<script>
+var startYear = <?=$s_year?>;
+var startMonth = <?=$s_month?>;
+var lastYear = <?=$e_year?>;
+var lastMonth = <?=$e_month?>;
+var selectYear = <?=$year?>;
+var selectMonth = <?=$month?>;
+</script>
 </head>
 
 <body>
@@ -116,22 +125,9 @@ if ($month <= 0) {
         <form name=form1 method=post>
         년월 선택 :
         <input type=submit name=btn value="◀◀ 이전달">
-        <select name=yearmonth size=1>
-<?php
-$dates = $db->queryAllLists('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC', $serverID);
-foreach($dates as [$hYear, $hMonth]){
-    $value = "".$hYear.StringUtil::padStringAlignRight($hMonth, 2, "0");
-    if ($hYear == $year && $hMonth == $month) {
-        echo "
-            <option selected value={$value}>{$hYear}년 {$hMonth}월</option>";
-    } else {
-        echo "
-            <option value={$value}>{$hYear}년 {$hMonth}월</option>";
-    }
-}
-
-$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
-?>
+        <select id='yearmonth' name=yearmonth size=1>
+            <option selected='selected'><?=$year?>년 <?=$month?>월</option>
+            <option><?=$e_year?>년 12월</option>
         </select>
         <input type=submit name=btn value='조회하기'>
         <input type=submit name=btn value="다음달 ▶▶">

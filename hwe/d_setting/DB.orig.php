@@ -28,7 +28,7 @@ class DB{
             self::$uDB = new \MeekroDB(self::$host,self::$user,self::$password,self::$dbName,self::$port,self::$encoding);
             self::$uDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
 
-            self::$uDB->error_handler= false;
+            self::$uDB->error_handler= function(){};
             self::$uDB->throw_exception_on_error = true;
             self::$uDB->throw_exception_on_nonsql_error = true;
         }

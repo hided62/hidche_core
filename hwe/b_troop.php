@@ -93,6 +93,48 @@ uasort($troops, function($lhs, $rhs){
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/troops.css')?>
+<script>
+jQuery(function($){
+
+$('#form1').submit(function(){
+    return false;
+});
+$('#leaveTroop').click(function(e){
+    return confirm("정말 부대를 탈퇴하시겠습니까?");
+})
+$('.submitBtn').click(function(event){
+    if(event.isPropagationStopped()){
+        return false;
+    }
+    console.log('b');
+    var $this=$(this);
+
+    $.post({
+        url:'j_troop.php',
+        dataType:'json',
+        data:{
+            action:$this.val().replace(/\s/g, ''),
+            troop:$('input.troopId:checked').val(),
+            name:$('#troopName').val(),
+            gen:$('#genNo').val()
+        }
+    }).then(function(data){
+        console.log(data);
+        if(!data.result){
+            alert(data.reason);
+            location.reload();
+        }
+
+        location.reload();
+
+    }, function(){
+        alert('알 수 없는 에러가 발생했습니다.');
+    });
+    return false;
+});
+
+});
+</script>
 </head>
 
 <body>
@@ -100,7 +142,7 @@ uasort($troops, function($lhs, $rhs){
 <table width=1000 class='tb_layout bg0'>
     <tr><td>부 대 편 성<br><?=backButton()?></td></tr>
 </table>
-<form name=form1 method=post action=c_troop.php>
+<form id=form1 name=form1 method=post>
 <table id="troop_list" class='tb_layout bg0'>
     <thead>
     <tr>
@@ -114,9 +156,9 @@ uasort($troops, function($lhs, $rhs){
     <tfoot><tr><td colspan='5'>
     <?php if(!$troops): ?>
     <?php elseif($me['troop'] == 0): ?>
-        <input type=submit name=btn value='부 대 가 입'>
+        <input type=submit class='submitBtn' value='부 대 가 입'>
     <?php else: ?>
-        <input type=submit name=btn value='부 대 탈 퇴' onclick='return confirm("정말 부대를 탈퇴하시겠습니까?")'>
+        <input type=submit id="leaveTroop" class='submitBtn' value='부 대 탈 퇴'>
     <?php endif;?>
     </td></tr></tfoot>
     <tbody>
@@ -145,7 +187,7 @@ foreach ($troops as $troopNo=>$troop) {
 
 <?php if ($me['troop'] == 0): ?>
     <tr>
-        <td align=center rowspan=2><input type='radio' name='troop' value='<?=$troopNo?>'></td>
+        <td align=center rowspan=2><input type='radio' class='troopId' name='troop' value='<?=$troop['troop']?>'></td>
         <td align=center><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
         <td height=64 class='generalIcon' style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=62><?=$genlistText?></td>
@@ -164,7 +206,7 @@ foreach ($troops as $troopNo=>$troop) {
         <td rowspan=2 width=62><?=$genlistText?></td>
         <td rowspan=2>
         <?php if ($me['no'] == $troopLeader['no']): ?>
-            <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:128px;>";
+            <select id='genNo' name=gen size=3 style=color:white;background-color:black;font-size:13px;width:128px;>";
                 <?php foreach ($troop['users'] as $troopUser): ?>
                     <?php if ($troopUser['no'] == $me['no']) {
         continue;
@@ -172,7 +214,7 @@ foreach ($troops as $troopNo=>$troop) {
                     <option value='<?=$troopUser['no']?>'><?=$troopUser['name']?></option>
                 <?php endforeach; ?>
             </select><br>
-            <input type=submit name=btn value='부 대 추 방' style=width:130px;height:25px;>
+            <input type=submit class='submitBtn' value='부 대 추 방' style=width:130px;height:25px;>
         <?php else: ?>
             <?=$troopLeader['turnText']?>
         <?php endif; ?>

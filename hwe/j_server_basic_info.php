@@ -3,6 +3,41 @@ namespace sammo;
 
 include "lib.php";
 
+$templates = new \League\Plates\Engine(__dir__.'/templates');
+
+function getAutorunInfo($autorunOption){
+    global $templates;
+    $auto_info = [];
+    foreach($autorunOption['options'] as $auto_option => $value){
+        assert($value);
+        switch($auto_option){
+            case 'develop': $auto_info['내정'] = '내정'; break;
+            case 'warp': $auto_info['순간이동'] = '순간이동'; break;
+            case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
+            case 'recruit_high': $auto_info['징병'] = '모병'; break;
+            case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
+            case 'battle': $auto_info['출병'] = '출병'; break;
+        }
+    }
+    $limit = Util::toInt($autorunOption['limit_minutes']);
+    if($limit >= 43200){
+        $auto_info['제한'] = '항상 유효';
+    }
+    else if($limit % 60 == 0){
+        $auto_info['제한'] = ($limit/60).'시간 유효';
+    }
+    else{
+        $auto_info['제한'] = ($limit).'분 유효';
+    }
+    $auto_info = join(', ', array_values($auto_info));
+    return $templates->render('tooltip', [
+        'text'=>'자율행동',
+        'info'=>$auto_info,
+        'style'=>'text-decoration:underline',
+        'copyable_info'=>true
+    ]);
+}
+
 $session = Session::requireLogin([
     'game'=>null,
     'me'=>null
@@ -38,6 +73,10 @@ if(file_exists(__dir__.'/.htaccess')){
         $otherTextInfo[] = '랜덤 임관 전용';
     }
 
+    if($options['autorun_user']['limit_minutes']??false){
+        $otherTextInfo[] = getAutorunInfo($options['autorun_user']);
+    }
+
     if(!$otherTextInfo){
         $otherTextInfo = '표준';
     }
@@ -64,7 +103,7 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime']);
+$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction', 'autorun_user']);
 $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
@@ -85,6 +124,29 @@ $admin['userCnt'] = $genCnt;
 $admin['npcCnt'] = $npcCnt;
 $admin['nationCnt'] = $nationCnt;
 
+$admin['npcMode'] = $admin['npcMode']?'가능':'불가';
+$admin['fictionMode'] = $admin['fiction']?'가상':'사실';
+
+$otherTextInfo = [];
+
+if($admin['join_mode'] == 'onlyRandom'){
+    $otherTextInfo[] = '랜덤 임관 전용';
+}
+
+if($admin['autorun_user']['limit_minutes']??false){
+    $otherTextInfo[] = getAutorunInfo($admin['autorun_user']);
+}
+
+if(!$otherTextInfo){
+    $otherTextInfo = '표준';
+}
+else{
+    $otherTextInfo = join(', ', $otherTextInfo);
+}
+
+
+$admin['otherTextInfo'] = $otherTextInfo;
+$admin['defaultStatTotal'] = GameConst::$defaultStatTotal;
 $me = [];
 
 $general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where owner=%i', $userID);

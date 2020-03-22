@@ -97,7 +97,21 @@ $me->applyDB($db);
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<script>
+var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
+jQuery(function($){
 
+$('#die_immediately').click(function(){
+    if(!availableDieImmediately){
+        alert('삭제를 위해서는 생성 후 2턴 가량의 시간이 필요합니다.');
+        location.reload();
+        return false;
+    }
+    return confirm('정말로 삭제하시겠습니까?');
+});
+
+});
+</script>
 </head>
 
 <body>
@@ -125,10 +139,18 @@ $me->applyDB($db);
                 <input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
                 ∞<font color=orange>설정저장은 이달중 <?=$myset?>회 남았습니다.</font><br><br>
             </form>
+            <?php if(!($gameStor->autorun_user['limit_minutes']??false)): ?>
             휴 가 신 청<br>
             <a href="c_vacation.php"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button></a><br><br>
+            <?php endif; ?>
             <!--빙의 해제용 삭턴 조절<br>
             <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>-->
+
+<?php if($showDieImmediatelyBtn): ?>
+            가오픈 기간 내 장수 삭제<br>
+            <a href="c_die_immediately.php" id='die_immediately'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>장수 삭제</button></a><br><br>
+<?php endif; ?>
+
             개인용 CSS<br>
             <textarea id='custom_css' style='color:white;background-color:black;width:420px;height:150px;'></textarea>
         </td>

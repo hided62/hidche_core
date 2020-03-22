@@ -38,22 +38,20 @@ function serverUpdate(caller){
         return;
     }
 
-    if(isRoot){
-        if(!confirm('서버 라이브러리, 루트 서버에 대해 git pull을 실행합니다.')){
-            return;
-        }
-    }
-    else if(!allowFullUpdate){
-        if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
-            return;
-        }
-    }
-    else {
+    
+    if(allowFullUpdate){
         target = prompt('가져올 git tree-ish 명을 입력해주세요.', target)
         if(!target){
             return;
         }
-
+    }
+    else if(isRoot){
+        if(!confirm('서버 라이브러리, 루트 서버에 대해 git pull을 실행합니다.')){
+            return;
+        }
+    }
+    else if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
+        return;
     }
     
     $.ajax({
@@ -66,7 +64,11 @@ function serverUpdate(caller){
         }
     }).then(function(response) {
             if(response.result) {
-                alert('{0} 서버가 {1} 버전으로 업데이트 되었습니다.'.format(response.server, response.version));
+                var aux = '';
+                if(isRoot){
+                    aux = ' (이미지 서버 갱신:{0}, {1})'.format(response.imgResult, response.imgDetail);
+                }
+                alert('{0} 서버가 {1} 버전으로 업데이트 되었습니다.{2}'.format(response.server, response.version, aux));
                 location.reload();
             } else {
                 alert(response.reason);

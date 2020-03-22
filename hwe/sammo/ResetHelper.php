@@ -145,7 +145,8 @@ class ResetHelper{
         int $show_img_level,
         int $tournament_trig,
         string $join_mode,
-        string $turntime
+        string $turntime,
+        ?array $autorun_user
     ):array{
         //FIXME: 분리할 것
         if(120 % $turnterm != 0){
@@ -239,7 +240,7 @@ class ResetHelper{
             'msg'=>'공지사항',//TODO:공지사항
             'maxgeneral'=>GameConst::$defaultMaxGeneral,
             'maxnation'=>GameConst::$defaultMaxNation,
-            'conlimit'=>300,
+            'conlimit'=>30000,
             'gold_rate'=>100,
             'rice_rate'=>100,
             'develcost'=>$develcost,
@@ -256,8 +257,7 @@ class ResetHelper{
             'fiction'=>$fiction,
             'tnmt_trig'=>$tournament_trig,
             'prev_winner'=>$prevWinner,
-            'tournament'=>0,
-            'server_cnt'=>$db->queryFirstField('SELECT count(*) FROM ng_games')
+            'autorun_user'=>$autorun_user
         ];
 
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
