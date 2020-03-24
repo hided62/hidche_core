@@ -44,7 +44,7 @@ class che_포상 extends Command\NationCommand{
         if(!is_int($amount)){
             return false;
         }
-        $amount = Util::valueFit($amount, 100, 10000);
+        $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);
         if(!is_bool($isGold)){
             return false;
         }
@@ -183,12 +183,6 @@ class che_포상 extends Command\NationCommand{
                 'rice'=>$destGeneral['rice']
             ];
         }
-
-        $amountList = [
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-            12, 15, 20, 25,
-            30, 40, 50, 60, 70, 80, 90, 100
-        ];
         ob_start();
 ?>
 국고로 장수에게 자금이나 군량을 지급합니다.<br>
@@ -203,8 +197,8 @@ class che_포상 extends Command\NationCommand{
 </select>
 </select>
 <select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
-<?php foreach($amountList as $amount): ?>
-    <option value='<?=$amount?>00'><?=$amount?>00</option>
+<?php foreach(GameConst::$resourceActionAmountGuide as $amount): ?>
+    <option value='<?=$amount?>'><?=$amount?></option>
 <?php endforeach; ?>
 </select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
 <br>

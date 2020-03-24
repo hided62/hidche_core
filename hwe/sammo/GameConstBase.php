@@ -111,6 +111,17 @@ class GameConstBase
     /** @var int 시작시 쌀 */
     public static $defaultRice = 1000;
 
+    /** @var int 원조 계수 */
+    public static $coefAidAmount = 10000;
+
+    /** @var int 최대 개별 자원 금액 */
+    public static $maxResourceActionAmount = 10000;
+    /** @var int[] 포상/몰수 가이드 금액 */
+    public static $resourceActionAmountGuide = [
+        100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+        1200, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000
+    ];
+
     public static $generalMinimumGold = 0;
     public static $generalMinimumRice = 500;
 

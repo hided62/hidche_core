@@ -48,7 +48,7 @@ window.submitAction = function(){
             'isGold', 'buyRice',
         ],
         'integerArray':[
-            'destNationIDList', 'destGeneralIDList'
+            'destNationIDList', 'destGeneralIDList', 'amountList'
         ]
     }
 

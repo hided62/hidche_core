@@ -228,6 +228,7 @@ class che_선전포고 extends Command\NationCommand{
         style='color:<?=$nation['color']?>;<?=$nation['availableWar']?'':'background-color:red;'?>'
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
+</select>
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">
 <?php
         return ob_get_clean();

@@ -225,7 +225,7 @@ function checkCommandArg(?array $arg):?string{
             ['crewType', 0]
         ],
         'integerArray'=>[
-            'destNationIDList', 'destGeneralIDList'
+            'destNationIDList', 'destGeneralIDList', 'amountList'
         ],
         'stringWidthBetween'=>[
             ['nationName', 1, 18]

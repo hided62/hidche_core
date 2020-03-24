@@ -698,7 +698,7 @@ class GeneralAI{
             if((($isWarUser || $resName == 'gold') && $compUser->$resName < 21000) || ($compUser->$resName < 5000)){
                 if($work){
                     //TODO: 새로 구현한 코드로 이전
-                    $amount = min(10000, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 3000)*1000 + 1000);
+                    $amount = min(GameConst::$maxIncentiveAmount, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 3000)*1000 + 1000);
                     $commandList[] = [['che_포상', [
                         'destGeneralID'=>$userGenerals[0]->no,
                         'isGold'=>$resName=='gold',
@@ -706,7 +706,7 @@ class GeneralAI{
                     ]], 10]; // 금,쌀 1000단위 포상
                 }
                 else{
-                    $amount = min(10000, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*1000 + 1000);
+                    $amount = min(GameConst::$maxIncentiveAmount, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*1000 + 1000);
                     $commandList[] = [['che_포상', [
                         'destGeneralID'=>$userGenerals[0]->no,
                         'isGold'=>$resName=='gold',
@@ -1130,10 +1130,10 @@ class GeneralAI{
         }
 
         if($general->getVar('gold') >= $general->getVar('rice')){
-            return ['che_헌납', ['isGold'=>true, 'amount'=>10000]];
+            return ['che_헌납', ['isGold'=>true, 'amount'=>GameConst::$maxResourceActionAmount]];
         }
         else{
-            return ['che_헌납', ['isGold'=>false, 'amount'=>10000]];
+            return ['che_헌납', ['isGold'=>false, 'amount'=>GameConst::$maxResourceActionAmount]];
         }
     }
 

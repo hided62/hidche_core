@@ -171,7 +171,7 @@ class ActionLogger{
         $this->generalBattleDetailLog[] = $text;
     }
 
-    public function pushNationalHistoryLog($text, int $formatType = self::RAWTEXT){
+    public function pushNationalHistoryLog($text, int $formatType = self::YEAR_MONTH){
         if(!$text){
             return;
         }

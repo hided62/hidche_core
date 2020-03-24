@@ -38,7 +38,7 @@ class che_군량매매 extends Command\GeneralCommand{
         if(!is_int($amount)){
             return false;
         }
-        $amount = Util::valueFit($amount, 100, 10000);
+        $amount = Util::valueFit($amount, 100, GameConst::$maxIncentiveAmount);
         
         $this->arg = [
             'buyRice'=>$buyRice,
@@ -184,28 +184,9 @@ class che_군량매매 extends Command\GeneralCommand{
     <option value='true'>삼</option>
 </select>
 <select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
-    <option value=100>100</option>
-    <option value=200>200</option>
-    <option value=300>300</option>
-    <option value=400>400</option>
-    <option value=500>500</option>
-    <option value=600>600</option>
-    <option value=700>700</option>
-    <option value=800>800</option>
-    <option value=900>900</option>
-    <option value=1000>1000</option>
-    <option value=1200>1200</option>
-    <option value=1500>1500</option>
-    <option value=2000>2000</option>
-    <option value=2500>2500</option>
-    <option value=3000>3000</option>
-    <option value=4000>4000</option>
-    <option value=5000>5000</option>
-    <option value=6000>6000</option>
-    <option value=7000>7000</option>
-    <option value=8000>8000</option>
-    <option value=9000>9000</option>
-    <option value=10000>10000</option>
+<?php foreach(GameConst::$resourceActionAmountGuide as $amount): ?>
+    <option value='<?=$amount?>'><?=$amount?></option>
+<?php endforeach; ?>
 </select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
 <?php
         return ob_get_clean();
