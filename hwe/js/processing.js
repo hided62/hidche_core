@@ -81,7 +81,10 @@ window.submitAction = function(){
         availableArgumentList[typeName].forEach(function(argName){
             var $obj = $('#'+argName);
             if($obj.length == 0){
-                return;
+                $obj = $('.'+argName);
+                if($obj.length == 0){
+                    return;
+                }
             }
     
             argument[argName] = handlerList[typeName]($obj);

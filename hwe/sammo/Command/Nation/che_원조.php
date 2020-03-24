@@ -254,12 +254,12 @@ class che_원조 extends Command\NationCommand{
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
 </select>
-국고 <select class='formInput' name="goldAmount" id="goldAmount" size='1' style='color:white;background-color:black;'>
+국고 <select class='formInput' name="amountList[]" class="amountList" size='1' style='color:white;background-color:black;'>
 <?php foreach(range(0, $currentNationLevel) as $nationLevel): ?>
     <option value='<?=$nationLevel*GameConst::$coefAidAmount?>'><?=$nationLevel*GameConst::$coefAidAmount?></option>
 <?php endforeach; ?>
 </select> 
-병량 <select class='formInput' name="riceAmount" id="riceAmount" size='1' style='color:white;background-color:black;'>
+병량 <select class='formInput' name="amountList[]" class="amountList" size='1' style='color:white;background-color:black;'>
 <?php foreach(range(0, $currentNationLevel) as $nationLevel): ?>
     <option value='<?=$nationLevel*GameConst::$coefAidAmount?>'><?=$nationLevel*GameConst::$coefAidAmount?></option>
 <?php endforeach; ?>
