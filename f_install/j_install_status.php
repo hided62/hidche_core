@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 
 if(!class_exists('\\sammo\\RootDB')){
     Json::die([

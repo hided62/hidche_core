@@ -7,7 +7,7 @@ class ResetHelper{
     }
 
     static public function clearDB(){
-        $servRoot = realpath(__dir__.'/../');
+        $servRoot = realpath(__DIR__.'/../');
 
         if(!file_exists($servRoot.'/logs') || !file_exists($servRoot.'/data')){
             if(!is_writable($servRoot)){
@@ -195,8 +195,8 @@ class ResetHelper{
             ];
         }
         Util::generateFileUsingSimpleTemplate(
-            __dir__.'/../templates/base_map.orig.js',
-            __dir__.'/../d_shared/base_map.js',
+            __DIR__.'/../templates/base_map.orig.js',
+            __DIR__.'/../d_shared/base_map.js',
             [
                 'cityPosition'=>Json::encode($cityPositions),
                 'regionMap'=>Json::encode(CityConst::$regionMap),

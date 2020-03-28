@@ -82,7 +82,7 @@ if($session->userGrade < 5 && !$allowFullReset){
     //리셋 가능한 조건인지 테스트
     $allowReset = false;
 
-    if(file_exists(__dir__.'/.htaccess')){
+    if(file_exists(__DIR__.'/.htaccess')){
         $allowReset = true;
     }
     else{

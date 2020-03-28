@@ -2,12 +2,12 @@
 namespace sammo;
 
 /** @var  \Composer\Autoload\ClassLoader $loader */
-$loader = require __dir__.'/../vendor/autoload.php';
+$loader = require __DIR__.'/../vendor/autoload.php';
 $loader->addPsr4('sammo\\', __DIR__.'/sammo', true);
 
 $loader->addClassMap((function () {
     $d_settingMap = [];
-    foreach (glob(__dir__.'/d_setting/*.orig.php') as $filepath) {
+    foreach (glob(__DIR__.'/d_setting/*.orig.php') as $filepath) {
         $filepath = str_replace('.orig.php', '.php', $filepath);
         $filename = basename($filepath);
         $classname = explode('.', $filename)[0];
@@ -36,7 +36,7 @@ function Error($message='', $url="")
     $e = new \Exception();
     logError("aux_err", $message, '', getExceptionTraceAsString($e));
 
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     ob_get_flush();
     WebUtil::setHeaderNoCache();

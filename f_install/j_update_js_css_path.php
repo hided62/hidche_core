@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([])->setReadOnly();
 if($session->userGrade < 6){
@@ -27,7 +27,7 @@ if($servHost){
     $gameImagePath = WebUtil::resolveRelativePath($gameImagePath, $servHost);
 
     $result = Util::generateFileUsingSimpleTemplate(
-        __dir__.'/templates/ServConfig.orig.php',
+        __DIR__.'/templates/ServConfig.orig.php',
         ROOT.'/d_setting/ServConfig.php',
         [
             'serverBasePath'=>$servHost,
@@ -61,7 +61,7 @@ else if($sharedIconPath || $gameImagePath){
     }
 
     $result = Util::generateFileUsingSimpleTemplate(
-        __dir__.'/templates/ServConfig.orig.php',
+        __DIR__.'/templates/ServConfig.orig.php',
         ROOT.'/d_setting/ServConfig.php',
         [
             'serverBasePath'=>$servHost,
@@ -87,7 +87,7 @@ else{
 
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/common_path.orig.js',
+    __DIR__.'/templates/common_path.orig.js',
     ROOT.'/d_shared/common_path.js',
     [
         'serverBasePath'=>$servHost,
@@ -99,7 +99,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/common.orig.css',
+    __DIR__.'/templates/common.orig.css',
     ROOT.'/d_shared/common.css',
     [
         'serverBasePath'=>$servHost,

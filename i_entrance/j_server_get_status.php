@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 
 // 외부 파라미터
 $response['server'] = [];

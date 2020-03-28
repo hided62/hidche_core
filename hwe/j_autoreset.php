@@ -44,7 +44,7 @@ if($lastTurn !== null){
 if($lastTurn === null){
     //이미 리셋된 상태임
 }
-else if(file_exists(__dir__.'/.htaccess')){
+else if(file_exists(__DIR__.'/.htaccess')){
     //일단 서버는 닫혀 있음
 }
 else if(

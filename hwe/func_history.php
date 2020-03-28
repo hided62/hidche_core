@@ -5,7 +5,7 @@ namespace sammo;
 
 function delStepLog() {
     $date = date('Y_m_d');
-    @unlink(__dir__."/logs/".UniqueConst::$serverID."/_{$date}_steplog.txt");
+    @unlink(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_steplog.txt");
 }
 
 function pushRawFileLog($path, $lines){
@@ -50,81 +50,81 @@ function eraseTnmtFightLogAll(){
 }
 
 function eraseTnmtFightLog(int $group){
-    $filepath = __dir__."/logs/".UniqueConst::$serverID."/fight{$group}.txt";
+    $filepath = __DIR__."/logs/".UniqueConst::$serverID."/fight{$group}.txt";
     if(file_exists($filepath)){
         @unlink($filepath);
     }
 }
 
 function pushTnmtFightLog(int $group, $log) {
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/fight{$group}.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/fight{$group}.txt", $log);
 }
 
 function getTnmtFightLogAll(int $group) {
-    return join('<br>',getFormattedFileLogAll(__dir__."/logs/".UniqueConst::$serverID."/fight{$group}.txt"));
+    return join('<br>',getFormattedFileLogAll(__DIR__."/logs/".UniqueConst::$serverID."/fight{$group}.txt"));
 }
 
 function pushSabotageLog($log) {
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/_sabotagelog.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_sabotagelog.txt", $log);
 }
 
 function getSabotageLogRecent($count) {
-    return join('<br>', getFormattedFileLogRecent(__dir__."/logs/".UniqueConst::$serverID."/_sabotagelog.txt", $count, 150));
+    return join('<br>', getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/_sabotagelog.txt", $count, 150));
 }
 
 function pushProcessLog($log) {
     $date = date('Y_m_d');
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/_{$date}_processlog.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_processlog.txt", $log);
 }
 
 
 function pushStepLog($log) {
     $date = date('Y_m_d');
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/_{$date}_steplog.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_steplog.txt", $log);
 }
 
 function pushLockLog($log) {
     $date = date('Y_m_d');
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/_{$date}_locklog.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_locklog.txt", $log);
 }
 
 function pushAdminLog($log) {
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/_adminlog.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_adminlog.txt", $log);
 }
 
 function pushAuctionLog($log) {
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $log);
 }
 
 function getAuctionLogRecent(int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $count, 300)));
 }
 
 function pushGenLog($general, $log) {
     $no = Util::toInt($general['no']);
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/gen{$no}.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/gen{$no}.txt", $log);
 }
 
 function getGenLogRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/".UniqueConst::$serverID."/gen{$no}.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/gen{$no}.txt", $count, 300)));
 }
 
 function pushBatRes($general, $log) {
     $no = Util::toInt($general['no']);
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/batres{$no}.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/batres{$no}.txt", $log);
 }
 
 function getBatResRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/".UniqueConst::$serverID."/batres{$no}.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/batres{$no}.txt", $count, 300)));
 }
 
 function pushBatLog($general, $log) {
     $no = Util::toInt($general['no']);
-    pushRawFileLog(__dir__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $log);
+    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $log);
 }
 
 function getBatLogRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $count, 300)));
 }
 
 function pushOldNationStop(int $no, int $nationNo){
@@ -132,7 +132,7 @@ function pushOldNationStop(int $no, int $nationNo){
 
     $result = [];
     foreach($logPrefixList as $logPrefix){
-        $path = __dir__."/logs/".UniqueConst::$serverID."/{$logPrefix}{$no}.txt";
+        $path = __DIR__."/logs/".UniqueConst::$serverID."/{$logPrefix}{$no}.txt";
         if(file_exists($path)){
             $fileLen = @filesize($path);
         }
@@ -142,7 +142,7 @@ function pushOldNationStop(int $no, int $nationNo){
         $result[$logPrefix] = $fileLen;
     }
 
-    $baseStopPath = __dir__."/logs/".UniqueConst::$serverID."/stop{$no}.txt";
+    $baseStopPath = __DIR__."/logs/".UniqueConst::$serverID."/stop{$no}.txt";
     if(file_exists($baseStopPath)){
         $oldValues = Json::decode(file_get_contents($baseStopPath));
     }

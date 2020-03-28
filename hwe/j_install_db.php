@@ -29,7 +29,7 @@ if(!$host || !$port || !$username || !$password || !$dbName){
 if($fullReset && class_exists('\\sammo\\DB')){
     $mysqli_obj = DB::db()->get();
 
-    if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
+    if($mysqli_obj->multi_query(file_get_contents(__DIR__.'/sql/reset.sql'))){
         while(true){
             if (!$mysqli_obj->more_results()) {
                 break;
@@ -41,13 +41,13 @@ if($fullReset && class_exists('\\sammo\\DB')){
     }
 }
 if($fullReset){
-    FileUtil::delInDir(__dir__."/logs");
-    FileUtil::delInDir(__dir__."/data");
-    if(file_exists(__dir__.'/d_setting/DB.php')){
-        @unlink(__dir__.'/d_setting/DB.php');
+    FileUtil::delInDir(__DIR__."/logs");
+    FileUtil::delInDir(__DIR__."/data");
+    if(file_exists(__DIR__.'/d_setting/DB.php')){
+        @unlink(__DIR__.'/d_setting/DB.php');
     }
-    if(file_exists(__dir__.'/d_setting/UniqueConst.php')){
-        @unlink(__dir__.'/d_setting/UniqueConst.php');
+    if(file_exists(__DIR__.'/d_setting/UniqueConst.php')){
+        @unlink(__DIR__.'/d_setting/UniqueConst.php');
     }
 }
 

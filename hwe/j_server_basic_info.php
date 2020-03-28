@@ -3,7 +3,7 @@ namespace sammo;
 
 include "lib.php";
 
-$templates = new \League\Plates\Engine(__dir__.'/templates');
+$templates = new \League\Plates\Engine(__DIR__.'/templates');
 
 function getAutorunInfo($autorunOption){
     global $templates;
@@ -54,7 +54,7 @@ if(!class_exists('\\sammo\\DB')){
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-if(file_exists(__dir__.'/.htaccess')){
+if(file_exists(__DIR__.'/.htaccess')){
     $reserved = $db->queryFirstRow(
         'SELECT * FROM reserved_open ORDER BY `date` ASC LIMIT 1'
     );

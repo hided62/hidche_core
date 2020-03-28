@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 require('lib.join.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;

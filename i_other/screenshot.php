@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 WebUtil::setHeaderNoCache();//FIXME: 이 파일에는 이럴 이유가 없다. javascript 기반으로 바꿔도 충분
 
 if($sel == 0) $sel = 1;

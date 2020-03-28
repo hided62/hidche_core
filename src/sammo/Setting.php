@@ -103,7 +103,7 @@ class Setting
         if (!file_exists($this->basepath) || !is_dir($this->basepath)) {
             return false;
         }
-        $templates = new \League\Plates\Engine(__dir__.'/templates');
+        $templates = new \League\Plates\Engine(__DIR__.'/templates');
         //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
         $allow_ip = Util::get_client_ip(false);
         if (Util::starts_with($allow_ip, '192.168.') ||

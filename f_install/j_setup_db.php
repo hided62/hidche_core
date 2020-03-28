@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 
 $host = Util::getReq('db_host');
 $port = Util::getReq('db_port', 'int');
@@ -165,7 +165,7 @@ $rootDB->error_handler = function ($params) {
 
 $mysqli_obj = $rootDB->get(); //로그인에 실패할 경우 자동으로 dbConnFail()이 실행됨.
 
-if ($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/common_schema.sql'))) {
+if ($mysqli_obj->multi_query(file_get_contents(__DIR__.'/sql/common_schema.sql'))) {
     while (true) {
         if (!$mysqli_obj->more_results()) {
             break;
@@ -195,7 +195,7 @@ $imageRequestPath = WebUtil::resolveRelativePath($gameImagePath.'/../hook/git_pu
 $imageKeyInstallPath = WebUtil::resolveRelativePath($gameImagePath.'/../hook/InstallKey.php', $servHost);
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/ServConfig.orig.php',
+    __DIR__.'/templates/ServConfig.orig.php',
     ROOT.'/d_setting/ServConfig.php',
     [
         'serverBasePath'=>$servHost,
@@ -219,7 +219,7 @@ if ($result !== true) {
 }
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/common_path.orig.js',
+    __DIR__.'/templates/common_path.orig.js',
     ROOT.'/d_shared/common_path.js',
     [
         'serverBasePath'=>$servHost,
@@ -230,7 +230,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 );
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/menu.orig.json',
+    __DIR__.'/templates/menu.orig.json',
     ROOT.'/d_shared/menu.json',
     [],
     true
@@ -245,7 +245,7 @@ if ($result !== true) {
 
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/common.orig.css',
+    __DIR__.'/templates/common.orig.css',
     ROOT.'/d_shared/common.css',
     [
         'serverBasePath'=>$servHost,
@@ -264,7 +264,7 @@ if ($result !== true) {
 
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/RootDB.orig.php',
+    __DIR__.'/templates/RootDB.orig.php',
     ROOT.'/d_setting/RootDB.php',
     [
         'host'=>$host,
@@ -279,7 +279,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 $kakaoRedirectURI = WebUtil::resolveRelativePath('oauth_kakao/oauth.php', $servHost.'/');
 
 Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/KakaoKey.orig.php',
+    __DIR__.'/templates/KakaoKey.orig.php',
     ROOT.'/d_setting/KakaoKey.php',
     [
         'REST_API_KEY'=>$kakaoRESTKey,

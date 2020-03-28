@@ -1,6 +1,6 @@
 <?php
 namespace sammo;
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 ?>
 <!DOCTYPE html>
 <html>

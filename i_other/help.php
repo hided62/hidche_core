@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
+require(__DIR__.'/../vendor/autoload.php');
 
 WebUtil::setHeaderNoCache();
 $category = Util::getReq('category', 'int', 0);

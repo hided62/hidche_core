@@ -14,7 +14,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("명장일람", 1);
-$templates = new \League\Plates\Engine(__dir__.'/templates');
+$templates = new \League\Plates\Engine(__DIR__.'/templates');
 
 ?>
 <!DOCTYPE html>

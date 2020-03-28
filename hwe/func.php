@@ -1047,7 +1047,7 @@ function increaseRefresh($type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     file_put_contents(
-        __dir__."/logs/".UniqueConst::$serverID."/_{$date2}_refresh.txt",
+        __DIR__."/logs/".UniqueConst::$serverID."/_{$date2}_refresh.txt",
         sprintf(
             "%s, %s, %s, %s, %s, %d\n",
             $date,
@@ -1084,7 +1084,7 @@ function increaseRefresh($type="", $cnt=1) {
     }
     if($str != "") {
         file_put_contents(
-            __dir__."/logs/".UniqueConst::$serverID."/_{$date2}_ipcheck.txt",
+            __DIR__."/logs/".UniqueConst::$serverID."/_{$date2}_ipcheck.txt",
             sprintf(
                 "%s, %s, %s%s\n",
                 $session->userName,
@@ -1119,7 +1119,7 @@ function updateTraffic() {
 
     $date = TimeUtil::now();
     //일시|년|월|총갱신|접속자|최다갱신자
-    file_put_contents(__dir__."/logs/".UniqueConst::$serverID."/_traffic.txt",
+    file_put_contents(__DIR__."/logs/".UniqueConst::$serverID."/_traffic.txt",
         Json::encode([
             $date,
             $admin['year'],

@@ -2,7 +2,7 @@
 namespace sammo;
 
 class Scenario{
-    const SCENARIO_PATH = __dir__.'/../scenario';
+    const SCENARIO_PATH = __DIR__.'/../scenario';
 
     private $scenarioIdx;
     private $scenarioPath;
@@ -449,10 +449,10 @@ class Scenario{
     }
 
     public function buildConf(){
-        $path = __dir__.'/../d_setting';
+        $path = __DIR__.'/../d_setting';
 
-        $mapPath = __dir__.'/../scenario/map';
-        $unitPath = __dir__.'/../scenario/unit';
+        $mapPath = __DIR__.'/../scenario/map';
+        $unitPath = __DIR__.'/../scenario/unit';
 
         $mapName = $this->gameConf['mapName'];
         $unitSet = $this->gameConf['unitSet'];

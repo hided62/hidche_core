@@ -15,7 +15,7 @@ function turnTable() {
 
     $turnList = [];
     $turnList[] = "<option selected value='0'>1턴</option>";
-    foreach(range(1, GameConst::$maxTurn - 1) as $turnIdx){
+    foreach(\range(1, GameConst::$maxTurn - 1) as $turnIdx){
         $turnText = $turnIdx + 1;
         $turnList[] = "<option value='{$turnIdx}'>{$turnText}턴</option>";
     }
@@ -59,7 +59,7 @@ function displayiActionObjInfo(?iAction $action){
         $text = $action->getName();
     }
 
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     return $templates->render('tooltip', [
         'text'=>$text,
@@ -71,7 +71,7 @@ function displayCharInfo(string $type):string{
     $info = $class->getInfo();
     $text = $class->getName();
 
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     return $templates->render('tooltip', [
         'text'=>$text,
@@ -84,7 +84,7 @@ function displaySpecialWarInfo(?string $type):string{
     $info = $class->getInfo();
     $name = $class->getName();
 
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     return $templates->render('tooltip', [
         'text'=>$name,
@@ -97,7 +97,7 @@ function displaySpecialDomesticInfo(?string $type):string{
     $info = $class->getInfo();
     $name = $class->getName();
 
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     return $templates->render('tooltip', [
         'text'=>$name,
@@ -117,11 +117,11 @@ function allButton() {
         $call = "설문조사";
     }
 
-    if(\file_exists(__dir__."/d_setting/templates/allButton.php")){
-        $templates = new \League\Plates\Engine(__dir__.'/d_setting/templates');
+    if(\file_exists(__DIR__."/d_setting/templates/allButton.php")){
+        $templates = new \League\Plates\Engine(__DIR__.'/d_setting/templates');
     }
     else{
-        $templates = new \League\Plates\Engine(__dir__.'/templates');
+        $templates = new \League\Plates\Engine(__DIR__.'/templates');
     }
     
 
@@ -152,7 +152,7 @@ function commandButton() {
     $bgColor = Util::array_get($nation['color'])?:'#000000';
     $fgColor = newColor($bgColor);
 
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
     $showSecret = false;
     $permission = checkSecretPermission($me);
     if($permission >= 1){
@@ -210,7 +210,7 @@ function formatName(string $name, int $npc): string{
 }
 
 function getMapHtml(?string $mapTheme=null){
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     if($mapTheme === null){
         $db = DB::db();
@@ -224,7 +224,7 @@ function getMapHtml(?string $mapTheme=null){
 }
 
 function getInvitationList(array $nationList){
-    $templates = new \League\Plates\Engine(__dir__.'/templates');
+    $templates = new \League\Plates\Engine(__DIR__.'/templates');
 
     foreach($nationList as &$nation){
         $nation['textColor'] = newColor($nation['color']);

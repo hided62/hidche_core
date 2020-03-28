@@ -11,7 +11,7 @@ increaseRefresh("갱신정보", 2);
 
 $admin = $gameStor->getValues(['year','month','refresh','maxrefresh','maxonline']);
 
-$log = getRawFileLogRecent(__dir__.'/logs/'.UniqueConst::$serverID.'/_traffic.txt', 11, 100);
+$log = getRawFileLogRecent(__DIR__.'/logs/'.UniqueConst::$serverID.'/_traffic.txt', 11, 100);
 
 $date = [];
 $year = [];
