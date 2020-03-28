@@ -405,7 +405,7 @@ function postUpdateMonthly() {
         +A.tech
         +if(A.level=0,0,(
             select round(
-                sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop2+agri2+comm2+secu2+wall2+def2)/100
+                sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop_max+agri_max+comm_max+secu_max+wall_max+def_max)/100
             ) from city where nation=A.nation and supply=1
         ))
         +(select sum(leadership+strength+intel) from general where nation=A.nation)
@@ -1054,7 +1054,7 @@ function checkStatistic() {
     );
 
     $nationCityInfos = Util::convertArrayToDict(
-        $db->query('SELECT nation, count(*) as cnt, sum(pop) as pop,sum(pop2) as pop2 from city GROUP BY nation'),
+        $db->query('SELECT nation, count(*) as cnt, sum(pop) as pop,sum(pop_max) as pop_max from city GROUP BY nation'),
         'nation'
     );
 
@@ -1066,7 +1066,7 @@ function checkStatistic() {
         $nation['cityInfo'] = $city;
 
         $nationName .= $nation['name'].'('.getNationType($nation['type']).'), ';
-        $powerHist .= "{$nation['name']}({$nation['power']}/{$nation['gennum']}/{$city['cnt']}/{$city['pop']}/{$city['pop2']}/{$nation['goldrice']}/{$general['goldrice']}/{$general['abil']}/{$general['dex']}/{$general['expded']}), ";
+        $powerHist .= "{$nation['name']}({$nation['power']}/{$nation['gennum']}/{$city['cnt']}/{$city['pop']}/{$city['pop_max']}/{$nation['goldrice']}/{$general['goldrice']}/{$general['abil']}/{$general['dex']}/{$general['expded']}), ";
 
         if(!isset($nationHists[$nation['type']])){
             $nationHists[$nation['type']] = 0;
@@ -1253,7 +1253,7 @@ function checkEmperior() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
+    $query = "select SUM(pop) as totalpop,SUM(pop_max) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityresult);
     $pop = "{$city['totalpop']} / {$city['maxpop']}";

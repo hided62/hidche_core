@@ -365,9 +365,9 @@ jQuery(function($){
             city: (generalData.no)<=1 ? 1 : 3,
             turntime:'2018-08-26 12:00',
             special:defaultSpecialDomestic,
-            leadership2:0,
-            strength2:0,
-            intel2:0,
+            leadership_max:0,
+            strength_max:0,
+            intel_max:0,
             
             gold:10000,
 
@@ -597,12 +597,12 @@ jQuery(function($){
             
             trust:100,
             
-            pop2:600000,
-            agri2:12000,
-            comm2:12000,
-            secu2:10000,
-            def2:12000,
-            wall2:12000,
+            pop_max:600000,
+            agri_max:12000,
+            comm_max:12000,
+            secu_max:10000,
+            def_max:12000,
+            wall_max:12000,
             
             dead:0,
 
@@ -640,8 +640,8 @@ jQuery(function($){
         var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
         defenderCity.nation = 2;
         defenderCity.city = 3;
-        defenderCity.wall2 = defenderCity.wall/5*6;
-        defenderCity.def2 = defenderCity.def/5*6;
+        defenderCity.wall_max = defenderCity.wall/5*6;
+        defenderCity.def_max = defenderCity.def/5*6;
 
         var defenderGenerals = [];
         $.each(allData.defenderGenerals, function(){

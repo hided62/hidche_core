@@ -148,8 +148,8 @@ class che_백성동원 extends Command\NationCommand{
         }
 
         $db->update('city', [
-            'def' => $db->sqleval('GREATEST(def2 * 0.8, def)'),
-            'wall' => $db->sqleval('GREATEST(wall2 * 0.8, wall)'),
+            'def' => $db->sqleval('GREATEST(def_max * 0.8, def)'),
+            'wall' => $db->sqleval('GREATEST(wall_max * 0.8, wall)'),
         ], 'city=%i', $destCityID);
 
         $josaYiNation = JosaUtil::pick($nationName, '이');

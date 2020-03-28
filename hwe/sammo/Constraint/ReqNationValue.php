@@ -38,7 +38,7 @@ class ReqNationValue extends Constraint{
 
         $this->comp = $comp;
         
-        $this->maxKey = $this->key.'2';
+        $this->maxKey = $this->key.'_max';
 
         if(!key_exists($this->key, $this->nation)){
             if(!$throwExeception){return false; }

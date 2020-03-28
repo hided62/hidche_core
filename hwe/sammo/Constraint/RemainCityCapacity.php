@@ -17,7 +17,7 @@ class RemainCityCapacity extends Constraint{
         }
 
         [$this->key, $this->keyNick] = $this->arg;
-        $this->maxKey = $this->key.'2';
+        $this->maxKey = $this->key.'_max';
 
         if(!key_exists($this->key, $this->city)){
             if(!$throwExeception){return false; }

@@ -111,9 +111,9 @@ class che_물자조달 extends Command\GeneralCommand{
         $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $incStat = Util::choiceRandomUsingWeight([
-            'leadership2'=>$general->getLeadership(false, false, false, false),
-            'strength2'=>$general->getStrength(false, false, false, false),
-            'intel2'=>$general->getIntel(false, false, false, false)
+            'leadership_max'=>$general->getLeadership(false, false, false, false),
+            'strength_max'=>$general->getStrength(false, false, false, false),
+            'intel_max'=>$general->getIntel(false, false, false, false)
         ]);
 
         $general->increaseVar('experience', $exp);

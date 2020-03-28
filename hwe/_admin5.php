@@ -210,14 +210,14 @@ for($i=0; $i < $nationCount; $i++) {
     $gen = MYDB_fetch_array($genResult);
 
     $query = "select COUNT(*) as cnt,
-                    SUM(pop) as pop,    SUM(pop2) as pop2,
-                    ROUND(SUM(pop)/SUM(pop2)*100, 2) as rate,
+                    SUM(pop) as pop,    SUM(pop_max) as pop_max,
+                    ROUND(SUM(pop)/SUM(pop_max)*100, 2) as rate,
                     trust,
-                    ROUND(SUM(agri)/SUM(agri2)*100, 2) as agri,
-                    ROUND(SUM(comm)/SUM(comm2)*100, 2) as comm,
-                    ROUND(SUM(secu)/SUM(secu2)*100, 2) as secu,
-                    ROUND(SUM(wall)/SUM(wall2)*100, 2) as wall,
-                    ROUND(SUM(def)/SUM(def2)*100, 2) as def
+                    ROUND(SUM(agri)/SUM(agri_max)*100, 2) as agri,
+                    ROUND(SUM(comm)/SUM(comm_max)*100, 2) as comm,
+                    ROUND(SUM(secu)/SUM(secu_max)*100, 2) as secu,
+                    ROUND(SUM(wall)/SUM(wall_max)*100, 2) as wall,
+                    ROUND(SUM(def)/SUM(def_max)*100, 2) as def
         from city where nation='{$nation['nation']}'";
     $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityResult);
@@ -246,8 +246,8 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=right>&nbsp;{$nation['dex30']}&nbsp;</td>
         <td align=right>&nbsp;{$nation['dex40']}&nbsp;</td>
         <td align=right>&nbsp;{$gen['crew']}/{$gen['leadership']}00&nbsp;</td>
-        <td align=center>&nbsp;{$city['pop']}/{$city['pop2']}&nbsp;</td>
-        <td align=center>&nbsp;".sprintf('%.1f',$city['pop']/$city['pop2']*100)."%&nbsp;</td>
+        <td align=center>&nbsp;{$city['pop']}/{$city['pop_max']}&nbsp;</td>
+        <td align=center>&nbsp;".sprintf('%.1f',$city['pop']/$city['pop_max']*100)."%&nbsp;</td>
         <td align=center>&nbsp;{$city['agri']}%&nbsp;</td>
         <td align=center>&nbsp;{$city['comm']}%&nbsp;</td>
         <td align=center>&nbsp;{$city['secu']}%&nbsp;</td>

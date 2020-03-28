@@ -186,12 +186,12 @@ class GeneralAI{
 
         $develRate = [
             'trust'=>$city['trust'],
-            'pop'=>$city['pop']/$city['pop2'],
-            'agri'=>$city['agri']/$city['agri2'],
-            'comm'=>$city['comm']/$city['comm2'],
-            'secu'=>$city['secu']/$city['secu2'],
-            'def'=>$city['def']/$city['def2'],
-            'wall'=>$city['wall']/$city['wall2'],
+            'pop'=>$city['pop']/$city['pop_max'],
+            'agri'=>$city['agri']/$city['agri_max'],
+            'comm'=>$city['comm']/$city['comm_max'],
+            'secu'=>$city['secu']/$city['secu_max'],
+            'def'=>$city['def']/$city['def_max'],
+            'wall'=>$city['wall']/$city['wall_max'],
         ];
 
         // 우선 선정
@@ -535,7 +535,7 @@ class GeneralAI{
             $dev = 
                 ($nationCity['agri'] + $nationCity['comm'] + $nationCity['secu'] + $nationCity['def'] + $nationCity['wall'])/
                 ($nationCity['agri'] + $nationCity['comm'] + $nationCity['secu'] + $nationCity['def'] + $nationCity['wall']);
-            $dev += $nationCity['pop'] / $nationCity['pop2'];
+            $dev += $nationCity['pop'] / $nationCity['pop_max'];
             $dev /= 50;
     
             $nationCity['dev'] = $dev;
@@ -978,7 +978,7 @@ class GeneralAI{
                     if($targetCity['pop'] < 33000 + $nationGeneral->leadership){
                         continue;
                     }
-                    if (Util::randBool($targetCity['pop'] / $targetCity['pop2'])) {
+                    if (Util::randBool($targetCity['pop'] / $targetCity['pop_max'])) {
                         break;
                     }
                 }
@@ -1316,7 +1316,7 @@ class GeneralAI{
         $developTurn = $this->chooseDevelopTurn($cityFull);
 
         if($cityFull && Util::randBool(0.2)){
-            $moveRawCities = $db->query('SELECT city,front,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev, officer3 FROM city WHERE nation=%i', $nationID);
+            $moveRawCities = $db->query('SELECT city,front,(pop/10+agri+comm+secu+def+wall)/(pop_max/10+agri_max+comm_max+secu_max+def_max+wall_max)*100 as dev, officer3 FROM city WHERE nation=%i', $nationID);
 
             $moveCities = [];
             foreach($moveRawCities as $moveCity){
@@ -1671,7 +1671,7 @@ class GeneralAI{
         $nationID = $this->nation['nation'];
 
         $this->devRate = $db->queryFirstRow(
-            'SELECT sum(pop)/sum(pop2) as pop_p,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2)) as all_p from city where nation=%i',
+            'SELECT sum(pop)/sum(pop_max) as pop_p,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri_max)+sum(comm_max)+sum(secu_max)+sum(def_max)+sum(wall_max)) as all_p from city where nation=%i',
             $nationID
         );
         return $this->devRate;

@@ -122,11 +122,11 @@ class WarUnitGeneral extends WarUnit{
     function addStatExp(int $value = 1){
         $general = $this->general;
         if($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
-            $general->increaseVar('intel2', $value);
+            $general->increaseVar('intel_max', $value);
         } elseif($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
-            $general->increaseVar('leadership2', $value);
+            $general->increaseVar('leadership_max', $value);
         } else {
-            $general->increaseVar('strength2', $value);
+            $general->increaseVar('strength_max', $value);
         }
     }
 

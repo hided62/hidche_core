@@ -138,15 +138,15 @@ function popIncrease() {
 
         $updateVar = [];
         if($popRatio >= 0){
-            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 + secu / secu2 / 10)))', GameConst::$basePopIncreaseAmount, $popRatio);
+            $updateVar['pop'] = $db->sqleval('least(pop_max, %i + pop * (1 + %d * (1 + secu / secu_max / 10)))', GameConst::$basePopIncreaseAmount, $popRatio);
         }
         else{
-            $updateVar['pop'] = $db->sqleval('least(pop2, %i + pop * (1 + %d * (1 - secu / secu2 / 10)))', GameConst::$basePopIncreaseAmount, $popRatio);
+            $updateVar['pop'] = $db->sqleval('least(pop_max, %i + pop * (1 + %d * (1 - secu / secu_max / 10)))', GameConst::$basePopIncreaseAmount, $popRatio);
         }
 
         $genericRatio = (20 - $taxRate) / 200; // 20일때 0% 0일때 10% 100일때 -40%
         foreach(['agri', 'comm', 'secu', 'def', 'wall'] as $key){
-            $updateVar[$key] = $db->sqleval('least(%b, %b * (1 + %d))', $key.'2', $key, $genericRatio);
+            $updateVar[$key] = $db->sqleval('least(%b, %b * (1 + %d))', $key.'_max', $key, $genericRatio);
         }
 
         $trustDiff = 20 - $taxRate;
@@ -173,8 +173,8 @@ function calcCityGoldIncome(array $rawCity, int $officerCnt, bool $isCapital, in
 
     $trustRatio = $rawCity['trust'] / 200 + 0.5;//0.5 ~ 1
 
-    $cityIncome = $rawCity['pop'] * $rawCity['comm'] / $rawCity['comm2'] * $trustRatio / 30;
-    $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
+    $cityIncome = $rawCity['pop'] * $rawCity['comm'] / $rawCity['comm_max'] * $trustRatio / 30;
+    $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu_max']/10;
     $cityIncome *= pow(1.05, $officerCnt);
     if($isCapital){
         $cityIncome *= 1 + 1/(3*$nationLevel);
@@ -191,8 +191,8 @@ function calcCityRiceIncome(array $rawCity, int $officerCnt, bool $isCapital, in
 
     $trustRatio = $rawCity['trust'] / 200 + 0.5;//0.5 ~ 1
 
-    $cityIncome = $rawCity['pop'] * $rawCity['agri'] / $rawCity['agri2'] * $trustRatio / 30;
-    $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
+    $cityIncome = $rawCity['pop'] * $rawCity['agri'] / $rawCity['agri_max'] * $trustRatio / 30;
+    $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu_max']/10;
     $cityIncome *= pow(1.05, $officerCnt);
     if($isCapital){
         $cityIncome *= 1 + 1/(3*$nationLevel);
@@ -207,8 +207,8 @@ function calcCityWallRiceIncome(array $rawCity, int $officerCnt, bool $isCapital
         return 0;
     }
 
-    $wallIncome = $rawCity['def'] * $rawCity['wall'] / $rawCity['wall2'] / 3;
-    $wallIncome *= 1 + $rawCity['secu']/$rawCity['secu2']/10;
+    $wallIncome = $rawCity['def'] * $rawCity['wall'] / $rawCity['wall_max'] / 3;
+    $wallIncome *= 1 + $rawCity['secu']/$rawCity['secu_max']/10;
     $wallIncome *= pow(1.05, $officerCnt);
     if($isCapital){
         $wallIncome *= 1 + 1/(3*$nationLevel);
@@ -520,14 +520,14 @@ function disaster() {
 
     $targetCityList = [];
 
-    foreach($db->query('SELECT city,name,secu,secu2 FROM city') as $city){
+    foreach($db->query('SELECT city,name,secu,secu_max FROM city') as $city){
         //호황 발생 도시 선택 ( 기본 2% )
         //재해 발생 도시 선택 ( 기본 6% )
         if($isGood){
-            $raiseProp = 0.02 + ($city['secu'] / $city['secu2']) * 0.05; // 2 ~ 7%
+            $raiseProp = 0.02 + ($city['secu'] / $city['secu_max']) * 0.05; // 2 ~ 7%
         }
         else {
-            $raiseProp = 0.06 - ($city['secu'] / $city['secu2']) * 0.05; // 1 ~ 6%
+            $raiseProp = 0.06 - ($city['secu'] / $city['secu_max']) * 0.05; // 1 ~ 6%
         }    
 
         if(Util::randBool($raiseProp)) {
@@ -587,7 +587,7 @@ function disaster() {
         $generalListByCity = Util::arrayGroupBy($db->query('SELECT no, nation, city, injury, crew, atmos, train FROM general WHERE city IN %li', Util::squeezeFromArray($targetCityList, 'city')), 'city');
         //NOTE: 쿼리 1번이지만 복잡하기 vs 쿼리 여러번이지만 조금 더 깔끔하기
         foreach ($targetCityList as $city) {
-            $affectRatio = Util::valueFit($city['secu'] / $city['secu2'] / 0.8, 0, 1);
+            $affectRatio = Util::valueFit($city['secu'] / $city['secu_max'] / 0.8, 0, 1);
             $affectRatio = 0.8 + $affectRatio * 0.15;
 
             $db->update('city', [
@@ -613,18 +613,18 @@ function disaster() {
     }
     else{
         foreach ($targetCityList as $city) {
-            $affectRatio = Util::valueFit($city['secu'] / $city['secu2'] / 0.8, 0, 1);
+            $affectRatio = Util::valueFit($city['secu'] / $city['secu_max'] / 0.8, 0, 1);
             $affectRatio = 1.01 + $affectRatio * 0.04;
 
             $db->update('city', [
                 'state'=>$stateCode,
-                'pop'=>$db->sqleval('greatest(pop * %d, pop2)', $affectRatio),
+                'pop'=>$db->sqleval('greatest(pop * %d, pop_max)', $affectRatio),
                 'trust'=>$db->sqleval('greatest(trust * %d, 100)', $affectRatio),
-                'agri'=>$db->sqleval('greatest(agri * %d, agri2)', $affectRatio),
-                'comm'=>$db->sqleval('greatest(comm * %d, comm2)', $affectRatio),
-                'secu'=>$db->sqleval('greatest(secu * %d, secu2)', $affectRatio),
-                'def'=>$db->sqleval('greatest(def * %d, def2)', $affectRatio),
-                'wall'=>$db->sqleval('greatest(wall * %d, wall2)', $affectRatio),
+                'agri'=>$db->sqleval('greatest(agri * %d, agri_max)', $affectRatio),
+                'comm'=>$db->sqleval('greatest(comm * %d, comm_max)', $affectRatio),
+                'secu'=>$db->sqleval('greatest(secu * %d, secu_max)', $affectRatio),
+                'def'=>$db->sqleval('greatest(def * %d, def_max)', $affectRatio),
+                'wall'=>$db->sqleval('greatest(wall * %d, wall_max)', $affectRatio),
             ], 'city = %i', $city['city']);
 
             

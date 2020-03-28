@@ -52,7 +52,7 @@ $cityNames = [];
 
 foreach($cityList as $city){
     $currPop += $city['pop'];
-    $maxPop += $city['pop2'];
+    $maxPop += $city['pop_max'];
     if($city['city'] == $nation['capital']){
         $cityNames[] = "<span style='color:cyan;'>{$city['name']}</span>";
     }

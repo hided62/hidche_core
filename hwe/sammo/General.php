@@ -478,7 +478,7 @@ class General implements iAction{
         $result = false;
 
         foreach($table as [$statNickName, $statName]){
-            $statExpName = $statName.'2';
+            $statExpName = $statName.'_max';
 
             if($this->getVar($statExpName) < 0){
                 $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 떨어졌습니다!", ActionLogger::PLAIN);
@@ -673,7 +673,7 @@ class General implements iAction{
         ];
         $fullColumn = [
             'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
-            'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weapon', 'book', 'horse', 'item', 
+            'leadership', 'leadership_max', 'strength', 'strength_max', 'intel', 'intel_max', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',

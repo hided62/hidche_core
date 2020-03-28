@@ -82,13 +82,13 @@ $rawDefenderNation = $query['defenderNation'];
 $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
-        'intel', 'intel2', 'book', 'strength', 'strength2', 'weapon', 'injury', 'leadership', 'leadership2', 'horse', 'item', 
+        'intel', 'intel_max', 'book', 'strength', 'strength_max', 'weapon', 'injury', 'leadership', 'leadership_max', 'horse', 'item', 
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
         'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar'
     ],
     'integer'=>[
         'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
-        'intel', 'intel2', 'book', 'strength', 'strength2', 'weapon', 'injury', 'leadership', 'leadership2', 'horse', 'item',
+        'intel', 'intel_max', 'book', 'strength', 'strength_max', 'weapon', 'injury', 'leadership', 'leadership_max', 'horse', 'item',
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
         'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew'
     ],
@@ -156,7 +156,7 @@ $cityCheck = [
         'city', 'nation', 'supply', 'name', 
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 
         'trust', 'level',
-        'pop2', 'agri2', 'comm2', 'secu2', 'def2', 'wall2',
+        'pop_max', 'agri_max', 'comm_max', 'secu_max', 'def_max', 'wall_max',
         'dead', 'state', 'officer4', 'officer3', 'officer2', 'conflict', 
     ],
     'numeric'=>[
@@ -164,7 +164,7 @@ $cityCheck = [
     ],
     'integer'=>[
         'city', 'nation', 'supply',
-        'pop2', 'agri2', 'comm2', 'secu2', 'def2', 'wall2',
+        'pop_max', 'agri_max', 'comm_max', 'secu_max', 'def_max', 'wall_max',
         'state', 'officer4', 'officer3', 'officer2'
     ],
     'min'=>[

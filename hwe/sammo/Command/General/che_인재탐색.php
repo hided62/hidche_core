@@ -129,9 +129,9 @@ class che_인재탐색 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog("인재를 찾을 수 없었습니다. <1>$date</>");
 
             $incStat = Util::choiceRandomUsingWeight([
-                'leadership2'=>$general->getLeadership(false, false, false, false),
-                'strength2'=>$general->getStrength(false, false, false, false),
-                'intel2'=>$general->getIntel(false, false, false, false)
+                'leadership_max'=>$general->getLeadership(false, false, false, false),
+                'strength_max'=>$general->getStrength(false, false, false, false),
+                'intel_max'=>$general->getIntel(false, false, false, false)
             ]);
             [$reqGold, $reqRice] = $this->getCost();
     
@@ -290,9 +290,9 @@ class che_인재탐색 extends Command\GeneralCommand{
         $logger->pushGeneralHistoryLog("<Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
         $incStat = Util::choiceRandomUsingWeight([
-            'leadership2'=>$general->getLeadership(false, false, false, false),
-            'strength2'=>$general->getStrength(false, false, false, false),
-            'intel2'=>$general->getIntel(false, false, false, false)
+            'leadership_max'=>$general->getLeadership(false, false, false, false),
+            'strength_max'=>$general->getStrength(false, false, false, false),
+            'intel_max'=>$general->getIntel(false, false, false, false)
         ]);
         [$reqGold, $reqRice] = $this->getCost();
 

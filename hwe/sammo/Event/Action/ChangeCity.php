@@ -92,7 +92,7 @@ class ChangeCity extends \sammo\Event\Action{
     }
 
     private function genSQLGeneric($key, $value){
-        $keyMax = $key.'2'; //comm, comm2
+        $keyMax = $key.'_max'; //comm, comm_max
 
         if(is_float($value)){
             if($value < 0){

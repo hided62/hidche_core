@@ -658,12 +658,12 @@ function process_67(&$general) {
         $db->update('city', [
             'upgrading'=>$db->sqleval('upgrading+1'),
             'level'=>$db->sqleval('level+1'),
-            'pop2'=>$db->sqleval('pop2 + %i', GameConst::$expandCityPopIncreaseAmount),
-            'agri2'=>$db->sqleval('agri2 + %i', GameConst::$expandCityDevelIncreaseAmount),
-            'comm2'=>$db->sqleval('comm2 + %i', GameConst::$expandCityDevelIncreaseAmount),
-            'secu2'=>$db->sqleval('secu2 + %i', GameConst::$expandCityDevelIncreaseAmount),
-            'def2'=>$db->sqleval('def2 + %i', GameConst::$expandCityWallIncreaseAmount),
-            'wall2'=>$db->sqleval('wall2 + %i', GameConst::$expandCityWallIncreaseAmount),
+            'pop_max'=>$db->sqleval('pop_max + %i', GameConst::$expandCityPopIncreaseAmount),
+            'agri_max'=>$db->sqleval('agri_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'comm_max'=>$db->sqleval('comm_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'secu_max'=>$db->sqleval('secu_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'def_max'=>$db->sqleval('def_max + %i', GameConst::$expandCityWallIncreaseAmount),
+            'wall_max'=>$db->sqleval('wall_max + %i', GameConst::$expandCityWallIncreaseAmount),
         ], 'city=%i', $destcity['city']);
         
         //경험치, 공헌치
@@ -772,12 +772,12 @@ function process_68(&$general) {
         $db->update('city', [
             'upgrading'=>$db->sqleval('upgrading-1'),
             'level'=>$db->sqleval('level-1'),
-            'pop2'=>$db->sqleval('pop2 - %i', GameConst::$expandCityPopIncreaseAmount),
-            'agri2'=>$db->sqleval('agri2 - %i', GameConst::$expandCityDevelIncreaseAmount),
-            'comm2'=>$db->sqleval('comm2 - %i', GameConst::$expandCityDevelIncreaseAmount),
-            'secu2'=>$db->sqleval('secu2 - %i', GameConst::$expandCityDevelIncreaseAmount),
-            'def2'=>$db->sqleval('def2 - %i', GameConst::$expandCityWallIncreaseAmount),
-            'wall2'=>$db->sqleval('wall2 - %i', GameConst::$expandCityWallIncreaseAmount),
+            'pop_max'=>$db->sqleval('pop_max - %i', GameConst::$expandCityPopIncreaseAmount),
+            'agri_max'=>$db->sqleval('agri_max - %i', GameConst::$expandCityDevelIncreaseAmount),
+            'comm_max'=>$db->sqleval('comm_max - %i', GameConst::$expandCityDevelIncreaseAmount),
+            'secu_max'=>$db->sqleval('secu_max - %i', GameConst::$expandCityDevelIncreaseAmount),
+            'def_max'=>$db->sqleval('def_max - %i', GameConst::$expandCityWallIncreaseAmount),
+            'wall_max'=>$db->sqleval('wall_max - %i', GameConst::$expandCityWallIncreaseAmount),
             'pop'=>$pop,
             'agri'=>$agri,
             'comm'=>$comm,
@@ -993,7 +993,7 @@ function process_72(&$general) {
         pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$destcity['name']}</b></>에 <M>백성동원</>을 발동");
 
         //도시 성수 80%
-        $query = "update city set def=def2*0.8,wall=wall2*0.8 where city='{$destcity['city']}'";
+        $query = "update city set def=def_max*0.8,wall=wall_max*0.8 where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
@@ -1509,7 +1509,7 @@ function process_76(&$general) {
             $type = Util::choiceRandomUsingWeight([
                 'strength0'=>1,
                 'strength1'=>1,
-                'strength2'=>1,
+                'strength_max'=>1,
                 'intel'=>3,
                 'neutral'=>0
             ]);
@@ -1526,7 +1526,7 @@ function process_76(&$general) {
                 $intel = $stat_tier3;
                 $dexVal = [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8];
                 break;
-            case 'strength2':
+            case 'strength_max':
                 $leadership = $stat_tier1;
                 $strength = $stat_tier2;
                 $intel = $stat_tier3;

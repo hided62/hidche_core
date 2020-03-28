@@ -416,17 +416,17 @@ foreach($generalsFormat as $general){
     </tr>
     <tr>
         <td align=center width=48 class=bg1>주민</td>
-        <td align=center width=112><?=$city['pop']?>/<?=$city['pop2']?></td>
+        <td align=center width=112><?=$city['pop']?>/<?=$city['pop_max']?></td>
         <td align=center width=48 class=bg1>농업</td>
-        <td align=center width=108><?=$city['agri']?>/<?=$city['agri2']?></td>
+        <td align=center width=108><?=$city['agri']?>/<?=$city['agri_max']?></td>
         <td align=center width=48 class=bg1>상업</td>
-        <td align=center width=108><?=$city['comm']?>/<?=$city['comm2']?></td>
+        <td align=center width=108><?=$city['comm']?>/<?=$city['comm_max']?></td>
         <td align=center width=48 class=bg1>치안</td>
-        <td align=center width=108><?=$city['secu']?>/<?=$city['secu2']?></td>
+        <td align=center width=108><?=$city['secu']?>/<?=$city['secu_max']?></td>
         <td align=center width=48 class=bg1>수비</td>
-        <td align=center width=108><?=$city['def']?>/<?=$city['def2']?></td>
+        <td align=center width=108><?=$city['def']?>/<?=$city['def_max']?></td>
         <td align=center width=48 class=bg1>성벽</td>
-        <td align=center width=108><?=$city['wall']?>/<?=$city['wall2']?></td>
+        <td align=center width=108><?=$city['wall']?>/<?=$city['wall_max']?></td>
     </tr>
     <tr>
         <td align=center class=bg1>민심</td>
@@ -434,7 +434,7 @@ foreach($generalsFormat as $general){
         <td align=center class=bg1>시세</td>
         <td align=center><?=$city['trade']?>%</td>
         <td align=center class=bg1>인구</td>
-        <td align=center><?=round($city['pop']/$city['pop2']*100, 2)?>%</td>
+        <td align=center><?=round($city['pop']/$city['pop_max']*100, 2)?>%</td>
         <td align=center class=bg1>태수</td>
         <td align=center><?=$officer[4]['name']?></td>
         <td align=center class=bg1>군사</td>

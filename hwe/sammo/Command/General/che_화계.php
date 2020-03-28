@@ -98,7 +98,7 @@ class che_화계 extends Command\GeneralCommand{
 
         $prob = $maxGenScore / GameConst::$sabotageProbCoefByStat;
 
-        $prob += $destCity['secu'] / $destCity['secu2'] / 5; //최대 20%p
+        $prob += $destCity['secu'] / $destCity['secu_max'] / 5; //최대 20%p
         $prob += $destCity['supply'] ? 0.1 : 0;
         return $prob;
     }
@@ -273,7 +273,7 @@ class che_화계 extends Command\GeneralCommand{
             $general->increaseVarWithLimit('rice', -$reqRice, 0);
             $general->increaseVar('experience', $exp);
             $general->increaseVar('dedication', $ded);
-            $general->increaseVar($statType.'2', 1);
+            $general->increaseVar($statType.'_max', 1);
 
             $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
@@ -310,7 +310,7 @@ class che_화계 extends Command\GeneralCommand{
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar($statType.'2', 1);
+        $general->increaseVar($statType.'_max', 1);
         $general->increaseVar('firenum', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

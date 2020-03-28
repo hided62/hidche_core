@@ -75,7 +75,7 @@ $sel = [$type => "selected"];
 
 $nation = getNationStaticInfo($me['nation']);  //국가정보
 
-$query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}'";
+$query = "select *,pop/pop_max as poprate from city where nation='{$me['nation']}'";
 
 switch ($type) {
     case  1: break;
@@ -144,17 +144,17 @@ for ($j=0; $j < $citycount; $j++) {
     </tr>
     <tr>
         <td align=center width=46 id=bg1>주민</td>
-        <td align=center width=140>{$city['pop']}/{$city['pop2']}</td>
+        <td align=center width=140>{$city['pop']}/{$city['pop_max']}</td>
         <td align=center width=46 id=bg1>농업</td>
-        <td align=center width=140>{$city['agri']}/{$city['agri2']}</td>
+        <td align=center width=140>{$city['agri']}/{$city['agri_max']}</td>
         <td align=center width=46 id=bg1>상업</td>
-        <td align=center width=140>{$city['comm']}/{$city['comm2']}</td>
+        <td align=center width=140>{$city['comm']}/{$city['comm_max']}</td>
         <td align=center width=46 id=bg1>치안</td>
-        <td align=center width=140>{$city['secu']}/{$city['secu2']}</td>
+        <td align=center width=140>{$city['secu']}/{$city['secu_max']}</td>
         <td align=center width=46 id=bg1>수비</td>
-        <td align=center width=140>{$city['def']}/{$city['def2']}</td>
+        <td align=center width=140>{$city['def']}/{$city['def_max']}</td>
         <td align=center width=46 id=bg1>성벽</td>
-        <td align=center width=140>{$city['wall']}/{$city['wall2']}</td>
+        <td align=center width=140>{$city['wall']}/{$city['wall_max']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
@@ -162,7 +162,7 @@ for ($j=0; $j < $citycount; $j++) {
         <td align=center id=bg1>시세</td>
         <td align=center>{$city['trade']}%</td>
         <td align=center id=bg1>인구</td>
-        <td align=center>".round($city['pop']/$city['pop2']*100, 2)." %</td>
+        <td align=center>".round($city['pop']/$city['pop_max']*100, 2)." %</td>
         <td align=center id=bg1>태수</td>
         <td align=center>";
     echo $officerName[4];

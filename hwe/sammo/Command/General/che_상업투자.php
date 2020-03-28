@@ -190,7 +190,7 @@ class che_상업투자 extends Command\GeneralCommand{
             static::$cityKey => Util::valueFit(
                 $this->city[static::$cityKey] + $score,
                 0,
-                $this->city[static::$cityKey.'2']
+                $this->city[static::$cityKey.'_max']
             )
         ];
         $db->update('city', $cityUpdated, 'city=%i', $general->getVar('city'));
@@ -198,7 +198,7 @@ class che_상업투자 extends Command\GeneralCommand{
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar(static::$statKey.'2', 1);
+        $general->increaseVar(static::$statKey.'_max', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);

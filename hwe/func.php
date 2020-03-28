@@ -196,7 +196,7 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
+    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop_max) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
@@ -726,13 +726,13 @@ function generalInfo(General $generalObj) {
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$leadership}</font>{$lbonus}&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('leadership2')), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('leadership_max')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>무력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$strength}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('strength2')), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('strength_max')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>지력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('intel2')), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('intel_max')), 20)."</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>명마</b></td>

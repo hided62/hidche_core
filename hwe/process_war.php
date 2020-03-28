@@ -34,7 +34,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
     $defenderList = [];
-    foreach ($db->query('SELECT no,name,nation,turntime,personal,special,special2,crew,crewtype,atmos,train,intel,intel2,book,strength,strength2,weapon,injury,leadership,leadership2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,defence_train FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
+    foreach ($db->query('SELECT no,name,nation,turntime,personal,special,special2,crew,crewtype,atmos,train,intel,intel_max,book,strength,strength_max,weapon,injury,leadership,leadership_max,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,defence_train FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
         $defenderList[] = new General($rawGeneral, $rawDefenderCity, $year, $month);
     }
 
@@ -702,8 +702,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query['def'] = 1000;
         $query['wall'] = 1000;
     } else {
-        $query['def'] = $db->sqleval('def2/2');
-        $query['wall'] = $db->sqleval('wall2/2');
+        $query['def'] = $db->sqleval('def_max/2');
+        $query['wall'] = $db->sqleval('wall_max/2');
     }
     
     $db->update('city', $query, 'city=%i', (int)$city['city']);

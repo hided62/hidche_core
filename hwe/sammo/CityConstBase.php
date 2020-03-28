@@ -337,12 +337,12 @@ class CityConstBase{
                 'city'=>$city->id,
                 'name'=>$city->name,
                 'level'=>$city->level,
-                'pop2'=>$city->population,
-                'agri2'=>$city->agriculture,
-                'comm2'=>$city->commerce,
-                'secu2'=>$city->security,
-                'def2'=>$city->defence,
-                'wall2'=>$city->wall,
+                'pop_max'=>$city->population,
+                'agri_max'=>$city->agriculture,
+                'comm_max'=>$city->commerce,
+                'secu_max'=>$city->security,
+                'def_max'=>$city->defence,
+                'wall_max'=>$city->wall,
                 'region'=>$city->region
             ] + $initValue + static::$buildInitCommon;
         }, array_values(static::$constID));
