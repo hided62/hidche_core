@@ -61,7 +61,7 @@ class RaiseInvader extends \sammo\Event\Action{
                 order by rand() limit 1', $nation, $oldCapital);
             $db->update('nation', ['capital'=>$newCapital], 'nation=%i', $nation);
 
-            $db->update('general', ['city'=>$newCapital], 'nation=%i and city=%i', $nation, $city);
+            $db->update('general', ['city'=>$newCapital], 'nation=%i and city=%i', $nation, $oldCapital);
         }
 
         $generals = [];

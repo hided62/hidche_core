@@ -47,7 +47,7 @@ $templates = new \League\Plates\Engine(__DIR__.'/templates');
     </td></tr>
 </form>
 </table>
-<div style="margin:auto;width=1000px;">
+<div style="margin:auto;width:1000px;">
 <?php
 
 $ownerNameList = [];
@@ -220,7 +220,7 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 }
 ?>
 </div>
-<div style="margin:auto;width=1000px;margin-top:5px;">
+<div style="margin:auto;width:1000px;margin-top:5px;">
 <?php
 //유니크 아이템 소유자
 $itemTypes = [

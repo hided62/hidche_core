@@ -51,7 +51,7 @@ class che_전투태세 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
-        $crew = $this->getVar('crew');
+        $crew = $this->generalObj->getVar('crew');
         $techCost = getTechCost($this->nation['tech']);
         return [Util::round($crew / 100 * 3 * $techCost), 0];
     }

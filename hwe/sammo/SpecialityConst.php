@@ -104,7 +104,7 @@ class SpecialityConst{
         }
 
         $invWar = [];
-        foreach(static::War as $key=>$val){
+        foreach(static::WAR as $key=>$val){
             $nameKey = $val[0];
             $val[0] = $key;
             $invWar[$nameKey] = $val;

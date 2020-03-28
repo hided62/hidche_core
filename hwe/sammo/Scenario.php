@@ -10,7 +10,10 @@ class Scenario{
     private $iconPath = '.';
     private $data;
 
+    /** @var int */
     private $year;
+
+    /** @var string */
     private $title;
 
     private $history;
