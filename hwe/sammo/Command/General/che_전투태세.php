@@ -123,7 +123,7 @@ class che_전투태세 extends Command\GeneralCommand{
 
         $general->addDex($general->getCrewTypeObj(), $crew / 100 * 3, false);
         
-        $general->increaseVar('leadership_max', 3);
+        $general->increaseVar('leadership_exp', 3);
         $general->setResultTurn($turnResult);
         $general->checkStatChange();
         tryUniqueItemLottery($general);

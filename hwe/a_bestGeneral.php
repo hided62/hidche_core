@@ -161,7 +161,15 @@ $types = [
     }],
 ];
 
-$generals = array_map(function($general) use($nationColor, $nationName) {
+$generals = [];
+foreach($db->query(
+    "SELECT nation,no,name,name2 as owner_name, owner, picture, imgsvr, 
+    experience, dedication,
+    dex0, dex10, dex20, dex30, dex40, 
+    horse, weapon, book, item 
+    FROM general WHERE %l", $btn == "NPC 보기"?"npc>=2":"npc<2") as $general
+){
+    $generalID = $general['no'];
     $general['bgColor'] = $nationColor[$general['nation']]??GameConst::$basecolor4;
     $general['fgColor'] = newColor($general['bgColor']);
     $general['nationName'] = $nationName[$general['nation']];
@@ -174,16 +182,12 @@ $generals = array_map(function($general) use($nationColor, $nationName) {
         $general['pictureFullPath'] = GetImageURL(0)."/default.jpg";
     }
 
-    return $general;
-}, $db->query(
-    "SELECT nation,no,name,name2 as owner_name, owner, picture, imgsvr, 
-    experience, dedication, firenum, warnum, killnum, killcrew, deathcrew, 
-    dex0, dex10, dex20, dex30, dex40, 
-    ttw, ttd, ttl, tlw, tld, tll, tpw, tpd, tpl, tiw, tid, til,
-    betgold, betwin, betwingold,
-    horse, weapon, book, item
-    FROM general WHERE %l", $btn == "NPC 보기"?"npc>=2":"npc<2"));
+    $generals[$generalID] = $general;
+}
 
+foreach($db->queryAllLists('SELECT general_id, `type`, `value` FROM rank_data') as [$generalID, $typeKey, $value]){
+     $generals[$generalID][$typeKey] = $value;
+}
 
 $templates = new \League\Plates\Engine('templates');
 

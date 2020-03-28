@@ -56,38 +56,3 @@ function LogText($prefix, $variable)
     $text = sprintf('%s : %s'."\r\n", $prefix, var_export($variable, true));
     file_put_contents(ROOT.'/d_log/dbg_logs.txt', $text, FILE_APPEND);
 }
-
-function extractMissingPostToGlobals()
-{
-    $result = [];
-    if (isset($_POST) && count($_POST) > 0) {
-        foreach($_POST as $key=>$val){
-            if(is_numeric($key)){
-                continue;
-            }
-            if(isset($GLOBALS[$key])){
-                continue;
-            }
-            $result[$key]=$val;
-            $GLOBALS[$key]=$val;
-        }
-    }
-
-    if (isset($_GET) && count($_GET) > 0) {
-        foreach($_GET as $key=>$val){
-            if(is_numeric($key)){
-                continue;
-            }
-            if(isset($GLOBALS[$key])){
-                continue;
-            }
-            $result[$key]=$val;
-            $GLOBALS[$key]=$val;
-        }
-    }
-
-    if($result){
-        LogText($_SERVER['REQUEST_URI'], $result);
-    }
-    
-}

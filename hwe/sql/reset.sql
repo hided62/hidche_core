@@ -9,10 +9,6 @@ DROP TABLE IF EXISTS `nation_turn`;
 DROP TABLE IF EXISTS board;
 DROP TABLE IF EXISTS comment;
 
-# 회의실 테이블 삭제
-DROP TABLE IF EXISTS board;
-DROP TABLE IF EXISTS comment;
-
 # 도시 테이블 삭제
 DROP TABLE IF EXISTS city;
 
@@ -51,6 +47,9 @@ DROP TABLE IF EXISTS world_history;
 DROP TABLE IF EXISTS general_public_record;
 
 DROP TABLE IF EXISTS select_npc_token;
+
+DROP TABLE IF EXISTS betting;
+DROP TABLE IF EXISTS rank_data;
 
 DROP TABLE IF EXISTS reserved_open;
 CREATE TABLE `reserved_open` (

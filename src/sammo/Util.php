@@ -720,4 +720,11 @@ class Util extends \utilphp\util
 
         return 0;
     }
+
+    function isPowerOfTwo(int $number):bool{
+        if($number <= 0){
+            return false;
+        }
+        return ($number & ($number - 1)) == 0;
+    }
 };

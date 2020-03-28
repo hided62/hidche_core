@@ -8,7 +8,6 @@ $type = Util::getReq('type', 'int', 0);
 if($type < 0 || $type > 4){
     $type = 0;
 }
-extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

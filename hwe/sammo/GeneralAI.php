@@ -1355,8 +1355,8 @@ class GeneralAI{
         );//기본 병종
         $baseArmCost = $general->onCalcDomestic('징병', 'cost', $baseArmCost);
         $baseArmRice = $general->getLeadership(false) / 2 * $crewType->rice * getTechCost($tech);
-        if($general->getVar('deathcrew') > 500 && $general->getVar('killcrew') > 500){
-            $baseArmRice *= $general->getVar('killcrew') / $general->getVar('deathcrew');
+        if($general->getRankVar('deathcrew') > 500 && $general->getRankVar('killcrew') > 500){
+            $baseArmRice *= $general->getRankVar('killcrew') / $general->getRankVar('deathcrew');
         }
 
         return [$baseArmCost, $baseArmRice];

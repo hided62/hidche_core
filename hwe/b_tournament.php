@@ -394,19 +394,16 @@ for ($i=0; $i < 16; $i++) {
 
 echo"
                 </tr>";
-
-$betting = $gameStor->getValues(['tournament','bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
-$betting['bet'] = 0;
-for($i=0;$i<16;$i+=1){
-    $betting['bet'] += $betting['bet'.$i];
-}
+$globalBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = 0'), -16);
+$globalBetTotal = array_sum($globalBet);
+$admin = $gameStor->getValues(['tournament', 'phase']);
 $bet = [];
 for ($i=0; $i < 16; $i++) {
-    if($betting["bet{$i}"] == 0){
+    if($globalBet[$i] == 0){
         $bet[$i] = '∞';
         continue;
     }
-    $bet[$i]  = round($betting['bet'] /  $betting["bet{$i}"], 2);
+    $bet[$i]  = round($globalBetTotal /  $globalBet[$i], 2);
 }
 
 echo "

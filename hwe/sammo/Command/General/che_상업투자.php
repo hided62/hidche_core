@@ -198,7 +198,7 @@ class che_상업투자 extends Command\GeneralCommand{
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar(static::$statKey.'_max', 1);
+        $general->increaseVar(static::$statKey.'_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);

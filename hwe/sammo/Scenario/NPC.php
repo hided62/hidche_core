@@ -358,6 +358,15 @@ class NPC{
         }
         $db->insert('general_turn', $turnRows);
 
+        foreach(\sammo\General::RANK_COLUMN as $rankColumn){
+            $db->insert('rank_data', [
+                'general_id'=>$this->generalID,
+                'nation_id'=>0,
+                'type'=>$rankColumn,
+                'value'=>0
+            ]);
+        }
+
         return true; //생성되었다.
     }
 }

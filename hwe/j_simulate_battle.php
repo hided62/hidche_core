@@ -82,15 +82,14 @@ $rawDefenderNation = $query['defenderNation'];
 $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
-        'intel', 'intel_max', 'book', 'strength', 'strength_max', 'weapon', 'injury', 'leadership', 'leadership_max', 'horse', 'item', 
+        'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item', 
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
-        'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar'
+        'recwar'
     ],
     'integer'=>[
         'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
-        'intel', 'intel_max', 'book', 'strength', 'strength_max', 'weapon', 'injury', 'leadership', 'leadership_max', 'horse', 'item',
+        'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item',
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
-        'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew'
     ],
     'min'=>[
         ['no', 1],
@@ -276,8 +275,9 @@ function simulateBattle(
     $defenderList, $rawDefenderCity, $rawDefenderNation, 
     $startYear, $year, $month, $cityRate
 ){
+
     $attacker = new WarUnitGeneral(
-        new General($rawAttacker, $rawAttackerCity, $year, $month),
+        new General($rawAttacker, null, $rawAttackerCity, $year, $month),
         $rawAttackerNation,
         true
     );
@@ -317,7 +317,7 @@ function simulateBattle(
         $defenderRice += $rawGeneral['rice'];
 
         $retVal = new WarUnitGeneral(
-            new General($rawGeneral, $rawDefenderCity, $year, $month),
+            new General($rawGeneral, null, $rawDefenderCity, $year, $month),
             $rawDefenderNation,
             false
         );

@@ -1509,7 +1509,7 @@ function process_76(&$general) {
             $type = Util::choiceRandomUsingWeight([
                 'strength0'=>1,
                 'strength1'=>1,
-                'strength_max'=>1,
+                'strength_exp'=>1,
                 'intel'=>3,
                 'neutral'=>0
             ]);
@@ -1526,7 +1526,7 @@ function process_76(&$general) {
                 $intel = $stat_tier3;
                 $dexVal = [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8];
                 break;
-            case 'strength_max':
+            case 'strength_exp':
                 $leadership = $stat_tier1;
                 $strength = $stat_tier2;
                 $intel = $stat_tier3;

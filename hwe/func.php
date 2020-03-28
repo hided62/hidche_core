@@ -726,13 +726,13 @@ function generalInfo(General $generalObj) {
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$leadership}</font>{$lbonus}&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('leadership_max')), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('leadership_exp')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>무력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$strength}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('strength_max')), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('strength_exp')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>지력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('intel_max')), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('intel_exp')), 20)."</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>명마</b></td>
@@ -794,8 +794,8 @@ function generalInfo(General $generalObj) {
 function generalInfo2(General $generalObj) {
     $general = $generalObj->getRaw();
 
-    $general['winrate'] = round($general['killnum']/max($general['warnum'],1), 2);
-    $general['killrate'] = round($general['killcrew']/max($general['deathcrew'],1), 2);
+    $winRate = round($generalObj->getRankVar('killnum')/max($generalObj->getRankVar('warnum'),1), 2);
+    $killRate = round($generalObj->getRankVar('killcrew')/max($generalObj->getRankVar('deathcrew'),1), 2);
 
     $experienceBonus = $generalObj->onCalcStat($generalObj, 'experience', 10000) - 10000;
     if($experienceBonus > 0){
@@ -853,27 +853,27 @@ function generalInfo2(General $generalObj) {
     </tr>
     <tr>
         <td width=64 style='text-align:center;' class='bg1'><b>전투</b></td>
-        <td width=132 style='text-align:center;'>{$general['warnum']}</td>
+        <td width=132 style='text-align:center;'>{$generalObj->getRankVar('warnum')}</td>
         <td width=48 style='text-align:center;' class='bg1'><b>계략</b></td>
-        <td width=98 style='text-align:center;'>{$general['firenum']}</td>
+        <td width=98 style='text-align:center;'>{$generalObj->getRankVar('firenum')}</td>
         <td width=48 style='text-align:center;' class='bg1'><b>사관</b></td>
         <td width=98 style='text-align:center;'>{$general['belong']}년</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>승률</b></td>
-        <td style='text-align:center;'>{$general['winrate']} %</td>
+        <td style='text-align:center;'>{$winRate} %</td>
         <td style='text-align:center;' class='bg1'><b>승리</b></td>
-        <td style='text-align:center;'>{$general['killnum']}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar('killnum')}</td>
         <td style='text-align:center;' class='bg1'><b>패배</b></td>
-        <td style='text-align:center;'>{$general['deathnum']}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar('deathnum')}</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>살상률</b></td>
-        <td style='text-align:center;'>{$general['killrate']} %</td>
+        <td style='text-align:center;'>{$killRate} %</td>
         <td style='text-align:center;' class='bg1'><b>사살</b></td>
-        <td style='text-align:center;'>{$general['killcrew']}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar('killcrew')}</td>
         <td style='text-align:center;' class='bg1'><b>피살</b></td>
-        <td style='text-align:center;'>{$general['deathcrew']}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar('deathcrew')}</td>
     </tr>
 </table>
 <table width=498 class='tb_layout bg2'>
@@ -1362,84 +1362,111 @@ function CheckHall($no) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $types = array(
-        "experience",
-        "dedication",
-        "firenum",
-        "warnum",
-        "killnum",
-        "winrate",
-        "killcrew",
-        "killrate",
-        "dex0",
-        "dex10",
-        "dex20",
-        "dex30",
-        "dex40",
-        "ttrate",
-        "tlrate",
-        "tprate",
-        "tirate",
-        "betgold",
-        "betwin",
-        "betwingold",
-        "betrate"
-    );
+    $types = [
+        ["experience", 'natural'],
+        ["dedication", 'natural'],
+        ["firenum", 'rank'],
+        ["warnum", 'rank'],
+        ["killnum", 'rank'],
+        ["winrate", 'rank'],
+        ["killcrew", 'rank'],
+        ["killrate", 'calc'],
+        ["dex0", 'natural'],
+        ["dex10", 'natural'],
+        ["dex20", 'natural'],
+        ["dex30", 'natural'],
+        ["dex40", 'natural'],
+        ["ttrate", 'calc'],
+        ["tlrate", 'calc'],
+        ["tprate", 'calc'],
+        ["tirate", 'calc'],
+        ["betgold", 'rank'],
+        ["betwin", 'rank'],
+        ["betwingold", 'rank'],
+        ["betrate", 'calc'],
+    ];//XXX: 순서가 DB에 박혀있다 ㅜㅜ
 
-    $general = $db->queryFirstRow('SELECT name,name2,owner,nation,picture,imgsvr,
-    experience,dedication,warnum,firenum,killnum,
-    killnum/warnum as winrate,killcrew,killcrew/deathcrew as killrate,
-    dex0,dex10,dex20,dex30,dex40,
-    ttw/(ttw+ttd+ttl) as ttrate, ttw+ttd+ttl as tt,
-    tlw/(tlw+tld+tll) as tlrate, tlw+tld+tll as tl,
-    tsw/(tsw+tsd+tsl) as tprate, tsw+tsd+tsl as ts,
-    tiw/(tiw+tid+til) as tirate, tiw+tid+til as ti,
-    betgold, betwin, betwingold, betwingold/betgold as betrate
-    from general where no=%i', $no);
+    $generalObj = General::createGeneralObjFromDB($no, null, 2);
 
-    if(!$general){
+    $ttw = $generalObj->getRankVar('ttw');
+    $ttd = $generalObj->getRankVar('ttd');
+    $ttl = $generalObj->getRankVar('ttl');
+
+    $tlw = $generalObj->getRankVar('tlw');
+    $tld = $generalObj->getRankVar('tld');
+    $tll = $generalObj->getRankVar('tll');
+    
+    $tsw = $generalObj->getRankVar('tsw');
+    $tsd = $generalObj->getRankVar('tsd');
+    $tsl = $generalObj->getRankVar('tsl');
+    
+    $tiw = $generalObj->getRankVar('tiw');
+    $tid = $generalObj->getRankVar('tid');
+    $til = $generalObj->getRankVar('til');
+
+    $tt = max($ttw+$ttd+$ttl, 1);
+    $tl = max($tlw+$tld+$tll, 1);
+    $ts = max($tsw+$tsd+$tsl, 1);
+    $ti = max($tiw+$tid+$til, 1);
+
+    $calcVar = [];
+    $calcVar['ttrate'] = $ttw/$tt;
+    $calcVar['tlrate'] = $tlw/$tl;
+    $calcVar['tsrate'] = $tsw/$ts;
+    $calcVar['tirate'] = $tiw/$ti;
+    
+    if($generalObj instanceof DummyGeneral){
         return;
     }
 
     $unitedDate = TimeUtil::now();
-    $nation = getNationStaticInfo($general['nation']);
+    $nation = $generalObj->getStaticNation();
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
 
     [$scenarioIdx, $scenarioName, $startTime] = $gameStor->getValuesAsArray(['scenario', 'scenario_text', 'starttime']);
 
-    $ownerName = $general['name2'];
-    if($general['owner']){
-        $ownerName = RootDB::db()->queryFirstField('SELECT name FROM member WHERE no = %i', $general['owner']);
+    $ownerName = $generalObj->getVar('name2');
+    if($generalObj->getVar('owner')){
+        $ownerName = RootDB::db()->queryFirstField('SELECT name FROM member WHERE no = %i', $generalObj->getVar('owner'));
     }
 
-    foreach($types as $idx=>$typeName) {
+    foreach($types as $idx=>[$typeName, $valueType]) {
         
+        if($valueType === 'natural'){
+            $value = $generalObj->getVar($typeName);
+        }
+        else if($valueType === 'rank'){
+            $value = $generalObj->getRankVar($typeName);
+        }
+        else if($valueType === 'calc'){
+            $value = $calcVar[$typeName];
+        }
 
         //승률,살상률인데 10회 미만 전투시 스킵
-        if(($typeName === 'winrate' || $typeName === 'killrate') && $general['warnum']<10) { continue; }
+        if(($typeName === 'winrate' || $typeName === 'killrate') && $generalObj->getRankVar('warnum')<10) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($typeName === 'ttrate' && $general['tt'] < 50) { continue; }
+        if($typeName === 'ttrate' && $tt < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($typeName === 'tlrate' && $general['tl'] < 50) { continue; }
+        if($typeName === 'tlrate' && $tl < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($typeName === 'tsrate' && $general['ts'] < 50) { continue; }
+        if($typeName === 'tsrate' && $ts < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($typeName === 'tirate' && $general['ti'] < 50) { continue; }
+        if($typeName === 'tirate' && $ti < 50) { continue; }
         //수익률인데 1000미만시 스킵
-        if($typeName === 'betrate' && $general['betgold'] < 1000) { continue; }
+        if($typeName === 'betrate' && $generalObj->getRankVar('betgold') < 1000) { continue; }
 
-        if($general[$typeName]<=0){
+        if($value<=0){
             continue;
         }
 
         $aux = [
-            'name'=>$general['name'],
+            'name'=>$generalObj->getName(),
             'nationName'=>$nation['name'],
             'bgColor'=>$nation['color'],
             'fgColor'=>newColor($nation['color']),
-            'picture'=>$general['picture'],
-            'imgsvr'=>$general['imgsvr'],
+            'picture'=>$generalObj->getVar('picture'),
+            'imgsvr'=>$generalObj->getVar('imgsvr'),
             'startTime'=>$startTime,
             'unitedTime'=>$unitedDate,
             'owner_name'=>$ownerName,
@@ -1456,14 +1483,14 @@ function CheckHall($no) {
             'scenario'=>$scenarioIdx,
             'general_no'=>$no,
             'type'=>$idx,
-            'value'=>$general[$typeName]??0,
-            'owner'=>$general['owner']??null,
+            'value'=>$value,
+            'owner'=>$generalObj->getVar('owner'),
             'aux'=>$jsonAux
         ]);
 
         if($db->affectedRows() == 0){
             $db->update('ng_hall', [
-                'value'=>$general[$typeName]??0,
+                'value'=>$value,
                 'aux'=>$jsonAux
             ], 
             'server_id = %s AND scenario = %i AND general_no = %i AND type = %i AND value < %d', 
@@ -1471,7 +1498,7 @@ function CheckHall($no) {
             $scenarioIdx,
             $no,
             $idx,
-            $general[$typeName]??0);
+            $value);
         }
         
     }

@@ -15,8 +15,6 @@ $btn = Util::getReq('btn');
 $genlist = Util::getReq('genlist', 'array_int');
 $msg = Util::getReq('msg','string', '메시지');
 
-extractMissingPostToGlobals();
-
 $db = DB::db();
 
 //NOTE: 왜 기능이 admin2와 admin4가 같이 있는가? 

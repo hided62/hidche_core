@@ -9,8 +9,6 @@ $item = Util::getReq('item', 'string');
 $genlist = Util::getReq('genlist', 'array_int');
 $msg = Util::getReq('msg', 'string');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireLogin()->loginGame()->setReadOnly();
 

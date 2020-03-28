@@ -116,9 +116,9 @@ class che_단련 extends Command\GeneralCommand{
         $general->addDex($general->getCrewTypeObj(), $score, false);
 
         $incStat = Util::choiceRandomUsingWeight([
-            'leadership_max'=>$general->getLeadership(false, false, false, false),
-            'strength_max'=>$general->getStrength(false, false, false, false),
-            'intel_max'=>$general->getIntel(false, false, false, false)
+            'leadership_exp'=>$general->getLeadership(false, false, false, false),
+            'strength_exp'=>$general->getStrength(false, false, false, false),
+            'intel_exp'=>$general->getIntel(false, false, false, false)
         ]);
         [$reqGold, $reqRice] = $this->getCost();
 

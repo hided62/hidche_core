@@ -147,7 +147,7 @@ class che_등용 extends Command\GeneralCommand{
 
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar('leadership_max', 1);
+        $general->increaseVar('leadership_exp', 1);
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

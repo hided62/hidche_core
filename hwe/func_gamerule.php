@@ -1114,7 +1114,7 @@ function checkStatistic() {
     }
 
     foreach($db->queryAllLists(
-        'SELECT crewtype, count(crewtype) AS cnt FROM general WHERE crew>=100 OR deathnum>0 GROUP BY crewtype'
+        'SELECT crewtype, count(crewtype) AS cnt FROM general WHERE recwar != NULL GROUP BY crewtype'
         ) as [$crewtype, $cnt]
     ){
         $crewtypeHists[$crewtype] = $cnt;
@@ -1272,27 +1272,27 @@ function checkEmperior() {
     $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
     $oldNation['generals'] = $oldNationGenerals;
 
-    $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
-    $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $tigernum = MYDB_num_rows($tigerresult);
-    $tigerstr = '';
-    for($i=0; $i < $tigernum; $i++) {
-        $tiger = MYDB_fetch_array($tigerresult);
-        if($tiger['killnum'] > 0) {
-            $tigerstr .= "{$tiger['name']}【{$tiger['killnum']}】, ";
-        }
-    }
+    $tigers = $db->query('SELECT value, name 
+        FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+        WHERE rank_data.nation_id = %i AND rank_data.type = "warnum" AND value > 0 ORDER BY value DESC LIMIT 5',
+        $nation['nation']
+    );// 오호장군
 
-    $query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
-    $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $eaglenum = MYDB_num_rows($eagleresult);
-    $eaglestr = '';
-    for($i=0; $i < $eaglenum; $i++) {
-        $eagle = MYDB_fetch_array($eagleresult);
-        if($eagle['firenum'] > 0) {
-            $eaglestr .= "{$eagle['name']}【{$eagle['firenum']}】, ";
-        }
-    }
+    $tigerstr = join(', ', array_map(function($arr){
+        $number = number_format($arr['value']);
+        return "{$arr['name']}【{$number}】";
+    }, $tigers));
+
+    $eagles = $db->query('SELECT value, name 
+        FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+        WHERE rank_data.nation_id = %i AND rank_data.type = "firenum" AND value > 0 ORDER BY value DESC LIMIT 7', 
+        $nation['nation']
+    );// 건안칠자
+
+    $eaglestr = join(', ', array_map(function($arr){
+        $number = number_format($arr['value']);
+        return "{$arr['name']}【{$number}】";
+    }, $eagles));
 
     $log = ["<C>●</>{$admin['year']}년 {$admin['month']}월: <D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
 

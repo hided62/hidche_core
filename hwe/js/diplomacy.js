@@ -65,7 +65,6 @@ function repondLetter(letterNo, isAgree, reason){
         }
     }).then(function(data){
         if(!data){
-            alert()
             return quickReject('응답을 실패했습니다.');
         }
         if(!data.result){
@@ -99,7 +98,6 @@ function rollbackLetter(letterNo){
         }
     }).then(function(data){
         if(!data){
-            alert()
             return quickReject('회수를 실패했습니다.');
         }
         if(!data.result){
@@ -128,7 +126,6 @@ function destroyLetter(letterNo){
         }
     }).then(function(data){
         if(!data){
-            alert()
             return quickReject('파기를 실패했습니다.');
         }
         if(!data.result){

@@ -365,20 +365,15 @@ jQuery(function($){
             city: (generalData.no)<=1 ? 1 : 3,
             turntime:'2018-08-26 12:00',
             special:defaultSpecialDomestic,
-            leadership_max:0,
-            strength_max:0,
-            intel_max:0,
+            leadership_exp:0,
+            strength_exp:0,
+            intel_exp:0,
             
             gold:10000,
 
             dedication:0,
-            warnum:0,
-            killnum:0,
-            deathnum:0,
 
-            killcrew:20000,
-            deathcrew:20000,
-            recwar:'SUCCESS',
+            recwar:'2018-08-26 12:00',
             experience:Math.pow(generalData.explevel, 2),
         };
 

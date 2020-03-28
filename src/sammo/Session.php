@@ -339,6 +339,20 @@ class Session
         return $obj->userID;
     }
 
+    /**
+     * 
+     */
+    public static function getGeneralID(bool $requireLogin = false, string $exitPath = '..')
+    {
+        if ($requireLogin) {
+            $obj = self::requireLogin($exitPath);
+        } else {
+            $obj = self::getInstance();
+        }
+        
+        return $obj->generalID??0;
+    }
+
     public function isLoggedIn(bool $ignoreOTP = false): bool
     {
         if(!$ignoreOTP){

@@ -6,13 +6,30 @@ include "func.php";
 
 $btn = Util::getReq('btn');
 $gen = Util::getReq('gen', 'int', 0);
-$type = Util::getReq('type', 'int', 0);
+$reqQueryType = Util::getReq('query_type', 'string', null);
 
-if($type < 0 || $type > 3){
-    $type = 0;
+// $queryTypeText, $reqArgType(0=>None, 1=>AdditionalColumn, 2=>rankVal, 3=>aux), $comp
+$queryMap = [
+    'turntime' => ['최근턴', 0, function($lhs, $rhs){
+        return -($lhs['turntime']<=>$rhs['turntime']);
+    }],
+    'recwar' => ['최근전투', 1, function($lhs, $rhs){
+        return -($lhs['recwar']<=>$rhs['recwar']);
+    }],
+    'name' => ['장수명', 0, function($lhs, $rhs){
+        if($lhs['npc'] !== $rhs['npc']){
+            return $lhs['npc']<=>$rhs['npc'];
+        }
+        return $lhs['name']<=>$rhs['name'];
+    }],
+    'warnum' => ['전투수', 1, function($lhs, $rhs){
+        return -($lhs['warnum']<=>$rhs['warnum']);
+    }]
+];
+
+if($reqQueryType === null || !key_exists($reqQueryType, $queryMap)){
+    $reqQueryType = Util::array_first_key($queryMap);
 }
-
-extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -45,7 +62,39 @@ if($btn == '정렬하기') {
     $gen = 0;
 }
 
-$sel[$type] = "selected";
+[$queryTypeText, $reqArgType, $comp] = $queryMap[$reqQueryType];
+if($reqArgType===0){
+    $generalBasicList = $db->query('SELECT no, name, nation, npc, turntime FROM general');
+}
+else if($reqArgType===1){
+    $generalBasicList = $db->query('SELECT no, name, nation, npc, turntime, %b FROM general', $reqQueryType);
+}
+else if($reqArgType===2){
+    $generalBasicList = $db->query('SELECT no, name, nation, npc, turntime, value as %b 
+        FROM general LEFT JOIN rank_data 
+        ON general.no = rank_data.general_id 
+        WHERE rank_data.type = %b', 
+        $reqQueryType, $reqQueryType
+    );
+}
+else if($reqArgType===3){
+    $generalBasicList = array_map(function($arr){
+        $arr['aux'] = Json::decode($arr['aux']);
+        return $arr;
+    }, $db->query('SELECT no, name, nation, npc, turntime, aux FROM general'));
+}
+else{
+    throw new \sammo\MustNotBeReachedException();
+}
+
+usort($generalBasicList, $comp);
+
+if(!$gen){
+    $gen = $generalBasicList[0]['no'];
+}
+
+$generalObj = General::createGeneralObjFromDB($gen);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -64,40 +113,16 @@ $sel[$type] = "selected";
         <form name=form1 method=post>
         정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[0]??''?> value=0>최근턴</option>
-            <option <?=$sel[1]??''?> value=1>최근전투</option>
-            <option <?=$sel[2]??''?> value=2>장수명</option>
-            <option <?=$sel[3]??''?> value=3>전투수</option>
+<?php foreach($queryMap as $queryType => [$queryTypeText,]): ?>
+    <option <?=$queryKey==$reqQueryType?'selected':''?> value='<?=$queryKey?>'><?=$queryTypeText?></option>
+<?php endforeach; ?>
         </select>
         <input type=submit name=btn value='정렬하기'>
         대상장수 :
         <select name=gen size=1>
-<?php
-switch($type) {
-    case 0: $query = "select no,name,nation,turntime from general order by turntime desc"; break;
-    case 1: $query = "select no,name,nation,turntime from general order by recwar desc"; break;
-    case 2: $query = "select no,name,nation,turntime from general order by npc,binary(name)"; break;
-    case 3: $query = "select no,name,nation,turntime from general order by warnum desc"; break;
-}
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($result);
-
-for($i=0; $i < $gencount; $i++) {
-    $general = MYDB_fetch_array($result);
-    
-    // 선택 없으면 맨 처음 장수
-    if($gen == 0) {
-        $gen = $general['no'];
-    }
-
-    $selected = $gen == $general['no']?'selected':'';
-    $nationName = getNationStaticInfo($general['nation'])['name'];
-    $turntime = substr($general['turntime'], 11, 10);
-    echo "<option {$selected} value={$general['no']}>{$nationName} - {$general['name']} ($turntime)</option>\n";
-    
-}
-$generalObj = General::createGeneralObjFromDB($gen);
-?>
+<?php foreach($generalBasicList as $general): ?>
+    <option <?=$gen==$general['no']?'selected':''?>><?=getNationStaticInfo($general['nation'])['name']?> - <?=$general['name']?> (<?=$general['turntime']?>)</option>
+<?php endforeach; ?>
         </select>
         <input type=submit name=btn value='조회하기'>
         </form>

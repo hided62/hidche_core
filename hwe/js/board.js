@@ -27,7 +27,6 @@ function submitArticle(){
         if(!data){
             $title.val(title);
             $text.val(text);
-            alert()
             return quickReject('글을 올리는데 실패했습니다.');
         }
         if(!data.result){
@@ -70,7 +69,6 @@ function submitComment(){
     }).then(function(data){
         if(!data){
             $text.val(text);
-            alert()
             return quickReject('댓글을 다는데 실패했습니다.');
         }
         if(!data.result){

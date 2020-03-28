@@ -113,7 +113,7 @@ class WarUnitGeneral extends WarUnit{
 
     function addWin(){
         $general = $this->general;
-        $general->increaseVar('killnum', 1);
+        $general->increaseRankVar('killnum', 1);
         $general->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
 
         $this->addStatExp(1);
@@ -122,11 +122,11 @@ class WarUnitGeneral extends WarUnit{
     function addStatExp(int $value = 1){
         $general = $this->general;
         if($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
-            $general->increaseVar('intel_max', $value);
+            $general->increaseVar('intel_exp', $value);
         } elseif($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
-            $general->increaseVar('leadership_max', $value);
+            $general->increaseVar('leadership_exp', $value);
         } else {
-            $general->increaseVar('strength_max', $value);
+            $general->increaseVar('strength_exp', $value);
         }
     }
 
@@ -147,7 +147,7 @@ class WarUnitGeneral extends WarUnit{
 
     function addLose(){
         $general = $this->general;
-        $general->increaseVar('deathnum', 1);
+        $general->increaseRankVar('deathnum', 1);
         $this->addStatExp(1);
     }
 
@@ -310,8 +310,8 @@ class WarUnitGeneral extends WarUnit{
         $this->isFinished = true;
         $general = $this->general;
 
-        $general->increaseVar('killcrew', $this->killed);
-        $general->increaseVar('deathcrew', $this->dead);
+        $general->increaseRankVar('killcrew', $this->killed);
+        $general->increaseRankVar('deathcrew', $this->dead);
         
         $general->updateVar('rice', Util::round($general->getVar('rice')));
         $general->updateVar('experience', Util::round($general->getVar('experience')));

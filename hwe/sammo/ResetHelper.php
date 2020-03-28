@@ -282,6 +282,15 @@ class ResetHelper{
                 ];
             }
             $db->insert('general_turn', $turnRows);
+
+            foreach(General::RANK_COLUMN as $rankColumn){
+                $db->insert('rank_data', [
+                    'general_id'=>$generalID,
+                    'nation_id'=>0,
+                    'type'=>$rankColumn,
+                    'value'=>0
+                ]);
+            }
         }
 
         foreach($env as $key=>$value){

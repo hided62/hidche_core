@@ -77,13 +77,13 @@ class che_견문 extends Command\GeneralCommand{
             $exp += 60;
         }
         if($type & SightseeingMessage::IncLeadership){
-            $general->increaseVar('leadership_max', 2);
+            $general->increaseVar('leadership_exp', 2);
         }
         if($type & SightseeingMessage::IncStrength){
-            $general->increaseVar('strength_max', 2);
+            $general->increaseVar('strength_exp', 2);
         }
         if($type & SightseeingMessage::IncIntel){
-            $general->increaseVar('intel_max', 2);
+            $general->increaseVar('intel_exp', 2);
         }
         if($type & SightseeingMessage::IncGold){
             $general->increaseVar('gold', 300);

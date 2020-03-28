@@ -116,12 +116,26 @@ for($i=12; $i >= $lv; $i--) {
     $level[$levels['level']] = $levels;
 }
 
-$query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
-$tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-$query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
-$eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$tigers = $db->query('SELECT value, name 
+    FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+    WHERE rank_data.nation_id = %i AND rank_data.type = "warnum" AND value > 0 ORDER BY value DESC LIMIT 5',
+    $nation['nation']
+);// 오호장군
+$tigerstr = join(', ', array_map(function($arr){
+    $number = number_format($arr['value']);
+    return "{$arr['name']}【{$number}】";
+}, $tigers));
 
+$eagles = $db->query('SELECT value, name 
+    FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+    WHERE rank_data.nation_id = %i AND rank_data.type = "firenum" AND value > 0 ORDER BY value DESC LIMIT 7', 
+    $nation['nation']
+);// 건안칠자
+$eaglestr = join(', ', array_map(function($arr){
+    $number = number_format($arr['value']);
+    return "{$arr['name']}【{$number}】";
+}, $eagles));
 
 echo "
 <table align=center width=1000 class='tb_layout bg0'>
@@ -147,40 +161,14 @@ for($i=12; $i >= $lv; $i-=2) {
     <?php
 }
 
-echo "
-    <tr>
-        <td width=98 align=center id=bg1>오호장군【승전】</td>
-        <td colspan=5>
-";
-
-$tigernum = MYDB_num_rows($tigerresult);
-for($i=0; $i < $tigernum; $i++) {
-    $tiger = MYDB_fetch_array($tigerresult);
-
-    if($tiger['killnum'] > 0) {
-        echo "{$tiger['name']}【{$tiger['killnum']}】, ";
-    }
-}
-
-echo "
-        </td>
+?>
+<tr>
+    <td width=98 align=center id=bg1>오호장군【승전】</td>
+    <td colspan=5><?=$tigerstr?></td>
     </tr>
     <tr>
         <td width=98 align=center id=bg1>건안칠자【계략】</td>
-        <td colspan=5>
-";
-
-$eaglenum = MYDB_num_rows($eagleresult);
-for($i=0; $i < $eaglenum; $i++) {
-    $eagle = MYDB_fetch_array($eagleresult);
-
-    if($eagle['firenum'] > 0) {
-        echo "{$eagle['name']}【{$eagle['firenum']}】, ";
-    }
-}
-
-echo "
-        </td>
+        <td colspan=5><?=$eaglestr?></td>
     </tr>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
@@ -190,7 +178,7 @@ echo "
     <tr>
         <td width=498 align=right id=bg1>대상 장수</td>
         <td width=498>
-";
+<?php
 
 if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "

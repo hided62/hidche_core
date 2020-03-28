@@ -250,11 +250,11 @@ function startTournament($auto, $type) {
     $gameStor->tournament = 1;
     $gameStor->tnmt_type = $type;
     $gameStor->phase = 0;
-    for($i=0;$i<16;$i+=1){
-        $gameStor->setValue("bet{$i}", 0);
-    }
+
     $db->update('general', [
         'tournament'=>0,
+    ], true);
+    $db->update('betting', [
         'bet0'=>0,
         'bet1'=>0,
         'bet2'=>0,
@@ -641,10 +641,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
 
     $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
-    $genNo = [];
-    $genName = [];
-    $genGold = [];
-    $genCall = [];
+    $resultHelper = [];
 
     switch($tnmt_type) {
     case 0: $tp = "전력전"; $tp2 = "tt"; break;
@@ -655,137 +652,147 @@ function setGift($tnmt_type, $tnmt, $phase) {
 
     //16강자 명성 돈
     $cost = $admin['develcost'];
-    $query = "select no,name from tournament where grp>=20 and grp<30";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+25,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    foreach($db->query('SELECT no, name, grp, grp_no FROM tournament WHERE grp>=20 AND grp<30 AND no > 0') as $general){
+        $generalID = $general['no'];
+        $db->update('general', [
+            'experience'=>$db->sqleval('experience + 25'),
+            'gold'=>$db->sqleval('gold + %i', $cost)
+        ], 'no=%i', $general['no']);
+        $db->update('rank_data', [
+            "{$tp2}g" => $db->sqleval('%b + 1', "{$tp2}g")
+        ], 'general_id = %i', $general['no']);
         //포상 장수 이름, 금액
-        $genNo[$i] = $general['no'];
-        $genName[$i] = $general['name'];
-        $genGold[$general['no']] = $cost;
-        $genCall[$general['no']] = "<span class='ev_highlight'>16강 진출</span>";
+
+        $logger = new ActionLogger($generalID, 0, $admin['year'], $admin['month']);
+        $resultHelper[$generalID] = [
+            'id'=>$generalID,
+            'grp'=>$general['grp'],
+            'grp_no'=>$general['grp_no'],
+            'reward'=>$cost,
+            'msg'=>"<span class='ev_highlight'>16강 진출</span>",
+            'logger'=>$logger
+        ];
     }
     //8강자 명성 돈
     $cost = $admin['develcost'] * 2;
-    $query = "select no from tournament where grp>=30 and grp<40";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+50,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    foreach($db->query('SELECT no, name FROM tournament WHERE grp>=30 AND grp<40 AND no > 0') as $general){
+        $generalID = $general['no'];
+        $db->update('general', [
+            'experience'=>$db->sqleval('experience + 50'),
+            'gold'=>$db->sqleval('gold + %i', $cost)
+        ], 'no=%i', $general['no']);
+        $db->update('rank_data', [
+            "{$tp2}g" => $db->sqleval('%b + 1', "{$tp2}g")
+        ], 'general_id = %i', $general['no']);
+
         //포상 장수 이름, 금액
-        $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<span class='ev_highlight'>8강 진출</span>";
+        $resultHelper[$generalID]['reward'] += $cost;
+        $resultHelper[$generalID]['msg'] = "<span class='ev_highlight'>8강 진출</span>";
     }
     //4강자 명성 돈
     $cost = $admin['develcost'] * 3;
-    $query = "select no from tournament where grp>=40 and grp<50";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+75,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    foreach($db->query('SELECT no, name FROM tournament WHERE grp>=40 AND grp<50 AND no > 0') as $general){
+        $generalID = $general['no'];
+        $db->update('general', [
+            'experience'=>$db->sqleval('experience + 50'),
+            'gold'=>$db->sqleval('gold + %i', $cost)
+        ], 'no=%i', $general['no']);
+        $db->update('rank_data', [
+            "{$tp2}g" => $db->sqleval('%b + 2', "{$tp2}g")
+        ], 'general_id = %i', $general['no']);
+
         //포상 장수 이름, 금액
-        $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<span class='ev_highlight'>4강 진출</span>";
+        $resultHelper[$generalID]['reward'] += $cost;
+        $resultHelper[$generalID]['msg'] = "<span class='ev_highlight'>4강 진출</span>";
     }
     //결승자 명성 돈
     $cost = $admin['develcost'] * 6;
-    $query = "select no from tournament where grp>=50 and grp<60";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+150,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    foreach($db->query('SELECT no, name, lose FROM tournament WHERE grp>=50 AND grp<60 AND no > 0') as $general){
+        $generalID = $general['no'];
+        $db->update('general', [
+            'experience'=>$db->sqleval('experience + 100'),
+            'gold'=>$db->sqleval('gold + %i', $cost)
+        ], 'no=%i', $general['no']);
+        $db->update('rank_data', [
+            "{$tp2}g" => $db->sqleval('%b + 2', "{$tp2}g")
+        ], 'general_id = %i', $general['no']);
+
         //포상 장수 이름, 금액
-        $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<span class='ev_highlight'>준우승</span>으";
+        $resultHelper[$generalID]['reward'] += $cost;
+        $resultHelper[$generalID]['msg'] = "<span class='ev_highlight'>준우승</span>으";
+        if($general['lose'] > 0){
+            $runnerUp = $general;
+        }
     }
     //우승자 명성 돈
     $cost = $admin['develcost'] * 8;
-    $query = "select no from tournament where grp>=60";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+200,gold=gold+'$cost',{$tp2}g={$tp2}g+3,{$tp2}p={$tp2}p+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    foreach($db->query('SELECT no, name FROM tournament WHERE grp>=6 AND no > 0') as $general){
+        $generalID = $general['no'];
+        $db->update('general', [
+            'experience'=>$db->sqleval('experience + 200'),
+            'gold'=>$db->sqleval('gold + %i', $cost)
+        ], 'no=%i', $general['no']);
+        $db->update('rank_data', [
+            "{$tp2}g" => $db->sqleval('%b + 2', "{$tp2}g")
+        ], 'general_id = %i', $general['no']);
+
         //포상 장수 이름, 금액
-        $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<span class='ev_highlight'>우승</span>으";
+        $resultHelper[$generalID]['reward'] += $cost;
+        $resultHelper[$generalID]['msg'] = "<span class='ev_highlight'>우승</span>으";
+        $winner = $general;
     }
-    //우승자 이름
-    $query = "select no,name from tournament where grp=60";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    //준우승자 이름
-    $query = "select no,name from tournament where grp=50 and lose=1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general2 = MYDB_fetch_array($result);
 
     //자동진행 끝
     $gameStor->tnmt_auto = 0;
 
     //장수열전 기록
-    $query = "select no from general where no={$general['no']}";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen1 = MYDB_fetch_array($result);
-    $query = "select no from general where no={$general2['no']}";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen2 = MYDB_fetch_array($result);
-    pushGeneralHistory($gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");
-    pushGeneralHistory($gen2, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 준우승");
+    /** @var ActionLogger */
+    $winnerLogger = $resultHelper[$winner['no']]['logger'];
+    $winnerLogger->pushGeneralHistoryLog("<C>{$tp}</> 대회에서 우승");
+    /** @var ActionLogger */
+    $runnerUpLogger = $resultHelper[$runnerUp['no']]['logger'];
+    $runnerUpLogger->pushGeneralHistoryLog("<C>{$tp}</> 대회에서 준우승");
 
-    $cost = $admin['develcost'] * 20;
-    $cost2 = $admin['develcost'] * 12;
 
-    $josaYi1 = JosaUtil::pick($general['name'], '이');
-    $josaYi2 = JosaUtil::pick($general2['name'], '이');
-    $history = [
-        "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회에서 <Y>{$general['name']}</>{$josaYi1} <C>우승</>, <Y>{$general2['name']}</>{$josaYi2} <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!",
-        "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$cost}</>, <S>준우승자</>에겐 <C>{$cost2}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!"
-    ];
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    
 
-    for($i=0; $i < count($genNo); $i++) {
-        $general['no']   = $genNo[$i];
-        $general['name'] = $genName[$i];
-        pushGenLog($general, ["<S>◆</><C>{$tp}</> 대회의 {$genCall[$genNo[$i]]}로 <C>{$genGold[$genNo[$i]]}</>의 <S>상금</>, 약간의 <S>명성</> 획득!"]);
+    $winnerRewardText = number_format($resultHelper[$winner['no']]['reward']);
+    $runnerUpRewardText = number_format($resultHelper[$runnerUp['no']]['reward']);
+
+    $josaYiWinner = JosaUtil::pick($winner['name'], '이');
+    $josaYiRunnerUp = JosaUtil::pick($runnerUp['name'], '이');
+
+    $winnerLogger->pushGlobalHistoryLog("<C>{$tp}</> 대회에서 <Y>{$winner['name']}</>{$josaYiWinner} <C>우승</>, <Y>{$runnerUp['name']}</>{$josaYiRunnerUp} <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!", ActionLogger::EVENT_YEAR_MONTH);
+    $winnerLogger->pushGlobalHistoryLog("<C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$winnerRewardText}</>, <S>준우승자</>에겐 <C>{$runnerUpRewardText}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!", ActionLogger::EVENT_YEAR_MONTH);
+    
+    foreach($resultHelper as $general){
+        $rewardText = number_format($general['reward']);
+        /** @var ActionLogger */
+        $logger = $general['logger'];
+        $logger->pushGeneralActionLog("<C>{$tp}</> 대회의 {$general['msg']}로 <C>{$rewardText}</>의 <S>상금</>, 약간의 <S>명성</> 획득!", ActionLogger::EVENT_PLAIN);
     }
 
     //우승자 번호
-    $query = "select no from tournament where grp=60";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    //16강 목록에서 검색
-    $query = "select grp,grp_no from tournament where grp>=20 and grp<30 and no='{$general['no']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    $no = ($general['grp'] - 20) * 2 + $general['grp_no'];
-
-
-    $admin = $gameStor->getValues(['bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
-    $admin['bet'] = array_sum($admin);
-    $bet = @round($admin['bet'] /  $admin["bet{$no}"], 2);
+    $winnerGrp = $resultHelper[$winner['no']]['grp'];
+    $winnerGrpNo = $resultHelper[$winner['no']]['grp_no'];
+    $winnerSlot = ($winnerGrp - 20) * 2 + $winnerGrpNo;
 
     //당첨칸에 베팅한 사람들만
-    $query = "select no,name,gold,bet{$no} as bet from general where bet{$no}>0";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $gen = MYDB_fetch_array($result);
-        $gold = Util::round($gen['bet'] * $bet);
-        //금 지급
-        $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='{$gen['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        //로그
-        pushGenLog($gen, ["<S>◆</><C>{$tp}</> 대회의 베팅 당첨으로 <C>{$gold}</>의 <S>금</> 획득!"]);
+    $globalBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = 0'), -16);
+    $globalBetTotal = array_sum($globalBet);
+    $rewardRate = round($globalBetTotal / max($globalBet[$winnerSlot], 1), 2);
+
+    $betKey = "bet{$winnerSlot}";
+    $gambleResult = Util::convertArrayToDict($db->query('SELECT no, %b as bet FROM betting WHERE %b > 0', $betKey, $betKey), 'no');
+
+    foreach(General::createGeneralObjListFromDB(Util::squeezeFromArray($gambleResult, 'no'), ['gold'], 1) as $gambler){
+        $reward = Util::round($gambleResult[$gambler->getID()]['bet'] * $rewardRate);
+        $gambler->increaseVar('gold', $reward);
+        $gambler->increaseRankVar('betwingold', $reward);
+        $gambler->increaseRankVar('betwin', 1);
+        $rewardText = number_format($reward);
+        $gambler->getLogger()->pushGeneralActionLog("<C>{$tp}</> 대회의 베팅 당첨으로 <C>{$rewardText}</>의 <S>금</> 획득!", ActionLogger::EVENT_PLAIN);
+        $gambler->applyDB($db);
     }
 }
 
@@ -796,20 +803,18 @@ function setRefund() {
 
     //16강자 명성 돈
     $cost = $gameStor->develcost;
-    $query = "select no from tournament where grp<10";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
-        $query = "update general set gold=gold+'$cost' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    }
+    $generalIDList = $db->queryFirstColumn('SELECT no FROM tournament WHERE grp<10 AND no >0');
+    $db->update('general', [
+        'gold'=>$db->sqleval('gold + %i', $cost)
+    ], 'no IN %li', $generalIDList);
+    
+    //베팅금 환수
+    $db->update(['general', [
+        'gold'=>$db->sqleval('gold + (SELECT bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 FROM betting WHERE general_id = general.no)')
+    ]], true);
 
     //자동진행 끝
     $gameStor->tnmt_auto = 0;
-    //베팅금 환수
-    $query = "update general set gold=gold+bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
 //10차이 1.1, 50 차이 1.17, 100차이 1.2
@@ -1063,14 +1068,12 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g2'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general1['gl'] > $general2['gl'])      { $gl1 = "+1"; $gl2 = "+0"; }
-        elseif($general1['gl'] == $general2['gl']) { $gl1 = "+2"; $gl2 = "-1"; }
-        else                                   { $gl1 = "+3"; $gl2 = "-2"; }
+        if($general1['gl'] > $general2['gl'])      { $gl1 = 1; $gl2 = 0; }
+        elseif($general1['gl'] == $general2['gl']) { $gl1 = 2; $gl2 = -1; }
+        else                                   { $gl1 = 3; $gl2 = -2; }
 
-        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl1} where no='{$gen1['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl2} where no='{$gen2['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gen1resKey = 'w';
+        $gen2resKey = 'l';
         break;
     case 1:
         $log[] = "<S>●</> <Y>{$gen2['name']}</> <S>승리</>!";
@@ -1081,14 +1084,12 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general2['gl'] > $general1['gl'])      { $gl2 = "+1"; $gl1 = "+0"; }
-        elseif($general2['gl'] == $general1['gl']) { $gl2 = "+2"; $gl1 = "-1"; }
-        else                                   { $gl2 = "+3"; $gl1 = "-2"; }
+        if($general2['gl'] > $general1['gl'])      { $gl2 = 1; $gl1 = 0; }
+        elseif($general2['gl'] == $general1['gl']) { $gl2 = 2; $gl1 = -1; }
+        else                                   { $gl2 = 3; $gl1 = -2; }
 
-        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl1} where no='{$gen1['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl2} where no='{$gen2['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gen1resKey = 'l';
+        $gen2resKey = 'w';
         break;
     case 2:
         $log[] = "<S>●</> 무승부!";
@@ -1096,16 +1097,30 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $query = "update tournament set draw=draw+1 where grp='$group' and (grp_no='$g1' or grp_no='$g2')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general1['gl'] > $general2['gl'])      { $gl2 = "-1"; $gl1 = "+1"; }
-        elseif($general1['gl'] == $general2['gl']) { $gl2 = "+0"; $gl1 = "+0"; }
-        else                                   { $gl2 = "+1"; $gl1 = "-1"; }
+        if($general1['gl'] > $general2['gl'])      { $gl2 = -1; $gl1 = 1; }
+        elseif($general1['gl'] == $general2['gl']) { $gl2 = 0; $gl1 = 0; }
+        else                                   { $gl2 = +1; $gl1 = -1; }
 
-        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl1} where no='{$gen1['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl2} where no='{$gen2['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gen1resKey = 'd';
+        $gen2resKey = 'd';
         break;
     }
+
+    $db->update('rank_data', [
+        "{$tp2}{$gen1resKey}" => $db->sqleval('%b + 1', "{$tp2}{$gen1resKey}")
+    ], 'no=%i',$gen1['no']);
+    $db->update('rank_data', [
+        "{$tp2}g" => $db->sqleval('%b + %i', "{$tp2}g", $gl1)
+    ], 'no=%i',$gen1['no']);
+
+    $db->update('rank_data', [
+        "{$tp2}{$gen2resKey}" => $db->sqleval('%b + 1', "{$tp2}{$gen2resKey}")
+    ], 'no=%i',$gen2['no']);
+    $db->update('rank_data', [
+        "{$tp2}g" => $db->sqleval('%b + %i', "{$tp2}g", $gl2)
+    ], 'no=%i',$gen2['no']);
+
+
 
     if(($tnmt == 2 && $phs < 55) || ($tnmt == 4 && $phs < 5)) {
         $cand = getTwo($tnmt, $phs+1);

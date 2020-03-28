@@ -14,15 +14,18 @@ $connect=$db->get();
 increaseRefresh("베팅장", 1);
 TurnExecutionHelper::executeAllCommand();
 
-$query = "select no,tournament,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$generalID = $session->generalID;
 
-$admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost','bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
-$admin['bet'] = 
-    $admin['bet0'] + $admin['bet1'] + $admin['bet2'] + $admin['bet3'] + $admin['bet4'] + 
-    $admin['bet5'] + $admin['bet6'] + $admin['bet7'] + $admin['bet8'] + $admin['bet9'] + 
-    $admin['bet10'] + $admin['bet11'] + $admin['bet12'] + $admin['bet13'] + $admin['bet14'] + $admin['bet15'];
+//NOTE: general_id만 빼기 귀찮음.
+$myBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = %i', $generalID), -16);
+$globalBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = 0'), -16);
+
+$me = $db->queryFirstRow('SELECT no,tournament,con,turntime from general where owner=%i', $userID);
+
+$myBetTotal = array_sum($myBet);
+$globalBetTotal = array_sum($globalBet);
+
+$admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost']);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -62,6 +65,7 @@ if($str3){
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/betting.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -74,7 +78,7 @@ if($str3){
 <table align=center width=1120 class='tb_layout bg0'>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
     <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
-    <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin['bet']?> / 내 투자 금액 : <?=$me['bet']?>)</font></td></tr>
+    <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$globalBetTotal?> / 내 투자 금액 : <?=$myBetTotal?>)</font></td></tr>
 </table>
 <table align=center width=1120 class='mimic_flex bg0' style='border:solid 1px gray;font-size:10px;'>
     <tr align=center><td height=10 colspan=16></td></tr>
@@ -282,23 +286,16 @@ for ($i=0; $i < 16; $i++) {
     echo "<td width=70>{$gen[$i]}</td>";
 }
 
-$query = "select bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15 from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
 $myBet = [];
 $bet = [];
 $gold = [];
 
 for ($i=0; $i < 16; $i++) {
-    $myBet[$i]  = $me["bet{$i}"];
-}
-
-for ($i=0; $i < 16; $i++) {
-    if($admin["bet{$i}"] == 0){
+    if($globalBet[$i] == 0){
         $bet[$i] = "∞";
     }
     else{
-        $bet[$i]  = round($admin['bet'] /  $admin["bet{$i}"], 2);
+        $bet[$i]  = round($globalBetTotal /  $globalBet[$i], 2);
     }
 }
 
@@ -352,13 +349,12 @@ echo "
 
 if ($admin['tournament'] == 6) {
     echo "
-<form method=post action=c_betting.php>
     <tr align=center>";
 
     for ($i=0; $i < 16; $i++) {
         echo "
         <td>
-            <select size=1 name=gold{$i} style=color:white;background-color:black;>
+            <select size=1 id='target_{$i}' style=color:white;background-color:black;>
                 <option style=color:white; value=10>금10</option>
                 <option style=color:white; value=20>금20</option>
                 <option style=color:white; value=50>금50</option>
@@ -376,12 +372,10 @@ if ($admin['tournament'] == 6) {
 
     for ($i=0; $i < 16; $i++) {
         echo "
-        <td><input type=submit name=btn{$i} value=베팅! style=width:100%;color:white;background-color:black;></td>";
+        <td><input type=button class='submitBtn' data-target='{$i}' value=베팅! style=width:100%;color:white;background-color:black;></td>";
     }
 
-    echo "
-    </tr>
-</form>";
+    echo "</tr>";
 }
 
 ?>
