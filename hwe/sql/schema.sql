@@ -231,7 +231,7 @@ CREATE TABLE `city` (
 	`officer3set` INT(1) NOT NULL DEFAULT '0',
 	`officer2set` INT(1) NOT NULL DEFAULT '0',
 	`state` INT(2) NOT NULL DEFAULT '0',
-	`region` INT(2) NOT NULL COMMENT 'TODO:Delete',
+	`region` INT(2) NOT NULL,
 	`term` INT(1) NOT NULL DEFAULT '0',
 	`conflict` VARCHAR(500) NOT NULL DEFAULT '{}',
 	PRIMARY KEY (`city`),

@@ -10,6 +10,11 @@ class GeneralAI{
     protected $nation;
     protected $genType;
 
+    /** @var AutorunGeneralPolicy */
+    protected $generalPolicy;
+    /** @var AutorunNationPolicy */
+    protected $nationPolicy;
+
     protected $env;
     protected $baseDevelCost;
 
@@ -264,7 +269,7 @@ class GeneralAI{
             if($develRate['trust'] < 1){
                 $commandObj = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($commandObj->isRunnable()){
-                    $commandList['che_주민선정'] = power($leadership * 2, 1 / ($develRate['trust'] + 0.001));
+                    $commandList['che_주민선정'] = pow($leadership * 2, 1 / ($develRate['trust'] + 0.001));
                 }
             }
             if($develRate['pop'] < 0.99){
