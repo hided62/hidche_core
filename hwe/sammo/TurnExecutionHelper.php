@@ -65,13 +65,8 @@ class TurnExecutionHelper
         return true;
     }
 
-    public function processNationCommand(string $commandClassName, ?array $commandArg, LastTurn $commandLast):LastTurn{
+    public function processNationCommand(Command\NationCommand $commandObj):LastTurn{
         $general = $this->getGeneral();
-
-        $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-
-        $commandObj = buildNationCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandLast, $commandArg);
 
         while(true){
             $failReason = $commandObj->testRunnable();
@@ -108,14 +103,12 @@ class TurnExecutionHelper
         return $commandObj->getResultTurn();
     }
 
-    public function processCommand(string $commandClassName, ?array $commandArg){
+    public function processCommand(Command\GeneralCommand $commandObj){
 
         $general = $this->getGeneral();
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-
-        $commandObj = buildGeneralCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandArg);
 
         while(true){
             $failReason = $commandObj->testRunnable();
@@ -230,6 +223,8 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
 
         $currentTurn = null;
 
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
         foreach($generalsTodo as $rawGeneral){
             $generalCommand = $rawGeneral['action'];
             $generalArg = Json::decode($rawGeneral['arg'])??[];
@@ -243,6 +238,9 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
 
             $general = General::createGeneralObjFromDB($rawGeneral['no']);
             $turnObj = new static($general);
+
+            $env = $gameStor->getAll(true);
+            $generalCommandObj = buildGeneralCommandClass($generalCommand, $general, $env, $generalArg);
 
             $hasNationTurn = false;
             if($general->getVar('nation') != 0 && $general->getVar('level') >= 5){
@@ -258,15 +256,18 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 $hasNationTurn = true;
                 $nationCommand = $rawNationTurn['action']??null;
                 $nationArg = Json::decode($rawNationTurn['arg']??null);
+                $lastNationTurn = LastTurn::fromJson($lastNationTurn);
+                $nationCommandObj = buildNationCommandClass($nationCommand, $general, $env, $lastNationTurn, $nationArg);
             }
 
+            
             if($general->getVar('npc') >= 2){
                 $ai = new GeneralAI($turnObj->getGeneral());
                 if($hasNationTurn){
-                    [$nationCommand, $nationArg] = $ai->chooseNationTurn($nationCommand, $nationArg);
+                    $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
                 }
 
-                [$generalCommand, $generalArg] = $ai->chooseGeneralTurn($generalCommand, $generalArg); // npc AI 처리
+                $generalCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
                 
             }
             
@@ -274,13 +275,11 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 $turnObj->preprocessCommand();
                 if($hasNationTurn){
                     $resultNationTurn = $turnObj->processNationCommand(
-                        $nationCommand, 
-                        $nationArg, 
-                        LastTurn::fromJson($lastNationTurn)
+                        $nationCommandObj
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
                 }
-                $turnObj->processCommand($generalCommand, $generalArg);
+                $turnObj->processCommand($generalCommandObj);
             }
             pullNationCommand($general->getVar('nation'), $general->getVar('level'));
             pullGeneralCommand($general->getID());

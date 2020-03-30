@@ -26,6 +26,8 @@ class AutorunNationPolicy {
     static $선포 = '선포';
     static $천도 = '천도';
 
+    
+
     //실제 행동
     static public $defaultPriority = [
         '선포',
@@ -51,6 +53,18 @@ class AutorunNationPolicy {
         'NPC몰수',
 
         'NPC전방발령',
+    ];
+
+    //순서는 중요하지 않음
+    static public $availableInstantTurn = [
+        '유저장긴급포상'=>true,
+        '유저장후방발령'=>true,
+        '유저장전방발령'=>true,
+        '유저장포상'=>true,
+        'NPC긴급포상'=>true,
+        'NPC후방발령'=>true,
+        'NPC포상'=>true,
+        'NPC전방발령'=>true,
     ];
 
     public $priority = [];

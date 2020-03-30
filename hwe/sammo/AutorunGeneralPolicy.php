@@ -16,7 +16,7 @@ class AutorunGeneralPolicy{
     static $한계징병 = '한계징병';
     static $고급병종 = '고급병종';
     static $전투준비 = '전투준비';
-    public $소집해제 = '소집해제';
+    static $소집해제 = '소집해제';
 
     static $출병 = '출병';
     
