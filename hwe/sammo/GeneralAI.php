@@ -3,8 +3,10 @@
 namespace sammo;
 
 use Generator;
+use PDO;
 use sammo\Command\GeneralCommand;
 use sammo\Command\NationCommand;
+use SplQueue;
 
 class GeneralAI
 {
@@ -30,6 +32,7 @@ class GeneralAI
 
     protected $dipState;
     protected $warTargetNation;
+    /** @var bool */
     protected $attackable;
 
     protected $devRate = null;
@@ -252,12 +255,185 @@ class GeneralAI
     // 군주 행동
     protected function do선포(LastTurn $lastTurn): ?NationCommand
     {
-        return null;
+        $general = $this->general;
+
+        if($general->getVar('level') < 12){
+            return null;
+        }
+
+        if($this->dipState !== self::d평화){
+            return null;
+        }
+
+        if($this->attackable){
+            return null;
+        }
+
+        $targetNationID = $this->findWarTarget();
+        if($targetNationID === null){
+            return null;
+        }
+
+        $cmd = buildNationCommandClass('che_선전포고', $general, $this->env, $lastTurn, [
+            'destNationID' => $targetNationID
+        ]);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
     protected function do천도(LastTurn $lastTurn): ?NationCommand
     {
-        return null;
+        $general = $this->general;
+
+        //천도를 한턴 넣었다면 계속 넣는다.
+        if($lastTurn->getCommand() === 'che_천도'){
+            $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, $lastTurn->getArg());
+            if($cmd->isRunnable()){
+                return $cmd;
+            }
+        }
+
+        /*
+        도시 점수 공식
+        sqrt(인구) * sqrt(모든 아국 도시까지의 거리의 합) * sqrt(내정률)
+        가장 높은 도시로 이동하되, 상위 25% 내에 들었다면 정지
+        */
+
+
+        //checkSupply()와 비슷하면서 다름
+        $db = DB::db();
+        $nationCityIDList = [];
+        foreach($db->queryFirstColumn('SELECT city FROM nation WHERE nation = %i', $general->getNationID()) as $cityID){
+            $nationCityIDList[$cityID] = true;
+        }
+
+        //애초에 도시랄 것이 없음
+        if(count($nationCityIDList) <= 1){
+            return null;
+        }
+
+        $queue = new \SplQueue();
+        $capital = $this->nation['capital'];
+        $cityList = [
+            $capital=>0
+        ];
+
+        $queue->enqueue($capital);
+        $distanceList = [
+        ];
+
+        //수도와 연결된 도시 탐색
+        while(!$queue->isEmpty()){
+            $cityID = $queue->dequeue();
+            
+            foreach(CityConst::byID($cityID)->path as $nextCityID){
+                if(!key_exists($cityID, $nationCityIDList)){
+                    continue;
+                }
+                if(key_exists($cityID, $cityList)){
+                    continue;
+                }
+                $cityList[$cityID] = 0;
+                $queue->enqueue($nextCityID);
+            }
+        }
+
+        $cityList = array_keys($cityList);
+
+        //수도와 연결된 도시가 없음
+        if(count($cityList) == 1){
+            return null;
+        }
+
+        //기본 간선
+        foreach(array_keys($cityList) as $cityID){
+            $nearList = [$cityID=>0];
+            foreach(CityConst::byID($cityID)->path as $nextCityID){
+                if(!key_exists($nextCityID, $cityList)){
+                    continue;
+                }
+                $nearList[$nextCityID] = 1;
+            }
+            $distanceList[$cityID] = $nearList;
+        }
+
+        //Floyd-Warshall
+        foreach($cityList as $cityStop){
+            foreach($cityList as $cityFrom){
+                foreach($cityList as $cityTo){
+                    if(!key_exists($cityStop, $distanceList[$cityFrom])){
+                        continue;
+                    }
+                    if(!key_exists($cityTo, $distanceList[$cityStop])){
+                        continue;
+                    }
+
+                    if(!key_exists($cityTo, $distanceList[$cityFrom])){
+                        $distanceList[$cityFrom][$cityTo] = $distanceList[$cityFrom][$cityStop] + $distanceList[$cityStop][$cityTo];
+                        continue;
+                    }
+                    
+                    $distanceList[$cityFrom][$cityTo] = min($distanceList[$cityFrom][$cityStop] + $distanceList[$cityStop][$cityTo], $distanceList[$cityFrom][$cityTo]);
+                }
+            }
+        }
+
+        $maxDistance = 0;
+        foreach($distanceList as $cityID=>$subDistanceList){
+            $maxDistance = max($maxDistance, array_sum($subDistanceList));
+        }
+
+        $cityScoreList = [];
+        foreach($db->query('SELECT city, pop, agri, agri_max, comm, comm_max, secu, secu_max, def, def_max, wall, wall_max') as $city){
+            $cityID = $city['city'];
+
+            $cityScoreList[$cityID] =  sqrt($city['pop']) 
+                * $maxDistance / array_sum($distanceList[$cityID])
+                * sqrt(
+                    ($city['agri'] + $city['comm'] + $city['secu'] + $city['def'] + $city['wall']) /
+                    ($city['agri_max'] + $city['comm_max'] + $city['secu_max'] + $city['def_max'] + $city['wall_max'])
+                );
+        }
+
+        arsort($cityScoreList);
+
+        $enoughLimit = ceil(count($cityScoreList) * 0.25);
+        foreach(array_keys($cityScoreList) as $idx=>$cityID){
+            if($idx > $enoughLimit){
+                break;
+            }
+            if($idx === $capital){
+                return null;
+            }
+        }
+
+        $finalCityID = Util::array_first_key($cityScoreList);
+        $dist = $distanceList[$capital][$finalCityID];
+        $targetCityID = $finalCityID;
+        if($dist > 1){
+            $candidates = [];
+            foreach(CityConst::byID($capital)->path as $stopID){
+                if(!key_exists($stopID, $distanceList)){
+                    continue;
+                }
+                if($distanceList[$stopID][$finalCityID] + 1 === $dist){
+                    $candidates[] = $stopID;
+                }
+            }
+            $targetCityID = Util::choiceRandom($candidates);
+        }
+        
+        $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, [
+            'destCityID'=>$targetCityID
+        ]);
+
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        
+        return $cmd;
     }
 
     //일반장 행동
