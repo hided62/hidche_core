@@ -6,13 +6,13 @@ class GameUnitConstBase{
 
     }    
 
-    const T_CASTLE = -1;
-    const T_MISC = -2;
-    const T_FOOTMAN = 0;
-    const T_ARCHER = 1;
-    const T_CAVALRY = 2;
-    const T_WIZARD = 3;
-    const T_SIEGE = 4;
+    const T_CASTLE = 0;
+    const T_FOOTMAN = 1;
+    const T_ARCHER = 2;
+    const T_CAVALRY = 3;
+    const T_WIZARD = 4;
+    const T_SIEGE = 5;
+    const T_MISC = 6;
 
     const DEFAULT_CREWTYPE = 0;
     
@@ -34,7 +34,7 @@ class GameUnitConstBase{
 
     protected static $_buildData = [
         [
-            -1, self::T_CASTLE, '성벽',
+            1000, self::T_CASTLE, '성벽',
             100, 100, 7, 0, 0,   99,  9,    
             999999, null,     null,     999999, 
             [],//성벽은 공격할 수 없다.
@@ -44,7 +44,7 @@ class GameUnitConstBase{
         ],
 
         [
-            0, self::T_FOOTMAN, '보병',
+            1100, self::T_FOOTMAN, '보병',
             100, 150, 7, 10, 0,   9,  9,    
             0, null,     null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -53,7 +53,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            1, self::T_FOOTMAN, '청주병',   
+            1101, self::T_FOOTMAN, '청주병',   
             100, 200, 7, 10, 0,  10, 11, 
             1000, null,     ['중원'], 0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -62,7 +62,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            2, self::T_FOOTMAN, '수병',     
+            1102, self::T_FOOTMAN, '수병',     
             150, 150, 7, 10, 0,  11, 10, 
             1000, null,     ['오월'], 0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -71,7 +71,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            3, self::T_FOOTMAN, '자객병',   
+            1103, self::T_FOOTMAN, '자객병',   
             100, 150, 8, 20, 0,  10, 10, 
             2000, ['저'],   null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -80,7 +80,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            4, self::T_FOOTMAN, '근위병',   
+            1104, self::T_FOOTMAN, '근위병',   
             150, 200, 7, 10, 0,  12, 12, 
             3000, ['낙양'], null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -89,7 +89,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            5, self::T_FOOTMAN, '등갑병',   
+            1105, self::T_FOOTMAN, '등갑병',   
             100, 225, 7,  5, 0,  13, 10, 
             1000, null,     ['남중'], 0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -99,7 +99,7 @@ class GameUnitConstBase{
         ],
 
         [
-            10, self::T_ARCHER, '궁병',     
+            1200, self::T_ARCHER, '궁병',     
             100, 100, 7, 20, 0,  10, 10,    
             0, null,     null,     0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
@@ -108,7 +108,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            11, self::T_ARCHER, '궁기병',   
+            1201, self::T_ARCHER, '궁기병',   
             100, 100, 8, 30, 0,  11, 12, 
             1000, null,     ['동이'], 0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
@@ -117,7 +117,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            12, self::T_ARCHER, '연노병',   
+            1202, self::T_ARCHER, '연노병',   
             150, 100, 8, 20, 0,  12, 11, 
             1000, null,     ['서촉'], 0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
@@ -126,7 +126,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            13, self::T_ARCHER, '강궁병',   
+            1203, self::T_ARCHER, '강궁병',   
             150, 150, 7, 20, 0,  13, 13, 
             3000, ['양양'], null,     0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
@@ -135,7 +135,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            14, self::T_ARCHER, '석궁병',   
+            1204, self::T_ARCHER, '석궁병',   
             200, 100, 7, 20, 0,  13, 13, 
             3000, ['건업'], null,     0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
@@ -145,7 +145,7 @@ class GameUnitConstBase{
         ],
 
         [
-            20, self::T_CAVALRY, '기병',     
+            1300, self::T_CAVALRY, '기병',     
             150, 100, 7,  5, 0,  11, 11,    
             0, null,     null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -154,7 +154,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            21, self::T_CAVALRY, '백마병',   
+            1301, self::T_CAVALRY, '백마병',   
             200, 100, 7,  5, 0,  12, 13, 
             1000, null,     ['하북'], 0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -163,7 +163,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            22, self::T_CAVALRY, '중장기병', 
+            1302, self::T_CAVALRY, '중장기병', 
             150, 150, 7,  5, 0,  13, 12, 
             1000, null,     ['서북'], 0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -172,7 +172,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            23, self::T_CAVALRY, '돌격기병', 
+            1303, self::T_CAVALRY, '돌격기병', 
             200, 100, 8,  5, 0,  13, 11, 
             2000, ['흉노'], null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -181,7 +181,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            24, self::T_CAVALRY, '철기병',  
+            1304, self::T_CAVALRY, '철기병',  
             100, 200, 7,  5, 0,  11, 13, 
             2000, ['강'],   null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -190,7 +190,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            25, self::T_CAVALRY, '수렵기병', 
+            1305, self::T_CAVALRY, '수렵기병', 
             150, 100, 8, 15, 0,  12, 12, 
             2000, ['산월'], null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -199,7 +199,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            26, self::T_CAVALRY, '맹수병',   
+            1306, self::T_CAVALRY, '맹수병',   
             250, 175, 6,  0, 0,  16, 16, 
             2000, ['남만'], null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -208,7 +208,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            27, self::T_CAVALRY, '호표기병', 
+            1307, self::T_CAVALRY, '호표기병', 
             200, 150, 7,  5, 0,  14, 14, 
             3000, ['허창'], null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -218,7 +218,7 @@ class GameUnitConstBase{
         ],
 
         [
-            30, self::T_WIZARD, '귀병',      
+            1400, self::T_WIZARD, '귀병',      
             80,  80, 7,  5, 0.5,  9,  9,    
             0, null,     null,     0, 
             [self::T_SIEGE=>1.2],
@@ -227,7 +227,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            31, self::T_WIZARD, '신귀병',    
+            1401, self::T_WIZARD, '신귀병',    
             80,  80, 7, 20, 0.6, 10, 10, 
             1000, null,     ['초'],   0, 
             [self::T_SIEGE=>1.2],
@@ -236,7 +236,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            32, self::T_WIZARD, '백귀병',    
+            1402, self::T_WIZARD, '백귀병',    
             80, 130, 7,  5, 0.6,  9, 11, 
             2000, ['오환'], null,     0, 
             [self::T_SIEGE=>1.2],
@@ -245,7 +245,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            33, self::T_WIZARD, '흑귀병',   
+            1403, self::T_WIZARD, '흑귀병',   
             130,  80, 7,  5, 0.6, 11,  9, 
             2000, ['왜'],   null,     0, 
             [self::T_SIEGE=>1.2],
@@ -254,7 +254,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            34, self::T_WIZARD, '악귀병',   
+            1404, self::T_WIZARD, '악귀병',   
             130, 130, 7,  0, 0.6, 12, 12, 
             3000, ['장안'], null,     0, 
             [self::T_SIEGE=>1.2],
@@ -263,7 +263,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            35, self::T_WIZARD, '남귀병',    
+            1405, self::T_WIZARD, '남귀병',    
             60,  60, 7, 10, 0.8,  8,  8, 
             1000, null,     null,     0, 
             [self::T_SIEGE=>1.2],
@@ -272,7 +272,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            36, self::T_WIZARD, '황귀병',   
+            1406, self::T_WIZARD, '황귀병',   
             110, 110, 7,  0, 0.8, 13, 10, 
             3000, ['낙양'], null,     0, 
             [self::T_SIEGE=>1.2],
@@ -281,7 +281,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            37, self::T_WIZARD, '천귀병',    
+            1407, self::T_WIZARD, '천귀병',    
             80, 130, 7, 15, 0.6, 11, 12, 
             3000, ['성도'], null,     0, 
             [self::T_SIEGE=>1.2],
@@ -290,7 +290,7 @@ class GameUnitConstBase{
             null, null
         ],
         [
-            38, self::T_WIZARD, '마귀병',   
+            1408, self::T_WIZARD, '마귀병',   
             130,  80, 7, 15, 0.6, 12, 11, 
             3000, ['업'],   null,     0, 
             [self::T_SIEGE=>1.2],
@@ -300,7 +300,7 @@ class GameUnitConstBase{
         ],
 
         [
-            40, self::T_SIEGE, '정란',     
+            1500, self::T_SIEGE, '정란',     
             100, 100, 6,  0, 0,  15,  5,    
             0, null,     null,     3, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>1.8],
@@ -309,7 +309,7 @@ class GameUnitConstBase{
             ['che_성벽부상무효'], null
         ],
         [
-            41, self::T_SIEGE, '충차',     
+            1501, self::T_SIEGE, '충차',     
             150, 100, 6,  0, 0,  20,  5, 
             1000, null,     null,     3, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>2.4],
@@ -318,7 +318,7 @@ class GameUnitConstBase{
             ['che_성벽부상무효'], null
         ],
         [
-            42, self::T_SIEGE, '벽력거',   
+            1502, self::T_SIEGE, '벽력거',   
             200, 100, 6,  0, 0,  25,  5, 
             3000, ['업'],   null,     0, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>1.8],
@@ -327,7 +327,7 @@ class GameUnitConstBase{
             ['che_성벽부상무효'], null
         ],
         [
-            43, self::T_SIEGE, '목우',      
+            1503, self::T_SIEGE, '목우',      
             50, 200, 5,  0, 0,  30,  5, 
             3000, ['성도'], null,     0, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8],
@@ -378,6 +378,9 @@ class GameUnitConstBase{
     }
 
     public static function byID(int $id): ?GameUnitDetail{
+        if($id < 1000){
+            throw new \InvalidArgumentException('적절한 id는 1000이상이어야합니다:'.$id);
+        }
         static::_generate();
         return static::$constID[$id]??null;
     }

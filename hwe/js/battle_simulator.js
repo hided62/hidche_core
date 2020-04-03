@@ -176,11 +176,11 @@ jQuery(function($){
         setVal('.form_atmos', data.atmos);
         setVal('.form_train', data.train);
 
-        setVal('.form_dex0', data.dex0);
-        setVal('.form_dex10', data.dex10);
-        setVal('.form_dex20', data.dex20);
-        setVal('.form_dex30', data.dex30);
-        setVal('.form_dex40', data.dex40);
+        setVal('.form_dex0', data.dex1);
+        setVal('.form_dex10', data.dex2);
+        setVal('.form_dex20', data.dex3);
+        setVal('.form_dex30', data.dex4);
+        setVal('.form_dex40', data.dex5);
         setVal('.form_defence_train', data.defence_train);
 
         if(!setGeneralNo($general, data.no)){
@@ -223,11 +223,11 @@ jQuery(function($){
             atmos:getInt('.form_atmos'),
             train:getInt('.form_train'),
             
-            dex0:getInt('.form_dex0'),
-            dex10:getInt('.form_dex10'),
-            dex20:getInt('.form_dex20'),
-            dex30:getInt('.form_dex30'),
-            dex40:getInt('.form_dex40'),
+            dex1:getInt('.form_dex0'),
+            dex2:getInt('.form_dex10'),
+            dex3:getInt('.form_dex20'),
+            dex4:getInt('.form_dex30'),
+            dex5:getInt('.form_dex40'),
             defence_train:getInt('.form_defence_train'),
         };
     }
@@ -373,7 +373,7 @@ jQuery(function($){
 
             dedication:0,
 
-            recwar:'2018-08-26 12:00',
+            recent_war:'2018-08-26 12:00',
             experience:Math.pow(generalData.explevel, 2),
         };
 

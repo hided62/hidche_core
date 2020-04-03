@@ -175,7 +175,7 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $avgGen = $db->queryFirstRow(
             'SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp,
-            avg(dex0+dex10+dex20+dex30) as dex_t, avg(age) as age, avg(dex40) as dex40
+            avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
             from general where nation=%i',
             $nationID
         );
@@ -275,7 +275,7 @@ class che_인재탐색 extends Command\GeneralCommand{
             $dexVal[1],
             $dexVal[2],
             $dexVal[3],
-            $avgGen['dex40']
+            $avgGen['dex5']
         );
 
         $newNPC->build($this->env);

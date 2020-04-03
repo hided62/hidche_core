@@ -819,29 +819,29 @@ function generalInfo2(General $generalObj) {
         $dedication = getHonor($general['dedication'])." ({$general['dedication']})";
     }
 
-    $dex0  = $general['dex0']  / GameConst::$dexLimit * 100;
-    $dex10 = $general['dex10'] / GameConst::$dexLimit * 100;
-    $dex20 = $general['dex20'] / GameConst::$dexLimit * 100;
-    $dex30 = $general['dex30'] / GameConst::$dexLimit * 100;
-    $dex40 = $general['dex40'] / GameConst::$dexLimit * 100;
+    $dex1  = $general['dex1']  / GameConst::$dexLimit * 100;
+    $dex2 = $general['dex2'] / GameConst::$dexLimit * 100;
+    $dex3 = $general['dex3'] / GameConst::$dexLimit * 100;
+    $dex4 = $general['dex4'] / GameConst::$dexLimit * 100;
+    $dex5 = $general['dex5'] / GameConst::$dexLimit * 100;
 
-    if($dex0 > 100) { $dex0 = 100; }
-    if($dex10 > 100) { $dex10 = 100; }
-    if($dex20 > 100) { $dex20 = 100; }
-    if($dex30 > 100) { $dex30 = 100; }
-    if($dex40 > 100) { $dex40 = 100; }
+    if($dex1 > 100) { $dex1 = 100; }
+    if($dex2 > 100) { $dex2 = 100; }
+    if($dex3 > 100) { $dex3 = 100; }
+    if($dex4 > 100) { $dex4 = 100; }
+    if($dex5 > 100) { $dex5 = 100; }
 
-    $general['dex0_text']  = getDexCall($general['dex0']);
-    $general['dex10_text'] = getDexCall($general['dex10']);
-    $general['dex20_text'] = getDexCall($general['dex20']);
-    $general['dex30_text'] = getDexCall($general['dex30']);
-    $general['dex40_text'] = getDexCall($general['dex40']);
+    $general['dex1_text']  = getDexCall($general['dex1']);
+    $general['dex2_text'] = getDexCall($general['dex2']);
+    $general['dex3_text'] = getDexCall($general['dex3']);
+    $general['dex4_text'] = getDexCall($general['dex4']);
+    $general['dex5_text'] = getDexCall($general['dex5']);
 
-    $general['dex0_short'] = sprintf('%.1fK', $general['dex0']/1000);
-    $general['dex10_short'] = sprintf('%.1fK', $general['dex10']/1000);
-    $general['dex20_short'] = sprintf('%.1fK', $general['dex20']/1000);
-    $general['dex30_short'] = sprintf('%.1fK', $general['dex30']/1000);
-    $general['dex40_short'] = sprintf('%.1fK', $general['dex40']/1000);
+    $general['dex1_short'] = sprintf('%.1fK', $general['dex1']/1000);
+    $general['dex2_short'] = sprintf('%.1fK', $general['dex2']/1000);
+    $general['dex3_short'] = sprintf('%.1fK', $general['dex3']/1000);
+    $general['dex4_short'] = sprintf('%.1fK', $general['dex4']/1000);
+    $general['dex5_short'] = sprintf('%.1fK', $general['dex5']/1000);
 
     echo "<table width=498 class='tb_layout bg2'>
     <tr><td style='text-align:center;' colspan=6 class='bg1'><b>추 가 정 보</b></td></tr>
@@ -880,33 +880,33 @@ function generalInfo2(General $generalObj) {
     <tr><td style='text-align:center;' colspan=4 class='bg1'><b>숙 련 도</b></td></tr>
     <tr height=16>
         <td width=64 style='text-align:center;' class='bg1'><b>보병</b></td>
-        <td width=40>　{$general['dex0_text']}</td>
-        <td width=60 align=right>{$general['dex0_short']}&nbsp;</td>
-        <td width=330 style='text-align:center;'>".bar($dex0, 16)."</td>
+        <td width=40>　{$general['dex1_text']}</td>
+        <td width=60 align=right>{$general['dex1_short']}&nbsp;</td>
+        <td width=330 style='text-align:center;'>".bar($dex1, 16)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>궁병</b></td>
-        <td>　{$general['dex10_text']}</td>
-        <td align=right>{$general['dex10_short']}&nbsp;</td>
-        <td style='text-align:center;'>".bar($dex10, 16)."</td>
+        <td>　{$general['dex2_text']}</td>
+        <td align=right>{$general['dex2_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex2, 16)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>기병</b></td>
-        <td>　{$general['dex20_text']}</td>
-        <td align=right>{$general['dex20_short']}&nbsp;</td>
-        <td style='text-align:center;'>".bar($dex20, 16)."</td>
+        <td>　{$general['dex3_text']}</td>
+        <td align=right>{$general['dex3_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex3, 16)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>귀병</b></td>
-        <td>　{$general['dex30_text']}</td>
-        <td align=right>{$general['dex30_short']}&nbsp;</td>
-        <td style='text-align:center;'>".bar($dex30, 16)."</td>
+        <td>　{$general['dex4_text']}</td>
+        <td align=right>{$general['dex4_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex4, 16)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>차병</b></td>
-        <td>　{$general['dex40_text']}</td>
-        <td align=right>{$general['dex40_short']}&nbsp;</td>
-        <td style='text-align:center;'>".bar($dex40, 16)."</td>
+        <td>　{$general['dex5_text']}</td>
+        <td align=right>{$general['dex5_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex5, 16)."</td>
     </tr>
 </table>";
 }
@@ -1300,7 +1300,7 @@ function addAge() {
             pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
         }
 
-        foreach($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
+        foreach($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
             $special2 = SpecialityConst::pickSpecialWar($general);
             $specialClass = buildGeneralSpecialWarClass($special2);
             $specialText = $specialClass->getName();
@@ -1371,11 +1371,11 @@ function CheckHall($no) {
         ["winrate", 'rank'],
         ["killcrew", 'rank'],
         ["killrate", 'calc'],
-        ["dex0", 'natural'],
-        ["dex10", 'natural'],
-        ["dex20", 'natural'],
-        ["dex30", 'natural'],
-        ["dex40", 'natural'],
+        ["dex1", 'natural'],
+        ["dex2", 'natural'],
+        ["dex3", 'natural'],
+        ["dex4", 'natural'],
+        ["dex5", 'natural'],
         ["ttrate", 'calc'],
         ["tlrate", 'calc'],
         ["tprate", 'calc'],

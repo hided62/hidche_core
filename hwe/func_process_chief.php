@@ -1494,7 +1494,7 @@ function process_76(&$general) {
         $avgGenNum = $db->queryFirstField('SELECT avg(gennum) FROM nation');
         $addGenCount = 5 + Util::round($avgGenNum / 10);
 
-        $avgGen = $db->queryFirstRow('SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) as dex_t, avg(age) as age, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
+        $avgGen = $db->queryFirstRow('SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp, avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5 from general where npc < 5 and nation = %i', $general['nation']);
 
         $dexTotal = $avgGen['dex_t'];
 
@@ -1608,14 +1608,14 @@ function process_76(&$general) {
                     level,gold,rice,crew,crewtype,train,atmos,tnmt,
                     weapon,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                     makelimit,bornyear,deadyear,
-                    dex0, dex10, dex20, dex30, dex40
+                    dex1, dex2, dex3, dex4, dex5
                 ) values (
                     '$npc','$npc','$affinity','$name','$picture','{$nation['nation']}',
                     '{$general['city']}','$leadership','$strength','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
                     '1','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','{$avgGen['age']}','1','$personal','0','0','0','0','',
                     '0','$bornyear','$deadyear',
-                    '{$dexVal[0]}','{$dexVal[1]}','{$dexVal[2]}','{$dexVal[3]}','{$avgGen['dex40']}'
+                    '{$dexVal[0]}','{$dexVal[1]}','{$dexVal[2]}','{$dexVal[3]}','{$avgGen['dex5']}'
                 )",
                 $connect
             ) or Error(__LINE__.MYDB_error($connect),"");

@@ -17,8 +17,8 @@ $queryMap = [
     'turntime' => ['최근턴', 0, function($lhs, $rhs){
         return -($lhs['turntime']<=>$rhs['turntime']);
     }],
-    'recwar' => ['최근전투', 1, function($lhs, $rhs){
-        return -($lhs['recwar']<=>$rhs['recwar']);
+    'recent_war' => ['최근전투', 1, function($lhs, $rhs){
+        return -($lhs['recent_war']<=>$rhs['recent_war']);
     }],
     'name' => ['장수명', 0, function($lhs, $rhs){
         if($lhs['npc'] !== $rhs['npc']){

@@ -110,7 +110,7 @@ class RaiseInvader extends \sammo\Event\Action{
 
         $dex = $this->dex;
         if($dex < 0){
-            $dex = $db->queryFirstField("SELECT avg(dex0 + dex10 + dex20 + dex30 + dex40)/5 from nation where `level`>0");
+            $dex = $db->queryFirstField("SELECT avg(dex1 + dex2 + dex3 + dex4 + dex5)/5 from nation where `level`>0");
             $dex /= -1 * $this->dex;
         }
 

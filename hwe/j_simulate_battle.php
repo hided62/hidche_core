@@ -83,13 +83,13 @@ $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
         'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item', 
-        'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
-        'recwar'
+        'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
+        'recent_war'
     ],
     'integer'=>[
         'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
         'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item',
-        'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
+        'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
     ],
     'min'=>[
         ['no', 1],
@@ -101,11 +101,11 @@ $generalCheck = [
         ['experience', 0],
         ['gold', 0],
         ['rice', 0],
-        ['dex0', 0],
-        ['dex10', 0],
-        ['dex20', 0],
-        ['dex30', 0],
-        ['dex40', 0],
+        ['dex1', 0],
+        ['dex2', 0],
+        ['dex3', 0],
+        ['dex4', 0],
+        ['dex5', 0],
     ],
     'between'=>[
         ['train', [40, GameConst::$maxTrainByWar]],

@@ -366,8 +366,7 @@ class General implements iAction{
             $exp *= ($this->getVar('train') + $this->getVar('atmos')) / 200;
         }
 
-        $ntype = $armType*10;
-        $dexType = "dex{$ntype}";
+        $dexType = "dex{$armType}";
 
         $this->increaseVar($dexType, $exp);
     }
@@ -446,11 +445,11 @@ class General implements iAction{
         $this->setVar('age', 20);
         $this->setVar('specage', 0);
         $this->setVar('specage2', 0);
-        $this->multiplyVar('dex0', 0.5);
-        $this->multiplyVar('dex10', 0.5);
-        $this->multiplyVar('dex20', 0.5);
-        $this->multiplyVar('dex30', 0.5);
-        $this->multiplyVar('dex40', 0.5);
+        $this->multiplyVar('dex1', 0.5);
+        $this->multiplyVar('dex2', 0.5);
+        $this->multiplyVar('dex3', 0.5);
+        $this->multiplyVar('dex4', 0.5);
+        $this->multiplyVar('dex5', 0.5);
 
         $this->setRankVar('firenum', 0);
         $this->setRankVar('warnum', 0);
@@ -769,8 +768,8 @@ class General implements iAction{
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
-            'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
-            'recwar', 'last_turn', 'myset',
+            'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 
+            'recent_war', 'last_turn', 'myset',
             'specage', 'specage2', 'con', 'connect', 'owner', 'aux'
         ];
 

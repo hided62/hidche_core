@@ -7,7 +7,7 @@ class GameUnitConst extends GameUnitConstBase
 
     protected static $_buildData = [
         [
-            -1, self::T_CASTLE, '성벽',
+            1000, self::T_CASTLE, '성벽',
             100, 100, 7, 0, 0,   99,  9,    
             999999, null,     null,     999999, 
             [],//성벽은 공격할 수 없다.
@@ -16,7 +16,7 @@ class GameUnitConst extends GameUnitConstBase
             null, null
         ],
         [
-            0, self::T_FOOTMAN, '보병',
+            1100, self::T_FOOTMAN, '보병',
             100, 150, 7, 10, 0,   18,  18,    
             0, null,     null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8],
@@ -26,7 +26,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            10, self::T_ARCHER, '궁병',     
+            1200, self::T_ARCHER, '궁병',     
             100, 100, 7, 20, 0,  20, 20,    
             0, null,     null,     0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8],
@@ -36,7 +36,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            20, self::T_CAVALRY, '기병',     
+            1300, self::T_CAVALRY, '기병',     
             150, 100, 7,  5, 0,  22, 22,    
             0, null,     null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8],
@@ -46,7 +46,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            30, self::T_WIZARD, '귀병',      
+            1400, self::T_WIZARD, '귀병',      
             80,  80, 7,  5, 0.5,  18,  18,    
             0, null,     null,     0, 
             [],
@@ -55,7 +55,7 @@ class GameUnitConst extends GameUnitConstBase
             null, null
         ],
         [
-            35, self::T_WIZARD, '남귀병',    
+            1405, self::T_WIZARD, '남귀병',    
             60,  60, 7, 10, 0.8,  16,  16, 
             1000, null,     null,     0, 
             [],
@@ -65,7 +65,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            40, self::T_SIEGE, '정란',     
+            1500, self::T_SIEGE, '정란',     
             100, 100, 6,  0, 0,  7,  3,    
             0, null,     null,     0, 
             [self::T_CASTLE=>1.8],
@@ -74,7 +74,7 @@ class GameUnitConst extends GameUnitConstBase
             ['che_성벽부상무효'], null
         ],
         [
-            41, self::T_SIEGE, '충차',     
+            1501, self::T_SIEGE, '충차',     
             150, 100, 6,  0, 0,  10,  3, 
             1000, null,     null,     3, 
             [self::T_CASTLE=>2.4],
@@ -83,7 +83,7 @@ class GameUnitConst extends GameUnitConstBase
             ['che_성벽부상무효'], null
         ],
         [
-            42, self::T_SIEGE, '벽력거',   
+            1502, self::T_SIEGE, '벽력거',   
             200, 100, 6,  0, 0,  20,  4, 
             3000, ['업'],   null,     0, 
             [self::T_CASTLE=>1.8],
@@ -92,7 +92,7 @@ class GameUnitConst extends GameUnitConstBase
             ['che_성벽부상무효'], null
         ],
         [
-            43, self::T_SIEGE, '목우',      
+            1503, self::T_SIEGE, '목우',      
             50, 200, 5,  0, 0,  15,  3, 
             3000, ['성도'], null,     0, 
             [],

@@ -136,11 +136,11 @@ class SpecialityConst{
 
     private static function calcCondDexterity(array $general) : int {
         $dex = [
-            static::ARMY_FOOTMAN => $general['dex0']??0,
-            static::ARMY_ARCHER => $general['dex10']??0,
-            static::ARMY_CAVALRY => $general['dex20']??0,
-            static::ARMY_WIZARD => $general['dex30']??0,
-            static::ARMY_SIEGE => $general['dex40']??0,
+            static::ARMY_FOOTMAN => $general['dex1']??0,
+            static::ARMY_ARCHER => $general['dex2']??0,
+            static::ARMY_CAVALRY => $general['dex3']??0,
+            static::ARMY_WIZARD => $general['dex4']??0,
+            static::ARMY_SIEGE => $general['dex5']??0,
         ];
 
         $dexSum = array_sum($dex);

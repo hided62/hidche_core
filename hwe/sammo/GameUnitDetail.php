@@ -83,20 +83,22 @@ class GameUnitDetail implements iAction{
         return $this->cost * getTechCost($tech) * $crew / 100;
     }
 
-    public function getAttackCoef($armType):float{
-        if($armType instanceof GameUnitDetail){
-            $armType = $armType->armType;
+    public function getAttackCoef(GameUnitDetail $opposeCrewType):float{
+        $opposeCrewTypeID = $opposeCrewType->id;
+        if(key_exists($opposeCrewTypeID, $this->attackCoef)){
+            return $this->attackCoef[$opposeCrewTypeID];
         }
-        assert(is_numeric($armType), '$armType should be int or GameUnitDetail');
-        return $this->attackCoef[$armType]??1;
+        $opposeArmType = $opposeCrewType->armType;
+        return $this->attackCoef[$opposeArmType]??1;
     }
 
-    public function getDefenceCoef($armType):float{
-        if($armType instanceof GameUnitDetail){
-            $armType = $armType->armType;
+    public function getDefenceCoef(GameUnitDetail $opposeCrewType):float{
+        $opposeCrewTypeID = $opposeCrewType->id;
+        if(key_exists($opposeCrewTypeID, $this->defenceCoef)){
+            return $this->defenceCoef[$opposeCrewTypeID];
         }
-        assert(is_numeric($armType), '$armType should be int or GameUnitDetail');
-        return $this->defenceCoef[$armType]??1;
+        $opposeArmType = $opposeCrewType->armType;
+        return $this->defenceCoef[$opposeArmType]??1;
     }
 
     public function getComputedAttack(General $general, int $tech){

@@ -162,11 +162,11 @@ if ($genius) {
         'leadership'=>$leadership,
         'strength'=>$strength,
         'intel'=>$intel,
-        'dex0'=>0,
-        'dex10'=>0,
-        'dex20'=>0,
-        'dex30'=>0,
-        'dex40'=>0
+        'dex1'=>0,
+        'dex2'=>0,
+        'dex3'=>0,
+        'dex4'=>0,
+        'dex5'=>0
     ]);
 } else {
     $specage2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/4 - $relYear / 2), 3) + $age;

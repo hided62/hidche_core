@@ -160,11 +160,11 @@ SELECT
     COUNT(B.nation) AS gennum,
     ROUND(AVG(B.connect), 1) AS connect,
     ROUND(AVG(B.con), 1) AS con,
-    ROUND(AVG(B.dex0)) AS dex0,
-    ROUND(AVG(B.dex10)) AS dex10,
-    ROUND(AVG(B.dex20)) AS dex20,
-    ROUND(AVG(B.dex30)) AS dex30,
-    ROUND(AVG(B.dex40)) AS dex40
+    ROUND(AVG(B.dex1)) AS dex1,
+    ROUND(AVG(B.dex2)) AS dex2,
+    ROUND(AVG(B.dex3)) AS dex3,
+    ROUND(AVG(B.dex4)) AS dex4,
+    ROUND(AVG(B.dex5)) AS dex5
 FROM nation A, general B
 WHERE A.nation=B.nation
 GROUP BY B.nation
@@ -184,11 +184,11 @@ switch($type) {
     case 10: $query .= " order by avg(B.explevel) desc"; break;
     case 11: $query .= " order by avg(B.connect) desc"; break;
     case 12: $query .= " order by avg(B.con) desc"; break;
-    case 13: $query .= " order by avg(B.dex0) desc"; break;
-    case 14: $query .= " order by avg(B.dex10) desc"; break;
-    case 15: $query .= " order by avg(B.dex20) desc"; break;
-    case 16: $query .= " order by avg(B.dex30) desc"; break;
-    case 17: $query .= " order by avg(B.dex40) desc"; break;
+    case 13: $query .= " order by avg(B.dex1) desc"; break;
+    case 14: $query .= " order by avg(B.dex2) desc"; break;
+    case 15: $query .= " order by avg(B.dex3) desc"; break;
+    case 16: $query .= " order by avg(B.dex4) desc"; break;
+    case 17: $query .= " order by avg(B.dex5) desc"; break;
 }
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nationCount = MYDB_num_rows($result);
@@ -238,11 +238,11 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=right>&nbsp;{$gen['avgs']}&nbsp;</td>
         <td align=right>&nbsp;{$gen['avgi']}&nbsp;</td>
         <td align=right>&nbsp;{$gen['avge']}&nbsp;</td>
-        <td align=right>&nbsp;{$nation['dex0']}&nbsp;</td>
-        <td align=right>&nbsp;{$nation['dex10']}&nbsp;</td>
-        <td align=right>&nbsp;{$nation['dex20']}&nbsp;</td>
-        <td align=right>&nbsp;{$nation['dex30']}&nbsp;</td>
-        <td align=right>&nbsp;{$nation['dex40']}&nbsp;</td>
+        <td align=right>&nbsp;{$nation['dex1']}&nbsp;</td>
+        <td align=right>&nbsp;{$nation['dex2']}&nbsp;</td>
+        <td align=right>&nbsp;{$nation['dex3']}&nbsp;</td>
+        <td align=right>&nbsp;{$nation['dex4']}&nbsp;</td>
+        <td align=right>&nbsp;{$nation['dex5']}&nbsp;</td>
         <td align=right>&nbsp;{$gen['crew']}/{$gen['leadership']}00&nbsp;</td>
         <td align=center>&nbsp;{$city['pop']}/{$city['pop_max']}&nbsp;</td>
         <td align=center>&nbsp;".sprintf('%.1f',$city['pop']/$city['pop_max']*100)."%&nbsp;</td>

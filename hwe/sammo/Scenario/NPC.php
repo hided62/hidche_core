@@ -52,11 +52,11 @@ class NPC{
     public $killturn = null;
 
     //XXX: 코드 못 바꾸나?
-    protected $dex0 = 0;
-    protected $dex10 = 0;
-    protected $dex20 = 0;
-    protected $dex30 = 0;
-    protected $dex40 = 0;
+    protected $dex1 = 0;
+    protected $dex2 = 0;
+    protected $dex3 = 0;
+    protected $dex4 = 0;
+    protected $dex5 = 0;
 
     public function __construct(
         int $affinity, 
@@ -149,11 +149,11 @@ class NPC{
     }
 
     public function setDex(int $footman, int $archer, int $cavalry, int $wizard, int $siege):self{
-        $this->dex0 = $footman;
-        $this->dex10 = $archer;
-        $this->dex20 = $cavalry;
-        $this->dex30 = $wizard;
-        $this->dex40 = $siege;
+        $this->dex1 = $footman;
+        $this->dex2 = $archer;
+        $this->dex3 = $cavalry;
+        $this->dex4 = $wizard;
+        $this->dex5 = $siege;
         return $this;
     }
 
@@ -339,11 +339,11 @@ class NPC{
             'makelimit'=>0,
             'bornyear'=>$this->birth,
             'deadyear'=>$this->death,
-            'dex0'=>$this->dex0,
-            'dex10'=>$this->dex10,
-            'dex20'=>$this->dex20,
-            'dex30'=>$this->dex30,
-            'dex40'=>$this->dex40,
+            'dex1'=>$this->dex1,
+            'dex2'=>$this->dex2,
+            'dex3'=>$this->dex3,
+            'dex4'=>$this->dex4,
+            'dex5'=>$this->dex5,
         ]);
         $this->generalID = $db->insertId();
         $turnRows = [];

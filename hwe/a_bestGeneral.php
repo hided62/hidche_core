@@ -101,11 +101,11 @@ $types = [
         }
         return $v;
     }],
-    ["보 병 숙 련 도", "int", function($v){$v['value'] = $v['dex0']; return $v; }],
-    ["궁 병 숙 련 도", "int", function($v){$v['value'] = $v['dex10']; return $v; }],
-    ["기 병 숙 련 도", "int", function($v){$v['value'] = $v['dex20']; return $v; }],
-    ["귀 병 숙 련 도", "int", function($v){$v['value'] = $v['dex30']; return $v; }],
-    ["차 병 숙 련 도", "int", function($v){$v['value'] = $v['dex40']; return $v; }],
+    ["보 병 숙 련 도", "int", function($v){$v['value'] = $v['dex1']; return $v; }],
+    ["궁 병 숙 련 도", "int", function($v){$v['value'] = $v['dex2']; return $v; }],
+    ["기 병 숙 련 도", "int", function($v){$v['value'] = $v['dex3']; return $v; }],
+    ["귀 병 숙 련 도", "int", function($v){$v['value'] = $v['dex4']; return $v; }],
+    ["차 병 숙 련 도", "int", function($v){$v['value'] = $v['dex5']; return $v; }],
     ["전 력 전 승 률", "percent", function($v){
         $totalCnt = $v['ttw']+$v['ttd']+$v['ttl'];
         if($totalCnt < 50){
@@ -165,7 +165,7 @@ $generals = [];
 foreach($db->query(
     "SELECT nation,no,name,name2 as owner_name, owner, picture, imgsvr, 
     experience, dedication,
-    dex0, dex10, dex20, dex30, dex40, 
+    dex1, dex2, dex3, dex4, dex5, 
     horse, weapon, book, item 
     FROM general WHERE %l", $btn == "NPC 보기"?"npc>=2":"npc<2") as $general
 ){

@@ -409,7 +409,7 @@ function postUpdateMonthly() {
             ) from city where nation=A.nation and supply=1
         ))
         +(select sum(leadership+strength+intel) from general where nation=A.nation)
-        +(select round(sum(dex0+dex10+dex20+dex30+dex40)/1000) from general where nation=A.nation)
+        +(select round(sum(dex1+dex2+dex3+dex4+dex5)/1000) from general where nation=A.nation)
         +(select round(sum(experience+dedication)/100) from general where nation=A.nation)
         +(select round(avg(connect)) from general where nation=A.nation)
     )/10)
@@ -1009,8 +1009,8 @@ function checkStatistic() {
     ];
 
     $avgGeneral = $db->queryFirstRow(
-        'SELECT avg(gold) as avggold, avg(rice) as avgrice, avg(dex0+dex10+dex20+dex30) as avgdex, 
-        max(dex0+dex10+dex20+dex30) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded
+        'SELECT avg(gold) as avggold, avg(rice) as avgrice, avg(dex1+dex2+dex3+dex4) as avgdex, 
+        max(dex1+dex2+dex3+dex4) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded
         FROM general'
     );
     $auxData['generals']['avg'] = $avgGeneral;
@@ -1047,7 +1047,7 @@ function checkStatistic() {
     $nationGeneralInfos = Util::convertArrayToDict(
         $db->query(
             'SELECT nation, sum(leadership+strength+intel) as abil,sum(gold+rice) as goldrice,
-            sum(dex0+dex10+dex20+dex30) as dex,sum(experience+dedication) as expded
+            sum(dex1+dex2+dex3+dex4) as dex,sum(experience+dedication) as expded
             from general GROUP BY nation'
         ),
         'nation'
@@ -1114,7 +1114,7 @@ function checkStatistic() {
     }
 
     foreach($db->queryAllLists(
-        'SELECT crewtype, count(crewtype) AS cnt FROM general WHERE recwar != NULL GROUP BY crewtype'
+        'SELECT crewtype, count(crewtype) AS cnt FROM general WHERE recent_war != NULL GROUP BY crewtype'
         ) as [$crewtype, $cnt]
     ){
         $crewtypeHists[$crewtype] = $cnt;

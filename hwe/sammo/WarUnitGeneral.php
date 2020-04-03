@@ -49,10 +49,10 @@ class WarUnitGeneral extends WarUnit{
         $this->general->increaseVar('warnum', 1);
 
         if($this->isAttacker){
-            $general->updateVar('recwar', $general->getTurnTime());
+            $general->updateVar('recent_war', $general->getTurnTime());
         }
         else if($oppose !== null){
-            $general->updateVar('recwar', $oppose->getGeneral()->getTurnTime());
+            $general->updateVar('recent_war', $oppose->getGeneral()->getTurnTime());
         }
     }
 
@@ -203,29 +203,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function addDex(GameUnitDetail $crewType, float $exp){
-        $general = $this->general;
-        $armType = $crewType->armType;
-
-        if($armType == GameUnitConst::T_CASTLE){
-            $armType = GameUnitConst::T_SIEGE;
-        }
-
-        if($armType < 0){
-            return;
-        }
-
-        if($armType == GameUnitConst::T_WIZARD) {
-            $exp *= 0.9;
-        }
-        else if($armType == GameUnitConst::T_SIEGE) {
-            $exp *= 0.9;
-        }
-        $exp *= ($this->getComputedTrain() + $this->getComputedAtmos()) / 200;
-
-        $ntype = $armType*10;
-        $dexType = "dex{$ntype}";
-
-        $general->increaseVar($dexType, $exp);
+        $this->general->addDex($crewType, $exp, false);
     }
 
     function decreaseHP(int $damage):int{

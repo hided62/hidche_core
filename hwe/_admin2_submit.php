@@ -111,7 +111,7 @@ switch($btn) {
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
         $text = "특기 부여!";
 
-        foreach($db->query("SELECT `no`,leadership,strength,intel,dex0,dex10,dex20,dex30,dex40 FROM general WHERE `no` IN %li", $genlist) as $general){    
+        foreach($db->query("SELECT `no`,leadership,strength,intel,dex1,dex2,dex3,dex4,dex5 FROM general WHERE `no` IN %li", $genlist) as $general){    
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
 
@@ -156,7 +156,7 @@ switch($btn) {
             $msg->send(true);
         }
         $db->update('general',[
-            'dex0'=>$db->sqleval('dex0+10000')
+            'dex1'=>$db->sqleval('dex1+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "궁숙10000":
@@ -166,7 +166,7 @@ switch($btn) {
             $msg->send(true);
         }
         $db->update('general',[
-            'dex10'=>$db->sqleval('dex10+10000')
+            'dex2'=>$db->sqleval('dex2+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "기숙10000":
@@ -177,7 +177,7 @@ switch($btn) {
             $msg->send(true);
         }
         $db->update('general',[
-            'dex20'=>$db->sqleval('dex20+10000')
+            'dex3'=>$db->sqleval('dex3+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "귀숙10000":
@@ -188,7 +188,7 @@ switch($btn) {
             $msg->send(true);
         }
         $db->update('general',[
-            'dex30'=>$db->sqleval('dex30+10000')
+            'dex4'=>$db->sqleval('dex4+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "차숙10000":
@@ -199,7 +199,7 @@ switch($btn) {
             $msg->send(true);
         }
         $db->update('general',[
-            'dex40'=>$db->sqleval('dex40+10000')
+            'dex5'=>$db->sqleval('dex5+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "접속 허용":
