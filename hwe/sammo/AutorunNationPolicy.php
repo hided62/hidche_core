@@ -16,7 +16,7 @@ class AutorunNationPolicy {
 
     static $유저장긴급포상 = '유저장긴급포상';
     static $유저장포상 = '유저장포상';
-    static $유저장몰수 = '유저장몰수';
+    //static $유저장몰수 = '유저장몰수';
 
     static $NPC긴급포상 = 'NPC긴급포상';
     static $NPC포상 = 'NPC포상';
@@ -42,7 +42,7 @@ class AutorunNationPolicy {
         '유저장전방발령',
         '유저장포상',
 
-        '유저장몰수',
+        //'유저장몰수',
         '부대후방발령',
 
         'NPC긴급포상',
@@ -81,7 +81,7 @@ class AutorunNationPolicy {
 
     public $can유저장긴급포상 = true;
     public $can유저장포상 = true;
-    public $can유저장몰수 = true;
+    //public $can유저장몰수 = true;
 
     public $canNPC긴급포상 = true;
     public $canNPC포상 = true;
@@ -112,7 +112,7 @@ class AutorunNationPolicy {
     public $reqNPCDevelGold = 1000;
     public $reqNPCDevelRice = 0;
 
-    
+    public $minNPCWarLeadership = 40;
 
     public $allowNpcAttackCity = true;
     public $minNPCRecruitCityPopulation = 50000;
