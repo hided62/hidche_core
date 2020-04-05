@@ -15,8 +15,11 @@ class GeneralAI
      * @var General $general
      */
     protected $general;
+    /** @var array */
     protected $city;
+    /** @var array */
     protected $nation;
+    /** @var int */
     protected $genType;
 
     /** @var AutorunGeneralPolicy */
@@ -24,12 +27,17 @@ class GeneralAI
     /** @var AutorunNationPolicy */
     protected $nationPolicy;
 
+    /** @var array */
     protected $env;
     protected $baseDevelCost;
 
     protected $leadership;
     protected $strength;
     protected $intel;
+
+    protected $fullLeadership;
+    protected $fullStrength;
+    protected $fullIntel;
 
     protected $dipState;
     protected $warTargetNation;
@@ -99,6 +107,10 @@ class GeneralAI
         $this->strength = $general->getStrength();
         $this->intel = $general->getIntel();
 
+        $this->fullLeadership = $general->getLeadership(false);
+        $this->fullStrength = $general->getStrength(false);
+        $this->fullIntel = $general->getIntel(false);
+
         $this->genType = $this::calcGenType($general);
 
         $this->calcDiplomacyState();
@@ -134,7 +146,7 @@ class GeneralAI
         }
 
         //통솔
-        if ($leadership >= 40) {
+        if ($leadership >= $this->nationPolicy->minNPCWarLeadership) {
             $genType |= self::t통솔장;
         }
         return $genType;
@@ -882,22 +894,311 @@ class GeneralAI
     //일반장 행동
     protected function do일반내정(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        $leadership = $this->leadership;
+        $strength = $this->strength;
+        $intel = $this->intel;
+
+        $general = $this->general;
+        $env = $this->env;
+        $genType = $this->genType;
+
+        $city = $this->city;
+        $nation = $this->nation;
+
+        $develRate = [
+            'trust' => Util::valueFit($city['trust'], 0.001),
+            'pop' => Util::valueFit($city['pop'] / $city['pop_max'], 0.001),
+            'agri' => Util::valueFit($city['agri'] / $city['agri_max'], 0.001),
+            'comm' => Util::valueFit($city['comm'] / $city['comm_max'], 0.001),
+            'secu' => Util::valueFit($city['secu'] / $city['secu_max'], 0.001),
+            'def' => Util::valueFit($city['def'] / $city['def_max'], 0.001),
+            'wall' => Util::valueFit($city['wall'] / $city['wall_max'], 0.001),
+        ];
+
+        $cmdList = [];
+
+        if ($genType & self::t통솔장) {
+            if ($develRate['trust'] < 0.95) {
+                $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $leadership / $develRate['trust'] * 2];
+                }
+            }
+            if ($develRate['pop'] < 0.8) {
+                $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $leadership / $develRate['pop']];
+                }
+            }
+        }
+
+        if($genType & self::t무장){
+            if($develRate['def'] < 1){
+                $cmd = buildGeneralCommandClass('che_수비강화', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $strength / $develRate['def']];
+                }
+            }
+            if($develRate['wall'] < 1){
+                $cmd = buildGeneralCommandClass('che_성벽보수', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $strength / $develRate['wall']];
+                }
+            }
+            if($develRate['comm'] < 0.9){
+                $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['comm'] / 0.8, null, 1)];
+                }
+            }
+        }
+
+        if($genType & self::t지장){
+            if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
+                $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
+                if ($cmd->isRunnable()) {
+                    if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
+                        //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
+                        $cmdList[] = [$cmd, $intel * 2];
+                    } else {
+                        $cmdList[] = [$cmd, $intel];
+                    }
+                }
+            }
+            if ($develRate['agri'] < 1) {
+                $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
+                if ($cmd->isRunnable()) {
+                    $cmdList[] = [$cmd, $intel];
+                }
+            }
+            if ($develRate['comm'] < 1) {
+                $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
+                if ($cmd->isRunnable()) {
+                    $cmdList[] = [$cmd, $intel];
+                }
+            }
+        }
+
+        return Util::choiceRandomUsingWeightPair($cmdList);
     }
 
     protected function do긴급내정(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        if($this->dipState === self::d평화){
+            return null;
+        }
+
+        $leadership = $this->leadership;
+        $strength = $this->strength;
+        $intel = $this->intel;
+
+        $general = $this->general;
+        $env = $this->env;
+        $genType = $this->genType;
+
+        $city = $this->city;
+
+        if($city['trust'] < 0.3 && Util::randBool($leadership / GameConst::$chiefStatMin)){
+            $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
+            if($cmd->isRunnable()){
+                return $cmd;
+            }
+        }
+
+        if($city['pop'] < $this->nationPolicy->safeRecruitCityPopulation && Util::randBool($leadership / GameConst::$chiefStatMin / 2)){
+            $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
+            if($cmd->isRunnable()){
+                return $cmd;
+            }
+        }
     }
 
     protected function do전쟁내정(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+
+        if($this->dipState === self::d평화){
+            return null;
+        }
+
+        $leadership = $this->leadership;
+        $strength = $this->strength;
+        $intel = $this->intel;
+
+        $general = $this->general;
+        $env = $this->env;
+        $genType = $this->genType;
+
+        $city = $this->city;
+        $nation = $this->nation;
+
+        $develRate = [
+            'trust' => Util::valueFit($city['trust'], 0.001),
+            'pop' => Util::valueFit($city['pop'] / $city['pop_max'], 0.001),
+            'agri' => Util::valueFit($city['agri'] / $city['agri_max'], 0.001),
+            'comm' => Util::valueFit($city['comm'] / $city['comm_max'], 0.001),
+            'secu' => Util::valueFit($city['secu'] / $city['secu_max'], 0.001),
+            'def' => Util::valueFit($city['def'] / $city['def_max'], 0.001),
+            'wall' => Util::valueFit($city['wall'] / $city['wall_max'], 0.001),
+        ];
+
+        $cmdList = [];
+
+        if ($genType & self::t통솔장) {
+            if ($develRate['trust'] < 0.9) {
+                $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $leadership / $develRate['trust'] / 2];
+                }
+            }
+            if ($develRate['pop'] < 0.8) {
+                $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
+                if($cmd->isRunnable()){
+                    if (in_array($city['front'], [1, 3])) {
+                        $cmdList[] = [$cmd, $leadership / $develRate['pop']];
+                    }
+                    else{
+                        $cmdList[] = [$cmd, $leadership / $develRate['pop'] / 2];
+                    }
+                }
+            }
+        }
+
+        if($genType & self::t무장){
+            if($develRate['def'] < 0.5){
+                $cmd = buildGeneralCommandClass('che_수비강화', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $strength / $develRate['def'] / 2];
+                }
+            }
+            if($develRate['wall'] < 0.5){
+                $cmd = buildGeneralCommandClass('che_성벽보수', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $strength / $develRate['wall'] / 2];
+                }
+            }
+            if($develRate['comm'] < 0.5){
+                $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
+                if($cmd->isRunnable()){
+                    $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['comm'] / 0.8, null, 1) / 4];
+                }
+            }
+        }
+
+        if($genType & self::t지장){
+            if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
+                $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
+                if ($cmd->isRunnable()) {
+                    if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
+                        //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
+                        $cmdList[] = [$cmd, $intel * 2];
+                    } else {
+                        $cmdList[] = [$cmd, $intel];
+                    }
+                }
+            }
+            if ($develRate['agri'] < 0.5) {
+                $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
+                if ($cmd->isRunnable()) {
+                    if (in_array($city['front'], [1, 3])) {
+                        $cmdList[] = [$cmd, $intel / 4];
+                    }
+                    else{
+                        $cmdList[] = [$cmd, $intel / 2];
+                    }
+                }
+            }
+            if ($develRate['comm'] < 0.5) {
+                $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
+                if ($cmd->isRunnable()) {
+                    if (in_array($city['front'], [1, 3])) {
+                        $cmdList[] = [$cmd, $intel / 4];
+                    }
+                    else{
+                        $cmdList[] = [$cmd, $intel / 2];
+                    }
+                }
+            }
+        }
+
+        return Util::choiceRandomUsingWeightPair($cmdList);
     }
 
 
     protected function do금쌀구매(GeneralCommand $reservedCommand): ?GeneralCommand
     {
+        $general = $this->general;
+        $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
+
+        if($this->city['trade'] === null && !$this->generalPolicy->can상인무시){
+            return null;
+        }
+
+        if($avgAmount < $this->baseDevelCost){
+            return null;
+        }
+
+        if($this->dipState !== self::d평화 && ($this->genType & self::t통솔장)){
+            $crewType = $general->getCrewTypeObj();
+            if($this->generalPolicy->can모병){
+                $costCmd = buildGeneralCommandClass('che_모병', $general, $this->env, [
+                    'crewType'=>$crewType->id,
+                    'amount'=>$this->fullLeadership*100
+                ]);
+            }
+            else{
+                $costCmd = buildGeneralCommandClass('che_징병', $general, $this->env, [
+                    'crewType'=>$crewType->id,
+                    'amount'=>$this->fullLeadership*100
+                ]);
+            }
+
+            $goldCost = $costCmd->getCost()[0];
+            $riceCost = $crewType->riceWithTech(
+                $this->nation['tech'],
+                $this->fullLeadership*100 * 
+                    $general->getRankVar('killcrew')/max($general->getRankVar('deathcrew'),1)
+            );
+
+            if($avgAmount * 2 > $goldCost + $riceCost){
+                if ($general->getVar('rice') < $riceCost * 2 && $general->getVar('gold') >= $goldCost * 4) {
+                    //1:1
+                    return buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                        [
+                            'buyRice' => true,
+                            'amount' => Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
+                        ]
+                    );
+                }
+                if ($general->getVar('gold') < $goldCost && $general->getVar('rice') >= $riceCost * 2) {
+                    $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
+                    return buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                        [
+                            'buyRice' => false,
+                            'amount' => Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
+                        ]
+                    );
+                }
+            }
+        }
+
+        if ($general->getVar('rice') < $this->baseDevelCost && $general->getVar('gold') >= $this->baseDevelCost * 3) { 
+            return buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                [
+                    'buyRice' => true,
+                    'amount' => Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
+                ]
+            );
+        }
+        if ($general->getVar('gold') < $this->baseDevelCost && $general->getVar('rice') >= $this->baseDevelCost * 3) {
+            $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
+            return buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                [
+                    'buyRice' => false,
+                    'amount' => Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
+                ]
+            );
+        }
+
         return null;
     }
 
@@ -1001,12 +1302,58 @@ class GeneralAI
 
     protected function do전투준비(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        if (!$this->attackable){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
+        $cmdList = [];
+        $general = $this->general;
+        $cmd사기진작 = buildGeneralCommandClass('che_사기진작', $general, $this->env);
+
+        $train = $general->getVar('train');
+        $atmos = $general->getVar('atmos');
+
+        if($train < $this->nationPolicy->properWarTrainAtmos){
+            $cmd = buildGeneralCommandClass('che_훈련', $general, $this->env);
+            if($cmd->isRunnable()){
+                $cmdList[] = [$cmd, GameConst::$maxTrainByCommand / Util::valueFit($train, 1)];
+            }
+        }
+
+        if($train < $this->nationPolicy->properWarTrainAtmos){
+            $cmd = buildGeneralCommandClass('che_사기진작', $general, $this->env);
+            if($cmd->isRunnable()){
+                $cmdList[] = [$cmd, GameConst::$maxAtmosByCommand / Util::valueFit($atmos, 1)];
+            }
+        }
+
+        if(!$cmd){
+            return null;
+        }
+        return Util::choiceRandomUsingWeightPair($cmdList);
     }
 
     public function do소집해제(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        if ($this->attackable){
+            return null;
+        }
+        if ($this->dipState !== self::d평화) {
+            return null;
+        }
+        if ($this->general->getVar('crew') == 0){
+            return null;
+        }
+        if (Util::randBool(0.75)) {
+            return null;
+        }
+        $cmd = buildGeneralCommandClass('che_소집해제', $this->general, $this->env);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
 
@@ -1044,14 +1391,16 @@ class GeneralAI
             throw new \RuntimeException('출병 불가' . $cityID . var_export($attackableNations, true) . var_export($nearCities, true));
         }
 
-        return buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)])
+        return buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)]);
     }
 
 
+    /*
     protected function doNPC증여(GeneralCommand $reservedCommand): ?GeneralCommand
     {
         return null;
     }
+    */
 
     protected function doNPC헌납(GeneralCommand $reservedCommand): ?GeneralCommand
     {
@@ -1080,12 +1429,6 @@ class GeneralAI
         return null;
     }
 
-
-    protected function do임관(GeneralCommand $reservedCommand): ?GeneralCommand
-    {
-        return null;
-    }
-
     protected function do집합(GeneralCommand $reservedCommand): ?GeneralCommand
     {
         return null;
@@ -1108,6 +1451,110 @@ class GeneralAI
 
     protected function do선양(GeneralCommand $reservedCommand): ?GeneralCommand
     {
+        return null;
+    }
+
+    protected function do국가선택(GeneralCommand $reservedCommand): ?GeneralCommand
+    {
+        $general = $this->getGeneralObj();
+        $city = $this->city;
+        $env = $this->env;
+
+        $db = DB::db();
+
+        $arg = null;
+
+        // 오랑캐는 바로 임관
+        if ($general->getVar('npc') == 9) {
+            $rulerNation = $db->queryFirstField(
+                'SELECT nation FROM general WHERE `level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1',
+                $general->getAuxVar('joinedNations') ?? [0]
+            );
+
+            if ($rulerNation) {
+                $cmd = buildGeneralCommandClass('che_임관', $general, $env, ['destNationID' => $rulerNation]);
+                if(!$cmd->isRunnable()){
+                    return null;
+                }
+                return $cmd;
+            }
+        }
+
+        switch (Util::choiceRandomUsingWeight([
+            '임관' => 11.4,
+            '거병_견문' => 40,
+            '이동' => 20,
+            '기타' => 28.6
+        ])) {
+                //임관
+            case '임관':
+
+                $available = true;
+
+                if ($env['startyear'] + 3 > $env['year']) {
+                    //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
+                    $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
+                    $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
+                    if ($nationCnt == 0 || $notFullNationCnt == 0) {
+                        $available = false;
+                    } else if (Util::randBool(pow(1 / $nationCnt / pow($notFullNationCnt, 3), 1 / 4))) {
+                        //국가가 1개일 경우에는 '임관하지 않음'
+                        $available = false;
+                    }
+                }
+
+                if ($general->getVar('affinity') == 999 || !$available) {
+                    return null;
+                }
+
+                //랜임 커맨드 입력.
+                $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env, ['destNationID' => $rulerNation]);
+                if(!$cmd->isRunnable()){
+                    return null;
+                }
+                return $cmd;
+
+                break;
+            case '거병_견문': //거병이나 견문
+                // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
+
+                if($general->getVar('makelimit')){
+                    return null;
+                }
+
+                if(!$this->generalPolicy->can건국){
+                    return null;
+                }
+
+                $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
+                $ratio = ($general->getVar('leadership') + $general->getVar('strength') + $general->getVar('intel')) / 3;
+                
+
+                if($prop >= $ratio){
+                    return null;
+                }
+
+                if(Util::randBool(1 - 0.014)){
+                    return null;
+                }
+
+                $cmd = buildGeneralCommandClass('che_거병', $general, $env, null);
+                if(!$cmd->isRunnable()){
+                    return null;
+                }
+                return $cmd;
+                break;
+            case '이동': //이동
+
+                $paths = array_keys(CityConst::byID($city['city'])->path);
+
+                $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => Util::choiceRandom($paths)]);
+                if(!$cmd->isRunnable()){
+                    return null;
+                }
+                return $cmd;
+                break;
+        }
         return null;
     }
 
@@ -1327,8 +1774,13 @@ class GeneralAI
             }
         }
 
-        if($nationID != 0){
-
+        if($nationID === 0 && $this->generalPolicy->can국가선택){
+            $result = $this->do국가선택($reservedCommand);
+            if($result !== null){
+                return $result;
+            }
+        }
+        else {
             if($npcType >= 2 && $general->getVar('level') == 12 && !$this->nation['capital']){
                 //방랑군 건국
                 $result = $this->do건국($reservedCommand);
@@ -1350,12 +1802,6 @@ class GeneralAI
                 if($result !== null){
                     return $result;
                 }
-            }
-        }
-        else if(2 <= $npcType && $npcType <= 4){
-            $result = $this->do임관($reservedCommand);
-            if($result !== null){
-                return $result;
             }
         }
 
@@ -1593,7 +2039,7 @@ class GeneralAI
 
             if ($nationGeneral->npc < 2 && $nationGeneral->killturn >= 5) {
                 $userGenerals[] = $nationGeneral;
-            } else if ($nationGeneral->getLeadership() >= 40 && $nationGeneral->killturn >= 5) {
+            } else if ($nationGeneral->getLeadership() >= $this->nationPolicy->minNPCWarLeadership && $nationGeneral->killturn >= 5) {
                 $npcWarGenerals[] = $nationGeneral;
             } else {
                 //삭턴이 몇 안남은 장수는 '내정장 npc'로 처리
@@ -2380,7 +2826,7 @@ class GeneralAI
                 return null;
             }
 
-            $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leadership) FROM general WHERE nation = %i AND city = %i AND leadership > 40', $nationID, $cityID);
+            $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leadership) FROM general WHERE nation = %i AND city = %i AND leadership > %i', $nationID, $cityID, $this->nationPolicy->minNPCWarLeadership);
             if (
                 $sumLeadershipInCity > 0 &&
                 $city['pop'] > 30000 + $general->getLeadership(false) * 100 * 1.3 &&

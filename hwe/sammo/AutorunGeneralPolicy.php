@@ -20,7 +20,7 @@ class AutorunGeneralPolicy{
 
     static $출병 = '출병';
     
-    static $NPC증여 = 'NPC증여';
+    //static $NPC증여 = 'NPC증여';
     static $NPC헌납 = 'NPC헌납';
 
     static $후방워프 = '후방워프';
@@ -31,7 +31,7 @@ class AutorunGeneralPolicy{
     //static $전투이동 = '전투이동';
     //static $내정이동 = '내정이동';
     
-    static $임관 = '임관';
+    static $국가선택 = '국가선택';
     static $집합 = '집합';
     static $건국 = '건국';
     static $선양 = '선양';
@@ -44,7 +44,7 @@ class AutorunGeneralPolicy{
         '긴급내정',
         '전투준비',
         '전방워프',
-        'NPC증여',
+        //'NPC증여',
         'NPC헌납',
         '징병',
         '후방워프',
@@ -71,7 +71,7 @@ class AutorunGeneralPolicy{
 
     public $can출병 = true;
     
-    public $canNPC증여 = true;
+    //public $canNPC증여 = true;
     public $canNPC헌납 = true;
 
     public $can후방워프 = true;
@@ -80,7 +80,7 @@ class AutorunGeneralPolicy{
 
     public $can귀환 = true;
 
-    public $can임관 = true;
+    public $can국가선택 = true;
     public $can집합 = false;
     public $can건국 = true;
     public $can선양 = false;
@@ -92,12 +92,12 @@ class AutorunGeneralPolicy{
         if($npc==5){
             $this->can선양 = true;
             $this->can집합 = true;
-            $this->can임관 = false;
+            $this->can국가선택 = false;
             return;
         }
 
         if($nationID != 0){
-            $this->can임관 = false;
+            $this->can국가선택 = false;
             $this->can건국 = false;
         }
 
@@ -127,14 +127,14 @@ class AutorunGeneralPolicy{
 
         $this->can출병 = false;
         
-        $this->canNPC증여 = false;
+        //$this->canNPC증여 = false;
         $this->canNPC헌납 = false;
 
         $this->can후방워프 = false;
         $this->can전방워프 = false;
         $this->can내정워프 = false;
 
-        $this->can임관 = false;
+        $this->can국가선택 = false;
         $this->can집합 = false;
         $this->can건국 = false;
         $this->can선양 = false;

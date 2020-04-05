@@ -117,6 +117,7 @@ class AutorunNationPolicy {
     public $allowNpcAttackCity = true;
     public $minNPCRecruitCityPopulation = 50000;
     public $safeRecruitCityPopulation = 50000;
+    public $properWarTrainAtmos = 90;
 
 
     function __construct(General $general, array $nationPolicy, array $serverPolicy)
