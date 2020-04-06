@@ -10,9 +10,13 @@ class AutorunNationPolicy {
     static $부대유저장후방발령 = '부대유저장후방발령';
     static $유저장후방발령 = '유저장후방발령';
     static $유저장전방발령 = '유저장전방발령';
+    static $유저장구출발령 = '유저장구출발령';
+    static $유저장내정발령 = '유저장내정발령';
 
     static $NPC후방발령 = 'NPC후방발령';
     static $NPC전방발령 = 'NPC전방발령';
+    static $NPC구출발령 = 'NPC구출발령';
+    static $NPC내정발령 = 'NPC내정발령';
 
     static $유저장긴급포상 = '유저장긴급포상';
     static $유저장포상 = '유저장포상';
@@ -35,6 +39,7 @@ class AutorunNationPolicy {
 
         '유저장긴급포상',
         '부대전방발령',
+        '유저장구출발령',
 
         '유저장후방발령',
         '부대유저장후방발령',
@@ -46,23 +51,30 @@ class AutorunNationPolicy {
         '부대후방발령',
 
         'NPC긴급포상',
-
+        'NPC구출발령',
         'NPC후방발령',
 
         'NPC포상',
         'NPC몰수',
 
         'NPC전방발령',
+
+        '유저장내정발령',
+        'NPC내정발령',
     ];
 
     //순서는 중요하지 않음
     static public $availableInstantTurn = [
         '유저장긴급포상'=>true,
+        '유저장구출발령'=>true,
         '유저장후방발령'=>true,
         '유저장전방발령'=>true,
+        '유저장내정발령'=>true,
         '유저장포상'=>true,
         'NPC긴급포상'=>true,
+        'NPC구출발령'=>true,
         'NPC후방발령'=>true,
+        'NPC내정발령'=>true,
         'NPC포상'=>true,
         'NPC전방발령'=>true,
     ];
@@ -75,9 +87,13 @@ class AutorunNationPolicy {
     public $can부대유저장후방발령 = true;
     public $can유저장후방발령 = true;
     public $can유저장전방발령 = true;
+    public $can유저장구출발령 = true;
+    public $can유저장내정발령 = true;
 
     public $canNPC후방발령 = true;
     public $canNPC전방발령 = true;
+    public $canNPC구출발령 = true;
+    public $canNPC내정발령 = true;
 
     public $can유저장긴급포상 = true;
     public $can유저장포상 = true;
@@ -94,14 +110,14 @@ class AutorunNationPolicy {
     public $reqNationGold = 10000;
     public $reqNationRice = 10000;
     public $CombatForce = [
-        [200, 10, 24],//troopLeader, fromCity, toCity
-        [242, 10, 24]
+        //200 => [10, 24],//troopLeader, fromCity, toCity
+        //242 => [10, 24]
     ];
     public $SupportForce = [
-        211
+        //211=>true
     ];
     public $DevelopForce = [
-        123
+        //123=>true
     ];
     public $reqHumanWarGold = [10000, 30000];
     public $reqHumanWarRice = [10000, 30000];
@@ -113,10 +129,11 @@ class AutorunNationPolicy {
     public $reqNPCDevelRice = 0;
 
     public $minNPCWarLeadership = 40;
+    public $minWarCrew = 1500;
 
     public $allowNpcAttackCity = true;
     public $minNPCRecruitCityPopulation = 50000;
-    public $safeRecruitCityPopulation = 50000;
+    public $safeRecruitCityPopulationRatio = 0.5;
     public $properWarTrainAtmos = 90;
 
 

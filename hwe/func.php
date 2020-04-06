@@ -1903,6 +1903,76 @@ function searchDistanceListToDest(int $from, int $to, array $linkNationList) {
     return $result;
 }
 
+/**
+ * 지정된 도시 내의 최단 거리를 계산해 줌(Floyd-Warshall)
+ * @param $cityIDList 이동 가능한 도시 리스트.
+ * @return array [from][to] 로 표시되는 거리값
+ */
+function searchAllDistanceByCityList(array $cityIDList):array {
+    if(!$cityIDList){
+        return [];
+    }
+    $cityList = [];
+    foreach($cityIDList as $cityID){
+        $cityList[$cityID] = $cityID;
+    }
+
+    $distanceList = [];
+    foreach($cityIDList as $cityID){
+        $nearList = [$cityID=>0];
+        foreach(CityConst::byID($cityID)->path as $nextCityID){
+            if(!key_exists($nextCityID, $cityList)){
+                continue;
+            }
+            $nearList[$nextCityID] = 1;
+        }
+        $distanceList[$cityID] = $nearList;
+    }
+
+    //Floyd-Warshall
+    foreach($cityList as $cityStop){
+        foreach($cityList as $cityFrom){
+            foreach($cityList as $cityTo){
+                if(!key_exists($cityStop, $distanceList[$cityFrom])){
+                    continue;
+                }
+                if(!key_exists($cityTo, $distanceList[$cityStop])){
+                    continue;
+                }
+
+                if(!key_exists($cityTo, $distanceList[$cityFrom])){
+                    $distanceList[$cityFrom][$cityTo] = $distanceList[$cityFrom][$cityStop] + $distanceList[$cityStop][$cityTo];
+                    continue;
+                }
+                
+                $distanceList[$cityFrom][$cityTo] = min($distanceList[$cityFrom][$cityStop] + $distanceList[$cityStop][$cityTo], $distanceList[$cityFrom][$cityTo]);
+            }
+        }
+    }
+
+    return $distanceList;
+}
+
+/**
+ * 지정된 국가 내의 모든 도시들의 최단 거리를 계산해 줌(Floyd-Warshall)
+ * @param $linkNationList 경로에 해당하는 국가 리스트
+ * @param $suppliedCityOnly 보급된 도시만을 이용해 검색
+ * @return array [from][to] 로 표시되는 거리값
+ */
+function searchAllDistanceByNationList(array $linkNationList, bool $suppliedCityOnly=false):array {
+    if(!$linkNationList){
+        return [];
+    }
+    $db = DB::db();
+    if($suppliedCityOnly){
+        $cityIDList = $db->queryFirstColumn('SELECT city FROM city WHERE nation IN %li AND supply=1',$linkNationList);
+    }
+    else{
+        $cityIDList = $db->queryFirstColumn('SELECT city FROM city WHERE nation IN %li',$linkNationList);
+    }
+    return searchAllDistanceByCityList($cityIDList);
+}
+
 function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
     if($nation1 === $nation2){
         return false;

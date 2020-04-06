@@ -22,6 +22,7 @@ class AutorunGeneralPolicy{
     
     //static $NPC증여 = 'NPC증여';
     static $NPC헌납 = 'NPC헌납';
+    static $NPC사망대비 = 'NPC사망대비';
 
     static $후방워프 = '후방워프';
     static $전방워프 = '전방워프';
@@ -35,9 +36,11 @@ class AutorunGeneralPolicy{
     static $집합 = '집합';
     static $건국 = '건국';
     static $선양 = '선양';
+    
 
 
     static public $priority = [
+        'NPC사망대비',
         '귀환',
         '금쌀구매',
         '출병',
@@ -55,6 +58,7 @@ class AutorunGeneralPolicy{
     ];
 
 
+    public $canNPC사망대비 = true;
     public $can일반내정 = true;
     public $can긴급내정 = true;
     public $can전쟁내정 = true;
@@ -90,10 +94,15 @@ class AutorunGeneralPolicy{
         $nationID = $general->getNationID();
 
         if($npc==5){
+            $this->can집합 = true;
             $this->can선양 = true;
             $this->can집합 = true;
             $this->can국가선택 = false;
             return;
+        }
+
+        if($npc==1){
+            $this->canNPC사망대비 = false;
         }
 
         if($nationID != 0){

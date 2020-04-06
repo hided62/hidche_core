@@ -1,6 +1,8 @@
 <?php
 
 namespace sammo;
+
+use sammo\Command\GeneralCommand;
 use sammo\WarUnitTrigger as WarUnitTrigger;
 
 class General implements iAction{
@@ -264,6 +266,30 @@ class General implements iAction{
 
     function getCrewTypeObj():GameUnitDetail{
         return GameUnitConst::byID($this->getVar('crewtype'));
+    }
+
+    function calcRecentWarTurn(int $turnTerm):int{
+        if(!$this->getVar('recent_war')){
+            return 12*1000;
+        }
+        $recwar = new \DateTimeImmutable($this->getVar('recent_war'));
+        $turnNow = new \DateTimeImmutable($this->getVar('turntime'));
+        $secDiff = TimeUtil::DateIntervalToSeconds($recwar->diff($turnNow));
+
+        if($secDiff <= 0){
+            return 0;
+        }
+
+        return intdiv($secDiff, 60 * $turnTerm);
+    }
+
+    function getReservedTurn(int $turnIdx, array $env):?GeneralCommand{
+        $db = DB::db();
+        $rawCmd = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id = %i AND turn_idx = %i', $this->getID(), $turnIdx);
+        if(!$rawCmd){
+            return null;
+        }
+        return buildGeneralCommandClass($rawCmd['action'], $this, $env, $rawCmd['arg']);
     }
 
     /**
