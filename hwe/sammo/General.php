@@ -269,27 +269,74 @@ class General implements iAction{
     }
 
     function calcRecentWarTurn(int $turnTerm):int{
+        $cacheKey = "recent_war_turn_{$turnTerm}";
+        if(key_exists($cacheKey, $this->calcCache)){
+            return $this->calcCache[$cacheKey];
+        }
         if(!$this->getVar('recent_war')){
-            return 12*1000;
+            $result = 12*1000;
+            $this->calcCache[$cacheKey] = $result;
+            return $result;
         }
         $recwar = new \DateTimeImmutable($this->getVar('recent_war'));
         $turnNow = new \DateTimeImmutable($this->getVar('turntime'));
         $secDiff = TimeUtil::DateIntervalToSeconds($recwar->diff($turnNow));
 
         if($secDiff <= 0){
+            $this->calcCache[$cacheKey] = 0;
             return 0;
         }
 
-        return intdiv($secDiff, 60 * $turnTerm);
+        $result = intdiv($secDiff, 60 * $turnTerm);
+        $this->calcCache[$cacheKey] = $result;
+        return $result;
     }
 
-    function getReservedTurn(int $turnIdx, array $env):?GeneralCommand{
+    function getReservedTurn(int $turnIdx, array $env):GeneralCommand{
         $db = DB::db();
         $rawCmd = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id = %i AND turn_idx = %i', $this->getID(), $turnIdx);
         if(!$rawCmd){
-            return null;
+            return buildGeneralCommandClass(null, $this, $env);
         }
         return buildGeneralCommandClass($rawCmd['action'], $this, $env, $rawCmd['arg']);
+    }
+
+    /**
+     * @param General[] $generalList 
+     * @param int $turnIdxFrom [$turnIdxFrom, $turnIdxTo)
+     * @param int $turnIdxTo [$turnIdxFrom, $turnIdxTo)
+     * @param array $env 
+     * @return GeneralCommand[]
+     */
+    public function getReservedTurnList(int $turnIdxFrom, int $turnIdxTo, array $env){
+        if($turnIdxFrom < 0 || $turnIdxFrom >= GameConst::$maxTurn){
+            throw new \OutOfRangeException('$turnIdxFrom 범위 초과'.$turnIdxFrom);
+        }
+
+        if($turnIdxTo <= $turnIdxFrom || GameConst::$maxTurn < $turnIdxTo){
+            throw new \OutOfRangeException('$turnIdxTo 범위 초과'.$turnIdxTo);
+        }
+
+        $db = DB::db();
+        
+        $generalID = $this->getID();
+        
+        $result = [];
+
+        $rawCmds = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id = %i AND %i <= turn_idx AND turn_idx < %i ORDER BY turn_idx ASC', $generalID, $turnIdxFrom, $turnIdxTo);
+
+        if(!$rawCmds){
+            foreach(range($turnIdxFrom, $turnIdxTo-1) as $turnIdx){
+                $result[$turnIdx] = buildGeneralCommandClass(null, $this, $env);
+            }
+            return $result;
+        }
+        
+        foreach($rawCmds as $turnIdx=>$rawCmd){
+            $result[$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $this, $env, $rawCmd['arg']);
+        }
+        
+        return $result;
     }
 
     /**
@@ -398,12 +445,11 @@ class General implements iAction{
     }
 
     function updateVar(string $key, $value){
-        if(!key_exists($key, $this->updatedVar)){
-            $this->updatedVar[$key] = $this->raw[$key];
-            $this->calcCache = [];
-        }
         if($this->raw[$key] === $value){
             return;
+        }
+        if(!key_exists($key, $this->updatedVar)){
+            $this->updatedVar[$key] = true;
         }
         $this->raw[$key] = $value;
         $this->calcCache = [];
@@ -413,8 +459,6 @@ class General implements iAction{
      * @param \MeekroDB $db
      */
     function kill($db){
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-
         $generalID = $this->getID();
         $logger = $this->getLogger();
 
@@ -907,5 +951,89 @@ class General implements iAction{
         $general = new static($rawGeneral, $rawRankValues, null, $year, $month, $constructMode > 1);
         
         return $general;
+    }
+
+    /**
+     * @param General[] $generalList 
+     * @param int $turnIdx 
+     * @param array $env 
+     * @return GeneralCommand[]
+     */
+    static public function getReservedTurnByGeneralList(array $generalList, int $turnIdx, array $env){
+        if(!$generalList){
+            return [];
+        }
+
+        $generalIDList = array_map(function(General $general){
+            return $general->getID();
+        }, $generalList);
+
+        $db = DB::db();
+        $result = [];
+        $rawCmds = Util::convertArrayToDict($db->queryFirstRow('SELECT * FROM general_turn WHERE general_id IN %i AND turn_idx = %i', $generalIDList, $turnIdx), 'general_id');
+        foreach($generalList as $general){
+            $generalID = $general->getID();
+            if(!key_exists($generalID, $rawCmds)){
+                $result[$generalID] = buildGeneralCommandClass(null, $general, $env);
+                continue;
+            }
+            $rawCmd = $rawCmds[$generalID];
+            $result[$generalID] = buildGeneralCommandClass($rawCmd['action'], $general, $env, $rawCmd['arg']);
+        }
+        return $result;
+    }
+
+    /**
+     * @param General[] $generalList 
+     * @param int $turnIdxFrom [$turnIdxFrom, $turnIdxTo)
+     * @param int $turnIdxTo [$turnIdxFrom, $turnIdxTo)
+     * @param array $env 
+     * @return GeneralCommand[][]
+     */
+    static public function getReservedTurnListByGeneralList(array $generalList, int $turnIdxFrom, int $turnIdxTo, array $env){
+        if(!$generalList){
+            return [];
+        }
+
+        if($turnIdxFrom < 0 || $turnIdxFrom >= GameConst::$maxTurn){
+            throw new \OutOfRangeException('$turnIdxFrom 범위 초과'.$turnIdxFrom);
+        }
+
+        if($turnIdxTo <= $turnIdxFrom || GameConst::$maxTurn < $turnIdxTo){
+            throw new \OutOfRangeException('$turnIdxTo 범위 초과'.$turnIdxTo);
+        }
+
+        $generalIDList = array_map(function(General $general){
+            return $general->getID();
+        }, $generalList);
+
+        $db = DB::db();
+        
+        $rawCmds = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id IN %i AND %i <= turn_idx AND turn_idx < %i ORDER BY general_id ASC, turn_idx ASC', $generalIDList, $turnIdxFrom, $turnIdxTo);
+        $orderedRawCmds = [];
+        foreach($rawCmds as $rawCmd){
+            $generalID = $rawCmd['general_id'];
+            $turnIdx = $rawCmd['turn_idx'];
+            if(!key_exists($generalID, $orderedRawCmds)){
+                $orderedRawCmds[$generalID] = [];
+            }
+            $orderedRawCmds[$generalID][$turnIdx] = $rawCmd;
+        }
+
+        $result = [];
+        foreach($generalList as $general){
+            $generalID = $general->getID();
+            $result[$generalID] = [];
+            if(!key_exists($generalID, $orderedRawCmds)){
+                foreach(range($turnIdxFrom, $turnIdxTo-1) as $turnIdx){
+                    $result[$generalID][$turnIdx] = buildGeneralCommandClass(null, $general, $env);
+                }
+                continue;
+            }
+            foreach($orderedRawCmds[$generalID] as $turnIdx=>$rawCmd){
+                $result[$generalID][$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $general, $env, $rawCmd['arg']);
+            }
+        }
+        return $result;
     }
 }

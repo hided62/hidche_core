@@ -36,7 +36,7 @@ trait LazyVarUpdater{
             if(!key_exists('aux', $this->raw)){
                 throw new \RuntimeException('aux is not set');
             }
-            $this->raw['auxVar'] = Json::decode($this->raw['aux']);
+            $this->raw['auxVar'] = Json::decode($this->raw['aux']??'{}');
         }
     }
 
@@ -52,16 +52,13 @@ trait LazyVarUpdater{
     function setAuxVar(string $key, $var){
         $oldVar = $this->getAuxVar($key);
 
-        if($var === null){
-            if($oldVar === null){
-                return;
-            }
-            unset($this->auxVar[$key]);
-            $this->auxUpdated = true;
+        if($oldVar === $var){
             return;
         }
 
-        if($oldVar === $var){
+        if($var === null){
+            unset($this->auxVar[$key]);
+            $this->auxUpdated = true;
             return;
         }
         $this->raw['auxVar'][$key] = $var;
@@ -69,11 +66,11 @@ trait LazyVarUpdater{
     }
 
     function updateVar(string $key, $value){
-        if(!key_exists($key, $this->updatedVar)){
-            $this->updatedVar[$key] = $this->raw[$key];
-        }
         if($this->raw[$key] === $value){
             return;
+        }
+        if(!key_exists($key, $this->updatedVar)){
+            $this->updatedVar[$key] = true;
         }
         $this->raw[$key] = $value;
     }

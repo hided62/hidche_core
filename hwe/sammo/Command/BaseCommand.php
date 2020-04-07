@@ -213,6 +213,11 @@ abstract class BaseCommand{
 
     abstract protected function init();
     abstract protected function argTest():bool;
+    
+    public function getArg():?array{
+        return $this->arg;
+    }
+
 
     public function getBrief():string{
         return static::getName();

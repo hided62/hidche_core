@@ -61,14 +61,14 @@ class GeneralAI
     protected $npcWarGenerals;
     /** @var General[] */
     protected $userGenerals;
-    /** @var General[] */
+    /** @var General[] (전쟁 가능한 기간만 따져서) 최근 12턴 내에 전투를 수행한, 또는 전투를 수행할 수 있는 유저장 목록*/
     protected $userWarGenerals;
     /** @var General[] */
     protected $userCivilGenerals;
 
     /** @var General[] */
     protected $lostGenerals;
-    /** @var General[] */
+    /** @var General[] 이번 턴에 '집합'하는 부대장 목록 */
     protected $troopLeaders;
 
     const t무장 = 1;
@@ -237,6 +237,9 @@ class GeneralAI
 
     protected function do부대전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->frontCities){
+            return null;
+        }
         $this->calcWarRoute();
         $troopCandidate = [];
         
@@ -320,6 +323,10 @@ class GeneralAI
 
     protected function do부대후방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->frontCities){
+            return null;
+        }
+        
         $troopCandidate = [];
         foreach($this->troopLeaders as $troopLeader){
             $leaderID = $troopLeader->getID();
@@ -392,7 +399,7 @@ class GeneralAI
         $generalCadidates = [];
         $db = DB::db();
 
-        $chiefTurnTime = new \DateTimeImmutable($this->general->getVar('turntime'));
+        $chiefTurnTime = new \DateTimeImmutable($this->general->getTurnTime());
 
         foreach($this->userWarGenerals as $userGeneral){
             $generalID = $userGeneral->getID();
@@ -403,10 +410,18 @@ class GeneralAI
             if(!key_exists($generalID, $this->supplyCities)){
                 continue;
             }
-            if($userGeneral->getVar('troop') === 0){
+            $troopLeaderID = $userGeneral->getVar('troop');
+            if(!$troopLeaderID || !key_exists($troopLeaderID, $this->troopLeaders)){
                 continue;
             }
-            if($userGeneral->getVar('troop') === $userGeneral->getID()){
+            if($troopLeaderID === $userGeneral->getID()){
+                continue;
+            }
+            $troopLeader = $this->nationGenerals[$troopLeaderID];
+            if($troopLeader->getCityID() !== $userGeneral->getCityID()){
+                continue;
+            }
+            if(!key_exists($troopLeader->getCityID(), $this->supplyCities)){
                 continue;
             }
             if($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
@@ -416,9 +431,9 @@ class GeneralAI
                 continue;
             }
 
-            $generalTurnTime = new \DateTimeImmutable($userGeneral->getVar('turntime'));
+            $generalTurnTime = new \DateTimeImmutable($userGeneral->getTurnTime());
             $troopLeader = $this->nationGenerals[$userGeneral->getVar('troop')];
-            $troopTurnTime =  new \DateTimeImmutable($troopLeader->getVar('turntime'));
+            $troopTurnTime =  new \DateTimeImmutable($troopLeader->getTurnTime());
 
             if($chiefTurnTime < $generalTurnTime && $generalTurnTime < $troopTurnTime){
                 $generalCadidates[$generalID] = $userGeneral;
@@ -429,16 +444,16 @@ class GeneralAI
             return null;
         }
 
-        $rawTurn = Util::convertArrayToDict($db->query('SELECT * FROM general_turn WHERE general_id IN %li AND turn_idx = 0', array_keys($generalCadidates)), 'no');
-        $generalCadidates = array_filter($generalCadidates, function(General $general)use($rawTurn){
+        $turnList = General::getReservedTurnByGeneralList($generalCadidates, 0, $this->env);
+        $generalCadidates = array_filter($generalCadidates, function(General $general)use($turnList){
             $generalID = $general->getID();
-            if(in_array($rawTurn[$generalID]??null, ['che_징병', 'che_모병'])){
+            if($turnList[$generalID] instanceof Command\General\che_징병){
                 return true;
             }
             else{
                 return false;
             }
-        }, ARRAY_FILTER_USE_KEY);
+        });
 
         if(count($this->supplyCities) == 1){
             return null;
@@ -548,12 +563,30 @@ class GeneralAI
 
     protected function do유저장구출발령(LastTurn $lastTurn): ?NationCommand
     {
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
+        
         //고립 도시 장수 발령
         $args = [];
         foreach ($this->lostGenerals as $lostGeneral) {
             if ($lostGeneral->getVar('npc') >= 2) {
                 continue;
             }
+
+            $troopID = $lostGeneral->getVar('troop');
+            if($troopID && key_exists($troopID, $this->troopLeaders)){
+                $troopLeader = $this->troopLeaders[$troopID];
+                
+                if(
+                    key_exists($troopLeader->getCityID(), $this->supplyCities) && 
+                    $this->troopLeaders[$troopID]->getTurnTime() < $lostGeneral->getTurnTime()
+                ){
+                    //이미 탈출 가능한 부대를 탔다
+                    continue;
+                }
+            }
+
             if (in_array($this->dipState, [self::d직전, self::d전쟁]) && count($this->frontCities) > 2) {
                 $selCity = Util::choiceRandom($this->frontCities);
             } else {
@@ -577,6 +610,40 @@ class GeneralAI
 
     protected function do유저장전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->frontCities){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
+
+        
+
+        $generalCandidates = [];
+        foreach($this->userWarGenerals as $userGeneral){
+            $generalID = $userGeneral->getID();
+            $cityID = $userGeneral->getCityID();
+            if(key_exists($cityID, $this->frontCities)){
+                continue;
+            }
+            if($userGeneral->getVar('crew') < $this->nationPolicy->minWarCrew){
+                continue;
+            }
+            if($userGeneral->getVar('troop')){
+                continue;
+            }
+
+            $train = $userGeneral->getVar('train');
+            $atmos = $userGeneral->getVar('atmos');
+
+            if(max($train, $atmos) < $this->nationPolicy->properWarTrainAtmos){
+                continue;
+            }
+
+            $generalCandidates[$generalID] = $userGeneral;
+        }
+
+
         return null;
     }
     
@@ -591,6 +658,12 @@ class GeneralAI
 
     protected function doNPC후방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->frontCities){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
         return null;
     }
 
@@ -622,6 +695,12 @@ class GeneralAI
 
     protected function doNPC전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->frontCities){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
         return null;
     }
 
@@ -1101,7 +1180,7 @@ class GeneralAI
         if($lastTurn->getCommand() === 'che_천도'){
             $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, $lastTurn->getArg());
             if($cmd->isRunnable()){
-                $nationStor->last천도Trial = [$general->getVar('level'), $general->getVar('turntime')];
+                $nationStor->last천도Trial = [$general->getVar('level'), $general->getTurnTime()];
                 return $cmd;
             }
         }
@@ -1111,7 +1190,7 @@ class GeneralAI
             [$lastTrialLevel, $lastTrialTurnTime] = $lastTrial;
             $timeDiffSeconds = TimeUtil::DateIntervalToSeconds(
                 date_create_immutable($lastTrialTurnTime)->diff(
-                    date_create_immutable($general->getVar('turntime'))
+                    date_create_immutable($general->getTurnTime())
                 )
             );
             if($timeDiffSeconds < $turnTerm * 30 && $lastTrialLevel !== $general->getVar('level')){ //0.5Turn
@@ -1222,7 +1301,7 @@ class GeneralAI
         }
 
         
-        $nationStor->last천도Trial = [$general->getVar('level'), $general->getVar('turntime')];
+        $nationStor->last천도Trial = [$general->getVar('level'), $general->getTurnTime()];
 
         return $cmd;
     }
@@ -1540,6 +1619,13 @@ class GeneralAI
 
     protected function do징병(GeneralCommand $reservedCommand): ?GeneralCommand
     {
+        if (!$this->attackable){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
+
         $general = $this->getGeneralObj();
         $nation = $this->nation;
         $env = $this->env;
@@ -1694,6 +1780,13 @@ class GeneralAI
 
     protected function do출병(GeneralCommand $reservedCommand): ?GeneralCommand
     {
+        if (!$this->attackable) {
+            return null;
+        }
+        if($this->dipState !== self::d전쟁){
+            return null;
+        }
+
         $general = $this->getGeneralObj();
         $city = $this->city;
         $nation = $this->nation;
@@ -1745,11 +1838,25 @@ class GeneralAI
 
     protected function do후방워프(GeneralCommand $reservedCommand): ?GeneralCommand
     {
+        if(!$this->attackable){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
+
         return null;
     }
 
     protected function do전방워프(GeneralCommand $reservedCommand): ?GeneralCommand
     {
+        if(!$this->attackable){
+            return null;
+        }
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            return null;
+        }
+
         return null;
     }
 
@@ -1761,12 +1868,28 @@ class GeneralAI
 
     protected function do귀환(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        $cityID = $this->general->getCityID();
+        if(key_exists($cityID, $this->supplyCities)){
+            return null;
+        }
+
+        $cmd = buildGeneralCommandClass('che_귀환', $this->general, $this->env);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
     protected function do집합(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        $cmd = $reservedCommand;
+        $general = $this->general;
+        $generalID = $general->getID();
+
+        $cmd = buildGeneralCommandClass('che_집합', $general, $this->env);
+        _setGeneralCommand($generalID, range(0, GameConst::$maxTurn - 1), $cmd->getRawClassName(), $cmd->getArg(), $cmd->getBrief());
+
+        return $cmd;
     }
 
     protected function do방랑군이동(GeneralCommand $reservedCommand): ?GeneralCommand
@@ -2027,7 +2150,20 @@ class GeneralAI
         $db = DB::db();
         $generalIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation = %i AND no != %i', $nationID, $this->general->getID());
 
-        foreach(General::createGeneralObjListFromDB($generalIDList, null, 2) as $nationGeneral){
+        $nationGenerals = General::createGeneralObjListFromDB($generalIDList, null, 2);
+
+        $lastWar = \PHP_INT_MAX;
+        foreach($nationGenerals as $nationGeneral){
+            $recentWar = $nationGeneral->calcRecentWarTurn($this->env['turnterm']);
+            if($recentWar >= $nationGeneral->getVar('belong') * 12){
+                //임관전 전투는 제외
+                continue;
+            }
+
+            $lastWar = min($lastWar, $recentWar);
+        }
+
+        foreach($nationGenerals as $nationGeneral){
             $generalID = $nationGeneral->getID();
             $cityID = $nationGeneral->getCityID();
             $npcType = $nationGeneral->getVar('npc');
@@ -2045,13 +2181,25 @@ class GeneralAI
                 //부대장임
                 $troopLeaders[$generalID] = $nationGeneral;
             }
+            else if($nationGeneral->getVar('troop') === $generalID && $nationGeneral->getReservedTurn(0, $this->env)->getName() === 'che_집합'){
+                //비 NPC부대장임
+                $troopLeaders[$generalID] = $nationGeneral;
+            }
             else if($nationGeneral->getVar('killturn') < 5){
                 //삭턴이 몇 안남은 장수는 '내정장 npc'로 처리
                 $npcCivilGenerals[$generalID] = $nationGeneral;
             }
             else if($npcType < 2) {
                 $userGenerals[$generalID] = $nationGeneral;
-                if($nationGeneral->calcRecentWarTurn($this->env['turnterm']) <= 12){
+                if($nationGeneral->calcRecentWarTurn($this->env['turnterm']) <= $lastWar + 12){
+                    $userWarGenerals[$generalID] = $nationGeneral;
+                }
+                else if(
+                    $this->dipState !== self::d평화 &&
+                    $nationGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew &&
+                    $nationGeneral->getVar('train') >= $nationGeneral->getVar('defence_train') &&
+                    $nationGeneral->getVar('atmos') >= $nationGeneral->getVar('defence_train')
+                ){
                     $userWarGenerals[$generalID] = $nationGeneral;
                 }
                 else{
@@ -2064,6 +2212,7 @@ class GeneralAI
             }
         }
 
+        $this->nationGenerals = $nationGenerals;
         $this->userGenerals = $userGenerals;
         $this->userCivilGenerals = $userCivilGenerals;
         $this->userWarGenerals = $userWarGenerals;
@@ -2071,7 +2220,6 @@ class GeneralAI
         $this->npcCivilGenerals = $npcCivilGenerals;
         $this->npcWarGenerals = $npcWarGenerals;
         $this->troopLeaders = $troopLeaders;
-        
     }
 
 
@@ -2134,17 +2282,21 @@ class GeneralAI
     }
 
     public function chooseGeneralTurn(GeneralCommand $reservedCommand): GeneralCommand{
+        $general = $this->general;
+        $npcType = $general->getVar('npc');
+        $nationID = $general->getNationID();
+        
+        if($npcType == 5){
+            return $this->do집합($reservedCommand);
+        }
+
         if($reservedCommand->isRunnable()){
             return $reservedCommand;
         }
 
-        $general = $this->general;
-        $npcType = $general->getVar('npc');
-        $nationID = $general->getNationID();
-        if($npcType == 5){
-            return $this->do집합($reservedCommand);
-        }
-        else if($npcType == 2 && $nationID == 0){
+        
+        
+        if($npcType == 2 && $nationID == 0){
             $result = $this->do거병($reservedCommand);
             if($result !== null){
                 return $result;
