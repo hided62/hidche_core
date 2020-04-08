@@ -371,7 +371,7 @@ $avgWar = 0;
 $attackerActivatedSkills = [];
 $defendersActivatedSkills = [];
 
-foreach(range(1, $repeatCnt) as $repeatIdx){
+foreach(Util::range($repeatCnt) as $repeatIdx){
     [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
         $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
         $defenderList, $rawDefenderCity, $rawDefenderNation, 

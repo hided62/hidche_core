@@ -326,7 +326,7 @@ class General implements iAction{
         $rawCmds = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id = %i AND %i <= turn_idx AND turn_idx < %i ORDER BY turn_idx ASC', $generalID, $turnIdxFrom, $turnIdxTo);
 
         if(!$rawCmds){
-            foreach(range($turnIdxFrom, $turnIdxTo-1) as $turnIdx){
+            foreach(Util::range($turnIdxFrom, $turnIdxTo) as $turnIdx){
                 $result[$turnIdx] = buildGeneralCommandClass(null, $this, $env);
             }
             return $result;
@@ -1025,7 +1025,7 @@ class General implements iAction{
             $generalID = $general->getID();
             $result[$generalID] = [];
             if(!key_exists($generalID, $orderedRawCmds)){
-                foreach(range($turnIdxFrom, $turnIdxTo-1) as $turnIdx){
+                foreach(Util::range($turnIdxFrom, $turnIdxTo) as $turnIdx){
                     $result[$generalID][$turnIdx] = buildGeneralCommandClass(null, $general, $env);
                 }
                 continue;

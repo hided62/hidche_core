@@ -132,7 +132,7 @@ class che_거병 extends Command\GeneralCommand{
         
         $turnRows = [];
         foreach([12, 11] as $chiefLevel){
-            foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
+            foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx){
                 $turnRows[] = [
                     'nation_id'=>$nationID,
                     'level'=>$chiefLevel,

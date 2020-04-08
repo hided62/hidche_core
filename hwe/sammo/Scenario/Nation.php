@@ -2,6 +2,7 @@
 namespace sammo\Scenario;
 use \sammo\DB;
 use \sammo\GameConst;
+use \sammo\Util;
 use function \sammo\getNationChiefLevel;
 
 class Nation{
@@ -150,8 +151,8 @@ class Nation{
         }
 
         $turnRows = [];
-        foreach(range(getNationChiefLevel(0) - 1, getNationChiefLevel($this->nationLevel), -1) as $chiefLevel){
-            foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
+        foreach(Util::range(12, getNationChiefLevel($this->nationLevel)-1, -1) as $chiefLevel){
+            foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx){
                 $turnRows[] = [
                     'nation_id'=>$this->id,
                     'level'=>$chiefLevel,
@@ -162,7 +163,7 @@ class Nation{
                 ];
             }
         }
-        $db->insert('nation_turn', $turnRows);
+        $db->insertIgnore('nation_turn', $turnRows);
     }
 
     public function getBrief(){

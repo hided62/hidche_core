@@ -44,7 +44,7 @@ function getFormattedFileLogAll(string $path){
 }
 
 function eraseTnmtFightLogAll(){
-    foreach(range(0, 49) as $i){
+    foreach(Util::range(50) as $i){
         eraseTnmtFightLog($i);
     }
 }

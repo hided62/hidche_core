@@ -455,6 +455,10 @@ class GeneralAI
             }
         });
 
+        if(!$generalCadidates){
+            return null;
+        }
+
         if(count($this->supplyCities) == 1){
             return null;
         }
@@ -566,7 +570,7 @@ class GeneralAI
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             return null;
         }
-        
+
         //고립 도시 장수 발령
         $args = [];
         foreach ($this->lostGenerals as $lostGeneral) {
@@ -1887,7 +1891,7 @@ class GeneralAI
         $generalID = $general->getID();
 
         $cmd = buildGeneralCommandClass('che_집합', $general, $this->env);
-        _setGeneralCommand($generalID, range(0, GameConst::$maxTurn - 1), $cmd->getRawClassName(), $cmd->getArg(), $cmd->getBrief());
+        _setGeneralCommand($generalID, iterator_to_array(Util::range(GameConst::$maxTurn)), $cmd->getRawClassName(), $cmd->getArg(), $cmd->getBrief());
 
         return $cmd;
     }
@@ -3538,7 +3542,7 @@ class GeneralAI
             $iterCandChiefStrength = new \ArrayIterator($candChiefStrength);
             $iterCandChiefIntel = new \ArrayIterator($candChiefIntel);
 
-            foreach (range(10, $minChiefLevel, -1) as $chiefLevel) {
+            foreach (Util::range(10, $minChiefLevel-1, -1) as $chiefLevel) {
                 if (key_exists($chiefLevel, $chiefCandidate)) {
                     continue;
                 }

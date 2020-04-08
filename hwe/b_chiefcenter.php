@@ -39,14 +39,14 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 <div class="chiefSubTable" style='height:<?=22*(GameConst::$maxChiefTurn+1)?>px;'
     ><div class='chiefTurnIdxPanel'
         ><div class='bg1 chiefTurnIdx'>.</div
-<?php foreach(range(1, 12) as $idx):?>
+<?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
         ><div class='bg0 chiefTurnIdx'><?=$idx?></div
 <?php endforeach; ?>
     ></div
 <?php foreach([12, 10, 8, 6] as $chiefIdx): ?>
     ><div class='bg2 chiefPlate' style='flex-grow:1;' id='chief_<?=$chiefIdx?>'
         ><div class='bg1 chiefNamePlate'><span class='chiefLevelText'>-</span> : <span class='chiefName'>&nbsp;</span></div
-<?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
+<?php   foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx): ?>
         ><div class='chiefTurnBox turn<?=$turnIdx?>'
             ><div class='chiefTurnTime'>&nbsp;</div
             ><div class='chiefTurnPad'><span class='chiefTurnText'>&nbsp;</span></div
@@ -56,7 +56,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 <?php endforeach; ?>
     ><div class='chiefTurnIdxPanel tail'
         ><div class='bg1 chiefTurnIdx'>.</div
-<?php foreach(range(1, GameConst::$maxChiefTurn) as $idx):?>
+<?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
         ><div class='bg0 chiefTurnIdx'><?=$idx?></div
 <?php endforeach; ?>
     ></div
@@ -79,14 +79,14 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 ><div class="chiefSubTable" style='height:<?=22*(GameConst::$maxChiefTurn+1)?>px;'
     ><div class='chiefTurnIdxPanel'
         ><div class='bg1 chiefTurnIdx'>.</div
-<?php foreach(range(1, GameConst::$maxChiefTurn) as $idx):?>
+<?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
         ><div class='bg0 chiefTurnIdx'><?=$idx?></div
 <?php endforeach; ?>
     ></div
 <?php foreach([11, 9, 7, 5] as $chiefIdx): ?>
     ><div class='bg2 chiefPlate' style='flex-grow:1;' id='chief_<?=$chiefIdx?>'
         ><div class='bg1 chiefNamePlate'><span class='chiefLevelText'>-</span> : <span class='chiefName'>&nbsp;</span></div
-<?php   foreach(range(1, GameConst::$maxChiefTurn) as $turnIdx): ?>
+<?php   foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx): ?>
         ><div class='chiefTurnBox turn<?=$turnIdx?>'
             ><div class='chiefTurnTime'>&nbsp;</div
             ><div class='chiefTurnPad'><span class='chiefTurnText'>&nbsp;</span></div
@@ -96,7 +96,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 <?php endforeach; ?>
     ><div class='chiefTurnIdxPanel tail'
         ><div class='bg1 chiefTurnIdx'>.</div
-<?php foreach(range(1, 12) as $idx):?>
+<?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
         ><div class='bg0 chiefTurnIdx'><?=$idx?></div
 <?php endforeach; ?>
     ></div

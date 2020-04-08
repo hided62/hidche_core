@@ -275,12 +275,12 @@ class che_불가침제의 extends Command\NationCommand{
 <?php endforeach; ?>
 </select>에게
 <select class='formInput' name="year" id="year" size='1' style='color:white;background-color:black;'>
-<?php foreach(range($currYear+1, $currYear+20) as $formYear): ?>
+<?php foreach(Util::range($currYear+1, $currYear+20+1) as $formYear): ?>
     <option value='<?=$formYear?>'><?=$formYear?></option>
 <?php endforeach; ?>
 </select>년
 <select class='formInput' name="month" id="month" size='1' style='color:white;background-color:black;'>
-<?php foreach(range(1, 12) as $formMonth): ?>
+<?php foreach(Util::range(1, 12+1) as $formMonth): ?>
     <option value='<?=$formMonth?>'><?=$formMonth?></option>
 <?php endforeach; ?>
 </select>월 전까지 

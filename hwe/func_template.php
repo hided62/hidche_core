@@ -15,7 +15,7 @@ function turnTable() {
 
     $turnList = [];
     $turnList[] = "<option selected value='0'>1턴</option>";
-    foreach(\range(1, GameConst::$maxTurn - 1) as $turnIdx){
+    foreach(Util::range(1, GameConst::$maxTurn) as $turnIdx){
         $turnText = $turnIdx + 1;
         $turnList[] = "<option value='{$turnIdx}'>{$turnText}턴</option>";
     }
@@ -35,7 +35,7 @@ function turnTable() {
 function chiefTurnTable() {
 $turnList = [];
 $turnList[] = "<option selected value='0'>1턴</option>";
-foreach(range(1, GameConst::$maxChiefTurn - 1) as $turnIdx){
+foreach(Util::range(1, GameConst::$maxChiefTurn) as $turnIdx){
     $turnText = $turnIdx + 1;
     $turnList[] = "<option value='{$turnIdx}'>{$turnText}턴</option>";
 }

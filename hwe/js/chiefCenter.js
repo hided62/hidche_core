@@ -18,7 +18,7 @@ function genChiefTableObj(){
         var $name = $plate.find('.chiefName');
         var turn = [];
         for(var turnIdx=0;turnIdx<maxChiefTurn;turnIdx++){
-            var $turn = $plate.find('.turn{0}'.format(turnIdx+1));
+            var $turn = $plate.find('.turn{0}'.format(turnIdx));
             var $turnTime = $turn.find('.chiefTurnTime');
             var $turnPad = $turn.find('.chiefTurnPad');
             var $turnText = $turn.find('.chiefTurnText');

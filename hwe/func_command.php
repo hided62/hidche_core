@@ -92,13 +92,7 @@ function repeatGeneralCommand(int $generalId, int $turnCnt){
     $turnList = $db->query('SELECT turn_idx, `action`, arg, brief FROM general_turn WHERE general_id=%i AND turn_idx < %i', $generalId, $reqTurn);
     foreach($turnList as $turnItem){
         $turnIdx = $turnItem['turn_idx'];
-        $nextTurnIdx = $turnIdx+$turnCnt;
-        $turnTarget = [];
-        while($nextTurnIdx < GameConst::$maxTurn){
-            //NOTE: range(15, 24, 12) 가 PHP에선 에러다. 그러니 직접 짠다. 
-            $turnTarget[] = $nextTurnIdx;
-            $nextTurnIdx += $turnCnt;
-        }
+        $turnTarget = iterator_to_array(Util::range($turnIdx+$turnCnt, GameConst::$maxTurn, $turnCnt));
         
         $db->update('general_turn', [
             'action'=>$turnItem['action'],

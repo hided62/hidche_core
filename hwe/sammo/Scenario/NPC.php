@@ -347,7 +347,7 @@ class NPC{
         ]);
         $this->generalID = $db->insertId();
         $turnRows = [];
-        foreach(range(0, GameConst::$maxTurn - 1) as $turnIdx){
+        foreach(Util::range(GameConst::$maxTurn) as $turnIdx){
             $turnRows[] = [
                 'general_id'=>$this->generalID,
                 'turn_idx'=>$turnIdx,

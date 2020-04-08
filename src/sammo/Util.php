@@ -721,10 +721,45 @@ class Util extends \utilphp\util
         return 0;
     }
 
-    function isPowerOfTwo(int $number):bool{
+    public static function isPowerOfTwo(int $number):bool{
         if($number <= 0){
             return false;
         }
         return ($number & ($number - 1)) == 0;
     }
+
+    /**
+     * Python 3의 range와 동일
+     * @param int $from 
+     * @param null|int $to 
+     * @param null|int $step 
+     * @return \Traversable
+     * @throws InvalidArgumentException 
+     */
+    public static function range(int $from, ?int $to=null, ?int $step=null):\Traversable{
+        if($to === null){
+            $to = $from;
+            $from = 0;
+        }
+        if($step === null){
+            $step = 1;
+        }
+        else if($step === 0){
+            throw new \InvalidArgumentException('xrange() arg 3 must not be zero');
+        }
+
+        if($step > 0){
+            while($from < $to){
+                yield $from;
+                $from += 1;
+            }
+        }
+        else{
+            while($from > $to){
+                yield $from;
+                $from -= 1;
+            }
+        }
+    }
+    
 };
