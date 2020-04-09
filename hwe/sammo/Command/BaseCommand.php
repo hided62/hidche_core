@@ -218,6 +218,17 @@ abstract class BaseCommand{
         return $this->arg;
     }
 
+    public function getGeneral():General{
+        return $this->generalObj;
+    }
+
+    public function getNationID(){
+        return $this->generalObj->getNationID();        
+    }
+
+    public function getGeneralLevel(){
+        return $this->generalObj->getVar('level');
+    }
 
     public function getBrief():string{
         return static::getName();

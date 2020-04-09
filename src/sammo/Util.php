@@ -655,6 +655,10 @@ class Util extends \utilphp\util
         return $year * 12 + $month - 1;
     }
 
+    public static function parseYearMonth(int $yearMonth):array{
+        return [intdiv($yearMonth, 12), $yearMonth%12 + 1];
+    }
+
     /**
      * 변수의 값을 첫번째 값부터 비교해서 대소를 반환
      * 길이가 다른 경우, 앞의 결과를 먼저 비교한 뒤, 짧은쪽의 값을 null으로 가정하여 길이 처리

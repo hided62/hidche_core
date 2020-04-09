@@ -229,11 +229,23 @@ function updateQuaterly() {
     $connect=$db->get();
 
     //천도 제한 해제, 관직 변경 제한 해제
-    $query = "update nation set capset='0',l12set='0',l11set='0',l10set='0',l9set='0',l8set='0',l7set='0',l6set='0',l5set='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('nation', [
+        'capset'=>0,
+        'l12set'=>0,
+        'l11set'=>0,
+        'l10set'=>0,
+        'l9set'=>0,
+        'l8set'=>0,
+        'l7set'=>0,
+        'l6set'=>0,
+        'l5set'=>0,
+    ], true);
     //관직 변경 제한 해제
-    $query = "update city set officer4set='0',officer3set='0',officer2set='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city', [
+        'officer4set'=>0,
+        'officer3set'=>0,
+        'officer2set'=>0,
+    ], true);
 }
 
 // 벌점 감소와 건국제한-1 전턴제한-1 외교제한-1, 1달마다 실행, 병사 있는 장수의 군량 감소, 수입비율 조정

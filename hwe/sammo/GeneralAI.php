@@ -65,6 +65,8 @@ class GeneralAI
     protected $userWarGenerals;
     /** @var General[] */
     protected $userCivilGenerals;
+    /** @var General[] */
+    protected $chiefGenerals;
 
     /** @var General[] */
     protected $lostGenerals;
@@ -96,7 +98,7 @@ class GeneralAI
         }
         $this->city = $general->getRawCity();
         $this->nation = $db->queryFirstRow(
-            'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,type,aux FROM nation WHERE nation = %i',
+            'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set,type,aux FROM nation WHERE nation = %i',
             $general->getNationID()
         ) ?? [
             'nation' => 0,
@@ -243,6 +245,9 @@ class GeneralAI
         $this->calcWarRoute();
         $troopCandidate = [];
         
+        $chiefTurn = cutTurn($this->general->getTurnTime(), $this->env['turnterm']);
+        $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
+
         foreach($this->troopLeaders as $troopLeader){
             $leaderID = $troopLeader->getID();
             if(!key_exists($leaderID, $this->nationPolicy->CombatForce)){
@@ -253,6 +258,19 @@ class GeneralAI
 
             if(key_exists($currentCityID, $this->frontCities)){
                 continue;
+            }
+
+            $last발령 = $troopLeader->getAuxVar('last발령');
+            if($last발령){
+                $leaderTurn = cutTurn($troopLeader->getTurnTime(), $this->env['turnterm']);
+                $compYearMonth = $yearMonth;
+                if($chiefTurn < $leaderTurn){
+                    $compYearMonth += 1;
+                }
+                if($compYearMonth === $yearMonth){
+                    //한턴마다 한번씩만 발령하자.
+                    continue;
+                }
             }
 
             [$fromCityID, $toCityID] = $this->nationPolicy->CombatForce[$leaderID];
@@ -326,6 +344,9 @@ class GeneralAI
         if(!$this->frontCities){
             return null;
         }
+
+        $chiefTurn = cutTurn($this->general->getTurnTime(), $this->env['turnterm']);
+        $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
         
         $troopCandidate = [];
         foreach($this->troopLeaders as $troopLeader){
@@ -343,6 +364,20 @@ class GeneralAI
             if($city['pop'] / $city['pop2'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
                 continue;
             }
+
+            $last발령 = $troopLeader->getAuxVar('last발령');
+            if($last발령){
+                $leaderTurn = cutTurn($troopLeader->getTurnTime(), $this->env['turnterm']);
+                $compYearMonth = $yearMonth;
+                if($chiefTurn < $leaderTurn){
+                    $compYearMonth += 1;
+                }
+                if($compYearMonth === $yearMonth){
+                    //한턴마다 한번씩만 발령하자.
+                    continue;
+                }
+            }
+
 
             $troopCandidate[$leaderID] = $troopLeader;
         }
@@ -708,8 +743,9 @@ class GeneralAI
         $cityCandidiates = [];
         foreach($this->supplyCities as $city){
             $dev = min($city['dev'], 0.999);
-            $score = (1 - $dev)**2;
-            $score /= \count($city['generals'])+1;
+            $score = 1 - $dev;
+            $score **= 2;
+            $score /= sqrt(count($city['generals']) + 1);
             $cityCandidiates[$city['city']] = $score;
         }
 
@@ -924,8 +960,9 @@ class GeneralAI
         $cityCandidiates = [];
         foreach($this->supplyCities as $city){
             $dev = min($city['dev'], 0.999);
-            $score = (1 - $dev)**2;
-            $score /= \count($city['generals'])+1;
+            $score = 1 - $dev;
+            $score **= 2;
+            $score /= sqrt(count($city['generals']) + 1);
             $cityCandidiates[$city['city']] = $score;
         }
 
@@ -1667,6 +1704,8 @@ class GeneralAI
                 return $cmd;
             }
         }
+
+        return null;
     }
 
     protected function do전쟁내정(GeneralCommand $reservedCommand): ?GeneralCommand
@@ -1774,6 +1813,10 @@ class GeneralAI
                     }
                 }
             }
+        }
+
+        if(!$cmdList){
+            return null;
         }
 
         return Util::choiceRandomUsingWeightPair($cmdList);
@@ -1941,6 +1984,13 @@ class GeneralAI
             $type = Util::choiceRandomUsingWeightPair($types);
         } else {
             $type = GameUnitConst::DEFAULT_CREWTYPE;
+        }
+
+        if($this->generalPolicy->can고급병종){
+            $currType = $general->getCrewTypeObj()->id;
+            if(key_exists($currType, $typesAll) && $typesAll[$currType][1] >= $typesAll[$type][1]){
+                $type = $currType;
+            }
         }
 
         //NOTE: 훈련과 사기진작은 '금만 사용한다'는 가정을 하고 있음
@@ -2125,10 +2175,9 @@ class GeneralAI
     {
         $cmd = $reservedCommand;
         $general = $this->general;
-        $generalID = $general->getID();
 
         $cmd = buildGeneralCommandClass('che_집합', $general, $this->env);
-        _setGeneralCommand($generalID, iterator_to_array(Util::range(GameConst::$maxTurn)), $cmd->getRawClassName(), $cmd->getArg(), $cmd->getBrief());
+        _setGeneralCommand($cmd, iterator_to_array(Util::range(GameConst::$maxTurn)));
 
         return $cmd;
     }
@@ -2140,12 +2189,56 @@ class GeneralAI
 
     protected function do거병(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        $general = $this->general;
+        // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
+        if($general->getVar('makelimit')){
+            return null;
+        }
+        if(!$this->generalPolicy->can건국){
+            return null;
+        }
+
+        $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
+        $ratio = ($this->fullLeadership + $this->fullStrength + $this->fullIntel) / 3;
+        
+
+        if($prop >= $ratio){
+            return null;
+        }
+
+        if(Util::randBool(1 - 0.014)){
+            return null;
+        }
+
+        $cmd = buildGeneralCommandClass('che_거병', $general, $this->env, null);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
+    }
+
+    protected function do해산(GeneralCommand $reservedCommand): ?GeneralCommand
+    {
+        $cmd = buildGeneralCommandClass('che_해산', $this->general, $this->env, null);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
     protected function do건국(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        $nationType = Util::choiceRandom(GameConst::$availableNationType);
+        $nationColor = Util::choiceRandom(array_keys(GetNationColors()));
+        $cmd = buildGeneralCommandClass('che_건국', $this->general, $this->env, [
+            'nationName' => "㉿" . mb_substr($this->general->getName(), 1),
+            'nationType' => $nationType,
+            'colorType' => $nationColor
+        ]);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
     protected function do선양(GeneralCommand $reservedCommand): ?GeneralCommand
@@ -2160,8 +2253,6 @@ class GeneralAI
         $env = $this->env;
 
         $db = DB::db();
-
-        $arg = null;
 
         // 오랑캐는 바로 임관
         if ($general->getVar('npc') == 9) {
@@ -2179,80 +2270,42 @@ class GeneralAI
             }
         }
 
-        switch (Util::choiceRandomUsingWeight([
-            '임관' => 11.4,
-            '거병_견문' => 40,
-            '이동' => 20,
-            '기타' => 28.6
-        ])) {
-                //임관
-            case '임관':
-
-                $available = true;
-
-                if ($env['startyear'] + 3 > $env['year']) {
-                    //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
-                    $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
-                    $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
-                    if ($nationCnt == 0 || $notFullNationCnt == 0) {
-                        $available = false;
-                    } else if (Util::randBool(pow(1 / $nationCnt / pow($notFullNationCnt, 3), 1 / 4))) {
-                        //국가가 1개일 경우에는 '임관하지 않음'
-                        $available = false;
-                    }
-                }
-
-                if ($general->getVar('affinity') == 999 || !$available) {
+        if(Util::randBool(0.3)){
+            if ($env['startyear'] + 3 > $env['year']) {
+                //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
+                $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
+                $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
+                if ($nationCnt == 0 || $notFullNationCnt == 0) {
                     return null;
                 }
-
-                //랜임 커맨드 입력.
-                $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env, ['destNationID' => $rulerNation]);
-                if(!$cmd->isRunnable()){
-                    return null;
-                }
-                return $cmd;
-
-                break;
-            case '거병_견문': //거병이나 견문
-                // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
-
-                if($general->getVar('makelimit')){
-                    return null;
-                }
-
-                if(!$this->generalPolicy->can건국){
-                    return null;
-                }
-
-                $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
-                $ratio = ($general->getVar('leadership') + $general->getVar('strength') + $general->getVar('intel')) / 3;
                 
-
-                if($prop >= $ratio){
+                if (Util::randBool(pow(1 / $nationCnt / pow($notFullNationCnt, 3), 1 / 4))) {
+                    //국가가 1개일 경우에는 '임관하지 않음'
                     return null;
                 }
+            }
 
-                if(Util::randBool(1 - 0.014)){
-                    return null;
-                }
+            if ($general->getVar('affinity') == 999) {
+                return null;
+            }
 
-                $cmd = buildGeneralCommandClass('che_거병', $general, $env, null);
-                if(!$cmd->isRunnable()){
-                    return null;
-                }
-                return $cmd;
-                break;
-            case '이동': //이동
+            //랜임 커맨드 입력.
+            $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env, ['destNationID' => $rulerNation]);
+            if(!$cmd->isRunnable()){
+                return null;
+            }
+            return $cmd;
+        }
 
-                $paths = array_keys(CityConst::byID($city['city'])->path);
+        if(Util::randBool(0.2)){
+            $paths = array_keys(CityConst::byID($city['city'])->path);
 
-                $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => Util::choiceRandom($paths)]);
-                if(!$cmd->isRunnable()){
-                    return null;
-                }
-                return $cmd;
-                break;
+            $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => Util::choiceRandom($paths)]);
+            if(!$cmd->isRunnable()){
+                return null;
+            }
+
+            return $cmd;
         }
         return null;
     }
@@ -2382,6 +2435,7 @@ class GeneralAI
         $npcCivilGenerals = [];
         $npcWarGenerals = [];
         $troopLeaders = [];
+        $chiefGenerals = [];
 
         $nationID = $this->nation['nation'];
 
@@ -2408,6 +2462,11 @@ class GeneralAI
             $generalID = $nationGeneral->getID();
             $cityID = $nationGeneral->getCityID();
             $npcType = $nationGeneral->getVar('npc');
+            $generalLevel = $nationGeneral->getVar('level');
+
+            if($generalLevel > 4){
+                $chiefGenerals[$generalLevel] = $nationGeneral;
+            }
 
             if (key_exists($cityID, $nationCities)) {
                 $nationCities[$cityID]['generals'][$generalID] = $nationGeneral;
@@ -2461,6 +2520,7 @@ class GeneralAI
         $this->npcCivilGenerals = $npcCivilGenerals;
         $this->npcWarGenerals = $npcWarGenerals;
         $this->troopLeaders = $troopLeaders;
+        $this->chiefGenerals = $chiefGenerals;
     }
 
 
@@ -2468,6 +2528,9 @@ class GeneralAI
         //TODO: NationTurn과 InstantNationTurn 구분 필요
         $lastTurn = $reservedCommand->getLastTurn();
         $general = $this->general;
+
+        $this->categorizeNationGeneral();
+        $this->categorizeNationCities();
 
         if($general->getVar('level') == 12){
             $month = $this->env['month'];
@@ -2481,12 +2544,15 @@ class GeneralAI
                 $this->calcRiceBillRate();
             }
         }
+        else if(in_array($month, [3, 6, 9, 12])){
+            $this->calcNonLordPromotion();
+        }
 
         if($reservedCommand->isRunnable()){
             return $reservedCommand;
         }
 
-        $this->categorizeNationGeneral();
+        
 
         foreach($this->nationPolicy->priority as $actionName){
             if(!$this->nationPolicy->{'can'.$actionName}){
@@ -2549,29 +2615,34 @@ class GeneralAI
             if($result !== null){
                 return $result;
             }
+            return $this->do중립($reservedCommand);
         }
-        else {
-            if($npcType >= 2 && $general->getVar('level') == 12 && !$this->nation['capital']){
-                //방랑군 건국
-                $result = $this->do건국($reservedCommand);
-                if($result !== null){
-                    return $result;
-                }
-                $result = $this->do방랑군이동($reservedCommand);
-                if($result !== null){
-                    return $result;
-                }
+        
+        if($npcType >= 2 && $general->getVar('level') == 12 && !$this->nation['capital']){
+            //방랑군 건국
+            $result = $this->do건국($reservedCommand);
+            if($result !== null){
+                return $result;
+            }
+            $result = $this->do방랑군이동($reservedCommand);
+            if($result !== null){
+                return $result;
             }
 
-            foreach($this->generalPolicy->priority as $actionName){
-                if(!$this->generalPolicy->{'can'.$actionName}){
-                    continue;
-                }
-                /** @var ?GeneralCommand */
-                $result = $this->{'do'.$actionName}($reservedCommand);
-                if($result !== null){
-                    return $result;
-                }
+            $result = $this->do해산($reservedCommand);
+            if($result !== null){
+                return $result;
+            }
+        }
+
+        foreach($this->generalPolicy->priority as $actionName){
+            if(!$this->generalPolicy->{'can'.$actionName}){
+                continue;
+            }
+            /** @var ?GeneralCommand */
+            $result = $this->{'do'.$actionName}($reservedCommand);
+            if($result !== null){
+                return $result;
             }
         }
 
@@ -3087,88 +3158,6 @@ class GeneralAI
         return Util::choiceRandomUsingWeightPair($commandList);
     }
 
-    public function chooseNeutralTurn(): array
-    {
-
-        $general = $this->getGeneralObj();
-        $city = $this->city;
-        $env = $this->env;
-
-        $db = DB::db();
-
-        $arg = null;
-
-        // 오랑캐는 바로 임관
-        if ($general->getVar('npc') == 9) {
-            $rulerNation = $db->queryFirstField(
-                'SELECT nation FROM general WHERE `level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1',
-                $general->getAuxVar('joinedNations') ?? [0]
-            );
-
-            if ($rulerNation) {
-                return ['che_임관', ['destNationID' => $rulerNation]];
-            }
-            return ['che_견문', null];
-        }
-
-        switch (Util::choiceRandomUsingWeight([
-            '임관' => 11.4,
-            '거병_견문' => 40,
-            '이동' => 20,
-            '기타' => 28.6
-        ])) {
-                //임관
-            case '임관':
-
-                $available = true;
-
-                if ($env['startyear'] + 3 > $env['year']) {
-                    //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
-                    $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
-                    $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
-                    if ($nationCnt == 0 || $notFullNationCnt == 0) {
-                        $available = false;
-                    } else if (Util::randBool(pow(1 / $nationCnt / pow($notFullNationCnt, 3), 1 / 4))) {
-                        //국가가 1개일 경우에는 '임관하지 않음'
-                        $available = false;
-                    }
-                }
-
-                if ($general->getVar('affinity') == 999 || !$available) {
-                    $command = 'che_견문'; //견문
-                } else {
-                    //랜임 커맨드 입력.
-                    $command = 'che_랜덤임관';
-                    $arg = [
-                        'destNationIDList' => []
-                    ];
-                }
-                break;
-            case '거병_견문': //거병이나 견문
-                // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
-                $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
-                $ratio = ($general->getVar('leadership') + $general->getVar('strength') + $general->getVar('intel')) / 3;
-                if ($env['startyear'] + 2 > $env['year'] && $prop < $ratio && Util::randBool(0.014) && $general->getVar('makelimit') == 0) {
-                    //거병
-                    $command = 'che_거병';
-                } else {
-                    //견문
-                    $command = 'che_견문';
-                }
-                break;
-            case '이동': //이동
-
-                $paths = array_keys(CityConst::byID($city['city'])->path);
-                $command = 'che_이동';
-                $arg = ['destCityID' => Util::choiceRandom($paths)];
-                break;
-            default:
-                $command = 'che_견문';
-                break;
-        }
-        return [$command, $arg];
-    }
-
     public function old_chooseGeneralTurn($command, $arg): array
     {
         $general = $this->getGeneralObj();
@@ -3205,11 +3194,7 @@ class GeneralAI
                 $arg = [];
                 $general->setVar('killturn', rand(70, 75));
                 //NOTE: 부대 편성에 보여야 하므로 이것만 DB에 직접 접근함.
-                $db->update('general_turn', [
-                    'action' => 'che_집합',
-                    'arg' => '{}',
-                    'brief' => '집합'
-                ], 'general_ID=%i AND turn_idx < 6', $general->getID());
+                //_setGeneralCommand($general->getID, [0,1,2,3,4,5], 'che_집합', null, '집합');
             }
 
             return [$command, $arg];
@@ -3694,6 +3679,50 @@ class GeneralAI
         return Util::choiceRandomUsingWeight($nations);
     }
 
+    protected function calcNonLordPromotion(){
+        //빈자리는 아무나 채움
+        $db = DB::db();
+        foreach(Util::range(getNationChiefLevel($this->nation['level']), 12) as $chiefLevel){
+            if($this->nation["l{$chiefLevel}set"]){
+                continue;
+            }
+            if(key_exists($chiefLevel, $this->chiefGenerals)){
+                continue;
+            }
+
+            
+            $picked = false;
+            foreach(Util::range(5) as $idx){
+                /** @var General */
+                $randGeneral = Util::choiceRandom($this->npcWarGenerals);
+                if($chiefLevel == 11){
+                    $picked = true;
+                    break;
+                }
+
+                if($chiefLevel % 2 == 0){
+                    if($randGeneral->getStrength(false, false, false, false) < GameConst::$chiefStatMin){
+                        continue;
+                    }
+                }
+                else{
+                    if($randGeneral->getIntel(false, false, false, false) < GameConst::$chiefStatMin){
+                        continue;
+                    }
+                }
+                $picked = true;
+                break;
+            }
+
+            if(!$picked){
+                continue;
+            }
+
+            $randGeneral->setVar('level', $chiefLevel);
+            $randGeneral->applyDB($db);
+        }
+    }
+
     protected function calcPromotion()
     {
         $db = DB::db();
@@ -3712,7 +3741,7 @@ class GeneralAI
             'permission' => 'ambassador',
         ], 'nation=%i AND npc < 2 AND level > 4', $nationID);
 
-        foreach ($db->query(
+        foreach($db->query(
             'SELECT no, npc, level, killturn FROM general WHERE nation = %i AND 12 > level AND level > 4',
             $nationID
         ) as $chief) {

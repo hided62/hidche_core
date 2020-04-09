@@ -1,6 +1,9 @@
 <?php
 namespace sammo;
 
+use sammo\Command\GeneralCommand;
+use sammo\Command\NationCommand;
+
 function getGeneralTurnBrief(General $generalObj, array $turnList) {
     $result = [];
 
@@ -164,29 +167,40 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     ], 'nation_id=%i AND level=%i ORDER BY turn_idx ASC', $nationID, $level);
 }
 
-function _setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg, string $brief) {
+function _setGeneralCommand(GeneralCommand $command, array $turnList):void {
     if(!$turnList){
         return;
     }
 
     $db = DB::db();
 
+    $generalID = $command->getGeneral()->getID();
+    $commandName = $command->getRawClassName();
+    $arg = $command->getArg();
+    $brief = $command->getBrief();
+
     $db->update('general_turn', [
-        'action'=>$command,
+        'action'=>$commandName,
         'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT),
         'brief'=>$brief
     ], 'general_id = %i AND turn_idx IN %li', $generalID, $turnList);
 }
 
-function _setNationCommand(int $nationID, int $level, array $turnList, string $command, ?array $arg, string $brief) {
+function _setNationCommand(NationCommand $command, array $turnList):void  {
     if(!$turnList){
         return;
     }
 
     $db = DB::db();
 
+    $nationID = $command->getNationID();
+    $level = $command->getGeneralLevel();
+    $commandName = $command->getRawClassName();
+    $arg = $command->getArg();
+    $brief = $command->getBrief();
+
     $db->update('nation_turn', [
-        'action'=>$command,
+        'action'=>$commandName,
         'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT),
         'brief'=>$brief
     ], 'nation_id = %i AND level = %i AND turn_idx IN %li', $nationID, $level, $turnList);
@@ -313,18 +327,16 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
         ];
     }
 
-    /*if(!$commandObj->isReservable()){
+    if(!$commandObj->isReservable()){
         return [
             'result'=>false,
             'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable(),
             'test'=>'isReservable',
             'target'=>'command'
         ];
-    }*/
+    }
 
-    $brief = $commandObj->getBrief();
-
-    _setGeneralCommand($generalID, $turnList, $command, $arg, $brief);
+    _setGeneralCommand($commandObj, $turnList);
     return [
         'result'=>true,
         'reason'=>'success'
@@ -395,20 +407,20 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
         ];
     }
 
-    /*if(!$commandObj->isReservable()){
+    if(!$commandObj->isReservable()){
         return [
             'result'=>false,
             'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable(),
             'test'=>'isReservable',
             'target'=>'command'
         ];
-    }*/
+    }
     //TODO: Reservable은 '정말로 입력 불가'이고, '입력은 가능하지만 실행은 안될 것 같은' 군을 하나더 추가해야함
     //      Runnable은 Arg를 모두 받아서 처리해야 하는 것이고, Arg를 받지 않아도 안될 것 같지만 입력 자체는 가능할 것 같은 커맨드.
 
     $brief = $commandObj->getBrief();
 
-    _setNationCommand($general->getNationID(), $general->getVar('level'), $turnList, $command, $arg, $brief);
+    _setNationCommand($commandObj, $turnList);
     return [
         'result'=>true,
         'arg_test'=>true,
