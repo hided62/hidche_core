@@ -48,8 +48,12 @@ class che_NPC능동 extends Command\GeneralCommand{
         $this->setNation();
         
 
-        $this->runnableConstraints=[
+        $this->reservableConstraints=[
             ConstraintHelper::MustBeNPC()
+        ];
+
+        $this->runnableConstraints=[
+
         ];
 
     }

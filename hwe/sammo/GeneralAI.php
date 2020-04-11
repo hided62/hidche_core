@@ -1910,9 +1910,34 @@ class GeneralAI
             return null;
         }
 
+        if(!($this->genType & self::t통솔장)){
+            return null;
+        }
+
+        
+
         $general = $this->getGeneralObj();
+        $city = $this->city;
         $nation = $this->nation;
         $env = $this->env;
+
+        if($general->getVar('crew') >= $this->nationPolicy->minWarCrew){
+            return null;
+        }
+
+        if(!$this->generalPolicy->can한계징병){
+            $remainPop = $city['pop'] - $this->nationPolicy->minNPCRecruitCityPopulation - $this->fullLeadership * 100;
+            if($remainPop <= 0){
+                return null;
+            }
+
+            $maxPop = $city['pop_max'] - $this->nationPolicy->minNPCRecruitCityPopulation;
+            if(($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) &&
+            (Util::randF($remainPop/$maxPop))){
+                return null;
+            }
+            
+        }
 
         $nationID = $general->getNationID();
 
@@ -1997,20 +2022,46 @@ class GeneralAI
         $obj훈련 = buildGeneralCommandClass('che_훈련', $general, $env);
         $obj사기진작 = buildGeneralCommandClass('che_사기진작', $general, $env);
 
+
+
         $gold = $general->getVar('gold');
         $gold -= $obj훈련->getCost()[0] * 2;
         $gold -= $obj사기진작->getCost()[0] * 2;
 
-        $cost = $general->getCrewTypeObj()->costWithTech($tech);
-        $cost = $general->onCalcDomestic('징병', 'cost', $cost);
+        if($gold <= 0){
+            return null;
+        }
 
-        $crew = intdiv($gold, $cost);
-        $crew *= 100;
+        $crew = $this->fullLeadership * 100;
 
-        return buildGeneralCommandClass('che_징병', $general, $env, [
+        $cmd = buildGeneralCommandClass('che_징병', $general, $env, [
             'crewType' => $type,
             'amount' => $crew
         ]);
+
+        $cost = $cmd->getCost()[0];
+
+        if($this->generalPolicy->can모병 && $gold >= $cost * 6){
+            $cmd = buildGeneralCommandClass('che_모병', $general, $env, [
+                'crewType' => $type,
+                'amount' => $crew
+            ]);
+        }
+        else if($gold < $cost){
+            $crew *= $gold / $cost; 
+            $crew = Util::round($crew-49, -2);
+            $cmd = buildGeneralCommandClass('che_징병', $general, $env, [
+                'crewType' => $type,
+                'amount' => $crew
+            ]);
+        }
+
+
+        
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
     protected function do전투준비(GeneralCommand $reservedCommand): ?GeneralCommand
@@ -2123,7 +2174,65 @@ class GeneralAI
 
     protected function doNPC헌납(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        return null;
+        $policy = $this->nationPolicy;
+        $general = $this->general;
+        $resourceMap = [
+            ['rice', $policy->reqNationRice, $policy->reqNPCWarRice, $policy->reqNPCDevelRice],
+            ['gold', $policy->reqNationGold, $policy->reqNPCWarGold, $policy->reqNPCDevelGold],
+        ];
+
+        $args = [];
+
+        foreach($resourceMap as [$resKey, $reqNation, $reqNPCWar, $reqNPCDevel]){
+            $genRes = $general->getVar($resKey);
+            
+            if($this->genType & self::t통솔장){
+                $reqRes = $reqNPCWar;
+            }
+            else{
+                $reqRes = $reqNPCDevel;
+                if($genRes >= $reqNPCWar && $reqNPCWar > $reqNPCDevel + 1000){
+                    $amount = $genRes - $reqNPCDevel;
+                    $args[] = [[
+                        'isGold'=>$resKey==='gold',
+                        'amount'=>$amount
+                    ], $amount];
+                }
+
+                if($genRes >= $reqNPCDevel * 5 && $genRes >= 5000){
+                    $amount = $genRes - $reqNPCDevel;
+                    $args[] = [[
+                        'isGold'=>$resKey==='gold',
+                        'amount'=>$amount
+                    ], $amount];
+                }
+            }
+
+            if($this->nation[$resKey] >= $reqNation){
+                continue;
+            }
+            if($genRes < $reqRes * 1.1){
+                continue;
+            }
+            $amount = $genRes - $reqRes;
+            if($amount < 1000){
+                continue;
+            }
+            $args[] = [[
+                'isGold'=>$resKey==='gold',
+                'amount'=>$amount
+            ], $amount];
+        }
+
+        if(!$args){
+            return null;
+        }
+
+        $cmd = buildGeneralCommandClass('che_헌납', $general, $this->env, Util::choiceRandomUsingWeightPair($args));
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+        return $cmd;
     }
 
 
@@ -2136,7 +2245,75 @@ class GeneralAI
             return null;
         }
 
-        return null;
+        if(!$this->generalPolicy->can징병){
+            return null;
+        }
+
+        if(!($this->genType & self::t통솔장)){
+            return null;
+        }
+
+        if($this->general['crew'] >= $this->nationPolicy->minWarCrew){
+            return null;
+        }
+
+        $city = $this->city;
+        if($this->generalPolicy->can한계징병){
+            if($city['pop'] >= $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop){
+                return null;
+            }
+        }
+        else{
+            if($city['pop']/$city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+                return null;
+            }
+        }
+
+        $this->categorizeNationCities();
+
+        $recruitableCityList = [];
+
+        foreach($this->backupCities as $candidateCity){
+            $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+            $cityID = $candidateCity['city'];
+            if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                continue;
+            }
+            $recruitableCityList[$cityID] = $pop_ratio;
+        }
+
+        if(!$recruitableCityList){
+            foreach($this->supplyCities as $candidateCity){
+                if($candidateCity['pop'] <= $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop){
+                    continue;
+                }
+                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+                $cityID = $candidateCity['city'];
+                if(key_exists($cityID, $this->frontCities)){
+                    $recruitableCityList[$cityID] = $pop_ratio / 2;
+                }
+                else{
+                    $recruitableCityList[$cityID] = $pop_ratio;
+                }
+            }
+        }
+
+        if(!$recruitableCityList){
+            return null;
+        }
+
+
+        $cmd = buildGeneralCommandClass('che_NPC능동', $this->general, $this->env, [
+            'optionText' => '순간이동',
+            'destCityID' => Util::choiceRandomUsingWeight($recruitableCityList),
+        ]);
+    
+
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+
+        return $cmd;
     }
 
     protected function do전방워프(GeneralCommand $reservedCommand): ?GeneralCommand
@@ -2148,7 +2325,41 @@ class GeneralAI
             return null;
         }
 
-        return null;
+        if(!($this->genType & self::t통솔장)){
+            return null;
+        }
+
+        if($this->general->getVar('crew') < $this->nationPolicy->minWarCrew){
+            return null;
+        }
+
+        if($this->city['front']){
+            return null;
+        }
+
+        $this->categorizeNationCities();
+
+        $candidateCities = [];
+
+        foreach($this->frontCities as $frontCity){
+            $cityCandidates[$frontCity['city']] = $frontCity['important'];
+        }
+
+        if(!$candidateCities){
+            return null;
+        }
+
+        $cmd = buildGeneralCommandClass('che_NPC능동', $this->general, $this->env, [
+            'optionText' => '순간이동',
+            'destCityID' => Util::choiceRandomUsingWeight($candidateCities),
+        ]);
+    
+
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+
+        return $cmd;
     }
 
     protected function do내정워프(GeneralCommand $reservedCommand): ?GeneralCommand
