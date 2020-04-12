@@ -284,6 +284,14 @@ class Util extends \utilphp\util
         return $result;
     }
 
+    public static function convertArrayToSetLike($arr){
+        $result = [];
+        foreach($arr as $datum){
+            $result[$datum] = $datum;
+        }
+        return $result;
+    }
+
     public static function convertPairArrayToDict($arr){
         $result = [];
         foreach($arr as [$key, $val]){
@@ -308,7 +316,7 @@ class Util extends \utilphp\util
         return $result;
     }
 
-    public static function squeezeFromArray(array $dict, string $key){
+    public static function squeezeFromArray(array $dict, $key){
         $result = [];
         foreach($dict as $dictKey=>$value){
             $result[$dictKey] = $value[$key];
@@ -583,6 +591,19 @@ class Util extends \utilphp\util
             }
         }
         
+        return $result;
+    }
+
+    public static function getKeyOfMaxValue(array $array){
+        $max = null;
+        $result = null;
+        foreach ($array as $key => $value) {
+            if ($max === null || $value > $max) {
+                $result = $key;
+                $max = $value;
+            }
+        }
+
         return $result;
     }
 
