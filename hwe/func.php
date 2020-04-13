@@ -1839,6 +1839,76 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
 }
 
 /**
+ * $from 으로 지정한 도시부터 $to 도시까지의 최단 거리를 계산해 줌
+ * @param $from 기준 도시 코드
+ * @param $to 대상 도시 코드
+ * @param array|null $linkNationList 경로에 해당하는 국가 리스트, null인 경우 제한 없음
+ * @return null|int 거리. 
+ */
+function calcCityDistance(int $from, int $to, ?array $linkNationList):?int{
+    $queue = new \SplQueue();
+
+    $cities = [];
+
+    if($linkNationList === []){
+        return null;
+    }
+
+    if($linkNationList !== null){
+        $db = DB::db();
+        //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까 
+        $allowedCityList = [];
+        foreach($db->queryAllLists(
+            'SELECT city FROM city WHERE nation IN %li',
+            $linkNationList
+        ) as [$cityID, $nationID]){
+            $allowedCityList[$cityID] = $nationID;
+        }
+
+        
+    }
+    else{
+        $allowedCityList = CityConst::all();
+    }
+
+    if(!key_exists($to, $allowedCityList)){
+        return null;
+    }
+
+    if($from === $to){
+        return 0;
+    }
+
+    $queue->enqueue([$from, 0]);
+
+    while(!$queue->isEmpty()){
+        list($cityID, $dist) = $queue->dequeue();
+        if(key_exists($cityID, $cities)){
+            continue;
+        }
+
+        $cities[$cityID] = $dist;
+
+        if($cityID === $to){
+            return $dist;
+        }
+
+        foreach(array_keys(CityConst::byID($cityID)->path) as $connCityID){
+            if(!key_exists($connCityID, $allowedCityList)){
+                continue;
+            }
+            if(key_exists($connCityID, $cities)){
+                continue;
+            }
+            $queue->enqueue([$connCityID, $dist+1]);
+            
+        }
+    }
+
+    //길이 없음
+    return null;
+}
+/**
  * $from 으로 지정한 도시의 인접 도시와 $to 도시의 최단 거리를 계산해 줌
  * @param $from 기준 도시 코드
  * @param $to 대상 도시 코드

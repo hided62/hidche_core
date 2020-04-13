@@ -5,12 +5,14 @@ class LastTurn{
     protected $command = '휴식';
     protected $arg = null;
     protected $term = null;
+    protected $seq = null;
 
-    function __construct(?string $command=null, ?array $arg=null, ?int $term=null)
+    function __construct(?string $command=null, ?array $arg=null, ?int $term=null, ?int $seq=null)
     {
         $this->setCommand($command);
         $this->setArg($arg);
         $this->setTerm($term);
+        $this->setSeq($term);
     }
 
     static function fromJson(?string $json):self{
@@ -43,7 +45,7 @@ class LastTurn{
 
     function getArg():?array{
         return $this->arg;
-    }    
+    } 
 
     function setTerm(?int $term){
         $this->term = $term;
@@ -51,6 +53,14 @@ class LastTurn{
 
     function getTerm():?int{
         return $this->term;
+    }
+
+    function setSeq(?int $seq){
+        $this->seq = $seq;
+    }
+    
+    function getSeq():?int{
+        return $this->seq;
     }
 
     function toJson():string{

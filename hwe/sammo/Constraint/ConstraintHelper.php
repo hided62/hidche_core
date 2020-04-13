@@ -108,6 +108,10 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
+    static function HasRouteWithEnemy():array{
+        return [__FUNCTION__];
+    }
+
     static function MustBeNPC():array{
         return [__FUNCTION__];
     }
@@ -233,6 +237,10 @@ class ConstraintHelper{
     }
 
     static function ReqNationValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
+    }
+
+    static function ReqNationAuxValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
         return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
     }
 

@@ -119,7 +119,7 @@ CREATE TABLE `nation` (
 	`onlinegen` VARCHAR(1024) NULL DEFAULT '',
 	`msg` TEXT NULL DEFAULT '',
 	`capital` INT(1) NULL DEFAULT '0',
-	`capset` INT(1) NULL DEFAULT '0',
+	`capset` INT(6) NULL DEFAULT '0',
 	`gennum` INT(3) NULL DEFAULT '1',
 	`gold` INT(8) NULL DEFAULT '0',
 	`rice` INT(8) NULL DEFAULT '0',

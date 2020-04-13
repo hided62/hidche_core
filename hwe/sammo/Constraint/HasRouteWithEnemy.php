@@ -4,7 +4,7 @@ namespace sammo\Constraint;
 
 use \sammo\DB;
 
-class HasRoute extends Constraint{
+class HasRouteWithEnemy extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_DEST_CITY;
 
     public function checkInputValues(bool $throwExeception=true):bool{
@@ -31,7 +31,9 @@ class HasRoute extends Constraint{
 
         $db = DB::db();
 
-        $allowedNationList = [$this->general['nation']];
+        $allowedNationList = $db->queryFirstColumn('SELECT you FROM diplomacy WHERE state = 0 AND me = %i', $this->general['nation']);
+        $allowedNationList[] = $this->general['nation'];
+        $allowedNationList[] = 0;
 
         $distanceList = \sammo\searchDistanceListToDest($this->general['city'], $this->destCity['city'], $allowedNationList);
         if(!$distanceList){

@@ -83,7 +83,7 @@ class che_포상 extends Command\NationCommand{
             ConstraintHelper::FriendlyDestGeneral()
         ];
         if($this->arg['isGold']){
-            $this->runnableConstraints[] = ConstraintHelper::ReqNationGold(1);
+            $this->runnableConstraints[] = ConstraintHelper::ReqNationGold(1+GameConst::$basegold);
         }
         else{
             $this->runnableConstraints[] = ConstraintHelper::ReqNationRice(1+GameConst::$baserice);

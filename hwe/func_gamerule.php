@@ -230,7 +230,6 @@ function updateQuaterly() {
 
     //천도 제한 해제, 관직 변경 제한 해제
     $db->update('nation', [
-        'capset'=>0,
         'l12set'=>0,
         'l11set'=>0,
         'l10set'=>0,
