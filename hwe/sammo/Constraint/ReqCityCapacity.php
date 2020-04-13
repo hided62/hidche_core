@@ -30,7 +30,7 @@ class ReqCityCapacity extends Constraint{
         if(is_numeric($this->reqVal)){
             $this->isPercent = false;
         }
-        else if(is_str($this->reqVal)){
+        else if(is_string($this->reqVal)){
             $this->reqVal = Util::convPercentStrToFloat($this->reqVal);
             if($this->reqVal === null){
                 if(!$throwExeception){return false; }
