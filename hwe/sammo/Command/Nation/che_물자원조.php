@@ -23,7 +23,7 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_원조 extends Command\NationCommand{
+class che_물자원조 extends Command\NationCommand{
     static protected $actionName = '원조';
     static public $reqArg = true;
 
