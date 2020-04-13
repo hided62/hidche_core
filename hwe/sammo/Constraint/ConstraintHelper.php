@@ -188,6 +188,14 @@ class ConstraintHelper{
         return [__FUNCTION__, $minTrust];
     }
 
+    static function ReqCityValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
+    }
+
+    static function ReqDestCityValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
+    }
+
     static function ReqCityTrader(int $npcType):array{
         return [__FUNCTION__, $npcType];
     }

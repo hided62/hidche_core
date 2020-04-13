@@ -26,28 +26,13 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;
 
-class che_천도 extends Command\NationCommand{
-    static protected $actionName = '천도';
-    static public $reqArg = true;
-
-    private $cachedDist = null;
+class che_증축 extends Command\NationCommand{
+    static protected $actionName = '증축';
+    static public $reqArg = false;
 
     protected function argTest():bool{
-        if($this->arg === null){
-            return false;
-        }
+        $this->arg = [];
 
-        if(!key_exists('destCityID', $this->arg)){
-            return false;
-        }
-        if(CityConst::byID($this->arg['destCityID']) === null){
-            return false;
-        }
-        $destCityID = $this->arg['destCityID'];
-
-        $this->arg = [
-            'destCityID'=>$destCityID,
-        ];
         return true;
     }
 
@@ -56,26 +41,28 @@ class che_천도 extends Command\NationCommand{
 
         $env = $this->env;
 
-        $this->setCity();
-        $this->setNation(['capset', 'gold', 'rice']);
-        $this->setDestCity($this->arg['destCityID'], null);
-        
-        [$reqGold, $reqRice] = $this->getCost();
-
-        if($this->getDistance() === null){
-            $this->runnableConstraints[
-                ConstraintHelper::AlwaysFail('천도 대상으로 도달할 방법이 없습니다.')
+        if($general->getNationID()===0){
+            $this->reservableConstraints=[
+                ConstraintHelper::NotBeNeutral(),
+            ];
+            $this->runnableConstraints=[
+                ConstraintHelper::NotBeNeutral(),
             ];
             return;
         }
 
+        $this->setCity();
+        $this->setNation(['gold', 'rice', 'capset', 'capital']);
+        $this->setDestCity($this->nation['capital'], null);
+        
+        [$reqGold, $reqRice] = $this->getCost();
+
         $this->runnableConstraints=[
             ConstraintHelper::OccupiedCity(),
-            ConstraintHelper::OccupiedDestCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::SuppliedDestCity(),
-            ConstraintHelper::NotSameDestCity(),
+            ConstraintHelper::ReqDestCityValue('level', '>', 3, '수진, 진, 관문에서는 불가능합니다.'),
+            ConstraintHelper::ReqDestCityValue('level', '<', 7, '더이상 증축할 수 없습니다.'),
             ConstraintHelper::ReqNationGold(GameConst::$basegold+$reqGold),
             ConstraintHelper::ReqNationRice(GameConst::$baserice+$reqRice),
         ];
@@ -84,33 +71,21 @@ class che_천도 extends Command\NationCommand{
     public function getCommandDetailTitle():string{
         $name = $this->getName();
 
+        [$reqGold, $reqRice] = array_map('number_format', $this->getCost());
         $amount = number_format($this->env['develcost'] * 5);
+        $reqTurn = $this->getPostReqTurn()+1;
 
-        return "{$name}/1+거리×2턴(금쌀 {$amount}×2^거리)";
+        return "{$name}/{$reqTurn}턴(금 {$reqGold}, 쌀 {$reqRice})";
     }
     
     public function getCost():array{
-        $amount = $this->env['develcost'] * 5;
-        $amount *= 2**$this->getDistance()??50;
+        $amount = $this->env['develcost'] * GameConst::$expandCityCostCoef + GameConst::$expandCityDefaultCost;
         
         return [$amount, $amount];
     }
 
-    private function getDistance():?int{
-        if($this->cachedDist !== null){
-            return $this->cachedDist;
-        }
-        $srcCityID = $this->nation['capital'];
-        $destCityID = $this->arg['destCityID'];
-        $nationID = $this->nation['nation'];
-        $distance = \sammo\calcCityDistance($srcCityID, $destCityID, [$nationID])??50;
-        $this->cachedDist = $distance;
-        
-        return $distance;
-    }
-    
     public function getPreReqTurn():int{
-        return 1 + $this->getDistance()*2;
+        return 5;
     }
 
     public function getPostReqTurn():int{
@@ -120,12 +95,6 @@ class che_천도 extends Command\NationCommand{
     public function addTermStack():bool{
         $lastTurn = $this->getLastTurn();
         $commandName = $this->getName();
-
-        $nationStor = \sammo\KVStorage::getStorage(DB::db(), 'nation_env');
-        $general = $this->getGeneral();
-        $nationID = $general->getNationID();
-        $nationStor->setValue("last천도Trial_{$nationID}", [$general->getVar('level'), $general->getTurnTime()]);
-
         if($lastTurn->getCommand() != $commandName && $lastTurn->getArg() !== $this->arg){
             $this->setResultTurn(new LastTurn(
                 $commandName,
@@ -162,9 +131,7 @@ class che_천도 extends Command\NationCommand{
 
     public function getBrief():string{
         $commandName = $this->getName();
-        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
-        $josaRo = JosaUtil::pick($destCityName, '로');
-        return "【{$destCityName}】{$josaRo} {$commandName}";
+        return "수도를 {$commandName}";
     }
 
     public function run():bool{
@@ -189,7 +156,7 @@ class che_천도 extends Command\NationCommand{
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
-        $josaRo = JosaUtil::pick($destCityName, '로');
+        
 
         $logger = $general->getLogger();
         
@@ -205,46 +172,36 @@ class che_천도 extends Command\NationCommand{
             'dedication', 5 * ($this->getPreReqTurn() + 1)
         ));
 
+        $josaUl = JosaUtil::pick($destCityName, '을');
         $josaYi = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
+        $db->update('city', [
+            'level'=>$db->sqleval('level+1'),
+            'pop2'=>$db->sqleval('pop_max + %i', GameConst::$expandCityPopIncreaseAmount),
+            'agri2'=>$db->sqleval('agri_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'comm2'=>$db->sqleval('comm_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'secu2'=>$db->sqleval('secu_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'def2'=>$db->sqleval('def_max + %i', GameConst::$expandCityWallIncreaseAmount),
+            'wall2'=>$db->sqleval('wall_max + %i', GameConst::$expandCityWallIncreaseAmount),
+        ], 'city=%i', $destCityID);
+
+        [$reqGold, $reqRice] = $this->getCost();
         $db->update('nation', [
-            'capital' => $destCityID,
             'capset' => $db->sqleval('capset + 1'),
+            'gold' => $db->sqleval('gold - %i', $reqGold),
+            'rice' => $db->sqleval('rice - %i', $reqRice),
         ], 'nation=%i', $nationID);
         
-        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 천도했습니다. <1>$date</");
-        $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaRo} <M>천도</>명령");
-        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</> 명령");
-        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</>를 명령하였습니다.");
-        $logger->pushGlobalHistoryLog("<S><b>【천도】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</>하였습니다.");
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 증축했습니다. <1>$date</");
+        $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>증축</>");
+        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>하였습니다.");
+        $logger->pushGlobalHistoryLog("<C><b>【증축】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>하였습니다.");
 
         $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
+
         return true;
-    }
-
-    public function getJSFiles(): array
-    {
-        return [
-            'js/defaultSelectCityByMap.js'
-        ];
-    }
-
-
-    public function getForm(): string
-    {
-        ob_start();
-?>
-<?=\sammo\getMapHtml()?><br>
-선택된 도시로 천도합니다.<br>
-현재 수도에서 연결된 도시만 가능하며, 1+2×거리만큼의 턴이 필요합니다.<br>
-목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-<?=\sammo\optionsForCities()?><br>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<br>
-<?php
-        return ob_get_clean();
     }
 }

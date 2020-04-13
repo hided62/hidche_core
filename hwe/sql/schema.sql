@@ -205,7 +205,6 @@ CREATE TABLE `city` (
 	`city` INT(6) NOT NULL AUTO_INCREMENT,
 	`name` CHAR(64) NOT NULL,
 	`level` INT(1) NOT NULL,
-	`upgrading` INT(1) NOT NULL DEFAULT '0',
 	`nation` INT(6) NOT NULL DEFAULT '0',
 	`supply` INT(1) NOT NULL DEFAULT '1',
 	`front` INT(1) NOT NULL DEFAULT '0',

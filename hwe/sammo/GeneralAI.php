@@ -1476,12 +1476,12 @@ class GeneralAI
         if($lastTurn->getCommand() === 'che_천도'){
             $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, $lastTurn->getArg());
             if($cmd->isRunnable()){
-                $nationStor->last천도Trial = [$general->getVar('level'), $general->getTurnTime()];
+                $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('level'), $general->getTurnTime()]);
                 return $cmd;
             }
         }
 
-        $lastTrial = $nationStor->last천도Trial;
+        $lastTrial = $nationStor->getValue("last천도Trial_{$this->nation['nation']}");
         if($lastTrial){
             [$lastTrialLevel, $lastTrialTurnTime] = $lastTrial;
             $timeDiffSeconds = TimeUtil::DateIntervalToSeconds(
@@ -1597,7 +1597,7 @@ class GeneralAI
         }
 
         
-        $nationStor->last천도Trial = [$general->getVar('level'), $general->getTurnTime()];
+        $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('level'), $general->getTurnTime()]);
 
         return $cmd;
     }

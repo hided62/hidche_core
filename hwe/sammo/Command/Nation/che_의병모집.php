@@ -40,18 +40,12 @@ class che_의병모집 extends Command\NationCommand{
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
         
-        if($relYear < 3){
-            $this->runnableConstraints = [
-                ConstraintHelper::AlwaysFail('현재 초반 제한중입니다.')
-            ];
-            return;
-        }
-
         $this->runnableConstraints=[
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::OccupiedCity(),
-            ConstraintHelper::AvailableStrategicCommand()
+            ConstraintHelper::AvailableStrategicCommand(),
+            ConstraintHelper::NotOpeningPart($relYear),
         ];
     }
 

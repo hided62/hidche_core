@@ -326,7 +326,7 @@ abstract class BaseCommand{
 
         $lastTurn = $this->getLastTurn();
         $commandName = $this->getName();
-        if($lastTurn->getCommand() != $commandName){
+        if($lastTurn->getCommand() != $commandName && $lastTurn->getArg() !== $this->arg){
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
