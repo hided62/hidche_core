@@ -51,7 +51,8 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
             'gold'=>0,
             'rice'=>2000,
             'tech'=>0,
-            'gennum'=>1  
+            'gennum'=>1,
+            'power'=>1
         ];
     }
 
@@ -2105,7 +2106,7 @@ function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null) {
         $baseDateTime = new \DateTimeImmutable();
     }
     else if($baseDateTime instanceof \DateTime){
-        $baseDateTime = DateTimeImmutable::createFromMutable($baseDateTime);
+        $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
     }
 
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
@@ -2120,7 +2121,7 @@ function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
         $baseDateTime = new \DateTimeImmutable();
     }
     else if($baseDateTime instanceof \DateTime){
-        $baseDateTime = DateTimeImmutable::createFromMutable($baseDateTime);
+        $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
     }
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수

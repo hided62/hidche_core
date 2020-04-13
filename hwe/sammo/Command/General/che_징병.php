@@ -104,7 +104,7 @@ class che_징병 extends Command\GeneralCommand{
         $this->runnableConstraints=[
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::OccupiedCity(),
-            ConstraintHelper::ReqCityCapacity('pop', '주민', 30000 + $reqCrew),
+            ConstraintHelper::ReqCityCapacity('pop', '주민', GameConst::$minAvailableRecruitPop + $reqCrew),
             ConstraintHelper::ReqCityTrust(20),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
