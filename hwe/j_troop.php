@@ -108,10 +108,10 @@ if ($action == '부대가입') {
         ]);
     }
 
-    if($me['troop'] != 0){
+    if($me['troop'] === $generalID){
         Json::die([
             'result'=>false,
-            'reason'=>'이미 부대에 가입해있습니다.'
+            'reason'=>'부대장입니다.'
         ]);
     }
 
