@@ -150,12 +150,9 @@ class che_건국 extends Command\GeneralCommand{
 
         $exp = 1000;
         $ded = 1000;
-        
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
 
         $db->update('city', [
             'nation'=>$general->getNationID(),

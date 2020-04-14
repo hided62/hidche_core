@@ -652,6 +652,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
 
     //16강자 명성 돈
     $cost = $admin['develcost'];
+    //experience를 General로
     foreach($db->query('SELECT no, name, grp, grp_no FROM tournament WHERE grp>=20 AND grp<30 AND no > 0') as $general){
         $generalID = $general['no'];
         $db->update('general', [

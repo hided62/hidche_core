@@ -113,11 +113,8 @@ class che_전투태세 extends Command\GeneralCommand{
         $exp = 100 * 3;
         $ded = 70 * 3;
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
 
         $crew = $general->getVar('crew');
 

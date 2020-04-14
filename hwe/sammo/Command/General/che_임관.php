@@ -153,7 +153,6 @@ class che_임관 extends Command\GeneralCommand{
             $exp = 100;
         }
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
         $general->setVar('nation', $destNationID);
         $general->setVar('level', 1);
         $general->setVar('belong', 1);
@@ -178,7 +177,7 @@ class che_임관 extends Command\GeneralCommand{
             $general->setAuxVar('joinedNations', $joinedNations);
         }
 
-        $general->increaseVar('experience', $exp);
+        $general->addExperience($exp);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);

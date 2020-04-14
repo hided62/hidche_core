@@ -71,12 +71,9 @@ class che_요양 extends Command\GeneralCommand{
         $exp = 10;
         $ded = 7;
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         $general->setVar('injury', 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);

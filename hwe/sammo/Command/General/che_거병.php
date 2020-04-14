@@ -157,12 +157,9 @@ class che_거병 extends Command\GeneralCommand{
 
         $exp = 100;
         $ded = 100;
-        
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->setVar('belong', 1);
         $general->setVar('level', 12);
         $general->setVar('nation', $nationID);

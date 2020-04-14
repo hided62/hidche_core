@@ -435,11 +435,13 @@ function getCall($leadership, $strength, $intel) {
 }
 
 function getDed($dedication) {
-    $dedLevel = getDedLevel($dedication);
-    if($dedLevel == 0){
+    return getDedLevelText(getDedLevel($dedication));
+}
+
+function getDedLevelText(int $dedLevel):string{
+    if($dedLevel === 0){
         return '무품관';
     }
-
     //{$maxDedLevel}품관 ~ 1품관
     $dedInvLevel = GameConst::$maxDedLevel - $dedLevel + 1;
     return "{$dedInvLevel}품관";
@@ -497,8 +499,11 @@ function getLevelPer($exp, $level) {
 }
 
 function getBill(int $dedication) : int{
-    $level = getDedLevel($dedication);
-    return ($level * 200 + 400);
+    return getBillByLevel(getDedLevel($dedication));
+}
+
+function getBillByLevel(int $dedLevel) : int{
+    return ($dedLevel * 200 + 400);
 }
 
 function getCost(int $armtype) : int {

@@ -135,8 +135,8 @@ class che_등용수락 extends Command\GeneralCommand{
 
         $isTroopLeader = ($generalID == $general->getVar('troop'));
         
-        $destGeneral->increaseVar('experience', $destGeneral->onCalcStat($general, 'experience', 100));
-        $destGeneral->increaseVar('dedication', $destGeneral->onCalcStat($general, 'dedication', 100));
+        $destGeneral->addExperience(100);
+        $destGeneral->addDedication(100);
 
         $setOriginalCityValues = [];
         $setOriginalNationValues = [
@@ -169,12 +169,14 @@ class che_등용수락 extends Command\GeneralCommand{
 
             // 재야가 아니면 명성N*10% 공헌N*10%감소
             $general->setVar('experience', $general->getVar('experience') * (1 - 0.1 * $general->getVar('betray')));
+            $general->addExperience(0, false);
             $general->setVar('dedication', $general->getVar('dedication') * (1 - 0.1 * $general->getVar('betray')));
-            $general->increaseVar('betray', 1);
+            $general->addDedication(0, false);
+            $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
         }
         else{
-            $general->increaseVar('experience', $general->onCalcStat($general, 'experience', 100));
-            $general->increaseVar('dedication', $general->onCalcStat($general, 'dedication', 100));
+            $general->addExperience(100);
+            $general->addDedication(100);
         }
 
         if($general->getVar('npc') < 2){

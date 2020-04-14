@@ -1612,48 +1612,6 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
     return true;
 }
 
-function checkDedication($general, $log) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $dedlevel = getDedLevel($general['dedication']);
-
-    $query = "update general set dedlevel='$dedlevel' where no='{$general['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    // 승급했다면
-    $josaRoDed = JosaUtil::pick(getDed($general['dedication']), '로');
-    $josaRoBill = JosaUtil::pick(getBill($general['dedication']), '로');
-    if($general['dedlevel'] < $dedlevel) {
-        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>{$josaRoDed} <C>승급</>하여 봉록이 <C>".getBill($general['dedication'])."</>{$josaRoBill} <C>상승</>했습니다!";
-    // 강등했다면
-    } elseif($general['dedlevel'] > $dedlevel) {
-        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>{$josaRoDed} <R>강등</>되어 봉록이 <C>".getBill($general['dedication'])."</>{$josaRoBill} <R>하락</>했습니다!";
-    }
-
-    return $log;
-}
-
-function checkExperience($general, $log) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $explevel = getExpLevel($general['experience']);
-
-    $query = "update general set explevel='$explevel' where no='{$general['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    // 승급했다면
-    if($general['explevel'] < $explevel) {
-        $log[] = "<C>●</><C>Lv $explevel</>로 <C>레벨업</>!";
-    // 강등했다면
-    } elseif($general['explevel'] > $explevel) {
-        $log[] = "<C>●</><C>Lv $explevel</>로 <R>레벨다운</>!";
-    }
-
-    return $log;
-}
-
 function getAdmin() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

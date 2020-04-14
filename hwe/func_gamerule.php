@@ -254,62 +254,86 @@ function preUpdateMonthly() {
 
     //연감 월결산
     $result = LogHistory();
-    $history = array();
 
     if($result == false) { return false; }
+    
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
-
-    //배신 횟수 최대 10회 미만
-    $query = "update general set betray=9 where betray>9";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $logger = new ActionLogger(0, 0, $admin['year'], $admin['month']);
 
     //보급선 체크
     checkSupply();
     //미보급도시 10% 감소
-    $query = "update city set pop=pop*0.9,trust=trust*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,def=def*0.9,wall=wall*0.9 where supply='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //미보급도시 장수 5% 감소
-    $query = "select city,nation from city where supply='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityCount = MYDB_num_rows($result);
-    for($i=0; $i < $cityCount; $i++) {
-        $city = MYDB_fetch_array($result);
-        //병 훈 사 5%감소
-        $query = "update general set crew=crew*0.95,atmos=atmos*0.95,train=train*0.95 where city='{$city['city']}' and nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city', [
+        'pop'=>$db->sqleval('pop * 0.9'),
+        'trust'=>$db->sqleval('trust * 0.9'),
+        'agri'=>$db->sqleval('agri * 0.9'),
+        'comm'=>$db->sqleval('comm * 0.9'),
+        'secu'=>$db->sqleval('secu * 0.9'),
+        'def'=>$db->sqleval('def * 0.9'),
+        'wall'=>$db->sqleval('wall * 0.9'),
+    ], 'supply = 0');
+    //미보급도시 장수 병 훈 사 5%감소
+    //NOTE: update inner join도 가능하지만, meekrodb 기준으로 깔끔하게.
+    $unsuppliedCities = $db->query('SELECT city, nation, trust, name, officer4, officer3, officer2 FROM city WHERE supply = 0');
+    foreach(Util::arrayGroupBy($unsuppliedCities, 'nation') as $nationID => $cityList){
+        $cityIDList = Util::squeezeFromArray($cityList, 'city');
+        $db->update('general', [
+            'crew'=>$db->sqleval('crew*0.95'),
+            'atmos'=>$db->sqleval('atmos*0.95'),
+            'train'=>$db->sqleval('train*0.95'),
+        ], 'city IN %li AND nation = %i', $cityIDList, $nationID);
     }
+
     //민심30이하 공백지 처리
-    $query = "select city,name,officer4,officer3,officer2 from city where trust<=30 and supply='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityCount = MYDB_num_rows($result);
-    for($i=0; $i < $cityCount; $i++) {
-        $city = MYDB_fetch_array($result);
-
-        $query = "update general set level=1 where no='{$city['officer4']}' or no='{$city['officer3']}' or no='{$city['officer2']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $josaYi = JosaUtil::pick($city['name'], '이');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【고립】</b></><G><b>{$city['name']}</b></>{$josaYi} 보급이 끊겨 <R>미지배</> 도시가 되었습니다.";
+    $lostCityGenerals = [];
+    $lostCities = [];
+    foreach($unsuppliedCities as $unsuppliedCity){
+        if($unsuppliedCity['trust'] >= 30){
+            continue;
+        }
+        $lostCities[$unsuppliedCity['city']] = $unsuppliedCity;
+        $lostCityGenerals[$unsuppliedCity['officer4']] = true;
+        $lostCityGenerals[$unsuppliedCity['officer3']] = true;
+        $lostCityGenerals[$unsuppliedCity['officer2']] = true;
     }
-    pushWorldHistory($history, $admin['year'], $admin['month']);
-    //민심30이하 공백지 처리
-    $query = "update city set nation='0',officer4='0',officer3='0',officer2='0',conflict='{}',term=0,front=0 where trust<=30 and supply='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    if(key_exists(0, $lostCityGenerals)){
+        unset($lostCityGenerals[0]);
+    }
 
-    //접률감소
-    $query = "update general set connect=floor(connect*0.99)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //건국제한, 전략제한, 외교제한-1
-    $query = "update general set makelimit=makelimit-1 where makelimit>'0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update nation set strategic_cmd_limit=strategic_cmd_limit-1 where strategic_cmd_limit>'0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update nation set surlimit=surlimit-1 where surlimit>'0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //세율 동기화 목적
-    $query = "update nation set rate_tmp=rate";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    if($lostCityGenerals){
+        $db->update('general', [
+            'level'=>1
+        ], 'no IN %li', array_keys($lostCityGenerals));
+    }
+    if($lostCities){
+        $history = [];
+        foreach($lostCities as $lostCity){
+            $josaYi = JosaUtil::pick($lostCity['name'], '이');
+            $logger->pushGlobalHistoryLog("<R><b>【고립】</b></><G><b>{$lostCity['name']}</b></>{$josaYi} 보급이 끊겨 <R>미지배</> 도시가 되었습니다.");
+        }
+        $db->update('city', [
+            'nation'=>0,
+            'officer4'=>0,
+            'officer3'=>0,
+            'officer2'=>0,
+            'conflict'=>'{}',
+            'term'=>0,
+            'front'=>0
+        ], 'city IN %li', array_keys($lostCities));
+    }
+    
+    //접률감소, 건국제한-1
+    $db->update('general', [
+        'connect'=>$db->sqleval('floor(connect*0.99)'),
+        'makelimit'=>$db->sqleval('greatest(0, makelimit - 1)'),
+    ], true);
+    //전략제한-1, 외교제한-1, 세율동기화
+    $db->update('nation', [
+        'strategic_cmd_limit'=>$db->sqleval('greatest(0, strategic_cmd_limit - 1)'),
+        'surlimit'=>$db->sqleval('greatest(0, surlimit - 1)'),
+        'rate_tmp'=>$db->sqleval('rate')
+    ], true);
 
     //도시훈사 180년 60, 220년 87, 240년 100
     $rate = Util::round(($admin['year'] - $admin['startyear']) / 1.5) + 60;
@@ -327,34 +351,21 @@ function preUpdateMonthly() {
     processWarIncome($ratio);
 
     //계략, 전쟁표시 해제
-    $query = "update city set state=0 where state=31 or state=33";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set state=state-1 where state=32 or state=34";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set term=term-1 where term>0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set conflict='{}' where term=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set state=0 where state=41";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set state=41 where state=42";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set state=42 where state=43";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    // 계급 검사 및 승,강급
-    $query = "select no,name,dedication,dedlevel,experience,explevel from general";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
-
-    for($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($result);
-
-        $log = [];
-        $log = checkDedication($general, $log);
-        $log = checkExperience($general, $log);
-        pushGenLog($general, $log);
-    }
+    $db->update('city', [
+        'state'=>$db->sqleval(<<<EOD
+CASE
+WHEN state=31 THEN 0
+WHEN state=32 THEN 31
+WHEN state=33 THEN 0
+WHEN state=34 THEN 33
+WHEN state=41 THEN 0
+WHEN state=42 THEN 41
+WHEN state=43 THEN 42
+ELSE state END
+EOD),
+        'term'=>$db->sqleval('greatest(0, term - 1'),
+        'conflict'=>$db->sqleval('if(term = 0,%s,conflict)', '{}'),
+    ], true);
 
     //첩보-1
     foreach($db->queryAllLists("SELECT nation, spy FROM nation WHERE spy!='' AND spy!='{}'") as [$nationNo, $rawSpy]){
@@ -681,6 +692,7 @@ function checkMerge() {
         $query = "update general set belong=1,level=1,nation='{$you['nation']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 공헌도0.9, 명성0.9
+        //TODO:experience General 객체로 이동
         $query = "update general set dedication=dedication*0.9,experience=experience*0.9 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 모두 국가 소속 변경
@@ -840,6 +852,7 @@ function checkSurrender() {
         $query = "update city set nation='{$you['nation']}',officer4='0',officer3='0',officer2='0',conflict='{}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 제의국 모든 장수들 공헌도0.95, 명성0.95
+        //TODO: experience를 General로
         $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동, 공헌도1.1, 명성0.9

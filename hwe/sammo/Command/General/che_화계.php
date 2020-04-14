@@ -265,14 +265,11 @@ class che_화계 extends Command\GeneralCommand{
             $exp = Util::randRangeInt(1, 100);
             $ded = Util::randRangeInt(1, 70);
 
-            $exp = $general->onCalcStat($general, 'experience', $exp);
-            $ded = $general->onCalcStat($general, 'dedication', $ded);
-
             [$reqGold, $reqRice] = $this->getCost();
             $general->increaseVarWithLimit('gold', -$reqGold, 0);
             $general->increaseVarWithLimit('rice', -$reqRice, 0);
-            $general->increaseVar('experience', $exp);
-            $general->increaseVar('dedication', $ded);
+            $general->addExperience($exp);
+            $general->addDedication($ded);
             $general->increaseVar($statType.'_exp', 1);
 
             $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
@@ -301,15 +298,12 @@ class che_화계 extends Command\GeneralCommand{
 
         $exp = Util::randRangeInt(201, 300);
         $ded = Util::randRangeInt(141, 210);
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
         
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar($statType.'_exp', 1);
         $general->increaseRankVar('firenum', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

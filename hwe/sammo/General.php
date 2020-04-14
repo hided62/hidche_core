@@ -444,6 +444,57 @@ class General implements iAction{
         $this->increaseVar($dexType, $exp);
     }
 
+    function addExperience(float $experience, bool $affectTrigger=true){
+        if($affectTrigger){
+            $experience = $this->onCalcStat($this, 'experience', $experience);
+        }
+        
+        $this->increaseVar('experience', $experience);
+        $nextExpLevel = getExpLevel($this->getVar('experience'));
+        $comp = $nextExpLevel <=> $this->getVar('explevel');
+        if($comp === 0){
+            return;
+        }
+
+        $this->updateVar('explevel', $nextExpLevel);
+
+        $josaRo = JosaUtil::pick($nextExpLevel, '로');
+        if($comp > 0){
+            $this->getLogger()->pushGeneralActionLog("<C>Lv {$nextExpLevel}</>{$josaRo} <C>레벨업</>!", ActionLogger::PLAIN);
+        }
+        else{
+            $this->getLogger()->pushGeneralActionLog("<C>Lv {$nextExpLevel}</>{$josaRo} <R>레벨다운</>!", ActionLogger::PLAIN);
+        }
+        
+    }
+
+    function addDedication(float $dedication, bool $affectTrigger=true){
+        if($affectTrigger){
+            $dedication = $this->onCalcStat($this, 'dedication', $dedication);
+        }
+        
+        $this->increaseVar('dedication', $dedication);
+        $nextDedLevel = getDedLevel($this->getVar('dedication'));
+        $comp = $nextDedLevel <=> $this->getVar('dedlevel');
+        if($comp === 0){
+            return;
+        }
+
+        $this->updateVar('dedlevel', $nextDedLevel);
+
+        $dedLevelText = getDedLevelText($nextDedLevel);
+        $billText = number_format(getBillByLevel($nextDedLevel));
+        $josaRoDed = JosaUtil::pick($dedLevelText, '로');
+        $josaRoBill = JosaUtil::pick($billText, '로');
+        if($comp > 0){
+            $this->getLogger()->pushGeneralActionLog("<Y>{$dedLevelText}</>{$josaRoDed} <C>승급</>하여 봉록이 <C>{$billText}</>{$josaRoBill} <C>상승</>했습니다!", ActionLogger::PLAIN);
+        }
+        else{
+            $this->getLogger()->pushGeneralActionLog("<Y>{$dedLevelText}</>{$josaRoDed} <R>강등</>되어 봉록이 <C>{$billText}</>{$josaRoBill} <R>하락</>했습니다!", ActionLogger::PLAIN);
+        }
+        
+    }
+
     function updateVar(string $key, $value){
         if($this->raw[$key] === $value){
             return;
@@ -866,14 +917,14 @@ class General implements iAction{
     }
 
     /**
-     * @param int[] $generalIDList 
+     * @param ?int[] $generalIDList 
      * @param null|string[] $column 
      * @param int $constructMode 
      * @return \sammo\General[]
      * @throws MustNotBeReachedException 
      */
-    static public function createGeneralObjListFromDB(array $generalIDList, ?array $column=null, int $constructMode=2):array{
-        if(!$generalIDList){
+    static public function createGeneralObjListFromDB(?array $generalIDList, ?array $column=null, int $constructMode=2):array{
+        if($generalIDList === []){
             return [];
         }
         
@@ -889,10 +940,20 @@ class General implements iAction{
         
         [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
 
-        $rawGenerals = Util::convertArrayToDict(
-            $db->queryFirstRow('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
-            'no'
-        );
+        if($generalIDList === null){
+            $rawGenerals = Util::convertArrayToDict(
+                $db->queryFirstRow('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
+                'no'
+            );
+            $generalIDList = array_keys($rawGenerals);
+        }
+        else{
+            $rawGenerals = Util::convertArrayToDict(
+                $db->queryFirstRow('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
+                'no'
+            );
+        }
+        
 
         $rawRanks = [];
         if($rankColumn){

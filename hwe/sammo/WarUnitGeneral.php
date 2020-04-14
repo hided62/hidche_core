@@ -135,14 +135,12 @@ class WarUnitGeneral extends WarUnit{
         if(!$this->isAttacker){
             $value *= 0.8;
         }
-        $value = $general->onCalcStat($general, 'experience', $value);
-        $general->increaseVar('experience', $value);
+        $general->addExperience($value);
     }
 
     function addDedication(float $value){
         $general = $this->general;
-        $value = $general->onCalcStat($general, 'dedication', $value);
-        $general->increaseVar('dedication', $value);
+        $general->addDedication($value);
     }
 
     function addLose(){

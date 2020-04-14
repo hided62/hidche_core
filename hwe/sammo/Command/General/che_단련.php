@@ -111,7 +111,6 @@ class che_단련 extends Command\GeneralCommand{
         }
 
         $exp = $general->getVar('crew') / 400;
-        $exp = $general->onCalcStat($general, 'experience', $exp);
 
         $general->addDex($general->getCrewTypeObj(), $score, false);
 
@@ -124,7 +123,7 @@ class che_단련 extends Command\GeneralCommand{
 
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
-        $general->increaseVar('experience', $exp);
+        $general->addExperience($exp);
         $general->increaseVar($incStat, 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

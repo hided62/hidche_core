@@ -75,17 +75,14 @@ class che_소집해제 extends Command\GeneralCommand{
 
         $exp = 70;
         $ded = 100;
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
+        
         $db->update('city', [
             'pop'=>$db->sqleval('pop + %i', $crew)
         ], 'city=%i', $general->getCityID());
 
         $general->setVar('crew', 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);

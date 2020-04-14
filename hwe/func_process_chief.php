@@ -370,6 +370,7 @@ function process_65(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //전장수 10% 삭감
+        //experience를 General로
         $query = "update general set experience=experience*0.9,dedication=dedication*0.9 where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }

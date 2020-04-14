@@ -128,11 +128,8 @@ class che_헌납 extends Command\GeneralCommand{
         $exp = 70;
         $ded = 100;
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar('leadership_exp', 1);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

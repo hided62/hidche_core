@@ -140,13 +140,10 @@ class che_등용 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 200;
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         [$reqGold, $reqRice] = $this->getCost();
 
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar('leadership_exp', 1);
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
 

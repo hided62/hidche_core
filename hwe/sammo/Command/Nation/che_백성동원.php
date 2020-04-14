@@ -125,16 +125,8 @@ class che_백성동원 extends Command\NationCommand{
         $logger = $general->getLogger();
         $logger->pushGeneralActionLog("백성동원 발동! <1>$date</>");
 
-        $general->increaseVar(
-            'experience',
-            $general->onCalcStat($general,
-            'experience', 5 * ($this->getPreReqTurn() + 1)
-        ));
-        $general->increaseVar(
-            'dedication',
-            $general->onCalcStat($general,
-            'dedication', 5 * ($this->getPreReqTurn() + 1)
-        ));
+        $general->addExperience(5 * ($this->getPreReqTurn() + 1));
+        $general->addDedication(5 * ($this->getPreReqTurn() + 1));
 
         $josaYi = JosaUtil::pick($generalName, '이');
 

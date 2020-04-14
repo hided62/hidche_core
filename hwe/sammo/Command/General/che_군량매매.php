@@ -153,18 +153,15 @@ class che_군량매매 extends Command\GeneralCommand{
 
         $exp = 30;
         $ded = 50;
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
+        
         $incStat = Util::choiceRandomUsingWeight([
             'leadership_exp'=>$general->getLeadership(false, false, false, false),
             'strength_exp'=>$general->getStrength(false, false, false, false),
             'intel_exp'=>$general->getIntel(false, false, false, false)
         ]);
 
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar($incStat, 1);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

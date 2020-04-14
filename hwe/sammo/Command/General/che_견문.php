@@ -112,9 +112,7 @@ class che_견문 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("{$text} <1>$date</>");
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-
-        $general->increaseVar('experience', $exp);
+        $general->addExperience($exp);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);

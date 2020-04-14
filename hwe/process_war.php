@@ -596,6 +596,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         //분쟁기록 모두 지움
         DeleteConflict($city['nation']);
         // 전 장수 공헌 명성치 깎음
+        //TODO: experience를 General에
         $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 도시 공백지로

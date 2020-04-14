@@ -1701,7 +1701,7 @@ class GeneralAI
 
         $city = $this->city;
 
-        if($city['trust'] < 0.4 && Util::randBool($leadership / GameConst::$chiefStatMin)){
+        if($city['trust'] < 40 && Util::randBool($leadership / GameConst::$chiefStatMin)){
             $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
             if($cmd->isRunnable()){
                 return $cmd;
@@ -3123,7 +3123,7 @@ class GeneralAI
 
     protected function calcCityDevelRate(array $city){
         return [
-            'trust' => [$city['trust'], self::t통솔장],
+            'trust' => [$city['trust'] / 100, self::t통솔장],
             'pop' => [$city['pop'] / $city['pop_max'], self::t통솔장],
             'agri' => [$city['agri'] / $city['agri_max'], self::t통솔장],
             'comm' => [$city['comm'] / $city['comm_max'], self::t통솔장],

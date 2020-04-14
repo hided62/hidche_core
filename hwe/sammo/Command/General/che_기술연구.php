@@ -105,10 +105,6 @@ class che_기술연구 extends che_상업투자{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
 
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         if(TechLimit($this->env['startyear'], $this->env['year'], $this->nation['tech'])){
             $score /= 4;
         }
@@ -124,8 +120,8 @@ class che_기술연구 extends che_상업투자{
         $db->update('nation', $nationUpdated, 'nation=%i', $general->getVar('nation'));
 
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar(static::$statKey.'_exp', 1);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

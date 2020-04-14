@@ -178,9 +178,6 @@ class che_상업투자 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         if(in_array($this->city['front'], [1, 3]) && $this->nation['capital'] != $this->city['city']){
             $score *= static::$debuffFront;
         }
@@ -196,8 +193,8 @@ class che_상업투자 extends Command\GeneralCommand{
         $db->update('city', $cityUpdated, 'city=%i', $general->getVar('city'));
 
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar(static::$statKey.'_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

@@ -94,16 +94,13 @@ class che_훈련 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 70;
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         $general->increaseVarWithLimit('train', $score, 0, GameConst::$maxTrainByCommand);
         $general->setVar('atmos', $sideEffect);
 
         $general->addDex($general->getCrewTypeObj(), $score, false);
 
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar('leadership_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

@@ -138,13 +138,10 @@ class che_인재탐색 extends Command\GeneralCommand{
             $exp = 100;
             $ded = 70;
 
-            $exp = $general->onCalcStat($general, 'experience', $exp);
-            $ded = $general->onCalcStat($general, 'dedication', $ded);
-
             $general->increaseVarWithLimit('gold', -$reqGold, 0);
             $general->increaseVarWithLimit('rice', -$reqRice, 0);
-            $general->increaseVar('experience', $exp);
-            $general->increaseVar('dedication', $ded);
+            $general->addExperience($exp);
+            $general->addDedication($ded);
             $general->increaseVar($incStat, 1);
             $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
@@ -299,13 +296,10 @@ class che_인재탐색 extends Command\GeneralCommand{
         $exp = 200;
         $ded = 300;
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar($incStat, 3);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

@@ -125,16 +125,8 @@ class che_의병모집 extends Command\NationCommand{
         $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <M>{$commandName}</>{$josaUl} 발동하였습니다.");
 
 
-        $general->increaseVar(
-            'experience',
-            $general->onCalcStat($general,
-            'experience', 5 * ($this->getPreReqTurn() + 1)
-        ));
-        $general->increaseVar(
-            'dedication',
-            $general->onCalcStat($general,
-            'dedication', 5 * ($this->getPreReqTurn() + 1)
-        ));
+        $general->addExperience(5 * ($this->getPreReqTurn() + 1));
+        $general->addDedication(5 * ($this->getPreReqTurn() + 1));
 
         $gameStor = KVStorage::getStorage($db, 'game_env'); //TODO: 차라리 env가 이거여야..?
 

@@ -196,15 +196,12 @@ class che_징병 extends Command\GeneralCommand{
         $exp = Util::round($reqCrew / 100);
         $ded = Util::round($reqCrew / 100);
 
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         $general->addDex($general->getCrewTypeObj(), $reqCrew / 100, false);
 
         [$reqGold, $reqRice] = $this->getCost();
 
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->increaseVar('leadership_exp', 1);

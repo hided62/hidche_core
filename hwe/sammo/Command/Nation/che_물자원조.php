@@ -217,8 +217,8 @@ class che_물자원조 extends Command\NationCommand{
             'rice'=>$db->sqleval('rice + %i', $riceAmount),
         ], 'nation = %i', $destNationID);
 
-        $general->increaseVar('experience', $general->onCalcStat($general, 'experience', 5));
-        $general->increaseVar('dedication', $general->onCalcStat($general, 'dedication', 5));
+        $general->addExperience(5);
+        $general->addDedication(5);
 
 
         $general->applyDB($db);

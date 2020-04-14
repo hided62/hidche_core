@@ -126,8 +126,6 @@ class che_강행 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 강행했습니다. <1>$date</>");
 
         $exp = 100;
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
         $general->setVar('city', $destCityID);
 
         if($general->getVar('level') == 12 && $this->nation['level'] == 0){
@@ -148,7 +146,7 @@ class che_강행 extends Command\GeneralCommand{
 
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
-        $general->increaseVar('experience', $exp);
+        $general->addExperience($exp);
         $general->increaseVar('leadership_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

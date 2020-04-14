@@ -93,8 +93,10 @@ class che_하야 extends Command\GeneralCommand{
             $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>에서 하야");
             $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>하야</>했습니다.");
             $general->setVar('experience', $general->getVar('experience') * (1 - 0.1 * $general->getVar('betray')));
+            $general->addExperience(0, false);
             $general->setVar('dedication', $general->getVar('dedication') * (1 - 0.1 * $general->getVar('betray')));
-            $general->increaseVar('betray', 1);
+            $general->addDedication(0, false);
+            $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
 
         }
 

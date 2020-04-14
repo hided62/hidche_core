@@ -165,11 +165,6 @@ class che_정착장려 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 주민이 <C>$scoreText</>명 증가했습니다. <1>$date</>");
         }
 
-        
-
-        $exp = $general->onCalcStat($general, 'experience', $exp);
-        $ded = $general->onCalcStat($general, 'dedication', $ded);
-
         //NOTE: 내정량 상승시 초과 가능?
         $cityUpdated = [
             static::$cityKey => Util::valueFit(
@@ -181,8 +176,8 @@ class che_정착장려 extends Command\GeneralCommand{
         $db->update('city', $cityUpdated, 'city=%i', $general->getVar('city'));
 
         $general->increaseVarWithLimit('rice', -$this->reqRice, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
+        $general->addExperience($exp);
+        $general->addDedication($ded);
         $general->increaseVar(static::$statKey.'_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

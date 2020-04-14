@@ -168,9 +168,8 @@ class che_장비매매 extends Command\GeneralCommand{
         }
 
         $exp = 10;
-        $exp = $general->onCalcStat($general, 'experience', $exp);
 
-        $general->increaseVar('experience', $exp);
+        $general->addExperience($exp);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
