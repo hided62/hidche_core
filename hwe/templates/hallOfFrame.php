@@ -16,8 +16,8 @@
     <?php endif;?>
     <div class="hall_nation" style="background-color:<?=$general['bgColor']?>;color:<?=$general['fgColor']?>;"><?=$general['nationName']??'-'?></div>
     <div class="hall_name" style="background-color:<?=$general['bgColor']?>;color:<?=$general['fgColor']?>;"><p><?=$general['name']??'-'?>
-        <?php if($general["owner_name"]??null): ?>
-            <div class="hall_owner">(<?=$general['owner_name']?>)</div>
+        <?php if($general["ownerName"]??null): ?>
+            <div class="hall_owner">(<?=$general['ownerName']?>)</div>
         <?php endif;?>
     </p></div>
     <div class="hall_value"><?=$general['printValue']??$general['value']?></div>

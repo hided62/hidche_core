@@ -226,7 +226,6 @@ function updateYearly() {
 //관직 변경 해제
 function updateQuaterly() {
     $db = DB::db();
-    $connect=$db->get();
 
     //천도 제한 해제, 관직 변경 제한 해제
     $db->update('nation', [

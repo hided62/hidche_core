@@ -176,7 +176,7 @@ class TurnExecutionHelper
             // npc유저 삭턴시 npc로 전환
             if($general->getVar('npc') == 1 && $general->getVar('deadyear') > $gameStor->year){
 
-                $ownerName = $general->getVar('name2');
+                $ownerName = $general->getVar('owner_name');
                 $josaYi = JosaUtil::pick($ownerName, '이');
                 
                 $logger->pushGlobalActionLog("{$ownerName}</>{$josaYi} <Y>{$generalName}</>의 육체에서 <S>유체이탈</>합니다!");
@@ -185,7 +185,7 @@ class TurnExecutionHelper
                 $general->setVar('npc', $general->getVar('npc_org'));
                 $general->setVar('owner', 1);
                 $general->setVar('defence_train', 80);
-                $general->setVar('name2', null);
+                $general->setVar('owner_name', null);
             }
             else{
                 $general->applyDB($db);

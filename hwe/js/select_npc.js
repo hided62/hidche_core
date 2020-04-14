@@ -179,7 +179,7 @@ function printGeneralList(value){
             special2:general[7],
             personal:general[8],
             name:general[9],
-            name2:general[10],
+            ownerName:general[10],
             injury:general[11],
             leadership:general[12],
             lbonus:general[13],
@@ -213,8 +213,8 @@ function printGeneralList(value){
             general.userCSS = 'color:skyblue';
         }
 
-        if(general.name2){
-            general.nameAux += '<br><small>({0})</small>'.format(general.name2);
+        if(general.ownerName){
+            general.nameAux += '<br><small>({0})</small>'.format(general.ownerName);
         }
 
         if(general.reserved == 1){

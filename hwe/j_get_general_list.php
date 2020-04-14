@@ -42,7 +42,7 @@ else{
 
 $session->setReadOnly();
 
-$rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,name2,injury,leadership,strength,intel,experience,dedication,level,killturn,connect from general');
+$rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,owner_name as ownerName,injury,leadership,strength,intel,experience,dedication,level,killturn,connect from general');
 
 $ownerNameList = [];
 if($gameStor->isunited){
@@ -53,10 +53,10 @@ if($gameStor->isunited){
 
 $generalList = [];
 foreach($rawGeneralList as $rawGeneral){
-    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$name2,$injury,$leadership,$strength,$intel,$experience,$dedication,$level,$killturn,$connect] = $rawGeneral;
+    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$ownerName,$injury,$leadership,$strength,$intel,$experience,$dedication,$level,$killturn,$connect] = $rawGeneral;
 
     if(key_exists($owner, $ownerNameList)){
-        $name2 = $ownerNameList[$owner];
+        $ownerName = $ownerNameList[$owner];
     }
 
     $nationArr = getNationStaticInfo($nation);
@@ -73,7 +73,7 @@ foreach($rawGeneralList as $rawGeneral){
         getGeneralSpecialWarName($special2),
         getGenChar($personal),
         $name,
-        $npc==1?$name2:null,
+        $npc==1?$ownerName:null,
         $injury,
         $leadership,
         $lbonus,

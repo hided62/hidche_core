@@ -20,7 +20,7 @@ CREATE TABLE `general` (
 	`picture` VARCHAR(40) NOT NULL,
 	`imgsvr` INT(1) NOT NULL DEFAULT '0',
 	`name` CHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
-	`name2` CHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
+	`owner_name` CHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	`nation` INT(6) NOT NULL DEFAULT '0',
 	`city` INT(6) NOT NULL DEFAULT '3',
 	`troop` INT(6) NOT NULL DEFAULT '0',

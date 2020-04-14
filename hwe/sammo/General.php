@@ -833,7 +833,7 @@ class General implements iAction{
             'horse', 'weapon', 'book', 'item', 'last_turn'
         ];
         $fullColumn = [
-            'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
+            'no', 'name', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
             'leadership', 'leadership_exp', 'strength', 'strength_exp', 'intel', 'intel_exp', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',

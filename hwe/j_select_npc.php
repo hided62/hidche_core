@@ -73,7 +73,7 @@ if ($gencount >= $maxgeneral) {
 
 //등록 시작
 $db->update('general', [
-    'name2'=>$userNick,
+    'owner_name'=>$userNick,
     'npc'=>1,
     'killturn'=>6,
     'defence_train'=>80,

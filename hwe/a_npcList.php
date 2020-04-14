@@ -54,27 +54,44 @@ $sel[$type] = "selected";
     </td></tr>
 </table>
 <?php
-$nationname = [];
-$nationname[0] = "-";
+$nationName = [];
+$nationName[0] = "-";
 foreach (getAllNationStaticInfo() as $nation) {
-    $nationname[$nation['nation']] = $nation['name'];
+    $nationName[$nation['nation']] = $nation['name'];
 }
 
-switch ($type) {//FIXME: $query 처리 부실
-    default:
-    case  1: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by binary(name)"; break;
-    case  2: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by nation"; break;
-    case  3: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by sum desc"; break;
-    case  4: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by leadership"; break;
-    case  5: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by strength"; break;
-    case  6: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by intel"; break;
-    case  7: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by experience"; break;
-    case  8: $query = "select npc,nation,name,name2,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1 order by dedication"; break;
-}
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$gencount = MYDB_num_rows($genresult);
 
-echo"
+$generalList = $db->query('SELECT npc,nation,name,owner_name,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1');
+$sortType = [
+    1 => ['name', true],
+    2 => ['nation', true],
+    3 => ['sum', false],
+    4 => ['leadership', false],
+    5 => ['strength', false],
+    6 => ['intel', false],
+    7 => ['experience', false],
+    8 => ['dedication', false],
+];
+
+foreach($generalList as &$general){
+    $general['nationName'] = $nationName[$general['nation']];
+    $general['coloredName'] = getColoredName($general['name'], $general['npc']);
+}
+
+[$sortKey, $isAsc] = $sortType[$type];
+
+if($isAsc){
+    usort($generalList, function($lhs, $rhs)use($sortKey){
+        return $lhs[$sortKey] <=> $rhs[$sortKey];
+    });
+}
+else{
+    usort($generalList, function($lhs, $rhs)use($sortKey){
+        return $rhs[$sortKey] <=> $lhs[$sortKey];
+    });
+}
+
+?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=102  align=center id=bg1>희생된 장수</td>
@@ -89,7 +106,8 @@ echo"
         <td width=68  align=center id=bg1>지력</td>
         <td width=78  align=center id=bg1>명성</td>
         <td width=78  align=center id=bg1>계급</td>
-    </tr>";
+    </tr>
+<?php foreach($generalList as $general): ?>
 for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
     $nation = $nationname[$general['nation']];
@@ -105,7 +123,7 @@ for ($j=0; $j < $gencount; $j++) {
     echo "
     <tr>
         <td align=center>{$name}</td>
-        <td align=center>{$general['name2']}</td>
+        <td align=center>{$general['owner_name']}</td>
         <td align=center>Lv {$general['explevel']}</td>
         <td align=center>{$nation}</td>
         <td align=center>".displayCharInfo($general['personal'])."</td>

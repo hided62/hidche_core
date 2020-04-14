@@ -75,7 +75,7 @@ $types = [
         $v['nationName'] = '???';
         $v['pictureFullPath'] = GetImageURL(0)."/default.jpg";
         $v['name'] = '???'; 
-        $v['owner_name'] = null;
+        $v['ownerName'] = null;
         $v['bgColor'] = GameConst::$basecolor4;
         $v['fgColor'] = newColor($v['bgColor']);
         return $v;
@@ -163,7 +163,7 @@ $types = [
 
 $generals = [];
 foreach($db->query(
-    "SELECT nation,no,name,name2 as owner_name, owner, picture, imgsvr, 
+    "SELECT nation,no,name,owner_name as ownerName, owner, picture, imgsvr, 
     experience, dedication,
     dex1, dex2, dex3, dex4, dex5, 
     horse, weapon, book, item 
@@ -194,7 +194,7 @@ $templates = new \League\Plates\Engine('templates');
 foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
     $validCnt = 0;
     $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, &$validCnt, $ownerNameList){
-        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
+        $general['ownerName'] = $ownerNameList[$general['owner']]??null;
         $general = ($typeFunc)($general);
         $value = $general['value'];
 

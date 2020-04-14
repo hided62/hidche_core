@@ -122,7 +122,7 @@ foreach($types as $idx=>[$typeName, $typeValue]) {
         $general += $aux;
 
         if(key_exists($general['owner'], $ownerNameList)){
-            $general['owner_name'] = $ownerNameList[$general['owner']];
+            $general['ownerName'] = $ownerNameList[$general['owner']];
         }
 
         if(!key_exists('bgColor', $general)){

@@ -13,7 +13,7 @@ $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$general = $db->queryFirstRow('SELECT no,name,name2,npc,lastrefresh FROM general WHERE owner=%i AND npc = 0', $userID);
+$general = $db->queryFirstRow('SELECT no,name,owner_name,npc,lastrefresh FROM general WHERE owner=%i AND npc = 0', $userID);
 
 if(!$general){
     header('location:b_myPage.php');
