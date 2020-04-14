@@ -95,10 +95,6 @@ uasort($troops, function($lhs, $rhs){
 <?=WebUtil::printCSS('css/troops.css')?>
 <script>
 jQuery(function($){
-
-$('#form1').submit(function(){
-    return false;
-});
 $('#leaveTroop').click(function(e){
     return confirm("정말 부대를 탈퇴하시겠습니까?");
 })
@@ -106,7 +102,6 @@ $('.submitBtn').click(function(event){
     if(event.isPropagationStopped()){
         return false;
     }
-    console.log('b');
     var $this=$(this);
 
     $.post({
@@ -142,7 +137,6 @@ $('.submitBtn').click(function(event){
 <table width=1000 class='tb_layout bg0'>
     <tr><td>부 대 편 성<br><?=backButton()?></td></tr>
 </table>
-<form id=form1 name=form1 method=post>
 <table id="troop_list" class='tb_layout bg0'>
     <thead>
     <tr>
@@ -248,7 +242,6 @@ foreach ($troops as $troopNo=>$troop) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
-</form>
 </div>
 </body>
 </html>

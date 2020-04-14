@@ -16,8 +16,8 @@ $userID = $session::getUserID();
 $db = DB::db();
 
 $me = $db->queryFirstRow('SELECT `no`, name, nation, troop FROM general WHERE `owner`=%i', $userID);
-
-
+$generalID = $me['no'];
+$nationID = $me['nation'];
 
 if($action == '부대창설'){
     $name = trim($name);
@@ -34,15 +34,14 @@ if($action == '부대창설'){
         ]);
     }
     $db->insert('troop',[
+        'troop_leader'=>$generalID,
         'name'=>$name,
-        'nation'=>$me['nation'],
-        'no'=>$me['no']
+        'nation'=>$nationID,
     ]);
-    $troopID = $db->insertId();
 
     $db->update('general', [
-        'troop'=>$troopID
-    ], 'no=%i',$me['no']);
+        'troop'=>$generalID,
+    ], 'no=%i',$generalID);
 
     Json::die([
         'result'=>true,
@@ -61,7 +60,7 @@ if($action == '부대변경'){
 
     $db->update('troop', [
         'name'=>$name
-    ], 'no=%i',$me['no']);
+    ], 'troop_leader=%i',$generalID);
 
     if($db->affectedRows() == 0){
         Json::die([
@@ -86,7 +85,7 @@ if($action == '부대추방'){
 
     $db->update('general', [
         'troop'=>0
-    ], 'no=%i AND troop=(SELECT troop FROM troop WHERE no = %i)', $gen, $me['no']);
+    ], 'no=%i AND troop=(SELECT troop FROM troop WHERE troop_leader = %i)', $gen, $generalID);
 
     if($db->affectedRows() == 0){
         Json::die([
@@ -109,10 +108,16 @@ if ($action == '부대가입') {
         ]);
     }
 
-    $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop=%i', $troop)?:0;
-    $troopLeaderNation = $db->queryFirstField('SELECT `nation` FROM `general` WHERE `no`=%i AND `nation`=%i', $troopLeader, $me['nation']);
+    if($me['troop'] != 0){
+        Json::die([
+            'result'=>false,
+            'reason'=>'이미 부대에 가입해있습니다.'
+        ]);
+    }
 
-    if (!$troopLeaderNation) {
+    $troopExists = $db->queryFirstField('SELECT `troop_leader` FROM `troop` WHERE `troop_leader` = %i AND `nation` = %i', $troop, $nationID);
+
+    if (!$troopExists) {
         Json::die([
             'result'=>false,
             'reason'=>'올바른 부대장이 아닙니다.'
@@ -121,7 +126,7 @@ if ($action == '부대가입') {
 
     $db->update('general', [
         'troop'=>$troop
-    ], 'no=%i', $me['no']);
+    ], 'no=%i', $generalID);
 
     Json::die([
         'result'=>true,
@@ -137,20 +142,18 @@ if($action ==  "부대탈퇴") {
             'reason'=>'부대에 속해있지 않습니다.'
         ]);
     }
-    $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop=%i', $me['troop']);
-    
+
     //부대장일 경우
-    if($troopLeader == $me['no']) {
-        // 모두 탈퇴
+    if($me['troop'] === $generalID){
         $db->update('general', [
             'troop'=>0
-        ], 'troop=%i',$me['troop']);
-        // 부대 삭제
-        $db->delete('troop', 'troop=%i', $me['troop']);
-    } else {
+        ], 'troop=%i',$generalID);
+        $db->delete('troop', 'troop_leader=%i', $generalID);
+    }
+    else{
         $db->update('general', [
             'troop'=>0
-        ], 'no=%i', $me['no']);
+        ], 'no=%i', $generalID);
     }
 
     Json::die([
