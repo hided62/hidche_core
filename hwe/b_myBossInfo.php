@@ -137,14 +137,14 @@ $eaglestr = join(', ', array_map(function($arr){
     return "{$arr['name']}【{$number}】";
 }, $eagles));
 
-echo "
+?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']} colspan=6>
+        <td align=center style='color:<?=newColor($nation['color'])?>; bgcolor=<?=$nation['color']?>' colspan=6>
             <font size=5>【 {$nation['name']} 】</font>
         </td>
     </tr>
-";
+<?php
 for($i=12; $i >= $lv; $i-=2) {
     $i1 = $i;   $i2 = $i - 1;
     $imageTemp1 = GetImageURL($level[$i1]['imgsvr']??0);
@@ -172,7 +172,6 @@ for($i=12; $i >= $lv; $i-=2) {
     </tr>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
-<form method=post action=c_myBossInfo.php>
     <tr><td colspan=6 height=5></td></tr>
     <tr><td colspan=2 align=center bgcolor=red>추 방</td></tr>
     <tr>
@@ -208,7 +207,6 @@ $general = MYDB_fetch_array($result);
 echo "
         </td>
     </tr>
-</form>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=4 height=5></td></tr>
@@ -217,7 +215,6 @@ echo "
         <td width=98  align=right id=bg1>".getLevelText(12, $nation['level'])."</td>
         <td width=398>{$general['name']} 【".CityConst::byID($general['city'])->name."】</td>
         <td width=98  align=right id=bg1>".getLevelText(11, $nation['level'])."</td>
-<form method=post action=c_myBossInfo.php>
         <td width=398>
 ";
 
@@ -255,7 +252,6 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
 }
 echo "
         </td>
-</form>
     </tr>
 ";
 
@@ -271,7 +267,6 @@ for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
     echo "
         <td width=98 align=right id=bg1>".getLevelText($i, $nation['level'])."</td>
-<form method=post action=c_myBossInfo.php>
         <td width=398>
     ";
 
@@ -307,7 +302,7 @@ for($i=10; $i >= $lv; $i--) {
             echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
         }
     }
-    echo "</td></form>";
+    echo "</td>";
     if($i % 2 == 1) { echo "</tr>"; }
 }
 echo "
@@ -345,7 +340,6 @@ endif;
 if($meLevel >= 5) {
     echo "
     <tr><td colspan=5 align=center bgcolor=orange>도 시 관 직 임 명</td></tr>
-<form method=post action=c_myBossInfo.php>
     <tr>
         <td colspan=3 align=right id=bg2>태 수 임 명</td>
         <td colspan=2>
@@ -398,8 +392,6 @@ if($meLevel >= 5) {
             <input type=$btn name=btn value=임명>
         </td>
     </tr>
-</form>
-<form method=post action=c_myBossInfo.php>
     <tr>
         <td colspan=3 align=right id=bg2>군 사 임 명</td>
         <td colspan=2>
@@ -452,8 +444,6 @@ if($meLevel >= 5) {
             <input type=$btn name=btn value=임명>
         </td>
     </tr>
-</form>
-<form method=post action=c_myBossInfo.php>
     <tr>
         <td colspan=3 align=right id=bg2>종 사 임 명</td>
         <td colspan=2>
@@ -507,7 +497,6 @@ if($meLevel >= 5) {
         </td>
     </tr>
     <tr><td colspan=5>※ <font color=red>빨간색</font>은 현재 임명중인 장수, <font color=orange>노란색</font>은 다른 관직에 임명된 장수, 하얀색은 일반 장수를 뜻합니다.</td></tr>
-</form>
     ";
 }
 echo "

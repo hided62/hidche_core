@@ -874,9 +874,7 @@ class General implements iAction{
         return $caller;
     }
 
-    //TODO:createGeneralObjListFromDB로, 조건으로 select query나 generalIDList가 들어가는 녀석이 필요할 수 있음
-
-    static private function mergeQueryColumn(?array $reqColumns=null, int $constructMode=2):array{
+    static public function mergeQueryColumn(?array $reqColumns=null, int $constructMode=2):array{
         $minimumColumn = ['no', 'name', 'city', 'nation', 'level'];
         $defaultEventColumn = [
             'no', 'name', 'city', 'nation', 'level',
@@ -1052,6 +1050,7 @@ class General implements iAction{
      * @return GeneralCommand[][]
      */
     static public function getReservedTurnListByGeneralList(array $generalList, int $turnIdxFrom, int $turnIdxTo, array $env){
+        //XXX: static인데 return값이 General이 아니라고?? GeneralCommandHelper같은게 있어야하지 않을까?
         if(!$generalList){
             return [];
         }
