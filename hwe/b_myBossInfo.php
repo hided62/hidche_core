@@ -44,9 +44,8 @@ if($meLevel == 0) {
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <script type="text/javascript">
-function out() {
-    return confirm('정말 추방하시겠습니까?');
-}
+var chiefStatMin = <?=GameConst::$chiefStatMin?>;
+var myLevel = <?=$meLevel?>;
 </script>
 
 <?php 
@@ -105,7 +104,7 @@ var candidateAuditors = <?=Json::encode(array_map(function($value){
 <?php
 
 $lv = getNationChiefLevel($nation['level']);
-if($meLevel >= 5) { $btn = "submit"; }
+if($meLevel >= 5) { $btn = "button"; }
 else { $btn = "hidden"; }
 
 $query = "select name,level,picture,imgsvr,belong from general where nation='{$nation['nation']}' and level>={$lv} order by level desc";
@@ -181,7 +180,7 @@ for($i=12; $i >= $lv; $i-=2) {
 
 if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "
-            <select name=outlist size=1 style=color:white;background-color:black;>";
+            <select id='genlist_kick' size=1 style=color:white;background-color:black;>";
 
     $query = "select no,npc,name,level,leadership,strength,intel,killturn from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -193,17 +192,18 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
             continue;
         }
         echo "
-                <option value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
+                <option data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }
 
     echo "
             </select>
-            <input type=$btn name=btn value=추방 onclick='return out()'>";
+            <input type=$btn id='btn_kick' value=추방>";
 }
 
 $query = "select name,city from general where nation='{$me['nation']}' and level=12";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
+$levelText = getLevelText(11, $nation['level']);
 echo "
         </td>
     </tr>
@@ -214,14 +214,14 @@ echo "
     <tr>
         <td width=98  align=right id=bg1>".getLevelText(12, $nation['level'])."</td>
         <td width=398>{$general['name']} 【".CityConst::byID($general['city'])->name."】</td>
-        <td width=98  align=right id=bg1>".getLevelText(11, $nation['level'])."</td>
+        <td width=98  align=right id=bg1>{$levelText}</td>
         <td width=398>
 ";
 
 if($meLevel >= 5 && $nation['l11set'] == 0) {
     echo "
-            <select name=genlist size=1 maxlength=15 style=color:white;background-color:black;>
-                <option value=0>____공석____</option>";
+            <select id='genlist_11' size=1 maxlength=15 style=color:white;background-color:black;>
+                <option value=0 data-level='0' data-name=''>____공석____</option>";
     $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
@@ -229,18 +229,17 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 11) {
-            echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; selected data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input type=hidden name=level value=11>
-            <input type=$btn name=btn value=임명>";
+            <input class='btn_appoint' type=$btn data-level='11' data-level-text='{$levelText}' value=임명>";
 } else {
     $query = "select name,city from general where nation='{$me['nation']}' and level='11'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -265,15 +264,17 @@ $queries[5]  = "select no,name,level,city from general where nation='{$me['natio
 
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
+    $levelText = getLevelText($i, $nation['level']);
     echo "
-        <td width=98 align=right id=bg1>".getLevelText($i, $nation['level'])."</td>
+        <td width=98 align=right id=bg1>{$levelText}</td>
         <td width=398>
     ";
 
+    
     if($meLevel >= 5 && $nation["l{$i}set"] == 0) {
         echo "
-            <select name=genlist size=1 style=color:white;background-color:black;>
-                <option value=0>____공석____</option>";
+            <select id='genlist_{$i}' size=1 style=color:white;background-color:black;>
+                <option value=0 data-level='0' data-name=''>____공석____</option>";
 
         $query = $queries[$i];
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -282,18 +283,17 @@ for($i=10; $i >= $lv; $i--) {
         for($k=0; $k < $gencount; $k++) {
             $general = MYDB_fetch_array($result);
             if($general['level'] == $i) {
-                echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+                echo "<option style=color:red; selected data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } elseif($general['level'] > 1) {
-                echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+                echo "<option style=color:orange; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } else {
-                echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+                echo "<option data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             }
         }
 
         echo "
             </select>
-            <input type=hidden name=level value={$i}>
-            <input type=$btn name=btn value=임명>";
+            <input class='btn_appoint' type=$btn data-level='{$i}' data-level-text='$levelText' value=임명>";
     } else {
         $query = "select name,city from general where nation='{$me['nation']}' and level={$i}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -338,12 +338,13 @@ endif;
     <tr><td colspan=5 height=5></td></tr>
 <?php
 if($meLevel >= 5) {
+    $levelText = getLevelText(4, $nation['level']);
     echo "
     <tr><td colspan=5 align=center bgcolor=orange>도 시 관 직 임 명</td></tr>
     <tr>
-        <td colspan=3 align=right id=bg2>태 수 임 명</td>
+        <td colspan=3 align=right id=bg2>{$levelText} 임명</td>
         <td colspan=2>
-            <select name=citylist size=1 style=color:white;background-color:black;>
+            <select id='citylist_4' size=1 style=color:white;background-color:black;>
     ";
 
     $query = "select city,name,region from city where nation='{$nation['nation']}' and officer4set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
@@ -362,14 +363,14 @@ if($meLevel >= 5) {
             $region = $city['region'];
         }
 
-        echo "<option value='{$city['city']}' style=color:white;>{$city['name']}</option>";
+        echo "<option value='{$city['city']}' style=color:white;><span class='name_field'>{$city['name']}</span></option>";
     }
     echo "</optgroup>";
 
     echo "
             </select>
-            <select name=genlist size=1 style=color:white;background-color:black;>
-                <option value=0>____공석____</option>
+            <select id='genlist_4' size=1 style=color:white;background-color:black;>
+                <option value=0 data-level='0' data-name='' data-level-text='{$levelText}'>____공석____</option>
     ";
 
     $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
@@ -378,24 +379,24 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 4) {
-            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input type=hidden name=level value=4>
-            <input type=$btn name=btn value=임명>
+            <input class='btn_appoint' type=$btn data-level='4' value=임명>
         </td>
-    </tr>
-    <tr>
-        <td colspan=3 align=right id=bg2>군 사 임 명</td>
+    </tr>";
+    $levelText = getLevelText(3, $nation['level']);
+    echo "<tr>
+        <td colspan=3 align=right id=bg2>{$levelText} 임명</td>
         <td colspan=2>
-            <select name=citylist size=1 style=color:white;background-color:black;>
+            <select id='citylist_3' size=1 style=color:white;background-color:black;>
     ";
 
     $query = "select city,name,region from city where nation='{$nation['nation']}' and officer3set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
@@ -414,14 +415,14 @@ if($meLevel >= 5) {
             $region = $city['region'];
         }
 
-        echo "<option value='{$city['city']}' style=color:white;>{$city['name']}</option>";
+        echo "<option value='{$city['city']}' style=color:white;><span class='name_field'>{$city['name']}</span></option>";
     }
     echo "</optgroup>";
 
     echo "
             </select>
-            <select name=genlist size=1 style=color:white;background-color:black;>
-                <option value=0>____공석____</option>
+            <select id='genlist_3' size=1 style=color:white;background-color:black;>
+                <option value=0 data-level='0' data-name='' data-level-text='{$levelText}'>____공석____</option>
     ";
 
     $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
@@ -430,24 +431,24 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 3) {
-            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input type=hidden name=level value=3>
-            <input type=$btn name=btn value=임명>
+            <input class='btn_appoint' type=$btn data-level='3' value=임명>
         </td>
-    </tr>
-    <tr>
-        <td colspan=3 align=right id=bg2>종 사 임 명</td>
+    </tr>";
+    $levelText = getLevelText(2, $nation['level']);
+    echo "<tr>
+        <td colspan=3 align=right id=bg2>{$levelText} 임명</td>
         <td colspan=2>
-            <select name=citylist size=1 style=color:white;background-color:black;>
+            <select id='citylist_2' size=1 style=color:white;background-color:black;>
     ";
 
     $query = "select city,name,region from city where nation='{$nation['nation']}' and officer2set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
@@ -466,14 +467,14 @@ if($meLevel >= 5) {
             $region = $city['region'];
         }
 
-        echo "<option value='{$city['city']}' style=color:white;>{$city['name']}</option>";
+        echo "<option value='{$city['city']}' style=color:white;><span class='name_field'>{$city['name']}</span></option>";
     }
     echo "</optgroup>";
 
     echo "
             </select>
-            <select name=genlist size=1 style=color:white;background-color:black;>
-                <option value=0>____공석____</option>
+            <select id='genlist_2' size=1 style=color:white;background-color:black;>
+                <option value=0>____<span class='name_field' data-level-text='{$levelText}'>공석</span>____</option>
     ";
 
     $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' order by npc,binary(name)";
@@ -482,18 +483,17 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 2) {
-            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-level='{$general['level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input type=hidden name=level value=2>
-            <input type=$btn name=btn value=임명>
+            <input class='btn_appoint' type=$btn data-level='2' value=임명>
         </td>
     </tr>
     <tr><td colspan=5>※ <font color=red>빨간색</font>은 현재 임명중인 장수, <font color=orange>노란색</font>은 다른 관직에 임명된 장수, 하얀색은 일반 장수를 뜻합니다.</td></tr>

@@ -3,9 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-// $btn, $level, $genlist, $outlist
+// $action, $level, $genlist, $outlist
 
-$btn = Util::getReq('btn');
+$action = Util::getReq('action');
 $level = Util::getReq('level', 'int');
 $destGeneralID = Util::getReq('destGeneralID', 'int');
 $destCityID = Util::getReq('destCityID', 'int');
@@ -30,7 +30,7 @@ if($myLevel < 5){
     ]);
 }
 
-if($btn === '추방' && $destGeneralID==0){
+if($action === '추방' && $destGeneralID==0){
     Json::die([
         'result'=>false,
         'reason'=>'장수가 지정되지 않았습니다.'
@@ -333,7 +333,7 @@ function do추방(General $general, int $myLevel):?string{
 
 
 
-if($btn == "임명") {
+if($action == "임명") {
     if(2 <= $level && $level <= 4){
         if(!$destCityID){
             Json::die([
@@ -374,7 +374,7 @@ if($btn == "임명") {
     ]);
 }
 
-if($btn == "추방") {
+if($action == "추방") {
     $result = do추방($general, $myLevel);
     if($result !== null){
         Json::die([
