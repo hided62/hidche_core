@@ -7,10 +7,8 @@ $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 // 외부 파라미터
-// $_POST['old_pw'] : PW
-// $_POST['new_pw'] : 새 PW
-$pw = $_POST['old_pw'];
-$newPw = $_POST['new_pw'];
+$pw = Util::getReq('old_pw');
+$newPw = Util::getReq('new_pw');
 
 $response = ['result' => false];
 
