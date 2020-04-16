@@ -22,28 +22,30 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $admin = $gameStor->getValues(['develcost', 'cost', 'vote_title', 'vote', 'votecomment']);
 
-$me = $db->queryFirstRow('SELECT no,vote,name,nation,horse,weapon,book,item,npc from general where owner=%i', $userID);
+$generalID = Session::getGeneralID();
 
-if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
+$general = General::createGeneralObjFromDB($generalID, ['vote','horse','weapon','book','item'], 1);
+
+if($btn == "투표" && $general->getVar('vote') == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;
     $db->update('general', [
         'gold'=>$db->sqleval('gold + %i', $develcost),
         'vote'=>$sel
     ], 'owner=%i', $userID);
 
-    $log = [];
-    $log = uniqueItem($me, $log, 1);
-    pushGenLog($me, $log);
+    if(tryUniqueItemLottery($general, '투표')){
+        $general->applyDB($db);
+    }
 }
 else if($btn == "댓글" && trim($comment) != "") {
     $comment = trim($comment);
 
-    $nation = getNationStaticInfo($me['nation']);
+    $nation = $general->getStaticNation();
 
     if(!$admin['votecomment']){
         $admin['votecomment'] = [];
     }
-    $admin['votecomment'][] = [$nation['name'],$me['name'],$comment];
+    $admin['votecomment'][] = [$nation['name'],$general->getName(),$comment];
     $gameStor->votecomment = $admin['votecomment'];
 }
 
