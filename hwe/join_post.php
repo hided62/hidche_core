@@ -238,7 +238,7 @@ $db->insert('general', [
     'crew' => 0,
     'train' => 0,
     'atmos' => 0,
-    'level' => 0,
+    'officer_level' => 0,
     'turntime' => $turntime,
     'killturn' => 6,
     'lastconnect' => $lastconnect,

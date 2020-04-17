@@ -18,9 +18,9 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("세력장수", 1);
 
-$me = $db->queryFirstRow('SELECT no,nation,level from general where owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,nation,officer_level from general where owner=%i', $userID);
 
-if($me['level'] == 0) {
+if($me['officer_level'] == 0) {
     echo "재야입니다.";
     exit();
 }
@@ -82,7 +82,7 @@ if($gameStor->isunited){
 $nationLevel = DB::db()->queryFirstField('select level from nation where nation = %i', $me['nation']);
 
 [$orderKey, $orderDesc] = [
-    1=>['level', true],
+    1=>['officer_level', true],
     2=>['dedication', true],
     3=>['experience', true],
     4=>['leadership', true],
@@ -99,7 +99,7 @@ $nationLevel = DB::db()->queryFirstField('select level from nation where nation 
     15=>['npc', true],
 ][$type];
 
-$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc?'desc':'');
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center class='tb_layout bg0'>
@@ -122,7 +122,7 @@ echo"
     </tr>";
 foreach($generalList as $general){
 
-    $lbonus = calcLeadershipBonus($general['level'], $nationLevel);
+    $lbonus = calcLeadershipBonus($general['officer_level'], $nationLevel);
     if($lbonus > 0) {
         $lbonus = "<font color=cyan>+{$lbonus}</font>";
     } else {
@@ -155,7 +155,7 @@ foreach($generalList as $general){
     <tr>
         <td align=center class='generalIcon' style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;' height=64></td>
         <td align=center>$name</td>
-        <td align=center>"; echo getLevelText($general['level'], $nationLevel); echo "</td>
+        <td align=center>"; echo getOfficerLevelText($general['officer_level'], $nationLevel); echo "</td>
         <td align=center>".getDed($general['dedication'])."</td>
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getBill($general['dedication'])."</td>

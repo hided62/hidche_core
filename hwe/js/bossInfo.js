@@ -114,31 +114,31 @@ $(function(){
 
     $('.btn_appoint').click(function(){
         var $btn = $(this);
-        var level = $btn.data('level');
+        var officerLevel = $btn.data('officer_level');
+        var officerLevelText = $btn.data('officer_level_text');
         var cityID = 0;
         var cityName = '_';
-        var $generalSelect = $('.genlist_{0} option:selected'.format(level));
-        var $citySelect = $('.citylist_{0} option:selected'.format(level));
-        var levelText = $btn.data('level-text');
+        var $generalSelect = $('.genlist_{0} option:selected'.format(officerLevel));
+        var $citySelect = $('.citylist_{0} option:selected'.format(officerLevel));
 
         var generalID = $generalSelect.val();
         var generalName = $generalSelect.data('name');
-        var generalLevel = $generalSelect.data('level');
+        var generalOfficerLevel = $generalSelect.data('officer_level');
         
 
-        if(level >= 5){
+        if(officerLevel >= 5){
             if(generalID == 0){
-                if(!confirm('{0}직을 비우시겠습니까?'.format(levelText))){
+                if(!confirm('{0}직을 비우시겠습니까?'.format(officerLevelText))){
                     return false;
                 }
             }
-            else if(generalLevel >= 5){
-                if(!confirm('이미 수뇌인 {0}를 {1}직에 임명하시겠습니까?'.format(generalName, levelText))){
+            else if(generalOfficerLevel >= 5){
+                if(!confirm('이미 수뇌인 {0}를 {1}직에 임명하시겠습니까?'.format(generalName, officerLevelText))){
                     return false;
                 }
             }
             else{
-                if(!confirm('{0}를 {1}직에 임명하시겠습니까?'.format(generalName, levelText))){
+                if(!confirm('{0}를 {1}직에 임명하시겠습니까?'.format(generalName, officerLevelText))){
                     return false;
                 }
             }
@@ -152,17 +152,17 @@ $(function(){
             cityName = $citySelect.find('option:selected .name_field').text();
 
             if(generalID == 0){
-                if(!confirm('{0} {1}직을 비우시겠습니까?'.format(cityName, levelText))){
+                if(!confirm('{0} {1}직을 비우시겠습니까?'.format(cityName, officerLevelText))){
                     return false;
                 }
             }
-            else if(generalLevel >= 5){
-                if(!confirm('수뇌인 {0}를 {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, levelText))){
+            else if(generalOfficerLevel >= 5){
+                if(!confirm('수뇌인 {0}를 {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, officerLevelText))){
                     return false;
                 }
             }
             else{
-                if(!confirm('{0}를 {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, levelText))){
+                if(!confirm('{0}를 {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, officerLevelText))){
                     return false;
                 }
             }
@@ -175,7 +175,7 @@ $(function(){
                 action:'임명',
                 destGeneralID:generalID,
                 destCityID:cityID,
-                level:level
+                officerLevel:officerLevel
             },
         }).then(function(data){
             if(!data){

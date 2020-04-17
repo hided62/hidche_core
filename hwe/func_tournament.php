@@ -274,7 +274,7 @@ function startTournament($auto, $type) {
     ], true);
     $db->query('TRUNCATE TABLE tournament');
 
-    $opener = $db->queryFirstField('SELECT `general`.`name` FROM `general` JOIN `nation` ON `general`.`nation` = `nation`.`nation` WHERE `general`.`level` = 12 AND `nation`.`level` = 7 ORDER BY rand() LIMIT 1');
+    $opener = $db->queryFirstField('SELECT `general`.`name` FROM `general` JOIN `nation` ON `general`.`nation` = `nation`.`nation` WHERE `general`.`officer_level` = 12 AND `nation`.`level` = 7 ORDER BY rand() LIMIT 1');
     if(!$opener){
         $opener = $gameStor->prev_winner;
     }

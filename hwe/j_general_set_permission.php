@@ -3,7 +3,6 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-// $btn, $level, $genlist, $outlist
 
 //TODO: 변경이 완료되면 항상 공지되어야함
 
@@ -17,9 +16,9 @@ $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$me = $db->queryFirstRow('SELECT no, level, nation FROM general WHERE owner = %i', $userID);
+$me = $db->queryFirstRow('SELECT no, officer_level, nation FROM general WHERE owner = %i', $userID);
 
-if(!$me || $me['level'] != 12){
+if(!$me || $me['officer_level'] != 12){
     Json::die([
         'result'=>false,
         'reason'=>'군주가 아닙니다',
@@ -55,7 +54,7 @@ if(!$genlist){
     ]);
 }
 $realCandidates = [];
-foreach($db->query('SELECT no, nation, level, penalty, permission FROM general WHERE nation = %i AND level != 12 AND permission = \'normal\' AND no IN %li', $nationID, $genlist) as $candidate){
+foreach($db->query('SELECT no, nation, officer_level, penalty, permission FROM general WHERE nation = %i AND officer_level != 12 AND permission = \'normal\' AND no IN %li', $nationID, $genlist) as $candidate){
     $maxPermission = checkSecretMaxPermission($candidate);
     if($maxPermission < $targetLevel){
         continue;

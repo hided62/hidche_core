@@ -13,7 +13,7 @@ $connect=$db->get();
 
 increaseRefresh("내무부", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, nation, officer_level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
 
 $nationID = $me['nation'];
 $nation = $db->queryFirstRow('SELECT nation,level,name,color,type,gold,rice,bill,rate,scout,war,secretlimit,msg,scoutmsg,capital FROM nation WHERE nation = %i', $nationID);
@@ -34,7 +34,7 @@ else if ($permission < 1) {
     die();
 }
 
-if ($me['level'] >= 5) {
+if ($me['officer_level'] >= 5) {
     $btn = "submit";
     $read = "";
 } else {
@@ -51,7 +51,7 @@ if ($me['level'] >= 5) {
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <script>
-var editable = <?=(($me['level']>=5||$permission==4)?'true':'false')?>;
+var editable = <?=(($me['officer_level']>=5||$permission==4)?'true':'false')?>;
 var nationMsg = <?=Json::encode($nation['msg']??'')?>;
 var scoutmsg = <?=Json::encode($nation['scoutmsg']??'')?>;
 </script>

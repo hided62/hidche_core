@@ -83,13 +83,13 @@ $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
         'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item', 
-        'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
+        'explevel', 'experience', 'dedication', 'officer_level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
         'recent_war'
     ],
     'integer'=>[
         'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
         'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item',
-        'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
+        'explevel', 'experience', 'dedication', 'officer_level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
     ],
     'min'=>[
         ['no', 1],
@@ -112,7 +112,7 @@ $generalCheck = [
         ['atmos', [40, GameConst::$maxAtmosByWar]],
         ['explevel', [0, 300]],
         ['injury', [0, 80]],
-        ['level', [1, 12]]
+        ['officer_level', [1, 12]]
     ],
     'in'=>[
         ['personal', array_keys(getCharacterList())],
@@ -156,7 +156,7 @@ $cityCheck = [
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 
         'trust', 'level',
         'pop_max', 'agri_max', 'comm_max', 'secu_max', 'def_max', 'wall_max',
-        'dead', 'state', 'officer4', 'officer3', 'officer2', 'conflict', 
+        'dead', 'state', 'conflict', 
     ],
     'numeric'=>[
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 'trust', 'dead'
@@ -164,7 +164,7 @@ $cityCheck = [
     'integer'=>[
         'city', 'nation', 'supply',
         'pop_max', 'agri_max', 'comm_max', 'secu_max', 'def_max', 'wall_max',
-        'state', 'officer4', 'officer3', 'officer2'
+        'state',
     ],
     'min'=>[
         ['def', 0],
@@ -215,9 +215,6 @@ $nationCheck = [
         ['gold', 0],
         ['rice', 0],
         ['gennum', 1],
-        ['officer4', 0],
-        ['officer3', 0],
-        ['officer2', 0],
     ],
     'in'=>[
         ['type', array_keys(getNationTypeList())],

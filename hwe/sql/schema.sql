@@ -38,7 +38,8 @@ CREATE TABLE `general` (
 	`dex3` INT(8) NOT NULL DEFAULT '0',
 	`dex4` INT(8) NOT NULL DEFAULT '0',
 	`dex5` INT(8) NOT NULL DEFAULT '0',
-	`level` INT(2) NOT NULL DEFAULT '0',
+	`officer_level` INT(2) NOT NULL DEFAULT '0',
+	`officer_city` INT(4) NOT NULL DEFAULT '0',
 	`permission` ENUM('normal','auditor','ambassador') NULL DEFAULT 'normal',
 	`gold` INT(6) NOT NULL DEFAULT '1000',
 	`rice` INT(6) NOT NULL DEFAULT '1000',
@@ -86,7 +87,8 @@ CREATE TABLE `general` (
 	INDEX `no_member` (`owner`),
 	INDEX `npc` (`npc`),
 	INDEX `troop` (`troop`, `turntime`),
-	INDEX `level` (`nation`, `level`),
+	INDEX `officer_level` (`nation`, `officer_level`),
+	INDEX `officer_city` (`officer_city`, `officer_level`)
 	INDEX `name` (`name`)
 )
 DEFAULT CHARSET=utf8mb4
@@ -155,14 +157,14 @@ ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 CREATE TABLE `nation_turn` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`nation_id` INT(11) NOT NULL,
-	`level` INT(4) NOT NULL,
+	`officer_level` INT(4) NOT NULL,
 	`turn_idx` INT(4) NOT NULL,
 	`action` VARCHAR(16) NOT NULL,
 	`arg` TEXT NULL DEFAULT NULL,
 	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE INDEX `nation` (`nation_id`, `level`, `turn_idx`),
-	INDEX `action` (`action`, `turn_idx`, `nation_id`, `level`)
+	UNIQUE INDEX `nation` (`nation_id`, `officer_level`, `turn_idx`),
+	INDEX `action` (`action`, `turn_idx`, `nation_id`, `officer_level`)
 )
 ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
@@ -223,9 +225,6 @@ CREATE TABLE `city` (
 	`def_max` INT(5) NOT NULL,
 	`wall` INT(5) NOT NULL,
 	`wall_max` INT(5) NOT NULL,
-	`officer4` INT(4) NOT NULL DEFAULT '0',
-	`officer3` INT(4) NOT NULL DEFAULT '0',
-	`officer2` INT(4) NOT NULL DEFAULT '0',
 	`officer4set` INT(1) NOT NULL DEFAULT '0',
 	`officer3set` INT(1) NOT NULL DEFAULT '0',
 	`officer2set` INT(1) NOT NULL DEFAULT '0',

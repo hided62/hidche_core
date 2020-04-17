@@ -226,8 +226,8 @@ abstract class BaseCommand{
         return $this->generalObj->getNationID();        
     }
 
-    public function getGeneralLevel(){
-        return $this->generalObj->getVar('level');
+    public function getOfficerLevel(){
+        return $this->generalObj->getVar('officer_level');
     }
 
     public function getBrief():string{

@@ -3,10 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-// $action, $level, $genlist, $outlist
 
 $action = Util::getReq('action');
-$level = Util::getReq('level', 'int');
+$officerLevel = Util::getReq('officerLevel', 'int');
 $destGeneralID = Util::getReq('destGeneralID', 'int');
 $destCityID = Util::getReq('destCityID', 'int');
 
@@ -18,12 +17,12 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $gameStor->cacheValues(['startyear','year','month','scenario']);
 
-$me = $db->queryFirstRow('SELECT no,nation,level from general where owner=%i', $userID);
-$myLevel = $me['level'];
+$me = $db->queryFirstRow('SELECT no,nation,officer_level from general where owner=%i', $userID);
+$myOfficerLevel = $me['officer_level'];
 $nationID = $nationID;
 
 //수뇌가 아니면 아무것도 할 수 없음
-if($myLevel < 5){
+if($myOfficerLevel < 5){
     Json::die([
         'result'=>false,
         'reason'=>'수뇌가 아닙니다.'
@@ -41,12 +40,12 @@ if($destGeneralID==0){
     $general = new DummyGeneral(true);
 }
 else{
-    $general = General::createGeneralObjFromDB($destGeneralID, ['name', 'leadership', 'strength', 'intel', 'gold','rice','troop','level','npc','picture','imgsvr','permission','penalty','belong'], 1);
+    $general = General::createGeneralObjFromDB($destGeneralID, ['name', 'leadership', 'strength', 'intel', 'gold','rice','troop','officer_level','npc','picture','imgsvr','permission','penalty','belong'], 1);
 
     if($general instanceof DummyGeneral){
         Json::die([
             'result'=>false,
-            'reason'=>'올바릦 않은 장수입니다.'
+            'reason'=>'올바르지 않은 장수입니다.'
         ]);
     }
 
@@ -58,28 +57,28 @@ else{
     }
 }
 
-if($generalLevel == 12){
+if($officerLevel == 12){
     Json::die([
         'result'=>false,
         'reason'=>'군주를 대상으로 할 수 없습니다.'
     ]);
 }
 
-function do수뇌임명(General $general, int $targetLevel):?string{
-    global $myLevel;
+function do수뇌임명(General $general, int $targetOfficerLevel):?string{
+    global $myOfficerLevel;
     $generalID = $general->getID();
-    $generalLevel = $general->getVar('level');
+    $officerLevel = $general->getVar('officer_level');
     $generalName = $general->getVar('name');
     $nationID = $general->getNationID();
 
     $db = DB::db();
 
-    [$levelSet, $nationLevel] = $db->queryFirstList('SELECT $b,level FROM nation WHERE nation = %i', "l{$targetLevel}set", $nationID);
+    [$levelSet, $nationLevel] = $db->queryFirstList('SELECT %b,level FROM nation WHERE nation = %i', "l{$targetOfficerLevel}set", $nationID);
 
 	// 임명가능 레벨
     $lv = getNationChiefLevel($nationLevel);
 
-    if($targetLevel < $lv){
+    if($targetOfficerLevel < $lv){
         return '임명불가능한 관직입니다.';
     }
 
@@ -89,13 +88,14 @@ function do수뇌임명(General $general, int $targetLevel):?string{
 
     //기존 장수 일반으로
     $db->update('general', [
-        'level'=>1,
-    ], 'nation=%i AND level=%i', $nationID, $targetLevel);
+        'officer_level'=>1,
+        'officer_city'=>0,
+    ], 'nation=%i AND officer_level=%i', $nationID, $targetOfficerLevel);
 
-    if($targetLevel === 11){
+    if($targetOfficerLevel === 11){
 
     }
-    else if($targetLevel % 2 == 0){
+    else if($targetOfficerLevel % 2 == 0){
         if($general->getVar('strength') < GameConst::$chiefStatMin){
             return '무력이 부족합니다.';
         }
@@ -107,80 +107,58 @@ function do수뇌임명(General $general, int $targetLevel):?string{
         }
     }
 
-    // 신임 장수의 원래 자리 해제
-    if(2 <= $generalLevel && $generalLevel <= 4){
-        $db->update('city', [
-            'officer'.$generalLevel=>0
-        ], "officer{$generalLevel} = %i", $generalID);
-    }
     //신임 장수
-    $general->setVar('level', $targetLevel);
+    $general->setVar('officer_level', $targetOfficerLevel);
+    $general->setVar('officer_city', 0);
     $db->update('nation', [
-        "l{$targetLevel}set"=>1,
+        "l{$targetOfficerLevel}set"=>1,
     ], 'nation=%i', $nationID);
 
     return null;
 }
 
-function do도시임명(General $general, int $cityID, int $targetLevel):?string{
-    $generalID = $general->getID();
-    $generalLevel = $general->getVar('level');
+function do도시임명(General $general, int $cityID, int $targetOfficerLevel):?string{
     $nationID = $general->getNationID();
 
-    $genlv = 'officer'.$targetLevel;
-    $genlvset = 'officer'.$targetLevel.'set';
+    $genlvset = 'officer'.$targetOfficerLevel.'set';
 
     $db = DB::db();
 
-    $oldOfficerID = $db->queryFirstField('SELECT %b FROM city WHERE nation=%i AND city=%i', $genlv, $nationID, $cityID);
-
-    if($oldOfficerID === null){
+    if(CityConst::byID($cityID) === null){
         return '올바르지 않은 도시입니다';
     }
 
-    if($oldOfficerID !== 0) {
-        //기존 장수 일반으로
-        $db->update('general', [
-            'level'=>1
-        ], 'no=%i', $oldOfficerID);
-        //기존 자리 공석으로
-        $db->update('city', [
-            $genlv=>0
-        ], 'city = %i AND nation = %i', $cityID , $nationID);
-    }
+    //기존 장수 일반으로
+    $db->update('general', [
+        'officer_level'=>1,
+        'officer_city'=>0,
+    ], 'officer_level=%i AND officer_city=%i', $targetOfficerLevel, $cityID);
 
     if($general instanceof DummyGeneral){
         return null;
     }
 
-    if($targetLevel === 4 && $general->getVar('strength') < GameConst::$chiefStatMin){
+    if($targetOfficerLevel === 4 && $general->getVar('strength') < GameConst::$chiefStatMin){
         return '무력이 부족합니다.';
     }
 
-    if($targetLevel === 3 && $general->getVar('intel') < GameConst::$chiefStatMin){
+    if($targetOfficerLevel === 3 && $general->getVar('intel') < GameConst::$chiefStatMin){
         return '지력이 부족합니다.';
-    }
-
-    // 신임 장수의 원래 자리 해제
-    if(2 <= $generalLevel && $generalLevel <= 4){
-        $db->update('city', [
-            'officer'.$generalLevel=>0
-        ], "officer{$generalLevel} = %i", $generalID);
     }
 
     //신임 장수
     $db->update('city', [
-        $genlv=>$generalID,
         $genlvset=>1
     ], 'city=%i AND nation=%i', $cityID, $nationID);
-    $general->setVar('level', $targetLevel);
+    $general->setVar('officer_level', $targetOfficerLevel);
+    $general->setVar('officer_city', $cityID);
 
     return null;
 }
 
-function do추방(General $general, int $myLevel):?string{
+function do추방(General $general, int $myOfficerLevel):?string{
     $generalID = $general->getID();
-    $generalLevel = $general->getVar('level');
+    $officerLevel = $general->getVar('officer_level');
     $generalName = $general->getVar('name');
     $nationID = $general->getNationID();
 
@@ -201,13 +179,13 @@ function do추방(General $general, int $myLevel):?string{
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $env = $gameStor->getValues(['startyear','year','month','scenario']);
 
-    $nation = $db->queryFirstRow('SELECT name,%b,color FROM nation WHERE nation=%i',"l{$myLevel}set", $nationID);
+    $nation = $db->queryFirstRow('SELECT name,%b,color FROM nation WHERE nation=%i',"l{$myOfficerLevel}set", $nationID);
     $nationName = $nation['name'];
 
     $logger = $general->getLogger();
 
     //이미 지정했다면 무시
-    if($nation["l{$myLevel}set"] == 1 || $generalLevel == 0 && $generalLevel == 12) {
+    if($nation["l{$myOfficerLevel}set"] == 1 || $officerLevel == 0 && $officerLevel == 12) {
         header('location:b_myBossInfo.php', true, 303);
         die();
     }
@@ -227,7 +205,8 @@ function do추방(General $general, int $myLevel):?string{
     }
 
     $general->setVar('nation', 0);
-    $general->setVar('level', 0);
+    $general->setVar('officer_level', 0);
+    $general->setVar('officer_city', 0);
     $general->setVar('belong', 0);
     $oldMakeLimit = $general->getVar('makelimit');
     $general->setVar('makelimit', 12);
@@ -268,13 +247,6 @@ function do추방(General $general, int $myLevel):?string{
     }
     $general->setVar('troop', 0);
 
-    // 도시관직해제
-    if(2 <= $generalLevel && $generalLevel <= 4){
-        $db->update('city', [
-            'officer'.$generalLevel=>0
-        ], "officer{$generalLevel} = %i", $general->getID());
-    }
-
     if($general->getVar('npc') >= 2 && ($env['scenario'] < 100 || Util::randBool(0.01))) {
 
         $str = Util::choiceRandom([
@@ -309,7 +281,7 @@ function do추방(General $general, int $myLevel):?string{
         //초반엔 군주 부상 증가(엔장 임관지양)
         $db->update('general', [
             'injury'=>$db->sqleval('least(injury + 1, %i)', 80),
-        ], 'nation=%i AND level=12', $nationID);
+        ], 'nation=%i AND officer_level=12', $nationID);
 
         $db->update('nation', [
             'gennum'=>$db->sqleval('gennum - 1'),
@@ -319,7 +291,7 @@ function do추방(General $general, int $myLevel):?string{
     } else {
         //이번분기는 추방불가(초반 제외)
         $db->update('nation', [
-            "l{$myLevel}set"=>1,
+            "l{$myOfficerLevel}set"=>1,
             'gennum'=>$db->sqleval('gennum - 1'),
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),
@@ -334,14 +306,14 @@ function do추방(General $general, int $myLevel):?string{
 
 
 if($action == "임명") {
-    if(2 <= $level && $level <= 4){
+    if(2 <= $officerLevel && $officerLevel <= 4){
         if(!$destCityID){
             Json::die([
                 'result'=>false,
                 'reason'=>'도시가 지정되지 않았습니다.'
             ]);
         }
-        $result = do도시임명($general, $destCityID, $level);
+        $result = do도시임명($general, $destCityID, $officerLevel);
         if($result !== null){
             Json::die([
                 'result'=>false,
@@ -354,8 +326,8 @@ if($action == "임명") {
         ]);
     }
 
-    if(5 <= $level && $level < 12){
-        $result = do수뇌임명($general, $level);
+    if(5 <= $officerLevel && $officerLevel < 12){
+        $result = do수뇌임명($general, $officerLevel);
         if($result !== null){
             Json::die([
                 'result'=>false,
@@ -375,7 +347,7 @@ if($action == "임명") {
 }
 
 if($action == "추방") {
-    $result = do추방($general, $myLevel);
+    $result = do추방($general, $myOfficerLevel);
     if($result !== null){
         Json::die([
             'result'=>false,

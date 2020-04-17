@@ -49,7 +49,7 @@ $now = new \DateTime();
 $unlimited = new \DateTime('9999-12-31');
 
 $db = DB::db();
-$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission,belong FROM general WHERE `owner`=%i', $userID);
+$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,penalty,permission,belong FROM general WHERE `owner`=%i', $userID);
 
 if(!$me){
     $session->logoutGame();
@@ -150,7 +150,7 @@ if($mailbox > 0) {
     
     $session->lastMsg = $now->format('Y-m-d H:i:s');
 
-    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,permission,penalty FROM general WHERE `no`=%i',$mailbox);
+    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,permission,penalty FROM general WHERE `no`=%i',$mailbox);
     
     if(!$destUser){
         Json::die([

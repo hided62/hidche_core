@@ -165,7 +165,7 @@ class che_증여 extends Command\GeneralCommand{
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
         ob_start();
 ?>
 자신의 자금이나 군량을 다른 장수에게 증여합니다.<br>
@@ -177,7 +177,7 @@ class che_증여 extends Command\GeneralCommand{
         $color = " style='color:{$color}'";
     }
     $name = $destGeneral['name'];
-    if($destGeneral['level'] >= 5){
+    if($destGeneral['officer_level'] >= 5){
         $name = "*{$name}*";
     }
 ?>

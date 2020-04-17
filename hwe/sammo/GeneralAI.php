@@ -1437,7 +1437,7 @@ class GeneralAI
     {
         $general = $this->general;
 
-        if($general->getVar('level') < 12){
+        if($general->getVar('officer_level') < 12){
             return null;
         }
 
@@ -1476,7 +1476,7 @@ class GeneralAI
         if($lastTurn->getCommand() === 'che_천도'){
             $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, $lastTurn->getArg());
             if($cmd->isRunnable()){
-                $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('level'), $general->getTurnTime()]);
+                $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
                 return $cmd;
             }
         }
@@ -1489,7 +1489,7 @@ class GeneralAI
                     date_create_immutable($general->getTurnTime())
                 )
             );
-            if($timeDiffSeconds < $turnTerm * 30 && $lastTrialLevel !== $general->getVar('level')){ //0.5Turn
+            if($timeDiffSeconds < $turnTerm * 30 && $lastTrialLevel !== $general->getVar('officer_level')){ //0.5Turn
                 return null;
             }
         }
@@ -1597,7 +1597,7 @@ class GeneralAI
         }
 
         
-        $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('level'), $general->getTurnTime()]);
+        $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
 
         return $cmd;
     }
@@ -2334,6 +2334,7 @@ class GeneralAI
         }
 
         $this->categorizeNationCities();
+        $this->categorizeNationGeneral();
 
         $candidateCities = [];
 
@@ -2452,7 +2453,7 @@ class GeneralAI
         $db = DB::db();
 
         $general = $this->general;
-        $lordCities = $db->queryFirstColumn('SELECT city.city as city FROM general LEFT JOIN city ON general.city = city.city WHERE general.level = 12 AND city.nation = 0');
+        $lordCities = $db->queryFirstColumn('SELECT city.city as city FROM general LEFT JOIN city ON general.city = city.city WHERE general.officer_level = 12 AND city.nation = 0');
         $nationCities = $db->queryFirstColumn('SELECT city a FROM city WHERE nation != 0');+
 
         $occupiedCities = [];
@@ -2580,7 +2581,7 @@ class GeneralAI
         // 오랑캐는 바로 임관
         if ($general->getVar('npc') == 9) {
             $rulerNation = $db->queryFirstField(
-                'SELECT nation FROM general WHERE `level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1',
+                'SELECT nation FROM general WHERE `officer_level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1',
                 $general->getAuxVar('joinedNations') ?? [0]
             );
 
@@ -2711,20 +2712,7 @@ class GeneralAI
 
             $nationCity['dev'] = $dev;
 
-            $importantScore = 1;
-            if ($nationCity['officer4']) {
-                $importantScore += 1;
-            }
-
-            if ($nationCity['officer3']) {
-                $importantScore += 1;
-            }
-
-            if ($nationCity['officer2']) {
-                $importantScore += 1;
-            }
-
-            $nationCity['important'] = $importantScore;
+            $nationCity['important'] = 1;
 
             if($nationCity['supply']){
                 $supplyCities[$cityID] = &$nationCity;
@@ -2785,10 +2773,14 @@ class GeneralAI
             $generalID = $nationGeneral->getID();
             $cityID = $nationGeneral->getCityID();
             $npcType = $nationGeneral->getVar('npc');
-            $generalLevel = $nationGeneral->getVar('level');
+            $officerLevel = $nationGeneral->getVar('officer_level');
+            $officerCity = $nationGeneral->getVar('officer_city');
 
-            if($generalLevel > 4){
-                $chiefGenerals[$generalLevel] = $nationGeneral;
+            if($officerLevel > 4){
+                $chiefGenerals[$officerLevel] = $nationGeneral;
+            }
+            else if($officerLevel > 2){
+                $nationCities[$officerCity]['important'] += 1;
             }
 
             if (key_exists($cityID, $nationCities)) {
@@ -2855,7 +2847,7 @@ class GeneralAI
         $this->categorizeNationGeneral();
         $this->categorizeNationCities();
 
-        if($general->getVar('level') == 12){
+        if($general->getVar('officer_level') == 12){
             $month = $this->env['month'];
             if (in_array($month, [1, 4, 7, 10])) {
                 $this->choosePromotion();
@@ -2950,7 +2942,7 @@ class GeneralAI
             $general->setVar('defence_train', 80);
         }
 
-        if($general->getVar('level') === 12 && $this->generalPolicy->can선양){
+        if($general->getVar('officer_level') === 12 && $this->generalPolicy->can선양){
             $result = $this->do선양($reservedCommand);
             if($result !== null){
                 return $result;
@@ -2984,7 +2976,7 @@ class GeneralAI
             return $this->do중립($reservedCommand);
         }
         
-        if($npcType >= 2 && $general->getVar('level') == 12 && !$this->nation['capital']){
+        if($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']){
             //방랑군 건국
             $result = $this->do건국($reservedCommand);
             if($result !== null){
@@ -3089,7 +3081,7 @@ class GeneralAI
             foreach(Util::range(5) as $idx){
                 /** @var General */
                 $randGeneral = Util::choiceRandom($this->npcWarGenerals);
-                if($randGeneral->getVar('level') != 1){
+                if($randGeneral->getVar('officer_level') != 1){
                     continue;
                 }
 
@@ -3116,7 +3108,8 @@ class GeneralAI
                 continue;
             }
 
-            $randGeneral->setVar('level', $chiefLevel);
+            $randGeneral->setVar('officer_level', $chiefLevel);
+            $randGeneral->setVar('officer_city', 0);
             $randGeneral->applyDB($db);
         }
     }
@@ -3149,29 +3142,29 @@ class GeneralAI
 
         $db->update('general', [
             'permission' => 'ambassador',
-        ], 'nation=%i AND npc < 2 AND level > 4', $nationID);
+        ], 'nation=%i AND npc < 2 AND officer_level > 4', $nationID);
 
         foreach($db->query(
-            'SELECT no, npc, level, killturn FROM general WHERE nation = %i AND 12 > level AND level > 4',
+            'SELECT no, npc, officer_level, killturn FROM general WHERE nation = %i AND 12 > officer_level AND officer_level > 4',
             $nationID
         ) as $chief) {
 
             if ($chief['npc'] < 2 && $chief['killturn'] < $minKillturn) {
-                $chiefCandidate[$chief['level']] = $chief['no'];
-                $userChief[$chief['no']] = $chief['level'];
+                $chiefCandidate[$chief['officer_level']] = $chief['no'];
+                $userChief[$chief['no']] = $chief['officer_level'];
             }
         }
 
         $db->update('general', [
-            'level' => 1
-        ], 'level < 12 AND level > 4 AND nation = %i', $nationID);
+            'officer_level' => 1
+        ], 'officer_level < 12 AND officer_level > 4 AND nation = %i', $nationID);
 
         $maxBelong = $db->queryFirstField('SELECT max(belong) FROM `general` WHERE nation=%i', $nationID);
         $maxBelong = min($maxBelong - 1, 3);
 
         if (!$userChief) {
             $candUserChief = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND level = 1 AND killturn > %i AND npc < 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
+                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND killturn > %i AND npc < 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
                 $nationID,
                 $minKillturn,
                 $maxBelong
@@ -3186,7 +3179,7 @@ class GeneralAI
 
         if (!key_exists(11, $chiefCandidate)) {
             $candChiefHead = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND level = 1 AND npc >= 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
+                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND npc >= 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
                 $nationID,
                 $maxBelong
             );
@@ -3199,7 +3192,7 @@ class GeneralAI
         if ($minChiefLevel < 11) {
             //무장 수뇌 후보
             $candChiefStrength = $db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation = %i AND strength >= %i AND level = 1 AND belong >= %i ORDER BY strength DESC LIMIT %i',
+                'SELECT no FROM general WHERE nation = %i AND strength >= %i AND officer_level = 1 AND belong >= %i ORDER BY strength DESC LIMIT %i',
                 $nationID,
                 GameConst::$chiefStatMin,
                 $maxBelong,
@@ -3207,7 +3200,7 @@ class GeneralAI
             );
             //지장 수뇌 후보
             $candChiefIntel = $db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation = %i AND intel >= %i AND level = 1 AND belong >= %i ORDER BY intel DESC LIMIT %i',
+                'SELECT no FROM general WHERE nation = %i AND intel >= %i AND officer_level = 1 AND belong >= %i ORDER BY intel DESC LIMIT %i',
                 $nationID,
                 GameConst::$chiefStatMin,
                 $maxBelong,
@@ -3243,7 +3236,7 @@ class GeneralAI
 
             foreach ($chiefCandidate as $chiefLevel => $chiefID) {
                 $db->update('general', [
-                    'level' => $chiefLevel
+                    'officer_level' => $chiefLevel
                 ], 'no=%i', $chiefID);
             }
         }
@@ -3298,7 +3291,7 @@ class GeneralAI
         $dedicationList = array_map(function(General $general){
             return $general->getRaw();
         }, array_filter($this->nationGenerals, function(General $rawGeneral){
-            return $rawGeneral->getVar('level') != 5;
+            return $rawGeneral->getVar('officer_level') != 5;
         }));
 
         $goldIncome  = getGoldIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
@@ -3340,7 +3333,7 @@ class GeneralAI
         $dedicationList = array_map(function(General $general){
             return $general->getRaw();
         }, array_filter($this->nationGenerals, function(General $rawGeneral){
-            return $rawGeneral->getVar('level') != 5;
+            return $rawGeneral->getVar('officer_level') != 5;
         }));
 
         $riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);

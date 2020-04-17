@@ -16,7 +16,7 @@ $connect=$db->get();
 
 increaseRefresh("현재도시", 1);
 
-$query = "select no,nation,level,city from general where owner='{$userID}'";
+$query = "select no,nation,officer_level,city from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -77,7 +77,7 @@ if(!$citylist){
 
 // 재야일때는 현재 도시만
 $valid = 0;
-if($me['level'] == 0) {
+if($me['officer_level'] == 0) {
     $query = "select city,name,nation from city where city='{$me['city']}'";
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityresult);
@@ -178,26 +178,21 @@ $officer = [
     3=>['name'=>'-', 'npc'=>0],
     2=>['name'=>'-', 'npc'=>0]
 ];
-$officerQuery = [];
-if($city['officer4']){ $officerQuery[] = $city['officer4']; }
-if($city['officer3']){ $officerQuery[] = $city['officer3']; }
-if($city['officer2']){ $officerQuery[] = $city['officer2']; }
-if($officerQuery){
-    foreach($db->query('SELECT `name`, npc, `level` FROM general WHERE `no` IN %li', $city['officer4']) as $officerInfo){
-        $officer[$officerInfo['level']] = $officerInfo;
-    }
+
+foreach($db->query('SELECT `name`, npc, `officer_level` FROM general WHERE `officer_city` = %i', $city['city']) as $officerInfo){
+    $officer[$officerInfo['officer_level']] = $officerInfo;
 }
 
 if($city['trade'] === null) {
     $city['trade'] = "- ";
 }
 
-$query = "select npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
+$query = "select npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,officer_level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 
 $generals = $db->query(
-    'SELECT npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
+    'SELECT npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,officer_level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
     $city['city']
 );
 
@@ -256,16 +251,10 @@ for($j=0; $j < $gencount; $j++) {
     $strengthText = formatWounded($strength, $general['injury']);
     $intelText = formatWounded($intel, $general['injury']);
 
-    $level = $general['level'];
-    $levelText = getLevelText($general['level']);
+    $officerLevel = $general['officer_level'];
+    $officerLevelText = getOfficerLevelText($officerLevel);
 
-    if($general['level'] == 12) {
-        $leadershipBonus = $nationInfo['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $leadershipBonus = $nationInfo['level'];
-    } else {
-        $leadershipBonus = 0;
-    }
+    $lerdershipBonus = calcLeadershipBonus($officerLevel, $nationInfo['level']);
     $leadershipBonusText = formatLeadershipBonus($leadershipBonus);
 
     if($ourGeneral){
@@ -314,8 +303,8 @@ for($j=0; $j < $gencount; $j++) {
         'leadershipText'=>$leadershipText,
         'leadershipBonus'=>$leadershipBonus,
         'leadershipBonusText'=>$leadershipBonusText,
-        'level'=>$level,
-        'levelText'=>$levelText,
+        'officerLevel'=>$officerLevel,
+        'officerLevelText'=>$officerLevelText,
         'strength'=>$strength,
         'strengthText'=>$strengthText,
         'intel'=>$intel,

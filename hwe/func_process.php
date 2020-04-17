@@ -49,10 +49,10 @@ function CriticalRatioDomestic(General $general, string $type) {
     );
 }
 
-function calcLeadershipBonus($generalLevel, $nationLevel):int{
-    if($generalLevel == 12) {
+function calcLeadershipBonus($officerLevel, $nationLevel):int{
+    if($officerLevel == 12) {
         $lbonus = $nationLevel * 2;
-    } elseif($generalLevel >= 5) {
+    } elseif($officerLevel >= 5) {
         $lbonus = $nationLevel;
     } else {
         $lbonus = 0;

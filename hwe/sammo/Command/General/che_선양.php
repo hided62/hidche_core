@@ -109,16 +109,11 @@ class che_선양 extends Command\GeneralCommand{
         $logger = $general->getLogger();
         $destLogger = $destGeneral->getLogger();
 
-        $destGeneralLevel = $destGeneral->getVar('level');
-        $destGeneral->setVar('level', 12);
-        $general->setVar('level', 1);
+        $destGeneral->setVar('officer_level', 12);
+        $destGeneral->setVar('officer_city', 0);
+        $general->setVar('officer_level', 1);
+        $general->setVar('officer_city', 0);
         $general->multiplyVar('experience', 0.7);
-
-        if(2 <= $destGeneralLevel && $destGeneralLevel <= 4){
-            $db->update('city', [
-                'officer'.$destGeneralLevel=>0
-            ], "officer{$destGeneralLevel}=%i", $destGeneral->getID());
-        }
 
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalHistoryLog("<Y><b>【선양】</b></><Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>의 군주 자리를 <Y>{$destGeneralName}</>에게 선양했습니다.");
@@ -143,7 +138,7 @@ class che_선양 extends Command\GeneralCommand{
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,level,npc FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
         ob_start();
 ?>
 군주의 자리를 다른 장수에게 물려줍니다.<br>
@@ -155,7 +150,7 @@ class che_선양 extends Command\GeneralCommand{
         $color = " style='color:{$color}'";
     }
     $name = $destGeneral['name'];
-    if($destGeneral['level'] >= 5){
+    if($destGeneral['officer_level'] >= 5){
         $name = "*{$name}*";
     }
 ?>

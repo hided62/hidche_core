@@ -358,9 +358,9 @@ function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = n
     return $class->newInstanceArgs(array_merge([$unit], $args));
 }
 
-function getLevelText($level, $nlevel=8) {
-    if($level >= 0 && $level <= 4) { $nlevel = 0; }
-    $code = $nlevel * 100 + $level;
+function getOfficerLevelText($officerLevel, $nlevel=8) {
+    if($officerLevel >= 0 && $officerLevel <= 4) { $nlevel = 0; }
+    $code = $nlevel * 100 + $officerLevel;
     return [
         812 =>     '군주',
         811 =>     '참모',

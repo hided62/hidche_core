@@ -110,14 +110,14 @@ class che_랜덤임관 extends Command\GeneralCommand{
         if ($general->getVar('npc') >= 2 && !$env['fiction'] && 1000 <= $env['scenario'] && $env['scenario'] < 2000) {
             if($notIn){
                 $nations = $db->query(
-                    'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE scout=0 and gennum<%i and nation.nation not in %li',
+                    'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.officer_level = 12 WHERE scout=0 and gennum<%i and nation.nation not in %li',
                     $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral,
                     $notIn
                 );
             }
             else{
                 $nations = $db->query(
-                    'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE scout=0 and gennum<%i',
+                    'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.officer_level = 12 WHERE scout=0 and gennum<%i',
                     $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
                 );
             }
@@ -239,14 +239,15 @@ class che_랜덤임관 extends Command\GeneralCommand{
         }
 
         $general->setVar('nation', $destNationID);
-        $general->setVar('level', 1);
+        $general->setVar('officer_level', 1);
+        $general->setVar('officer_city', 0);
         $general->setVar('belong', 1);
         
         if($this->destGeneralObj !== null){
             $general->setVar('city', $this->destGeneralObj->getCityID());
         }
         else{
-            $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND level=12', $destNationID);
+            $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND officer_level=12', $destNationID);
             $general->setVar('city', $targetCityID);
         }
 

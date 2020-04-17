@@ -15,9 +15,9 @@ class NotCapital extends Constraint{
             throw new \InvalidArgumentException("require city in general");
         }
 
-        if(!key_exists('level', $this->general)){
+        if(!key_exists('officer_level', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require level in general");
+            throw new \InvalidArgumentException("require officer_level in general");
         }
 
         if(!key_exists('capital', $this->nation)){
@@ -36,7 +36,7 @@ class NotCapital extends Constraint{
             return true;
         }
 
-        if($this->arg && 2 <= $this->general['level'] && $this->general['level'] <= 4){
+        if($this->arg && 2 <= $this->general['officer_level'] && $this->general['officer_level'] <= 4){
             return true;
         }
 

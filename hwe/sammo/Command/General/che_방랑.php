@@ -107,17 +107,16 @@ class che_방랑 extends Command\GeneralCommand{
             'makelimit'=>12
         ], 'nation=%i', $nationID);
         $general->setVar('makelimit', 12);
+        $general->setVar('officer_city', 0);
 
         $db->update('general', [
-            'level'=>1,
-        ], 'nation=%i AND level < 12', $nationID);
+            'officer_level'=>1,
+            'officer_city'=>0,
+        ], 'nation=%i AND officer_level < 12', $nationID);
 
         $db->update('city', [
             'nation'=>0,
             'front'=>0,
-            'officer4'=>0,
-            'officer3'=>0,
-            'officer2'=>0,
             'conflict'=>'{}'
         ], 'nation=%i', $nationID);
 

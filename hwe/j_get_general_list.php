@@ -42,7 +42,7 @@ else{
 
 $session->setReadOnly();
 
-$rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,owner_name as ownerName,injury,leadership,strength,intel,experience,dedication,level,killturn,connect from general');
+$rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,owner_name as ownerName,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,connect from general');
 
 $ownerNameList = [];
 if($gameStor->isunited){
@@ -53,14 +53,14 @@ if($gameStor->isunited){
 
 $generalList = [];
 foreach($rawGeneralList as $rawGeneral){
-    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$ownerName,$injury,$leadership,$strength,$intel,$experience,$dedication,$level,$killturn,$connect] = $rawGeneral;
+    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$ownerName,$injury,$leadership,$strength,$intel,$experience,$dedication,$officerLevel,$killturn,$connect] = $rawGeneral;
 
     if(key_exists($owner, $ownerNameList)){
         $ownerName = $ownerNameList[$owner];
     }
 
     $nationArr = getNationStaticInfo($nation);
-    $lbonus = calcLeadershipBonus($level, $nationArr['level']);
+    $lbonus = calcLeadershipBonus($officerLevel, $nationArr['level']);
 
     $generalList[] = [
         $no,
@@ -82,7 +82,7 @@ foreach($rawGeneralList as $rawGeneral){
         getExpLevel($experience),
         getHonor($experience),
         getDed($dedication),
-        getLevelText($level, $nationArr['level']),
+        getOfficerLevelText($officerLevel, $nationArr['level']),
         $killturn,
         $connect
     ];

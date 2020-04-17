@@ -46,7 +46,7 @@ uasort($nations, function($lhs, $rhs){return $rhs['power']<=>$lhs['power'];});
 
 $nations[0] = getNationStaticInfo(0);
 
-foreach($db->query('SELECT npc,name,city,nation,level,penalty,permission FROM general ORDER BY dedication DESC') as $general){
+foreach($db->query('SELECT npc,name,city,nation,officer_level,penalty,permission FROM general ORDER BY dedication DESC') as $general){
     $nationID = $general['nation'];
     
     if(!key_exists('generals', $nations[$nationID])){
@@ -73,9 +73,9 @@ foreach ($nations as $nation) {
     $ambassadors = [];
     $auditors = [];
     foreach($generals as $general){
-        $generalLevel = $general['level'];
-        if($generalLevel >= 5){
-            $chiefs[$generalLevel] = $general;
+        $officerLevel = $general['officer_level'];
+        if($officerLevel >= 5){
+            $chiefs[$officerLevel] = $general;
         }
         $generalPermission = checkSecretPermission($general, false);
         if($generalPermission == 4){
@@ -106,9 +106,9 @@ foreach ($nations as $nation) {
             echo '</tr><tr>';
         }
         $chief = $chiefs[$chiefLevel]??['name'=>'-','npc'=>0];
-        $levelText = getLevelText($chiefLevel, $nation['level']);
+        $officerLevelText = getOfficerLevelText($chiefLevel, $nation['level']);
         $chiefText = getColoredName($chief['name'], $chief['npc']);
-        echo "<td class='center bg1'>{$levelText}</td>
+        echo "<td class='center bg1'>{$officerLevelText}</td>
         <td class='center'>{$chiefText}</td>";
     }
     echo "</tr>

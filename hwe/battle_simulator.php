@@ -256,7 +256,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     <div class="input-group-prepend">
                         <span class="input-group-text">직위</span>
                     </div>
-                    <select class="custom-select form_general_level" style="width:8ch;">
+                    <select class="custom-select form_officer_level" style="width:8ch;">
                         <option value="1">일반</option>
                         <option value="4">태수</option>
                         <option value="3">군사</option>

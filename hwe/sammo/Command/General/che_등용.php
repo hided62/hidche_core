@@ -78,7 +78,7 @@ class che_등용 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
-        if($this->destGeneralObj->getVar('level') == 12){
+        if($this->destGeneralObj->getVar('officer_level') == 12){
             $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('군주에게는 등용장을 보낼 수 없습니다.');
         }
     }
@@ -160,7 +160,7 @@ class che_등용 extends Command\GeneralCommand{
         $db = DB::db();
 
         $destGenerals = [];
-        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND officer_level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
         foreach($destRawGenerals as $destGeneral){
             $destNationID = $destGeneral['nation'];
             if(!key_exists($destNationID, $destGenerals)){

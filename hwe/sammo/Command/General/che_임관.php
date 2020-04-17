@@ -154,14 +154,15 @@ class che_임관 extends Command\GeneralCommand{
         }
 
         $general->setVar('nation', $destNationID);
-        $general->setVar('level', 1);
+        $general->setVar('officer_level', 1);
+        $general->setVar('officer_city', 0);
         $general->setVar('belong', 1);
         
         if($this->destGeneralObj !== null){
             $general->setVar('city', $this->destGeneralObj->getCityID());
         }
         else{
-            $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND level=12', $destNationID);
+            $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND officer_level=12', $destNationID);
             $general->setVar('city', $targetCityID);
         }
 

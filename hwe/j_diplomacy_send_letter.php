@@ -20,7 +20,7 @@ if($prevNo < 1){
     $prevNo = null;
 }
 
-$me = $db->queryFirstRow('SELECT no, name, nation, level, permission, con, turntime, belong, penalty, picture, imgsvr FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, name, nation, officer_level, permission, con, turntime, belong, penalty, picture, imgsvr FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {

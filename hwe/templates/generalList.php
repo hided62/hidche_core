@@ -27,7 +27,7 @@
     data-general-leadership="<?=$general['leadership']?>"
     data-general-strength="<?=$general['strength']?>"
     data-general-intel="<?=$general['intel']?>"
-    data-general-level="<?=$general['expLevelText']?>"
+    data-general-exp-level="<?=$general['expLevelText']?>"
     data-general-leadership-bonus="<?=$general['lbonus']?>"
     data-general-defence-train="<?=$general['defence_train']?>"
     data-general-crew-type="<?=$general['crewtype']?>"

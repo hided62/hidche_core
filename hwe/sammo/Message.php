@@ -406,7 +406,7 @@ class Message
                 //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
                 DB::db()->update('general', [
                     'newmsg'=>1
-                ], 'nation = %i AND (level = 12 OR permission IN (\'ambassador\', \'auditor\')) ',$this->dest->nationID);
+                ], 'nation = %i AND (officer_level = 12 OR permission IN (\'ambassador\', \'auditor\')) ',$this->dest->nationID);
             }
             return $this->sendRaw($this->dest->nationID + self::MAILBOX_NATIONAL);
         }

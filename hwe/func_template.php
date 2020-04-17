@@ -105,11 +105,8 @@ function displaySpecialDomesticInfo(?string $type):string{
     ]);
 }
 
-function allButton() {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $npcmode = $gameStor->npcmode;
-    if($npcmode == 1) {
+function allButton(bool $seizeNPCMode) {
+    if($seizeNPCMode) {
         $site = "a_npcList.php";
         $call = "빙의일람";
     } else {
@@ -140,7 +137,7 @@ function commandButton() {
     }
     
     $db = DB::db();
-    $me = $db->queryFirstRow("select no,nation,level,belong,permission,penalty from general where owner=%i", $userID);
+    $me = $db->queryFirstRow("select no,nation,officer_level,belong,permission,penalty from general where owner=%i", $userID);
 
     $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
         'nation'=>0,
@@ -158,14 +155,14 @@ function commandButton() {
     if($permission >= 1){
         $showSecret = true;
     }
-    else if($me['level']== 0){
+    else if($me['officer_level']== 0){
         $showSecret = false;
     }
     
     return $templates->render('commandButton', [
         'bgColor'=>$bgColor,
         'fgColor'=>$fgColor,
-        'meLevel'=>$me['level'],
+        'meLevel'=>$me['officer_level'],
         'nationLevel'=>$nation['level'],
         'showSecret'=>$showSecret,
         'permission'=>$permission,

@@ -14,7 +14,7 @@ function genChiefTableObj(){
 
     for(var chiefIdx = 5; chiefIdx <= 12; chiefIdx++){
         var $plate = $('#chief_{0}'.format(chiefIdx));
-        var $levelText = $plate.find('.chiefLevelText');
+        var $officerLevelText = $plate.find('.chiefLevelText');
         var $name = $plate.find('.chiefName');
         var turn = [];
         for(var turnIdx=0;turnIdx<maxChiefTurn;turnIdx++){
@@ -25,7 +25,7 @@ function genChiefTableObj(){
             turn.push({turnTime:$turnTime,turnPad:$turnPad,turnText:$turnText});
         }
         objTable[chiefIdx] = {
-            levelText: $levelText,
+            officerLevelText: $officerLevelText,
             name: $name,
             turn: turn
         };
@@ -70,7 +70,7 @@ function reloadTable(){
             if(nameColor){
                 $name.css('color',nameColor);
             }
-            plateObj.levelText.text(chiefInfo.levelText);
+            plateObj.officerLevelText.text(chiefInfo.officerLevelText);
             plateObj.name.html($name);
 
             var turnTimeObj = moment(chiefInfo.turnTime);

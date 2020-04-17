@@ -50,7 +50,7 @@ if($delayTime){
 }
 $session->setReadOnly();
 
-$me = DB::db()->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
+$me = DB::db()->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
 
 if($me === null){
     Json::die([

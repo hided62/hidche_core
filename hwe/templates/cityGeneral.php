@@ -6,7 +6,7 @@
     data-general-leadership="<?=$leadership?>"
     data-general-strength="<?=$strength?>"
     data-general-intel="<?=$intel?>"
-    data-general-level="<?=$level?>"
+    data-general-officer-level="<?=$officerLevel?>"
     data-general-leadership-bonus="<?=$leadershipBonus?>"
 <?php if($ourGeneral): ?>
     data-general-defence-train="<?=$defenceTrain?>"
@@ -25,7 +25,7 @@
     <td><?=$leadershipText?><?=$leadershipBonusText?></td>
     <td><?=$strengthText?></td>
     <td><?=$intelText?></td>
-    <td class="general_level"><?=$levelText?></td>
+    <td class="general_officer_level"><?=$officerLevelText?></td>
 <?php if($ourGeneral): ?>
     <td><?=$defenceTrainText?></td>
     <td class="general_crew_type"><?=$crewTypeText?></td>

@@ -144,10 +144,10 @@ class Nation{
         ], 'nation=%i', $this->id);
 
         //군주가 없는지 확인
-        $hasRuler = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i AND level=12', $this->id);
+        $hasRuler = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i AND officer_level=12', $this->id);
         if(!$hasRuler){
             $newRuler = $db->queryFirstField('SELECT `no` FROM general WHERE nation=%i ORDER BY leadership+strength+intel DESC LIMIT 1', $this->id);
-            $db->update('general',['level'=>12], 'no=%i', $newRuler);
+            $db->update('general',['officer_level'=>12], 'no=%i', $newRuler);
         }
 
         $turnRows = [];
@@ -155,7 +155,7 @@ class Nation{
             foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx){
                 $turnRows[] = [
                     'nation_id'=>$this->id,
-                    'level'=>$chiefLevel,
+                    'officer_level'=>$chiefLevel,
                     'turn_idx'=>$turnIdx,
                     'action'=>'휴식',
                     'arg'=>'{}',

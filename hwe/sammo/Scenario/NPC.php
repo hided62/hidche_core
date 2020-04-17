@@ -22,7 +22,7 @@ class NPC{
     public $leadership; 
     public $strength; 
     public $intel; 
-    public $level;
+    public $officerLevel;
     public $birth; 
     public $death; 
     public $ego;
@@ -67,7 +67,7 @@ class NPC{
         int $leadership, 
         int $strength, 
         int $intel, 
-        int $level = 0,
+        int $officerLevel = 0,
         int $birth = 160, 
         int $death = 300, 
         $ego = null,
@@ -82,7 +82,7 @@ class NPC{
         $this->leadership = $leadership;
         $this->strength = $strength;
         $this->intel = $intel;
-        $this->level = $level;
+        $this->officerLevel = $officerLevel;
         $this->birth = $birth;
         $this->death = $death;
         $this->ego = $ego;
@@ -289,9 +289,9 @@ class NPC{
 
         $experience = $this->experience?:$age * 100;
         $dedication = $this->dedication?:$age * 100;
-        $level = $this->level;
-        if(!$level || $isNewGeneral){
-            $level = $nationID?1:0;
+        $officerLevel = $this->officerLevel;
+        if(!$officerLevel || $isNewGeneral){
+            $officerLevel = $nationID?1:0;
         }
 
         $turntime = \sammo\getRandTurn($env['turnterm'], new \DateTimeImmutable($env['turntime']));
@@ -319,7 +319,7 @@ class NPC{
             'intel'=>$this->intel,
             'experience'=>$experience,
             'dedication'=>$dedication,
-            'level'=>$level,
+            'officer_level'=>$officerLevel,
             'gold'=>$this->gold,
             'rice'=>$this->rice,
             'crew'=>0,

@@ -26,7 +26,7 @@ if(!$session->isGameLoggedIn()){
 }
 
 $me = $db->queryFirstRow(
-    'SELECT no,con,turntime,newmsg,newvote,`level` from general where owner = %i',
+    'SELECT no,con,turntime,newmsg,newvote,`officer_level` from general where owner = %i',
     $userID
 );
 
@@ -128,7 +128,7 @@ $(function(){
 <body class="img_back">
 
 <div id="container">
-<div><?=allButton()?></div>
+<div><?=allButton($gameStor->npcmode!=0)?></div>
 <table class="tb_layout bg0" style="width:1000px;">
     <tr height=50>
         <td colspan=5 id="server_title" align=center><font size=4>삼국지 모의전투 HiDCHe <?=$serverName.$serverCnt?>기 (<font color=cyan><?=$scenario?></font>)</font></td>
@@ -293,7 +293,7 @@ else if($session->userGrade == 4){
         ></td>
     </tr>
     <tr>
-        <td align=right style="'width:650px;border:none;"><br>
+        <td align=right style="width:650px;border:none;"><br>
             <?php printCommandTable($generalObj)?>
             <input type=button value='실 행' id="reserveTurn"
                 style='background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px;'
@@ -336,7 +336,7 @@ else if($session->userGrade == 4){
     <button id="msg_submit">서신전달&amp;갱신</button><br>
     내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
 </div>
-<div><?=allButton()?></div>
+<div><?=allButton($gameStor->npcmode!=0)?></div>
 <div id="message_board"><div style="left:0;" class="board_side bg0">
         <div class="board_header bg0" id='public_talk_position'>전체 메시지(최고99자)</div>
         <section class="public_message">
@@ -356,7 +356,7 @@ else if($session->userGrade == 4){
         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="diplomacy">이전 메시지 불러오기</button>
         </section>
  </div></div>
-<div style="clear:left;"><?=allButton()?><?=banner()?></div>
+<div style="clear:left;"><?=allButton($gameStor->npcmode!=0)?><?=banner()?></div>
 </div>
 <?php
 if ($con == 1) {

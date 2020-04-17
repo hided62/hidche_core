@@ -246,7 +246,7 @@ class che_화계 extends Command\GeneralCommand{
         [$year, $month] = [$env['year'], $env['month']];
         
         foreach($db->query(
-            'SELECT `no`,name,city,nation,level,leadership,horse,strength,weapon,intel,book,item,last_turn,injury,special,special2,injury,crew,atmos,train FROM general WHERE city = %i',
+            'SELECT `no`,name,city,nation,officer_level,leadership,horse,strength,weapon,intel,book,item,last_turn,injury,special,special2,injury,crew,atmos,train FROM general WHERE city = %i',
             $destCityID,
             $destNationID
         ) as $rawDestCityGeneral){

@@ -29,7 +29,7 @@ var templateGeneralRow =
     <td><%nation%></td>\
     <td><%experience%></td>\
     <td><%dedication%></td>\
-    <td><%level%></td>\
+    <td><%officerLevel%></td>\
     <td><%total%></td>\
     <td><%leadership%></td>\
     <td><%strength%></td>\
@@ -188,7 +188,7 @@ function printGeneralList(value){
             explevel:general[16],
             experience:general[17],
             dedication:general[18],
-            level:general[19],
+            officerLevel:general[19],
             killturn:general[20],
             connect:general[21],
             reserved:0

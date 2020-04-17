@@ -8,7 +8,7 @@ class DummyGeneral extends General{
             'name'=>'Dummy',
             'city'=>0,
             'nation'=>0,
-            'level'=>0,
+            'officer_level'=>0,
             'crewtype'=>-1,
             'turntime'=>'2012-03-04 05:06:07.000000',
             'experience'=>0,

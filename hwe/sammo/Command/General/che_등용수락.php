@@ -92,7 +92,7 @@ class che_등용수락 extends Command\GeneralCommand{
             ConstraintHelper::AllowJoinDestNation($relYear),
             ConstraintHelper::ReqDestNationValue('level', '국가규모', '>', 0, '방랑군에는 임관할 수 없습니다.'),
             ConstraintHelper::DifferentDestNation(),
-            ConstraintHelper::ReqGeneralValue('level', '직위', '!=', 12, '군주는 등용장을 수락할 수 없습니다')
+            ConstraintHelper::ReqGeneralValue('officer_level', '직위', '!=', 12, '군주는 등용장을 수락할 수 없습니다')
         ];
     }
 
@@ -138,7 +138,6 @@ class che_등용수락 extends Command\GeneralCommand{
         $destGeneral->addExperience(100);
         $destGeneral->addDedication(100);
 
-        $setOriginalCityValues = [];
         $setOriginalNationValues = [
             'gennum'=>$db->sqleval('gennum - 1')
         ];
@@ -159,12 +158,9 @@ class che_등용수락 extends Command\GeneralCommand{
                 $general->setVar('rice', GameConst::$defaultRice);
             }
 
-            $generalLevel = $general->getVar('level');
-            if(5 <= $generalLevel && $generalLevel <= 11){
-                $setOriginalNationValues["l{$generalLevel}set"] = 0;
-            }
-            else if(2 <= $generalLevel && $generalLevel <= 4){
-                $setOriginalCityValues['officer'.$generalLevel] = 0;
+            $officerLevel = $general->getVar('officer_level');
+            if(5 <= $officerLevel && $officerLevel <= 11){
+                $setOriginalNationValues["l{$officerLevel}set"] = 0;
             }
 
             // 재야가 아니면 명성N*10% 공헌N*10%감소
@@ -201,14 +197,12 @@ class che_등용수락 extends Command\GeneralCommand{
             $db->update('nation', $setOriginalNationValues, 'nation=%i', $nationID);
         }
         $db->update('nation', $setScoutNationValues, 'nation=%i', $destNationID);
-        if($setOriginalCityValues){
-            $db->update('city', $setOriginalCityValues, 'city=%i', $cityID);
-        }
 
 
         $general->setVar('permission', 'normal');
         $general->setVar('belong', 1);
-        $general->setVar('level', 1);
+        $general->setVar('officer_level', 1);
+        $general->setVar('officer_city', 0);
         $general->setVar('nation', $destNationID);
         $general->setVar('city', $this->destNation['capital']);
         $general->setVar('troop', 0);
@@ -234,7 +228,7 @@ class che_등용수락 extends Command\GeneralCommand{
         $db = DB::db();
 
         $destGenerals = [];
-        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND officer_level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
         foreach($destRawGenerals as $destGeneral){
             $destNationID = $destGeneral['nation'];
             if(!key_exists($destNationID, $destGenerals)){

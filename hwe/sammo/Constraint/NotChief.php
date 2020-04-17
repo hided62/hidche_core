@@ -10,9 +10,9 @@ class NotChief extends Constraint{
             return false;
         }
 
-        if(!key_exists('level', $this->general)){
+        if(!key_exists('officer_level', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require level in general");
+            throw new \InvalidArgumentException("require officer_level in general");
         }
 
         return true;
@@ -22,7 +22,7 @@ class NotChief extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['level'] <= 4){
+        if($this->general['officer_level'] <= 4){
             return true;
         }
 

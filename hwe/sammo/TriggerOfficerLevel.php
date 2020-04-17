@@ -1,30 +1,23 @@
 <?php
 namespace sammo;
 
-class TriggerGeneralLevel implements iAction{
+class TriggerOfficerLevel implements iAction{
     use DefaultAction;
 
-    protected $generalLevel;
+    protected $officerLevel;
     protected $nationLevel;
     protected $lbonus;
 
-    public function __construct(array $general, int $nationLevel, ?array $city){
-        $this->generalLevel = $general['level'];
+    public function __construct(array $general, int $nationLevel){
+        $this->officerLevel = $general['officer_level'];
 
         $this->nationLevel = $nationLevel;
 
-        if($city === null){
-            if(2 <= $this->generalLevel || $this->generalLevel <= 4){
-                $this->generalLevel = 1;
-            }
-        }
-        else{
-            if(2 <= $this->generalLevel && $this->generalLevel <= 4 && $city['officer'.$this->generalLevel] != $general['no']){
-                $this->generalLevel = 1;
-            }
+        if(2 <= $this->officerLevel && $this->officerLevel <= 4 && $general['officer_city'] != $general['city']){
+            $this->officerLevel = 1;
         }
 
-        $this->lbonus = calcLeadershipBonus($this->generalLevel, $nationLevel);
+        $this->lbonus = calcLeadershipBonus($this->officerLevel, $nationLevel);
     }
 
     public function getLbonus():int{
@@ -33,22 +26,22 @@ class TriggerGeneralLevel implements iAction{
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '농업' || $turnType == '상업'){
-            if(in_array($this->generalLevel, [12, 11, 9, 7, 5, 3])){
+            if(in_array($this->officerLevel, [12, 11, 9, 7, 5, 3])){
                 return $value * 1.05;
             }
         }
         else if($turnType == '기술'){
-            if(in_array($this->generalLevel, [12, 11, 9, 7, 5])){
+            if(in_array($this->officerLevel, [12, 11, 9, 7, 5])){
                 return $value * 1.05;
             }
         }
         else if($turnType == '민심' || $turnType == '인구'){
-            if(in_array($this->generalLevel, [12, 11, 2])){
+            if(in_array($this->officerLevel, [12, 11, 2])){
                 return $value * 1.05;
             }
         }
         else if($turnType == '수비' || $turnType == '성벽' || $turnType == '치안'){
-            if(in_array($this->generalLevel, [12, 11, 10, 8, 6, 4])){
+            if(in_array($this->officerLevel, [12, 11, 10, 8, 6, 4])){
                 return $value * 1.05;
             }
         }

@@ -8,13 +8,13 @@ function process_51(&$general) {
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
-    if($general['level'] < 5 || $general['nation']==0) {
+    if($general['officer_level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 권고 실패. <1>$date</>"]);
         return;
     }
 
     $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
-    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['officer_level']}turn0", $general['nation']);
     
     $command = DecodeCommand($myTurn);
     $which = $command[1];
@@ -80,13 +80,13 @@ function process_53(&$general) {
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
-    if($general['level'] < 5 || $general['nation']==0) {
+    if($general['officer_level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
         return;
     }
     
     $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
-    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['officer_level']}turn0", $general['nation']);
 
     $command = DecodeCommand($myTurn);
     $which = $command[1];
@@ -153,13 +153,13 @@ function process_63(&$general) {
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
-    if($general['level'] < 5 || $general['nation']==0) {
+    if($general['officer_level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
         return;
     }
 
     $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
-    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['officer_level']}turn0", $general['nation']);
 
     $command = DecodeCommand($myTurn);
     $which = $command[1];
@@ -225,13 +225,13 @@ function process_64(&$general) {
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
-    if($general['level'] < 5 || $general['nation']==0) {
+    if($general['officer_level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
         return;
     }
 
     $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
-    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['officer_level']}turn0", $general['nation']);
 
     $command = DecodeCommand($myTurn);
     $which = $command[1];
@@ -312,11 +312,11 @@ function process_65(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
-    $query = "select nation,capital,name,surlimit,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,capital,name,surlimit,l{$general['officer_level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($nation["l{$general['officer_level']}turn0"]);
     $which = $command[1];
 
     $query = "select city,name,nation,pop,officer4,officer3,officer2 from city where city='$which'";
@@ -330,7 +330,7 @@ function process_65(&$general) {
 
     if($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 초토화 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
+    } elseif($general['officer_level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 초토화 실패. <1>$date</>";
     } elseif($nation['capital'] == $destcity['city']) {
         $log[] = "<C>●</>{$admin['month']}월:수도입니다. 초토화 실패. <1>$date</>";
@@ -362,7 +362,7 @@ function process_65(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //직위해제
-        $query = "update general set level=1 where no='{$destcity['officer4']}' or no='{$destcity['officer3']}' or no='{$destcity['officer2']}'";
+        $query = "update general set officer_level=1 where no='{$destcity['officer4']}' or no='{$destcity['officer3']}' or no='{$destcity['officer2']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //성 공백지로
@@ -398,11 +398,11 @@ function process_77(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,gennum,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,gennum,name,type,strategic_cmd_limit,l{$general['officer_level']}term,l{$general['officer_level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($nation["l{$general['officer_level']}turn0"]);
     $which = $command[1];
 
     $query = "select nation,name from nation where nation='$which'";
@@ -418,7 +418,7 @@ function process_77(&$general) {
     $term2 = 1;
     $term3 = Util::round(sqrt($genCount*16)*10);
 
-    $code = $nation["l{$general['level']}term"];
+    $code = $nation["l{$general['officer_level']}term"];
     if($code%100 == 77) {
         $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 77;
@@ -431,7 +431,7 @@ function process_77(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:없는 국가입니다. 이호경식 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 이호경식 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
+    } elseif($general['officer_level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 이호경식 실패. <1>$date</>";
     } elseif($dip['state'] > 1) {
         $log[] = "<C>●</>{$admin['month']}월:선포,전쟁중인 상대국에만 가능합니다. 이호경식 실패. <1>$date</>";
@@ -440,7 +440,7 @@ function process_77(&$general) {
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:이호경식 수행중... ({$term}/{$term2}) <1>$date</>";
 
-        $query = "update nation set l{$general['level']}term={$code} where nation='{$general['nation']}'";
+        $query = "update nation set l{$general['officer_level']}term={$code} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
         $log[] = "<C>●</>{$admin['month']}월:이호경식 발동! <1>$date</>";
@@ -525,11 +525,11 @@ function process_78(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,gennum,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,gennum,name,type,strategic_cmd_limit,l{$general['officer_level']}term,l{$general['officer_level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($nation["l{$general['officer_level']}turn0"]);
     $which = $command[1];
 
     $query = "select nation,name from nation where nation='$which'";
@@ -545,7 +545,7 @@ function process_78(&$general) {
     $term2 = 1;
     $term3 = Util::round(sqrt($genCount*16)*10);
 
-    $code = $nation["l{$general['level']}term"];
+    $code = $nation["l{$general['officer_level']}term"];
     if($code%100 == 78) {
         $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 78;
@@ -558,7 +558,7 @@ function process_78(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:없는 국가입니다. 급습 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 급습 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
+    } elseif($general['officer_level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 급습 실패. <1>$date</>";
     } elseif($dip['state'] != 1) {
         $log[] = "<C>●</>{$admin['month']}월:선포중인 상대국에만 가능합니다. 급습 실패. <1>$date</>";
@@ -569,7 +569,7 @@ function process_78(&$general) {
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:급습 수행중... ({$term}/{$term2}) <1>$date</>";
 
-        $query = "update nation set l{$general['level']}term={$code} where nation='{$general['nation']}'";
+        $query = "update nation set l{$general['officer_level']}term={$code} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
         $log[] = "<C>●</>{$admin['month']}월:급습 발동! <1>$date</>";
@@ -648,11 +648,11 @@ function process_81(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,can_change_flag,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,can_change_flag,name,type,strategic_cmd_limit,l{$general['officer_level']}term,l{$general['officer_level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($nation["l{$general['officer_level']}turn0"]);
     $which = $command[1];
     $colors = GetNationColors();
     if($which >= count($colors)) { $which = 0; }
@@ -660,7 +660,7 @@ function process_81(&$general) {
 
     if($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 국기변경 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
+    } elseif($general['officer_level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 국기변경 실패. <1>$date</>";
     } elseif($nation['can_change_flag'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:더이상 변경이 불가능합니다. 국기변경 실패. <1>$date</>";

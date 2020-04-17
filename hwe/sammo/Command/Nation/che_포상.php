@@ -162,7 +162,7 @@ class che_포상 extends Command\NationCommand{
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
         $destGeneralList = [];
         foreach($destRawGenerals as $destGeneral){
             $nameColor = \sammo\getNameColor($destGeneral['npc']);
@@ -171,7 +171,7 @@ class che_포상 extends Command\NationCommand{
             }
 
             $name = $destGeneral['name'];
-            if($destGeneral['level'] >= 5){
+            if($destGeneral['officer_level'] >= 5){
                 $name = "*{$name}*";
             }
 

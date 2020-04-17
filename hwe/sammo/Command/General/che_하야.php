@@ -117,7 +117,8 @@ class che_하야 extends Command\GeneralCommand{
         \sammo\refreshNationStaticInfo();
 
         $general->setVar('nation', 0);
-        $general->setVar('level', 0);
+        $general->setVar('officer_level', 0);
+        $general->setVar('officer_city', 0);
         $general->setVar('belong', 0);
         $general->setVar('makelimit', 12);
         

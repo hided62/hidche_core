@@ -47,7 +47,7 @@ if(!$isChiefTurn){
     $commandObj = buildGeneralCommandClass($commandType, $general, $env);
 }
 else{
-    if($general->getVar('level') < 5){
+    if($general->getVar('officer_level') < 5){
         die_redirect();
     }
     $commandObj = buildNationCommandClass($commandType, $general, $env, new LastTurn());

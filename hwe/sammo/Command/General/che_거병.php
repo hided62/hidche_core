@@ -135,7 +135,7 @@ class che_거병 extends Command\GeneralCommand{
             foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx){
                 $turnRows[] = [
                     'nation_id'=>$nationID,
-                    'level'=>$chiefLevel,
+                    'officer_level'=>$chiefLevel,
                     'turn_idx'=>$turnIdx,
                     'action'=>'휴식',
                     'arg'=>null,
@@ -161,7 +161,8 @@ class che_거병 extends Command\GeneralCommand{
         $general->addExperience($exp);
         $general->addDedication($ded);
         $general->setVar('belong', 1);
-        $general->setVar('level', 12);
+        $general->setVar('officer_level', 12);
+        $general->setVar('officer_city', 0);
         $general->setVar('nation', $nationID);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

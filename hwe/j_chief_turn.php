@@ -10,7 +10,7 @@ $userID = Session::getUserID();
 $turnAmount = Util::getReq('amount', 'int');
 
 $db = DB::db();
-$me = $db->queryFirstRow('SELECT no,nation,level FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,nation,officer_level FROM general WHERE owner=%i', $userID);
 
 if($me['nation'] == 0){
     Json::die([
@@ -19,7 +19,7 @@ if($me['nation'] == 0){
     ]);
 }
 
-if($me['level'] < 5){
+if($me['officer_level'] < 5){
     Json::die([
         'result'=>false,
         'reason'=>'수뇌가 아닙니다.',
@@ -27,10 +27,10 @@ if($me['level'] < 5){
 }
 
 if($turnAmount > 0){
-    pushNationCommand($me['nation'], $me['level']);
+    pushNationCommand($me['nation'], $me['officer_level']);
 }
 else{
-    pullNationCommand($me['nation'], $me['level']);
+    pullNationCommand($me['nation'], $me['officer_level']);
 }
 
 Json::die([

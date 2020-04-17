@@ -166,12 +166,12 @@ class ScoutMessage extends Message{
 
         $db = DB::db();
         $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM general WHERE `no`=%i', $srcGeneralID);
-        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM general WHERE `no`=%i', $destGeneralID);
+        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `officer_level` FROM general WHERE `no`=%i', $destGeneralID);
         if($date === null){
             $date = new \DateTime();
         }
 
-        if($destGeneral['level'] == 12){
+        if($destGeneral['officer_level'] == 12){
             if($reason !== null){
                 $reason = '군주에게 등용장을 보낼 수 없습니다';
             }

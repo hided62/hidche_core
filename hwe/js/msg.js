@@ -449,7 +449,7 @@ function registerGlobal(basicInfo){
     };
     window.myGeneralID = basicInfo.generalID;
     window.isChief = basicInfo.isChief;
-    window.myGeneralLevel = basicInfo.generalLevel;
+    window.myOfficerLevel = basicInfo.officerLevel;
     window.permissionLevel = basicInfo.permission;
 }
 

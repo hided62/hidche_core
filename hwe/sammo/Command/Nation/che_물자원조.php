@@ -178,7 +178,7 @@ class che_물자원조 extends Command\NationCommand{
 
         $broadcastMessage = "<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원했습니다.";
 
-        $chiefList = $db->queryFirstColumn('SELECT no FROM general WHERE level >= 5 AND no != %i AND nation = %i', $generalID, $nationID);
+        $chiefList = $db->queryFirstColumn('SELECT no FROM general WHERE officer_level >= 5 AND no != %i AND nation = %i', $generalID, $nationID);
         foreach($chiefList as $chiefID){
             $chiefLogger = new ActionLogger($chiefID, $nationID, $year, $month);
             $chiefLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
@@ -193,7 +193,7 @@ class che_물자원조 extends Command\NationCommand{
         $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaRo} 물자를 지원합니다. <1>$date</>", ActionLogger::PLAIN);
 
         $destBroadcastMessage = $broadcastMessage = "<D><b>{$nationName}</b></>에서 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 원조했습니다.";
-        $destChiefList = $db->queryFirstColumn('SELECT no FROM general WHERE level >= 5 AND nation = %i', $destNationID);
+        $destChiefList = $db->queryFirstColumn('SELECT no FROM general WHERE officer_level >= 5 AND nation = %i', $destNationID);
         foreach($destChiefList as $destChiefID){
             $destChiefLogger = new ActionLogger($destChiefID, $nationID, $year, $month);
             $destChiefLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);

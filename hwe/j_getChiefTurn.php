@@ -12,7 +12,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("사령부", 1);
 
-$me = $db->queryFirstRow('SELECT no,nation,level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
 
 $nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation = %i', $me['nation']);
 $nationID = $me['nation'];
@@ -49,34 +49,34 @@ $lv = getNationChiefLevel($nationLevel);
 $turn = [];
 
 $generals = [];
-foreach($db->query('SELECT no,name,turntime,npc,city,nation,level FROM general WHERE nation = %i AND level >= 5',$nationID) as $rawGeneral){
-    $generals[$rawGeneral['level']] = new General($rawGeneral, null, $year, $month, false);
+foreach($db->query('SELECT no,name,turntime,npc,city,nation,officer_level FROM general WHERE nation = %i AND officer_level >= 5',$nationID) as $rawGeneral){
+    $generals[$rawGeneral['officer_level']] = new General($rawGeneral, null, $year, $month, false);
 }
 
 $nationTurnList = [];
 
 foreach(
     $db->queryAllLists(
-        'SELECT level, turn_idx, action, arg, brief FROM nation_turn WHERE nation_id = %i ORDER BY level DESC, turn_idx ASC',
+        'SELECT officer_level, turn_idx, action, arg, brief FROM nation_turn WHERE nation_id = %i ORDER BY officer_level DESC, turn_idx ASC',
         $me['nation']
-    ) as [$level, $turn_idx, $action, $arg, $brief]
+    ) as [$officer_level, $turn_idx, $action, $arg, $brief]
 ){
-    if(!key_exists($level, $nationTurnList)){
-        $nationTurnList[$level] = [];
+    if(!key_exists($officer_level, $nationTurnList)){
+        $nationTurnList[$officer_level] = [];
     }
-    $nationTurnList[$level][$turn_idx] = $brief;
+    $nationTurnList[$officer_level][$turn_idx] = $brief;
 }
 
 $nationTurnBrief = [];
-foreach($nationTurnList as $level=>$turnBrief){
-    if(!key_exists($level, $generals)){
+foreach($nationTurnList as $officer_level=>$turnBrief){
+    if(!key_exists($officer_level, $generals)){
         continue;
     }
-    $general = $generals[$level];
-    $nationTurnBrief[$level] = [
+    $general = $generals[$officer_level];
+    $nationTurnBrief[$officer_level] = [
         'name'=>$general->getName(),
         'turnTime'=>$general->getTurnTime($general::TURNTIME_FULL),
-        'levelText'=>getLevelText($general->getVar('level'), $nationLevel),
+        'officerlevelText'=>getOfficerLevelText($general->getVar('officer_level'), $nationLevel),
         'npcType'=>$general->getVar('npc'),
         'turn'=>$turnBrief
     ];
@@ -89,6 +89,6 @@ Json::die([
     'reason'=>'success',
     'date'=>$date,
     'nationTurnBrief'=>$nationTurnBrief,
-    'isChief'=>($me['level'] > 4),
+    'isChief'=>($me['officer_level'] > 4),
     'turnTerm'=>$turnterm
 ]);

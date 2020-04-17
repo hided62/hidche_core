@@ -17,7 +17,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("세력장수", 1);
 
-$me = $db->queryFirstRow('SELECT con, turntime, nation, level, permission, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT con, turntime, nation, officer_level, permission, penalty FROM general WHERE owner=%i', $userID);
 $con = checkLimit($me['con']);
 if ($con >= 2) {
     Json::die([
@@ -42,7 +42,7 @@ $viewColumns = [
     'owner_name'=>9,
     'nation'=>1,
     'city'=>1,
-    'level'=>1,
+    'officer_level'=>9,
     'npc'=>1,
     'defence_train'=>2,
     'troop'=>2,
@@ -76,14 +76,18 @@ $viewColumns = [
 ];
 
 $customViewColumns = [
+    'officerLevel'=>1,
+    'officerlevelText'=>1,
     'lbonus'=>1,
     'ownerName'=>1,
-    'levelText'=>1,
     'honorText'=>1,
     'expLevelText'=>1,
 ];
 
 $specialViewFilter = [
+    'officerLevel'=>function($rawGeneral){
+        return $rawGeneral['officer_level'];
+    },
     'special'=>function($rawGeneral){
         return getGeneralSpecialDomesticName($rawGeneral['special']);
     },
@@ -94,7 +98,7 @@ $specialViewFilter = [
         return getGenChar($rawGeneral['personal']);
     },
     'lbonus'=>function($rawGeneral)use($nationArr){
-        return calcLeadershipBonus($rawGeneral['level'], $nationArr['level']);
+        return calcLeadershipBonus($rawGeneral['officer_level'], $nationArr['level']);
     },
     'ownerName'=>function($rawGeneral){
         if($rawGeneral['npc']!=1){
@@ -102,8 +106,8 @@ $specialViewFilter = [
         }
         return $rawGeneral['owner_name'];
     },
-    'levelText'=>function($rawGeneral)use($nationArr){
-        return getLevelText($rawGeneral['level'], $nationArr['level']);
+    'officerlevelText'=>function($rawGeneral)use($nationArr){
+        return getOfficerLevelText($rawGeneral['officer_level'], $nationArr['level']);
     },
     'honorText'=>function($rawGeneral){
         return getHonor($rawGeneral['experience']);

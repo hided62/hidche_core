@@ -5,9 +5,9 @@ function getMailboxList(){
         
     $generalNations = [];
 
-    foreach(DB::db()->query('select `no`, `name`, `nation`, `level`, `npc`, `permission`, `penalty` from `general` where `npc` < 2') as $general)
+    foreach(DB::db()->query('select `no`, `name`, `nation`, `officer_level`, `npc`, `permission`, `penalty` from `general` where `npc` < 2') as $general)
     {
-        [$generalID, $generalName, $nationID, $level, $npc] = [$general['no'], $general['name'], $general['nation'], $general['level'], $general['npc']];
+        [$generalID, $generalName, $nationID, $officerLevel, $npc] = [$general['no'], $general['name'], $general['nation'], $general['officer_level'], $general['npc']];
         if(!isset($generalNations[$nationID])){
             $generalNations[$nationID] = [];
         }
@@ -15,7 +15,7 @@ function getMailboxList(){
         $obj = [$generalID, $generalName, 0];
         $permission = checkSecretPermission($general, false);
 
-        if($level == 12){
+        if($officerLevel == 12){
             $obj[2] |= 1;
         }
 

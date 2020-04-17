@@ -140,6 +140,7 @@ function cityInfo(General $generalObj) {
 
     // 도시 정보
     $city = $generalObj->getRawCity();
+    $cityID = $city['city'];
 
     $nation = getNationStaticInfo($city['nation']);
 
@@ -153,27 +154,16 @@ function cityInfo(General $generalObj) {
     $city['region'] = CityConst::$regionMap[$city['region']];
     $city['levelText'] = CityConst::$levelMap[$city['level']];
 
-    $officerQuery = [];
     $officerName = [
         2=>'-',
         3=>'-',
         4=>'-'
     ];
-    if ($city['officer4'] > 0) {
-        $officerQuery[] = $city['officer4'];
-    }
-    if ($city['officer3'] > 0) {
-        $officerQuery[] = $city['officer3'];
-    }
-    if ($city['officer2'] > 0) {
-        $officerQuery[] = $city['officer2'];
+
+    foreach($db->query('SELECT `officer_level`, `name`, npc, no FROM general WHERE officer_city = %i', $cityID) as $officer){
+        $officerName[$officer['officer_level']] = getColoredName($officer['name'], $officer['npc']);
     }
 
-    if($officerQuery){
-        foreach($db->query('SELECT `level`, `name` FROM general WHERE `no` IN %li', $officerQuery) as $genOfficer){
-            $officerName[$genOfficer['level']] = $genOfficer['name'];
-        }
-    }
     $city['officerName'] = $officerName;
 
     $templates = new \League\Plates\Engine('templates');
@@ -205,11 +195,11 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name from general where nation='{$nation['nation']}' and level='12'";
+    $query = "select name from general where nation='{$nation['nation']}' and officer_level='12'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level12 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where nation='{$nation['nation']}' and level='11'";
+    $query = "select name from general where nation='{$nation['nation']}' and officer_level='11'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
@@ -229,9 +219,9 @@ function myNationInfo() {
         </td>
     </tr>
     <tr>
-        <td width=68 class='bg1 center'><b>".getLevelText(12, $nation['level'])."</b></td>
+        <td width=68 class='bg1 center'><b>".getOfficerLevelText(12, $nation['level'])."</b></td>
         <td width=178 class='center'>";echo $level12?$level12['name']:"-"; echo "</td>
-        <td width=68 class='bg1 center'><b>".getLevelText(11, $nation['level'])."</b></td>
+        <td width=68 class='bg1 center'><b>".getOfficerLevelText(11, $nation['level'])."</b></td>
         <td width=178 class='center'>";echo $level11?$level11['name']:"-"; echo "</td>
     </tr>
     <tr>
@@ -350,7 +340,7 @@ function checkSecretPermission($me, $checkSecretLimit=true){
         return -1;
     }
 
-    if($me['level'] == 0){
+    if($me['officer_level'] == 0){
         return -1;
     }
     
@@ -363,7 +353,7 @@ function checkSecretPermission($me, $checkSecretLimit=true){
     $secretMax = checkSecretMaxPermission($me, $penalty);
     
 
-    if($me['level'] == 12){
+    if($me['officer_level'] == 12){
         $secretMin = 4;
     }
     else if($me['permission'] == 'ambassador'){
@@ -372,10 +362,10 @@ function checkSecretPermission($me, $checkSecretLimit=true){
     else if($me['permission'] == 'auditor'){
         $secretMin = 3;
     }
-    else if($me['level'] >= 5){
+    else if($me['officer_level'] >= 5){
         $secretMin = 2;
     }
-    else if($me['level'] > 1){
+    else if($me['officer_level'] > 1){
         $secretMin = 1;
     }
     else if($checkSecretLimit){
@@ -525,86 +515,6 @@ function chiefCommandTable(General $generalObj) {
 <?php
 }
 
-
-function chiefCommandTable_old() {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $userID = Session::getUserID();
-
-    $develcost = $gameStor->develcost;
-
-    $me = $db->queryFirstRow('select no,nation,city,level from general where owner=%i', $userID);
-    $nation = $db->queryFirstRow('SELECT level,can_change_flag,gennum FROM nation WHERE nation=%i', $me['nation']);
-
-    $genCount = $nation['gennum'];
-    $citySupply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i', $me['city']);
-
-    if($nation['level'] > 0) { $valid = 1; }
-    else { $valid = 0; }
-    if($citySupply == 0) { $valid = 0; }
-
-    echo "
-<select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;display:inline-block;'>";
-    commandGroup("====== 휴 식 ======");
-    addCommand("휴 식", 99);
-    commandGroup("", 1);
-    commandGroup("====== 인 사 ======");
-    addCommand("발령", 27, $valid);
-    addCommand("포상", 23, $valid);
-    addCommand("몰수", 24, $valid);
-    commandGroup("", 1);
-    commandGroup("====== 외 교 ======");
-    //addCommand("통합 제의", 53, $valid);
-
-    addCommand("항복 권고", 51, $valid);
-    if($nation['level'] >= 2) {
-        addCommand("물자 원조", 52, $valid);
-    } else {
-        addCommand("물자 원조", 52, 0);
-    }
-    addCommand("불가침 제의", 61, $valid);
-    addCommand("선전 포고", 62, $valid);
-    addCommand("종전 제의", 63, $valid);
-    addCommand("파기 제의", 64, $valid);
-    commandGroup("", 1);
-    commandGroup("====== 특 수 ======");
-    addCommand("초토화", 65, $valid);
-    addCommand("천도/3턴(금쌀{$develcost}0)", 66, $valid);
-    $cost = $develcost * 500 + 60000;   // 7만~13만
-    addCommand("증축/6턴(금쌀{$cost})", 67, $valid);
-    addCommand("감축/6턴", 68, $valid);
-    commandGroup("", 1);
-    commandGroup("====== 전 략 ======");
-    $term = Util::round(sqrt($genCount*8)*10);
-    addCommand("필사즉생/3턴(전략{$term})", 71, $valid);
-    $term = Util::round(sqrt($genCount*4)*10);
-    addCommand("백성동원/1턴(전략{$term})", 72, $valid);
-    $term = Util::round(sqrt($genCount*4)*10);
-    addCommand("수몰/3턴(전략{$term})", 73, $valid);
-    $term = Util::round(sqrt($genCount*4)*10);
-    addCommand("허보/2턴(전략{$term})", 74, $valid);
-    $term = Util::round(sqrt($genCount*2)*10);
-    if($term < 72) { $term = 72; }
-    addCommand("피장파장/3턴(전략{$term})", 75, $valid);
-    $term = Util::round(sqrt($genCount*10)*10);
-    addCommand("의병모집/3턴(전략{$term})", 76, $valid);
-    $term = Util::round(sqrt($genCount*16)*10);
-    addCommand("이호경식/1턴(전략{$term})", 77, $valid);
-    $term = Util::round(sqrt($genCount*16)*10);
-    addCommand("급습/1턴(전략{$term})", 78, $valid);
-    commandGroup("", 1);
-    commandGroup("====== 기 타 ======");
-    if($nation['can_change_flag'] > 0) {
-        addCommand("국기 변경", 81, 1);
-    } else {
-        addCommand("국기 변경", 81, 0);
-    }
-    commandGroup("", 1);
-    echo "
-</select>
-";
-}
-
 function generalInfo(General $generalObj) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -614,7 +524,7 @@ function generalInfo(General $generalObj) {
 
     $nation = getNationStaticInfo($generalObj->getNationID());
 
-    $lbonus = calcLeadershipBonus($generalObj->getVar('level'), $nation['level']);
+    $lbonus = calcLeadershipBonus($generalObj->getVar('officer_level'), $nation['level']);
     if($lbonus > 0) {
         $lbonus = "<font color=cyan>+{$lbonus}</font>";
     } else {
@@ -638,13 +548,12 @@ function generalInfo(General $generalObj) {
         }
     }
 
-    $generalLevel = $generalObj->getVar('level');
-    $levelText = getLevelText($generalLevel, $nation['level']);
+    $officerLevel = $generalObj->getVar('officer_level');
+    $officerLevelText = getOfficerLevelText($officerLevel, $nation['level']);
 
-    if(2 <= $generalLevel && $generalLevel <= 4){
-        $cityOfficerKey = 'officer'.$generalLevel;
-        $cityOfficerName = $db->queryFirstField('SELECT name FROM city where %b = %i',$cityOfficerKey, $generalObj->getID());
-        $levelText = "{$cityOfficerName} {$levelText}";
+    if(2 <= $officerLevel && $officerLevel <= 4){
+        $cityOfficerName = CityConst::byID($generalObj->getVar('officer_city'))->name;
+        $officerLevelText = "{$cityOfficerName} {$officerLevelText}";
     }
 
     $call = getCall(...$generalObj->getVars('leadership', 'strength', 'intel'));
@@ -722,7 +631,7 @@ function generalInfo(General $generalObj) {
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
         <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imagePath}\");background-size:64px;'>&nbsp;</td>
-        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$generalObj->getName()} 【 {$levelText} | {$call} | {$color}{$injury}</font> 】 ".$generalObj->getTurnTime($generalObj::TURNTIME_HMS)."</td>
+        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$generalObj->getName()} 【 {$officerLevelText} | {$call} | {$color}{$injury}</font> 】 ".$generalObj->getTurnTime($generalObj::TURNTIME_HMS)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>
@@ -1650,7 +1559,8 @@ function deleteNation(General $general) {
 
     $general->setVar('belong', 0);
     $general->setVar('troop', 0);
-    $general->setVar('level', 0);
+    $general->setVar('officer_level', 0);
+    $general->setVar('officer_city', 0);
     $general->setVar('nation', 0);
     $general->setVar('makelimit', 12);
 
@@ -1658,7 +1568,8 @@ function deleteNation(General $general) {
     $db->update('general', [
         'belong'=>0,
         'troop'=>0,
-        'level'=>0,
+        'officer_level'=>0,
+        'officer_city'=>0,
         'nation'=>0,
         'makelimit'=>12,
         'permission'=>'normal',
@@ -1667,9 +1578,6 @@ function deleteNation(General $general) {
     $db->update('city', [
         'nation'=>0,
         'front'=>0,
-        'officer4'=>0,
-        'officer3'=>0,
-        'officer2'=>0,
     ], 'nation=%i', $nationID);
     // 부대 삭제
     $db->delete('troop', 'nation=%i', $nationID);
@@ -1702,7 +1610,7 @@ function nextRuler(General $general) {
     //npc or npc유저인 경우 후계 찾기
     if($general->getVar('npc') > 0) {
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,nation,level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
+            'SELECT no,name,nation,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
             $general->getVar('affinity'),
             $general->getVar('affinity'),
             $nationID
@@ -1710,13 +1618,13 @@ function nextRuler(General $general) {
     }
     if(!$candidate){
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,npc,level FROM general WHERE nation=%i and level!= 12 AND level >= 9 ORDER BY level DESC LIMIT 1',
+            'SELECT no,name,npc,officer_level FROM general WHERE nation=%i and officer_level!= 12 AND officer_level >= 9 ORDER BY officer_level DESC LIMIT 1',
             $nationID
         );
     }
     if(!$candidate){
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,npc,level FROM general WHERE nation=%i and level!= 12 ORDER BY dedication DESC LIMIT 1',
+            'SELECT no,name,npc,officer_level FROM general WHERE nation=%i and officer_level!= 12 ORDER BY dedication DESC LIMIT 1',
             $nationID
         );
     }
@@ -1731,16 +1639,13 @@ function nextRuler(General $general) {
     $nextRulerID = $candidate['no'];
     $nextRulerName = $candidate['name'];
 
-    $general->setVar('level', 1);
+    $general->setVar('officer_level', 1);
+    $general->setVar('officer_city', 0);
 
     $db->update('general', [
-        'level'=>12
+        'officer_level'=>12,
+        'officer_city'=>0,
     ], 'no=%i', $nextRulerID);
-    if(2 <= $candidate['level'] && $candidate['level'] <= 4){
-        $db->update('city', [
-            'officer'.$candidate['level']=>0
-        ], "officer{$candidate['level']}=%i", $nextRulerID);
-    }
 
     $josaYi = JosaUtil::pick($nextRulerName, '이');
 
@@ -2066,6 +1971,9 @@ function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null) {
     else if($baseDateTime instanceof \DateTime){
         $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
     }
+    else{
+        throw new MustNotBeReachedException();
+    }
 
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
@@ -2080,6 +1988,9 @@ function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
     }
     else if($baseDateTime instanceof \DateTime){
         $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
+    }
+    else{
+        throw new MustNotBeReachedException();
     }
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수

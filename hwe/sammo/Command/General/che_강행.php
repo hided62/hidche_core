@@ -128,7 +128,7 @@ class che_강행 extends Command\GeneralCommand{
         $exp = 100;
         $general->setVar('city', $destCityID);
 
-        if($general->getVar('level') == 12 && $this->nation['level'] == 0){
+        if($general->getVar('officer_level') == 12 && $this->nation['level'] == 0){
             
             $generalList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no!=%i', $general->getNationID(), $general->getID());
             if($generalList){

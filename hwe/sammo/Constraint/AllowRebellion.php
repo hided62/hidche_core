@@ -35,7 +35,7 @@ class AllowRebellion extends Constraint{
         }
 
         $db = DB::db();
-        $lord = $db->queryFirstRow('SELECT no, killturn, npc FROM general WHERE nation = %i AND level = 12', $nationID);
+        $lord = $db->queryFirstRow('SELECT no, killturn, npc FROM general WHERE nation = %i AND officer_level = 12', $nationID);
 
         if(!$lord){
             throw new MustNotBeReachedException('군주가 없음');

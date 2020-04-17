@@ -275,7 +275,7 @@ function preUpdateMonthly() {
     ], 'supply = 0');
     //미보급도시 장수 병 훈 사 5%감소
     //NOTE: update inner join도 가능하지만, meekrodb 기준으로 깔끔하게.
-    $unsuppliedCities = $db->query('SELECT city, nation, trust, name, officer4, officer3, officer2 FROM city WHERE supply = 0');
+    $unsuppliedCities = $db->query('SELECT city, nation, trust, name FROM city WHERE supply = 0');
     foreach(Util::arrayGroupBy($unsuppliedCities, 'nation') as $nationID => $cityList){
         $cityIDList = Util::squeezeFromArray($cityList, 'city');
         $db->update('general', [
@@ -286,37 +286,28 @@ function preUpdateMonthly() {
     }
 
     //민심30이하 공백지 처리
-    $lostCityGenerals = [];
     $lostCities = [];
     foreach($unsuppliedCities as $unsuppliedCity){
         if($unsuppliedCity['trust'] >= 30){
             continue;
         }
         $lostCities[$unsuppliedCity['city']] = $unsuppliedCity;
-        $lostCityGenerals[$unsuppliedCity['officer4']] = true;
-        $lostCityGenerals[$unsuppliedCity['officer3']] = true;
-        $lostCityGenerals[$unsuppliedCity['officer2']] = true;
     }
-    if(key_exists(0, $lostCityGenerals)){
-        unset($lostCityGenerals[0]);
-    }
-
-    if($lostCityGenerals){
-        $db->update('general', [
-            'level'=>1
-        ], 'no IN %li', array_keys($lostCityGenerals));
-    }
+    
     if($lostCities){
-        $history = [];
         foreach($lostCities as $lostCity){
             $josaYi = JosaUtil::pick($lostCity['name'], '이');
             $logger->pushGlobalHistoryLog("<R><b>【고립】</b></><G><b>{$lostCity['name']}</b></>{$josaYi} 보급이 끊겨 <R>미지배</> 도시가 되었습니다.");
         }
+        $db->update('general', [
+            'officer_level'=>1,
+            'officer_city'=>0
+        ], 'officer_city IN %li', array_keys($lostCities));
         $db->update('city', [
             'nation'=>0,
-            'officer4'=>0,
-            'officer3'=>0,
-            'officer2'=>0,
+            'officer4set'=>0,
+            'officer3set'=>0,
+            'officer2set'=>0,
             'conflict'=>'{}',
             'term'=>0,
             'front'=>0
@@ -562,7 +553,7 @@ function checkWander() {
 
     $admin = $gameStor->getValues(['year', 'month']);
 
-    $wanderers = $db->queryFirstColumn('SELECT general.`no` FROM general LEFT JOIN nation ON general.nation = nation.nation WHERE nation.`level` = 0 AND general.`level` = 12');
+    $wanderers = $db->queryFirstColumn('SELECT general.`no` FROM general LEFT JOIN nation ON general.nation = nation.nation WHERE nation.`level` = 0 AND general.`officer_level` = 12');
 
     foreach(General::createGeneralObjListFromDB($wanderers) as $wanderer){
         $wanderCmd = buildGeneralCommandClass('che_해산', $wanderer, $admin);
@@ -597,11 +588,11 @@ function checkMerge() {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,nation from general where nation='{$dip['me']}' and level='12'";
+        $query = "select no,name,nation from general where nation='{$dip['me']}' and officer_level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and level='12'";
+        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and officer_level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
@@ -686,10 +677,10 @@ function checkMerge() {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='{$you['nation']}',officer4='0',officer3='0',officer2='0',conflict='{}' where nation='{$me['nation']}'";
+        $query = "update city set nation='{$you['nation']}',conflict='{}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동
-        $query = "update general set belong=1,level=1,nation='{$you['nation']}' where nation='{$me['nation']}'";
+        $query = "update general set belong=1,officer_level=1,officer_city=0,nation='{$you['nation']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 공헌도0.9, 명성0.9
         //TODO:experience General 객체로 이동
@@ -753,11 +744,11 @@ function checkSurrender() {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,nation from general where nation='{$dip['me']}' and level='12'";
+        $query = "select no,name,nation from general where nation='{$dip['me']}' and officer_level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and level='12'";
+        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and officer_level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
@@ -845,18 +836,18 @@ function checkSurrender() {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
         // 군주가 있는 위치 구함
-        $query = "select city from general where nation='{$you['nation']}' and level='12'";
+        $query = "select city from general where nation='{$you['nation']}' and officer_level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($result);
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='{$you['nation']}',officer4='0',officer3='0',officer2='0',conflict='{}' where nation='{$me['nation']}'";
+        $query = "update city set nation='{$you['nation']}',conflict='{}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 제의국 모든 장수들 공헌도0.95, 명성0.95
         //TODO: experience를 General로
         $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동, 공헌도1.1, 명성0.9
-        $query = "update general set belong=1,level=1,nation='{$you['nation']}',city='{$king['city']}',dedication=dedication*1.1,experience=experience*0.9 where nation='{$me['nation']}'";
+        $query = "update general set belong=1,officer_level=1,officer_city=0,nation='{$you['nation']}',city='{$king['city']}',dedication=dedication*1.1,experience=experience*0.9 where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 모두 국가 소속 변경
         $query = "update troop set nation='{$you['nation']}' where nation='{$me['nation']}'";
@@ -958,7 +949,7 @@ function updateNationState() {
                 foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx){
                     $turnRows[] = [
                         'nation_id'=>$nation['nation'],
-                        'level'=>$chiefLevel,
+                        'officer_level'=>$chiefLevel,
                         'turn_idx'=>$turnIdx,
                         'action'=>'휴식',
                         'arg'=>null,
@@ -1285,10 +1276,10 @@ function checkEmperior() {
 
     $chiefs = Util::convertArrayToDict(
         $db->query(
-            'SELECT name,picture,belong,level FROM general WHERE nation=%i AND level >= 5',
+            'SELECT name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
             $nation['nation']
         ),
-        'level'
+        'officer_level'
     );
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);

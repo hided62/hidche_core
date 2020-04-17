@@ -15,7 +15,7 @@ $text = Util::getReq('text');
 
 increaseRefresh("회의실", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, name, level, permission, con, turntime, belong, penalty, `picture`,`imgsvr` FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, nation, name, officer_level, permission, con, turntime, belong, penalty, `picture`,`imgsvr` FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {

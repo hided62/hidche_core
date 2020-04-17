@@ -48,7 +48,7 @@ function processGoldIncome() {
 
     $nationList = $db->query('SELECT name,nation,capital,gold,level,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,gold,level,dedication,city FROM general'), 'nation');
+    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,gold,officer_level,dedication,city FROM general'), 'nation');
 
     //국가별 처리
     foreach($nationList as $nation) {
@@ -98,7 +98,7 @@ function processGoldIncome() {
             $generalObj->increaseVar('gold', $gold);
             
             $logger = $generalObj->getLogger();
-            if($generalObj->getVar('level') > 4){
+            if($generalObj->getVar('officer_level') > 4){
                 $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
             }
             $logger->pushGeneralActionLog("봉급으로 금 <C>$gold</>을 받았습니다.", $logger::PLAIN);
@@ -226,9 +226,9 @@ function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
 
     $db = DB::db();
 
-    $officers = [];
-    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)', $nationID) as [$genID, $cityID]){
-        $officers[$genID] = $cityID;
+    $officersCnt = [];
+    foreach($db->queryAllLists('SELECT officer_city, count(*) FROM general WHERE nation = %i AND officer_level IN (2,3,4) AND city = officer_city GROUP BY officer_city', $nationID) as [$cityID, $cnt]){
+        $officersCnt[$cityID] = $cnt;
     }
 
     $nationTypeObj = buildNationTypeClass($nationType);
@@ -236,14 +236,7 @@ function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     $cityIncome = 0;
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
-        foreach ([2,3,4] as $officerLevel) {
-            $officerCnt = 0;
-            if($officers[$rawCity['officer'.$officerLevel]]??0 == $cityID){
-                $officerCnt += 1;
-            }
-        }
-
-        $cityIncome += calcCityGoldIncome($rawCity, $officerCnt, $capitalID == $cityID, $nationLevel, $nationTypeObj);
+        $cityIncome += calcCityGoldIncome($rawCity, $officersCnt[$cityID], $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);
@@ -326,7 +319,7 @@ function processRiceIncome() {
 
     $nationList = $db->query('SELECT name,level,nation,capital,rice,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,level,dedication,city FROM general'), 'nation');
+    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,officer_level,dedication,city FROM general'), 'nation');
 
     //국가별 처리
     foreach($nationList as $nation) {
@@ -377,7 +370,7 @@ function processRiceIncome() {
             $generalObj->increaseVar('rice', $rice);
             
             $logger = $generalObj->getLogger();
-            if($generalObj->getVar('level') > 4){
+            if($generalObj->getVar('officer_level') > 4){
                 $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
             }
             $logger->pushGeneralActionLog("봉급으로 쌀 <C>$rice</>을 받았습니다.", $logger::PLAIN);
@@ -399,9 +392,9 @@ function getRiceIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
 
     $db = DB::db();
 
-    $officers = [];
-    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)', $nationID) as [$genID, $cityID]){
-        $officers[$genID] = $cityID;
+    $officersCnt = [];
+    foreach($db->queryAllLists('SELECT officer_city, count(*) FROM general WHERE nation = %i AND officer_level IN (2,3,4) AND city = officer_city GROUP BY officer_city', $nationID) as [$cityID, $cnt]){
+        $officersCnt[$cityID] = $cnt;
     }
 
     $nationTypeObj = buildNationTypeClass($nationType);
@@ -409,14 +402,8 @@ function getRiceIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     $cityIncome = 0;
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
-        foreach ([2,3,4] as $officerLevel) {
-            $officerCnt = 0;
-            if($officers[$rawCity['officer'.$officerLevel]]??0 == $cityID){
-                $officerCnt += 1;
-            }
-        }
 
-        $cityIncome += calcCityRiceIncome($rawCity, $officerCnt, $capitalID == $cityID, $nationLevel, $nationTypeObj);
+        $cityIncome += calcCityRiceIncome($rawCity, $officersCnt[$cityID], $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);
@@ -431,9 +418,9 @@ function getWallIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
 
     $db = DB::db();
 
-    $officers = [];
-    foreach($db->queryAllLists('SELECT no, city FROM general WHERE nation = %i AND level IN (2,3,4)', $nationID) as [$genID, $cityID]){
-        $officers[$genID] = $cityID;
+    $officersCnt = [];
+    foreach($db->queryAllLists('SELECT officer_city, count(*) FROM general WHERE nation = %i AND officer_level IN (2,3,4) AND city = officer_city GROUP BY officer_city', $nationID) as [$cityID, $cnt]){
+        $officersCnt[$cityID] = $cnt;
     }
 
     $nationTypeObj = buildNationTypeClass($nationType);
@@ -441,14 +428,8 @@ function getWallIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     $cityIncome = 0;
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
-        foreach ([2,3,4] as $officerLevel) {
-            $officerCnt = 0;
-            if($officers[$rawCity['officer'.$officerLevel]]??0 == $cityID){
-                $officerCnt += 1;
-            }
-        }
-
-        $cityIncome += calcCityWallRiceIncome($rawCity, $officerCnt, $capitalID == $cityID, $nationLevel, $nationTypeObj);
+        
+        $cityIncome += calcCityWallRiceIncome($rawCity, $officersCnt[$cityID], $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);

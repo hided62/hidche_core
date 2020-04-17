@@ -175,11 +175,11 @@ $(function() {
                         
                         var cityInfo = subCityList[cityVal].city;
                         
-                        $.post(basicPath+'c_myBossInfo.php',{
-                            citylist:cityVal,
-                            genlist:userVal,
-                            level:type,
-                            btn:'임명'
+                        $.post(basicPath+'j_myBossInfo.php',{
+                            destCityID:cityVal,
+                            destGeneralID:userVal,
+                            officerLevel:type,
+                            action:'임명'
                         },function(rawData){
                             
                             cityInfo['p'+text]=false;
@@ -451,11 +451,11 @@ $(function() {
                                     }
                                 }
                                 
-                                $.post(basicPath+'c_myBossInfo.php',{
-                                    citylist:cityVal,
-                                    genlist:userInfo.val,
-                                    level:type,
-                                    btn:'임명'
+                                $.post(basicPath+'j_myBossInfo.php',{
+                                    destCityID:cityVal,
+                                    destGeneralID:userInfo.val,
+                                    officerLevel:type,
+                                    action:'임명'
                                 },function(rawData){
                                     
                                     cityInfo['p'+text]=false;

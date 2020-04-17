@@ -19,7 +19,7 @@ $connect=$db->get();
 
 increaseRefresh("암행부", 1);
 
-$query = "select no,nation,level,con,turntime,belong,permission,penalty from general where owner='{$userID}'";
+$query = "select no,nation,officer_level,con,turntime,belong,permission,penalty from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
@@ -100,7 +100,7 @@ switch ($type) {
 }
 
 $generals = $db->query(
-    'SELECT npc,defence_train,no,level,troop,city,injury,leadership,strength,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
+    'SELECT npc,defence_train,no,officer_level,troop,city,injury,leadership,strength,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
     $me['nation'],
     $orderSQL
 );
@@ -127,7 +127,7 @@ foreach ($generals as &$general) {
         $genCntEff += 1;
     }
 
-    $lbonus = calcLeadershipBonus($general['level'], $nationLevel);
+    $lbonus = calcLeadershipBonus($general['officer_level'], $nationLevel);
     if ($lbonus > 0) {
         $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {

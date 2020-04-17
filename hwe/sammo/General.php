@@ -10,7 +10,7 @@ class General implements iAction{
 
     /**
      * @var iAction $nationType
-     * @var iAction $levelObj
+     * @var iAction $officerLevelObj
      * @var iAction $specialDomesticObj
      * @var iAction $specialWarObj
      * @var iAction $personalityObj
@@ -33,7 +33,7 @@ class General implements iAction{
     protected $isFinished = false;
 
     protected $nationType = null;
-    protected $levelObj = null;
+    protected $officerLevelObj = null;
     protected $specialDomesticObj = null;
     protected $specialWarObj = null;
     protected $personalityObj = null;
@@ -62,8 +62,8 @@ class General implements iAction{
         'power'=>1,
         'intel'=>1,
         'nation'=>2,
-        'level'=>1,
-        //NOTE: levelObj로 인해 국가의 '레벨'이 바뀌는 것도 조심해야 하나, 국가 레벨의 변경은 월 초/말에만 일어남.
+        'officer_level'=>1,
+        //NOTE: officerLevelObj로 인해 국가의 '레벨'이 바뀌는 것도 조심해야 하나, 국가 레벨의 변경은 월 초/말에만 일어남.
         'special'=>1,
         'special2'=>1,
         'personal'=>1,
@@ -79,7 +79,7 @@ class General implements iAction{
      * @param null|array $city DB city 테이블의 row값
      * @param int $year 게임 연도
      * @param int $month 게임 월
-     * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, level 정도로 초기화 가능
+     * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, officer_level 정도로 초기화 가능
      */
     public function __construct(array $raw, ?array $rawRank, ?array $city, ?int $year, ?int $month, bool $fullConstruct=true){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
@@ -102,7 +102,7 @@ class General implements iAction{
         }
 
         $this->nationType = buildNationTypeClass($staticNation['type']);
-        $this->levelObj = new TriggerGeneralLevel($this->raw, $staticNation['level'], $city);
+        $this->officerLevelObj = new TriggerOfficerLevel($this->raw, $staticNation['level']);
 
         $this->specialDomesticObj = buildGeneralSpecialDomesticClass($raw['special']);
         $this->specialWarObj = buildGeneralSpecialWarClass($raw['special2']);
@@ -260,8 +260,8 @@ class General implements iAction{
         return $this->nationType;
     }
 
-    public function getGeneralLevelObj():iAction{
-        return $this->levelObj;
+    public function getOfficerLevelObj():iAction{
+        return $this->officerLevelObj;
     }
 
     function getCrewTypeObj():GameUnitDetail{
@@ -379,7 +379,7 @@ class General implements iAction{
         if($withIActionObj){
             foreach([
                 $this->nationType,
-                $this->levelObj,
+                $this->officerLevelObj,
                 $this->specialDomesticObj,
                 $this->specialWarObj,
                 $this->personalityObj
@@ -516,16 +516,9 @@ class General implements iAction{
         $generalName = $this->getName();
 
         // 군주였으면 유지 이음
-        $generalLevel = $this->getVar('level');
-        if($generalLevel == 12) {
+        $officerLevel = $this->getVar('officer_level');
+        if($officerLevel == 12) {
             nextRuler($this);
-        }
-
-        //도시의 태수, 군사, 종사직도 초기화
-        if(2 <= $generalLevel && $generalLevel <= 4){
-            $db->update('city', [
-                'officer'.$generalLevel=>0
-            ], "officer{$generalLevel} = %i", $generalID);
         }
 
         // 부대 처리
@@ -713,7 +706,7 @@ class General implements iAction{
         $caller = new GeneralTriggerCaller();
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -735,7 +728,7 @@ class General implements iAction{
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -754,7 +747,7 @@ class General implements iAction{
         //xxx: $general?
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -772,7 +765,7 @@ class General implements iAction{
     public function onCalcStrategic(string $turnType, string $varType, $value){
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -790,7 +783,7 @@ class General implements iAction{
     public function onCalcNationalIncome(string $type, int $amount):int{
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -811,7 +804,7 @@ class General implements iAction{
         $def = 1;
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -831,7 +824,7 @@ class General implements iAction{
         $caller = new WarUnitTriggerCaller();
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -858,7 +851,7 @@ class General implements iAction{
         );
         foreach(array_merge([
             $this->nationType, 
-            $this->levelObj, 
+            $this->officerLevelObj, 
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
@@ -875,16 +868,16 @@ class General implements iAction{
     }
 
     static public function mergeQueryColumn(?array $reqColumns=null, int $constructMode=2):array{
-        $minimumColumn = ['no', 'name', 'city', 'nation', 'level'];
+        $minimumColumn = ['no', 'name', 'city', 'nation', 'officer_level', 'officer_city'];
         $defaultEventColumn = [
-            'no', 'name', 'city', 'nation', 'level',
+            'no', 'name', 'city', 'nation', 'officer_level', 'officer_city',
             'special', 'special2', 'personal',
             'horse', 'weapon', 'book', 'item', 'last_turn'
         ];
         $fullColumn = [
             'no', 'name', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
             'leadership', 'leadership_exp', 'strength', 'strength_exp', 'intel', 'intel_exp', 'weapon', 'book', 'horse', 'item', 
-            'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
+            'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 

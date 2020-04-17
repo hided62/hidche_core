@@ -38,7 +38,7 @@ $session->setReadOnly();
 
 
 $db = DB::db();
-$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
+$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
 
 if($me === null){
     Json::die([

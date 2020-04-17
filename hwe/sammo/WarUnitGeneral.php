@@ -153,25 +153,26 @@ class WarUnitGeneral extends WarUnit{
         [$warPower,$opposeWarPowerMultiply] = parent::computeWarPower();
 
         $general = $this->general;
-        $generalNo = $general->getVar('no');
-        $genLevel = $general->getVar('level');
+        $cityID = $general->getCityID();
+        $officerLevel = $general->getVar('officer_level');
+        $officerCity = $general->getVar('officer_city');
 
         if($this->isAttacker){
-            if($genLevel == 12){
+            if($officerLevel == 12){
                 $warPower *= 1.10;
             }
-            else if($genLevel == 11 | $genLevel == 10 || $genLevel == 8 || $genLevel == 6){
+            else if($officerLevel == 11 | $officerLevel == 10 || $officerLevel == 8 || $officerLevel == 6){
                 $warPower *= 1.05;
             }
         }
         else{
-            if($genLevel == 12){
+            if($officerLevel == 12){
                 $opposeWarPowerMultiply *= 0.90;
             }
-            else if($genLevel == 11 || $genLevel == 9 || $genLevel == 7 || $genLevel == 5){
+            else if($officerLevel == 11 || $officerLevel == 9 || $officerLevel == 7 || $officerLevel == 5){
                 $opposeWarPowerMultiply *= 0.95;
             }
-            else if(2 <= $genLevel && $genLevel <= 4 && $generalNo == $this->getCityVar('officer'.$genLevel)){
+            else if(2 <= $officerLevel && $officerLevel <= 4 && $officerCity  == $cityID){
                 $opposeWarPowerMultiply *= 0.95;
             }
         }

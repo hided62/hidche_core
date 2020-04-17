@@ -94,7 +94,7 @@ foreach (getAllNationStaticInfo() as $nation) {
     4=>['intel', true],
     5=>['experience', true],
     6=>['dedication', true],
-    7=>['level', true],
+    7=>['officer_level', true],
     8=>['killturn', false],
     9=>['connect', true],
     10=>['experience', true],
@@ -105,7 +105,7 @@ foreach (getAllNationStaticInfo() as $nation) {
     15=>['npc', true],
 ][$type];
 
-$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,level,killturn,connect from general order by %b %l', $orderKey, $orderDesc?'desc':'');
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,connect from general order by %b %l', $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center width=1000 class='tb_layout bg0'>
@@ -129,7 +129,7 @@ echo"
 foreach($generalList as $general){
     $nation = $nationname[$general['nation']];
 
-    $lbonus = calcLeadershipBonus($general['level'], $nationlevel[$general['nation']]??0);
+    $lbonus = calcLeadershipBonus($general['officer_level'], $nationlevel[$general['nation']]??0);
     if ($lbonus > 0) {
         $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {
@@ -185,7 +185,7 @@ foreach($generalList as $general){
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getDed($general['dedication'])."</td>
         <td align=center>";
-    echo getLevelText($general['level']);
+    echo getOfficerLevelText($general['officer_level']);
     echo "</td>
         <td align=center>$leadership</td>
         <td align=center>$strength</td>

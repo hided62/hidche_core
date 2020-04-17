@@ -12,6 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
+    function getNationStaticInfo,
     tryUniqueItemLottery
 };
 
@@ -71,32 +72,28 @@ class che_귀환 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
-        $generalID = $general->getID();
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $generalLevel = $general->getVar('level');
-        $target = null;
-        if(2 <= $generalLevel && $generalLevel <= 4){
-            $target = $db->queryFirstList(
-                'SELECT city, name FROM city WHERE %b=%i AND nation = %i',
-                'officer'.$general->getVar('level'), $generalID, $general->getNationID()
-            );
+        $officerLevel = $general->getVar('officer_level');
+        $destCityID = null;
+        if(2 <= $officerLevel && $officerLevel <= 4){
+            $destCityID = $general->getVar('officer_city');
         }
-        if(!$target){
-            $target = $db->queryFirstList('SELECT city, name FROM city WHERE city=%i', $this->nation['capital']);
+        else{
+            $destCityID = $this->nation['capital'];
         }
+        $destCityName = CityConst::byID($destCityID)->name;
 
-        [$cityID, $cityName] = $target;
-        $josaRo = JosaUtil::pick($cityName, '로');
+        $josaRo = JosaUtil::pick($destCityName, '로');
 
         $logger = $general->getLogger();
 
-        $logger->pushGeneralActionLog("<G><b>{$cityName}</b></>{$josaRo} 귀환했습니다. <1>$date</>");
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 귀환했습니다. <1>$date</>");
 
         $exp = 70;
         $ded = 100;
         
-        $general->setVar('city', $cityID);
+        $general->setVar('city', $destCityID);
 
         $general->addExperience($exp);
         $general->addDedication($ded);

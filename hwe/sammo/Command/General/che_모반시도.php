@@ -70,7 +70,7 @@ class che_모반시도 extends Command\GeneralCommand{
 
         $nationID = $general->getNationID();
 
-        $lordID = $db->queryFirstField('SELECT no FROM general WHERE nation = %i AND level = 12', $nationID);
+        $lordID = $db->queryFirstField('SELECT no FROM general WHERE nation = %i AND officer_level = 12', $nationID);
 
         $lordGeneral = General::createGeneralObjFromDB($lordID);
 
@@ -82,16 +82,12 @@ class che_모반시도 extends Command\GeneralCommand{
         $logger = $general->getLogger();
         $lordLogger = $this->destGeneralObj->getLogger();
 
-        $generalLevel = $general->getVar('level');
-        $general->setVar('level', 12);
-        $lordGeneral->setVar('level', 1);
+        $general->setVar('officer_level', 12);
+        $general->setVar('officer_city', 0);
+        $lordGeneral->setVar('officer_level', 1);
+        $lordGeneral->setVar('officer_city', 0);
         $lordGeneral->multiplyVar('experience', 0.7);
-        
-        if(2 <= $generalLevel && $generalLevel <= 4){
-            $db->update('city', [
-                'officer'.$generalLevel=>0
-            ], "officer{$generalLevel}=%i", $general->getID());
-        }
+
         
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalHistoryLog("<Y><b>【모반】</b></><Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>의 군주 자리를 찬탈했습니다.");

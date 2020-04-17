@@ -24,12 +24,14 @@ switch($btn) {
         if($nation == 0) {
             $db->update('general', [
                 'nation'=>0,
-                'level'=>0,
+                'officer_level'=>0,
+                'officer_city'=>0
             ], 'owner=%i', $userID);
         } else {
             $db->update('general', [
                 'nation'=>$nation,
-                'level'=>1,
+                'officer_level'=>1,
+                'officer_city'=>0
             ], 'owner=%i', $userID);
             $db->update('nation', [
                 'gennum'=>$db->sqleval('gennum + 1')

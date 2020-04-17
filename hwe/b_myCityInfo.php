@@ -18,11 +18,12 @@ $connect=$db->get();
 
 increaseRefresh("세력도시", 1);
 
-$query = "select no,nation,level from general where owner='{$userID}'";
+$query = "select no,nation,officer_level from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
+$nationID = $me['nation'];
 
-if ($me['level'] == 0) {
+if ($me['officer_level'] == 0) {
     echo "재야입니다.";
     exit();
 }
@@ -75,30 +76,51 @@ $sel = [$type => "selected"];
 
 $nation = getNationStaticInfo($me['nation']);  //국가정보
 
-$query = "select *,pop/pop_max as poprate from city where nation='{$me['nation']}'";
+$officerList = [];
+foreach($db->query('SELECT no,name,npc,city,officer_level,officer_city,belong FROM general WHERE nation = %i AND 2 <= officer_level AND officer_level <= 4', $nationID) as $officer){
+    $officerCityID = $officer['officer_city'];
+    if(!key_exists($officerCityID, $officerList)){
+        $officerList[$officerCityID] = [];
+    }
+    $officerList[$officerCityID][$officer['officer_level']] = $officer;
+}
+
+
+$cityList = $db->query('SELECT *,pop/pop_max as poprate from city where nation=%i', $nationID);
+
 
 switch ($type) {
     case  1: break;
-    case  2: $query .= " order by pop desc"; break;
-    case  3: $query .= " order by poprate desc"; break;
-    case  4: $query .= " order by trust desc"; break;
-    case  5: $query .= " order by agri desc"; break;
-    case  6: $query .= " order by comm desc"; break;
-    case  7: $query .= " order by secu desc"; break;
-    case  8: $query .= " order by def desc"; break;
-    case  9: $query .= " order by wall desc"; break;
-    case 10: $query .= " order by trade desc"; break;
-    case 11: $query .= " order by region,level desc"; break;
-    case 12: $query .= " order by level desc, region"; break;
+    case  2: usort($cityList, function($lhs, $rhs){return $rhs['pop'] <=> $lhs['pop'];}); break;
+    case  3: usort($cityList, function($lhs, $rhs){return $rhs['poprate'] <=> $lhs['poprate'];}); break;
+    case  4: usort($cityList, function($lhs, $rhs){return $rhs['trust'] <=> $lhs['trust'];}); break;
+    case  5: usort($cityList, function($lhs, $rhs){return $rhs['agri'] <=> $lhs['agri'];}); break;
+    case  6: usort($cityList, function($lhs, $rhs){return $rhs['comm'] <=> $lhs['comm'];}); break;
+    case  7: usort($cityList, function($lhs, $rhs){return $rhs['secu'] <=> $lhs['secu'];}); break;
+    case  8: usort($cityList, function($lhs, $rhs){return $rhs['def'] <=> $lhs['def'];}); break;
+    case  9: usort($cityList, function($lhs, $rhs){return $rhs['wall'] <=> $lhs['wall'];}); break;
+    case 10: usort($cityList, function($lhs, $rhs){return $rhs['trade'] <=> $lhs['trade'];}); break;
+    case 11: usort($cityList, function($lhs, $rhs){
+        $cmpTrust = $lhs['region'] <=> $rhs['region'];
+        if($cmpTrust != 0){
+            return $cmpTrust;
+        }
+        return $rhs['level']<=>$lhs['level'];
+    }); break;
+    case 12: usort($cityList, function($lhs, $rhs){
+        $cmpTrust = $rhs['level'] <=> $lhs['level'];
+        if($cmpTrust != 0){
+            return $cmpTrust;
+        }
+        return $lhs['region']<=>$rhs['region'];
+    }); break;
 }
-$cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$citycount = MYDB_num_rows($cityresult);
 
 $region = 0;
 $level = 0;
 
-for ($j=0; $j < $citycount; $j++) {
-    $city = MYDB_fetch_array($cityresult);
+foreach($cityList as $city){
+    $cityID = $city['city'];
     if ($city['city'] == $nation['capital']) {
         $city['name'] = "<font color=cyan>[{$city['name']}]</font>";
     }
@@ -109,22 +131,12 @@ for ($j=0; $j < $citycount; $j++) {
         3=>'-',
         4=>'-'
     ];
-    if ($city['officer4'] > 0) {
-        $officerQuery[] = $city['officer4'];
-    }
-    if ($city['officer3'] > 0) {
-        $officerQuery[] = $city['officer3'];
-    }
-    if ($city['officer2'] > 0) {
-        $officerQuery[] = $city['officer2'];
-    }
 
-    if($officerQuery){
-        foreach($db->query('SELECT `level`, `name` FROM general WHERE `no` IN %li', $officerQuery) as $genOfficer){
-            $officerName[$genOfficer['level']] = $genOfficer['name'];
-        }
+    $cityOfficerList = $officerList[$cityID]??[];
+    foreach($cityOfficerList as $cityOfficer){   
+        $officerName[$cityOfficer['officer_level']] = getColoredName($cityOfficer['name'], $cityOfficer['npc']);
     }
-
+    
     if ($type == 10 && $city['region'] != $region) {
         echo "<br>";
         $region = $city['region'];

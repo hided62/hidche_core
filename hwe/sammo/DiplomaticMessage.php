@@ -268,7 +268,7 @@ class DiplomaticMessage extends Message{
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $general = $db->queryFirstRow(
-            'SELECT `name`, nation, `level`, `permission`, `penalty`,belong FROM general WHERE `no`=%i AND nation=%i', 
+            'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong FROM general WHERE `no`=%i AND nation=%i', 
             $receiverID, 
             $this->dest->nationID
         );
@@ -373,7 +373,7 @@ class DiplomaticMessage extends Message{
 
         $db = DB::db();
         $general = $db->queryFirstRow(
-            'SELECT `name`, nation, `level`, `permission`, `penalty`,belong  FROM general WHERE `no`=%i AND nation=%i', 
+            'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong  FROM general WHERE `no`=%i AND nation=%i', 
             $receiverID, 
             $this->dest->nationID
         );

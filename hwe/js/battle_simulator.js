@@ -152,7 +152,7 @@ jQuery(function($){
 
         setVal('.form_general_name', data.name);
 
-        setVal('.form_general_level', data.level);
+        setVal('.form_officer_level', data.officer_level);
         setVal('.form_exp_level', data.explevel);
         setVal('.form_injury', data.injury);
 
@@ -200,7 +200,7 @@ jQuery(function($){
         return {
             no:getGeneralNo($general),
             name:getVal('.form_general_name'),
-            level:getInt('.form_general_level'),
+            officer_level:getInt('.form_officer_level'),
             explevel:getInt('.form_exp_level'),
 
             leadership:getInt('.form_leadership'),
@@ -602,9 +602,6 @@ jQuery(function($){
             dead:0,
 
             state:0,
-            officer4:0,
-            officer3:0,
-            officer2:0,
 
             conflict:'{}',
         };
@@ -618,14 +615,8 @@ jQuery(function($){
         attackerCity.city = 1;
 
         var attackerGeneral = extendGeneralInfoForDB(allData.attackerGeneral);
-        if(attackerGeneral.level == 4){
-            attackerCity.officer4 = attackerGeneral.no;
-        }
-        if(attackerGeneral.level == 3){
-            attackerCity.officer3 = attackerGeneral.no;
-        }
-        if(attackerGeneral.level == 2){
-            attackerCity.officer2 = attackerGeneral.no;
+        if(2 <= attackerGeneral.officer_level && attackerGeneral.officer_level <= 4){
+            attackerCity.officer_city = 1;
         }
 
         var defenderNation = $.extend({}, defaultNation, allData.defenderNation);
@@ -641,14 +632,8 @@ jQuery(function($){
         var defenderGenerals = [];
         $.each(allData.defenderGenerals, function(){
             var defenderGeneral = extendGeneralInfoForDB(this);
-            if(defenderGeneral.level == 4){
-                defenderCity.officer4 = defenderGeneral.no;
-            }
-            if(defenderGeneral.level == 3){
-                defenderCity.officer3 = defenderGeneral.no;
-            }
-            if(defenderGeneral.level == 2){
-                defenderCity.officer2 = defenderGeneral.no;
+            if(2 <= defenderGeneral.officer_level && defenderGeneral.officer_level <= 4){
+                defenderGeneral.officer_city = 3;
             }
 
             defenderGenerals.push(defenderGeneral);

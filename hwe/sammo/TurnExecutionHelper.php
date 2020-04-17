@@ -243,15 +243,15 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $generalCommandObj = buildGeneralCommandClass($generalCommand, $general, $env, $generalArg);
 
             $hasNationTurn = false;
-            if($general->getVar('nation') != 0 && $general->getVar('level') >= 5){
+            if($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5){
                 $nationStor = KVStorage::getStorage($db, 'nation_env');
-                $lastNationTurnKey = "turn_last_{$general->getVar('nation')}_{$general->getVar('level')}";
+                $lastNationTurnKey = "turn_last_{$general->getVar('nation')}_{$general->getVar('officer_level')}";
                 $lastNationTurn = $nationStor->getValue($lastNationTurnKey);
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
                 $rawNationTurn = $db->queryFirstRow(
-                    'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND level = %i AND turn_idx =0',
+                    'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND officer_level = %i AND turn_idx =0',
                     $general->getVar('nation'),
-                    $general->getVar('level')
+                    $general->getVar('officer_level')
                 )??[];
                 $hasNationTurn = true;
                 $nationCommand = $rawNationTurn['action']??null;
@@ -281,7 +281,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 }
                 $turnObj->processCommand($generalCommandObj);
             }
-            pullNationCommand($general->getVar('nation'), $general->getVar('level'));
+            pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));
             pullGeneralCommand($general->getID());
 
             $currentTurn = $general->getTurnTime();
