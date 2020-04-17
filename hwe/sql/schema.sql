@@ -88,7 +88,7 @@ CREATE TABLE `general` (
 	INDEX `npc` (`npc`),
 	INDEX `troop` (`troop`, `turntime`),
 	INDEX `officer_level` (`nation`, `officer_level`),
-	INDEX `officer_city` (`officer_city`, `officer_level`)
+	INDEX `officer_city` (`officer_city`, `officer_level`),
 	INDEX `name` (`name`)
 )
 DEFAULT CHARSET=utf8mb4
