@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Event\Action;
+
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';
@@ -1188,29 +1190,35 @@ function updateOnline() {
 function addAge() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
+
 
     //나이와 호봉 증가
-    $query = "update general set age=age+1,belong=belong+1";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'age'=>$db->sqleval('age+1'),
+        'belong'=>$db->sqleval('belong+1')
+    ], true);
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
+    [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
-    if($admin['year'] >= $admin['startyear']+3) {
+    if($year >= $startYear+3) {
         foreach($db->query('SELECT no,name,nation,leadership,strength,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general){
+            $generalID = $general['no'];
             $special = SpecialityConst::pickSpecialDomestic($general);
             $specialClass = buildGeneralSpecialDomesticClass($special);
             $specialText = $specialClass->getName();
             $db->update('general', [
                 'special'=>$special
-            ], 'no=%i',$general['no']);
+            ], 'no=%i',$generalID);
+
+            $logger = new ActionLogger($generalID, $general['nation'], $year, $month);
 
             $josaUl = JosaUtil::pick($specialText, '을');
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
-            pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
+            $logger->pushGeneralActionLog("특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!", ActionLogger::PLAIN);
+            $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
         }
 
         foreach($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
+            $generalID = $general['no'];
             $special2 = SpecialityConst::pickSpecialWar($general);
             $specialClass = buildGeneralSpecialWarClass($special2);
             $specialText = $specialClass->getName();
@@ -1219,9 +1227,11 @@ function addAge() {
                 'special2'=>$special2
             ], 'no=%i',$general['no']);
 
+            $logger = new ActionLogger($generalID, $general['nation'], $year, $month);
+
             $josaUl = JosaUtil::pick($specialText, '을');
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
-            pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
+            $logger->pushGeneralActionLog("특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!", ActionLogger::PLAIN);
+            $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
         }
     }
 }

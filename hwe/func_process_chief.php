@@ -353,8 +353,8 @@ function process_65(&$general) {
 
         $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【초토화】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} <G><b>{$destcity['name']}</b></>{$josaUl} <R>초토화</>하였습니다.";
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
+        pushGeneralHistory($general['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령"]);
+        pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령"]);
 
         //외교제한 24
         $amount = Util::round($destcity['pop'] * 0.1);
@@ -475,8 +475,8 @@ function process_77(&$general) {
 //        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동하였습니다.";
 //        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} <D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동하였습니다.";
         $sabotagelog[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} <D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동하였습니다.";
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동");
+        pushGeneralHistory($general['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동"]);
+        pushNationHistory($nation['nation'], "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$destnation['name']}</b></>에 <M>이호경식</>을 발동");
         pushNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} 아국에 <M>이호경식</>을 발동");
 
         //선포+3개월

@@ -531,24 +531,29 @@ ENGINE=Aria;
 ##전체 이벤트 기록 테이블
 CREATE TABLE `world_history` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`nation_id` INT(11) NOT NULL,
 	`year` INT(4) NOT NULL,
 	`month` INT(2) NOT NULL,
 	`text` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
-	INDEX `date` (`year`, `month`, `id`)
+	INDEX `date` (`nation_id`, `year`, `month`, `id`),
+	INDEX `plain` (`nation_id`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria
 ;
 
 ##장수 동향 테이블
-CREATE TABLE `general_public_record` (
+CREATE TABLE `general_record` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`general_id` INT(11) NOT NULL,
+	`log_type` ENUM('action','battle_brief','battle', 'history') NOT NULL,
 	`year` INT(4) NOT NULL,
 	`month` INT(2) NOT NULL,
 	`text` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
-	INDEX `date` (`year`, `month`, `id`)
+	INDEX `date` (`general_id`, `log_type`, `year`, `month`, `id`),
+	INDEX `plain` (`general_id`, `log_type`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria

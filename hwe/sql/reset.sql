@@ -44,7 +44,7 @@ DROP TABLE IF EXISTS event;
 DROP TABLE IF EXISTS world_history;
 
 # 전체 이벤트 테이블 삭제(연감 대체?)
-DROP TABLE IF EXISTS general_public_record;
+DROP TABLE IF EXISTS general_record;
 
 DROP TABLE IF EXISTS select_npc_token;
 

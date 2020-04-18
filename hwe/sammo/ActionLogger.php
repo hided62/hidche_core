@@ -4,8 +4,8 @@ namespace sammo;
 
 class ActionLogger{
     //TODO: global을 따로 뗴어내고, 장수 Logger를 상속해서 받는 형식으로.
-    protected $generalId;
-    protected $nationId;
+    protected $generalID;
+    protected $nationID;
     protected $autoFlush;
 
     protected $year = null;
@@ -20,18 +20,26 @@ class ActionLogger{
     protected $globalActionLog = [];
 
     const RAWTEXT = 0;
+    /** <C>●</> */
     const PLAIN = 1;
+    /** <C>●</>{$year}년 {$month}월: */
     const YEAR_MONTH = 2;
+    /** <C>●</>{$year}년: */
     const YEAR = 3;
+    /** <C>●</>{$month}월: */
     const MONTH = 4;
+    /** <S>◆</> */
     const EVENT_PLAIN = 5;
+    /** <S>◆</>{$year}년 {$month}월: */
     const EVENT_YEAR_MONTH = 6;
+    /** <R>★</> */
     const NOTICE = 7;
+    /** <R>★</>{$year}년 {$month}월: */
     const NOTICE_YEAR_MONTH = 8;
 
-    public function __construct(int $generalId, int $nationId, int $year, int $month, bool $autoFlush = true){
-        $this->generalId = $generalId;
-        $this->nationId = $nationId;
+    public function __construct(int $generalID, int $nationID, int $year, int $month, bool $autoFlush = true){
+        $this->generalID = $generalID;
+        $this->nationID = $nationID;
         $this->year = $year;
         $this->month = $month;
         $this->autoFlush = $autoFlush;
@@ -66,36 +74,28 @@ class ActionLogger{
     }
 
     public function flush(){
-        $db = DB::db();
-
         if($this->generalHistoryLog){
-            $rawText = join('<br>', $this->generalHistoryLog).'<br>';
-            $db->update('general', [
-                'history'=>$db->sqleval('concat(%s, history)', $rawText)
-            ], 'no=%i', $this->generalId);
+            pushGeneralHistory($this->generalID, $this->generalHistoryLog, $this->year, $this->month);
             $this->generalHistoryLog = [];
         }
 
         if($this->generalActionLog){
-            pushGenLog(['no'=>$this->generalId], $this->generalActionLog);
+            pushGenLog($this->generalID, $this->generalActionLog, $this->year, $this->month);
             $this->generalActionLog = [];
         }
 
         if($this->generalBattleResultLog){
-            pushBatRes(['no'=>$this->generalId], $this->generalBattleResultLog);
+            pushBatRes($this->generalID, $this->generalBattleResultLog, $this->year, $this->month);
             $this->generalBattleResultLog = [];
         }
 
         if($this->generalBattleDetailLog){
-            pushBatLog(['no'=>$this->generalId], $this->generalBattleDetailLog);
+            pushBatLog($this->generalID, $this->generalBattleDetailLog, $this->year, $this->month);
             $this->generalBattleDetailLog = [];
         }
 
-        if($this->nationId && $this->nationalHistoryLog){
-            $rawText = join('<br>', $this->nationalHistoryLog).'<br>';
-            $db->update('nation', [
-                'history'=>$db->sqleval('concat(%s, history)', $rawText)
-            ], 'nation=%i', $this->nationId);
+        if($this->nationID && $this->nationalHistoryLog){
+            pushNationHistory($this->nationID, $this->nationalHistoryLog, $this->year, $this->month);
             $this->nationalHistoryLog = [];
         }
 

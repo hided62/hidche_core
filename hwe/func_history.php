@@ -100,33 +100,6 @@ function getAuctionLogRecent(int $count) {
     return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $count, 300)));
 }
 
-function pushGenLog($general, $log) {
-    $no = Util::toInt($general['no']);
-    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/gen{$no}.txt", $log);
-}
-
-function getGenLogRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/gen{$no}.txt", $count, 300)));
-}
-
-function pushBatRes($general, $log) {
-    $no = Util::toInt($general['no']);
-    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/batres{$no}.txt", $log);
-}
-
-function getBatResRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/batres{$no}.txt", $count, 300)));
-}
-
-function pushBatLog($general, $log) {
-    $no = Util::toInt($general['no']);
-    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $log);
-}
-
-function getBatLogRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $count, 300)));
-}
-
 function pushOldNationStop(int $no, int $nationNo){
     $logPrefixList = ['batres', 'gen', 'batlog'];
 
@@ -156,45 +129,188 @@ function pushOldNationStop(int $no, int $nationNo){
 }
 
 //DB-based
-function pushNationHistory($nation, ?string $history) {
-    if(!$history){
-        return;
-    }
-    if(!$nation || !$nation['nation']){
-        return;
-    }
-    $db = DB::db();
-    $db->update('nation', [
-        'history'=>$db->sqleval('concat(%s, history)', $history.'<br>')
-    ], 'nation=%i', $nation['nation']);
-}
 
-function pushGeneralHistory($me, ?string $history) {
+
+function pushGenLog(int $generalID, ?array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
     $db = DB::db();
-    $db->update('general', [
-        'history'=>$db->sqleval('concat(%s, history)', $history.'<br>')
-    ], 'nation=%i', $me['no']);
+
+    if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
+    }
+    $request = array_map(function($text) use ($year, $month, $generalID) {
+        return [
+            'general_id'=>$generalID,
+            'log_type'=>'action',
+            'year'=>$year,
+            'month'=>$month,
+            'text'=>$text
+        ];
+    }, array_values($history));
+    $db->insert('general_record', $request);
 }
 
-function getGeneralHistoryAll(int $no) {
-    $history = DB::db()->queryFirstField('SELECT history FROM general WHERE `no`=%i',$no);
-    return ConvertLog($history);
+function getGenLogRecent(int $generalID, int $count) {
+    $db = DB::db();
+
+    $texts = [];
+    foreach(
+        $db->queryFirstColumn(
+            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "action" order by id desc LIMIT %i',
+            $generalID, $count
+        ) as $text
+    ){
+        $texts[] = ConvertLog($text);
+    }
+    return join('<br>', $texts);
 }
+
+function pushBatRes(int $generalID, array $history, ?int $year=null, ?int $month=null) {
+    if(!$history){
+        return;
+    }
+    $db = DB::db();
+
+    if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
+    }
+    $request = array_map(function($text) use ($year, $month, $generalID) {
+        return [
+            'general_id'=>$generalID,
+            'log_type'=>'battle_brief',
+            'year'=>$year,
+            'month'=>$month,
+            'text'=>$text
+        ];
+    }, array_values($history));
+    $db->insert('general_record', $request);
+}
+
+function getBatResRecent(int $generalID, int $count) {
+    $db = DB::db();
+
+    $texts = [];
+    foreach(
+        $db->queryFirstColumn(
+            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle_brief" order by id desc LIMIT %i',
+            $generalID, $count
+        ) as $text
+    ){
+        $texts[] = ConvertLog($text);
+    }
+    return join('<br>', $texts);
+}
+
+function pushBatLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
+    if(!$history){
+        return;
+    }
+    $db = DB::db();
+
+    if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
+    }
+    $request = array_map(function($text) use ($year, $month, $generalID) {
+        return [
+            'general_id'=>$generalID,
+            'log_type'=>'battle',
+            'year'=>$year,
+            'month'=>$month,
+            'text'=>$text
+        ];
+    }, array_values($history));
+    $db->insert('general_record', $request);
+}
+
+function getBatLogRecent(int $generalID, int $count) {
+    $db = DB::db();
+
+    $texts = [];
+    foreach(
+        $db->queryFirstColumn(
+            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle" order by id desc LIMIT %i',
+            $generalID, $count
+        ) as $text
+    ){
+        $texts[] = ConvertLog($text);
+    }
+    return join('<br>', $texts);
+}
+
+
+function pushGeneralHistory(int $generalID, ?array $history, $year=null, $month=null) {
+    if(!$history){
+        return;
+    }
+    $db = DB::db();
+    
+    if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
+    }
+    $request = array_map(function($text) use ($year, $month, $generalID) {
+        return [
+            'general_id'=>$generalID,
+            'log_type'=>'history',
+            'year'=>$year,
+            'month'=>$month,
+            'text'=>$text
+        ];
+    }, array_values($history));
+    $db->insert('general_record', $request);
+
+}
+
+function getGeneralHistoryAll(int $generalID) {
+    $db = DB::db();
+
+    $texts = [];
+    foreach(
+        $db->queryFirstColumn(
+            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "history" order by id desc',
+            $generalID
+        ) as $text
+    ){
+        $texts[] = ConvertLog($text);
+    }
+    return join('<br>', $texts);
+}
+
+
+function pushNationHistory(int $nationID, ?array $history, ?int $year=null, ?int $month=null) {
+    if(!$history){
+        return;
+    }
+    $db = DB::db();
+    
+    if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
+    }
+    $request = array_map(function($text) use ($year, $month, $nationID) {
+        return ['nation_id'=>$nationID, 'year'=>$year, 'month'=>$month, 'text'=>$text];
+    }, array_values($history));
+    $db->insert('world_history', $request);
+}
+
 
 function pushWorldHistory(?array $history, $year=null, $month=null) {
     if(!$history){
         return;
     }
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
+    
     if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
     }
     $request = array_map(function($text) use ($year, $month) {
-        return ['year'=>$year, 'month'=>$month, 'text'=>$text];
+        return ['nation_id'=>0, 'year'=>$year, 'month'=>$month, 'text'=>$text];
     }, array_values($history));
     $db->insert('world_history', $request);
 }
@@ -203,19 +319,19 @@ function getWorldHistoryRecent(int $count) {
     $db = DB::db();
 
     $texts = [];
-    foreach($db->queryFirstColumn('SELECT `text` from world_history order by id desc limit %i', $count) as $text){
+    foreach($db->queryFirstColumn('SELECT `text` from world_history WHERE nation_id = 0 order by id desc limit %i', $count) as $text){
         $texts[] = ConvertLog($text);
     }
     return join('<br>', $texts);
 }
 
-function getWorldHistoryWithDate($year, $month) {
+function getWorldHistoryWithDate(int $year, int $month) {
     $db = DB::db();
 
     $texts = [];
     foreach(
         $db->queryFirstColumn(
-            'SELECT `text` from world_history where year = %i and month = %i order by id desc', 
+            'SELECT `text` from world_history where nation_id = 0 AND year = %i and month = %i order by id desc', 
             $year, 
             $month
         ) as $text
@@ -231,28 +347,29 @@ function getWorldHistoryWithDate($year, $month) {
 }
 
 
-function pushGeneralPublicRecord(?array $history, $year=null, $month=null) {
+function pushGeneralPublicRecord(?array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
+    
     if($year === null || $month === null){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
     }
     $request = array_map(function($text) use ($year, $month) {
-        return ['year'=>$year, 'month'=>$month, 'text'=>$text];
+        return ['general_id'=>0, 'log_type'=>'history', 'year'=>$year, 'month'=>$month, 'text'=>$text];
     }, array_values($history));
-    $db->insert('general_public_record', $request);
+    $db->insert('general_record', $request);
 }
 
-function getGeneralPublicRecordRecent($count) {
+function getGeneralPublicRecordRecent(int $count) {
     $db = DB::db();
 
     $texts = [];
     foreach(
         $db->queryFirstColumn(
-            'SELECT `text` from general_public_record order by id desc limit %i',
+            'SELECT `text` from general_record WHERE general_id = 0 AND log_type = "history" order by id desc limit %i',
             $count
         ) as $text
     ){
@@ -261,13 +378,13 @@ function getGeneralPublicRecordRecent($count) {
     return join('<br>', $texts);
 }
 
-function getGeneralPublicRecordWithDate($year, $month) {
+function getGeneralPublicRecordWithDate(int $year, int $month) {
     $db = DB::db();
 
     $texts = [];
     foreach(
         $db->queryFirstColumn(
-            'SELECT `text` from general_public_record where year = %i and month = %i order by id desc', 
+            'SELECT `text` from general_record where general_id = 0 AND log_type = "history" AND year = %i and month = %i order by id desc', 
             $year, 
             $month
         ) as $text

@@ -122,8 +122,8 @@ switch($btn) {
             ], 'no=%i', $general['no']);
             $specialWarName = SpecialityConst::WAR[$specialWar][0];
             $josaUl = JosaUtil::pick($specialWarName, '을');
-            pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:특기 【<b><C>{$specialWarName}</></b>】{$josaUl} 습득");
-            pushGenLog($general, ["<C>●</>특기 【<b><L>{$specialWarName}</></b>】{$josaUl} 익혔습니다!"]);
+            pushGeneralHistory($general['no'], ["<C>●</>{$year}년 {$month}월:특기 【<b><C>{$specialWarName}</></b>】{$josaUl} 습득"]);
+            pushGenLog($general['no'], ["<C>●</>특기 【<b><L>{$specialWarName}</></b>】{$josaUl} 익혔습니다!"]);
         }
         
         break;

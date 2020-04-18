@@ -501,9 +501,9 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYiGen} <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $log[] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} <G><b>{$city['name']}</b></>{$josaUl} 지배했습니다.";
-    pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <S>함락</>시킴");
-    pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>{$josaYiGen} {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>");
-    pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>{$josaYiCity} <span class='ev_highlight'>함락</span>");
+    pushGeneralHistory($general['no'], ["<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <S>함락</>시킴"]);
+    pushNationHistory($nation['nation'], ["<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>{$josaYiGen} {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>"]);
+    pushNationHistory($destnation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>{$josaYiCity} <span class='ev_highlight'>함락</span>"]);
 
     $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $city['nation']);
     $renewFront = false;
@@ -516,7 +516,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $josaYi = JosaUtil::pick($losenation['name'], '이');
         $josaUl = JosaUtil::pick($losenation['name'], '을');
         $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>{$josaYi} 멸망하였습니다.";
-        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복");
+        pushNationHistory($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복"]);
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
@@ -543,9 +543,9 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             $query = "update general set gold=gold-{$loseGold},rice=rice-{$loseRice} where no={$gen['no']}";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             
-            pushGenLog($gen, $genlog);
+            pushGenLog($gen['no'], $genlog);
             
-            pushGeneralHistory($gen, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>");
+            pushGeneralHistory($gen['no'], ["<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>"]);
             pushOldNationStop($gen['no'], $city['nation']);
 
             $loseGeneralGold += $loseGold;
@@ -589,7 +589,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $genlog[0] = "<C>●</><D><b>{$losenation['name']}</b></> 정복으로 금<C>{$losenation['gold']}</> 쌀<C>{$losenation['rice']}</>을 획득했습니다.";
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
-            pushGenLog($gen, $genlog);
+            pushGenLog($gen['no'], $genlog);
         }
         
         
@@ -646,7 +646,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             $genlog = ["<C>●</>수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다."];
             for($i=0; $i < $gencount; $i++) {
                 $gen = MYDB_fetch_array($result);
-                pushGenLog($gen, $genlog);
+                pushGenLog($gen['no'], $genlog);
             }
             //천도
             $query = "update nation set capital='$minCity',gold=gold*0.5,rice=rice*0.5 where nation='{$destnation['nation']}'";
@@ -679,8 +679,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $josaUl = JosaUtil::pick($city['name'], '을');
         $josaYi = JosaUtil::pick($conquerNationName, '이');
         $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationName}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
-        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationName}</b></>에 <Y>양도</>");
-        pushNationHistory(['nation'=>$conquerNation], "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
+        pushNationHistory($nation['nation'], ["<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationName}</b></>에 <Y>양도</>"]);
+        pushNationHistory($conquerNation, ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음"]);
     }
     
     $query = [
@@ -714,7 +714,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         SetNationFront($nationNationID);
     }
 
-    pushGenLog($general, $log);
+    pushGenLog($general['no'], $log);
     pushGeneralPublicRecord($alllog, $year, $month);
     pushWorldHistory($history);
 }

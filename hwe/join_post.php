@@ -282,28 +282,33 @@ $me = [
 $log = [];
 $mylog = [];
 
-$josaRa = JosaUtil::pick($name, '라');
-if ($genius) {
-    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 기재가 천하에 이름을 알립니다.";
-    $log[1] = "<C>●</>{$gameStor->month}월:<C>".getGeneralSpecialWarName($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
+$logger = new ActionLogger($generalID, 0, $gameStor->year, $gameStor->month);
 
-    pushWorldHistory(["<C>●</>{$gameStor->year}년 {$gameStor->month}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다."], $gameStor->year, $gameStor->month);
-} else {
-    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 호걸이 천하에 이름을 알립니다.";
-}
-pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<Y>{$name}</>, <G>{$cityname}</>에서 큰 뜻을 품다.");
-$mylog[] = "<C>●</>삼국지 모의전투 PHP의 세계에 오신 것을 환영합니다 ^o^";
-$mylog[] = "<C>●</>처음 하시는 경우에는 <D>도움말</>을 참고하시고,";
-$mylog[] = "<C>●</>문의사항이 있으시면 게시판에 글을 남겨주시면 되겠네요~";
-$mylog[] = "<C>●</>부디 즐거운 삼모전 되시길 바랍니다 ^^";
-$mylog[] = "<C>●</>통솔 <C>$pleadership</> 무력 <C>$pstrength</> 지력 <C>$pintel</> 의 보너스를 받으셨습니다.";
-$mylog[] = "<C>●</>연령은 <C>$age</>세로 시작합니다.";
+$josaRa = JosaUtil::pick($name, '라');
+$speicalText = getGeneralSpecialWarName($special2);
 if ($genius) {
-    $mylog[] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGeneralSpecialWarName($special2)."</> 특기를 가지게 됩니다!";
-    pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<C>".getGeneralSpecialWarName($special2)."</> 특기를 가진 천재로 탄생.");
+    
+    $logger->pushGlobalActionLog("<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 기재가 천하에 이름을 알립니다.");
+    $logger->pushGlobalActionLog("<C>{$speicalText}</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.");
+    $logger->pushGlobalHistoryLog("<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다.");
+} else {
+    $logger->pushGlobalActionLog("<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 호걸이 천하에 이름을 알립니다.");
 }
-pushGenLog($me, $mylog);
-pushGeneralPublicRecord($log, $gameStor->year, $gameStor->month);
+
+$logger->pushGeneralHistoryLog("<Y>{$name}</>, <G>{$cityname}</>에서 큰 뜻을 품다.");
+$logger->pushGeneralActionLog("삼국지 모의전투 PHP의 세계에 오신 것을 환영합니다 ^o^", ActionLogger::PLAIN);
+$logger->pushGeneralActionLog("처음 하시는 경우에는 <D>도움말</>을 참고하시고,", ActionLogger::PLAIN);
+$logger->pushGeneralActionLog("문의사항이 있으시면 게시판에 글을 남겨주시면 되겠네요~", ActionLogger::PLAIN);
+$logger->pushGeneralActionLog("부디 즐거운 삼모전 되시길 바랍니다 ^^", ActionLogger::PLAIN);
+$logger->pushGeneralActionLog("통솔 <C>$pleadership</> 무력 <C>$pstrength</> 지력 <C>$pintel</> 의 보너스를 받으셨습니다.", ActionLogger::PLAIN);
+$logger->pushGeneralActionLog("연령은 <C>$age</>세로 시작합니다.", ActionLogger::PLAIN);
+
+if ($genius) {
+    $logger->pushGeneralActionLog("축하합니다! 천재로 태어나 처음부터 <C>{$speicalText}</> 특기를 가지게 됩니다!", ActionLogger::PLAIN);
+    $logger->pushGeneralHistoryLog("<C>{$speicalText}</> 특기를 가진 천재로 탄생.");
+}
+
+$logger->flush();
 
 pushAdminLog(["가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADDR")]);
 

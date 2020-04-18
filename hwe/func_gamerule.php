@@ -621,8 +621,8 @@ function checkMerge() {
         $genlog = ["<C>●</><D><b>{$mynation['name']}</b></>{$josaWa} 통합에 성공했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
-            pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공");
+            pushGenLog($gen['no'], $genlog);
+            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공"]);
         }
         //항복국 장수들 역사 기록 및 로그 전달
         $query = "select no,name,nation from general where nation='{$me['nation']}'";
@@ -632,8 +632,8 @@ function checkMerge() {
         $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>{$josaWa} 통합에 성공했습니다.";
         for($i=0; $i < $gencount2; $i++) {
             $gen = MYDB_fetch_array($result);
-            pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공");
+            pushGenLog($gen['no'], $genlog);
+            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공"]);
         }
 
         $josaRo = JosaUtil::pick($you['makenation'], '로');
@@ -641,7 +641,7 @@ function checkMerge() {
         $josaWa = JosaUtil::pick($mynation['name'], '와');
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합】</b></><D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$younation['name']}</b></>{$josaYi} <D><b>{$you['makenation']}</b></>{$josaRo} 통합하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$you['makenation']}</b></>에 혼란이 일고 있습니다.";
-        pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합");
+        pushNationHistory($younation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합"]);
 
         $newGenCount = $gencount + $gencount2;
         $newTech = ($younation['tech']*$gencount + $mynation['tech']*$gencount2)/$newGenCount;
@@ -713,8 +713,8 @@ function checkMerge() {
             ], 'general_id IN %li AND turn_idx = 0');
         }
         
-        pushGenLog($me, $mylog);
-        pushGenLog($you, $youlog);
+        pushGenLog($me['no'], $mylog);
+        pushGenLog($you['no'], $youlog);
         pushWorldHistory($history, $admin['year'], $admin['month']);
 
         $mylog = [];
@@ -775,8 +775,8 @@ function checkSurrender() {
         $genlog = ["<C>●</><D><b>{$mynation['name']}</b></> 합병에 성공했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
-            pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></> 합병에 성공");
+            pushGenLog($gen['no'], $genlog);
+            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></> 합병에 성공"]);
         }
         $josaRo = JosaUtil::pick($younation['name'], '로');
         //항복국 장수들 역사 기록 및 로그 전달
@@ -786,15 +786,15 @@ function checkSurrender() {
         $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>{$josaRo} 항복하여 수도로 이동합니다.";
         for($i=0; $i < $gencount2; $i++) {
             $gen = MYDB_fetch_array($result);
-            pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>가 <D><b>{$younation['name']}</b></>{$josaRo} 항복");
+            pushGenLog($gen['no'], $genlog);
+            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>가 <D><b>{$younation['name']}</b></>{$josaRo} 항복"]);
         }
 
         $josaYi = JosaUtil::pick($mynation['name'], '이');
         $josaWa = JosaUtil::pick($mynation['name'], '와');
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【투항】</b></><D><b>{$mynation['name']}</b></>{$josaYi} <D><b>{$younation['name']}</b></>{$josaRo} 항복하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$younation['name']}</b></>에 혼란이 일고 있습니다.";
-        pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} 합병");
+        pushNationHistory($younation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} 합병"]);
 
         // 국가 백업
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
@@ -872,8 +872,8 @@ function checkSurrender() {
             ], 'general_id IN %li AND turn_idx = 0');
         }
 
-        pushGenLog($me, $mylog);
-        pushGenLog($you, $youlog);
+        pushGenLog($me['no'], $mylog);
+        pushGenLog($you['no'], $youlog);
         pushWorldHistory($history, $admin['year'], $admin['month']);
 
         refreshNationStaticInfo();
@@ -922,21 +922,21 @@ function updateNationState() {
                 case 7:
                     $josaUl = JosaUtil::pick(getNationLevel($nationlevel), '을');
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>{$josaUl} 자칭하였습니다.";
-                    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>{$josaUl} 자칭");
+                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>{$josaUl} 자칭"]);
                     break;
                 case 6:
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극하였습니다.";
-                    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극");
+                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극"]);
                     break;
                 case 5:
                 case 4:
                 case 3:
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명되었습니다.";
-                    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명됨");
+                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명됨"]);
                     break;
                 case 2:
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 독립하여 <Y>".getNationLevel($nationlevel)."</>로 나섰습니다.";
-                    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>로 나서다");
+                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>로 나서다"]);
                     break;
             }
 
@@ -1254,7 +1254,7 @@ function checkEmperior() {
 
     $josaYi = JosaUtil::pick($nation['name'], '이');
 
-    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일");
+    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일"]);
 
     $gameStor->isunited = 2;
     $gameStor->conlimit = $gameStor->conlimit*100;
@@ -1318,7 +1318,7 @@ function checkEmperior() {
         $general = MYDB_fetch_array($result);
         $gen .= "{$general['name']}, ";
 
-        pushGenLog($general, $log);
+        pushGenLog($general['no'], $log);
     }
 
     $nation['type'] = getNationType($nation['type']);
