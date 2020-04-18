@@ -38,7 +38,7 @@ class che_군량매매 extends Command\GeneralCommand{
         if(!is_int($amount)){
             return false;
         }
-        $amount = Util::valueFit($amount, 100, GameConst::$maxIncentiveAmount);
+        $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);
         
         $this->arg = [
             'buyRice'=>$buyRice,

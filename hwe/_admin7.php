@@ -114,14 +114,14 @@ $generalObj = General::createGeneralObjFromDB($gen);
         정렬순서 :
         <select name=type size=1>
 <?php foreach($queryMap as $queryType => [$queryTypeText,]): ?>
-    <option <?=$queryKey==$reqQueryType?'selected':''?> value='<?=$queryKey?>'><?=$queryTypeText?></option>
+    <option <?=$queryType==$reqQueryType?'selected':''?> value='<?=$queryType?>'><?=$queryTypeText?></option>
 <?php endforeach; ?>
         </select>
         <input type=submit name=btn value='정렬하기'>
         대상장수 :
         <select name=gen size=1>
 <?php foreach($generalBasicList as $general): ?>
-    <option <?=$gen==$general['no']?'selected':''?>><?=getNationStaticInfo($general['nation'])['name']?> - <?=$general['name']?> (<?=$general['turntime']?>)</option>
+    <option <?=$gen==$general['no']?'selected':''?> value='<?=$general['no']?>'><?=$general['name']?> (<?=$general['turntime']?>)</option>
 <?php endforeach; ?>
         </select>
         <input type=submit name=btn value='조회하기'>

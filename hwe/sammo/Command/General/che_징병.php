@@ -165,12 +165,11 @@ class che_징병 extends Command\GeneralCommand{
         $currCrewType = $this->currCrewType;
 
         $crewTypeName = $reqCrewType->name;
-        $josaUl = JosaUtil::pick($crewTypeName, '을');
 
         $logger = $general->getLogger();
 
         if($reqCrewType->id == $currCrewType->id && $currCrew > 0){
-            $logger->pushGeneralActionLog("{$crewTypeName}{$josaUl} <C>{$reqCrewText}</>명을 추가{$this->getName()}했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog("{$crewTypeName} <C>{$reqCrewText}</>명을 추가{$this->getName()}했습니다. <1>$date</>");
             $train = ($currCrew * $general->getVar('train') + $reqCrew * static::$defaultTrain) / ($currCrew + $reqCrew);
             $atmos = ($currCrew * $general->getVar('atmos') + $reqCrew * static::$defaultAtmos) / ($currCrew + $reqCrew);
 
@@ -179,7 +178,7 @@ class che_징병 extends Command\GeneralCommand{
             $general->setVar('atmos', $atmos);
         }
         else{
-            $logger->pushGeneralActionLog("{$crewTypeName}{$josaUl} <C>{$reqCrewText}</>명을 {$this->getName()}했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog("{$crewTypeName} <C>{$reqCrewText}</>명을 {$this->getName()}했습니다. <1>$date</>");
             $general->setVar('crewtype', $reqCrewType->id);
             $general->setVar('crew', $reqCrew);
             $general->setVar('train', static::$defaultTrain);

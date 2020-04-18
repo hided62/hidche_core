@@ -39,7 +39,7 @@ class AutorunGeneralPolicy{
     
 
 
-    static public $priority = [
+    static public $default_priority = [
         'NPC사망대비',
         '귀환',
         '금쌀구매',
@@ -114,7 +114,8 @@ class AutorunGeneralPolicy{
     }
 
     function __construct(General $general, $aiOptions){
-        
+        //TODO: 국가 정책을 받아와야함
+        $this->priority = static::$default_priority;
 
         if($general->getVar('npc') >= 2){
             $this->doNPCState($general);

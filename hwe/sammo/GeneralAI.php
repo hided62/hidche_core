@@ -85,7 +85,7 @@ class GeneralAI
     {
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $this->env = $gameStor->getValues(['startyear', 'year', 'month', 'turnterm', 'killturn', 'scenario', 'gold_rate', 'rice_rate', 'develcost', 'autorun_user']);
+        $this->env = $gameStor->getAll(true);
         $this->baseDevelCost = $this->env['develcost'] * 12;
         $this->general = $general;
         if ($general->getRawCity() === null) {
@@ -1684,6 +1684,10 @@ class GeneralAI
             }
         }
 
+        if(!$cmdList){
+            return null;
+        }
+
         return Util::choiceRandomUsingWeightPair($cmdList);
     }
 
@@ -2093,7 +2097,7 @@ class GeneralAI
             }
         }
 
-        if(!$cmd){
+        if(!$cmdList){
             return null;
         }
         return Util::choiceRandomUsingWeightPair($cmdList);
@@ -2251,7 +2255,7 @@ class GeneralAI
             return null;
         }
 
-        if($this->general['crew'] >= $this->nationPolicy->minWarCrew){
+        if($this->general->getVar('crew') >= $this->nationPolicy->minWarCrew){
             return null;
         }
 
@@ -2427,8 +2431,9 @@ class GeneralAI
 
     protected function do귀환(GeneralCommand $reservedCommand): ?GeneralCommand
     {
-        $cityID = $this->general->getCityID();
-        if(key_exists($cityID, $this->supplyCities)){
+        $general = $this->general;
+        $city = $this->city;
+        if($city['nation'] == $general->getNationID() && $city['supply']){
             return null;
         }
 
@@ -2456,7 +2461,7 @@ class GeneralAI
 
         $general = $this->general;
         $lordCities = $db->queryFirstColumn('SELECT city.city as city FROM general LEFT JOIN city ON general.city = city.city WHERE general.officer_level = 12 AND city.nation = 0');
-        $nationCities = $db->queryFirstColumn('SELECT city a FROM city WHERE nation != 0');+
+        $nationCities = $db->queryFirstColumn('SELECT city a FROM city WHERE nation != 0');
 
         $occupiedCities = [];
         foreach ($lordCities as $tCityId) {
@@ -2636,7 +2641,7 @@ class GeneralAI
         return null;
     }
 
-    protected function NPC사망대비(): ?GeneralCommand
+    protected function doNPC사망대비(): ?GeneralCommand
     {
         $general = $this->getGeneralObj();
 
@@ -2865,7 +2870,7 @@ class GeneralAI
             $this->chooseNonLordPromotion();
         }
 
-        if($reservedCommand->isRunnable()){
+        if(!($reservedCommand instanceof Command\NationCommand\휴식) && $reservedCommand->isRunnable()){
             return $reservedCommand;
         }
 
@@ -2911,11 +2916,6 @@ class GeneralAI
         $npcType = $general->getVar('npc');
         $nationID = $general->getNationID();
 
-        $cmd = $this->NPC사망대비();
-        if($cmd){
-            return $cmd;
-        }
-
         //특별 메세지 있는 경우 출력 하루 4번
         $term = $this->env['turnterm'];
         if ($general->getVar('npcmsg') && Util::randBool($term / (6 * 60))) {
@@ -2955,14 +2955,14 @@ class GeneralAI
             return $this->do집합($reservedCommand);
         }
 
-        if($reservedCommand->isRunnable()){
+        if(!($reservedCommand instanceof Command\General\휴식) && $reservedCommand->isRunnable()){
             return $reservedCommand;
         }
 
         if ($general->getVar('injury') > 10) {
             return buildGeneralCommandClass('che_요양', $general, $this->env);
         }
-        
+
         if($npcType == 2 && $nationID == 0){
             $result = $this->do거병($reservedCommand);
             if($result !== null){
@@ -2977,7 +2977,7 @@ class GeneralAI
             }
             return $this->do중립($reservedCommand);
         }
-        
+
         if($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']){
             //방랑군 건국
             $result = $this->do건국($reservedCommand);

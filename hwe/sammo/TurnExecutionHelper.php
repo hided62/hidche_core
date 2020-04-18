@@ -269,7 +269,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 }
 
                 $generalCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
-                
+                LogText("turn", "General: {$general->getName()}[{$general->getID()},{$general->getStaticNation()['name']}]; run; {$generalCommandObj->getBrief()}");
             }
             
             if(!$turnObj->processBlocked()){

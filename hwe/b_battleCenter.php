@@ -54,17 +54,10 @@ increaseRefresh("감찰부", 2);
 TurnExecutionHelper::executeAllCommand();
 $gameStor->resetCache();
 
-$query = "select nation from general where no='$gen'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$general = MYDB_fetch_array($result);
+$testGeneralNationID = $db->queryFirstField('SELECT nation FROM general WHERE no = %i', $gen);
 
-$query = "select no,nation,officer_level,con,turntime,belong,permission,penalty from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
-
-$query = "select secretlimit from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$nation = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,permission,penalty from general where owner=%i', $userID);
+$nationID = $me['nation'];
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -83,7 +76,7 @@ else if ($permission < 1) {
 }
 
 //잘못된 접근
-if ($general['nation'] != $me['nation']) {
+if ($testGeneralNationID != $nationID) {
     $gen = 0;
 }
 
@@ -94,24 +87,24 @@ if ($btn == '정렬하기') {
 
 [$queryTypeText, $reqArgType, $comp] = $queryMap[$reqQueryType];
 if($reqArgType===0){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime FROM general');
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime FROM general WHERE nation = %i', $nationID);
 }
 else if($reqArgType===1){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime, %b FROM general', $reqQueryType);
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime, %b FROM general WHERE nation = %i', $reqQueryType, $nationID);
 }
 else if($reqArgType===2){
     $generalBasicList = $db->query('SELECT no, name, npc, turntime, value as %b 
         FROM general LEFT JOIN rank_data 
         ON general.no = rank_data.general_id 
-        WHERE rank_data.type = %b', 
-        $reqQueryType, $reqQueryType
+        WHERE rank_data.type = %b AND general.nation = %i', 
+        $reqQueryType, $reqQueryType, $nationID
     );
 }
 else if($reqArgType===3){
     $generalBasicList = array_map(function($arr){
         $arr['aux'] = Json::decode($arr['aux']);
         return $arr;
-    }, $db->query('SELECT no, name, npc, turntime, aux FROM general'));
+    }, $db->query('SELECT no, name, npc, turntime, aux FROM general WHERE nation = %i', $nationID));
 }
 else{
     throw new \sammo\MustNotBeReachedException();
@@ -148,16 +141,16 @@ $showGeneral = General::createGeneralObjFromDB($gen);
     <tr><td>
         <form name=form1 method=post>
         정렬순서 :
-        <select name=type size=1>
+        <select name='query_type' size=1>
 <?php foreach($queryMap as $queryType => [$queryTypeText,]): ?>
-    <option <?=$queryKey==$reqQueryType?'selected':''?> value='<?=$queryKey?>'><?=$queryTypeText?></option>
+    <option  <?=$queryType==$reqQueryType?'selected':''?> value='<?=$queryType?>'><?=$queryTypeText?></option>
 <?php endforeach; ?>
         </select>
         <input type=submit name=btn value='정렬하기'>
         대상장수 :
         <select name=gen size=1>
 <?php foreach($generalBasicList as $general): ?>
-    <option <?=$gen==$general['no']?'selected':''?>><?=$general['name']?> (<?=$general['turntime']?>)</option>
+    <option <?=$gen==$general['no']?'selected':''?> value='<?=$general['no']?>'><?=$general['name']?> (<?=$general['turntime']?>)</option>
 <?php endforeach; ?>
         </select>
         <input type=submit name=btn value='조회하기'>
@@ -189,7 +182,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
             <?=formatHistoryToHTML(getBatResRecent($gen, 24))?>
         </td>
     </tr>
-<?php if($npc > 1 || $permission >= 2): ?>
+<?php if($showGeneral->getVar('npc') > 1 || $permission >= 2): ?>
     <tr>
         <td align=center id=bg1><font color=orange size=3>개인 기록</font></td>
         <td align=center id=bg1><font color=orange size=3>&nbsp;</font></td>
