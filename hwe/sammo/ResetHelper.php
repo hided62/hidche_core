@@ -257,7 +257,8 @@ class ResetHelper{
             'fiction'=>$fiction,
             'tnmt_trig'=>$tournament_trig,
             'prev_winner'=>$prevWinner,
-            'autorun_user'=>$autorun_user
+            'autorun_user'=>$autorun_user,
+            'tournament'=>0,
         ];
 
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
@@ -283,14 +284,17 @@ class ResetHelper{
             }
             $db->insert('general_turn', $turnRows);
 
-            foreach(General::RANK_COLUMN as $rankColumn){
-                $db->insert('rank_data', [
+          
+            $rank_data = [];
+            foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
+                $rank_data[] = [
                     'general_id'=>$generalID,
                     'nation_id'=>0,
                     'type'=>$rankColumn,
                     'value'=>0
-                ]);
+                ];
             }
+            $db->insert('rank_data', $rank_data);
         }
 
         foreach($env as $key=>$value){

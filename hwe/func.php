@@ -1982,6 +1982,9 @@ function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null) {
     else if($baseDateTime instanceof \DateTime){
         $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
     }
+    else if($baseDateTime instanceof \DateTimeImmutable){
+        //do Nothing
+    }
     else{
         throw new MustNotBeReachedException();
     }

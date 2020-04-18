@@ -109,6 +109,13 @@ class GeneralAI
             'color' => '#000000',
             'name' => '재야',
         ];
+
+        $serverPolicy = KVStorage::getStorage($db, 'autorun_nation_policy_0');
+        $nationPolicy = KVStorage::getStorage($db, "autorun_nation_policy_{$this->nation['nation']}");
+
+        $this->nationPolicy = new AutorunNationPolicy($general, $nationPolicy->getAll(), $serverPolicy->getAll());
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??[]);
+
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
 
         $this->leadership = $general->getLeadership();
@@ -119,15 +126,10 @@ class GeneralAI
         $this->fullStrength = $general->getStrength(false);
         $this->fullIntel = $general->getIntel(false);
 
-        $this->genType = $this::calcGenType($general);
+        
+        $this->genType = $this->calcGenType($general);
 
         $this->calcDiplomacyState();
-
-        $serverPolicy = KVStorage::getStorage($db, 'autorun_nation_policy_0');
-        $nationPolicy = KVStorage::getStorage($db, "autorun_nation_policy_{$this->nation['nation']}");
-
-        $this->nationPolicy = new AutorunNationPolicy($general, $nationPolicy->getAll(), $serverPolicy->getAll());
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??[]);
     }
 
     public function getGeneralObj(): General
@@ -135,7 +137,7 @@ class GeneralAI
         return $this->general;
     }
 
-    protected static function calcGenType(General $general)
+    protected function calcGenType(General $general)
     {
         $leadership = $general->getLeadership();
         $strength = Util::valueFit($general->getStrength(), 1);

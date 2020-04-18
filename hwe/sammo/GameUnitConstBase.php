@@ -14,7 +14,7 @@ class GameUnitConstBase{
     const T_SIEGE = 5;
     const T_MISC = 6;
 
-    const DEFAULT_CREWTYPE = 0;
+    const DEFAULT_CREWTYPE = 1100;
     
     
 

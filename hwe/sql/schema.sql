@@ -97,7 +97,7 @@ CREATE TABLE `general_turn` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`general_id` INT(11) NOT NULL,
 	`turn_idx` INT(4) NOT NULL,
-	`action` VARCHAR(16) NOT NULL,
+	`action` VARCHAR(20) NOT NULL,
 	`arg` TEXT NULL DEFAULT NULL,
 	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),

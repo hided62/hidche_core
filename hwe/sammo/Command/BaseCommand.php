@@ -234,7 +234,10 @@ abstract class BaseCommand{
         return static::getName();
     }
 
-    public function getRawClassName():string{
+    public function getRawClassName(bool $shortName=true):string{
+        if($shortName){
+            return Util::getClassNameFromObj($this);
+        }
         return static::class;
     }
 

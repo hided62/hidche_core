@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    function getNationStaticInfo,
+    getNationStaticInfo,
     tryUniqueItemLottery
 };
 

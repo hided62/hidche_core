@@ -358,7 +358,7 @@ class NPC{
         }
         $db->insert('general_turn', $turnRows);
 
-        foreach(\sammo\General::RANK_COLUMN as $rankColumn){
+        foreach(array_keys(\sammo\General::RANK_COLUMN) as $rankColumn){
             $db->insert('rank_data', [
                 'general_id'=>$this->generalID,
                 'nation_id'=>0,

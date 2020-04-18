@@ -344,7 +344,7 @@ function preUpdateMonthly() {
     //계략, 전쟁표시 해제
     $db->update('city', [
         'state'=>$db->sqleval(<<<EOD
-CASE
+(CASE
 WHEN state=31 THEN 0
 WHEN state=32 THEN 31
 WHEN state=33 THEN 0
@@ -352,9 +352,9 @@ WHEN state=34 THEN 33
 WHEN state=41 THEN 0
 WHEN state=42 THEN 41
 WHEN state=43 THEN 42
-ELSE state END
+ELSE state END)
 EOD),
-        'term'=>$db->sqleval('greatest(0, term - 1'),
+        'term'=>$db->sqleval('greatest(0, term - 1)'),
         'conflict'=>$db->sqleval('if(term = 0,%s,conflict)', '{}'),
     ], true);
 

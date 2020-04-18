@@ -265,7 +265,7 @@ foreach(Util::range(GameConst::$maxTurn) as $turnIdx){
 }
 $db->insert('general_turn', $turnRows);
 
-foreach(General::RANK_COLUMN as $rankColumn){
+foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
     $db->insert('rank_data', [
         'general_id'=>$generalID,
         'nation_id'=>0,

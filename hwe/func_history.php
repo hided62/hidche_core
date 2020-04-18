@@ -363,7 +363,7 @@ function getGeneralPublicRecordWithDate(int $year, int $month):array {
     );
 
     if(!$texts){
-        return "<C>●</>{$month}월: 기록 없음";
+        return ["<C>●</>{$month}월: 기록 없음"];
     }
     return $texts;
 }

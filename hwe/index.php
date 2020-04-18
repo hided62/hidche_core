@@ -162,17 +162,17 @@ echo "
         <td align=center>
 ";
 
-switch ($gameStor->tnmt_type) {
-case 0:  $str = "전력전"; break;
-case 1:  $str = "통솔전"; break;
-case 2:  $str = "일기토"; break;
-case 3:  $str = "설전"; break;
-}
-$str2 = getTournament($gameStor->tournament);
-$str3 = getTournamentTime();
 if ($gameStor->tournament == 0) {
     echo "<font color=magenta>현재 토너먼트 경기 없음</font>";
 } else {
+    switch ($gameStor->tnmt_type) {
+        case 0:  $str = "전력전"; break;
+        case 1:  $str = "통솔전"; break;
+        case 2:  $str = "일기토"; break;
+        case 3:  $str = "설전"; break;
+        }
+    $str2 = getTournament($gameStor->tournament);
+    $str3 = getTournamentTime();
     echo "<marquee scrollamount=2>↑<font color=cyan>{$str}</font> {$str2} {$str3}↑</marquee>";
 }
 

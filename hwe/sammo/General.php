@@ -886,7 +886,7 @@ class General implements iAction{
         ];
 
         if($reqColumns === null){
-            return [$fullColumn, static::RANK_COLUMN];
+            return [$fullColumn, array_keys(static::RANK_COLUMN)];
         }
 
         $rankColumn = [];
@@ -933,14 +933,14 @@ class General implements iAction{
 
         if($generalIDList === null){
             $rawGenerals = Util::convertArrayToDict(
-                $db->queryFirstRow('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
+                $db->query('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
                 'no'
             );
             $generalIDList = array_keys($rawGenerals);
         }
         else{
             $rawGenerals = Util::convertArrayToDict(
-                $db->queryFirstRow('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
+                $db->query('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
                 'no'
             );
         }
