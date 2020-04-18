@@ -146,7 +146,7 @@ foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
             'reason'=>"[수비자{$idx}]".$v->errorStr()
         ]);
     }
-    $defenderList[] = new General($rawDefenderGeneral, $rawDefenderCity, $year, $month, true);
+    $defenderList[] = new General($rawDefenderGeneral, null, $rawDefenderCity, $year, $month, true);
 }
 
 

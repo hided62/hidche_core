@@ -250,7 +250,7 @@ class che_화계 extends Command\GeneralCommand{
             $destCityID,
             $destNationID
         ) as $rawDestCityGeneral){
-            $destCityGeneralList[] = new General($rawDestCityGeneral, $destCity, $year, $month, true);
+            $destCityGeneralList[] = new General($rawDestCityGeneral, null, $destCity, $year, $month, true);
             //계략에 성공할 경우 logger를 사용해야 하므로 해야하므로, 미리 초기화한다.
             //실패하면 날리는거지 뭐~
         };

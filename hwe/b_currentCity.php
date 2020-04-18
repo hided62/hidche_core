@@ -254,7 +254,7 @@ for($j=0; $j < $gencount; $j++) {
     $officerLevel = $general['officer_level'];
     $officerLevelText = getOfficerLevelText($officerLevel);
 
-    $lerdershipBonus = calcLeadershipBonus($officerLevel, $nationInfo['level']);
+    $leadershipBonus = calcLeadershipBonus($officerLevel, $nationInfo['level']);
     $leadershipBonusText = formatLeadershipBonus($leadershipBonus);
 
     if($ourGeneral){

@@ -93,7 +93,7 @@ class General implements iAction{
         }
         $this->resultTurn = new LastTurn();
 
-        if($year !== null || $month !== null){
+        if($year !== null && $month !== null){
             $this->initLogger($year, $month);
         }
 

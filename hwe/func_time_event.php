@@ -93,7 +93,7 @@ function processGoldIncome() {
 
         // 각 장수들에게 지급
         foreach ($generalRawList as $rawGeneral) {
-            $generalObj = new General($rawGeneral, null, $year, $month, false);
+            $generalObj = new General($rawGeneral, null, null, $year, $month, false);
             $gold = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
             $generalObj->increaseVar('gold', $gold);
             
@@ -236,7 +236,7 @@ function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     $cityIncome = 0;
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
-        $cityIncome += calcCityGoldIncome($rawCity, $officersCnt[$cityID], $capitalID == $cityID, $nationLevel, $nationTypeObj);
+        $cityIncome += calcCityGoldIncome($rawCity, $officersCnt[$cityID]??0, $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);
@@ -365,7 +365,7 @@ function processRiceIncome() {
 
         // 각 장수들에게 지급
         foreach ($generalRawList as $rawGeneral) {
-            $generalObj = new General($rawGeneral, null, $year, $month, false);
+            $generalObj = new General($rawGeneral, null, null, $year, $month, false);
             $rice = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
             $generalObj->increaseVar('rice', $rice);
             
@@ -403,7 +403,7 @@ function getRiceIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
 
-        $cityIncome += calcCityRiceIncome($rawCity, $officersCnt[$cityID], $capitalID == $cityID, $nationLevel, $nationTypeObj);
+        $cityIncome += calcCityRiceIncome($rawCity, $officersCnt[$cityID]??0, $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);
@@ -429,7 +429,7 @@ function getWallIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
         
-        $cityIncome += calcCityWallRiceIncome($rawCity, $officersCnt[$cityID], $capitalID == $cityID, $nationLevel, $nationTypeObj);
+        $cityIncome += calcCityWallRiceIncome($rawCity, $officersCnt[$cityID]??0, $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);
@@ -584,7 +584,7 @@ function disaster() {
             
             $generalList = array_map(
                 function($rawGeneral) use ($city, $year, $month){
-                    return new General($rawGeneral, $city, $year, $month, false);
+                    return new General($rawGeneral, null, $city, $year, $month, false);
                 }, 
                 $generalListByCity[$city['city']]??[]
             );
@@ -599,13 +599,13 @@ function disaster() {
 
             $db->update('city', [
                 'state'=>$stateCode,
-                'pop'=>$db->sqleval('greatest(pop * %d, pop_max)', $affectRatio),
-                'trust'=>$db->sqleval('greatest(trust * %d, 100)', $affectRatio),
-                'agri'=>$db->sqleval('greatest(agri * %d, agri_max)', $affectRatio),
-                'comm'=>$db->sqleval('greatest(comm * %d, comm_max)', $affectRatio),
-                'secu'=>$db->sqleval('greatest(secu * %d, secu_max)', $affectRatio),
-                'def'=>$db->sqleval('greatest(def * %d, def_max)', $affectRatio),
-                'wall'=>$db->sqleval('greatest(wall * %d, wall_max)', $affectRatio),
+                'pop'=>$db->sqleval('least(pop * %d, pop_max)', $affectRatio),
+                'trust'=>$db->sqleval('least(trust * %d, 100)', $affectRatio),
+                'agri'=>$db->sqleval('least(agri * %d, agri_max)', $affectRatio),
+                'comm'=>$db->sqleval('least(comm * %d, comm_max)', $affectRatio),
+                'secu'=>$db->sqleval('least(secu * %d, secu_max)', $affectRatio),
+                'def'=>$db->sqleval('least(def * %d, def_max)', $affectRatio),
+                'wall'=>$db->sqleval('least(wall * %d, wall_max)', $affectRatio),
             ], 'city = %i', $city['city']);
 
             

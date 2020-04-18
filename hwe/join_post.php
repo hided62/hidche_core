@@ -265,14 +265,16 @@ foreach(Util::range(GameConst::$maxTurn) as $turnIdx){
 }
 $db->insert('general_turn', $turnRows);
 
+$rank_data = [];
 foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
-    $db->insert('rank_data', [
+    $rank_data[] = [
         'general_id'=>$generalID,
         'nation_id'=>0,
         'type'=>$rankColumn,
         'value'=>0
-    ]);
+    ];
 }
+$db->insert('rank_data', $rank_data);
 $cityname = CityConst::byID($city)->name;
 
 $me = [

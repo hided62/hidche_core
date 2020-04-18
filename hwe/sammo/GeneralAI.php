@@ -2849,8 +2849,8 @@ class GeneralAI
         $this->categorizeNationGeneral();
         $this->categorizeNationCities();
 
+        $month = $this->env['month'];
         if($general->getVar('officer_level') == 12){
-            $month = $this->env['month'];
             if (in_array($month, [1, 4, 7, 10])) {
                 $this->choosePromotion();
             } else if ($month == 12) {
@@ -3252,28 +3252,24 @@ class GeneralAI
 
         $nationID = $nation['nation'];
 
+        $rate = 15;
         //도시
-        if(!$this->supplyCities){
-            $db->update('nation', [
-                'war' => 0,
-                'rate' => 15
-            ], 'nation=%i', $nationID);
-        } else {
+        if($this->supplyCities){
             $devRate = $this->calcNationDevelopedRate();
 
-            $avg = ($devRate['pop'] + $devRate['all_p']) / 2;
+            $avg = ($devRate['pop'] + $devRate['all']) / 2;
 
             if ($avg > 0.95) $rate = 25;
             elseif ($avg > 0.70) $rate = 20;
             elseif ($avg > 0.50) $rate = 15;
             else $rate = 10;
-
-            $db->update('nation', [
-                'war' => 0,
-                'rate' => $rate
-            ], 'nation=%i', $nationID);
-            return $rate;
         }
+
+        $db->update('nation', [
+            'war' => 0,
+            'rate' => $rate
+        ], 'nation=%i', $nationID);
+        return $rate;
     }
 
     protected function chooseGoldBillRate(): int

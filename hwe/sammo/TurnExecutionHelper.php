@@ -224,6 +224,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         $currentTurn = null;
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
+        $autorun_user = $gameStor->autorun_user;
 
         foreach($generalsTodo as $rawGeneral){
             $generalCommand = $rawGeneral['action'];
@@ -261,7 +262,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             }
 
             
-            if($general->getVar('npc') >= 2){
+            if($general->getVar('npc') >= 2 || ($autorun_user['limit_minutes']??false)){
                 $ai = new GeneralAI($turnObj->getGeneral());
                 if($hasNationTurn){
                     $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
