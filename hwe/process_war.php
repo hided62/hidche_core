@@ -533,6 +533,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             return $gen['no'];
         }, $oldNationGenerals);
         $oldNation['aux'] = Json::decode($oldNation['aux']);
+        $oldNation['history'] = getNationHistoryAll($city['nation']);
 
         foreach($oldNationGenerals as $gen){
 

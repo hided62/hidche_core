@@ -63,7 +63,6 @@ CREATE TABLE `general` (
 	`explevel` INT(2) NULL DEFAULT '0',
 	`age` INT(3) NULL DEFAULT '20',
 	`startage` INT(3) NULL DEFAULT '20',
-	`history` MEDIUMTEXT NULL DEFAULT '',
 	`belong` INT(2) NULL DEFAULT '1',
 	`betray` INT(2) NULL DEFAULT '0',
 	`personal` VARCHAR(20) NOT NULL DEFAULT 'None',
@@ -148,7 +147,6 @@ CREATE TABLE `nation` (
 	`level` INT(1) NULL DEFAULT '0',
 	`type` VARCHAR(20) NOT NULL DEFAULT 'che_중립',
 	`rule` TEXT NULL DEFAULT '',
-	`history` MEDIUMTEXT NULL DEFAULT '',
 	`aux` TEXT NOT NULL DEFAULT '{}',
 	PRIMARY KEY (`nation`)
 )

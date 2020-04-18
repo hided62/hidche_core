@@ -64,7 +64,7 @@ $(function(){
 <table align=center width=1200 height=520 class='tb_layout bg0'>
     <tr height=520>
         <td width=498 valign=top>
-            <?=getGeneralPublicRecordRecent(34)?>
+            <?=formatHistoryToHTML(getGeneralPublicRecordRecent(34))?>
         </td>
         <td width=698>
             <?=getMapHtml($mapTheme)?>
@@ -72,7 +72,7 @@ $(function(){
     </tr>
     <tr>
         <td colspan=2 valign=top>
-            <?=getWorldHistoryRecent(34)?>
+            <?=formatHistoryToHTML(getWorldHistoryRecent(34))?>
         </td>
     </tr>
 </table>

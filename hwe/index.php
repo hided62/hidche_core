@@ -318,11 +318,11 @@ else if($session->userGrade == 4){
         <td width=498 class='bg1 center'><b>개인 기록</b></td>
     </tr>
     <tr>
-        <td width=498 id="general_public_record" style="text-align:left;"><?=getGeneralPublicRecordRecent(15)?></td>
-        <td width=498 id="general_log" style="text-align:left;"><?=getGenLogRecent($me['no'], 15)?></td>
+        <td width=498 id="general_public_record" style="text-align:left;"><?=formatHistoryToHTML(getGeneralPublicRecordRecent(15))?></td>
+        <td width=498 id="general_log" style="text-align:left;"><?=formatHistoryToHTML(getGenLogRecent($me['no'], 15))?></td>
     </tr>
     <tr><td width=998 colspan=2 class='bg1 center'><b>중원 정세</b></td></tr>
-    <tr><td width=998 id="world_history" colspan=2 style="text-align:left;"><?=getWorldHistoryRecent(15)?></td></tr>
+    <tr><td width=998 id="world_history" colspan=2 style="text-align:left;"><?=formatHistoryToHTML(getWorldHistoryRecent(15))?></td></tr>
 </table>
 <div class="message_input_form bg0">
     <select id="mailbox_list" size="1">

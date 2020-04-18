@@ -174,7 +174,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
             <?php generalInfo($showGeneral); generalInfo2($showGeneral); ?>
         </td>
         <td valign=top>
-            <?=getGeneralHistoryAll($gen)?>
+            <?=formatHistoryToHTML(getGeneralHistoryAll($gen))?>
         </td>
     </tr>
     <tr>
@@ -183,10 +183,10 @@ $showGeneral = General::createGeneralObjFromDB($gen);
     </tr>
     <tr>
         <td valign=top>
-            <?=getBatLogRecent($gen, 24)?>
+            <?=formatHistoryToHTML(getBatLogRecent($gen, 24))?>
         </td>
         <td valign=top>
-            <?=getBatResRecent($gen, 24)?>
+            <?=formatHistoryToHTML(getBatResRecent($gen, 24))?>
         </td>
     </tr>
 <?php if($npc > 1 || $permission >= 2): ?>
@@ -196,7 +196,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
     </tr>
     <tr>
         <td valign=top>
-            <?=getGenLogRecent($gen, 24)?>
+            <?=formatHistoryToHTML(getGenLogRecent($gen, 24))?>
         </td>
         <td valign=top>
         </td>

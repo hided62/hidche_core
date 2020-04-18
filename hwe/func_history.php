@@ -129,7 +129,13 @@ function pushOldNationStop(int $no, int $nationNo){
 }
 
 //DB-based
-
+function formatHistoryToHTML(array $history):string{
+    $result = [];
+    foreach($history as $item){
+        $result[] = ConvertLog($item);
+    }
+    return join('<br>', $result);
+}
 
 function pushGenLog(int $generalID, ?array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
@@ -153,19 +159,13 @@ function pushGenLog(int $generalID, ?array $history, ?int $year=null, ?int $mont
     $db->insert('general_record', $request);
 }
 
-function getGenLogRecent(int $generalID, int $count) {
+function getGenLogRecent(int $generalID, int $count):array{
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "action" order by id desc LIMIT %i',
-            $generalID, $count
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
+    return $db->queryFirstColumn(
+        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "action" order by id desc LIMIT %i',
+        $generalID, $count
+    );
 }
 
 function pushBatRes(int $generalID, array $history, ?int $year=null, ?int $month=null) {
@@ -190,19 +190,13 @@ function pushBatRes(int $generalID, array $history, ?int $year=null, ?int $month
     $db->insert('general_record', $request);
 }
 
-function getBatResRecent(int $generalID, int $count) {
+function getBatResRecent(int $generalID, int $count):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle_brief" order by id desc LIMIT %i',
-            $generalID, $count
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
+    return $db->queryFirstColumn(
+        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle_brief" order by id desc LIMIT %i',
+        $generalID, $count
+    );
 }
 
 function pushBatLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
@@ -227,19 +221,13 @@ function pushBatLog(int $generalID, array $history, ?int $year=null, ?int $month
     $db->insert('general_record', $request);
 }
 
-function getBatLogRecent(int $generalID, int $count) {
+function getBatLogRecent(int $generalID, int $count):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle" order by id desc LIMIT %i',
-            $generalID, $count
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
+    return $db->queryFirstColumn(
+        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle" order by id desc LIMIT %i',
+        $generalID, $count
+    );
 }
 
 
@@ -266,19 +254,13 @@ function pushGeneralHistory(int $generalID, ?array $history, $year=null, $month=
 
 }
 
-function getGeneralHistoryAll(int $generalID) {
+function getGeneralHistoryAll(int $generalID):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from general_record WHERE general_id = %i AND log_type = "history" order by id desc',
-            $generalID
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
+    return $db->queryFirstColumn(
+        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "history" order by id desc',
+        $generalID
+    );
 }
 
 
@@ -298,6 +280,15 @@ function pushNationHistory(int $nationID, ?array $history, ?int $year=null, ?int
     $db->insert('world_history', $request);
 }
 
+function getNationHistoryAll(int $nationID):array {
+    $db = DB::db();
+
+    return $db->queryFirstColumn(
+        'SELECT `text` from world_history WHERE nation_id = %i order by id desc',
+        $nationID
+    );
+}
+
 
 function pushWorldHistory(?array $history, $year=null, $month=null) {
     if(!$history){
@@ -315,35 +306,25 @@ function pushWorldHistory(?array $history, $year=null, $month=null) {
     $db->insert('world_history', $request);
 }
 
-function getWorldHistoryRecent(int $count) {
+function getWorldHistoryRecent(int $count):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach($db->queryFirstColumn('SELECT `text` from world_history WHERE nation_id = 0 order by id desc limit %i', $count) as $text){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
+    return $db->queryFirstColumn('SELECT `text` from world_history WHERE nation_id = 0 order by id desc limit %i', $count);
 }
 
-function getWorldHistoryWithDate(int $year, int $month) {
+function getWorldHistoryWithDate(int $year, int $month):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from world_history where nation_id = 0 AND year = %i and month = %i order by id desc', 
-            $year, 
-            $month
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
+    $texts = $db->queryFirstColumn(
+        'SELECT `text` from world_history where nation_id = 0 AND year = %i and month = %i order by id desc', 
+        $year, 
+        $month
+    );
 
     if(!$texts){
-        return ConvertLog("<C>●</>{$year}년 {$month}월: 기록 없음");
+        return ["<C>●</>{$year}년 {$month}월: 기록 없음"];
     }
-
-    return join('<br>', $texts);
+    return $texts;
 }
 
 
@@ -363,39 +344,28 @@ function pushGeneralPublicRecord(?array $history, ?int $year=null, ?int $month=n
     $db->insert('general_record', $request);
 }
 
-function getGeneralPublicRecordRecent(int $count) {
+function getGeneralPublicRecordRecent(int $count):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from general_record WHERE general_id = 0 AND log_type = "history" order by id desc limit %i',
-            $count
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
+    return $db->queryFirstColumn(
+        'SELECT `text` from general_record WHERE general_id = 0 AND log_type = "history" order by id desc limit %i',
+        $count
+    );
 }
 
-function getGeneralPublicRecordWithDate(int $year, int $month) {
+function getGeneralPublicRecordWithDate(int $year, int $month):array {
     $db = DB::db();
 
-    $texts = [];
-    foreach(
-        $db->queryFirstColumn(
-            'SELECT `text` from general_record where general_id = 0 AND log_type = "history" AND year = %i and month = %i order by id desc', 
-            $year, 
-            $month
-        ) as $text
-    ){
-        $texts[] = ConvertLog($text);
-    }
+    $texts = $db->queryFirstColumn(
+        'SELECT `text` from general_record where general_id = 0 AND log_type = "history" AND year = %i and month = %i order by id desc', 
+        $year, 
+        $month
+    );
 
     if(!$texts){
-        return ConvertLog("<C>●</>{$month}월: 기록 없음");
+        return "<C>●</>{$month}월: 기록 없음";
     }
-    return join('<br>', $texts);
+    return $texts;
 }
 
 function LogHistory($isFirst=0) {
@@ -432,8 +402,8 @@ function LogHistory($isFirst=0) {
 
     $map_json = Json::encode($map);
     
-    $log = getWorldHistoryWithDate($year, $month);
-    $genlog = getGeneralPublicRecordWithDate($year, $month);
+    $log = Json::encode(getWorldHistoryWithDate($year, $month));
+    $genlog = Json::encode(getGeneralPublicRecordWithDate($year, $month));
 
     $nationStr = "";
     $powerStr = "";

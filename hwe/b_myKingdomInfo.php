@@ -43,7 +43,7 @@ if($nationID == 0) {
 <br>
 <?php
 
-$nation = $db->queryFirstRow('SELECT nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital FROM nation WHERE nation=%i', $nationID);   //국가정보
+$nation = $db->queryFirstRow('SELECT nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,capital FROM nation WHERE nation=%i', $nationID);   //국가정보
 $cityList = $db->query('SELECT * FROM city WHERE nation=%i', $nationID);
 
 $currPop = 0;
@@ -146,7 +146,7 @@ if ($budgetricediff > 0) {
     </tr>
     <tr>
         <td align=center valign=top id=bg1>국가열전</td>
-        <td colspan=7 id=bg0><?=ConvertLog($nation['history'])?></td>
+        <td colspan=7 id=bg0><?=formatHistoryToHTML(getNationHistoryAll($nation['nation']))?></td>
     </tr>
 </table>
 <br>

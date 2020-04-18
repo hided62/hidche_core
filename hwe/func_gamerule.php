@@ -651,6 +651,7 @@ function checkMerge() {
         $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
         $oldNation['generals'] = $oldNationGenerals;
         $oldNation['aux'] = Json::decode($oldNation['aux']);
+        $oldNation['history'] = getNationHistoryAll($me['nation']);
 
         // 자금 통합, 외교제한 5년, 기술유지
         $db->update('nation', [
@@ -801,6 +802,7 @@ function checkSurrender() {
         $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
         $oldNation['generals'] = $oldNationGenerals;
         $oldNation['aux'] = Json::decode($oldNation['aux']);
+        $oldNation['history'] = getNationHistoryAll($me['nation']);
 
         $newGenCount = $gencount + $gencount2;
         $newTech = ($younation['tech'] * $gencount + $mynation['tech'] * $gencount2) / $newGenCount;
@@ -1186,6 +1188,7 @@ function checkStatistic() {
 
 
 function convForOldGeneral(array $general, int $year, int $month){
+    $general['history'] = getGeneralHistoryAll($general['no']);
     return [
         'server_id'=>UniqueConst::$serverID,
         'general_no'=>$general['no'],
@@ -1345,6 +1348,7 @@ function checkEmperior() {
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
     $oldNation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
     $oldNation['aux'] = Json::decode($oldNation['aux']);
+    $oldNation['history'] = getNationHistoryAll($nation['nation']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
@@ -1366,7 +1370,7 @@ function checkEmperior() {
         ])
     ]);
 
-    $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
+    $nationHistory = JSON::encode(getNationHistoryAll($nation['nation']));
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
     $serverName = UniqueConst::$serverName;

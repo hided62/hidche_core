@@ -195,7 +195,7 @@ if ($select == 0) {
     </tr>
     <tr>
         <td id=bg1 align=center>역 사 기 록</td>
-        <td colspan=5>".ConvertLog($emperior['history'], 1)."</td>
+        <td colspan=5>".formatHistoryToHTML(Json::decode($emperior['history']))."</td>
     </tr>
 </table>
 </form>";

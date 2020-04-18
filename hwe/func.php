@@ -1566,6 +1566,7 @@ function deleteNation(General $general) {
     $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nationID);
     $oldNation['generals'] = $oldNationGenerals;
     $oldNation['aux'] = Json::decode($oldNation['aux']);
+    $oldNation['history'] = getNationHistoryAll($nationID);
 
     $general->setVar('belong', 0);
     $general->setVar('troop', 0);

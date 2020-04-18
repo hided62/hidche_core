@@ -148,13 +148,13 @@ var selectMonth = <?=$month?>;
     <tr><td colspan=5 align=center id=bg1>중 원 정 세</td></tr>
     <tr>
         <td colspan=5 valign=top>
-            <?=$history['log']?>
+            <?=formatHistoryToHTML(Json::decode($history['log']))?>
         </td>
     </tr>
     <tr><td colspan=5 align=center id=bg1>장 수 동 향</td></tr>
     <tr>
         <td colspan=5 valign=top>
-            <?=$history['genlog']?>
+            <?=formatHistoryToHTML(Json::decode($history['genlog']))?>
         </td>
     </tr>
 </table>
