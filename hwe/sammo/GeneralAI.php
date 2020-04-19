@@ -2932,6 +2932,7 @@ class GeneralAI
         }
 
         if(!($reservedCommand instanceof Command\Nation\휴식) && $reservedCommand->isRunnable()){
+            $reservedCommand->reason = 'reserved';
             return $reservedCommand;
         }
 
@@ -2945,10 +2946,13 @@ class GeneralAI
             /** @var ?NationCommand */
             $result = $this->{'do'.$actionName}($lastTurn);
             if($result !== null){
+                $reservedCommand->reason = 'do'.$actionName;
                 return $result;
             }
         }
-        return buildNationCommandClass(null, $this->general, $this->env, $this->general->getLastTurn());
+        $cmd = buildNationCommandClass(null, $this->general, $this->env, $this->general->getLastTurn());
+        $cmd->reason = 'neutral';
+        return $cmd;
     }
 
     public function chooseInstantNationTurn(NationCommand $reservedCommand): ?NationCommand{
@@ -3092,13 +3096,18 @@ class GeneralAI
             return $this->devRate;
         }
 
-        $devRate = [];
+        $devRate = [
+            'all'=>0,
+        ];
 
 
         foreach($this->supplyCities as $city){
             foreach($this->calcCityDevelRate($city) as $develKey => [$devScore, $devType]){
                 if($develKey == 'trust'){
                     continue;
+                }
+                if(!key_exists($develKey, $devRate)){
+                    $devRate[$develKey] = 0;
                 }
                 $devRate[$develKey] += $devScore;
                 $devRate['all'] += $devScore;

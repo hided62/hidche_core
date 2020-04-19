@@ -266,6 +266,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 $ai = new GeneralAI($turnObj->getGeneral());
                 if($hasNationTurn){
                     $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
+                    LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
                 }
 
                 $generalCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리

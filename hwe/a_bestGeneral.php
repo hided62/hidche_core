@@ -186,6 +186,9 @@ foreach($db->query(
 }
 
 foreach($db->queryAllLists('SELECT general_id, `type`, `value` FROM rank_data') as [$generalID, $typeKey, $value]){
+    if(!key_exists($generalID, $generals)){
+        continue;
+    }
      $generals[$generalID][$typeKey] = $value;
 }
 

@@ -36,14 +36,14 @@ if(!$availableDieImmediately){
 }
 
 
-if(!$db->query('DELETE FROM general WHERE owner=%i AND npc=0', $userID)){
+
+$generalObj = General::createGeneralObjFromDB($general['no']);
+if($generalObj instanceof DummyGeneral){
     trigger_error("올바르지 않은 삭제 프로세스 $userID", E_USER_WARNING);
 }
-$generalName = $general['name'];
+$generalName = $generalObj->getName();
 $josaYi = JosaUtil::pick($generalName, '이');
-pushGeneralPublicRecord(["<C>●</>{$gameStor->month}월:<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>"], $gameStor->year, $gameStor->month);
-
-
+$generalObj->kill($db, true, "<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>");
 
 $session->logoutGame();
 header('location:..');

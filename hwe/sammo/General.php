@@ -509,7 +509,7 @@ class General implements iAction{
     /**
      * @param \MeekroDB $db
      */
-    function kill($db){
+    function kill($db, bool $sendDyingMessage=true, ?string $dyingMessage=null){
         $generalID = $this->getID();
         $logger = $this->getLogger();
 
@@ -533,11 +533,22 @@ class General implements iAction{
             $db->delete('troop', 'troop_leader=%i', $troopLeaderID);
         }
 
-        $dyingMessage = new TextDecoration\DyingMessage($this);
-        $logger->pushGlobalActionLog($dyingMessage->getText());
+
+        if($sendDyingMessage){
+            if($dyingMessage){
+                $logger->pushGlobalActionLog($dyingMessage);
+            }
+            else{
+                $dyingMessageObj = new TextDecoration\DyingMessage($this);
+                $logger->pushGlobalActionLog($dyingMessageObj->getText());
+            }
+            $logger->flush();    
+        }
+        
 
         $db->delete('general', 'no=%i', $generalID);
         $db->delete('general_turn', 'general_id=%i', $generalID);
+        $db->delete('rank_data', 'general_id=%i', $generalID);
         $this->updatedVar = [];
 
         $db->update('nation', [
