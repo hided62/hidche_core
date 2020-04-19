@@ -21,7 +21,7 @@ class WarUnitCity extends WarUnit{
         $this->cityRate = $cityRate;
 
         $this->logger = $general->getLogger();
-        $this->crewType = GameUnitConst::byID(GameUnitConst::T_CASTLE);
+        $this->crewType = GameUnitConst::byID(GameUnitConst::CREWTYPE_CASTLE);
 
         $this->hp = $this->getVar('def') * 10; 
 

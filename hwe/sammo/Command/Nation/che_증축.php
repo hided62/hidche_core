@@ -170,12 +170,12 @@ class che_증축 extends Command\NationCommand{
 
         $db->update('city', [
             'level'=>$db->sqleval('level+1'),
-            'pop2'=>$db->sqleval('pop_max + %i', GameConst::$expandCityPopIncreaseAmount),
-            'agri2'=>$db->sqleval('agri_max + %i', GameConst::$expandCityDevelIncreaseAmount),
-            'comm2'=>$db->sqleval('comm_max + %i', GameConst::$expandCityDevelIncreaseAmount),
-            'secu2'=>$db->sqleval('secu_max + %i', GameConst::$expandCityDevelIncreaseAmount),
-            'def2'=>$db->sqleval('def_max + %i', GameConst::$expandCityWallIncreaseAmount),
-            'wall2'=>$db->sqleval('wall_max + %i', GameConst::$expandCityWallIncreaseAmount),
+            'pop_max'=>$db->sqleval('pop_max + %i', GameConst::$expandCityPopIncreaseAmount),
+            'agri_max'=>$db->sqleval('agri_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'comm_max'=>$db->sqleval('comm_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'secu_max'=>$db->sqleval('secu_max + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'def_max'=>$db->sqleval('def_max + %i', GameConst::$expandCityWallIncreaseAmount),
+            'wall_max'=>$db->sqleval('wall_max + %i', GameConst::$expandCityWallIncreaseAmount),
         ], 'city=%i', $destCityID);
 
         [$reqGold, $reqRice] = $this->getCost();

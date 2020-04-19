@@ -360,7 +360,7 @@ class GeneralAI
 
             //충분히 징병 가능한 도시의 부대는 제자리 유지
             $city = $this->supplyCities[$currentCityID];
-            if($city['pop'] / $city['pop2'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
                 continue;
             }
 
@@ -744,7 +744,7 @@ class GeneralAI
             $dev = min($city['dev'], 0.999);
             $score = 1 - $dev;
             $score **= 2;
-            $score /= sqrt(count($city['generals']) + 1);
+            $score /= sqrt(count($city['generals']??[]) + 1);
             $cityCandidiates[$city['city']] = $score;
         }
 
@@ -961,7 +961,7 @@ class GeneralAI
             $dev = min($city['dev'], 0.999);
             $score = 1 - $dev;
             $score **= 2;
-            $score /= sqrt(count($city['generals']) + 1);
+            $score /= sqrt(count($city['generals']??[]) + 1);
             $cityCandidiates[$city['city']] = $score;
         }
 
@@ -1044,6 +1044,10 @@ class GeneralAI
                     count($userWarGenerals)-$idx
                 ];
             }
+        }
+
+        if(!$candidateArgs){
+            return null;
         }
         
         $cmd = buildNationCommandClass(
@@ -1133,6 +1137,9 @@ class GeneralAI
             }
         }
         
+        if(!$candidateArgs){
+            return null;
+        }
         
         $cmd = buildNationCommandClass(
             'che_포상', $this->general, $this->env, $lastTurn, 
@@ -1202,6 +1209,10 @@ class GeneralAI
                     count($npcWarGenerals)-$idx
                 ];
             }
+        }
+
+        if(!$candidateArgs){
+            return null;
         }
         
         $cmd = buildNationCommandClass(
@@ -1303,6 +1314,10 @@ class GeneralAI
                 ];
             }
 
+        }
+
+        if(!$candidateArgs){
+            return null;
         }
         
         $cmd = buildNationCommandClass(
@@ -1421,6 +1436,10 @@ class GeneralAI
                 ];
             }
 
+        }
+
+        if(!$candidateArgs){
+            return null;
         }
         
         $cmd = buildNationCommandClass(
@@ -1605,7 +1624,7 @@ class GeneralAI
     }
 
     //일반장 행동
-    protected function do일반내정(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do일반내정(): ?GeneralCommand
     {
         $leadership = $this->leadership;
         $strength = $this->strength;
@@ -1691,7 +1710,7 @@ class GeneralAI
         return Util::choiceRandomUsingWeightPair($cmdList);
     }
 
-    protected function do긴급내정(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do긴급내정(): ?GeneralCommand
     {
         if($this->dipState === self::d평화){
             return null;
@@ -1724,7 +1743,7 @@ class GeneralAI
         return null;
     }
 
-    protected function do전쟁내정(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do전쟁내정(): ?GeneralCommand
     {
 
         if($this->dipState === self::d평화){
@@ -1830,7 +1849,7 @@ class GeneralAI
     }
 
 
-    protected function do금쌀구매(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do금쌀구매(): ?GeneralCommand
     {
         $general = $this->general;
         $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
@@ -1920,7 +1939,7 @@ class GeneralAI
         return null;
     }
 
-    protected function do징병(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do징병(): ?GeneralCommand
     {
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             return null;
@@ -2072,7 +2091,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do전투준비(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do전투준비(): ?GeneralCommand
     {
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             return null;
@@ -2103,7 +2122,7 @@ class GeneralAI
         return Util::choiceRandomUsingWeightPair($cmdList);
     }
 
-    public function do소집해제(GeneralCommand $reservedCommand): ?GeneralCommand
+    public function do소집해제(): ?GeneralCommand
     {
         if ($this->attackable){
             return null;
@@ -2125,7 +2144,7 @@ class GeneralAI
     }
 
 
-    protected function do출병(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do출병(): ?GeneralCommand
     {
         if (!$this->attackable) {
             return null;
@@ -2171,13 +2190,13 @@ class GeneralAI
 
 
     /*
-    protected function doNPC증여(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function doNPC증여(): ?GeneralCommand
     {
         return null;
     }
     */
 
-    protected function doNPC헌납(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function doNPC헌납(): ?GeneralCommand
     {
         $policy = $this->nationPolicy;
         $general = $this->general;
@@ -2241,7 +2260,7 @@ class GeneralAI
     }
 
 
-    protected function do후방워프(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do후방워프(): ?GeneralCommand
     {
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             return null;
@@ -2318,7 +2337,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do전방워프(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do전방워프(): ?GeneralCommand
     {
         if(!$this->attackable){
             return null;
@@ -2365,7 +2384,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do내정워프(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do내정워프(): ?GeneralCommand
     {
         
         $city = $this->city;
@@ -2399,6 +2418,7 @@ class GeneralAI
             if($city['city'] === $candidate['city']){
                 continue;
             }
+            $realDevelRate = 0;
 
             foreach($this->calcCityDevelRate($city) as $develKey => [$develVal, $develType]){
                 if(!($this->genType & $develType)){
@@ -2411,7 +2431,7 @@ class GeneralAI
                 continue;
             }
 
-            $candidateCities[$city['city']] = $realDevelRate / \sqrt(count($city['generals']) + 1);
+            $candidateCities[$city['city']] = $realDevelRate / \sqrt(count($city['generals']??[]) + 1);
         }
 
         if(!$candidateCities){
@@ -2429,7 +2449,7 @@ class GeneralAI
     }
 
 
-    protected function do귀환(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do귀환(): ?GeneralCommand
     {
         $general = $this->general;
         $city = $this->city;
@@ -2444,9 +2464,8 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do집합(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do집합(): ?GeneralCommand
     {
-        $cmd = $reservedCommand;
         $general = $this->general;
 
         $cmd = buildGeneralCommandClass('che_집합', $general, $this->env);
@@ -2455,7 +2474,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do방랑군이동(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do방랑군이동(): ?GeneralCommand
     {
         $db = DB::db();
 
@@ -2510,7 +2529,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do거병(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do거병(): ?GeneralCommand
     {
         $general = $this->general;
         // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
@@ -2540,7 +2559,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do해산(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do해산(): ?GeneralCommand
     {
         $cmd = buildGeneralCommandClass('che_해산', $this->general, $this->env, null);
         if(!$cmd->isRunnable()){
@@ -2549,7 +2568,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do건국(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do건국(): ?GeneralCommand
     {
         $nationType = Util::choiceRandom(GameConst::$availableNationType);
         $nationColor = Util::choiceRandom(array_keys(GetNationColors()));
@@ -2564,7 +2583,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do선양(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do선양(): ?GeneralCommand
     {
         $db = DB::db();
         $cmd = buildGeneralCommandClass('che_선양', $this->general, $this->env, [
@@ -2577,7 +2596,7 @@ class GeneralAI
         return $cmd;
     }
 
-    protected function do국가선택(GeneralCommand $reservedCommand): ?GeneralCommand
+    protected function do국가선택(): ?GeneralCommand
     {
         $general = $this->getGeneralObj();
         $city = $this->city;
@@ -2621,7 +2640,7 @@ class GeneralAI
             }
 
             //랜임 커맨드 입력.
-            $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env, ['destNationID' => $rulerNation]);
+            $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env);
             if(!$cmd->isRunnable()){
                 return null;
             }
@@ -2672,7 +2691,7 @@ class GeneralAI
         return null;
     }
 
-    protected function do중립(GeneralCommand $reservedCommand): GeneralCommand
+    protected function do중립(): GeneralCommand
     {
         $general = $this->general;
         if($general->getNationID() == 0){
@@ -2870,7 +2889,7 @@ class GeneralAI
             $this->chooseNonLordPromotion();
         }
 
-        if(!($reservedCommand instanceof Command\NationCommand\휴식) && $reservedCommand->isRunnable()){
+        if(!($reservedCommand instanceof Command\Nation\휴식) && $reservedCommand->isRunnable()){
             return $reservedCommand;
         }
 
@@ -2945,17 +2964,17 @@ class GeneralAI
         }
 
         if($general->getVar('officer_level') === 12 && $this->generalPolicy->can선양){
-            $result = $this->do선양($reservedCommand);
+            $result = $this->do선양();
             if($result !== null){
                 return $result;
             }
         }
         
         if($npcType == 5){
-            return $this->do집합($reservedCommand);
+            return $this->do집합();
         }
 
-        if(!($reservedCommand instanceof Command\General\휴식) && $reservedCommand->isRunnable()){
+        if(!($reservedCommand instanceof Command\General\휴식)){
             return $reservedCommand;
         }
 
@@ -2964,32 +2983,32 @@ class GeneralAI
         }
 
         if($npcType == 2 && $nationID == 0){
-            $result = $this->do거병($reservedCommand);
+            $result = $this->do거병();
             if($result !== null){
                 return $result;
             }
         }
 
         if($nationID === 0 && $this->generalPolicy->can국가선택){
-            $result = $this->do국가선택($reservedCommand);
+            $result = $this->do국가선택();
             if($result !== null){
                 return $result;
             }
-            return $this->do중립($reservedCommand);
+            return $this->do중립();
         }
 
         if($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']){
             //방랑군 건국
-            $result = $this->do건국($reservedCommand);
+            $result = $this->do건국();
             if($result !== null){
                 return $result;
             }
-            $result = $this->do방랑군이동($reservedCommand);
+            $result = $this->do방랑군이동();
             if($result !== null){
                 return $result;
             }
 
-            $result = $this->do해산($reservedCommand);
+            $result = $this->do해산();
             if($result !== null){
                 return $result;
             }
@@ -3000,13 +3019,13 @@ class GeneralAI
                 continue;
             }
             /** @var ?GeneralCommand */
-            $result = $this->{'do'.$actionName}($reservedCommand);
+            $result = $this->{'do'.$actionName}();
             if($result !== null){
                 return $result;
             }
         }
 
-        return $this->do중립($reservedCommand);
+        return $this->do중립();
     }
 
     protected function calcNationDevelopedRate()

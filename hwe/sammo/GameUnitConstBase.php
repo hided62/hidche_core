@@ -13,6 +13,7 @@ class GameUnitConstBase{
     const T_WIZARD = 4;
     const T_SIEGE = 5;
     const T_MISC = 6;
+    const CREWTYPE_CASTLE = 1000;
 
     const DEFAULT_CREWTYPE = 1100;
     

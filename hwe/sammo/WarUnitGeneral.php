@@ -46,7 +46,7 @@ class WarUnitGeneral extends WarUnit{
     function setOppose(?WarUnit $oppose){
         parent::setOppose($oppose);
         $general = $this->general;
-        $this->general->increaseVar('warnum', 1);
+        $this->general->increaseRankVar('warnum', 1);
 
         if($this->isAttacker){
             $general->updateVar('recent_war', $general->getTurnTime());

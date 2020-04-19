@@ -43,7 +43,10 @@ class che_증여 extends Command\GeneralCommand{
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
         $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($amount)){
+        if(is_float($amount)){
+            $amount = Util::toInt($amount);
+        }
+        else if(!is_int($amount)){
             return false;
         }
         $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);

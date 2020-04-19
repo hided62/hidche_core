@@ -1051,13 +1051,8 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         if($energy2 <= 0) { $sel = 0; break; }
     }
 
-    $query = "select {$tp2}g as gl from general where no='{$gen1['no']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general1 = MYDB_fetch_array($result);
-
-    $query = "select {$tp2}g as gl from general where no='{$gen2['no']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general2 = MYDB_fetch_array($result);
+    $general1 = $db->queryFirstRow('SELECT value as gl FROM rank_data WHERE general_id = %i AND type = %s', $gen1['no'], $tp2.'g');
+    $general2 = $db->queryFirstRow('SELECT value as gl FROM rank_data WHERE general_id = %i AND type = %s', $gen2['no'], $tp2.'g');
 
     switch($sel) {
     case 0:
