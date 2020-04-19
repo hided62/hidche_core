@@ -74,22 +74,22 @@ class ActionLogger{
     }
 
     public function flush(){
-        if($this->generalHistoryLog){
+        if($this->generalHistoryLog && $this->generalID){
             pushGeneralHistory($this->generalID, $this->generalHistoryLog, $this->year, $this->month);
             $this->generalHistoryLog = [];
         }
 
-        if($this->generalActionLog){
+        if($this->generalActionLog && $this->generalID){
             pushGenLog($this->generalID, $this->generalActionLog, $this->year, $this->month);
             $this->generalActionLog = [];
         }
 
-        if($this->generalBattleResultLog){
+        if($this->generalBattleResultLog && $this->generalID){
             pushBatRes($this->generalID, $this->generalBattleResultLog, $this->year, $this->month);
             $this->generalBattleResultLog = [];
         }
 
-        if($this->generalBattleDetailLog){
+        if($this->generalBattleDetailLog && $this->generalID){
             pushBatLog($this->generalID, $this->generalBattleDetailLog, $this->year, $this->month);
             $this->generalBattleDetailLog = [];
         }

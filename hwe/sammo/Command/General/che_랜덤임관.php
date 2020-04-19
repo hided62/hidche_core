@@ -29,9 +29,14 @@ class che_랜덤임관 extends Command\GeneralCommand{
     static public $reqArg = false;
 
     protected function argTest():bool{
-        if($this->arg === null){
+        $this->arg = null;
+        return true;
+
+        //TODO: 구현
+        /*if($this->arg === null){
             return true;
         }
+        
         $destNationIDList = $this->arg['destNationIDList']??null;
         //null은 에러, []는 정상
 
@@ -53,7 +58,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
             'destNationIDList' => $destNationIDList
         ];    
         
-        return true;
+        return true;*/
     }
 
     protected function init(){
@@ -71,9 +76,11 @@ class che_랜덤임관 extends Command\GeneralCommand{
             ConstraintHelper::AllowJoinAction(),
         ];
 
+        /*
         if($this->arg['destNationIDList']??false){
             $this->runnableConstraints[] = ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']);
         }
+        */
     }
 
     public function getCost():array{
@@ -103,7 +110,10 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $relYear = $env['year'] - $env['startyear'];
 
+        /*
         $notIn = array_merge($general->getAuxVar('joinedNations')??[], $this->arg['destNationIDList']);
+        */
+        $notIn = null;
 
         $destNation = null;
 

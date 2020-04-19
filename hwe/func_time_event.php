@@ -85,7 +85,8 @@ function processGoldIncome() {
             ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
 
-        $incomeLog = "이번 수입은 금 <C>$income</>입니다.";
+        $incomeText = number_format($income);
+        $incomeLog = "이번 수입은 금 <C>$incomeText</>입니다.";
 
         $db->update('nation', [
             'gold'=>$nation['gold']
@@ -101,7 +102,9 @@ function processGoldIncome() {
             if($generalObj->getVar('officer_level') > 4){
                 $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
             }
-            $logger->pushGeneralActionLog("봉급으로 금 <C>$gold</>을 받았습니다.", $logger::PLAIN);
+
+            $goldText = number_format($gold);
+            $logger->pushGeneralActionLog("봉급으로 금 <C>$goldText</>을 받았습니다.", $logger::PLAIN);
             $generalObj->applyDB($db);
         }
     }
@@ -357,7 +360,8 @@ function processRiceIncome() {
             ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
 
-        $incomeLog = "이번 수입은 쌀 <C>$income</>입니다.";
+        $incomeText = number_format($income);
+        $incomeLog = "이번 수입은 쌀 <C>$incomeText</>입니다.";
 
         $db->update('nation', [
             'rice'=>$nation['rice']
@@ -373,7 +377,8 @@ function processRiceIncome() {
             if($generalObj->getVar('officer_level') > 4){
                 $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
             }
-            $logger->pushGeneralActionLog("봉급으로 쌀 <C>$rice</>을 받았습니다.", $logger::PLAIN);
+            $riceText = number_format($rice);
+            $logger->pushGeneralActionLog("봉급으로 쌀 <C>$riceText</>을 받았습니다.", $logger::PLAIN);
             $generalObj->applyDB($db);
         }
     }

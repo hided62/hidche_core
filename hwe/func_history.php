@@ -268,6 +268,9 @@ function pushNationHistory(int $nationID, ?array $history, ?int $year=null, ?int
     if(!$history){
         return;
     }
+    if(!$nationID){
+        return;
+    }
     $db = DB::db();
     
     if($year === null || $month === null){

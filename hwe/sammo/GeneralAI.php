@@ -200,9 +200,13 @@ class GeneralAI
                 $warTargetNation[$warNationID] = 1;
             }
         }
-        $warTargetNation[0] = 0;
-        $this->warTargetNation = $warTargetNation;
 
+        if(!$onWar){
+            $warTargetNation[0] = 1;
+        }
+        
+        $this->warTargetNation = $warTargetNation;
+        
 
         $minWarTerm = $db->queryFirstField('SELECT min(term) FROM diplomacy WHERE me = %i AND state=1', $nationID);
         if ($minWarTerm === null) {
@@ -1057,6 +1061,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -1148,6 +1153,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -1222,6 +1228,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -1327,6 +1334,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -1449,6 +1457,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -1481,6 +1490,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -1619,7 +1629,6 @@ class GeneralAI
 
         
         $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
-
         return $cmd;
     }
 
@@ -1845,7 +1854,8 @@ class GeneralAI
             return null;
         }
 
-        return Util::choiceRandomUsingWeightPair($cmdList);
+        $cmd = Util::choiceRandomUsingWeightPair($cmdList);
+        return $cmd;
     }
 
 
@@ -2149,9 +2159,6 @@ class GeneralAI
         if (!$this->attackable) {
             return null;
         }
-        if($this->dipState !== self::d전쟁){
-            return null;
-        }
 
         $general = $this->getGeneralObj();
         $city = $this->city;
@@ -2162,13 +2169,24 @@ class GeneralAI
 
         $db = DB::db();
 
-        if ($city['front'] <= 1) {
+        if($general->getVar('train') < $this->nationPolicy->properWarTrainAtmos){
+            return null;
+        }
+        if($general->getVar('atmos') < $this->nationPolicy->properWarTrainAtmos){
+            return null;
+        }
+
+        if($city['front'] === 0){
+            return null;
+        }
+
+        if ($city['front'] === 1 && $this->dipState === self::d전쟁) {
             return null;
         }
 
         $attackableNations = [];
         foreach ($this->warTargetNation as $targetNationID => $state) {
-            if ($state == 1) {
+            if ($this->dipState === self::d전쟁 && $state == 1) {
                 continue;
             }
             $attackableNations[] = $targetNationID;
@@ -2185,7 +2203,12 @@ class GeneralAI
             throw new \RuntimeException('출병 불가' . $cityID . var_export($attackableNations, true) . var_export($nearCities, true));
         }
 
-        return buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)]);
+        $cmd = buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)]);
+        if(!$cmd->isRunnable()){
+            return null;
+        }
+
+        return $cmd;
     }
 
 
@@ -2404,6 +2427,11 @@ class GeneralAI
             $availableTypeCnt += 1;
         }
 
+        if($availableTypeCnt === 0){
+            //무능장은 인탐을 하세요.
+            return null;
+        }
+
         if(!Util::randBool($warpProp)){
             return null;
         }
@@ -2426,7 +2454,10 @@ class GeneralAI
                 }
                 $realDevelRate += $develVal;
             }
+
+            
             $realDevelRate /= $availableTypeCnt;
+            
             if($realDevelRate >= 0.95){
                 continue;
             }
@@ -2445,6 +2476,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2461,6 +2493,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2526,6 +2559,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2556,6 +2590,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2565,6 +2600,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2580,6 +2616,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2593,6 +2630,7 @@ class GeneralAI
         if(!$cmd->isRunnable()){
             return null;
         }
+
         return $cmd;
     }
 
@@ -2616,6 +2654,7 @@ class GeneralAI
                 if(!$cmd->isRunnable()){
                     return null;
                 }
+
                 return $cmd;
             }
         }
@@ -2644,6 +2683,7 @@ class GeneralAI
             if(!$cmd->isRunnable()){
                 return null;
             }
+
             return $cmd;
         }
 
@@ -2695,7 +2735,8 @@ class GeneralAI
     {
         $general = $this->general;
         if($general->getNationID() == 0){
-            return buildGeneralCommandClass('che_견문', $this->general, $this->env);
+            $cmd = buildGeneralCommandClass('che_견문', $this->general, $this->env);
+            return $cmd;
         }
 
 
@@ -2710,7 +2751,8 @@ class GeneralAI
         $candidate[] = 'che_인재탐색';
 
 
-        return buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
+        $cmd = buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
+        return $cmd;
     }
 
     protected function categorizeNationCities():void{
@@ -2966,25 +3008,32 @@ class GeneralAI
         if($general->getVar('officer_level') === 12 && $this->generalPolicy->can선양){
             $result = $this->do선양();
             if($result !== null){
+                $result->reason='do선양';
                 return $result;
             }
         }
         
         if($npcType == 5){
-            return $this->do집합();
+            $result = $this->do집합();
+            $result->reason='do집합';
+            return $result;
         }
 
         if(!($reservedCommand instanceof Command\General\휴식)){
+            $reservedCommand->reason='do예약턴';
             return $reservedCommand;
         }
 
         if ($general->getVar('injury') > 10) {
-            return buildGeneralCommandClass('che_요양', $general, $this->env);
+            $result = buildGeneralCommandClass('che_요양', $general, $this->env);
+            $result->reason='do요양';
+            return $result;
         }
 
         if($npcType == 2 && $nationID == 0){
             $result = $this->do거병();
             if($result !== null){
+                $result->reason='do거병';
                 return $result;
             }
         }
@@ -2992,24 +3041,30 @@ class GeneralAI
         if($nationID === 0 && $this->generalPolicy->can국가선택){
             $result = $this->do국가선택();
             if($result !== null){
+                $result->reason='do국가선택';
                 return $result;
             }
-            return $this->do중립();
+            $result = $this->do중립();
+            $result->reason='do중립';
+            return $result;
         }
 
         if($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']){
             //방랑군 건국
             $result = $this->do건국();
             if($result !== null){
+                $result->reason='do건국';
                 return $result;
             }
             $result = $this->do방랑군이동();
             if($result !== null){
+                $result->reason='do방랑군이동';
                 return $result;
             }
 
             $result = $this->do해산();
             if($result !== null){
+                $result->reason='do해산';
                 return $result;
             }
         }
@@ -3021,11 +3076,14 @@ class GeneralAI
             /** @var ?GeneralCommand */
             $result = $this->{'do'.$actionName}();
             if($result !== null){
+                $result->reason='do'.$actionName;
                 return $result;
             }
         }
 
-        return $this->do중립();
+        $result = $this->do중립();
+        $result->reason='do중립';
+        return $result;
     }
 
     protected function calcNationDevelopedRate()
@@ -3139,11 +3197,11 @@ class GeneralAI
         return [
             'trust' => [$city['trust'] / 100, self::t통솔장],
             'pop' => [$city['pop'] / $city['pop_max'], self::t통솔장],
-            'agri' => [$city['agri'] / $city['agri_max'], self::t통솔장],
-            'comm' => [$city['comm'] / $city['comm_max'], self::t통솔장],
-            'secu' => [$city['secu'] / $city['secu_max'], self::t통솔장],
-            'def' => [$city['def'] / $city['def_max'], self::t통솔장],
-            'wall' => [$city['wall'] / $city['wall_max'], self::t통솔장],
+            'agri' => [$city['agri'] / $city['agri_max'], self::t지장],
+            'comm' => [$city['comm'] / $city['comm_max'], self::t지장],
+            'secu' => [$city['secu'] / $city['secu_max'], self::t무장],
+            'def' => [$city['def'] / $city['def_max'], self::t무장],
+            'wall' => [$city['wall'] / $city['wall_max'], self::t무장],
         ];
     }
 

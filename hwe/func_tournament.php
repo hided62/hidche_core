@@ -660,8 +660,8 @@ function setGift($tnmt_type, $tnmt, $phase) {
             'gold'=>$db->sqleval('gold + %i', $cost)
         ], 'no=%i', $general['no']);
         $db->update('rank_data', [
-            "{$tp2}g" => $db->sqleval('%b + 1', "{$tp2}g")
-        ], 'general_id = %i', $general['no']);
+            'value' => $db->sqleval('value + 1')
+        ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}g");
         //포상 장수 이름, 금액
 
         $logger = new ActionLogger($generalID, 0, $admin['year'], $admin['month']);
@@ -683,8 +683,8 @@ function setGift($tnmt_type, $tnmt, $phase) {
             'gold'=>$db->sqleval('gold + %i', $cost)
         ], 'no=%i', $general['no']);
         $db->update('rank_data', [
-            "{$tp2}g" => $db->sqleval('%b + 1', "{$tp2}g")
-        ], 'general_id = %i', $general['no']);
+            'value' => $db->sqleval('value + 1')
+        ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}g");
 
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
@@ -699,8 +699,8 @@ function setGift($tnmt_type, $tnmt, $phase) {
             'gold'=>$db->sqleval('gold + %i', $cost)
         ], 'no=%i', $general['no']);
         $db->update('rank_data', [
-            "{$tp2}g" => $db->sqleval('%b + 2', "{$tp2}g")
-        ], 'general_id = %i', $general['no']);
+            'value' => $db->sqleval('value + 2')
+        ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}g");
 
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
@@ -715,8 +715,8 @@ function setGift($tnmt_type, $tnmt, $phase) {
             'gold'=>$db->sqleval('gold + %i', $cost)
         ], 'no=%i', $general['no']);
         $db->update('rank_data', [
-            "{$tp2}g" => $db->sqleval('%b + 2', "{$tp2}g")
-        ], 'general_id = %i', $general['no']);
+            'value' => $db->sqleval('value + 2')
+        ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}g");
 
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
@@ -727,15 +727,15 @@ function setGift($tnmt_type, $tnmt, $phase) {
     }
     //우승자 명성 돈
     $cost = $admin['develcost'] * 8;
-    foreach($db->query('SELECT no, name FROM tournament WHERE grp>=6 AND no > 0') as $general){
+    foreach($db->query('SELECT no, name FROM tournament WHERE grp>=60 AND no > 0') as $general){
         $generalID = $general['no'];
         $db->update('general', [
             'experience'=>$db->sqleval('experience + 200'),
             'gold'=>$db->sqleval('gold + %i', $cost)
         ], 'no=%i', $general['no']);
         $db->update('rank_data', [
-            "{$tp2}g" => $db->sqleval('%b + 2', "{$tp2}g")
-        ], 'general_id = %i', $general['no']);
+            'value' => $db->sqleval('value + 2')
+        ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}g");
 
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
@@ -1103,18 +1103,18 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     }
 
     $db->update('rank_data', [
-        "{$tp2}{$gen1resKey}" => $db->sqleval('%b + 1', "{$tp2}{$gen1resKey}")
-    ], 'no=%i',$gen1['no']);
+        'value' => $db->sqleval('value + 1')
+    ], 'general_id=%i AND type = %s',$gen1['no'], "{$tp2}{$gen1resKey}");
     $db->update('rank_data', [
-        "{$tp2}g" => $db->sqleval('%b + %i', "{$tp2}g", $gl1)
-    ], 'no=%i',$gen1['no']);
+        'value' => $db->sqleval('value + %i', $gl1),
+    ], 'general_id=%i AND type = %s',$gen1['no'], "{$tp2}g");
 
     $db->update('rank_data', [
-        "{$tp2}{$gen2resKey}" => $db->sqleval('%b + 1', "{$tp2}{$gen2resKey}")
-    ], 'no=%i',$gen2['no']);
+        'value' => $db->sqleval('value + 1'),
+    ], 'general_id=%i AND type = %s',$gen2['no'], "{$tp2}{$gen2resKey}");
     $db->update('rank_data', [
-        "{$tp2}g" => $db->sqleval('%b + %i', "{$tp2}g", $gl2)
-    ], 'no=%i',$gen2['no']);
+        'value' => $db->sqleval('value + %i', $gl2)
+    ], 'general_id=%i AND type = %s',$gen2['no'], "{$tp2}g");
 
 
 

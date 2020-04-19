@@ -84,6 +84,13 @@ class che_출병 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getBrief():string{
+        $commandName = $this->getName();
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        $josaRo = JosaUtil::pick($destCityName, '로');
+        return "【{$destCityName}】{$josaRo} {$commandName}";
+    }
+
     public function getFailString():string{
         $commandName = $this->getName();
         $failReason = $this->testRunnable();

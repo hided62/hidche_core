@@ -145,8 +145,8 @@ class che_증여 extends Command\GeneralCommand{
         $destGeneral->increaseVarWithLimit($resKey, $amount);
         $general->increaseVarWithLimit($resKey, -$amount, 0);
 
-        $destGeneral->getLogger()->pushGeneralActionLog("{$general->getName()}</>에게서 {$resName} <C>{$amountText}</>을 증여 받았습니다.", ActionLogger::PLAIN);
-        $logger->pushGeneralActionLog("{$destGeneral->getName()}에게 {$resName} <C>$amountText</>을 증여했습니다. <1>$date</>");
+        $destGeneral->getLogger()->pushGeneralActionLog("<Y>{$general->getName()}</>에게서 {$resName} <C>{$amountText}</>을 증여 받았습니다.", ActionLogger::PLAIN);
+        $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게 {$resName} <C>$amountText</>을 증여했습니다. <1>$date</>");
 
         $exp = 70;
         $ded = 100;
