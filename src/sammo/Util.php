@@ -782,7 +782,7 @@ class Util extends \utilphp\util
         else{
             while($from > $to){
                 yield $from;
-                $from -= $step;
+                $from += $step;
             }
         }
     }
