@@ -307,7 +307,7 @@ foreach(GameConst::$allItems as $itemType=>$itemList){
                 'nationName'=>$general['nationName'],
                 'name'=>$general['name'],
                 'bgColor'=>$general['bgColor'],
-                'fgColor'=>$general['dfColor'],
+                'fgColor'=>$general['fgColor'],
             ];
             $itemRanker[] = $card;
         }

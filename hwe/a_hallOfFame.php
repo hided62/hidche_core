@@ -81,7 +81,7 @@ else{
 </select>
 </td></tr>
 </table>
-<div style="margin:auto;width=1100px;">
+<div style="margin:auto;width:1100px;">
 <?php
 $types = [
     ["명 성", 'int'],

@@ -119,8 +119,10 @@ class AutorunNationPolicy {
     public $DevelopForce = [
         //123=>true
     ];
-    public $reqHumanWarGold = [10000, 30000];
-    public $reqHumanWarRice = [10000, 30000];
+    public $reqHumanWarUrgentGold = 10000;
+    public $reqHumanWarUrgentRice = 10000;
+    public $reqHumanWarRecommandGold = 30000;
+    public $reqHumanWarRecommandRice = 30000;
     public $reqHumanDevelGold = 10000;
     public $reqHumanDevelRice = 10000;
     public $reqNPCWarGold = 5000;

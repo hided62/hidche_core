@@ -776,13 +776,13 @@ class Util extends \utilphp\util
         if($step > 0){
             while($from < $to){
                 yield $from;
-                $from += 1;
+                $from += $step;
             }
         }
         else{
             while($from > $to){
                 yield $from;
-                $from -= 1;
+                $from -= $step;
             }
         }
     }

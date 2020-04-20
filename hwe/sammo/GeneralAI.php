@@ -1002,11 +1002,11 @@ class GeneralAI
         $remainResource = [
             'gold' => [
                 $nation['gold'],
-                $this->nationPolicy->reqHumanWarGold
+                $this->nationPolicy->reqHumanWarUrgentGold
             ],
             'rice' => [
                 $nation['rice'],
-                $this->nationPolicy->reqHumanWarRice
+                $this->nationPolicy->reqHumanWarUrgentRice
             ]
         ];
 
@@ -1077,12 +1077,12 @@ class GeneralAI
         $remainResource = [
             'gold' => [
                 $nation['gold'],
-                $this->nationPolicy->reqHumanWarGold,
+                $this->nationPolicy->reqHumanWarRecommandGold,
                 $this->nationPolicy->reqHumanDevelGold,
             ],
             'rice' => [
                 $nation['rice'],
-                $this->nationPolicy->reqHumanWarRice,
+                $this->nationPolicy->reqHumanWarRecommandRice,
                 $this->nationPolicy->reqHumanDevelRice
             ]
         ];
@@ -1304,10 +1304,6 @@ class GeneralAI
                 }
 
                 $enoughMoney = $reqNPCMinDevelRes * 1.5;
-    
-                if ($targetNPCGeneral->getVar($resName) >= $reqMoney) {
-                    continue;
-                }
 
                 $payAmount = $enoughMoney - $targetNPCGeneral->getVar($resName);
                 $payAmount = Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount);
@@ -2946,7 +2942,7 @@ class GeneralAI
             /** @var ?NationCommand */
             $result = $this->{'do'.$actionName}($lastTurn);
             if($result !== null){
-                $reservedCommand->reason = 'do'.$actionName;
+                $result->reason = 'do'.$actionName;
                 return $result;
             }
         }

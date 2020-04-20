@@ -604,23 +604,58 @@ class JosaUtil{
         };
     }
 
-    public static function batch(string $text, string $key, array $decorator =[':',':']){
+    public static function batch(string $text, string $decorator = ';'){
         JosaUtil::init();
 
-        $search = [];
-        $replace = [];
+        if($decorator === ';'){
+            preg_match_all('/;([^;]+);/', $text, $matches, PREG_OFFSET_CAPTURE);
+        }
+        else{
+            $decorator = preg_quote($decorator);
+            $pattern = "/{$decorator}([^{$decorator}]+){$decorator}/";
+            preg_match_all($pattern, $text, $matches, PREG_OFFSET_CAPTURE);
+        }
+        
 
-        $prefix = ':';
-        $postfix = ':';
-
-        foreach(static::DEFAULT_POSTPOSITION as $wJong => $woJong){
-            $value = JosaUtil::pick($key, $wJong);
-            $search[] = "{$prefix}{$wJong}{$postfix}";
-            $replace[] = $value;
-            $search[] = "{$prefix}{$woJong}{$postfix}";
-            $replace[] = $value;
+        $matchCnt = count($matches[0]);
+        if($matchCnt & 1){
+            $matchCnt -= 1;
         }
 
-        return str_replace($search, $replace, $text);
+        if(!$matchCnt){
+            return $text;
+        }
+
+        $result = [];
+        $prePos = 0;
+        foreach(Util::range(0, $matchCnt, 2) as $matchIdx){
+            $bodyRawText = $matches[0][$matchIdx][0];
+            $bodyText = $matches[1][$matchIdx][0];
+            $bodyRawPos = $matches[0][$matchIdx][1];
+            if($bodyRawPos > $prePos){
+                $result[] = substr($text, $prePos, $bodyRawPos - $prePos);
+            }
+            $prePos = $bodyRawPos + strlen($bodyRawText);
+
+            $result[] = $bodyText;
+
+            $josaRawText = $matches[0][$matchIdx+1][0];
+            $josaText = $matches[1][$matchIdx+1][0];
+            $josaRawPos = $matches[0][$matchIdx+1][1];
+
+            if($josaRawPos > $prePos){
+                $result[] = substr($text, $prePos, $josaRawPos - $prePos);
+            }
+            $prePos = $josaRawPos + strlen($josaRawText);
+            
+            $pickedJosa = JosaUtil::pick($bodyText, $josaText);
+            $result[] = $pickedJosa;
+        }
+        $textLen = strlen($text);
+        if($prePos < $textLen){
+            $result[] = substr($text, $prePos, $textLen - $prePos);
+        }
+        
+        return join('', $result);
     }
 }
