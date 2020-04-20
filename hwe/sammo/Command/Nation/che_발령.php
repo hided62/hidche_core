@@ -17,7 +17,7 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    function cutTurn
+    cutTurn
 };
 
 use \sammo\Constraint\Constraint;

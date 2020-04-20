@@ -38,12 +38,10 @@ class che_헌납 extends Command\GeneralCommand{
         }
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
-        if(is_float($amount)){
-            $amount = Util::toInt($amount);
-        }
-        else if(!is_int($amount)){
+        if(!is_numeric($amount)){
             return false;
         }
+        $amount = Util::round($amount, -2);
         $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);
         if(!is_bool($isGold)){
             return false;

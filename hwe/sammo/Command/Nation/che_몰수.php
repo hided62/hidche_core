@@ -44,13 +44,14 @@ class che_몰수 extends Command\NationCommand{
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
         $destGeneralID = $this->arg['destGeneralID'];
-        if(is_float($amount)){
-            $amount = Util::toInt($amount);
-        }
-        else if(!is_int($amount)){
+        if(!is_numeric($amount)){
             return false;
         }
+        $amount = Util::round($amount, -2);
         $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);
+        if($amount <= 0){
+            return false;
+        }
         if(!is_bool($isGold)){
             return false;
         }
@@ -140,8 +141,7 @@ class che_몰수 extends Command\NationCommand{
         $amount = Util::valueFit(
             $amount,
             0,
-            ($destGeneral->getVar($resKey) - 
-                ($isGold?GameConst::$generalMinimumGold:GameConst::$generalMinimumRice))
+            $destGeneral->getVar($resKey)
         );
         $amountText = number_format($amount, 0);
 

@@ -35,14 +35,14 @@ class che_군량매매 extends Command\GeneralCommand{
         }
         $buyRice = boolval($buyRice);
         $amount = $this->arg['amount']??null;
-        if(is_float($amount)){
-            $amount = Util::toInt($amount);
-        }
-        else if(!is_int($amount)){
+        if(!is_numeric($amount)){
             return false;
         }
+        $amount = Util::round($amount, -2);
         $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);
-        
+        if($amount <= 0){
+            return false;
+        }
         $this->arg = [
             'buyRice'=>$buyRice,
             'amount'=>$amount

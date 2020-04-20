@@ -17,7 +17,7 @@ TurnExecutionHelper::executeAllCommand();
 $query = "select no,nation,officer_level from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
-$nationID = $nationID;
+$nationID = $me['nation'];
 
 $meLevel = $me['officer_level'];
 if($meLevel == 0) {
@@ -140,8 +140,8 @@ $eaglestr = join(', ', array_map(function($arr){
 ?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td align=center style='color:<?=newColor($nation['color'])?>; bgcolor=<?=$nation['color']?>' colspan=6>
-            <font size=5>【 {$nation['name']} 】</font>
+        <td align=center style='color:<?=newColor($nation['color'])?>; background-color:<?=$nation['color']?>' colspan=6>
+            <font size=5>【 <?=$nation['name']?> 】</font>
         </td>
     </tr>
 <?php
@@ -530,7 +530,7 @@ $dummyOfficer = [
 $textColor = newColor($nation['color']);
 $nationColor = $nation['color'];
 
-foreach($db->query('SELECT city,name,level,region,officer4set,officer3set,officer2set from city where nation=$i order by region,level desc,binary(name)', $nationID) as $city) {
+foreach($db->query('SELECT city,name,level,region,officer4set,officer3set,officer2set from city where nation=%i order by region,level desc,binary(name)', $nationID) as $city) {
     $cityID = $city['city'];
     $cityOfficerList = $officerList[$cityID]??[];
 ?>

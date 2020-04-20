@@ -139,9 +139,9 @@ class GeneralAI
 
     protected function calcGenType(General $general)
     {
-        $leadership = $general->getLeadership();
-        $strength = Util::valueFit($general->getStrength(), 1);
-        $intel = Util::valueFit($general->getIntel(), 1);
+        $leadership = $general->getLeadership(false);
+        $strength = Util::valueFit($general->getStrength(false), 1);
+        $intel = Util::valueFit($general->getIntel(false), 1);
 
         //무장
         if ($strength >= $intel) {
@@ -241,6 +241,9 @@ class GeneralAI
 
     protected function do부대전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if(!$this->frontCities){
             return null;
         }
@@ -343,6 +346,9 @@ class GeneralAI
 
     protected function do부대후방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if(!$this->frontCities){
             return null;
         }
@@ -430,6 +436,9 @@ class GeneralAI
 
     protected function do부대유저장후방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if($this->dipState !== self::d전쟁){
             return null;
         }
@@ -536,6 +545,9 @@ class GeneralAI
     }
     protected function do유저장후방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if($this->dipState !== self::d전쟁){
             return null;
         }
@@ -605,6 +617,9 @@ class GeneralAI
 
     protected function do유저장구출발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             return null;
         }
@@ -652,6 +667,9 @@ class GeneralAI
 
     protected function do유저장전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if(!$this->frontCities){
             return null;
         }
@@ -706,7 +724,10 @@ class GeneralAI
     
     protected function do유저장내정발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(count($this->supplyCitiesID) === 1){
+        if(!$this->nation['capital']){
+            return null;
+        }
+        if(count($this->supplyCities) === 1){
             return null;
         }
 
@@ -775,6 +796,9 @@ class GeneralAI
 
     protected function doNPC후방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if(!$this->frontCities){
             return null;
         }
@@ -848,6 +872,9 @@ class GeneralAI
 
     protected function doNPC구출발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         //고립 도시 장수 발령
         $args = [];
         foreach ($this->lostGenerals as $lostGeneral) {
@@ -873,6 +900,9 @@ class GeneralAI
 
     protected function doNPC전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        if(!$this->nation['capital']){
+            return null;
+        }
         if(!$this->frontCities){
             return null;
         }
@@ -927,7 +957,10 @@ class GeneralAI
 
     protected function doNPC내정발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(count($this->supplyCitiesID) === 1){
+        if(!$this->nation['capital']){
+            return null;
+        }
+        if(count($this->supplyCities) === 1){
             return null;
         }
 
@@ -1035,6 +1068,9 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
+                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                    continue;
+                }
 
                 if ($resVal < $payAmount / 2) {
                     continue;
@@ -1127,6 +1163,9 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
+                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                    continue;
+                }
 
                 if ($resVal < $payAmount / 2) {
                     continue;
@@ -1202,6 +1241,10 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetNPCGeneral->getVar($resName)) * $resVal);
+
+                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                    continue;
+                }
 
                 if ($resVal < $payAmount / 2) {
                     continue;
@@ -1308,6 +1351,10 @@ class GeneralAI
                 $payAmount = $enoughMoney - $targetNPCGeneral->getVar($resName);
                 $payAmount = Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount);
 
+                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                    continue;
+                }
+
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
@@ -1374,6 +1421,9 @@ class GeneralAI
 
                 $takeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinDevelRes;
                 $takeAmount = Util::valueFit($takeAmount, 100, GameConst::$maxResourceActionAmount);
+                if($takeAmount < $this->nationPolicy->minimumResourceActionAmount){
+                    break;
+                }
 
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetNPCGeneral->getID(),
@@ -1427,6 +1477,10 @@ class GeneralAI
                 }
 
                 if($takeAmount < 100){
+                    break;
+                }
+
+                if($takeAmount < $this->nationPolicy->minimumResourceActionAmount){
                     break;
                 }
 

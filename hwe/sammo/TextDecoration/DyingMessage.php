@@ -127,6 +127,6 @@ class DyingMessage{
         }
 
         
-        return JosaUtil::batch($text, $name);
+        return JosaUtil::batch($text);
     }
 }

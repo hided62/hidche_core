@@ -258,6 +258,11 @@ abstract class BaseCommand{
     }
 
     public function testReservable():?string{
+        if(!$this->isArgValid()){
+            $this->reasonNotReservable = '인자가 올바르지 않습니다.';
+            $this->reservable = false;
+            return $this->reasonNotReservable;
+        }
         if($this->reservableConstraints === null){
             return null;
         }
@@ -288,8 +293,10 @@ abstract class BaseCommand{
 
     public function testRunnable():?string{
         if(!$this->isArgValid()){
-            throw new \InvalidArgumentException('인자가 제대로 설정되지 않았습니다'.\sammo\Json::encode($this->arg));
-        }        
+            $this->reasonNotReservable = '인자가 올바르지 않습니다.';
+            $this->reservable = false;
+            return $this->reasonNotReservable;
+        }
         if($this->runnableConstraints === null){
             throw new \InvalidArgumentException('runnableConstraits가 제대로 설정되지 않았습니다');
         }

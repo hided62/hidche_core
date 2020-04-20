@@ -55,12 +55,12 @@ class AutorunNationPolicy {
         'NPC후방발령',
 
         'NPC포상',
-        'NPC몰수',
 
         'NPC전방발령',
 
         '유저장내정발령',
         'NPC내정발령',
+        'NPC몰수',
     ];
 
     //순서는 중요하지 않음
@@ -128,7 +128,9 @@ class AutorunNationPolicy {
     public $reqNPCWarGold = 5000;
     public $reqNPCWarRice = 5000;
     public $reqNPCDevelGold = 1000;
-    public $reqNPCDevelRice = 0;
+    public $reqNPCDevelRice = 500;
+
+    public $minimumResourceActionAmount = 1000;
 
     public $minNPCWarLeadership = 40;
     public $minWarCrew = 1500;
