@@ -4,6 +4,15 @@ namespace sammo;
 require(__DIR__.'/vendor/autoload.php');
 
 $session = Session::requireLogin('./')->setReadOnly();
+if(key_exists('from', $_REQUEST) && is_numeric($_REQUEST['from'])){
+    $from = (int)$_REQUEST['from'];
+    if($from < 0){
+        $from = 0;
+    }
+}
+else{
+    $from = 0;
+}
 
 $allowUpdate = false;
 
@@ -34,7 +43,7 @@ $err_logs = $fdb->select('err_log', [
     'webuser'
 ], [
     'ORDER'=>['id'=>'DESC'],
-    'LIMIT'=>100
+    'LIMIT'=>[$from, 100]
 ]);
 ?>
 <!DOCTYPE html>
@@ -74,6 +83,7 @@ $err_logs = $fdb->select('err_log', [
         </div>
     </div>
 <?php endforeach; ?>
+<a href="showErrorLog.php?from=<?=$from+100?>" class="btn btn-primary btn-lg active" role="button">+100</a>
 </div>
 </body>
 </html>

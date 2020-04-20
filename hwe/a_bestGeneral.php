@@ -47,7 +47,7 @@ $templates = new \League\Plates\Engine(__DIR__.'/templates');
     </td></tr>
 </form>
 </table>
-<div style="margin:auto;width:1000px;">
+<div style="margin:auto;width:1100px;">
 <?php
 
 $ownerNameList = [];
@@ -227,7 +227,7 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 }
 ?>
 </div>
-<div style="margin:auto;width:1000px;margin-top:5px;">
+<div style="margin:auto;width:1100px;margin-top:5px;">
 <?php
 //유니크 아이템 소유자
 $itemTypes = [
@@ -238,52 +238,81 @@ $itemTypes = [
 ];
 
 $simpleItemTypes = array_keys($itemTypes); array_map(function($itemType){return $itemType[1];}, $itemTypes);
+$itemOwners = [];
 
 foreach($generals as $general){
-    foreach($itemTypes as $itemIdx=>[,$itemType, $itemFunc,,,]){
-        $itemCode = $general[$itemType];
-        $itemClass = buildItemClass($itemCode);
-        if(!$itemClass->isBuyable()){
+    foreach($itemTypes as $itemType=>$itemTypeName){
+        $itemClassName = $general[$itemType];
+        $itemClass = buildItemClass($itemClassName);
+        if($itemClass->isBuyable()){
+            continue;
+        }
+
+        if(key_exists($itemClassName, $itemOwners)){
+            $itemOwners[$itemClassName][] = $general;
+        }
+        else{
+            $itemOwners[$itemClassName] = [$general];
+        }
+        
+    }
+}
+
+foreach(GameConst::$allItems as $itemType=>$itemList){
+    $itemNameType = $itemTypes[$itemType];
+    $itemList = array_reverse($itemList, true);
+
+
+    $itemRanker = [];
+    foreach($itemList as $itemClassName=>$itemCnt){
+        if($itemCnt==0){
+            continue;
+        }
+        $itemClass = buildItemClass($itemClassName);
+        
+        if($itemClass->isBuyable()){
             continue;
         }
 
         $info = $itemClass->getInfo();
         $name = $itemClass->getName();
+
         
         if($info){
             $name = $templates->render('tooltip', [
-                'text'=>$text,
+                'text'=>$name,
                 'info'=>$info,
             ]);
         }
-        
+        foreach(Util::range($itemCnt) as $itemIdx){
+            if(($itemOwners[$itemClassName][$itemIdx]??null) === null){
+                $emptyCard = [
+                    'rankName' => $name,
+                    'pictureFullPath' => GetImageURL(0)."/default.jpg",
+                    'value'=>$itemClassName,
+                    'name'=>'미발견',
+                    'bgColor'=>GameConst::$basecolor4,
+                    'fgColor'=>newColor(GameConst::$basecolor4),
+                ];
+                $itemRanker[] = $emptyCard;
+                continue;
+            }
 
-        $general['rankName'] = $name;
-        $general['value'] = $itemCode;
-        $itemTypes[$itemIdx][5][$itemCode] = $general;
-    }
-}
+            $general = $itemOwners[$itemClassName][$itemIdx];
 
-foreach($itemTypes as [$itemNameType, $itemType, $itemFunc, $itemMinCode, $itemMaxCode, $itemOwners]){
-    $itemRanker = [];
-    for($itemCode = $itemMaxCode; $itemCode >= $itemMinCode; $itemCode--){
-        if(!key_exists($itemCode, $itemOwners)){
-            $emptyCard = [
-                'rankName' => ($itemFunc)($itemCode),
-                'pictureFullPath' => GetImageURL(0)."/default.jpg",
-                'value'=>$itemCode,
-                'name'=>'미발견',
-                'bgColor'=>GameConst::$basecolor4,
-                'fgColor'=>newColor(GameConst::$basecolor4),
+            $card = [
+                'rankName' => $name,
+                'pictureFullPath' => $general['pictureFullPath'],
+                'value'=>$itemClassName,
+                'nationName'=>$general['nationName'],
+                'name'=>$general['name'],
+                'bgColor'=>$general['bgColor'],
+                'fgColor'=>$general['dfColor'],
             ];
-            $itemRanker[$itemCode] = $emptyCard;
-            continue;
+            $itemRanker[] = $card;
         }
-
-        $general = $itemOwners[$itemCode];
-        $itemRanker[$itemCode] = $general;
     }
-
+    
     echo $templates->render('hallOfFrame', [
         'typeName'=>$itemNameType,
         'generals'=>$itemRanker

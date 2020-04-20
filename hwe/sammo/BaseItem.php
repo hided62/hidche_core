@@ -23,6 +23,13 @@ class BaseItem implements iAction{
     function getRawName(){
         return $this->rawName;
     }
+
+    public function getRawClassName(bool $shortName=true):string{
+        if($shortName){
+            return Util::getClassNameFromObj($this);
+        }
+        return static::class;
+    }
     
     function getCost(){
         return $this->cost;
