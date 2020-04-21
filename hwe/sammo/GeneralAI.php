@@ -775,7 +775,7 @@ class GeneralAI
 
         /** @var General */
         $destGeneral = Util::choiceRandom($generalCandidates);
-        $srcCity = $this->supplyCities[$destGeneral->getCityID];
+        $srcCity = $this->supplyCities[$destGeneral->getCityID()];
         $destCity = $this->supplyCities[Util::choiceRandomUsingWeight($cityCandidiates)];
 
         if($srcCity['dev'] <= $destCity['dev']){
@@ -1004,7 +1004,7 @@ class GeneralAI
 
         /** @var General */
         $destGeneral = Util::choiceRandom($generalCandidates);
-        $srcCity = $this->supplyCities[$destGeneral->getCityID];
+        $srcCity = $this->supplyCities[$destGeneral->getCityID()];
         $destCity = $this->supplyCities[Util::choiceRandomUsingWeight($cityCandidiates)];
 
         if($srcCity['dev'] <= $destCity['dev']){
@@ -1068,6 +1068,9 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
+                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                    continue;
+                }
 
                 if ($resVal < $payAmount / 2) {
                     continue;
@@ -1526,6 +1529,8 @@ class GeneralAI
             return null;
         }
 
+        
+
         $targetNationID = $this->findWarTarget();
         if($targetNationID === null){
             return null;
@@ -1697,6 +1702,7 @@ class GeneralAI
 
         $cmdList = [];
 
+        LogText('내정', [$general->getName(), $this->city['name'], $develRate]);
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
@@ -2458,7 +2464,7 @@ class GeneralAI
     {
         
         $city = $this->city;
-        if(Util::randBool(0.8)){
+        if(Util::randBool(0.6)){
             return null;
         }
 
@@ -2480,10 +2486,6 @@ class GeneralAI
         }
 
         if(!Util::randBool($warpProp)){
-            return null;
-        }
-
-        if (!Util::randBool(0.4)) {
             return null;
         }
 
@@ -3174,7 +3176,7 @@ class GeneralAI
         $nation = $this->nation;
         $nationID = $nation['nation'];
         
-        if(!$this->frontCities){
+        if($this->frontCities){
             return null;
         }
 
