@@ -31,7 +31,7 @@ trait LazyVarUpdater{
         return true;
     }
 
-    protected function unpackAux(){
+    function unpackAux(){
         if($this->raw['auxVar']??null === null){
             if(!key_exists('aux', $this->raw)){
                 throw new \RuntimeException('aux is not set');

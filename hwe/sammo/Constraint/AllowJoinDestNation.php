@@ -19,11 +19,6 @@ class AllowJoinDestNation extends Constraint{
             throw new \InvalidArgumentException("require auxVar in general");
         }
 
-        if(!key_exists('joinedNations', $this->general['auxVar'])){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require joinedNations in general['auxVar']");
-        }
-
         if(!key_exists('scout', $this->destNation)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException("require scout in nation");
@@ -55,7 +50,7 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        $joinedNations = $this->general['auxVar']['joinedNations'];
+        $joinedNations = $this->general['auxVar']['joinedNations']??[];
         if(in_array($this->destNation['nation'], $joinedNations)){
             $this->reason = "이미 임관했었던 국가입니다.";
             return false;

@@ -130,6 +130,7 @@ class GeneralAI
         $this->genType = $this->calcGenType($general);
 
         $this->calcDiplomacyState();
+        LogText('전쟁상태', "{$this->general->getName()} {$this->nation['name']} {$this->dipState}");
     }
 
     public function getGeneralObj(): General
@@ -190,13 +191,15 @@ class GeneralAI
             $nationID
         );
 
-        $onWar = false;
+        $onWar = 0;
+        $onWarReady = 0;
         $warTargetNation = [];
         foreach ($warTarget as [$warNationID, $warState]) {
             if ($warState == 0) {
-                $onWar = true;
+                $onWar += 1;
                 $warTargetNation[$warNationID] = 2;
             } else {
+                $onWarReady += 1;
                 $warTargetNation[$warNationID] = 1;
             }
         }
@@ -221,10 +224,8 @@ class GeneralAI
 
         if ($this->attackable) {
             //전쟁으로 인한 attackable인가?
-            if ($onWar) {
+            if ($onWar || !$onWarReady) {
                 $this->dipState = self::d전쟁;
-            } else {
-                $this->dipState = self::d징병;
             }
         }
     }
@@ -1108,6 +1109,13 @@ class GeneralAI
             return null;
         }
 
+        if($this->nation['gold'] < $this->nationPolicy->reqNationGold){
+            return null;
+        }
+        if($this->nation['rice'] < $this->nationPolicy->reqNationRice){
+            return null;
+        }
+
         $nation = $this->nation;
         $candidateArgs = [];
         $remainResource = [
@@ -1202,6 +1210,13 @@ class GeneralAI
             return null;
         }
 
+        if($this->nation['gold'] < $this->nationPolicy->reqNationGold){
+            return null;
+        }
+        if($this->nation['rice'] < $this->nationPolicy->reqNationRice){
+            return null;
+        }
+
 
         $nation = $this->nation;
         $candidateArgs = [];
@@ -1278,6 +1293,13 @@ class GeneralAI
     protected function doNPC포상(LastTurn $lastTurn): ?NationCommand
     {
         if(!$this->npcWarGenerals && !$this->npcCivilGenerals){
+            return null;
+        }
+
+        if($this->nation['gold'] < $this->nationPolicy->reqNationGold){
+            return null;
+        }
+        if($this->nation['rice'] < $this->nationPolicy->reqNationRice){
             return null;
         }
 
@@ -2172,7 +2194,7 @@ class GeneralAI
             }
         }
 
-        if($train < $this->nationPolicy->properWarTrainAtmos){
+        if($atmos < $this->nationPolicy->properWarTrainAtmos){
             $cmd = buildGeneralCommandClass('che_사기진작', $general, $this->env);
             if($cmd->isRunnable()){
                 $cmdList[] = [$cmd, GameConst::$maxAtmosByCommand / Util::valueFit($atmos, 1)];
@@ -2213,6 +2235,10 @@ class GeneralAI
             return null;
         }
 
+        if($this->dipState !== self::d전쟁){
+            return null;
+        }
+
         $general = $this->getGeneralObj();
         $city = $this->city;
         $nation = $this->nation;
@@ -2233,13 +2259,13 @@ class GeneralAI
             return null;
         }
 
-        if ($city['front'] === 1 && $this->dipState === self::d전쟁) {
+        if ($city['front'] === 1) {
             return null;
         }
 
         $attackableNations = [];
         foreach ($this->warTargetNation as $targetNationID => $state) {
-            if ($this->dipState === self::d전쟁 && $state == 1) {
+            if ($state == 1) {
                 continue;
             }
             $attackableNations[] = $targetNationID;
@@ -2247,7 +2273,7 @@ class GeneralAI
         $nearCities = array_keys(CityConst::byID($cityID)->path);
 
         $attackableCities = $db->queryFirstColumn(
-            'SELECT city FROM city WHERE nation IN %li AND city IN %li',
+            'SELECT city, nation FROM city WHERE nation IN %li AND city IN %li',
             $attackableNations,
             $nearCities
         );

@@ -258,11 +258,6 @@ abstract class BaseCommand{
     }
 
     public function testReservable():?string{
-        if(!$this->isArgValid()){
-            $this->reasonNotReservable = '인자가 올바르지 않습니다.';
-            $this->reservable = false;
-            return $this->reasonNotReservable;
-        }
         if($this->reservableConstraints === null){
             return null;
         }
@@ -271,6 +266,7 @@ abstract class BaseCommand{
             return $this->reasonNotReservable;
         }
 
+        $this->generalObj->unpackAux();
         $constraintInput = [
             'general'=>$this->generalObj->getRaw(),
             'city'=>$this->city,
@@ -305,6 +301,7 @@ abstract class BaseCommand{
             return $this->reasonNotRunnable;
         }
 
+        $this->generalObj->unpackAux();
         $constraintInput = [
             'general'=>$this->generalObj->getRaw(),
             'city'=>$this->city,
