@@ -10,6 +10,9 @@ $tnmt = Util::getReq('tnmt', 'int', 1);
 //$detachNPC = Util::getReq('detachNPC', 'bool');
 $detachNPC = false;
 
+$showDieImmediatelyBtn = false;
+$availableDieImmediately = false;
+
 if ($defence_train <= 60) {
     $defence_train = 60;
 }
@@ -81,6 +84,17 @@ if (($btn == "설정저장" || $detachNPC) && $myset > 0) {
     }
 }
 $me->applyDB($db);
+
+if($gameStor->turntime <= $gameStor->opentime){
+    //서버 가오픈시 할 수 있는 행동
+
+    if($me['npc'] == 0){
+        $showDieImmediatelyBtn = true;
+        if(addTurn($me['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::DatetimeNow()){
+            $availableDieImmediately = true;
+        }
+    }
+}
 
 ?>
 <!DOCTYPE html>

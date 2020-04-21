@@ -16,7 +16,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
             'capital'=>0,
             'level'=>0,
             'gold'=>0,
-            'rice'=>2000,
+            'rice'=>10000,
             'type'=>GameConst::$neutralNationType,
             'tech'=>0,
             'gennum'=>1     
@@ -714,6 +714,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     foreach($nearNationsID as $nationNationID){
         SetNationFront($nationNationID);
     }
+    SetNationFront($conquerNation);
 
     pushGenLog($general['no'], $log);
     pushGeneralPublicRecord($alllog, $year, $month);

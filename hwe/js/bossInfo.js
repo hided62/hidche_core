@@ -118,8 +118,8 @@ $(function(){
         var officerLevelText = $btn.data('officer_level_text');
         var cityID = 0;
         var cityName = '_';
-        var $generalSelect = $('.genlist_{0} option:selected'.format(officerLevel));
-        var $citySelect = $('.citylist_{0} option:selected'.format(officerLevel));
+        var $generalSelect = $('#genlist_{0} option:selected'.format(officerLevel));
+        var $citySelect = $('#citylist_{0} option:selected'.format(officerLevel));
 
         var generalID = $generalSelect.val();
         var generalName = $generalSelect.data('name');
@@ -133,12 +133,12 @@ $(function(){
                 }
             }
             else if(generalOfficerLevel >= 5){
-                if(!confirm('이미 수뇌인 {0}를 {1}직에 임명하시겠습니까?'.format(generalName, officerLevelText))){
+                if(!confirm('이미 수뇌인 {0}을(를) {1}직에 임명하시겠습니까?'.format(generalName, officerLevelText))){
                     return false;
                 }
             }
             else{
-                if(!confirm('{0}를 {1}직에 임명하시겠습니까?'.format(generalName, officerLevelText))){
+                if(!confirm('{0}을(를) {1}직에 임명하시겠습니까?'.format(generalName, officerLevelText))){
                     return false;
                 }
             }
@@ -157,12 +157,12 @@ $(function(){
                 }
             }
             else if(generalOfficerLevel >= 5){
-                if(!confirm('수뇌인 {0}를 {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, officerLevelText))){
+                if(!confirm('수뇌인 {0}을(를) {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, officerLevelText))){
                     return false;
                 }
             }
             else{
-                if(!confirm('{0}를 {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, officerLevelText))){
+                if(!confirm('{0}을(를) {1} {2}직에 임명하시겠습니까?'.format(generalName, cityName, officerLevelText))){
                     return false;
                 }
             }
@@ -187,8 +187,8 @@ $(function(){
                 return false;
             }
 
-            if(destGeneralID){
-                alert('{0}를 임명했습니다.'.format(generalName));
+            if(generalID){
+                alert('{0}을(를) 임명했습니다.'.format(generalName));
             }
             else{
                 alert('관직을 비웠습니다.');

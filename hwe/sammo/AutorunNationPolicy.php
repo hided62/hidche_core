@@ -27,14 +27,14 @@ class AutorunNationPolicy {
     static $NPC몰수 = 'NPC몰수';
 
     // 군주 행동
-    static $선포 = '선포';
+    static $선전포고 = '선전포고';
     static $천도 = '천도';
 
     
 
     //실제 행동
     static public $defaultPriority = [
-        '선포',
+        '선전포고',
         '천도',
 
         '유저장긴급포상',
@@ -103,8 +103,8 @@ class AutorunNationPolicy {
     public $canNPC포상 = true;
     public $canNPC몰수 = true;
 
-    public $can선포 = false;
-    public $can천도 = false;
+    public $can선전포고 = true;
+    public $can천도 = true;
 
     //Policy Variables
     public $reqNationGold = 10000;

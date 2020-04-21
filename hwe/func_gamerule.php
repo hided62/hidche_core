@@ -1089,6 +1089,7 @@ function checkStatistic() {
         }
         $nationHists[$nation['type']]++;
     }
+    unset($nation);
 
     $auxData['nations']['all'] = $nations;
 

@@ -36,11 +36,6 @@ if($reqQueryType === null || !key_exists($reqQueryType, $queryMap)){
 }
 
 
-if($reqQueryType === null || !key_exists($reqQueryType, $queryMap)){
-    $reqQueryType = Util::array_first_key($queryMap);
-}
-
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

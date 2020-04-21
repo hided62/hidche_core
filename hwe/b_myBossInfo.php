@@ -193,7 +193,7 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
             continue;
         }
         echo "
-                <option data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
+                <option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }
 
     echo "
@@ -230,11 +230,11 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['officer_level'] == 11) {
-            echo "<option style=color:red; selected data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; selected data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
-            echo "<option style=color:orange; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
@@ -284,11 +284,11 @@ for($i=10; $i >= $lv; $i--) {
         for($k=0; $k < $gencount; $k++) {
             $general = MYDB_fetch_array($result);
             if($general['officer_level'] == $i) {
-                echo "<option style=color:red; selected data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+                echo "<option style=color:red; selected data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } elseif($general['officer_level'] > 1) {
-                echo "<option style=color:orange; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+                echo "<option style=color:orange; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } else {
-                echo "<option data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+                echo "<option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             }
         }
 
@@ -371,7 +371,7 @@ if($meLevel >= 5) {
     echo "
             </select>
             <select id='genlist_4' size=1 style=color:white;background-color:black;>
-                <option value=0 data-officer_level='0' data-name='' data-officer_level_text='{$officerLevelText}'>____공석____</option>
+                <option value=0 data-officer_level='0' data-name=''>____공석____</option>
     ";
 
     $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
@@ -380,17 +380,17 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['officer_level'] == 4) {
-            echo "<option style=color:red; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
-            echo "<option style=color:orange; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input class='btn_appoint' type=$btn data-officer_level='4' value=임명>
+            <input class='btn_appoint' type=$btn data-officer_level='4' data-officer_level_text='{$officerLevelText}' value=임명>
         </td>
     </tr>";
     $officerLevelText = getOfficerLevelText(3, $nation['level']);
@@ -423,7 +423,7 @@ if($meLevel >= 5) {
     echo "
             </select>
             <select id='genlist_3' size=1 style=color:white;background-color:black;>
-                <option value=0 data-officer_level='0' data-name='' data-officer_level_text='{$officerLevelText}'>____공석____</option>
+                <option value=0 data-officer_level='0' data-name=''>____공석____</option>
     ";
 
     $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
@@ -432,17 +432,17 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['officer_level'] == 3) {
-            echo "<option style=color:red; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
-            echo "<option style=color:orange; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input class='btn_appoint' type=$btn data-officer_level='3' value=임명>
+            <input class='btn_appoint' type=$btn data-officer_level='3'  data-officer_level_text='{$officerLevelText}' value=임명>
         </td>
     </tr>";
     $officerLevelText = getOfficerLevelText(2, $nation['level']);
@@ -475,7 +475,7 @@ if($meLevel >= 5) {
     echo "
             </select>
             <select id='genlist_2' size=1 style=color:white;background-color:black;>
-                <option value=0>____<span class='name_field' data-officer_level_text='{$officerLevelText}'>공석</span>____</option>
+                <option value=0>____<span class='name_field'>공석</span>____</option>
     ";
 
     $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' order by npc,binary(name)";
@@ -484,17 +484,17 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['officer_level'] == 2) {
-            echo "<option style=color:red; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:red; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
-            echo "<option style=color:orange; data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option style=color:orange; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option data-officer_level='{$general['officer_level']} data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
+            echo "<option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
     echo "
             </select>
-            <input class='btn_appoint' type=$btn data-officer_level='2' value=임명>
+            <input class='btn_appoint' type=$btn data-officer_level='2'  data-officer_level_text='{$officerLevelText}' value=임명>
         </td>
     </tr>
     <tr><td colspan=5>※ <font color=red>빨간색</font>은 현재 임명중인 장수, <font color=orange>노란색</font>은 다른 관직에 임명된 장수, 하얀색은 일반 장수를 뜻합니다.</td></tr>
@@ -534,20 +534,21 @@ foreach($db->query('SELECT city,name,level,region,officer4set,officer3set,office
     $cityID = $city['city'];
     $cityOfficerList = $officerList[$cityID]??[];
 ?>
+<?php if($region != $city['region']): ?>
+    <tr><td colspan=5 height=3 id=bg1></td></tr>
+    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 <?=CityConst::$regionMap[$city['region']]?> 】 </font></td></tr>
+<?php endif; $region = $city['region']; ?>
 <tr>
 <td width=78 align=center style='color:<?=$textColor?>;background-color:<?=$nationColor?>;font-size:1.2em;'>【<?=$citylevel[$city['level']]?>】</td>
 <td width=78 align=right  style='color:<?=$textColor?>;background-color:<?=$nationColor?>;font-size:1.2em;'><?=$city['name']?>&nbsp;&nbsp;</td>
-<?php if($region != $city['region']): ?>
-    <tr><td colspan=5 height=3 id=bg1></td></tr>
-    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 <?=CityConst::$regionMap[$city['region']]?> 】 </font></td></tr>";
-<?php endif; $region = $city['region']; ?>
+
 <?php foreach(Util::range(4, 1, -1) as $officerLevel): ?>
 <?php     if(key_exists($officerLevel, $cityOfficerList)): 
 $officer = $cityOfficerList[$officerLevel];
 ?>
-<?=$officer['name']?>(<?=$officer['belong']?>년) 【<?=CityConst::byID($officer['city'])->name?>】
+<td><?=$officer['name']?>(<?=$officer['belong']?>년) 【<?=CityConst::byID($officer['city'])->name?>】</td>
 <?php     else: ?>
--
+<td>-</td>
 <?php     endif; ?>
 <?php endforeach; ?>
 </tr>

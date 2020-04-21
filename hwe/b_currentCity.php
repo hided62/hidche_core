@@ -187,10 +187,6 @@ if($city['trade'] === null) {
     $city['trade'] = "- ";
 }
 
-$query = "select npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,officer_level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($genresult);
-
 $generals = $db->query(
     'SELECT npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,officer_level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
     $city['city']
@@ -198,16 +194,19 @@ $generals = $db->query(
 
 $generalTurnList = [];
 
-foreach($db->queryAllLists(
-    'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
-    array_column($generals, 'no')
-    ) as [$generalID, $turnIdx, $brief]
-){
-    if(!key_exists($generalID, $generalTurnList)){
-        $generalTurnList[$generalID] = [];
+if($generals){
+    foreach($db->queryAllLists(
+        'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+        array_column($generals, 'no')
+        ) as [$generalID, $turnIdx, $brief]
+    ){
+        if(!key_exists($generalID, $generalTurnList)){
+            $generalTurnList[$generalID] = [];
+        }
+        $generalTurnList[$generalID][$turnIdx] = $brief;
     }
-    $generalTurnList[$generalID][$turnIdx] = $brief;
 }
+
 
 $nationname = [];
 $nationlevel = [];
@@ -220,9 +219,7 @@ foreach(getAllNationStaticInfo() as $nation){
 $generalsFormat = [];
 
 
-for($j=0; $j < $gencount; $j++) {
-    $general = MYDB_fetch_array($genresult);
-
+foreach($generals as $general){
     $nationInfo = getNationStaticInfo($general['nation']);
 
     if($general['nation'] != 0 && $general['nation'] == $myNation['nation']){

@@ -23,7 +23,7 @@ class WarUnitCity extends WarUnit{
         $this->logger = $general->getLogger();
         $this->crewType = GameUnitConst::byID(GameUnitConst::CREWTYPE_CASTLE);
 
-        $this->hp = $this->getVar('def') * 10; 
+        $this->hp = $this->getCityVar('def') * 10; 
 
         //수비자 보정
         if($this->getCityVar('level') == 1){

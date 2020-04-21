@@ -19,7 +19,7 @@ $gameStor->cacheValues(['startyear','year','month','scenario']);
 
 $me = $db->queryFirstRow('SELECT no,nation,officer_level from general where owner=%i', $userID);
 $myOfficerLevel = $me['officer_level'];
-$nationID = $nationID;
+$nationID = $me['nation'];
 
 //수뇌가 아니면 아무것도 할 수 없음
 if($myOfficerLevel < 5){
@@ -113,6 +113,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
     $db->update('nation', [
         "l{$targetOfficerLevel}set"=>1,
     ], 'nation=%i', $nationID);
+    $general->applyDB($db);
 
     return null;
 }
@@ -152,6 +153,7 @@ function do도시임명(General $general, int $cityID, int $targetOfficerLevel):
     ], 'city=%i AND nation=%i', $cityID, $nationID);
     $general->setVar('officer_level', $targetOfficerLevel);
     $general->setVar('officer_city', $cityID);
+    $general->applyDB($db);
 
     return null;
 }
@@ -299,6 +301,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
     }
 
     $logger->pushGeneralHistoryLog("<D>{$nation['name']}</>에서 추방됨");
+    $general->applyDB($db);
 
     return null;
 }

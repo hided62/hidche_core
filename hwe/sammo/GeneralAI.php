@@ -1068,9 +1068,6 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
-                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
-                    continue;
-                }
 
                 if ($resVal < $payAmount / 2) {
                     continue;
@@ -1513,7 +1510,7 @@ class GeneralAI
 
 
     // 군주 행동
-    protected function do선포(LastTurn $lastTurn): ?NationCommand
+    protected function do선전포고(LastTurn $lastTurn): ?NationCommand
     {
         $general = $this->general;
 
@@ -2843,6 +2840,7 @@ class GeneralAI
             }
 
             $nationCities[$cityID] = &$nationCity;
+            unset($nationCity);
         }
 
         $this->nationCities = $nationCities;

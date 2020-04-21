@@ -369,4 +369,9 @@ class WarUnit{
         //전특, 병종에 따라 필살 데미지가 달라질지도 모르므로 static 함수는 아닌 것으로
         return Util::randRange(1.3, 2.0);
     }
+
+    function applyDB(\MeekroDB $db):bool{
+        throw new MustNotBeReachedException('Must be WarUnitCity or WarUnitGeneral');
+        return false;
+    }
 }

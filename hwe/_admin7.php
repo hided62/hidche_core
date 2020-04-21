@@ -56,7 +56,6 @@ if($session->userGrade < 5) {
 }
 
 $db = DB::db();
-$connect=$db->get();
 
 if($btn == '정렬하기') {
     $gen = 0;
@@ -112,7 +111,7 @@ $generalObj = General::createGeneralObjFromDB($gen);
     <tr><td>
         <form name=form1 method=post>
         정렬순서 :
-        <select name=type size=1>
+        <select name='query_type' size=1>
 <?php foreach($queryMap as $queryType => [$queryTypeText,]): ?>
     <option <?=$queryType==$reqQueryType?'selected':''?> value='<?=$queryType?>'><?=$queryTypeText?></option>
 <?php endforeach; ?>
