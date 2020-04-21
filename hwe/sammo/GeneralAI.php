@@ -1109,22 +1109,17 @@ class GeneralAI
             return null;
         }
 
-        if($this->nation['gold'] < $this->nationPolicy->reqNationGold){
-            return null;
-        }
-        if($this->nation['rice'] < $this->nationPolicy->reqNationRice){
-            return null;
-        }
-
         $nation = $this->nation;
         $candidateArgs = [];
         $remainResource = [
             'gold' => [
+                $this->nationPolicy->reqNationGold,
                 $nation['gold'],
                 $this->nationPolicy->reqHumanWarRecommandGold,
                 $this->nationPolicy->reqHumanDevelGold,
             ],
             'rice' => [
+                $this->nationPolicy->reqNationRice,
                 $nation['rice'],
                 $this->nationPolicy->reqHumanWarRecommandRice,
                 $this->nationPolicy->reqHumanDevelRice
@@ -1135,7 +1130,10 @@ class GeneralAI
         $userGenerals = $this->userGenerals;
         
 
-        foreach($remainResource as $resName=>[$resVal,$reqHumanMinWarRes,$reqHumanMinDevelRes]){
+        foreach($remainResource as $resName=>[$reqNationRes, $resVal,$reqHumanMinWarRes,$reqHumanMinDevelRes]){
+            if($resVal < $reqNationRes){
+                continue;
+            }
             usort($userGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
@@ -1210,22 +1208,16 @@ class GeneralAI
             return null;
         }
 
-        if($this->nation['gold'] < $this->nationPolicy->reqNationGold){
-            return null;
-        }
-        if($this->nation['rice'] < $this->nationPolicy->reqNationRice){
-            return null;
-        }
-
-
         $nation = $this->nation;
         $candidateArgs = [];
         $remainResource = [
             'gold' => [
+                $this->nationPolicy->reqNationGold,
                 $nation['gold'],
                 $this->nationPolicy->reqNPCWarGold
             ],
             'rice' => [
+                $this->nationPolicy->reqNationRice,
                 $nation['rice'],
                 $this->nationPolicy->reqNPCWarRice
             ]
@@ -1234,7 +1226,10 @@ class GeneralAI
 
         $npcWarGenerals = $this->npcWarGenerals;
 
-        foreach($remainResource as $resName=>[$resVal,$reqNPCMinWarRes]){
+        foreach($remainResource as $resName=>[$reqNationRes, $resVal,$reqNPCMinWarRes]){
+            if($resVal < $reqNationRes){
+                continue;
+            }
             usort($npcWarGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
@@ -1296,23 +1291,17 @@ class GeneralAI
             return null;
         }
 
-        if($this->nation['gold'] < $this->nationPolicy->reqNationGold){
-            return null;
-        }
-        if($this->nation['rice'] < $this->nationPolicy->reqNationRice){
-            return null;
-        }
-
-
         $nation = $this->nation;
         $candidateArgs = [];
         $remainResource = [
             'gold' => [
+                $this->nationPolicy->reqNationGold,
                 $nation['gold'],
                 $this->nationPolicy->reqNPCWarGold,
                 $this->nationPolicy->reqNPCDevelGold
             ],
             'rice' => [
+                $this->nationPolicy->reqNationRice,
                 $nation['rice'],
                 $this->nationPolicy->reqNPCWarRice,
                 $this->nationPolicy->reqNPCDevelRice
@@ -1323,7 +1312,10 @@ class GeneralAI
         $npcWarGenerals = $this->npcWarGenerals;
         $npcCivilGenerals = $this->npcCivilGenerals;
 
-        foreach($remainResource as $resName=>[$resVal,$reqNPCMinWarRes,$reqNPCMinDevelRes]){
+        foreach($remainResource as $resName=>[$reqNationRes, $resVal,$reqNPCMinWarRes,$reqNPCMinDevelRes]){
+            if($resVal < $reqNationRes){
+                continue;
+            }
             usort($npcWarGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
@@ -2820,7 +2812,7 @@ class GeneralAI
         if($nation['gold'] < $this->nationPolicy->reqNationGold){
             $candidate[] = 'che_물자조달';
         }
-        if($nation['rice'] < $this->nationPolicy->reqNationGold){
+        if($nation['rice'] < $this->nationPolicy->reqNationRice){
             $candidate[] = 'che_물자조달';
         }
         $candidate[] = 'che_인재탐색';
