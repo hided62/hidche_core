@@ -195,7 +195,7 @@ class che_임관 extends Command\GeneralCommand{
 
         $env = $this->env;
 
-        $joinedNations = \sammo\Json::decode($db->queryFirstField('SELECT nations FROM general WHERE no = %i', $generalObj->getID()));
+        $joinedNations = $generalObj->getAuxVar('joinedNations')??[];
 
         $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation');
         shuffle($nationList);
