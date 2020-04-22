@@ -221,7 +221,7 @@ class che_인재탐색 extends Command\GeneralCommand{
         $intel = Util::round($intel);
 
 
-        $joinProp = 0.55 * $avgCnt / ($genCnt + $npcCnt / 2);
+        $joinProp = 0.55 * $avgCnt / (Util::valueFit($genCnt + $npcCnt, 1) / 2);
         $noScout = false;
         if($this->nation['scout'] != 0){
             $noScout = true;

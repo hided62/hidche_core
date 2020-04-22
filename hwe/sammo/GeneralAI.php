@@ -1547,6 +1547,40 @@ class GeneralAI
             return null;
         }
 
+        $currentTech = $this->nation['tech'];
+        if(!TechLimit($this->env['startyear'], $this->env['year'], $currentTech + 1000)){
+            return null;
+        }
+
+        $avgGold = 0;
+        $avgRice = 0;
+        $genCnt = 0;
+        foreach($this->npcWarGenerals as $general){
+            $avgGold += $general->getVar('gold');
+            $avgRice += $general->getVar('rice');
+            $genCnt += 1;
+        }
+        foreach($this->userWarGenerals as $general){
+            $avgGold += $general->getVar('gold');
+            $avgRice += $general->getVar('rice');
+            $genCnt += 1;
+        }
+
+        if($genCnt == 0){
+            //장수가 없는데 무슨 선포야.
+            return null;
+        }
+        $avgGold /= $genCnt;
+        $avgRice /= $genCnt;
+
+        $trialProp = $avgGold / max($this->nationPolicy->reqNPCWarGold, 1000);
+        $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice, 1000);
+        $trialProp /= 2;
+
+        if(!Util::randBool($trialProp)){
+            return null;
+        }
+
         
 
         $targetNationID = $this->findWarTarget();
