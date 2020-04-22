@@ -394,7 +394,8 @@ for ($i=0; $i < 16; $i++) {
 
 echo"
                 </tr>";
-$globalBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = 0'), -16);
+$globalBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = 0')??[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ];
+$globalBet = array_splice($globalBet, -16);
 $globalBetTotal = array_sum($globalBet);
 $admin = $gameStor->getValues(['tournament', 'phase']);
 $bet = [];

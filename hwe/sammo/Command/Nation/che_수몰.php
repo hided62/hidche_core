@@ -31,6 +31,9 @@ class che_수몰 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         if(!key_exists('destCityID', $this->arg)){
             return false;
         }
