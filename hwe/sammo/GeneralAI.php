@@ -651,7 +651,7 @@ class GeneralAI
                 $selCity = Util::choiceRandom($this->supplyCities);
             }
             //고립된 장수가 많을 수록 발령 확률 증가
-            $args = [
+            $args[] = [
                 'destGeneralID' => $lostGeneral->getID(),
                 'destCityID' => $selCity['city']
             ];
@@ -814,10 +814,10 @@ class GeneralAI
             if($generalID == $this->general->getID()){
                 continue;
             }
-            $city = $this->supplyCities[$npcGeneral->getCityID()];
-            if(!key_exists($generalID, $this->supplyCities)){
+            if(!key_exists($npcGeneral->getCityID(), $this->supplyCities)){
                 continue;
             }
+            $city = $this->supplyCities[$npcGeneral->getCityID()];
             if($npcGeneral->getVar('troop') !== 0){
                 continue;
             }
@@ -884,7 +884,7 @@ class GeneralAI
             }
             $selCity = Util::choiceRandom($this->supplyCities);
             //고립된 장수가 많을 수록 발령 확률 증가
-            $args = [
+            $args[] = [
                 'destGeneralID' => $lostGeneral->getID(),
                 'destCityID' => $selCity['city']
             ];
@@ -2261,6 +2261,9 @@ class GeneralAI
                 continue;
             }
             $attackableNations[] = $targetNationID;
+        }
+        if(!$attackableNations){
+            $attackableNations[] = 0;
         }
         $nearCities = array_keys(CityConst::byID($cityID)->path);
 
