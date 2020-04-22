@@ -130,7 +130,6 @@ class GeneralAI
         $this->genType = $this->calcGenType($general);
 
         $this->calcDiplomacyState();
-        LogText('전쟁상태', "{$this->general->getName()} {$this->nation['name']} {$this->dipState}");
     }
 
     public function getGeneralObj(): General
@@ -1754,7 +1753,6 @@ class GeneralAI
 
         $cmdList = [];
 
-        LogText('내정', [$general->getName(), $this->city['name'], $develRate]);
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
