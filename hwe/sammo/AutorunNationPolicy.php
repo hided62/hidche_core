@@ -119,14 +119,14 @@ class AutorunNationPolicy {
     public $DevelopForce = [
         //123=>true
     ];
-    public $reqHumanWarUrgentGold = 10000;
-    public $reqHumanWarUrgentRice = 10000;
-    public $reqHumanWarRecommandGold = 30000;
-    public $reqHumanWarRecommandRice = 30000;
+    public $reqHumanWarUrgentGold = 0;
+    public $reqHumanWarUrgentRice = 0;
+    public $reqHumanWarRecommandGold = 0;
+    public $reqHumanWarRecommandRice = 0;
     public $reqHumanDevelGold = 10000;
     public $reqHumanDevelRice = 10000;
-    public $reqNPCWarGold = 5000;
-    public $reqNPCWarRice = 5000;
+    public $reqNPCWarGold = 0;
+    public $reqNPCWarRice = 0;
     public $reqNPCDevelGold = 1000;
     public $reqNPCDevelRice = 500;
 
@@ -141,7 +141,7 @@ class AutorunNationPolicy {
     public $properWarTrainAtmos = 90;
 
 
-    function __construct(General $general, array $nationPolicy, array $serverPolicy)
+    function __construct(General $general, array $nationPolicy, array $serverPolicy, array $nation)
     {
         foreach($serverPolicy as $policy=>$value){
             if(!property_exists($this, $policy)){
@@ -159,6 +159,39 @@ class AutorunNationPolicy {
 
         if(!$this->priority){
             $this->priority = $this::$defaultPriority;
+        }
+
+
+
+        if($this->reqNPCWarGold === 0 || $this->reqNPCWarRice === 0){
+            $defaultCrewType = GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE);
+            $reqGold = $defaultCrewType->costWithTech($nation['tech'], $this->minNPCWarLeadership * 150);
+            $reqRice = $defaultCrewType->riceWithTech($nation['tech'], $this->minNPCWarLeadership * 150);
+            if($this->reqNPCWarGold === 0){
+                $this->reqNPCWarGold = Util::round($reqGold * 2, -2);
+            }
+            if($this->reqNPCWarRice === 0){
+                $this->reqNPCWarRice = Util::round($reqRice * 2, -2);
+            }
+        }
+
+        if($this->reqHumanWarUrgentGold === 0 || $this->reqHumanWarUrgentRice === 0){
+            $defaultCrewType = GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE);
+            $reqGold = $defaultCrewType->costWithTech($nation['tech'], GameConst::$defaultStatMax * 100);
+            $reqRice = $defaultCrewType->riceWithTech($nation['tech'], GameConst::$defaultStatMax * 100);
+            if($this->reqHumanWarUrgentGold === 0){
+                $this->reqHumanWarUrgentGold = Util::round(max(10000, $reqGold * 4 * 2), -2);
+            }
+            if($this->reqHumanWarUrgentRice === 0){
+                $this->reqHumanWarUrgentRice = Util::round(max(10000, $reqRice * 4 * 2), -2);
+            }
+        }
+
+        if($this->reqHumanWarRecommandGold === 0){
+            $this->reqHumanWarRecommandGold = Util::round(max(30000, $this->reqHumanWarUrgentGold * 3), -2);
+        }
+        if($this->reqHumanWarRecommandRice === 0){
+            $this->reqHumanWarRecommandRice = Util::round(max(30000, $this->reqHumanWarRecommandRice * 3), -2);
         }
     }
 }

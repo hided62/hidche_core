@@ -528,7 +528,7 @@ class General implements iAction{
             // 모두 탈퇴
             $db->update('general', [
                 'troop'=>0
-            ], 'troop_leader=%i', $troopLeaderID);
+            ], 'troop=%i', $troopLeaderID);
             // 부대 삭제
             $db->delete('troop', 'troop_leader=%i', $troopLeaderID);
         }

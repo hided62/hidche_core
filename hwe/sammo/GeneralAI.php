@@ -113,7 +113,7 @@ class GeneralAI
         $serverPolicy = KVStorage::getStorage($db, 'autorun_nation_policy_0');
         $nationPolicy = KVStorage::getStorage($db, "autorun_nation_policy_{$this->nation['nation']}");
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $nationPolicy->getAll(), $serverPolicy->getAll());
+        $this->nationPolicy = new AutorunNationPolicy($general, $nationPolicy->getAll(), $serverPolicy->getAll(), $this->nation);
         $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??[]);
 
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
@@ -3361,7 +3361,7 @@ class GeneralAI
 
         if (!$userChief) {
             $candUserChief = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND killturn > %i AND npc < 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
+                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND killturn > %i AND npc <= 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
                 $nationID,
                 $minKillturn,
                 $maxBelong
@@ -3376,7 +3376,7 @@ class GeneralAI
 
         if (!key_exists(11, $chiefCandidate)) {
             $candChiefHead = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND npc >= 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
+                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND npc > 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
                 $nationID,
                 $maxBelong
             );
