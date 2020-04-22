@@ -1879,10 +1879,10 @@ class GeneralAI
         $cmdList = [];
 
         if ($genType & self::t통솔장) {
-            if ($develRate['trust'] < 0.9) {
+            if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($cmd->isRunnable()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust'], 0.001) / 2];
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust'], 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
@@ -3331,7 +3331,7 @@ class GeneralAI
         $nationID = $nation['nation'];
         $minChiefLevel = getNationChiefLevel($nation['level']);
 
-        $minKillturn = $this->env['killturn'] - Util::toInt(30 / $this->env['turnterm']);
+        $minKillturn = $this->env['killturn'] - Util::toInt(180 / $this->env['turnterm']);
         $chiefCandidate = [];
 
         //이 함수를 부르는건 군주 AI이므로, 군주는 세지 않아도 됨
@@ -3433,7 +3433,8 @@ class GeneralAI
 
             foreach ($chiefCandidate as $chiefLevel => $chiefID) {
                 $db->update('general', [
-                    'officer_level' => $chiefLevel
+                    'officer_level' => $chiefLevel,
+                    'officer_city' => 0,
                 ], 'no=%i', $chiefID);
             }
         }
