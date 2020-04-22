@@ -1543,6 +1543,10 @@ class GeneralAI
             return null;
         }
 
+        if(!$this->nation['capital']){
+            return null;
+        }
+
         
 
         $targetNationID = $this->findWarTarget();
