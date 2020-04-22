@@ -103,12 +103,13 @@ class TurnExecutionHelper
         return $commandObj->getResultTurn();
     }
 
-    public function processCommand(Command\GeneralCommand $commandObj){
+    public function processCommand(Command\GeneralCommand $commandObj, bool $autorunMode){
 
         $general = $this->getGeneral();
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
+        $commandClassName = $commandObj->getName();
 
         while(true){
             $failReason = $commandObj->testRunnable();
@@ -151,6 +152,9 @@ class TurnExecutionHelper
         else if($general->getVar('killturn') > $killTurn){
             $general->increaseVarWithLimit('killturn', -1);
         }
+        else if($autorunMode){
+            $general->increaseVarWithLimit('killturn', -1);
+        }
         else if($commandClassName == '휴식'){
             $general->increaseVarWithLimit('killturn', -1);
         }
@@ -168,6 +172,7 @@ class TurnExecutionHelper
         $general = $this->getGeneral();
         $generalID = $general->getID();
         $logger = $general->getLogger();
+        $general->setVar('con', 0);
 
         $generalName = $general->getName();
 
@@ -261,15 +266,20 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 $nationCommandObj = buildNationCommandClass($nationCommand, $general, $env, $lastNationTurn, $nationArg);
             }
 
-            
+            $autorunMode = false;
+
             if($general->getVar('npc') >= 2 || ($autorun_user['limit_minutes']??false)){
                 $ai = new GeneralAI($turnObj->getGeneral());
                 if($hasNationTurn){
                     $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
                     LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
                 }
-
-                $generalCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
+                
+                $newGeneralCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
+                if($generalCommand !== $newGeneralCommandObj){
+                    $autorunMode = true;
+                    $generalCommand = $newGeneralCommandObj;
+                }
                 LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
             }
             
@@ -281,7 +291,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
                 }
-                $turnObj->processCommand($generalCommandObj);
+                $turnObj->processCommand($generalCommandObj, $autorunMode);
             }
             pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));
             pullGeneralCommand($general->getID());
