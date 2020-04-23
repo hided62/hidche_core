@@ -162,6 +162,7 @@ foreach ($generals as &$general) {
 
     
     if ($general['npc'] < 2) {
+        $turntext = [];
         foreach($generalTurnList[$general['no']] as $turnRawIdx=>$turn){
             $turn = StringUtil::subStringForWidth($turn, 0, 41);
             $turnIdx = $turnRawIdx+1;
