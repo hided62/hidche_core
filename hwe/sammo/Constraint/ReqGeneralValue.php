@@ -45,23 +45,6 @@ class ReqGeneralValue extends Constraint{
             throw new \InvalidArgumentException("require {$this->key} in general");
         }
 
-        if(is_numeric($this->reqVal)){
-            $this->isPercent = false;
-        }
-        else if(is_string($this->reqVal)){
-            $this->reqVal = Util::convPercentStrToFloat($this->reqVal);
-            if($this->reqVal === null){
-                if(!$throwExeception){return false; }
-                throw new \InvalidArgumentException("require valid reqVal(percentStr|numeric) format");
-            }
-
-            if(!key_exists($this->maxKey, $this->general)){
-                if(!$throwExeception){return false; }
-                throw new \InvalidArgumentException("require {$this->maxKey} in general");
-            }
-            $this->isPercent = true;
-        }
-
         if($this->errMsg!==null && !is_string($this->errMsg)){
             if(!$throwExeception){return false; }
                 throw new \InvalidArgumentException("{$this->errMsg} must be string or null");
@@ -75,12 +58,7 @@ class ReqGeneralValue extends Constraint{
         $this->tested = true;
         $keyNick = $this->keyNick;
 
-        if ($this->isPercent) {
-            $reqVal = $this->general[$this->maxKey] * $this->reqVal;
-        }
-        else{
-            $reqVal = $this->reqVal;
-        }
+        $reqVal = $this->reqVal;
 
         $compList = [
             '<'=>function($target, $src){
