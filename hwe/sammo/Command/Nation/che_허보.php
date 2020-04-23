@@ -32,7 +32,7 @@ class che_허보 extends Command\NationCommand{
 
     protected function argTest():bool{
         if($this->arg === null){
-            return null;
+            return false;
         }
         if(!key_exists('destCityID', $this->arg)){
             return false;

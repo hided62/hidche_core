@@ -275,6 +275,9 @@ foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
     ];
 }
 $db->insert('rank_data', $rank_data);
+$db->insert('betting', [
+    'general_id'=>$generalID,
+]);
 $cityname = CityConst::byID($city)->name;
 
 $me = [

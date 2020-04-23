@@ -368,6 +368,9 @@ class NPC{
             ];
         }
         $db->insert('rank_data', $rank_data);
+        $db->insert('betting', [
+            'general_id'=>$this->generalID,
+        ]);
 
         return true; //생성되었다.
     }
