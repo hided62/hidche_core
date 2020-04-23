@@ -1500,7 +1500,7 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
 
             $remain = $cnt - $occupiedUnique[$itemCode];
             if($remain > 0){
-                $availableUnique[] = [[$itemType, $itemCode], $cnt];
+                $availableUnique[] = [[$itemType, $itemCode], $remain];
             }
         }
     }
