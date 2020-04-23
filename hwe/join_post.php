@@ -130,7 +130,7 @@ if (!$city) {
     $city = $db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1");
 }
 
-$pleadershipship = 0;
+$pleadership = 0;
 $pstrength = 0;
 $pintel = 0;
 for ($statBonusCnt = 3 + mt_rand(0, 2); $statBonusCnt > 0; $statBonusCnt--) {

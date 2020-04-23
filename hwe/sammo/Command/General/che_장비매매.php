@@ -41,7 +41,7 @@ class che_장비매매 extends Command\GeneralCommand{
             return false;
         }
         $itemCode = $this->arg['itemCode']??null;
-        if(!key_exists($itemCode, GameConst::$allItems[$itemType])){
+        if(!key_exists($itemCode, GameConst::$allItems[$itemType]) && $itemCode !== 'None'){
             return false;
         }
         $itemClass = buildItemClass($itemCode);
@@ -208,7 +208,7 @@ $('#customSubmit').click(function(){
     //매각
     $typeName = static::$itemMap[$itemType];
 ?>
-    <option value='None' data-itemType='<?=$itemType?>' style='color:skyblue'>_____<?=$typeName?>매각(반값)____</option>
+    <option value='None' data-item_type='<?=$itemType?>' style='color:skyblue'>_____<?=$typeName?>매각(반값)____</option>
     <?php foreach($itemCategories as $itemCode=>$cnt) :
             if($cnt > 0){
                 continue;
