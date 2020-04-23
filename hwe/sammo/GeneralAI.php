@@ -3160,6 +3160,10 @@ class GeneralAI
             return $result;
         }
 
+        if($npcType < 2 && $nationID === 0 && !$this->generalPolicy->can국가선택){
+            return $reservedCommand;
+        }
+
         if($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']){
             //방랑군 건국
             $result = $this->do건국();
