@@ -1525,6 +1525,7 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
     $logger = $general->getLogger();
 
     $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 습득했습니다!");
+    $logger->pushGeneralHistoryLog("<C>{$itemName}</>{$josaUl} 습득");
     $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
     $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
 
