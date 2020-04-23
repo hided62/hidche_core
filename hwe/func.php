@@ -1733,11 +1733,11 @@ function calcCityDistance(int $from, int $to, ?array $linkNationList):?int{
         $db = DB::db();
         //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까 
         $allowedCityList = [];
-        foreach($db->queryAllLists(
+        foreach($db->queryFirstColumn(
             'SELECT city FROM city WHERE nation IN %li',
             $linkNationList
-        ) as [$cityID, $nationID]){
-            $allowedCityList[$cityID] = $nationID;
+        ) as $cityID){
+            $allowedCityList[$cityID] = $cityID;
         }
 
         

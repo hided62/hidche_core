@@ -101,15 +101,16 @@ case "쌀지급":
     processRiceIncome();
     break;
 case "락걸기":
-    $db->update('plock', [
-        'plock'=>1,
-        'locktime'=>TimeUtil::now(true)
-    ], true);
+    for($i = 0; $i < 10; $i++){
+        if(tryLock()){
+            $locked = true;
+            break;
+        }
+        usleep(500000);
+    }
     break;
 case "락풀기":
-    $db->update('plock', [
-        'plock'=>0
-    ], true);
+    unlock();
     break;
 }
 

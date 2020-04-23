@@ -393,31 +393,84 @@ if ($admin['tournament'] == 6) {
     <tr align=center>
 <?php
 
+$tournamentType = [
+    '전 력 전'=>[
+        '종합',
+        function(General $general){return $general->getVar('leadership')+$general->getVar('strength')+$general->getVar('intel');},
+        'tt',
+    ],
+    '통 솔 전'=>[
+        '통솔',
+        function(General $general){return $general->getVar('leadership');},
+        'tl',
+    ],
+    '일 기 토'=>[
+        '무력',
+        function(General $general){return $general->getVar('strength');},
+        'ts',
+    ],
+    '설 전'=>[
+        '지력',
+        function(General $general){return $general->getVar('intel');},
+        'ti',
+    ],
+];
+
 $type1 = array("전 력 전", "통 솔 전", "일 기 토", "설 전");
 $type2 = array("종합", "통솔", "무력", "지력");
 $type3 = array("tt", "tl", "ts", "ti");
 $type4 = array("total", "leadership", "strength", "intel");
 
-for ($i=0; $i < 4; $i++) {
-    $grp = $i;
-    echo "
+foreach($tournamentType as $tournamentTypeText=>[$statTypeText,$statFunc,$rankColumn]): ?>
         <td>
             <table align=center width=280 class='tb_layout bg0'>
-                <tr><td colspan=9 align=center style=color:white;background-color:black;><font size=4>{$type1[$i]}</font></td></tr>
-                <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$type2[$i]}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>";
-
-    $query = "select npc,name,leadership,strength,intel,leadership+strength+intel as total,{$type3[$i]}p as prize,{$type3[$i]}w+{$type3[$i]}d+{$type3[$i]}l as game,{$type3[$i]}w as win,{$type3[$i]}d as draw,{$type3[$i]}l as lose,{$type3[$i]}g as gl from general order by gl desc, game desc, win desc, draw desc, lose, no limit 0,30";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    for ($k=1; $k <= 30; $k++) {
-        $general = MYDB_fetch_array($result);
-        printRow($k, $general['npc'], $general['name'], $general[$type4[$i]], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gl'], $general['prize'], 0);
+                <tr><td colspan=9 align=center style=color:white;background-color:black;><font size=4><?=$tournamentTypeText?></font></td></tr>
+                <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center><?=$statTypeText?></td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>
+<?php
+    $prizeColumn = "{$rankColumn}p";
+    $gameColumn = "{$rankColumn}g";
+    $winColumn = "{$rankColumn}w";
+    $drawColumn = "{$rankColumn}d";
+    $loseColumn = "{$rankColumn}l";
+    $tournamentRankerList = General::createGeneralObjListFromDB(
+        $db->queryFirstColumn('SELECT general_id FROM rank_data WHERE `type`= %s ORDER BY value DESC LIMIT 40', $gameColumn),
+        [$prizeColumn, $gameColumn, $winColumn, $drawColumn, $loseColumn,'leadership', 'strength', 'intel', 'no', 'npc', 'name'],
+        0
+    );
+    usort($tournamentRankerList, function(General $lhs, General $rhs) use($gameColumn, $winColumn, $drawColumn, $loseColumn){
+        $result = -($lhs->getRankVar($gameColumn) <=> $rhs->getRankVar($gameColumn));
+        if($result !== 0) return $result;
+        $result = -(
+            ($lhs->getRankVar($winColumn)+$lhs->getRankVar($drawColumn)+$lhs->getRankVar($loseColumn)) 
+            <=> 
+            ($rhs->getRankVar($winColumn)+$rhs->getRankVar($drawColumn)+$rhs->getRankVar($loseColumn))
+        );
+        if($result !== 0) return $result;
+        $result = -($lhs->getRankVar($winColumn) <=> $rhs->getRankVar($winColumn));
+        if($result !== 0) return $result;
+        $result = -($lhs->getRankVar($drawColumn) <=> $rhs->getRankVar($drawColumn));
+        if($result !== 0) return $result;
+        return $lhs->getRankVar($loseColumn) <=> $rhs->getRankVar($loseColumn);
+    });
+    $tournamentRankerList = array_splice($tournamentRankerList, 0, 30);
+    foreach($tournamentRankerList as $rank=>$ranker){
+        printRow(
+            $rank+1,
+            $ranker->getVar('npc'),
+            $ranker->getName(),
+            ($statFunc)($ranker),
+            $ranker->getRankVar($winColumn)+$ranker->getRankVar($drawColumn)+$ranker->getRankVar($loseColumn),
+            $ranker->getRankVar($winColumn),
+            $ranker->getRankVar($drawColumn),
+            $ranker->getRankVar($loseColumn),
+            $ranker->getRankVar($gameColumn),
+            $ranker->getRankVar($prizeColumn),
+            0
+        );
     }
-    echo "
-            </table>
-        </td>";
-}
-
 ?>
+    </table></td>
+<?php endforeach; ?>
     </tr>
     <tr>
         <td colspan=16>

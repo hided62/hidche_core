@@ -205,7 +205,7 @@ class che_천도 extends Command\NationCommand{
             'capset' => $db->sqleval('capset + 1'),
         ], 'nation=%i', $nationID);
         
-        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 천도했습니다. <1>$date</");
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 천도했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaRo} <M>천도</>명령");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</> 명령");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</>를 명령하였습니다.");

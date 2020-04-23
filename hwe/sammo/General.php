@@ -44,8 +44,10 @@ class General implements iAction{
 
     const RANK_COLUMN = [
         'firenum'=>1, 'warnum'=>1, 'killnum'=>1, 'deathnum'=>1, 'killcrew'=>1, 'deathcrew'=>1,
-        'ttw'=>1, 'ttd'=>1, 'ttl'=>1, 'ttg'=>1, 'ttp'=>1, 'tlw'=>1,  'tld'=>1, 'tll'=>1, 'tlg'=>1, 'tlp'=>1,
-        'tsw'=>1, 'tsd'=>1, 'tsl'=>1, 'tsg'=>1, 'tsp'=>1, 'tiw'=>1,  'tid'=>1, 'til'=>1, 'tig'=>1, 'tip'=>1,
+        'ttw'=>1, 'ttd'=>1, 'ttl'=>1, 'ttg'=>1, 'ttp'=>1,
+        'tlw'=>1, 'tld'=>1, 'tll'=>1, 'tlg'=>1, 'tlp'=>1,
+        'tsw'=>1, 'tsd'=>1, 'tsl'=>1, 'tsg'=>1, 'tsp'=>1,
+        'tiw'=>1, 'tid'=>1, 'til'=>1, 'tig'=>1, 'tip'=>1,
         'betwin'=>1, 'betgold'=>1, 'betwingold'=>1,
     ];
 
@@ -97,6 +99,10 @@ class General implements iAction{
             $this->initLogger($year, $month);
         }
 
+        if($rawRank){
+            $this->rankVarRead = $rawRank;
+        }
+
         if(!$fullConstruct){
             return;
         }
@@ -113,10 +119,6 @@ class General implements iAction{
         $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
         $this->itemObjs['book'] = buildItemClass($raw['book']);
         $this->itemObjs['item'] = buildItemClass($raw['item']);
-
-        if($rawRank){
-            $this->rankVarRead = $rawRank;
-        }
     }
 
     function initLogger(int $year, int $month){
@@ -978,7 +980,10 @@ class General implements iAction{
                 $result[$generalID] = new DummyGeneral($constructMode > 0);
                 continue;
             }
-            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID], null, $year, $month, $constructMode > 1);
+            if(key_exists($generalID, $rawRanks) && count($rawRanks[$generalID]??[]) !== count($rankColumn)){
+                throw new \RuntimeException('column의 수가 일치하지 않음 : '.$generalID);
+            }
+            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID]??null, null, $year, $month, $constructMode > 1);
         }
         
         return $result;

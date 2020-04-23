@@ -43,7 +43,7 @@ var charInfoText = <?php
 $charInfoText = [];
 foreach(GameConst::$availablePersonality as $personalityID){
     $personalityInfo = buildPersonalityClass($personalityID)->getInfo();
-    $charInfoText[$personalityID];
+    $charInfoText[$personalityID] = $personalityInfo;
 }
 echo Json::encode((object)$charInfoText);
 ?>;

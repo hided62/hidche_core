@@ -453,10 +453,10 @@ class GeneralAI
             if($generalID == $this->general->getID()){
                 continue;
             }
-            $city = $this->supplyCities[$userGeneral->getCityID()];
-            if(!key_exists($generalID, $this->supplyCities)){
+            if(!key_exists($userGeneral->getCityID(), $this->supplyCities)){
                 continue;
             }
+            $city = $this->supplyCities[$userGeneral->getCityID()];
             $troopLeaderID = $userGeneral->getVar('troop');
             if(!$troopLeaderID || !key_exists($troopLeaderID, $this->troopLeaders)){
                 continue;
@@ -559,10 +559,10 @@ class GeneralAI
             if($generalID == $this->general->getID()){
                 continue;
             }
-            $city = $this->supplyCities[$userGeneral->getCityID()];
-            if(!key_exists($generalID, $this->supplyCities)){
+            if(!key_exists($userGeneral->getCityID(), $this->supplyCities)){
                 continue;
             }
+            $city = $this->supplyCities[$userGeneral->getCityID()];
             if($userGeneral->getVar('troop') !== 0){
                 continue;
             }
@@ -1057,7 +1057,7 @@ class GeneralAI
                 }
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership()) * 2 * 4 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 2 * 4 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
@@ -1157,7 +1157,7 @@ class GeneralAI
                 }
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership()) * 2 * 4 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 2 * 4 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
@@ -1239,7 +1239,7 @@ class GeneralAI
                 }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetNPCGeneral->getLeadership()) * 2 * 4 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetNPCGeneral->getLeadership(false)) * 2 * 4 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqNPCMinWarRes);
                 }
@@ -1325,7 +1325,7 @@ class GeneralAI
                 }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($nation['tech'], $targetNPCGeneral->getLeadership()) * 2 * 4 * 1.1;
+                $reqMoney = $crewtype->costWithTech($nation['tech'], $targetNPCGeneral->getLeadership(false)) * 2 * 4 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqNPCMinWarRes);
                 }
@@ -2995,7 +2995,7 @@ class GeneralAI
                 else{
                     $userCivilGenerals[$generalID] = $nationGeneral;
                 }
-            } else if ($nationGeneral->getLeadership() >= $this->nationPolicy->minNPCWarLeadership) {
+            } else if ($nationGeneral->getLeadership(false) >= $this->nationPolicy->minNPCWarLeadership) {
                 $npcWarGenerals[$generalID] = $nationGeneral;
             } else {
                 $npcCivilGenerals[$generalID] = $nationGeneral;

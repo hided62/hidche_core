@@ -108,6 +108,9 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $currCnt  = Util::toInt($totalGenCnt + $totalNpcCnt / 2);
         $remainSlot = $maxGenCnt - $currCnt;
+        if($remainSlot < 0){
+            $remainSlot = 0;
+        }
 
         $avgCnt = $currCnt / $nationCnt;
 

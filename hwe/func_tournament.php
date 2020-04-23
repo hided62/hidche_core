@@ -979,7 +979,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         } else {
             $ratio = rand() % 1000;
             if($critical1 == 0 && $gen1[$tp] >= $ratio) {
-                $damage2 *= Util::round((rand() % 151 + 150) / 100); // 150 ~ 300%
+                $damage2 *= Util::randRangeInt(150, 300) / 100; // 150 ~ 300%
                 $critical1 = 1;
                 if    ($tnmt_type == 0) { switch(rand()%6) { case 0: $str = "참격"; break; case 1: $str = "집중"; break; case 2: $str = "역공"; break; case 3: $str = "반격"; break; case 4: $str = "선제"; break; case 5: $str = "도발"; break; } }
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
@@ -989,7 +989,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             }
             $ratio = rand() % 1000;
             if($critical2 == 0 && $gen2[$tp] >= $ratio) {
-                $damage1 *= Util::round((rand() % 151 + 150) / 100); // 150 ~ 300%
+                $damage1 *= Util::randRangeInt(150, 300) / 100; // 150 ~ 300%
                 $critical2 = 1;
                 if    ($tnmt_type == 0) { switch(rand()%6) { case 0: $str = "참격"; break; case 1: $str = "집중"; break; case 2: $str = "역공"; break; case 3: $str = "반격"; break; case 4: $str = "선제"; break; case 5: $str = "도발"; break; } }
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
@@ -998,6 +998,9 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
                 $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>{$str}</>!";
             }
         }
+
+        Util::setRound($damage1);
+        Util::setRound($damage2);
 
         $energy1 -= $damage1;
         $energy2 -= $damage2;

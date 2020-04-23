@@ -31,6 +31,9 @@ class che_허보 extends Command\NationCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return null;
+        }
         if(!key_exists('destCityID', $this->arg)){
             return false;
         }
