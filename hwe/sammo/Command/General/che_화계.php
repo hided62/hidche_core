@@ -60,7 +60,7 @@ class che_화계 extends Command\GeneralCommand{
             $genScore = $general->getIntel();
         }
         else{
-            throw new MustNotBeReachedException();
+            throw new \sammo\MustNotBeReachedException();
         }
 
         $prob = $genScore / GameConst::$sabotageProbCoefByStat;
@@ -91,7 +91,7 @@ class che_화계 extends Command\GeneralCommand{
                 $genScore = $destGeneral->getIntel();
             }
             else{
-                throw new MustNotBeReachedException();
+                throw new \sammo\MustNotBeReachedException();
             }
             $maxGenScore = max($maxGenScore, $genScore);
         }
@@ -243,20 +243,17 @@ class che_화계 extends Command\GeneralCommand{
 
         $destCityGeneralList = [];
         
-        [$year, $month] = [$env['year'], $env['month']];
-        
-        foreach($db->query(
-            'SELECT `no`,name,city,nation,officer_level,leadership,horse,strength,weapon,intel,book,item,last_turn,injury,special,special2,injury,crew,atmos,train FROM general WHERE city = %i',
-            $destCityID,
-            $destNationID
-        ) as $rawDestCityGeneral){
-            $destCityGeneralList[] = new General($rawDestCityGeneral, null, $destCity, $year, $month, true);
-            //계략에 성공할 경우 logger를 사용해야 하므로 해야하므로, 미리 초기화한다.
-            //실패하면 날리는거지 뭐~
-        };
+        $cityGeneralID = $db->queryFirstColumn('SELECT no FROM general WHERE city = %i AND nation = %i', $destCityID, $destNationID);
+        $destCityGeneralList = General::createGeneralObjListFromDB($cityGeneralID, ['name', 'city', 'nation', 'officer_level', 'leadership', 'horse', 'strength', 'weapon', 'intel', 'book', 'item', 'last_turn', 'injury', 'special', 'special2', 'injury', 'crew', 'atmos', 'train'], 2);
+        foreach($destCityGeneralList as &$destCityGeneral){
+            $destCityGeneral->setRawCity($this->destCity);
+            unset($destCityGeneral);
+        }
+        //계략에 성공할 경우 logger를 사용해야 하므로 해야하므로, 미리 초기화한다.
+        //실패하면 날리는거지 뭐~
 
         $prob = GameConst::$sabotageDefaultProb + $this->calcSabotageAttackProb() - $this->calcSabotageDefenceProb($destCityGeneralList);
-        $prob /= $dist[$destCityID];
+        $prob /= $dist;
 
         if(!Util::randBool($prob)){
             $josaYi = JosaUtil::pick($commandName, '이');

@@ -3161,6 +3161,7 @@ class GeneralAI
         }
 
         if($npcType < 2 && $nationID === 0 && !$this->generalPolicy->can국가선택){
+            $reservedCommand->reason = '재야유저';
             return $reservedCommand;
         }
 

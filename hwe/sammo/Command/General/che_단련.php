@@ -40,8 +40,8 @@ class che_단련 extends Command\GeneralCommand{
         $this->runnableConstraints=[
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::ReqGeneralCrew(),
-            ConstraintHelper::ReqGeneralValue('train', '훈련', '<', GameConst::$defaultTrainHigh),
-            ConstraintHelper::ReqGeneralValue('atmos', '사기', '<', GameConst::$defaultAtmosHigh),
+            ConstraintHelper::ReqGeneralValue('train', '훈련', '>=', GameConst::$defaultTrainLow),
+            ConstraintHelper::ReqGeneralValue('atmos', '사기', '>=', GameConst::$defaultAtmosLow),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
