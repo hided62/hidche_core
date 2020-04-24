@@ -2496,12 +2496,12 @@ class GeneralAI
 
         $candidateCities = [];
 
-        foreach($this->frontCities as $frontCity){
-            $cityCandidates[$frontCity['city']] = $frontCity['important'];
+        if(!$this->frontCities){
+            throw new \sammo\MustNotBeReachedException('attackable인데 frontCities가 없음');
         }
 
-        if(!$candidateCities){
-            return null;
+        foreach($this->frontCities as $frontCity){
+            $candidateCities[$frontCity['city']] = $frontCity['important'];
         }
 
         $cmd = buildGeneralCommandClass('che_NPC능동', $this->general, $this->env, [
@@ -2878,7 +2878,7 @@ class GeneralAI
         $backupCities = [];
 
         foreach ($db->query('SELECT * FROM city WHERE nation = %i', $nationID) as $nationCity) {
-            $nationCity['generals'] = [];
+            $nationCity['generals'] = new \ArrayObject();
             $cityID = $nationCity['city'];
             $dev =
                 ($nationCity['agri'] + $nationCity['comm'] + $nationCity['secu'] + $nationCity['def'] + $nationCity['wall']) /
@@ -2889,17 +2889,16 @@ class GeneralAI
             $nationCity['important'] = 1;
 
             if($nationCity['supply']){
-                $supplyCities[$cityID] = &$nationCity;
+                $supplyCities[$cityID] = $nationCity;
             }
             if($nationCity['front']){
-                $frontCities[$cityID] = &$nationCity;
+                $frontCities[$cityID] = $nationCity;
             }
             else{
-                $backupCities[$cityID] = &$nationCity;
+                $backupCities[$cityID] = $nationCity;
             }
 
-            $nationCities[$cityID] = &$nationCity;
-            unset($nationCity);
+            $nationCities[$cityID] = $nationCity;
         }
 
         $this->nationCities = $nationCities;
@@ -3348,7 +3347,7 @@ class GeneralAI
             }
         }
 
-        
+
     }
 
     protected function choosePromotion()
