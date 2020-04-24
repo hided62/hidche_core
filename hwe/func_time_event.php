@@ -322,7 +322,7 @@ function processRiceIncome() {
 
     $nationList = $db->query('SELECT name,level,nation,capital,rice,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,officer_level,dedication,city FROM general'), 'nation');
+    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,officer_level,dedication,city FROM general WHERE npc != 5'), 'nation');
 
     //국가별 처리
     foreach($nationList as $nation) {
