@@ -127,7 +127,7 @@ class AutorunNationPolicy {
     public $reqHumanDevelRice = 10000;
     public $reqNPCWarGold = 0;
     public $reqNPCWarRice = 0;
-    public $reqNPCDevelGold = 1000;
+    public $reqNPCDevelGold = 0;
     public $reqNPCDevelRice = 500;
 
     public $minimumResourceActionAmount = 1000;
@@ -141,7 +141,7 @@ class AutorunNationPolicy {
     public $properWarTrainAtmos = 90;
 
 
-    function __construct(General $general, array $nationPolicy, array $serverPolicy, array $nation)
+    function __construct(General $general, array $nationPolicy, array $serverPolicy, array $nation, array $env)
     {
         foreach($serverPolicy as $policy=>$value){
             if(!property_exists($this, $policy)){
@@ -161,6 +161,10 @@ class AutorunNationPolicy {
             $this->priority = $this::$defaultPriority;
         }
 
+
+        if($this->reqNPCDevelGold === 0){
+            $this->reqNPCDevelGold = $env['develcost'] * 30;
+        }
 
 
         if($this->reqNPCWarGold === 0 || $this->reqNPCWarRice === 0){
