@@ -3521,14 +3521,9 @@ class GeneralAI
 
         $outcome = getOutcome(100, $dedicationList);
 
-        $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
+        $bill = intval($income / $outcome * 90); // 수입의 80% 만 지급
 
-        if ($bill < 20) {
-            $bill = 20;
-        }
-        if ($bill > 200) {
-            $bill = 200;
-        }
+        $bill = Util::valueFit($bill, 20, 200);
 
         $db->update('nation', [
             'bill' => $bill,
@@ -3563,7 +3558,7 @@ class GeneralAI
 
         $outcome = getOutcome(100, $dedicationList);
 
-        $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
+        $bill = intval($income / $outcome * 90); // 수입의 80% 만 지급
 
         if ($bill < 20) {
             $bill = 20;

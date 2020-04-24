@@ -41,8 +41,8 @@ class NPC{
         9 => 'ⓞ', //오랑캐?
     ];
 
-    protected $gold;
-    protected $rice;
+    public $gold;
+    public $rice;
 
     protected $specAge = null;
     protected $specAge2 = null;
