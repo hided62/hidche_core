@@ -681,6 +681,7 @@ class General implements iAction{
         $this->rankVarSet = [];
 
         $this->getLogger()->flush();
+        $this->flushUpdateValues();
         return $db->affectedRows() > 0;
     }
 

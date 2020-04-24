@@ -153,11 +153,11 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $db->update('nation', $updateDefenderNation, 'nation=%i', $defenderNationID);
 
     $db->update('diplomacy', [
-        'dead'=>$db->sqleval('dead + %i', $attacker->getDead() * getTechCost($rawAttackerNation['tech']))
+        'dead'=>$db->sqleval('dead + %i', $attacker->getDead())
     ], 'me = %i and you = %i', $attackerNationID, $defenderNationID);
 
     $db->update('diplomacy', [
-        'dead'=>$db->sqleval('dead + %i', $attacker->getKilled() * getTechCost($rawDefenderNation['tech']))
+        'dead'=>$db->sqleval('dead + %i', $attacker->getKilled())
     ], 'me = %i and you = %i', $defenderNationID, $attackerNationID);
 
     if(!$conquerCity){

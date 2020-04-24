@@ -145,7 +145,7 @@ class che_포상 extends Command\NationCommand{
         
         $logger = $general->getLogger();
 
-        $destGeneral->increaseVarWithLimit($resKey, $amount);
+        $destGeneral->increaseVar($resKey, $amount);
         $db->update('nation', [
             $resKey=>$db->sqleval('%b - %i', $resKey, $amount)
         ], 'nation=%i', $nationID);

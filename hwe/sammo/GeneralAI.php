@@ -3326,6 +3326,31 @@ class GeneralAI
         ];
     }
 
+    protected function newChoosePromotion(){
+        $db = DB::db();
+
+        $nation = $this->nation;
+        $nationID = $nation['nation'];
+        $minChiefLevel = getNationChiefLevel($nation['level']);
+
+        $userChiefCnt = 0;
+
+        $strengthSort = [];
+        $intelSort = [];
+
+        foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
+            if(!key_exists($chiefLevel, $this->chiefGenerals)){
+                continue;
+            }
+            $chief = $this->chiefGenerals[$chiefLevel];
+            if($chief->getVar('npc') < 2){
+                $userChiefCnt[$chiefLevel] = $chief;
+            }
+        }
+
+        
+    }
+
     protected function choosePromotion()
     {
         $db = DB::db();

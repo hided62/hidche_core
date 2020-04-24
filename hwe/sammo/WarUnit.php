@@ -80,6 +80,10 @@ class WarUnit{
     function getUpdatedValues():array {
         return $this->general->getUpdatedValues();
     }
+
+    function flushUpdateValues():void {
+        $this->general->flushUpdateValues();
+    }
     
     protected function clearActivatedSkill(){
         foreach($this->activatedSkill as $skillName=>$state){

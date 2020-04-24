@@ -35,7 +35,9 @@ class che_징병 extends Command\GeneralCommand{
     static protected $defaultAtmos;
 
     protected $reqCrew = 0;
+    /** @var \sammo\GameUnitDetail */
     protected $reqCrewType;
+    /** @var \sammo\GameUnitDetail */
     protected $currCrewType;
     
     static protected $isInitStatic = false;

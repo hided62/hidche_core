@@ -330,16 +330,13 @@ function preUpdateMonthly() {
     $rate = Util::round(($admin['year'] - $admin['startyear']) / 1.5) + 60;
     if($rate > 100) $rate = 100;
 
-    $ratio = 100;
     // 20 ~ 140원
     $develcost = ($admin['year'] - $admin['startyear'] + 10) * 2;
-    $gameStor->gold_rate = $ratio;
-    $gameStor->rice_rate = $ratio;
     $gameStor->city_rate = $rate;
     $gameStor->develcost = $develcost;
 
     //매달 사망자 수입 결산
-    processWarIncome($ratio);
+    processWarIncome();
 
     //계략, 전쟁표시 해제
     $db->update('city', [

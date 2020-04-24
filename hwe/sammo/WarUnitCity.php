@@ -154,6 +154,7 @@ class WarUnitCity extends WarUnit{
         }
         
         $db->update('city', $updateVals, 'city=%i', $this->raw['city']);
+        $this->flushUpdateValues();
         return $db->affectedRows() > 0;
     }
 

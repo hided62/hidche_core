@@ -136,4 +136,12 @@ trait LazyVarUpdater{
         }
         return $updateVals;
     }
+
+    function flushUpdateValues():void {
+        $this->updatedVar = [];
+        if(key_exists('auxVar', $this->raw)){
+            $this->auxUpdated = false;
+            unset($this->raw['auxVar']);
+        }
+    }
 }

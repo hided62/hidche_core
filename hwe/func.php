@@ -1288,7 +1288,7 @@ function CheckHall($no) {
         ["firenum", 'rank'],
         ["warnum", 'rank'],
         ["killnum", 'rank'],
-        ["winrate", 'rank'],
+        ["winrate", 'calc'],
         ["killcrew", 'rank'],
         ["killrate", 'calc'],
         ["dex1", 'natural'],
@@ -1298,7 +1298,7 @@ function CheckHall($no) {
         ["dex5", 'natural'],
         ["ttrate", 'calc'],
         ["tlrate", 'calc'],
-        ["tprate", 'calc'],
+        ["tsrate", 'calc'],
         ["tirate", 'calc'],
         ["betgold", 'rank'],
         ["betwin", 'rank'],
@@ -1324,16 +1324,28 @@ function CheckHall($no) {
     $tid = $generalObj->getRankVar('tid');
     $til = $generalObj->getRankVar('til');
 
-    $tt = max($ttw+$ttd+$ttl, 1);
-    $tl = max($tlw+$tld+$tll, 1);
-    $ts = max($tsw+$tsd+$tsl, 1);
-    $ti = max($tiw+$tid+$til, 1);
+    $betWinGold = $generalObj->getRankVar('betwingold');
+    $betGold = Util::valueFit($generalObj->getRankVar('betgold'), 1);
+    
+    $win = $generalObj->getRankVar('killnum');
+    $war = Util::valueFit($generalObj->getRankVar('warnum'), 1);
+
+    $kill = $generalObj->getRankVar('killcrew');
+    $death = Util::valueFit($generalObj->getRankVar('deathcrew'), 1);
+
+    $tt = Util::valueFit($ttw+$ttd+$ttl, 1);
+    $tl = Util::valueFit($tlw+$tld+$tll, 1);
+    $ts = Util::valueFit($tsw+$tsd+$tsl, 1);
+    $ti = Util::valueFit($tiw+$tid+$til, 1);
 
     $calcVar = [];
     $calcVar['ttrate'] = $ttw/$tt;
     $calcVar['tlrate'] = $tlw/$tl;
     $calcVar['tsrate'] = $tsw/$ts;
     $calcVar['tirate'] = $tiw/$ti;
+    $calcVar['betrate'] = $betWinGold/$betGold;
+    $calcVar['winrate'] = $win/$war;
+    $calcVar['killrate'] = $kill/($kill+$death);
     
     if($generalObj instanceof DummyGeneral){
         return;

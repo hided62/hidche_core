@@ -241,8 +241,6 @@ class ResetHelper{
             'maxgeneral'=>GameConst::$defaultMaxGeneral,
             'maxnation'=>GameConst::$defaultMaxNation,
             'conlimit'=>30000,
-            'gold_rate'=>100,
-            'rice_rate'=>100,
             'develcost'=>$develcost,
             'turntime'=>$turntime,
             'starttime'=>$starttime,
