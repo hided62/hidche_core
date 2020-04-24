@@ -579,10 +579,9 @@ class General implements iAction{
         $this->multiplyVar('dex4', 0.5);
         $this->multiplyVar('dex5', 0.5);
 
-        $this->setRankVar('firenum', 0);
-        $this->setRankVar('warnum', 0);
-        $this->setRankVar('killnum', 0);
-        $this->setRankVar('killcrew', 0);
+        foreach(array_keys(static::RANK_COLUMN) as $rankKey){
+            $this->setRankVar($rankKey, 0);
+        }
 
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.");
