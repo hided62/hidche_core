@@ -1546,7 +1546,10 @@ class GeneralAI
             return null;
         }
 
-        $currentTech = $this->nation['tech'];
+        $nation = $this->nation;
+        $nationID = $nation['nation'];
+
+        $currentTech = $nation['tech'];
         if(!TechLimit($this->env['startyear'], $this->env['year'], $currentTech + 1000)){
             return null;
         }
@@ -1564,6 +1567,8 @@ class GeneralAI
             $avgRice += $general->getVar('rice');
             $genCnt += 1;
         }
+        $avgGold += $nation['gold'];
+        $avgRice += $nation['rice'];
 
         if($genCnt == 0){
             //장수가 없는데 무슨 선포야.
@@ -1574,21 +1579,34 @@ class GeneralAI
 
         $trialProp = $avgGold / max($this->nationPolicy->reqNPCWarGold, 1000);
         $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice, 1000);
-        $trialProp /= 2;
+
+        $devRate = $this->calcNationDevelopedRate();
+        $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
+
+        $trialProp /= 3;
 
         if(!Util::randBool($trialProp)){
             return null;
         }
 
-        
-
-        $targetNationID = $this->findWarTarget();
-        if($targetNationID === null){
+        $nations = [];
+        foreach(getAllNationStaticInfo() as $destNation){
+            if($destNation['level'] == 0){
+                continue;
+            }
+            $destNationID = $destNation['nation'];
+            $destNationPower = $destNation['power'];
+            if (!isNeighbor($nationID, $destNationID)) {
+                continue;
+            }
+            $nations[$destNationID] = 1 / sqrt($destNationPower + 1);
+        }
+        if (!$nations) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_선전포고', $general, $this->env, $lastTurn, [
-            'destNationID' => $targetNationID
+            'destNationID' => Util::choiceRandomUsingWeight($nations)
         ]);
         if(!$cmd->isRunnable()){
             return null;
@@ -3521,7 +3539,13 @@ class GeneralAI
 
         $outcome = getOutcome(100, $dedicationList);
 
-        $bill = intval($income / $outcome * 90); // 수입의 80% 만 지급
+        $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
+        if($nation['gold'] + $income - $outcome > $this->nationPolicy->reqNationGold * 2){
+            $moreBill = ($nation['gold'] + $income - $this->nationPolicy->reqNationGold * 2) / $outcome * 50;
+            if($moreBill > $bill){
+                $bill = intval(($moreBill + $bill)/2);
+            }
+        }
 
         $bill = Util::valueFit($bill, 20, 200);
 
@@ -3558,14 +3582,15 @@ class GeneralAI
 
         $outcome = getOutcome(100, $dedicationList);
 
-        $bill = intval($income / $outcome * 90); // 수입의 80% 만 지급
+        $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
+        if($nation['rice'] + $income - $outcome > $this->nationPolicy->reqNationRice * 2){
+            $moreBill = ($nation['rice'] + $income - $this->nationPolicy->reqNationRice * 2) / $outcome * 50;
+            if($moreBill > $bill){
+                $bill = intval(($moreBill + $bill)/2);
+            }
+        }
 
-        if ($bill < 20) {
-            $bill = 20;
-        }
-        if ($bill > 200) {
-            $bill = 200;
-        }
+        $bill = Util::valueFit($bill, 20, 200);
 
         $db->update('nation', [
             'bill' => $bill,
