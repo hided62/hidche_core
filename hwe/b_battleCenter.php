@@ -145,7 +145,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
         대상장수 :
         <select name=gen size=1>
 <?php foreach($generalBasicList as $general): ?>
-    <option <?=$gen==$general['no']?'selected':''?> value='<?=$general['no']?>'><?=$general['name']?> (<?=$general['turntime']?>)</option>
+    <option <?=$gen==$general['no']?'selected':''?> value='<?=$general['no']?>'><?=$general['name']?> (<?=substr($general['turntime'], 14, 5)?>)</option>
 <?php endforeach; ?>
         </select>
         <input type=submit name=btn value='조회하기'>
