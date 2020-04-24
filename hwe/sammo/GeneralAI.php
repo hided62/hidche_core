@@ -1605,7 +1605,7 @@ class GeneralAI
             return null;
         }
 
-        $cmd = buildNationCommandClass('che_선전포고', $general, $this->env, $lastTurn, [
+        $cmd = buildNationCommandClass('che_선전포고', $this->general, $this->env, $lastTurn, [
             'destNationID' => Util::choiceRandomUsingWeight($nations)
         ]);
         if(!$cmd->isRunnable()){
@@ -1626,7 +1626,7 @@ class GeneralAI
 
         //천도를 한턴 넣었다면 계속 넣는다.
         if($lastTurn->getCommand() === 'che_천도'){
-            $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, $lastTurn->getArg());
+            $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
             if($cmd->isRunnable()){
                 $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
                 return $cmd;
@@ -1740,7 +1740,7 @@ class GeneralAI
             $targetCityID = Util::choiceRandom($candidates);
         }
         
-        $cmd = buildNationCommandClass('che_천도', $general, $this->env, $lastTurn, [
+        $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, [
             'destCityID'=>$targetCityID
         ]);
 
