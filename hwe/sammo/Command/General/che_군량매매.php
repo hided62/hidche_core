@@ -148,7 +148,7 @@ class che_군량매매 extends Command\GeneralCommand{
         }
         
         $general->increaseVar($buyKey, $buyAmount);
-        $general->increaseVarWithLimit($sellKey, $sellAmount, 0);
+        $general->increaseVarWithLimit($sellKey, -$sellAmount, 0);
 
         $db->update('nation', [
             'gold'=>$db->sqleval('gold + %i', $tax)

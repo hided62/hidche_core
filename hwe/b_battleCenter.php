@@ -82,13 +82,13 @@ if ($btn == '정렬하기') {
 
 [$queryTypeText, $reqArgType, $comp] = $queryMap[$reqQueryType];
 if($reqArgType===0){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime FROM general WHERE nation = %i', $nationID);
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level FROM general WHERE nation = %i', $nationID);
 }
 else if($reqArgType===1){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime, %b FROM general WHERE nation = %i', $reqQueryType, $nationID);
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, %b FROM general WHERE nation = %i', $reqQueryType, $nationID);
 }
 else if($reqArgType===2){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime, value as %b 
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, value as %b 
         FROM general LEFT JOIN rank_data 
         ON general.no = rank_data.general_id 
         WHERE rank_data.type = %b AND general.nation = %i', 
@@ -99,7 +99,7 @@ else if($reqArgType===3){
     $generalBasicList = array_map(function($arr){
         $arr['aux'] = Json::decode($arr['aux']);
         return $arr;
-    }, $db->query('SELECT no, name, npc, turntime, aux FROM general WHERE nation = %i', $nationID));
+    }, $db->query('SELECT no, name, npc, turntime, officer_level, aux FROM general WHERE nation = %i', $nationID));
 }
 else{
     throw new \sammo\MustNotBeReachedException();
@@ -145,7 +145,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
         대상장수 :
         <select name=gen size=1>
 <?php foreach($generalBasicList as $general): ?>
-    <option <?=$gen==$general['no']?'selected':''?> value='<?=$general['no']?>'><?=$general['name']?> (<?=substr($general['turntime'], 14, 5)?>)</option>
+    <option <?=$gen==$general['no']?'selected':''?> value='<?=$general['no']?>'><?=$general['officer_level']>4?"*{$general['name']}*":$general['name']?> (<?=substr($general['turntime'], 14, 5)?>)</option>
 <?php endforeach; ?>
         </select>
         <input type=submit name=btn value='조회하기'>
