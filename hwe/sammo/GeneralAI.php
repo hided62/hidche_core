@@ -1801,7 +1801,7 @@ class GeneralAI
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['wall'], 0.001)];
                 }
             }
-            if($develRate['comm'] < 0.9){
+            if($develRate['secu'] < 0.9){
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
                 if($cmd->isRunnable()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['comm'] / 0.8, 0.001, 1)];
