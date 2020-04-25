@@ -1582,6 +1582,14 @@ class GeneralAI
         $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice, 1000);
 
         $devRate = $this->calcNationDevelopedRate();
+
+        LogText('선전포고', [
+            'avgGold'=>$avgGold,
+            'avgRice'=>$avgRice,
+            'cnt'=>$genCnt,
+            'devRate'=>$devRate,
+            'prop'=>$trialProp
+        ]);
         $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
 
         $trialProp /= 4;
