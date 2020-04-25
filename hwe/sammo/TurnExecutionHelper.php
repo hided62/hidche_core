@@ -267,30 +267,35 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             }
 
             $autorunMode = false;
+            $tryAutorun = false;
 
             if($general->getVar('npc') >= 2 || ($autorun_user['limit_minutes']??false)){
+                $tryAutorun = true;
                 $ai = new GeneralAI($turnObj->getGeneral());
-                if($hasNationTurn){
-                    $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
-                    LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
-                }
-                
-                $newGeneralCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
-                if($generalCommandObj !== $newGeneralCommandObj){
-                    $autorunMode = true;
-                    $generalCommandObj = $newGeneralCommandObj;
-                }
-                LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
             }
             
             if(!$turnObj->processBlocked()){
                 $turnObj->preprocessCommand();
                 if($hasNationTurn){
+                    if($tryAutorun){
+                        $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
+                        LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
+                    }
                     $resultNationTurn = $turnObj->processNationCommand(
                         $nationCommandObj
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
                 }
+
+                if($tryAutorun){
+                    $newGeneralCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
+                    if($generalCommandObj !== $newGeneralCommandObj){
+                        $autorunMode = true;
+                        $generalCommandObj = $newGeneralCommandObj;
+                    }
+                    LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
+                }
+                
                 $turnObj->processCommand($generalCommandObj, $autorunMode);
             }
             pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));

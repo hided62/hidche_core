@@ -3049,6 +3049,7 @@ class GeneralAI
 
         $month = $this->env['month'];
         if($npcType >= 2 && $general->getVar('officer_level') == 12){
+            LogText('action', "Try Boss {$general->getID()}, {$general->getName()}");
             if (in_array($month, [1, 4, 7, 10])) {
                 $this->choosePromotion();
             } else if ($month == 12) {
@@ -3387,7 +3388,7 @@ class GeneralAI
             }
         }
 
-        $generals = $this->userGenerals;
+        $generals = $this->nationGenerals;
         uasort($generals, function(General $lhs, General $rhs){
             $lhsStat = $lhs->getLeadership(false, false, false, false) * 2
                 + $lhs->getStrength(false, false, false, false)
