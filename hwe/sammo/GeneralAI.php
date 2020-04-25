@@ -1585,6 +1585,7 @@ class GeneralAI
         $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
 
         $trialProp /= 3;
+        $trialProp = $trialProp**3;
 
         if(!Util::randBool($trialProp)){
             return null;

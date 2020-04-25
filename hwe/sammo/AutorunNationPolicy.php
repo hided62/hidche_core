@@ -169,8 +169,8 @@ class AutorunNationPolicy {
 
         if($this->reqNPCWarGold === 0 || $this->reqNPCWarRice === 0){
             $defaultCrewType = GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE);
-            $reqGold = $defaultCrewType->costWithTech($nation['tech'], $this->minNPCWarLeadership * 150);
-            $reqRice = $defaultCrewType->riceWithTech($nation['tech'], $this->minNPCWarLeadership * 150);
+            $reqGold = $defaultCrewType->costWithTech($nation['tech'], GameConst::$defaultStatNPCMax * 100);
+            $reqRice = $defaultCrewType->riceWithTech($nation['tech'], GameConst::$defaultStatNPCMax * 100);
             if($this->reqNPCWarGold === 0){
                 $this->reqNPCWarGold = Util::round($reqGold * 2, -2);
             }
