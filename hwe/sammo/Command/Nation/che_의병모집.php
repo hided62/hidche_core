@@ -37,6 +37,7 @@ class che_의병모집 extends Command\NationCommand{
         $general = $this->generalObj;
 
         $this->setNation(['strategic_cmd_limit']);
+        $this->setCity();
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
         
