@@ -3048,19 +3048,21 @@ class GeneralAI
         $this->categorizeNationCities();
 
         $month = $this->env['month'];
-        if($npcType >= 2 && $general->getVar('officer_level') == 12){
-            if (in_array($month, [1, 4, 7, 10])) {
-                $this->choosePromotion();
-            } else if ($month == 12) {
-                $this->chooseTexRate();
-                $this->chooseGoldBillRate();
-            } else if ($month == 6) {
-                $this->chooseTexRate();
-                $this->chooseRiceBillRate();
+        if($npcType >= 2){
+            if($general->getVar('officer_level') == 12){
+                if (in_array($month, [1, 4, 7, 10])) {
+                    $this->choosePromotion();
+                } else if ($month == 12) {
+                    $this->chooseTexRate();
+                    $this->chooseGoldBillRate();
+                } else if ($month == 6) {
+                    $this->chooseTexRate();
+                    $this->chooseRiceBillRate();
+                }
             }
-        }
-        else if(in_array($month, [3, 6, 9, 12])){
-            $this->chooseNonLordPromotion();
+            else if(in_array($month, [3, 6, 9, 12])){
+                $this->chooseNonLordPromotion();
+            }
         }
 
         if(!($reservedCommand instanceof Command\Nation\휴식) && $reservedCommand->isRunnable()){
@@ -3383,6 +3385,7 @@ class GeneralAI
                 $general->setVar('officer_city', 0);
                 $nation['l11set'] = true;
                 $updatedNationVar['l11set'] = 1;
+                $userChiefCnt += 1;
                 break;
             }
         }
@@ -3407,6 +3410,13 @@ class GeneralAI
             }
             if($this->general->getVar('officer_level') === $chiefLevel){
                 continue;
+            }
+            
+            if(key_exists($chiefLevel, $this->chiefGenerals)){
+                $oldChief = $this->chiefGenerals[$chiefLevel];
+                if($oldChief->getVar('npc') < 2 && $oldChief->getVar('killturn') >= $minChiefLevel){
+                    continue;
+                }
             }
 
             if(!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)){
@@ -3442,12 +3452,20 @@ class GeneralAI
                     continue;
                 }
 
+                if($general->getVar('npc') < 2 && $userChiefCnt >= 3){
+                    continue;
+                }
+
                 $newChief = $general;
                 break;  
             }
 
             if(!$newChief){
                 continue;
+            }
+
+            if($newChief->getVar('npc') < 2){
+                $userChiefCnt += 1;
             }
 
             $nextChiefs[$chiefLevel] = $newChief;

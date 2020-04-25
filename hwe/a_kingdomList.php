@@ -99,7 +99,7 @@ foreach ($nations as $nation) {
         <td width=80 align=center id=bg1>국 력</td>
         <td width=170 align=center>{$nation['power']}</td>
         <td width=80 align=center id=bg1>장수 / 속령</td>
-        <td width=170 align=center>".count($generals)." / ".count($nation['cities'])."</td>
+        <td width=170 align=center>".count($generals??[])." / ".count($nation['cities']??[])."</td>
     ";
     for($chiefLevel = 12; $chiefLevel >= 5; $chiefLevel--){
         if($chiefLevel % 4 == 0){
