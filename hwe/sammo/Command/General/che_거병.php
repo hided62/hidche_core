@@ -42,7 +42,7 @@ class che_거병 extends Command\GeneralCommand{
         
         $this->runnableConstraints=[
             ConstraintHelper::BeNeutral(),
-            ConstraintHelper::BeOpeningPart($relYear),
+            ConstraintHelper::BeOpeningPart($relYear+1),
             ConstraintHelper::AllowJoinAction(),
         ];
     }
@@ -87,6 +87,8 @@ class che_거병 extends Command\GeneralCommand{
             $nationName = '㉥'.$nationName;
         }
 
+        $secretlimit = 3;
+
         DB::db()->insert('nation', [
             'name'=>$nationName,
             'color'=>'#330000', 
@@ -96,6 +98,7 @@ class che_거병 extends Command\GeneralCommand{
             'bill'=>100, 
             'strategic_cmd_limit'=>12, 
             'surlimit'=>72, 
+            'secretlimit'=>$secretlimit,
             'type'=>GameConst::$neutralNationType, 
             'gennum'=>1
         ]);

@@ -184,7 +184,7 @@ class GeneralAI
 
         $frontStatus = $db->queryFirstField('SELECT max(front) FROM city WHERE nation=%i AND supply=1', $nationID);
         // 공격가능도시 있으면
-        $this->attackable = ($frontStatus !== null) ? $frontStatus : false;
+        $this->attackable = !!$frontStatus;
 
         $warTarget = $db->queryAllLists(
             'SELECT you, state FROM diplomacy WHERE me = %i AND (state = 0 OR (state = 1 AND term < 5))',
@@ -1570,7 +1570,7 @@ class GeneralAI
         foreach($this->userWarGenerals as $general){
             $avgGold += $general->getVar('gold');
             $avgRice += $general->getVar('rice');
-            $genCnt += 1;
+            $genCnt += 2;
         }
         $avgGold += $nation['gold'];
         $avgRice += $nation['rice'];
@@ -2713,7 +2713,7 @@ class GeneralAI
             return null;
         }
 
-        if(Util::randBool(1 - 0.014)){
+        if(!Util::randBool(0.014)){
             return null;
         }
 
@@ -3042,12 +3042,13 @@ class GeneralAI
         //TODO: NationTurn과 InstantNationTurn 구분 필요
         $lastTurn = $reservedCommand->getLastTurn();
         $general = $this->general;
+        $npcType = $general->getVar('npc');
 
         $this->categorizeNationGeneral();
         $this->categorizeNationCities();
 
         $month = $this->env['month'];
-        if($general->getVar('officer_level') == 12){
+        if($npcType >= 2 && $general->getVar('officer_level') == 12){
             if (in_array($month, [1, 4, 7, 10])) {
                 $this->choosePromotion();
             } else if ($month == 12) {
@@ -3067,11 +3068,12 @@ class GeneralAI
             return $reservedCommand;
         }
 
-        
-
         foreach($this->nationPolicy->priority as $actionName){
             
             if(property_exists($this->nationPolicy, 'can'.$actionName) && !$this->nationPolicy->{'can'.$actionName}){
+                continue;
+            }
+            if($npcType < 2 && !($this->nationPolicy::$availableInstantTurn[$actionName]??false)){
                 continue;
             }
             /** @var ?NationCommand */
@@ -3326,7 +3328,7 @@ class GeneralAI
         ];
     }
 
-    protected function newChoosePromotion(){
+    protected function choosePromotion(){
         $db = DB::db();
 
         $nation = $this->nation;
@@ -3335,7 +3337,7 @@ class GeneralAI
 
         $userChiefCnt = 0;
 
-        $minUserKillturn = $this->env['killturn'] - Util::toInt(180 / $this->env['turnterm']);
+        $minUserKillturn = $this->env['killturn'] - Util::toInt(240 / $this->env['turnterm']);
         $minNPCKillturn = 36;
 
         foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
@@ -3352,8 +3354,8 @@ class GeneralAI
 
         $minBelong = min($this->general->getVar('belong') - 1, 3);
 
+        /** @var General[] */
         $nextChiefs = [];
-        $oldChiefs = [];
 
         if($userChiefCnt == 0 && $this->userGenerals && !$nation['l11set']){
             $userGenerals = $this->userGenerals;
@@ -3383,152 +3385,91 @@ class GeneralAI
             }
         }
 
-        $generals = $this->userWarGenerals + $this->npcWarGenerals;
+        $generals = $this->userGenerals;
         uasort($generals, function(General $lhs, General $rhs){
-            return -($lhs->getVar('leadership')<=>$rhs->getVar('leadership'));
+            $lhsStat = $lhs->getLeadership(false, false, false, false) * 2
+                + $lhs->getStrength(false, false, false, false)
+                + $lhs->getIntel(false, false, false, false);
+            $rhsStat = $rhs->getLeadership(false, false, false, false) * 2
+                + $rhs->getStrength(false, false, false, false)
+                + $rhs->getIntel(false, false, false, false);
+            return -($lhsStat <=> $rhsStat);
         });
 
-        $strengthSort = $generals;
-        uasort($strengthSort, function(General $lhs, General $rhs){
-            return -($lhs->getVar('strength')<=>$rhs->getVar('strength'));
-        });
-        $intelSort = $generals;
-        uasort($intelSort, function(General $lhs, General $rhs){
-            return -($lhs->getVar('intel')<=>$rhs->getVar('intel'));
-        });
-        
-        if(!$nation['l11set']){
-            $new11 = false;
-            if(!key_exists(11, $this->chiefGenerals) && !key_exists(11, $nextChiefs)){
-                $new11 = true;
+
+        $updatedNationVar = [];
+        foreach(Util::range(11, $minChiefLevel-1, -1) as $chiefLevel) {
+            $nationKey = "l{$chiefLevel}set";
+            if($nation[$nationKey]){
+                continue;
+            }
+
+            if(!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)){
+                $newChiefProb = 1;
             }
             else{
-                $new11 = Util::randF(0.2);
+                $newChiefProb = Util::randF(0.1);
+            }
+
+            if($newChiefProb < 1 && !Util::randF($newChiefProb)){
+                continue;
             }
 
 
-
-        }
-
-        
-
-
-    }
-
-    protected function choosePromotion()
-    {
-        $db = DB::db();
-
-        $nation = $this->nation;
-        $nationID = $nation['nation'];
-        $minChiefLevel = getNationChiefLevel($nation['level']);
-
-        $minKillturn = $this->env['killturn'] - Util::toInt(180 / $this->env['turnterm']);
-        $chiefCandidate = [];
-
-        //이 함수를 부르는건 군주 AI이므로, 군주는 세지 않아도 됨
-        $userChief = [];
-
-        $db->update('general', [
-            'permission' => 'ambassador',
-        ], 'nation=%i AND npc < 2 AND officer_level > 4', $nationID);
-
-        foreach($db->query(
-            'SELECT no, npc, officer_level, killturn FROM general WHERE nation = %i AND 12 > officer_level AND officer_level > 4',
-            $nationID
-        ) as $chief) {
-
-            if ($chief['npc'] < 2 && $chief['killturn'] < $minKillturn) {
-                $chiefCandidate[$chief['officer_level']] = $chief['no'];
-                $userChief[$chief['no']] = $chief['officer_level'];
-            }
-        }
-
-        $db->update('general', [
-            'officer_level' => 1
-        ], 'officer_level < 12 AND officer_level > 4 AND nation = %i', $nationID);
-
-        $maxBelong = $db->queryFirstField('SELECT max(belong) FROM `general` WHERE nation=%i', $nationID);
-        $maxBelong = min($maxBelong - 1, 3);
-
-        if (!$userChief) {
-            $candUserChief = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND killturn > %i AND npc <= 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
-                $nationID,
-                $minKillturn,
-                $maxBelong
-            );
-            if ($candUserChief) {
-                $userChief[$candUserChief] = 11;
-                $chiefCandidate[11] = $candUserChief;
-            }
-        }
-
-        $promoted = $userChief;
-
-        if (!key_exists(11, $chiefCandidate)) {
-            $candChiefHead = $db->queryFirstField(
-                'SELECT no FROM general WHERE nation = %i AND officer_level = 1 AND npc > 2 AND belong >= %i ORDER BY leadership DESC LIMIT 1',
-                $nationID,
-                $maxBelong
-            );
-            if ($candChiefHead) {
-                $chiefCandidate[11] = $candChiefHead;
-                $promoted[$candChiefHead] = 11;
-            }
-        }
-
-        if ($minChiefLevel < 11) {
-            //무장 수뇌 후보
-            $candChiefStrength = $db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation = %i AND strength >= %i AND officer_level = 1 AND belong >= %i ORDER BY strength DESC LIMIT %i',
-                $nationID,
-                GameConst::$chiefStatMin,
-                $maxBelong,
-                12 - $minChiefLevel
-            );
-            //지장 수뇌 후보
-            $candChiefIntel = $db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation = %i AND intel >= %i AND officer_level = 1 AND belong >= %i ORDER BY intel DESC LIMIT %i',
-                $nationID,
-                GameConst::$chiefStatMin,
-                $maxBelong,
-                12 - $minChiefLevel
-            );
-            //무력, 지력이 모두 높은 장수를 고려하여..
-
-            $iterCandChiefStrength = new \ArrayIterator($candChiefStrength);
-            $iterCandChiefIntel = new \ArrayIterator($candChiefIntel);
-
-            foreach (Util::range(10, $minChiefLevel-1, -1) as $chiefLevel) {
-                if (key_exists($chiefLevel, $chiefCandidate)) {
+            $newChief = null;
+            foreach($generals as $general){
+                if($general->getVar('officer_level') !== 1){
+                    continue;
+                }
+                if($general->getVar('npc') < 2 && $general->getVar('killturn') < $minUserKillturn){
+                    continue;
+                }
+                if($general->getVar('npc') >= 2 && $general->getVar('killturn') < $minNPCKillturn){
                     continue;
                 }
 
-                /** @var \ArrayIterator $iterCurrentType */
-                $iterCurrentType = ($chiefLevel % 2 == 0) ? $iterCandChiefStrength : $iterCandChiefIntel;
-                $candidate = $iterCurrentType->current();
-
-                while (key_exists($candidate, $promoted)) {
-                    $iterCurrentType->next();
-                    if (!$iterCurrentType->valid()) {
-                        break;
-                    }
-                    $candidate = $iterCurrentType->current();
+                if($chiefLevel == 11){
+                }
+                else if($chiefLevel % 2 == 0 && $general->getStrength(false, false, false, false) < GameConst::$chiefStatMin){
+                    continue;
+                }
+                else if($chiefLevel % 2 == 1 && $general->getIntel(false, false, false, false) < GameConst::$chiefStatMin){
+                    continue;
                 }
 
-                if ($candidate) {
-                    $chiefCandidate[$chiefLevel] = $candidate;
-                    $promoted[$candidate] = $chiefLevel;
-                }
+                $newChief = $general;
+                break;  
             }
 
-            foreach ($chiefCandidate as $chiefLevel => $chiefID) {
-                $db->update('general', [
-                    'officer_level' => $chiefLevel,
-                    'officer_city' => 0,
-                ], 'no=%i', $chiefID);
+            if(!$newChief){
+                continue;
             }
+
+            $nextChiefs[$chiefLevel] = $newChief;
+            if(key_exists($chiefLevel,$this->chiefGenerals)){
+                $oldChief = $this->chiefGenerals[$chiefLevel];
+                $oldChief->setVar('officer_level', 1);
+                $oldChief->setVar('officer_city', 0);
+            }
+            $newChief->setVar('officer_level', $chiefLevel);
+            $newChief->setVar('officer_city', 0);
+            $nation[$nationKey] = true;
+            $updatedNationVar[$nationKey] = 1;
+        }
+
+        
+        foreach($this->chiefGenerals as $oldChief){
+            if($oldChief->getVar('officer_level') > 4){
+                continue;
+            }
+            $oldChief->applyDB($db);
+        }
+        foreach($nextChiefs as $chiefLevel=>$chief){
+            $chief->applyDB($db);
+            $this->chiefGenerals[$chiefLevel] = $chief;
+        }
+        if($updatedNationVar){
+            $db->update('nation', $updatedNationVar, 'nation=%i', $nationID);
         }
     }
 

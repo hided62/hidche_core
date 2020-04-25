@@ -40,7 +40,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
     ><div class='chiefTurnIdxPanel'
         ><div class='bg1 chiefTurnIdx'>.</div
 <?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
-        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+        ><div class='bg0 chiefTurnIdx'><?=$idx+1?></div
 <?php endforeach; ?>
     ></div
 <?php foreach([12, 10, 8, 6] as $chiefIdx): ?>
@@ -57,7 +57,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
     ><div class='chiefTurnIdxPanel tail'
         ><div class='bg1 chiefTurnIdx'>.</div
 <?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
-        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+        ><div class='bg0 chiefTurnIdx'><?=$idx+1?></div
 <?php endforeach; ?>
     ></div
 ></div
@@ -80,7 +80,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
     ><div class='chiefTurnIdxPanel'
         ><div class='bg1 chiefTurnIdx'>.</div
 <?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
-        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+        ><div class='bg0 chiefTurnIdx'><?=$idx+1?></div
 <?php endforeach; ?>
     ></div
 <?php foreach([11, 9, 7, 5] as $chiefIdx): ?>
@@ -97,7 +97,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
     ><div class='chiefTurnIdxPanel tail'
         ><div class='bg1 chiefTurnIdx'>.</div
 <?php foreach(Util::range(GameConst::$maxChiefTurn) as $idx):?>
-        ><div class='bg0 chiefTurnIdx'><?=$idx?></div
+        ><div class='bg0 chiefTurnIdx'><?=$idx+1?></div
 <?php endforeach; ?>
     ></div
 ></div

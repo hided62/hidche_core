@@ -87,7 +87,7 @@ class che_건국 extends Command\GeneralCommand{
             ConstraintHelper::BeLord(),
             ConstraintHelper::WanderingNation(),
             ConstraintHelper::ReqNationValue('gennum', '수하 장수', '>=', 2),
-            ConstraintHelper::BeOpeningPart($relYear),
+            ConstraintHelper::BeOpeningPart($relYear+1),
             ConstraintHelper::CheckNationNameDuplicate($nationName),
             ConstraintHelper::AllowJoinAction(),
             ConstraintHelper::ConstructableCity(),
