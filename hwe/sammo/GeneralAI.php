@@ -1585,7 +1585,7 @@ class GeneralAI
         $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
 
         $trialProp /= 3;
-        $trialProp = $trialProp**3;
+        $trialProp = $trialProp**8;
 
         if(!Util::randBool($trialProp)){
             return null;
@@ -3250,38 +3250,6 @@ class GeneralAI
         $devRate['all'] /= count($devRate) - 1;
         $this->devRate = $devRate;
         return $this->devRate;
-    }
-
-    protected function findWarTarget(): ?int
-    {
-        $nation = $this->nation;
-        $nationID = $nation['nation'];
-        
-        if($this->frontCities){
-            return null;
-        }
-
-        $devRate = $this->calcNationDevelopedRate();
-        if (($devRate['pop'] + $devRate['all']) / 2 < 0.8) {
-            return null;
-        }
-
-        $nations = [];
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['level'] == 0){
-                continue;
-            }
-            $destNationID = $destNation['nation'];
-            $destNationPower = $destNation['power'];
-            if (!isNeighbor($nationID, $destNationID)) {
-                continue;
-            }
-            $nations[$destNationID] = 1 / sqrt($destNationPower + 1);
-        }
-        if (!$nations) {
-            return null;
-        }
-        return Util::choiceRandomUsingWeight($nations);
     }
 
     protected function chooseNonLordPromotion(){
