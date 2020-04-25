@@ -210,7 +210,9 @@ class che_랜덤임관 extends Command\GeneralCommand{
                 $randVals[] = [$testNation, 1/$testNation['cnt']];
             }
 
-            $destNation = Util::choiceRandomUsingWeightPair($randVals);
+            if($randVals){
+                $destNation = Util::choiceRandomUsingWeightPair($randVals);
+            }
         }
 
         $logger = $general->getLogger();

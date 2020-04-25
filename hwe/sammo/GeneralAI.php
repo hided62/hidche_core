@@ -4,6 +4,7 @@ namespace sammo;
 
 use sammo\Command\GeneralCommand;
 use sammo\Command\NationCommand;
+use sammo\Scenario\NPC;
 
 class GeneralAI
 {
@@ -1856,7 +1857,7 @@ class GeneralAI
 
         $city = $this->city;
 
-        if($city['trust'] < 40 && Util::randBool($leadership / GameConst::$chiefStatMin)){
+        if($city['trust'] < 70 && Util::randBool($leadership / GameConst::$chiefStatMin)){
             $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
             if($cmd->isRunnable()){
                 return $cmd;
@@ -3285,6 +3286,8 @@ class GeneralAI
     protected function chooseNonLordPromotion(){
         //빈자리는 아무나 채움
         $db = DB::db();
+
+        $setChiefLevel = [];
         foreach(Util::range(getNationChiefLevel($this->nation['level']), 12) as $chiefLevel){
             if($this->nation["l{$chiefLevel}set"]){
                 continue;
@@ -3328,7 +3331,11 @@ class GeneralAI
             $randGeneral->setVar('officer_level', $chiefLevel);
             $randGeneral->setVar('officer_city', 0);
             $randGeneral->applyDB($db);
+            $this->nation["l{$chiefLevel}set"] = 1;
+            $setChiefLevel["l{$chiefLevel}set"] = 1;
         }
+
+        $db->update('nation', $setChiefLevel, 'nation=%i', $this->nation['nation']);
     }
 
     protected function calcCityDevelRate(array $city){
@@ -3352,18 +3359,82 @@ class GeneralAI
 
         $userChiefCnt = 0;
 
-        $strengthSort = [];
-        $intelSort = [];
+        $minUserKillturn = $this->env['killturn'] - Util::toInt(180 / $this->env['turnterm']);
+        $minNPCKillturn = 36;
 
         foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
             if(!key_exists($chiefLevel, $this->chiefGenerals)){
                 continue;
             }
             $chief = $this->chiefGenerals[$chiefLevel];
-            if($chief->getVar('npc') < 2){
-                $userChiefCnt[$chiefLevel] = $chief;
+            if($chief->getVar('npc') < 2 && $chief->getVar('killturn') >= $minUserKillturn){
+                $userChiefCnt+=1;
             }
         }
+
+        
+
+        $minBelong = min($this->general->getVar('belong') - 1, 3);
+
+        $nextChiefs = [];
+        $oldChiefs = [];
+
+        if($userChiefCnt == 0 && $this->userGenerals && !$nation['l11set']){
+            $userGenerals = $this->userGenerals;
+            uasort($userGenerals, function(General $lhs, General $rhs){
+                return -($lhs->getVar('leadership')<=>$rhs->getVar('leadership'));
+            });
+            foreach($userGenerals as $general){
+                if($general->getVar('killturn') < $minUserKillturn){
+                    continue;
+                }
+                if($general->getVar('belong') < $minBelong){
+                    continue;
+                }
+                if($general->getVar('officer_level') !== 1){
+                    continue;
+                }
+                $nextChiefs[11] = $general;
+                if(key_exists(11,$this->chiefGenerals)){
+                    $oldChief = $this->chiefGenerals[11];
+                    $oldChief->setVar('officer_level', 1);
+                    $oldChief->setVar('officer_city', 0);
+                }
+                $general->setVar('officer_level', 11);
+                $general->setVar('officer_city', 0);
+                $nation['l11set'] = true;
+                break;
+            }
+        }
+
+        $generals = $this->userWarGenerals + $this->npcWarGenerals;
+        uasort($generals, function(General $lhs, General $rhs){
+            return -($lhs->getVar('leadership')<=>$rhs->getVar('leadership'));
+        });
+
+        $strengthSort = $generals;
+        uasort($strengthSort, function(General $lhs, General $rhs){
+            return -($lhs->getVar('strength')<=>$rhs->getVar('strength'));
+        });
+        $intelSort = $generals;
+        uasort($intelSort, function(General $lhs, General $rhs){
+            return -($lhs->getVar('intel')<=>$rhs->getVar('intel'));
+        });
+        
+        if(!$nation['l11set']){
+            $new11 = false;
+            if(!key_exists(11, $this->chiefGenerals) && !key_exists(11, $nextChiefs)){
+                $new11 = true;
+            }
+            else{
+                $new11 = Util::randF(0.2);
+            }
+
+
+
+        }
+
+        
 
 
     }
@@ -3541,7 +3612,7 @@ class GeneralAI
 
         $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
         if($nation['gold'] + $income - $outcome > $this->nationPolicy->reqNationGold * 2){
-            $moreBill = ($nation['gold'] + $income - $this->nationPolicy->reqNationGold * 2) / $outcome * 50;
+            $moreBill = ($nation['gold'] + $income - $this->nationPolicy->reqNationGold * 2) / $outcome * 80;
             if($moreBill > $bill){
                 $bill = intval(($moreBill + $bill)/2);
             }
@@ -3584,7 +3655,7 @@ class GeneralAI
 
         $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
         if($nation['rice'] + $income - $outcome > $this->nationPolicy->reqNationRice * 2){
-            $moreBill = ($nation['rice'] + $income - $this->nationPolicy->reqNationRice * 2) / $outcome * 50;
+            $moreBill = ($nation['rice'] + $income - $this->nationPolicy->reqNationRice * 2) / $outcome * 80;
             if($moreBill > $bill){
                 $bill = intval(($moreBill + $bill)/2);
             }

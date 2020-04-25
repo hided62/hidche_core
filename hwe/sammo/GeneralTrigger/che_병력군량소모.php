@@ -22,6 +22,7 @@ class che_병력군량소모 extends BaseGeneralTrigger{
                 $general->increaseVar('rice', -$consumeRice);
             }
             else{
+                $general->setVar('crew', 0);
                 $general->setVar('rice', 0);
                 $general->getLogger()->pushGeneralActionLog(
                     '군량이 모자라 병사들이 <R>소집해제</>되었습니다!', ActionLogger::PLAIN
