@@ -3353,6 +3353,7 @@ class GeneralAI
         
 
         $minBelong = min($this->general->getVar('belong') - 1, 3);
+        $updatedNationVar = [];
 
         /** @var General[] */
         $nextChiefs = [];
@@ -3381,6 +3382,7 @@ class GeneralAI
                 $general->setVar('officer_level', 11);
                 $general->setVar('officer_city', 0);
                 $nation['l11set'] = true;
+                $updatedNationVar['l11set'] = 1;
                 break;
             }
         }
@@ -3397,7 +3399,7 @@ class GeneralAI
         });
 
 
-        $updatedNationVar = [];
+        
         foreach(Util::range(11, $minChiefLevel-1, -1) as $chiefLevel) {
             $nationKey = "l{$chiefLevel}set";
             if($nation[$nationKey]){
