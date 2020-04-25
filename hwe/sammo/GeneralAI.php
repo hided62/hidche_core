@@ -3272,6 +3272,9 @@ class GeneralAI
             if(key_exists($chiefLevel, $this->chiefGenerals)){
                 continue;
             }
+            if($this->general->getVar('officer_level') == $chiefLevel){
+                continue;
+            }
 
             
             $picked = false;
@@ -3400,6 +3403,9 @@ class GeneralAI
         foreach(Util::range(11, $minChiefLevel-1, -1) as $chiefLevel) {
             $nationKey = "l{$chiefLevel}set";
             if($nation[$nationKey]){
+                continue;
+            }
+            if($this->general->getVar('officer_level') === $chiefLevel){
                 continue;
             }
 
