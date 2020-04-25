@@ -3049,7 +3049,6 @@ class GeneralAI
 
         $month = $this->env['month'];
         if($npcType >= 2 && $general->getVar('officer_level') == 12){
-            LogText('action', "Try Boss {$general->getID()}, {$general->getName()}");
             if (in_array($month, [1, 4, 7, 10])) {
                 $this->choosePromotion();
             } else if ($month == 12) {
@@ -3310,6 +3309,7 @@ class GeneralAI
             $randGeneral->applyDB($db);
             $this->nation["l{$chiefLevel}set"] = 1;
             $setChiefLevel["l{$chiefLevel}set"] = 1;
+            $this->chiefGenerals[$chiefLevel] = $randGeneral;
         }
 
         if($setChiefLevel){
@@ -3375,11 +3375,6 @@ class GeneralAI
                     continue;
                 }
                 $nextChiefs[11] = $general;
-                if(key_exists(11,$this->chiefGenerals)){
-                    $oldChief = $this->chiefGenerals[11];
-                    $oldChief->setVar('officer_level', 1);
-                    $oldChief->setVar('officer_city', 0);
-                }
                 $general->setVar('officer_level', 11);
                 $general->setVar('officer_city', 0);
                 $nation['l11set'] = true;
@@ -3449,25 +3444,19 @@ class GeneralAI
             }
 
             $nextChiefs[$chiefLevel] = $newChief;
-            if(key_exists($chiefLevel,$this->chiefGenerals)){
-                $oldChief = $this->chiefGenerals[$chiefLevel];
-                $oldChief->setVar('officer_level', 1);
-                $oldChief->setVar('officer_city', 0);
-            }
             $newChief->setVar('officer_level', $chiefLevel);
             $newChief->setVar('officer_city', 0);
             $nation[$nationKey] = true;
             $updatedNationVar[$nationKey] = 1;
         }
 
-        
-        foreach($this->chiefGenerals as $oldChief){
-            if($oldChief->getVar('officer_level') > 4){
-                continue;
-            }
-            $oldChief->applyDB($db);
-        }
         foreach($nextChiefs as $chiefLevel=>$chief){
+            $oldChief = $this->chiefGenerals[$chiefLevel]??null;
+            if($oldChief){
+                $oldChief->setVar('officer_level', 1);
+                $oldChief->setVar('officer_city', 0);
+                $oldChief->applyDB($db);
+            }
             $chief->applyDB($db);
             $this->chiefGenerals[$chiefLevel] = $chief;
         }
