@@ -1585,7 +1585,9 @@ class GeneralAI
 
         LogText('선전포고', [
             'avgGold'=>$avgGold,
+            'reqGold'=>$this->nationPolicy->reqNPCWarGold,
             'avgRice'=>$avgRice,
+            'reqRice'=>$this->nationPolicy->reqNPCWarRice,
             'cnt'=>$genCnt,
             'devRate'=>$devRate,
             'prop'=>$trialProp
