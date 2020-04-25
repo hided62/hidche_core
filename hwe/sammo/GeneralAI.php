@@ -3264,7 +3264,8 @@ class GeneralAI
         $db = DB::db();
 
         $setChiefLevel = [];
-        foreach(Util::range(getNationChiefLevel($this->nation['level']), 12) as $chiefLevel){
+        $minChiefLevel = getNationChiefLevel($this->nation['level']);
+        foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
             if($this->nation["l{$chiefLevel}set"]){
                 continue;
             }
