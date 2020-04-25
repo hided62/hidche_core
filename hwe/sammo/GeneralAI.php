@@ -3335,7 +3335,9 @@ class GeneralAI
             $setChiefLevel["l{$chiefLevel}set"] = 1;
         }
 
-        $db->update('nation', $setChiefLevel, 'nation=%i', $this->nation['nation']);
+        if($setChiefLevel){
+            $db->update('nation', $setChiefLevel, 'nation=%i', $this->nation['nation']);
+        }
     }
 
     protected function calcCityDevelRate(array $city){
