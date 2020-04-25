@@ -237,7 +237,8 @@ class che_의병모집 extends Command\NationCommand{
 
         $gameStor->npccount = $lastCreatGenIdx;
         $db->update('nation', [
-            'gennum'=>$db->sqleval('gennum + %i', $createGenCnt)
+            'gennum'=>$db->sqleval('gennum + %i', $createGenCnt),
+            'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
 
         
