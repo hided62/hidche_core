@@ -1584,7 +1584,7 @@ class GeneralAI
         $devRate = $this->calcNationDevelopedRate();
         $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
 
-        $trialProp /= 3;
+        $trialProp /= 4;
         $trialProp = $trialProp**8;
 
         if(!Util::randBool($trialProp)){
