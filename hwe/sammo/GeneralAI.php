@@ -1547,6 +1547,10 @@ class GeneralAI
             return null;
         }
 
+        if($this->frontCities){
+            return null;
+        }
+
         $nation = $this->nation;
         $nationID = $nation['nation'];
 
@@ -1578,25 +1582,15 @@ class GeneralAI
         $avgGold /= $genCnt;
         $avgRice /= $genCnt;
 
-        $trialProp = $avgGold / max($this->nationPolicy->reqNPCWarGold, 1000);
-        $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice, 1000);
+        $trialProp = $avgGold / max($this->nationPolicy->reqNPCWarGold, 2000);
+        $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice, 2000);
 
         $devRate = $this->calcNationDevelopedRate();
 
         $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
 
         $trialProp /= 4;
-        $trialProp = $trialProp**8;
-
-        LogText('선전포고', [
-            'avgGold'=>$avgGold,
-            'reqGold'=>$this->nationPolicy->reqNPCWarGold,
-            'avgRice'=>$avgRice,
-            'reqRice'=>$this->nationPolicy->reqNPCWarRice,
-            'cnt'=>$genCnt,
-            'devRate'=>$devRate,
-            'prop'=>$trialProp
-        ]);
+        $trialProp = $trialProp**6;
 
         if(!Util::randBool($trialProp)){
             return null;
