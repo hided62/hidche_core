@@ -192,7 +192,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
         die();
     }
     $dipcount1 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=3 AND state<=4', $nationID);
-    $dipcount2 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=5 AND state<=6', nationID);
+    $dipcount2 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=5 AND state<=6', $nationID);
 
     $gold = 0;
     $rice = 0;

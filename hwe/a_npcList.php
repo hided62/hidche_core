@@ -108,40 +108,26 @@ else{
         <td width=78  align=center id=bg1>계급</td>
     </tr>
 <?php foreach($generalList as $general): ?>
-for ($j=0; $j < $gencount; $j++) {
-    $general = MYDB_fetch_array($genresult);
+<?php
     $nation = $nationname[$general['nation']];
-
-    if ($general['npc'] >= 2) {
-        $name = "<font color=cyan>{$general['name']}</font>";
-    } elseif ($general['npc'] == 1) {
-        $name = "<font color=skyblue>{$general['name']}</font>";
-    } else {
-        $name =  "{$general['name']}";
-    }
-
-    echo "
-    <tr>
-        <td align=center>{$name}</td>
-        <td align=center>{$general['owner_name']}</td>
-        <td align=center>Lv {$general['explevel']}</td>
-        <td align=center>{$nation}</td>
-        <td align=center>".displayCharInfo($general['personal'])."</td>
-        <td align=center>".displaySpecialDomesticInfo($general['special'])." / ".displaySpecialWarInfo($general['special2'])."</td>
-        <td align=center>{$general['sum']}</td>
-        <td align=center>{$general['leadership']}</td>
-        <td align=center>{$general['strength']}</td>
-        <td align=center>{$general['intel']}</td>
-        <td align=center>{$general['experience']}</td>
-        <td align=center>{$general['dedication']}</td>
-    </tr>";
-}
-echo "
-</table>
-";
-
+    $name = getColoredName($general['name'], $general['npc']);
 ?>
-
+    <tr>
+        <td align=center><?=getColoredName($general['name'], $general['npc'])?></td>
+        <td align=center><?=$general['owner_name']?></td>
+        <td align=center>Lv <?=$general['explevel']?></td>
+        <td align=center><?=$nationname[$general['nation']]?></td>
+        <td align=center><?=displayCharInfo($general['personal'])?></td>
+        <td align=center><?=displaySpecialDomesticInfo($general['special'])?> / <?=displaySpecialWarInfo($general['special2'])?></td>
+        <td align=center><?=$general['sum']?></td>
+        <td align=center><?=$general['leadership']?></td>
+        <td align=center><?=$general['strength']?></td>
+        <td align=center><?=$general['intel']?></td>
+        <td align=center><?=$general['experience']?></td>
+        <td align=center><?=$general['dedication']?></td>
+    </tr>";
+<?php endforeach; ?>
+</table>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
