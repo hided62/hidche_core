@@ -180,7 +180,7 @@ function calcCityGoldIncome(array $rawCity, int $officerCnt, bool $isCapital, in
     $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu_max']/10;
     $cityIncome *= pow(1.05, $officerCnt);
     if($isCapital){
-        $cityIncome *= 1 + 1/(3*$nationLevel);
+        $cityIncome *= 1 + (1/3/$nationLevel);
     }
     $cityIncome = Util::round($nationType->onCalcNationalIncome('gold', $cityIncome));
 
@@ -198,7 +198,7 @@ function calcCityRiceIncome(array $rawCity, int $officerCnt, bool $isCapital, in
     $cityIncome *= 1 + $rawCity['secu']/$rawCity['secu_max']/10;
     $cityIncome *= pow(1.05, $officerCnt);
     if($isCapital){
-        $cityIncome *= 1 + 1/(3*$nationLevel);
+        $cityIncome *= 1 + (1/3/$nationLevel);
     }
     $cityIncome = Util::round($nationType->onCalcNationalIncome('rice', $cityIncome));
 

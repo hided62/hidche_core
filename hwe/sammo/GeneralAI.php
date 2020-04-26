@@ -1818,24 +1818,25 @@ class GeneralAI
             if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
                 $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
                 if ($cmd->isRunnable()) {
+                    $nextTech = $nation['tech'] % 1000 + 1;
                     if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
                         //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
-                        $cmdList[] = [$cmd, $intel * 2];
+                        $cmdList[] = [$cmd, $intel / ($nextTech / 3000)];
                     } else {
-                        $cmdList[] = [$cmd, $intel];
+                        $cmdList[] = [$cmd, $intel / ($nextTech / 1000)];
                     }
                 }
             }
             if ($develRate['agri'] < 1) {
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
                 if ($cmd->isRunnable()) {
-                    $cmdList[] = [$cmd, $intel];
+                    $cmdList[] = [$cmd, $intel / Util::valueFit($develRate['agri'], 0.001, 1)];
                 }
             }
             if ($develRate['comm'] < 1) {
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
                 if ($cmd->isRunnable()) {
-                    $cmdList[] = [$cmd, $intel];
+                    $cmdList[] = [$cmd, $intel / Util::valueFit($develRate['comm'], 0.001, 1)];
                 }
             }
         }
@@ -1946,11 +1947,12 @@ class GeneralAI
             if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
                 $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
                 if ($cmd->isRunnable()) {
+                    $nextTech = $nation['tech'] % 1000 + 1;
                     if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
                         //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
-                        $cmdList[] = [$cmd, $intel * 2];
+                        $cmdList[] = [$cmd, $intel / ($nextTech / 3000)];
                     } else {
-                        $cmdList[] = [$cmd, $intel];
+                        $cmdList[] = [$cmd, $intel / ($nextTech / 1000)];
                     }
                 }
             }
@@ -1958,10 +1960,10 @@ class GeneralAI
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
                 if ($cmd->isRunnable()) {
                     if (in_array($city['front'], [1, 3])) {
-                        $cmdList[] = [$cmd, $intel / 4];
+                        $cmdList[] = [$cmd, $intel / 4 / Util::valueFit($develRate['agri'], 0.001, 1)];
                     }
                     else{
-                        $cmdList[] = [$cmd, $intel / 2];
+                        $cmdList[] = [$cmd, $intel / 2 / Util::valueFit($develRate['agri'], 0.001, 1)];
                     }
                 }
             }
@@ -1969,10 +1971,10 @@ class GeneralAI
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
                 if ($cmd->isRunnable()) {
                     if (in_array($city['front'], [1, 3])) {
-                        $cmdList[] = [$cmd, $intel / 4];
+                        $cmdList[] = [$cmd, $intel / 4 / Util::valueFit($develRate['comm'], 0.001, 1)];
                     }
                     else{
-                        $cmdList[] = [$cmd, $intel / 2];
+                        $cmdList[] = [$cmd, $intel / 2 / Util::valueFit($develRate['comm'], 0.001, 1)];
                     }
                 }
             }
