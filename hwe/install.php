@@ -175,6 +175,9 @@ if($session->userGrade < 5 && !$allowReset){
                                     <label class="btn btn-secondary">
                                         <input type="checkbox" class="autorun_user_chk" data-key="battle" name="autorun_battle" id="autorun_battle">출병
                                     </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="checkbox" class="autorun_user_chk" data-key="chief" name="autorun_chief" id="autorun_chief">기본 사령턴
+                                    </label>
                                 </div>
                                 <div class="input-group-append">
                                     <span class="input-group-text">유효 시간</span>

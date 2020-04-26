@@ -987,7 +987,7 @@ class General implements iAction{
             if(key_exists($generalID, $rawRanks) && count($rawRanks[$generalID]??[]) !== count($rankColumn)){
                 throw new \RuntimeException('column의 수가 일치하지 않음 : '.$generalID);
             }
-            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID]??null, null, $year, $month, $constructMode > 1);
+            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID]??null, null, null, $year, $month, $constructMode > 1);
         }
         
         return $result;
@@ -1020,7 +1020,7 @@ class General implements iAction{
         }
     
 
-        $general = new static($rawGeneral, $rawRankValues, null, $year, $month, $constructMode > 1);
+        $general = new static($rawGeneral, $rawRankValues, null, null, $year, $month, $constructMode > 1);
         
         return $general;
     }

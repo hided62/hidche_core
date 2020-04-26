@@ -33,7 +33,7 @@ class SpecialityHelper{
 
         if(static::$domesticInv){
             if(!key_exists($type, static::$domesticInv)){
-                throw new \InvalidArgumentException('올바르지 않은 특기명:',$type);
+                throw new \InvalidArgumentException('올바르지 않은 특기명:'.$type);
             }
             return static::$domesticInv[$type];
         }
@@ -43,6 +43,9 @@ class SpecialityHelper{
             $cache[$classObj->getName()] = $className;
         }
         static::$domesticInv = $cache;
+        if(!key_exists($type, $cache)){
+            throw new \InvalidArgumentException('올바르지 않은 특기명:'.$type);
+        }
         return $cache[$type];
     }
 
@@ -53,7 +56,7 @@ class SpecialityHelper{
 
         if(static::$warInv){
             if(!key_exists($type, static::$warInv)){
-                throw new \InvalidArgumentException('올바르지 않은 특기명:',$type);
+                throw new \InvalidArgumentException('올바르지 않은 특기명:'.$type);
             }
             return static::$warInv[$type];
         }
@@ -61,6 +64,9 @@ class SpecialityHelper{
         $cache = [];
         foreach(static::getSpecialWarList(false) as $className=>$classObj){
             $cache[$classObj->getName()] = $className;
+        }
+        if(!key_exists($type, $cache)){
+            throw new \InvalidArgumentException('올바르지 않은 특기명:'.$type);
         }
         static::$warInv = $cache;
         return $cache[$type];

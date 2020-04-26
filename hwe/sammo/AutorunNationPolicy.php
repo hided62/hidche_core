@@ -141,18 +141,18 @@ class AutorunNationPolicy {
     public $properWarTrainAtmos = 90;
 
 
-    function __construct(General $general, array $nationPolicy, array $serverPolicy, array $nation, array $env)
+    function __construct(General $general, $aiOptions, array $nationPolicy, array $serverPolicy, array $nation, array $env)
     {
         foreach($serverPolicy as $policy=>$value){
             if(!property_exists($this, $policy)){
-                throw new \InvalidArgumentException($policy);
+                continue;
             }
             $this->$policy = $value;
         }
 
         foreach($nationPolicy as $policy){
             if(!property_exists($this, $policy)){
-                throw new \InvalidArgumentException($policy);
+                continue;
             }
             $this->$policy = $value;
         }
@@ -196,6 +196,37 @@ class AutorunNationPolicy {
         }
         if($this->reqHumanWarRecommandRice === 0){
             $this->reqHumanWarRecommandRice = Util::round(max(30000, $this->reqHumanWarRecommandRice * 3), -2);
+        }
+
+        if($general->getVar('npc') >= 2){
+            return;
+        }
+
+        if(!key_exists('chief', $aiOptions)){
+            $this->can부대전방발령 = false;
+            $this->can부대후방발령 = false;
+    
+            $this->can부대유저장후방발령 = false;
+            $this->can유저장후방발령 = false;
+            $this->can유저장전방발령 = false;
+            $this->can유저장구출발령 = false;
+            $this->can유저장내정발령 = false;
+    
+            $this->canNPC후방발령 = false;
+            $this->canNPC전방발령 = false;
+            $this->canNPC구출발령 = false;
+            $this->canNPC내정발령 = false;
+    
+            $this->can유저장긴급포상 = false;
+            $this->can유저장포상 = false;
+            //$this->can유저장몰수 = false;
+    
+            $this->canNPC긴급포상 = false;
+            $this->canNPC포상 = false;
+            $this->canNPC몰수 = false;
+    
+            $this->can선전포고 = false;
+            $this->can천도 = false;
         }
     }
 }

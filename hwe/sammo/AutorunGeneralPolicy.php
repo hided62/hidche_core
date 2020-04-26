@@ -113,7 +113,7 @@ class AutorunGeneralPolicy{
 
     }
 
-    function __construct(General $general, $aiOptions){
+    function __construct(General $general, $aiOptions, array $nationPolicy, array $serverPolicy, array $nation, array $env){
         //TODO: 국가 정책을 받아와야함
         $this->priority = static::$default_priority;
 

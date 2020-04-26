@@ -17,6 +17,7 @@ function getAutorunInfo($autorunOption){
             case 'recruit_high': $auto_info['징병'] = '모병'; break;
             case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
             case 'battle': $auto_info['출병'] = '출병'; break;
+            case 'chief': $auto_info['사령턴'] = '사령턴'; break;
         }
     }
     $limit = Util::toInt($autorunOption['limit_minutes']);

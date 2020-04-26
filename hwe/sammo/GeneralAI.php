@@ -114,8 +114,8 @@ class GeneralAI
         $serverPolicy = KVStorage::getStorage($db, 'autorun_nation_policy_0');
         $nationPolicy = KVStorage::getStorage($db, "autorun_nation_policy_{$this->nation['nation']}");
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $nationPolicy->getAll(), $serverPolicy->getAll(), $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??[]);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options']??[], $nationPolicy->getAll(), $serverPolicy->getAll(), $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??[], $nationPolicy->getAll(), $serverPolicy->getAll(), $this->nation, $this->env);
 
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
 
