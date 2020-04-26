@@ -958,6 +958,7 @@ function updateNationState() {
                     999, sprintf('부대장%4d',$lastAssemblerID), null, $nation['nation'], null, 
                     10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
                 );
+                $npcObj->killturn = 70;
                 $npcObj->gold=0;
                 $npcObj->rice=0;
                 $npcObj->npc = 5;

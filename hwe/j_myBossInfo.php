@@ -177,11 +177,6 @@ function do추방(General $general, int $myOfficerLevel):?string{
         return '외교권자는 추방할 수 없습니다.';
     }
 
-    //NPC 부대장 추방 불가
-    if($general->getVar('npc') == 5){
-        return '부대장은 추방할 수 없습니다.';
-    }
-
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $env = $gameStor->getValues(['startyear','year','month','scenario']);

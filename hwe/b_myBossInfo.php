@@ -189,9 +189,6 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general['npc'] == 5){
-            continue;
-        }
         echo "
                 <option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }

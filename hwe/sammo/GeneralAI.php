@@ -2626,6 +2626,12 @@ class GeneralAI
     {
         $general = $this->general;
 
+        if($general->getVar('npc') == 5){
+            $newKillTurn = ($general->getVar('killturn') + Util::randRangeInt(2, 4)) % 5;
+            $newKillTurn += 70;
+            $general->setVar('killturn', $newKillTurn);
+        }
+
         $cmd = buildGeneralCommandClass('che_집합', $general, $this->env);
         _setGeneralCommand($cmd, iterator_to_array(Util::range(GameConst::$maxTurn)));
 
