@@ -2,22 +2,21 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 use \sammo\WarUnit;
 
-class che_척사 implements iAction{
-    use \sammo\DefaultAction;
+class che_척사 extends \sammo\BaseSpecial{
 
     protected $id = 75;
     protected $name = '척사';
     protected $info = '[전투] 지역·도시 병종 상대로 대미지 +10%, 아군 피해 -10%';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_STRENGTH,
-        SpecialityConst::STAT_INTEL
+        SpecialityHelper::STAT_LEADERSHIP,
+        SpecialityHelper::STAT_STRENGTH,
+        SpecialityHelper::STAT_INTEL
     ];
 
     public function getWarPowerMultiplier(WarUnit $unit):array{

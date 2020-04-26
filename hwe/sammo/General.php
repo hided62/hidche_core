@@ -83,10 +83,13 @@ class General implements iAction{
      * @param int $month 게임 월
      * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, officer_level 정도로 초기화 가능
      */
-    public function __construct(array $raw, ?array $rawRank, ?array $city, ?int $year, ?int $month, bool $fullConstruct=true){
+    public function __construct(array $raw, ?array $rawRank, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct=true){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
-        $staticNation = getNationStaticInfo($raw['nation']);
+        if($nation === null){
+            $nation = getNationStaticInfo($raw['nation']);
+        }
+        
         $this->raw = $raw;
         $this->rawCity = $city;
 
@@ -107,8 +110,8 @@ class General implements iAction{
             return;
         }
 
-        $this->nationType = buildNationTypeClass($staticNation['type']);
-        $this->officerLevelObj = new TriggerOfficerLevel($this->raw, $staticNation['level']);
+        $this->nationType = buildNationTypeClass($nation['type']);
+        $this->officerLevelObj = new TriggerOfficerLevel($this->raw, $nation['level']);
 
         $this->specialDomesticObj = buildGeneralSpecialDomesticClass($raw['special']);
         $this->specialWarObj = buildGeneralSpecialWarClass($raw['special2']);

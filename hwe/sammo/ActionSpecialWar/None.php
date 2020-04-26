@@ -2,19 +2,18 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 
-class None implements iAction{
-    use \sammo\DefaultAction;
+class None extends \sammo\BaseSpecial{
 
     protected $id = 0;
     protected $name = '-';
     protected $info = '';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 0;
     static $type = [
-        SpecialityConst::DISABLED
+        SpecialityHelper::DISABLED
     ];
 
 }

@@ -7,7 +7,7 @@ use \sammo\CityHelper;
 use \sammo\GameUnitConst;
 use \sammo\CityConst;
 use \sammo\GameConst;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 
 class NPC{
 
@@ -101,17 +101,17 @@ class NPC{
         $this->charWar = GameConst::$defaultSpecialWar;
 
         if($char === '랜덤전특'){
-            $this->charWar = SpecialityConst::pickSpecialWar($general);
+            $this->charWar = SpecialityHelper::pickSpecialWar($general);
         }
         else if($char === '랜덤내특'){
-            $this->charDomestic = SpecialityConst::pickSpecialDomestic($general);
+            $this->charDomestic = SpecialityHelper::pickSpecialDomestic($general);
         }
         else if($char === '랜덤'){
             if(Util::randBool(2/3)){
-                $this->charWar = SpecialityConst::pickSpecialWar($general);
+                $this->charWar = SpecialityHelper::pickSpecialWar($general);
             }
             else{
-                $this->charDomestic = SpecialityConst::pickSpecialDomestic($general);
+                $this->charDomestic = SpecialityHelper::pickSpecialDomestic($general);
             }
         }
         else if($char === null){
@@ -120,12 +120,10 @@ class NPC{
             //TODO: 내특, 전특 구분 필요
 
             try{
-                $domesticClass = \sammo\getGeneralSpecialDomesticClass($char);
-                $this->charDomestic = Util::getClassName($domesticClass);
+                $this->charDomestic = SpecialityHelper::getDomesticClassByName($char);
             }
             catch (\Exception $e) {
-                $warClass = \sammo\getGeneralSpecialWarClass($char);
-                $this->charWar = Util::getClassName($warClass);
+                $this->charWar = SpecialityHelper::getWarClassByName($char);
             }
         }  
     }

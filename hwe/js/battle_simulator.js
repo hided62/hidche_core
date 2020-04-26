@@ -204,19 +204,19 @@ jQuery(function($){
             explevel:getInt('.form_exp_level'),
 
             leadership:getInt('.form_leadership'),
-            horse:getInt('.form_general_horse'),
+            horse:getVal('.form_general_horse'),
             strength:getInt('.form_strength'),
-            weapon:getInt('.form_general_weap'),
+            weapon:getVal('.form_general_weap'),
             intel:getInt('.form_intel'),
-            book:getInt('.form_general_book'),
-            item:getInt('.form_general_item'),
+            book:getVal('.form_general_book'),
+            item:getVal('.form_general_item'),
 
             injury:getInt('.form_injury'),
 
             rice:getInt('.form_rice'),
 
-            personal:getInt('.form_general_character'),
-            special2:getInt('.form_general_special_war'),
+            personal:getVal('.form_general_character'),
+            special2:getVal('.form_general_special_war'),
 
             crew:getInt('.form_crew'),
             crewtype:getInt('.form_crewtype'),
@@ -523,7 +523,7 @@ jQuery(function($){
         };
 
         var attackerNation = {
-            type:parseInt($attackerNation.find('.form_nation_type').val()),
+            type:$attackerNation.find('.form_nation_type').val(),
             tech:parseInt($attackerNation.find('.form_tech').val()) * 1000,
             level:parseInt($attackerNation.find('.form_nation_level').val()),
             capital:$attackerNation.find('.form_is_capital:checked').val()=='1'?1:2,
@@ -540,7 +540,7 @@ jQuery(function($){
         };
 
         var defenderNation = {
-            type:parseInt($defenderNation.find('.form_nation_type').val()),
+            type:$defenderNation.find('.form_nation_type').val(),
             tech:parseInt($defenderNation.find('.form_tech').val()) * 1000,
             level:parseInt($defenderNation.find('.form_nation_level').val()),
             capital:$defenderNation.find('.form_is_capital:checked').val()=='1'?3:4,
@@ -573,7 +573,7 @@ jQuery(function($){
             level:0,
             gold:0,
             rice:2000,
-            type:0,
+            type:'None',
             tech:0,
             gennum:200,
         };
@@ -616,7 +616,10 @@ jQuery(function($){
 
         var attackerGeneral = extendGeneralInfoForDB(allData.attackerGeneral);
         if(2 <= attackerGeneral.officer_level && attackerGeneral.officer_level <= 4){
-            attackerCity.officer_city = 1;
+            attackerGeneral.officer_city = 1;
+        }
+        else{
+            attackerGeneral.officer_city = 0;
         }
 
         var defenderNation = $.extend({}, defaultNation, allData.defenderNation);
@@ -634,6 +637,9 @@ jQuery(function($){
             var defenderGeneral = extendGeneralInfoForDB(this);
             if(2 <= defenderGeneral.officer_level && defenderGeneral.officer_level <= 4){
                 defenderGeneral.officer_city = 3;
+            }
+            else{
+                defenderGeneral.officer_city = 0;
             }
 
             defenderGenerals.push(defenderGeneral);
@@ -763,6 +769,7 @@ jQuery(function($){
             type:'post',
             url:'j_simulate_battle.php',
             dataType:'json',
+            contentType: "application/json",
             data:{
                 action:'reorder',
                 query:JSON.stringify(data),

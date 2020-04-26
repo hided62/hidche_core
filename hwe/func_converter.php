@@ -9,11 +9,21 @@ namespace sammo;
  * (단, autoload, 정적 변수 초기화는 허용)
  */
 
-function getCharacterList(){
+function getCharacterList(bool $onlyAvailable=true){
     $infoText = [];
-    foreach(GameConst::$allPersonality as $personalityID){
+    if(!$onlyAvailable){
+        $class = buildPersonalityClass(GameConst::$neutralPersonality);
+        $infoText[GameConst::$neutralPersonality] = [$class->getName(), $class->getInfo()];
+    }
+    foreach(GameConst::$availablePersonality as $personalityID){
         $class = buildPersonalityClass($personalityID);
         $infoText[$personalityID] = [$class->getName(), $class->getInfo()];
+    }
+    if(!$onlyAvailable){
+        foreach(GameConst::$optionalPersonality as $personalityID){
+            $class = buildPersonalityClass($personalityID);
+            $infoText[$personalityID] = [$class->getName(), $class->getInfo()];
+        }
     }
     return $infoText;
 }
@@ -247,7 +257,7 @@ function getGeneralSpecialDomesticClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 내정 특기가 아님");
 }
 
-function buildGeneralSpecialDomesticClass(?string $type):iAction{
+function buildGeneralSpecialDomesticClass(?string $type):BaseSpecial{
     static $cache = [];
     if($type === null){
         $type = 'None';
@@ -282,7 +292,7 @@ function getGeneralSpecialWarClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 전투 특기가 아님");
 }
 
-function buildGeneralSpecialWarClass(?string $type):iAction{
+function buildGeneralSpecialWarClass(?string $type):BaseSpecial{
     static $cache = [];
     if($type === null){
         $type = 'None';

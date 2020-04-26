@@ -37,16 +37,15 @@ $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation 
 var specialInfo = 
 <?php
 $specialAll = [];
-foreach (GameConst::$availableSpecialDomestic as $id) {
-    $domesticClass = buildGeneralSpecialDomesticClass($id);
-    $name = $domesticClass->getName();
-    $info = $domesticClass->getInfo();
+foreach(SpecialityHelper::getSpecialDomesticList() as $specialID=>$specialObj){
+    $name = $specialObj->getName();
+    $info = $specialObj->getInfo();
     $specialAll[$name] = $info;
 }
-foreach (SpecialityConst::WAR as $id=>$values) {
-    $name = $values[0];
-    $text = getSpecialInfo($id);
-    $specialAll[$name] = $text;
+foreach(SpecialityHelper::getSpecialWarList() as $specialID=>$specialObj){
+    $name = $specialObj->getName();
+    $info = $specialObj->getInfo();
+    $specialAll[$name] = $info;
 }
 $specialAll['-'] = '없음';
 echo Json::encode($specialAll);
@@ -55,7 +54,7 @@ echo Json::encode($specialAll);
 var characterInfo = 
 <?php
 $characterAll = [];
-foreach(getCharacterList() as $id=>[$name, $info]){
+foreach(getCharacterList(false) as $id=>[$name, $info]){
     $characterAll[$name] = $info;
 }
 echo Json::encode($characterAll);

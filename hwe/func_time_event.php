@@ -94,7 +94,7 @@ function processGoldIncome() {
 
         // 각 장수들에게 지급
         foreach ($generalRawList as $rawGeneral) {
-            $generalObj = new General($rawGeneral, null, null, $year, $month, false);
+            $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
             $gold = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
             $generalObj->increaseVar('gold', $gold);
             
@@ -369,7 +369,7 @@ function processRiceIncome() {
 
         // 각 장수들에게 지급
         foreach ($generalRawList as $rawGeneral) {
-            $generalObj = new General($rawGeneral, null, null, $year, $month, false);
+            $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
             $rice = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
             $generalObj->increaseVar('rice', $rice);
             
@@ -589,7 +589,7 @@ function disaster() {
             
             $generalList = array_map(
                 function($rawGeneral) use ($city, $year, $month){
-                    return new General($rawGeneral, null, $city, $year, $month, false);
+                    return new General($rawGeneral, null, $city, null, $year, $month, false);
                 }, 
                 $generalListByCity[$city['city']]??[]
             );

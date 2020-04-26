@@ -158,7 +158,7 @@ $age = 20 + ($pleadership + $pstrength + $pintel) * 2 - (mt_rand(0, 1));
 // 아직 남았고 천재등록상태이면 특기 부여
 if ($genius) {
     $specage2 = $age;
-    $special2 = SpecialityConst::pickSpecialWar([
+    $special2 = SpecialityHelper::pickSpecialWar([
         'leadership'=>$leadership,
         'strength'=>$strength,
         'intel'=>$intel,

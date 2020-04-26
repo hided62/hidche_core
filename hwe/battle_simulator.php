@@ -29,7 +29,7 @@ $startYear = $gameStor->getValue('startyear');
 <?=WebUtil::printJS('../e_lib/download2.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <script>
-var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
+var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
 </script>
 <?=WebUtil::printJS('js/battle_simulator.js')?>
 </head>
@@ -167,7 +167,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     <select class="custom-select form_nation_type" style="width:25ch;">
                         <?php foreach(GameConst::$availableNationType as $typeID): ?>
                             <?php $nationTypeObj = buildNationTypeClass($typeID) ?> 
-                            <option value="<?=$typeID?>"><?=$nationTypeObj->name?> (<?=$nationTypeClass::$pros?>, <?=$nationTypeClass::$cons?>)</option>
+                            <option value="<?=$typeID?>"><?=$nationTypeObj->getName()?> (<?=$nationTypeObj::$pros?>, <?=$nationTypeObj::$cons?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -339,7 +339,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     </div>
                     <select class="custom-select form_crewtype">
                         <?php foreach(GameUnitConst::all() as $crewTypeID => $crewType): ?>
-                            <?php if($crewTypeID < 0){ continue; } ?>
+                            <?php if($crewType->armType === GameUnitConst::T_CASTLE){ continue; } ?>
                             <option value="<?=$crewTypeID?>"><?=$crewType->name?></option>
                         <?php endforeach; ?>
                     </select>
@@ -351,7 +351,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                         <span class="input-group-text">성격</span>
                     </div>
                     <select class="custom-select form_general_character">
-                        <?php foreach(getCharacterList() as $characterID => [$name,$info]): ?>
+                        <?php foreach(getCharacterList(false) as $characterID => [$name,$info]): ?>
                             <option value="<?=$characterID?>"><?=$name?></option>
                         <?php endforeach; ?>
                     </select>
@@ -369,9 +369,8 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                         <span class="input-group-text">전특</span>
                     </div>
                     <select class="custom-select form_general_special_war">
-                        <option value="0">-</option>
-                        <?php foreach(SpecialityConst::WAR as $specialWarID => [$name,$buff,$cond]): ?>
-                            <option value="<?=$specialWarID?>"><?=$name?></option>
+                        <?php foreach(SpecialityHelper::getSpecialWarList(false) as $specialWarID =>$specialObj): ?>
+                            <option value="<?=$specialWarID?>"><?=$specialObj->getName()?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

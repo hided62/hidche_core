@@ -280,7 +280,7 @@ foreach($generals as $general){
 
     if($ourGeneral && !$isNPC){
         $turnText = [];
-        $generalObj = new General($general, null, null, null, false);
+        $generalObj = new General($general, null, null, null, null, false);
         foreach($generalTurnList[$generalObj->getID()] as $turnRawIdx=>$turn){
             $turnIdx = $turnRawIdx+1;
             $turnText[] = "{$turnIdx} : $turn";

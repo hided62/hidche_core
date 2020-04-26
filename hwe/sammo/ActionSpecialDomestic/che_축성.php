@@ -2,19 +2,18 @@
 namespace sammo\ActionSpecialDomestic;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 
-class che_축성 implements iAction{
-    use \sammo\DefaultAction;
+class che_축성 extends \sammo\BaseSpecial{
 
     protected $id = 10;
     protected $name = '축성';
     protected $info = '[내정] 기술 연구 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_STRENGTH
+        SpecialityHelper::STAT_STRENGTH
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

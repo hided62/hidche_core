@@ -115,12 +115,12 @@ switch($btn) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
 
-            $specialWar = SpecialityConst::pickSpecialWar($general);
+            $specialWar = SpecialityHelper::pickSpecialWar($general);
             $db->update('general', [
                 'specage2'=>$db->sqleval('age'),
                 'special2'=>$specialWar
             ], 'no=%i', $general['no']);
-            $specialWarName = SpecialityConst::WAR[$specialWar][0];
+            $specialWarName = buildGeneralSpecialWarClass($specialWar)->getName();
             $josaUl = JosaUtil::pick($specialWarName, '을');
             pushGeneralHistory($general['no'], ["<C>●</>{$year}년 {$month}월:특기 【<b><C>{$specialWarName}</></b>】{$josaUl} 습득"]);
             pushGenLog($general['no'], ["<C>●</>특기 【<b><L>{$specialWarName}</></b>】{$josaUl} 익혔습니다!"]);

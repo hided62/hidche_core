@@ -2,7 +2,7 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use sammo\BaseGeneralTrigger;
-use sammo\SpecialityConst;
+use sammo\SpecialityHelper;
 use \sammo\General;
 use \sammo\GeneralTrigger;
 use \sammo\GeneralTriggerCaller;
@@ -11,19 +11,18 @@ use sammo\WarUnitTrigger\che_전투치료발동;
 use sammo\WarUnitTrigger\che_전투치료시도;
 use sammo\WarUnitTriggerCaller;
 
-class che_의술 implements iAction{
-    use \sammo\DefaultAction;
+class che_의술 extends \sammo\BaseSpecial{
 
     protected $id = 73;
     protected $name = '의술';
     protected $info = '[군사] 매 턴마다 자신(100%)과 소속 도시 장수(적 포함 50%) 부상 회복<br>[전투] 페이즈마다 20% 확률로 치료 발동(아군 피해 1/3 감소)';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_PERCENT;
+    static $selectWeightType = SpecialityHelper::WEIGHT_PERCENT;
     static $selectWeight = 2;
     static $type = [
-        SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_STRENGTH,
-        SpecialityConst::STAT_INTEL
+        SpecialityHelper::STAT_LEADERSHIP,
+        SpecialityHelper::STAT_STRENGTH,
+        SpecialityHelper::STAT_INTEL
     ];
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{

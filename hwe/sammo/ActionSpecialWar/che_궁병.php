@@ -2,22 +2,21 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 
 use \sammo\GameUnitConst;
 
-class che_궁병 implements iAction{
-    use \sammo\DefaultAction;
+class che_궁병 extends \sammo\BaseSpecial{
 
     protected $id = 51;
     protected $name = '궁병';
     protected $info = '[군사] 궁병 계통 징·모병비 -10%<br>[전투] 회피 확률 +20%p';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_LEADERSHIP | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_ARCHER,
-        SpecialityConst::STAT_STRENGTH | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_ARCHER
+        SpecialityHelper::STAT_LEADERSHIP | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_ARCHER,
+        SpecialityHelper::STAT_STRENGTH | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_ARCHER
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

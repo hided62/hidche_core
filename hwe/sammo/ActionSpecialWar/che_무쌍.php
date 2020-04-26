@@ -2,21 +2,20 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 use \sammo\WarUnit;
 
-class che_무쌍 implements iAction{
-    use \sammo\DefaultAction;
+class che_무쌍 extends \sammo\BaseSpecial{
 
     protected $id = 61;
     protected $name = '무쌍';
     protected $info = '[전투] 대미지 +10%, 공격 시 필살 확률 +10%p';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_STRENGTH
+        SpecialityHelper::STAT_LEADERSHIP,
+        SpecialityHelper::STAT_STRENGTH
     ];
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){

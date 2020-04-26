@@ -2,22 +2,21 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 use \sammo\GameUnitConst;
 use \sammo\WarUnit;
 
-class che_기병 implements iAction{
-    use \sammo\DefaultAction;
+class che_기병 extends \sammo\BaseSpecial{
 
     protected $id = 52;
     protected $name = '기병';
     protected $info = '[군사] 기병 계통 징·모병비 -10%<br>[전투] 수비 시 대미지 +10%, 공격 시 대미지 +20%';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_LEADERSHIP | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_CAVALRY,
-        SpecialityConst::STAT_STRENGTH | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_CAVALRY
+        SpecialityHelper::STAT_LEADERSHIP | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_CAVALRY,
+        SpecialityHelper::STAT_STRENGTH | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_CAVALRY
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

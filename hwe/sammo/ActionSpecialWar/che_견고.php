@@ -2,24 +2,23 @@
 namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo\SpecialityHelper;
 use \sammo\WarUnit;
 use sammo\WarUnitTriggerCaller;
 use sammo\BaseWarUnitTrigger;
 use sammo\WarUnitTrigger\WarActivateSkills;
 
-class che_견고 implements iAction{
-    use \sammo\DefaultAction;
+class che_견고 extends \sammo\BaseSpecial{
 
     protected $id = 62;
     protected $name = '견고';
     protected $info = '[전투] 상대 필살 불가, 상대 계략 시도시 성공 확률 -10%p';
 
-    static $selectWeightType = SpecialityConst::WEIGHT_NORM;
+    static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityConst::STAT_LEADERSHIP,
-        SpecialityConst::STAT_STRENGTH
+        SpecialityHelper::STAT_LEADERSHIP,
+        SpecialityHelper::STAT_STRENGTH
     ];
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{

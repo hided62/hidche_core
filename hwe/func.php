@@ -1203,7 +1203,7 @@ function addAge() {
     if($year >= $startYear+3) {
         foreach($db->query('SELECT no,name,nation,leadership,strength,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general){
             $generalID = $general['no'];
-            $special = SpecialityConst::pickSpecialDomestic($general);
+            $special = SpecialityHelper::pickSpecialDomestic($general);
             $specialClass = buildGeneralSpecialDomesticClass($special);
             $specialText = $specialClass->getName();
             $db->update('general', [
@@ -1219,7 +1219,7 @@ function addAge() {
 
         foreach($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
             $generalID = $general['no'];
-            $special2 = SpecialityConst::pickSpecialWar($general);
+            $special2 = SpecialityHelper::pickSpecialWar($general);
             $specialClass = buildGeneralSpecialWarClass($special2);
             $specialText = $specialClass->getName();
 

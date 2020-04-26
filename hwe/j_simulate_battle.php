@@ -31,6 +31,7 @@ if($query === null){
     ]);
 }
 
+LogText('simulate', $query);
 
 $defaultCheck = [
     'required'=>[
@@ -74,7 +75,7 @@ $rawAttacker['turntime'] = TimeUtil::now();
 $rawAttackerCity = $query['attackerCity'];
 $rawAttackerNation = $query['attackerNation'];
 
-$rawdefenderList = $query['defenderGenerals'];
+$rawDefenderList = $query['defenderGenerals'];
 $rawDefenderCity = $query['defenderCity'];
 $rawDefenderNation = $query['defenderNation'];
 
@@ -83,13 +84,13 @@ $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
         'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item', 
-        'explevel', 'experience', 'dedication', 'officer_level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
+        'explevel', 'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
         'recent_war'
     ],
     'integer'=>[
-        'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
-        'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item',
-        'explevel', 'experience', 'dedication', 'officer_level', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
+        'no', 'nation', 'crew', 'crewtype', 'atmos', 'train',
+        'intel', 'intel_exp', 'strength', 'strength_exp',  'injury', 'leadership', 'leadership_exp', 
+        'explevel', 'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
     ],
     'min'=>[
         ['no', 1],
@@ -115,8 +116,8 @@ $generalCheck = [
         ['officer_level', [1, 12]]
     ],
     'in'=>[
-        ['personal', array_keys(getCharacterList())],
-        ['special2', array_merge(array_keys(SpecialityConst::WAR), ['None'])],
+        ['personal', array_merge(GameConst::$availablePersonality, GameConst::$optionalPersonality)],
+        ['special2', array_merge(GameConst::$availableSpecialWar, GameConst::$optionalSpecialWar)],
         ['crewtype', array_keys(GameUnitConst::all())],
         ['horse', array_keys(GameConst::$allItems['horse'])],
         ['weapon', array_keys(GameConst::$allItems['weapon'])],
@@ -135,7 +136,6 @@ if(!$v->validate()){
 }
 
 $defenderList = [];
-
 foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
     $v = new Validator($rawDefenderGeneral);
     $v->rules($generalCheck);
@@ -146,7 +146,7 @@ foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
             'reason'=>"[수비자{$idx}]".$v->errorStr()
         ]);
     }
-    $defenderList[] = new General($rawDefenderGeneral, null, $rawDefenderCity, $year, $month, true);
+    $defenderList[] = new General($rawDefenderGeneral, null, $rawDefenderCity, $rawAttackerNation, $year, $month, true);
 }
 
 
@@ -205,7 +205,7 @@ $nationCheck = [
         'nation', 'name', 'gold', 'rice', 'gennum'
     ],
     'integer'=>[
-        'type', 'level', 'capital', 'nation', 'gennum',
+        'level', 'capital', 'nation', 'gennum',
     ],
     'numeric'=>[
         'tech', 'gold', 'rice'
@@ -217,7 +217,7 @@ $nationCheck = [
         ['gennum', 1],
     ],
     'in'=>[
-        ['type', array_keys(getNationTypeList())],
+        ['type', GameConst::$availableNationType],
         ['level', array_keys(getNationLevelList())]
     ]
 ];
@@ -246,8 +246,8 @@ if($action == 'reorder'){
     });
 
     $order = [];
-    foreach($defenderList as $rawDefenderGeneral){
-        $order[] = $rawDefenderGeneral['no'];
+    foreach($defenderList as $defenderGeneral){
+        $order[] = $defenderGeneral->getID();
     }
     
     Json::die([
@@ -261,6 +261,11 @@ usort($defenderList, function(General $lhs, General $rhs){
     return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
 });
 
+$rawDefenderList = array_map(function(General $general){
+    return $general->getRaw();
+}, $defenderList);
+unset($defenderList);
+
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $startYear = $gameStor->startyear;
@@ -269,18 +274,17 @@ $cityRate = Util::round(($year - $startYear) / 1.5) + 60;
 
 function simulateBattle(
     $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
-    $defenderList, $rawDefenderCity, $rawDefenderNation, 
+    $rawDefenderList, $rawDefenderCity, $rawDefenderNation, 
     $startYear, $year, $month, $cityRate
 ){
-
     $attacker = new WarUnitGeneral(
-        new General($rawAttacker, null, $rawAttackerCity, $year, $month),
+        new General($rawAttacker, null, $rawAttackerCity, $rawAttackerNation, $year, $month),
         $rawAttackerNation,
         true
     );
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
-    $iterDefender = new \ArrayIterator($defenderList);
+    $iterDefender = new \ArrayIterator($rawDefenderList);
     $iterDefender->rewind();
 
     $battleResult = [];
@@ -306,15 +310,15 @@ function simulateBattle(
             return null;
         }
 
-        $rawGeneral = $iterDefender->current();
-        if(extractBattleOrder($rawGeneral) <= 0){
+        $defenderObj = new General($iterDefender->current(), null, $rawDefenderCity, $rawDefenderNation, $year, $month);
+        if(extractBattleOrder($defenderObj) <= 0){
             return null;
         }
 
-        $defenderRice += $rawGeneral['rice'];
+        $defenderRice += $defenderObj->getVar('rice');
 
         $retVal = new WarUnitGeneral(
-            new General($rawGeneral, null, $rawDefenderCity, $year, $month),
+            $defenderObj,
             $rawDefenderNation,
             false
         );
@@ -371,7 +375,7 @@ $defendersActivatedSkills = [];
 foreach(Util::range($repeatCnt) as $repeatIdx){
     [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
         $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
-        $defenderList, $rawDefenderCity, $rawDefenderNation, 
+        $rawDefenderList, $rawDefenderCity, $rawDefenderNation, 
         $startYear, $year, $month, $cityRate
     );
     $lastWarLog = Util::mapWithKey(function($key, $values){
