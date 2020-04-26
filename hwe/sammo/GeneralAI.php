@@ -3153,6 +3153,11 @@ class GeneralAI
         }
         
         if($npcType == 5){
+            if($general->getNationID()==0){
+                $general->setVar('killturn', 1);
+                $reservedCommand->reason='사망';
+                return $reservedCommand;
+            }
             $result = $this->do집합();
             $result->reason='do집합';
             return $result;
