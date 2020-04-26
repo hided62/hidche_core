@@ -44,7 +44,7 @@ else{
         'name', 'leadership', 'strength', 'intel', 'gold','rice',
         'troop','officer_level','npc','picture','imgsvr',
         'permission','penalty','belong', 'crewtype',
-        'experience', 'dedication'
+        'experience', 'dedication', 'betray', 'dedlevel', 'explevel', 'makelimit',
     ], 1);
 
     if($general instanceof DummyGeneral){
