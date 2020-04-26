@@ -6,6 +6,7 @@ use sammo\WarUnitCity;
 use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
+use sammo\Util;
 
 class che_회피시도 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_PRE + 200;

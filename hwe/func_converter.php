@@ -359,7 +359,7 @@ function getWarUnitTriggerClass(string $type){
 }
 
 function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = null):BaseWarUnitTrigger{
-    $classPath = getNationCommandClass($type);
+    $classPath = getWarUnitTriggerClass($type);
     if(!$args){
         return new $classPath($unit);
     }

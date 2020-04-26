@@ -18,7 +18,13 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
     public function getUniqueID():string{
         $priority = $this->priority;
         $fqn = static::class;
-        return "{$priority}_{$fqn}_{$this->raiseType}";
+        if($this->object === null){
+            $objID = '';
+        }
+        else{
+            $objID = spl_object_id($this->object);
+        }
+        return "{$priority}_{$fqn}_{$objID}_{$this->raiseType}";
     }
 
     public function action(?array $env=null, $arg=null):?array{
@@ -53,7 +59,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         $env['e_attacker'] = $isAttacker?$selfEnv:$opposeEnv;
         $env['e_defender'] = $isAttacker?$opposeEnv:$selfEnv;
 
-        if($callNextAction){
+        if(!$callNextAction){
             $env['stopNextAction'] = true;
         }
 

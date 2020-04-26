@@ -127,7 +127,7 @@ class SpecialityHelper{
         }
 
         if(!$onlyAvailable){
-            foreach(GameConst::$availableSpecialDomestic as $specialID){
+            foreach(GameConst::$optionalSpecialDomestic as $specialID){
                 $specialObj = buildGeneralSpecialDomesticClass($specialID);
                 $result[$specialID] = $specialObj;
             }
@@ -140,18 +140,18 @@ class SpecialityHelper{
     public static function getSpecialWarList(bool $onlyAvailable=true):array{
         $result = [];
         if(!$onlyAvailable){
-            $specialObj = buildGeneralSpecialDomesticClass(GameConst::$defaultSpecialDomestic);
-            $result[GameConst::$defaultSpecialDomestic] = $specialObj;
+            $specialObj = buildGeneralSpecialWarClass(GameConst::$defaultSpecialWar);
+            $result[GameConst::$defaultSpecialWar] = $specialObj;
         }
         
-        foreach(GameConst::$availableSpecialDomestic as $specialID){
-            $specialObj = buildGeneralSpecialDomesticClass($specialID);
+        foreach(GameConst::$availableSpecialWar as $specialID){
+            $specialObj = buildGeneralSpecialWarClass($specialID);
             $result[$specialID] = $specialObj;
         }
 
         if(!$onlyAvailable){
-            foreach(GameConst::$availableSpecialDomestic as $specialID){
-                $specialObj = buildGeneralSpecialDomesticClass($specialID);
+            foreach(GameConst::$optionalSpecialWar as $specialID){
+                $specialObj = buildGeneralSpecialWarClass($specialID);
                 $result[$specialID] = $specialObj;
             }
         }

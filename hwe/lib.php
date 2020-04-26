@@ -53,6 +53,6 @@ function MessageBox($str)
 
 function LogText($prefix, $variable)
 {
-    $text = sprintf('%s : %s'."\r\n", $prefix, var_export($variable, true));
+    $text = sprintf('%s : %s'."\r\n", $prefix, TVarDumper::dump($variable));
     file_put_contents(ROOT.'/d_log/dbg_logs.txt', $text, FILE_APPEND);
 }

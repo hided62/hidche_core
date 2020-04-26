@@ -7,6 +7,7 @@ use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\Util;
 use sammo\ObjectTrigger;
+use sammo\ActionLogger;
 
 class che_위압발동 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_POST + 700;

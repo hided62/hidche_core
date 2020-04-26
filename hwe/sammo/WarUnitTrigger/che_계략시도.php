@@ -6,6 +6,7 @@ use sammo\WarUnitCity;
 use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
+use sammo\Util;
 
 class che_계략시도 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_PRE + 300;
@@ -49,7 +50,7 @@ class che_계략시도 extends BaseWarUnitTrigger{
 
         $magicSuccessProb = 0.7;
         $magicSuccessProb = $general->onCalcStat($general, 'warMagicSuccessProb', $magicSuccessProb);
-        if($this->hasActivatedSkill('계략약화')){
+        if($self->hasActivatedSkill('계략약화')){
             $magicSuccessProb -= 0.1; //NOTE: 앞으로 이건 oppose의 onCalcStat에 들어가야하지 않을까?
         }
 

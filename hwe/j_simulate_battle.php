@@ -31,8 +31,6 @@ if($query === null){
     ]);
 }
 
-LogText('simulate', $query);
-
 $defaultCheck = [
     'required'=>[
         'attackerGeneral', 'attackerCity', 'attackerNation',

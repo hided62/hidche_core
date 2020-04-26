@@ -769,7 +769,6 @@ jQuery(function($){
             type:'post',
             url:'j_simulate_battle.php',
             dataType:'json',
-            contentType: "application/json",
             data:{
                 action:'reorder',
                 query:JSON.stringify(data),

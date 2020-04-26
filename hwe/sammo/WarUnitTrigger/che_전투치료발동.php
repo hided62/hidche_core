@@ -7,6 +7,7 @@ use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\Util;
 use sammo\ObjectTrigger;
+use sammo\ActionLogger;
 
 class che_전투치료발동 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_POST + 300;
@@ -24,7 +25,7 @@ class che_전투치료발동 extends BaseWarUnitTrigger{
         $oppose->getLogger()->pushGeneralBattleDetailLog("상대가 <C>치료</>했다!", ActionLogger::PLAIN);
         $self->getLogger()->pushGeneralBattleDetailLog("<C>치료</>했다!", ActionLogger::PLAIN);
 
-        $oppose->getGeneral()->multiplyWarPowerMultiply(1/1.5);
+        $oppose->multiplyWarPowerMultiply(1/1.5);
 
         $this->processConsumableItem();
 

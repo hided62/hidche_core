@@ -25,6 +25,12 @@ abstract class ObjectTrigger{
     public function getUniqueID():string{
         $priority = $this->priority;
         $fqn = static::class;
-        return "{$priority}_{$fqn}";
+        if($this->object === null){
+            $objID = '';
+        }
+        else{
+            $objID = spl_object_id($this->object);
+        }
+        return "{$priority}_{$fqn}_{$objID}";
     }
 }

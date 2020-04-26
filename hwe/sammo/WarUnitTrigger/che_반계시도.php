@@ -5,6 +5,7 @@ use sammo\WarUnitGeneral;
 use sammo\WarUnitCity;
 use sammo\WarUnit;
 use sammo\GameUnitDetail;
+use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_반계시도 extends BaseWarUnitTrigger{
