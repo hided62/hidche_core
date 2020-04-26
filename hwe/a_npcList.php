@@ -125,7 +125,7 @@ else{
         <td align=center><?=$general['intel']?></td>
         <td align=center><?=$general['experience']?></td>
         <td align=center><?=$general['dedication']?></td>
-    </tr>";
+    </tr>
 <?php endforeach; ?>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>

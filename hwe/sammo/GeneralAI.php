@@ -2697,7 +2697,7 @@ class GeneralAI
     protected function do거병(): ?GeneralCommand
     {
         $general = $this->general;
-        // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
+        // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병
         if($general->getVar('makelimit')){
             return null;
         }
@@ -2713,7 +2713,7 @@ class GeneralAI
             return null;
         }
 
-        if(!Util::randBool(0.014)){
+        if(!Util::randBool(0.01)){
             return null;
         }
 
