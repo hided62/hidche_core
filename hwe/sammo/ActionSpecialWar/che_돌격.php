@@ -17,7 +17,6 @@ class che_돌격 extends \sammo\BaseSpecial{
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityHelper::STAT_LEADERSHIP,
         SpecialityHelper::STAT_STRENGTH
     ];
 

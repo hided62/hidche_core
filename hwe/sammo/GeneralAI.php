@@ -2120,13 +2120,30 @@ class GeneralAI
 
         $db = DB::db();
 
-        $dex = [
-            GameUnitConst::T_FOOTMAN => sqrt($general->getVar('dex1') + 500),
-            GameUnitConst::T_ARCHER => sqrt($general->getVar('dex2') + 500),
-            GameUnitConst::T_CAVALRY => sqrt($general->getVar('dex3') + 500),
-            GameUnitConst::T_WIZARD => sqrt($general->getVar('dex4') + 500),
-            GameUnitConst::T_SIEGE => sqrt($general->getVar('dex5') + 500),
-        ];
+        $armType =$general->getAuxVar('armType');
+        if(!$armType){
+
+            $dex = [
+                GameUnitConst::T_FOOTMAN => sqrt($general->getVar('dex1') + 500),
+                GameUnitConst::T_ARCHER => sqrt($general->getVar('dex2') + 500),
+                GameUnitConst::T_CAVALRY => sqrt($general->getVar('dex3') + 500),
+                GameUnitConst::T_WIZARD => sqrt($general->getVar('dex4') + 500),
+                GameUnitConst::T_SIEGE => sqrt($general->getVar('dex5') + 500),
+            ];
+            
+            $availableArmType = [];
+            if($genType & self::t무장){
+                $availableArmType[GameUnitConst::T_FOOTMAN] = $dex[GameUnitConst::T_FOOTMAN] * $this->fullStrength;
+                $availableArmType[GameUnitConst::T_ARCHER] = $dex[GameUnitConst::T_ARCHER] * $this->fullStrength;
+                $availableArmType[GameUnitConst::T_CAVALRY] = $dex[GameUnitConst::T_CAVALRY] * $this->fullStrength;
+            }
+            if($genType & self::t지장){
+                $availableArmType[GameUnitConst::T_WIZARD] = $dex[GameUnitConst::T_WIZARD] * $this->fullIntel * 3;
+            }
+            $armType = Util::choiceRandomUsingWeight($availableArmType);
+        }
+
+        
 
 
         $cities = [];
@@ -2139,38 +2156,15 @@ class GeneralAI
         $relYear = Util::valueFit($env['year'] - $env['startyear'], 0);
 
 
-        $typesAll = [];
-        if ($genType & self::t무장) {
-            $types = [];
-
-            $unitType = Util::getKeyOfMaxValue([
-                GameUnitConst::T_FOOTMAN => $dex[GameUnitConst::T_FOOTMAN] + Util::randRangeInt(0, 50),
-                GameUnitConst::T_ARCHER => $dex[GameUnitConst::T_ARCHER] + Util::randRangeInt(0, 50),
-                GameUnitConst::T_CAVALRY => $dex[GameUnitConst::T_CAVALRY] + Util::randRangeInt(0, 50),
-            ]);
-            
-            foreach (GameUnitConst::byType($unitType) as $crewtype) {
-                if ($crewtype->isValid($cities, $regions, $relYear, $tech)) {
-                    $score = $dex[$unitType] * $crewtype->pickScore($tech);
-                    $types[] = [$crewtype->id, $score];
-                }
+        $types = [];
+        foreach (GameUnitConst::byType($armType) as $crewtype) {
+            if ($crewtype->isValid($cities, $regions, $relYear, $tech)) {
+                $score = $crewtype->pickScore($tech);
+                $types[] = [$crewtype->id, $score];
             }
         }
 
-        if ($genType & self::t지장) {
-            $types = [];
-            foreach (GameUnitConst::byType(GameUnitConst::T_WIZARD) as $crewtype) {
-                if ($crewtype->isValid($cities, $regions, $relYear, $tech)) {
-                    $score = $dex[GameUnitConst::T_WIZARD] * $crewtype->pickScore($tech);
-                    $types[] = [$crewtype->id, $score];
-                }
-            }
-            foreach ($types as [$crewtype, $score]) {
-                $typesAll[$crewtype] = [$crewtype, $score / count($types)];
-            }
-        }
-
-        if ($typesAll) {
+        if ($types) {
             $type = Util::choiceRandomUsingWeightPair($types);
         } else {
             $type = GameUnitConst::DEFAULT_CREWTYPE;
@@ -2178,7 +2172,7 @@ class GeneralAI
 
         if($this->generalPolicy->can고급병종){
             $currType = $general->getCrewTypeObj()->id;
-            if(key_exists($currType, $typesAll) && $typesAll[$currType][1] >= $typesAll[$type][1]){
+            if(key_exists($currType, $types) && $types[$currType][1] >= $types[$type][1]){
                 $type = $currType;
             }
         }
@@ -2212,7 +2206,7 @@ class GeneralAI
                 'amount' => $crew
             ]);
         }
-        else if($gold < $cost){
+        else if($gold < $cost && $gold * 2 >= $cost){
             $crew *= $gold / $cost; 
             $crew = Util::round($crew-49, -2);
             $cmd = buildGeneralCommandClass('che_징병', $general, $env, [

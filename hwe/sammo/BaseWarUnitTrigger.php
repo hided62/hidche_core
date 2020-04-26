@@ -97,7 +97,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         $self->activateSkill('아이템소모');
         $josaUl = JosaUtil::pick($itemRawName, '을');
         $self->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
-        $self->general->deleteItem();
+        $self->getGeneral()->deleteItem();
 
         return true;
     }

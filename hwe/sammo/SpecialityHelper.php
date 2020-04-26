@@ -78,17 +78,31 @@ class SpecialityHelper{
         $leadership = $general['leadership']??50;
         $strength = $general['strength']??50;
         $intel = $general['intel']??50;
-        
-        if ($leadership * 0.95 > $strength && $leadership * 0.95 > $intel) {
+
+        if($leadership > GameConst::$chiefStatMin){
             $myCond |= self::STAT_LEADERSHIP;
         }
-        else if($strength >= $intel){
+        
+        if($strength >= $intel * 0.95 && $strength > GameConst::$chiefStatMin){
             $myCond |= self::STAT_STRENGTH;
         }
-        else {
+
+        if($intel >= $strength * 0.95 && $intel > GameConst::$chiefStatMin){
             $myCond |= self::STAT_INTEL;
         }
 
+        if($myCond === 0){
+            if ($leadership * 0.9 > $strength && $leadership * 0.9 > $intel) {
+                $myCond |= self::STAT_LEADERSHIP;
+            }
+            else if($strength >= $intel){
+                $myCond |= self::STAT_STRENGTH;
+            }
+            else {
+                $myCond |= self::STAT_INTEL;
+            }
+        }
+        
         return $myCond;
     }
 
@@ -116,7 +130,7 @@ class SpecialityHelper{
             return array_rand($dex);
         }
 
-        return array_keys($dex, max($dex))[0];
+        return Util::choiceRandom(array_keys($dex, max($dex)));
     }
 
     /** @return BaseSpecial[] */
@@ -222,6 +236,7 @@ class SpecialityHelper{
 
         $myCond = static::calcCondGeneric($general);
         $myCond |= static::calcCondDexterity($general);
+        $myCond |= static::REQ_DEXTERITY;
 
         foreach(static::getSpecialWarList() as $specialID=>$specialObj){
             $conds = $specialObj::$type;

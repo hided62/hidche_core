@@ -85,7 +85,7 @@ if($action == '부대추방'){
 
     $db->update('general', [
         'troop'=>0
-    ], 'no=%i AND troop_leader = %i', $gen, $generalID);
+    ], 'no=%i AND troop = %i', $gen, $generalID);
 
     if($db->affectedRows() == 0){
         Json::die([

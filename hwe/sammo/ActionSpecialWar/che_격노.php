@@ -17,9 +17,7 @@ class che_격노 extends \sammo\BaseSpecial{
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityHelper::STAT_LEADERSHIP,
         SpecialityHelper::STAT_STRENGTH,
-        SpecialityHelper::STAT_INTEL
     ];
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{

@@ -17,6 +17,8 @@ class che_격노발동 extends BaseWarUnitTrigger{
             return true;
         }
 
+        /** @var WarUnitGeneral $self */
+
         $targetAct = $oppose->hasActivatedSkill('필살')?'필살 공격':'회피 시도';
         $is진노 = $self->hasActivatedSkill('진노');
         $reaction = $is진노?'진노':'격노';
@@ -25,7 +27,7 @@ class che_격노발동 extends BaseWarUnitTrigger{
         $oppose->getLogger()->pushGeneralBattleDetailLog("{$targetAct}에 상대가 <R>{$reaction}</>했다!</>", ActionLogger::PLAIN);
          
         if($is진노){
-            $self->bonusPhase += 1;
+            $self->addBonusPhase(1);
         }
         $self->multiplyWarPowerMultiply($self->criticalDamage());
 

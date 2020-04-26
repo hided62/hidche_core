@@ -56,6 +56,10 @@ class WarUnitGeneral extends WarUnit{
         }
     }
 
+    function addBonusPhase(int $cnt){
+        $this->bonusPhase += $cnt;
+    }
+
     function getMaxPhase():int{
         $phase = $this->getCrewType()->speed;
         $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase);

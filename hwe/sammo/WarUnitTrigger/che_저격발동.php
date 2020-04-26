@@ -22,7 +22,7 @@ class che_저격발동 extends BaseWarUnitTrigger{
         }
         $selfEnv['저격발동'] = true;
 
-        $general = $self->general;
+        $general = $self->getGeneral();
 
         $oppose->getLogger()->pushGeneralActionLog("상대를 <C>저격</>했다!", ActionLogger::PLAIN);
         $oppose->getLogger()->pushGeneralBattleDetailLog("상대를 <C>저격</>했다!", ActionLogger::PLAIN);

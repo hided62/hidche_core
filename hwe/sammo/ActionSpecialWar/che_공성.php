@@ -17,8 +17,6 @@ class che_공성 extends \sammo\BaseSpecial{
     static $selectWeight = 1;
     static $type = [
         SpecialityHelper::STAT_LEADERSHIP | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_SIEGE,
-        SpecialityHelper::STAT_STRENGTH | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_SIEGE,
-        SpecialityHelper::STAT_INTEL | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::ARMY_SIEGE,
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

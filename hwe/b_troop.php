@@ -88,47 +88,14 @@ uasort($troops, function($lhs, $rhs){
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/troop.js')?>
 <?=WebUtil::printJS('js/ext.plugin_troop.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/troops.css')?>
 <script>
-jQuery(function($){
-$('#leaveTroop').click(function(e){
-    return confirm("정말 부대를 탈퇴하시겠습니까?");
-})
-$('.submitBtn').click(function(event){
-    if(event.isPropagationStopped()){
-        return false;
-    }
-    var $this=$(this);
 
-    $.post({
-        url:'j_troop.php',
-        dataType:'json',
-        data:{
-            action:$this.val().replace(/\s/g, ''),
-            troop:$('input.troopId:checked').val(),
-            name:$('#troopName').val(),
-            gen:$('#genNo').val()
-        }
-    }).then(function(data){
-        console.log(data);
-        if(!data.result){
-            alert(data.reason);
-            location.reload();
-        }
-
-        location.reload();
-
-    }, function(){
-        alert('알 수 없는 에러가 발생했습니다.');
-    });
-    return false;
-});
-
-});
 </script>
 </head>
 
@@ -150,9 +117,9 @@ $('.submitBtn').click(function(event){
     <tfoot><tr><td colspan='5'>
     <?php if(!$troops): ?>
     <?php elseif($me['troop'] == 0): ?>
-        <input type=submit class='submitBtn' value='부 대 가 입'>
+        <input type=button id='btnJoinTroop' value='부 대 가 입'>
     <?php else: ?>
-        <input type=submit id="leaveTroop" class='submitBtn' value='부 대 탈 퇴'>
+        <input type=button id="btnLeaveTroop" value='부 대 탈 퇴'>
     <?php endif;?>
     </td></tr></tfoot>
     <tbody>
@@ -181,7 +148,7 @@ foreach ($troops as $troopNo=>$troop) {
 
 <?php if ($me['troop'] == 0): ?>
     <tr>
-        <td align=center rowspan=2><input type='radio' class='troopId' name='troop' value='<?=$troop['troop']?>'></td>
+        <td align=center rowspan=2><input type='radio' class='troopId' name='troop' value='<?=$troopNo?>'></td>
         <td align=center><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
         <td height=64 class='generalIcon' style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=62><?=$genlistText?></td>
@@ -208,7 +175,7 @@ foreach ($troops as $troopNo=>$troop) {
                     <option value='<?=$troopUser['no']?>'><?=$troopUser['name']?></option>
                 <?php endforeach; ?>
             </select><br>
-            <input type=submit class='submitBtn' value='부 대 추 방' style=width:130px;height:25px;>
+            <input type=button id='btnKickTroop' value='부 대 추 방' style=width:130px;height:25px;>
         <?php else: ?>
             <?=$troopLeader['turnText']?>
         <?php endif; ?>
@@ -229,11 +196,11 @@ foreach ($troops as $troopNo=>$troop) {
 <table width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 id=bg1>부 대 명</td>
-        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=18 name=name></td>
+        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=18 id='nameplate'></td>
     <?php if($me['troop'] == 0): ?>
-        <td><input type=submit name=btn value='부 대 창 설'></td>
+        <td><input type=button id='btnCreateTroop' value='부 대 창 설'></td>
     <?php else: ?>
-        <td><input type=submit name=btn value='부 대 변 경'></td>
+        <td><input type=button id='btnChangeTroopName' value='부 대 변 경'></td>
     <?php endif; ?>
     </tr>
 </table>

@@ -501,7 +501,7 @@ function postUpdateMonthly() {
     //5,6 기간 끝나면 합병
     checkSurrender();
     //초반이후 방랑군 자동 해체
-    if($admin['year'] >= $admin['startyear']+3) {
+    if($admin['year'] >= $admin['startyear']+2) {
         checkWander();
     }
     // 작위 업데이트

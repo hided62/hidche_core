@@ -208,6 +208,7 @@ class che_징병 extends Command\GeneralCommand{
         $general->increaseVar('leadership_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        $general->setAuxVar('armType', $currCrewType->armType);
         tryUniqueItemLottery($general);
         $general->applyDB($db);
 
