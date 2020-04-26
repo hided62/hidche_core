@@ -40,7 +40,12 @@ if($destGeneralID==0){
     $general = new DummyGeneral(true);
 }
 else{
-    $general = General::createGeneralObjFromDB($destGeneralID, ['name', 'leadership', 'strength', 'intel', 'gold','rice','troop','officer_level','npc','picture','imgsvr','permission','penalty','belong'], 1);
+    $general = General::createGeneralObjFromDB($destGeneralID, [
+        'name', 'leadership', 'strength', 'intel', 'gold','rice',
+        'troop','officer_level','npc','picture','imgsvr',
+        'permission','penalty','belong', 'crewtype',
+        'experience', 'dedication'
+    ], 1);
 
     if($general instanceof DummyGeneral){
         Json::die([

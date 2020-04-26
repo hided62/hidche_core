@@ -82,7 +82,7 @@ $(function(){
     $('#btn_kick').click(function(){
         var $kickSelect = $('#genlist_kick option:selected');
         var generalID = $kickSelect.val();
-        if(!$generalID){
+        if(!generalID){
             alert('장수를 선택해주세요');
             return false;
         }

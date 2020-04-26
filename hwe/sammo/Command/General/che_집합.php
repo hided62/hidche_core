@@ -86,7 +86,7 @@ class che_집합 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("<G><b>{$cityName}</b></>에서 집합을 실시했습니다. <1>$date</>");
 
-        $generalList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND troop=%i AND no!=%i', $general->getNationID(), $troopID, $general->getID());
+        $generalList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city!=%i AND troop=%i AND no!=%i', $general->getNationID(), $cityID, $troopID, $general->getID());
         if($generalList){
             $db->update('general', [
                 'city'=>$cityID
