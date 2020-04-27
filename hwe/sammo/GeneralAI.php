@@ -2150,7 +2150,14 @@ class GeneralAI
             if($genType & self::t지장){
                 $availableArmType[GameUnitConst::T_WIZARD] = $dex[GameUnitConst::T_WIZARD] * $this->fullIntel * 3;
             }
-            $armType = Util::choiceRandomUsingWeight($availableArmType);
+
+            if($availableArmType){
+                $armType = Util::choiceRandomUsingWeight($availableArmType);
+            }
+            else{
+                $armType = Util::choiceRandom([GameUnitConst::T_FOOTMAN,GameUnitConst::T_ARCHER,GameUnitConst::T_CAVALRY]);
+            }
+            
         }
 
         
