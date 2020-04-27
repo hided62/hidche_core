@@ -68,6 +68,10 @@ class WarUnitCity extends WarUnit{
         return $this->hp;
     }
 
+    function getDex(GameUnitDetail $crewType){
+        return ($this->cityRate - 60) * 7200;
+    }
+
     function decreaseHP(int $damage):int{
         $damage = min($damage, $this->hp);
         $this->dead += $damage;

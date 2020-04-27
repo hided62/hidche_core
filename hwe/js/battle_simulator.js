@@ -223,11 +223,11 @@ jQuery(function($){
             atmos:getInt('.form_atmos'),
             train:getInt('.form_train'),
             
-            dex1:getInt('.form_dex0'),
-            dex2:getInt('.form_dex10'),
-            dex3:getInt('.form_dex20'),
-            dex4:getInt('.form_dex30'),
-            dex5:getInt('.form_dex40'),
+            dex1:getInt('.form_dex1'),
+            dex2:getInt('.form_dex2'),
+            dex3:getInt('.form_dex3'),
+            dex4:getInt('.form_dex4'),
+            dex5:getInt('.form_dex5'),
             defence_train:getInt('.form_defence_train'),
         };
     }

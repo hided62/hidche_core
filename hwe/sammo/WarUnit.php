@@ -237,19 +237,9 @@ class WarUnit{
         $warPower *= $this->getComputedAtmos();
         $warPower /= $oppose->getComputedTrain();
 
-        if($this instanceof WarUnitGeneral){
-            $genDexAtt = $general->getDex($this->getCrewType());
-        }
-        else{
-            $genDexAtt = ($this->cityRate - 60) * 7200;
-        }
+        $genDexAtt = $this->getDex($this->getCrewType());
         
-        if($this instanceof WarUnitGeneral){
-            $oppDexDef = $opposeGeneral->getDex($this->getCrewType());
-        }
-        else{
-            $oppDexDef = ($this->cityRate - 60) * 7200;
-        }
+        $oppDexDef = $oppose->getDex($this->getCrewType());
         
         $warPower *= getDexLog($genDexAtt, $oppDexDef);
         
@@ -298,6 +288,10 @@ class WarUnit{
     }
 
     function addLose(){
+    }
+
+    function getDex(GameUnitDetail $crewType){
+        throw new NotInheritedMethodException();
     }
 
     function finishBattle(){

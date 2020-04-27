@@ -74,6 +74,10 @@ class WarUnitGeneral extends WarUnit{
         $this->general->increaseVarWithLimit('atmos', $atmos, 0, GameConst::$maxAtmosByWar);
     }
 
+    function getDex(GameUnitDetail $crewType){
+        return $this->general->getDex($crewType);
+    }
+
     function getComputedTrain(){
         $train = $this->general->getVar('train');
         $train = $this->general->onCalcStat($this->general, 'bonusTrain', $train);
