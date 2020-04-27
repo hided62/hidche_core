@@ -1782,7 +1782,7 @@ class GeneralAI
             if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($cmd->isRunnable()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust'], 0.001) * 2];
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']-0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
@@ -1906,7 +1906,7 @@ class GeneralAI
             if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($cmd->isRunnable()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust'], 0.001) * 2];
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']-0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
