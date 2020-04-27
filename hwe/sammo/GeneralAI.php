@@ -2183,8 +2183,6 @@ class GeneralAI
             throw new MustNotBeReachedException('에러:'.var_dump([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
         }
 
-        LogText('징병1', "{$general->getAuxVar('armType')}, {$armType}, {$type}");
-
         if($this->generalPolicy->can고급병종){
             $currCrewType = $general->getCrewTypeObj();
             if ($currCrewType->isValid($cities, $regions, $relYear, $tech) && $currCrewType->reqTech >= 2000) {
@@ -2730,7 +2728,6 @@ class GeneralAI
 
         //XXX: 건국기한 2년
         $more = Util::valueFit(3 - $this->env['year'] + $this->env['init_year'], 1, 3);
-        LogText('건국', $more);
         if(!Util::randBool(0.005*$more)){
             return null;
         }
