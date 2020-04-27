@@ -2123,8 +2123,16 @@ class GeneralAI
         $db = DB::db();
 
         $armType =$general->getAuxVar('armType');
-        if(!$armType){
+        if($armType){
+            if(!($genType & self::t지장) && $armType == GameUnitConst::T_WIZARD){
+                $armType = null;
+            }
+            else if(!($genType & self::t무장) && in_array($armType, [GameUnitConst::T_FOOTMAN, GameUnitConst::T_ARCHER, GameUnitConst::T_CAVALRY])){
+                $armType = null;
+            }
+        }
 
+        if(!$armType){
             $dex = [
                 GameUnitConst::T_FOOTMAN => sqrt($general->getVar('dex1') + 500),
                 GameUnitConst::T_ARCHER => sqrt($general->getVar('dex2') + 500),
@@ -2169,13 +2177,16 @@ class GeneralAI
         if ($types) {
             $type = Util::choiceRandomUsingWeightPair($types);
         } else {
-            $type = GameUnitConst::DEFAULT_CREWTYPE;
+            throw new MustNotBeReachedException('에러:'.var_dump([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
         }
 
         if($this->generalPolicy->can고급병종){
-            $currType = $general->getCrewTypeObj()->id;
-            if(key_exists($currType, $types) && $types[$currType][1] >= $types[$type][1]){
-                $type = $currType;
+            $currCrewType = $general->getCrewTypeObj();
+            if ($currCrewType->isValid($cities, $regions, $relYear, $tech)) {
+                $currScore = $crewtype->pickScore($tech);
+                if($types[$type][1] * 0.8 < $currScore){
+                    $type = $currCrewType->id;
+                }
             }
         }
 
