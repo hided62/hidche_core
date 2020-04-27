@@ -2314,6 +2314,9 @@ class GeneralAI
         if($general->getVar('atmos') < $this->nationPolicy->properWarTrainAtmos){
             return null;
         }
+        if($general->getVar('crew') < $this->nationPolicy->minWarCrew){
+            return null;
+        }
 
         if($city['front'] === 0){
             return null;
