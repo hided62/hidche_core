@@ -77,7 +77,7 @@ $viewColumns = [
 
 $customViewColumns = [
     'officerLevel'=>1,
-    'officerlevelText'=>1,
+    'officerLevelText'=>1,
     'lbonus'=>1,
     'ownerName'=>1,
     'honorText'=>1,
@@ -106,7 +106,7 @@ $specialViewFilter = [
         }
         return $rawGeneral['owner_name'];
     },
-    'officerlevelText'=>function($rawGeneral)use($nationArr){
+    'officerLevelText'=>function($rawGeneral)use($nationArr){
         return getOfficerLevelText($rawGeneral['officer_level'], $nationArr['level']);
     },
     'honorText'=>function($rawGeneral){

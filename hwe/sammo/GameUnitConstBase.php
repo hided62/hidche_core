@@ -508,14 +508,14 @@ class GameUnitConstBase{
             if(!key_exists($armType, $constType)){
                 $constType[$armType] = [];
             }
-            $constType[$armType][] = $unit;
+            $constType[$armType][$id] = $unit;
 
             if($unit->reqCities){
                 foreach($unit->reqCities as $reqCity){
                     if(!key_exists($reqCity, $constCity)){
                         $constCity[$reqCity] = [];
                     }
-                    $constCity[$reqCity][] = $unit;
+                    $constCity[$reqCity][$id] = $unit;
                 }
             }
             
@@ -525,7 +525,7 @@ class GameUnitConstBase{
                     if(!key_exists($reqRegion, $constRegion)){
                         $constRegion[$reqRegion] = [];
                     }
-                    $constRegion[$reqRegion][] = $unit;
+                    $constRegion[$reqRegion][$id] = $unit;
                 }
             }
 

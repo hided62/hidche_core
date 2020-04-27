@@ -286,7 +286,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
         ], 'nation=%i AND officer_level=12', $nationID);
 
         $db->update('nation', [
-            'gennum'=>$db->sqleval('gennum - 1'),
+            'gennum'=>$db->sqleval('gennum - %i', $general->getVar('npc')!=5?1:0),
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),
         ], 'nation = %i', $nationID);
@@ -294,7 +294,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
         //이번분기는 추방불가(초반 제외)
         $db->update('nation', [
             "l{$myOfficerLevel}set"=>1,
-            'gennum'=>$db->sqleval('gennum - 1'),
+            'gennum'=>$db->sqleval('gennum - %i', $general->getVar('npc')!=5?1:0),
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),
         ], 'nation = %i', $nationID);

@@ -522,7 +522,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $loseGeneralRice = 0;
         //멸망국 장수들 역사 기록 및 로그 전달
         $josaYi = JosaUtil::pick($losenation['name'], '이');
-        $genlog = ["<C>●</><D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>했습니다."];
+        $destroyLog = "<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>했습니다.";
+        $destroyHistoryLog = "<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>";
 
 
         // 국가 백업
@@ -536,21 +537,25 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $oldNation['history'] = getNationHistoryAll($city['nation']);
 
         foreach($oldNationGenerals as $gen){
+            $oldGeneralObj = new General($gen, null, null, $oldNation, $year, $month, false);
 
             $loseGold = intdiv($gen['gold'] * (rand()%30+20), 100);
             $loseRice = intdiv($gen['rice'] * (rand()%30+20), 100);
-            $genlog[1] = "<C>●</>도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.";
+            $generalLogger = $oldGeneralObj->getLogger();
+            $generalLogger->pushGeneralHistoryLog($destroyHistoryLog);
+            $generalLogger->pushGeneralActionLog($destroyLog, ActionLogger::PLAIN);
+            $generalLogger->pushGeneralActionLog("도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.", ActionLogger::PLAIN);
+            $oldGeneralObj->increaseVar('gold', -$loseGold);
+            $oldGeneralObj->increaseVar('rice', -$loseRice);
+            $oldGeneralObj->addExperience(-$oldGeneralObj->getVar('experience')*0.1, false);
+            $oldGeneralObj->addDedication(-$oldGeneralObj->getVar('dedication')*0.5, false);
             
-            $query = "update general set gold=gold-{$loseGold},rice=rice-{$loseRice} where no={$gen['no']}";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            
-            pushGenLog($gen['no'], $genlog);
-            
-            pushGeneralHistory($gen['no'], ["<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>"]);
             pushOldNationStop($gen['no'], $city['nation']);
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
+
+            $oldGeneralObj->applyDB($db);
             
             //모두 등용장 발부
             if($admin['join_mode'] != 'onlyRandom' && Util::randBool(0.5)) {
@@ -565,7 +570,6 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
                 setGeneralCommand($gen['no'], [0], 'che_임관', ['destNationID'=>$nation['nation']]);
             }
         }
-        unset($genlog[1]);
         
         // 승전국 보상
         $losenation['gold'] -= GameConst::$basegold;
@@ -596,16 +600,19 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         
         //분쟁기록 모두 지움
         DeleteConflict($city['nation']);
-        // 전 장수 공헌 명성치 깎음
-        //TODO: experience를 General에
-        $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
         // 전 도시 공백지로
         $query = "update city set nation='0',conflict='{}',term=0 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 장수 소속 무소속으로, 재야로, 부대 탈퇴
-        $query = "update general set nation='0',belong='0',officer_level='0',officer_city=0,troop='0' where nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('general',[
+            'nation'=>0,
+            'belong'=>0,
+            'officer_level'=>0,
+            'officer_city'=>0,
+            'troop'=>0,
+        ], 'nation=%i',$city['nation']);
+
         // 부대도 삭제
         $query = "delete from troop where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

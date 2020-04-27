@@ -1027,7 +1027,7 @@ class GeneralAI
 
     protected function do유저장긴급포상(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->userGenerals){
+        if(!$this->userWarGenerals){
             return null;
         }
 
@@ -1059,7 +1059,7 @@ class GeneralAI
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
                 $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 2 * 4 * 1.1;
-                if ($this->env['year'] > $this->env['startyear'] + 5) {
+                if ($this->env['year'] > $this->env['startyear'] + 3) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
                 $enoughMoney = $reqMoney * 1.5;
@@ -1159,7 +1159,7 @@ class GeneralAI
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
                 $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 2 * 4 * 1.1;
-                if ($this->env['year'] > $this->env['startyear'] + 5) {
+                if ($this->env['year'] > $this->env['startyear'] + 3) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
                 $enoughMoney = $reqMoney * 1.5;
@@ -1169,6 +1169,8 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.5);
+
                 if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
                     continue;
                 }
@@ -1251,6 +1253,7 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetNPCGeneral->getVar($resName)) * $resVal);
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.5);
 
                 if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
                     continue;
@@ -1337,6 +1340,7 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetNPCGeneral->getVar($resName)) * $resVal);
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.5);
 
                 if ($resVal < $payAmount / 2) {
                     continue;
@@ -2142,25 +2146,17 @@ class GeneralAI
             ];
             
             $availableArmType = [];
-            if($genType & self::t무장){
+            if($this->fullStrength > $this->fullIntel * 0.9){
                 $availableArmType[GameUnitConst::T_FOOTMAN] = $dex[GameUnitConst::T_FOOTMAN] * $this->fullStrength;
                 $availableArmType[GameUnitConst::T_ARCHER] = $dex[GameUnitConst::T_ARCHER] * $this->fullStrength;
                 $availableArmType[GameUnitConst::T_CAVALRY] = $dex[GameUnitConst::T_CAVALRY] * $this->fullStrength;
             }
-            if($genType & self::t지장){
+            if($this->fullIntel > $this->fullStrength * 0.9){
                 $availableArmType[GameUnitConst::T_WIZARD] = $dex[GameUnitConst::T_WIZARD] * $this->fullIntel * 3;
             }
 
-            if($availableArmType){
-                $armType = Util::choiceRandomUsingWeight($availableArmType);
-            }
-            else{
-                $armType = Util::choiceRandom([GameUnitConst::T_FOOTMAN,GameUnitConst::T_ARCHER,GameUnitConst::T_CAVALRY]);
-            }
-            
+            $armType = Util::choiceRandomUsingWeight($availableArmType);
         }
-
-        
 
 
         $cities = [];
@@ -2187,13 +2183,12 @@ class GeneralAI
             throw new MustNotBeReachedException('에러:'.var_dump([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
         }
 
+        LogText('징병1', "{$general->getAuxVar('armType')}, {$armType}, {$type}");
+
         if($this->generalPolicy->can고급병종){
             $currCrewType = $general->getCrewTypeObj();
-            if ($currCrewType->isValid($cities, $regions, $relYear, $tech)) {
-                $currScore = $crewtype->pickScore($tech);
-                if($types[$type] * 0.8 < $currScore){
-                    $type = $currCrewType->id;
-                }
+            if ($currCrewType->isValid($cities, $regions, $relYear, $tech) && $currCrewType->reqTech >= 2000) {
+                $type = $currCrewType->id;
             }
         }
 
@@ -2227,7 +2222,7 @@ class GeneralAI
             ]);
         }
         else if($gold < $cost && $gold * 2 >= $cost){
-            $crew *= $gold / $cost; 
+            $crew *= 0.5; 
             $crew = Util::round($crew-49, -2);
             $cmd = buildGeneralCommandClass('che_징병', $general, $env, [
                 'crewType' => $type,
@@ -2717,7 +2712,7 @@ class GeneralAI
     protected function do거병(): ?GeneralCommand
     {
         $general = $this->general;
-        // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병
+        // 초반이면서 능력이 좋은놈 위주로 거병
         if($general->getVar('makelimit')){
             return null;
         }
@@ -2733,7 +2728,10 @@ class GeneralAI
             return null;
         }
 
-        if(!Util::randBool(0.01)){
+        //XXX: 건국기한 2년
+        $more = Util::valueFit(3 - $this->env['year'] + $this->env['init_year'], 1, 3);
+        LogText('건국', $more);
+        if(!Util::randBool(0.005*$more)){
             return null;
         }
 

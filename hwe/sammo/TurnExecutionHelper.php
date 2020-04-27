@@ -279,7 +279,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 if($hasNationTurn){
                     if($tryAutorun){
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
-                        //LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
+                        LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
                     }
                     $resultNationTurn = $turnObj->processNationCommand(
                         $nationCommandObj
@@ -293,7 +293,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                         $autorunMode = true;
                         $generalCommandObj = $newGeneralCommandObj;
                     }
-                    //LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
+                    LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
                 }
                 
                 $turnObj->processCommand($generalCommandObj, $autorunMode);
