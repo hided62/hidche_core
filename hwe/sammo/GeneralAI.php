@@ -2170,12 +2170,12 @@ class GeneralAI
         foreach (GameUnitConst::byType($armType) as $crewtype) {
             if ($crewtype->isValid($cities, $regions, $relYear, $tech)) {
                 $score = $crewtype->pickScore($tech);
-                $types[] = [$crewtype->id, $score];
+                $types[$crewtype->id] = $score;
             }
         }
 
         if ($types) {
-            $type = Util::choiceRandomUsingWeightPair($types);
+            $type = Util::choiceRandomUsingWeight($types);
         } else {
             throw new MustNotBeReachedException('에러:'.var_dump([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
         }
@@ -2184,7 +2184,7 @@ class GeneralAI
             $currCrewType = $general->getCrewTypeObj();
             if ($currCrewType->isValid($cities, $regions, $relYear, $tech)) {
                 $currScore = $crewtype->pickScore($tech);
-                if($types[$type][1] * 0.8 < $currScore){
+                if($types[$type] * 0.8 < $currScore){
                     $type = $currCrewType->id;
                 }
             }
