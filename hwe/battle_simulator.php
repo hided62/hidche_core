@@ -378,7 +378,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                     <div class="input-group-prepend">
                         <span class="input-group-text">보병숙련</span>
                     </div>
-                    <select class="custom-select form_dex0">
+                    <select class="custom-select form_dex1">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
                             <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
@@ -386,7 +386,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                     <div class="input-group-prepend">
                         <span class="input-group-text">궁병숙련</span>
                     </div>
-                    <select class="custom-select form_dex10">
+                    <select class="custom-select form_dex2">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
                             <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
@@ -394,7 +394,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                     <div class="input-group-prepend">
                         <span class="input-group-text">기병숙련</span>
                     </div>
-                    <select class="custom-select form_dex20">
+                    <select class="custom-select form_dex3">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
                             <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
@@ -404,7 +404,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                     <div class="input-group-prepend">
                         <span class="input-group-text">귀병숙련</span>
                     </div>
-                    <select class="custom-select form_dex30">
+                    <select class="custom-select form_dex4">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
                             <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
@@ -412,7 +412,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                     <div class="input-group-prepend">
                         <span class="input-group-text">차병숙련</span>
                     </div>
-                    <select class="custom-select form_dex40">
+                    <select class="custom-select form_dex5">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
                             <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>

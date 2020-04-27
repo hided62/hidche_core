@@ -73,11 +73,6 @@ $sortType = [
     8 => ['dedication', false],
 ];
 
-foreach($generalList as &$general){
-    $general['nationName'] = $nationName[$general['nation']];
-    $general['coloredName'] = getColoredName($general['name'], $general['npc']);
-}
-
 [$sortKey, $isAsc] = $sortType[$type];
 
 if($isAsc){
@@ -108,15 +103,11 @@ else{
         <td width=78  align=center id=bg1>계급</td>
     </tr>
 <?php foreach($generalList as $general): ?>
-<?php
-    $nation = $nationname[$general['nation']];
-    $name = getColoredName($general['name'], $general['npc']);
-?>
     <tr>
         <td align=center><?=getColoredName($general['name'], $general['npc'])?></td>
         <td align=center><?=$general['owner_name']?></td>
         <td align=center>Lv <?=$general['explevel']?></td>
-        <td align=center><?=$nationname[$general['nation']]?></td>
+        <td align=center><?=$nationName[$general['nation']]?></td>
         <td align=center><?=displayCharInfo($general['personal'])?></td>
         <td align=center><?=displaySpecialDomesticInfo($general['special'])?> / <?=displaySpecialWarInfo($general['special2'])?></td>
         <td align=center><?=$general['sum']?></td>

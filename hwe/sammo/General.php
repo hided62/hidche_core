@@ -422,6 +422,16 @@ class General implements iAction{
         return $this->getStatValue('intel', $withInjury, $withIActionObj, $withStatAdjust, $useFloor);
     }
 
+    function getDex(GameUnitDetail $crewType){
+        $armType = $crewType->armType;
+
+        if($armType == GameUnitConst::T_CASTLE){
+            $armType = GameUnitConst::T_SIEGE;
+        }
+
+        return $this->getVar("dex{$armType}");
+    }
+
     function addDex(GameUnitDetail $crewType, float $exp, bool $affectTrainAtmos=false){
         $armType = $crewType->armType;
 

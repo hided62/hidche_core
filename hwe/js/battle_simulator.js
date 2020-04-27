@@ -176,11 +176,11 @@ jQuery(function($){
         setVal('.form_atmos', data.atmos);
         setVal('.form_train', data.train);
 
-        setVal('.form_dex0', data.dex1);
-        setVal('.form_dex10', data.dex2);
-        setVal('.form_dex20', data.dex3);
-        setVal('.form_dex30', data.dex4);
-        setVal('.form_dex40', data.dex5);
+        setVal('.form_dex1', data.dex1);
+        setVal('.form_dex2', data.dex2);
+        setVal('.form_dex3', data.dex3);
+        setVal('.form_dex4', data.dex4);
+        setVal('.form_dex5', data.dex5);
         setVal('.form_defence_train', data.defence_train);
 
         if(!setGeneralNo($general, data.no)){

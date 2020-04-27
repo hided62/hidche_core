@@ -34,41 +34,6 @@ function getCityLevelList():array{
     ];
 }
 
-function getGenDex($general, $type) {
-    //XXX: 지금은 동작하지만.. 병종 구성이 보궁기귀차 에서 바뀌면...
-    $ntype = GameUnitConst::byId($type)->armType * 10;
-    return $general["dex{$ntype}"]??0;
-}
-
-function addGenDex($no, $atmos, $train, $type, $exp) {
-    //XXX: 지금은 동작하지만.. 병종 구성이 보궁기귀차 에서 바뀌면...
-    $db = DB::db();
-
-    $armType = GameUnitConst::byId($type)->armType;
-    if($armType == GameUnitConst::T_CASTLE){
-        $armType = GameUnitConst::T_SIEGE;
-    }
-
-    if($armType < 0){
-        return;
-    }
-    
-    $ntype = $armType*10;
-    $dexType = "dex{$ntype}";
-    if($armType == GameUnitConst::T_WIZARD) {
-        $exp = Util::round($exp * 0.90); 
-    }
-    else if($armType == GameUnitConst::T_SIEGE) {
-        $exp = Util::round($exp * 0.90);
-    }
-    $exp = Util::round($exp * ($atmos + $train) / 200); // 사기 + 훈련 / 200
-
-    $db->update('general', [
-        $dexType=>$db->sqleval('%b + %i', $dexType, $exp)
-    ], 'no=%i', $no);
-}
-
-
 //한국가의 전체 전방 설정
 function SetNationFront($nationNo) {
     if(!$nationNo) { return; }

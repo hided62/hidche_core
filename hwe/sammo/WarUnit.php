@@ -238,14 +238,14 @@ class WarUnit{
         $warPower /= $oppose->getComputedTrain();
 
         if($this instanceof WarUnitGeneral){
-            $genDexAtt = getGenDex($this->getRaw(), $this->getCrewType()->id);
+            $genDexAtt = $general->getDex($this->getCrewType());
         }
         else{
             $genDexAtt = ($this->cityRate - 60) * 7200;
         }
         
         if($this instanceof WarUnitGeneral){
-            $oppDexDef = getGenDex($oppose->getRaw(), $this->getCrewType()->id);
+            $oppDexDef = $opposeGeneral->getDex($this->getCrewType());
         }
         else{
             $oppDexDef = ($this->cityRate - 60) * 7200;
