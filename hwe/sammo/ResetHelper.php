@@ -184,6 +184,7 @@ class ResetHelper{
         ]);
 
         $prevWinner = $db->queryFirstField('SELECT l12name FROM emperior ORDER BY `no` DESC LIMIT 1');
+        $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games') + 1;
 
         CityConst::build();
         $cityPositions = [];
@@ -257,6 +258,7 @@ class ResetHelper{
             'prev_winner'=>$prevWinner,
             'autorun_user'=>$autorun_user,
             'tournament'=>0,
+            'server_cnt'=>$serverCnt,
         ];
 
         $db->insert('betting', [
