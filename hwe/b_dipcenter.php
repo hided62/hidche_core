@@ -97,7 +97,7 @@ $dipStateList = Util::convertArrayToDict($db->query('SELECT you,state,term FROM 
 foreach(getAllNationStaticInfo() as $staticNation):
     //속령수
     $staticNationID = $staticNation['nation'];
-    $cityCnt = $cityCntList[$staticNation['nation']];
+    $cityCnt = $cityCntList[$staticNation['nation']]??0;
 
     $dipStateText = '-';
     $dipTermText = '-';
