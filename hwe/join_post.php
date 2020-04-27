@@ -28,7 +28,7 @@ $v
     'strength',
     'intel'
 ], GameConst::$defaultStatMax)
-->rule('in', 'character', GameConst::$availablePersonality);
+->rule('in', 'character', array_merge(GameConst::$availablePersonality, ['Random']));
 
 if (!$v->validate()) {
     MessageBox($v->errorStr());
