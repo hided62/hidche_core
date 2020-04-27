@@ -1821,9 +1821,9 @@ class GeneralAI
                     $nextTech = $nation['tech'] % 1000 + 1;
                     if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
                         //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
-                        $cmdList[] = [$cmd, $intel / ($nextTech / 3000)];
+                        $cmdList[] = [$cmd, $intel / ($nextTech / 2000)];
                     } else {
-                        $cmdList[] = [$cmd, $intel / ($nextTech / 1000)];
+                        $cmdList[] = [$cmd, $intel];
                     }
                 }
             }
@@ -1949,10 +1949,10 @@ class GeneralAI
                 if ($cmd->isRunnable()) {
                     $nextTech = $nation['tech'] % 1000 + 1;
                     if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
-                        //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
+                        //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자. 전쟁중이면 더더욱
                         $cmdList[] = [$cmd, $intel / ($nextTech / 3000)];
                     } else {
-                        $cmdList[] = [$cmd, $intel / ($nextTech / 1000)];
+                        $cmdList[] = [$cmd, $intel];
                     }
                 }
             }
