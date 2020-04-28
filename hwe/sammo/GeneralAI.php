@@ -2185,9 +2185,15 @@ class GeneralAI
 
         if($this->generalPolicy->can고급병종){
             $currCrewType = $general->getCrewTypeObj();
-            if ($currCrewType->isValid($cities, $regions, $relYear, $tech) && $currCrewType->reqTech >= 2000) {
-                $type = $currCrewType->id;
-            }
+            if ($currCrewType->isValid($cities, $regions, $relYear, $tech)){
+                if($currCrewType->reqTech >= 2000) {
+                    $type = $currCrewType->id;
+                }
+                else if($currCrewType->armType != $armType && $currCrewType->reqTech >= 1000){
+                    //굳이 뽑은 이유가 있겠지
+                    $type = $currCrewType->id;
+                }
+            } 
         }
 
         //NOTE: 훈련과 사기진작은 '금만 사용한다'는 가정을 하고 있음
