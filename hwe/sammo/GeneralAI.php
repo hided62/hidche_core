@@ -1731,7 +1731,6 @@ class GeneralAI
                 break;
             }
             if($cityID === $capital){
-                LogText('천도', "{$this->nation['name']}, {$general->getName()}, 수도가 충분히 가까움");
                 return null;
             }
         }
@@ -1757,7 +1756,6 @@ class GeneralAI
         ]);
 
         if(!$cmd->isRunnable()){
-            LogText('천도', "{$this->nation['name']}, {$general->getName()}, 천도 턴 실행 불가, {$this->nation['capital']} => {$targetCityID}");
             return null;
         }
 
