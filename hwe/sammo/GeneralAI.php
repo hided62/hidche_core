@@ -311,7 +311,7 @@ class GeneralAI
             while(!key_exists($targetCityID, $this->frontCities)){
                 $distance = $this->warRoute[$targetCityID][$toCityID];
                 $nextCityCandidate = [];
-                foreach(CityConst::byID($targetCityID)->path as $nearCityID){
+                foreach(array_keys(CityConst::byID($targetCityID)->path) as $nearCityID){
                     if(!key_exists($nearCityID, $this->warRoute) || !key_exists($toCityID, $this->warRoute[$nearCityID])){
                         continue;
                     }
@@ -1636,7 +1636,7 @@ class GeneralAI
         $turnTerm = $this->env['turnterm'];
 
         //천도를 한턴 넣었다면 계속 넣는다.
-        if($lastTurn->getCommand() === 'che_천도'){
+        if($lastTurn->getCommand() === '천도' && $lastTurn->getArg()['destCityID'] != $this->nation['capital']){
             $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
             if($cmd->isRunnable()){
                 $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
@@ -1689,14 +1689,14 @@ class GeneralAI
         while(!$queue->isEmpty()){
             $cityID = $queue->dequeue();
             
-            foreach(CityConst::byID($cityID)->path as $nextCityID){
-                if(!key_exists($cityID, $nationCityIDList)){
+            foreach(array_keys(CityConst::byID($cityID)->path) as $nextCityID){
+                if(!key_exists($nextCityID, $nationCityIDList)){
                     continue;
                 }
-                if(key_exists($cityID, $cityList)){
+                if(key_exists($nextCityID, $cityList)){
                     continue;
                 }
-                $cityList[$cityID] = 0;
+                $cityList[$nextCityID] = 0;
                 $queue->enqueue($nextCityID);
             }
         }
@@ -1730,7 +1730,8 @@ class GeneralAI
             if($idx > $enoughLimit){
                 break;
             }
-            if($idx === $capital){
+            if($cityID === $capital){
+                LogText('천도', "{$this->nation['name']}, {$general->getName()}, 수도가 충분히 가까움");
                 return null;
             }
         }
@@ -1740,7 +1741,7 @@ class GeneralAI
         $targetCityID = $finalCityID;
         if($dist > 1){
             $candidates = [];
-            foreach(CityConst::byID($capital)->path as $stopID){
+            foreach(array_keys(CityConst::byID($capital)->path) as $stopID){
                 if(!key_exists($stopID, $distanceList)){
                     continue;
                 }
@@ -1756,6 +1757,7 @@ class GeneralAI
         ]);
 
         if(!$cmd->isRunnable()){
+            LogText('천도', "{$this->nation['name']}, {$general->getName()}, 천도 턴 실행 불가, {$this->nation['capital']} => {$targetCityID}");
             return null;
         }
 

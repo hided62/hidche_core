@@ -1878,7 +1878,7 @@ function searchAllDistanceByCityList(array $cityIDList):array {
     $distanceList = [];
     foreach($cityIDList as $cityID){
         $nearList = [$cityID=>0];
-        foreach(CityConst::byID($cityID)->path as $nextCityID){
+        foreach(array_keys(CityConst::byID($cityID)->path) as $nextCityID){
             if(!key_exists($nextCityID, $cityList)){
                 continue;
             }
