@@ -96,7 +96,6 @@ class che_증축 extends Command\NationCommand{
         $lastTurn = $this->getLastTurn();
         $commandName = $this->getName();
         if($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg){
-            \sammo\LogText('증축', '여기서 걸려?');
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
@@ -108,7 +107,6 @@ class che_증축 extends Command\NationCommand{
 
         if($lastTurn->getSeq() < $this->nation['capset']){
             //NOTE: 최근에 천도, 증축이 일어났으면 리셋됨
-            \sammo\LogText('증축', '으으음?'.$this->nation['capset'].','.$lastTurn->getSeq());
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
@@ -119,7 +117,6 @@ class che_증축 extends Command\NationCommand{
         }
 
         if($lastTurn->getTerm() < $this->getPreReqTurn()){
-            \sammo\LogText('증축', '잘된다는데?');
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,

@@ -264,6 +264,8 @@ class WarUnitGeneral extends WarUnit{
             return false;
         }
 
+        $this->activateSkill('부상');
+
         $general->increaseVarWithLimit('injury', Util::randRangeInt(10, 80), null, 80);
         $this->getLogger()->pushGeneralActionLog("전투중 <R>부상</>당했다!", ActionLogger::PLAIN);
 

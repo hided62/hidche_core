@@ -8,6 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\Util;
 use sammo\ObjectTrigger;
 use sammo\ActionLogger;
+use sammo\GameConst;
 
 class che_저격발동 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_POST + 100;
@@ -29,6 +30,7 @@ class che_저격발동 extends BaseWarUnitTrigger{
         $self->getLogger()->pushGeneralActionLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
         $self->getLogger()->pushGeneralBattleDetailLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
 
+        $general->increaseVarWithLimit('atmos', 10, GameConst::$maxAtmosByWar);
         $general->increaseVarWithLimit('injury', Util::randRangeInt($opposeEnv['woundMin'], $opposeEnv['woundMax']), null, 80);
 
         $this->processConsumableItem();

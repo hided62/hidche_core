@@ -291,6 +291,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                         <span class="input-group-text">명마</span>
                     </div>
                     <select class="custom-select form_general_horse">
+                        <option value='None'>-</option>
                         <?php foreach(GameConst::$allItems['horse'] as $horseID=>$cnt): ?>
                             <option value="<?=$horseID?>"><?=getItemName($horseID)?></option>
                         <?php endforeach; ?>
@@ -299,6 +300,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                         <span class="input-group-text">무기</span>
                     </div>
                     <select class="custom-select form_general_weap">
+                        <option value='None'>-</option>
                     <?php foreach(GameConst::$allItems['weapon'] as $weaponID=>$cnt): ?>
                             <option value="<?=$weaponID?>"><?=getItemName($weaponID)?></option>
                         <?php endforeach; ?>
@@ -307,6 +309,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                         <span class="input-group-text">서적</span>
                     </div>
                     <select class="custom-select form_general_book">
+                        <option value='None'>-</option>
                         <?php foreach(GameConst::$allItems['book'] as $bookID=>$cnt): ?>
                             <option value="<?=$bookID?>"><?=getItemName($bookID)?></option>
                         <?php endforeach; ?>
@@ -328,6 +331,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                         <span class="input-group-text">도구</span>
                     </div>
                     <select class="custom-select form_general_item">
+                        <option value='None'>-</option>
                         <?php foreach(GameConst::$allItems['item'] as $itemID=>$cnt): ?>
                             <option value="<?=$itemID?>"><?=getItemName($itemID)?></option>
                         <?php endforeach; ?>

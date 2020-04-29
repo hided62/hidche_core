@@ -117,10 +117,10 @@ $generalCheck = [
         ['personal', array_merge(GameConst::$availablePersonality, GameConst::$optionalPersonality)],
         ['special2', array_merge(GameConst::$availableSpecialWar, GameConst::$optionalSpecialWar)],
         ['crewtype', array_keys(GameUnitConst::all())],
-        ['horse', array_keys(GameConst::$allItems['horse'])],
-        ['weapon', array_keys(GameConst::$allItems['weapon'])],
-        ['book', array_keys(GameConst::$allItems['book'])],
-        ['item', array_keys(GameConst::$allItems['item'])],
+        ['horse', array_merge(array_keys(GameConst::$allItems['horse']), ['None'])],
+        ['weapon', array_merge(array_keys(GameConst::$allItems['weapon']), ['None'])],
+        ['book', array_merge(array_keys(GameConst::$allItems['book']), ['None'])],
+        ['item', array_merge(array_keys(GameConst::$allItems['item']), ['None'])],
     ]
 ];
 
@@ -371,6 +371,7 @@ $attackerActivatedSkills = [];
 $defendersActivatedSkills = [];
 
 foreach(Util::range($repeatCnt) as $repeatIdx){
+    /** @var WarUnit $attacker */
     [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
         $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
         $rawDefenderList, $rawDefenderCity, $rawDefenderNation, 

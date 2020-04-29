@@ -424,9 +424,6 @@ function processWar_NG(
         
     }
 
-    $attacker->finishBattle();
-    $defender->finishBattle();
-
     if($currPhase == $attacker->getMaxPhase()){
         //마지막 페이즈의 전투 마무리
         $attacker->logBattleResult();
@@ -435,6 +432,9 @@ function processWar_NG(
         $attacker->tryWound();
         $defender->tryWound();
     }
+
+    $attacker->finishBattle();
+    $defender->finishBattle();
     
     if($defender instanceof WarUnitCity){
         $newConflict = $defender->addConflict();
