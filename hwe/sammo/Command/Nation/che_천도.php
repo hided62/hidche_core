@@ -75,7 +75,7 @@ class che_천도 extends Command\NationCommand{
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::SuppliedDestCity(),
-            ConstraintHelper::NotSameDestCity(),
+            ConstraintHelper::ReqNationValue('capital', '수도', '!=', $this->destCity['city'], '이미 수도입니다.'),
             ConstraintHelper::ReqNationGold(GameConst::$basegold+$reqGold),
             ConstraintHelper::ReqNationRice(GameConst::$baserice+$reqRice),
         ];
@@ -110,7 +110,7 @@ class che_천도 extends Command\NationCommand{
     }
     
     public function getPreReqTurn():int{
-        return 1 + $this->getDistance()*2;
+        return $this->getDistance()*2;
     }
 
     public function getPostReqTurn():int{

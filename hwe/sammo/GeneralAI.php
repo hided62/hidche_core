@@ -101,7 +101,7 @@ class GeneralAI
             'nation' => 0,
             'level' => 0,
             'capital' => 0,
-            'capset' => false,
+            'capset' => 0,
             'gennum' => 0,
             'tech' => 0,
             'gold' => 0,
@@ -3089,9 +3089,15 @@ class GeneralAI
             }
         }
 
-        if(!($reservedCommand instanceof Command\Nation\휴식) && $reservedCommand->isRunnable()){
-            $reservedCommand->reason = 'reserved';
-            return $reservedCommand;
+        if(!($reservedCommand instanceof Command\Nation\휴식)){
+            if($reservedCommand->isRunnable()){
+                $reservedCommand->reason = 'reserved';
+                return $reservedCommand;
+            }
+            $date = $general->getTurnTime($general::TURNTIME_HM);
+            $failString = $reservedCommand->getFailString();
+            $text = "{$failString} <1>{$date}</>";
+            $general->getLogger()->pushGeneralActionLog($text);
         }
 
         foreach($this->nationPolicy->priority as $actionName){

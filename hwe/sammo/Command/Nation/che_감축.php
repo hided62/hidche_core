@@ -74,7 +74,7 @@ class che_감축 extends Command\NationCommand{
 
         [$reqGold, $reqRice] = array_map('number_format', $this->getCost());
         $amount = number_format($this->env['develcost'] * 5);
-        $reqTurn = $this->getPostReqTurn()+1;
+        $reqTurn = $this->getPreReqTurn()+1;
 
         return "{$name}/{$reqTurn}턴(금 {$reqGold}, 쌀 {$reqRice} 회수)";
     }
