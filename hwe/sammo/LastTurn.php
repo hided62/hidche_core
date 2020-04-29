@@ -12,7 +12,7 @@ class LastTurn{
         $this->setCommand($command);
         $this->setArg($arg);
         $this->setTerm($term);
-        $this->setSeq($term);
+        $this->setSeq($seq);
     }
 
     static function fromJson(?string $json):self{
@@ -23,7 +23,8 @@ class LastTurn{
         $obj = new static(
             $values['command']??null,
             $values['arg']??null,
-            $values['term']??null
+            $values['term']??null,
+            $values['seq']??null
         );
         return $obj;
     }
@@ -72,6 +73,9 @@ class LastTurn{
         }
         if($this->term !== null){
             $result['term'] = $this->term;
+        }
+        if($this->seq !== null){
+            $result['seq'] = $this->seq;
         }
         return Json::encode($result);
     }

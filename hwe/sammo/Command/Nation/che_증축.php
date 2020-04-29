@@ -61,8 +61,8 @@ class che_증축 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqDestCityValue('level', '>', 3, '수진, 진, 관문에서는 불가능합니다.'),
-            ConstraintHelper::ReqDestCityValue('level', '<', 7, '더이상 증축할 수 없습니다.'),
+            ConstraintHelper::ReqDestCityValue('level', '규모', '>', 3, '수진, 진, 관문에서는 불가능합니다.'),
+            ConstraintHelper::ReqDestCityValue('level', '규모', '<', 7, '더이상 증축할 수 없습니다.'),
             ConstraintHelper::ReqNationGold(GameConst::$basegold+$reqGold),
             ConstraintHelper::ReqNationRice(GameConst::$baserice+$reqRice),
         ];
@@ -95,7 +95,8 @@ class che_증축 extends Command\NationCommand{
     public function addTermStack():bool{
         $lastTurn = $this->getLastTurn();
         $commandName = $this->getName();
-        if($lastTurn->getCommand() != $commandName && $lastTurn->getArg() !== $this->arg){
+        if($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg){
+            \sammo\LogText('증축', '여기서 걸려?');
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
@@ -107,6 +108,7 @@ class che_증축 extends Command\NationCommand{
 
         if($lastTurn->getSeq() < $this->nation['capset']){
             //NOTE: 최근에 천도, 증축이 일어났으면 리셋됨
+            \sammo\LogText('증축', '으으음?'.$this->nation['capset'].','.$lastTurn->getSeq());
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
@@ -117,6 +119,7 @@ class che_증축 extends Command\NationCommand{
         }
 
         if($lastTurn->getTerm() < $this->getPreReqTurn()){
+            \sammo\LogText('증축', '잘된다는데?');
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
@@ -185,7 +188,7 @@ class che_증축 extends Command\NationCommand{
             'rice' => $db->sqleval('rice - %i', $reqRice),
         ], 'nation=%i', $nationID);
         
-        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 증축했습니다. <1>$date</");
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 증축했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>증축</>");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>하였습니다.");

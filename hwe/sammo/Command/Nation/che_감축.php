@@ -64,8 +64,8 @@ class che_감축 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqDestCityValue('level', '>', 4, '더이상 감축할 수 없습니다.'),
-            ConstraintHelper::ReqDestCityValue('level', '>', $origCityLevel, '더이상 감축할 수 없습니다.')
+            ConstraintHelper::ReqDestCityValue('level', '규모', '>', 4, '더이상 감축할 수 없습니다.'),
+            ConstraintHelper::ReqDestCityValue('level', '규모', '>', $origCityLevel, '더이상 감축할 수 없습니다.')
         ];
     }
 
@@ -96,7 +96,7 @@ class che_감축 extends Command\NationCommand{
     public function addTermStack():bool{
         $lastTurn = $this->getLastTurn();
         $commandName = $this->getName();
-        if($lastTurn->getCommand() != $commandName && $lastTurn->getArg() !== $this->arg){
+        if($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg){
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
@@ -193,7 +193,7 @@ class che_감축 extends Command\NationCommand{
             'rice' => $db->sqleval('rice + %i', $reqRice),
         ], 'nation=%i', $nationID);
         
-        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 감축했습니다. <1>$date</");
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 감축했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>감축</>");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");

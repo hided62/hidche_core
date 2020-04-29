@@ -57,7 +57,7 @@ class che_천도 extends Command\NationCommand{
         $env = $this->env;
 
         $this->setCity();
-        $this->setNation(['capset', 'gold', 'rice']);
+        $this->setNation(['capset', 'gold', 'rice', 'capital']);
         $this->setDestCity($this->arg['destCityID'], null);
         
         [$reqGold, $reqRice] = $this->getCost();
@@ -126,7 +126,7 @@ class che_천도 extends Command\NationCommand{
         $nationID = $general->getNationID();
         $nationStor->setValue("last천도Trial_{$nationID}", [$general->getVar('officer_level'), $general->getTurnTime()]);
 
-        if($lastTurn->getCommand() != $commandName && $lastTurn->getArg() !== $this->arg){
+        if($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg){
             $this->setResultTurn(new LastTurn(
                 $commandName,
                 $this->arg,
