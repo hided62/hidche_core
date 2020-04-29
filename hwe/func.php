@@ -627,7 +627,7 @@ function generalInfo(General $generalObj) {
 
     $crewType = $generalObj->getCrewTypeObj();
 
-    $weapImage = ServConfig::$gameImagePath."/weap{$crewType->id}.png";
+    $weapImage = ServConfig::$gameImagePath."/crewtype{$crewType->id}.png";
     if($show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imagePath = GetImageURL(...$generalObj->getVars('imgsvr', 'picture'));
     echo "<table width=498 class='tb_layout bg2'>

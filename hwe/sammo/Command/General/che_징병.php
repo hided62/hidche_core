@@ -288,7 +288,7 @@ class che_징병 extends Command\GeneralCommand{
                     $crewObj->img = ServConfig::$sharedIconPath."/default.jpg"; 
                 }
                 else{
-                    $crewObj->img = ServConfig::$gameImagePath."/weap".$unit->id.".png";
+                    $crewObj->img = ServConfig::$gameImagePath."/crewtype".$unit->id.".png";
                 }
                 
                 $crewObj->baseRiceShort = round($crewObj->baseRice, 1);
