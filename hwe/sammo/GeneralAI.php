@@ -155,7 +155,7 @@ class GeneralAI
             //지장
         } else {
             $genType = self::t지장;
-            if ($strength >= $intel * 0.8 && Util::randBool(0.2)) {  //지무장
+            if ($strength >= $intel * 0.8) {  //지무장
                 if (Util::randBool($strength / $intel / 2)) {
                     $genType |= self::t무장;
                 }
@@ -1779,6 +1779,7 @@ class GeneralAI
         $nation = $this->nation;
 
         $develRate = Util::squeezeFromArray($this->calcCityDevelRate($city), 0);
+        $isSpringSummer = $this->env['month'] <= 6;
 
         $cmdList = [];
 
@@ -1834,13 +1835,13 @@ class GeneralAI
             if ($develRate['agri'] < 1) {
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
                 if ($cmd->isRunnable()) {
-                    $cmdList[] = [$cmd, $intel / Util::valueFit($develRate['agri'], 0.001, 1)];
+                    $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / Util::valueFit($develRate['agri'], 0.001, 1)];
                 }
             }
             if ($develRate['comm'] < 1) {
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
                 if ($cmd->isRunnable()) {
-                    $cmdList[] = [$cmd, $intel / Util::valueFit($develRate['comm'], 0.001, 1)];
+                    $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / Util::valueFit($develRate['comm'], 0.001, 1)];
                 }
             }
         }
@@ -1904,6 +1905,7 @@ class GeneralAI
         $nation = $this->nation;
 
         $develRate = Util::squeezeFromArray($this->calcCityDevelRate($city), 0);
+        $isSpringSummer = $this->env['month'] <= 6;
         $cmdList = [];
 
         if ($genType & self::t통솔장) {
@@ -1964,10 +1966,10 @@ class GeneralAI
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
                 if ($cmd->isRunnable()) {
                     if (in_array($city['front'], [1, 3])) {
-                        $cmdList[] = [$cmd, $intel / 4 / Util::valueFit($develRate['agri'], 0.001, 1)];
+                        $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / 4 / Util::valueFit($develRate['agri'], 0.001, 1)];
                     }
                     else{
-                        $cmdList[] = [$cmd, $intel / 2 / Util::valueFit($develRate['agri'], 0.001, 1)];
+                        $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / 2 / Util::valueFit($develRate['agri'], 0.001, 1)];
                     }
                 }
             }
@@ -1975,10 +1977,10 @@ class GeneralAI
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
                 if ($cmd->isRunnable()) {
                     if (in_array($city['front'], [1, 3])) {
-                        $cmdList[] = [$cmd, $intel / 4 / Util::valueFit($develRate['comm'], 0.001, 1)];
+                        $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / 4 / Util::valueFit($develRate['comm'], 0.001, 1)];
                     }
                     else{
-                        $cmdList[] = [$cmd, $intel / 2 / Util::valueFit($develRate['comm'], 0.001, 1)];
+                        $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / 2 / Util::valueFit($develRate['comm'], 0.001, 1)];
                     }
                 }
             }
