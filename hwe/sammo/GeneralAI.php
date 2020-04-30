@@ -360,7 +360,7 @@ class GeneralAI
         $troopCandidate = [];
         foreach($this->troopLeaders as $troopLeader){
             $leaderID = $troopLeader->getID();
-            if(key_exists($leaderID, $this->nationPolicy->CombatForce)){
+            if(!key_exists($leaderID, $this->nationPolicy->SupportForce)){
                 continue;
             }
             $currentCityID = $troopLeader->getCityID();
