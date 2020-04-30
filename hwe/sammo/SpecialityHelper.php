@@ -27,8 +27,8 @@ class SpecialityHelper{
     }
 
     public static function getDomesticClassByName(?string $type):string{
-        if($type === null || $type === '' || $type === 'None'){
-            $type = GameConst::$defaultSpecialWar;
+        if($type === null || $type === '' || $type == 'None'){
+            return GameConst::$defaultSpecialDomestic;
         }
 
         if(static::$domesticInv){
@@ -50,8 +50,8 @@ class SpecialityHelper{
     }
 
     public static function getWarClassByName(?string $type):string{
-        if($type === null || $type === '' || $type === 'None'){
-            $type = GameConst::$defaultSpecialWar;
+        if($type === null || $type === '' || $type == 'None'){
+            return GameConst::$defaultSpecialWar;
         }
 
         if(static::$warInv){
