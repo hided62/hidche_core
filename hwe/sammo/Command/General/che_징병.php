@@ -160,7 +160,7 @@ class che_징병 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $reqCrew = $this->reqCrew;
+        $reqCrew = $this->maxCrew;
         $reqCrewText = number_format($reqCrew);
         $reqCrewType = $this->reqCrewType;
 
