@@ -34,7 +34,8 @@ if($tournament != 6) {
 }
 
 $myGold = $db->queryFirstField('SELECT gold FROM general WHERE no = %i', $generalID);
-$bets = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = %i', $generalID), -16); 
+$bets = $db->queryFirstList('SELECT * FROM betting WHERE general_id = %i', $generalID);
+$bets = array_splice($bets, -16); 
 $totalBet = array_sum($bets);
 $oldBet = $bets[$betTarget];
 

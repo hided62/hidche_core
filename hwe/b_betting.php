@@ -17,8 +17,10 @@ TurnExecutionHelper::executeAllCommand();
 $generalID = $session->generalID;
 
 //NOTE: general_id만 빼기 귀찮음.
-$myBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = %i', $generalID), -16);
-$globalBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = 0'), -16);
+$myBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = %i', $generalID);
+$myBet = array_splice($myBet, -16);
+$globalBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = 0');
+$globalBet = array_splice($globalBet, -16);
 
 $me = $db->queryFirstRow('SELECT no,tournament,con,turntime from general where owner=%i', $userID);
 
@@ -286,7 +288,6 @@ for ($i=0; $i < 16; $i++) {
     echo "<td width=70>{$gen[$i]}</td>";
 }
 
-$myBet = [];
 $bet = [];
 $gold = [];
 

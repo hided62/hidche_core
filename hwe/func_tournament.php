@@ -779,7 +779,8 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $winnerSlot = ($winnerGrp - 20) * 2 + $winnerGrpNo;
 
     //당첨칸에 베팅한 사람들만
-    $globalBet = array_splice($db->queryFirstList('SELECT * FROM betting WHERE general_id = 0'), -16);
+    $globalBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = 0');
+    $globalBet = array_splice($globalBet, -16);
     $globalBetTotal = array_sum($globalBet);
     $rewardRate = round($globalBetTotal / max($globalBet[$winnerSlot], 1), 2);
 

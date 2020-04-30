@@ -19,7 +19,7 @@ class che_반계발동 extends BaseWarUnitTrigger{
 
         $general = $self->getGeneral();
 
-        [$opposeMagic, $damage] = $opposeEnv['magic'][0];
+        [$opposeMagic, $damage] = $opposeEnv['magic'];
         
 
         $josaUl = \sammo\JosaUtil::pick($opposeMagic, '을');

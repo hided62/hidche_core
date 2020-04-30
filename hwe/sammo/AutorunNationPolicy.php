@@ -108,7 +108,7 @@ class AutorunNationPolicy {
 
     //Policy Variables
     public $reqNationGold = 10000;
-    public $reqNationRice = 10000;
+    public $reqNationRice = 12000;
     public $CombatForce = [
         //200 => [10, 24],//troopLeader, fromCity, toCity
         //242 => [10, 24]
