@@ -194,7 +194,6 @@ function updateQuaterly() {
 function preUpdateMonthly() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     //연감 월결산
     $result = LogHistory();

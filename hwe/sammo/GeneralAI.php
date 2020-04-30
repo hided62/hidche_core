@@ -1575,10 +1575,20 @@ class GeneralAI
             $avgRice += $general->getVar('rice');
             $genCnt += 1;
         }
-        foreach($this->userWarGenerals as $general){
+        foreach($this->npcCivilGenerals as $general){
             $avgGold += $general->getVar('gold');
             $avgRice += $general->getVar('rice');
-            $genCnt += 2;
+            $genCnt += 1;
+        }
+        foreach($this->userWarGenerals as $general){
+            $avgGold += $general->getVar('gold') / 2;
+            $avgRice += $general->getVar('rice') / 2;
+            $genCnt += 1;
+        }
+        foreach($this->userCivilGenerals as $general){
+            $avgGold += $general->getVar('gold') / 2;
+            $avgRice += $general->getVar('rice') / 2;
+            $genCnt += 1;
         }
         $avgGold += $nation['gold'];
         $avgRice += $nation['rice'];

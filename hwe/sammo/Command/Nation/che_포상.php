@@ -151,7 +151,7 @@ class che_포상 extends Command\NationCommand{
         ], 'nation=%i', $nationID);
 
         $destGeneral->getLogger()->pushGeneralActionLog("{$resName} <C>{$amountText}</>을 포상으로 받았습니다.", ActionLogger::PLAIN);
-        $logger->pushGeneralActionLog("{$destGeneral->getName()}에게 {$resName} <C>$amountText</>을 수여했습니다. <1>$date</>");
+        $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게 {$resName} <C>$amountText</>을 수여했습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);

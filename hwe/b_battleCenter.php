@@ -26,7 +26,7 @@ $queryMap = [
         }
         return $lhs['name']<=>$rhs['name'];
     }],
-    'warnum' => ['전투수', 1, function($lhs, $rhs){
+    'warnum' => ['전투수', 2, function($lhs, $rhs){
         return -($lhs['warnum']<=>$rhs['warnum']);
     }]
 ];
@@ -91,7 +91,7 @@ else if($reqArgType===2){
     $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, value as %b 
         FROM general LEFT JOIN rank_data 
         ON general.no = rank_data.general_id 
-        WHERE rank_data.type = %b AND general.nation = %i', 
+        WHERE rank_data.type = %s AND general.nation = %i', 
         $reqQueryType, $reqQueryType, $nationID
     );
 }

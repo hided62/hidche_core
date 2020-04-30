@@ -423,7 +423,6 @@ function getTwo($tournament, $phase) {
 function qualify($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $cand = getTwo($tnmt, $phase);
 
@@ -437,13 +436,15 @@ function qualify($tnmt_type, $tnmt, $phase) {
         $gameStor->phase=0;
         $gameStor->tournament=3;
 
-        for($i=0; $i < 8; $i++) {
-            $query = "select grp,grp_no,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$i' order by gd desc, gl desc, seq limit 0,4";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            for($k=1; $k <= 4; $k++) {
-                $gen = MYDB_fetch_array($result);
-                $query = "update tournament set prmt='$k' where grp='{$gen['grp']}' and grp_no='{$gen['grp_no']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        foreach(Util::range(8) as $grpIdx){
+            $promoters = $db->query(
+                'SELECT grp,grp_no,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq limit 0,4',
+                $grpIdx
+            );
+            foreach($promoters as $grpRank=>$grpGen){
+                $db->update('tournament', [
+                    'prmt'=>$grpRank+1,
+                ], 'grp=%i AND grp_no=%i', $grpIdx, $grpGen['grp_no']);
             }
         }
     }
@@ -451,7 +452,6 @@ function qualify($tnmt_type, $tnmt, $phase) {
 
 function qualifyAll($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
-    $connect=$db->get();
 
     $start = $phase;
     $end = $phase - ($phase % 4) + 4;
@@ -463,7 +463,6 @@ function qualifyAll($tnmt_type, $tnmt, $phase) {
 function selection($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     //시드1 배정
     if($phase < 8) {
@@ -521,7 +520,6 @@ function selectionAll($tnmt_type, $tnmt, $phase) {
 function finallySingle($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $cand = getTwo($tnmt, $phase);
 
@@ -535,13 +533,15 @@ function finallySingle($tnmt_type, $tnmt, $phase) {
         $gameStor->tournament=5;
         $gameStor->phase=0;
 
-        for($i=10; $i < 18; $i++) {
-            $query = "select grp,grp_no,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$i' order by gd desc, gl desc, seq limit 0,2";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            for($k=1; $k <= 2; $k++) {
-                $gen = MYDB_fetch_array($result);
-                $query = "update tournament set prmt='$k' where grp='{$gen['grp']}' and grp_no='{$gen['grp_no']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        foreach(Util::range(10, 18) as $grpIdx){
+            $promoters = $db->query(
+                'SELECT grp,grp_no,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq limit 0,2',
+                $grpIdx
+            );
+            foreach($promoters as $grpRank=>$grpGen){
+                $db->update('tournament', [
+                    'prmt'=>$grpRank+1,
+                ], 'grp=%i AND grp_no=%i', $grpIdx, $grpGen['grp_no']);
             }
         }
     }
@@ -558,7 +558,6 @@ function finallyAll($tnmt_type, $tnmt, $phase) {
 function final16set() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     //1조1-5조2, 2조1-6조2, 3조1-7조2, 4조1-8조2, 5조1-1조2, 6조1-2조2, 7조1-3조2, 8조1-4조2
     $grp  = Array(10, 14, 11, 15, 12, 16, 13, 17, 14, 10, 15, 11, 16, 12, 17, 13);
@@ -595,7 +594,6 @@ function final16set() {
 function finalFight($tnmt_type, $tnmt, $phase, $type) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     switch($type) {
     case 16: $offset = 20; $turn = 7; $next = 7; break;
@@ -637,7 +635,6 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
 function setGift($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
@@ -801,7 +798,6 @@ function setGift($tnmt_type, $tnmt, $phase) {
 function setRefund() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     //16강자 명성 돈
     $cost = $gameStor->develcost;
@@ -833,17 +829,11 @@ function getLog($lvl1, $lvl2) {
 function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     $log = [];
     $db = DB::db();
-    $connect=$db->get();
 
     eraseTnmtFightLog($group);
 
-    $query = "select *,(leadership+strength+intel)*7/15 as total,h,w,b from tournament where grp='$group' and grp_no='$g1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen1 = MYDB_fetch_array($result);
-
-    $query = "select *,(leadership+strength+intel)*7/15 as total,h,w,b from tournament where grp='$group' and grp_no='$g2'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen2 = MYDB_fetch_array($result);
+    $gen1 = $db->queryFirstRow('SELECT *,(leadership+strength+intel)*7/15 as total,h,w,b from tournament where grp=%i AND grp_no=%i', $group, $g1);
+    $gen2 = $db->queryFirstRow('SELECT *,(leadership+strength+intel)*7/15 as total,h,w,b from tournament where grp=%i AND grp_no=%i', $group, $g2);
 
     if($type == 0) { $turn = 10; }
     else           { $turn = 100; }
@@ -1063,11 +1053,15 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $log[] = "<S>●</> <Y>{$gen1['name']}</> <S>승리</>!";
 
         $gl = Util::round(($gd2 - $gd1) / 50);
-        $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g1'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g2'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
+        $db->update('tournament', [
+            'win'=>$db->sqleval('win+1'),
+            'gl'=>$db->sqleval('gl+%i', $gl)
+        ], 'grp=%i AND grp_no=%i', $group, $g1);
+        $db->update('tournament', [
+            'lose'=>$db->sqleval('lose+1'),
+            'gl'=>$db->sqleval('gl-%i', $gl)
+        ], 'grp=%i AND grp_no=%i', $group, $g2);
+        
         if($general1['gl'] > $general2['gl'])      { $gl1 = 1; $gl2 = 0; }
         elseif($general1['gl'] == $general2['gl']) { $gl1 = 2; $gl2 = -1; }
         else                                   { $gl1 = 3; $gl2 = -2; }
@@ -1079,10 +1073,14 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $log[] = "<S>●</> <Y>{$gen2['name']}</> <S>승리</>!";
 
         $gl = Util::round(($gd1 - $gd2) / 50);
-        $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g2'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g1'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('tournament', [
+            'lose'=>$db->sqleval('lose+1'),
+            'gl'=>$db->sqleval('gl-%i', $gl)
+        ], 'grp=%i AND grp_no=%i', $group, $g1);
+        $db->update('tournament', [
+            'win'=>$db->sqleval('win+1'),
+            'gl'=>$db->sqleval('gl+%i', $gl)
+        ], 'grp=%i AND grp_no=%i', $group, $g2);
 
         if($general2['gl'] > $general1['gl'])      { $gl2 = 1; $gl1 = 0; }
         elseif($general2['gl'] == $general1['gl']) { $gl2 = 2; $gl1 = -1; }
@@ -1094,8 +1092,9 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     case 2:
         $log[] = "<S>●</> 무승부!";
 
-        $query = "update tournament set draw=draw+1 where grp='$group' and (grp_no='$g1' or grp_no='$g2')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('tournament', [
+            'draw'=>$db->sqleval('draw+1')
+        ], 'grp=%i AND (grp_no=%i OR grp_no=%i)', $group, $g1, $g2);
 
         if($general1['gl'] > $general2['gl'])      { $gl2 = -1; $gl1 = 1; }
         elseif($general1['gl'] == $general2['gl']) { $gl2 = 0; $gl1 = 0; }
@@ -1125,15 +1124,10 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     if(($tnmt == 2 && $phs < 55) || ($tnmt == 4 && $phs < 5)) {
         $cand = getTwo($tnmt, $phs+1);
 
-        $query = "select name from tournament where grp='$group' and grp_no='$cand[0]'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen1 = MYDB_fetch_array($result);
+        $gen1Name = $db->queryFirstField('SELECT name FROM tournament where grp=%i and grp_no=%i', $group, $cand[0]);
+        $gen2Name = $db->queryFirstField('SELECT name FROM tournament where grp=%i and grp_no=%i', $group, $cand[1]);
 
-        $query = "select name from tournament where grp='$group' and grp_no='$cand[1]'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen2 = MYDB_fetch_array($result);
-
-        $log[] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1['name']}</> vs <Y>{$gen2['name']}</>";
+        $log[] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1Name}</> vs <Y>{$gen2Name}</>";
     }
 
     pushTnmtFightLog($group, $log);
