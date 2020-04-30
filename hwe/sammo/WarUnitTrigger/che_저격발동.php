@@ -30,7 +30,7 @@ class che_저격발동 extends BaseWarUnitTrigger{
         $oppose->getLogger()->pushGeneralActionLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
         $oppose->getLogger()->pushGeneralBattleDetailLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
 
-        $general->increaseVarWithLimit('atmos', 10, GameConst::$maxAtmosByWar);
+        $general->increaseVarWithLimit('atmos', 10, 0, GameConst::$maxAtmosByWar);
         $oppose->getGeneral()->increaseVarWithLimit('injury', Util::randRangeInt($selfEnv['woundMin'], $selfEnv['woundMax']), null, 80);
 
         $this->processConsumableItem();

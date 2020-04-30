@@ -187,24 +187,28 @@ class GeneralAI
         $this->attackable = !!$frontStatus;
 
         $warTarget = $db->queryAllLists(
-            'SELECT you, state FROM diplomacy WHERE me = %i AND (state = 0 OR (state = 1 AND term < 5))',
+            'SELECT you, state, term FROM diplomacy WHERE me = %i AND state IN (0, 1)',
             $nationID
         );
 
         $onWar = 0;
         $onWarReady = 0;
+        $onWarYet = 0;
         $warTargetNation = [];
-        foreach ($warTarget as [$warNationID, $warState]) {
+        foreach ($warTarget as [$warNationID, $warState, $warTerm]) {
             if ($warState == 0) {
                 $onWar += 1;
                 $warTargetNation[$warNationID] = 2;
-            } else {
+            } else if($warState == 1 && $warTerm < 5){
                 $onWarReady += 1;
                 $warTargetNation[$warNationID] = 1;
             }
+            else{
+                $onWarYet += 1;
+            }
         }
 
-        if(!$onWar){
+        if(!$onWar && !$onWarReady && !$onWarYet){
             $warTargetNation[0] = 1;
         }
         
@@ -224,7 +228,7 @@ class GeneralAI
 
         if ($this->attackable) {
             //전쟁으로 인한 attackable인가?
-            if ($onWar || !$onWarReady) {
+            if ($onWar || (!$onWarReady && !$onWarYet)) {
                 $this->dipState = self::d전쟁;
             }
         }
@@ -1586,8 +1590,8 @@ class GeneralAI
         $avgGold /= $genCnt;
         $avgRice /= $genCnt;
 
-        $trialProp = $avgGold / max($this->nationPolicy->reqNPCWarGold, 2000);
-        $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice, 2000);
+        $trialProp = $avgGold / max($this->nationPolicy->reqNPCWarGold * 1.5, 2000);
+        $trialProp += $avgRice / max($this->nationPolicy->reqNPCWarRice * 1.5, 2000);
 
         $devRate = $this->calcNationDevelopedRate();
 
