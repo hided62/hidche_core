@@ -34,6 +34,7 @@ class che_징병 extends Command\GeneralCommand{
     static protected $defaultTrain;
     static protected $defaultAtmos;
 
+    protected $maxCrew = 0;
     protected $reqCrew = 0;
     /** @var \sammo\GameUnitDetail */
     protected $reqCrewType;
@@ -82,13 +83,12 @@ class che_징병 extends Command\GeneralCommand{
     }
 
     protected function init(){
-
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation(['tech']);
 
-        $leadership = $general->getLeadership();
+        $leadership = $general->getLeadership(false);
         $currCrewType = $general->getCrewTypeObj();
         $maxCrew = $leadership * 100;
 
@@ -96,7 +96,8 @@ class che_징병 extends Command\GeneralCommand{
         if($reqCrewType->id == $currCrewType->id){
             $maxCrew -= $general->getVar('crew');
         }
-        $reqCrew = Util::valueFit($this->arg['amount'], 100, $maxCrew);
+        $this->maxCrew = Util::valueFit($this->arg['amount'], 100, $maxCrew);
+        $reqCrew = Util::valueFit($this->arg['amount'], 100);
         $this->reqCrew = $reqCrew;
         $this->reqCrewType = $reqCrewType;
         $this->currCrewType = $currCrewType;
@@ -131,10 +132,10 @@ class che_징병 extends Command\GeneralCommand{
         if(!$this->isArgValid){
             return [0, 0];
         }
-        $reqGold = $this->reqCrewType->costWithTech($this->nation['tech'], $this->reqCrew);
+        $reqGold = $this->reqCrewType->costWithTech($this->nation['tech'], $this->maxCrew);
         $reqGold = $this->generalObj->onCalcDomestic('징병', 'cost', $reqGold, ['armType'=>$this->reqCrewType->armType]);
         $reqGold *= static::$costOffset;
-        $reqRice = $this->reqCrew / 100;
+        $reqRice = $this->maxCrew / 100;
 
         $reqGold = Util::round($reqGold);
         $reqRice = Util::round($reqRice);
