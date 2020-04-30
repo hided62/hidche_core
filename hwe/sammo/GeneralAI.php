@@ -492,7 +492,7 @@ class GeneralAI
             return null;
         }
 
-        $turnList = General::getReservedTurnByGeneralList($generalCadidates, 0, $this->env);
+        $turnList = General::getReservedTurnByGeneralList(array_keys($generalCadidates), 0, $this->env);
         $generalCadidates = array_filter($generalCadidates, function(General $general)use($turnList){
             $generalID = $general->getID();
             if($turnList[$generalID] instanceof Command\General\che_징병){
