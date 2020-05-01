@@ -3578,6 +3578,7 @@ class GeneralAI
             elseif ($avg > 0.50) $rate = 15;
             else $rate = 10;
         }
+        $this->nation['rate'] = $rate;
 
         $db->update('nation', [
             'war' => 0,
