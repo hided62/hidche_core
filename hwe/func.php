@@ -1670,7 +1670,7 @@ function nextRuler(General $general) {
         'officer_level'=>12,
         'officer_city'=>0,
     ], 'no=%i', $nextRulerID);
-    if($db->affectedRows()){
+    if($db->affectedRows()==0){
         throw new \RuntimeException('선양되지 않음');
     }
 
