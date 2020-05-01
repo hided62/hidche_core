@@ -534,6 +534,7 @@ class General implements iAction{
         $officerLevel = $this->getVar('officer_level');
         if($officerLevel == 12) {
             nextRuler($this);
+            $this->setVar('officer_level', 1);
         }
 
         // 부대 처리

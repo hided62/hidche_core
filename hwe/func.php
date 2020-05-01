@@ -1634,7 +1634,8 @@ function nextRuler(General $general) {
     //npc or npc유저인 경우 후계 찾기
     if($general->getVar('npc') > 0) {
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,nation,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
+            'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
+            $general->getVar('affinity'),
             $general->getVar('affinity'),
             $general->getVar('affinity'),
             $nationID
@@ -1669,7 +1670,7 @@ function nextRuler(General $general) {
     $db->update('general', [
         'officer_level'=>12,
         'officer_city'=>0,
-    ], 'no=%i', $nextRulerID);
+    ], 'no=%i AND nation=%i', $nextRulerID, $nationID);
     if($db->affectedRows()==0){
         throw new \RuntimeException('선양되지 않음');
     }
