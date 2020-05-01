@@ -92,7 +92,7 @@ $db->delete('select_npc_token', 'owner=%i or valid_until < %s', $userID, $now);
 
 $josaYi = JosaUtil::pick($userNick, '이');
 
-$logger = new ActionLogger($pickedNPC['no'], $pickedNPC['nation'], $year, $month);
+$logger = new ActionLogger($pickedNPC['no'], 0, $year, $month);
 $logger->pushGeneralHistoryLog("<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>{$josaYi} 빙의되다.");
 $logger->pushGlobalActionLog("<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>{$josaYi} <S>빙의</>됩니다!");
 $logger->flush();
