@@ -111,7 +111,7 @@ class CreateManyNPC extends \sammo\Event\Action{
         else{
             $logger->pushGlobalActionLog("운영자가 장수 {$genCnt}명을 생성하였습니다.");
         }
-        $logger->pushGlobalHistoryLog("운영자가 장수 {$genCnt}명을 생성했습니다.", \sammo\ActionLogger::EVENT_YEAR_MONTH);
+        $logger->pushGlobalHistoryLog("<b>운영자</>가 <b>장수 <C>{$genCnt}</>명</b>을 <S>생성</>했습니다.", \sammo\ActionLogger::EVENT_YEAR_MONTH);
         $logger->flush();
 
         return [__CLASS__, $result];   
