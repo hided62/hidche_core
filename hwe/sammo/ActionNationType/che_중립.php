@@ -3,8 +3,7 @@ namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_중립 implements iAction{
-    use \sammo\DefaultAction;
+class che_중립 extends \sammo\BaseNation{
 
     protected $name = '-';
     protected $info = '';

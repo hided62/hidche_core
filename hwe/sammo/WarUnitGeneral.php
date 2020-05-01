@@ -2,8 +2,6 @@
 namespace sammo;
 
 class WarUnitGeneral extends WarUnit{
-    protected $bonusPhase = 0;
-
     function __construct(General $general, array $rawNation, bool $isAttacker){
         $this->general = $general;
         $this->raw = $general->getRaw();
@@ -54,10 +52,6 @@ class WarUnitGeneral extends WarUnit{
         else if($oppose !== null){
             $general->updateVar('recent_war', $oppose->getGeneral()->getTurnTime());
         }
-    }
-
-    function addBonusPhase(int $cnt){
-        $this->bonusPhase += $cnt;
     }
 
     function getMaxPhase():int{

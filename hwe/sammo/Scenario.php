@@ -18,7 +18,9 @@ class Scenario{
 
     private $history;
     
+    /** @var \sammo\Scenario\Nation[] */
     private $nations;
+    /** @var \sammo\Scenario\Nation[] */
     private $nationsInv;
 
     private $diplomacy;
@@ -125,7 +127,7 @@ class Scenario{
             ) = $rawGeneral;
 
             if(key_exists($nationName, $this->nationsInv)){
-                $nationID = $this->nationsInv[$nationName]->id;;
+                $nationID = $this->nationsInv[$nationName]->getID();
             }
             else if(key_exists($nationName, $this->nations)){
                 $nationID = (int)$nationName;
@@ -167,7 +169,7 @@ class Scenario{
             ) = $rawGeneral;
 
             if(key_exists($nationName, $this->nationsInv)){
-                $nationID = $this->nationsInv[$nationName]->id;;
+                $nationID = $this->nationsInv[$nationName]->getID();
             }
             else if(key_exists($nationName, $this->nations)){
                 $nationID = (int)$nationName;

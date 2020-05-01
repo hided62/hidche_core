@@ -63,7 +63,7 @@ class Util extends \utilphp\util
         throw new \InvalidArgumentException('올바르지 않은 type 지정');
     }
 
-    public static function zip(iterable  ...$iterators){
+    public static function zip(\Generator  ...$iterators){
         while(true){
             $hasValue = false;
             $values = [];

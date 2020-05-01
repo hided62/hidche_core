@@ -342,7 +342,7 @@ switch($btn) {
             $turntime = getRandTurn($turnterm);
             $cutTurn = cutTurn($turntime, $turnterm);
             $db->update('general', [
-                'turntime'=>$curTurn
+                'turntime'=>$cutTurn
             ], '`no` IN %li', $genlist);
         }
         break;

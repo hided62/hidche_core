@@ -18,6 +18,7 @@ class WarUnit{
 
     protected $currPhase = 0;
     protected $prePhase = 0;
+    protected $bonusPhase = 0;
 
     protected $atmosBonus = 0;
     protected $trainBonus = 0;
@@ -166,7 +167,8 @@ class WarUnit{
     }
 
     function getMaxPhase():int{
-        return $this->getCrewType()->speed;
+        $phase = $this->getCrewType()->speed;
+        return $phase + $this->bonusPhase;
     }
 
     function setPrePhase(int $phase){
@@ -175,6 +177,10 @@ class WarUnit{
 
     function addPhase(){
         $this->currPhase += 1;
+    }
+
+    function addBonusPhase(int $cnt){
+        $this->bonusPhase += $cnt;
     }
 
     function setOppose(?WarUnit $oppose){

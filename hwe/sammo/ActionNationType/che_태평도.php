@@ -3,8 +3,7 @@ namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_태평도 implements iAction{
-    use \sammo\DefaultAction;
+class che_태평도 extends \sammo\BaseNation{
 
     protected $name = '태평도';
     protected $info = '';

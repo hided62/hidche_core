@@ -3,8 +3,7 @@ namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_불가 implements iAction{
-    use \sammo\DefaultAction;
+class che_불가 extends \sammo\BaseNation{
 
     protected $name = '불가';
     protected $info = '';

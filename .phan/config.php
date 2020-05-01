@@ -15,13 +15,14 @@ return [
     // Note that the **only** effect of choosing `'5.6'` is to infer
     // that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
-    "target_php_version" => '7.4',
+    "target_php_version" => '8.0',
     'backward_compatibility_checks ' => false,
     'ignore_undeclared_variables_in_global_scope' => false,
-    'minimum_severity'=>\Phan\Issue::SEVERITY_LOW,
+    'minimum_severity'=>\Phan\Issue::SEVERITY_CRITICAL,
 
     'file_list' => [
         'f_config/config.php',
+        'hwe/MYDB.php',
         'hwe/a_bestGeneral.php',
         'hwe/a_emperior.php',
         'hwe/a_emperior2.php',

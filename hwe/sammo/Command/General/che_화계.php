@@ -285,7 +285,7 @@ class che_화계 extends Command\GeneralCommand{
         $this->affectDestCity($injuryCount);
 
         $itemObj = $general->getItem();
-        if($itemObj->isConsumableNow('GeneralCommand', '계략') && $itemObj::$consumable){
+        if($itemObj->isConsumableNow('GeneralCommand', '계략') && $itemObj->isConsumableNow('GeneralCommand', '계략')){
             $itemName = $itemObj->getName();
             $itemRawName = $itemObj->getRawName();
             $josaUl = JosaUtil::pick($itemRawName, '을');

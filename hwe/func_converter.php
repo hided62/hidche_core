@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Command\BaseCommand;
+
 /**
  * Value Converter
  * 
@@ -156,7 +158,7 @@ function getNationTypeClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
 }
 
-function buildNationTypeClass(?string $type):iAction{
+function buildNationTypeClass(?string $type):BaseNation{
     static $cache = [];
     if($type === null){
         $type = 'None';

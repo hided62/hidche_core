@@ -473,4 +473,12 @@ class Message
         ], 'id=%i', $this->id);
 
     }
+
+    public function agreeMessage(int $receiverID, string &$reason):int{
+        throw new NotInheritedMethodException();
+    }
+
+    public function declineMessage(int $receiverID, string &$reason):int{
+        throw new NotInheritedMethodException();
+    }
 }

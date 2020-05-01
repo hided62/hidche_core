@@ -63,7 +63,7 @@ case "분지연":
             $locked = true;
             break;
         }
-        sleep(0.5);
+        usleep(500000);
     }
     $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
     $turntime = (new \DateTimeImmutable($gameStor->turntime))->add(new \DateInterval("PT{$minute}M"));

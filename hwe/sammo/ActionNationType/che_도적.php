@@ -3,8 +3,7 @@ namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_도적 implements iAction{
-    use \sammo\DefaultAction;
+class che_도적 extends \sammo\BaseNation{
 
     protected $name = '도적';
     protected $info = '';

@@ -1,8 +1,10 @@
 <?php
-namespace sammo\ActionNationType;
+namespace sammo;
 use \sammo\iAction;
+use \sammo\General;
 
-class None extends \sammo\BaseNation{
+abstract class BaseNation implements iAction{
+    use \sammo\DefaultAction;
 
     protected $name = '-';
     protected $info = '';

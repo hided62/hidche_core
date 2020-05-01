@@ -4,8 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\Util;
 
-class che_종횡가 implements iAction{
-    use \sammo\DefaultAction;
+class che_종횡가 extends \sammo\BaseNation{
 
     protected $name = '종횡가';
     protected $info = '';

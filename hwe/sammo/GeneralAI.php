@@ -3332,8 +3332,24 @@ class GeneralAI
             
             $picked = false;
             foreach(Util::range(5) as $idx){
+                
                 /** @var General */
-                $randGeneral = Util::choiceRandom($this->npcWarGenerals);
+                if($this->npcWarGenerals){
+                    $randGeneral = Util::choiceRandom($this->npcWarGenerals);
+                }
+                else if($this->npcCivilGenerals){
+                    $randGeneral = Util::choiceRandom($this->npcCivilGenerals);
+                }
+                else if($this->userWarGenerals){
+                    $randGeneral = Util::choiceRandom($this->userWarGenerals);
+                }
+                else if($this->userCivilGenerals){
+                    $randGeneral = Util::choiceRandom($this->userCivilGenerals);
+                }
+                else{
+                    break;
+                }
+                
                 if($randGeneral->getVar('officer_level') != 1){
                     continue;
                 }
@@ -3357,10 +3373,11 @@ class GeneralAI
                 break;
             }
 
-            if(!$picked){
+            if(!$picked || !$randGeneral){
                 continue;
             }
 
+            /** @var General $randGeneral */
             $randGeneral->setVar('officer_level', $chiefLevel);
             $randGeneral->setVar('officer_city', 0);
             $randGeneral->applyDB($db);
