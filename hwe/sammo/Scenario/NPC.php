@@ -201,7 +201,7 @@ class NPC{
         if($isNewGeneral){
             $josaYi = JosaUtil::pick($name, '이');
             $logger = new \sammo\ActionLogger(0, 0, $year, $month);
-            $logger->pushGlobalActionLog('<Y>{$name}</>{$josaYi} 성인이 되어 <S>등장</>했습니다.');
+            $logger->pushGlobalActionLog("<Y>{$name}</>{$josaYi} 성인이 되어 <S>등장</>했습니다.");
             $logger->flush();
         }
 
