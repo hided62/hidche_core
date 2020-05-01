@@ -598,7 +598,7 @@ class General implements iAction{
         }
 
         $josaYi = JosaUtil::pick($generalName, '이');
-        $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.");
         $logger->pushGeneralActionLog('나이가 들어 <R>은퇴</>하고 자손에게 자리를 물려줍니다.', ActionLogger::PLAIN);
         $logger->pushGeneralHistoryLog('나이가 들어 은퇴하고, 자손에게 관직을 물려줌');
     }
