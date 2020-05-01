@@ -28,7 +28,7 @@ $eventArgs = [$eventName];
 if($eventArgsJson !== null){
     try{
         $eventNextArgs = Json::decode($eventArgsJson);
-        if(is_array($eventArg)){
+        if(is_array($eventNextArgs)){
             $eventArgs = array_merge($eventArgs, $eventNextArgs);
         }
         else{
