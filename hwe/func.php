@@ -1670,12 +1670,16 @@ function nextRuler(General $general) {
         'officer_level'=>12,
         'officer_city'=>0,
     ], 'no=%i', $nextRulerID);
+    if($db->affectedRows()){
+        throw new \RuntimeException('선양되지 않음');
+    }
 
     $josaYi = JosaUtil::pick($nextRulerName, '이');
 
-    $logger = $general->getLogger();
-    $logger->pushGlobalHistoryLog("<C><b>【유지】</b></><Y>{$nextRulerName}</>{$josaYi} <D><b>{$nationName}</b></>의 유지를 이어 받았습니다");
-    $logger->pushGlobalHistoryLog("<C><b>【유지】</b></><Y>{$nextRulerName}</>{$josaYi} <D><b>{$nationName}</b></>의 유지를 이어 받음.");
+    $nextRulerLogger = new ActionLogger($nextRulerID, $nationID, $year, $month);
+    $nextRulerLogger->pushGlobalHistoryLog("<C><b>【유지】</b></><Y>{$nextRulerName}</>{$josaYi} <D><b>{$nationName}</b></>의 유지를 이어 받았습니다");
+    $nextRulerLogger->pushGeneralHistoryLog("<C><b>【유지】</b></><Y>{$nextRulerName}</>{$josaYi} <D><b>{$nationName}</b></>의 유지를 이어 받음.");
+    $nextRulerLogger->flush();
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
 
