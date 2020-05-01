@@ -144,7 +144,7 @@ class che_임관 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("<D>{$destNationName}</>에 임관했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 임관");
-        $logger->pushGlobalActionLog("<D>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
 
         if($gennum < GameConst::$initialNationGenLimit) {
             $exp = 700;
