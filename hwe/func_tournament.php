@@ -315,6 +315,19 @@ function fillLowGenAll() {
         'explevel'=>10
     ];
 
+    $dummyGeneral = [
+        'no'=>0,
+        'npc'=>2,
+        'name'=>'무명장수',
+        'leadership'=>10,
+        'strength'=>10,
+        'intel'=>10,
+        'lvl'=>0,
+        'h'=>'None',
+        'w'=>'None',
+        'b'=>'None'
+    ];
+
     for($i=0;$i<8;$i++){
         $grpCount[$i] = 0;
     }
@@ -366,7 +379,11 @@ function fillLowGenAll() {
 
     foreach($grpCount as $grpIdx=>$grpCnt){
         while($grpCnt < 8){
-            $joinersValues[] = $dummyGeneral;
+            $dummyCopy = $dummyGeneral;
+            $dummyCopy['grp'] = $grpIdx;
+            $dummyCopy['grp_no'] = $grpCnt;
+            $grpCnt += 1;
+            $joinersValues[] = $dummyCopy;
         }
     }
 
