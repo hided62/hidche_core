@@ -7,10 +7,17 @@ namespace Composer\Autoload;
 class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
 {
     public static $files = array (
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '2b9d0f43f9552984cfa82fee95491826' => __DIR__ . '/..' . '/sabre/event/lib/coroutine.php',
+        'd81bab31d3feb45bfe2f283ea3c8fdf7' => __DIR__ . '/..' . '/sabre/event/lib/Loop/functions.php',
+        'a1cce3d26cc15c00fcd0b3354bd72c88' => __DIR__ . '/..' . '/sabre/event/lib/Promise/functions.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '5b154887902198b16314243c6e0e3e19' => __DIR__ . '/..' . '/pguardiario/phpuri/phpuri.php',
         '870dc64919afa8b0f700701bb2c6a783' => __DIR__ . '/../..' . '/f_config/config.php',
@@ -21,9 +28,17 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             'sammo\\' => 6,
         ),
+        'p' => 
+        array (
+            'phpDocumentor\\Reflection\\' => 25,
+        ),
         'k' => 
         array (
             'kakao\\' => 6,
+        ),
+        'W' => 
+        array (
+            'Webmozart\\Assert\\' => 17,
         ),
         'V' => 
         array (
@@ -31,19 +46,29 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php73\\' => 23,
+            'Symfony\\Polyfill\\Php72\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Component\\Lock\\' => 23,
+            'Symfony\\Component\\Console\\' => 26,
             'ScssPhp\\ScssPhp\\' => 16,
+            'Sabre\\Event\\' => 12,
         ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
             'PhpExtended\\Tail\\' => 17,
             'PhpExtended\\System\\' => 19,
+            'Phan\\' => 5,
         ),
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Microsoft\\PhpParser\\' => 20,
             'Medoo\\' => 6,
         ),
         'L' => 
@@ -56,6 +81,15 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
+        'C' => 
+        array (
+            'Composer\\XdebugHandler\\' => 23,
+            'Composer\\Semver\\' => 16,
+        ),
+        'A' => 
+        array (
+            'AdvancedJsonRpc\\' => 16,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -63,21 +97,59 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             0 => __DIR__ . '/../..' . '/src/sammo',
         ),
+        'phpDocumentor\\Reflection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
         'kakao\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/kakao',
+        ),
+        'Webmozart\\Assert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
         'Valitron\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron',
         ),
+        'Symfony\\Polyfill\\Php73\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
+        ),
+        'Symfony\\Polyfill\\Php72\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Contracts\\Service\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/service-contracts',
+        ),
         'Symfony\\Component\\Lock\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/lock',
         ),
+        'Symfony\\Component\\Console\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/console',
+        ),
         'ScssPhp\\ScssPhp\\' => 
         array (
             0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
+        ),
+        'Sabre\\Event\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sabre/event/lib',
         ),
         'Psr\\Log\\' => 
         array (
@@ -87,6 +159,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
         'PhpExtended\\Tail\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-extended/php-tail/src',
@@ -95,9 +171,17 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             0 => __DIR__ . '/..' . '/php-extended/php-system/src',
         ),
+        'Phan\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phan/phan/src/Phan',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Microsoft\\PhpParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/microsoft/tolerant-php-parser/src',
         ),
         'Medoo\\' => 
         array (
@@ -119,6 +203,18 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'Composer\\XdebugHandler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/xdebug-handler/src',
+        ),
+        'Composer\\Semver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/semver/src',
+        ),
+        'AdvancedJsonRpc\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/felixfbecker/advanced-json-rpc/lib',
+        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -127,6 +223,13 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
             'utilphp\\' => 
             array (
                 0 => __DIR__ . '/..' . '/brandonwamboldt/utilphp/src',
+            ),
+        ),
+        'J' => 
+        array (
+            'JsonMapper' => 
+            array (
+                0 => __DIR__ . '/..' . '/netresearch/jsonmapper/src',
             ),
         ),
         'H' => 
@@ -176,6 +279,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'HTMLPurifier_HTMLModule_HTML5_SafeScripting' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/SafeScripting.php',
         'HTMLPurifier_HTMLModule_HTML5_Scripting' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Scripting.php',
         'HTMLPurifier_HTMLModule_HTML5_Text' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Text.php',
+        'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'MeekroDB' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBEval' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBException' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',

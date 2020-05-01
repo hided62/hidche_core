@@ -25,7 +25,8 @@
         "symfony/lock": "^4.1",
         "ezyang/htmlpurifier": "^4.10",
         "xemlock/htmlpurifier-html5": "^0.1.7",
-        "catfan/medoo": "^1.5"
+        "catfan/medoo": "^1.5",
+        "phan/phan": "^2.7"
     },
     "autoload": {
         "psr-4": {

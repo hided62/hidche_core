@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'utilphp\\' => array($vendorDir . '/brandonwamboldt/utilphp/src'),
+    'JsonMapper' => array($vendorDir . '/netresearch/jsonmapper/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

@@ -43,6 +43,7 @@ return array(
     'HTMLPurifier_HTMLModule_HTML5_SafeScripting' => $vendorDir . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/SafeScripting.php',
     'HTMLPurifier_HTMLModule_HTML5_Scripting' => $vendorDir . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Scripting.php',
     'HTMLPurifier_HTMLModule_HTML5_Text' => $vendorDir . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTMLModule/HTML5/Text.php',
+    'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
     'MeekroDB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'MeekroDBEval' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'MeekroDBException' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
