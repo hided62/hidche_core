@@ -5,7 +5,7 @@ abstract class Action{
     //public abstract function __construct(...$args);
     public abstract function run($env=null);
 
-    public static function build($actionArgs){
+    public static function build($actionArgs):Action{
         if(!is_array($actionArgs)){
             throw new \InvalidArgumentException('action을 입력해야 합니다.');
         }
