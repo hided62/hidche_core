@@ -167,7 +167,7 @@ function getTournament(int $tnmt) {
     ][$tnmt]??"TOURNAMENT_TYPE_ERR_{$tnmt}";
 }
 
-function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt) {
+function printRow(int $k, int $npc, string $name, int $abil, int $tgame, int $win, int $draw, int $lose, int $gd, int $gl, int $prmt) {
     if($prmt > 0) { $name = "<font color=orange>".$name."</font>"; }
     elseif($npc >= 2) { $name = "<font color=cyan>".$name."</font>"; }
     elseif($npc == 1) { $name = "<font color=skyblue>".$name."</font>"; }

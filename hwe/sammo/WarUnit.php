@@ -334,19 +334,16 @@ class WarUnit{
 
     function getHP():int{
         throw new NotInheritedMethodException();
-        return 0;
     }
 
     function decreaseHP(int $damage):int{
         $this->dead += $damage;
         throw new NotInheritedMethodException();
-        return 0;
     }
 
     function increaseKilled(int $damage):int{
         $this->killed += $damage;
         throw new NotInheritedMethodException();
-        return 0;
     }
 
     function calcDamage():int{
@@ -376,6 +373,5 @@ class WarUnit{
 
     function applyDB(\MeekroDB $db):bool{
         throw new MustNotBeReachedException('Must be WarUnitCity or WarUnitGeneral');
-        return false;
     }
 }

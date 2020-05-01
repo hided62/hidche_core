@@ -17,8 +17,7 @@ return [
     // (See `backward_compatibility_checks` for additional options)
     "target_php_version" => '8.0',
     'backward_compatibility_checks ' => false,
-    'ignore_undeclared_variables_in_global_scope' => false,
-    'minimum_severity'=>\Phan\Issue::SEVERITY_CRITICAL,
+    'minimum_severity'=>\Phan\Issue::SEVERITY_NORMAL,
 
     'file_list' => [
         'f_config/config.php',
@@ -168,6 +167,10 @@ return [
     //       to `exclude_analysis_directory_list`.
     "exclude_analysis_directory_list" => [
         'vendor/'
+    ],
+
+    'suppress_issue_types' => [
+        'PhanUnreferencedUseNormal',
     ],
 
     // A list of plugin files to execute.

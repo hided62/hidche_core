@@ -113,38 +113,8 @@ if ($session->userGrade >= 5) {
 
     switch ($admin['tournament']) {
     case 1:
-        echo "<select name=gen size=1 style=color:white;background-color:black;>";
-
-        $query = "select no,name,npc,tnmt,leadership,strength,intel,leadership+strength+intel as total from general where tournament=0 and gold>='{$admin['develcost']}' order by {$tp3} desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-        $genCount = MYDB_num_rows($result);
-
-        for ($i=0; $i < $genCount; $i++) {
-            $general = MYDB_fetch_array($result);
-            if ($general['npc'] >= 2) {
-                $npc = "cyan";
-            } elseif ($general['npc'] == 1) {
-                $npc = "skyblue";
-            } elseif ($general['tnmt'] > 0) {
-                $npc = "blue";
-            } else {
-                $npc = "white";
-            }
-            echo "<option style=color:{$npc}; value={$general['no']}>[{$general[$tp3]}]{$general['name']}</option>";
-        }
-        echo "
-        </select>
-        <input type=submit name=btn value='투입'>
-        <input type=submit name=btn value='무명투입'>
-        <input type=submit name=btn value='쪼렙투입'>
-        <input type=submit name=btn value='일반투입'>
-        <input type=submit name=btn value='굇수투입'>
-        <input type=submit name=btn value='랜덤투입'>
-        <input type=submit name=btn value='쪼렙전부투입'>
-        <input type=submit name=btn value='일반전부투입'>
-        <input type=submit name=btn value='굇수전부투입'>
-        <input type=submit name=btn value='랜덤전부투입'>
-        <input type=submit name=btn value='무명전부투입'>";
+        echo "<input type=submit name=btn value='랜덤투입'>";
+        echo "<input type=submit name=btn value='랜덤전부투입'>";
         break;
     case 2: echo "<input type=submit name=btn value='예선'><input type=submit name=btn value='예선전부'>"; break;
     case 3: echo "<input type=submit name=btn value='추첨'><input type=submit name=btn value='추첨전부'>"; break;

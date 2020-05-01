@@ -20,13 +20,10 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 $admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost']);
 
-$query = "select no,name,tournament from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstList('SELECT no,name,tournament from general where owner=%i',$userID);
 
 switch($admin['tnmt_type']) {
 case 0: $tp = "total";  $tp2 = "전력전"; $tp3 = "leadership+strength+intel"; break;
@@ -102,57 +99,8 @@ if($btn == "자동개최설정") {
     $gameStor->tnmt_auto = 0;
     $gameStor->tournament = 0;
     $gameStor->phase = 0;
-} elseif($btn == "투입" || $btn == "무명투입" || $btn == "쪼렙투입" || $btn == "일반투입" || $btn == "굇수투입" || $btn == "랜덤투입") {
-    if($btn == "투입") {
-        $query = "select no,name,npc,leadership,strength,intel,explevel,gold,horse,weapon,book from general where no='$gen'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-        $general['gold'] -= $admin['develcost'];
-    } elseif($btn == "무명투입") {
-        $general['no'] = 0;
-        $general['name'] = "무명장수";
-        $general['npc'] = 2;
-        $general['leadership'] = 10;
-        $general['strength'] = 10;
-        $general['intel'] = 10;
-        $general['explevel'] = 10;
-        $general['gold'] = 0;
-    } elseif($btn == "쪼렙투입") {
-        $sel = rand() % 32;
-        $query = "select no,name,npc,leadership,strength,intel,explevel,gold,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by {$tp} limit {$sel},1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-        $general['gold'] -= $admin['develcost'];
-    } elseif($btn == "일반투입") {
-        //참가한 사람 평균치
-        $query = "select AVG({$tp3}) as av from general where tournament=1";
-        $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $avgGen = MYDB_fetch_array($genResult);
-
-        //그 장수보다 높은장수 수
-        $query = "select no from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 and {$tp3}>{$avgGen['av']}";
-        $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $genCount = MYDB_num_rows($genResult);
-
-        $sel = rand() % 32 + $genCount - 8;
-
-        $query = "select no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by {$tp} desc limit {$sel},1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-        $general['gold'] -= $admin['develcost'];
-    } elseif($btn == "굇수투입") {
-        $sel = rand() % 32;
-        $query = "select no,name,npc,leadership,strength,intel,explevel,gold,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by {$tp} desc limit {$sel},1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-        $general['gold'] -= $admin['develcost'];
-    } elseif($btn == "랜덤투입") {
-        $query = "select no,name,npc,leadership,strength,intel,explevel,gold,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by rand() limit 0,1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-        $general['gold'] -= $admin['develcost'];
-    //참가
-    }
+} elseif($btn == "랜덤투입") {
+    $general = $db->queryFirstRow('SELECT no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 order by rand() limit 1');
 
     $occupied = [];
     foreach($db->queryFirstColumn('SELECT grp FROM tournament WHERE grp < 10 GROUP BY grp HAVING count(*)=8') as $grp){
@@ -179,7 +127,6 @@ if($btn == "자동개최설정") {
         ]);
         $db->update('general', [
             'tournament'=>1,
-            'gold'=>$general['gold']
         ], 'no=%i', $general['no']);
     }
 
@@ -189,50 +136,21 @@ if($btn == "자동개최설정") {
         $gameStor->phase = 0;
     }
 
-} elseif($btn == "쪼렙전부투입" || $btn == "일반전부투입" || $btn == "굇수전부투입" || $btn == "랜덤전부투입") {
-    $z = 0;
+} elseif($btn == "랜덤전부투입") {
     $code = [];
-    for($i=0; $i < 8; $i++) {
-        $query = "select grp from tournament where grp='$i'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $grpCount = MYDB_num_rows($result);
-        for($k=$grpCount; $k < 8; $k++) {
-            $code[$z++] = $i * 10 + $k;
+    foreach($db->queryAllLists('SELECT grp, count(*) FROM tournament WHERE 0 <= grp AND grp < 8 GROUP BY grp') as [$grpIdx, $cnt]){
+        foreach(Util::range($cnt, 8) as $grpNo){
+            $code[] = $grpIdx * 10 + $grpNo;
         }
     }
-    //섞기
-    for($i=0; $i < $z; $i++) {
-        $index = rand() % $z;
-        $temp = $code[$i];
-        $code[$i] = $code[$index];
-        $code[$index] = $temp;
-    }
+    $z = count($code);
 
-    for($i=0; $i < $z; $i++) {
+
+    $generals = $db->query('SELECT no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 order by rand() limit %i', $z);
+
+    foreach(Util::range($z) as $i){
         $sel = rand() % 32;
-        if($btn == "쪼렙전부투입") {
-            $query = "select no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by {$tp} limit {$sel},1";
-        } elseif($btn == "일반전부투입") {
-            //참가한 사람 평균치
-            $query = "select AVG({$tp3}) as av from general where tournament=1";
-            $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $avgGen = MYDB_fetch_array($genResult);
-
-            //그 장수보다 높은장수 수
-            $query = "select no from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 and {$tp3}>{$avgGen['av']}";
-            $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $genCount = MYDB_num_rows($genResult);
-
-            $sel += $genCount - 8;
-
-            $query = "select no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by {$tp} desc limit {$sel},1";
-        } elseif($btn == "굇수전부투입") {
-            $query = "select no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by {$tp} desc limit {$sel},1";
-        } else {
-            $query = "select no,name,npc,leadership,strength,intel,explevel,leadership+strength+intel as total,horse,weapon,book from general where tournament=0 and gold>='{$admin['develcost']}' and npc>=2 order by rand() limit 0,1";
-        }
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
+        $general = $generals[$i];
 
         $grp    = intdiv($code[$i], 10);
         $grp_no = $code[$i] % 10;
@@ -250,11 +168,10 @@ if($btn == "자동개최설정") {
             'w'=>$general['weapon'],
             'b'=>$general['book']
         ]);
-        $db->update('general', [
-            'tournament'=>1,
-            'gold'=>$db->sqleval('gold - %i', $admin['develcost'])
-        ], 'no=%i', $general['no']);
     }
+    $db->update('general', [
+        'tournament'=>1,
+    ], 'no=%li', array_column($generals, 'no'));
 
     $gameStor->tournament = 2;
     $gameStor->phase = 0;

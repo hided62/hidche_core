@@ -12,7 +12,7 @@ function MYDB_num_rows(\mysqli_result $result) : int
 }
 
 /**
- * @return mixed[]
+ * @return mixed[]|null
  */
 function MYDB_fetch_array(\mysqli_result $result)
 {

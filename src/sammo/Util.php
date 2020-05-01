@@ -685,8 +685,25 @@ class Util extends \utilphp\util
      * 길이가 다른 경우, 앞의 결과를 먼저 비교한 뒤, 짧은쪽의 값을 null으로 가정하여 길이 처리
      */
     public static function arrayCompare(iterable $lhs, iterable $rhs, ?callable $comp=null){
-        $lhsIter = new \Iterator($lhs);
-        $rhsIter = new \Iterator($rhs);
+        if($lhs instanceof \Traversable){
+            $lhsIter = new \IteratorIterator($lhs);
+        }
+        else if(is_array($lhs)){
+            $lhsIter = new \ArrayIterator($lhs);
+        }
+        else{
+            throw new \InvalidArgumentException('$lhs is not Traversable');
+        }
+        
+        if($rhs instanceof \Traversable){
+            $rhsIter = new \IteratorIterator($rhs);
+        }
+        else if(is_array($rhs)){
+            $rhsIter = new \ArrayIterator($rhs);
+        }
+        else{
+            throw new \InvalidArgumentException('$rhs is not Traversable');
+        }
 
         while($lhsIter->valid() && $rhsIter->valid()){
             $lhsVal = $lhsIter->current();
@@ -759,7 +776,7 @@ class Util extends \utilphp\util
      * @param null|int $to 
      * @param null|int $step 
      * @return \Traversable
-     * @throws InvalidArgumentException 
+     * @throws \InvalidArgumentException 
      */
     public static function range(int $from, ?int $to=null, ?int $step=null):\Traversable{
         if($to === null){
