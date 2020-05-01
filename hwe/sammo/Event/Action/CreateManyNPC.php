@@ -106,12 +106,12 @@ class CreateManyNPC extends \sammo\Event\Action{
         if($genCnt == 1){
             $npcName = $result[0][0];
             $josaRa = \sammo\JosaUtil::pick($npcName, '라');
-            $logger->pushGlobalActionLog("<b>운영자</b>가 <Y>$npcName</>{$josaRa}는 장수를 <S>생성</>하였습니다.");
+            $logger->pushGlobalActionLog("운영자가 <Y>$npcName</>{$josaRa}는 장수를 <S>생성</>하였습니다.");
         }
         else{
-            $logger->pushGlobalActionLog("<b>운영자</b>가 <b>장수 <C>{$genCnt}</>명</b>을 <S>생성</>하였습니다.");
+            $logger->pushGlobalActionLog("운영자가 장수 <C>{$genCnt}</>명을 <S>생성</>하였습니다.");
         }
-        $logger->pushGlobalHistoryLog("<b>운영자</b>가 <b>장수 <C>{$genCnt}</>명</b>을 <S>생성</>했습니다.", \sammo\ActionLogger::NOTICE_YEAR_MONTH);
+        $logger->pushGlobalHistoryLog("운영자가 장수 <C>{$genCnt}</>명을 <S>생성</>했습니다.", \sammo\ActionLogger::NOTICE_YEAR_MONTH);
         $logger->flush();
 
         return [__CLASS__, $result];   
