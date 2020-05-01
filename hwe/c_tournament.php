@@ -23,7 +23,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost']);
 
-$me = $db->queryFirstList('SELECT no,name,tournament from general where owner=%i',$userID);
+$me = $db->queryFirstRow('SELECT no,name,tournament from general where owner=%i',$userID);
 
 switch($admin['tnmt_type']) {
 case 0: $tp = "total";  $tp2 = "전력전"; $tp3 = "leadership+strength+intel"; break;
