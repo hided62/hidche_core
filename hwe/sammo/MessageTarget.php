@@ -38,7 +38,7 @@ class MessageTarget extends Target {
     public static function buildFromArray($arr)
     {
         if(!$arr){
-            return null;
+            throw new \InvalidArgumentException();
         }
         if(!Util::array_get($arr['nation_id'])){
             $arr['nation'] = '재야';
@@ -71,7 +71,7 @@ class MessageTarget extends Target {
         ) = $db->queryFirstList('SELECT `name`, nation, imgsvr, picture FROM general WHERE `no`=%i', $generalID); 
 
         if($generalName === null){
-            return null;
+            throw new \RuntimeException('장수가 없음:'.$generalID);
         }
 
         $icon = GetImageURL($imgsvr, $picture);

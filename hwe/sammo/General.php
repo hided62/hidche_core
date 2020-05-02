@@ -8,15 +8,6 @@ use sammo\WarUnitTrigger as WarUnitTrigger;
 class General implements iAction{
     use LazyVarUpdater;
 
-    /**
-     * @var iAction $nationType
-     * @var iAction $officerLevelObj
-     * @var iAction $specialDomesticObj
-     * @var iAction $specialWarObj
-     * @var iAction $personalityObj
-     * @var iAction[] $itemObjs
-     */
-
     protected $raw = [];
     protected $rawCity = null;
 
@@ -32,11 +23,17 @@ class General implements iAction{
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
+    /** @var iAction */
     protected $nationType = null;
+    /** @var iAction */
     protected $officerLevelObj = null;
+    /** @var iAction */
     protected $specialDomesticObj = null;
+    /** @var iAction */
     protected $specialWarObj = null;
+    /** @var iAction */
     protected $personalityObj = null;
+    /** @var iAction[] */
     protected $itemObjs = [];
 
     protected $lastTurn = null;
@@ -79,8 +76,8 @@ class General implements iAction{
     /**
      * @param array $raw DB row값.
      * @param null|array $city DB city 테이블의 row값
-     * @param int $year 게임 연도
-     * @param int $month 게임 월
+     * @param int|null $year 게임 연도
+     * @param int|null $month 게임 월
      * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, officer_level 정도로 초기화 가능
      */
     public function __construct(array $raw, ?array $rawRank, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct=true){
@@ -270,7 +267,11 @@ class General implements iAction{
     }
 
     function getCrewTypeObj():GameUnitDetail{
-        return GameUnitConst::byID($this->getVar('crewtype'));
+        $crewType = GameUnitConst::byID($this->getVar('crewtype'));
+        if($crewType === null){
+            throw new \InvalidArgumentException('Invalid CrewType:'.$this->getVar('crewtype'));
+        }
+        return $crewType;
     }
 
     function calcRecentWarTurn(int $turnTerm):int{
@@ -292,7 +293,7 @@ class General implements iAction{
             return 0;
         }
 
-        $result = intdiv($secDiff, 60 * $turnTerm);
+        $result = intdiv(Util::toInt($secDiff), 60 * $turnTerm);
         $this->calcCache[$cacheKey] = $result;
         return $result;
     }

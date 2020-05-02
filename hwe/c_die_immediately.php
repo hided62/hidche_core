@@ -25,7 +25,7 @@ $gameStor->cacheValues(['turnterm', 'opentime', 'turntime', 'year', 'month']);
 
 if($gameStor->turntime <= $gameStor->opentime){
     //서버 가오픈시 할 수 있는 행동
-    if(addTurn($general['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::DatetimeNow()){
+    if(addTurn($general['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::now()){
         $availableDieImmediately = true;
     }
 }

@@ -2,6 +2,7 @@
 namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
+use \sammo\Util;
 
 class che_법가 extends \sammo\BaseNation{
 
@@ -26,10 +27,10 @@ class che_법가 extends \sammo\BaseNation{
 
     public function onCalcNationalIncome(string $type, int $amount):int{
         if($type == 'gold'){
-            return $amount * 1.1;
+            return Util::toInt($amount * 1.1);
         }
         if($type == 'pop'){
-            return $amount * 0.8;
+            return Util::toInt($amount * 0.8);
         }
         
         return $amount;

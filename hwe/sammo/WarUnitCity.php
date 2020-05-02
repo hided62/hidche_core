@@ -149,7 +149,7 @@ class WarUnitCity extends WarUnit{
     }
     
 
-    function applyDB($db):bool{
+    function applyDB(\MeekroDB $db):bool{
         $updateVals = $this->getUpdatedValues();
         $this->getLogger()->rollback(); //수비 도시의 로그는 기록하지 않음
 

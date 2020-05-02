@@ -98,8 +98,8 @@ class che_물자원조 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqNationGold(GameConst::$basegold+($goldAmount>0)?1:0),
-            ConstraintHelper::ReqNationRice(GameConst::$baserice+($riceAmount>0)?1:0),
+            ConstraintHelper::ReqNationGold(GameConst::$basegold+(($goldAmount>0)?1:0)),
+            ConstraintHelper::ReqNationRice(GameConst::$baserice+(($riceAmount>0)?1:0)),
             ConstraintHelper::ReqNationValue('surlimit', '외교제한', '==', 0, '외교제한중입니다.'),
             ConstraintHelper::ReqDestNationValue('surlimit', '외교제한', '==', 0, '상대국이 외교제한중입니다.'),
         ];

@@ -143,7 +143,11 @@ class WarUnit{
     }
 
     function getLogger():ActionLogger{
-        return $this->getGeneral()->getLogger();
+        $logger = $this->getGeneral()->getLogger();
+        if($logger === null){
+            throw new \RuntimeException();
+        }
+        return $logger;
     }
 
     function getKilled():int{

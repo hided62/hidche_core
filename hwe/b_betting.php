@@ -36,7 +36,7 @@ if ($con >= 2) {
 }
 
 switch ($admin['tnmt_type']) {
-default: throw new \RuntimeException('Invalid tnmt_type');break;
+default: throw new \RuntimeException('Invalid tnmt_type');
 case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "total"; $tp2 = "종합"; $tp3 = "total"; break;
 case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "leadership"; $tp2 = "통솔"; $tp3 = "leadership"; break;
 case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "strength"; $tp2 = "무력"; $tp3 = "strength"; break;

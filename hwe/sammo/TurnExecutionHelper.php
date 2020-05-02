@@ -4,9 +4,7 @@ namespace sammo;
 use \Symfony\Component\Lock;
 class TurnExecutionHelper
 {
-    /**
-     * @var General $generalObj;
-     */
+    /** @var General*/
     protected $generalObj;
 
     public function __construct(General $general)
@@ -267,17 +265,16 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             }
 
             $autorunMode = false;
-            $tryAutorun = false;
+            $ai = null;
 
             if($general->getVar('npc') >= 2 || ($autorun_user['limit_minutes']??false)){
-                $tryAutorun = true;
                 $ai = new GeneralAI($turnObj->getGeneral());
             }
             
             if(!$turnObj->processBlocked()){
                 $turnObj->preprocessCommand();
                 if($hasNationTurn){
-                    if($tryAutorun){
+                    if($ai){
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
                         LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
                     }
@@ -287,7 +284,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
                 }
 
-                if($tryAutorun){
+                if($ai){
                     $newGeneralCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
                     if($generalCommandObj !== $newGeneralCommandObj){
                         $autorunMode = true;
@@ -347,7 +344,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
 
-        $maxActionTime = ini_get('max_execution_time');
+        $maxActionTime = Util::toInt(ini_get('max_execution_time'));
         if($maxActionTime == 0){
             $maxActionTime = 60;
         }

@@ -331,7 +331,7 @@ function checkSecretMaxPermission($penalty){
     return $secretMax;
 }
 
-function checkSecretPermission($me, $checkSecretLimit=true){
+function checkSecretPermission(array $me, $checkSecretLimit=true){
     if(!key_exists('penalty', $me) || !key_exists('permission', $me)){
         trigger_error ('canAccessSecret() 함수에 필요한 인자가 부족');
     }
@@ -1656,7 +1656,7 @@ function nextRuler(General $general) {
 
 
     if(!$candidate){
-        DeleteConflict($general['nation']);
+        DeleteConflict($general->getNationID());
         deleteNation($general);
         return;
     }

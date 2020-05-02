@@ -86,7 +86,7 @@ if(in_array($stateOpt, ['try_destroy_src', 'try_destroy_dest'])){
         'aux'=>Json::encode($aux)
     ], 'no=%i', $letterNo);
     while(true){
-        $deleteLetter = $db->queryFirstRow('SELECT prev_no, aux FROM ng_diplomacy WHERE no = %i AND state = \'replaced\'', $currentLetterNo);
+        $deleteLetter = $db->queryFirstRow('SELECT prev_no, aux FROM ng_diplomacy WHERE no = %i AND state = \'replaced\'', $letterNo);
         if(!$deleteLetter){
             break;
         }

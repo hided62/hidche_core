@@ -28,6 +28,8 @@ class che_정착장려 extends Command\GeneralCommand{
     static protected $actionKey = '인구';
     static protected $actionName = '정착 장려';
 
+    protected $reqRice;
+
     protected function argTest():bool{
         $this->arg = null;
         return true;

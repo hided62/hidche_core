@@ -2,6 +2,8 @@
 namespace sammo;
 
 class WarUnitGeneral extends WarUnit{
+    protected $raw;
+    
     function __construct(General $general, array $rawNation, bool $isAttacker){
         $this->general = $general;
         $this->raw = $general->getRaw();
@@ -301,10 +303,7 @@ class WarUnitGeneral extends WarUnit{
         $this->checkStatChange();
     }
 
-    /**
-     * @param \MeekroDB $db
-     */
-    function applyDB($db):bool{
+    function applyDB(\MeekroDB $db):bool{
         $affected = $this->getGeneral()->applyDB($db);
         $this->getLogger()->flush();
         return $affected;

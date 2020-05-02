@@ -567,7 +567,7 @@ class Util extends \utilphp\util
      * 
      * @param array $array 배열. 1차원 배열 또는 2차원 배열
      * @param int|string|null $key 2차원 배열에서 참조할 키.
-     * @return int|float 합계
+     * @return array
      */
     public static function arrayGroupBy(array $array, $key, bool $preserveRowKey=false) {
         $result = array();

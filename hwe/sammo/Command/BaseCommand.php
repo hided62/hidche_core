@@ -14,10 +14,6 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 abstract class BaseCommand{
-    /**
-     * @var General|null $generalObj
-     * @var General|null $destGeneralObj
-     */
     static protected $actionName = 'CommandName';
     static public $reqArg = false;
 
@@ -253,7 +249,7 @@ abstract class BaseCommand{
         return static::$actionName;
     }
 
-    public function getLogger():ActionLogger{
+    public function getLogger():?ActionLogger{
         return $this->logger;
     }
 
@@ -403,7 +399,6 @@ abstract class BaseCommand{
     }
     public function getForm():string{
         throw new \sammo\MustNotBeReachedException();
-        return '';
     }
 
     public function getLastTurn():LastTurn{

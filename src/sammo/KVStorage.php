@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use MeekroDBException;
+
 class KVStorage{
     private $db;
     private $tableName;
@@ -31,7 +33,7 @@ class KVStorage{
     }
     
     public function __set($key, $value) {
-        return $this->setValue($key, $value);
+        $this->setValue($key, $value);
     }
 
     public function __unset($key){
@@ -63,7 +65,9 @@ class KVStorage{
     }
 
     public function invalidateCacheValue($key):self{
-        $key = mb_strtolower($key);
+        if(is_string($key)){
+            $key = mb_strtolower($key);
+        }
         if($this->cacheData === null){
             return $this;
         }
@@ -192,8 +196,15 @@ class KVStorage{
         return $result;
     }
 
+    /**
+     * @param string|int $key 
+     * @param bool $onlyCache 
+     * @return mixed|null 
+     */
     public function getValue($key, bool $onlyCache=false){
-        $key = mb_strtolower($key);
+        if(is_string($key)){
+            $key = mb_strtolower($key);
+        }
         if($this->cacheData !== null && ($onlyCache || key_exists($key, $this->cacheData))){
             return $this->cacheData[$key] ?? null;
         }
@@ -205,8 +216,17 @@ class KVStorage{
         return $value;
     }
 
+    /**
+     * 
+     * @param string|int $key 
+     * @param mixed $value 
+     * @return KVStorage 
+     * @throws MeekroDBException 
+     */
     public function setValue($key, $value):self{
-        $key = mb_strtolower($key);
+        if(is_string($key)){
+            $key = mb_strtolower($key);
+        }
         if($value === null){
             return $this->deleteValue($key);
         }
@@ -217,8 +237,17 @@ class KVStorage{
         return $this->setDBValue($key, $value);
     }
 
+    /**
+     * 
+     * @param string|int $key 
+     * @param mixed $value 
+     * @return KVStorage 
+     * @throws MeekroDBException 
+     */
     public function deleteValue($key):self{
-        $key = mb_strtolower($key);
+        if(is_string($key)){
+            $key = mb_strtolower($key);
+        }
         if(isset($this->cacheData[$key])){
             unset($this->cacheData[$key]);
         }

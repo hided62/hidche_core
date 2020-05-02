@@ -4,7 +4,7 @@ namespace sammo;
 /**
  * 내정 커맨드 사용시 성공 확률 계산
  * 
- * @param array $general 장수 정보
+ * @param General $general 장수 정보
  * @param string $type 내정 커맨드 타입, 'leadership' = 통솔 기반, 'strength' = 무력 기반, 'intel' = 지력 기반
  * 
  * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)

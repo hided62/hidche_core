@@ -24,9 +24,6 @@ use \sammo\Constraint\ConstraintHelper;
 
 
 class che_징병 extends Command\GeneralCommand{
-    /**
-     * @var \sammo\GameUnitDetail $reqCrewType
-     */
     static protected $actionName = '징병';
     static protected $costOffset = 1;
     static public $reqArg = true;

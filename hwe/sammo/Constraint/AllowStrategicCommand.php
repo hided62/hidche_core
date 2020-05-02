@@ -2,7 +2,7 @@
 
 namespace sammo\Constraint;
 
-class AllowWar extends Constraint{
+class AllowStrategicCommand extends Constraint{
     const REQ_VALUES = Constraint::REQ_NATION;
 
     public function checkInputValues(bool $throwExeception=true):bool{

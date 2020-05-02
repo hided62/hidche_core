@@ -52,9 +52,9 @@ class Session
     public function restart(): Session
     {
         //NOTE: logout 프로세스는 아예 세션을 날려버리기도 하므로, 항상 안전하게 session_restart가 가능함을 보장하지 않음.
-        ini_set('session.use_only_cookies', false);
-        ini_set('session.use_cookies', false);
-        ini_set('session.use_trans_sid', false);
+        ini_set('session.use_only_cookies', 'false');
+        ini_set('session.use_cookies', 'false');
+        ini_set('session.use_trans_sid', 'false');
         ini_set('session.cache_limiter', "none");
         session_id($this->sessionID);
         session_start(); // second session_start

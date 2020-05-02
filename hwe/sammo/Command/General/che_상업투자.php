@@ -29,6 +29,8 @@ class che_상업투자 extends Command\GeneralCommand{
     static protected $actionName = '상업 투자';
     static protected $debuffFront = 0.5;
 
+    protected $reqGold;
+
     protected function argTest():bool{
         $this->arg = null;
         return true;

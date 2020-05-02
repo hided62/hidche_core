@@ -8,9 +8,7 @@ use sammo\Scenario\NPC;
 
 class GeneralAI
 {
-    /**
-     * @var General $general
-     */
+    /** @var General */
     protected $general;
     /** @var array */
     protected $city;
@@ -92,8 +90,12 @@ class GeneralAI
         if ($general->getRawCity() === null) {
             $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
             $general->setRawCity($city);
+            $this->city = $city;
         }
-        $this->city = $general->getRawCity();
+        else{
+            $this->city = $general->getRawCity();
+        }
+        
         $this->nation = $db->queryFirstRow(
             'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set,type,aux FROM nation WHERE nation = %i',
             $general->getNationID()
@@ -496,7 +498,7 @@ class GeneralAI
             return null;
         }
 
-        $turnList = General::getReservedTurnByGeneralList(array_keys($generalCadidates), 0, $this->env);
+        $turnList = General::getReservedTurnByGeneralList($generalCadidates, 0, $this->env);
         $generalCadidates = array_filter($generalCadidates, function(General $general)use($turnList){
             $generalID = $general->getID();
             if($turnList[$generalID] instanceof Command\General\che_징병){
@@ -2898,8 +2900,6 @@ class GeneralAI
                 'amount' => GameConst::$maxResourceActionAmount
             ]);
         }
-
-        return null;
     }
 
     protected function do중립(): GeneralCommand
@@ -3205,6 +3205,9 @@ class GeneralAI
                 return $reservedCommand;
             }
             $result = $this->do집합();
+            if(!$result){
+                throw new MustNotBeReachedException();
+            }
             $result->reason='do집합';
             return $result;
         }

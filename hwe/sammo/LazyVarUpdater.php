@@ -4,6 +4,7 @@ namespace sammo;
 trait LazyVarUpdater{
     protected $raw = [];
     protected $updatedVar = [];
+    protected $auxVar = null;
     protected $auxUpdated = false;
 
     function getRaw(bool $extractAux=false):array{

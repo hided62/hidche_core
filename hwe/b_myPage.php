@@ -88,9 +88,9 @@ $me->applyDB($db);
 if($gameStor->turntime <= $gameStor->opentime){
     //서버 가오픈시 할 수 있는 행동
 
-    if($me['npc'] == 0){
+    if($me->getVar('npc') == 0){
         $showDieImmediatelyBtn = true;
-        if(addTurn($me['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::DatetimeNow()){
+        if(addTurn($me->getVar('lastrefresh'), $gameStor->turnterm, 2) <= TimeUtil::now()){
             $availableDieImmediately = true;
         }
     }

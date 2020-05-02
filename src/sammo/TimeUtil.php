@@ -76,13 +76,13 @@ class TimeUtil
         return date('H:i:s', strtotime('00:00:00') + $second);
     }
 
-    public static function today()
+    public static function today():string
     {
         $obj = new \DateTime();
         return $obj->format('Y-m-d');
     }
 
-    public static function now(bool $withFraction=false)
+    public static function now(bool $withFraction=false):string
     {
         $obj = new \DateTime();
         if(!$withFraction){
@@ -91,7 +91,7 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function nowAddDays($day, bool $withFraction=false)
+    public static function nowAddDays($day, bool $withFraction=false):string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($day * 3600 * 24));
@@ -101,7 +101,7 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function nowAddHours($hour, bool $withFraction=false)
+    public static function nowAddHours($hour, bool $withFraction=false):string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($hour * 3600));
@@ -111,7 +111,7 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function nowAddMinutes($minute, bool $withFraction=false)
+    public static function nowAddMinutes($minute, bool $withFraction=false):string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($minute * 60));
@@ -121,7 +121,7 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function nowAddSeconds($second, bool $withFraction=false)
+    public static function nowAddSeconds($second, bool $withFraction=false):string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($second));

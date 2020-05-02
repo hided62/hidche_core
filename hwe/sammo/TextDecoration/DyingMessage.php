@@ -6,6 +6,7 @@ use \sammo\Util;
 use \sammo\JosaUtil;
 
 class DyingMessage{
+    private $general;
     private $name;
     private $realName;
     private $npc;

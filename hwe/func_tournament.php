@@ -28,6 +28,7 @@ function processTournament() {
         case 5: $unit =  30; break;
         case 6: $unit =  15; break;
         case 7: $unit =   5; break;
+        default: throw new MustNotBeReachedException();
         }
 
         //업데이트 횟수
@@ -617,6 +618,7 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
     case  8: $offset = 30; $turn = 3; $next = 8; break;
     case  4: $offset = 40; $turn = 1; $next = 9; break;
     case  2: $offset = 50; $turn = 0; $next = 0; break;
+    default: throw new MustNotBeReachedException();
     }
 
     $grp = $phase + $offset;
@@ -662,6 +664,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
     case 1: $tp = "통솔전"; $tp2 = "tl"; break;
     case 2: $tp = "일기토"; $tp2 = "ts"; break;
     case 3: $tp = "설전";   $tp2 = "ti"; break;
+    default: throw new MustNotBeReachedException();
     }
 
     //16강자 명성 돈
@@ -1120,6 +1123,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $gen1resKey = 'd';
         $gen2resKey = 'd';
         break;
+    default: new MustNotBeReachedException();
     }
 
     $db->update('rank_data', [

@@ -5,7 +5,7 @@ use \sammo\DB;
 use \sammo\GameConst;
 use \sammo\Json;
 
-class AllowJoinDestNation extends Constraint{
+class ExistsAllowJoinNation extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARRAY_ARG;
 
     protected $relYear;

@@ -89,7 +89,9 @@ class ReqGeneralValue extends Constraint{
                 return '부족합니다.';
             },
             '>'=>function($target, $src){
-                return $target > $src;
+                if($target > $src){
+                    return true;
+                }
                 if($src == 0){
                     return '없습니다';
                 }
