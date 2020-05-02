@@ -47,7 +47,7 @@ class AllowDiplomacyBetweenStatus extends Constraint{
             'SELECT state FROM diplomacy WHERE me = %i AND you = %i AND `state` IN %li LIMIT 1', 
             $this->nationID, 
             $this->destNationID, 
-            array_keys($this->allowDipCodeList)
+            $this->allowDipCodeList
         );
         if($state !== null){
             return true;

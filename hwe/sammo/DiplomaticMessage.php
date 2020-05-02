@@ -98,38 +98,24 @@ class DiplomaticMessage extends Message{
     }
 
     protected function cancelNA(){
-        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->cancelNA();
-        if($chk[0] !== self::ACCEPTED){
-            return $chk;
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
+        
+        $commandObj = buildNationCommandClass('che_불가침파기수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
+            'destNationID'=>$this->src->nationID,
+            'destGeneralID'=>$this->src->generalID,
+        ]);
+
+        $this->diplomacyDetail = $commandObj->getBrief();
+
+        if(!$commandObj->isRunnable()){
+            return [self::DECLINED, $commandObj->getFailString()];
         }
 
-        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaWa} <M>조약 파기</>에 합의.";
+        $commandObj->run();
 
-        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【파기】</b></><D><b>{$this->dest->nationName}</b></>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaWa} 불가침을 파기 하였습니다.";
-        
-        $josaWa = JosaUtil::pick($this->dest->nationName, '와');
-        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>{$josaWa} 파기에 성공했습니다.";
-
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>{$josaWa} 파기에 합의했습니다.";
-
-        $josaWa = JosaUtil::pick($this->dest->nationName, '와');
-        pushGeneralHistory($this->src->generalID, ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>{$josaWa} 파기 성공"]);
-
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        pushGeneralHistory($this->dest->generalID, ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaWa} 파기 수락"]);
-
-        pushGenLog($this->dest->generalID, $mylog);
-        pushGenLog($this->src->generalID, $youlog);
-        pushGeneralPublicRecord($alllog, $helper->year, $helper->month);
-        pushWorldHistory($history, $helper->year, $helper->month);
-
-        return $chk;
+        return [self::ACCEPTED, ''];
     }
 
     protected function stopWar(){

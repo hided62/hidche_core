@@ -286,6 +286,10 @@ class Message
             return '5분 이내의 메시지만 삭제할 수 있습니다.';
         }
 
+        if(!($msgObj->msgOption['deletable']??true)){
+            return '삭제할 수 없는 메시지입니다.';
+        }
+
         $msgOption = [
             'hide'=>true,   
             'silence'=>true,
