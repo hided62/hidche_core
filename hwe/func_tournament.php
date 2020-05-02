@@ -1018,26 +1018,26 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $tDamage1 = $damage1;   $tDamage2 = $damage2;
         $tEnergy1 = $energy1;   $tEnergy2 = $energy2;
         if($energy1 <= 0 && $energy2 <= 0) {
-            $r1 = $tEnergy1 / $tDamage1;
-            $r2 = $tEnergy2 / $tDamage2;
+            $r1 = $tEnergy1 / Util::valueFit($tDamage1, 1);
+            $r2 = $tEnergy2 / Util::valueFit($tDamage2, 1);
 
             if($r1 > $r2) {
-                $offset = Util::round($tEnergy2*$tDamage1/$tDamage2);
+                $offset = Util::round($tEnergy2*$tDamage1/Util::valueFit($tDamage2,1));
                 $damage1 += $offset;    $energy1 -= $offset;
                 $damage2 += $tEnergy2;  $energy2 = 0;
             } else {
-                $offset = Util::round($tEnergy1*$tDamage2/$tDamage1);
+                $offset = Util::round($tEnergy1*$tDamage2/Util::valueFit($tDamage1,1));
                 $damage2 += $offset;    $energy2 -= $offset;
                 $damage1 += $tEnergy1;  $energy1 = 0;
             }
         } elseif($energy1 * $energy2 <= 0) {
             if($energy2 < 0) {
-                $offset = Util::round($tEnergy2*$tDamage1/$tDamage2);
+                $offset = Util::round($tEnergy2*$tDamage1/Util::valueFit($tDamage2,1));
                 $damage1 += $offset;    $energy1 -= $offset;
                 $damage2 += $tEnergy2;  $energy2 = 0;
             }
             if($energy1 < 0) {
-                $offset = Util::round($tEnergy1*$tDamage2/$tDamage1);
+                $offset = Util::round($tEnergy1*$tDamage2/Util::valueFit($tDamage1,1));
                 $damage2 += $offset;    $energy2 -= $offset;
                 $damage1 += $tEnergy1;  $energy1 = 0;
             }
