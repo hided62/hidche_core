@@ -1345,7 +1345,7 @@ function CheckHall($no) {
     $calcVar['tirate'] = $tiw/$ti;
     $calcVar['betrate'] = $betWinGold/$betGold;
     $calcVar['winrate'] = $win/$war;
-    $calcVar['killrate'] = $kill/($kill+$death);
+    $calcVar['killrate'] = $kill/$death;
     
     if($generalObj instanceof DummyGeneral){
         return;
