@@ -217,6 +217,7 @@ function checkCommandArg(?array $arg):?string{
         'integer'=>[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
             'amount', 'colorType',
+            'srcArmType', 'destArmType', //숙련전환 전용
         ],
         'boolean'=>[
             'isGold', 'buyRice',

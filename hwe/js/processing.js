@@ -43,6 +43,7 @@ window.submitAction = function(){
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
             'amount', 'colorType', 
             'year', 'month',
+            'srcArmType', 'destArmType', //숙련전환 전용
         ],
         'boolean':[
             'isGold', 'buyRice',

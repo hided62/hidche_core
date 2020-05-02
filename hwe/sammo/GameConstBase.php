@@ -277,7 +277,7 @@ class GameConstBase
             //'che_내정특기초기화',
             //'che_전투특기초기화',
             'che_단련',
-            //'che_숙련전환',
+            'che_숙련전환',
             'che_견문',
             'che_장비매매',
             'che_군량매매',
