@@ -48,14 +48,27 @@ if($btn == '참가') {
     }
     $general['gold'] -= $admin['develcost'];
 
-    $occupied = [];
-    foreach($db->queryFirstColumn('SELECT grp FROM tournament WHERE grp < 10 GROUP BY grp HAVING count(*)=8') as $grp){
-        $occupied[$grp] = true;
+    $freeSlot = [
+        1=>8,
+        2=>8,
+        3=>8,
+        4=>8,
+        5=>8,
+        6=>8,
+        7=>8,
+        8=>8,
+    ];
+    foreach($db->query('SELECT count(*) as cnt, grp FROM tournament WHERE grp < 10 GROUP BY grp') as $grpInfo){
+        if($grpInfo['cnt'] == 8){
+            unset($freeSlot[$grpInfo['grp']]);
+        }
+        $freeSlot[$grpInfo['grp']] = 8 - $grpInfo['cnt'];
     }
-    $grpCount = count($occupied);
+
+    $fullGrpCnt = 8 - count($freeSlot);
     
-    if($grpCount < 8) {
-        $grp = Util::choiceRandom(array_keys($occupied));
+    if($freeSlot) {
+        $grp = Util::choiceRandom(array_keys($freeSlot));
         $grpMemberCount = $db->queryFirstField('SELECT count(*) FROM tournament WHERE grp=%i', $grp);
         $db->insert('tournament', [
             'no'=>$general['no'],
