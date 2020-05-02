@@ -79,7 +79,7 @@ $msg = new Message(
     $msgText,
     $now,
     $unlimited,
-    ['invalid' => true]
+    ['deletable' => false]
 );
 $msgID = $msg->send();
 

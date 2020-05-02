@@ -26,8 +26,8 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_불가침수락 extends Command\NationCommand{
-    static protected $actionName = '불가침 수락';
+class che_종전수락 extends Command\NationCommand{
+    static protected $actionName = '종전 수락';
     static public $reqArg = true;
 
     protected function argTest():bool{
@@ -60,28 +60,9 @@ class che_불가침수락 extends Command\NationCommand{
             return false;
         }
 
-        if(!key_exists('year', $this->arg) || !key_exists('month', $this->arg) ){
-            return false;
-        }
-        $year = $this->arg['year'];
-        $month = $this->arg['month'];
-        if(!is_int($year) || !is_int($month)){
-            return false;
-        }
-
-        if($month < 1 || 12 < $month){
-            return false;
-        }
-
-        if($year < $this->env['startyear']){
-            return false;
-        }
-
         $this->arg = [
             'destNationID'=>$destNationID,
             'destGeneralID'=>$destGeneralID,
-            'year'=>$year,
-            'month'=>$month,
         ];
         return true;
     }
@@ -99,42 +80,22 @@ class che_불가침수락 extends Command\NationCommand{
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID']);
 
-        //NOTE: 개월에서 기한으로 바뀜
-        $year = $this->arg['year'];
-        $month = $this->arg['month'];
-
-        $currentMonth = $env['year'] * 12 + $env['month'] - 1;
-        $reqMonth = $year *12 + $month - 1;
-
         $nationID = $this->nation['nation'];
 
         $this->reservableConstraints = [
             ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
         ];
 
-        if ($reqMonth <= $currentMonth) {
-            $this->runnableConstraints = [
-                ConstraintHelper::AlwaysFail('이미 기한이 지났습니다.')
-            ];
-            return;
-        }        
-
         $this->runnableConstraints=[
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(), 
-            ConstraintHelper::OccupiedCity(),
-            ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::ExistsDestGeneral(),
             ConstraintHelper::ReqDestNationValue('nation', '소속', '==', $this->destGeneralObj->getNationID(), '제의 장수가 국가 소속이 아닙니다'),
-            ConstraintHelper::DisallowDiplomacyBetweenStatus([
-                0 => '아국과 이미 교전중입니다.',
-                1 => '아국과 이미 선포중입니다.',
-                3 => '아국과 외교 진행중입니다.',
-                4 => '아국과 외교 진행중입니다.',
-                5 => '아국과 외교 진행중입니다.',
-                6 => '아국과 외교 진행중입니다.',
-            ]),
+            ConstraintHelper::AllowDiplomacyBetweenStatus(
+                [0, 1],
+                '상대국과 선포, 전쟁중이지 않습니다.'
+            ),
         ];
 
     }
@@ -154,9 +115,7 @@ class che_불가침수락 extends Command\NationCommand{
     public function getBrief():string{
         $commandName = $this->getName();
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
-        $year = $this->arg['year'];
-        $month = $this->arg['month'];
-        return "{$year}년 {$month}월까지 불가침 합의";
+        return "{$destNationName}국과 종전 합의";
     }
 
     public function run():bool{
@@ -168,6 +127,7 @@ class che_불가침수락 extends Command\NationCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
+        $generalName = $general->getName();
 
         $nation = $this->nation;
         $nationID = $nation['nation'];
@@ -177,31 +137,31 @@ class che_불가침수락 extends Command\NationCommand{
         $destNationID = $destNation['nation'];
         $destNationName = $destNation['name'];
 
-        $year = $this->arg['year'];
-        $month = $this->arg['month'];
-
         $logger = $general->getLogger();
         $destLogger = $this->destGeneralObj->getLogger();
-        
-        $currentMonth = $env['year'] * 12 + $env['month'] - 1;
-        $reqMonth = $year *12 + $month - 1;
 
         $db->update('diplomacy',[
-            'state'=>7,
-            'term'=>$reqMonth - $currentMonth
+            'state'=>2,
+            'term'=>0
         ],
         '(me=%i AND you=%i) OR (you=%i AND me=%i)',
         $nationID, $destNationID,
         $nationID, $destNationID);
 
+        $josaYiGeneral = JosaUtil::pick($generalName, '이');
+        $josaYiNation = JosaUtil::pick($nationName, '이');
+
         $josaWa = JosaUtil::pick($destNationName, '와');
-        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaWa} <C>$year</>년 <C>{$month}</>월까지 불가침에 성공했습니다.", ActionLogger::PLAIN);
-        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
+        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaWa} 종전에 합의했습니다.", ActionLogger::PLAIN);
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaWa} 종전 수락");
+
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYiGeneral} <D><b>{$destNationName}</b></>{$josaWa} <M>종전 합의</> 하였습니다.");
+        $logger->pushGlobalHistoryLog("<Y><b>【종전】</b></><D><b>{$nationName}</b></>{$josaYiNation} <D><b>{$destNationName}</b></>{$josaWa} <M>종전 합의</> 하였습니다.");
 
 
         $josaWa = JosaUtil::pick($nationName, '와');
-        $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa} <C>$year</>년 <C>{$month}</>월까지 불가침에 성공했습니다.", ActionLogger::PLAIN);
-        $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
+        $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa} 종전에 성공했습니다.", ActionLogger::PLAIN);
+        $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} 종전 성공");
 
         $general->applyDB($db);
         $destLogger->flush();

@@ -308,7 +308,7 @@ class GameConstBase
             'che_물자원조',
             'che_불가침제의',
             'che_선전포고',
-            //'che_종전제의',
+            'che_종전제의',
             //'che_파기제의',
         ],
         '특수'=>[

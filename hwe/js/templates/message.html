@@ -12,7 +12,7 @@
     </div>
     <div class="msg_body">
         <div class="msg_header">
-            <%if(!this.option.action && src.id == myGeneralID && now <= last5min && invalidType == 'msg_valid'){%>
+            <%if(!this.option.action && src.id == myGeneralID && now <= last5min && invalidType == 'msg_valid' && !deletable){%>
                 <button type="button" data-erase_until="<%last5min%>" class="btn btn btn-outline-warning btn-sm btn-delete-msg" style='float:right'>❌</button>
             <%}%>
             <%if(msgType == 'private') {%>

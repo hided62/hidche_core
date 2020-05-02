@@ -666,37 +666,47 @@ class General implements iAction{
             $this->setVar('last_turn', $this->getResultTurn()->toJson());
         }
         $updateVals = $this->getUpdatedValues();
-
-        if(!$updateVals){
-            return false;
-        }
+        
 
         $generalID = $this->getID();
-        
-        $db->update('general', $updateVals, 'no=%i', $generalID);
-        if(key_exists('nation', $updateVals)){
-            $db->update('rank_data', [
-                'nation_id'=>$updateVals['nation']
-            ], 'general_id = %i', $generalID);
+        $result = false;
+
+        if($updateVals){
+            $db->update('general', $updateVals, 'no=%i', $generalID);
+            $result |= $db->affectedRows() > 0;
+            if(key_exists('nation', $updateVals)){
+                $db->update('rank_data', [
+                    'nation_id'=>$updateVals['nation']
+                ], 'general_id = %i', $generalID);
+                $result = true;
+            }
+            $this->flushUpdateValues();
         }
 
-        foreach($this->rankVarIncrease as $rankKey => $rankVal){
-            $db->update('rank_data', [
-                'value'=>$db->sqleval('value + %i', $rankVal)
-            ], 'general_id = %i AND type = %s', $generalID, $rankKey);
+        if($this->rankVarIncrease){
+            foreach($this->rankVarIncrease as $rankKey => $rankVal){
+                $db->update('rank_data', [
+                    'value'=>$db->sqleval('value + %i', $rankVal)
+                ], 'general_id = %i AND type = %s', $generalID, $rankKey);
+            }
+            $result = true;
         }
-        foreach($this->rankVarSet as $rankKey => $rankVal){
-            $db->update('rank_data', [
-                'value'=>$rankVal
-            ], 'general_id = %i AND type = %s', $generalID, $rankKey);
-            $this->rankVarRead[$rankKey] = $rankVal;
+        
+        if($this->rankVarSet){
+            foreach($this->rankVarSet as $rankKey => $rankVal){
+                $db->update('rank_data', [
+                    'value'=>$rankVal
+                ], 'general_id = %i AND type = %s', $generalID, $rankKey);
+                $this->rankVarRead[$rankKey] = $rankVal;
+            }
+            $result = true;
         }
+        
         $this->rankVarIncrease = [];
         $this->rankVarSet = [];
 
         $this->getLogger()->flush();
-        $this->flushUpdateValues();
-        return $db->affectedRows() > 0;
+        return $result;
     }
 
     function checkStatChange():bool{

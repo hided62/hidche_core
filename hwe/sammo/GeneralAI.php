@@ -2923,6 +2923,9 @@ class GeneralAI
 
 
         $cmd = buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
+        if(!$cmd->isRunnable()){
+            return buildGeneralCommandClass('che_물자조달', $this->general, $this->env);
+        }
         return $cmd;
     }
 

@@ -29,7 +29,7 @@ if ($msgID === null || !is_bool($msgResponse)) {
     ]);
 }
 
-$general = DB::db()->queryFirstRow('select `no`, `name`, `nation`, `nations`, `officer_level`, `npc`, `gold`, `rice`, `troop` from `general` where `no` = %i', $generalID);
+$general = DB::db()->queryFirstRow('SELECT `no`, `name`, `nation`, `officer_level`, `npc`, `gold`, `rice`, `troop`, `aux` from `general` where `no` = %i', $generalID);
 if(!$general){
     Json::die([
         'result'=>false,

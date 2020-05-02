@@ -294,27 +294,6 @@ class Diplomacy{
         return $chk;
     }
 
-    public function stopWar(){
-        $chk = $this->checkValidNation();
-        $chk = $this->checkInWar($chk);
-
-        [$result, $reason] = $chk;
-        if($result !== DiplomaticMessage::ACCEPTED){
-            return $chk;
-        }
-
-        $db = DB::db();
-        $db->update('diplomacy',[
-            'state'=>2,
-            'term'=>0
-        ],
-        '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
-        $this->srcNation['nation'], $this->destNation['nation'],
-        $this->srcNation['nation'], $this->destNation['nation']);
-
-        return $chk;
-    }
-
     public function acceptMerge(int $srcGeneral,  int $destGeneral){
         $chk = $this->checkValidNation();
         $chk = $this->checkDiplomacyLimit($chk);
