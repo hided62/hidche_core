@@ -9,7 +9,7 @@ class ConstraintHelper{
     }
 
     static function AllowDiplomacyStatus(int $nationID, array $allowList, string $errMsg):array{
-        return [__FUNCTION__, [$nationID, $disallowList, $errMsg]];
+        return [__FUNCTION__, [$nationID, $allowList, $errMsg]];
     }
 
     static function AllowDiplomacyBetweenStatus(array $allowDipCodeList, string $errMsg):array{
