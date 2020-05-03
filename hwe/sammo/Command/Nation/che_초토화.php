@@ -67,7 +67,7 @@ class che_초토화 extends Command\NationCommand{
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::SuppliedDestCity(),
             ConstraintHelper::ReqNationValue('capital', '수도', '!=', $this->destCity['city'], '수도입니다.'),
-            ConstraintHelper::ReqNationValue('surlimit', '제한 턴', '>', 0, '외교제한 턴이 남아있습니다.'),
+            ConstraintHelper::ReqNationValue('surlimit', '제한 턴', '==', 0, '외교제한 턴이 남아있습니다.'),
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 2, 7
             ], '평시에만 가능합니다.'),
