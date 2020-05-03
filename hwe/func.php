@@ -1633,7 +1633,7 @@ function nextRuler(General $general) {
     //npc or npc유저인 경우 후계 찾기
     if($general->getVar('npc') > 0) {
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
+            'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and 1 <= npc and npc<=3 order by npcmatch2,rand() LIMIT 1',
             $general->getVar('affinity'),
             $general->getVar('affinity'),
             $general->getVar('affinity'),
@@ -1642,13 +1642,13 @@ function nextRuler(General $general) {
     }
     if(!$candidate){
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,npc,officer_level FROM general WHERE nation=%i and officer_level!= 12 AND officer_level >= 9 ORDER BY officer_level DESC LIMIT 1',
+            'SELECT no,name,npc,officer_level FROM general WHERE nation=%i and officer_level!= 12 AND officer_level >= 9 and npc != 5 ORDER BY officer_level DESC LIMIT 1',
             $nationID
         );
     }
     if(!$candidate){
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,npc,officer_level FROM general WHERE nation=%i and officer_level!= 12 ORDER BY dedication DESC LIMIT 1',
+            'SELECT no,name,npc,officer_level FROM general WHERE nation=%i and officer_level!= 12 and npc != 5 ORDER BY dedication DESC LIMIT 1',
             $nationID
         );
     }

@@ -15,6 +15,10 @@ class ConstraintHelper{
     static function AllowDiplomacyBetweenStatus(array $allowDipCodeList, string $errMsg):array{
         return [__FUNCTION__, [$allowDipCodeList, $errMsg]];
     }
+
+    static function AllowDiplomacyWithTerm(int $allowDipCode, int $allowMinTerm, string $errMsg):array{
+        return [__FUNCTION__, [$allowDipCode, $allowMinTerm, $errMsg]];
+    }
     
     static function AllowJoinAction():array{
         return [__FUNCTION__];

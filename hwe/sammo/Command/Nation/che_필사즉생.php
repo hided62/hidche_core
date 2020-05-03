@@ -123,11 +123,9 @@ class che_필사즉생 extends Command\NationCommand{
         $logger->pushGeneralHistoryLog('<M>필사즉생</>을 발동');
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동");
 
-        $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*8)*10);    
-
-        $nextTerm = $general->onCalcStrategic($this->getName(), 'delay', $nextTerm);
-        $db->update('nation', ['strategic_cmd_limit' => $nextTerm], 'nation=%i', $nationID);
+        $db->update('nation', [
+            'strategic_cmd_limit' => $this->getPostReqTurn()
+        ], 'nation=%i', $nationID);
 
         $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);

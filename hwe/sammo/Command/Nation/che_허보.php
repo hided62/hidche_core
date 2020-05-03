@@ -180,7 +180,9 @@ class che_허보 extends Command\NationCommand{
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동");
         $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동하였습니다.");
 
-        $db->update('nation', ['strategic_cmd_limit' => $this->getPostReqTurn()], 'nation=%i', $nationID);
+        $db->update('nation', [
+            'strategic_cmd_limit' => $this->getPostReqTurn()
+        ], 'nation=%i', $nationID);
 
         $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);

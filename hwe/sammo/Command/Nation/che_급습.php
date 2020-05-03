@@ -24,10 +24,9 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_피장파장 extends Command\NationCommand{
-    static protected $actionName = '피장파장';
+class che_급습 extends Command\NationCommand{
+    static protected $actionName = '급습';
     static public $reqArg = true;
-    static public $delayCnt = 60;
 
     protected function argTest():bool{
         if($this->arg === null){
@@ -66,9 +65,9 @@ class che_피장파장 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::ExistsDestNation(),
-            ConstraintHelper::AllowDiplomacyBetweenStatus(
-                [0, 1],
-                '선포, 전쟁중인 상대국에게만 가능합니다.'
+            ConstraintHelper::AllowDiplomacyWithTerm(
+                1, 12,
+                '선포 12개월 이상인 상대국에만 가능합니다.'
             ),
             ConstraintHelper::AvailableStrategicCommand(),
         ];
@@ -88,12 +87,12 @@ class che_피장파장 extends Command\NationCommand{
     }
     
     public function getPreReqTurn():int{
-        return 2;
+        return 0;
     }
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*2)*10);    
+        $nextTerm = Util::round(sqrt($genCount*16)*10);    
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
@@ -171,9 +170,9 @@ class che_피장파장 extends Command\NationCommand{
         $db->update('nation', [
             'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
-        $db->update('nation', [
-            'strategic_cmd_limit' => $db->sqleval('strategic_cmd_limit + %i', static::$delayCnt)
-        ], 'nation = %i', $destNationID);
+        $db->update('diplomacy', [
+            'term'=>$db->sqleval('`term` - %i', 3),
+        ], '(me = %i AND you = %i) OR (you = %i AND me = %i)', $nationID, $destNationID, $nationID, $destNationID);
 
         $general->applyDB($db);
 
@@ -213,10 +212,10 @@ class che_피장파장 extends Command\NationCommand{
         ob_start(); 
 ?>
 <?=\sammo\getMapHtml()?><br>
-선택된 국가에 피장파장을 발동합니다.<br>
+선택된 국가에 급습을 발동합니다.<br>
 선포, 전쟁중인 상대국에만 가능합니다.<br>
 상대 국가를 목록에서 선택하세요.<br>
-배경색은 현재 피장파장 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
+배경색은 현재 급습 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
 <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
 <?php foreach($nationList as $nation): ?>
     <option 

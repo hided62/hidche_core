@@ -324,8 +324,8 @@ class GameConstBase
             'che_허보',
             'che_피장파장',
             'che_의병모집',
-            //'che_이호경식',
-            //'che_급습',
+            'che_이호경식',
+            'che_급습',
         ],
         '기타'=>[
             //'che_국기변경',

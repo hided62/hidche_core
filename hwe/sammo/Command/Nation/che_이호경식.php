@@ -24,10 +24,9 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_피장파장 extends Command\NationCommand{
-    static protected $actionName = '피장파장';
+class che_이호경식 extends Command\NationCommand{
+    static protected $actionName = '이호경식';
     static public $reqArg = true;
-    static public $delayCnt = 60;
 
     protected function argTest():bool{
         if($this->arg === null){
@@ -88,12 +87,12 @@ class che_피장파장 extends Command\NationCommand{
     }
     
     public function getPreReqTurn():int{
-        return 2;
+        return 0;
     }
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*2)*10);    
+        $nextTerm = Util::round(sqrt($genCount*16)*10);    
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
@@ -171,9 +170,10 @@ class che_피장파장 extends Command\NationCommand{
         $db->update('nation', [
             'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
-        $db->update('nation', [
-            'strategic_cmd_limit' => $db->sqleval('strategic_cmd_limit + %i', static::$delayCnt)
-        ], 'nation = %i', $destNationID);
+        $db->update('diplomacy', [
+            'term'=>$db->sqleval('IF(`state`=0, %i, `term`+ %i)', 3, 3),
+            'state'=>1,
+        ], '(me = %i AND you = %i) OR (you = %i AND me = %i)', $nationID, $destNationID, $nationID, $destNationID);
 
         $general->applyDB($db);
 
@@ -213,10 +213,10 @@ class che_피장파장 extends Command\NationCommand{
         ob_start(); 
 ?>
 <?=\sammo\getMapHtml()?><br>
-선택된 국가에 피장파장을 발동합니다.<br>
+선택된 국가에 이호경식을 발동합니다.<br>
 선포, 전쟁중인 상대국에만 가능합니다.<br>
 상대 국가를 목록에서 선택하세요.<br>
-배경색은 현재 피장파장 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
+배경색은 현재 이호경식 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
 <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
 <?php foreach($nationList as $nation): ?>
     <option 
