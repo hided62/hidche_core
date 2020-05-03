@@ -312,7 +312,7 @@ class GameConstBase
             'che_불가침파기제의',
         ],
         '특수'=>[
-            //'che_초토화',
+            'che_초토화',
             'che_천도',
             'che_증축',
             'che_감축',

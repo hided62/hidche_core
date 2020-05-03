@@ -209,7 +209,7 @@ class che_물자원조 extends Command\NationCommand{
         $db->update('nation', [
             'gold'=>$db->sqleval('gold - %i', $goldAmount),
             'rice'=>$db->sqleval('rice - %i', $riceAmount),
-            'surlimit'=>$db->sqleval('surlimit + %i', 12)
+            'surlimit'=>$db->sqleval('surlimit + %i', $this->getPostReqTurn())
         ], 'nation = %i', $nationID);
 
         $db->update('nation', [

@@ -8,7 +8,7 @@ class ConstraintHelper{
         return [__FUNCTION__, $callback];
     }
 
-    static function AllowDiplomacyStatus(int $nationID, array $disallowList, string $errMsg):array{
+    static function AllowDiplomacyStatus(int $nationID, array $allowList, string $errMsg):array{
         return [__FUNCTION__, [$nationID, $disallowList, $errMsg]];
     }
 

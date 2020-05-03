@@ -2218,6 +2218,8 @@ class GeneralAI
         $gold = $general->getVar('gold');
         $gold -= $this->fullLeadership * 3;
 
+        //TODO: 소유 쌀을 생각해야할 필요가 있다.
+
         if($gold <= 0){
             return null;
         }
