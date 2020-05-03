@@ -93,6 +93,10 @@ class che_임관 extends Command\GeneralCommand{
         }
 
         $relYear = $env['year'] - $env['startyear'];
+
+        $this->reservableConstraints=[
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다')
+        ];
         
         $this->runnableConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
@@ -101,6 +105,11 @@ class che_임관 extends Command\GeneralCommand{
             ConstraintHelper::AllowJoinDestNation($relYear),
             ConstraintHelper::AllowJoinAction()
         ];
+    }
+
+    public function canDisplay(): bool
+    {
+        return ($this->env['join_mode']??'') != 'onlyRandom';
     }
 
     public function getCost():array{

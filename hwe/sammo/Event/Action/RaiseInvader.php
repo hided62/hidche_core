@@ -109,6 +109,7 @@ class RaiseInvader extends \sammo\Event\Action{
         //TODO:외교를 설정한다.
 
         //TODO: 시나리오 구현 후 마무리.
+        //TODO: 임관 모드가 '랜임모드'인 경우 오랑캐와 충돌하므로 해제해야함.
 
         return [__CLASS__, 'NYI'];   
     }

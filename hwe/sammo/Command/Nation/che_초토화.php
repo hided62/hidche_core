@@ -79,11 +79,19 @@ class che_초토화 extends Command\NationCommand{
     }
 
     public function getPreReqTurn():int{
-        return 0;
+        return 2;
     }
 
     public function getPostReqTurn():int{
         return 24;
+    }
+
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+
+        $reqTurn = $this->getPreReqTurn()+1;
+
+        return "{$name}/{$reqTurn}턴(공백지 화, 금쌀 회수)";
     }
 
     public function getBrief():string{
