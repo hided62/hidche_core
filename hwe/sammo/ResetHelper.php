@@ -345,6 +345,7 @@ class ResetHelper{
 
         $prefix = DB::prefix();
         AppConf::getList()[$prefix]->closeServer();
+        opcache_reset();
 
         return [
             'result'=>true

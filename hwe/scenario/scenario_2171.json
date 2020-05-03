@@ -10,10 +10,16 @@
         "total": 230,
         "min": 50,
         "max": 105
-      },
-      "const":{
-          "defaultMaxGeneral":700
-      },
+    },
+    "const":{
+        "defaultMaxGeneral":700,
+        "maxResourceActionAmount":30000,
+        "resourceActionAmountGuide":[
+            100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+            1200, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
+            12000, 15000, 20000, 25000, 30000
+        ]
+    },
       "iconPath": "루드라사움",
       "fiction": 0,
       "nation":[
