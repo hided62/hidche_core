@@ -86,49 +86,6 @@ class che_초토화 extends Command\NationCommand{
         return 24;
     }
 
-    public function addTermStack():bool{
-        $lastTurn = $this->getLastTurn();
-        $commandName = $this->getName();
-
-        $nationStor = \sammo\KVStorage::getStorage(DB::db(), 'nation_env');
-        $general = $this->getGeneral();
-        $nationID = $general->getNationID();
-        $nationStor->setValue("last천도Trial_{$nationID}", [$general->getVar('officer_level'), $general->getTurnTime()]);
-
-        if($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg){
-            $this->setResultTurn(new LastTurn(
-                $commandName,
-                $this->arg,
-                1,
-                $this->nation['capset']
-            ));
-            return false;
-        }
-
-        if($lastTurn->getSeq() < $this->nation['capset']){
-            //NOTE: 최근에 천도, 증축이 일어났으면 리셋됨
-            $this->setResultTurn(new LastTurn(
-                $commandName,
-                $this->arg,
-                1,
-                $this->nation['capset']
-            ));
-            return false;
-        }
-
-        if($lastTurn->getTerm() < $this->getPreReqTurn()){
-            $this->setResultTurn(new LastTurn(
-                $commandName,
-                $this->arg,
-                $lastTurn->getTerm() + 1,
-                $this->nation['capset']
-            ));
-            return false;
-        }
-
-        return true;
-    }
-
     public function getBrief():string{
         $commandName = $this->getName();
         $destCityName = CityConst::byID($this->arg['destCityID'])->name;
