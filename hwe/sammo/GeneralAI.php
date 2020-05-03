@@ -2214,15 +2214,9 @@ class GeneralAI
             } 
         }
 
-        //NOTE: 훈련과 사기진작은 '금만 사용한다'는 가정을 하고 있음
-        $obj훈련 = buildGeneralCommandClass('che_훈련', $general, $env);
-        $obj사기진작 = buildGeneralCommandClass('che_사기진작', $general, $env);
-
-
-
+        //XXX: 훈련, 사기진작 금액을 하드코딩으로 계산중
         $gold = $general->getVar('gold');
-        $gold -= $obj훈련->getCost()[0] * 2;
-        $gold -= $obj사기진작->getCost()[0] * 2;
+        $gold -= $this->fullLeadership * 3;
 
         if($gold <= 0){
             return null;
