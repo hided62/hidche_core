@@ -181,6 +181,7 @@ if($server == $baseServerName){
     
 
     $storage->$server = [$target, $version];
+    opcache_reset();
 
     Json::die([
         'server'=>$server,
@@ -229,6 +230,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 
 $storage->$server = [$target, $version];
 //AppConf::getList()[$server]->closeServer();
+opcache_reset();
 
 Json::die([
     'server'=>$server,
