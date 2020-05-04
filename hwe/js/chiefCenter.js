@@ -77,7 +77,7 @@ function reloadTable(){
             var turnList = plateObj.turn;
             $.each(chiefInfo.turn, function(turnIdx, turnText){
                 turnList[turnIdx].turnTime.text(turnTimeObj.format('hh:mm'));
-                turnList[turnIdx].turnText.text(turnText).css('font-size', '13px');
+                turnList[turnIdx].turnText.html(turnText).css('font-size', '13px');
                 var oWidth = turnList[turnIdx].turnPad.innerWidth();
                 var iWidth = turnList[turnIdx].turnText.outerWidth();
                 if(iWidth > oWidth * 0.95){

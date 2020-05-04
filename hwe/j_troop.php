@@ -22,7 +22,7 @@ $generalID = $me['no'];
 $nationID = $me['nation'];
 
 if($action == '부대창설'){
-    $name = trim($name);
+    $name = StringUtil::neutralize($name);
     if(!$name){
         Json::die([
             'result'=>false,
@@ -52,7 +52,7 @@ if($action == '부대창설'){
 }
 
 if($action == '부대변경'){
-    $name = trim($name);
+    $name = StringUtil::neutralize($name);
     if(!$name){
         Json::die([
             'result'=>false,

@@ -15,7 +15,7 @@ $gameImagePath = Util::getPost('game_image_path');
 $imageRequestKey = Util::getPost('image_request_key');
 
 $kakaoRESTKey = Util::getPost('kakao_rest_key', 'string', '');
-$kakaoAdminKey = Util::ggetPostetReq('kakao_admin_key', 'string', '');
+$kakaoAdminKey = Util::getPost('kakao_admin_key', 'string', '');
 
 
 if (!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath) {

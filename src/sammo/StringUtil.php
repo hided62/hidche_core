@@ -161,8 +161,6 @@ class StringUtil
             $str = StringUtil::subStringForWidth($str, 0, $maxLen);
         }
         $str = htmlspecialchars($str);
-        $str = StringUtil::removeSpecialCharacter($str);
-        $str = WebUtil::htmlPurify($str);
         $str = StringUtil::textStrip($str);
         return $str;
     }

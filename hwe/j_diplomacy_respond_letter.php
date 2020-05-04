@@ -45,7 +45,7 @@ if ($permission < 4) {
     ]);
 }
 
-$reason = trim($reason);
+$reason = StringUtil::neutralize($reason);
 
 $letter = $db->queryFirstRow('SELECT * FROM ng_diplomacy WHERE no=%i AND dest_nation_id = %i AND state = \'proposed\'', $letterNo, $me['nation']);
 if(!$letter){

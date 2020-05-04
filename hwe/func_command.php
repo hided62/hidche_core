@@ -206,6 +206,26 @@ function _setNationCommand(NationCommand $command, array $turnList):void  {
     ], 'nation_id = %i AND officer_level = %i AND turn_idx IN %li', $nationID, $officerLevel, $turnList);
 }
 
+function sanitizeArg(?array $args):?array{
+    if($args === null){
+        return $args;
+    }
+
+    $result = [];
+    foreach($args as $key=>$value){
+        if(is_array($value)){
+            $result[$key] = sanitizeArg($value);
+        }
+        else if(is_string($value)){
+            $result[$key] = StringUtil::neutralize(StringUtil::removeSpecialCharacter($value));
+        }
+        else{
+            $result[$key] = $value;
+        }
+    }
+    return $result;
+}
+
 function checkCommandArg(?array $arg):?string{
     if($arg === null){
         return null;
@@ -284,6 +304,7 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
     }
     $turnList = array_keys($turnList);
 
+    $arg = sanitizeArg($arg);
     $argBasicTestResult = checkCommandArg($arg);
     if($argBasicTestResult !== null){
         return [
@@ -357,6 +378,7 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
         }
     }
 
+    $arg = sanitizeArg($arg);
     $argBasicTestResult = checkCommandArg($arg);
     if($argBasicTestResult !== null){
         return [

@@ -33,7 +33,7 @@ if($articleNo === null || $text === null){
     ]);
 }
 
-$text = trim($text);
+$text = StringUtil::neutralize($text);
 
 if(!$text){
     Json::die([

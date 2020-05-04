@@ -38,7 +38,7 @@ if($btn == "투표" && $general->getVar('vote') == 0 && $sel > 0) {
     }
 }
 else if($btn == "댓글" && trim($comment) != "") {
-    $comment = trim($comment);
+    $comment = StringUtil::neutralize($comment);
 
     $nation = $general->getStaticNation();
 

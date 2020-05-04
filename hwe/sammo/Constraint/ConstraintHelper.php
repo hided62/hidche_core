@@ -252,8 +252,8 @@ class ConstraintHelper{
         return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
     }
 
-    static function ReqNationAuxValue($key, string $keyNick, string $comp, $reqVal, ?string $errMsg=null):array{
-        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $errMsg]];
+    static function ReqNationAuxValue($key, $defaultValue, string $comp, $reqVal, string $errMsg):array{
+        return [__FUNCTION__, [$key, $defaultValue, $comp, $reqVal, $errMsg]];
     }
 
     static function ReqTroopMembers():array{

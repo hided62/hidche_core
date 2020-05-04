@@ -46,8 +46,8 @@ if($textBrief === null || $textDetail === null){
     ]);
 }
 
-$textBrief = trim($textBrief);
-$textDetail = trim($textDetail);
+$textBrief = StringUtil::neutralize($textBrief);
+$textDetail = StringUtil::neutralize($textDetail);
 
 if(!$textBrief){
     Json::die([
