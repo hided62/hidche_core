@@ -196,6 +196,13 @@ class che_건국 extends Command\GeneralCommand
         return true;
     }
 
+    public function getJSFiles(): array
+    {
+        return [
+            'js/colorSelect.js'
+        ];
+    }
+
     public function getForm(): string
     {
 
@@ -248,7 +255,7 @@ class che_건국 extends Command\GeneralCommand
         <?php endforeach; ?>
         <br>
         국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
-        색깔 : <select class='formInput' name='colorType' id='colorType' size='1'>
+        색상 : <select class='formInput' name='colorType' id='colorType' size='1'>
 
             <?php foreach (GetNationColors() as $idx => $color) :
                 /*
@@ -257,7 +264,7 @@ class che_건국 extends Command\GeneralCommand
             }
             */
             ?>
-                <option value="<?= $idx ?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>' ;>국가명</option>
+                <option value="<?= $idx ?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
             <?php endforeach; ?>
         </select>
         성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
