@@ -35,6 +35,12 @@ class che_사기진작 extends Command\GeneralCommand{
         $this->setNation();
 
         [$reqGold, $reqRice] = $this->getCost();
+
+        $this->minConditionConstraints=[
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+        ];
         
         $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(), 

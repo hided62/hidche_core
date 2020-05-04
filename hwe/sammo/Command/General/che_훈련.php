@@ -34,6 +34,12 @@ class che_훈련 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
+
+        $this->minConditionConstraints=[
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+        ];
         
         $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(), 

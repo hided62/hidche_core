@@ -60,7 +60,7 @@ class che_출병 extends Command\GeneralCommand
         $relYear = $this->env['year'] - $this->env['startyear'];
 
         $this->minConditionConstraints = [
-            ConstraintHelper::NotOpeningPart($relYear+1),
+            ConstraintHelper::NotOpeningPart($relYear+2),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::ReqGeneralCrew(),

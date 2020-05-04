@@ -312,10 +312,7 @@ abstract class BaseCommand{
     }
 
     public function testMinConditionMet():?string{
-        if(!static::$reqArg){
-            if($this->minConditionConstraints){
-                throw new \LogicException('reqArg==false인데 minCondition이 설정됨');
-            }
+        if(!static::$reqArg && !$this->minConditionConstraints){
             return $this->testFullConditionMet();
         }
 
