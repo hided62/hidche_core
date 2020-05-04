@@ -5,6 +5,8 @@ namespace sammo;
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/oauth_kakao/lib.join.php');
 
+WebUtil::requireAJAX();
+
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $RootDB = RootDB::db();
@@ -13,8 +15,8 @@ if ($session->isLoggedIn()) {
     $session->logout();
 }
 
-$username = mb_strtolower(Util::getReq('username'), 'utf-8');
-$password = Util::getReq('password');
+$username = mb_strtolower(Util::getPost('username'), 'utf-8');
+$password = Util::getPost('password');
 
 if (!$username || !$password) {
     Json::die([

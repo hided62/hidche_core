@@ -4,6 +4,8 @@ namespace sammo;
 
 require(__DIR__ . '/vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 function getVersion($target = null)
 {
     if ($target) {
@@ -39,7 +41,7 @@ if (!$v->validate()) {
     ]);
 }
 
-$target = Util::getReq('target');
+$target = Util::getPost('target');
 
 $server = basename($request['server']);
 
