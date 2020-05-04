@@ -4,6 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([])->setReadOnly();
 if($session->userGrade < 6){
     Json::die([
@@ -12,12 +14,12 @@ if($session->userGrade < 6){
     ]);
 }
 
-$fullReset  = Util::getReq('full_reset', 'bool', false);
-$host = Util::getReq('db_host');
-$port = Util::getReq('db_port', 'int');
-$username = Util::getReq('db_id');
-$password = Util::getReq('db_pw');
-$dbName = Util::getReq('db_name');
+$fullReset  = Util::getPost('full_reset', 'bool', false);
+$host = Util::getPost('db_host');
+$port = Util::getPost('db_port', 'int');
+$username = Util::getPost('db_id');
+$password = Util::getPost('db_pw');
+$dbName = Util::getPost('db_name');
 
 if(!$host || !$port || !$username || !$password || !$dbName){
     Json::die([

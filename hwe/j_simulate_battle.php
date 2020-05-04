@@ -4,10 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
-$query = Util::getReq('query');
+$query = Util::getPost('query');
 if($query === null){
     Json::die([
         'result'=>false,
@@ -15,7 +17,7 @@ if($query === null){
     ]);
 }
 
-$action = Util::getReq('action');
+$action = Util::getPost('action');
 if($action === null || !in_array($action, ['reorder', 'battle'])){
     Json::die([
         'result'=>false,

@@ -4,10 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+WebUtil::requireAJAX();
+
 //TODO: 변경이 완료되면 항상 공지되어야함
 
-$isAmbassador = Util::getReq('isAmbassador', 'bool');
-$genlist = Util::getReq('genlist', 'array_int');
+$isAmbassador = Util::getPost('isAmbassador', 'bool');
+$genlist = Util::getPost('genlist', 'array_int');
 
 //로그인 검사
 $session = Session::requireGameLogin([])->setReadOnly();

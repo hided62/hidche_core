@@ -4,7 +4,9 @@ namespace sammo;
 include 'lib.php';
 include 'func.php';
 
-$post = Json::decode(Util::getReq('data', 'string', '{}'));
+WebUtil::requireAJAX();
+
+$post = Json::decode(Util::getPost('data', 'string', '{}'));
 '@phan-var mixed[] $post';
 
 $v = new Validator($post);

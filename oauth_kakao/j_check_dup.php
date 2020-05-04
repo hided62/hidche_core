@@ -4,6 +4,8 @@ namespace sammo;
 require(__DIR__.'/../vendor/autoload.php');
 require('lib.join.php');
 
+WebUtil::requireAJAX();
+
 
 $session = Session::getInstance()->setReadOnly();
 
@@ -13,8 +15,8 @@ if(!$access_token){
 }
 
 
-$value = Util::getReq('value');
-switch(Util::getReq('type')){
+$value = Util::getPost('value');
+switch(Util::getPost('type')){
 case 'nickname':
     Json::die(checkNicknameDup($value));
 case 'username':

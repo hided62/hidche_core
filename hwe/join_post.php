@@ -40,19 +40,19 @@ $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
 //NOTE: 이 페이지에서는 세션에 데이터를 등록하지 않음. 로그인은 이후에.
 
-$name       = Util::getReq('name');
+$name       = Util::getPost('name');
 $name       = htmlspecialchars($name);
 $name       = StringUtil::removeSpecialCharacter($name);
 $name       = WebUtil::htmlPurify($name);
 $name       = StringUtil::textStrip($name);
-$pic        = (int)Util::getReq('pic', 'bool', 0);
-$character  = Util::getReq('character');
+$pic        = (int)Util::getPost('pic', 'bool', 0);
+$character  = Util::getPost('character');
 
-$leadership = Util::getReq('leadership', 'int', 50);
-$strength = Util::getReq('strength', 'int', 50);
-$intel = Util::getReq('intel', 'int', 50);
+$leadership = Util::getPost('leadership', 'int', 50);
+$strength = Util::getPost('strength', 'int', 50);
+$intel = Util::getPost('intel', 'int', 50);
 
-$join = Util::getReq('join'); //쓸모 없음
+$join = Util::getPost('join'); //쓸모 없음
 
 $rootDB = RootDB::db();
 //회원 테이블에서 정보확인

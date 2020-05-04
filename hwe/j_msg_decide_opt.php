@@ -4,6 +4,8 @@ namespace sammo;
 include 'lib.php';
 include 'func.php';
 
+WebUtil::requireAJAX();
+
 //{msgID: 1206, response: true}
 $session = Session::requireGameLogin([])->setReadOnly();
 
@@ -17,7 +19,7 @@ if (!$generalID) {
     ]);
 }
 
-$jsonPost = Json::decode(Util::getReq('data', 'string', '{}'));
+$jsonPost = Json::decode(Util::getPost('data', 'string', '{}'));
 
 $msgID = Util::toInt($jsonPost['msgID']??null);
 $msgResponse = $jsonPost['response']??null;

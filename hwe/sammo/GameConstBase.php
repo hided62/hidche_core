@@ -328,7 +328,7 @@ class GameConstBase
             'che_급습',
         ],
         '기타'=>[
-            //'che_국기변경',
+            'che_국기변경',
             //'che_국호변경',
         ]
     ];

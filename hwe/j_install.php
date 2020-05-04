@@ -4,6 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([])->setReadOnly();
 
 if(!class_exists('\\sammo\\DB')){
@@ -19,7 +21,7 @@ $allowReset = in_array('reset', $serverAcl);
 $allowFullReset = in_array('fullReset',$serverAcl);
 $allowReset |= $allowFullReset;
 
-$reserve_open = Util::getReq('reserve_open');
+$reserve_open = Util::getPost('reserve_open');
 if($reserve_open && $reserve_open < date('Y-m-d H:i')){
     Json::die([
         'result'=>false,
@@ -27,7 +29,7 @@ if($reserve_open && $reserve_open < date('Y-m-d H:i')){
     ]);
 }
 
-$pre_reserve_open = Util::getReq('pre_reserve_open');
+$pre_reserve_open = Util::getPost('pre_reserve_open');
 if($pre_reserve_open && !$reserve_open){
     Json::die([
         'result'=>false,
@@ -112,7 +114,7 @@ $tournament_trig = (int)$_POST['tournament_trig'];
 $join_mode = $_POST['join_mode'];
 $autorun_user_minutes = (int)$_POST['autorun_user_minutes'];
 $autorun_user_options = [];
-foreach(Util::getReq('autorun_user', 'array_string', []) as $autorun_option){
+foreach(Util::getPost('autorun_user', 'array_string', []) as $autorun_option){
     $autorun_user_options[$autorun_option] = 1;
 }
 

@@ -4,10 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$action = Util::getReq('action');
-$officerLevel = Util::getReq('officerLevel', 'int');
-$destGeneralID = Util::getReq('destGeneralID', 'int');
-$destCityID = Util::getReq('destCityID', 'int');
+WebUtil::requireAJAX();
+
+$action = Util::getPost('action');
+$officerLevel = Util::getPost('officerLevel', 'int');
+$destGeneralID = Util::getPost('destGeneralID', 'int');
+$destCityID = Util::getPost('destCityID', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

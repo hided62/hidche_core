@@ -3,11 +3,13 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 // $btn, $name, $troop
-$action = Util::getReq('action');
-$name = Util::getReq('name');
-$gen = Util::getReq('gen', 'int');
-$troop = Util::getReq('troop', 'int');
+$action = Util::getPost('action');
+$name = Util::getPost('name');
+$gen = Util::getPost('gen', 'int');
+$troop = Util::getPost('troop', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin([])->setReadOnly();

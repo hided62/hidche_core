@@ -5,9 +5,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$btn = Util::getReq('btn');
-$gen = Util::getReq('gen', 'int', 0);
-$reqQueryType = Util::getReq('query_type', 'string', null);
+$btn = Util::getPost('btn');
+$gen = Util::getPost('gen', 'int', 0);
+$reqQueryType = Util::getPost('query_type', 'string', null);
 
 // $queryTypeText, $reqArgType(0=>None, 1=>AdditionalColumn, 2=>rankVal, 3=>aux), $comp
 $queryMap = [

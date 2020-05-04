@@ -14,8 +14,8 @@ if(Session::getInstance()->userGrade < 5){
     ]);
 }
 
-$eventName = Util::getReq('event', 'string');
-$eventArgsJson = Util::getReq('arg', 'string');
+$eventName = Util::getPost('event', 'string');
+$eventArgsJson = Util::getPost('arg', 'string');
 
 if($eventName === null){
     Json::die([

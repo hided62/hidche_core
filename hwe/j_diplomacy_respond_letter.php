@@ -3,15 +3,17 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
 
-$letterNo = Util::getReq('letterNo', 'int');
-$isAgree  = Util::getReq('isAgree', 'bool', false);
-$reason = Util::getReq('reason', 'string', '');
+$letterNo = Util::getPost('letterNo', 'int');
+$isAgree  = Util::getPost('isAgree', 'bool', false);
+$reason = Util::getPost('reason', 'string', '');
 
 
 

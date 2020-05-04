@@ -4,6 +4,8 @@ namespace sammo;
 require(__DIR__.'/../vendor/autoload.php');
 require('lib.join.php');
 
+WebUtil::requireAJAX();
+
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $session = Session::getInstance();
@@ -35,12 +37,12 @@ if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
     ]);
 }
-$secret_agree = Util::getReq('secret_agree', 'bool');
-$secret_agree2 = Util::getReq('secret_agree2', 'bool');
-$third_use = Util::getReq('third_use', 'bool');
-$username = mb_strtolower(Util::getReq('username'), 'utf-8');
-$password = Util::getReq('password');
-$nickname = Util::getReq('nickname');
+$secret_agree = Util::getPost('secret_agree', 'bool');
+$secret_agree2 = Util::getPost('secret_agree2', 'bool');
+$third_use = Util::getPost('third_use', 'bool');
+$username = mb_strtolower(Util::getPost('username'), 'utf-8');
+$password = Util::getPost('password');
+$nickname = Util::getPost('nickname');
 
 if(!$username || !$password || !$nickname){
     Json::die([

@@ -19,7 +19,7 @@ if($session->userGrade < 5 && !$allowReset){
 }
 
 
-$scenarioIdx = Util::getReq('scenarioIdx', 'int');
+$scenarioIdx = Util::getPost('scenarioIdx', 'int');
 
 if ($scenarioIdx !== null) {
     //TODO: preview 지도 출력

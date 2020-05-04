@@ -4,8 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$btn = Util::getReq('btn');
-$gen = Util::getReq('gen', 'int', 0);
+$btn = Util::getPost('btn');
+$gen = Util::getPost('gen', 'int', 0);
 $type = 0;
 
 //로그인 검사

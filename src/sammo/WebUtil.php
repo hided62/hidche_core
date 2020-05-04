@@ -28,6 +28,19 @@ class WebUtil
         }
     }
 
+    public static function isAJAX(){
+        return strtolower($_SERVER['HTTP_X_REQUESTED_WITH']??null) === 'xmlhttprequest';
+    }
+
+    public static function requireAJAX():void{
+        if(!static::isAJAX()){
+            Json::die([
+                'result'=>false,
+                'reason'=>'no ajax'
+            ]);
+        }
+    }
+
     /**
      * @return mixed|mixed[]
      */

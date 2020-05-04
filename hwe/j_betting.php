@@ -4,8 +4,10 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$betTarget = Util::getReq('target', 'int', -1);
-$betGold = Util::getReq('amount', 'int', 0);
+WebUtil::requireAJAX();
+
+$betTarget = Util::getPost('target', 'int', -1);
+$betGold = Util::getPost('amount', 'int', 0);
 
 
 if($betTarget < 0 || $betTarget >= 16 || $betGold < 10 || $betGold > 1000){

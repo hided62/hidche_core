@@ -3,11 +3,13 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
-$turnAmount = Util::getReq('amount', 'int');
+$turnAmount = Util::getPost('amount', 'int');
 
 $db = DB::db();
 $me = $db->queryFirstRow('SELECT no,nation,officer_level FROM general WHERE owner=%i', $userID);

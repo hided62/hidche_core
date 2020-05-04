@@ -4,15 +4,15 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 // $btn, $msg
-$btn = Util::getReq('btn');
-$msg = Util::getReq('msg');
+$btn = Util::getPost('btn');
+$msg = Util::getPost('msg');
 
 //관리자용
-$auto = Util::getReq('auto', 'int');
-$type = Util::getReq('type', 'int');
-$gen = Util::getReq('gen', 'int');
-$sel = Util::getReq('sel', 'int');
-$trig = Util::getReq('trig', 'int');
+$auto = Util::getPost('auto', 'int');
+$type = Util::getPost('type', 'int');
+$gen = Util::getPost('gen', 'int');
+$sel = Util::getPost('sel', 'int');
+$trig = Util::getPost('trig', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

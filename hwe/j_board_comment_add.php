@@ -3,14 +3,16 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
 
-$articleNo = Util::getReq('articleNo', 'int');
-$text = Util::getReq('text');
+$articleNo = Util::getPost('articleNo', 'int');
+$text = Util::getPost('text');
 
 increaseRefresh("회의실", 1);
 

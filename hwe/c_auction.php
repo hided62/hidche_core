@@ -14,13 +14,13 @@ $v->rule('integer', [
     'sel'
 ]);
 
-$btn = Util::getReq('btn');
-$amount = Util::getReq('amount', 'int');
-$cost = Util::getReq('cost', 'int');
-$topv = Util::getReq('topv', 'int');
-$value = Util::getReq('value', 'int');
-$term = Util::getReq('term', 'int');
-$sel = Util::getReq('sel', 'int');
+$btn = Util::getPost('btn');
+$amount = Util::getPost('amount', 'int');
+$cost = Util::getPost('cost', 'int');
+$topv = Util::getPost('topv', 'int');
+$value = Util::getPost('value', 'int');
+$term = Util::getPost('term', 'int');
+$sel = Util::getPost('sel', 'int');
 
 $msg = '';
 $msg2 = '';

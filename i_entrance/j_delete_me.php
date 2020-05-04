@@ -3,12 +3,14 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([]);
 $userID = Session::getUserID();
 
 // 외부 파라미터
 // $_POST['pw'] : PW
-$pw = Util::getReq('pw');
+$pw = Util::getPost('pw');
 
 if(!$pw){
     Json::die([

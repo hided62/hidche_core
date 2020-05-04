@@ -12,9 +12,9 @@ if ($session->userGrade < 5) {
     die();
 }
 
-$btn = Util::getReq('btn');
-$genlist = Util::getReq('genlist', 'array_int');
-$msg = Util::getReq('msg', 'string', '메시지');
+$btn = Util::getPost('btn');
+$genlist = Util::getPost('genlist', 'array_int');
+$msg = Util::getPost('msg', 'string', '메시지');
 
 $db = DB::db();
 

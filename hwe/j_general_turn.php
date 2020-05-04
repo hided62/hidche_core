@@ -4,14 +4,16 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+WebUtil::requireAJAX();
+
 
 
 $session = Session::requireGameLogin([])->setReadOnly();
 
 $generalID = $session->generalID;
 
-$turnAmount = Util::getReq('amount', 'int');
-$isRepeat = Util::getReq('is_repeat', 'bool', false);
+$turnAmount = Util::getPost('amount', 'int');
+$isRepeat = Util::getPost('is_repeat', 'bool', false);
 
 if($turnAmount == null){
     Json::die([

@@ -3,13 +3,15 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
 
-$letterNo = Util::getReq('letterNo', 'int');
+$letterNo = Util::getPost('letterNo', 'int');
 
 increaseRefresh("외교부", 1);
 

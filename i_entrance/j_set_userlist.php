@@ -3,6 +3,8 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([])->setReadOnly();
 
 if($session->userGrade < 5){
@@ -17,9 +19,9 @@ if($session->userGrade < 5){
 // user_id : 유저 이름
 // param : 추가 파라미터
 
-$action = Util::getReq('action');
-$userID = Util::getReq('user_id');
-$param = Util::getReq('param');
+$action = Util::getPost('action');
+$userID = Util::getPost('user_id');
+$param = Util::getPost('param');
 
 if(!$action){
     Json::die([

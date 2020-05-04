@@ -3,6 +3,8 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -10,7 +12,7 @@ $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$isSecretBoard = Util::getReq('isSecret', 'bool', false);
+$isSecretBoard = Util::getPost('isSecret', 'bool', false);
 
 increaseRefresh("외교부", 1);
 

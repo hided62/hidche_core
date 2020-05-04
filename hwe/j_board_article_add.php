@@ -3,15 +3,17 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+WebUtil::requireAJAX();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
 
-$isSecretBoard = Util::getReq('isSecret', 'bool', false);
-$title = Util::getReq('title');
-$text = Util::getReq('text');
+$isSecretBoard = Util::getPost('isSecret', 'bool', false);
+$title = Util::getPost('title');
+$text = Util::getPost('text');
 
 increaseRefresh("회의실", 1);
 

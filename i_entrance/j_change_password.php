@@ -3,12 +3,14 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 // 외부 파라미터
-$pw = Util::getReq('old_pw');
-$newPw = Util::getReq('new_pw');
+$pw = Util::getPost('old_pw');
+$newPw = Util::getPost('new_pw');
 
 $response = ['result' => false];
 

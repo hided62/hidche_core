@@ -4,6 +4,8 @@ namespace sammo;
 include 'lib.php';
 include 'func.php';
 
+WebUtil::requireAJAX();
+
 $session = Session::requireGameLogin([])->setReadOnly();
 $userID = $session::getUserID();
 $serverID = UniqueConst::$serverID;

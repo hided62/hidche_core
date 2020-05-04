@@ -3,6 +3,8 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $RootDB = RootDB::db();
 $session = Session::getInstance();
 if($session->isLoggedIn()){
@@ -21,7 +23,7 @@ if(!$session->isLoggedIn(true)){
     ]);
 }
 
-$otp = Util::getReq('otp', 'int');
+$otp = Util::getPost('otp', 'int');
 if(!$otp){
     Json::die([
         'result'=>false,

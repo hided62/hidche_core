@@ -10,7 +10,7 @@ $session = Session::requireLogin();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$withToken = Util::getReq('with_token', 'bool', false);
+$withToken = Util::getPost('with_token', 'bool', false);
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 if($session->isGameLoggedIn()){

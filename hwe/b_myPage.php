@@ -4,10 +4,10 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$btn = Util::getReq('btn');
-$defence_train = Util::getReq('defence_train', 'int', 2);
-$tnmt = Util::getReq('tnmt', 'int', 1);
-//$detachNPC = Util::getReq('detachNPC', 'bool');
+$btn = Util::getPost('btn');
+$defence_train = Util::getPost('defence_train', 'int', 2);
+$tnmt = Util::getPost('tnmt', 'int', 1);
+//$detachNPC = Util::getPost('detachNPC', 'bool');
 $detachNPC = false;
 
 $showDieImmediatelyBtn = false;

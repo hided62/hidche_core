@@ -22,13 +22,13 @@ if (!$v->validate()) {
     Error($v->errorStr());
 }
 
-$msg = Util::getReq('msg');
-$btn = Util::getReq('btn');
-$log = Util::getReq('log');
-$starttime = Util::getReq('starttime', 'string', (new \DateTime())->format('Y-m-d H:i:s'));
-$maxgeneral = Util::getReq('maxgeneral', 'int', GameConst::$defaultMaxGeneral);
-$maxnation = Util::getReq('maxnation', 'int', GameConst::$defaultMaxNation);
-$startyear = Util::getReq('startyear', 'int', GameConst::$defaultStartYear);
+$msg = Util::getPost('msg');
+$btn = Util::getPost('btn');
+$log = Util::getPost('log');
+$starttime = Util::getPost('starttime', 'string', (new \DateTime())->format('Y-m-d H:i:s'));
+$maxgeneral = Util::getPost('maxgeneral', 'int', GameConst::$defaultMaxGeneral);
+$maxnation = Util::getPost('maxnation', 'int', GameConst::$defaultMaxNation);
+$startyear = Util::getPost('startyear', 'int', GameConst::$defaultStartYear);
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');

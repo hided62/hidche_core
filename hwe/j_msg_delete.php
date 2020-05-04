@@ -4,10 +4,12 @@ namespace sammo;
 include('lib.php');
 include('func.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireGameLogin([]);
 $userID = Session::getUserID();
 
-$msgID = Util::getReq('msgID', 'int');
+$msgID = Util::getPost('msgID', 'int');
 if($msgID === null){
     Json::die([
         'result'=>false,

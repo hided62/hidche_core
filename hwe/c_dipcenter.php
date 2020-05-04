@@ -5,12 +5,12 @@ include "lib.php";
 include "func.php";
 // $btn, $msg, $scoutmsg, $rate, $bill, $secretlimit
 
-$btn = Util::getReq('btn');
-$msg = Util::getReq('msg');
-$scoutmsg = Util::getReq('scoutmsg');
-$rate = Util::getReq('rate', 'int');
-$bill = Util::getReq('bill', 'int');
-$secretlimit = Util::getReq('secretlimit', 'int');
+$btn = Util::getPost('btn');
+$msg = Util::getPost('msg');
+$scoutmsg = Util::getPost('scoutmsg');
+$rate = Util::getPost('rate', 'int');
+$bill = Util::getPost('bill', 'int');
+$secretlimit = Util::getPost('secretlimit', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

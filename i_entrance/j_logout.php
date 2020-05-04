@@ -3,6 +3,8 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([
     'result'=>true,
     'reason'=>'로그인 되지 않았습니다'

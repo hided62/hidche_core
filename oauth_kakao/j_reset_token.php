@@ -3,6 +3,8 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $session = Session::requireLogin([

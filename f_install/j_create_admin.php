@@ -7,9 +7,9 @@ require(__DIR__ . '/../vendor/autoload.php');
 session_start();
 session_destroy();
 
-$username = mb_strtolower(Util::getReq('username'), 'utf-8');
-$password = Util::getReq('password', 'string');
-$nickname = Util::getReq('nickname');
+$username = mb_strtolower(Util::getPost('username'), 'utf-8');
+$password = Util::getPost('password', 'string');
+$nickname = Util::getPost('nickname');
 
 if (!$username || !$password || !$nickname) {
     Json::die([

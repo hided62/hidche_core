@@ -7,8 +7,8 @@ include('func.php');
 $session = Session::requireGameLogin([]);
 $userID = Session::getUserID();
 
-$reqTo = Util::getReq('to', 'int');
-$reqType = Util::getReq('type', 'string');
+$reqTo = Util::getPost('to', 'int');
+$reqType = Util::getPost('type', 'string');
 
 if($reqTo === null){
     Json::die([

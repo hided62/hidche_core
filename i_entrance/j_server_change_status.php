@@ -3,6 +3,8 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin(null);
 
 
@@ -12,9 +14,9 @@ $session = Session::requireLogin(null);
 // $_POST['notice'] : 공지
 // $_POST['server'] : 서버 인덱스
 
-$action = Util::getReq('action', 'string', '');
-$notice = Util::getReq('notice', 'string', '');
-$server = Util::getReq('server', 'string', '');
+$action = Util::getPost('action', 'string', '');
+$notice = Util::getPost('notice', 'string', '');
+$server = Util::getPost('server', 'string', '');
 
 $db = RootDB::db();
 $userGrade = $session->userGrade;

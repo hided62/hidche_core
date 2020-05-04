@@ -12,9 +12,9 @@ if ($session->userGrade < 6) {
     ]);
 }
 
-$servHost = Util::getReq('serv_host');
-$sharedIconPath = Util::getReq('shared_icon_path');
-$gameImagePath = Util::getReq('game_image_path');
+$servHost = Util::getPost('serv_host');
+$sharedIconPath = Util::getPost('shared_icon_path');
+$gameImagePath = Util::getPost('game_image_path');
 
 if ($servHost) {
     if (!$sharedIconPath || $gameImagePath) {

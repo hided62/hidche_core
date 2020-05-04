@@ -5,10 +5,10 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$btn = Util::getReq('btn');
-$item = Util::getReq('item', 'string');
-$genlist = Util::getReq('genlist', 'array_int');
-$msg = Util::getReq('msg', 'string');
+$btn = Util::getPost('btn');
+$item = Util::getPost('item', 'string');
+$genlist = Util::getPost('genlist', 'array_int');
+$msg = Util::getPost('msg', 'string');
 
 //로그인 검사
 $session = Session::requireLogin()->loginGame()->setReadOnly();

@@ -4,13 +4,15 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+WebUtil::requireAJAX();
+
 $session = Session::requireGameLogin([])->setReadOnly();
 
 $generalID = $session->generalID;
 
-$action = Util::getReq('action', 'string');
-$arg = Json::decode(Util::getReq('arg', 'string'));
-$turnList = Util::getReq('turnList', 'array_int');
+$action = Util::getPost('action', 'string');
+$arg = Json::decode(Util::getPost('arg', 'string'));
+$turnList = Util::getPost('turnList', 'array_int');
 
 if(!is_array($turnList) || !$turnList){
     Json::die([

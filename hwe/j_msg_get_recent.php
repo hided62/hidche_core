@@ -7,7 +7,7 @@ include('func.php');
 $session = Session::requireGameLogin([]);
 $userID = Session::getUserID();
 
-$reqSequence = Util::getReq('sequence', 'int', -1);
+$reqSequence = Util::getPost('sequence', 'int', -1);
 
 $lastMsgGet = Json::decode($session->lastMsgGet)??[];
 $now = new \DateTime();

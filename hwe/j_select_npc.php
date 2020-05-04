@@ -4,7 +4,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$pick = Util::getReq('pick', 'int');
+WebUtil::requireAJAX();
+
+$pick = Util::getPost('pick', 'int');
 
 if(!$pick){
     Json::die([

@@ -3,6 +3,8 @@ namespace sammo;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+WebUtil::requireAJAX();
+
 $session = Session::requireLogin([])->setReadOnly();
 if($session->userGrade < 5 && !$session->acl){
     Json::die([

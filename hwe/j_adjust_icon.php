@@ -3,6 +3,7 @@ namespace sammo;
 
 include('lib.php');
 
+WebUtil::requireAJAX();
 $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 

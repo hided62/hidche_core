@@ -5,7 +5,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$type = Util::getReq('type', 'int', 0);
+$type = Util::getPost('type', 'int', 0);
 if ($type < 0 || $type > 4) {
     $type = 0;
 }

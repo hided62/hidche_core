@@ -4,11 +4,11 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$btn = Util::getReq('btn');
-$sel = Util::getReq('sel', 'int');
-$comment = Util::getReq('comment');
-$title = Util::getReq('title');
-$str = Util::getReq('str');
+$btn = Util::getPost('btn');
+$sel = Util::getPost('sel', 'int');
+$comment = Util::getPost('comment');
+$title = Util::getPost('title');
+$str = Util::getPost('str');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

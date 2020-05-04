@@ -9,8 +9,8 @@ const PICK_MORE_SECOND = 10;
 const KEEP_CNT = 3;
 
 
-$refresh = Util::getReq('refresh', 'bool', false);
-$keepResult = Util::getReq('keep', 'array_int', []);
+$refresh = Util::getPost('refresh', 'bool', false);
+$keepResult = Util::getPost('keep', 'array_int', []);
 
 $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
