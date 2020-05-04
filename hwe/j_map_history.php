@@ -4,9 +4,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$year = Util::getPost('year', 'int');
-$month = Util::getPost('month', 'int');
-$serverID = Util::getPost('serverID', 'string', null);
+$year = Util::getReq('year', 'int');
+$month = Util::getReq('month', 'int');
+$serverID = Util::getReq('serverID', 'string', null);
 
 $url = '/a_history.php';
 
