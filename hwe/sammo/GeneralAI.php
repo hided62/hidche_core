@@ -3424,6 +3424,7 @@ class GeneralAI
             $chief = $this->chiefGenerals[$chiefLevel];
             if($chief->getVar('npc') < 2 && $chief->getVar('killturn') >= $minUserKillturn){
                 $userChiefCnt+=1;
+                $chief->setVar('permission', 'ambassador');
             }
         }
 
@@ -3453,6 +3454,7 @@ class GeneralAI
                 $nextChiefs[11] = $general;
                 $general->setVar('officer_level', 11);
                 $general->setVar('officer_city', 0);
+                $general->setVar('permission', 'ambassador');
                 $nation['l11set'] = true;
                 $updatedNationVar['l11set'] = 1;
                 $userChiefCnt += 1;
@@ -3536,6 +3538,7 @@ class GeneralAI
 
             if($newChief->getVar('npc') < 2){
                 $userChiefCnt += 1;
+                $newChief->setVar('permission', 'ambassador');
             }
 
             $nextChiefs[$chiefLevel] = $newChief;

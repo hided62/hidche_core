@@ -89,6 +89,9 @@ class che_거병 extends Command\GeneralCommand{
         }
 
         $secretlimit = 3;
+        if($env['scenario']>=1000){
+            $secretlimit = 1;
+        }
 
         DB::db()->insert('nation', [
             'name'=>$nationName,

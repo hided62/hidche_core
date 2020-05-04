@@ -34,8 +34,8 @@ if($title === null || $text === null){
     ]);
 }
 
-$title = StringUtil::neutralize($title);
-$text = StringUtil::neutralize($text);
+$title = trim($title);
+$text = trim($text);
 
 if(!$title && !$text){
     Json::die([
