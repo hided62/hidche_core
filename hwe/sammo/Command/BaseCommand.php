@@ -272,12 +272,6 @@ abstract class BaseCommand{
     }
 
     public function testPermissionToReserve():?string{
-        if(!$this->isArgValid()){
-            $this->reasonNoPermissionToReserve = '인자가 올바르지 않습니다.';
-            $this->cachedPermissionToReserve = true;
-            return $this->reasonNoPermissionToReserve;
-        }
-
         if($this->cachedPermissionToReserve){
             return $this->reasonNoPermissionToReserve;
         }
