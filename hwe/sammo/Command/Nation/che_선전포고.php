@@ -1,20 +1,25 @@
 <?php
+
 namespace sammo\Command\Nation;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
     GameUnitConst,
     Command,
-    Message, MessageTarget
+    Message,
+    MessageTarget
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     getAllNationStaticInfo,
     getNationStaticInfo,
@@ -24,56 +29,67 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_선전포고 extends Command\NationCommand{
+class che_선전포고 extends Command\NationCommand
+{
     static protected $actionName = '선전포고';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
         //NOTE: 멸망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 국가여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destNationID', $this->arg)){
+        if (!key_exists('destNationID', $this->arg)) {
             return false;
         }
         $destNationID = $this->arg['destNationID'];
 
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
         $this->arg = [
-            'destNationID'=>$destNationID
+            'destNationID' => $destNationID
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
 
         $env = $this->env;
-        $relYear = $env['year'] - $env['startyear'];
+
 
         $this->setCity();
         $this->setNation();
 
-        $this->setDestNation($this->arg['destNationID'], null);
-
-        if($relYear < 3 - 2){
-            $this->runnableConstraints = [
-                ConstraintHelper::AlwaysFail('초반제한 해제 2년전부터 가능합니다.')
-            ];
-            return;
-        }
-        
-        $this->runnableConstraints=[
+        $startYear = $this->env['startyear'];
+        $this->minConditionConstraints = [
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ReqEnvValue('year', '>=', $startYear + 1, '초반제한 해제 2년전부터 가능합니다.'),
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $startYear = $this->env['startyear'];
+
+        $this->setDestNation($this->arg['destNationID'], null);
+
+        $this->fullConditionConstraints = [
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ReqEnvValue('year', '>=', $startYear + 1, '초반제한 해제 2년전부터 가능합니다.'),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::NearNation(),
             ConstraintHelper::DisallowDiplomacyBetweenStatus([
@@ -86,30 +102,34 @@ class che_선전포고 extends Command\NationCommand{
                 5 => '상대국이 외교 진행중입니다.'
             ]),
         ];
-
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         return "【{$destNationName}】에 {$commandName}";
     }
 
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -143,15 +163,15 @@ class che_선전포고 extends Command\NationCommand{
         $logger->pushGlobalHistoryLog("<R><b>【선포】</b></><D><b>{$nationName}</b></>{$josaYiNation} <D><b>{$destNationName}</b></>에 선전 포고 하였습니다.");
 
         $db->update('diplomacy', [
-            'state'=>1,
-            'term'=>24
+            'state' => 1,
+            'term' => 24
         ], '(me=%i AND you=%i) OR (me=%i AND you=%i)', $nationID, $destNationID, $destNationID, $nationID);
 
         //국메로 저장
         $text = "【외교】{$env['year']}년 {$env['month']}월:{$nationName}에서 {$destNationName}에 선전포고";
 
         $src = new MessageTarget(
-            $general->getID(), 
+            $general->getID(),
             $general->getName(),
             $nationID,
             $nationName,
@@ -166,7 +186,7 @@ class che_선전포고 extends Command\NationCommand{
             $destNation['color']
         );
         $msg = new Message(
-            Message::MSGTYPE_NATIONAL, 
+            Message::MSGTYPE_NATIONAL,
             $src,
             $dest,
             $text,
@@ -197,39 +217,35 @@ class che_선전포고 extends Command\NationCommand{
         $startYear = $this->env['startyear'];
         $availableYear = $startYear + 1;
         $nationList = [];
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['nation'] == $nationID){
+        foreach (getAllNationStaticInfo() as $destNation) {
+            if ($destNation['nation'] == $nationID) {
                 continue;
             }
 
-            $testCommand = new static($generalObj, $this->env, $this->getLastTurn(), ['destNationID'=>$destNation['nation']]);
-            if($testCommand->isRunnable()){
+            $testCommand = new static($generalObj, $this->env, $this->getLastTurn(), ['destNationID' => $destNation['nation']]);
+            if ($testCommand->hasFullConditionMet()) {
                 $destNation['availableWar'] = true;
-            }
-            else{
+            } else {
                 $destNation['availableWar'] = false;
             }
 
             $nationList[] = $destNation;
         }
 
-        ob_start(); 
+        ob_start();
 ?>
-<?=\sammo\getMapHtml()?><br>
-타국에게 선전 포고합니다.<br>
-선전 포고할 국가를 목록에서 선택하세요.<br>
-고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br>
-초반제한 해제 2년전부터 선포가 가능합니다. (<?=$availableYear?>년 1월부터 가능)<br>
-현재 선포가 불가능한 국가는 배경색이 <font color=red>붉은색</font>으로 표시됩니다.<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
-        style='color:<?=$nation['color']?>;<?=$nation['availableWar']?'':'background-color:red;'?>'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-</select>
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
+        <?= \sammo\getMapHtml() ?><br>
+        타국에게 선전 포고합니다.<br>
+        선전 포고할 국가를 목록에서 선택하세요.<br>
+        고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br>
+        초반제한 해제 2년전부터 선포가 가능합니다. (<?= $availableYear ?>년 1월부터 가능)<br>
+        현재 선포가 불가능한 국가는 배경색이 <font color=red>붉은색</font>으로 표시됩니다.<br>
+        <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
+            <?php foreach ($nationList as $nation) : ?>
+                <option value='<?= $nation['nation'] ?>' style='color:<?= $nation['color'] ?>;<?= $nation['availableWar'] ? '' : 'background-color:red;' ?>'>【<?= $nation['name'] ?> 】</option>
+            <?php endforeach; ?>
+        </select>
+        <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
 <?php
         return ob_get_clean();
     }

@@ -1,17 +1,21 @@
 <?php
+
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
     ActionLogger,
-    GameConst, GameUnitConst,
+    GameConst,
+    GameUnitConst,
     LastTurn,
     Command
 };
 
 
-use function \sammo\{
+use function\sammo\{
     tryUniqueItemLottery,
     getAllNationStaticInfo
 };
@@ -25,69 +29,80 @@ use function sammo\GetNationColors;
 use function sammo\newColor;
 
 
-class che_건국 extends Command\GeneralCommand{
+class che_건국 extends Command\GeneralCommand
+{
     static protected $actionName = '건국';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
-        $nationName = $this->arg['nationName']??null;
-        $nationType = $this->arg['nationType']??null;
-        $colorType = $this->arg['colorType']??null;
+        $nationName = $this->arg['nationName'] ?? null;
+        $nationType = $this->arg['nationType'] ?? null;
+        $colorType = $this->arg['colorType'] ?? null;
 
-        if($nationName === null || $nationType === null || $colorType === null){
-            return false;
-        }
-
-        if(!is_string($nationName) || !is_string($nationType) || !is_int($colorType)){
+        if ($nationName === null || $nationType === null || $colorType === null) {
             return false;
         }
 
-        if(mb_strwidth($nationName) > 18 || $nationName == ''){
+        if (!is_string($nationName) || !is_string($nationType) || !is_int($colorType)) {
             return false;
         }
 
-        if(!key_exists($colorType, GetNationColors())){
+        if (mb_strwidth($nationName) > 18 || $nationName == '') {
             return false;
         }
 
-        try{
+        if (!key_exists($colorType, GetNationColors())) {
+            return false;
+        }
+
+        try {
             $nationTypeClass = buildNationTypeClass($nationType);
-        }
-        catch(\InvalidArgumentException $e){
+        } catch (\InvalidArgumentException $e) {
             return false;
         }
-        
+
         $this->arg = [
-            'nationName'=>$nationName,
-            'nationType'=>$nationType,
-            'colorType'=>$colorType
+            'nationName' => $nationName,
+            'nationType' => $nationType,
+            'colorType' => $colorType
         ];
 
         return true;
     }
 
-    protected function init(){
-
-        $general = $this->generalObj;
+    protected function init()
+    {
         $env = $this->env;
-
-        $nationName = $this->arg['nationName'];
-        $nationType = $this->arg['nationType'];
-        $colorType = $this->arg['colorType'];
 
         $this->setCity();
         $this->setNation(['gennum']);
 
         $relYear = $env['year'] - $env['startyear'];
-        
-        $this->runnableConstraints=[
+
+        $this->minConditionConstraints = [
+            ConstraintHelper::BeOpeningPart($relYear + 1),
+            ConstraintHelper::ReqNationValue('level', '국가규모', '==', 0, '정식 국가가 아니어야합니다.')
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $env = $this->env;
+        $relYear = $env['year'] - $env['startyear'];
+
+        $nationName = $this->arg['nationName'];
+        $nationType = $this->arg['nationType'];
+        $colorType = $this->arg['colorType'];
+
+        $this->fullConditionConstraints = [
             ConstraintHelper::BeLord(),
             ConstraintHelper::WanderingNation(),
             ConstraintHelper::ReqNationValue('gennum', '수하 장수', '>=', 2),
-            ConstraintHelper::BeOpeningPart($relYear+1),
+            ConstraintHelper::BeOpeningPart($relYear + 1),
             ConstraintHelper::CheckNationNameDuplicate($nationName),
             ConstraintHelper::AllowJoinAction(),
             ConstraintHelper::ConstructableCity(),
@@ -101,20 +116,24 @@ class che_건국 extends Command\GeneralCommand{
         return "【{$nationName}】{$josaUl} 건국";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -155,16 +174,16 @@ class che_건국 extends Command\GeneralCommand{
         $general->addDedication($ded);
 
         $db->update('city', [
-            'nation'=>$general->getNationID(),
-            'conflict'=>'{}'
+            'nation' => $general->getNationID(),
+            'conflict' => '{}'
         ], 'city=%i', $general->getCityID());
 
         $db->update('nation', [
-            'name'=>$nationName,
-            'color'=>$colorType,
-            'level'=>1,
-            'type'=>$nationType,
-            'capital'=>$general->getCityID()
+            'name' => $nationName,
+            'color' => $colorType,
+            'level' => 1,
+            'type' => $nationType,
+            'capital' => $general->getCityID()
         ], 'nation=%i', $general->getNationID());
 
         refreshNationStaticInfo();
@@ -180,7 +199,7 @@ class che_건국 extends Command\GeneralCommand{
     public function getForm(): string
     {
 
-        if(count(getAllNationStaticInfo()) >= $this->env['maxnation']){
+        if (count(getAllNationStaticInfo()) >= $this->env['maxnation']) {
             return '더 이상 건국은 불가능합니다.';
         }
 
@@ -213,43 +232,43 @@ class che_건국 extends Command\GeneralCommand{
             }
         }
         */
-        
+
 
         ob_start();
 ?>
-현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br>
+        현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br>
 
-<?php foreach(GameConst::$availableNationType as $nationType):
-    $nationClass = buildNationTypeClass($nationType);
+        <?php foreach (GameConst::$availableNationType as $nationType) :
+            $nationClass = buildNationTypeClass($nationType);
 
-    [$name, $pros, $cons] = [$nationClass->getName(), $nationClass::$pros, $nationClass::$cons]; 
-?>
-            
-    - <?=$name?> : <span style='color:cyan;'><?=$pros?></span> <span style='color:magenta;'><?=$cons?></span><br>
-<?php endforeach; ?>
-<br>
-국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
-색깔 : <select class='formInput' name='colorType' id='colorType' size='1'>
+            [$name, $pros, $cons] = [$nationClass->getName(), $nationClass::$pros, $nationClass::$cons];
+        ?>
 
-<?php foreach(GetNationColors() as $idx=>$color): 
-            /*
+            - <?= $name ?> : <span style='color:cyan;'><?= $pros ?></span> <span style='color:magenta;'><?= $cons ?></span><br>
+        <?php endforeach; ?>
+        <br>
+        국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
+        색깔 : <select class='formInput' name='colorType' id='colorType' size='1'>
+
+            <?php foreach (GetNationColors() as $idx => $color) :
+                /*
             if($colorUsed[$color] > 0){
                 continue;
             }
             */
-?>
-    <option value="<?=$idx?>" style='background-color:<?=$color?>;color:<?=newColor($color)?>';>국가명</option>
-<?php endforeach; ?>
-</select>
-성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
+            ?>
+                <option value="<?= $idx ?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>' ;>국가명</option>
+            <?php endforeach; ?>
+        </select>
+        성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
 
-<?php foreach(GameConst::$availableNationType as $nationType):
-        $nationTypeName = buildNationTypeClass($nationType)->getName(); 
-?>
-    <option value='<?=$nationType?>' style=background-color:black;color:white;><?=$nationTypeName?></option>
-<?php endforeach; ?>
-</select>
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
+            <?php foreach (GameConst::$availableNationType as $nationType) :
+                $nationTypeName = buildNationTypeClass($nationType)->getName();
+            ?>
+                <option value='<?= $nationType ?>' style=background-color:black;color:white;><?= $nationTypeName ?></option>
+            <?php endforeach; ?>
+        </select>
+        <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
 <?php
         return ob_get_clean();
     }

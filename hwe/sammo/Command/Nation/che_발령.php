@@ -59,13 +59,23 @@ class che_발령 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation();
+        
+        $this->minConditionConstraints=[
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+        ];
+    }
 
-        $this->setDestCity($this->arg['destCityID'], null);
+    protected function initWithArg()
+    {
+        $this->setDestCity($this->arg['destCityID']);
 
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, 1);
         $this->setDestGeneral($destGeneral);
-        
-        $this->runnableConstraints=[
+
+        $this->fullConditionConstraints=[
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::OccupiedCity(),
@@ -79,7 +89,7 @@ class che_발령 extends Command\NationCommand{
 
     public function getFailString():string{
         $commandName = $this->getName();
-        $failReason = $this->testRunnable();
+        $failReason = $this->testFullConditionMet();
         if($failReason === null){
             throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
         }
@@ -109,7 +119,7 @@ class che_발령 extends Command\NationCommand{
 
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

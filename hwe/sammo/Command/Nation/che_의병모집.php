@@ -25,7 +25,6 @@ use \sammo\Constraint\ConstraintHelper;
 
 class che_의병모집 extends Command\NationCommand{
     static protected $actionName = '의병모집';
-    static public $reqArg = false;
 
     protected function argTest():bool{
         $this->arg = null;
@@ -41,7 +40,7 @@ class che_의병모집 extends Command\NationCommand{
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::OccupiedCity(),
@@ -75,7 +74,7 @@ class che_의병모집 extends Command\NationCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

@@ -44,7 +44,7 @@ class che_주민선정 extends Command\GeneralCommand{
         
         [$reqGold, $reqRice] = $this->getCost();
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
@@ -119,7 +119,7 @@ class che_주민선정 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

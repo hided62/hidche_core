@@ -29,7 +29,6 @@ use sammo\Event\Action;
 
 class che_감축 extends Command\NationCommand{
     static protected $actionName = '감축';
-    static public $reqArg = false;
 
     protected function argTest():bool{
         $this->arg = [];
@@ -43,10 +42,10 @@ class che_감축 extends Command\NationCommand{
         $env = $this->env;
 
         if($general->getNationID()===0){
-            $this->reservableConstraints=[
+            $this->permissionConstraints=[
                 ConstraintHelper::NotBeNeutral(),
             ];
-            $this->runnableConstraints=[
+            $this->fullConditionConstraints=[
                 ConstraintHelper::NotBeNeutral(),
             ];
             return;
@@ -54,13 +53,13 @@ class che_감축 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['gold', 'rice', 'capset', 'capital']);
-        $this->setDestCity($this->nation['capital'], null);
+        $this->setDestCity($this->nation['capital']);
         
         [$reqGold, $reqRice] = $this->getCost();
 
         $origCityLevel = CityConst::byID($this->nation['capital'])->level;
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
@@ -136,7 +135,7 @@ class che_감축 extends Command\NationCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

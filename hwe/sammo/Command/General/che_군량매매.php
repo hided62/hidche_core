@@ -56,24 +56,36 @@ class che_군량매매 extends Command\GeneralCommand{
         return "군량 {$this->arg['amount']}을 {$buyRiceText}";
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation();    
+
+        $this->minConditionConstraints=[
+            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::OccupiedCity(true),
+            ConstraintHelper::SuppliedCity(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $general = $this->generalObj;
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::ReqCityTrader($general->getVar('npc')),
             ConstraintHelper::OccupiedCity(true),
             ConstraintHelper::SuppliedCity(),
         ];
 
         if($this->arg['buyRice']){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
+            $this->fullConditionConstraints[] = ConstraintHelper::ReqGeneralGold(1);
         }
         else{
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
+            $this->fullConditionConstraints[] = ConstraintHelper::ReqGeneralRice(1);
         }
     }
 
@@ -90,7 +102,7 @@ class che_군량매매 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

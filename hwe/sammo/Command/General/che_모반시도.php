@@ -29,14 +29,15 @@ class che_모반시도 extends Command\GeneralCommand{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation();
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::OccupiedCity(),
@@ -59,7 +60,7 @@ class che_모반시도 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

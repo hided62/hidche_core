@@ -451,7 +451,8 @@ class JosaUtil{
 
     private static $init = false;
 
-    private static function init(){
+    private static function init()
+    {
         if(JosaUtil::$init){
             return;
         }
@@ -502,7 +503,8 @@ class JosaUtil{
         return false;
     }
 
-    private static function checkCode(int $code, bool $isRo){
+    private static function checkCode(int $code, bool $isRo)
+    {
         JosaUtil::init();
         $jongsung = ($code - JosaUtil::KO_START_CODE) % 28;
 
@@ -517,7 +519,8 @@ class JosaUtil{
         return true;
     }
 
-    public static function check(string $text, string $type){
+    public static function check(string $text, string $type)
+    {
         JosaUtil::init();
         
         $htarget = preg_replace(JosaUtil::REG_INVALID_CHAR_W_HANJA, ' ', $text);
@@ -560,7 +563,8 @@ class JosaUtil{
         return JosaUtil::checkText($target, $isRo);
     }
 
-    public static function pick($text, string $wJongsung, string $woJongsung=''){
+    public static function pick($text, string $wJongsung, string $woJongsung='')
+    {
         /* NOTE:원본 코드와 인자 순서가 다름.
          * 원본은 pick('바람', '랑', '이랑'); 이었다면 JosaUtil::pick('바람', '이랑', '랑'); 으로 바뀜.
          * JosaUtil::pick('바람', '은', '는'); JosaUti::pick('바람', '이', '가');처럼 쓰기 위해서임.

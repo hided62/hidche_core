@@ -15,7 +15,7 @@ class 휴식 extends Command\NationCommand{
 
     protected function init(){
         //아무것도 하지 않음
-        $this->runnableConstraints=[];
+        $this->fullConditionConstraints=[];
         
     }
 

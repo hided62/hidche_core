@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\Nation;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -14,9 +18,9 @@ use \sammo\{
     Message,
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     getAllNationStaticInfo,
     getNationStaticInfo,
@@ -26,74 +30,84 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_불가침수락 extends Command\NationCommand{
+class che_불가침수락 extends Command\NationCommand
+{
     static protected $actionName = '불가침 수락';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
 
-        if(!key_exists('destNationID', $this->arg)){
+        if (!key_exists('destNationID', $this->arg)) {
             return false;
         }
         $destNationID = $this->arg['destNationID'];
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
-        if(!key_exists('destGeneralID', $this->arg)){
+        if (!key_exists('destGeneralID', $this->arg)) {
             return false;
         }
         $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($destGeneralID)){
+        if (!is_int($destGeneralID)) {
             return false;
         }
-        if($destGeneralID <= 0){
+        if ($destGeneralID <= 0) {
             return false;
         }
-        if($destGeneralID == $this->generalObj->getID()){
+        if ($destGeneralID == $this->generalObj->getID()) {
             return false;
         }
 
-        if(!key_exists('year', $this->arg) || !key_exists('month', $this->arg) ){
+        if (!key_exists('year', $this->arg) || !key_exists('month', $this->arg)) {
             return false;
         }
         $year = $this->arg['year'];
         $month = $this->arg['month'];
-        if(!is_int($year) || !is_int($month)){
+        if (!is_int($year) || !is_int($month)) {
             return false;
         }
 
-        if($month < 1 || 12 < $month){
+        if ($month < 1 || 12 < $month) {
             return false;
         }
 
-        if($year < $this->env['startyear']){
+        if ($year < $this->env['startyear']) {
             return false;
         }
 
         $this->arg = [
-            'destNationID'=>$destNationID,
-            'destGeneralID'=>$destGeneralID,
-            'year'=>$year,
-            'month'=>$month,
+            'destNationID' => $destNationID,
+            'destGeneralID' => $destGeneralID,
+            'year' => $year,
+            'month' => $month,
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
-
-        $env = $this->env;
-        $relYear = $env['year'] - $env['startyear'];
 
         $this->setCity();
         $this->setNation();
+
+        $this->permissionConstraints = [
+            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $env = $this->env;
+        $relYear = $env['year'] - $env['startyear'];
 
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], [], 1);
         $this->setDestGeneral($destGeneral);
@@ -104,24 +118,20 @@ class che_불가침수락 extends Command\NationCommand{
         $month = $this->arg['month'];
 
         $currentMonth = $env['year'] * 12 + $env['month'] - 1;
-        $reqMonth = $year *12 + $month - 1;
+        $reqMonth = $year * 12 + $month - 1;
 
         $nationID = $this->nation['nation'];
 
-        $this->reservableConstraints = [
-            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
-        ];
-
         if ($reqMonth <= $currentMonth) {
-            $this->runnableConstraints = [
+            $this->fullConditionConstraints = [
                 ConstraintHelper::AlwaysFail('이미 기한이 지났습니다.')
             ];
             return;
-        }        
+        }
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestNation(),
@@ -136,22 +146,25 @@ class che_불가침수락 extends Command\NationCommand{
                 6 => '아국과 외교 진행중입니다.',
             ]),
         ];
-
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         $year = $this->arg['year'];
@@ -159,8 +172,9 @@ class che_불가침수락 extends Command\NationCommand{
         return "{$year}년 {$month}월까지 불가침 합의";
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -182,17 +196,22 @@ class che_불가침수락 extends Command\NationCommand{
 
         $logger = $general->getLogger();
         $destLogger = $this->destGeneralObj->getLogger();
-        
-        $currentMonth = $env['year'] * 12 + $env['month'] - 1;
-        $reqMonth = $year *12 + $month - 1;
 
-        $db->update('diplomacy',[
-            'state'=>7,
-            'term'=>$reqMonth - $currentMonth
-        ],
-        '(me=%i AND you=%i) OR (you=%i AND me=%i)',
-        $nationID, $destNationID,
-        $nationID, $destNationID);
+        $currentMonth = $env['year'] * 12 + $env['month'] - 1;
+        $reqMonth = $year * 12 + $month - 1;
+
+        $db->update(
+            'diplomacy',
+            [
+                'state' => 7,
+                'term' => $reqMonth - $currentMonth
+            ],
+            '(me=%i AND you=%i) OR (you=%i AND me=%i)',
+            $nationID,
+            $destNationID,
+            $nationID,
+            $destNationID
+        );
 
         $josaWa = JosaUtil::pick($destNationName, '와');
         $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaWa} <C>$year</>년 <C>{$month}</>월까지 불가침에 성공했습니다.", ActionLogger::PLAIN);

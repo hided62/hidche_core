@@ -1,7 +1,8 @@
 <?php
 namespace sammo;
 
-function getMailboxList(){
+function getMailboxList()
+{
         
     $generalNations = [];
 

@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -11,9 +15,9 @@ use \sammo\{
     Command
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     tryUniqueItemLottery
 };
@@ -22,45 +26,55 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_선양 extends Command\GeneralCommand{
+class che_선양 extends Command\GeneralCommand
+{
     static protected $actionName = '선양';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
         //NOTE: 사망 직전에 '선양' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destGeneralID', $this->arg)){
+        if (!key_exists('destGeneralID', $this->arg)) {
             return false;
         }
         $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($destGeneralID)){
+        if (!is_int($destGeneralID)) {
             return false;
         }
-        if($destGeneralID <= 0){
+        if ($destGeneralID <= 0) {
             return false;
         }
-        if($destGeneralID == $this->generalObj->getID()){
+        if ($destGeneralID == $this->generalObj->getID()) {
             return false;
         }
         $this->arg = [
-            'destGeneralID'=>$destGeneralID
+            'destGeneralID' => $destGeneralID
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setNation();
 
+        $this->minConditionConstraints = [
+            ConstraintHelper::BeLord()
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
         $this->setDestGeneral($destGeneral);
-        
-        $this->runnableConstraints=[
-            ConstraintHelper::BeLord(), 
+
+        $this->fullConditionConstraints = [
+            ConstraintHelper::BeLord(),
             ConstraintHelper::ExistsDestGeneral(),
             ConstraintHelper::FriendlyDestGeneral(),
             ConstraintHelper::DisallowDiplomacyStatus(
@@ -70,15 +84,18 @@ class che_선양 extends Command\GeneralCommand{
         ];
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
@@ -89,8 +106,9 @@ class che_선양 extends Command\GeneralCommand{
         return "【{$destGeneralName}】에게 {$name}";
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -105,7 +123,7 @@ class che_선양 extends Command\GeneralCommand{
         $destGeneralName = $destGeneral->getName();
 
         $nationName = $this->nation['name'];
-        
+
         $logger = $general->getLogger();
         $destLogger = $destGeneral->getLogger();
 
@@ -138,25 +156,25 @@ class che_선양 extends Command\GeneralCommand{
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)', $this->generalObj->getNationID(), $this->generalObj->getID());
         ob_start();
 ?>
-군주의 자리를 다른 장수에게 물려줍니다.<br>
-장수를 선택하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-<?php foreach($destRawGenerals as $destGeneral):
-    $color = \sammo\getNameColor($destGeneral['npc']);
-    if($color){
-        $color = " style='color:{$color}'";
-    }
-    $name = $destGeneral['name'];
-    if($destGeneral['officer_level'] >= 5){
-        $name = "*{$name}*";
-    }
-?>
-    <option value='<?=$destGeneral['no']?>' <?=$color?>><?=$name?></option>
-<?php endforeach; ?>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+        군주의 자리를 다른 장수에게 물려줍니다.<br>
+        장수를 선택하세요.<br>
+        <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+            <?php foreach ($destRawGenerals as $destGeneral) :
+                $color = \sammo\getNameColor($destGeneral['npc']);
+                if ($color) {
+                    $color = " style='color:{$color}'";
+                }
+                $name = $destGeneral['name'];
+                if ($destGeneral['officer_level'] >= 5) {
+                    $name = "*{$name}*";
+                }
+            ?>
+                <option value='<?= $destGeneral['no'] ?>' <?= $color ?>><?= $name ?></option>
+            <?php endforeach; ?>
+        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
 <?php
         return ob_get_clean();
     }

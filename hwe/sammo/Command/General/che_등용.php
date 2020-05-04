@@ -53,21 +53,39 @@ class che_등용 extends Command\GeneralCommand{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation(['gennum', 'scout']);
 
+        $relYear = $this->env['year'] - $this->env['startyear'];
+
+        $this->permissionConstraints=[
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
+        ];
+
+        $this->minConditionConstraints=[
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotOpeningPart($relYear),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
         $this->setDestGeneral($destGeneral);
 
         [$reqGold, $reqRice] = $this->getCost();
         $relYear = $this->env['year'] - $this->env['startyear'];
-        
-        $this->runnableConstraints=[
-            ConstraintHelper::ReqEnvValue('join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
+
+        $this->fullConditionConstraints=[
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::OccupiedCity(),
@@ -77,9 +95,9 @@ class che_등용 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
-
+        
         if($this->destGeneralObj->getVar('officer_level') == 12){
-            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('군주에게는 등용장을 보낼 수 없습니다.');
+            $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('군주에게는 등용장을 보낼 수 없습니다.');
         }
     }
 
@@ -113,7 +131,7 @@ class che_등용 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

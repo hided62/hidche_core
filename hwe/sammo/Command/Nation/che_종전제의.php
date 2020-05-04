@@ -60,9 +60,20 @@ class che_종전제의 extends Command\NationCommand{
         $this->setCity();
         $this->setNation();
 
+        
+        $this->minConditionConstraints=[
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $this->setDestNation($this->arg['destNationID'], null);
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::OccupiedCity(),
@@ -73,7 +84,6 @@ class che_종전제의 extends Command\NationCommand{
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
         ];
-
     }
 
     public function getCost():array{
@@ -96,7 +106,7 @@ class che_종전제의 extends Command\NationCommand{
 
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

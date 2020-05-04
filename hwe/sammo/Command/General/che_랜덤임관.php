@@ -26,7 +26,6 @@ use sammo\MustNotBeReachedException;
 
 class che_랜덤임관 extends Command\GeneralCommand{
     static protected $actionName = '랜덤임관';
-    static public $reqArg = false;
 
     protected function argTest():bool{
         $this->arg = null;
@@ -61,7 +60,8 @@ class che_랜덤임관 extends Command\GeneralCommand{
         return true;*/
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
         $env = $this->env;
@@ -71,14 +71,14 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $relYear = $env['year'] - $env['startyear'];
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::AllowJoinAction(),
         ];
 
         /*
         if($this->arg['destNationIDList']??false){
-            $this->runnableConstraints[] = ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']);
+            $this->fullConditionConstraints[] = ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']);
         }
         */
     }
@@ -96,7 +96,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

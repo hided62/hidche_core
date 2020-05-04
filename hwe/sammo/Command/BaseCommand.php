@@ -5,7 +5,8 @@ use \sammo\{
     Util, JosaUtil, DB,
     General, GameConst,
     ActionLogger,
-    LastTurn
+    LastTurn,
+    NotInheritedMethodException
 };
 
 use function \sammo\getNationStaticInfo;
@@ -33,16 +34,19 @@ abstract class BaseCommand{
     protected $destCity = null;
     protected $destNation = null;
 
-    protected $runnable = null;
-    protected $reservable = null;
+    protected $cachedPermissionToReserve = false;
+    protected $cachedMinConditionMet = false;
+    protected $cachedFullConditionMet = false;
 
     protected $isArgValid=false;
 
-    protected $reasonNotRunnable = null;
-    protected $reasonNotReservable = null;
+    protected $reasonNotFullConditionMet = null;
+    protected $reasonNotMinConditionMet = null;
+    protected $reasonNoPermissionToReserve = null;
 
-    protected $runnableConstraints = null;
-    protected $reservableConstraints = null;
+    protected $fullConditionConstraints = null;
+    protected $minConditionConstraints = null;
+    protected $permissionConstraints = null;
 
     protected $logger;
 
@@ -63,57 +67,48 @@ abstract class BaseCommand{
         $this->logger = $generalObj->getLogger();
         $this->env = $env;
         $this->arg = $arg;
-        if (!$this->argTest()) {
-           return;
-        }
-        $this->isArgValid = true;
-        $this->init();
+
         
+        $this->init();
+        if ($this->argTest()) {
+            $this->isArgValid = true;
+            if(static::$reqArg){
+                $this->initWithArg();
+            }
+        }
+        else{
+            $this->isArgValid = false;
+        }
     }
 
     protected function resetTestCache():void{
-        $this->runnable = null;
-        $this->reservable = null;
+        $this->cachedFullConditionMet = false;
+        $this->cachedMinConditionMet = false;
+        $this->cachedPermissionToReserve = false;
 
-        $this->reasonNotRunnable = null;
-        $this->reasonNotReservable = null;
+        $this->reasonNotFullConditionMet = null;
+        $this->reasonNotMinConditionMet = null;
+        $this->reasonNoPermissionToReserve = null;
     }
     
-    protected function setCity(?array $args=null){
+    protected function setCity(){
         $this->resetTestCache();
         $db = DB::db();
-        if($args === null){
-            $this->city = $this->generalObj->getRawCity();
-            if($this->city){
-                return;
-            }
-            $this->city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $this->generalObj->getVar('city'));
-            $this->generalObj->setRawCity($this->city);
-            return;
-        }
-        
         $this->city = $this->generalObj->getRawCity();
-        $hasArgs = true;
-        foreach($args as $arg){
-            if(!key_exists($arg, $this->city)){
-                $hasArgs = false;
-                break;
-            }
-        }
-        if($hasArgs){
+        if($this->city){
             return;
         }
-        
-        $this->city = $db->queryFirstRow('SELECT %l FROM city WHERE city=%i', Util::formatListOfBackticks($args), $this->generalObj->getVar('city'));
-        if($this->generalObj->getRawCity() === null){
-            $this->generalObj->setRawCity($this->city);
-        }
+        $this->city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $this->generalObj->getVar('city'));
+        $this->generalObj->setRawCity($this->city);
+        return;
     }
 
     protected function setNation(?array $args = null){
         $this->resetTestCache();
         if($args === null){
-            $this->nation = $this->generalObj->getStaticNation();
+            if(!$this->nation){
+                $this->nation = $this->generalObj->getStaticNation();
+            }
             return;
         }
 
@@ -143,7 +138,18 @@ abstract class BaseCommand{
             'gennum'=>1  
         ];
 
-        
+        if($this->nation && $this->nation['nation'] === $nationID){
+            $allArgExists = true;
+            foreach($args as $arg){
+                if(!key_exists($arg, $this->nation)){
+                    $allArgExists = false;
+                    break;
+                }
+            }
+            if($allArgExists){
+                return;
+            }
+        }
 
         $db = DB::db();
         $nation = $db->queryFirstRow('SELECT %l FROM nation WHERE nation=%i', Util::formatListOfBackticks($args), $nationID);
@@ -153,7 +159,14 @@ abstract class BaseCommand{
                 $nation[$arg] = $defaultValues[$arg];
             }
         }
-        $this->nation = $nation;
+
+        if($this->nation){
+            //NOTE: 이 순서 맞다! https://www.php.net/manual/en/language.operators.array.php
+            $this->nation = $nation + $this->nation;
+        }
+        else{
+            $this->nation = $nation;
+        }
     }
 
     protected function setDestGeneral(General $destGeneralObj){
@@ -161,19 +174,19 @@ abstract class BaseCommand{
         $this->destGeneralObj = $destGeneralObj;
     }
 
-    protected function setDestCity(int $cityNo, ?array $args){
+    protected function setDestCity(int $cityNo, bool $onlyName=false){
         $this->resetTestCache();
         $db = DB::db();
-        if($args === []){
+        if($onlyName){
             $cityObj = \sammo\CityConst::byID($cityNo);
-            $this->destCity = ['city'=>$cityNo, 'name'=>$cityObj->name];
+            $this->destCity = [
+                'city'=>$cityNo,
+                'name'=>$cityObj->name,
+                'region'=>$cityObj->region,
+            ];
             return;
         }
-        if($args === null){
-            $this->destCity = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $cityNo);
-            return;
-        }
-        $this->destCity = $db->queryFirstRow('SELECT %l FROM city WHERE city=%i', Util::formatListOfBackticks($args), $cityNo);
+        $this->destCity = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $cityNo);
     }
 
     protected function setDestNation(int $nationID, ?array $args = null){
@@ -208,6 +221,11 @@ abstract class BaseCommand{
     }
 
     abstract protected function init();
+    protected function initWithArg(){
+        if(static::$reqArg){
+            throw new NotInheritedMethodException();
+        }
+    }
     abstract protected function argTest():bool;
     
     public function getArg():?array{
@@ -253,13 +271,19 @@ abstract class BaseCommand{
         return $this->logger;
     }
 
-    public function testReservable():?string{
-        if($this->reservableConstraints === null){
+    public function testPermissionToReserve():?string{
+        if(!$this->isArgValid()){
+            $this->reasonNoPermissionToReserve = '인자가 올바르지 않습니다.';
+            $this->cachedPermissionToReserve = true;
+            return $this->reasonNoPermissionToReserve;
+        }
+
+        if($this->permissionConstraints === null){
             return null;
         }
 
-        if($this->reasonNotReservable){
-            return $this->reasonNotReservable;
+        if($this->reasonNoPermissionToReserve){
+            return $this->reasonNoPermissionToReserve;
         }
 
         $this->generalObj->unpackAux();
@@ -274,27 +298,29 @@ abstract class BaseCommand{
             'destNation'=>$this->destNation,
         ];
 
-        [$this->reasonConstraint, $this->reasonNotReservable] = Constraint::testAll($this->reservableConstraints??[], $constraintInput, $this->env);
-        $this->reservable = $this->reasonNotReservable === null;
-        return $this->reasonNotReservable;
+        [$this->reasonConstraint, $this->reasonNoPermissionToReserve] = Constraint::testAll($this->permissionConstraints??[], $constraintInput, $this->env);
+        $this->cachedPermissionToReserve = true;
+        return $this->reasonNoPermissionToReserve;
     }
 
     public function canDisplay():bool{
-        return true;
+        return $this->hasPermissionToReserve();
     }
 
-    public function testRunnable():?string{
-        if(!$this->isArgValid()){
-            $this->reasonNotReservable = '인자가 올바르지 않습니다.';
-            $this->reservable = false;
-            return $this->reasonNotReservable;
-        }
-        if($this->runnableConstraints === null){
-            throw new \InvalidArgumentException('runnableConstraits가 제대로 설정되지 않았습니다');
+    public function testMinConditionMet():?string{
+        if(!static::$reqArg){
+            if($this->minConditionConstraints){
+                throw new \LogicException('reqArg==false인데 minCondition이 설정됨');
+            }
+            return $this->testFullConditionMet();
         }
 
-        if($this->reasonNotRunnable){
-            return $this->reasonNotRunnable;
+        if($this->minConditionConstraints === null){
+            throw new \InvalidArgumentException('minConditionConstraints가 제대로 설정되지 않았습니다');
+        }
+
+        if($this->cachedMinConditionMet){
+            return $this->reasonNotMinConditionMet;
         }
 
         $this->generalObj->unpackAux();
@@ -309,9 +335,42 @@ abstract class BaseCommand{
             'destNation'=>$this->destNation,
         ];
 
-        [$this->reasonConstraint, $this->reasonNotRunnable] = Constraint::testAll($this->runnableConstraints??[], $constraintInput, $this->env);
-        $this->runnable = $this->reasonNotRunnable === null;
-        return $this->reasonNotRunnable;
+        [$this->reasonConstraint, $this->reasonNotMinConditionMet] = Constraint::testAll($this->minConditionConstraints??[], $constraintInput, $this->env);
+        $this->cachedMinConditionMet = true;
+        return $this->reasonNotMinConditionMet;
+        
+    }
+
+    public function testFullConditionMet():?string{
+        if(!$this->isArgValid()){
+            $this->reasonNotFullConditionMet = '인자가 올바르지 않습니다.';
+            $this->cachedFullConditionMet = true;
+            return $this->reasonNotFullConditionMet;
+        }
+
+        if($this->fullConditionConstraints === null){
+            throw new \InvalidArgumentException('fullConditionConstraints가 제대로 설정되지 않았습니다');
+        }
+
+        if($this->cachedFullConditionMet){
+            return $this->reasonNotFullConditionMet;
+        }
+
+        $this->generalObj->unpackAux();
+        $constraintInput = [
+            'general'=>$this->generalObj->getRaw(),
+            'city'=>$this->city,
+            'nation'=>$this->nation,
+            'cmd_arg'=>$this->arg,
+
+            'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
+            'destCity'=>$this->destCity,
+            'destNation'=>$this->destNation,
+        ];
+
+        [$this->reasonConstraint, $this->reasonNotFullConditionMet] = Constraint::testAll($this->fullConditionConstraints??[], $constraintInput, $this->env);
+        $this->cachedFullConditionMet = true;
+        return $this->reasonNotFullConditionMet;
         
     }
 
@@ -350,30 +409,25 @@ abstract class BaseCommand{
         return true;
     }
 
-    public function isReservable():bool{
-        if($this->reservable !== null){
-            return $this->reservable;
-        }
-
-        $this->reservable = $this->testReservable() === null;
-        return $this->reservable;
+    public function hasPermissionToReserve():bool{
+        return $this->testPermissionToReserve() === null;
     }
 
     public function isArgValid():bool{
         return $this->isArgValid;
     }
 
-    public function isRunnable():bool {
-        if($this->runnable !== null){
-            return $this->runnable;
-        }
-        
-        return $this->testRunnable() === null;
+    public function hasMinConditionMet():bool {
+        return $this->testMinConditionMet() === null;
+    }
+
+    public function hasFullConditionMet():bool {
+        return $this->testFullConditionMet() === null;
     }
 
     public function getFailString():string{
         $commandName = $this->getName();
-        $failReason = $this->testRunnable();
+        $failReason = $this->testFullConditionMet();
         if($failReason === null){
             throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
         }

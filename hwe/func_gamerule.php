@@ -497,7 +497,7 @@ function checkWander() {
 
     foreach(General::createGeneralObjListFromDB($wanderers) as $wanderer){
         $wanderCmd = buildGeneralCommandClass('che_해산', $wanderer, $admin);
-        if($wanderCmd->isRunnable()){
+        if($wanderCmd->hasFullConditionMet()){
             $logger = $wanderer->getLogger();
             $logger->pushGeneralActionLog('초반 제한후 방랑군은 자동 해산됩니다.', ActionLogger::PLAIN);
             $wanderCmd->run();

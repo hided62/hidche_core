@@ -82,6 +82,22 @@ class che_임관 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
 
+        $relYear = $env['year'] - $env['startyear'];
+
+        $this->permissionConstraints=[
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다')
+        ];
+
+        $this->minConditionConstraints=[
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
+            ConstraintHelper::BeNeutral(),
+            ConstraintHelper::AllowJoinAction()
+        ];
+        
+    }
+
+    protected function initWithArg()
+    {
         $destGeneralID = $this->arg['destGeneralID']??null;
         $destNationID = $this->arg['destNationID']??null;
         if($destGeneralID !== null){
@@ -92,24 +108,15 @@ class che_임관 extends Command\GeneralCommand{
             $this->setDestNation($destNationID, ['gennum', 'scout']);
         }
 
+        $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
-
-        $this->reservableConstraints=[
-            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다')
-        ];
-        
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::AllowJoinDestNation($relYear),
             ConstraintHelper::AllowJoinAction()
         ];
-    }
-
-    public function canDisplay(): bool
-    {
-        return ($this->env['join_mode']??'') != 'onlyRandom';
     }
 
     public function getCost():array{
@@ -132,7 +139,7 @@ class che_임관 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

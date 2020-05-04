@@ -40,7 +40,7 @@ class che_해산 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation(['gennum']);
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::BeLord(),
             ConstraintHelper::WanderingNation(),
         ];
@@ -59,7 +59,7 @@ class che_해산 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

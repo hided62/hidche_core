@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\Nation;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -14,9 +18,9 @@ use \sammo\{
     Message,
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     getAllNationStaticInfo,
     getNationStaticInfo,
@@ -26,69 +30,69 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_불가침파기수락 extends Command\NationCommand{
+class che_불가침파기수락 extends Command\NationCommand
+{
     static protected $actionName = '불가침 파기 수락';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
 
-        if(!key_exists('destNationID', $this->arg)){
+        if (!key_exists('destNationID', $this->arg)) {
             return false;
         }
         $destNationID = $this->arg['destNationID'];
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
-        if(!key_exists('destGeneralID', $this->arg)){
+        if (!key_exists('destGeneralID', $this->arg)) {
             return false;
         }
         $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($destGeneralID)){
+        if (!is_int($destGeneralID)) {
             return false;
         }
-        if($destGeneralID <= 0){
+        if ($destGeneralID <= 0) {
             return false;
         }
-        if($destGeneralID == $this->generalObj->getID()){
+        if ($destGeneralID == $this->generalObj->getID()) {
             return false;
         }
 
         $this->arg = [
-            'destNationID'=>$destNationID,
-            'destGeneralID'=>$destGeneralID,
+            'destNationID' => $destNationID,
+            'destGeneralID' => $destGeneralID,
         ];
         return true;
     }
 
-    protected function init(){
-        $general = $this->generalObj;
-
-        $env = $this->env;
-        $relYear = $env['year'] - $env['startyear'];
-
+    protected function init()
+    {
         $this->setCity();
         $this->setNation();
 
+        $this->permissionConstraints = [
+            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
+        ];   
+    }
+
+    protected function initWithArg()
+    {
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], [], 1);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID']);
 
-        $nationID = $this->nation['nation'];
 
-        $this->reservableConstraints = [
-            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
-        ];
-
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::ExistsDestGeneral(),
             ConstraintHelper::ReqDestNationValue('nation', '소속', '==', $this->destGeneralObj->getNationID(), '제의 장수가 국가 소속이 아닙니다'),
@@ -97,29 +101,33 @@ class che_불가침파기수락 extends Command\NationCommand{
                 '불가침 중인 상대국에게만 가능합니다.'
             ),
         ];
-
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         return "{$destNationName}국과 불가침 파기 합의";
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -140,13 +148,18 @@ class che_불가침파기수락 extends Command\NationCommand{
         $logger = $general->getLogger();
         $destLogger = $this->destGeneralObj->getLogger();
 
-        $db->update('diplomacy',[
-            'state'=>2,
-            'term'=>0
-        ],
-        '(me=%i AND you=%i) OR (you=%i AND me=%i)',
-        $nationID, $destNationID,
-        $nationID, $destNationID);
+        $db->update(
+            'diplomacy',
+            [
+                'state' => 2,
+                'term' => 0
+            ],
+            '(me=%i AND you=%i) OR (you=%i AND me=%i)',
+            $nationID,
+            $destNationID,
+            $nationID,
+            $destNationID
+        );
 
         $josaYiGeneral = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');

@@ -88,7 +88,7 @@ class DiplomaticMessage extends Message{
 
         $this->diplomacyDetail = $commandObj->getBrief();
 
-        if(!$commandObj->isRunnable()){
+        if(!$commandObj->hasFullConditionMet()){
             return [self::DECLINED, $commandObj->getFailString()];
         }
 
@@ -109,7 +109,7 @@ class DiplomaticMessage extends Message{
 
         $this->diplomacyDetail = $commandObj->getBrief();
 
-        if(!$commandObj->isRunnable()){
+        if(!$commandObj->hasFullConditionMet()){
             return [self::DECLINED, $commandObj->getFailString()];
         }
 
@@ -130,7 +130,7 @@ class DiplomaticMessage extends Message{
 
         $this->diplomacyDetail = $commandObj->getBrief();
 
-        if(!$commandObj->isRunnable()){
+        if(!$commandObj->hasFullConditionMet()){
             return [self::DECLINED, $commandObj->getFailString()];
         }
 

@@ -63,14 +63,23 @@ class che_장비매매 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
 
+        $this->minConditionConstraints=[
+            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $general = $this->generalObj;
+
         $itemType = $this->arg['itemType'];
         $itemTypeName = static::$itemMap[$itemType];
         $itemCode = $this->arg['itemCode'];
         $itemClass = buildItemClass($itemCode);
 
         [$reqGold, $reqRice] = $this->getCost();
-        
-        $this->runnableConstraints=[
+
+        $this->fullConditionConstraints=[
             ConstraintHelper::ReqCityTrader($general->getVar('npc')),
             ConstraintHelper::ReqCityCapacity('secu', '치안 수치', $itemClass->getReqSecu()),
             ConstraintHelper::ReqGeneralGold($reqGold),
@@ -78,15 +87,14 @@ class che_장비매매 extends Command\GeneralCommand{
         ];
 
         if($itemCode === 'None'){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralValue($itemType, $itemTypeName, '!=', 'None');
+            $this->fullConditionConstraints[] = ConstraintHelper::ReqGeneralValue($itemType, $itemTypeName, '!=', 'None');
         }
         else if($itemCode == $general->getVar($itemType)){
-            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 가지고 있습니다.');
+            $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('이미 가지고 있습니다.');
         }
         else if($itemType != 'item' && !buildItemClass($general->getVar($itemType))->isBuyable()){
-            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 진귀한 것을 가지고 있습니다.');
+            $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('이미 진귀한 것을 가지고 있습니다.');
         }
-
     }
 
     public function getCost():array{
@@ -128,7 +136,7 @@ class che_장비매매 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

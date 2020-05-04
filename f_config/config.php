@@ -1,55 +1,56 @@
 <?php
+
 namespace sammo;
 
-define('ROOT', realpath(__DIR__.'/..'));
+define('ROOT', realpath(__DIR__ . '/..'));
 setlocale(LC_ALL, 'ko_KR.UTF-8');
 date_default_timezone_set('Asia/Seoul');
 mb_internal_encoding("UTF-8");
 mb_http_output('UTF-8');
-mb_regex_encoding('UTF-8'); 
+mb_regex_encoding('UTF-8');
 
 ini_set("session.cache_expire", '10080');      // minutes
 ini_set("session.gc_maxlifetime", '604800');    // seconds
 
-function getFriendlyErrorType($type) 
-{ 
-    switch($type) 
-    { 
+function getFriendlyErrorType($type)
+{
+    switch ($type) {
         case E_ERROR: // 1 // 
-            return 'E_ERROR'; 
+            return 'E_ERROR';
         case E_WARNING: // 2 // 
-            return 'E_WARNING'; 
+            return 'E_WARNING';
         case E_PARSE: // 4 // 
-            return 'E_PARSE'; 
+            return 'E_PARSE';
         case E_NOTICE: // 8 // 
-            return 'E_NOTICE'; 
+            return 'E_NOTICE';
         case E_CORE_ERROR: // 16 // 
-            return 'E_CORE_ERROR'; 
+            return 'E_CORE_ERROR';
         case E_CORE_WARNING: // 32 // 
-            return 'E_CORE_WARNING'; 
+            return 'E_CORE_WARNING';
         case E_COMPILE_ERROR: // 64 // 
-            return 'E_COMPILE_ERROR'; 
+            return 'E_COMPILE_ERROR';
         case E_COMPILE_WARNING: // 128 // 
-            return 'E_COMPILE_WARNING'; 
+            return 'E_COMPILE_WARNING';
         case E_USER_ERROR: // 256 // 
-            return 'E_USER_ERROR'; 
+            return 'E_USER_ERROR';
         case E_USER_WARNING: // 512 // 
-            return 'E_USER_WARNING'; 
+            return 'E_USER_WARNING';
         case E_USER_NOTICE: // 1024 // 
-            return 'E_USER_NOTICE'; 
+            return 'E_USER_NOTICE';
         case E_STRICT: // 2048 // 
-            return 'E_STRICT'; 
+            return 'E_STRICT';
         case E_RECOVERABLE_ERROR: // 4096 // 
-            return 'E_RECOVERABLE_ERROR'; 
+            return 'E_RECOVERABLE_ERROR';
         case E_DEPRECATED: // 8192 // 
-            return 'E_DEPRECATED'; 
+            return 'E_DEPRECATED';
         case E_USER_DEPRECATED: // 16384 // 
-            return 'E_USER_DEPRECATED'; 
-    } 
-    return "{$type}"; 
+            return 'E_USER_DEPRECATED';
+    }
+    return "{$type}";
 }
 
-function getExceptionTraceAsString($exception) {
+function getExceptionTraceAsString($exception)
+{
     //https://gist.github.com/abtris/1437966
     $rtn = "";
     $count = 0;
@@ -73,74 +74,79 @@ function getExceptionTraceAsString($exception) {
                     $args[] = get_resource_type($arg);
                 } else {
                     $args[] = $arg;
-                }   
-            }   
+                }
+            }
             $args = join(", ", $args);
         }
-        $rtn[] = sprintf( "#%s %s:%s %s(%s)",
-                                 $count,
-                                 isset($frame['file']) ? $frame['file'] : 'unknown file',
-                                 isset($frame['line']) ? $frame['line'] : 'unknown line',
-                                 (isset($frame['class']))  ? $frame['class'].$frame['type'].$frame['function'] : $frame['function'],
-                                 $args );
+        $rtn[] = sprintf(
+            "#%s %s:%s %s(%s)",
+            $count,
+            isset($frame['file']) ? $frame['file'] : 'unknown file',
+            isset($frame['line']) ? $frame['line'] : 'unknown line',
+            (isset($frame['class']))  ? $frame['class'] . $frame['type'] . $frame['function'] : $frame['function'],
+            $args
+        );
         $count++;
     }
     return $rtn;
 }
 
-function logError(string $err, string $errstr, string $errpath, array $trace){
-    $fdb = FileDB::db(ROOT.'/d_log/err_log.sqlite3', ROOT.'/f_install/sql/err_log.sql');
+function logError(string $err, string $errstr, string $errpath, array $trace)
+{
+    $fdb = FileDB::db(ROOT . '/d_log/err_log.sqlite3', ROOT . '/f_install/sql/err_log.sql');
     $date = date("Ymd_His");
 
     $errpath = str_replace(ROOT, '{ROOT}', $errpath);
-    $trace = array_map(function(string $text){
+    $trace = array_map(function (string $text) {
         return str_replace(ROOT, '{ROOT}', $text);
     }, $trace);
 
     $owner = Util::get_client_ip();
     $session = Session::getInstance();
-    if($session->isLoggedIn(true)){
-        $owner .= '('.$session->getUserID().','.$session->userName.')';
+    if ($session->isLoggedIn(true)) {
+        $owner .= '(' . $session->getUserID() . ',' . $session->userName . ')';
     }
 
     $fdb->insert('err_log', [
-        'date'=>$date,
-        'err'=>$err,
-        'errstr'=>$errstr,
-        'errpath'=>$errpath,
-        'trace'=>Json::encode($trace),
-        'webuser'=>$owner
+        'date' => $date,
+        'err' => $err,
+        'errstr' => $errstr,
+        'errpath' => $errpath,
+        'trace' => Json::encode($trace),
+        'webuser' => $owner
     ]);
 }
 
-function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext){
+function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext)
+{
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall
         // through to the standard PHP error handler
         return false;
     }
-    
+
     $e = new \Exception();
 
     logError(
         getFriendlyErrorType($errno),
         $errstr,
-        $errfile.':'.$errline,
+        $errfile . ':' . $errline,
         getExceptionTraceAsString($e)
     );
 }
 set_error_handler("\sammo\logErrorByCustomHandler");
 
 
-function logExceptionByCustomHandler(\Throwable $e){
-    
+function logExceptionByCustomHandler(\Throwable $e)
+{
+
     logError(
         get_class($e),
         $e->getMessage(),
-        $e->getFile().':'.$e->getLine(),
+        $e->getFile() . ':' . $e->getLine(),
         getExceptionTraceAsString($e)
     );
-    
+
     echo $e->getTraceAsString();
     throw $e;
 }

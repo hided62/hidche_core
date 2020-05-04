@@ -7,24 +7,7 @@ include "func.php";
 $session = Session::requireGameLogin()->setReadOnly();
 
 if($session->userGrade < 5) {
-?>
-<!DOCTYPE html>
-<html>
-<head>
-<title>관리메뉴</title>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=1024" />
-<?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('css/common.css')?>
-</head>
-<body>
-관리자가 아닙니다.<br>
-    <?=banner()?>
-</body>
-</html>
-<?php
-    exit();
+    die(requireAdminPermissionHTML());
 }
 
 $db = DB::db();

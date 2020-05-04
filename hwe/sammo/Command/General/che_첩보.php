@@ -1,17 +1,21 @@
 <?php
+
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
     ActionLogger,
-    GameConst, GameUnitConst,
+    GameConst,
+    GameUnitConst,
     LastTurn,
     Command
 };
 
 
-use function \sammo\{
+use function\sammo\{
     tryUniqueItemLottery,
     searchDistance,
     printCitiesBasedOnDistance
@@ -23,89 +27,111 @@ use sammo\CityConst;
 
 
 
-class che_첩보 extends Command\GeneralCommand{
+class che_첩보 extends Command\GeneralCommand
+{
     static protected $actionName = '첩보';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
-        if(!key_exists('destCityID', $this->arg)){
+        if (!key_exists('destCityID', $this->arg)) {
             return false;
         }
-        if(!key_exists($this->arg['destCityID'], CityConst::all())){
+        if (!key_exists($this->arg['destCityID'], CityConst::all())) {
             return false;
         }
         $this->arg = [
-            'destCityID'=>$this->arg['destCityID']
+            'destCityID' => $this->arg['destCityID']
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation(['tech']);
-        $this->setDestCity($this->arg['destCityID'], null);
-        $this->setDestNation($this->destCity['nation'], ['tech']);
 
         [$reqGold, $reqRice] = $this->getCost();
-        
-        $this->runnableConstraints=[
+
+        $this->minConditionConstraints = [
             ConstraintHelper::NotOccupiedDestCity(),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
     }
 
-    public function getBrief():string{
+    protected function initWithArg()
+    {
+        $this->setDestCity($this->arg['destCityID']);
+        $this->setDestNation($this->destCity['nation'], ['tech']);
+
+        [$reqGold, $reqRice] = $this->getCost();
+
+        $this->fullConditionConstraints = [
+            ConstraintHelper::NotOccupiedDestCity(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
+        ];
+    }
+
+    public function getBrief(): string
+    {
         $cityName = $this->destCity['name'];
         return "【{$cityName}】에 {$this->getName()} 실행";
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
         [$reqGold, $reqRice] = $this->getCost();
 
         $title = "{$name}(통솔경험";
-        if($reqGold > 0){
+        if ($reqGold > 0) {
             $title .= ", 자금{$reqGold}";
         }
-        if($reqRice > 0){
+        if ($reqRice > 0) {
             $title .= ", 군량{$reqRice}";
         }
         $title .= ')';
         return $title;
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         $env = $this->env;
         return [$env['develcost'], $env['develcost']];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getFailString():string{
+    public function getFailString(): string
+    {
         $commandName = $this->getName();
-        $failReason = $this->testRunnable();
-        if($failReason === null){
+        $failReason = $this->testFullConditionMet();
+        if ($failReason === null) {
             throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
         }
         $destCityName = CityConst::byID($this->arg['destCityID'])->name;
         return "{$failReason} <G><b>{$destCityName}</b></>에 {$commandName} 실패.";
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -124,13 +150,13 @@ class che_첩보 extends Command\GeneralCommand{
 
         $logger = $general->getLogger();
 
-        $dist = searchDistance($general->getCityID(), 2, false)[$destCityID]??3;
+        $dist = searchDistance($general->getCityID(), 2, false)[$destCityID] ?? 3;
 
         $destCityGeneralList = $db->query('SELECT crew, crewtype FROM general WHERE city = %i AND nation = %i', $destCityID, $destNationID);
         $totalCrew = Util::arraySum($destCityGeneralList, 'crew');
         $totalGenCnt = count($destCityGeneralList);
         $byCrewType = Util::arrayGroupBy($destCityGeneralList, 'crewtype');
-        
+
         $popText = number_format($destCity['pop']);
         $trustText = number_format($destCity['trust'], 1);
         $agriText = number_format($destCity['agri']);
@@ -143,50 +169,43 @@ class che_첩보 extends Command\GeneralCommand{
         $cityDevel = "【<M>첩보</>】농업:{$agriText}, 상업:{$commText}, 치안:{$secuText}, 수비:{$defText}, 성벽:{$wallText}";
 
         $logger->pushGeneralActionLog("누군가가 <G><b>{$destCityName}</b></>{$josaUl} 살피는 것 같습니다.");
-        if($dist < 1){
+        if ($dist < 1) {
             $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>의 정보를 많이 얻었습니다. <1>$date</>");
             $logger->pushGeneralActionLog($cityBrief, ActionLogger::RAWTEXT);
             $logger->pushGeneralActionLog($cityDevel, ActionLogger::RAWTEXT);
-            $logger->pushGeneralActionLog('【<S>병종</>】 '. join(' ', Util::mapWithKey(function($crewType, $value){
+            $logger->pushGeneralActionLog('【<S>병종</>】 ' . join(' ', Util::mapWithKey(function ($crewType, $value) {
                 $crewTypeText = mb_substr(GameUnitConst::byID($crewType)->name, 0, 2);
                 $cnt = count($value);
                 return "{$crewTypeText}:{$cnt}";
             }, $destCityGeneralList)), ActionLogger::RAWTEXT);
 
-            if($this->destNation['nation'] && $general->getNationID()){
+            if ($this->destNation['nation'] && $general->getNationID()) {
                 $techDiff = floor($this->destNation['tech']) - floor($this->nation['tech']);
-                if($techDiff >= 1000){
+                if ($techDiff >= 1000) {
                     $techText = '<M>↑</>압도';
-                }
-                else if($techDiff >= 250){
+                } else if ($techDiff >= 250) {
                     $techText = '<Y>▲</>우위';
-                }
-                else if($techDiff >= -250){
+                } else if ($techDiff >= -250) {
                     $techText = '<W>↕</>대등';
-                }
-                else if($techDiff >= -1000){
+                } else if ($techDiff >= -1000) {
                     $techText = '<G>▼</>열위';
-                }
-                else{
+                } else {
                     $techText = '<C>↓</>미미';
                 }
                 $logger->pushGeneralActionLog("【<span class='ev_notice'>{$this->destNation['name']}</span>】아국대비기술:{$techText}");
             }
-            
-        }
-        else if($dist == 2){
+        } else if ($dist == 2) {
             $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>의 정보를 어느 정도 얻었습니다. <1>$date</>");
             $logger->pushGeneralActionLog($cityBrief, ActionLogger::RAWTEXT);
             $logger->pushGeneralActionLog($cityDevel, ActionLogger::RAWTEXT);
-        }
-        else{
+        } else {
             $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>의 소문만 들을 수 있었습니다. <1>$date</>");
             $logger->pushGeneralActionLog($cityBrief, ActionLogger::RAWTEXT);
         }
 
         $exp = Util::randRangeInt(1, 100);
         $ded = Util::randRangeInt(1, 70);
-        
+
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
@@ -212,19 +231,17 @@ class che_첩보 extends Command\GeneralCommand{
         $currentCityID = $this->generalObj->getCityID();
         ob_start();
 ?>
-<?=\sammo\getMapHtml()?><br>
-선택된 도시에 첩보를 실행합니다.<br>
-인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
-목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
-<?=\sammo\optionsForCities()?><br>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<br>
-<br>
-<?=printCitiesBasedOnDistance($currentCityID, 3)?>
+        <?= \sammo\getMapHtml() ?><br>
+        선택된 도시에 첩보를 실행합니다.<br>
+        인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
+        목록을 선택하거나 도시를 클릭하세요.<br>
+        <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
+            <?= \sammo\optionsForCities() ?><br>
+        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
+        <br>
+        <br>
+        <?= printCitiesBasedOnDistance($currentCityID, 3) ?>
 <?php
-                return ob_get_clean();
+        return ob_get_clean();
     }
-
-    
 }

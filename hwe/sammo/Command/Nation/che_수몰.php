@@ -56,10 +56,20 @@ class che_수몰 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        $this->setDestCity($this->arg['destCityID'], null);
+        
+        $this->minConditionConstraints=[
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::AvailableStrategicCommand(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $this->setDestCity($this->arg['destCityID']);
         $this->setDestNation($this->destCity['nation']);
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotNeutralDestCity(),
@@ -101,7 +111,7 @@ class che_수몰 extends Command\NationCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

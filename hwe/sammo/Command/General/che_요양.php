@@ -34,7 +34,7 @@ class che_요양 extends Command\GeneralCommand{
 
         $this->setNation();
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
         ];
 
     }
@@ -52,7 +52,7 @@ class che_요양 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

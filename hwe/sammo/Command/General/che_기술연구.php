@@ -31,7 +31,8 @@ class che_기술연구 extends che_상업투자{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
@@ -40,7 +41,7 @@ class che_기술연구 extends che_상업투자{
         
         [$reqGold, $reqRice] = $this->getCost();
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
@@ -53,7 +54,7 @@ class che_기술연구 extends che_상업투자{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

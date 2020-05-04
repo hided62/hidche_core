@@ -84,7 +84,7 @@ class ScoutMessage extends Message{
             'month'=>$this->msgOption['month']
         ]);
 
-        if(!$commandObj->isRunnable()){
+        if(!$commandObj->hasFullConditionMet()){
             $logger->pushGeneralActionLog($commandObj->getFailString());
             return self::DECLINED;
         }

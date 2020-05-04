@@ -26,7 +26,6 @@ use sammo\Event\Action;
 
 class che_필사즉생 extends Command\NationCommand{
     static protected $actionName = '필사즉생';
-    static public $reqArg = false;
 
     protected function argTest():bool{
         $this->arg = [];
@@ -42,7 +41,7 @@ class che_필사즉생 extends Command\NationCommand{
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
@@ -77,7 +76,7 @@ class che_필사즉생 extends Command\NationCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

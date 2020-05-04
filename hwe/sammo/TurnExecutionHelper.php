@@ -67,8 +67,7 @@ class TurnExecutionHelper
         $general = $this->getGeneral();
 
         while(true){
-            $failReason = $commandObj->testRunnable();
-            if($failReason){
+            if($commandObj->hasFullConditionMet()){
                 $date = $general->getTurnTime($general::TURNTIME_HM);
                 $failString = $commandObj->getFailString();
                 $text = "{$failString} <1>{$date}</>";
@@ -110,8 +109,7 @@ class TurnExecutionHelper
         $commandClassName = $commandObj->getName();
 
         while(true){
-            $failReason = $commandObj->testRunnable();
-            if($failReason){
+            if($commandObj->hasFullConditionMet()){
                 $date = $general->getTurnTime($general::TURNTIME_HM);
                 $failString = $commandObj->getFailString();
                 $text = "{$failString} <1>{$date}</>";

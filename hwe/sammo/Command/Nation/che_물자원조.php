@@ -80,6 +80,16 @@ class che_물자원조 extends Command\NationCommand{
         $this->setCity();
         $this->setNation(['gold', 'rice', 'surlimit']);
 
+        $this->minConditionConstraints=[
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ReqNationValue('surlimit', '외교제한', '==', 0, '외교제한중입니다.'),
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $destNationID = $this->arg['destNationID'];
         $this->setDestNation($destNationID, ['gold', 'rice', 'surlimit']);
 
@@ -87,13 +97,13 @@ class che_물자원조 extends Command\NationCommand{
         $limit = $this->nation['level'] * GameConst::$coefAidAmount;
 
         if($goldAmount > $limit || $riceAmount > $limit){
-            $this->runnableConstraints[
+            $this->fullConditionConstraints[
                 ConstraintHelper::AlwaysFail('작위 제한량 이상은 보낼 수 없습니다.')
             ];
             return;
         }
-        
-        $this->runnableConstraints=[
+
+        $this->fullConditionConstraints=[
             ConstraintHelper::ExistsDestNation(), 
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -128,7 +138,7 @@ class che_물자원조 extends Command\NationCommand{
 
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

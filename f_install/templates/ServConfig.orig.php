@@ -1,4 +1,5 @@
 <?php
+
 namespace sammo;
 
 class ServConfig
@@ -13,32 +14,32 @@ class ServConfig
     public static $imageRequestPath = "_tK_imageRequestPath_";
     public static $imageRequestKey = '_tK_imageRequestKey_';
 
-    public static function getSharedIconPath(string $filepath='') : string
+    public static function getSharedIconPath(string $filepath = ''): string
     {
-        if($filepath){
-            return static::$sharedIconPath."/{$filepath}";
+        if ($filepath) {
+            return static::$sharedIconPath . "/{$filepath}";
         }
         return static::$sharedIconPath;
     }
-    
-    public static function getUserIconPath(string $filepath='') : string
+
+    public static function getUserIconPath(string $filepath = ''): string
     {
         return AppConf::getUserIconPathWeb($filepath);
     }
 
-    public static function getGameImagePath(string $filepath='') : string
+    public static function getGameImagePath(string $filepath = ''): string
     {
-        if($filepath){
-            return static::$gameImagePath."/{$filepath}";
+        if ($filepath) {
+            return static::$gameImagePath . "/{$filepath}";
         }
         return static::$gameImagePath;
     }
 
-    public static function getImagePullURI() : string
+    public static function getImagePullURI(): string
     {
         $now = time();
-        $req_hash = Util::hashPassword(sprintf("%016x",$now), static::$imageRequestKey);
-        return static::$imageRequestPath."?req={$req_hash}&time={$now}";
+        $req_hash = Util::hashPassword(sprintf("%016x", $now), static::$imageRequestKey);
+        return static::$imageRequestPath . "?req={$req_hash}&time={$now}";
     }
 
 
@@ -47,7 +48,7 @@ class ServConfig
      *
      * @return string
      */
-    public static function getServerBasepath() : string
+    public static function getServerBasepath(): string
     {
         return self::$serverWebPath;
     }

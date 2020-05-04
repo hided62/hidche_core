@@ -1,9 +1,12 @@
 <?php
+
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -11,9 +14,9 @@ use \sammo\{
     Command
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     tryUniqueItemLottery
 };
@@ -22,84 +25,99 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_헌납 extends Command\GeneralCommand{
+class che_헌납 extends Command\GeneralCommand
+{
     static protected $actionName = '헌납';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
-        if(!key_exists('isGold', $this->arg)){
+        if (!key_exists('isGold', $this->arg)) {
             return false;
         }
-        if(!key_exists('amount', $this->arg)){
+        if (!key_exists('amount', $this->arg)) {
             return false;
         }
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
-        if(!is_numeric($amount)){
+        if (!is_numeric($amount)) {
             return false;
         }
         $amount = Util::round($amount, -2);
         $amount = Util::valueFit($amount, 100, GameConst::$maxResourceActionAmount);
-        if(!is_bool($isGold)){
+        if (!is_bool($isGold)) {
             return false;
         }
         $this->arg = [
-            'isGold'=>$isGold,
-            'amount'=>$amount
+            'isGold' => $isGold,
+            'amount' => $amount
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation();
-        
-        $this->runnableConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+
+        $this->minConditionConstraints = [
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
         ];
-        if($this->arg['isGold']){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(GameConst::$generalMinimumGold);
-        }
-        else{
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(GameConst::$generalMinimumRice);
-        }
+    }
 
+    protected function initWithArg()
+    {
+        $this->fullConditionConstraints = [
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+        ];
+        if ($this->arg['isGold']) {
+            $this->fullConditionConstraints[] = ConstraintHelper::ReqGeneralGold(GameConst::$generalMinimumGold);
+        } else {
+            $this->fullConditionConstraints[] = ConstraintHelper::ReqGeneralRice(GameConst::$generalMinimumRice);
+        }
     }
 
     public function getBrief(): string
     {
-        $resText = $this->arg['isGold']?'금':'쌀';
+        $resText = $this->arg['isGold'] ? '금' : '쌀';
         $name = $this->getName();
         return "{$resText} {$this->arg['amount']}을 {$name}";
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
         return "{$name}(통솔경험)";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -110,16 +128,16 @@ class che_헌납 extends Command\GeneralCommand{
 
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
-        $resKey = $isGold?'gold':'rice';
-        $resName = $isGold?'금':'쌀';
+        $resKey = $isGold ? 'gold' : 'rice';
+        $resName = $isGold ? '금' : '쌀';
 
         $amount = Util::valueFit($amount, 0, $general->getVar($resKey));
         $amountText = number_format($amount, 0);
-        
+
         $logger = $general->getLogger();
 
         $db->update('nation', [
-            $resKey=>$db->sqleval('%b + %i', $resKey, $amount)
+            $resKey => $db->sqleval('%b + %i', $resKey, $amount)
         ], 'nation=%i', $general->getNationID());
 
         $general->increaseVarWithLimit($resKey, -$amount, 0);
@@ -144,16 +162,16 @@ class che_헌납 extends Command\GeneralCommand{
     {
         ob_start();
 ?>
-자신의 자금이나 군량을 국가 재산으로 헌납합니다.<br>
-<select id='isGold' name="isGold" size=1 style=color:white;background-color:black>
-    <option value='true'>금</option>
-    <option value='false'>쌀</option>
-</select>
-<select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
-<?php foreach(GameConst::$resourceActionAmountGuide as $amount): ?>
-    <option value='<?=$amount?>'><?=$amount?></option>
-<?php endforeach; ?>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
+        자신의 자금이나 군량을 국가 재산으로 헌납합니다.<br>
+        <select id='isGold' name="isGold" size=1 style=color:white;background-color:black>
+            <option value='true'>금</option>
+            <option value='false'>쌀</option>
+        </select>
+        <select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
+            <?php foreach (GameConst::$resourceActionAmountGuide as $amount) : ?>
+                <option value='<?= $amount ?>'><?= $amount ?></option>
+            <?php endforeach; ?>
+        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
 <?php
         return ob_get_clean();
     }

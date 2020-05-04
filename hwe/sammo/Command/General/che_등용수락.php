@@ -70,22 +70,26 @@ class che_등용수락 extends Command\GeneralCommand{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
         $this->setNation(['gennum', 'scout']);
 
+        $this->permissionConstraints = [
+            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID'], ['gennum', 'scout']);
 
         $relYear = $this->env['year'] - $this->env['startyear'];
 
-        $this->reservableConstraints = [
-            ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
-        ];
-        
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::ExistsDestNation(),
@@ -109,7 +113,7 @@ class che_등용수락 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

@@ -75,14 +75,16 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
 /**
  * getNationStaticInfo() 함수의 국가 캐시를 초기화
  */
-function refreshNationStaticInfo(){
+function refreshNationStaticInfo()
+{
     getNationStaticInfo(null, true);
 }
 
 /**
  * getNationStaticInfo(-1) 의 단축형
  */
-function getAllNationStaticInfo(){
+function getAllNationStaticInfo()
+{
     return getNationStaticInfo(-1);
 }
 
@@ -447,10 +449,10 @@ function printCommandTable(General $generalObj) {
             }
 ?>
 <option 
-    class='commandBasic <?=$getCompensateClassName($commandObj->getCompensationStyle())?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
+    class='commandBasic <?=$getCompensateClassName($commandObj->getCompensationStyle())?> <?=$commandObj->hasMinConditionMet()?'':'commandImpossible'?>'
     value='<?=Util::getClassNameFromObj($commandObj)?>'
     data-reqArg='<?=($commandObj::$reqArg)?'true':'false'?>'
-><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->isReservable()?'':'(불가)'?></option>
+><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->hasMinConditionMet()?'':'(불가)'?></option>
 <?php
         }
 
@@ -499,10 +501,10 @@ function chiefCommandTable(General $generalObj) {
             }
 ?>
 <option 
-    class='commandBasic <?=$getCompensateClassName($commandObj->getCompensationStyle())?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
+    class='commandBasic <?=$getCompensateClassName($commandObj->getCompensationStyle())?> <?=$commandObj->hasMinConditionMet()?'':'commandImpossible'?>'
     value='<?=Util::getClassNameFromObj($commandObj)?>'
     data-reqArg='<?=($commandObj::$reqArg)?'true':'false'?>'
-><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->isReservable()?'':'(불가)'?></option>
+><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->hasMinConditionMet()?'':'(불가)'?></option>
 <?php
         }
 

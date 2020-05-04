@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\Nation;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -14,52 +18,65 @@ use \sammo\{
     CityConst
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     GetImageURL,
-    getNationStaticInfo 
+    getNationStaticInfo
 };
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;
 
-class che_허보 extends Command\NationCommand{
+class che_허보 extends Command\NationCommand
+{
     static protected $actionName = '허보';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
-        if(!key_exists('destCityID', $this->arg)){
+        if (!key_exists('destCityID', $this->arg)) {
             return false;
         }
-        if(CityConst::byID($this->arg['destCityID']) === null){
+        if (CityConst::byID($this->arg['destCityID']) === null) {
             return false;
         }
         $destCityID = $this->arg['destCityID'];
 
         $this->arg = [
-            'destCityID'=>$destCityID,
+            'destCityID' => $destCityID,
         ];
 
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
 
         $env = $this->env;
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        $this->setDestCity($this->arg['destCityID'], null);
-        $this->setDestNation($this->destCity['nation']);
         
-        $this->runnableConstraints=[
+        $this->minConditionConstraints = [
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::AvailableStrategicCommand(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $this->setDestCity($this->arg['destCityID']);
+        $this->setDestNation($this->destCity['nation']);
+
+        $this->fullConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotNeutralDestCity(),
@@ -72,38 +89,44 @@ class che_허보 extends Command\NationCommand{
         ];
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
-        $reqTurn = $this->getPreReqTurn()+1;
+        $reqTurn = $this->getPreReqTurn() + 1;
         $postReqTurn = $this->getPostReqTurn();
 
         return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
     }
-    
-    public function getCost():array{
+
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 1;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*4)*10);    
+        $nextTerm = Util::round(sqrt($genCount * 4) * 10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destCityName = CityConst::byID($this->arg['destCityID'])->name;
         return "【{$destCityName}】에 {$commandName}";
     }
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -123,7 +146,7 @@ class che_허보 extends Command\NationCommand{
 
         $destNationID = $destCity['nation'];
         $destNationName = getNationStaticInfo($destNationID)['name'];
-        
+
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
@@ -138,7 +161,7 @@ class che_허보 extends Command\NationCommand{
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동하였습니다.";
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach($targetGeneralList as $targetGeneralID){
+        foreach ($targetGeneralList as $targetGeneralID) {
             $targetLogger = new ActionLogger($targetGeneralID, $nationID, $year, $month);
             $targetLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $targetLogger->flush();
@@ -148,12 +171,12 @@ class che_허보 extends Command\NationCommand{
         $destNationCityList = $db->queryFirstColumn('SELECT city FROM city WHERE nation = %i AND supply = 1', $destNationID);
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i', $destNationID, $destCityID);
-        foreach(General::createGeneralObjListFromDB($targetGeneralList) as $targetGeneralID => $targetGeneral){
+        foreach (General::createGeneralObjListFromDB($targetGeneralList) as $targetGeneralID => $targetGeneral) {
             $targetLogger = $targetGeneral->getLogger();
             $targetLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);
 
             $moveCityID = Util::choiceRandom($destNationCityList);
-            if($moveCityID == $destCityID){
+            if ($moveCityID == $destCityID) {
                 //현재도시면 다시 랜덤 추첨
                 $moveCityID = Util::choiceRandom($destNationCityList);
             }
@@ -164,7 +187,8 @@ class che_허보 extends Command\NationCommand{
 
         $destNationLogger = new ActionLogger(0, $destNationID, $year, $month);
         $destNationLogger->pushNationalHistoryLog(
-            "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동", ActionLogger::PLAIN
+            "<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국의 <G><b>{$destCityName}</b></>에 <M>허보</>를 발동",
+            ActionLogger::PLAIN
         );
         $destNationLogger->flush();
 
@@ -173,7 +197,7 @@ class che_허보 extends Command\NationCommand{
             'def' => $db->sqleval('def * 0.2'),
             'wall' => $db->sqleval('wall * 0.2'),
         ], 'city=%i', $destCityID);
-        
+
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>허보</>를 발동");
@@ -202,14 +226,14 @@ class che_허보 extends Command\NationCommand{
     {
         ob_start();
 ?>
-<?=\sammo\getMapHtml()?><br>
-선택된 도시에 허보를 발동합니다.<br>
-전쟁중인 상대국 도시만 가능합니다.<br>
-목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-<?=\sammo\optionsForCities()?><br>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<br>
+        <?= \sammo\getMapHtml() ?><br>
+        선택된 도시에 허보를 발동합니다.<br>
+        전쟁중인 상대국 도시만 가능합니다.<br>
+        목록을 선택하거나 도시를 클릭하세요.<br>
+        <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+            <?= \sammo\optionsForCities() ?><br>
+        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
+        <br>
 <?php
         return ob_get_clean();
     }

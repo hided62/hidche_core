@@ -40,7 +40,7 @@ class che_인재탐색 extends Command\GeneralCommand{
         
         [$reqGold, $reqRice] = $this->getCost();
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::ReqGeneralGold($reqGold),
@@ -51,7 +51,7 @@ class che_인재탐색 extends Command\GeneralCommand{
         if($this->nation['nation'] != 0 && $relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit){
             $nationName = $this->nation['name'];
             $josaUn = JosaUtil::pick($nationName, '은');
-            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail("현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다.");
+            $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail("현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다.");
         }
 
     }
@@ -84,7 +84,7 @@ class che_인재탐색 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

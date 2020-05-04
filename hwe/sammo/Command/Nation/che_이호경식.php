@@ -1,20 +1,25 @@
 <?php
+
 namespace sammo\Command\Nation;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
     GameUnitConst,
     Command,
-    Message, MessageTarget
+    Message,
+    MessageTarget
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     getAllNationStaticInfo,
     getNationStaticInfo,
@@ -24,34 +29,37 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_이호경식 extends Command\NationCommand{
+class che_이호경식 extends Command\NationCommand
+{
     static protected $actionName = '이호경식';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
         //NOTE: 멸망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 국가여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destNationID', $this->arg)){
+        if (!key_exists('destNationID', $this->arg)) {
             return false;
         }
         $destNationID = $this->arg['destNationID'];
 
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
         $this->arg = [
-            'destNationID'=>$destNationID
+            'destNationID' => $destNationID
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
 
         $env = $this->env;
@@ -59,9 +67,18 @@ class che_이호경식 extends Command\NationCommand{
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
 
+        $this->minConditionConstraints = [
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::AvailableStrategicCommand(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $this->setDestNation($this->arg['destNationID'], null);
-        
-        $this->runnableConstraints=[
+
+        $this->fullConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::ExistsDestNation(),
@@ -71,42 +88,47 @@ class che_이호경식 extends Command\NationCommand{
             ),
             ConstraintHelper::AvailableStrategicCommand(),
         ];
-
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
-        $reqTurn = $this->getPreReqTurn()+1;
+        $reqTurn = $this->getPreReqTurn() + 1;
         $postReqTurn = $this->getPostReqTurn();
 
         return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*16)*10);    
+        $nextTerm = Util::round(sqrt($genCount * 16) * 10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         return "【{$destNationName}】에 {$commandName}";
     }
 
 
-    public function run():bool{
-        if(!$this->isRunnable()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -144,7 +166,7 @@ class che_이호경식 extends Command\NationCommand{
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
         $nationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach($nationGeneralList as $nationGeneralID){
+        foreach ($nationGeneralList as $nationGeneralID) {
             $nationGeneralLogger = new ActionLogger($nationGeneralID, $nationID, $year, $month);
             $nationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $nationGeneralLogger->flush();
@@ -155,7 +177,7 @@ class che_이호경식 extends Command\NationCommand{
         $broadcastMessage = "아국에 <M>{$commandName}</>{$josaYiCommand} 발동되었습니다.";
 
         $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach($destNationGeneralList as $destNationGeneralID){
+        foreach ($destNationGeneralList as $destNationGeneralID) {
             $destNationGeneralLogger = new ActionLogger($destNationGeneralID, $destNationID, $year, $month);
             $destNationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $destNationGeneralLogger->flush();
@@ -166,13 +188,13 @@ class che_이호경식 extends Command\NationCommand{
         $destNationLogger->flush();
 
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동");
-        
+
         $db->update('nation', [
             'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
         $db->update('diplomacy', [
-            'term'=>$db->sqleval('IF(`state`=0, %i, `term`+ %i)', 3, 3),
-            'state'=>1,
+            'term' => $db->sqleval('IF(`state`=0, %i, `term`+ %i)', 3, 3),
+            'state' => 1,
         ], '(me = %i AND you = %i) OR (you = %i AND me = %i)', $nationID, $destNationID, $nationID, $destNationID);
 
         $general->applyDB($db);
@@ -193,39 +215,35 @@ class che_이호경식 extends Command\NationCommand{
         $nationID = $generalObj->getNationID();
         $nationList = [];
         $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['nation'] == $nationID){
+        foreach (getAllNationStaticInfo() as $destNation) {
+            if ($destNation['nation'] == $nationID) {
                 continue;
             }
 
-            $testTurn->setArg(['destNationID'=>$destNation['nation']]);
-            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID'=>$destNation['nation']]);
-            if($testCommand->isRunnable()){
+            $testTurn->setArg(['destNationID' => $destNation['nation']]);
+            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
+            if ($testCommand->hasFullConditionMet()) {
                 $destNation['availableCommand'] = true;
-            }
-            else{
+            } else {
                 $destNation['availableCommand'] = false;
             }
 
             $nationList[] = $destNation;
         }
 
-        ob_start(); 
+        ob_start();
 ?>
-<?=\sammo\getMapHtml()?><br>
-선택된 국가에 이호경식을 발동합니다.<br>
-선포, 전쟁중인 상대국에만 가능합니다.<br>
-상대 국가를 목록에서 선택하세요.<br>
-배경색은 현재 이호경식 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
-        style='color:<?=$nation['color']?>;<?=$nation['availableCommand']?'':'background-color:red;'?>'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
-<?php
+        <?= \sammo\getMapHtml() ?><br>
+        선택된 국가에 이호경식을 발동합니다.<br>
+        선포, 전쟁중인 상대국에만 가능합니다.<br>
+        상대 국가를 목록에서 선택하세요.<br>
+        배경색은 현재 이호경식 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
+        <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
+            <?php foreach ($nationList as $nation) : ?>
+                <option value='<?= $nation['nation'] ?>' style='color:<?= $nation['color'] ?>;<?= $nation['availableCommand'] ? '' : 'background-color:red;' ?>'>【<?= $nation['name'] ?> 】</option>
+            <?php endforeach; ?>
+            <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
+    <?php
         return ob_get_clean();
     }
 }

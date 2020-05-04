@@ -60,9 +60,18 @@ class che_피장파장 extends Command\NationCommand{
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
 
+        $this->minConditionConstraints=[
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::AvailableStrategicCommand(),
+        ];
+    }
+
+    protected function initWithArg()
+    {
         $this->setDestNation($this->arg['destNationID'], null);
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::ExistsDestNation(),
@@ -72,7 +81,6 @@ class che_피장파장 extends Command\NationCommand{
             ),
             ConstraintHelper::AvailableStrategicCommand(),
         ];
-
     }
 
     public function getCommandDetailTitle():string{
@@ -107,7 +115,7 @@ class che_피장파장 extends Command\NationCommand{
 
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -200,7 +208,7 @@ class che_피장파장 extends Command\NationCommand{
 
             $testTurn->setArg(['destNationID'=>$destNation['nation']]);
             $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID'=>$destNation['nation']]);
-            if($testCommand->isRunnable()){
+            if($testCommand->hasFullConditionMet()){
                 $destNation['availableCommand'] = true;
             }
             else{

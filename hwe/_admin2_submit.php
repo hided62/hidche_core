@@ -1,4 +1,5 @@
 <?php
+
 namespace sammo;
 
 include "lib.php";
@@ -12,12 +13,12 @@ $msg = Util::getReq('msg', 'string');
 //로그인 검사
 $session = Session::requireLogin()->loginGame()->setReadOnly();
 
-if($session->userGrade < 5) {
+if ($session->userGrade < 5) {
     header('location:_admin2.php');
 }
 
 $generalID = $session->generalID;
-if(!$generalID){
+if (!$generalID) {
     header('location:_admin2.php');
     die();
 }
@@ -29,328 +30,320 @@ $src = MessageTarget::buildQuick($session->generalID);
 
 $genObjList = [];
 $env = [];
-if($genlist){
+if ($genlist) {
     $genObjList = General::createGeneralObjListFromDB($genlist);
     $env = $gameStor->cacheAll();
 }
-switch($btn) {
+switch ($btn) {
     case "전체 접속허용":
         $db->update('general', [
-            'con'=>0
+            'con' => 0
         ], true);
         break;
     case "전체 접속제한":
         $db->update('general', [
-            'con'=>1000
+            'con' => 1000
         ], true);
         break;
     case "블럭 해제":
         $db->update('general', [
-            'block'=>0
+            'block' => 0
         ], '`no` IN %li', $genlist);
         DB::db()->query('update general set block=0 where no IN %li', $genlist);
         break;
     case "1단계 블럭":
         $date = TimeUtil::now();
         $db->update('general', [
-            'block'=>1,
-            'killturn'=>24
+            'block' => 1,
+            'killturn' => 24
         ], '`no` IN %li', $genlist);
         $uid = $db->queryFirstColumn('SELECT `owner` FROM general WHERE `no` IN %li', $genlist);
-        RootDB::db()->update('member',[
-            'block_num'=>$db->sqleval('block_num+1'),
-            'block_date'=>$date
+        RootDB::db()->update('member', [
+            'block_num' => $db->sqleval('block_num+1'),
+            'block_date' => $date
         ], 'id IN %li', $uid);
         break;
     case "2단계 블럭":
         $date = TimeUtil::now();
         $db->update('general', [
-            'gold'=>0,
-            'rice'=>0,
-            'block'=>2,
-            'killturn'=>24
+            'gold' => 0,
+            'rice' => 0,
+            'block' => 2,
+            'killturn' => 24
         ], '`no` IN %li', $genlist);
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        RootDB::db()->update('member',[
-            'block_num'=>$db->sqleval('block_num+1'),
-            'block_date'=>$date
+        RootDB::db()->update('member', [
+            'block_num' => $db->sqleval('block_num+1'),
+            'block_date' => $date
         ], 'id IN %li', $uid);
         break;
     case "3단계 블럭":
         $date = TimeUtil::now();
         $db->update('general', [
-            'gold'=>0,
-            'rice'=>0,
-            'block'=>3,
-            'killturn'=>24
+            'gold' => 0,
+            'rice' => 0,
+            'block' => 3,
+            'killturn' => 24
         ], '`no` IN %li', $genlist);
         $uid = $db->queryFirstColumn('SELECT `owner` from general where no IN %li', $genlist);
-        RootDB::db()->update('member',[
-            'block_num'=>$db->sqleval('block_num+1'),
-            'block_date'=>$date
+        RootDB::db()->update('member', [
+            'block_num' => $db->sqleval('block_num+1'),
+            'block_date' => $date
         ], 'id IN %li', $uid);
         break;
     case "무한삭턴":
         $db->update('general', [
-            'killturn'=>8000
+            'killturn' => 8000
         ], '`no` IN %li', $genlist);
         break;
     case "강제 사망":
         $date = TimeUtil::now(true);
         $db->update('general', [
-            'killturn'=>0,
-            'turntime'=>$date,
+            'killturn' => 0,
+            'turntime' => $date,
         ], '`no` IN %li', $genlist);
         $db->update('general_turn', [
-            'action'=>'휴식',
-            'arg'=>'{}',
-            'brief'=>'휴식',
+            'action' => '휴식',
+            'arg' => '{}',
+            'brief' => '휴식',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "특기 부여":
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
         $text = "특기 부여!";
 
-        foreach($db->query("SELECT `no`,leadership,strength,intel,dex1,dex2,dex3,dex4,dex5 FROM general WHERE `no` IN %li", $genlist) as $general){    
+        foreach ($db->query("SELECT `no`,leadership,strength,intel,dex1,dex2,dex3,dex4,dex5 FROM general WHERE `no` IN %li", $genlist) as $general) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
 
             $specialWar = SpecialityHelper::pickSpecialWar($general);
             $db->update('general', [
-                'specage2'=>$db->sqleval('age'),
-                'special2'=>$specialWar
+                'specage2' => $db->sqleval('age'),
+                'special2' => $specialWar
             ], 'no=%i', $general['no']);
             $specialWarName = buildGeneralSpecialWarClass($specialWar)->getName();
             $josaUl = JosaUtil::pick($specialWarName, '을');
             pushGeneralHistory($general['no'], ["<C>●</>{$year}년 {$month}월:특기 【<b><C>{$specialWarName}</></b>】{$josaUl} 습득"]);
             pushGenLog($general['no'], ["<C>●</>특기 【<b><L>{$specialWarName}</></b>】{$josaUl} 익혔습니다!"]);
         }
-        
+
         break;
     case "경험치1000":
-        $text = $btn." 지급!";
-        foreach($genlist as $generalID){
+        $text = $btn . " 지급!";
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'experience'=>$db->sqleval('experience+1000')
+        $db->update('general', [
+            'experience' => $db->sqleval('experience+1000')
         ], '`no` IN %li', $genlist);
 
         break;
     case "공헌치1000":
-        $text = $btn." 지급!";
-        foreach($genlist as $generalID){
+        $text = $btn . " 지급!";
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'dedication'=>$db->sqleval('dedication+1000')
+        $db->update('general', [
+            'dedication' => $db->sqleval('dedication+1000')
         ], '`no` IN %li', $genlist);
 
         break;
     case "보숙10000":
         $text = "보병숙련도+10000 지급!";
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'dex1'=>$db->sqleval('dex1+10000')
+        $db->update('general', [
+            'dex1' => $db->sqleval('dex1+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "궁숙10000":
         $text = "궁병숙련도+10000 지급!";
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'dex2'=>$db->sqleval('dex2+10000')
+        $db->update('general', [
+            'dex2' => $db->sqleval('dex2+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "기숙10000":
         $src = MessageTarget::buildQuick($session->generalID);
         $text = "기병숙련도+10000 지급!";
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'dex3'=>$db->sqleval('dex3+10000')
+        $db->update('general', [
+            'dex3' => $db->sqleval('dex3+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "귀숙10000":
         $src = MessageTarget::buildQuick($session->generalID);
         $text = "귀병숙련도+10000 지급!";
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'dex4'=>$db->sqleval('dex4+10000')
+        $db->update('general', [
+            'dex4' => $db->sqleval('dex4+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "차숙10000":
         $src = MessageTarget::buildQuick($session->generalID);
         $text = "차병숙련도+10000 지급!";
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
-        $db->update('general',[
-            'dex5'=>$db->sqleval('dex5+10000')
+        $db->update('general', [
+            'dex5' => $db->sqleval('dex5+10000')
         ], '`no` IN %li', $genlist);
         break;
     case "접속 허용":
-        $db->update('general',[
-            'con'=>0
+        $db->update('general', [
+            'con' => 0
         ], '`no` IN %li', $genlist);
         break;
     case "접속 제한":
-        $db->update('general',[
-            'con'=>1000
+        $db->update('general', [
+            'con' => 1000
         ], '`no` IN %li', $genlist);
         break;
     case "메세지 전달":
-        $text = $msg??'';
-        foreach($genlist as $generalID){
+        $text = $msg ?? '';
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         break;
     case "무기지급":
 
-        if($item == 'None') {
+        if ($item == 'None') {
             $text = "무기 회수!";
-        }
-        else { 
-            $text = getItemName($item)." 지급!"; 
+        } else {
+            $text = getItemName($item) . " 지급!";
         }
 
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
-        if($item === 'None'){
+        if ($item === 'None') {
             $db->update('general', [
-                'weapon'=>'None'
+                'weapon' => 'None'
             ], '`no` IN %li', $genlist);
-        }
-        else{
+        } else {
             $db->update('general', [
-                'weapon'=>$item
+                'weapon' => $item
             ], '`no` IN %li', $genlist, $item);
         }
         break;
     case "책지급":
-        if($item == 'None') {
+        if ($item == 'None') {
             $text = "책 회수!";
-        }
-        else { 
-            $text = getItemName($item)." 지급!"; 
+        } else {
+            $text = getItemName($item) . " 지급!";
         }
 
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
-        if($item == 'None'){
+        if ($item == 'None') {
             $db->update('general', [
-                'book'=>'None'
+                'book' => 'None'
             ], '`no` IN %li', $genlist);
-        }
-        else{
+        } else {
             $db->update('general', [
-                'book'=>$item
+                'book' => $item
             ], '`no` IN %li', $genlist);
         }
         break;
     case "말지급":
-        if($item == 'None') {
+        if ($item == 'None') {
             $text = "말 회수!";
-        }
-        else { 
-            $text = getItemName($item)." 지급!"; 
+        } else {
+            $text = getItemName($item) . " 지급!";
         }
 
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
-        if($item == 'None'){
+        if ($item == 'None') {
             $db->update('general', [
-                'horse'=>'None'
+                'horse' => 'None'
             ], '`no` IN %li', $genlist);
-        }
-        else{
+        } else {
             $db->update('general', [
-                'horse'=>$item
+                'horse' => $item
             ], '`no` IN %li', $genlist);
         }
         break;
     case "도구지급":
-        if($item == 'None') {
+        if ($item == 'None') {
             $text = "특수도구 회수!";
-        }
-        else { 
-            $text = getItemName($item)." 지급!"; 
+        } else {
+            $text = getItemName($item) . " 지급!";
         }
 
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
-        if($item == 'None'){
+        if ($item == 'None') {
             $db->update('general', [
-                'item'=>'None'
+                'item' => 'None'
             ], '`no` IN %li', $genlist);
-        }
-        else{
+        } else {
             $db->update('general', [
-                'item'=>$item
+                'item' => $item
             ], '`no` IN %li AND item < %i', $genlist, $item);
         }
         break;
     case "하야입력":
         $db->update('general_turn', [
-            'action'=>'che_하야',
-            'arg'=>'{}',
-            'brief'=>'하야',
+            'action' => 'che_하야',
+            'arg' => '{}',
+            'brief' => '하야',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "방랑해산":
         $db->update('general_turn', [
-            'action'=>'che_방랑',
-            'arg'=>'{}',
-            'brief'=>'방랑',
+            'action' => 'che_방랑',
+            'arg' => '{}',
+            'brief' => '방랑',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         $db->update('general_turn', [
-            'action'=>'che_해산',
-            'arg'=>'{}',
-            'brief'=>'해산',
+            'action' => 'che_해산',
+            'arg' => '{}',
+            'brief' => '해산',
         ], 'general_id IN %li AND turn_idx = 1', $genlist);
         break;
     case "00턴":
         $turnterm = $gameStor->turnterm;
 
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $turntime = getRandTurn($turnterm);
             $cutTurn = cutTurn($turntime, $turnterm);
             $db->update('general', [
-                'turntime'=>$cutTurn
+                'turntime' => $cutTurn
             ], '`no` IN %li', $genlist);
         }
         break;
     case "랜덤턴":
-        foreach($genlist as $generalID){
+        foreach ($genlist as $generalID) {
             $turntime = getRandTurn($turnterm);
             $db->update('general', [
-                'turntime'=>$turntime
+                'turntime' => $turntime
             ], '`no` IN %li', $genlist);
         }
         break;

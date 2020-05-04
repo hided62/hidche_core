@@ -30,7 +30,8 @@ class che_거병 extends Command\GeneralCommand{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
         $env = $this->env;
@@ -40,7 +41,7 @@ class che_거병 extends Command\GeneralCommand{
 
         $relYear = $env['year'] - $env['startyear'];
         
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::BeOpeningPart($relYear+1),
             ConstraintHelper::AllowJoinAction(),
@@ -60,7 +61,7 @@ class che_거병 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

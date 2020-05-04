@@ -58,9 +58,20 @@ class che_초토화 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['surlimit', 'gold', 'rice', 'capital']);
-        $this->setDestCity($this->arg['destCityID'], null);
         
-        $this->runnableConstraints=[
+        $this->minConditionConstraints=[
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ReqNationValue('surlimit', '제한 턴', '==', 0, '외교제한 턴이 남아있습니다.'),
+        ];
+    }
+
+    protected function initWithArg()
+    {
+        $this->setDestCity($this->arg['destCityID']);
+        
+        $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::OccupiedDestCity(),
             ConstraintHelper::BeChief(),
@@ -102,7 +113,7 @@ class che_초토화 extends Command\NationCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

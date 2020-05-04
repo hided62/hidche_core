@@ -1,38 +1,39 @@
 <?php
+
 namespace sammo;
 
-require(__DIR__.'/../vendor/autoload.php');
+require(__DIR__ . '/../vendor/autoload.php');
 
-if(!class_exists('\\sammo\\RootDB')){
+if (!class_exists('\\sammo\\RootDB')) {
     Json::die([
-        'step'=>'config'
+        'step' => 'config'
     ]);
 }
 
 $rootDB = RootDB::db();
 
 $rootDB->throw_exception_on_nonsql_error = false;
-$rootDB->nonsql_error_handler = function($params){
+$rootDB->nonsql_error_handler = function ($params) {
     Json::die([
-        'step'=>'conn_fail'
+        'step' => 'conn_fail'
     ]);
 };
 
-$rootDB->error_handler = function($params){
+$rootDB->error_handler = function ($params) {
     Json::die([
-        'step'=>'sql_fail'
+        'step' => 'sql_fail'
     ]);
 };
 
 $memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from member');
-if($memberCnt == 0){
+if ($memberCnt == 0) {
     Json::die([
-        'step'=>'admin',
-        'globalSalt'=>RootDB::getGlobalSalt()
+        'step' => 'admin',
+        'globalSalt' => RootDB::getGlobalSalt()
     ]);
 }
 
 
 Json::die([
-    'step'=>'done'
+    'step' => 'done'
 ]);

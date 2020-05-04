@@ -28,11 +28,12 @@ class che_견문 extends Command\GeneralCommand{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
-        $this->runnableConstraints=[
+        $this->fullConditionConstraints=[
         ];
 
     }
@@ -55,7 +56,7 @@ class che_견문 extends Command\GeneralCommand{
     }
 
     public function run():bool{
-        if(!$this->isRunnable()){
+        if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

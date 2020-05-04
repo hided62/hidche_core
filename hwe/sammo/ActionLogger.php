@@ -2,7 +2,8 @@
 
 namespace sammo;
 
-class ActionLogger{
+class ActionLogger
+{
     //TODO: global을 따로 뗴어내고, 장수 Logger를 상속해서 받는 형식으로.
     protected $generalID;
     protected $nationID;
@@ -10,7 +11,7 @@ class ActionLogger{
 
     protected $year = null;
     protected $month = null;
-    
+
     protected $generalHistoryLog = [];
     protected $generalActionLog = [];
     protected $generalBattleResultLog = [];
@@ -37,7 +38,8 @@ class ActionLogger{
     /** <R>★</>{$year}년 {$month}월: */
     const NOTICE_YEAR_MONTH = 8;
 
-    public function __construct(int $generalID, int $nationID, int $year, int $month, bool $autoFlush = true){
+    public function __construct(int $generalID, int $nationID, int $year, int $month, bool $autoFlush = true)
+    {
         $this->generalID = $generalID;
         $this->nationID = $nationID;
         $this->year = $year;
@@ -45,23 +47,25 @@ class ActionLogger{
         $this->autoFlush = $autoFlush;
     }
 
-    public function __destruct(){
-        if($this->autoFlush){
+    public function __destruct()
+    {
+        if ($this->autoFlush) {
             $this->flush();
         }
     }
 
-    public function rollback(){
+    public function rollback()
+    {
         $backup = [
-            'generalHistoryLog'=>$this->generalHistoryLog,
-            'generalActionLog'=>$this->generalActionLog,
-            'generalBattleResultLog'=>$this->generalBattleResultLog,
-            'generalBattleDetailLog'=>$this->generalBattleDetailLog,
-            'nationalHistoryLog'=>$this->nationalHistoryLog,
-            'globalHistoryLog'=>$this->globalHistoryLog,
-            'globalActionLog'=>$this->globalActionLog,
+            'generalHistoryLog' => $this->generalHistoryLog,
+            'generalActionLog' => $this->generalActionLog,
+            'generalBattleResultLog' => $this->generalBattleResultLog,
+            'generalBattleDetailLog' => $this->generalBattleDetailLog,
+            'nationalHistoryLog' => $this->nationalHistoryLog,
+            'globalHistoryLog' => $this->globalHistoryLog,
+            'globalActionLog' => $this->globalActionLog,
         ];
-        
+
         $this->generalHistoryLog = [];
         $this->generalActionLog = [];
         $this->generalBattleResultLog = [];
@@ -73,50 +77,52 @@ class ActionLogger{
         return $backup;
     }
 
-    public function flush(){
-        if($this->generalHistoryLog && $this->generalID){
+    public function flush()
+    {
+        if ($this->generalHistoryLog && $this->generalID) {
             pushGeneralHistory($this->generalID, $this->generalHistoryLog, $this->year, $this->month);
             $this->generalHistoryLog = [];
         }
 
-        if($this->generalActionLog && $this->generalID){
+        if ($this->generalActionLog && $this->generalID) {
             pushGenLog($this->generalID, $this->generalActionLog, $this->year, $this->month);
             $this->generalActionLog = [];
         }
 
-        if($this->generalBattleResultLog && $this->generalID){
+        if ($this->generalBattleResultLog && $this->generalID) {
             pushBatRes($this->generalID, $this->generalBattleResultLog, $this->year, $this->month);
             $this->generalBattleResultLog = [];
         }
 
-        if($this->generalBattleDetailLog && $this->generalID){
+        if ($this->generalBattleDetailLog && $this->generalID) {
             pushBatLog($this->generalID, $this->generalBattleDetailLog, $this->year, $this->month);
             $this->generalBattleDetailLog = [];
         }
 
-        if($this->nationID && $this->nationalHistoryLog){
+        if ($this->nationID && $this->nationalHistoryLog) {
             pushNationHistory($this->nationID, $this->nationalHistoryLog, $this->year, $this->month);
             $this->nationalHistoryLog = [];
         }
 
-        if($this->globalHistoryLog){
+        if ($this->globalHistoryLog) {
             pushWorldHistory($this->globalHistoryLog, $this->year, $this->month);
             $this->globalHistoryLog = [];
         }
 
-        if($this->globalActionLog){
+        if ($this->globalActionLog) {
             pushGeneralPublicRecord($this->globalActionLog, $this->year, $this->month);
             $this->globalActionLog = [];
         }
     }
 
 
-    public function pushGeneralHistoryLog($text, int $formatType = self::YEAR_MONTH){
-        if(!$text){
+    public function pushGeneralHistoryLog($text, int $formatType = self::YEAR_MONTH)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushGeneralHistoryLog($textItem);
             }
             return;
@@ -126,12 +132,13 @@ class ActionLogger{
         $this->generalHistoryLog[] = $text;
     }
 
-    public function pushGeneralActionLog($text, int $formatType = self::MONTH){
-        if(!$text){
+    public function pushGeneralActionLog($text, int $formatType = self::MONTH)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushGeneralActionLog($textItem);
             }
             return;
@@ -141,12 +148,13 @@ class ActionLogger{
         $this->generalActionLog[] = $text;
     }
 
-    public function pushGeneralBattleResultLog($text, int $formatType = self::RAWTEXT){
-        if(!$text){
+    public function pushGeneralBattleResultLog($text, int $formatType = self::RAWTEXT)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushGeneralBattleResultLog($textItem);
             }
             return;
@@ -156,12 +164,13 @@ class ActionLogger{
         $this->generalBattleResultLog[] = $text;
     }
 
-    public function pushGeneralBattleDetailLog($text, int $formatType = self::PLAIN){
-        if(!$text){
+    public function pushGeneralBattleDetailLog($text, int $formatType = self::PLAIN)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushGeneralBattleDetailLog($textItem);
             }
             return;
@@ -171,12 +180,13 @@ class ActionLogger{
         $this->generalBattleDetailLog[] = $text;
     }
 
-    public function pushNationalHistoryLog($text, int $formatType = self::YEAR_MONTH){
-        if(!$text){
+    public function pushNationalHistoryLog($text, int $formatType = self::YEAR_MONTH)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushNationalHistoryLog($textItem);
             }
             return;
@@ -186,12 +196,13 @@ class ActionLogger{
         $this->nationalHistoryLog[] = $text;
     }
 
-    public function pushGlobalActionLog($text, int $formatType = self::MONTH){
-        if(!$text){
+    public function pushGlobalActionLog($text, int $formatType = self::MONTH)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushGlobalActionLog($textItem);
             }
             return;
@@ -201,12 +212,13 @@ class ActionLogger{
         $this->globalActionLog[] = $text;
     }
 
-    public function pushGlobalHistoryLog($text, int $formatType = self::YEAR_MONTH){
-        if(!$text){
+    public function pushGlobalHistoryLog($text, int $formatType = self::YEAR_MONTH)
+    {
+        if (!$text) {
             return;
         }
-        if(is_array($text)){
-            foreach($text as $textItem){
+        if (is_array($text)) {
+            foreach ($text as $textItem) {
                 $this->pushGlobalHistoryLog($textItem);
             }
             return;
@@ -216,55 +228,56 @@ class ActionLogger{
         $this->globalHistoryLog[] = $text;
     }
 
-    public function formatText(string $text, int $formatType):string{
-        if($formatType === self::RAWTEXT){
+    public function formatText(string $text, int $formatType): string
+    {
+        if ($formatType === self::RAWTEXT) {
             return $text;
         }
 
-        if($formatType === self::PLAIN){
+        if ($formatType === self::PLAIN) {
             return "<C>●</>{$text}";
         }
 
-        if($formatType === self::YEAR_MONTH){
+        if ($formatType === self::YEAR_MONTH) {
             return "<C>●</>{$this->year}년 {$this->month}월:{$text}";
         }
 
-        if($formatType === self::YEAR){
+        if ($formatType === self::YEAR) {
             return "<C>●</>{$this->year}년:{$text}";
         }
 
-        if($formatType === self::MONTH){
+        if ($formatType === self::MONTH) {
             return "<C>●</>{$this->month}월:{$text}";
         }
 
-        if($formatType === self::EVENT_PLAIN){
+        if ($formatType === self::EVENT_PLAIN) {
             return "<S>◆</>{$text}";
         }
 
-        if($formatType === self::EVENT_YEAR_MONTH){
+        if ($formatType === self::EVENT_YEAR_MONTH) {
             return "<S>◆</>{$this->year}년 {$this->month}월:{$text}";
         }
 
-        if($formatType === self::NOTICE){
+        if ($formatType === self::NOTICE) {
             return "<R>★</>{$text}";
         }
 
-        if($formatType === self::NOTICE_YEAR_MONTH){
+        if ($formatType === self::NOTICE_YEAR_MONTH) {
             return "<R>★</>{$this->year}년 {$this->month}월:{$text}";
         }
-        
+
         return $text;
     }
 
     public function pushBattleResultTemplate(
         WarUnit $me,
         WarUnit $oppose
-    ){
-        if($me instanceof WarUnitCity){
+    ) {
+        if ($me instanceof WarUnitCity) {
             return;
         }
 
-        $templates = new \League\Plates\Engine(__DIR__.'/../templates');
+        $templates = new \League\Plates\Engine(__DIR__ . '/../templates');
 
         $render_me = [
             'crewtype' => $me->getCrewTypeShortName(),
@@ -280,24 +293,22 @@ class ActionLogger{
             'killed_crew' => -$oppose->getDeadCurrentBattle()
         ];
 
-        if(!$me->isAttacker()){
+        if (!$me->isAttacker()) {
             $warType = 'defense';
             $warTypeStr = '←';
-        }
-        else if($oppose instanceof WarUnitCity){
+        } else if ($oppose instanceof WarUnitCity) {
             $warType = 'siege';
             $warTypeStr = '→';
-        }
-        else{
+        } else {
             $warType = 'attack';
             $warTypeStr = '→';
         }
 
-        $res = str_replace(["\r\n", "\r", "\n"], '', $templates->render('small_war_log',[
-            'year'=>$this->year,
-            'month'=>$this->month,
-            'war_type'=>$warType,
-            'war_type_str'=>$warTypeStr,
+        $res = str_replace(["\r\n", "\r", "\n"], '', $templates->render('small_war_log', [
+            'year' => $this->year,
+            'month' => $this->month,
+            'war_type' => $warType,
+            'war_type_str' => $warTypeStr,
             'me' => $render_me,
             'you' => $render_oppose,
         ]));
@@ -307,12 +318,13 @@ class ActionLogger{
         $this->pushGeneralActionLog($res, self::EVENT_YEAR_MONTH);
     }
 
-    public function getYear():int{
+    public function getYear(): int
+    {
         return $this->year;
     }
 
-    public function getMonth():int{
+    public function getMonth(): int
+    {
         return $this->month;
     }
-
 }

@@ -9,7 +9,8 @@ $commandType = Util::getReq('command', 'string');
 $turnList = array_map('intval', explode('_', Util::getReq('turnList', 'string', '0')));
 $isChiefTurn = Util::getReq('is_chief', 'bool', false);
 
-function die_redirect(){
+function die_redirect()
+{
     global $isChiefTurn;
     if(!$isChiefTurn){
         header('location:index.php', true, 303);
@@ -59,9 +60,9 @@ if($commandObj->isArgValid()){
     die_redirect();
 }
 
-/*if(!$commandObj->isReservable()){
+if(!$commandObj->hasPermissionToReserve()){
     die_redirect();
-}*/
+}
 
 $jsList = $commandObj->getJSFiles();
 $cssList = $commandObj->getCSSFiles();

@@ -344,7 +344,7 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($troopCandidate));
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -433,7 +433,7 @@ class GeneralAI
             'destCityID'=>Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -544,7 +544,7 @@ class GeneralAI
             'destCityID'=>Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -615,7 +615,7 @@ class GeneralAI
             'destCityID'=>Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -666,7 +666,7 @@ class GeneralAI
             return null;
         }
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($args));
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
         return null;
@@ -722,7 +722,7 @@ class GeneralAI
             'destCityID'=>Util::choiceRandomUsingWeight($cityCandidates)
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -794,7 +794,7 @@ class GeneralAI
             'destCityID'=>$destCity['city']
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -869,7 +869,7 @@ class GeneralAI
             'destCityID'=>Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -899,7 +899,7 @@ class GeneralAI
             return null;
         }
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($args));
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
         return null;
@@ -955,7 +955,7 @@ class GeneralAI
             'destCityID'=>Util::choiceRandomUsingWeight($cityCandidates)
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1023,7 +1023,7 @@ class GeneralAI
             'destCityID'=>$destCity['city']
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1101,7 +1101,7 @@ class GeneralAI
             'che_포상', $this->general, $this->env, $lastTurn, 
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1203,7 +1203,7 @@ class GeneralAI
             'che_포상', $this->general, $this->env, $lastTurn, 
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1287,7 +1287,7 @@ class GeneralAI
             'che_포상', $this->general, $this->env, $lastTurn, 
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1398,7 +1398,7 @@ class GeneralAI
             'che_포상', $this->general, $this->env, $lastTurn, 
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1528,7 +1528,7 @@ class GeneralAI
             'che_몰수', $this->general, $this->env, $lastTurn, 
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1635,7 +1635,7 @@ class GeneralAI
         $cmd = buildNationCommandClass('che_선전포고', $this->general, $this->env, $lastTurn, [
             'destNationID' => Util::choiceRandomUsingWeight($nations)
         ]);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1654,7 +1654,7 @@ class GeneralAI
         //천도를 한턴 넣었다면 계속 넣는다.
         if($lastTurn->getCommand() === '천도' && $lastTurn->getArg()['destCityID'] != $this->nation['capital']){
             $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
                 return $cmd;
             }
@@ -1771,7 +1771,7 @@ class GeneralAI
             'destCityID'=>$targetCityID
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -1802,13 +1802,13 @@ class GeneralAI
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']-0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
                 $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['pop'], 0.001)];
                 }
             }
@@ -1817,19 +1817,19 @@ class GeneralAI
         if($genType & self::t무장){
             if($develRate['def'] < 1){
                 $cmd = buildGeneralCommandClass('che_수비강화', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['def'], 0.001)];
                 }
             }
             if($develRate['wall'] < 1){
                 $cmd = buildGeneralCommandClass('che_성벽보수', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['wall'], 0.001)];
                 }
             }
             if($develRate['secu'] < 0.9){
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['comm'] / 0.8, 0.001, 1)];
                 }
             }
@@ -1838,7 +1838,7 @@ class GeneralAI
         if($genType & self::t지장){
             if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
                 $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
-                if ($cmd->isRunnable()) {
+                if ($cmd->hasFullConditionMet()) {
                     $nextTech = $nation['tech'] % 1000 + 1;
                     if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
                         //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자.
@@ -1850,13 +1850,13 @@ class GeneralAI
             }
             if ($develRate['agri'] < 1) {
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
-                if ($cmd->isRunnable()) {
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / Util::valueFit($develRate['agri'], 0.001, 1)];
                 }
             }
             if ($develRate['comm'] < 1) {
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
-                if ($cmd->isRunnable()) {
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / Util::valueFit($develRate['comm'], 0.001, 1)];
                 }
             }
@@ -1887,14 +1887,14 @@ class GeneralAI
 
         if($city['trust'] < 70 && Util::randBool($leadership / GameConst::$chiefStatMin)){
             $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 return $cmd;
             }
         }
 
         if($city['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation && Util::randBool($leadership / GameConst::$chiefStatMin / 2)){
             $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 return $cmd;
             }
         }
@@ -1927,13 +1927,13 @@ class GeneralAI
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.95) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']-0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
                 $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     if (in_array($city['front'], [1, 3])) {
                         $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['pop'], 0.001)];
                     }
@@ -1947,19 +1947,19 @@ class GeneralAI
         if($genType & self::t무장){
             if($develRate['def'] < 0.5){
                 $cmd = buildGeneralCommandClass('che_수비강화', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['def'], 0.001) / 2];
                 }
             }
             if($develRate['wall'] < 0.5){
                 $cmd = buildGeneralCommandClass('che_성벽보수', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['wall'], 0.001) / 2];
                 }
             }
             if($develRate['secu'] < 0.5){
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
-                if($cmd->isRunnable()){
+                if($cmd->hasFullConditionMet()){
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['secu'] / 0.8, 0.001, 1) / 4];
                 }
             }
@@ -1968,7 +1968,7 @@ class GeneralAI
         if($genType & self::t지장){
             if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
                 $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
-                if ($cmd->isRunnable()) {
+                if ($cmd->hasFullConditionMet()) {
                     $nextTech = $nation['tech'] % 1000 + 1;
                     if (!TechLimit($env['startyear'], $env['year'], $nation['tech'] + 1000)) {
                         //한등급 이상 뒤쳐져 있다면, 조금 더 열심히 하자. 전쟁중이면 더더욱
@@ -1980,7 +1980,7 @@ class GeneralAI
             }
             if ($develRate['agri'] < 0.5) {
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
-                if ($cmd->isRunnable()) {
+                if ($cmd->hasFullConditionMet()) {
                     if (in_array($city['front'], [1, 3])) {
                         $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / 4 / Util::valueFit($develRate['agri'], 0.001, 1)];
                     }
@@ -1991,7 +1991,7 @@ class GeneralAI
             }
             if ($develRate['comm'] < 0.5) {
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
-                if ($cmd->isRunnable()) {
+                if ($cmd->hasFullConditionMet()) {
                     if (in_array($city['front'], [1, 3])) {
                         $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / 4 / Util::valueFit($develRate['comm'], 0.001, 1)];
                     }
@@ -2055,7 +2055,7 @@ class GeneralAI
                             'amount' => Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
                         ]
                     );
-                    if($cmd->isRunnable()){
+                    if($cmd->hasFullConditionMet()){
                         return $cmd;
                     }
                 }
@@ -2067,7 +2067,7 @@ class GeneralAI
                             'amount' => Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
                         ]
                     );
-                    if($cmd->isRunnable()){
+                    if($cmd->hasFullConditionMet()){
                         return $cmd;
                     }
                 }
@@ -2081,7 +2081,7 @@ class GeneralAI
                     'amount' => Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
                 ]
             );
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 return $cmd;
             }
         }
@@ -2093,7 +2093,7 @@ class GeneralAI
                     'amount' => Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
                 ]
             );
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 return $cmd;
             }
         }
@@ -2250,7 +2250,7 @@ class GeneralAI
 
 
         
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
         return $cmd;
@@ -2269,14 +2269,14 @@ class GeneralAI
 
         if($train < $this->nationPolicy->properWarTrainAtmos){
             $cmd = buildGeneralCommandClass('che_훈련', $general, $this->env);
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 $cmdList[] = [$cmd, GameConst::$maxTrainByCommand / Util::valueFit($train, 1)];
             }
         }
 
         if($atmos < $this->nationPolicy->properWarTrainAtmos){
             $cmd = buildGeneralCommandClass('che_사기진작', $general, $this->env);
-            if($cmd->isRunnable()){
+            if($cmd->hasFullConditionMet()){
                 $cmdList[] = [$cmd, GameConst::$maxAtmosByCommand / Util::valueFit($atmos, 1)];
             }
         }
@@ -2302,7 +2302,7 @@ class GeneralAI
             return null;
         }
         $cmd = buildGeneralCommandClass('che_소집해제', $this->general, $this->env);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
         return $cmd;
@@ -2369,7 +2369,7 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)]);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2441,7 +2441,7 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_헌납', $general, $this->env, Util::choiceRandomUsingWeightPair($args));
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
         return $cmd;
@@ -2518,7 +2518,7 @@ class GeneralAI
         ]);
     
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2565,7 +2565,7 @@ class GeneralAI
         ]);
     
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2634,7 +2634,7 @@ class GeneralAI
             'optionText' => '순간이동',
             'destCityID' => Util::choiceRandomUsingWeight($candidateCities),
         ]);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2651,7 +2651,7 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_귀환', $this->general, $this->env);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2723,7 +2723,7 @@ class GeneralAI
         $cmd = buildGeneralCommandClass('che_이동', $general, $this->env, [
             'destCityID'=>Util::choiceRandomUsingWeight($targetCity)
         ]);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2756,7 +2756,7 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_거병', $general, $this->env, null);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2766,7 +2766,7 @@ class GeneralAI
     protected function do해산(): ?GeneralCommand
     {
         $cmd = buildGeneralCommandClass('che_해산', $this->general, $this->env, null);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2782,7 +2782,7 @@ class GeneralAI
             'nationType' => $nationType,
             'colorType' => $nationColor
         ]);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2796,7 +2796,7 @@ class GeneralAI
             'destGeneralID' => $db->queryFirstField('SELECT `no` FROM general WHERE nation = %i AND npc != 5 ORDER BY RAND() LIMIT 1', $this->general->getNationID())
         ]);
 
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return null;
         }
 
@@ -2820,7 +2820,7 @@ class GeneralAI
 
             if ($rulerNation) {
                 $cmd = buildGeneralCommandClass('che_임관', $general, $env, ['destNationID' => $rulerNation]);
-                if(!$cmd->isRunnable()){
+                if(!$cmd->hasFullConditionMet()){
                     return null;
                 }
 
@@ -2849,7 +2849,7 @@ class GeneralAI
 
             //랜임 커맨드 입력.
             $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env);
-            if(!$cmd->isRunnable()){
+            if(!$cmd->hasFullConditionMet()){
                 return null;
             }
 
@@ -2860,7 +2860,7 @@ class GeneralAI
             $paths = array_keys(CityConst::byID($city['city'])->path);
 
             $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => Util::choiceRandom($paths)]);
-            if(!$cmd->isRunnable()){
+            if(!$cmd->hasFullConditionMet()){
                 return null;
             }
 
@@ -2919,7 +2919,7 @@ class GeneralAI
 
 
         $cmd = buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
-        if(!$cmd->isRunnable()){
+        if(!$cmd->hasFullConditionMet()){
             return buildGeneralCommandClass('che_물자조달', $this->general, $this->env);
         }
         return $cmd;
@@ -3105,7 +3105,7 @@ class GeneralAI
         }
 
         if(!($reservedCommand instanceof Command\Nation\휴식)){
-            if($reservedCommand->isRunnable()){
+            if($reservedCommand->hasFullConditionMet()){
                 $reservedCommand->reason = 'reserved';
                 return $reservedCommand;
             }
@@ -3136,7 +3136,7 @@ class GeneralAI
     }
 
     public function chooseInstantNationTurn(NationCommand $reservedCommand): ?NationCommand{
-        if($reservedCommand->isRunnable()){
+        if($reservedCommand->hasFullConditionMet()){
             return $reservedCommand;
         }
 
