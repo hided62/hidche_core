@@ -148,6 +148,10 @@ class che_불가침수락 extends Command\NationCommand
         ];
     }
 
+    public function canDisplay():bool{
+        return false;
+    }
+
     public function getCost(): array
     {
         return [0, 0];

@@ -60,7 +60,6 @@ class che_첩보 extends Command\GeneralCommand
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->minConditionConstraints = [
-            ConstraintHelper::NotOccupiedDestCity(),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];

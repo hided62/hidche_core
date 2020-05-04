@@ -96,6 +96,10 @@ class che_임관 extends Command\GeneralCommand{
         
     }
 
+    public function canDisplay():bool{
+        return $this->env['join_mode'] !== 'onlyRandom';
+    }
+
     protected function initWithArg()
     {
         $destGeneralID = $this->arg['destGeneralID']??null;

@@ -58,6 +58,10 @@ class che_NPC능동 extends Command\GeneralCommand{
 
     }
 
+    public function canDisplay():bool{
+        return false;
+    }
+
     public function getCost():array{
         return [0, 0];
     }

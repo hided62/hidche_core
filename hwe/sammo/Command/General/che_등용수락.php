@@ -100,6 +100,10 @@ class che_등용수락 extends Command\GeneralCommand{
         ];
     }
 
+    public function canDisplay():bool{
+        return false;
+    }
+
     public function getCost():array{
         return [0, 0];
     }

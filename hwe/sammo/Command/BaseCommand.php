@@ -278,7 +278,11 @@ abstract class BaseCommand{
             return $this->reasonNoPermissionToReserve;
         }
 
-        if($this->permissionConstraints === null){
+        if($this->cachedPermissionToReserve){
+            return $this->reasonNoPermissionToReserve;
+        }
+
+        if(!$this->permissionConstraints){
             return null;
         }
 
@@ -304,7 +308,7 @@ abstract class BaseCommand{
     }
 
     public function canDisplay():bool{
-        return $this->hasPermissionToReserve();
+        return true;
     }
 
     public function testMinConditionMet():?string{

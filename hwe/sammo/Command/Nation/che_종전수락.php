@@ -110,6 +110,10 @@ class che_종전수락 extends Command\NationCommand
         ];
     }
 
+    public function canDisplay():bool{
+        return false;
+    }
+
     public function getCost(): array
     {
         return [0, 0];

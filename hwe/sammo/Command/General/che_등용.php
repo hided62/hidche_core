@@ -95,10 +95,14 @@ class che_등용 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
-        
+
         if($this->destGeneralObj->getVar('officer_level') == 12){
             $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('군주에게는 등용장을 보낼 수 없습니다.');
         }
+    }
+
+    public function canDisplay():bool{
+        return $this->env['join_mode'] !== 'onlyRandom';
     }
 
     public function getCost():array{

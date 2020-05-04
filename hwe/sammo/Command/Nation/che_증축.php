@@ -41,7 +41,7 @@ class che_증축 extends Command\NationCommand{
         $env = $this->env;
 
         if($general->getNationID()===0){
-            $this->permissionConstraints=[
+            $this->minConditionConstraints=[
                 ConstraintHelper::NotBeNeutral(),
             ];
             $this->fullConditionConstraints=[
