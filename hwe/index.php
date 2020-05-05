@@ -58,6 +58,12 @@ $generalObj = General::createGeneralObjFromDB($me['no']);
 $generalObj->setRawCity($db->queryFirstRow('SELECT * FROM city WHERE city = %i', $generalObj->getCityID()));
 $scenario = $gameStor->scenario_text;
 
+$nationID = $generalObj->getNationID();
+if($nationID){
+    $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+    $nationStor->cacheValues(['notice', 'onlinegne']);
+}
+
 $valid = 0;
 if ($gameStor->extended_general == 0) {
     $extend = "표준";
@@ -209,7 +215,7 @@ echo "
     <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=$gameStor->onlinenation?></td></tr>
     <tr><td colspan=5 style="text-align:left;">운영자 메세지 : <span style='color:yellow;'><?=$gameStor->msg?></span></td></tr>
     <tr><td colspan=5 style="text-align:left;"><div>【 국가방침 】</div><div><?=nationMsg($generalObj)?></div></td></tr>
-    <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen()?></td></tr>
+    <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen($generalObj)?></td></tr>
 <?php
 if ($session->userGrade >= 5) {
 ?>

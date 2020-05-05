@@ -862,18 +862,17 @@ function getOnlineNum()
     return KVStorage::getStorage(DB::db(), 'game_env')->online;
 }
 
-function onlinegen()
+function onlinegen(General $general)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $onlinegen = "";
-    $generalID = Session::getInstance()->generalID;
-    $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
+    $nationID = $general->getNationID();
     if ($nationID === null || Util::toInt($nationID) === 0) {
         $onlinegen = $gameStor->onlinegen;
     } else {
-        $onlinegen = DB::db()->queryFirstField('select onlinegen from nation where nation=%i', $nationID);
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+        $onlinegen = $nationStor->onlinegen;
     }
     return $onlinegen;
 }
@@ -1228,8 +1227,8 @@ function updateOnline()
             if ($key == 0) {
                 $gameStor->onlinegen = $onnation[0];
             } else {
-                $query = "update nation set onlinegen='$onnation[$key]' where nation='$key'";
-                MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
+                $nationStor = KVStorage::getStorage($db, $key, 'nation_env');
+                $nationStor->onlinegen = $onnation[$key];
             }
         }
     }
