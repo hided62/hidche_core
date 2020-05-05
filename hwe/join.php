@@ -76,7 +76,18 @@ if ($gencount >= $admin['maxgeneral']) {
     exit();
 }
 
-$nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation ORDER BY rand()');
+$nationList = $db->query('SELECT nation,`name`,color,scout FROM nation');
+shuffle($nationList);
+$nationList = Util::convertArrayToDict($nationList, 'nation');
+$nationStor = KVStorage::getStorage($db, 'nation_env');
+//NOTE: join 안할것임
+$scoutMsgs = $nationStor->getValues(array_map(function($nationID){
+    return "nation_scout_msg_{$nationID}";
+}, array_keys($nationList)));
+foreach($scoutMsgs as $nationIDPack=>$scoutMsg){
+    $nationID = Util::toInt(Util::array_last(explode('_', $nationIDPack)));
+    $nationList[$nationID]['scoutmsg'] = $scoutMsg;
+}
 
 echo getInvitationList($nationList);
 ?>

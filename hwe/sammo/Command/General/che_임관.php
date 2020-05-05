@@ -8,7 +8,8 @@ use \sammo\{
     GameConst, GameUnitConst,
     LastTurn,
     Command,
-    Json
+    Json,
+    KVStorage
 };
 
 
@@ -217,8 +218,18 @@ class che_임관 extends Command\GeneralCommand{
 
         $joinedNations = $generalObj->getAuxVar('joinedNations')??[];
 
-        $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation');
+        $nationList = $db->query('SELECT nation,`name`,color,scout,gennum FROM nation');
         shuffle($nationList);
+        $nationList = Util::convertArrayToDict($nationList, 'nation');
+        $nationStor = KVStorage::getStorage($db, 'nation_env');
+        //NOTE: join 안할것임
+        $scoutMsgs = $nationStor->getValues(array_map(function($nationID){
+            return "nation_scout_msg_{$nationID}";
+        }, array_keys($nationList)));
+        foreach($scoutMsgs as $nationIDPack=>$scoutMsg){
+            $nationID = Util::toInt(Util::array_last(explode('_', $nationIDPack)));
+            $nationList[$nationID]['scoutmsg'] = $scoutMsg;
+        }
 
         foreach($nationList as &$nation){
             if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
@@ -234,6 +245,8 @@ class che_임관 extends Command\GeneralCommand{
             if(in_array($nation['nation'], $joinedNations)){
                 $nation['availableJoin'] = false;
             }
+
+            
         }
         unset($nation);
         ob_start(); 
@@ -246,7 +259,7 @@ class che_임관 extends Command\GeneralCommand{
 <?php foreach($nationList as $nation): ?>
     <option 
         value='<?=$nation['nation']?>' 
-        style='color:<?=$nation['color']?><?=$nation['availableJoin']?'':'background-color:red;'?>'
+        style='<?=$nation['availableJoin']?'':'background-color:red;'?>'
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">

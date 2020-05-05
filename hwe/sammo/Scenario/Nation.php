@@ -3,6 +3,7 @@ namespace sammo\Scenario;
 use \sammo\DB;
 use \sammo\GameConst;
 use \sammo\Util;
+use \sammo\KVStorage;
 use function \sammo\getNationChiefLevel;
 
 class Nation{
@@ -82,6 +83,7 @@ class Nation{
         }
 
         $db = DB::db();
+        $nationStor = KVStorage::getStorage($db, 'nation_env');
         $otherNations = $db->queryFirstColumn('SELECT nation FROM nation');
 
         $db->insert('nation', [
@@ -98,7 +100,6 @@ class Nation{
             'war'=>0,
             'strategic_cmd_limit'=>24,
             'surlimit'=>72,
-            'scoutmsg'=>$this->infoText,
             'tech'=>$this->tech,
             'level'=>$this->nationLevel,
             'type'=>$type,
@@ -109,7 +110,9 @@ class Nation{
                 'nation'=>$this->id
             ], 'city IN %li', $cities);
         }
-        
+
+        $scoutKey = "nation_scout_msg_{$this->id}";
+        $nationStor->{$scoutKey} = $this->infoText;
 
         
         $diplomacy = [];

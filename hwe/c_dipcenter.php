@@ -31,48 +31,49 @@ else if ($me['officer_level'] < 5 && $permission != 4) {
     exit();
 }
 
+$nationStor = KVStorage::getStorage($db, 'nation_env');
+$nationID = $me['nation'];
+$noticeKey = "nation_notice_{$nationID}";
+$scoutKey = "nation_scout_msg_{$nationID}";
+
 if($btn == "국가방침 수정") {
     $msg = mb_substr($msg, 0, 16384);
     //$msg = StringUtil::
-    $db->update('nation', [
-        'msg'=>WebUtil::htmlPurify($msg)
-    ], 'nation=%i',$me['nation']);
+    $nationStor->{$noticeKey} = WebUtil::htmlPurify($msg);
 } elseif($btn == "임관 권유문 수정") {
     $scoutmsg = mb_substr($scoutmsg, 0, 1000);
-    $db->update('nation', [
-        'scoutmsg'=>WebUtil::htmlPurify($scoutmsg)
-    ], 'nation=%i',$me['nation']);
+    $nationStor->{$scoutKey} = WebUtil::htmlPurify($scoutmsg);
 } elseif($btn == "세율") {
     $rate = Util::valueFit($rate, 5, 30);
     $db->update('nation', [
         'rate'=>$rate,
-    ], 'nation=%i', $me['nation']);
+    ], 'nation=%i', $nationID);
 } elseif($btn == "지급률") {
     $bill = Util::valueFit($bill, 20, 200);
     $db->update('nation', [
         'bill'=>$bill
-    ], 'nation=%i',$me['nation']);
+    ], 'nation=%i',$nationID);
 } elseif($btn == "기밀권한") {
     $secretlimit = Util::valueFit($secretlimit, 1, 99);
     $db->update('nation', [
         'secretlimit'=>$secretlimit
-    ], 'nation=%i',$me['nation']);
+    ], 'nation=%i',$nationID);
 } elseif($btn == "임관 금지") {
     $db->update('nation', [
         'scout'=>1
-    ], 'nation=%i',$me['nation']);
+    ], 'nation=%i',$nationID);
 } elseif($btn == "임관 허가") {
     $db->update('nation', [
         'scout'=>0
-    ], 'nation=%i',$me['nation']);
+    ], 'nation=%i',$nationID);
 } elseif($btn == "전쟁 금지") {
     $db->update('nation', [
         'war'=>1
-    ], 'nation=%i',$me['nation']);
+    ], 'nation=%i',$nationID);
 } elseif($btn == "전쟁 허가") {
     $db->update('nation', [
         'war'=>0
-    ], 'nation=%i',$me['nation']);
+    ], 'nation=%i',$nationID);
 }
 
 header('location:b_dipcenter.php');

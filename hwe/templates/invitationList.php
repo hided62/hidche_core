@@ -11,7 +11,7 @@
         <td style="width:130px;text-align:center;"
         ><?=$nation['name']?></td>
         <td><div style="width:870px;max-width:870px;max-height:200px;overflow:hidden;"
-        ><?=$nation['scoutmsg']?:'-'?></div></td>
+        ><?=$nation['scoutmsg']??'-'?></div></td>
     </tr>
 <?php endforeach; ?>
 </tbody>

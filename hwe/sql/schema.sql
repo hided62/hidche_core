@@ -117,7 +117,6 @@ CREATE TABLE `nation` (
 	`name` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_bin',
 	`color` CHAR(10) NOT NULL,
 	`onlinegen` TEXT NULL DEFAULT '',
-	`msg` TEXT NULL DEFAULT '',
 	`capital` INT(1) NULL DEFAULT '0',
 	`capset` INT(6) NULL DEFAULT '0',
 	`gennum` INT(3) NULL DEFAULT '1',
@@ -132,13 +131,11 @@ CREATE TABLE `nation` (
 	`war` INT(1) NULL DEFAULT '0',
 	`strategic_cmd_limit` INT(4) NULL DEFAULT '36',
 	`surlimit` INT(4) NULL DEFAULT '72',
-	`scoutmsg` TEXT NULL DEFAULT '',
 	`tech` float NULL DEFAULT '0',
 	`power` INT(8) NULL DEFAULT '0',
 	`spy` TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`spy`)),
 	`level` INT(1) NULL DEFAULT '0',
 	`type` VARCHAR(20) NOT NULL DEFAULT 'che_중립',
-	`rule` TEXT NULL DEFAULT '',
 	`aux` LONGTEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`nation`)
 )

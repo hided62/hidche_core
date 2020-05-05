@@ -86,7 +86,7 @@ $sel2[$type2] = "selected";
                     <select name=nation size=1 style=color:white;background-color:black>";
                         <option value=0>재야</option>";
                         <?php
-                        $query = "select nation,name,color,scout,scoutmsg,gennum from nation order by power";
+                        $query = "select nation,name,color,scout,gennum from nation order by power";
                         $result = MYDB_query($query, $connect) or Error("aaa_processing.php " . MYDB_error($connect), "");
                         $count = MYDB_num_rows($result);
                         for ($i = 1; $i <= $count; $i++) {

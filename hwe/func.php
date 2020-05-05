@@ -193,7 +193,7 @@ function myNationInfo()
     $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,strategic_cmd_limit,surlimit,tech,level,type from nation where nation='{$me['nation']}'";
+    $query = "select nation,name,color,power,gold,rice,bill,rate,scout,war,strategic_cmd_limit,surlimit,tech,level,type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
     $nation = MYDB_fetch_array($result);
 
@@ -898,12 +898,11 @@ function onlinegen()
 function nationMsg(General $general)
 {
     $db = DB::db();
-    $msg = $db->queryFirstField(
-        'SELECT msg FROM nation WHERE nation = %i',
-        $general->getNationID()
-    );
-
-    return $msg ?: '';
+    $nationStor = KVStorage::getStorage($db, 'nation_env');
+    $nationID = $general->getNationID();
+    $noticeKey = "nation_notice_{$nationID}";
+    
+    return $nationStor->{$noticeKey}??'';
 }
 
 function banner()
