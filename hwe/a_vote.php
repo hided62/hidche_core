@@ -328,7 +328,7 @@ if ($admin['voteopen'] >= 2 || $isVoteAdmin) {
                 continue;
             }
 
-            $per = round($nationVote[$nation['nation']][$k]??0 / $memCount * 100, 1);
+            $per = round(($nationVote[$nation['nation']][$k]??0) / $memCount * 100, 1);
 
             if($i == $voteTypeCount-1){
                 $per = 100-$totalPer;

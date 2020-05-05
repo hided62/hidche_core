@@ -11,7 +11,8 @@ use\sammo\{
     GameConst,
     GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    Json
 };
 
 
@@ -79,7 +80,7 @@ class che_건국 extends Command\GeneralCommand
         $env = $this->env;
 
         $this->setCity();
-        $this->setNation(['gennum']);
+        $this->setNation(['gennum', 'aux']);
 
         $relYear = $env['year'] - $env['startyear'];
 
@@ -173,6 +174,9 @@ class che_건국 extends Command\GeneralCommand
         $general->addExperience($exp);
         $general->addDedication($ded);
 
+        $aux = Json::decode($this->nation['aux'])??[];
+        $aux['can_국기변경'] = 1;
+
         $db->update('city', [
             'nation' => $general->getNationID(),
             'conflict' => '{}'
@@ -183,7 +187,8 @@ class che_건국 extends Command\GeneralCommand
             'color' => $colorType,
             'level' => 1,
             'type' => $nationType,
-            'capital' => $general->getCityID()
+            'capital' => $general->getCityID(),
+            'aux' => Json::encode($aux)
         ], 'nation=%i', $general->getNationID());
 
         refreshNationStaticInfo();

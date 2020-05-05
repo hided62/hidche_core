@@ -116,7 +116,6 @@ CREATE TABLE `nation` (
 	`nation` INT(6) NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_bin',
 	`color` CHAR(10) NOT NULL,
-	`can_change_flag` INT(1) NULL DEFAULT '1',
 	`onlinegen` TEXT NULL DEFAULT '',
 	`msg` TEXT NULL DEFAULT '',
 	`capital` INT(1) NULL DEFAULT '0',

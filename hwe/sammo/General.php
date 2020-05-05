@@ -158,6 +158,7 @@ class General implements iAction{
         return $this->itemObjs[$itemKey];
     }
 
+    /** @return BaseItem[] */
     function getItems():array{
         return $this->itemObjs;
     }
@@ -512,7 +513,7 @@ class General implements iAction{
     }
 
     function updateVar(string $key, $value){
-        if($this->raw[$key] === $value){
+        if(($this->raw[$key]??null) === $value){
             return;
         }
         if(!key_exists($key, $this->updatedVar)){

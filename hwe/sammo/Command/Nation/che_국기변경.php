@@ -15,7 +15,8 @@ use\sammo\{
     Command,
     MessageTarget,
     Message,
-    CityConst
+    CityConst,
+    Json,
 };
 
 use function\sammo\{
@@ -64,23 +65,27 @@ class che_국기변경 extends Command\NationCommand
         $env = $this->env;
 
         $this->setCity();
-        $this->setNation(['can_change_flag']);
+        $this->setNation(['aux']);
+
+        $actionName = $this->getName();
 
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqNationValue('can_change_flag', '국기색', '>', 0, '더이상 변경이 불가능합니다.')
+            ConstraintHelper::ReqNationAuxValue("can_{$actionName}", null, '>', 0, '더이상 변경이 불가능합니다.')
         ];
     }
 
     protected function initWithArg()
     {
+        $actionName = $this->getName();
+
         $this->fullConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqNationValue('can_change_flag', '국기색', '>', 0, '더이상 변경이 불가능합니다.')
+            ConstraintHelper::ReqNationAuxValue("can_{$actionName}", null, '>', 0, '더이상 변경이 불가능합니다.')
         ];
     }
 
@@ -113,6 +118,7 @@ class che_국기변경 extends Command\NationCommand
         }
 
         $db = DB::db();
+        $actionName = $this->getName();
 
         $general = $this->generalObj;
         $generalID = $general->getID();
@@ -135,9 +141,12 @@ class che_국기변경 extends Command\NationCommand
         $josaYi = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
+        $aux = Json::decode($this->nation['aux']);
+        $aux["can_{$actionName}"] = 0;
+
         $db->update('nation', [
             'color'=>$color,
-            'can_change_flag' => $db->sqleval('can_change_flag - 1'),
+            'aux'=>Json::encode($aux)
         ], 'nation=%i', $nationID);
 
         $logger->pushGeneralActionLog("<span style='color:{$color};'><b>국기</b></span>를 변경하였습니다 <1>$date</>");

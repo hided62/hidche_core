@@ -67,7 +67,7 @@ trait LazyVarUpdater{
     }
 
     function updateVar(string $key, $value){
-        if($this->raw[$key] === $value){
+        if(($this->raw[$key]??null) === $value){
             return;
         }
         if(!key_exists($key, $this->updatedVar)){
