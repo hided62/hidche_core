@@ -180,44 +180,31 @@ function cityInfo(General $generalObj)
     return $templates->render('mainCityInfo', $city);
 }
 
-function myNationInfo()
+function myNationInfo(General $generalObj)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect = $db->get();
-    $userID = Session::getUserID();
 
     $admin = $gameStor->getValues(['startyear', 'year']);
 
-    $query = "select no,nation from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $me = MYDB_fetch_array($result);
+    $nationID = $generalObj->getNationID();
+    $nation = $db->queryFirstRow('SELECT * FROM nation WHERE nation = %i', $nationID)??getNationStaticInfo(0);
+    $city = $db->queryFirstRow(
+        'SELECT COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop_max) as maxpop from city where nation=%i',
+        $nationID
+    );
+    $general = $db->queryFirstRow('SELECT COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leadership)*100 as maxcrew from general where nation=%i', $nationID);
 
-    $query = "select nation,name,color,power,gold,rice,bill,rate,scout,war,strategic_cmd_limit,surlimit,tech,level,type from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $nation = MYDB_fetch_array($result);
+    $topChiefs = Util::convertArrayToDict($db->query('SELECT officer_level, no, name, npc FROM general WHERE nation = %i AND officer_level >= 11', $nationID), 'officer_level');
 
-    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop_max) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $city = MYDB_fetch_array($result);
-
-    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leadership)*100 as maxcrew from general where nation='{$nation['nation']}'";    // 장수 목록
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $general = MYDB_fetch_array($result);
-
-    $query = "select name from general where nation='{$nation['nation']}' and officer_level='12'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $level12 = MYDB_fetch_array($genresult);
-
-    $query = "select name from general where nation='{$nation['nation']}' and officer_level='11'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $level11 = MYDB_fetch_array($genresult);
+    $level12Name = key_exists(12, $topChiefs)?getColoredName($topChiefs[12]['name'], $topChiefs[12]['npc']):'-';
+    $level11Name = key_exists(11, $topChiefs)?getColoredName($topChiefs[11]['name'], $topChiefs[11]['npc']):'-';
 
     echo "<table width=498 class='tb_layout bg2 nation_info'>
     <tr>
         <td colspan=4 ";
 
-    if ($me['nation'] == 0) {
+    if (!$nationID) {
         echo "style='color:white;background-color:000000;font-weight:bold;font-size:13px;text-align:center;'>【재 야】";
     } else {
         echo "style='color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:13px;text-align:center'>국가【 {$nation['name']} 】";
@@ -233,39 +220,35 @@ function myNationInfo()
     </tr>
     <tr>
         <td width=68 class='bg1 center'><b>" . getOfficerLevelText(12, $nation['level']) . "</b></td>
-        <td width=178 class='center'>";
-    echo $level12 ? $level12['name'] : "-";
-    echo "</td>
+        <td width=178 class='center'>{$level12Name}</td>
         <td width=68 class='bg1 center'><b>" . getOfficerLevelText(11, $nation['level']) . "</b></td>
-        <td width=178 class='center'>";
-    echo $level11 ? $level11['name'] : "-";
-    echo "</td>
+        <td width=178 class='center'>{$level11Name}</td>
     </tr>
     <tr>
         <td class='bg1 center'><b>총주민</b></td>
         <td class='center'>";
-    echo $me['nation'] == 0 ? "해당 없음" : "{$city['totpop']}/{$city['maxpop']}";
+    echo $nationID===0 ? "해당 없음" : "{$city['totpop']}/{$city['maxpop']}";
     echo "</td>
         <td class='bg1 center'><b>총병사</b></td>
         <td class='center'>";
-    echo $me['nation'] == 0 ? "해당 없음" : "{$general['totcrew']}/{$general['maxcrew']}";
+    echo $nationID===0 ? "해당 없음" : "{$general['totcrew']}/{$general['maxcrew']}";
     echo "</td>
         </td>
     </tr>
     <tr>
         <td class='bg1 center'><b>국 고</b></td>
         <td class='center'>";
-    echo $me['nation'] == 0 ? "해당 없음" : "{$nation['gold']}";
+    echo $nationID===0 ? "해당 없음" : "{$nation['gold']}";
     echo "</td>
         <td class='bg1 center'><b>병 량</b></td>
         <td class='center'>";
-    echo $me['nation'] == 0 ? "해당 없음" : "{$nation['rice']}";
+    echo $nationID===0 ? "해당 없음" : "{$nation['rice']}";
     echo "</td>
     </tr>
     <tr>
         <td class='bg1 center'><b>지급률</b></td>
         <td class='center'>";
-    if ($me['nation'] == 0) {
+    if ($nationID===0) {
         echo "해당 없음";
     } else {
         echo $nation['bill'] == 0 ? "0 %" : "{$nation['bill']} %";
@@ -274,7 +257,7 @@ function myNationInfo()
         </td>
         <td class='bg1 center'><b>세 율</b></td>
         <td class='center'>";
-    if ($me['nation'] == 0) {
+    if ($nationID===0) {
         echo "해당 없음";
     } else {
         echo $nation['rate'] == 0 ? "0 %" : "{$nation['rate']} %";
@@ -290,7 +273,7 @@ function myNationInfo()
 
     $nation['tech'] = "$techCall / {$nation['tech']}";
 
-    if ($me['nation'] == 0) {
+    if ($nationID===0 == 0) {
         $nation['strategic_cmd_limit'] = "<font color=white>해당 없음</font>";
         $nation['surlimit'] = "<font color=white>해당 없음</font>";
         $nation['scout'] = "<font color=white>해당 없음</font>";
@@ -328,11 +311,11 @@ function myNationInfo()
     <tr>
         <td style='text-align:center;' class='bg1'><b>속 령</b></td>
         <td style='text-align:center;'>";
-    echo $me['nation'] == 0 ? "-" : "{$city['cnt']}";
+    echo $nationID===0 ? "-" : "{$city['cnt']}";
     echo "</td>
         <td style='text-align:center;' class='bg1'><b>장 수</b></td>
         <td style='text-align:center;'>";
-    echo $me['nation'] == 0 ? "-" : "{$general['cnt']}";
+    echo $nationID===0 ? "-" : "{$general['cnt']}";
     echo "</td>
     </tr>
     <tr>
@@ -340,7 +323,7 @@ function myNationInfo()
         <td style='text-align:center;'>{$nation['power']}</td>
         <td style='text-align:center;' class='bg1'><b>기술력</b></td>
         <td style='text-align:center;'>";
-    echo $me['nation'] == 0 ? "-" : "{$nation['tech']}";
+    echo $nationID===0 ? "-" : "{$nation['tech']}";
     echo "</td>
     </tr>
     <tr>
@@ -898,11 +881,10 @@ function onlinegen()
 function nationMsg(General $general)
 {
     $db = DB::db();
-    $nationStor = KVStorage::getStorage($db, 'nation_env');
     $nationID = $general->getNationID();
-    $noticeKey = "nation_notice_{$nationID}";
+    $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
     
-    return $nationStor->{$noticeKey}??'';
+    return $nationStor->notice??'';
 }
 
 function banner()
@@ -1643,56 +1625,64 @@ function getAdmin()
     return $gameStor->getAll();
 }
 
-function getCity($city, $sel = "*")
+/** @return General[] */
+function deleteNation(General $lord, bool $applyDB):array
 {
+    $lordID = $lord->getID();
+    $nationID = $lord->getNationID();
+
+    DeleteConflict($nationID);
+
     $db = DB::db();
-    $connect = $db->get();
+    $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+    
+    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
+    $nationName = $oldNation['name'];
 
-    $query = "select {$sel} from city where city='$city'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $city = MYDB_fetch_array($result);
-
-    return $city;
-}
-
-function deleteNation(General $general)
-{
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-
-    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-    $nation = $general->getStaticNation();
-    $nationName = $nation['name'];
-    $nationID = $nation['nation'];
-
-    $logger = $general->getLogger();
+    $logger = $lord->getLogger();
 
     $josaUn = JosaUtil::pick($nationName, '은');
     $logger->pushGlobalHistoryLog("<R><b>【멸망】</b></><D><b>{$nationName}</b></>{$josaUn} <R>멸망</>했습니다.");
 
-    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
-    $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nationID);
-    $oldNation['generals'] = $oldNationGenerals;
+    
+    $oldNationGeneralList = General::createGeneralObjListFromDB(
+        $db->queryFirstColumn(
+            'SELECT `no` FROM general WHERE nation=%i AND no != %i',
+            $nationID,
+            $lordID
+        ), 
+        ['gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel'], 1
+    );
+    $oldNationGeneralList[$lordID] = $lord;
+    
+    $oldNation['generals'] = array_keys($oldNationGeneralList);
     $oldNation['aux'] = Json::decode($oldNation['aux']);
+    $oldNation['msg'] = $nationStor->notice;
+    $oldNation['scout_msg'] = $nationStor->scout_msg;
+    $oldNation['aux'] += $nationStor->max_power;
     $oldNation['history'] = getNationHistoryAll($nationID);
 
-    $general->setVar('belong', 0);
-    $general->setVar('troop', 0);
-    $general->setVar('officer_level', 0);
-    $general->setVar('officer_city', 0);
-    $general->setVar('nation', 0);
-    $general->setVar('makelimit', 12);
+    $josaYi = JosaUtil::pick($nationName, '이');
+    $destroyLog = "<D><b>{$nationName}</b></>{$josaYi} <R>멸망</>했습니다.";
+    $destroyHistoryLog = "<D><b>{$nationName}</b></>{$josaYi} <R>멸망</>";
 
-    // 전 장수 재야로    // 전 장수 소속 무소속으로
-    $db->update('general', [
-        'belong' => 0,
-        'troop' => 0,
-        'officer_level' => 0,
-        'officer_city' => 0,
-        'nation' => 0,
-        'makelimit' => 12,
-        'permission' => 'normal',
-    ], 'nation=%i', $nationID);
+    // 전 장수 재야로
+    foreach($oldNationGeneralList as $general){
+        $general->setVar('belong', 0);
+        $general->setVar('troop', 0);
+        $general->setVar('officer_level', 0);
+        $general->setVar('officer_city', 0);
+        $general->setVar('nation', 0);
+        $general->setVar('permission', 'normal');
+        $logger = $general->getLogger();
+        $logger->pushGeneralActionLog($destroyLog, ActionLogger::PLAIN);
+        $logger->pushGeneralHistoryLog($destroyHistoryLog);
+
+        if($applyDB){
+            $general->applyDB($db);
+        }
+    }
+
     // 도시 공백지로
     $db->update('city', [
         'nation' => 0,
@@ -1700,8 +1690,8 @@ function deleteNation(General $general)
     ], 'nation=%i', $nationID);
     // 부대 삭제
     $db->delete('troop', 'nation=%i', $nationID);
-    // 국가 삭제
 
+    // 국가 삭제
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => $nationID,
@@ -1713,6 +1703,11 @@ function deleteNation(General $general)
     $db->delete('diplomacy', 'me = %i OR you = %i', $nationID, $nationID);
 
     refreshNationStaticInfo();
+
+    $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+    $nationStor->resetValues();
+
+    return $oldNationGeneralList;
 }
 
 function nextRuler(General $general)
@@ -1752,8 +1747,7 @@ function nextRuler(General $general)
 
 
     if (!$candidate) {
-        DeleteConflict($general->getNationID());
-        deleteNation($general);
+        deleteNation($general, true);
         return;
     }
 

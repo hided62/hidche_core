@@ -142,10 +142,11 @@ class che_천도 extends Command\NationCommand
         $lastTurn = $this->getLastTurn();
         $commandName = $this->getName();
 
-        $nationStor = \sammo\KVStorage::getStorage(DB::db(), 'nation_env');
         $general = $this->getGeneral();
         $nationID = $general->getNationID();
-        $nationStor->setValue("last천도Trial_{$nationID}", [$general->getVar('officer_level'), $general->getTurnTime()]);
+        $nationStor = \sammo\KVStorage::getStorage(DB::db(), $nationID, 'nation_env');
+        
+        $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
 
         if ($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg) {
             $this->setResultTurn(new LastTurn(

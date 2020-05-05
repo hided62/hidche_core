@@ -42,7 +42,6 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("감찰부", 2);
 //전투 추진을 위해 갱신

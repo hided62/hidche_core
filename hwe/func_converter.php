@@ -667,7 +667,6 @@ function getColoredName(string $name, int $npcType):string{
     if($color === null){
         return $name;
     }
-    //TODO: font 폐기.
     return "<span style='color:{$color}'>{$name}</span>";
 }
 

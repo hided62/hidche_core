@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS `general_turn`;
 # 국가 테이블 삭제
 DROP TABLE IF EXISTS nation;
 DROP TABLE IF EXISTS `nation_turn`;
+DROP TABLE IF EXISTS nation_env;
 
 # 회의실 테이블 삭제
 DROP TABLE IF EXISTS board;

@@ -21,13 +21,9 @@ $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $nationList = $db->query('SELECT nation,`name`,color,scout FROM nation');
 shuffle($nationList);
 $nationList = Util::convertArrayToDict($nationList, 'nation');
-$nationStor = KVStorage::getStorage($db, 'nation_env');
 //NOTE: join 안할것임
-$scoutMsgs = $nationStor->getValues(array_map(function($nationID){
-    return "nation_scout_msg_{$nationID}";
-}, array_keys($nationList)));
-foreach($scoutMsgs as $nationIDPack=>$scoutMsg){
-    $nationID = Util::toInt(Util::array_last(explode('_', $nationIDPack)));
+$scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_msg');
+foreach($scoutMsgs as $nationID=>$scoutMsg){
     $nationList[$nationID]['scoutmsg'] = $scoutMsg;
 }
 ?>

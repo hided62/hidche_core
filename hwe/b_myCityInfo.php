@@ -14,13 +14,9 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
-
 increaseRefresh("세력도시", 1);
 
-$query = "select no,nation,officer_level from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation,officer_level FROM general WHERE owner=%i', $userID);
 $nationID = $me['nation'];
 
 if ($me['officer_level'] == 0) {
@@ -191,21 +187,12 @@ foreach($cityList as $city){
     <tr>
         <td align=center id=bg1>장수</td>
         <td colspan=11>";
-    $query = "select npc,name from general where city='{$city['city']}' and nation='{$me['nation']}'";    // 장수 목록
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $gencount = MYDB_num_rows($genresult);
-    if ($gencount == 0) {
+    $generalList = $db->query('SELECT npc, name FROM general WHERE city = %i AND nation = %i', $city['city'], $me['nation']);
+    if (!$generalList) {
         echo "-";
     }
-    for ($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($genresult);
-        if ($general['npc'] >= 2) {
-            echo "<font color=cyan>{$general['name']}, </font>";
-        } elseif ($general['npc'] == 1) {
-            echo "<font color=skyblue>{$general['name']}, </font>";
-        } else {
-            echo "{$general['name']}, ";
-        }
+    foreach($generalList as $general) {
+        echo getColoredName($general['name'], $general['npc']).', ';
     }
     echo "
         </td>

@@ -31,18 +31,16 @@ else if ($me['officer_level'] < 5 && $permission != 4) {
     exit();
 }
 
-$nationStor = KVStorage::getStorage($db, 'nation_env');
 $nationID = $me['nation'];
-$noticeKey = "nation_notice_{$nationID}";
-$scoutKey = "nation_scout_msg_{$nationID}";
+$nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
 if($btn == "국가방침 수정") {
     $msg = mb_substr($msg, 0, 16384);
     //$msg = StringUtil::
-    $nationStor->{$noticeKey} = WebUtil::htmlPurify($msg);
+    $nationStor->notice = WebUtil::htmlPurify($msg);
 } elseif($btn == "임관 권유문 수정") {
     $scoutmsg = mb_substr($scoutmsg, 0, 1000);
-    $nationStor->{$scoutKey} = WebUtil::htmlPurify($scoutmsg);
+    $nationStor->scout_msg = WebUtil::htmlPurify($scoutmsg);
 } elseif($btn == "세율") {
     $rate = Util::valueFit($rate, 5, 30);
     $db->update('nation', [

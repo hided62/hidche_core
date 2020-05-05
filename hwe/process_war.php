@@ -163,14 +163,6 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     if(!$conquerCity){
         return;
     }
-
-    //XXX: 새 도시점령 코드 작성하기 전까지 유지
-    $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $attackerGeneral->getCityID());
-    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
-
-    if($defenderNationID !== 0){
-        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
-    }
     
     ConquerCity([
         'startyear'=>$startYear,
@@ -178,7 +170,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
         'month'=>$month,
         'city_rate'=>$cityRate,
         'join_mode'=>$joinMode,
-    ], $attacker->getRaw(), $city->getRaw(), $rawAttackerNation, $rawDefenderNation);
+    ], $attacker->getGeneral(), $city->getRaw());
 }
 
 function extractBattleOrder(General $general){
@@ -476,198 +468,181 @@ function getConquerNation($city) : int {
     return Util::array_first_key($conflict);
 }
 
-function ConquerCity($admin, $general, $city, $nation, $destnation) {
-    '@phan-var array<string,mixed> $city';
+function ConquerCity(array $admin, General $general, array $city) {
     $db = DB::db();
-    $connect=$db->get();
-
-    $alllog = [];
-    $log = [];
-    $history = [];
-
-    if($destnation['nation'] > 0) {
-        $destnationName = "<D><b>{$destnation['name']}</b></>의";
-    } else {
-        $destnationName = "공백지인";
-    }
 
     $year = $admin['year'];
     $month = $admin['month'];
 
-    $josaUl = JosaUtil::pick($city['name'], '을');
-    $josaYiNation = JosaUtil::pick($nation['name'], '이');
-    $josaYiGen = JosaUtil::pick($general['name'], '이');
-    $josaYiCity = JosaUtil::pick($city['name'], '이');
-    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYiGen} <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
-    $log[] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
-    $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} <G><b>{$city['name']}</b></>{$josaUl} 지배했습니다.";
-    pushGeneralHistory($general['no'], ["<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <S>함락</>시킴"]);
-    pushNationHistory($nation['nation'], ["<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>{$josaYiGen} {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>"]);
-    pushNationHistory($destnation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>{$josaYiCity} <span class='ev_highlight'>함락</span>"]);
+    $attackerID = $general->getID();
+    $attackerNationID = $general->getNationID();
+    $attackerGeneralName = $general->getName();
+    $attackerNationName = $general->getStaticNation()['name'];
+    $attackerLogger = $general->getLogger();
 
-    $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $city['nation']);
-    $renewFront = false;
+    $cityID = $city['city'];
+    $cityName = $city['name'];
+
+    $defenderNationID = $city['nation'];
+    $defenderStaticNation = getNationStaticInfo($defenderNationID);
+    $defenderNationName = $defenderStaticNation['name'];
+    
+    $defenderNationLogger = new ActionLogger(0, $defenderNationID, $year, $month);
+
+    if($defenderNationID) {
+        $defenderNationDecoration = "<D><b>{$defenderNationName}</b></>의";
+    } else {
+        $defenderNationDecoration = "공백지인";
+    }
+
+    $josaUl = JosaUtil::pick($cityName, '을');
+    $josaYiNation = JosaUtil::pick($attackerNationName, '이');
+    $josaYiGen = JosaUtil::pick($attackerGeneralName, '이');
+    $josaYiCity = JosaUtil::pick($cityName, '이');
+    $attackerLogger->pushGeneralActionLog("<G><b>{$cityName}</b></> 공략에 <S>성공</>했습니다.", ActionLogger::PLAIN);
+    $attackerLogger->pushGeneralHistoryLog("<G><b>{$cityName}</b></>{$josaUl} <S>점령</>");
+    $attackerLogger->pushGlobalActionLog("<Y>{$attackerGeneralName}</>{$josaYiGen} <G><b>{$cityName}</b></> 공략에 <S>성공</>했습니다.");
+    $attackerLogger->pushGlobalHistoryLog("<S><b>【지배】</b></><D><b>{$attackerNationName}</b></>{$josaYiNation} <G><b>{$cityName}</b></>{$josaUl} 지배했습니다.");
+    $attackerLogger->pushNationalHistoryLog("<Y>{$attackerGeneralName}</>{$josaYiGen} {$defenderNationDecoration} <G><b>{$cityName}</b></> {$josaUl} <S>점령</>");
+
+    $defenderNationLogger->pushNationalHistoryLog("<D><b>{$attackerNationName}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$cityName}</b></>{$josaYiCity} <O>함락</>");
 
     // 국가 멸망시
-    //TODO: 국가 멸망 코드를 별도로 작성
-    if($citycount == 1 && $city['nation'] != 0) {
-        $losenation = $destnation;
+    if($defenderNationID && $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $defenderNationID) === 1) {
+        $defenderNationLogger->flush();
+        unset($defenderNationLogger);
 
-        $josaYi = JosaUtil::pick($losenation['name'], '이');
-        $josaUl = JosaUtil::pick($losenation['name'], '을');
-        $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>{$josaYi} 멸망하였습니다.";
-        pushNationHistory($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복"]);
+        $loseNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation = %i', $defenderNationID);
+
+        $lord = new General($db->queryFirstRow(
+            'SELECT %b FROM general WHERE nation = %i AND officer_level = %i LIMIT 1',
+            General::mergeQueryColumn(['gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel'], 1),
+            $defenderNationID,
+            12
+        ), null, $city, $loseNation, $year, $month, false);
+        
+        $oldNationGenerals = deleteNation($lord, false);
+        $josaUl = JosaUtil::pick($defenderNationName, '을');
+        $attackerLogger->pushNationalHistoryLog("<D><b>{$defenderNationName}</b></>{$josaUl} 정복");
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
-        //멸망국 장수들 역사 기록 및 로그 전달
-        $josaYi = JosaUtil::pick($losenation['name'], '이');
-        $destroyLog = "<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>했습니다.";
-        $destroyHistoryLog = "<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>";
-
-
-        // 국가 백업
-        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $city['nation']);
-        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $city['nation']);
-        $oldNation['generals'] = array_map(function($gen){
-            //다른 코드와는 다르게 공용으로 쓰므로 남겨둠
-            return $gen['no'];
-        }, $oldNationGenerals);
-        $oldNation['aux'] = Json::decode($oldNation['aux']);
-        $oldNation['history'] = getNationHistoryAll($city['nation']);
-
-        foreach($oldNationGenerals as $gen){
-            $oldGeneralObj = new General($gen, null, null, $oldNation, $year, $month, false);
-
-            $loseGold = intdiv($gen['gold'] * (rand()%30+20), 100);
-            $loseRice = intdiv($gen['rice'] * (rand()%30+20), 100);
-            $generalLogger = $oldGeneralObj->getLogger();
-            $generalLogger->pushGeneralHistoryLog($destroyHistoryLog);
-            $generalLogger->pushGeneralActionLog($destroyLog, ActionLogger::PLAIN);
-            $generalLogger->pushGeneralActionLog("도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.", ActionLogger::PLAIN);
-            $oldGeneralObj->increaseVar('gold', -$loseGold);
-            $oldGeneralObj->increaseVar('rice', -$loseRice);
-            $oldGeneralObj->addExperience(-$oldGeneralObj->getVar('experience')*0.1, false);
-            $oldGeneralObj->addDedication(-$oldGeneralObj->getVar('dedication')*0.5, false);
-            
-            pushOldNationStop($gen['no'], $city['nation']);
+        foreach($oldNationGenerals as $oldGeneral){
+            $loseGold = intdiv($oldGeneral->getVar('gold') * (rand()%30+20), 100);
+            $loseRice = intdiv($oldGeneral->getVar('rice') * (rand()%30+20), 100);
+            $oldGeneral->getLogger()->pushGeneralActionLog(
+                "도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.",
+                ActionLogger::PLAIN
+            );
+            $oldGeneral->increaseVar('gold', -$loseGold);
+            $oldGeneral->increaseVar('rice', -$loseRice);
+            $oldGeneral->addExperience(-$oldGeneral->getVar('experience')*0.1, false);
+            $oldGeneral->addDedication(-$oldGeneral->getVar('dedication')*0.5, false);
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
 
-            $oldGeneralObj->applyDB($db);
-            
+            $oldGeneral->applyDB($db);
+
             //모두 등용장 발부
             if($admin['join_mode'] != 'onlyRandom' && Util::randBool(0.5)) {
-                $msg = ScoutMessage::buildScoutMessage($general['no'], $gen['no']);
+                $msg = ScoutMessage::buildScoutMessage($attackerID, $oldGeneral->getID());
                 if($msg){
                     $msg->send(true);
                 }
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)
-            if($admin['join_mode'] != 'onlyRandom' && $gen['npc'] >= 2 && $gen['npc'] <= 8 && $gen['npc'] != 5 && Util::randBool(0.1)) {
-                setGeneralCommand($gen['no'], [0], 'che_임관', ['destNationID'=>$nation['nation']]);
+            $npcType = $oldGeneral->getVar('npc');
+            if($admin['join_mode'] != 'onlyRandom' && 2 <= $npcType && $npcType <= 8 && $npcType != 5 && Util::randBool(0.1)) {
+                $cmd = buildGeneralCommandClass('che_임관', $oldGeneral, $admin, [
+                    'destNationID'=>$attackerNationID
+                ]);
+                if($cmd->hasFullConditionMet()){
+                    _setGeneralCommand($cmd, [0]);
+                }
             }
         }
-        
+
         // 승전국 보상
-        $losenation['gold'] -= GameConst::$basegold;
-        $losenation['rice'] -= GameConst::$baserice;
-        if($losenation['gold'] < 0) { $losenation['gold'] = 0; }
-        if($losenation['rice'] < 0) { $losenation['rice'] = 0; }
+        $loseNationGold = Util::valueFit($loseNation['gold'] - GameConst::$basegold, 0);
+        $loseNationRice = Util::valueFit($loseNation['rice'] - GameConst::$baserice, 0);
         
-        $losenation['gold'] += $loseGeneralGold;
-        $losenation['rice'] += $loseGeneralRice;
+        $loseNationGold += $loseGeneralGold;
+        $loseNationRice += $loseGeneralRice;
         
-        $losenation['gold'] = intdiv($losenation['gold'], 2);
-        $losenation['rice'] = intdiv($losenation['gold'], 2);
+        $loseNationGold = intdiv($loseNationGold, 2);
+        $loseNationRice = intdiv($loseNationRice, 2);
         
         // 기본량 제외 금쌀50% + 장수들 분실 금쌀50% 흡수
-        $query = "update nation set gold=gold+'{$losenation['gold']}',rice=rice+'{$losenation['rice']}' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'gold'=>$db->sqleval('gold + %i', $loseNationGold),
+            'rice'=>$db->sqleval('rice + %i', $loseNationRice),
+        ], 'nation=%i', $attackerNationID);
         
         //아국 수뇌부에게 로그 전달
-        $query = "select no,name,nation from general where nation='{$general['nation']}' and officer_level>='9'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$losenation['name']}</b></> 정복으로 금<C>{$losenation['gold']}</> 쌀<C>{$losenation['rice']}</>을 획득했습니다.";
-        for($i=0; $i < $gencount; $i++) {
-            $gen = MYDB_fetch_array($result);
-            pushGenLog($gen['no'], $genlog);
+        $loseNationGoldText = number_format($loseNationGold);
+        $loseNationRiceText = number_format($loseNationRice);
+        $resourceLog = "<D><b>{$defenderNationName}</b></> 정복으로 금<C>{$loseNationGoldText}</> 쌀<C>{$loseNationRiceText}</>을 획득했습니다.";
+        foreach($db->queryFirstColumn(
+            'SELECT no FROM general WHERE nation=%i AND officer_level>=5', $attackerNationID
+            ) as $attackerChiefID
+        ){
+            if($attackerChiefID == $attackerID){
+                $attackerLogger->pushGeneralActionLog($resourceLog, ActionLogger::PLAIN);
+            }
+            else{
+                $chiefLogger = new ActionLogger($attackerChiefID, $attackerNationID, $year, $month);
+                $chiefLogger->pushGeneralActionLog($resourceLog, ActionLogger::PLAIN);
+                $chiefLogger->flush();
+            }
         }
-        
-        
-        //분쟁기록 모두 지움
-        DeleteConflict($city['nation']);
-
-        // 전 도시 공백지로
-        $query = "update city set nation='0',conflict='{}',term=0 where nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 전 장수 소속 무소속으로, 재야로, 부대 탈퇴
-        $db->update('general',[
-            'nation'=>0,
-            'belong'=>0,
-            'officer_level'=>0,
-            'officer_city'=>0,
-            'troop'=>0,
-        ], 'nation=%i',$city['nation']);
-
-        // 부대도 삭제
-        $query = "delete from troop where nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 외교 삭제
-        $query = "delete from diplomacy where me='{$city['nation']}' or you='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        
-        $db->insert('ng_old_nations', [
-            'server_id'=>UniqueConst::$serverID,
-            'nation'=>$city['nation'],
-            'data'=>Json::encode($oldNation)
-        ]);
-        // 국가 삭제
-        $query = "delete from nation where nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $db->delete('nation_turn', 'nation_id=%i', $city['nation']);
-        $renewFront = true;
     // 멸망이 아니면
     } else {
         // 태수,군사,종사은 일반으로...
         $db->update('general',[
             'officer_level'=>1,
             'officer_city'=>0,
-        ], 'officer_city = %i',$city['city']);
+        ], 'officer_city = %i',$cityID);
         
         //수도였으면 긴급 천도
-        if(isset($destnation['capital']) && $destnation['capital'] == $city['city']) {
-            $minCity = findNextCapital($city['city'], $destnation['nation']);
+        if($defenderNationID && $defenderStaticNation == $cityID) {
+            $minCity = findNextCapital($cityID, $defenderNationID);
 
             $minCityName = CityConst::byID($minCity)->name;
 
-            $josaYi = JosaUtil::pick($destnation['name'], '이');
-            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【긴급천도】</b></><D><b>{$destnation['name']}</b></>{$josaYi} 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
+            $josaYi = JosaUtil::pick($defenderNationName, '이');
+            $attackerLogger->pushGlobalHistoryLog("<M><b>【긴급천도】</b></><D><b>{$defenderNationName}</b></>{$josaYi} 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.");
 
+            $moveLog = "수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다.";
             //아국 수뇌부에게 로그 전달
-            $query = "select no,name,nation from general where nation='{$destnation['nation']}' and officer_level>='5'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gencount = MYDB_num_rows($result);
-            $genlog = ["<C>●</>수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다."];
-            for($i=0; $i < $gencount; $i++) {
-                $gen = MYDB_fetch_array($result);
-                pushGenLog($gen['no'], $genlog);
+            foreach($db->queryFirstColumn(
+                'SELECT no FROM general WHERE nation=%i AND officer_level>=5', $defenderNationID
+                ) as $defenderChiefID
+            ){
+                $chiefLogger = new ActionLogger($defenderChiefID, $defenderNationID, $year, $month);
+                $chiefLogger->pushGeneralActionLog($moveLog, ActionLogger::PLAIN);
+                $chiefLogger->flush();
             }
+
             //천도
-            $query = "update nation set capital='$minCity',gold=gold*0.5,rice=rice*0.5 where nation='{$destnation['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('nation', [
+                'capital'=>$minCity,
+                'gold'=>$db->sqleval('gold * 0.5'),
+                'rice'=>$db->sqleval('rice * 0.5'),
+            ], 'nation=%i', $defenderNationID);
             //보급도시로 만듬
-            $query = "update city set supply=1 where city='$minCity'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('city', [
+                'supply'=>1
+            ], 'city=%i', $minCity);
             //수뇌부 이동
-            $query = "update general set city='$minCity' where nation='{$destnation['nation']}' and officer_level>='5'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'city'=>$minCity
+            ], 'nation=%i AND officer_level>=5',$defenderNationID);
             //장수 사기 감소
-            $query = "update general set atmos=atmos*0.8 where nation='{$destnation['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'atmos'=>$db->sqleval('atmos*0.8')
+            ], 'nation=%i',$defenderNationID);
 
             refreshNationStaticInfo();
         }
@@ -675,20 +650,23 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
 
     $conquerNation = getConquerNation($city);
 
-    if ($conquerNation == $general['nation']) {
+    if ($conquerNation == $attackerNationID) {
         // 이동
         $db->update('general', [
-            'city'=>$city['city']
+            'city'=>$cityID
         ], 'no=%i', $general['no']);
     }
     else{
-        $conquerNationName = $db->queryFirstField('SELECT `name` FROM nation WHERE nation=%i', $conquerNation);
+        $conquerNationName = getNationStaticInfo($conquerNation)['name'];
+        $conquerNationLogger = new ActionLogger(0, $conquerNation, $year, $month);
 
-        $josaUl = JosaUtil::pick($city['name'], '을');
+        $josaUl = JosaUtil::pick($cityName, '을');
         $josaYi = JosaUtil::pick($conquerNationName, '이');
-        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationName}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
-        pushNationHistory($nation['nation'], ["<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationName}</b></>에 <Y>양도</>"]);
-        pushNationHistory($conquerNation, ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음"]);
+        $attackerLogger->pushGlobalHistoryLog(
+            "<Y><b>【분쟁협상】</b></><D><b>{$conquerNationName}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$cityName}</b></>{$josaUl} 양도받았습니다."
+        );
+        $conquerNationLogger->pushNationalHistoryLog("<D><b>{$attackerNationName}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
+        $attackerLogger->pushNationalHistoryLog("<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationName}</b></>에 <Y>양도</>");
     }
     
     $query = [
@@ -709,21 +687,19 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query['wall'] = $db->sqleval('wall_max/2');
     }
     
-    $db->update('city', $query, 'city=%i', (int)$city['city']);
+    $db->update('city', $query, 'city=%i', $cityID);
     //전방설정
 
     $nearNationsID = $db->queryFirstColumn(
         'SELECT distinct(nation) FROM city WHERE nation != 0 AND city IN %li',
-        array_merge(array_keys(CityConst::byID($city['city'])->path), [$city['city']])
+        array_merge(array_keys(CityConst::byID($cityID)->path), [$cityID])
     );
+
+    $nearNationsID[] = $conquerNation;
+    $nearNationsID = array_unique($nearNationsID);
     foreach($nearNationsID as $nationNationID){
         SetNationFront($nationNationID);
     }
-    SetNationFront($conquerNation);
-
-    pushGenLog($general['no'], $log);
-    pushGeneralPublicRecord($alllog, $year, $month);
-    pushWorldHistory($history);
 }
 
 function findNextCapital(int $capitalID, int $nationID):int{
@@ -739,8 +715,6 @@ function findNextCapital(int $capitalID, int $nationID):int{
     ){
         $cities[$row['city']] = $row['pop'];
     };
-
-    
 
     foreach($distList as $dist=>$distSubList){
         $maxCityPop = 0;

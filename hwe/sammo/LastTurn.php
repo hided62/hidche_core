@@ -15,18 +15,25 @@ class LastTurn{
         $this->setSeq($seq);
     }
 
+    static function fromRaw(?array $raw):self{
+        if(!$raw){
+            return new static();
+        }
+        $obj = new static(
+            $raw['command']??null,
+            $raw['arg']??null,
+            $raw['term']??null,
+            $raw['seq']??null
+        );
+        return $obj;
+    }
+
     static function fromJson(?string $json):self{
         if($json === null || $json === ''){
             return new static();
         }
-        $values = Json::decode($json);
-        $obj = new static(
-            $values['command']??null,
-            $values['arg']??null,
-            $values['term']??null,
-            $values['seq']??null
-        );
-        return $obj;
+        return static::fromRaw(Json::decode($json));
+        
     }
 
     function setCommand(?string $command){
@@ -64,7 +71,7 @@ class LastTurn{
         return $this->seq;
     }
 
-    function toJson():string{
+    function toRaw():array{
         $result = [
             'command'=>$this->command
         ];
@@ -77,10 +84,15 @@ class LastTurn{
         if($this->seq !== null){
             $result['seq'] = $this->seq;
         }
-        return Json::encode($result);
+        return $result;
+    }
+
+    function toJson():string{
+        
+        return Json::encode($this->toRaw());
     }
 
     function duplicate():LastTurn{
-        return new static($this->command, $this->arg, $this->term);
+        return new static($this->command, $this->arg, $this->term, $this->seq);
     }
 }

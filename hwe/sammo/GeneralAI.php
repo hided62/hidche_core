@@ -1648,19 +1648,19 @@ class GeneralAI
 
         $db = DB::db();
 
-        $nationStor = KVStorage::getStorage($db, 'nation_env');
+        $nationStor = KVStorage::getStorage($db, $general->getNationID(), 'nation_env');
         $turnTerm = $this->env['turnterm'];
 
         //천도를 한턴 넣었다면 계속 넣는다.
         if($lastTurn->getCommand() === '천도' && $lastTurn->getArg()['destCityID'] != $this->nation['capital']){
             $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
             if($cmd->hasFullConditionMet()){
-                $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
+                $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
                 return $cmd;
             }
         }
 
-        $lastTrial = $nationStor->getValue("last천도Trial_{$this->nation['nation']}");
+        $lastTrial = $nationStor->last천도Trial;
         if($lastTrial){
             [$lastTrialLevel, $lastTrialTurnTime] = $lastTrial;
             $timeDiffSeconds = TimeUtil::DateIntervalToSeconds(
@@ -1776,7 +1776,7 @@ class GeneralAI
         }
 
         
-        $nationStor->setValue("last천도Trial_{$this->nation['nation']}", [$general->getVar('officer_level'), $general->getTurnTime()]);
+        $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
         return $cmd;
     }
 

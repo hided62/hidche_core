@@ -18,7 +18,6 @@ use function sammo\buildNationTypeClass;
 use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
 use function sammo\getAllNationStaticInfo;
-use function sammo\DeleteConflict;
 use function sammo\deleteNation;
 
 
@@ -87,19 +86,20 @@ class che_해산 extends Command\GeneralCommand{
         $general->increaseVarWithLimit('gold', 0, 0, GameConst::$defaultGold);
         $general->increaseVarWithLimit('rice', 0, 0, GameConst::$defaultRice);
 
-        DeleteConflict($nationID);
-        deleteNation($general);
-
         refreshNationStaticInfo();
 
         $logger = $general->getLogger();
-
         $logger->pushGeneralActionLog("세력을 해산했습니다. <1>$date</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 세력을 해산했습니다.");
-
         $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 해산");
-
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+
+        $oldNationGenerals = deleteNation($general, false);
+        foreach($oldNationGenerals as $oldGeneral){
+            $oldGeneral->setVar('makelimit', 12);
+            $oldGeneral->applyDB($db);
+        }
+
         $general->applyDB($db);
 
         return true;

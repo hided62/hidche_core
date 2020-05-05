@@ -307,7 +307,7 @@ else if($session->userGrade == 4){
 </table>
 <table class="tb_layout bg0" style="width:1000px;">
     <tr>
-        <td width=498 style="border:none;"><?php myNationInfo(); ?></td>
+        <td width=498 style="border:none;"><?php myNationInfo($generalObj); ?></td>
         <td width=498 style="border:none;"><?php generalInfo($generalObj); ?></td>
     </tr>
     <tr><td colspan=2><?=commandButton()?></td></tr>

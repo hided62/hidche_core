@@ -11,7 +11,6 @@ if($type <= 0 || $type > 8){
 }
 
 $db = DB::db();
-$connect=$db->get();
 
 increaseRefresh("빙의일람", 2);
 

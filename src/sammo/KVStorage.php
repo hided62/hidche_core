@@ -11,7 +11,7 @@ class KVStorage{
 
     static private $storageList = [];
 
-    static public function getStorage(\MeekroDB $db, string $storNamespace, string $tableName='storage'):self{
+    static public function getStorage(\MeekroDB $db, $storNamespace, string $tableName='storage'):self{
         $obj_id = spl_object_hash($db);
         $fullKey = $obj_id.','.$storNamespace.','.$tableName;
         if(key_exists($fullKey, static::$storageList)){
@@ -22,10 +22,21 @@ class KVStorage{
         return $obj;
     }
 
-    public function __construct(\MeekroDB $db, string $storNamespace, string $tableName='storage'){
+    public function __construct(\MeekroDB $db, $storNamespace, string $tableName='storage'){
         $this->db = $db;
         $this->storNamespace = $storNamespace;
         $this->tableName = $tableName;
+    }
+
+    public static function getValuesFromInterNamespace(\MeekroDB $db, string $tableName, $key):array{
+        $result = [];
+        foreach($db->queryAllLists(
+            'SELECT `namespace`, `value` FROM %b WHERE `key`=%s', $tableName, $key
+        ) as [$namespaceName, $value])
+        {
+            $result[$namespaceName] = Json::decode($value);
+        }
+        return $result;
     }
 
     public function __get($key) {

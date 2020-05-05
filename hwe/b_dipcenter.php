@@ -9,7 +9,6 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$nationStor = KVStorage::getStorage($db, 'nation_env');
 
 increaseRefresh("내무부", 1);
 
@@ -17,6 +16,8 @@ $me = $db->queryFirstRow('SELECT no, nation, officer_level, con, turntime, belon
 
 $nationID = $me['nation'];
 $nation = $db->queryFirstRow('SELECT nation,level,name,color,type,gold,rice,bill,rate,scout,war,secretlimit,capital FROM nation WHERE nation = %i', $nationID);
+
+$nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -42,9 +43,7 @@ if ($me['officer_level'] >= 5) {
     $read = "readonly";
 }
 
-$noticeKey = "nation_notice_{$nationID}";
-$scoutKey = "nation_scout_msg_{$nationID}";
-$nationStor->cacheValues([$noticeKey, $scoutKey]);
+$nationStor->cacheValues(['notice', 'scout_msg']);
 
 ?>
 <!DOCTYPE html>
@@ -56,8 +55,8 @@ $nationStor->cacheValues([$noticeKey, $scoutKey]);
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <script>
 var editable = <?=(($me['officer_level']>=5||$permission==4)?'true':'false')?>;
-var nationMsg = <?=Json::encode($nationStor->{$noticeKey}??'')?>;
-var scoutmsg = <?=Json::encode($nationStor->{$scoutKey}??'')?>;
+var nationMsg = <?=Json::encode($nationStor->notice??'')?>;
+var scoutmsg = <?=Json::encode($nationStor->scout_msg??'')?>;
 </script>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>

@@ -83,7 +83,7 @@ class Nation{
         }
 
         $db = DB::db();
-        $nationStor = KVStorage::getStorage($db, 'nation_env');
+        $nationStor = KVStorage::getStorage($db, $this->id, 'nation_env');
         $otherNations = $db->queryFirstColumn('SELECT nation FROM nation');
 
         $db->insert('nation', [
@@ -111,8 +111,7 @@ class Nation{
             ], 'city IN %li', $cities);
         }
 
-        $scoutKey = "nation_scout_msg_{$this->id}";
-        $nationStor->{$scoutKey} = $this->infoText;
+        $nationStor->scout_msg = $this->infoText;
 
         
         $diplomacy = [];

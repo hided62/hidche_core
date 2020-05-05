@@ -587,6 +587,17 @@ CREATE TABLE IF NOT EXISTS `storage` (
 COLLATE='utf8mb4_general_ci'
 ENGINE=Aria;
 
+CREATE TABLE IF NOT EXISTS `nation_env` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`namespace` INT(11) NOT NULL, #storage와 다름!
+	`key` VARCHAR(40) NOT NULL,
+	`value` LONGTEXT NOT NULL CHECK (json_valid(`value`)),
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `key` (`namespace`, `key`)
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria;
+
 CREATE TABLE IF NOT EXISTS `betting` (
 	`general_id` INT(11) NOT NULL,
 	`bet0` INT(11) NOT NULL DEFAULT 0,

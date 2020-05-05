@@ -123,7 +123,6 @@ class ResetHelper{
             }
         }
 
-        (KVStorage::getStorage($db, 'nation_env'))->resetValues();
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->resetValues();
         $gameStor->next_season_idx = $seasonIdx;

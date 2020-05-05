@@ -181,7 +181,7 @@ function updateQuaterly()
 
     //천도 제한 해제, 관직 변경 제한 해제
     $db->update('nation', [
-        'chief_set'=>0,
+        'chief_set' => 0,
     ], true);
     //관직 변경 제한 해제
     $db->update('city', [
@@ -323,11 +323,9 @@ function postUpdateMonthly()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect = $db->get();
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month', 'scenario']);
-
-    $history = [];
+    $globalLogger = new ActionLogger(0, 0, $admin['year'], $admin['month']);
 
     //도시 수 측정
     $cityNations = [];
@@ -349,9 +347,9 @@ function postUpdateMonthly()
     // 접속률
     // 숙련도
     // 명성,공헌
-    $nations = $db->query('SELECT
+    $nations = Util::convertArrayToDict($db->query('SELECT
     A.nation,
-    A.gennum, A.aux,
+    A.gennum,
     round((
         round(((A.gold+A.rice)+(select sum(gold+rice) from general where nation=A.nation))/100)
         +A.tech
@@ -368,34 +366,34 @@ function postUpdateMonthly()
     as power,
     (select sum(crew) from general where nation=A.nation) as totalCrew
     from nation A
-    group by A.nation');
-    foreach ($nations as $nation) {
-        $genNum[$nation['nation']] = $nation['gennum'];
+    group by A.nation'), 'nation');
+    $maxPowerValues = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'max_power');
 
-        $aux = Json::decode($nation['aux']);
+    foreach ($nations as $nation) {
+        $nationID = $nation['nation'];
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+        $genNum[$nationID] = $nation['gennum'];
+
+        $powerValues = $maxPowerValues[$nationID]??[];
 
         //약간의 랜덤치 부여 (95% ~ 105%)
 
         $nation['power'] = Util::round($nation['power'] * (rand() % 101 + 950) / 1000);
-        $aux['maxPower'] = max($aux['maxPower'] ?? 0, $nation['power']);
-        $aux['maxCrew'] = max($aux['maxCrew'] ?? 0, Util::toInt($nation['totalCrew']));
+        $powerValues['maxPower'] = max($powerValues['maxPower'] ?? 0, $nation['power']);
+        $powerValues['maxCrew'] = max($powerValues['maxCrew'] ?? 0, Util::toInt($nation['totalCrew']));
 
-        if (count($cityNations[$nation['nation']] ?? []) > count($aux['maxCities'] ?? [])) {
-            $aux['maxCities'] = $cityNations[$nation['nation']];
+        if (count($cityNations[$nationID] ?? []) > count($powerValues['maxCities'] ?? [])) {
+            $powerValues['maxCities'] = $cityNations[$nationID];
         }
 
         $db->update('nation', [
-            'power' => $nation['power'],
-            'aux' => Json::encode($aux)
-        ], 'nation=%i', $nation['nation']);
+            'power' => $nation['power']
+        ], 'nation=%i', $nationID);
+        $nationStor->max_power = $powerValues;
     }
 
     // 전쟁기한 세팅
-    $query = "select me,you,dead,term from diplomacy where state='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $dipCount = MYDB_num_rows($result);
-    for ($i = 0; $i < $dipCount; $i++) {
-        $dip = MYDB_fetch_array($result);
+    foreach($db->query('SELECT me, you, dead, term FROM diplomacy WHERE state = 0') as $dip) {
         $genCount = $genNum[$dip['me']];
         // 25% 참여율일때 두당 10턴에 4000명 소모한다고 계산
         // 4000 / 10 * 0.25 = 100
@@ -410,12 +408,7 @@ function postUpdateMonthly()
     }
 
     //개전국 로그
-    $query = "select me,you from diplomacy where state='1' and term<='1' and me<you";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $dipCount = MYDB_num_rows($result);
-
-    for ($i = 0; $i < $dipCount; $i++) {
-        $dip = MYDB_fetch_array($result);
+    foreach($db->query('SELECT me, you FROM diplomacy WHERE state = 1 AND term <= 1 AND me < you') as $dip){
         $nation1 = getNationStaticInfo($dip['me']);
         $name1 = $nation1['name'];
         $nation2 = getNationStaticInfo($dip['you']);
@@ -423,47 +416,56 @@ function postUpdateMonthly()
 
         $josaYi = JosaUtil::pick($name2, '이');
         $josaWa = JosaUtil::pick($name1, '와');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【개전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <R>전쟁</>을 시작합니다.";
+        $globalLogger->pushGlobalHistoryLog("<R><b>【개전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <R>전쟁</>을 시작합니다.");
     }
     //휴전국 로그
-    $query = "select A.me as me,A.you as you,A.term as term1,B.term as term2 from diplomacy A, diplomacy B where A.me=B.you and A.you=B.me and A.state='0' and A.me<A.you";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $dipCount = MYDB_num_rows($result);
-    for ($i = 0; $i < $dipCount; $i++) {
-        $dip = MYDB_fetch_array($result);
+    $stopWarList = [];
+    foreach($db->queryAllLists('SELECT me,you WHERE state=0 AND term <= 1 ORDER BY me desc, you desc') as [$me, $you]){
+        if($me < $you){
+            $key = "{$me}_{$you}";
+        }
+        else{
+            $key = "{$you}_{$me}";
+        }
+        if(!key_exists($key, $stopWarList)){
+            $stopWarList[$key] = true;
+            continue;
+        }
 
         //양측 기간 모두 0이 되는 상황이면 휴전
-        if ($dip['term1'] <= 1 && $dip['term2'] <= 1) {
-            $nation1 = getNationStaticInfo($dip['me']);
-            $name1 = $nation1['name'];
-            $nation2 = getNationStaticInfo($dip['you']);
-            $name2 = $nation2['name'];
+        $nation1 = getNationStaticInfo($me);
+        $name1 = $nation1['name'];
+        $nation2 = getNationStaticInfo($you);
+        $name2 = $nation2['name'];
 
-            $josaWa = JosaUtil::pick($name1, '와');
-            $josaYi = JosaUtil::pick($name2, '이');
-            $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【휴전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <S>휴전</>합니다.";
-            //기한 되면 휴전으로
-            $query = "update diplomacy set state='2',term='0' where (me='{$dip['me']}' and you='{$dip['you']}') or (me='{$dip['you']}' and you='{$dip['me']}')";
-            MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        }
+        $josaWa = JosaUtil::pick($name1, '와');
+        $josaYi = JosaUtil::pick($name2, '이');
+
+        $globalLogger->pushGlobalHistoryLog("<R><b>【휴전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <S>휴전</>합니다.");
+        $db->update('diplomacy', [
+            'state'=>2,
+            'term'=>0,
+        ], '(me=%i AND you=%i) OR (you=%i AND me=%i)', $me, $you, $me, $you);
     }
-    pushWorldHistory($history, $admin['year'], $admin['month']);
-    //사상자 초기화
-    $query = "update diplomacy set dead=0 WHERE state != 0";
-    MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    //외교 기한-1
-    $query = "update diplomacy set term=term-1 where term!=0";
-    MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
+
+    $globalLogger->flush();
+
+    //사상자 초기화, 외교 기한-1
+    $db->update('diplomacy', [
+        'dead'=>$db->sqleval('if(state!=0, 0, dead)'),
+        'term'=>$db->sqleval('greatest(0, term-1)'),
+    ], true);
     //불가침 끝나면 통상으로
-    $query = "update diplomacy set state='2' where state='7' and term='0'";
-    MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
+    $db->update('diploacy', [
+        'state'=>2,
+    ], 'state = 7 AND term = 0');
     //선포 끝나면 교전으로
-    $query = "update diplomacy set state='0',term='6' where state='1' and term='0'";
-    MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    //3,4 기간 끝나면 통합
-    checkMerge();
-    //5,6 기간 끝나면 합병
-    checkSurrender();
+    $db->update('diploacy', [
+        'state'=>0,
+        'term'=>6,
+    ], 'state = 1 AND term = 0');
+
+    //NOTE: diplomacy에서 3=>4 통합, 5=>6 합병이 있었음
     //초반이후 방랑군 자동 해체
     if ($admin['year'] >= $admin['startyear'] + 2) {
         checkWander();
@@ -510,321 +512,6 @@ function checkWander()
     }
 }
 
-function checkMerge()
-{
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect = $db->get();
-
-    $mylog = [];
-    $youlog = [];
-    $history = [];
-
-    $admin = $gameStor->getValues(['year', 'month']);
-
-    $query = "select * from diplomacy where state='3' and term='0'";
-    $dipresult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $dipcount = MYDB_num_rows($dipresult);
-
-    for ($i = 0; $i < $dipcount; $i++) {
-        $dip = MYDB_fetch_array($dipresult);
-
-        // 아국군주
-        $query = "select no,name,nation from general where nation='{$dip['me']}' and officer_level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $me = MYDB_fetch_array($result);
-        // 상대군주
-        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and officer_level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $you = MYDB_fetch_array($result);
-        // 모국
-        $query = "select nation,name,surlimit,tech from nation where nation='{$you['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $younation = MYDB_fetch_array($result);
-        // 아국
-        $query = "select nation,name,gold,rice,surlimit,tech from nation where nation='{$me['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $mynation = MYDB_fetch_array($result);
-        //양국 NPC수
-        $query = "select no from general where nation='{$you['nation']}' and npc>=2";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $npccount = MYDB_num_rows($result);
-        //양국 NPC수
-        $query = "select no from general where nation='{$me['nation']}' and npc>=2";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $npccount2 = MYDB_num_rows($result);
-
-        //TODO: 로그 기록에 대한 쿼리는 한번만 할 수 있다.
-        //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation from general where nation='{$you['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $gencount = MYDB_num_rows($result);
-        $josaWa = JosaUtil::pick($mynation['name'], '와');
-        $genlog = ["<C>●</><D><b>{$mynation['name']}</b></>{$josaWa} 통합에 성공했습니다."];
-        for ($i = 0; $i < $gencount; $i++) {
-            $gen = MYDB_fetch_array($result);
-            pushGenLog($gen['no'], $genlog);
-            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공"]);
-        }
-        //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation from general where nation='{$me['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $gencount2 = MYDB_num_rows($result);
-        $josaWa = JosaUtil::pick($younation['name'], '와');
-        $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>{$josaWa} 통합에 성공했습니다.";
-        for ($i = 0; $i < $gencount2; $i++) {
-            $gen = MYDB_fetch_array($result);
-            pushGenLog($gen['no'], $genlog);
-            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공"]);
-        }
-
-        $josaRo = JosaUtil::pick($you['makenation'], '로');
-        $josaYi = JosaUtil::pick($younation['name'], '이');
-        $josaWa = JosaUtil::pick($mynation['name'], '와');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합】</b></><D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$younation['name']}</b></>{$josaYi} <D><b>{$you['makenation']}</b></>{$josaRo} 통합하였습니다.";
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$you['makenation']}</b></>에 혼란이 일고 있습니다.";
-        pushNationHistory($younation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합"]);
-
-        $newGenCount = $gencount + $gencount2;
-        $newTech = ($younation['tech'] * $gencount + $mynation['tech'] * $gencount2) / $newGenCount;
-
-        // 국가 백업
-        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
-        $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
-        $oldNation['generals'] = $oldNationGenerals;
-        $oldNation['aux'] = Json::decode($oldNation['aux']);
-        $oldNation['history'] = getNationHistoryAll($me['nation']);
-
-        // 자금 통합, 외교제한 5년, 기술유지
-        $db->update('nation', [
-            'name' => $you['makenation'],
-            'gold' => $db->sqleval('gold+%i', $mynation['gold']),
-            'rice' => $db->sqleval('rice+%i', $mynation['rice']),
-            'surlimit' => 24,
-            'tech' => $newTech,
-            'gennum' => $newGenCount
-        ], 'nation=%i', $younation['nation']);
-        //국가 삭제
-        $db->insert('ng_old_nations', [
-            'server_id' => UniqueConst::$serverID,
-            'nation' => $me['nation'],
-            'data' => Json::encode($oldNation)
-        ]);
-
-        $db->update('general', [
-            'nation' => 0,
-            'permission' => 'normal',
-        ], 'nation=%i AND npc = 5', $me['nation']);
-
-        $query = "delete from nation where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
-        // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='{$you['nation']}',conflict='{}' where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동
-        $query = "update general set belong=1,officer_level=1,officer_city=0,nation='{$you['nation']}' where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 공헌도0.9, 명성0.9
-        //TODO:experience General 객체로 이동
-        $query = "update general set dedication=dedication*0.9,experience=experience*0.9 where nation='{$you['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 부대도 모두 국가 소속 변경
-        $query = "update troop set nation='{$you['nation']}' where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 통합국 모든 도시 5% 감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,trust=trust*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 외교 삭제
-        $query = "delete from diplomacy where me='{$me['nation']}' or you='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-
-        // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
-        $resignCount = 0;
-        if ($npccount >= $npccount2) {
-            $resignCount = Util::round($npccount * (rand() % 21 + 90) / 100);
-        } else {
-            $resignCount = Util::round($npccount2 * (rand() % 21 + 90) / 100);
-        }
-
-        $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND npc>=2 AND npc != 5 ORDER BY rand() LIMIT %i', $you['nation'], $resignCount);
-        if ($npcList) {
-            $db->update('general_turn', [
-                'action' => 'che_하야',
-                'arg' => null,
-                'brief' => '하야',
-            ], 'general_id IN %li AND turn_idx = 0');
-        }
-
-        pushGenLog($me['no'], $mylog);
-        pushGenLog($you['no'], $youlog);
-        pushWorldHistory($history, $admin['year'], $admin['month']);
-
-        $mylog = [];
-        $youlog = [];
-        $history = [];
-
-        refreshNationStaticInfo();
-    }
-}
-
-function checkSurrender()
-{
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect = $db->get();
-
-    $admin = $gameStor->getValues(['year', 'month']);
-
-    $query = "select * from diplomacy where state='5' and term='0'";
-    $dipresult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $dipcount = MYDB_num_rows($dipresult);
-
-    for ($i = 0; $i < $dipcount; $i++) {
-        $mylog = [];
-        $youlog = [];
-        $history = [];
-
-        $dip = MYDB_fetch_array($dipresult);
-
-        // 아국군주
-        $query = "select no,name,nation from general where nation='{$dip['me']}' and officer_level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $me = MYDB_fetch_array($result);
-        // 상대군주
-        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and officer_level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $you = MYDB_fetch_array($result);
-        // 모국
-        $query = "select nation,name,surlimit,tech from nation where nation='{$you['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $younation = MYDB_fetch_array($result);
-        // 아국
-        $query = "select nation,name,gold,rice,surlimit,tech from nation where nation='{$me['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $mynation = MYDB_fetch_array($result);
-        //양국 NPC수
-        $query = "select no from general where nation='{$you['nation']}' and npc>=2 and npc != 5";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $npccount = MYDB_num_rows($result);
-        //양국 NPC수
-        $query = "select no from general where nation='{$me['nation']}' and npc>=2 and npc != 5";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $npccount2 = MYDB_num_rows($result);
-
-        //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation from general where nation='{$you['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $gencount = MYDB_num_rows($result);
-        $genlog = ["<C>●</><D><b>{$mynation['name']}</b></> 합병에 성공했습니다."];
-        for ($i = 0; $i < $gencount; $i++) {
-            $gen = MYDB_fetch_array($result);
-            pushGenLog($gen['no'], $genlog);
-            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></> 합병에 성공"]);
-        }
-        $josaRo = JosaUtil::pick($younation['name'], '로');
-        //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation from general where nation='{$me['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $gencount2 = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>{$josaRo} 항복하여 수도로 이동합니다.";
-        for ($i = 0; $i < $gencount2; $i++) {
-            $gen = MYDB_fetch_array($result);
-            pushGenLog($gen['no'], $genlog);
-            pushGeneralHistory($gen['no'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>가 <D><b>{$younation['name']}</b></>{$josaRo} 항복"]);
-        }
-
-        $josaYi = JosaUtil::pick($mynation['name'], '이');
-        $josaWa = JosaUtil::pick($mynation['name'], '와');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【투항】</b></><D><b>{$mynation['name']}</b></>{$josaYi} <D><b>{$younation['name']}</b></>{$josaRo} 항복하였습니다.";
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$younation['name']}</b></>에 혼란이 일고 있습니다.";
-        pushNationHistory($younation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} 합병"]);
-
-        // 국가 백업
-        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
-        $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
-        $oldNation['generals'] = $oldNationGenerals;
-        $oldNation['aux'] = Json::decode($oldNation['aux']);
-        $oldNation['history'] = getNationHistoryAll($me['nation']);
-
-        $newGenCount = $gencount + $gencount2;
-        $newTech = ($younation['tech'] * $gencount + $mynation['tech'] * $gencount2) / $newGenCount;
-        // 자금 통합, 외교제한 5년, 기술유지
-        $db->update('nation', [
-            'gold' => $db->sqleval('gold+%i', $mynation['gold']),
-            'rice' => $db->sqleval('rice+%i', $mynation['rice']),
-            'surlimit' => 24,
-            'tech' => $newTech,
-            'gennum' => $newGenCount
-        ], 'nation=%i', $younation['nation']);
-
-        //합병 당한국 모든 도시 10%감소
-        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,trust=trust*0.9,def=def*0.9,wall=wall*0.9 where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        //합병 시도국 모든 도시 5%감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,trust=trust*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        //국가 삭제
-
-        $db->insert('ng_old_nations', [
-            'server_id' => UniqueConst::$serverID,
-            'nation' => $me['nation'],
-            'data' => Json::encode($oldNation)
-        ]);
-
-        $db->update('general', [
-            'nation' => 0,
-            'permission' => 'normal',
-        ], 'nation=%i AND npc = 5', $me['nation']);
-
-        $query = "delete from nation where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
-        // 군주가 있는 위치 구함
-        $query = "select city from general where nation='{$you['nation']}' and officer_level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $king = MYDB_fetch_array($result);
-        // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='{$you['nation']}',conflict='{}' where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 제의국 모든 장수들 공헌도0.95, 명성0.95
-        //TODO: experience를 General로
-        $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='{$you['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동, 공헌도1.1, 명성0.9
-        $query = "update general set belong=1,officer_level=1,officer_city=0,nation='{$you['nation']}',city='{$king['city']}',dedication=dedication*1.1,experience=experience*0.9 where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 부대도 모두 국가 소속 변경
-        $query = "update troop set nation='{$you['nation']}' where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        // 외교 삭제
-        $query = "delete from diplomacy where me='{$me['nation']}' or you='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-
-        // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
-        $resignCount = 0;
-        if ($npccount >= $npccount2) {
-            $resignCount = Util::round($npccount * (rand() % 21 + 90) / 100);
-        } else {
-            $resignCount = Util::round($npccount2 * (rand() % 21 + 90) / 100);
-        }
-        $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND npc>=2 AND npc != 5 ORDER BY rand() LIMIT %i', $you['nation'], $resignCount);
-        if ($npcList) {
-            $db->update('general_turn', [
-                'action' => 'che_하야',
-                'arg' => null,
-                'brief' => '하야',
-            ], 'general_id IN %li AND turn_idx = 0');
-        }
-
-        pushGenLog($me['no'], $mylog);
-        pushGenLog($you['no'], $youlog);
-        pushWorldHistory($history, $admin['year'], $admin['month']);
-
-        refreshNationStaticInfo();
-    }
-}
-
 function updateNationState()
 {
     $db = DB::db();
@@ -864,7 +551,7 @@ function updateNationState()
             $levelDiff = $nationlevel - $nation['level'];
             $oldLevel = $nation['level'];
             $nation['level'] = $nationlevel;
-            
+
             $updateVals = [
                 'level' => $nationlevel
             ];
@@ -949,10 +636,10 @@ function updateNationState()
                 }
 
                 foreach (Util::range($levelDiff) as $idx) {
-                    if(!$uniqueLotteryWeightList){
+                    if (!$uniqueLotteryWeightList) {
                         break;
-                    }    
-                    
+                    }
+
                     /** @var General */
                     $winnerObj = Util::choiceRandomUsingWeightPair($uniqueLotteryWeightList);
                     unset($uniqueLotteryWeightList[$winnerObj->getID()]);
@@ -960,7 +647,6 @@ function updateNationState()
                     $winnerObj->applyDB($db);
                 }
             }
-            
         }
 
         $assemblerCnt = $assemblerCnts[$nation['nation']] ?? 0;
@@ -1250,27 +936,29 @@ function checkEmperior()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect = $db->get();
 
-    $admin = $gameStor->getValues(['year', 'month', 'isunited']);
-
-    $query = "select nation,name from nation where level>0";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $count = MYDB_num_rows($result);
-
-    if ($count != 1 || $admin['isunited'] != 0) {
+    $admin = $gameStor->getValues(['year', 'month', 'isunited', 'conlimit']);
+    if ($admin['isunited'] != 0) {
         return;
     }
 
-    $nation = MYDB_fetch_array($result);
+    $remainNationCnt = $db->queryFirstField('SELECT count(*) FROM nation WHERE level > 0');
 
-    $count = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nation['nation']);
-    if (!$count) {
+    if ($remainNationCnt > 1) {
         return;
     }
-    $allcount = $db->queryFirstField('SELECT count(city) FROM city');
 
-    if ($count != $allcount) {
+    $nation = $db->queryFirstRow('SELECT * FROM nation WHERE level > 0 LIMIT 1');
+    $nationID = $nation['nation'];
+
+    $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+
+    $cityCnt = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nationID);
+    if (!$cityCnt) {
+        return;
+    }
+
+    if ($cityCnt != count(CityConst::all())) {
         return;
     }
 
@@ -1278,7 +966,8 @@ function checkEmperior()
 
     $josaYi = JosaUtil::pick($nation['name'], '이');
 
-    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일"]);
+    $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
+    $nationLogger->pushNationalHistoryLog("<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일");
 
     $gameStor->isunited = 2;
     $gameStor->conlimit = $gameStor->conlimit * 100;
@@ -1287,26 +976,19 @@ function checkEmperior()
         CheckHall($hallGeneralNo);
     }
 
-    $query = "select nation,name,type,color,gold,rice,power,gennum from nation where nation='{$nation['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $nation = MYDB_fetch_array($result);
-
-    $query = "select SUM(pop) as totalpop,SUM(pop_max) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $city = MYDB_fetch_array($cityresult);
-    $pop = "{$city['totalpop']} / {$city['maxpop']}";
-    $poprate = round($city['totalpop'] / $city['maxpop'] * 100, 2);
-    $poprate .= " %";
+    [$totalPop, $totalMaxPop] = $db->queryFirstList('SELECT SUM(pop), SUM(pop_max) FROM city');
+    $pop = "{$totalPop} / {$totalMaxPop}";
+    $poprate = round($totalPop / $totalMaxPop * 100, 2). " %";
 
     $chiefs = Util::convertArrayToDict(
         $db->query(
-            'SELECT name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
+            'SELECT no,name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
             $nation['nation']
         ),
         'officer_level'
     );
 
-    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
+    $oldNation =  $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
     $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
     $oldNation['generals'] = $oldNationGenerals;
 
@@ -1334,43 +1016,30 @@ function checkEmperior()
         return "{$arr['name']}【{$number}】";
     }, $eagles));
 
-    $log = ["<C>●</>{$admin['year']}년 {$admin['month']}월: <D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
-
-    $query = "select no,name from general where nation='{$nation['nation']}' order by dedication desc";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $gencount = MYDB_num_rows($result);
-    $gen = '';
-    for ($i = 0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($result);
-        $gen .= "{$general['name']}, ";
-
-        pushGenLog($general['no'], $log);
+    $rawGeneralList = $db->query('SELECT no, name, npc, owner FROM general WHERE nation=%i ORDER BY dedication DESC');
+    foreach ($rawGeneralList as $rawGeneral) {
+        $generalLogger = new ActionLogger($rawGeneral['no'], $nationID, $admin['year'], $admin['month']);
+        $generalLogger->pushGeneralActionLog("<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다.", ActionLogger::YEAR_MONTH);
+        $generalLogger->flush();
     }
 
+    $gen = join(', ', array_column($rawGeneral, 'name'));
     $nation['type'] = getNationType($nation['type']);
 
-    $query = "select MAX(nation_count) as nc,MAX(gen_count) as gc from statistic";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $stat = MYDB_fetch_array($result);
-
-    $query = "select count(*) as cnt from general";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $gencount = MYDB_fetch_array($result);
+    $stat = $db->queryFirstRow('SELECT max(nation_count) as nc, max(gen_count) as gc FROM statistic');
+    $genCnt = $db->queryFirstField('SELECT count(*) FROM general');
 
     $statNC = "1 / {$stat['nc']}";
-    $statGC = "{$gencount['cnt']} / {$stat['gc']}";
+    $statGC = "{$genCnt} / {$stat['gc']}";
+    $statNation = $db->queryFirstRow('SELECT nation_count,nation_name,nation_hist from statistic where nation_count=%i LIMIT 1', $stat['nc']);
+    $statGeneral = $db->queryFirstRow('SELECT gen_count,personal_hist,special_hist,aux from statistic order by no desc LIMIT 1');
 
-    $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='{$stat['nc']}' limit 0,1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $statNation = MYDB_fetch_array($result);
-
-    $query = "select gen_count,personal_hist,special_hist,aux from statistic order by no desc limit 0,1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $statGeneral = MYDB_fetch_array($result);
-
-    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
+    $oldNation = $nation;
     $oldNation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
     $oldNation['aux'] = Json::decode($oldNation['aux']);
+    $oldNation['msg'] = $nationStor->notice;
+    $oldNation['scout_msg'] = $nationStor->scout_msg;
+    $oldNation['aux'] += $nationStor->max_power;
     $oldNation['history'] = getNationHistoryAll($nation['nation']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
@@ -1393,7 +1062,7 @@ function checkEmperior()
         ])
     ]);
 
-    $nationHistory = JSON::encode(getNationHistoryAll($nation['nation']));
+    $nationHistory = getNationHistoryAll($nation['nation']);
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
     $serverName = UniqueConst::$serverName;
@@ -1418,7 +1087,7 @@ function checkEmperior()
         'month' => $admin['month'],
         'power' => $nation['power'],
         'gennum' => $nation['gennum'],
-        'citynum' => $allcount,
+        'citynum' => $cityCnt,
         'pop' => $pop,
         'poprate' => $poprate,
         'gold' => $nation['gold'],
@@ -1442,7 +1111,7 @@ function checkEmperior()
         'tiger' => $tigerstr,
         'eagle' => $eaglestr,
         'gen' => $gen,
-        'history' => $nationHistory,
+        'history' => JSON::encode($nationHistory),
         'aux' => $statGeneral['aux']
     ]);
 
