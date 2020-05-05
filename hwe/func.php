@@ -273,7 +273,7 @@ function myNationInfo(General $generalObj)
 
     $nation['tech'] = "$techCall / {$nation['tech']}";
 
-    if ($nationID===0 == 0) {
+    if ($nationID===0) {
         $nation['strategic_cmd_limit'] = "<font color=white>해당 없음</font>";
         $nation['surlimit'] = "<font color=white>해당 없음</font>";
         $nation['scout'] = "<font color=white>해당 없음</font>";

@@ -321,7 +321,7 @@ foreach($generals as $general){
     ];
 }
 
-$generalsName = array_map(function($gen){return $gen['name'];}, $generalsFormat);
+$generalsName = array_map(function($gen){return getColoredName($gen['name'], $gen['npc']);}, $generals);
 
 $enemyCrew = 0;
 $enemyCnt = 0;

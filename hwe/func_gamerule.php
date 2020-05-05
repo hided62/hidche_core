@@ -420,7 +420,7 @@ function postUpdateMonthly()
     }
     //휴전국 로그
     $stopWarList = [];
-    foreach($db->queryAllLists('SELECT me,you WHERE state=0 AND term <= 1 ORDER BY me desc, you desc') as [$me, $you]){
+    foreach($db->queryAllLists('SELECT me,you FROM diplomacy WHERE state=0 AND term <= 1 ORDER BY me desc, you desc') as [$me, $you]){
         if($me < $you){
             $key = "{$me}_{$you}";
         }
@@ -456,11 +456,11 @@ function postUpdateMonthly()
         'term'=>$db->sqleval('greatest(0, term-1)'),
     ], true);
     //불가침 끝나면 통상으로
-    $db->update('diploacy', [
+    $db->update('diplomacy', [
         'state'=>2,
     ], 'state = 7 AND term = 0');
     //선포 끝나면 교전으로
-    $db->update('diploacy', [
+    $db->update('diplomacy', [
         'state'=>0,
         'term'=>6,
     ], 'state = 1 AND term = 0');

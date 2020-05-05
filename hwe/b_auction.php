@@ -62,7 +62,7 @@ if ($msg2 == "") {
 <body>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td>거 래 장<br><?=closeButton()?></td></tr>
-    <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick=location.replace('b_auction.php')></td></tr>
+    <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick="location.replace('b_auction.php')"></td></tr>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_auction.php>

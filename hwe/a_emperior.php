@@ -79,7 +79,7 @@ foreach($emperiors as $emperior){
         </td>
     </tr>
     <tr>
-        <td align=center style=color:".newColor($emperior['color'])."; bgcolor=<?=$emperior['color']?> colspan=8>
+        <td align=center style='color:<?=newColor($emperior['color'])?>;background-color:<?=$emperior['color']?>' colspan=8>
             <font size=5><?=$emperior['name']?> (<?=$emperior['year']?>年 <?=$emperior['month']?>月)</font>
         </td>
     </tr>

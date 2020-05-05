@@ -51,8 +51,17 @@ class che_감축 extends Command\NationCommand{
             return;
         }
 
+
         $this->setCity();
         $this->setNation(['gold', 'rice', 'capset', 'capital']);
+        
+        if(!$this->nation['capital']){
+            $this->fullConditionConstraints=[
+                ConstraintHelper::AlwaysFail('방랑상태에서는 불가능합니다.')
+            ];
+            return;
+        }
+
         $this->setDestCity($this->nation['capital']);
         
         [$reqGold, $reqRice] = $this->getCost();
