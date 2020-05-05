@@ -30,6 +30,14 @@ function getCharacterList(bool $onlyAvailable=true){
     return $infoText;
 }
 
+function isOfficerSet(int $officerSet, int $reqOfficerLevel):bool{
+    return ($officerSet & (1 << $reqOfficerLevel)) !== 0;
+}
+
+function doOfficerSet(int $officerSet, int $reqOfficerLevel):int{
+    return ($officerSet | (1 << $reqOfficerLevel));
+}
+
 function getNationChiefLevel(int $level) {
     return [
         7=>5,

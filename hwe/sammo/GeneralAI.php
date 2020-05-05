@@ -97,7 +97,7 @@ class GeneralAI
         }
         
         $this->nation = $db->queryFirstRow(
-            'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set,type,aux FROM nation WHERE nation = %i',
+            'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,chief_set,type,aux FROM nation WHERE nation = %i',
             $general->getNationID()
         ) ?? [
             'nation' => 0,
@@ -3318,10 +3318,11 @@ class GeneralAI
         //빈자리는 아무나 채움
         $db = DB::db();
 
-        $setChiefLevel = [];
+        $setChiefLevel = 0;
         $minChiefLevel = getNationChiefLevel($this->nation['level']);
+        $chiefSet = $this->nation['chief_set'];
         foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
-            if($this->nation["l{$chiefLevel}set"]){
+            if(isOfficerSet($chiefSet, $chiefLevel)){
                 continue;
             }
             if(key_exists($chiefLevel, $this->chiefGenerals)){
@@ -3383,13 +3384,15 @@ class GeneralAI
             $randGeneral->setVar('officer_level', $chiefLevel);
             $randGeneral->setVar('officer_city', 0);
             $randGeneral->applyDB($db);
-            $this->nation["l{$chiefLevel}set"] = 1;
-            $setChiefLevel["l{$chiefLevel}set"] = 1;
+            $this->nation['chief_set'] |= doOfficerSet(0, $chiefLevel);
+            $setChiefLevel |= doOfficerSet(0, $chiefLevel);
             $this->chiefGenerals[$chiefLevel] = $randGeneral;
         }
 
         if($setChiefLevel){
-            $db->update('nation', $setChiefLevel, 'nation=%i', $this->nation['nation']);
+            $db->update('nation', [
+                'chief_set' => $db->sqleval('chief_set | %i', $setChiefLevel)
+            ], 'nation=%i', $this->nation['nation']);
         }
     }
 
@@ -3431,12 +3434,12 @@ class GeneralAI
         
 
         $minBelong = min($this->general->getVar('belong') - 1, 3);
-        $updatedNationVar = [];
+        $updatedChiefSet = 0;
 
         /** @var General[] */
         $nextChiefs = [];
 
-        if($userChiefCnt == 0 && $this->userGenerals && !$nation['l11set']){
+        if($userChiefCnt == 0 && $this->userGenerals && !isOfficerSet($nation['chief_set'], 11)){
             $userGenerals = $this->userGenerals;
             uasort($userGenerals, function(General $lhs, General $rhs){
                 return -($lhs->getVar('leadership')<=>$rhs->getVar('leadership'));
@@ -3455,8 +3458,8 @@ class GeneralAI
                 $general->setVar('officer_level', 11);
                 $general->setVar('officer_city', 0);
                 $general->setVar('permission', 'ambassador');
-                $nation['l11set'] = true;
-                $updatedNationVar['l11set'] = 1;
+                $nation['chief_set'] |= doOfficerSet(0, 11);
+                $updatedChiefSet |= doOfficerSet(0, 11);
                 $userChiefCnt += 1;
                 break;
             }
@@ -3476,8 +3479,7 @@ class GeneralAI
 
         
         foreach(Util::range(11, $minChiefLevel-1, -1) as $chiefLevel) {
-            $nationKey = "l{$chiefLevel}set";
-            if($nation[$nationKey]){
+            if(isOfficerSet($nation['chief_set'], $chiefLevel)){
                 continue;
             }
             if($this->general->getVar('officer_level') === $chiefLevel){
@@ -3544,8 +3546,8 @@ class GeneralAI
             $nextChiefs[$chiefLevel] = $newChief;
             $newChief->setVar('officer_level', $chiefLevel);
             $newChief->setVar('officer_city', 0);
-            $nation[$nationKey] = true;
-            $updatedNationVar[$nationKey] = 1;
+            $nation['chief_set'] |= doOfficerSet(0, $chiefLevel);
+            $updatedChiefSet |= doOfficerSet(0, $chiefLevel);
         }
 
         foreach($nextChiefs as $chiefLevel=>$chief){
@@ -3558,8 +3560,10 @@ class GeneralAI
             $chief->applyDB($db);
             $this->chiefGenerals[$chiefLevel] = $chief;
         }
-        if($updatedNationVar){
-            $db->update('nation', $updatedNationVar, 'nation=%i', $nationID);
+        if($updatedChiefSet){
+            $db->update('nation', [
+                'chief_set'=>$db->sqleval('chief_set | %i', $updatedChiefSet)
+            ], 'nation=%i', $nationID);
         }
     }
 

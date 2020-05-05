@@ -699,9 +699,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         'comm'=>$db->sqleval('comm*0.7'),
         'secu'=>$db->sqleval('secu*0.7'),
         'nation'=>$conquerNation,
-        'officer4set'=>0,
-        'officer3set'=>0,
-        'officer2set'=>0
+        'officer_set'=>0,
     ];
     if($city['level'] > 3) {
         $query['def'] = 1000;

@@ -181,20 +181,11 @@ function updateQuaterly()
 
     //천도 제한 해제, 관직 변경 제한 해제
     $db->update('nation', [
-        'l12set' => 0,
-        'l11set' => 0,
-        'l10set' => 0,
-        'l9set' => 0,
-        'l8set' => 0,
-        'l7set' => 0,
-        'l6set' => 0,
-        'l5set' => 0,
+        'chief_set'=>0,
     ], true);
     //관직 변경 제한 해제
     $db->update('city', [
-        'officer4set' => 0,
-        'officer3set' => 0,
-        'officer2set' => 0,
+        'officer_set' => 0,
     ], true);
 }
 
@@ -259,9 +250,7 @@ function preUpdateMonthly()
         ], 'officer_city IN %li', array_keys($lostCities));
         $db->update('city', [
             'nation' => 0,
-            'officer4set' => 0,
-            'officer3set' => 0,
-            'officer2set' => 0,
+            'officer_set' => 0,
             'conflict' => '{}',
             'term' => 0,
             'front' => 0

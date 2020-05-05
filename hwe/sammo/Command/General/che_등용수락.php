@@ -166,11 +166,6 @@ class che_등용수락 extends Command\GeneralCommand{
                 $general->setVar('rice', GameConst::$defaultRice);
             }
 
-            $officerLevel = $general->getVar('officer_level');
-            if(5 <= $officerLevel && $officerLevel <= 11){
-                $setOriginalNationValues["l{$officerLevel}set"] = 0;
-            }
-
             // 재야가 아니면 명성N*10% 공헌N*10%감소
             $general->setVar('experience', $general->getVar('experience') * (1 - 0.1 * $general->getVar('betray')));
             $general->addExperience(0, false);

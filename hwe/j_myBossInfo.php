@@ -80,7 +80,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
 
     $db = DB::db();
 
-    [$levelSet, $nationLevel] = $db->queryFirstList('SELECT %b,level FROM nation WHERE nation = %i', "l{$targetOfficerLevel}set", $nationID);
+    [$chiefSet, $nationLevel] = $db->queryFirstList('SELECT chief_set,level FROM nation WHERE nation = %i',$nationID);
 
 	// 임명가능 레벨
     $lv = getNationChiefLevel($nationLevel);
@@ -89,7 +89,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
         return '임명불가능한 관직입니다.';
     }
 
-    if($levelSet){
+    if(isOfficerSet($chiefSet, $lv)){
         return '지금은 임명할 수 없습니다.';
     }
 
@@ -118,7 +118,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
     $general->setVar('officer_level', $targetOfficerLevel);
     $general->setVar('officer_city', 0);
     $db->update('nation', [
-        "l{$targetOfficerLevel}set"=>1,
+        'chief_set'=> $db->sqleval('chief_set | %i', doOfficerSet(0, $targetOfficerLevel)),
     ], 'nation=%i', $nationID);
     $general->applyDB($db);
 
@@ -128,12 +128,19 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
 function do도시임명(General $general, int $cityID, int $targetOfficerLevel):?string{
     $nationID = $general->getNationID();
 
-    $genlvset = 'officer'.$targetOfficerLevel.'set';
-
     $db = DB::db();
 
     if(CityConst::byID($cityID) === null){
         return '올바르지 않은 도시입니다';
+    }
+
+    $officerSet = $db->queryFirstField('SELECT officer_set FROM city WHERE nation=%i AND city=%i', $nationID, $cityID);
+    if($officerSet === null){
+        return '아국 도시가 아닙니다';
+    }
+
+    if(isOfficerSet($officerSet, $targetOfficerLevel)){
+        return '이미 다른 장수가 임명되어있습니다';
     }
 
     //기존 장수 일반으로
@@ -156,7 +163,7 @@ function do도시임명(General $general, int $cityID, int $targetOfficerLevel):
 
     //신임 장수
     $db->update('city', [
-        $genlvset=>1
+        'officer_set'=>$db->sqleval('officer_set | %i', doOfficerSet(0, $targetOfficerLevel)),
     ], 'city=%i AND nation=%i', $cityID, $nationID);
     $general->setVar('officer_level', $targetOfficerLevel);
     $general->setVar('officer_city', $cityID);
@@ -167,7 +174,6 @@ function do도시임명(General $general, int $cityID, int $targetOfficerLevel):
 
 function do추방(General $general, int $myOfficerLevel):?string{
     $generalID = $general->getID();
-    $officerLevel = $general->getVar('officer_level');
     $generalName = $general->getVar('name');
     $nationID = $general->getNationID();
 
@@ -183,13 +189,13 @@ function do추방(General $general, int $myOfficerLevel):?string{
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $env = $gameStor->getValues(['startyear','year','month','scenario']);
 
-    $nation = $db->queryFirstRow('SELECT name,%b,color FROM nation WHERE nation=%i',"l{$myOfficerLevel}set", $nationID);
+    $nation = $db->queryFirstRow('SELECT name,chief_set,color FROM nation WHERE nation=%i', $nationID);
     $nationName = $nation['name'];
 
     $logger = $general->getLogger();
 
     //이미 지정했다면 무시
-    if($nation["l{$myOfficerLevel}set"] == 1 || $officerLevel == 0 && $officerLevel == 12) {
+    if(isOfficerSet($nation['chief_set'], $myOfficerLevel) || ($myOfficerLevel == 0 && $myOfficerLevel == 12)) {
         header('location:b_myBossInfo.php', true, 303);
         die();
     }
@@ -295,7 +301,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
     } else {
         //이번분기는 추방불가(초반 제외)
         $db->update('nation', [
-            "l{$myOfficerLevel}set"=>1,
+            'chief_set'=>$db->sqleval('chief_set | %i', doOfficerSet(0, $myOfficerLevel)),
             'gennum'=>$db->sqleval('gennum - %i', $general->getVar('npc')!=5?1:0),
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),

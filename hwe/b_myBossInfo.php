@@ -51,7 +51,7 @@ var myLevel = <?=$meLevel?>;
 
 <?php 
 
-$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='{$nationID}'";
+$query = "select nation,name,level,color,chief_set from nation where nation='{$nationID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);   //국가정보
 
@@ -179,7 +179,7 @@ for($i=12; $i >= $lv; $i-=2) {
         <td width=498>
 <?php
 
-if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
+if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $meLevel)) {
     echo "
             <select id='genlist_kick' size=1 style=color:white;background-color:black;>";
 
@@ -216,7 +216,7 @@ echo "
         <td width=398>
 ";
 
-if($meLevel >= 5 && $nation['l11set'] == 0) {
+if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], 11)) {
     echo "
             <select id='genlist_11' size=1 maxlength=15 style=color:white;background-color:black;>
                 <option value=0 data-officer_level='0' data-name=''>____공석____</option>";
@@ -269,7 +269,7 @@ for($i=10; $i >= $lv; $i--) {
     ";
 
     
-    if($meLevel >= 5 && $nation["l{$i}set"] == 0) {
+    if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $i)) {
         echo "
             <select id='genlist_{$i}' size=1 style=color:white;background-color:black;>
                 <option value=0 data-officer_level='0' data-name=''>____공석____</option>";
@@ -345,7 +345,7 @@ if($meLevel >= 5) {
             <select id='citylist_4' size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nationID}' and officer4set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nationID}' and (officer_set&(1<<4))=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -397,7 +397,7 @@ if($meLevel >= 5) {
             <select id='citylist_3' size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nationID}' and officer3set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nationID}' and (officer_set&(1<<3))=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -449,7 +449,7 @@ if($meLevel >= 5) {
             <select id='citylist_2' size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nationID}' and officer2set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nationID}' and (officer_set&(1<<2))=0 order by region, level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -527,7 +527,7 @@ $dummyOfficer = [
 $textColor = newColor($nation['color']);
 $nationColor = $nation['color'];
 
-foreach($db->query('SELECT city,name,level,region,officer4set,officer3set,officer2set from city where nation=%i order by region,level desc,binary(name)', $nationID) as $city) {
+foreach($db->query('SELECT city,name,level,region,officer_set from city where nation=%i order by region,level desc,binary(name)', $nationID) as $city) {
     $cityID = $city['city'];
     $cityOfficerList = $officerList[$cityID]??[];
 ?>

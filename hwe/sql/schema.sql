@@ -76,8 +76,8 @@ CREATE TABLE `general` (
 	`tournament` INT(1) NULL DEFAULT '0',
 	`vote` INT(1) NULL DEFAULT '0',
 	`newvote` INT(1) NULL DEFAULT '0',
-	`last_turn` TEXT NOT NULL DEFAULT '{}',
-	`aux` TEXT NOT NULL DEFAULT '{}' COMMENT 'JSON',
+	`last_turn` TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`last_turn`)),
+	`aux` LONGTEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	`penalty` TEXT NULL DEFAULT '',
 	PRIMARY KEY (`no`),
 	INDEX `nation` (`nation`, `npc`),
@@ -127,14 +127,7 @@ CREATE TABLE `nation` (
 	`rate` INT(3) NULL DEFAULT '0',
 	`rate_tmp` INT(3) NULL DEFAULT '0',
 	`secretlimit` INT(2) NULL DEFAULT '3',
-	`l12set` INT(1) NULL DEFAULT '0',
-	`l11set` INT(1) NULL DEFAULT '0',
-	`l10set` INT(1) NULL DEFAULT '0',
-	`l9set` INT(1) NULL DEFAULT '0',
-	`l8set` INT(1) NULL DEFAULT '0',
-	`l7set` INT(1) NULL DEFAULT '0',
-	`l6set` INT(1) NULL DEFAULT '0',
-	`l5set` INT(1) NULL DEFAULT '0',
+	`chief_set` INT(11) NOT NULL DEFAULT '0',
 	`scout` INT(1) NULL DEFAULT '0',
 	`war` INT(1) NULL DEFAULT '0',
 	`strategic_cmd_limit` INT(4) NULL DEFAULT '36',
@@ -142,11 +135,11 @@ CREATE TABLE `nation` (
 	`scoutmsg` TEXT NULL DEFAULT '',
 	`tech` float NULL DEFAULT '0',
 	`power` INT(8) NULL DEFAULT '0',
-	`spy` TEXT NOT NULL DEFAULT '{}',
+	`spy` TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`spy`)),
 	`level` INT(1) NULL DEFAULT '0',
 	`type` VARCHAR(20) NOT NULL DEFAULT 'che_중립',
 	`rule` TEXT NULL DEFAULT '',
-	`aux` TEXT NOT NULL DEFAULT '{}',
+	`aux` LONGTEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`nation`)
 )
 ENGINE=Aria DEFAULT CHARSET=utf8mb4;
@@ -157,7 +150,7 @@ CREATE TABLE `nation_turn` (
 	`officer_level` INT(4) NOT NULL,
 	`turn_idx` INT(4) NOT NULL,
 	`action` VARCHAR(16) NOT NULL,
-	`arg` TEXT NULL DEFAULT NULL,
+	`arg` TEXT NULL DEFAULT NULL CHECK (json_valid(`arg`)),
 	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `nation` (`nation_id`, `officer_level`, `turn_idx`),
@@ -222,13 +215,11 @@ CREATE TABLE `city` (
 	`def_max` INT(5) NOT NULL,
 	`wall` INT(5) NOT NULL,
 	`wall_max` INT(5) NOT NULL,
-	`officer4set` INT(1) NOT NULL DEFAULT '0',
-	`officer3set` INT(1) NOT NULL DEFAULT '0',
-	`officer2set` INT(1) NOT NULL DEFAULT '0',
+	`officer_set` INT(11) NOT NULL DEFAULT '0',
 	`state` INT(2) NOT NULL DEFAULT '0',
 	`region` INT(2) NOT NULL,
 	`term` INT(1) NOT NULL DEFAULT '0',
-	`conflict` TEXT NOT NULL DEFAULT '{}',
+	`conflict` TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`conflict`)),
 	PRIMARY KEY (`city`),
 	INDEX `nation` (`nation`)
 ) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
@@ -269,7 +260,7 @@ CREATE TABLE `message` (
 	`dest` INT(11) NOT NULL,
 	`time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`valid_until` DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59',
-	`message` TEXT NOT NULL COMMENT 'json',
+	`message` TEXT NOT NULL CHECK (json_valid(`message`)),
 	PRIMARY KEY (`id`),
 	INDEX `by_mailbox` (`mailbox`, `type`, `id`)
 )
@@ -289,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `ng_hall` (
 	`type` INT(11) NOT NULL,
 	`value` DOUBLE NOT NULL,
 	`owner` INT(11) NULL DEFAULT NULL,
-	`aux` TEXT NOT NULL DEFAULT '{}',
+	`aux` LONGTEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `server_general` (`server_id`, `type`, `general_no`),
 	UNIQUE INDEX `owner` (`owner`, `server_id`, `type`),
@@ -312,7 +303,8 @@ CREATE TABLE IF NOT EXISTS `ng_games` (
 	`season` INT(11) NOT NULL,
 	`scenario` INT(11) NOT NULL,
 	`scenario_name` TEXT NOT NULL,
-	`env` TEXT NOT NULL COMMENT 'json',
+	`env` TEXT NOT NULL CHECK (json_valid(`aux`)),
+	CHECK (JSON_VALID(`env`)),
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `server_id` (`server_id`),
 	INDEX `date` (`date`)
@@ -323,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL DEFAULT '0',
 	`nation` INT(11) NOT NULL DEFAULT '0',
-	`data` LONGTEXT NOT NULL DEFAULT '0' COMMENT 'json',
+	`data` LONGTEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`data`)),
 	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),
 	INDEX `server_id` (`server_id`, `nation`)
@@ -387,8 +379,8 @@ CREATE TABLE IF NOT EXISTS `emperior` (
 	`tiger` VARCHAR(128) NULL DEFAULT '',
 	`eagle` VARCHAR(128) NULL DEFAULT '',
 	`gen` TEXT NULL DEFAULT '',
-	`history` MEDIUMTEXT NULL DEFAULT '',
-	`aux` MEDIUMTEXT NULL DEFAULT '' COMMENT 'json',
+	`history` MEDIUMTEXT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
+	`aux` MEDIUMTEXT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`no`)
 ) ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
@@ -419,7 +411,7 @@ CREATE TABLE `ng_diplomacy` (
 	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`src_signer` INT(11) NOT NULL,
 	`dest_signer` INT(11) NULL DEFAULT NULL,
-	`aux` TEXT NULL DEFAULT NULL,
+	`aux` TEXT NULL DEFAULT NULL CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`no`),
 	INDEX `by_nation_src` (`src_nation_id`, `dest_nation_id`, `state`, `date`),
 	INDEX `by_nation_dest` (`dest_nation_id`, `src_nation_id`, `state`, `date`)
@@ -486,7 +478,7 @@ CREATE TABLE `statistic` (
 	`power_hist` TEXT NULL DEFAULT '',
 	`crewtype` TEXT NULL DEFAULT '',
 	`etc` TEXT NULL DEFAULT '',
-	`aux` TEXT NULL DEFAULT '' COMMENT 'json',
+	`aux` TEXT NULL DEFAULT NULL CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`no`)
 )
 ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
@@ -499,9 +491,9 @@ CREATE TABLE IF NOT EXISTS `history` (
 	`server_id` CHAR(20) NOT NULL DEFAULT '',
 	`year` INT(4) NULL DEFAULT '0',
 	`month` INT(2) NULL DEFAULT '0',
-	`map` MEDIUMTEXT NULL DEFAULT '',
-	`log` TEXT NULL DEFAULT '',
-	`genlog` MEDIUMTEXT NULL DEFAULT '',
+	`map` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`map`)),
+	`log` TEXT NULL DEFAULT NULL CHECK (json_valid(`log`)),
+	`genlog` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`genlog`)),
 	`nation` TEXT NULL DEFAULT '',
 	`power` TEXT NULL DEFAULT '',
 	`gen` TEXT NULL DEFAULT '',
@@ -517,8 +509,8 @@ ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE `event` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `condition` MEDIUMTEXT NOT NULL COMMENT 'json',
-  `action` MEDIUMTEXT NOT NULL COMMENT 'json',
+  `condition` MEDIUMTEXT NOT NULL CHECK (json_valid(`condition`)),
+  `action` MEDIUMTEXT NOT NULL CHECK (json_valid(`action`)),
   PRIMARY KEY (`id`)
 )
 DEFAULT CHARSET=utf8mb4
@@ -560,7 +552,7 @@ ENGINE=Aria
 # 예약 오픈 테이블
 CREATE TABLE IF NOT EXISTS `reserved_open` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`options` TEXT NULL DEFAULT NULL,
+	`options` TEXT NULL DEFAULT NULL CHECK (json_valid(`options`)),
 	`date` DATETIME NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `date` (`date`)
@@ -575,7 +567,7 @@ CREATE TABLE `select_npc_token` (
 	`owner` INT(11) NOT NULL,
 	`valid_until` DATETIME NOT NULL,
 	`pick_more_from` DATETIME NOT NULL,
-	`pick_result` TEXT NOT NULL COMMENT 'json',
+	`pick_result` TEXT NOT NULL CHECK (json_valid(`pick_result`)),
 	`nonce` INT(11) NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `owner` (`owner`),
@@ -591,7 +583,7 @@ CREATE TABLE IF NOT EXISTS `storage` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`namespace` VARCHAR(40) NOT NULL,
 	`key` VARCHAR(40) NOT NULL,
-	`value` TEXT NOT NULL,
+	`value` LONGTEXT NOT NULL CHECK (json_valid(`value`)),
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `key` (`namespace`, `key`)
 )
