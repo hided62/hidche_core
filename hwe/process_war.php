@@ -516,7 +516,7 @@ function ConquerCity(array $admin, General $general, array $city) {
 
         $lord = new General($db->queryFirstRow(
             'SELECT %l FROM general WHERE nation = %i AND officer_level = %i LIMIT 1',
-            Util::formatListOfBackticks(General::mergeQueryColumn(['gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel'], 1)),
+            Util::formatListOfBackticks(General::mergeQueryColumn(['gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel'], 1)[0]),
             $defenderNationID,
             12
         ), null, $city, $loseNation, $year, $month, false);
