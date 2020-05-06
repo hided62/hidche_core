@@ -19,8 +19,8 @@ if (!$gameStor->isunited) {
 }
 
 foreach ($db->queryFirstColumn(
-    'SELECT no FROM general WHERE npc != 0 and age >= %i',
-    GameConst::$retirementYear
+    'SELECT no FROM general WHERE npc < 2 and age >= %i',
+    40
 ) as $generalNo) {
     CheckHall($generalNo);
 }

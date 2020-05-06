@@ -1016,7 +1016,7 @@ function checkEmperior()
         return "{$arr['name']}【{$number}】";
     }, $eagles));
 
-    $rawGeneralList = $db->query('SELECT no, name, npc, owner FROM general WHERE nation=%i ORDER BY dedication DESC');
+    $rawGeneralList = $db->query('SELECT no, name, npc, owner FROM general WHERE nation=%i ORDER BY dedication DESC', $nationID);
     foreach ($rawGeneralList as $rawGeneral) {
         $generalLogger = new ActionLogger($rawGeneral['no'], $nationID, $admin['year'], $admin['month']);
         $generalLogger->pushGeneralActionLog("<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다.", ActionLogger::YEAR_MONTH);

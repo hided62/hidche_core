@@ -84,27 +84,27 @@ else{
 <div style="margin:auto;width:1100px;">
 <?php
 $types = [
-    ["명 성", 'int'],
-    ["계 급", 'int'],
-    ["계 략 성 공", 'int'],
-    ["전 투 횟 수", 'int'],
-    ["승 리", 'int'],
-    ["승 률", 'percent'],
-    ["사 살", 'int'],
-    ["살 상 률", 'percent'],
-    ["보 병 숙 련 도", 'int'],
-    ["궁 병 숙 련 도", 'int'],
-    ["기 병 숙 련 도", 'int'],
-    ["귀 병 숙 련 도", 'int'],
-    ["차 병 숙 련 도", 'int'],
-    ["전 력 전 승 률", 'percent'],
-    ["통 솔 전 승 률", 'percent'],
-    ["일 기 토 승 률", 'percent'],
-    ["설 전 승 률", 'percent'],
-    ["베 팅 투 자 액", 'int'],
-    ["베 팅 당 첨", 'int'],
-    ["베 팅 수 익 금", 'int'],
-    ["베 팅 수 익 률", 'percent'],
+    'experience'=>['명 성', 'int'],
+    'dedication'=>['계 급', 'int'],
+    'firenum'=>['계 략 성 공', 'int'],
+    'warnum'=>['전 투 횟 수', 'int'],
+    'killnum'=>['승 리', 'int'],
+    'winrate'=>['승 률', 'percent'],
+    'killcrew'=>['사 살', 'int'],
+    'killrate'=>['살 상 률', 'percent'],
+    'dex1'=>['보 병 숙 련 도', 'int'],
+    'dex2'=>['궁 병 숙 련 도', 'int'],
+    'dex3'=>['기 병 숙 련 도', 'int'],
+    'dex4'=>['귀 병 숙 련 도', 'int'],
+    'dex5'=>['차 병 숙 련 도', 'int'],
+    'ttrate'=>['전 력 전 승 률', 'percent'],
+    'tlrate'=>['통 솔 전 승 률', 'percent'],
+    'tsrate'=>['일 기 토 승 률', 'percent'],
+    'tirate'=>['설 전 승 률', 'percent'],
+    'betgold'=>['베 팅 투 자 액', 'int'],
+    'betwin'=>['베 팅 당 첨', 'int'],
+    'betwingold'=>['베 팅 수 익 금', 'int'],
+    'betrate'=>['베 팅 수 익 률', 'percent'],
 ];
 
 $templates = new \League\Plates\Engine('templates');
@@ -114,8 +114,8 @@ foreach(RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID,
     $ownerNameList[$ownerID] = $ownerName;
 }
 
-foreach($types as $idx=>[$typeName, $typeValue]) {
-    $hallResult = $db->query('SELECT * FROM ng_hall WHERE `type`=%i AND %? ORDER BY `value` DESC LIMIT 10', $idx, $searchFilter);
+foreach($types as $typeName=>[$typeDescribe, $typeValue]) {
+    $hallResult = $db->query('SELECT * FROM hall WHERE `type`=%i AND %? ORDER BY `value` DESC LIMIT 10', $typeName, $searchFilter);
 
     $hallResult = array_map(function($general)use($typeValue, $ownerNameList){
         $aux = Json::decode($general['aux']);
@@ -160,7 +160,7 @@ foreach($types as $idx=>[$typeName, $typeValue]) {
     }, $hallResult);
 
     echo $templates->render('hallOfFrame', [
-        'typeName'=>$typeName,
+        'typeName'=>$typeDescribe,
         'generals'=>$hallResult
     ]);
 }

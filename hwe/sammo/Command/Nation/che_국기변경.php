@@ -73,7 +73,7 @@ class che_국기변경 extends Command\NationCommand
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqNationAuxValue("can_{$actionName}", null, '>', 0, '더이상 변경이 불가능합니다.')
+            ConstraintHelper::ReqNationAuxValue("can_{$actionName}", 0, '>', 0, '더이상 변경이 불가능합니다.')
         ];
     }
 
@@ -85,7 +85,7 @@ class che_국기변경 extends Command\NationCommand
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqNationAuxValue("can_{$actionName}", null, '>', 0, '더이상 변경이 불가능합니다.')
+            ConstraintHelper::ReqNationAuxValue("can_{$actionName}", 0, '>', 0, '더이상 변경이 불가능합니다.')
         ];
     }
 

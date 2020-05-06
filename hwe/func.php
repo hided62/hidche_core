@@ -1361,7 +1361,7 @@ function CheckHall($no)
         ["betwin", 'rank'],
         ["betwingold", 'rank'],
         ["betrate", 'calc'],
-    ]; //XXX: 순서가 DB에 박혀있다 ㅜㅜ
+    ];
 
     $generalObj = General::createGeneralObjFromDB($no, null, 2);
 
@@ -1420,7 +1420,7 @@ function CheckHall($no)
         $ownerName = RootDB::db()->queryFirstField('SELECT name FROM member WHERE no = %i', $generalObj->getVar('owner'));
     }
 
-    foreach ($types as $idx => [$typeName, $valueType]) {
+    foreach ($types as [$typeName, $valueType]) {
 
         if ($valueType === 'natural') {
             $value = $generalObj->getVar($typeName);
@@ -1476,12 +1476,12 @@ function CheckHall($no)
         ];
         $jsonAux = Json::encode($aux);
 
-        $db->insertIgnore('ng_hall', [
+        $db->insertIgnore('hall', [
             'server_id' => UniqueConst::$serverID,
             'season' => UniqueConst::$seasonIdx,
             'scenario' => $scenarioIdx,
             'general_no' => $no,
-            'type' => $idx,
+            'type' => $typeName,
             'value' => $value,
             'owner' => $generalObj->getVar('owner'),
             'aux' => $jsonAux
@@ -1489,16 +1489,16 @@ function CheckHall($no)
 
         if ($db->affectedRows() == 0) {
             $db->update(
-                'ng_hall',
+                'hall',
                 [
                     'value' => $value,
                     'aux' => $jsonAux
                 ],
-                'server_id = %s AND scenario = %i AND general_no = %i AND type = %i AND value < %d',
+                'server_id = %s AND scenario = %i AND general_no = %i AND type = %s AND value < %d',
                 UniqueConst::$serverID,
                 $scenarioIdx,
                 $no,
-                $idx,
+                $typeName,
                 $value
             );
         }
@@ -1650,7 +1650,7 @@ function deleteNation(General $lord, bool $applyDB):array
             $nationID,
             $lordID
         ), 
-        ['gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel'], 1
+        ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'aux'], 1
     );
     $oldNationGeneralList[$lordID] = $lord;
     

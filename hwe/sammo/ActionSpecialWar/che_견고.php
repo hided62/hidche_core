@@ -23,13 +23,14 @@ class che_견고 extends \sammo\BaseSpecial{
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_부상무효($unit, BaseWarUnitTrigger::TYPE_NONE)
+            new che_부상무효($unit, BaseWarUnitTrigger::TYPE_NONE),
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '저격불가')
         );
     }
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '필살불가', '위압불가', '격노불가', '계략약화')
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '필살불가', '위압불가', '격노불가', '계략약화', '저격불가')
         );
     }
 

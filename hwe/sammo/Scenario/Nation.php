@@ -4,6 +4,7 @@ use \sammo\DB;
 use \sammo\GameConst;
 use \sammo\Util;
 use \sammo\KVStorage;
+use \sammo\Json;
 use function \sammo\getNationChiefLevel;
 
 class Nation{
@@ -86,6 +87,14 @@ class Nation{
         $nationStor = KVStorage::getStorage($db, $this->id, 'nation_env');
         $otherNations = $db->queryFirstColumn('SELECT nation FROM nation');
 
+        $aux = [
+            'can_국기변경'=>1
+        ];
+
+        if($this->nationLevel==7){
+            $aux['can_국호변경']=1;
+        }
+
         $db->insert('nation', [
             'nation'=>$this->id,
             'name'=>$this->name,
@@ -103,6 +112,7 @@ class Nation{
             'tech'=>$this->tech,
             'level'=>$this->nationLevel,
             'type'=>$type,
+            'aux'=>Json::encode($aux),
         ]);
 
         if($cities){

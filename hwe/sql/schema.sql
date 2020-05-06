@@ -267,13 +267,13 @@ ENGINE=Aria;
 ## 명전 테이블
 ###########################################################################
 
-CREATE TABLE IF NOT EXISTS `ng_hall` (
+CREATE TABLE IF NOT EXISTS `hall` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
 	`season` INT(11) NOT NULL,
 	`scenario` INT(11) NOT NULL,
 	`general_no` INT(11) NOT NULL,
-	`type` INT(11) NOT NULL,
+	`type` VARCHAR(20) NOT NULL,
 	`value` DOUBLE NOT NULL,
 	`owner` INT(11) NULL DEFAULT NULL,
 	`aux` LONGTEXT NOT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `ng_hall` (
 	INDEX `server_show` (`server_id`, `type`, `value`),
 	INDEX `scenario` (`season`, `scenario`, `type`, `value`)
 )
-ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 
 ###########################################################################

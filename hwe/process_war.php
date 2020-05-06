@@ -558,9 +558,7 @@ function ConquerCity(array $admin, General $general, array $city) {
                 $cmd = buildGeneralCommandClass('che_임관', $oldGeneral, $admin, [
                     'destNationID'=>$attackerNationID
                 ]);
-                if($cmd->hasFullConditionMet()){
-                    _setGeneralCommand($cmd, [0]);
-                }
+                _setGeneralCommand($cmd, [0]);
             }
         }
 
