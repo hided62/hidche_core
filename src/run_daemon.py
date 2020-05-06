@@ -82,6 +82,7 @@ def main():
                     continue
                 waiters[servRelPath] = executor.submit(run, webPath)
                 time.sleep(waitTick)
+            currTime = getCurrentMillisecTime()
 
         for future in waiters.values():
             future.result(None)
