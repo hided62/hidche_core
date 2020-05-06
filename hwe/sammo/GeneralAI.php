@@ -1736,7 +1736,7 @@ class GeneralAI
         foreach($cityList as $cityID){
             $city = $this->nationCities[$cityID];
 
-            $cityScoreList[$cityID] =  sqrt($city['pop']) * $maxDistance / array_sum($distanceList[$cityID]) * sqrt($city['dev']);
+            $cityScoreList[$cityID] =  $city['pop'] * $maxDistance / array_sum($distanceList[$cityID]) * sqrt($city['dev']);
         }
 
         arsort($cityScoreList);
