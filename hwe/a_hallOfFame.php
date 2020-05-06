@@ -115,7 +115,7 @@ foreach(RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID,
 }
 
 foreach($types as $typeName=>[$typeDescribe, $typeValue]) {
-    $hallResult = $db->query('SELECT * FROM hall WHERE `type`=%i AND %? ORDER BY `value` DESC LIMIT 10', $typeName, $searchFilter);
+    $hallResult = $db->query('SELECT * FROM hall WHERE `type`=%s AND %? ORDER BY `value` DESC LIMIT 10', $typeName, $searchFilter);
 
     $hallResult = array_map(function($general)use($typeValue, $ownerNameList){
         $aux = Json::decode($general['aux']);
