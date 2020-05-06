@@ -606,7 +606,7 @@ function ConquerCity(array $admin, General $general, array $city) {
         ], 'officer_city = %i',$cityID);
         
         //수도였으면 긴급 천도
-        if($defenderNationID && $defenderStaticNation == $cityID) {
+        if($defenderNationID && $defenderStaticNation['capital'] == $cityID) {
             $minCity = findNextCapital($cityID, $defenderNationID);
 
             $minCityName = CityConst::byID($minCity)->name;
