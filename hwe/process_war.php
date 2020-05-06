@@ -515,7 +515,7 @@ function ConquerCity(array $admin, General $general, array $city) {
         $loseNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation = %i', $defenderNationID);
 
         $lord = new General($db->queryFirstRow(
-            'SELECT %b FROM general WHERE nation = %i AND officer_level = %i LIMIT 1',
+            'SELECT %lb FROM general WHERE nation = %i AND officer_level = %i LIMIT 1',
             General::mergeQueryColumn(['gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel'], 1),
             $defenderNationID,
             12
