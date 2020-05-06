@@ -299,8 +299,7 @@ CREATE TABLE IF NOT EXISTS `ng_games` (
 	`season` INT(11) NOT NULL,
 	`scenario` INT(11) NOT NULL,
 	`scenario_name` TEXT NOT NULL,
-	`env` TEXT NOT NULL CHECK (json_valid(`aux`)),
-	CHECK (JSON_VALID(`env`)),
+	`env` TEXT NOT NULL CHECK (json_valid(`env`)),
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `server_id` (`server_id`),
 	INDEX `date` (`date`)

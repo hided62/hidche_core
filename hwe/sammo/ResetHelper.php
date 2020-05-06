@@ -100,6 +100,11 @@ class ResetHelper{
             ], true
         );
 
+        copy(
+            $servRoot.'/d_setting/GameConst.orig.php',
+            $servRoot.'/d_setting/GameConst.php',
+        );
+
         if($mysqli_obj->multi_query(file_get_contents($servRoot.'/sql/reset.sql'))){
             while(true){
                 if (!$mysqli_obj->more_results()) {

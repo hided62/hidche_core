@@ -7,11 +7,28 @@ import urllib.request
 import concurrent.futures
 from datetime import datetime
 
+ONE_FILE_LOOP_SEC = 60
+ONE_LOOP_TIME_SEC = 6
+RETRY_SEC = 2
+
+def getCurrentMillisecTime():
+    return int(time.time() * 1000)
+
+
 def run(webPath):
-    now = datetime.now()
-    print(now.strftime("%Y-%m-%d %H:%M:%S"), webPath)
-    obj = urllib.request.urlopen(webPath)
-    obj.read()
+    for _ in range(5):
+        now = datetime.now()
+        print(now.strftime("%Y-%m-%d %H:%M:%S"), webPath)
+        startTime = getCurrentMillisecTime()
+
+        obj = urllib.request.urlopen(webPath)
+        obj.read()
+
+        timeGap = getCurrentMillisecTime() - startTime
+        if timeGap < RETRY_SEC * 1000:
+            break
+        print(webPath, timeGap, 'retry')
+    return getCurrentMillisecTime()
 
 def main():
     basepath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,29 +54,37 @@ def main():
         resetAbsPath = servPath + '/j_autoreset.php'
         resetPath = webBase + '/' + servRelPath + '/j_autoreset.php'
         if os.path.exists(resetAbsPath):
-            autoResetList.append(resetPath)
+            autoResetList.append((servRelPath, resetPath))
 
         if servPath in hiddenList:
             continue
 
         webPath = webBase + '/' + servRelPath + '/proc.php'
         
-        servList.append(webPath)
+        servList.append((servRelPath,webPath))
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,len(servList))) as executor:
-        waiters=[]
-        for resetPath in autoResetList:
+        waiters={}
+        startTime = getCurrentMillisecTime()
+
+        waitTick = 1.0 / max(len(autoResetList), 1)
+        for servRelPath, resetPath in autoResetList:
             future = executor.submit(run, resetPath)
-            waiters.append(future)
-        for idx in range(10):
-            for webPath in servList:
-                future = executor.submit(run, webPath)
-                waiters.append(future)
-            if idx == 9:
-                break
-            time.sleep(6)
-        for future in waiters:
-            future.done()
+            waiters[servRelPath] = future
+            time.sleep(waitTick)
+        
+        currTime = getCurrentMillisecTime()
+
+        waitTick = ONE_LOOP_TIME_SEC / max(len(servList), 1)
+        while currTime - startTime < ONE_FILE_LOOP_SEC*1000:
+            for servRelPath, webPath in servList:
+                if servRelPath in waiters and not waiters[servRelPath].done():
+                    continue
+                waiters[servRelPath] = executor.submit(run, webPath)
+                time.sleep(waitTick)
+
+        for future in waiters.values():
+            future.result(None)
 
 if __name__ == "__main__":
     # execute only if run as a script
