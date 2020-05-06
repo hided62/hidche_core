@@ -505,7 +505,7 @@ function ConquerCity(array $admin, General $general, array $city) {
     $attackerLogger->pushGlobalHistoryLog("<S><b>【지배】</b></><D><b>{$attackerNationName}</b></>{$josaYiNation} <G><b>{$cityName}</b></>{$josaUl} 지배했습니다.");
     $attackerLogger->pushNationalHistoryLog("<Y>{$attackerGeneralName}</>{$josaYiGen} {$defenderNationDecoration} <G><b>{$cityName}</b></> {$josaUl} <S>점령</>");
 
-    $defenderNationLogger->pushNationalHistoryLog("<D><b>{$attackerNationName}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$cityName}</b></>{$josaYiCity} <O>함락</>");
+    $defenderNationLogger->pushNationalHistoryLog("<D><b>{$attackerNationName}</b></>의 <Y>{$attackerGeneralName}</>에 의해 <G><b>{$cityName}</b></>{$josaYiCity} <O>함락</>");
 
     // 국가 멸망시
     if($defenderNationID && $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $defenderNationID) === 1) {
@@ -654,7 +654,7 @@ function ConquerCity(array $admin, General $general, array $city) {
         // 이동
         $db->update('general', [
             'city'=>$cityID
-        ], 'no=%i', $general['no']);
+        ], 'no=%i', $attackerID);
     }
     else{
         $conquerNationName = getNationStaticInfo($conquerNation)['name'];
