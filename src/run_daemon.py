@@ -8,7 +8,7 @@ import concurrent.futures
 from datetime import datetime
 
 ONE_FILE_LOOP_SEC = 60
-ONE_LOOP_TIME_SEC = 6
+ONE_LOOP_TIME_SEC = 8
 RETRY_SEC = 2
 
 def getCurrentMillisecTime():
@@ -18,7 +18,7 @@ def getCurrentMillisecTime():
 def run(webPath):
     for _ in range(5):
         now = datetime.now()
-        print(now.strftime("%Y-%m-%d %H:%M:%S"), webPath)
+        print(now.strftime("%Y-%m-%d %H:%M:%S"), webPath, flush=True)
         startTime = getCurrentMillisecTime()
 
         obj = urllib.request.urlopen(webPath)
@@ -31,6 +31,8 @@ def run(webPath):
     return getCurrentMillisecTime()
 
 def main():
+    startTime = getCurrentMillisecTime()
+
     basepath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     hiddenList = []
 
@@ -65,27 +67,30 @@ def main():
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,len(servList))) as executor:
         waiters={}
-        startTime = getCurrentMillisecTime()
-
+        
         waitTick = 1.0 / max(len(autoResetList), 1)
         for servRelPath, resetPath in autoResetList:
             future = executor.submit(run, resetPath)
             waiters[servRelPath] = future
             time.sleep(waitTick)
-        
-        currTime = getCurrentMillisecTime()
 
         waitTick = ONE_LOOP_TIME_SEC / max(len(servList), 1)
-        while currTime - startTime < ONE_FILE_LOOP_SEC*1000:
+        doLoop = True
+        while doLoop:
             for servRelPath, webPath in servList:
                 if servRelPath in waiters and not waiters[servRelPath].done():
                     continue
                 waiters[servRelPath] = executor.submit(run, webPath)
                 time.sleep(waitTick)
-            currTime = getCurrentMillisecTime()
-
+                currTime = getCurrentMillisecTime()
+                if currTime - startTime >= ONE_FILE_LOOP_SEC*1000:
+                    doLoop = False
+                    break
+        
         for future in waiters.values():
-            future.result(None)
+            future.result()
+    now = datetime.now()
+    print('Done', now.strftime("%Y-%m-%d %H:%M:%S"))
 
 if __name__ == "__main__":
     # execute only if run as a script
