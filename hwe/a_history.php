@@ -160,8 +160,8 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
                     <tr>
                         <td><span style='color:<?=newColor($nation['color'])?>;background-color:<?=$nation['color']?>'><?=$nation['name']?></td>
                         <td style='text-align:right'><?=number_format($nation['power'])?></td>
-                        <td style='text-align:right'><?=number_format(count($nation['generals']))?></td>
-                        <td style='text-align:right'><?=number_format(count($nation['cities']))?></td>
+                        <td style='text-align:right'><?=number_format(count($nation['generals']??[]))?></td>
+                        <td style='text-align:right'><?=number_format(count($nation['cities']??[]))?></td>
                     </tr>
 <?php endforeach; ?>
                 </tbody>
