@@ -196,8 +196,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
 
     //이미 지정했다면 무시
     if(isOfficerSet($nation['chief_set'], $myOfficerLevel) || ($myOfficerLevel == 0 && $myOfficerLevel == 12)) {
-        header('location:b_myBossInfo.php', true, 303);
-        die();
+        return '이미 추방 권한을 사용했습니다.';
     }
     $gold = 0;
     $rice = 0;
