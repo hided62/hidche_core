@@ -53,7 +53,7 @@ class AllowDiplomacyStatus extends Constraint{
         $db = DB::db();
 
         $state = $db->queryFirstField(
-            'SELECT state FROM diplomacy WHERE me = %i AND `state` NOT IN %li LIMIT 1', 
+            'SELECT state FROM diplomacy WHERE me = %i AND `state` IN %li LIMIT 1', 
             $this->nationID, 
             $this->allowStatus
         );

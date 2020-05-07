@@ -72,8 +72,8 @@ class che_백성동원 extends Command\NationCommand{
         $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
-                0
+            ConstraintHelper::DisallowDiplomacyStatus($this->generalObj->getNationID(), [
+                2, 7
             ], '전쟁중이 아닙니다.'),
             ConstraintHelper::OccupiedDestCity(),
             ConstraintHelper::AvailableStrategicCommand()
