@@ -57,7 +57,7 @@ class AllowDiplomacyStatus extends Constraint{
             $this->nationID, 
             $this->allowStatus
         );
-        if($state === null){
+        if($state !== null){
             return true;
         }
         $this->reason = $this->errMsg;
