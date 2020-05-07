@@ -184,18 +184,18 @@ class AutorunNationPolicy {
             $reqGold = $defaultCrewType->costWithTech($nation['tech'], GameConst::$defaultStatMax * 100);
             $reqRice = $defaultCrewType->riceWithTech($nation['tech'], GameConst::$defaultStatMax * 100);
             if($this->reqHumanWarUrgentGold === 0){
-                $this->reqHumanWarUrgentGold = Util::round(max(10000, $reqGold * 3 * 2), -2);
+                $this->reqHumanWarUrgentGold = Util::round(max(7000, $reqGold * 3 * 2), -2);
             }
             if($this->reqHumanWarUrgentRice === 0){
-                $this->reqHumanWarUrgentRice = Util::round(max(10000, $reqRice * 3 * 2), -2);
+                $this->reqHumanWarUrgentRice = Util::round(max(7000, $reqRice * 3 * 2), -2);
             }
         }
 
         if($this->reqHumanWarRecommandGold === 0){
-            $this->reqHumanWarRecommandGold = Util::round(max(30000, $this->reqHumanWarUrgentGold * 3), -2);
+            $this->reqHumanWarRecommandGold = Util::round(max(20000, $this->reqHumanWarUrgentGold * 3), -2);
         }
         if($this->reqHumanWarRecommandRice === 0){
-            $this->reqHumanWarRecommandRice = Util::round(max(30000, $this->reqHumanWarRecommandRice * 3), -2);
+            $this->reqHumanWarRecommandRice = Util::round(max(20000, $this->reqHumanWarRecommandRice * 3), -2);
         }
 
         if($general->getVar('npc') >= 2){
