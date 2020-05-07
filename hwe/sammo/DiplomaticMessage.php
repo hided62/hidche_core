@@ -11,8 +11,6 @@ class DiplomaticMessage extends Message{
     const TYPE_NO_AGGRESSION = 'noAggression'; //불가침
     const TYPE_CANCEL_NA = 'cancelNA'; //불가침 파기
     const TYPE_STOP_WAR = 'stopWar'; //종전
-    const TYPE_MERGE = 'merge'; //통합
-    const TYPE_SURRENDER = 'surrender'; //항복
 
     protected $diplomaticType = '';
     protected $diplomacyName = '';
@@ -38,8 +36,6 @@ class DiplomaticMessage extends Message{
             case self::TYPE_NO_AGGRESSION: $this->diplomacyName = '불가침'; break;
             case self::TYPE_CANCEL_NA: $this->diplomacyName = '불가침 파기'; break;
             case self::TYPE_STOP_WAR: $this->diplomacyName = '종전'; break;
-            case self::TYPE_MERGE: $this->diplomacyName = '통합'; break;
-            case self::TYPE_SURRENDER: $this->diplomacyName = '투항'; break;
             default: throw new \RuntimeException('diplomaticType이 올바르지 않음');
         }
 
@@ -139,91 +135,6 @@ class DiplomaticMessage extends Message{
         return [self::ACCEPTED, ''];
     }
 
-    protected function acceptMerge(){
-        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->acceptMerge($this->src->generalID, $this->dest->generalID);
-        if($chk[0] !== self::ACCEPTED){
-            return $chk;
-        }
-
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        pushGeneralHistory(
-            $this->dest->generalID,
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaWa} 통합 시도"]
-        );
-        pushGenLog(
-            $this->dest->generalID,
-            ["<C>●</><D><b>{$this->src->nationName}</b></>{$josaWa} 통합에 동의했습니다."]
-        );
-
-        $josaWa = JosaUtil::pick($this->src->nationName, '와');
-        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
-        pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaWa} <M>통합</>에 동의하였습니다."],
-            $helper->year,
-            $helper->month);
-            $josaYi = JosaUtil::pick($this->src->generalName, '이');
-
-
-        $josaWa = JosaUtil::pick($this->dest->nationName, '와');
-        pushGeneralHistory(
-            $this->src->generalID,
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>{$josaWa} 통합 시도"]
-        );
-        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
-        pushGenLog(
-            $this->src->generalID,
-            ["<C>●</><D><b>{$this->dest->nationName}</b></>{$josaYi} 통합에 동의했습니다."]
-        );
-        pushWorldHistory(
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【통합시도】</b></><D><b>{$this->dest->nationName}</b></>{$josaWa}과 <D><b>{$this->src->nationName}</b></>{$josaYi} 통합을 시도합니다."],
-            $helper->year, 
-            $helper->month
-        );
-
-        return $chk;
-    }
-
-    protected function acceptSurrender(){
-        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->acceptSurrender($this->src->generalID, $this->dest->generalID);
-        if($chk[0] !== self::ACCEPTED){
-            return $chk;
-        }
-
-        $josaRo = JosaUtil::pick($this->src->nationName, '로');
-        pushGeneralHistory(
-            $this->src->generalID, 
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>에게 투항 제의"]
-        );
-        pushGeneralHistory(
-            $this->dest->generalID,
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaRo} 투항 동의"]
-        );
-        pushGenLog(
-            $this->dest->generalID, 
-            ["<C>●</><D><b>{$this->src->nationName}</b></>{$josaRo} 투항에 동의했습니다."]
-        );
-        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
-        pushGenLog(
-            $this->src->generalID, 
-            ["<C>●</><D><b>{$this->dest->nationName}</b></>{$josaYi} 투항에 동의했습니다."]
-        );
-        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
-        pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaRo} <M>투항</>에 동의하였습니다."], 
-            $helper->year, 
-            $helper->month);
-        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
-        pushWorldHistory(
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【투항시도】</b></><D><b>{$this->dest->nationName}</b></>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaRo} 투항합니다."], 
-            $helper->year, 
-            $helper->month
-        );
-
-        return $chk;
-    }
-
     /**
      * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
      */
@@ -269,12 +180,6 @@ class DiplomaticMessage extends Message{
                 break;
             case self::TYPE_STOP_WAR:
                 list($result, $reason) = $this->stopWar();
-                break;
-            case self::TYPE_MERGE:
-                list($result, $reason) = $this->acceptMerge();
-                break;
-            case self::TYPE_SURRENDER:
-                list($result, $reason) = $this->acceptSurrender();
                 break;
             default: 
                 throw new \RuntimeException('diplomaticType이 올바르지 않음');

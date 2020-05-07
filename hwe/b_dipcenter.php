@@ -112,10 +112,6 @@ foreach(getAllNationStaticInfo() as $staticNation):
             0 => "<font color=red>교 전</font>",
             1 => "<font color=magenta>선포중</font>",
             2 => "통 상",
-            3 => "<font color=cyan>통합수락중</font>",
-            4 => "<font color=cyan>통합제의중</font>",
-            5 => "<font color=cyan>합병수락중</font>",
-            6 => "<font color=cyan>합병제의중</font>",
             7 => "<font color=green>불가침</font>",    
         ][$diplomacyState['state']];
 

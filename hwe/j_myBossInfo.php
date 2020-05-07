@@ -199,9 +199,6 @@ function do추방(General $general, int $myOfficerLevel):?string{
         header('location:b_myBossInfo.php', true, 303);
         die();
     }
-    $dipcount1 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=3 AND state<=4', $nationID);
-    $dipcount2 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=5 AND state<=6', $nationID);
-
     $gold = 0;
     $rice = 0;
     // 금쌀1000이상은 남김
@@ -222,29 +219,19 @@ function do추방(General $general, int $myOfficerLevel):?string{
     $general->setVar('makelimit', 12);
     $general->setVar('permission', 'normal');
 
-    if($dipcount1 > 0) {
-        $josaYi = JosaUtil::pick($generalName, '이');
-        $logger->pushGlobalActionLog("통합에 반대하던 <Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>숙청</>당했습니다.");
-        $logger->pushGeneralActionLog("통합에 반대하다가 <D><b>{$nationName}</b></>에서 <R>숙청</>당했습니다.", ActionLogger::PLAIN);
-    } elseif($dipcount2 > 0) {
-        $josaYi = JosaUtil::pick($generalName, '이');
-        $logger->pushGlobalActionLog("합병에 반대하던 <Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>숙청</>당했습니다.");
-        $logger->pushGeneralActionLog("합병에 반대하다가 <D><b>{$nationName}</b></>에서 <R>숙청</>당했습니다.", ActionLogger::PLAIN);
-    } else {
-        $josaYi = JosaUtil::pick($generalName, '이');
-        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>추방</>당했습니다.");
-        $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 <R>추방</>당했습니다.", ActionLogger::PLAIN);
+    $josaYi = JosaUtil::pick($generalName, '이');
+    $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>추방</>당했습니다.");
+    $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 <R>추방</>당했습니다.", ActionLogger::PLAIN);
 
-        // 명성/공헌 N*10%감소
-        if($env['year'] <= $env['startyear'] && $general->getVar('npc') < 2){
-            $general->setVar('makelimit', $oldMakeLimit);
-        }
-        else{
-            $betrayCnt = $general->getVar('betray');
-            $general->addExperience(-$general->getVar('experience')*0.1*$betrayCnt);
-            $general->addDedication(-$general->getVar('dedication')*0.1*$betrayCnt);
-            $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
-        }
+    // 명성/공헌 N*10%감소
+    if($env['year'] <= $env['startyear'] && $general->getVar('npc') < 2){
+        $general->setVar('makelimit', $oldMakeLimit);
+    }
+    else{
+        $betrayCnt = $general->getVar('betray');
+        $general->addExperience(-$general->getVar('experience')*0.1*$betrayCnt);
+        $general->addDedication(-$general->getVar('dedication')*0.1*$betrayCnt);
+        $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
     }
 
     //부대장일 경우

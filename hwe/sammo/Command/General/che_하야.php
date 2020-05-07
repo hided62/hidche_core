@@ -72,33 +72,17 @@ class che_하야 extends Command\GeneralCommand{
 
         $nationID = $this->nation['nation'];
         $nationName = $this->nation['name'];
-        $josaUl = JosaUtil::pick($nationName, '을');
-
-        $dipState = Util::arrayGroupBy($db->query('SELECT no, state FROM diplomacy WHERE me = %i', $nationID), 'state');
-
+        
         $logger = $general->getLogger();
 
-        if(key_exists('3', $dipState) || key_exists('4', $dipState)){
-            $logger->pushGeneralActionLog("통합에 반대하며 <D><b>{$nationName}</b></>에서 떠났습니다. <1>$date</>");
-            $logger->pushGeneralHistoryLog("통합에 반대하며 <D><b>{$nationName}</b></>{$josaUl} 떠남");
-            $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 통합에 반대하며 <D><b>{$nationName}</b></>{$josaUl} <R>떠났</>습니다.");
-        }
-        else if(key_exists('5', $dipState) || key_exists('6', $dipState)){
-            $logger->pushGeneralActionLog("합병에 반대하며 <D><b>{$nationName}</b></>에서 떠났습니다. <1>$date</>");
-            $logger->pushGeneralHistoryLog("합병에 반대하며 <D><b>{$nationName}</b></>{$josaUl} 떠남");
-            $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 합병에 반대하며 <D><b>{$nationName}</b></>{$josaUl} <R>떠났</>습니다.");
-        }
-        else{
-            $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 하야했습니다. <1>$date</>");
-            $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>에서 하야");
-            $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>하야</>했습니다.");
-            $general->setVar('experience', $general->getVar('experience') * (1 - 0.1 * $general->getVar('betray')));
-            $general->addExperience(0, false);
-            $general->setVar('dedication', $general->getVar('dedication') * (1 - 0.1 * $general->getVar('betray')));
-            $general->addDedication(0, false);
-            $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
-
-        }
+        $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 하야했습니다. <1>$date</>");
+        $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>에서 하야");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>에서 <R>하야</>했습니다.");
+        $general->setVar('experience', $general->getVar('experience') * (1 - 0.1 * $general->getVar('betray')));
+        $general->addExperience(0, false);
+        $general->setVar('dedication', $general->getVar('dedication') * (1 - 0.1 * $general->getVar('betray')));
+        $general->addDedication(0, false);
+        $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
 
         $newGold = Util::valueFit($general->getVar('gold'), null, GameConst::$defaultGold);
         $newRice = Util::valueFit($general->getVar('rice'), null, GameConst::$defaultRice);

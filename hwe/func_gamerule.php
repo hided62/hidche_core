@@ -465,7 +465,6 @@ function postUpdateMonthly()
         'term'=>6,
     ], 'state = 1 AND term = 0');
 
-    //NOTE: diplomacy에서 3=>4 통합, 5=>6 합병이 있었음
     //초반이후 방랑군 자동 해체
     if ($admin['year'] >= $admin['startyear'] + 2) {
         checkWander();

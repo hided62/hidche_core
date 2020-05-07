@@ -304,7 +304,6 @@ class GameConstBase
             'che_몰수',
         ],
         '외교'=>[
-            //'che_항복권고',
             'che_물자원조',
             'che_불가침제의',
             'che_선전포고',

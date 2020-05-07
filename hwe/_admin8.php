@@ -83,10 +83,6 @@ for ($i=0; $i < $dipcount; $i++) {
         case 0: $state = "<font color=red>교 전</font>"; break;
         case 1: $state = "<font color=magenta>선포중</font>"; break;
         case 2: $state = "통 상"; break;
-        case 3: $state = "<font color=cyan>통합수락중</font>"; break;
-        case 4: $state = "<font color=cyan>통합제의중</font>"; break;
-        case 5: $state = "<font color=cyan>합병수락중</font>"; break;
-        case 6: $state = "<font color=cyan>합병제의중</font>"; break;
         case 7: $state = "<font color=green>불가침</font>"; break;
     }
 

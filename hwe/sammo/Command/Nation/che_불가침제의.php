@@ -126,10 +126,6 @@ class che_불가침제의 extends Command\NationCommand
             ConstraintHelper::DisallowDiplomacyBetweenStatus([
                 0 => '아국과 이미 교전중입니다.',
                 1 => '아국과 이미 선포중입니다.',
-                3 => '아국과 외교 진행중입니다.',
-                4 => '아국과 외교 진행중입니다.',
-                5 => '아국과 외교 진행중입니다.',
-                6 => '아국과 외교 진행중입니다.',
             ]),
         ];
     }
