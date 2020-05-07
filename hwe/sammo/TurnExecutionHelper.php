@@ -264,12 +264,14 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $autorunMode = false;
             $ai = null;
 
+            $turnObj->preprocessCommand();
+
             if($general->getVar('npc') >= 2 || ($autorun_user['limit_minutes']??false)){
                 $ai = new GeneralAI($turnObj->getGeneral());
             }
             
             if(!$turnObj->processBlocked()){
-                $turnObj->preprocessCommand();
+                
                 if($hasNationTurn){
                     if($ai){
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
