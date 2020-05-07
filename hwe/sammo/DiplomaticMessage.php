@@ -164,7 +164,7 @@ class DiplomaticMessage extends Message{
 
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
         if($result !== self::ACCEPTED){
-            pushGenLog($receiverID, ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
+            pushGeneralActionLog($receiverID, ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
             if($result === self::DECLINED){
                 $this->_declineMessage();
             }
@@ -186,7 +186,7 @@ class DiplomaticMessage extends Message{
         }
         
         if($result !== self::ACCEPTED){
-            pushGenLog($receiverID, ["<C>●</>{$reason}"]);
+            pushGeneralActionLog($receiverID, ["<C>●</>{$reason}"]);
             if($result === self::DECLINED){
                 $this->_declineMessage();
             }
@@ -259,13 +259,13 @@ class DiplomaticMessage extends Message{
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
 
         if($result === self::INVALID){
-            pushGenLog($receiverID, ["<C>●</>{$reason} {$this->diplomacyName} 거절 불가."]);
+            pushGeneralActionLog($receiverID, ["<C>●</>{$reason} {$this->diplomacyName} 거절 불가."]);
             return $result;
         }
 
         $josaYi = JosaUtil::pick($this->dest->nationName, '이');
-        pushGenLog($receiverID, ["<C>●</><D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다."]);
-        pushGenLog($this->src->generalID, ["<C>●</><Y>{$this->dest->nationName}</>{$josaYi} {$this->diplomacyName} 제안을 거절했습니다."]);
+        pushGeneralActionLog($receiverID, ["<C>●</><D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다."]);
+        pushGeneralActionLog($this->src->generalID, ["<C>●</><Y>{$this->dest->nationName}</>{$josaYi} {$this->diplomacyName} 제안을 거절했습니다."]);
         $this->_declineMessage();  
         return self::DECLINED;
     }

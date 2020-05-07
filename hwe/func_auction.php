@@ -107,7 +107,7 @@ function processAuction() {
                     $josaUlRice = JosaUtil::pick($auction['amount'], '을');
                     $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, 그러나 입찰자 부재";
                 }
-                pushGenLog($trader['no'], $traderLog);
+                pushGeneralActionLog($trader['no'], $traderLog);
                 pushAuctionLog($auctionLog);
             }
         } else {
@@ -170,8 +170,8 @@ function processAuction() {
                     $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='{$auction['no2']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 }
-                pushGenLog($trader['no'], $traderLog);
-                pushGenLog($bidder['no'], $bidderLog);
+                pushGeneralActionLog($trader['no'], $traderLog);
+                pushGeneralActionLog($bidder['no'], $bidderLog);
                 pushAuctionLog($auctionLog);
             //구매거래
             } else {
@@ -219,8 +219,8 @@ function processAuction() {
                     $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='{$auction['no2']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 }
-                pushGenLog($trader['no'], $traderLog);
-                pushGenLog($bidder['no'], $bidderLog);
+                pushGeneralActionLog($trader['no'], $traderLog);
+                pushGeneralActionLog($bidder['no'], $bidderLog);
                 pushAuctionLog($auctionLog);
             }
         }

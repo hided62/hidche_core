@@ -547,7 +547,7 @@ class Scenario{
 
         
 
-        pushWorldHistory($this->history, $env['year'], $env['month']);
+        pushGlobalHistoryLog($this->history, $env['year'], $env['month']);
 
         refreshNationStaticInfo();
         foreach(getAllNationStaticInfo() as $nation){

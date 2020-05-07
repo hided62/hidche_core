@@ -1,0 +1,30 @@
+#nation_list_frame{
+    vertical-align: top;
+}
+
+#nation_list{
+    width:100%;
+}
+
+#nation_list thead{
+    background-color:#cccccc;
+    color:black;
+    text-align:center
+}
+
+#nation_list th{
+    border:0;
+    border-left:1px solid gray;
+    padding:2px 6px;
+}
+
+#nation_list td{
+    border:0;
+    border-left:1px solid gray;
+    padding:1px 6px;
+    text-align:right;
+}
+
+#nation_list td:first-child{
+    text-align:left;
+}

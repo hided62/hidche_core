@@ -142,10 +142,10 @@ $generalObj = General::createGeneralObjFromDB($gen);
         </tr>
         <tr>
             <td valign=top>
-                <?= formatHistoryToHTML(getGenLogRecent($gen, 24)) ?>
+                <?= formatHistoryToHTML(getGeneralActionLogRecent($gen, 24)) ?>
             </td>
             <td valign=top>
-                <?= formatHistoryToHTML(getBatLogRecent($gen, 24)) ?>
+                <?= formatHistoryToHTML(getBattleDetailLogRecent($gen, 24)) ?>
             </td>
         </tr>
         <tr>
@@ -158,10 +158,10 @@ $generalObj = General::createGeneralObjFromDB($gen);
         </tr>
         <tr>
             <td valign=top>
-                <?= formatHistoryToHTML(getGeneralHistoryAll($gen)) ?>
+                <?= formatHistoryToHTML(getGeneralHistoryLogAll($gen)) ?>
             </td>
             <td valign=top>
-                <?= formatHistoryToHTML(getBatResRecent($gen, 24)) ?>
+                <?= formatHistoryToHTML(getBattleResultRecent($gen, 24)) ?>
             </td>
         </tr>
     </table>

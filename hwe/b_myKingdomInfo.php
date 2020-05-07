@@ -146,7 +146,7 @@ if ($budgetricediff > 0) {
     </tr>
     <tr>
         <td align=center valign=top id=bg1>국가열전</td>
-        <td colspan=7 id=bg0><?=formatHistoryToHTML(getNationHistoryAll($nation['nation']))?></td>
+        <td colspan=7 id=bg0><?=formatHistoryToHTML(getNationHistoryLogAll($nation['nation']))?></td>
     </tr>
 </table>
 <br>

@@ -1659,7 +1659,7 @@ function deleteNation(General $lord, bool $applyDB):array
     $nation['msg'] = $nationStor->notice;
     $nation['scout_msg'] = $nationStor->scout_msg;
     $nation['aux'] += $nationStor->max_power;
-    $nation['history'] = getNationHistoryAll($nationID);
+    $nation['history'] = getNationHistoryLogAll($nationID);
 
     $josaYi = JosaUtil::pick($nationName, '이');
     $destroyLog = "<D><b>{$nationName}</b></>{$josaYi} <R>멸망</>했습니다.";

@@ -481,22 +481,19 @@ ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 ###########################################################################
 ## 연감 테이블
 ###########################################################################
-CREATE TABLE IF NOT EXISTS `history` (
+CREATE TABLE IF NOT EXISTS `ng_history` (
 	`no` INT(6) NOT NULL AUTO_INCREMENT,
-	`server_id` CHAR(20) NOT NULL DEFAULT '',
-	`year` INT(4) NULL DEFAULT '0',
-	`month` INT(2) NULL DEFAULT '0',
+	`server_id` CHAR(20) NOT NULL,
+	`year` INT(4) NULL,
+	`month` INT(2) NULL,
 	`map` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`map`)),
-	`log` TEXT NULL DEFAULT NULL CHECK (json_valid(`log`)),
-	`genlog` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`genlog`)),
-	`nation` TEXT NULL DEFAULT '',
-	`power` TEXT NULL DEFAULT '',
-	`gen` TEXT NULL DEFAULT '',
-	`city` TEXT NULL DEFAULT '',
+	`global_history` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`global_history`)),
+	`global_action` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`global_action`)),
+	`nations` MEDIUMTEXT NULL DEFAULT NULL CHECK (json_valid(`nations`)),
 	PRIMARY KEY (`no`),
 	INDEX `server_id` (`server_id`, `year`, `month`)
 )
-ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 이벤트 핸들러 테이블

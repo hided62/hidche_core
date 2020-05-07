@@ -143,14 +143,14 @@ class ScoutMessage extends Message{
         list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
 
         if($result === self::INVALID){
-            pushGenLog($receiverID, ["<C>●</>{$reason} 등용 취소 불가."]);
+            pushGeneralActionLog($receiverID, ["<C>●</>{$reason} 등용 취소 불가."]);
             return $result;
         }
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $josaYi = JosaUtil::pick($this->dest->generalName, '이');
-        pushGenLog($receiverID, ["<C>●</><D>{$this->src->nationName}</>{$josaRo} 망명을 거부했습니다."]);
-        pushGenLog($this->src->generalID, ["<C>●</><Y>{$this->dest->generalName}</>{$josaYi} 등용을 거부했습니다."]);
+        pushGeneralActionLog($receiverID, ["<C>●</><D>{$this->src->nationName}</>{$josaRo} 망명을 거부했습니다."]);
+        pushGeneralActionLog($this->src->generalID, ["<C>●</><Y>{$this->dest->generalName}</>{$josaYi} 등용을 거부했습니다."]);
         $this->_declineMessage();        
 
         return self::DECLINED;

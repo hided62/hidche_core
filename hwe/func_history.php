@@ -109,7 +109,7 @@ function formatHistoryToHTML(array $history):string{
     return join('<br>', $result);
 }
 
-function pushGenLog(int $generalID, ?array $history, ?int $year=null, ?int $month=null) {
+function pushGeneralActionLog(int $generalID, ?array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
@@ -131,7 +131,7 @@ function pushGenLog(int $generalID, ?array $history, ?int $year=null, ?int $mont
     $db->insert('general_record', $request);
 }
 
-function getGenLogRecent(int $generalID, int $count):array{
+function getGeneralActionLogRecent(int $generalID, int $count):array{
     $db = DB::db();
 
     return $db->queryFirstColumn(
@@ -140,7 +140,7 @@ function getGenLogRecent(int $generalID, int $count):array{
     );
 }
 
-function pushBatRes(int $generalID, array $history, ?int $year=null, ?int $month=null) {
+function pushBattleResultLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
@@ -162,7 +162,7 @@ function pushBatRes(int $generalID, array $history, ?int $year=null, ?int $month
     $db->insert('general_record', $request);
 }
 
-function getBatResRecent(int $generalID, int $count):array {
+function getBattleResultRecent(int $generalID, int $count):array {
     $db = DB::db();
 
     return $db->queryFirstColumn(
@@ -171,7 +171,7 @@ function getBatResRecent(int $generalID, int $count):array {
     );
 }
 
-function pushBatLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
+function pushBattleDetailLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
@@ -193,7 +193,7 @@ function pushBatLog(int $generalID, array $history, ?int $year=null, ?int $month
     $db->insert('general_record', $request);
 }
 
-function getBatLogRecent(int $generalID, int $count):array {
+function getBattleDetailLogRecent(int $generalID, int $count):array {
     $db = DB::db();
 
     return $db->queryFirstColumn(
@@ -203,7 +203,7 @@ function getBatLogRecent(int $generalID, int $count):array {
 }
 
 
-function pushGeneralHistory(int $generalID, ?array $history, $year=null, $month=null) {
+function pushGeneralHistoryLog(int $generalID, ?array $history, $year=null, $month=null) {
     if(!$history){
         return;
     }
@@ -226,7 +226,7 @@ function pushGeneralHistory(int $generalID, ?array $history, $year=null, $month=
 
 }
 
-function getGeneralHistoryAll(int $generalID):array {
+function getGeneralHistoryLogAll(int $generalID):array {
     $db = DB::db();
 
     return $db->queryFirstColumn(
@@ -236,7 +236,7 @@ function getGeneralHistoryAll(int $generalID):array {
 }
 
 
-function pushNationHistory(int $nationID, ?array $history, ?int $year=null, ?int $month=null) {
+function pushNationHistoryLog(int $nationID, ?array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
@@ -255,7 +255,7 @@ function pushNationHistory(int $nationID, ?array $history, ?int $year=null, ?int
     $db->insert('world_history', $request);
 }
 
-function getNationHistoryAll(int $nationID):array {
+function getNationHistoryLogAll(int $nationID):array {
     $db = DB::db();
 
     return $db->queryFirstColumn(
@@ -265,7 +265,7 @@ function getNationHistoryAll(int $nationID):array {
 }
 
 
-function pushWorldHistory(?array $history, $year=null, $month=null) {
+function pushGlobalHistoryLog(?array $history, $year=null, $month=null) {
     if(!$history){
         return;
     }
@@ -281,13 +281,13 @@ function pushWorldHistory(?array $history, $year=null, $month=null) {
     $db->insert('world_history', $request);
 }
 
-function getWorldHistoryRecent(int $count):array {
+function getGlobalHistoryLogRecent(int $count):array {
     $db = DB::db();
 
     return $db->queryFirstColumn('SELECT `text` from world_history WHERE nation_id = 0 order by id desc limit %i', $count);
 }
 
-function getWorldHistoryWithDate(int $year, int $month):array {
+function getGlobalHistoryLogWithDate(int $year, int $month):array {
     $db = DB::db();
 
     $texts = $db->queryFirstColumn(
@@ -303,7 +303,7 @@ function getWorldHistoryWithDate(int $year, int $month):array {
 }
 
 
-function pushGeneralPublicRecord(?array $history, ?int $year=null, ?int $month=null) {
+function pushGlobalActionLog(?array $history, ?int $year=null, ?int $month=null) {
     if(!$history){
         return;
     }
@@ -319,7 +319,7 @@ function pushGeneralPublicRecord(?array $history, ?int $year=null, ?int $month=n
     $db->insert('general_record', $request);
 }
 
-function getGeneralPublicRecordRecent(int $count):array {
+function getGlobalActionLogRecent(int $count):array {
     $db = DB::db();
 
     return $db->queryFirstColumn(
@@ -328,7 +328,7 @@ function getGeneralPublicRecordRecent(int $count):array {
     );
 }
 
-function getGeneralPublicRecordWithDate(int $year, int $month):array {
+function getGlobalActionLogWithDate(int $year, int $month):array {
     $db = DB::db();
 
     $texts = $db->queryFirstColumn(
@@ -350,7 +350,6 @@ function LogHistory($isFirst=0) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $obj = $gameStor->getValues(['startyear', 'year', 'month']);
 
-    //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성
     $map = getWorldMap([
         'year'=>null,
         'month'=>null,
@@ -371,43 +370,46 @@ function LogHistory($isFirst=0) {
         }       
     }
 
-    $startYear = $obj['startyear'];
     $year = $map['year'];
     $month = $map['month'];
 
-    $map_json = Json::encode($map);
     
-    $log = Json::encode(getWorldHistoryWithDate($year, $month));
-    $genlog = Json::encode(getGeneralPublicRecordWithDate($year, $month));
-
-    $nationStr = "";
-    $powerStr = "";
-    $genStr = "";
-    $cityStr = "";
-
+    $globalHistory = getGlobalHistoryLogWithDate($year, $month);
+    $globalAction = getGlobalActionLogWithDate($year, $month);
     
-    foreach($db->query('select nation,color,name,power,gennum from nation where level>0 order by power desc') as $nation){
-        $cityCount = $db->queryFirstField('select count(*) from city where nation = %i',$nation['nation']);
+    $nations = getAllNationStaticInfo();
+    $nations[0] = getNationStaticInfo(0);
 
-        $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
-        $powerStr .= "{$nation['power']}<br>";
-        $genStr .= "{$nation['gennum']}<br>";
-        $cityStr .= "$cityCount<br>";
+    foreach($db->query('SELECT name, nation FROM city') as $city){
+        $cityNationID = $city['nation'];
+        if(!key_exists('cities', $nations[$cityNationID])){
+            $nations[$cityNationID]['cities'] = [];
+        }
+        $nations[$cityNationID]['cities'][] = $city['name'];
     }
+
+    foreach($db->queryAllLists('SELECT name, npc, nation FROM general WHERE 1 ORDER BY dedication DESC') as $general){
+        $generalNationID = array_pop($general);
+        if(!key_exists('generals', $nations[$generalNationID])){
+            $nations[$generalNationID]['generals'] = [];
+        }
+        $nations[$generalNationID]['generals'][] = $general;
+    }
+
+    usort($nations, function(array $lhs, array $rhs){
+        return -($lhs['power']<=>$rhs['power']);
+    });
 
     if(STEP_LOG) pushStepLog(TimeUtil::now().', contents collected');
     
-    $db->insert('history', [
+    $db->insert('ng_history', [
         'server_id' => UniqueConst::$serverID,
         'year' => $year,
         'month' => $month,
-        'map' => $map_json,
-        'log' => $log,
-        'genlog' => $genlog,
-        'nation' => $nationStr,
-        'power' => $powerStr,
-        'gen' => $genStr,
-        'city' => $cityStr
+        'map' => Json::encode($map),
+        'global_history' => Json::encode($globalHistory),
+        'global_action' => Json::encode($globalAction),
+        'nations' => Json::encode($nations),
     ]);
 
     if(STEP_LOG) pushStepLog(TimeUtil::now().', LogHistory Finish');

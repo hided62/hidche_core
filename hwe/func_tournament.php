@@ -297,7 +297,7 @@ function startTournament($auto, $type) {
 
     $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월:{$openerText}<C>{$typeText}</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>{$genTypeText}</span>들을 모집하고 있습니다!";
     
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 }
 
 function fillLowGenAll() {

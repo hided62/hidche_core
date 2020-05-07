@@ -40,7 +40,7 @@ switch ($btn) {
         $gameStor->msg = $msg;
         break;
     case "로그쓰기":
-        pushWorldHistory(["<R>★</><S>{$log}</>"]);
+        pushGlobalHistoryLog(["<R>★</><S>{$log}</>"]);
         break;
     case "변경1":
         $gameStor->starttime = (new \DateTime($starttime))->format('Y-m-d H:i:s');
@@ -94,7 +94,7 @@ switch ($btn) {
         $starttime = cutTurn($starttime, $turnterm, false);
         $gameStor->turnterm = $turnterm;
         $gameStor->starttime = $starttime;
-        pushWorldHistory(["<R>★</>턴시간이 <C>$btn</>으로 변경됩니다."]);
+        pushGlobalHistoryLog(["<R>★</>턴시간이 <C>$btn</>으로 변경됩니다."]);
         break;
 }
 

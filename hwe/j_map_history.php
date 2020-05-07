@@ -34,7 +34,7 @@ $session = Session::requireGameLogin([])->setReadOnly();
 
 $db = DB::db();
 
-$map = $db->queryFirstField('SELECT map FROM history WHERE server_id=%s AND year=%i AND month=%i', $serverID, $year, $month);
+$map = $db->queryFirstField('SELECT map FROM ng_history WHERE server_id=%s AND year=%i AND month=%i', $serverID, $year, $month);
 
 if(!$map){
 	Json::die([

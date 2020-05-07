@@ -80,37 +80,37 @@ class ActionLogger
     public function flush()
     {
         if ($this->generalHistoryLog && $this->generalID) {
-            pushGeneralHistory($this->generalID, $this->generalHistoryLog, $this->year, $this->month);
+            pushGeneralHistoryLog($this->generalID, $this->generalHistoryLog, $this->year, $this->month);
             $this->generalHistoryLog = [];
         }
 
         if ($this->generalActionLog && $this->generalID) {
-            pushGenLog($this->generalID, $this->generalActionLog, $this->year, $this->month);
+            pushGeneralActionLog($this->generalID, $this->generalActionLog, $this->year, $this->month);
             $this->generalActionLog = [];
         }
 
         if ($this->generalBattleResultLog && $this->generalID) {
-            pushBatRes($this->generalID, $this->generalBattleResultLog, $this->year, $this->month);
+            pushBattleResultLog($this->generalID, $this->generalBattleResultLog, $this->year, $this->month);
             $this->generalBattleResultLog = [];
         }
 
         if ($this->generalBattleDetailLog && $this->generalID) {
-            pushBatLog($this->generalID, $this->generalBattleDetailLog, $this->year, $this->month);
+            pushBattleDetailLog($this->generalID, $this->generalBattleDetailLog, $this->year, $this->month);
             $this->generalBattleDetailLog = [];
         }
 
         if ($this->nationID && $this->nationalHistoryLog) {
-            pushNationHistory($this->nationID, $this->nationalHistoryLog, $this->year, $this->month);
+            pushNationHistoryLog($this->nationID, $this->nationalHistoryLog, $this->year, $this->month);
             $this->nationalHistoryLog = [];
         }
 
         if ($this->globalHistoryLog) {
-            pushWorldHistory($this->globalHistoryLog, $this->year, $this->month);
+            pushGlobalHistoryLog($this->globalHistoryLog, $this->year, $this->month);
             $this->globalHistoryLog = [];
         }
 
         if ($this->globalActionLog) {
-            pushGeneralPublicRecord($this->globalActionLog, $this->year, $this->month);
+            pushGlobalActionLog($this->globalActionLog, $this->year, $this->month);
             $this->globalActionLog = [];
         }
     }

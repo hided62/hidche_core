@@ -34,7 +34,7 @@ if ($con >= 2) {
 
 
 
-[$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
+[$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
 $s = $s_year * 12 + $s_month;
 
 if($s_year === null){
@@ -42,7 +42,7 @@ if($s_year === null){
     exit();
 }
 
-[$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
+[$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
 $e = $e_year * 12 + $e_month;
 
 if($serverID !== UniqueConst::$serverID){
@@ -86,8 +86,10 @@ if ($month <= 0) {
     $month += 12;
 }
 
-$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
+$history = $db->queryFirstRow('SELECT * FROM ng_history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
 
+
+$nations = Json::decode($history['nations']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -108,6 +110,7 @@ $history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM hist
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
+<?=WebUtil::printCSS('css/history.css')?>
 <script>
 var startYear = <?=$s_year?>;
 var startMonth = <?=$s_month?>;
@@ -115,6 +118,7 @@ var lastYear = <?=$e_year?>;
 var lastMonth = <?=$e_month?>;
 var selectYear = <?=$year?>;
 var selectMonth = <?=$month?>;
+var nations = <?=$nations?$history['nations']:'{}'?>;
 </script>
 </head>
 
@@ -135,28 +139,49 @@ var selectMonth = <?=$month?>;
     </td></tr>
 </table>
 <table align=center width=1000 height=520 class='tb_layout bg0'>
-    <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
+    <thead><tr><th colspan=5 align=center id=bg1>중 원 지 도</th></tr></thead>
+    <tbody>
     <tr height=520>
         <td width=698>
-            <?=getMapHtml($mapTheme);?>
-            
-        <td width=139 valign=top><div style='background-color:#cccccc;color:black;text-align:center'>국명</div><?=$history['nation']?></td>
-        <td width=70 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>국력</div><?=$history['power']?></td>
-        <td width=43 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>장수</div><?=$history['gen']?></td>
-        <td width=40 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>속령</div><?=$history['city']?></td>
-    </tr>
-    <tr><td colspan=5 align=center id=bg1>중 원 정 세</td></tr>
-    <tr>
-        <td colspan=5 valign=top>
-            <?=formatHistoryToHTML(Json::decode($history['log']))?>
+            <?=getMapHtml($mapTheme)?>
+        </td>
+        <td id='nation_list_frame'>
+            <table id='nation_list'>
+                <thead>
+                    <tr>
+                        <th width=130>국명</th>
+                        <th width=70>국력</th>
+                        <th width=45>장수</th>
+                        <th width=45>속령</th>
+                    </tr>
+                </thead>
+                <tbody>
+<?php foreach($nations as $nation): ?>
+                    <tr>
+                        <td><span style='color:<?=newColor($nation['color'])?>;background-color:<?=$nation['color']?>'><?=$nation['name']?></td>
+                        <td style='text-align:right'><?=number_format($nation['power'])?></td>
+                        <td style='text-align:right'><?=number_format($nation['gennum'])?></td>
+                        <td style='text-align:right'><?=number_format(count($nation['cities']))?></td>
+                    </tr>
+<?php endforeach; ?>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
         </td>
     </tr>
-    <tr><td colspan=5 align=center id=bg1>장 수 동 향</td></tr>
+    <tr><th colspan=5 align=center id=bg1>중 원 정 세</th></tr>
     <tr>
         <td colspan=5 valign=top>
-            <?=formatHistoryToHTML(Json::decode($history['genlog']))?>
+            <?=formatHistoryToHTML(Json::decode($history['global_history']))?>
         </td>
     </tr>
+    <tr><th colspan=5 align=center id=bg1>장 수 동 향</th></tr>
+    <tr>
+        <td colspan=5 valign=top>
+            <?=formatHistoryToHTML(Json::decode($history['global_action']))?>
+        </td>
+    </tr>
+    </tbody>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>

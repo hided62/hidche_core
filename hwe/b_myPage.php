@@ -175,10 +175,10 @@ $('#die_immediately').click(function(){
     </tr>
     <tr>
         <td valign=top>
-            <?=formatHistoryToHTML(getGenLogRecent($generalID, 24))?>
+            <?=formatHistoryToHTML(getGeneralActionLogRecent($generalID, 24))?>
         </td>
         <td valign=top>
-            <?=formatHistoryToHTML(getBatLogRecent($generalID, 24))?>
+            <?=formatHistoryToHTML(getBattleDetailLogRecent($generalID, 24))?>
         </td>
     </tr>
     <tr>
@@ -187,10 +187,10 @@ $('#die_immediately').click(function(){
     </tr>
     <tr>
         <td valign=top>
-            <?=formatHistoryToHTML(getGeneralHistoryAll($generalID))?>
+            <?=formatHistoryToHTML(getGeneralHistoryLogAll($generalID))?>
         </td>
         <td valign=top>
-            <?=formatHistoryToHTML(getBatResRecent($generalID, 24))?>
+            <?=formatHistoryToHTML(getBattleResultRecent($generalID, 24))?>
         </td>
     </tr>
 </table>

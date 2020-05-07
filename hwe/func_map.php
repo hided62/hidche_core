@@ -33,7 +33,7 @@ function getHistoryMap($year, $month, ?string $serverID=null){
         $serverID = UniqueConst::$serverID;
     }
 
-    $map = DB::db()->queryFirstField('SELECT map FROM history WHERE server_id = %s AND year=%i and month=%i',
+    $map = DB::db()->queryFirstField('SELECT map FROM ng_history WHERE server_id = %s AND year=%i and month=%i',
         $serverID,
         $year, 
         $month);

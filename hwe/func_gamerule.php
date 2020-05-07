@@ -559,7 +559,7 @@ function updateNationState()
                 case 7:
                     $josaUl = JosaUtil::pick(getNationLevel($nationlevel), '을');
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭하였습니다.";
-                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭"]);
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭"]);
                     $auxVal = Json::decode($nation['aux']);
                     $auxVal['can_국기변경'] = 1;
                     $auxVal['can_국호변경'] = 1;
@@ -567,17 +567,17 @@ function updateNationState()
                     break;
                 case 6:
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극하였습니다.";
-                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극"]);
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극"]);
                     break;
                 case 5:
                 case 4:
                 case 3:
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명되었습니다.";
-                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명됨"]);
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명됨"]);
                     break;
                 case 2:
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 독립하여 <Y>" . getNationLevel($nationlevel) . "</>로 나섰습니다.";
-                    pushNationHistory($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>로 나서다"]);
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>로 나서다"]);
                     break;
             }
 
@@ -701,7 +701,7 @@ function updateNationState()
             }
         }
     }
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 }
 
 function checkStatistic()
@@ -891,7 +891,7 @@ function checkStatistic()
 
 function convForOldGeneral(array $general, int $year, int $month)
 {
-    $general['history'] = getGeneralHistoryAll($general['no']);
+    $general['history'] = getGeneralHistoryLogAll($general['no']);
     return [
         'server_id' => UniqueConst::$serverID,
         'general_no' => $general['no'],
@@ -1040,7 +1040,7 @@ function checkEmperior()
     $nation['msg'] = $nationStor->notice;
     $nation['scout_msg'] = $nationStor->scout_msg;
     $nation['aux'] += $nationStor->max_power;
-    $nation['history'] = getNationHistoryAll($nation['nation']);
+    $nation['history'] = getNationHistoryLogAll($nation['nation']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
@@ -1062,7 +1062,7 @@ function checkEmperior()
         ])
     ]);
 
-    $nationHistory = getNationHistoryAll($nation['nation']);
+    $nationHistory = getNationHistoryLogAll($nation['nation']);
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
     $serverName = UniqueConst::$serverName;
@@ -1116,7 +1116,7 @@ function checkEmperior()
     ]);
 
     $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 
     //연감 월결산
     LogHistory();
