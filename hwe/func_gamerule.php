@@ -942,14 +942,13 @@ function checkEmperior()
         return;
     }
 
-    $remainNationCnt = $db->queryFirstField('SELECT count(*) FROM nation WHERE level > 0');
+    $remainNations = $db->queryFirstColumn('SELECT nation FROM nation WHERE level > 0 LIMIT 2');
 
-    if ($remainNationCnt > 1) {
+    if (!$remainNations || count($remainNations) != 1) {
         return;
     }
 
-    $nation = $db->queryFirstRow('SELECT * FROM nation WHERE level > 0 LIMIT 1');
-    $nationID = $nation['nation'];
+    $nationID = $remainNations[0];
 
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
@@ -964,10 +963,13 @@ function checkEmperior()
 
     checkStatistic();
 
-    $josaYi = JosaUtil::pick($nation['name'], '이');
+    $nation =  $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
+    $nationName = $nation['name'];
+
+    $josaYi = JosaUtil::pick($nationName, '이');
 
     $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
-    $nationLogger->pushNationalHistoryLog("<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일");
+    $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
 
     $gameStor->isunited = 2;
     $gameStor->conlimit = $gameStor->conlimit * 100;
@@ -983,20 +985,19 @@ function checkEmperior()
     $chiefs = Util::convertArrayToDict(
         $db->query(
             'SELECT no,name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
-            $nation['nation']
+            $nationID
         ),
         'officer_level'
     );
 
-    $oldNation =  $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
-    $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
-    $oldNation['generals'] = $oldNationGenerals;
+    $nationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nationID);
+    $nation['generals'] = $nationGenerals;
 
     $tigers = $db->query(
         'SELECT value, name 
         FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
         WHERE rank_data.nation_id = %i AND rank_data.type = "warnum" AND value > 0 ORDER BY value DESC LIMIT 5',
-        $nation['nation']
+        $nationID
     ); // 오호장군
 
     $tigerstr = join(', ', array_map(function ($arr) {
@@ -1008,7 +1009,7 @@ function checkEmperior()
         'SELECT value, name 
         FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
         WHERE rank_data.nation_id = %i AND rank_data.type = "firenum" AND value > 0 ORDER BY value DESC LIMIT 7',
-        $nation['nation']
+        $nationID
     ); // 건안칠자
 
     $eaglestr = join(', ', array_map(function ($arr) {
@@ -1019,7 +1020,7 @@ function checkEmperior()
     $rawGeneralList = $db->query('SELECT no, name, npc, owner FROM general WHERE nation=%i ORDER BY dedication DESC', $nationID);
     foreach ($rawGeneralList as $rawGeneral) {
         $generalLogger = new ActionLogger($rawGeneral['no'], $nationID, $admin['year'], $admin['month']);
-        $generalLogger->pushGeneralActionLog("<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다.", ActionLogger::YEAR_MONTH);
+        $generalLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일하였습니다.", ActionLogger::YEAR_MONTH);
         $generalLogger->flush();
     }
 
@@ -1034,13 +1035,13 @@ function checkEmperior()
     $statNation = $db->queryFirstRow('SELECT nation_count,nation_name,nation_hist from statistic where nation_count=%i LIMIT 1', $stat['nc']);
     $statGeneral = $db->queryFirstRow('SELECT gen_count,personal_hist,special_hist,aux from statistic order by no desc LIMIT 1');
 
-    $oldNation = $nation;
-    $oldNation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
-    $oldNation['aux'] = Json::decode($oldNation['aux']);
-    $oldNation['msg'] = $nationStor->notice;
-    $oldNation['scout_msg'] = $nationStor->scout_msg;
-    $oldNation['aux'] += $nationStor->max_power;
-    $oldNation['history'] = getNationHistoryAll($nation['nation']);
+    $nation = $nation;
+    $nation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
+    $nation['aux'] = Json::decode($nation['aux']);
+    $nation['msg'] = $nationStor->notice;
+    $nation['scout_msg'] = $nationStor->scout_msg;
+    $nation['aux'] += $nationStor->max_power;
+    $nation['history'] = getNationHistoryAll($nation['nation']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
@@ -1048,7 +1049,7 @@ function checkEmperior()
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => $nation['nation'],
-        'data' => Json::encode($oldNation)
+        'data' => Json::encode($nation)
     ]);
 
     $noNationGeneral = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=0');

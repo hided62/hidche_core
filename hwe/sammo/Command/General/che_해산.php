@@ -94,8 +94,8 @@ class che_해산 extends Command\GeneralCommand{
         $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 해산");
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
 
-        $oldNationGenerals = deleteNation($general, false);
-        foreach($oldNationGenerals as $oldGeneral){
+        $nationGenerals = deleteNation($general, false);
+        foreach($nationGenerals as $oldGeneral){
             $oldGeneral->setVar('makelimit', 12);
             $oldGeneral->applyDB($db);
         }

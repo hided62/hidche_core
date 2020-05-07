@@ -1635,8 +1635,8 @@ function deleteNation(General $lord, bool $applyDB):array
     $db = DB::db();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
     
-    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
-    $nationName = $oldNation['name'];
+    $nation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
+    $nationName = $nation['name'];
 
     $logger = $lord->getLogger();
 
@@ -1644,7 +1644,7 @@ function deleteNation(General $lord, bool $applyDB):array
     $logger->pushGlobalHistoryLog("<R><b>【멸망】</b></><D><b>{$nationName}</b></>{$josaUn} <R>멸망</>했습니다.");
 
     
-    $oldNationGeneralList = General::createGeneralObjListFromDB(
+    $nationGeneralList = General::createGeneralObjListFromDB(
         $db->queryFirstColumn(
             'SELECT `no` FROM general WHERE nation=%i AND no != %i',
             $nationID,
@@ -1652,21 +1652,21 @@ function deleteNation(General $lord, bool $applyDB):array
         ), 
         ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'aux'], 1
     );
-    $oldNationGeneralList[$lordID] = $lord;
+    $nationGeneralList[$lordID] = $lord;
     
-    $oldNation['generals'] = array_keys($oldNationGeneralList);
-    $oldNation['aux'] = Json::decode($oldNation['aux']);
-    $oldNation['msg'] = $nationStor->notice;
-    $oldNation['scout_msg'] = $nationStor->scout_msg;
-    $oldNation['aux'] += $nationStor->max_power;
-    $oldNation['history'] = getNationHistoryAll($nationID);
+    $nation['generals'] = array_keys($nationGeneralList);
+    $nation['aux'] = Json::decode($nation['aux']);
+    $nation['msg'] = $nationStor->notice;
+    $nation['scout_msg'] = $nationStor->scout_msg;
+    $nation['aux'] += $nationStor->max_power;
+    $nation['history'] = getNationHistoryAll($nationID);
 
     $josaYi = JosaUtil::pick($nationName, '이');
     $destroyLog = "<D><b>{$nationName}</b></>{$josaYi} <R>멸망</>했습니다.";
     $destroyHistoryLog = "<D><b>{$nationName}</b></>{$josaYi} <R>멸망</>";
 
     // 전 장수 재야로
-    foreach($oldNationGeneralList as $general){
+    foreach($nationGeneralList as $general){
         $general->setVar('belong', 0);
         $general->setVar('troop', 0);
         $general->setVar('officer_level', 0);
@@ -1694,7 +1694,7 @@ function deleteNation(General $lord, bool $applyDB):array
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => $nationID,
-        'data' => Json::encode($oldNation)
+        'data' => Json::encode($nation)
     ]);
     $db->delete('nation', 'nation=%i', $nationID);
     $db->delete('nation_turn', 'nation_id=%i', $nationID);
@@ -1706,7 +1706,7 @@ function deleteNation(General $lord, bool $applyDB):array
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
     $nationStor->resetValues();
 
-    return $oldNationGeneralList;
+    return $nationGeneralList;
 }
 
 function nextRuler(General $general)
