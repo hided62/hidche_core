@@ -20,6 +20,7 @@ class che_의술_태평청령 extends \sammo\BaseItem{
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller(
+            new GeneralTrigger\che_아이템치료($general),
             new GeneralTrigger\che_도시치료($general)
         );
     }
