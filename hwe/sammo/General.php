@@ -305,7 +305,7 @@ class General implements iAction{
         if(!$rawCmd){
             return buildGeneralCommandClass(null, $this, $env);
         }
-        return buildGeneralCommandClass($rawCmd['action'], $this, $env, $rawCmd['arg']);
+        return buildGeneralCommandClass($rawCmd['action'], $this, $env, Json::decode($rawCmd['arg']??null));
     }
 
     /**
@@ -340,7 +340,7 @@ class General implements iAction{
         }
         
         foreach($rawCmds as $turnIdx=>$rawCmd){
-            $result[$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $this, $env, $rawCmd['arg']);
+            $result[$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $this, $env, Json::decode($rawCmd['arg']??null));
         }
         
         return $result;
@@ -1073,7 +1073,7 @@ class General implements iAction{
                 continue;
             }
             $rawCmd = $rawCmds[$generalID];
-            $result[$generalID] = buildGeneralCommandClass($rawCmd['action'], $general, $env, $rawCmd['arg']);
+            $result[$generalID] = buildGeneralCommandClass($rawCmd['action'], $general, $env, Json::decode($rawCmd['arg']));
         }
         return $result;
     }
@@ -1127,7 +1127,7 @@ class General implements iAction{
                 continue;
             }
             foreach($orderedRawCmds[$generalID] as $turnIdx=>$rawCmd){
-                $result[$generalID][$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $general, $env, $rawCmd['arg']);
+                $result[$generalID][$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $general, $env, Json::decode($rawCmd['arg']));
             }
         }
         return $result;

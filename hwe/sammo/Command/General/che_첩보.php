@@ -62,6 +62,7 @@ class che_첩보 extends Command\GeneralCommand
         $this->minConditionConstraints = [
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
+            ConstraintHelper::NotBeNeutral(),
         ];
     }
 

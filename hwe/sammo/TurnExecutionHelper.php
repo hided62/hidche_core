@@ -215,10 +215,7 @@ class TurnExecutionHelper
     static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
         $db = DB::db();
         $generalsTodo = $db->query(
-            'SELECT no,name,turntime,killturn,block,npc,deadyear, 
-general_turn.`action` AS `action`, general_turn.arg AS arg
-FROM general LEFT JOIN general_turn ON general.`no` = general_turn.general_id AND turn_idx = 0
-WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
+            'SELECT no,name,turntime,killturn,block,npc,deadyear FROM general WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $date
         );
 
@@ -228,11 +225,6 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         $autorun_user = $gameStor->autorun_user;
 
         foreach($generalsTodo as $rawGeneral){
-            $generalCommand = $rawGeneral['action'];
-            $generalArg = Json::decode($rawGeneral['arg'])??[];
-            unset($rawGeneral['action']);
-            unset($rawGeneral['arg']);
-            
             $currActionTime = new \DateTimeImmutable();
             if($currActionTime > $limitActionTime){
                 return [true, $currentTurn];
@@ -242,7 +234,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $turnObj = new static($general);
 
             $env = $gameStor->getAll(true);
-            $generalCommandObj = buildGeneralCommandClass($generalCommand, $general, $env, $generalArg);
+            $generalCommandObj = $general->getReservedTurn(0, $env);
 
             $hasNationTurn = false;
             if($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5){
