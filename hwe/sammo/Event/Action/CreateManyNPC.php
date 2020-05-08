@@ -7,7 +7,6 @@ class CreateManyNPC extends \sammo\Event\Action{
     protected $npcCount;
     protected $avgGen;
     public function __construct($npcCount = 200){
-        \sammo\LogText('ctc',$npcCount);
         $this->npcCount = $npcCount;
     }
 

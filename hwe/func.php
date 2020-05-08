@@ -585,19 +585,19 @@ function generalInfo(General $generalObj)
 
     $injury = $generalObj->getVar('injury');
     if ($injury > 60) {
-        $color = "<font color=red>";
+        $color = "<span style='color:red'>";
         $injury = "위독";
     } elseif ($injury > 40) {
-        $color = "<font color=magenta>";
+        $color = "<span style='color:magenta'>";
         $injury = "심각";
     } elseif ($injury > 20) {
-        $color = "<font color=orange>";
+        $color = "<span style='color:orange'>";
         $injury = "중상";
     } elseif ($injury > 0) {
-        $color = "<font color=yellow>";
+        $color = "<span style='color:yellow'>";
         $injury = "경상";
     } else {
-        $color = "<font color=white>";
+        $color = "<span style='color:white'>";
         $injury = "건강";
     }
 
@@ -660,17 +660,17 @@ function generalInfo(General $generalObj)
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
         <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imagePath}\");background-size:64px;'>&nbsp;</td>
-        <td colspan=9 height=16 style=text-align:center;color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$generalObj->getName()} 【 {$officerLevelText} | {$call} | {$color}{$injury}</font> 】 " . $generalObj->getTurnTime($generalObj::TURNTIME_HMS) . "</td>
+        <td colspan=9 height=16 style=text-align:center;color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$generalObj->getName()} 【 {$officerLevelText} | {$call} | {$color}{$injury}</span> 】 " . $generalObj->getTurnTime($generalObj::TURNTIME_HMS) . "</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>
-        <td style='text-align:center;'>&nbsp;{$color}{$leadership}</font>{$lbonus}&nbsp;</td>
+        <td style='text-align:center;'>&nbsp;{$color}{$leadership}</span>{$lbonus}&nbsp;</td>
         <td style='text-align:center;' width=45>" . bar(expStatus($generalObj->getVar('leadership_exp')), 20) . "</td>
         <td style='text-align:center;' class='bg1'><b>무력</b></td>
-        <td style='text-align:center;'>&nbsp;{$color}{$strength}</font>&nbsp;</td>
+        <td style='text-align:center;'>&nbsp;{$color}{$strength}</span>&nbsp;</td>
         <td style='text-align:center;' width=45>" . bar(expStatus($generalObj->getVar('strength_exp')), 20) . "</td>
         <td style='text-align:center;' class='bg1'><b>지력</b></td>
-        <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
+        <td style='text-align:center;'>&nbsp;{$color}{$intel}</span>&nbsp;</td>
         <td style='text-align:center;' width=45>" . bar(expStatus($generalObj->getVar('intel_exp')), 20) . "</td>
     </tr>
     <tr>

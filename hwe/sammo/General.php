@@ -756,9 +756,6 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
-            if($caller->isEmpty()){
-                continue;
-            }
             /** @var iAction $iObj */
             $caller->merge($iObj->getPreTurnExecuteTriggerList($general));
         }

@@ -83,6 +83,7 @@ class che_하야 extends Command\GeneralCommand{
         $general->setVar('dedication', $general->getVar('dedication') * (1 - 0.1 * $general->getVar('betray')));
         $general->addDedication(0, false);
         $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
+        $general->setVar('permission', 'normal');
 
         $newGold = Util::valueFit($general->getVar('gold'), null, GameConst::$defaultGold);
         $newRice = Util::valueFit($general->getVar('rice'), null, GameConst::$defaultRice);

@@ -9,6 +9,7 @@ abstract class ObjectTrigger{
     const PRIORITY_POST  = 40000;
     const PRIORITY_FINAL = 50000;
 
+    /** @var int 낮을 수록 우선순위가 높다. */
     protected $priority;
     protected $object = null;
 

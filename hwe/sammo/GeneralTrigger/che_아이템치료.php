@@ -15,7 +15,7 @@ class che_아이템치료 extends BaseGeneralTrigger{
         /** @var \sammo\General $general */
         $general = $this->object;
 
-        if($general->getVar('injury') > 0){
+        if($general->getVar('injury') >= 10){
             $general->updateVar('injury', 0);
             $general->activateSkill('pre.부상경감', 'pre.치료');
             $itemObj = $general->getItem();

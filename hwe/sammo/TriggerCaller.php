@@ -94,7 +94,7 @@ abstract class TriggerCaller{
                 $iterLhs->next();
                 continue;
             }
-            if($iterRhs->key() > $iterLhs->key()){
+            if($iterRhs->key() < $iterLhs->key()){
                 $newTriggerList[$iterRhs->key()] = $iterRhs->current();
                 $iterRhs->next();
                 continue;
