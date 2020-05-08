@@ -41,7 +41,7 @@ if($isChiefTurn && !in_array($commandType, Util::array_flatten(GameConst::$avail
 }
 
 $gameStor = KVStorage::getStorage($db, 'game_env')->turnOnCache();
-$env = $gameStor->getValues(['init_year','init_month','startyear','year','month','show_img_level','join_mode','maxnation']);
+$env = $gameStor->getAll();
 $general = General::createGeneralObjFromDB($session->generalID);
 
 if(!$isChiefTurn){
