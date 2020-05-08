@@ -920,7 +920,7 @@ class General implements iAction{
             'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
-            'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 
+            'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'betray',
             'recent_war', 'last_turn', 'myset',
             'specage', 'specage2', 'con', 'connect', 'owner', 'aux'
         ];
