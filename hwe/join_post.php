@@ -196,8 +196,8 @@ else{
 
 $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
 
-$lastconnect = TimeUtil::now();
-if ($lastconnect >= $turntime) {
+$now = date('Y-m-d H:i:s');
+if ($now >= $turntime) {
     $turntime = addTurn($turntime, $admin['turnterm']);
 }
 
@@ -241,7 +241,8 @@ $db->insert('general', [
     'officer_level' => 0,
     'turntime' => $turntime,
     'killturn' => 6,
-    'lastconnect' => $lastconnect,
+    'lastconnect' => $now,
+    'lastrefresh' => $now,
     'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
     'makelimit' => 0,
     'age' => $age,
