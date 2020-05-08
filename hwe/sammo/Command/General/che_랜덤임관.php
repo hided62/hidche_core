@@ -83,6 +83,14 @@ class che_랜덤임관 extends Command\GeneralCommand{
         */
     }
 
+    public function getCommandDetailTitle():string{
+        return '무작위 국가로 임관';
+    }
+
+    public function getBrief():string{
+        return '무작위 국가로 임관';
+    }
+
     public function getCost():array{
         return [0, 0];
     }

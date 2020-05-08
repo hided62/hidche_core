@@ -14,6 +14,7 @@ use \sammo\{
 
 
 use function \sammo\{
+    getColoredName,
     tryUniqueItemLottery,
     getInvitationList,
     getNationStaticInfo,
@@ -25,31 +26,34 @@ use sammo\CityConst;
 
 
 
-class che_임관 extends Command\GeneralCommand{
-    static protected $actionName = '임관';
+class che_장수대상임관 extends Command\GeneralCommand{
+    static protected $actionName = '따라 임관';
     static public $reqArg = true;
 
     protected function argTest():bool{
         if($this->arg === null){
             return false;
         }
-        $destNationID = $this->arg['destNationID']??null;
+        $destGeneralID = $this->arg['destGeneralID']??null;
 
-        if($destNationID === null){
+        if($destGeneralID === null){
             return false;
         }
 
-        if(!is_int($destNationID)){
+        if(!is_int($destGeneralID)){
             return false;
         }
-        if($destNationID < 1){
+        if($destGeneralID < 1){
+            return false;
+        }
+        if($destGeneralID == $this->generalObj->getID()){
             return false;
         }
 
         $this->arg = [
-            'destNationID' => $destNationID
+            'destGeneralID' => $destGeneralID
         ];
-        
+
         return true;
     }
 
@@ -76,7 +80,7 @@ class che_임관 extends Command\GeneralCommand{
     }
 
     public function getCommandDetailTitle():string{
-        return '지정한 국가로 임관';
+        return '장수를 따라 임관';
     }
 
     public function canDisplay():bool{
@@ -85,8 +89,10 @@ class che_임관 extends Command\GeneralCommand{
 
     protected function initWithArg()
     {
-        $destNationID = $this->arg['destNationID'];
-        $this->setDestNation($destNationID, ['gennum', 'scout']);
+        $destGeneralID = $this->arg['destGeneralID'];
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
+        $this->setDestGeneral($destGeneral);
+        $this->setDestNation($this->destGeneralObj->getVar('nation'), ['gennum', 'scout']);
 
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
@@ -112,10 +118,9 @@ class che_임관 extends Command\GeneralCommand{
     }
 
     public function getBrief():string{
-        $commandName = $this->getName();
-        $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
-        $josaRo = JosaUtil::pick($destNationName, '로');
-        return "【{$destNationName}】{$josaRo} {$commandName}";
+        $destGeneralName = $this->destGeneralObj->getName();
+        $josaUl = JosaUtil::pick($destGeneralName, '을');
+        return "【{$destGeneralName}】{$josaUl} 따라 임관";
     }
 
     public function run():bool{
@@ -192,6 +197,8 @@ class che_임관 extends Command\GeneralCommand{
         $env = $this->env;
 
         $joinedNations = $generalObj->getAuxVar('joinedNations')??[];
+        $generalList = $db->query('SELECT no,name,nation,npc FROM general WHERE no!=%i ORDER BY name ASC', $generalObj->getID());
+
 
         $nationList = $db->query('SELECT nation,`name`,color,scout,gennum FROM nation');
         shuffle($nationList);
@@ -222,17 +229,15 @@ class che_임관 extends Command\GeneralCommand{
         unset($nation);
         ob_start(); 
 ?>
-국가에 임관합니다.<br>
+장수를 따라 임관합니다.<br>
 이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
 바로 군주의 위치로 이동합니다.<br>
 임관할 국가를 목록에서 선택하세요.<br>   
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
-        style='<?=$nation['availableJoin']?'':'background-color:red;'?>'
-    >【<?=$nation['name']?> 】</option>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+<?php foreach($generalList as $targetGeneral): ?>
+            <option value='<?=$targetGeneral['no']?>'><?=getColoredName($targetGeneral['name'],$targetGeneral['npc'])?>【<?=getNationStaticInfo($targetGeneral['nation'])['name']??'재야'?>】</option>
 <?php endforeach; ?>
+</select>
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">
 <?=getInvitationList($nationList)?>
 <?php

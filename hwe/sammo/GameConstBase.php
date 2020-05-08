@@ -265,7 +265,8 @@ class GameConstBase
             'che_집합',
             'che_귀환',
             'che_임관',
-            'che_랜덤임관',  
+            'che_랜덤임관',
+            'che_장수대상임관',
         ],
         '계략'=>[
             'che_화계',
