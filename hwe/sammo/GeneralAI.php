@@ -1164,7 +1164,7 @@ class GeneralAI
                 }
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 100 * 2 * 2 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 100 * 4 * 2 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 3) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
@@ -1248,7 +1248,7 @@ class GeneralAI
                 }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetNPCGeneral->getLeadership(false)) * 100 * 2 * 2 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetNPCGeneral->getLeadership(false)) * 100 * 2 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqNPCMinWarRes);
                 }
