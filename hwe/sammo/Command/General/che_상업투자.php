@@ -89,9 +89,7 @@ class che_상업투자 extends Command\GeneralCommand{
 
     
     public function getCompensationStyle():?int{
-        $develCost = $this->env['develcost'];
-        $reqGold = $this->getCost()[0];
-        return $develCost <=>$reqGold;
+        return $this->generalObj->onCalcDomestic(static::$actionKey, 'score', 100)<=>100;
     }
     
     public function getPreReqTurn():int{

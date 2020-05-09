@@ -332,7 +332,15 @@ function refreshMailboxList(obj){
     generalList = {};
 
     
-    
+    obj.nation.sort(function(lhs, rhs){
+        if(lhs.mailbox == myNation.mailbox){
+            return -1;
+        }
+        if(rhs.mailbox == myNation.mailbox){
+            return 1;
+        }
+        return lhs.mailbox - rhs.mailbox;
+    })
 
     $.each(obj.nation, function(){
         var nation = this;
