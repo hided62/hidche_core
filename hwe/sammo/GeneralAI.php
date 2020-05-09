@@ -634,7 +634,7 @@ class GeneralAI
         //고립 도시 장수 발령
         $args = [];
         foreach ($this->lostGenerals as $lostGeneral) {
-            if ($lostGeneral->getVar('npc') >= 2) {
+            if ($lostGeneral->getNPCType() >= 2) {
                 continue;
             }
 
@@ -885,7 +885,7 @@ class GeneralAI
         //고립 도시 장수 발령
         $args = [];
         foreach ($this->lostGenerals as $lostGeneral) {
-            if ($lostGeneral->getVar('npc') < 2 || $lostGeneral->getVar('npc') == 5) {
+            if ($lostGeneral->getNPCType() < 2 || $lostGeneral->getNPCType() == 5) {
                 continue;
             }
             $selCity = Util::choiceRandom($this->supplyCities);
@@ -2662,7 +2662,7 @@ class GeneralAI
     {
         $general = $this->general;
 
-        if($general->getVar('npc') == 5){
+        if($general->getNPCType() == 5){
             $newKillTurn = ($general->getVar('killturn') + Util::randRangeInt(2, 4)) % 5;
             $newKillTurn += 70;
             $general->setVar('killturn', $newKillTurn);
@@ -2812,7 +2812,7 @@ class GeneralAI
         $db = DB::db();
 
         // 오랑캐는 바로 임관
-        if ($general->getVar('npc') == 9) {
+        if ($general->getNPCType() == 9) {
             $rulerNation = $db->queryFirstField(
                 'SELECT nation FROM general WHERE `officer_level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1',
                 $general->getAuxVar('joinedNations') ?? [0]
@@ -3010,7 +3010,7 @@ class GeneralAI
         foreach($nationGenerals as $nationGeneral){
             $generalID = $nationGeneral->getID();
             $cityID = $nationGeneral->getCityID();
-            $npcType = $nationGeneral->getVar('npc');
+            $npcType = $nationGeneral->getNPCType();
             $officerLevel = $nationGeneral->getVar('officer_level');
             $officerCity = $nationGeneral->getVar('officer_city');
 
@@ -3081,7 +3081,7 @@ class GeneralAI
         //TODO: NationTurn과 InstantNationTurn 구분 필요
         $lastTurn = $reservedCommand->getLastTurn();
         $general = $this->general;
-        $npcType = $general->getVar('npc');
+        $npcType = $general->getNPCType();
 
         $this->categorizeNationGeneral();
         $this->categorizeNationCities();
@@ -3160,7 +3160,7 @@ class GeneralAI
 
     public function chooseGeneralTurn(GeneralCommand $reservedCommand): GeneralCommand{
         $general = $this->general;
-        $npcType = $general->getVar('npc');
+        $npcType = $general->getNPCType();
         $nationID = $general->getNationID();
 
         //특별 메세지 있는 경우 출력 하루 4번
@@ -3427,7 +3427,7 @@ class GeneralAI
                 continue;
             }
             $chief = $this->chiefGenerals[$chiefLevel];
-            if($chief->getVar('npc') < 2 && $chief->getVar('killturn') >= $minUserKillturn){
+            if($chief->getNPCType() < 2 && $chief->getVar('killturn') >= $minUserKillturn){
                 $userChiefCnt+=1;
                 $chief->setVar('permission', 'ambassador');
             }
@@ -3490,7 +3490,7 @@ class GeneralAI
             
             if(key_exists($chiefLevel, $this->chiefGenerals)){
                 $oldChief = $this->chiefGenerals[$chiefLevel];
-                if($oldChief->getVar('npc') < 2 && $oldChief->getVar('killturn') >= $minChiefLevel){
+                if($oldChief->getNPCType() < 2 && $oldChief->getVar('killturn') >= $minChiefLevel){
                     continue;
                 }
             }
@@ -3512,10 +3512,10 @@ class GeneralAI
                 if($general->getVar('officer_level') !== 1){
                     continue;
                 }
-                if($general->getVar('npc') < 2 && $general->getVar('killturn') < $minUserKillturn){
+                if($general->getNPCType() < 2 && $general->getVar('killturn') < $minUserKillturn){
                     continue;
                 }
-                if($general->getVar('npc') >= 2 && $general->getVar('killturn') < $minNPCKillturn){
+                if($general->getNPCType() >= 2 && $general->getVar('killturn') < $minNPCKillturn){
                     continue;
                 }
 
@@ -3528,7 +3528,7 @@ class GeneralAI
                     continue;
                 }
 
-                if($general->getVar('npc') < 2 && $userChiefCnt >= 3){
+                if($general->getNPCType() < 2 && $userChiefCnt >= 3){
                     continue;
                 }
 
@@ -3540,7 +3540,7 @@ class GeneralAI
                 continue;
             }
 
-            if($newChief->getVar('npc') < 2){
+            if($newChief->getNPCType() < 2){
                 $userChiefCnt += 1;
                 $newChief->setVar('permission', 'ambassador');
             }

@@ -553,7 +553,7 @@ function ConquerCity(array $admin, General $general, array $city) {
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)
-            $npcType = $oldGeneral->getVar('npc');
+            $npcType = $oldGeneral->getNPCType();
             if($admin['join_mode'] != 'onlyRandom' && 2 <= $npcType && $npcType <= 8 && $npcType != 5 && Util::randBool(0.1)) {
                 $cmd = buildGeneralCommandClass('che_임관', $oldGeneral, $admin, [
                     'destNationID'=>$attackerNationID

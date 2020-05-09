@@ -176,7 +176,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
             <?=formatHistoryToHTML(getBattleResultRecent($gen, 24))?>
         </td>
     </tr>
-<?php if($showGeneral->getVar('npc') > 1 || $permission >= 2): ?>
+<?php if($showGeneral->getNPCType() > 1 || $permission >= 2): ?>
     <tr>
         <td align=center id=bg1><font color=orange size=3>개인 기록</font></td>
         <td align=center id=bg1><font color=orange size=3>&nbsp;</font></td>

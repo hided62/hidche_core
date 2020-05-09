@@ -142,7 +142,7 @@ class TurnExecutionHelper
 
         $killTurn = $gameStor->killturn;
 
-        if($general->getVar('npc') >= 2){
+        if($general->getNPCType() >= 2){
             $general->increaseVarWithLimit('killturn', -1);
         }
         else if($general->getVar('killturn') > $killTurn){
@@ -175,7 +175,7 @@ class TurnExecutionHelper
         // 삭턴장수 삭제처리
         if($general->getVar('killturn') <= 0){
             // npc유저 삭턴시 npc로 전환
-            if($general->getVar('npc') == 1 && $general->getVar('deadyear') > $gameStor->year){
+            if($general->getNPCType() == 1 && $general->getVar('deadyear') > $gameStor->year){
 
                 $ownerName = $general->getVar('owner_name');
                 $josaYi = JosaUtil::pick($ownerName, '이');
@@ -197,7 +197,7 @@ class TurnExecutionHelper
         }
 
         //은퇴
-        if($general->getVar('age') >= GameConst::$retirementYear && $general->getVar('npc') == 0) {
+        if($general->getVar('age') >= GameConst::$retirementYear && $general->getNPCType() == 0) {
             if($gameStor->isunited == 0) {
                 $general->applyDB($db);
                 CheckHall($generalID);
@@ -258,7 +258,7 @@ class TurnExecutionHelper
 
             $turnObj->preprocessCommand();
 
-            if($general->getVar('npc') >= 2 || ($autorun_user['limit_minutes']??false)){
+            if($general->getNPCType() >= 2 || ($autorun_user['limit_minutes']??false)){
                 $ai = new GeneralAI($turnObj->getGeneral());
             }
             

@@ -125,7 +125,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $destNation = null;
 
-        if ($general->getVar('npc') >= 2 && !$env['fiction'] && 1000 <= $env['scenario'] && $env['scenario'] < 2000) {
+        if ($general->getNPCType() >= 2 && !$env['fiction'] && 1000 <= $env['scenario'] && $env['scenario'] < 2000) {
             if($notIn){
                 $nations = $db->query(
                     'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.officer_level = 12 WHERE scout=0 and gennum<%i and nation.nation not in %li',
@@ -276,7 +276,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
         ], 'nation=%i', $destNationID);
 
         $relYear = $env['year'] - $env['startyear'];
-        if($general->getVar('npc') == 1 || $relYear >= 3){
+        if($general->getNPCType() == 1 || $relYear >= 3){
             $joinedNations = $general->getAuxVar('joinedNations')??[];
             $joinedNations[] = $destNationID;
             $general->setAuxVar('joinedNations', $joinedNations);

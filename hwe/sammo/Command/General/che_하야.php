@@ -97,7 +97,7 @@ class che_하야 extends Command\GeneralCommand{
         $db->update('nation', [
             'gold'=>$db->sqleval('gold + %i', $lostGold),
             'rice'=>$db->sqleval('rice + %i', $lostRice),
-            'gennum'=>$db->sqleval('gennum - %i', $general->getVar('npc')!=5?1:0)
+            'gennum'=>$db->sqleval('gennum - %i', $general->getNPCType()!=5?1:0)
         ], 'nation=%i', $nationID);
         \sammo\refreshNationStaticInfo();
 

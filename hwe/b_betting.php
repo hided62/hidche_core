@@ -457,7 +457,7 @@ foreach($tournamentType as $tournamentTypeText=>[$statTypeText,$statFunc,$rankCo
     foreach($tournamentRankerList as $rank=>$ranker){
         printRow(
             $rank+1,
-            $ranker->getVar('npc'),
+            $ranker->getNPCType(),
             $ranker->getName(),
             ($statFunc)($ranker),
             $ranker->getRankVar($winColumn)+$ranker->getRankVar($drawColumn)+$ranker->getRankVar($loseColumn),

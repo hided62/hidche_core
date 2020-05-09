@@ -135,7 +135,7 @@ class che_등용수락 extends Command\GeneralCommand{
         $destNationName = $this->destNation['name'];
 
         $relYear = $env['year'] - $env['startyear'];
-        if($general->getVar('npc') == 1 || $relYear >= 3){
+        if($general->getNPCType() == 1 || $relYear >= 3){
             $joinedNations = $general->getAuxVar('joinedNations')??[];
             $joinedNations[] = $destNationID;
             $general->setAuxVar('joinedNations', $joinedNations);
@@ -178,7 +178,7 @@ class che_등용수락 extends Command\GeneralCommand{
             $general->addDedication(100);
         }
 
-        if($general->getVar('npc') < 2){
+        if($general->getNPCType() < 2){
             $general->setVar('killturn', $env['killturn']);
         }
 

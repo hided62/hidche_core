@@ -158,6 +158,10 @@ class General implements iAction{
         return $this->itemObjs[$itemKey];
     }
 
+    function getNPCType():int{
+        return $this->raw['npc'];
+    }
+
     /** @return BaseItem[] */
     function getItems():array{
         return $this->itemObjs;

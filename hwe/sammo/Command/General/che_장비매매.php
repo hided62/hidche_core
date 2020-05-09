@@ -64,7 +64,7 @@ class che_장비매매 extends Command\GeneralCommand{
         $this->setNation();
 
         $this->minConditionConstraints=[
-            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::ReqCityTrader($general->getNPCType()),
         ];
     }
 
@@ -80,7 +80,7 @@ class che_장비매매 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->fullConditionConstraints=[
-            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::ReqCityTrader($general->getNPCType()),
             ConstraintHelper::ReqCityCapacity('secu', '치안 수치', $itemClass->getReqSecu()),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),

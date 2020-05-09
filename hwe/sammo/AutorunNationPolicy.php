@@ -198,7 +198,7 @@ class AutorunNationPolicy {
             $this->reqHumanWarRecommandRice = Util::round(max(20000, $this->reqHumanWarRecommandRice * 3), -2);
         }
 
-        if($general->getVar('npc') >= 2){
+        if($general->getNPCType() >= 2){
             return;
         }
 

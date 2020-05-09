@@ -90,7 +90,7 @@ class AutorunGeneralPolicy{
     public $can선양 = false;
 
     function doNPCState(General $general){
-        $npc = $general->getVar('npc');
+        $npc = $general->getNPCType();
         $nationID = $general->getNationID();
 
         if($npc==5){
@@ -117,7 +117,7 @@ class AutorunGeneralPolicy{
         //TODO: 국가 정책을 받아와야함
         $this->priority = static::$default_priority;
 
-        if($general->getVar('npc') >= 2){
+        if($general->getNPCType() >= 2){
             $this->doNPCState($general);
             return;
         }

@@ -1581,11 +1581,11 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    if ($general->getVar('npc') >= 2) {
+    if ($general->getNPCType() >= 2) {
         return false;
     }
 
-    if ($general->getVar('npc') > 6) {
+    if ($general->getNPCType() > 6) {
         return false;
     }
 
@@ -1729,7 +1729,7 @@ function nextRuler(General $general)
     $candidate = null;
 
     //npc or npc유저인 경우 후계 찾기
-    if ($general->getVar('npc') > 0) {
+    if ($general->getNPCType() > 0) {
         $candidate = $db->queryFirstRow(
             'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and 1 <= npc and npc<=3 order by npcmatch2,rand() LIMIT 1',
             $general->getVar('affinity'),

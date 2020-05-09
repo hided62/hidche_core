@@ -65,7 +65,7 @@ class che_군량매매 extends Command\GeneralCommand{
         $this->setNation();    
 
         $this->minConditionConstraints=[
-            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::ReqCityTrader($general->getNPCType()),
             ConstraintHelper::OccupiedCity(true),
             ConstraintHelper::SuppliedCity(),
         ];
@@ -76,7 +76,7 @@ class che_군량매매 extends Command\GeneralCommand{
         $general = $this->generalObj;
         
         $this->fullConditionConstraints=[
-            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::ReqCityTrader($general->getNPCType()),
             ConstraintHelper::OccupiedCity(true),
             ConstraintHelper::SuppliedCity(),
         ];
@@ -115,7 +115,7 @@ class che_군량매매 extends Command\GeneralCommand{
         $buyRice = $this->arg['buyRice'];
 
         if($tradeRate === null){
-            if($general->getVar('npc') >= 2){
+            if($general->getNPCType() >= 2){
                 $tradeRate = 1.0;
             }
             else{

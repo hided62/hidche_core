@@ -173,7 +173,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
         \sammo\refreshNationStaticInfo();
 
         $relYear = $env['year'] - $env['startyear'];
-        if($general->getVar('npc') == 1 || $relYear >= 3){
+        if($general->getNPCType() == 1 || $relYear >= 3){
             $joinedNations = $general->getAuxVar('joinedNations')??[];
             $joinedNations[] = $destNationID;
             $general->setAuxVar('joinedNations', $joinedNations);

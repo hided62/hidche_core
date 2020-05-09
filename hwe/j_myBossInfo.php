@@ -223,7 +223,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
     $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 <R>추방</>당했습니다.", ActionLogger::PLAIN);
 
     // 명성/공헌 N*10%감소
-    if($env['year'] <= $env['startyear'] && $general->getVar('npc') < 2){
+    if($env['year'] <= $env['startyear'] && $general->getNPCType() < 2){
         $general->setVar('makelimit', $oldMakeLimit);
     }
     else{
@@ -243,7 +243,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
     }
     $general->setVar('troop', 0);
 
-    if($general->getVar('npc') >= 2 && ($env['scenario'] < 100 || Util::randBool(0.01))) {
+    if($general->getNPCType() >= 2 && ($env['scenario'] < 100 || Util::randBool(0.01))) {
 
         $str = Util::choiceRandom([
             '날 버리다니... 곧 전장에서 복수해주겠다...',
@@ -280,7 +280,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
         ], 'nation=%i AND officer_level=12', $nationID);
 
         $db->update('nation', [
-            'gennum'=>$db->sqleval('gennum - %i', $general->getVar('npc')!=5?1:0),
+            'gennum'=>$db->sqleval('gennum - %i', $general->getNPCType()!=5?1:0),
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),
         ], 'nation = %i', $nationID);
@@ -288,7 +288,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
         //이번분기는 추방불가(초반 제외)
         $db->update('nation', [
             'chief_set'=>$db->sqleval('chief_set | %i', doOfficerSet(0, $myOfficerLevel)),
-            'gennum'=>$db->sqleval('gennum - %i', $general->getVar('npc')!=5?1:0),
+            'gennum'=>$db->sqleval('gennum - %i', $general->getNPCType()!=5?1:0),
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),
         ], 'nation = %i', $nationID);
