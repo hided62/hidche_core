@@ -173,7 +173,10 @@ class che_발령 extends Command\NationCommand{
     {
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation = %i ORDER BY npc,binary(name)',$this->generalObj->getNationID());
+        $nationID = $this->generalObj->getNationID();
+
+        $troops = Util::convertArrayToDict($db->query('SELECT * FROM troop WHERE nation=%i', $nationID), 'troop_leader');
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice,leadership,strength,intel,city,crew,train,atmos,troop FROM general WHERE nation = %i ORDER BY npc,binary(name)',$nationID);
         $destGeneralList = [];
         foreach($destRawGenerals as $destGeneral){
             $nameColor = \sammo\getNameColor($destGeneral['npc']);
@@ -186,13 +189,9 @@ class che_발령 extends Command\NationCommand{
                 $name = "*{$name}*";
             }
 
-            $destGeneralList[] = [
-                'no'=>$destGeneral['no'],
-                'color'=>$nameColor,
-                'name'=>$name,
-                'gold'=>$destGeneral['gold'],
-                'rice'=>$destGeneral['rice']
-            ];
+            $destGeneral['name'] = $name;
+            $destGeneral['color'] = $nameColor;
+            $destGeneralList[] = $destGeneral;
         }
         ob_start();
 ?>
@@ -202,7 +201,10 @@ class che_발령 extends Command\NationCommand{
 목록을 선택하거나 도시를 클릭하세요.<br>
 <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
 <?php foreach($destGeneralList as $destGeneral): ?>
-<option value='<?=$destGeneral['no']?>' <?=$destGeneral['color']?>><?=$destGeneral['name']?>(금:<?=$destGeneral['gold']?>, 쌀:<?=$destGeneral['rice']?>)</option>
+<option value='<?=$destGeneral['no']?>' <?=$destGeneral['color']?>><?=$destGeneral['name']?>[<?=CityConst::byID($destGeneral['city'])->name?>]
+(<?=$destGeneral['leadership']?>/<?=$destGeneral['strength']?>/<?=$destGeneral['intel']?>)
+&lt;병<?=number_format($destGeneral['crew'])?>/훈<?=$destGeneral['train']?>/사<?=$destGeneral['atmos']?>/<?=$destGeneral['troop']?$troops[$destGeneral['troop']]['name']:'-'?>&gt;
+</option>
 <?php endforeach; ?>
 </select>
 <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
