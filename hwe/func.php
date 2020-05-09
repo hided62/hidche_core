@@ -1254,9 +1254,12 @@ function addAge()
     [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
     if ($year >= $startYear + 3) {
-        foreach ($db->query('SELECT no,name,nation,leadership,strength,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general) {
+        foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,aux from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general) {
             $generalID = $general['no'];
-            $special = SpecialityHelper::pickSpecialDomestic($general);
+            $special = SpecialityHelper::pickSpecialDomestic(
+                $general,
+                (Json::decode($general['aux'])['prev_types_special2'])??[]
+            );
             $specialClass = buildGeneralSpecialDomesticClass($special);
             $specialText = $specialClass->getName();
             $db->update('general', [
@@ -1270,9 +1273,12 @@ function addAge()
             $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
         }
 
-        foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general) {
+        foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5,aux from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general) {
             $generalID = $general['no'];
-            $special2 = SpecialityHelper::pickSpecialWar($general);
+            $special2 = SpecialityHelper::pickSpecialWar(
+                $general,
+                (Json::decode($general['aux'])['prev_types_special2'])??[]
+            );
             $specialClass = buildGeneralSpecialWarClass($special2);
             $specialText = $specialClass->getName();
 

@@ -7,8 +7,6 @@ use \sammo\WarUnit;
 use sammo\WarUnitTriggerCaller;
 use sammo\WarUnitTrigger\che_필살강화_회피불가;
 
-use function sammo\LogText;
-
 class che_필살 extends \sammo\BaseSpecial{
 
     protected $id = 71;

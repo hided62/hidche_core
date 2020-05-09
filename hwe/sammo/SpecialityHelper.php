@@ -179,7 +179,7 @@ class SpecialityHelper{
         return $result;
     }
 
-    public static function pickSpecialDomestic(array $general) : string{
+    public static function pickSpecialDomestic(array $general, array $prevSpecials=[]) : string{
         $pAbs = [];
         $pRel = [];
 
@@ -199,6 +199,9 @@ class SpecialityHelper{
                 }
             }
             if(!$valid){
+                continue;
+            }
+            if(in_array($specialID, $prevSpecials)){
                 continue;
             }
             
@@ -226,10 +229,14 @@ class SpecialityHelper{
             return $id;
         }
 
+        if($prevSpecials){
+            return static::pickSpecialDomestic($general, []);
+        }
+
         throw new MustNotBeReachedException();
     }
 
-    public static function pickSpecialWar(array $general) : string{
+    public static function pickSpecialWar(array $general, array $prevSpecials=[]) : string{
         $reqDex = [];
         $pAbs = [];
         $pRel = [];
@@ -252,6 +259,9 @@ class SpecialityHelper{
                 }
             }
             if(!$valid){
+                continue;
+            }
+            if(in_array($specialID, $prevSpecials)){
                 continue;
             }
             
@@ -284,6 +294,10 @@ class SpecialityHelper{
         $id = Util::choiceRandomUsingWeight($pRel);
         if($id){
             return $id;
+        }
+
+        if($prevSpecials){
+            return static::pickSpecialWar($general, []);
         }
 
         throw new MustNotBeReachedException();
