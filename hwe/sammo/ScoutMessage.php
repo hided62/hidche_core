@@ -80,8 +80,6 @@ class ScoutMessage extends Message{
         $commandObj = buildGeneralCommandClass('che_등용수락', $general, $gameStor->getAll(true), [
             'destNationID'=>$this->src->nationID,
             'destGeneralID'=>$this->src->generalID,
-            'year'=>$this->msgOption['year'],
-            'month'=>$this->msgOption['month']
         ]);
 
         if(!$commandObj->hasFullConditionMet()){
