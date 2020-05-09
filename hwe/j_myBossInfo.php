@@ -89,7 +89,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
         return '임명불가능한 관직입니다.';
     }
 
-    if(isOfficerSet($chiefSet, $lv)){
+    if(isOfficerSet($chiefSet, $targetOfficerLevel)){
         return '지금은 임명할 수 없습니다.';
     }
 

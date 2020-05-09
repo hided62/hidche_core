@@ -44,9 +44,6 @@ class che_발령 extends Command\NationCommand{
         $destGeneralID = $this->arg['destGeneralID'];
         $destCityID = $this->arg['destCityID'];
 
-        if($destGeneralID == $this->generalObj->getID()){
-            return false;
-        }
         $this->arg = [
             'destGeneralID'=>$destGeneralID,
             'destCityID'=>$destCityID,
@@ -71,9 +68,16 @@ class che_발령 extends Command\NationCommand{
     protected function initWithArg()
     {
         $this->setDestCity($this->arg['destCityID']);
-
+        
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, 1);
         $this->setDestGeneral($destGeneral);
+
+        if($this->arg['destGeneralID'] == $this->getGeneral()->getID()){
+            $this->fullConditionConstraints=[
+                ConstraintHelper::AlwaysFail('본인입니다')
+            ];
+            return;
+        }
 
         $this->fullConditionConstraints=[
             ConstraintHelper::BeChief(),
@@ -169,7 +173,7 @@ class che_발령 extends Command\NationCommand{
     {
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation = %i ORDER BY npc,binary(name)',$this->generalObj->getNationID());
         $destGeneralList = [];
         foreach($destRawGenerals as $destGeneral){
             $nameColor = \sammo\getNameColor($destGeneral['npc']);

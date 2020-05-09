@@ -67,9 +67,6 @@ class che_몰수 extends Command\NationCommand
         if ($destGeneralID <= 0) {
             return false;
         }
-        if ($destGeneralID == $this->generalObj->getID()) {
-            return false;
-        }
         $this->arg = [
             'isGold' => $isGold,
             'amount' => $amount,
@@ -105,6 +102,13 @@ class che_몰수 extends Command\NationCommand
 
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
+
+        if($this->arg['destGeneralID'] == $this->getGeneral()->getID()){
+            $this->fullConditionConstraints=[
+                ConstraintHelper::AlwaysFail('본인입니다')
+            ];
+            return;
+        }
 
         $this->fullConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
@@ -222,7 +226,7 @@ class che_몰수 extends Command\NationCommand
         //TODO: 암행부처럼 보여야...
         $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)', $this->generalObj->getNationID(), $this->generalObj->getID());
+        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation = %i ORDER BY npc,binary(name)', $this->generalObj->getNationID());
         $destGeneralList = [];
         foreach ($destRawGenerals as $destGeneral) {
             $nameColor = \sammo\getNameColor($destGeneral['npc']);
