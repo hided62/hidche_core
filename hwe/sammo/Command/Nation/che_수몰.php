@@ -177,7 +177,6 @@ class che_수몰 extends Command\NationCommand{
 
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
-        $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동하였습니다.");
 
         $db->update('nation', [
             'strategic_cmd_limit' => $this->getPostReqTurn()

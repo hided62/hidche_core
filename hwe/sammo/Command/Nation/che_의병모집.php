@@ -122,8 +122,6 @@ class che_의병모집 extends Command\NationCommand{
 
         $logger->pushGeneralHistoryLog("<M>{$commandName}</>{$josaUl} 발동");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <M>{$commandName}</>{$josaUl} 발동");
-        $logger->pushGlobalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <M>{$commandName}</>{$josaUl} 발동하였습니다.");
-
 
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
         $general->addDedication(5 * ($this->getPreReqTurn() + 1));
