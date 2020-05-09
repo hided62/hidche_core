@@ -218,7 +218,7 @@ class che_징병 extends Command\GeneralCommand
         $exp = Util::round($reqCrew / 100);
         $ded = Util::round($reqCrew / 100);
 
-        $general->addDex($general->getCrewTypeObj(), $reqCrew / 100, false);
+        $general->addDex($reqCrewType, $reqCrew / 100, false);
 
         [$reqGold, $reqRice] = $this->getCost();
 
@@ -229,7 +229,7 @@ class che_징병 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        $general->setAuxVar('armType', $currCrewType->armType);
+        $general->setAuxVar('armType', $reqCrewType->armType);
         tryUniqueItemLottery($general);
         $general->applyDB($db);
 
