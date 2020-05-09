@@ -9,39 +9,24 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("중원정보", 1);
 
 $mapTheme = $gameStor->map_theme??'che';
 
-$query = "select no,nation from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation FROM general WHERE owner=%i', $userID);
+$myNationID = $me['nation'];
 
-$query = "select nation,color,name,power,gennum from nation where level>0 order by power desc";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nationcount = MYDB_num_rows($result);
-$nationnum = [];
-$nationname = [];
+$nations = array_filter(getAllNationStaticInfo(), function(array $nation){
+    return $nation['level'];
+});
+uasort($nations, function(array $lhs, array $rhs){
+    return -($lhs['power']<=>$rhs['power']);
+});
+$nationCnt = count($nations);
 
-$nationStr = "";
-$powerStr = "";
-$genStr = "";
-$cityStr = "";
-for($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($result);
-
-    $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nation['nation']);
-
-
-    $nationnum[] = $nation['nation'];
-    $nationname[$nation['nation']] = $nation['name'];
-
-    $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
-    $powerStr .= "{$nation['power']}<br>";
-    $genStr .= "{$nation['gennum']}<br>";
-    $cityStr .= "$citycount<br>";
+foreach($db->queryAllLists('SELECT nation, count(city) FROM city WHERE nation != 0 GROUP BY nation') as [$nationID, $cityCnt]){
+    $nations[$nationID]['city_cnt'] = $cityCnt;
 }
 
 $realConflict = [];
@@ -51,23 +36,51 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
     $rawConflict
 ])
 {
-    $conflict = Json::decode($rawConflict);
-    if (count($conflict)<2) {
+    $rawConflict = Json::decode($rawConflict);
+    if (count($rawConflict)<2) {
         continue;
     }
 
-    $sum = array_sum($conflict);
+    $sum = array_sum($rawConflict);
 
-    foreach ($conflict as $nationID=>$killnum) {
-        $conflict[$nationID] = ['killnum'=>$killnum];
-        $conflict[$nationID]['percent'] = round(100*$killnum / $sum, 1);
-        $conflict[$nationID]['name'] = $nationname[$nationID];
-        $conflict[$nationID]['color'] = getNationStaticInfo($nationID)['color'];
+
+    $conflict = [];
+    foreach ($rawConflict as $nationID=>$killnum) {
+        $conflict[$nationID] = [
+            'killnum'=>$killnum,
+            'percent'=>round(100*$killnum / $sum, 1),
+            'name'=>$nations[$nationID]['name'],
+            'color'=>$nations[$nationID]['color']
+        ];
     }
 
     $realConflict[] = [$cityID, $cityName, $conflict];
 };
 
+$diplomacyList = [];
+foreach($db->queryAllLists('SELECT me, you, state FROM diplomacy') as [$me, $you, $state]){
+    if(!key_exists($me, $diplomacyList)){
+        $diplomacyList[$me] = [];
+    }
+    
+    $diplomacyList[$me][$you] = $state;
+}
+
+$cellWidth = intdiv(888, max(1, $nationCnt));
+
+
+$defaultStateChar = '?';
+$sameNationStateChar = '＼';
+$infomativeStateCharMap = [
+    0=>'<span style="color:red;">★</span>',
+    1=>'<span style="color:magenta;">▲</span>',
+    2=>'ㆍ',
+    7=>'<span style="color:green;">@</span>'
+];
+$neutralStateCharMap = [
+    0=>'<span style="color:red;">★</span>',
+    1=>'<span style="color:magenta;">▲</span>'
+];
 
 ?>
 <!DOCTYPE html>
@@ -100,6 +113,7 @@ $(function(){
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
+<?=WebUtil::printCSS('css/history.css')?>
 
 </head>
 
@@ -109,73 +123,32 @@ $(function(){
 </table>
 <br>
 <table align=center width=1000 class='tb_layout bg0'>
-    <tr><td colspan=<?=$nationcount+1?> align=center bgcolor=blue>외 교 현 황</td></tr>
-<?php
-echo "
+    <tr><td colspan=<?=$nationCnt+1?> align=center bgcolor=blue>외 교 현 황</td></tr>
     <tr>
-        <td align=center width=130 style=background-color:".GameConst::$basecolor2.";>&nbsp;</td>";
-
-if($nationcount != 0) {
-    $width = intdiv(888, $nationcount);
+        <td align=center width=130 style=background-color:<?=GameConst::$basecolor2?>;>&nbsp;</td>
+<?php foreach($nations as $nation): ?>
+    <td align=center width=<?=$cellWidth?> style='background-color:<?=$nation['color']?>;color:<?=newColor($nation['color'])?>'><?=$nation['name']?></td>
+<?php endforeach; ?>
+</tr>
+<?php foreach($nations as $me=>$meNation): ?>
+<tr style='text-align:center;'>
+<td align=center style='background-color:<?=$meNation['color']?>;color:<?=newColor($meNation['color'])?>'><?=$meNation['name']?></td>
+<?php    foreach(array_keys($nations) as $you): ?>
+<td <?=($me==$myNationID||$you==$myNationID)?'style="background-color:'.GameConst::$basecolor3.'"':''?>><?php
+if($me==$you){
+    echo $sameNationStateChar;
 }
-
-for($i=0; $i < $nationcount; $i++) {
-    echo "
-        <td align=center width={$width} style=background-color:".getNationStaticInfo($nationnum[$i])['color'].";color:".newColor(getNationStaticInfo($nationnum[$i])['color']).";>{$nationname[$nationnum[$i]]}</td>";
+else if($me==$myNationID || $you==$myNationID || $session->userGrade >= 5){
+    echo $infomativeStateCharMap[$diplomacyList[$me][$you]]??$defaultStateChar;
 }
-echo "
-    </tr>";
-
-$state = [];
-
-for($i=0; $i < $nationcount; $i++) {
-    $query = "select you,state from diplomacy where me='$nationnum[$i]'";
-    $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount2 = MYDB_num_rows($dipresult);
-    for($k=0; $k < $nationcount2; $k++) {
-        $dip = MYDB_fetch_array($dipresult);
-        $state[$dip['you']] = $dip['state'];
-    }
-    echo "
-    <tr>
-        <td align=center style=background-color:".getNationStaticInfo($nationnum[$i])['color'].";color:".newColor(getNationStaticInfo($nationnum[$i])['color']).";>{$nationname[$nationnum[$i]]}</td>";
-
-    for($k=0; $k < $nationcount; $k++) {
-        if($i == $k) {
-            $str = "＼";
-        } else {
-            switch($state[$nationnum[$k]]) {
-                case 0: $str = "<font color=red>★</font>"; break;
-                case 1: $str = "<font color=magenta>▲</font>"; break;
-                case 2:
-                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $session->userGrade >= 5) { $str = "ㆍ"; }
-                    else { $str = "?"; }
-//                    $str = "ㆍ";
-                    break;
-                case 3: $str = "<font color=cyan>○</font>"; break;
-                case 4: $str = "<font color=cyan>○</font>"; break;
-                case 5: $str = "<font color=cyan>◎</font>"; break;
-                case 6: $str = "<font color=cyan>◎</font>"; break;
-                case 7:
-                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $session->userGrade >= 5) { $str = "<font color=green>@</font>"; }
-                    else { $str = "?"; }
-//                    $str = "<font color=limegreen>@</font>";
-                    break;
-            }
-        }
-
-        if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation']) { $backcolor = "style=background-color:".GameConst::$basecolor3.";"; }
-        else { $backcolor = ""; }
-
-        echo "
-        <td align=center $backcolor>$str</td>";
-    }
-    echo "
-    </tr>
-";
+else{
+    echo $neutralStateCharMap[$diplomacyList[$me][$you]]??$defaultStateChar;
 }
-?>
-    <tr><td colspan=<?=$nationcount+1?> align=center>불가침 : <font color=limegreen>@</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
+?></td>
+<?php    endforeach; ?>
+</tr>
+<?php endforeach; ?>
+    <tr><td colspan=<?=$nationCnt+1?> align=center>불가침 : <font color=limegreen>@</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
 </table>
 
 <?php if ($realConflict) : ?>
@@ -220,10 +193,29 @@ for($i=0; $i < $nationcount; $i++) {
         <td width=698 height=420>
             <?=getMapHtml($mapTheme)?>
         </td>
-        <td width=139 valign=top><div style='background-color:#cccccc;color:black;text-align:center'>국명</div><?=$nationStr?></td>
-        <td width=70 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>국력</div><?=$powerStr?></td>
-        <td width=43 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>장수</div><?=$genStr?></td>
-        <td width=40 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>속령</div><?=$cityStr?></td>
+        <td id='nation_list_frame'>
+            <table id='nation_list'>
+                <thead>
+                    <tr>
+                        <th width=130>국명</th>
+                        <th width=70>국력</th>
+                        <th width=45>장수</th>
+                        <th width=45>속령</th>
+                    </tr>
+                </thead>
+                <tbody>
+<?php foreach($nations as $nation): ?>
+                    <tr>
+                        <td><span style='color:<?=newColor($nation['color'])?>;background-color:<?=$nation['color']?>'><?=$nation['name']?></td>
+                        <td style='text-align:right'><?=number_format($nation['power'])?></td>
+                        <td style='text-align:right'><?=number_format($nation['gennum'])?></td>
+                        <td style='text-align:right'><?=number_format($nation['city_cnt'])?></td>
+                    </tr>
+<?php endforeach; ?>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </td>
     </tr>
 </table>
 <br>
