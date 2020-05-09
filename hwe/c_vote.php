@@ -33,7 +33,7 @@ if($btn == "투표" && $general->getVar('vote') == 0 && $sel > 0) {
         'vote'=>$sel
     ], 'owner=%i', $userID);
 
-    if(tryUniqueItemLottery($general, '투표')){
+    if(tryUniqueItemLottery($general, '설문조사')){
         $general->applyDB($db);
     }
 }

@@ -1607,8 +1607,8 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         $prob = 1 / $genCount; // 1~2개월에 하나씩 등장
     }
 
-    if ($acquireType == '투표') {
-        $prob = 1 / ($genCount * 0.7 / 3); // 투표율 70%, 투표 한번에 2~3개 등장
+    if ($acquireType == '설문조사') {
+        $prob = 1 / ($genCount * 0.7 / 3); // 투표율 70%, 설문조사 한번에 2~3개 등장
     } else if ($acquireType == '랜덤 임관') {
         $prob = 1 / ($genCount / 10 / 2); // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
     } else if ($acquireType == '건국') {
