@@ -753,6 +753,9 @@ function setGift($tnmt_type, $tnmt, $phase) {
         $db->update('rank_data', [
             'value' => $db->sqleval('value + 2')
         ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}g");
+        $db->update('rank_data', [
+            'value' => $db->sqleval('value + 1')
+        ], 'general_id = %i AND type = %s', $general['no'], "{$tp2}p");
 
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
