@@ -167,6 +167,18 @@ function checkSupply()
     }
 }
 
+function updateGeneralNumber(){
+    $db = DB::db();
+    foreach($db->queryAllLists('SELECT nation, count(*) FROM general WHERE npc != 5 GROUP BY nation') as [$nationID, $gennum]){
+        if($nationID === 0){
+            continue;
+        }
+        $db->update('nation', [
+            'gennum'=>$gennum
+        ], 'nation=%i', $nationID);
+    }
+    refreshNationStaticInfo();
+}
 
 function updateYearly()
 {
@@ -471,6 +483,7 @@ function postUpdateMonthly()
     }
     // 작위 업데이트
     updateNationState();
+    updateGeneralNumber();
     refreshNationStaticInfo();
     // 천통여부 검사
     checkEmperior();

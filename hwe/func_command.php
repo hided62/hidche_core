@@ -285,19 +285,19 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
         }
         else if($turnIdx == -1){
             //홀수
-            for ($subIdx = 1; $subIdx < GameConst::$maxTurn; $subIdx+=2) {
-               $turnList[$subIdx] = true;
+            foreach(Util::range(1, GameConst::$maxTurn, 2) as $subIdx){
+                $turnList[$subIdx] = true;
             }
         }
         else if($turnIdx == -2){
             //짝수
-            for ($subIdx = 0; $subIdx < GameConst::$maxTurn; $subIdx+=2) {
+            foreach(Util::range(0, GameConst::$maxTurn, 2) as $subIdx){
                 $turnList[$subIdx] = true;
             }
         }
         else if($turnIdx == -3){
             //모두
-            for ($subIdx = 0; $subIdx < GameConst::$maxTurn; $subIdx++) {
+            foreach(Util::range(GameConst::$maxTurn) as $subIdx){
                 $turnList[$subIdx] = true;
             }
         }

@@ -133,7 +133,7 @@ if (!$city) {
 $pleadership = 0;
 $pstrength = 0;
 $pintel = 0;
-for ($statBonusCnt = 3 + mt_rand(0, 2); $statBonusCnt > 0; $statBonusCnt--) {
+foreach(Util::range(Util::randRangeInt(3, 5)) as $statIdx){
     switch (Util::choiceRandomUsingWeight([$leadership, $strength, $intel])) {
     case 0:
         $pleadership++;

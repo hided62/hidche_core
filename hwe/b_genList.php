@@ -170,7 +170,7 @@ foreach ($generals as &$general) {
 }
 unset($general);
 
-$genCnt = count($generals);
+$genCnt = countPureGeneralFromRawList($generals);
 $totalGold = 0;
 $totalRice = 0;
 $crew90 = 0;
@@ -182,6 +182,9 @@ $gen60 = 0;
 $crewTotal = 0;
 //$genTotal = 0;
 foreach($generals as $general){
+    if($general['npc']==5){
+        continue;
+    }
     $totalGold += $general['gold'];
     $totalRice += $general['rice'];
 

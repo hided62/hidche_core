@@ -127,7 +127,7 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
     <tr><td>연 감<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>
-        년월 선택 :
+        연월 선택 :
         <input type=submit name=btn value="◀◀ 이전달">
         <select id='yearmonth' name=yearmonth size=1>
             <option selected='selected'><?=$year?>년 <?=$month?>월</option>
@@ -160,7 +160,7 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
                     <tr>
                         <td><span style='color:<?=newColor($nation['color'])?>;background-color:<?=$nation['color']?>'><?=$nation['name']?></td>
                         <td style='text-align:right'><?=number_format($nation['power'])?></td>
-                        <td style='text-align:right'><?=number_format(count($nation['generals']??[]))?></td>
+                        <td style='text-align:right'><?=number_format($nation['gennum'])?></td>
                         <td style='text-align:right'><?=number_format(count($nation['cities']??[]))?></td>
                     </tr>
 <?php endforeach; ?>

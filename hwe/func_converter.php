@@ -378,6 +378,21 @@ function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = n
     return $class->newInstanceArgs(array_merge([$unit], $args));
 }
 
+function countPureGeneralFromRawList(?array $rawGeneralList=null):int{
+    if(!$rawGeneralList){
+        return 0;
+    }
+
+    $result = 0;
+    foreach($rawGeneralList as $rawGeneral){
+        if(!$rawGeneral['npc'] === 5){
+            continue;
+        }
+        $result+=1;
+    }
+    return $result;
+}
+
 function getOfficerLevelText($officerLevel, $nlevel=8) {
     if($officerLevel >= 0 && $officerLevel <= 4) { $nlevel = 0; }
     $code = $nlevel * 100 + $officerLevel;

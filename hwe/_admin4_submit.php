@@ -64,11 +64,11 @@ switch ($btn) {
     case "메세지 전달":
         $date = TimeUtil::now();
         $src = MessageTarget::buildQuick($session->generalID);
-        for ($i = 0; $i < count($genlist); $i++) {
+        foreach($genlist as $generalID){
             $msgObj = new Message(
                 Message::MSGTYPE_PRIVATE,
                 $src,
-                MessageTarget::buildQuick($genlist[$i]),
+                MessageTarget::buildQuick($generalID),
                 $msg,
                 new \DateTime(),
                 new \DateTime('9999-12-31'),
