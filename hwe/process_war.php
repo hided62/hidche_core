@@ -521,6 +521,7 @@ function ConquerCity(array $admin, General $general, array $city) {
             12
         ), null, $city, $loseNation, $year, $month, false);
         
+        $attackerLogger->flush();
         $oldNationGenerals = deleteNation($lord, false);
         $josaUl = JosaUtil::pick($defenderNationName, '을');
         $attackerLogger->pushNationalHistoryLog("<D><b>{$defenderNationName}</b></>{$josaUl} 정복");
