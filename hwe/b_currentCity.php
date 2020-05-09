@@ -12,14 +12,10 @@ $userID = Session::getUserID();
 $userGrade = Session::getUserGrade();
 
 $db = DB::db();
-$connect=$db->get();
 
 increaseRefresh("현재도시", 1);
 
-$query = "select no,nation,officer_level,city from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
+$me = $db->queryFirstRow('SELECT no,nation,officer_level,city from general where owner=%i', $userID);
 $myNation = $db->queryFirstRow('SELECT nation,level,spy FROM nation WHERE nation=%i', $me['nation']);
 
 $templates = new \League\Plates\Engine('templates');
@@ -78,9 +74,7 @@ if(!$citylist){
 // 재야일때는 현재 도시만
 $valid = 0;
 if($me['officer_level'] == 0) {
-    $query = "select city,name,nation from city where city='{$me['city']}'";
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($cityresult);
+    $city = $db->queryFirstRow('SELECT city,name,nation from city where city=%i', $me['city']);
     echo "
                     <option value={$city['city']}";
     if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
@@ -91,12 +85,7 @@ if($me['officer_level'] == 0) {
     echo "</option>";
 } else {
     // 아국 도시들 선택
-    $query = "select city,name,nation from city where nation='{$me['nation']}'";
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
-
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($cityresult);
+    foreach($db->query('SELECT city,name,nation from city where nation=%i', $me['nation']) as $city){
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
@@ -108,12 +97,7 @@ if($me['officer_level'] == 0) {
     }
 
     // 아국 장수가 있는 타국 도시들 선택
-    $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='{$me['nation']}' and B.nation!='{$me['nation']}'";
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
-
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($cityresult);
+    foreach ($db->query('SELECT distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation=%i and B.nation!=%i', $me['nation'], $me['nation']) as $city){
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $citylist) { echo " selected"; $valid = 1; }

@@ -53,7 +53,7 @@ if($gameStor->isunited){
 
 $generalList = [];
 foreach($rawGeneralList as $rawGeneral){
-    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$ownerName,$injury,$leadership,$strength,$intel,$experience,$dedication,$officerLevel,$killturn,$connect] = $rawGeneral;
+    [$owner,$no,$picture,$imgsvr,$npc,$age,$nation,$special,$special2,$personal,$name,$ownerName,$injury,$leadership,$strength,$intel,$experience,$dedication,$officerLevel,$killturn,$connectCnt] = $rawGeneral;
 
     if(key_exists($owner, $ownerNameList)){
         $ownerName = $ownerNameList[$owner];
@@ -84,7 +84,7 @@ foreach($rawGeneralList as $rawGeneral){
         getDed($dedication),
         getOfficerLevelText($officerLevel, $nationArr['level']),
         $killturn,
-        $connect
+        $connectCnt
     ];
 }
 

@@ -9,14 +9,11 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("토너먼트", 1);
 TurnExecutionHelper::executeAllCommand();
 
-$query = "select no,tournament,con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('select no,tournament,con,turntime from general where owner=%i', $userID);
 
 $admin = $gameStor->getValues(['tournament','phase','tnmt_msg','tnmt_type','develcost','tnmt_trig']);
 
@@ -158,14 +155,15 @@ echo "
             <table align=center width=2000 class='bg0 mimic_flex'>
                <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-for ($i=0; $i < 1; $i++) {
-    $general = MYDB_fetch_array($result) ?? [
-        'name'=>'',
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=60 order by grp, grp_no LIMIT 1');
+while(count($generalList) < 1){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -181,22 +179,21 @@ echo "
                 </tr>
                 <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=50 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $cent = [];
 for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }
 $line = [];
 $gen = [];
-for ($i=0; $i < 2; $i++) {
-    //FIXME: 다시 작성. null인 경우엔 어쩌려고?
-    $general = MYDB_fetch_array($result) ?? [
-        'name'=>'',
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=50 order by grp, grp_no LIMIT 2');
+while(count($generalList) < 2){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
         'win'=>0
     ];
-
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -230,18 +227,19 @@ for ($i=0; $i < 2; $i++) {
 echo "
                 </tr>
                 <tr align=center>";
-
-$query = "select npc,name,win from tournament where grp>=40 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 2; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 4; $i++) {
-    $general = MYDB_fetch_array($result) ?? [
-        'name'=>'',
+
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=40 order by grp, grp_no LIMIT 4');
+while(count($generalList) < 4){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -276,17 +274,19 @@ echo "
                 </tr>
                 <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=30 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 4; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 8; $i++) {
-    $general = MYDB_fetch_array($result) ?? [
-        'name'=>'',
+
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=30 order by grp, grp_no LIMIT 8');
+while(count($generalList) < 8){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -321,17 +321,18 @@ echo "
                 </tr>
                 <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=20 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 8; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 16; $i++) {
-    $general = MYDB_fetch_array($result) ?? [
-        'name'=>'',
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=20 order by grp, grp_no LIMIT 16');
+while(count($generalList) < 16){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -410,10 +411,8 @@ for ($i=0; $i < 8; $i++) {
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
-    $query = "select npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$grp' order by gd desc, gl desc, seq";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    for ($k=1; $k <= 4; $k++) {
-        $general = MYDB_fetch_array($result);
+    $generalList = $db->query('SELECT npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq',$grp);
+    foreach($generalList as $k=>$general) {
         printRow($k, $general['npc'], $general['name'], $general[$tp], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gd'], $general['gl'], $general['prmt']);
     }
     echo "
@@ -436,10 +435,8 @@ for ($i=0; $i < 8; $i++) {
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
-    $query = "select npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$grp' order by gd desc, gl desc, seq";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    for ($k=1; $k <= 8; $k++) {
-        $general = MYDB_fetch_array($result);
+    $generalList = $db->query('SELECT npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq',$grp);
+    foreach($generalList as $k=>$general) {
         printRow($k, $general['npc'], $general['name'], $general[$tp], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gd'], $general['gl'], $general['prmt']);
     }
     echo "

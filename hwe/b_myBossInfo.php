@@ -8,15 +8,12 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
 
 increaseRefresh("인사부", 1);
 //훼섭 추방을 위해 갱신
 TurnExecutionHelper::executeAllCommand();
 
-$query = "select no,nation,officer_level from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation,officer_level from general where owner=%i', $userID);
 $nationID = $me['nation'];
 
 $meLevel = $me['officer_level'];
@@ -24,6 +21,8 @@ if($meLevel == 0) {
     echo "재야입니다.";
     exit();
 }
+
+$nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nation where nation=%i', $nationID); //국가정보
 
 ?>
 <!DOCTYPE html>
@@ -50,10 +49,6 @@ var myLevel = <?=$meLevel?>;
 </script>
 
 <?php 
-
-$query = "select nation,name,level,color,chief_set from nation where nation='{$nationID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);   //국가정보
 
 $ambassadors = $db->query('SELECT no, name, officer_level, penalty, permission FROM general WHERE permission = \'ambassador\' AND nation = %i', $nationID);
 $auditors = $db->query('SELECT no, name, officer_level, penalty, permission FROM general WHERE permission = \'auditor\' AND nation = %i', $nationID);
@@ -108,13 +103,13 @@ $lv = getNationChiefLevel($nation['level']);
 if($meLevel >= 5) { $btn = "button"; }
 else { $btn = "hidden"; }
 
-$query = "select name,officer_level,picture,imgsvr,belong from general where nation='{$nationID}' and officer_level>={$lv} order by officer_level desc";
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$level = [];
-for($i=12; $i >= $lv; $i--) {
-    $levels = MYDB_fetch_array($genresult);
-    $level[$levels['officer_level']] = $levels;
-}
+$level = Util::convertArrayToDict(
+    $db->query(
+        'SELECT name,officer_level,city,picture,imgsvr,belong from general where nation=%i and officer_level>=%i order by officer_level desc',
+        $nationID, $lv
+    ),
+    'officer_level'
+);
 
 
 $tigers = $db->query('SELECT value, name 
@@ -179,16 +174,26 @@ for($i=12; $i >= $lv; $i-=2) {
         <td width=498>
 <?php
 
+if($meLevel >= 5){
+    $candidateStrength = $db->query('SELECT no,name,officer_level,city,npc from general where nation=%i and officer_level!=12 and strength>=%i order by npc,binary(name)', $nationID, GameConst::$chiefStatMin);
+    $candidateIntel = $db->query('SELECT no,name,officer_level,city,npc from general where nation=%i and officer_level!=12 and intel>=%i order by npc,binary(name)', $nationID, GameConst::$chiefStatMin);
+    $candidateAny = $db->query('SELECT no,name,officer_level,city,npc,leadership,strength,intel,killturn from general where nation=%i and officer_level!=12  order by npc,binary(name)', $nationID); //추방 때문에 조금 더 김
+}
+else{
+    $candidateStrength = [];
+    $candidateIntel = [];
+    $candidateAny = [];
+}
+
+
 if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $meLevel)) {
     echo "
             <select id='genlist_kick' size=1 style=color:white;background-color:black;>";
 
-    $query = "select no,npc,name,officer_level,leadership,strength,intel,killturn from general where nation='{$nationID}' and officer_level!='12' and no!='{$me['no']}' order by npc,binary(name)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
-
-    for($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($result);
+    foreach($candidateAny as $general) {
+        if($general['no'] === $me['no']){
+            continue;
+        }
         echo "
                 <option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }
@@ -198,9 +203,6 @@ if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $meLevel)) {
             <input type=$btn id='btn_kick' value=추방>";
 }
 
-$query = "select name,city from general where nation='{$nationID}' and officer_level=12";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$general = MYDB_fetch_array($result);
 $officerLevelText = getOfficerLevelText(11, $nation['level']);
 echo "
         </td>
@@ -211,7 +213,7 @@ echo "
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
         <td width=98  align=right id=bg1>".getOfficerLevelText(12, $nation['level'])."</td>
-        <td width=398>{$general['name']} 【".CityConst::byID($general['city'])->name."】</td>
+        <td width=398>{$level[12]['name']} 【".CityConst::byID($level[12]['city'])->name."】</td>
         <td width=98  align=right id=bg1>{$officerLevelText}</td>
         <td width=398>
 ";
@@ -220,12 +222,8 @@ if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], 11)) {
     echo "
             <select id='genlist_11' size=1 maxlength=15 style=color:white;background-color:black;>
                 <option value=0 data-officer_level='0' data-name=''>____공석____</option>";
-    $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' order by npc,binary(name)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
 
-    for($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($result);
+    foreach($candidateAny as $general) {
         if($general['officer_level'] == 11) {
             echo "<option style=color:red; selected data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
@@ -239,11 +237,8 @@ if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], 11)) {
             </select>
             <input class='btn_appoint' type=$btn data-officer_level='11' data-officer_level_text='{$officerLevelText}' value=임명>";
 } else {
-    $query = "select name,city from general where nation='{$nationID}' and officer_level='11'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    if($general){
-        echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+    if(key_exists(11, $level)){
+        echo "{$level[11]['name']} 【".CityConst::byID($level[11]['city'])->name."】";
     }
     
 }
@@ -251,14 +246,6 @@ echo "
         </td>
     </tr>
 ";
-
-$queries = [];
-$queries[10] = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[9]  = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[8]  = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[7]  = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[6]  = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-$queries[5]  = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
 
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
@@ -274,12 +261,7 @@ for($i=10; $i >= $lv; $i--) {
             <select id='genlist_{$i}' size=1 style=color:white;background-color:black;>
                 <option value=0 data-officer_level='0' data-name=''>____공석____</option>";
 
-        $query = $queries[$i];
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-
-        for($k=0; $k < $gencount; $k++) {
-            $general = MYDB_fetch_array($result);
+        foreach(($i%2==0?$candidateStrength:$candidateIntel) as $general) {
             if($general['officer_level'] == $i) {
                 echo "<option style=color:red; selected data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } elseif($general['officer_level'] > 1) {
@@ -293,9 +275,7 @@ for($i=10; $i >= $lv; $i--) {
             </select>
             <input class='btn_appoint' type=$btn data-officer_level='{$i}' data-officer_level_text='$officerLevelText' value=임명>";
     } else {
-        $query = "select name,city from general where nation='{$nationID}' and officer_level={$i}";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
+        $general = $level[$i]??null;
         if($general){
             echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
         }
@@ -345,13 +325,12 @@ if($meLevel >= 5) {
             <select id='citylist_4' size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nationID}' and (officer_set&(1<<4))=0 order by region,level desc,binary(name)"; // 도시 이름 목록
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
-
+    $cityList = $db->query('SELECT city,name,region,officer_set FROM city WHERE nation=%i ORDER BY region,level DESC,binary(name)', $nationID);
     $region = 0;
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($result);
+    foreach($cityList as $city){
+        if(isOfficerSet($city['officer_set'], 4)){
+            continue;
+        }
 
         if($region != $city['region']) {
             if($region != 0) {
@@ -371,11 +350,7 @@ if($meLevel >= 5) {
                 <option value=0 data-officer_level='0' data-name=''>____공석____</option>
     ";
 
-    $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and strength>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
+    foreach($candidateStrength as $general) {
         if($general['officer_level'] == 4) {
             echo "<option style=color:red; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
@@ -397,13 +372,11 @@ if($meLevel >= 5) {
             <select id='citylist_3' size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nationID}' and (officer_set&(1<<3))=0 order by region,level desc,binary(name)"; // 도시 이름 목록
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
-
     $region = 0;
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($result);
+    foreach($cityList as $city){
+        if(isOfficerSet($city['officer_set'], 3)){
+            continue;
+        }
 
         if($region != $city['region']) {
             if($region != 0) {
@@ -423,11 +396,7 @@ if($meLevel >= 5) {
                 <option value=0 data-officer_level='0' data-name=''>____공석____</option>
     ";
 
-    $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
+    foreach($candidateIntel as $general) {
         if($general['officer_level'] == 3) {
             echo "<option style=color:red; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {
@@ -449,13 +418,11 @@ if($meLevel >= 5) {
             <select id='citylist_2' size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nationID}' and (officer_set&(1<<2))=0 order by region, level desc,binary(name)"; // 도시 이름 목록
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
-
     $region = 0;
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($result);
+    foreach($cityList as $city){
+        if(isOfficerSet($city['officer_set'], 2)){
+            continue;
+        }
 
         if($region != $city['region']) {
             if($region != 0) {
@@ -475,11 +442,7 @@ if($meLevel >= 5) {
                 <option value=0>____<span class='name_field'>공석</span>____</option>
     ";
 
-    $query = "select no,name,officer_level,city from general where nation='{$nationID}' and officer_level!='12' order by npc,binary(name)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $general = MYDB_fetch_array($result);
+    foreach ($candidateAny as $general) {
         if($general['officer_level'] == 2) {
             echo "<option style=color:red; data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['officer_level'] > 1) {

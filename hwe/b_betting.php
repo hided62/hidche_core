@@ -9,7 +9,6 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("베팅장", 1);
 TurnExecutionHelper::executeAllCommand();
@@ -86,14 +85,15 @@ if($str3){
     <tr align=center><td height=10 colspan=16></td></tr>
     <tr align=center>
 <?php
-$query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-for ($i=0; $i < 1; $i++) {
-    $general = MYDB_fetch_array($result)??[
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=60 order by grp, grp_no LIMIT 1');
+while(count($generalList) < 1){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
-        'name'=>'',
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -109,20 +109,21 @@ echo "
     </tr>
     <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=50 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $cent = [];
 $line = [];
 $gen = [];
 for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 2; $i++) {
-    $general = MYDB_fetch_array($result)??[
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=50 order by grp, grp_no LIMIT 2');
+while(count($generalList) < 2){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
-        'name'=>'',
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -157,17 +158,18 @@ echo "
     </tr>
     <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=40 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 2; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 4; $i++) {
-    $general = MYDB_fetch_array($result)??[
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=40 order by grp, grp_no LIMIT 4');
+while(count($generalList) < 4){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
-        'name'=>'',
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -202,17 +204,18 @@ echo "
     </tr>
     <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=30 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 4; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 8; $i++) {
-    $general = MYDB_fetch_array($result)??[
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=30 order by grp, grp_no LIMIT 8');
+while(count($generalList) < 8){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
-        'name'=>'',
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -247,17 +250,18 @@ echo "
     </tr>
     <tr align=center>";
 
-$query = "select npc,name,win from tournament where grp>=20 order by grp, grp_no";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 8; $i++) {
     $cent[$i] = "<font color=white>";
 }
-for ($i=0; $i < 16; $i++) {
-    $general = MYDB_fetch_array($result)??[
+$generalList = $db->query('SELECT npc,name,win from tournament where grp>=20 order by grp, grp_no LIMIT 16');
+while(count($generalList) < 16){
+    $generalList[] = [
+        'name'=>'-',
         'npc'=>0,
-        'name'=>'',
         'win'=>0
     ];
+}
+foreach($generalList as $i=>$general){
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -456,7 +460,7 @@ foreach($tournamentType as $tournamentTypeText=>[$statTypeText,$statFunc,$rankCo
     $tournamentRankerList = array_splice($tournamentRankerList, 0, 30);
     foreach($tournamentRankerList as $rank=>$ranker){
         printRow(
-            $rank+1,
+            $rank,
             $ranker->getNPCType(),
             $ranker->getName(),
             ($statFunc)($ranker),

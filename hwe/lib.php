@@ -19,7 +19,6 @@ $loader->addClassMap((function () {
 
 //디버그용 매크로
 ini_set("session.cache_expire", 10080);      // minutes
-include "MYDB.php";
 
 // 각종 변수
 define('STEP_LOG', true);

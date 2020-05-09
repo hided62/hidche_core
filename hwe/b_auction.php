@@ -13,7 +13,6 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("거래장", 2);
 
@@ -79,13 +78,8 @@ if ($msg2 == "") {
         <td width=148>거래종료</td>
     </tr>
 <?php
-$query = "select * from auction where type=0 order by expire";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$count = MYDB_num_rows($result);
-
 $chk = 0;
-for ($i=0; $i < $count; $i++) {
-    $auction = MYDB_fetch_array($result);
+foreach($db->query('SELECT * from auction where type=0 order by expire') as $auction){
     $radio = "";
     $alert = "";
     $alert2 = "";
@@ -172,13 +166,8 @@ for ($i=0; $i < $count; $i++) {
         <td width=148>거래종료</td>
     </tr>
 <?php
-$query = "select * from auction where type=1 order by expire";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$count = MYDB_num_rows($result);
-
 $chk = 0;
-for ($i=0; $i < $count; $i++) {
-    $auction = MYDB_fetch_array($result);
+foreach($db->query('SELECT * from auction where type=1 order by expire') as $auction){
     $radio = "";
     $alert = "";
     $alert2 = "";

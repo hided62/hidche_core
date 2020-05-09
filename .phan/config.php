@@ -21,7 +21,6 @@ return [
 
     'file_list' => [
         'f_config/config.php',
-        'hwe/MYDB.php',
         'hwe/a_bestGeneral.php',
         'hwe/a_emperior.php',
         'hwe/a_emperior2.php',

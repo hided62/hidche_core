@@ -417,27 +417,30 @@ ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 ###########################################################################
 ## 토너먼트 테이블
 ###########################################################################
-create table tournament (
-  seq  int(6) not null auto_increment,
-  no   int(6) default 0,
-  npc  int(6) default 0,
-  name varchar(64) default '',
-  w    varchar(20) default 'None',
-  b    varchar(20) default 'None',
-  h    varchar(20) default 'None',
-  leadership  int(3) default 0,
-  strength  int(3) default 0,
-  intel  int(3) default 0,
-  lvl  int(3) default 0,
-  grp  int(2) default 0,
-  grp_no int(2) default 0,
-  win  int(2) default 0,
-  draw int(2) default 0,
-  lose int(2) default 0,
-  gl   int(2) default 0,
-  prmt int(1) default 0,
-  PRIMARY KEY (seq)
-  ) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `tournament` (
+	`seq` INT(6) NOT NULL AUTO_INCREMENT,
+	`no` INT(6) NULL DEFAULT 0,
+	`npc` INT(6) NULL DEFAULT 0,
+	`name` VARCHAR(64) NULL DEFAULT '',
+	`w` VARCHAR(20) NULL DEFAULT 'None',
+	`b` VARCHAR(20) NULL DEFAULT 'None',
+	`h` VARCHAR(20) NULL DEFAULT 'None',
+	`leadership` INT(3) NULL DEFAULT 0,
+	`strength` INT(3) NULL DEFAULT 0,
+	`intel` INT(3) NULL DEFAULT 0,
+	`lvl` INT(3) NULL DEFAULT 0,
+	`grp` INT(2) NULL DEFAULT 0,
+	`grp_no` INT(2) NULL DEFAULT 0,
+	`win` INT(2) NULL DEFAULT 0,
+	`draw` INT(2) NULL DEFAULT 0,
+	`lose` INT(2) NULL DEFAULT 0,
+	`gl` INT(2) NULL DEFAULT 0,
+	`prmt` INT(1) NULL DEFAULT 0,
+	PRIMARY KEY (`seq`),
+	INDEX `grp` (`grp`, `grp_no`)
+) 
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria;
 
 ###########################################################################
 ## 거래 테이블

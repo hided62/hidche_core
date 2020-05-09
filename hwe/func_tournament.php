@@ -169,6 +169,7 @@ function getTournament(int $tnmt) {
 }
 
 function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt) {
+    $k += 1;
     if($prmt > 0) { $name = "<font color=orange>".$name."</font>"; }
     elseif($npc >= 2) { $name = "<font color=cyan>".$name."</font>"; }
     elseif($npc == 1) { $name = "<font color=skyblue>".$name."</font>"; }
@@ -824,7 +825,7 @@ function setRefund() {
 
     //16강자 명성 돈
     $cost = $gameStor->develcost;
-    $generalIDList = $db->queryFirstColumn('SELECT no FROM tournament WHERE grp<10 AND no >0');
+    $generalIDList = $db->queryFirstColumn('SELECT no FROM tournament WHERE grp<10 AND no > 0');
     $db->update('general', [
         'gold'=>$db->sqleval('gold + %i', $cost)
     ], 'no IN %li', $generalIDList);

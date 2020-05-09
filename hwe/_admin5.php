@@ -23,7 +23,6 @@ if ($session->userGrade < 5) {
 }
 
 $db = DB::db();
-$connect = $db->get();
 
 $sel = [];
 $sel2 = [];
@@ -86,11 +85,7 @@ $sel2[$type2] = "selected";
                     <select name=nation size=1 style=color:white;background-color:black>";
                         <option value=0>재야</option>";
                         <?php
-                        $query = "select nation,name,color,scout,gennum from nation order by power";
-                        $result = MYDB_query($query, $connect) or Error("aaa_processing.php " . MYDB_error($connect), "");
-                        $count = MYDB_num_rows($result);
-                        for ($i = 1; $i <= $count; $i++) {
-                            $nation = MYDB_fetch_array($result);
+                        foreach ($db->query('SELECT nation,name,color,scout,gennum from nation order by power DESC') as $nation) {
 
                             echo "
             <option value={$nation['nation']}>{$nation['name']}</option>";
@@ -216,35 +211,27 @@ GROUP BY B.nation
                 $query .= " order by avg(B.dex5) desc";
                 break;
         }
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $nationCount = MYDB_num_rows($result);
-        for ($i = 0; $i < $nationCount; $i++) {
-            $nation = MYDB_fetch_array($result);
+        foreach($db->query($query) as $nation){
+            $gen = $db->queryFirstRow('SELECT COUNT(*) as cnt,
+            ROUND(AVG(gold)) as avgg,
+            ROUND(AVG(rice)) as avgr,
+            SUM(leadership) as leadership,  ROUND(AVG(leadership), 1) as avgl,
+                                    ROUND(AVG(strength), 1) as avgs,
+                                    ROUND(AVG(intel), 1) as avgi,
+                                    ROUND(AVG(explevel), 1) as avge,
+            SUM(crew) as crew
+from general where nation=%i',$nation['nation']);
 
-            $query = "select COUNT(*) as cnt,
-                    ROUND(AVG(gold)) as avgg,
-                    ROUND(AVG(rice)) as avgr,
-                    SUM(leadership) as leadership,  ROUND(AVG(leadership), 1) as avgl,
-                                            ROUND(AVG(strength), 1) as avgs,
-                                            ROUND(AVG(intel), 1) as avgi,
-                                            ROUND(AVG(explevel), 1) as avge,
-                    SUM(crew) as crew
-        from general where nation='{$nation['nation']}'";
-            $genResult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-            $gen = MYDB_fetch_array($genResult);
-
-            $query = "select COUNT(*) as cnt,
-                    SUM(pop) as pop,    SUM(pop_max) as pop_max,
-                    ROUND(SUM(pop)/SUM(pop_max)*100, 2) as rate,
-                    trust,
-                    ROUND(SUM(agri)/SUM(agri_max)*100, 2) as agri,
-                    ROUND(SUM(comm)/SUM(comm_max)*100, 2) as comm,
-                    ROUND(SUM(secu)/SUM(secu_max)*100, 2) as secu,
-                    ROUND(SUM(wall)/SUM(wall_max)*100, 2) as wall,
-                    ROUND(SUM(def)/SUM(def_max)*100, 2) as def
-        from city where nation='{$nation['nation']}'";
-            $cityResult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-            $city = MYDB_fetch_array($cityResult);
+            $city = $db->queryFirstRow('SELECT COUNT(*) as cnt,
+            SUM(pop) as pop,    SUM(pop_max) as pop_max,
+            ROUND(SUM(pop)/SUM(pop_max)*100, 2) as rate,
+            trust,
+            ROUND(SUM(agri)/SUM(agri_max)*100, 2) as agri,
+            ROUND(SUM(comm)/SUM(comm_max)*100, 2) as comm,
+            ROUND(SUM(secu)/SUM(secu_max)*100, 2) as secu,
+            ROUND(SUM(wall)/SUM(wall_max)*100, 2) as wall,
+            ROUND(SUM(def)/SUM(def_max)*100, 2) as def
+from city where nation=%i', $nation['nation']);
 
             echo "
     <tr>
@@ -324,12 +311,7 @@ GROUP BY B.nation
             ?>
         </tr>
         <?php
-        $query = "select * from statistic where month=1 or no=1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-        $count = MYDB_num_rows($result);
-        for ($i = 0; $i < $count; $i++) {
-            $stat = MYDB_fetch_array($result);
-
+        foreach($db->query('SELECT * from statistic where month=1 or no=1') as $stat){
             echo "
     <tr>
         <td align=center>{$stat['year']}</td>
