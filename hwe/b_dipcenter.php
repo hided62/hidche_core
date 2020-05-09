@@ -96,8 +96,12 @@ $admin = $gameStor->getValues(['year','month']);
 $cityCntList = Util::convertPairArrayToDict($db->queryAllLists('SELECT nation, count(city) FROM city GROUP BY nation'));
 $dipStateList = Util::convertArrayToDict($db->query('SELECT you,state,term FROM diplomacy WHERE me = %i', $nationID), 'you');
 
+$nationsList = getAllNationStaticInfo();
+uasort($nationsList, function(array $lhs, array $rhs){
+    return -($lhs['power']<=>$rhs['power']);
+});
 
-foreach(getAllNationStaticInfo() as $staticNation):
+foreach($nationsList as $staticNation):
     //속령수
     $staticNationID = $staticNation['nation'];
     $cityCnt = $cityCntList[$staticNation['nation']]??0;
