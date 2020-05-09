@@ -57,8 +57,18 @@ class che_인재탐색 extends Command\GeneralCommand{
     }
 
     public function getCommandDetailTitle():string{
+        $db = DB::db();
+        $env = $this->env;
+
+        $maxGenCnt = $env['maxgeneral'];
+        $totalGenCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE npc <= 2');
+        $totalNpcCnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4');
+
         $name = $this->getName();
         [$reqGold, $reqRice] = $this->getCost();
+
+        $foundProp = $this->calcFoundProp($maxGenCnt, $totalGenCnt, $totalNpcCnt);
+        $foundPropText = number_format($foundProp*100, 1);
 
         $title = "{$name}(랜덤경험";
         if($reqGold > 0){
@@ -67,7 +77,8 @@ class che_인재탐색 extends Command\GeneralCommand{
         if($reqRice > 0){
             $title .= ", 군량{$reqRice}";
         }
-        $title .= ')';
+
+        $title .= ", 확률 {$foundPropText}%)";
         return $title;
     }
 
@@ -81,6 +92,28 @@ class che_인재탐색 extends Command\GeneralCommand{
 
     public function getPostReqTurn():int{
         return 0;
+    }
+
+    public function calcFoundProp(int $maxGenCnt, int $totalGenCnt, int $totalNpcCnt):float{
+
+
+        $currCnt  = Util::toInt($totalGenCnt + $totalNpcCnt / 2);
+        $remainSlot = $maxGenCnt - $currCnt;
+        if($remainSlot < 0){
+            $remainSlot = 0;
+        }
+
+        $foundPropMain = pow($remainSlot / $maxGenCnt, 6);
+        $foundPropSmall = 1 / ($totalNpcCnt / 3 + 1);
+        $foundPropBig = 1 / $maxGenCnt;
+
+        if($totalNpcCnt < 50){
+            $foundProp = max($foundPropMain, $foundPropSmall);
+        }
+        else{
+            $foundProp = max($foundPropMain, $foundPropBig);
+        }
+        return $foundProp;
     }
 
     public function run():bool{
@@ -97,7 +130,6 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $nationID = $general->getNationID();
 
-        $maxGenCnt = $env['maxgeneral'];
         $nationCnt = count(getAllNationStaticInfo());
 
         $totalGenCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE npc <= 2');
@@ -107,24 +139,9 @@ class che_인재탐색 extends Command\GeneralCommand{
         $npcCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND 3 <= npc AND npc <= 4', $nationID);
 
         $currCnt  = Util::toInt($totalGenCnt + $totalNpcCnt / 2);
-        $remainSlot = $maxGenCnt - $currCnt;
-        if($remainSlot < 0){
-            $remainSlot = 0;
-        }
-
         $avgCnt = $currCnt / $nationCnt;
 
-        $foundPropMain = pow($remainSlot / $maxGenCnt, 6);
-        $foundPropSmall = 1 / ($totalNpcCnt / 3 + 1);
-        $foundPropBig = 1 / $maxGenCnt;
-
-        if($totalNpcCnt < 50){
-            $foundProp = max($foundPropMain, $foundPropSmall);
-        }
-        else{
-            $foundProp = max($foundPropMain, $foundPropBig);
-        }
-        $foundNpc = Util::randBool($foundProp);
+        $foundNpc = Util::randBool($this->calcFoundProp($env['maxgeneral'], $totalGenCnt, $totalNpcCnt));
 
         $logger = $general->getLogger();
 
