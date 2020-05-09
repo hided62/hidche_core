@@ -146,7 +146,7 @@ class che_의병모집 extends Command\NationCommand{
         $dexTotal = $avgGen['dex_t'];
 
         for(;$createGenIdx <= $lastCreatGenIdx; $createGenIdx++){
-            $pickType = Util::choiceRandomUsingWeightPair($pickTypeList);
+            $pickType = Util::choiceRandomUsingWeight($pickTypeList);
 
             $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
             $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);

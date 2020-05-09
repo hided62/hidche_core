@@ -159,7 +159,7 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $pickTypeList = ['무'=>6, '지'=>6, '무지'=>3];
 
-        $pickType = Util::choiceRandomUsingWeightPair($pickTypeList);
+        $pickType = Util::choiceRandomUsingWeight($pickTypeList);
 
         $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
         $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);
