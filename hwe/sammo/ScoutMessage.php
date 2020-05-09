@@ -138,17 +138,21 @@ class ScoutMessage extends Message{
             throw new \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }
 
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+
         list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
 
         if($result === self::INVALID){
-            pushGeneralActionLog($receiverID, ["<C>●</>{$reason} 등용 취소 불가."]);
+            (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("{$reason} 등용 취소 불가.", ActionLogger::PLAIN);
             return $result;
         }
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $josaYi = JosaUtil::pick($this->dest->generalName, '이');
-        pushGeneralActionLog($receiverID, ["<C>●</><D>{$this->src->nationName}</>{$josaRo} 망명을 거부했습니다."]);
-        pushGeneralActionLog($this->src->generalID, ["<C>●</><Y>{$this->dest->generalName}</>{$josaYi} 등용을 거부했습니다."]);
+        (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("{$this->src->nationName}</>{$josaRo} 망명을 거부했습니다.", ActionLogger::PLAIN);
+        (new ActionLogger($this->src->generalID, 0, $year, $month))->pushGeneralActionLog("<Y>{$this->dest->generalName}</>{$josaYi} 등용을 거부했습니다.", ActionLogger::PLAIN);
         $this->_declineMessage();        
 
         return self::DECLINED;

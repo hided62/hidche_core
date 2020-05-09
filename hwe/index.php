@@ -224,7 +224,6 @@ if ($session->userGrade >= 5) {
         <a href='_admin2.php' target='_blank'><button type='button'>회원관리</button></a>
         <a href='_admin4.php' target='_blank'><button type='button'>멀티관리</button></a>
         <a href='_admin5.php' target='_blank'><button type='button'>일제정보</button></a>
-        <a href='_admin6.php' target='_blank'><button type='button'>접속정보</button></a>
         <a href='_admin7.php' target='_blank'><button type='button'>로그정보</button></a>
         <a href='_admin8.php' target='_blank'><button type='button'>외교정보</button></a>
         <a href='_119.php' target='_blank'><button type='button'>119</button></a>

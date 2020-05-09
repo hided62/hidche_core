@@ -131,7 +131,6 @@ return [
         'hwe/_admin4_submit.php',
         'hwe/_admin5.php',
         'hwe/_admin5_submit.php',
-        'hwe/_admin6.php',
         'hwe/_admin7.php',
         'hwe/_admin8.php',
         'hwe/_admin_force_rehall.php',

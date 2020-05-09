@@ -16,7 +16,6 @@ if ($session->userGrade < 5) {
 }
 
 $db = DB::db();
-$connect=$db->get();
 
 if ($btn == '정렬하기') {
     $gen = 0;
@@ -65,13 +64,7 @@ foreach (getAllNationStaticInfo() as $nation) {
 }
 
 
-$query = "select * from diplomacy where me < you order by state desc";
-
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$dipcount = MYDB_num_rows($result);
-for ($i=0; $i < $dipcount; $i++) {
-    $dip = MYDB_fetch_array($result);
-
+foreach($db->query('SELECT * from diplomacy where me < you order by state desc') as $dip){
     $me = $dip['me'];
     $you = $dip['you'];
 

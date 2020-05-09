@@ -13,9 +13,23 @@ if ($session->userGrade < 5) {
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect = $db->get();
 
 $conlimit = $gameStor->conlimit;
+
+$ipGroupList = Util::arrayGroupBy(
+    $db->query(
+        'SELECT name,ip,lastconnect,owner,block,substring_index(ip,".",3) as ip_c from general WHERE ip!="" and npc<2'
+    ),
+    'ip_c'
+);
+
+function colorBlockedName($general){
+    if(!$general['blocked']){
+        return $general['name'];
+    }
+    return "<span style='color:magenta;'>{$general['name']}</span>";
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -92,42 +106,15 @@ $conlimit = $gameStor->conlimit;
                 <td align=center width=180>최근로그인</td>
                 <td align=center width=129>IP</td>
                 <td align=center width=100>ID</td>
-            </tr>
-            <tr>
-                <?php
-                $query = "select substring_index(ip,'.',3) as ip2 from general where ip!='' and npc<2 group by ip2 having count(*)>1";
-                $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-                $ipCount = MYDB_num_rows($result);
-                $genName = "";
-                $genDate = "";
-                $genIP   = "";
-                $genID   = "";
-                for ($i = 0; $i < $ipCount; $i++) {
-                    $ip = MYDB_fetch_array($result);
-
-                    $query = "select name,ip,lastconnect,owner,block from general where ip like '{$ip['ip2']}%' and npc<2 order by ip";
-                    $genResult = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-                    $genCount = MYDB_num_rows($genResult);
-                    for ($k = 0; $k < $genCount; $k++) {
-                        $gen = MYDB_fetch_array($genResult);
-                        if ($gen['block'] > 0) $genName .= "<font color=magenta>{$gen['name']}</font><br>";
-                        else $genName .= $gen['name'] . "<br>";
-                        $genDate .= $gen['lastconnect'] . "<br>";
-                        $genIP   .= $gen['ip'] . "<br>";
-                        $genID   .= $gen['owner'] . "<br>";
-                    }
-                    $genName .= "<br>";
-                    $genDate .= "<br>";
-                    $genIP   .= "<br>";
-                    $genID   .= "<br>";
-                }
-                echo "
-        <td align=right>$genName</td>
-        <td>$genDate</td>
-        <td>$genIP</td>
-        <td>$genID</td>";
-                ?>
-            </tr>
+            </tr>    
+<?php foreach($ipGroupList as $ipGroupC=>$users): ?>
+    <tr>
+        <td><?=join('<br>',array_map('\sammo\colorBlockedName', $users))?></td>
+        <td><?=join('<br>',array_column($users, 'lastconnect'))?></td>
+        <td><?=join('<br>',array_column($users, 'ip'))?></td>
+        <td><?=join('<br>',array_column($users, 'owner'))?></td>
+    </tr>
+<?php endforeach; ?>
         </table>
         <?php
         //NOTE: password의 md5 해시가 같은지 확인하는 방식으로는 앞으로 잡아낼 수 없다. 폐기

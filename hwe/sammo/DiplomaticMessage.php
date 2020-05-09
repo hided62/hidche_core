@@ -149,6 +149,8 @@ class DiplomaticMessage extends Message{
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+        
 
         $general = $db->queryFirstRow(
             'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong FROM general WHERE `no`=%i AND nation=%i', 
@@ -164,7 +166,7 @@ class DiplomaticMessage extends Message{
 
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
         if($result !== self::ACCEPTED){
-            pushGeneralActionLog($receiverID, ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
+            (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("{$reason} {$this->diplomacyName} 실패", ActionLogger::PLAIN);
             if($result === self::DECLINED){
                 $this->_declineMessage();
             }
@@ -186,14 +188,14 @@ class DiplomaticMessage extends Message{
         }
         
         if($result !== self::ACCEPTED){
-            pushGeneralActionLog($receiverID, ["<C>●</>{$reason}"]);
+            (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog($reason, ActionLogger::PLAIN);
             if($result === self::DECLINED){
                 $this->_declineMessage();
             }
             return $result;
         }
         
-        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
+        
 
 
         $this->dest->generalID = $receiverID;
@@ -251,6 +253,9 @@ class DiplomaticMessage extends Message{
         }
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+
         $general = $db->queryFirstRow(
             'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong  FROM general WHERE `no`=%i AND nation=%i', 
             $receiverID, 
@@ -259,13 +264,13 @@ class DiplomaticMessage extends Message{
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
 
         if($result === self::INVALID){
-            pushGeneralActionLog($receiverID, ["<C>●</>{$reason} {$this->diplomacyName} 거절 불가."]);
+            (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("{$reason} {$this->diplomacyName} 거절 불가.", ActionLogger::PLAIN);
             return $result;
         }
 
         $josaYi = JosaUtil::pick($this->dest->nationName, '이');
-        pushGeneralActionLog($receiverID, ["<C>●</><D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다."]);
-        pushGeneralActionLog($this->src->generalID, ["<C>●</><Y>{$this->dest->nationName}</>{$josaYi} {$this->diplomacyName} 제안을 거절했습니다."]);
+        (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("<D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다.", ActionLogger::PLAIN);
+        (new ActionLogger($this->src->generalID, 0, $year, $month))->pushGeneralActionLog("<Y>{$this->dest->nationName}</>{$josaYi} {$this->diplomacyName} 제안을 거절했습니다.", ActionLogger::PLAIN);
         $this->_declineMessage();  
         return self::DECLINED;
     }

@@ -17,9 +17,7 @@ $connect=$db->get();
 
 increaseRefresh("거래장", 2);
 
-$query = "select no,special,con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,special,con,turntime from general where owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
