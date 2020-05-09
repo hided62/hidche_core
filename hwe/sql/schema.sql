@@ -88,7 +88,8 @@ CREATE TABLE `general` (
 	INDEX `troop` (`troop`, `turntime`),
 	INDEX `officer_level` (`nation`, `officer_level`),
 	INDEX `officer_city` (`officer_city`, `officer_level`),
-	INDEX `name` (`name`)
+	INDEX `name` (`name`),
+	INDEX `last_refresh` (`lastrefresh`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria;

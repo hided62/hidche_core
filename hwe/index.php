@@ -61,7 +61,7 @@ $scenario = $gameStor->scenario_text;
 $nationID = $generalObj->getNationID();
 if($nationID){
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-    $nationStor->cacheValues(['notice', 'onlinegne']);
+    $nationStor->cacheValues(['notice', 'online_genenerals']);
 }
 
 $valid = 0;
@@ -150,7 +150,7 @@ $(function(){
 
     <tr height=30>
         <td width=198><?=info(2)?></td>
-        <td width=198>전체 접속자 수 : <?=$gameStor->online?> 명</td>
+        <td width=198>전체 접속자 수 : <?=$gameStor->online_user_cnt?> 명</td>
         <td width=198>턴당 갱신횟수 : <?=$gameStor->conlimit?>회</td>
         <td width=398 colspan=2><?=info(3)?></td>
     </tr>
@@ -212,7 +212,7 @@ echo "
         </td>
     </tr>";
 ?>
-    <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=$gameStor->onlinenation?></td></tr>
+    <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=$gameStor->online_nation?></td></tr>
     <tr><td colspan=5 style="text-align:left;">운영자 메세지 : <span style='color:yellow;'><?=$gameStor->msg?></span></td></tr>
     <tr><td colspan=5 style="text-align:left;"><div>【 국가방침 】</div><div><?=nationMsg($generalObj)?></div></td></tr>
     <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen($generalObj)?></td></tr>

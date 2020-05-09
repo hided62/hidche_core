@@ -868,12 +868,8 @@ function onlinegen(General $general)
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $nationID = $general->getNationID();
-    if ($nationID === null || Util::toInt($nationID) === 0) {
-        $onlinegen = $gameStor->onlinegen;
-    } else {
-        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-        $onlinegen = $nationStor->onlinegen;
-    }
+    $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+    $onlinegen = $nationStor->online_genenerals;
     return $onlinegen;
 }
 
@@ -1193,7 +1189,6 @@ function updateOnline()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect = $db->get();
     $nationname = ["재야"];
 
     //국가별 이름 매핑
@@ -1203,40 +1198,28 @@ function updateOnline()
 
 
     //동접수
-    $query = "select no,name,nation from general where lastrefresh > DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__ . MYDB_error($connect), "");
-    $onlinenum = MYDB_num_rows($result);
+    $before5Min = TimeUtil::nowAddMinutes(-5);
+    $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh > %s', $before5Min);
+    $onlineNum = count($onlineUser);
+    $onlineNationUsers = Util::arrayGroupBy($onlineUser, 'nation');
+    
+    uasort($onlineNationUsers, function(array $lhs, array $rhs){
+        return -(count($lhs)<=>count($rhs));
+    });
 
-    $onnation = array();
-    $onnationstr = "";
+    $onlineNation = []; 
 
-    //국가별 접속중인 장수
-    for ($i = 0; $i < $onlinenum; $i++) {
-        $general = MYDB_fetch_array($result);
-        if (isset($onnation[$general['nation']])) {
-            $onnation[$general['nation']] .= $general['name'] . ', ';
-        } else {
-            $onnation[$general['nation']] = $general['name'] . ', ';
-        }
-    }
-
-    //$onnation이 empty라면 굳이 foreach를 수행 할 이유가 없음. 
-    if (!empty($onnation)) {
-        foreach ($onnation as $key => $val) {
-            $onnationstr .= "【{$nationname[$key]}】, ";
-
-            if ($key == 0) {
-                $gameStor->onlinegen = $onnation[0];
-            } else {
-                $nationStor = KVStorage::getStorage($db, $key, 'nation_env');
-                $nationStor->onlinegen = $onnation[$key];
-            }
-        }
+    foreach($onlineNationUsers as $nationID=>$rawOnlineUser){
+        $nationName = getNationStaticInfo($nationID)['name'];
+        $onlineNation[] = "【{$nationName}】";
+        $userList = join(', ', Util::squeezeFromArray($rawOnlineUser, 'name'));
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+        $nationStor->online_genenerals = $userList;
     }
 
     //접속중인 국가
-    $gameStor->online = $onlinenum;
-    $gameStor->onlinenation = $onnationstr;
+    $gameStor->online_user_cnt = $onlineNum;
+    $gameStor->online_nation = join(', ', $onlineNation);
 }
 
 function addAge()
