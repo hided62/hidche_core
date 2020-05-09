@@ -72,10 +72,7 @@ if($officerLevel == 12){
 }
 
 function do수뇌임명(General $general, int $targetOfficerLevel):?string{
-    global $myOfficerLevel;
     $generalID = $general->getID();
-    $officerLevel = $general->getVar('officer_level');
-    $generalName = $general->getVar('name');
     $nationID = $general->getNationID();
 
     $db = DB::db();
@@ -97,7 +94,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
     $db->update('general', [
         'officer_level'=>1,
         'officer_city'=>0,
-    ], 'nation=%i AND officer_level=%i', $nationID, $targetOfficerLevel);
+    ], 'nation=%i AND officer_level=%i AND no!=%i', $nationID, $targetOfficerLevel, $generalID);
 
     if($targetOfficerLevel === 11){
 
@@ -147,7 +144,7 @@ function do도시임명(General $general, int $cityID, int $targetOfficerLevel):
     $db->update('general', [
         'officer_level'=>1,
         'officer_city'=>0,
-    ], 'officer_level=%i AND officer_city=%i', $targetOfficerLevel, $cityID);
+    ], 'officer_level=%i AND officer_city=%i AND no!=%i', $targetOfficerLevel, $cityID, $general->getID());
 
     if($general instanceof DummyGeneral){
         return null;
