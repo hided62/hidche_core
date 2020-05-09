@@ -3089,12 +3089,14 @@ class GeneralAI
         $month = $this->env['month'];
         if($npcType >= 2){
             if($general->getVar('officer_level') == 12){
-                if (in_array($month, [1, 4, 7, 10])) {
+                if (in_array($month, [3, 6, 9, 12])) {
                     $this->choosePromotion();
-                } else if ($month == 12) {
+                }
+                if ($month == 12) {
                     $this->chooseTexRate();
                     $this->chooseGoldBillRate();
-                } else if ($month == 6) {
+                }
+                if ($month == 6) {
                     $this->chooseTexRate();
                     $this->chooseRiceBillRate();
                 }
