@@ -3065,6 +3065,14 @@ class GeneralAI
             }
         }
 
+        LogText('warUserGenerals,'.getNationStaticInfo($nationID)['name'].','.$this->general->getName(), array_map(function(General $general){
+            return $general->getName();
+        }, $userWarGenerals));
+
+        LogText('userGenerals,'.getNationStaticInfo($nationID)['name'].','.$this->general->getName(), array_map(function(General $general){
+            return $general->getName();
+        }, $userGenerals));
+
         $this->nationGenerals = $nationGenerals;
         $this->userGenerals = $userGenerals;
         $this->userCivilGenerals = $userCivilGenerals;
