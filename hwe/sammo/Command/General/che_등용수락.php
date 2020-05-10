@@ -83,14 +83,14 @@ class che_등용수락 extends Command\GeneralCommand{
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, 2);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID'], ['gennum', 'scout']);
 
         $relYear = $this->env['year'] - $this->env['startyear'];
 
         $this->fullConditionConstraints=[
-            ConstraintHelper::ReqEnvValue('join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
+            ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::AllowJoinDestNation($relYear),

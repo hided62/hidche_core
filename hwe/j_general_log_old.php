@@ -71,29 +71,26 @@ if($generalID !== $targetID){
 }
 
 if($reqType == 'generalAction'){
-    $result = getGeneralActionLogMore($targetID, $reqTo, 30, $lastSeq);
+    $result = getGeneralActionLogMore($targetID, $reqTo, 30);
     Json::die([
         'result'=>true,
         'reason'=>'success',
-        'sequence'=>$lastSeq,
         'log'=>array_map(function($data){return ConvertLog($data);}, $result)
     ]);
 }
 if($reqType == 'battleResult'){
-    $result = getBattleResultMore($targetID, $reqTo, 30, $lastSeq);
+    $result = getBattleResultMore($targetID, $reqTo, 30);
     Json::die([
         'result'=>true,
         'reason'=>'success',
-        'sequence'=>$lastSeq,
         'log'=>array_map(function($data){return ConvertLog($data);}, $result)
     ]);
 }
 if($reqType == 'battleDetail'){
-    $result = getBattleDetailLogMore($targetID, $reqTo, 30, $lastSeq);
+    $result = getBattleDetailLogMore($targetID, $reqTo, 30);
     Json::die([
         'result'=>true,
         'reason'=>'success',
-        'sequence'=>$lastSeq,
         'log'=>array_map(function($data){return ConvertLog($data);}, $result)
     ]);
 }

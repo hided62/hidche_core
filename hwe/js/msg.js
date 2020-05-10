@@ -26,7 +26,12 @@ function responseMessage(msgID, response){
                 response:response
             })
         }
-    }).then(refreshMsg);
+    }).then(function(result){
+        if(result && !result.result){
+            alert(result.reason);
+        }
+        location.reload();
+    });
 }
 
 function deleteMessage(msgID){

@@ -49,7 +49,7 @@ class ScoutMessage extends Message{
             return [self::INVALID, '올바른 수신자가 아닙니다.'];
         }
 
-        return [self::ACCEPTED, ''];
+        return [self::ACCEPTED, '성공'];
     }
 
     /**
@@ -63,7 +63,7 @@ class ScoutMessage extends Message{
         }
 
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        $general = \sammo\General::createGeneralObjFromDB($receiverID, ['npc', 'gold', 'rice', 'experience', 'dedication', 'betray', 'troop', 'aux'], 1);
+        $general = \sammo\General::createGeneralObjFromDB($receiverID, null, 2);
 
         $logger = $general->getLogger();
         
@@ -84,6 +84,7 @@ class ScoutMessage extends Message{
 
         if(!$commandObj->hasFullConditionMet()){
             $logger->pushGeneralActionLog($commandObj->getFailString());
+            $reason = $commandObj->getFailString();
             return self::DECLINED;
         }
 
