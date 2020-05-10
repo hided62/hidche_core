@@ -195,6 +195,7 @@ class che_출병 extends Command\GeneralCommand
         $defenderCityName = $this->destCity['name'];
         $this->setDestCity($defenderCityID);
         $josaRo = JosaUtil::pick($defenderCityName, '로');
+        $defenderNationID = $this->destCity['nation'];
 
         if ($attackerNationID == $defenderNationID) {
             $logger->pushGeneralActionLog("본국입니다. <G><b>{$defenderCityName}</b></>{$josaRo} 으로 이동합니다. <1>$date</>");
