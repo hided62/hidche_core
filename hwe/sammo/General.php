@@ -1066,7 +1066,7 @@ class General implements iAction{
 
         $db = DB::db();
         $result = [];
-        $rawCmds = Util::convertArrayToDict($db->queryFirstRow('SELECT * FROM general_turn WHERE general_id IN %li AND turn_idx = %i', $generalIDList, $turnIdx), 'general_id');
+        $rawCmds = Util::convertArrayToDict($db->query('SELECT * FROM general_turn WHERE general_id IN %li AND turn_idx = %i', $generalIDList, $turnIdx), 'general_id');
         foreach($generalList as $general){
             $generalID = $general->getID();
             if(!key_exists($generalID, $rawCmds)){
