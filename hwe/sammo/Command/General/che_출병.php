@@ -198,7 +198,15 @@ class che_출병 extends Command\GeneralCommand
         $defenderNationID = $this->destCity['nation'];
 
         if ($attackerNationID == $defenderNationID) {
-            $logger->pushGeneralActionLog("본국입니다. <G><b>{$defenderCityName}</b></>{$josaRo} 으로 이동합니다. <1>$date</>");
+            $defenderCityName = $this->destCity['name'];
+            $josaRo = JosaUtil::pick($defenderCityName, '로');
+            if($this->arg['destCityID'] == $defenderCityID){
+                $logger->pushGeneralActionLog("본국입니다. <G><b>{$defenderCityName}</b></>{$josaRo} 으로 이동합니다. <1>$date</>");
+            }
+            else{
+                $logger->pushGeneralActionLog("가까운 경로에 적군 도시가 없습니다. <G><b>{$defenderCityName}</b></>{$josaRo} 으로 이동합니다. <1>$date</>");
+            }
+            
             $this->alternative = new che_이동($general, $this->env, ['destCityID' => $defenderCityID]);
             return false;
         }
