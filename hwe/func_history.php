@@ -388,14 +388,6 @@ function LogHistory($isFirst=0) {
         $nations[$cityNationID]['cities'][] = $city['name'];
     }
 
-    foreach($db->queryAllLists('SELECT name, npc, nation FROM general WHERE 1 ORDER BY dedication DESC') as $general){
-        $generalNationID = array_pop($general);
-        if(!key_exists('generals', $nations[$generalNationID])){
-            $nations[$generalNationID]['generals'] = [];
-        }
-        $nations[$generalNationID]['generals'][] = $general;
-    }
-
     usort($nations, function(array $lhs, array $rhs){
         return -($lhs['power']<=>$rhs['power']);
     });
