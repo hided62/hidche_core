@@ -2049,26 +2049,33 @@ class GeneralAI
             if($avgAmount * 2 > $goldCost + $riceCost){
                 if ($general->getVar('rice') < $riceCost * 2 && $general->getVar('gold') >= $goldCost * 4) {
                     //1:1
-                    $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
-                        [
-                            'buyRice' => true,
-                            'amount' => Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
-                        ]
-                    );
-                    if($cmd->hasFullConditionMet()){
-                        return $cmd;
+                    $amount = Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount);
+                    if($amount >= $this->nationPolicy->minimumResourceActionAmount){
+                        $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                            [
+                                'buyRice' => true,
+                                'amount' => $amount
+                            ]
+                        );
+                        if($cmd->hasFullConditionMet()){
+                            return $cmd;
+                        }
                     }
+                    
                 }
                 if ($general->getVar('gold') < $goldCost && $general->getVar('rice') >= $riceCost * 2) {
                     $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
-                    $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
-                        [
-                            'buyRice' => false,
-                            'amount' => Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
-                        ]
-                    );
-                    if($cmd->hasFullConditionMet()){
-                        return $cmd;
+                    $amount = Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount);
+                    if($amount >= $this->nationPolicy->minimumResourceActionAmount){
+                        $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                            [
+                                'buyRice' => false,
+                                'amount' => $amount
+                            ]
+                        );
+                        if($cmd->hasFullConditionMet()){
+                            return $cmd;
+                        }
                     }
                 }
             }
