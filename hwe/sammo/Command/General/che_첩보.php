@@ -11,7 +11,8 @@ use\sammo\{
     GameConst,
     GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    Json
 };
 
 
@@ -139,6 +140,7 @@ class che_첩보 extends Command\GeneralCommand
         $env = $this->env;
 
         $general = $this->generalObj;
+        $nationID = $general->getNationID();
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $destCity = $this->destCity;
@@ -168,8 +170,8 @@ class che_첩보 extends Command\GeneralCommand
         $cityBrief = "【<G>{$destCityName}</>】주민:{$popText}, 민심:{$trustText}, 장수:{$totalGenCnt}, 병력:{$totalCrew}";
         $cityDevel = "【<M>첩보</>】농업:{$agriText}, 상업:{$commText}, 치안:{$secuText}, 수비:{$defText}, 성벽:{$wallText}";
 
-        $logger->pushGeneralActionLog("누군가가 <G><b>{$destCityName}</b></>{$josaUl} 살피는 것 같습니다.");
-        if ($dist < 1) {
+        $logger->pushGlobalActionLog("누군가가 <G><b>{$destCityName}</b></>{$josaUl} 살피는 것 같습니다.");
+        if ($dist <= 1) {
             $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>의 정보를 많이 얻었습니다. <1>$date</>");
             $logger->pushGeneralActionLog($cityBrief, ActionLogger::RAWTEXT);
             $logger->pushGeneralActionLog($cityDevel, ActionLogger::RAWTEXT);
@@ -177,7 +179,7 @@ class che_첩보 extends Command\GeneralCommand
                 $crewTypeText = mb_substr(GameUnitConst::byID($crewType)->name, 0, 2);
                 $cnt = count($value);
                 return "{$crewTypeText}:{$cnt}";
-            }, $destCityGeneralList)), ActionLogger::RAWTEXT);
+            }, $byCrewType)), ActionLogger::RAWTEXT);
 
             if ($this->destNation['nation'] && $general->getNationID()) {
                 $techDiff = floor($this->destNation['tech']) - floor($this->nation['tech']);
@@ -202,6 +204,13 @@ class che_첩보 extends Command\GeneralCommand
             $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>의 소문만 들을 수 있었습니다. <1>$date</>");
             $logger->pushGeneralActionLog($cityBrief, ActionLogger::RAWTEXT);
         }
+
+        $rawSpy = $db->queryFirstField('SELECT spy FROM nation WHERE nation = %i', $nationID);
+        $spyInfo = Json::decode($rawSpy)??[];
+        $spyInfo[$destCityID] = 3;
+        $db->update('nation', [
+            'spy'=>Json::encode($spyInfo)
+        ], 'nation=%i',$nationID);
 
         $exp = Util::randRangeInt(1, 100);
         $ded = Util::randRangeInt(1, 70);
