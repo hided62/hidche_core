@@ -175,10 +175,16 @@ $('#die_immediately').click(function(){
     </tr>
     <tr>
         <td valign=top>
-            <?=formatHistoryToHTML(getGeneralActionLogRecent($generalID, 24))?>
+            <div id='generalActionPlate'>
+            <?=formatHistoryToHTML(getGeneralActionLogRecent($generalID, 24), 'generalAction')?>
+            </div>
+            <button type="button" class="load_old_log btn btn-secondary btn-block" data-log_type="generalAction">이전 로그 불러오기</button>
         </td>
         <td valign=top>
-            <?=formatHistoryToHTML(getBattleDetailLogRecent($generalID, 24))?>
+            <div id='battleDetailPlate'>
+            <?=formatHistoryToHTML(getBattleDetailLogRecent($generalID, 24), 'battleDetail')?>
+            </div>
+            <button type="button" class="load_old_log btn btn-secondary btn-block" data-log_type="battleDetail">이전 로그 불러오기</button>
         </td>
     </tr>
     <tr>
@@ -190,7 +196,10 @@ $('#die_immediately').click(function(){
             <?=formatHistoryToHTML(getGeneralHistoryLogAll($generalID))?>
         </td>
         <td valign=top>
-            <?=formatHistoryToHTML(getBattleResultRecent($generalID, 24))?>
+            <div id='battleResultPlate'>
+            <?=formatHistoryToHTML(getBattleResultRecent($generalID, 24), 'battleResult')?>
+            </div>
+            <button type="button" class="load_old_log btn btn-secondary btn-block" data-log_type="battleResult">이전 로그 불러오기</button>
         </td>
     </tr>
 </table>

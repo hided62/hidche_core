@@ -101,12 +101,20 @@ function getAuctionLogRecent(int $count) {
 }
 
 //DB-based
-function formatHistoryToHTML(array $history):string{
+function formatHistoryToHTML(array $history, ?string $type=null):string{
     $result = [];
-    foreach($history as $item){
-        $result[] = ConvertLog($item);
+    if($type){
+        foreach($history as $seq=>$item){
+            $result[] = "<div class='log_{$type}' id='log_{$type}_{$seq}' data-seq='{$seq}'>".ConvertLog($item).'</div>';        
+        }
     }
-    return join('<br>', $result);
+    else{
+        foreach($history as $seq=>$item){
+            $result[] = '<div>'.ConvertLog($item).'</div>';        
+        }
+    }
+    
+    return join('', $result);
 }
 
 function pushGeneralActionLog(int $generalID, ?array $history, ?int $year=null, ?int $month=null) {
@@ -134,10 +142,19 @@ function pushGeneralActionLog(int $generalID, ?array $history, ?int $year=null, 
 function getGeneralActionLogRecent(int $generalID, int $count):array{
     $db = DB::db();
 
-    return $db->queryFirstColumn(
-        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "action" order by id desc LIMIT %i',
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`,`text` from general_record WHERE general_id = %i AND log_type = "action" order by id desc LIMIT %i',
         $generalID, $count
-    );
+    ));
+}
+
+function getGeneralActionLogMore(int $generalID, int $startSeq, int $count):array{
+    $db = DB::db();
+
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`,`text` from general_record WHERE general_id = %i AND log_type = "action" AND id < %i order by id desc LIMIT %i',
+        $generalID, $startSeq, $count
+    ));
 }
 
 function pushBattleResultLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
@@ -165,10 +182,19 @@ function pushBattleResultLog(int $generalID, array $history, ?int $year=null, ?i
 function getBattleResultRecent(int $generalID, int $count):array {
     $db = DB::db();
 
-    return $db->queryFirstColumn(
-        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle_brief" order by id desc LIMIT %i',
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`, `text` from general_record WHERE general_id = %i AND log_type = "battle_brief" order by id desc LIMIT %i',
         $generalID, $count
-    );
+    ));
+}
+
+function getBattleResultMore(int $generalID, int $startSeq, int $count):array {
+    $db = DB::db();
+
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`, `text` from general_record WHERE general_id = %i AND log_type = "battle_brief" AND id < %i order by id desc LIMIT %i',
+        $generalID, $startSeq, $count
+    ));
 }
 
 function pushBattleDetailLog(int $generalID, array $history, ?int $year=null, ?int $month=null) {
@@ -196,12 +222,20 @@ function pushBattleDetailLog(int $generalID, array $history, ?int $year=null, ?i
 function getBattleDetailLogRecent(int $generalID, int $count):array {
     $db = DB::db();
 
-    return $db->queryFirstColumn(
-        'SELECT `text` from general_record WHERE general_id = %i AND log_type = "battle" order by id desc LIMIT %i',
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`,`text` from general_record WHERE general_id = %i AND log_type = "battle" order by id desc LIMIT %i',
         $generalID, $count
-    );
+    ));
 }
 
+function getBattleDetailLogMore(int $generalID, int $startSeq, int $count):array {
+    $db = DB::db();
+
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`,`text` from general_record WHERE general_id = %i AND log_type = "battle" AND id < %i order by id desc LIMIT %i',
+        $generalID, $startSeq, $count
+    ));
+}
 
 function pushGeneralHistoryLog(int $generalID, ?array $history, $year=null, $month=null) {
     if(!$history){

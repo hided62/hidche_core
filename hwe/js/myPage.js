@@ -30,5 +30,56 @@ jQuery(function($){
 
     }
 
+    $('.load_old_log').click(function(){
+        var $thisBtn = $(this);
+        var logType = $thisBtn.data('log_type');
+        var $last = $('.log_{0}:last'.format(logType));
+        var reqTo = null;
+        if($last.length){
+            reqTo = $last.data('seq');
+        }
+        
+        $.post({
+            url:'j_general_log_old.php', 
+            dataType:'json',
+            data:{
+                to:reqTo,
+                type:logType
+            }
+        }).then(function(data){
+            if(!data){
+                return quickReject('로그를 받아오지 못했습니다.');
+            }
+            if(!data.result){
+                return quickReject('로그를 받아오지 못했습니다. : '+data.reason);
+            }
+
+            var keys = Object.keys(data.log);
+            if(keys.length > 1 && keys[0] < keys[1]){
+                keys.reverse();
+            }
+
+            if(keys == 0){
+                $thisBtn.hide();
+                return;
+            }
+
+            var html = [];
+            $.each(keys, function(_, key){
+                if($('#log_{0}_{1}'.format(logType, key)).length){
+                    return true;
+                }
+                var item = data.log[key];
+                html.push("<div class='log_{0}' id='log_{0}_{1}' data-seq='{1}'>{2}</div>".format(logType, key, item));
+            });
+
+            $('#{0}Plate'.format(logType)).append(html);
+        }, errUnknown)
+        .fail(function(reason){
+            alert(reason);
+            location.reload();
+        });
+    })
+
     initCustomCSSForm();
 });
