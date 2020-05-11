@@ -113,9 +113,30 @@ class AutorunGeneralPolicy{
 
     }
 
-    function __construct(General $general, $aiOptions, array $nationPolicy, array $serverPolicy, array $nation, array $env){
-        //TODO: 국가 정책을 받아와야함
+    function __construct(General $general, $aiOptions, ?array $nationPolicy, ?array $serverPolicy, array $nation, array $env){
         $this->priority = static::$default_priority;
+
+        if($serverPolicy && key_exists('priority', $serverPolicy)){
+            $priority = [];
+            foreach($serverPolicy['priority'] as $priorityItem){
+                if(!property_exists($this, $priorityItem)){
+                    continue;
+                }
+                $priority[] = $priorityItem;
+            }
+            $this->priority = $priority;
+        }
+
+        if($nationPolicy && key_exists('priority', $nationPolicy)){
+            $priority = [];
+            foreach($nationPolicy['priority'] as $priorityItem){
+                if(!property_exists($this, $priorityItem)){
+                    continue;
+                }
+                $priority[] = $priorityItem;
+            }
+            $this->priority = $priority;
+        }
 
         if($general->getNPCType() >= 2){
             $this->doNPCState($general);

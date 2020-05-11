@@ -140,22 +140,68 @@ class AutorunNationPolicy {
     public $safeRecruitCityPopulationRatio = 0.5;
     public $properWarTrainAtmos = 90;
 
+    ///이쪽의 값이 실제 초기화 값임
+    public static $defaultPolicy = [
+        'reqNationGold'=>10000,
+        'reqNationRice'=>12000,
+        'CombatForce'=>[],
+        'SupportForce'=>[],
+        'DevelopForce'=>[],
+        'reqHumanWarUrgentGold'=>0,
+        'reqHumanWarUrgentRice'=>0,
+        'reqHumanWarRecommandGold'=>0,
+        'reqHumanWarRecommandRice'=>0,
+        'reqHumanDevelGold'=>10000,
+        'reqHumanDevelRice'=>10000,
+        'reqNPCWarGold'=>0,
+        'reqNPCWarRice'=>0,
+        'reqNPCDevelGold'=>0,
+        'reqNPCDevelRice'=>500,
+    
+        'minimumResourceActionAmount'=>1000,
+    
+        'minNPCWarLeadership'=>40,
+        'minWarCrew'=>1500,
+    
+        'allowNpcAttackCity'=>true,
+        'minNPCRecruitCityPopulation'=>50000,
+        'safeRecruitCityPopulationRatio'=>0.5,
+        'properWarTrainAtmos'=>90,
+    ];
 
-    function __construct(General $general, $aiOptions, array $nationPolicy, array $serverPolicy, array $nation, array $env)
+    function __construct(General $general, $aiOptions, ?array $nationPolicy, ?array $serverPolicy, array $nation, array $env)
     {
-        foreach($serverPolicy as $policy=>$value){
-            if(!property_exists($this, $policy)){
-                continue;
-            }
-            $this->$policy = $value;
+        foreach(static::$defaultPolicy as $policy=>$value){
+            $this->{$policy} = $value;
         }
+        
+        if($serverPolicy){
+            foreach($serverPolicy['values']??[] as $policy=>$value){
+                if(!property_exists($this, $policy)){
+                    continue;
+                }
+                $this->$policy = $value;
+            }
 
-        foreach($nationPolicy as $policy){
-            if(!property_exists($this, $policy)){
-                continue;
+            if(key_exists('priority', $serverPolicy)){
+                $this->priority = $serverPolicy['priority'];
             }
-            $this->$policy = $value;
         }
+        
+
+        if($nationPolicy){
+            foreach($nationPolicy['values']??[] as $policy){
+                if(!property_exists($this, $policy)){
+                    continue;
+                }
+                $this->$policy = $value;
+            }
+
+            if(key_exists('priority', $nationPolicy)){
+                $this->priority = $nationPolicy['priority'];
+            }
+        }
+        
 
         if(!$this->priority){
             $this->priority = $this::$defaultPriority;

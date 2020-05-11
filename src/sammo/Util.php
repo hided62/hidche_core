@@ -284,10 +284,10 @@ class Util extends \utilphp\util
         return $result;
     }
 
-    public static function convertArrayToSetLike($arr){
+    public static function convertArrayToSetLike($arr, $valueIsKey=true){
         $result = [];
         foreach($arr as $datum){
-            $result[$datum] = $datum;
+            $result[$datum] = $valueIsKey?$datum:1;
         }
         return $result;
     }

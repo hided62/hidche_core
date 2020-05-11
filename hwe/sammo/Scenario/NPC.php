@@ -303,8 +303,8 @@ class NPC{
             $killturn = ($this->death - $year) * 12 + mt_rand(0, 11) + $month - 1;
         }
 
-        $specage = $this->specAge?:$age + 1;
-        $specage2 = $this->specAge2?:$age + 1;
+        $specage = $this->specAge?:($age + 1);
+        $specage2 = $this->specAge2?:($age + 1);
 
         $db->insert('general',[
             'npc'=>$this->npc,

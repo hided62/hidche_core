@@ -113,11 +113,11 @@ class GeneralAI
             'name' => '재야',
         ];
 
-        $serverPolicy = KVStorage::getStorage($db, 'autorun_nation_policy_0');
-        $nationPolicy = KVStorage::getStorage($db, "autorun_nation_policy_{$this->nation['nation']}");
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options']??[], $nationPolicy->getAll(), $serverPolicy->getAll(), $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??[], $nationPolicy->getAll(), $serverPolicy->getAll(), $this->nation, $this->env);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
 
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
 
