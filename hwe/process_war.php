@@ -92,7 +92,12 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
             $updateDefenderNation['rice'] = max(0, $rawDefenderNation['rice'] - $rice);
         }
         else if($conquerCity){
-            $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 500;
+            if($rawDefenderNation['capital'] == $rawDefenderCity['city']){
+                $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 1000;
+            }
+            else{
+                $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 500;
+            }
         }
     }
 
