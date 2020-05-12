@@ -110,12 +110,17 @@ $currentGeneralActionPriority = $rawNationGeneralPolicy['priority'] ?? $defaultG
                             <input type="number" class="form-control" data-type="integer" id="reqNationGold" min="0" value="0">
                         </div>
                     </div>
-                    <div style='text-align:right;'><small class="form-text text-muted">이 보다 많으면 포상, 적으면 몰수합니다.(긴급포상 제외)</small></div>
+                    <div style='text-align:right;'><small class="form-text text-muted">이 보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상 제외)</small></div>
                 </div>
 
-                <label for="reqNationRice" class="col-sm-3 col-form-label">국가 권장 쌀</label>
-                <div class="col-sm-3">
-                    <input type="number" class="form-control" data-type="integer" id="reqNationRice" min="0" value="0">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <label for="reqNationRice" class="col-sm-6 col-form-label">국가 권장 쌀</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" data-type="integer" id="reqNationRice" min="0" value="0">
+                        </div>
+                    </div>
+                    <div style='text-align:right;'><small class="form-text text-muted">이 보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상 제외)</small></div>
                 </div>
             </div>
             <div class="form-group row">

@@ -27,7 +27,7 @@ if(!in_array($type, $availableTypes)){
     ]);
 }
 
-$data =  JSON::decode($data);
+$data =  Json::decode($data);
 if(!$data || !is_array($data)){
     Json::die([
         'result'=>false,
