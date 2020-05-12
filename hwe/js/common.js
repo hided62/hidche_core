@@ -311,6 +311,15 @@ function errUnknown(){
     alert('작업을 실패했습니다.');
 }
 
+function errUnknownToast(){
+    $.toast({
+        title: '에러!',
+        content: '작업을 실패했습니다.',
+        type: 'danger',
+        delay: 5000
+    });
+}
+
 function quickReject(errMsg){
     if(errMsg === undefined){
         errMsg = '작업을 실패했습니다.';
