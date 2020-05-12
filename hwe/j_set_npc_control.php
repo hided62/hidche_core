@@ -163,7 +163,7 @@ function applyGeneralPriority($priority, $nationID, $generalName):?string{
     }
     $generalPolicyRoot['priority'] = $priority;
     $generalPolicyRoot['prioritySetter'] = $generalName;
-    $nationStor->npc_nation_policy = $generalPolicyRoot;
+    $nationStor->npc_general_policy = $generalPolicyRoot;
     return null;
 }
 
