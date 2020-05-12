@@ -53,7 +53,13 @@ if ($me['officer_level'] < 5) {
         'reason'=>'수뇌가 아닙니다.',
     ]);
 }
-
+$permission = checkSecretPermission($me);
+if ($permission < 4) {
+    Json::die([
+        'result'=>false,
+        'reason'=>'권한이 부족합니다. 군주, 혹은 외교권자가 아닙니다.'
+    ]);
+}
 
 function applyNationPolicy($policy, $nationID, $generalName):?string{
     $db = DB::db();
