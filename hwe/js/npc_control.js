@@ -127,7 +127,7 @@ jQuery(function ($) {
         $.toast({
             title: '되돌리기 완료',
             content: '이전 설정으로 되돌렸습니다.',
-            type: 'success',
+            type: 'info',
             delay: 5000
         });
     });
@@ -201,6 +201,12 @@ jQuery(function ($) {
             if (!data.result) {
                 return quickReject('설정하지 못했습니다. : ' + data.reason);
             }
+            $.toast({
+                title: '적용 완료',
+                content: 'NPC 정책이 반영되었습니다.',
+                type: 'success',
+                delay: 5000
+            });
         }, errUnknownToast)
             .fail(function (reason) {
                 $.toast({

@@ -116,8 +116,8 @@ class GeneralAI
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $gameStor->getValue('npc_nation_policy'), $nationStor->getValue('npc_nation_policy'), $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $gameStor->getValue('npc_general_policy'), $nationStor->getValue('npc_general_policy'), $this->nation, $this->env);
 
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
 
@@ -3126,7 +3126,10 @@ class GeneralAI
 
         foreach($this->nationPolicy->priority as $actionName){
             
-            if(property_exists($this->nationPolicy, 'can'.$actionName) && !$this->nationPolicy->{'can'.$actionName}){
+            if(!property_exists($this->nationPolicy, 'can'.$actionName)){
+                continue;
+            }
+            if(!$this->nationPolicy->{'can'.$actionName}){
                 continue;
             }
             if($npcType < 2 && !($this->nationPolicy::$availableInstantTurn[$actionName]??false)){
@@ -3276,7 +3279,10 @@ class GeneralAI
         }
 
         foreach($this->generalPolicy->priority as $actionName){
-            if(!$this->generalPolicy->{'can'.$actionName}){
+            if(!property_exists($this->generalPolicy, 'can'.$actionName)){
+                continue;
+            }
+            if(!($this->generalPolicy->{'can'.$actionName})){
                 continue;
             }
             /** @var ?GeneralCommand */

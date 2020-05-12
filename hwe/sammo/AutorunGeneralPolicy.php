@@ -124,7 +124,9 @@ class AutorunGeneralPolicy{
                 }
                 $priority[] = $priorityItem;
             }
-            $this->priority = $priority;
+            if($priority){
+                $this->priority = $priority;
+            }
         }
 
         if($nationPolicy && key_exists('priority', $nationPolicy)){
@@ -135,7 +137,9 @@ class AutorunGeneralPolicy{
                 }
                 $priority[] = $priorityItem;
             }
-            $this->priority = $priority;
+            if($priority){
+                $this->priority = $priority;
+            }
         }
 
         if($general->getNPCType() >= 2){

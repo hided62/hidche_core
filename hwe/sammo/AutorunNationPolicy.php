@@ -174,13 +174,13 @@ class AutorunNationPolicy {
         foreach(static::$defaultPolicy as $policy=>$value){
             $this->{$policy} = $value;
         }
-        
+
         if($serverPolicy){
             foreach($serverPolicy['values']??[] as $policy=>$value){
                 if(!property_exists($this, $policy)){
                     continue;
                 }
-                $this->$policy = $value;
+                $this->{$policy} = $value;
             }
 
             if(key_exists('priority', $serverPolicy)){
@@ -194,7 +194,7 @@ class AutorunNationPolicy {
                 if(!property_exists($this, $policy)){
                     continue;
                 }
-                $this->$policy = $value;
+                $this->{$policy} = $value;
             }
 
             if(key_exists('priority', $nationPolicy)){
