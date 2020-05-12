@@ -54,10 +54,10 @@ if ($me['officer_level'] < 5) {
     ]);
 }
 $permission = checkSecretPermission($me);
-if ($permission < 4) {
+if ($permission < 3) {
     Json::die([
         'result'=>false,
-        'reason'=>'권한이 부족합니다. 군주, 혹은 외교권자가 아닙니다.'
+        'reason'=>'권한이 부족합니다. 군주, 외교권자, 조언자가 아닙니다.'
     ]);
 }
 
