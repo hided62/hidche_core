@@ -6,6 +6,7 @@ class AutorunNationPolicy {
     // 수뇌 행동
     static $부대전방발령 = '부대전방발령';
     static $부대후방발령 = '부대후방발령';
+    static $부대구출발령 = '부대구출발령';
 
     static $부대유저장후방발령 = '부대유저장후방발령';
     static $유저장후방발령 = '유저장후방발령';
@@ -48,6 +49,7 @@ class AutorunNationPolicy {
         '유저장포상',
 
         //'유저장몰수',
+        '부대구출발령',
         '부대후방발령',
 
         'NPC긴급포상',
@@ -190,7 +192,7 @@ class AutorunNationPolicy {
         
 
         if($nationPolicy){
-            foreach($nationPolicy['values']??[] as $policy){
+            foreach($nationPolicy['values']??[] as $policy=>$value){
                 if(!property_exists($this, $policy)){
                     continue;
                 }
@@ -230,18 +232,18 @@ class AutorunNationPolicy {
             $reqGold = $defaultCrewType->costWithTech($nation['tech'], GameConst::$defaultStatMax * 100);
             $reqRice = $defaultCrewType->riceWithTech($nation['tech'], GameConst::$defaultStatMax * 100);
             if($this->reqHumanWarUrgentGold === 0){
-                $this->reqHumanWarUrgentGold = Util::round(max(7000, $reqGold * 3 * 2), -2);
+                $this->reqHumanWarUrgentGold = Util::round($reqGold * 3 * 2, -2);
             }
             if($this->reqHumanWarUrgentRice === 0){
-                $this->reqHumanWarUrgentRice = Util::round(max(7000, $reqRice * 3 * 2), -2);
+                $this->reqHumanWarUrgentRice = Util::round($reqRice * 3 * 2, -2);
             }
         }
 
         if($this->reqHumanWarRecommandGold === 0){
-            $this->reqHumanWarRecommandGold = Util::round(max(20000, $this->reqHumanWarUrgentGold * 3), -2);
+            $this->reqHumanWarRecommandGold = Util::round($this->reqHumanWarUrgentGold * 3, -2);
         }
         if($this->reqHumanWarRecommandRice === 0){
-            $this->reqHumanWarRecommandRice = Util::round(max(20000, $this->reqHumanWarRecommandRice * 3), -2);
+            $this->reqHumanWarRecommandRice = Util::round($this->reqHumanWarUrgentRice * 3, -2);
         }
 
         if($general->getNPCType() >= 2){

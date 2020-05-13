@@ -1,5 +1,19 @@
 jQuery(function ($) {
 
+    var itemFrame =
+        '<div class="list-group-item list-group-item-action" data-value="{0}">'
+        + '<i class="fas fa-bars"></i>&nbsp;&nbsp;'
+        + '{0}'
+        + '<button class="btn btn-sm float-right btn-secondary py-0 px-1 help-message">'
+        + '<i class="fas fa-question fa-xs"></i>'
+        + '</button>' +
+        '</div>';
+    var itemFrameDisabled =
+        '<div class="list-group-item list-group-item-dark">'
+        + '{0}' +
+        '</div>';
+
+
     function initPriority(priorityKey, currentPriority, availablePriority) {
         var $disabledList = $('#{0}Disabled'.format(priorityKey));
         var $enabledList = $('#{0}'.format(priorityKey));
@@ -8,14 +22,15 @@ jQuery(function ($) {
         $enabledList.empty();
 
         var usedKey = {};
-        var itemFrame = '<div class="list-group-item" data-value="{0}">{0}</div>';
+        var items = [];
         $.each(currentPriority, function (key, val) {
             var $item = $(itemFrame.format(val));
             usedKey[val] = true;
             $enabledList.append($item);
+            items.push($item);
         })
 
-        var $disabled = $(itemFrame.format('&lt;비활성화 항목들&gt;')).addClass('filtered');
+        var $disabled = $(itemFrameDisabled.format('&lt;비활성화 항목들&gt;')).addClass('filtered');
         $disabledList.append($disabled);
 
         $.each(availablePriority, function (key, val) {
@@ -24,6 +39,7 @@ jQuery(function ($) {
             }
             var $item = $(itemFrame.format(val));
             $disabledList.append($item);
+            items.push($item);
         })
 
         $disabledList.sortable({
@@ -36,6 +52,21 @@ jQuery(function ($) {
             group: priorityKey,
             filter: '.filtered',
             animation: 150
+        });
+
+        $.each(items, function(key, $item){
+            var itemValue = $item.data('value');
+            if(!(itemValue in btnHelpMessage)){
+                return true;
+            }
+            var helpText = btnHelpMessage[itemValue];
+            $item.find('.help-message').popover({
+                content:helpText,
+                placement:'right',
+                html:true,
+                trigger:'hover'
+            });
+
         });
     }
 
@@ -135,7 +166,7 @@ jQuery(function ($) {
     var collectPriority = function (priorityKey) {
         var $list = $('#{0}'.format(priorityKey));
         var result = [];
-        $list.find('.list-group-item').each(function(){
+        $list.find('.list-group-item').each(function () {
             var $item = $(this);
             result.push($item.data('value'));
         });

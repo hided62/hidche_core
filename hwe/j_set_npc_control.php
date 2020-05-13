@@ -130,11 +130,15 @@ function applyNationPolicy($policy, $nationID, $generalName):?string{
         if(is_array($defaultValue) != is_array($val)){
             return "{$key}는 올바른 값이 아닙니다.";
         }
+        if(is_integer($val) && $val < 0){
+            $val = 0;
+        }
         $nationPolicy[$key] = $val;
     }
     
     $nationPolicyRoot['values'] = $nationPolicy;
     $nationPolicyRoot['valueSetter'] = $generalName;
+    $nationPolicyRoot['valueSetTime'] = TimeUtil::now();
     $nationStor->npc_nation_policy = $nationPolicyRoot;
     return null;
 }
@@ -152,6 +156,7 @@ function applyNationPriority($priority, $nationID, $generalName):?string{
     }
     $nationPolicyRoot['priority'] = $priority;
     $nationPolicyRoot['prioritySetter'] = $generalName;
+    $nationPolicyRoot['prioritySetTime'] = TimeUtil::now();
     $nationStor->npc_nation_policy = $nationPolicyRoot;
     return null;
 }
@@ -169,6 +174,7 @@ function applyGeneralPriority($priority, $nationID, $generalName):?string{
     }
     $generalPolicyRoot['priority'] = $priority;
     $generalPolicyRoot['prioritySetter'] = $generalName;
+    $generalPolicyRoot['prioritySetTime'] = TimeUtil::now();
     $nationStor->npc_general_policy = $generalPolicyRoot;
     return null;
 }
