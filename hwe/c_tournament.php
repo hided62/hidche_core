@@ -122,7 +122,13 @@ if($btn == "자동개최설정") {
     $grpCount = count($occupied);
 
     if($grpCount < 8) {
-        $grp = Util::choiceRandom(array_keys($occupied));
+        $notFullGrp = [];
+        foreach(Util::range(8) as $grpIdx){
+            if(!($occupied[$grpIdx]??false)){
+                $notFullGrp[] = $grpIdx;
+            }
+        }
+        $grp = Util::choiceRandom($notFullGrp);
         $grpMemberCount = $db->queryFirstField('SELECT count(*) FROM tournament WHERE grp=%i', $grp);
         $db->insert('tournament', [
             'no'=>$general['no'],
@@ -150,8 +156,15 @@ if($btn == "자동개최설정") {
     }
 
 } elseif($btn == "랜덤전부투입") {
-    $code = [];
+    $grpIn = [];
+    
     foreach($db->queryAllLists('SELECT grp, count(*) FROM tournament WHERE 0 <= grp AND grp < 8 GROUP BY grp') as [$grpIdx, $cnt]){
+        $grpIn[$grpIdx] = $cnt;
+        
+    }
+    $code = [];
+    foreach(Util::range(8) as $grpIdx){
+        $cnt = $grpIn[$grpIdx]??0;
         foreach(Util::range($cnt, 8) as $grpNo){
             $code[] = $grpIdx * 10 + $grpNo;
         }
@@ -184,7 +197,7 @@ if($btn == "자동개최설정") {
     }
     $db->update('general', [
         'tournament'=>1,
-    ], 'no=%li', array_column($generals, 'no'));
+    ], 'no IN %li', Util::squeezeFromArray($generals, 'no'));
 
     $gameStor->tournament = 2;
     $gameStor->phase = 0;

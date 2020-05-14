@@ -415,6 +415,9 @@ for ($i=0; $i < 8; $i++) {
     foreach($generalList as $k=>$general) {
         printRow($k, $general['npc'], $general['name'], $general[$tp], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gd'], $general['gl'], $general['prmt']);
     }
+    foreach(Util::range(count($generalList), 4) as $idx){
+        printRow($idx, '', '', '', '', '', '', '', '', '', '');
+    }
     echo "
             </table>
         </td>";
@@ -438,6 +441,9 @@ for ($i=0; $i < 8; $i++) {
     $generalList = $db->query('SELECT npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq',$grp);
     foreach($generalList as $k=>$general) {
         printRow($k, $general['npc'], $general['name'], $general[$tp], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gd'], $general['gl'], $general['prmt']);
+    }
+    foreach(Util::range(count($generalList), 8) as $idx){
+        printRow($idx, '', '', '', '', '', '', '', '', '', '');
     }
     echo "
             </table>

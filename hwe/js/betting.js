@@ -2,7 +2,7 @@ jQuery(function($){
     $('.submitBtn').click(function(){
         var $this = $(this);
         var target = parseInt($this.data('target'));
-        var amount = $('target_{0}'.format(target)).val();
+        var amount = $('#target_{0}'.format(target)).val();
 
         $.post({
             url:'j_betting.php',
