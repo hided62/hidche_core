@@ -47,12 +47,7 @@ if (!$nationID) {
         'reason'=>'국가에 소속되어있지 않습니다.',
     ]);
 }
-if ($me['officer_level'] < 5) {
-    Json::die([
-        'result'=>false,
-        'reason'=>'수뇌가 아닙니다.',
-    ]);
-}
+
 $permission = checkSecretPermission($me);
 if ($permission < 3) {
     Json::die([
