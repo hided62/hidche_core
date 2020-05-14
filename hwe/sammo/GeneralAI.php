@@ -2512,13 +2512,13 @@ class GeneralAI
                     $args[] = [[
                         'isGold'=>'rice',
                         'amount'=>$genRes
-                    ], $amount];
+                    ], $genRes];
                 }
                 else{
                     $args[] = [[
                         'isGold'=>'rice',
                         'amount'=>$genRes/2
-                    ], $amount];
+                    ], $genRes/2];
                 }
             }
             if($genRes < $reqRes * 1.2){
