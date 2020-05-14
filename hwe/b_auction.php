@@ -29,7 +29,7 @@ $bidCount = $db->queryFirstField('SELECT count(no) FROM auction where no2=%i', $
 
 $btCount = $tradeCount + $bidCount;
 
-if ($session->userGrade >= 5) {
+if ($session->userGrade >= 5 || $btCount < 1) {
     $btn = "submit";
 } else {
     $btn = "hidden";
