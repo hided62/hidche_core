@@ -68,7 +68,7 @@ class AutorunGeneralPolicy{
 
     public $can징병 = true;
     public $can모병 = false;
-    public $can한계징병 = true;
+    public $can한계징병 = false;
     public $can고급병종 = false;
     public $can전투준비 = true;
     public $can소집해제 = true;
