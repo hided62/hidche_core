@@ -162,7 +162,7 @@ class che_초토화 extends Command\NationCommand{
 
         $db->update('general', [
             'betray'=>$db->sqleval('betray + 1')
-        ], 'nation = %i AND AND no!=%i', $nationID, $generalID);
+        ], 'nation = %i AND no!=%i', $nationID, $generalID);
         $general->increaseVar('betray', 1);
 
         $db->update('city', [
