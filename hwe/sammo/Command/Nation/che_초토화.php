@@ -11,7 +11,8 @@ use \sammo\{
     Command,
     MessageTarget,
     Message,
-    CityConst
+    CityConst,
+    CityInitialDetail
 };
 
 use function \sammo\{
@@ -103,7 +104,7 @@ class che_초토화 extends Command\NationCommand{
 
         $reqTurn = $this->getPreReqTurn()+1;
 
-        return "{$name}/{$reqTurn}턴(공백지 화, 금쌀 회수)";
+        return "{$name}/{$reqTurn}턴(공백지화, 금쌀 회수, 수뇌진 명성하락)";
     }
 
     public function getBrief():string{
@@ -111,6 +112,15 @@ class che_초토화 extends Command\NationCommand{
         $destCityName = CityConst::byID($this->arg['destCityID'])->name;
         $josaUl = JosaUtil::pick($destCityName, '을');
         return "【{$destCityName}】{$josaUl} {$commandName}";
+    }
+
+    public function calcReturnAmount(array $destCity):int{
+        $amount = $destCity['pop'] / 5;
+        foreach(['agri', 'comm', 'secu'] as $cityRes){
+            $cityResMax = "{$cityRes}_max";
+            $amount *= (($destCity[$cityRes] - $destCity[$cityResMax] * 0.5) / $destCity[$cityResMax]) + 1;
+        }
+        return Util::toInt($amount);
     }
 
     public function run():bool{
@@ -144,16 +154,16 @@ class che_초토화 extends Command\NationCommand{
         $josaYi = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
-        $amount = $destCity['pop'] / 5;
-        foreach(['agri', 'comm', 'secu'] as $cityRes){
-            $cityResMax = "{$cityRes}_max";
-            $amount *= (($destCity[$cityRes] - $destCity[$cityResMax] * 0.5) / $destCity[$cityResMax]) + 1;
-        }
-        $amount = Util::toInt($amount);
+        $amount = $this->calcReturnAmount($destCity);
 
         $db->update('general', [
             'experience'=>$db->sqleval('experience * 0.9')
         ], 'nation = %i AND officer_level >= 5 AND no!=%i', $nationID, $generalID);
+
+        $db->update('general', [
+            'betray'=>$db->sqleval('betray + 1')
+        ], 'nation = %i AND AND no!=%i', $nationID, $generalID);
+        $general->increaseVar('betray', 1);
 
         $db->update('city', [
             'trust'=>$db->sqleval('greatest(50, trust)'),
@@ -195,15 +205,25 @@ class che_초토화 extends Command\NationCommand{
 
     public function getForm(): string
     {
+
+        $cities = Util::convertArrayToDict(DB::db()->query('SELECT * FROM city WHERE nation =%i', $this->generalObj->getNationID()), 'city');
+        $calc = function(CityInitialDetail $constCity)use($cities){
+            if(!key_exists($constCity->id, $cities)){
+                return null;
+            }
+            $amount = $this->calcReturnAmount($cities[$constCity->id]);
+            $amountText = number_format($amount);
+            return "금쌀 각 {$amountText} 회수";
+        };
         ob_start();
 ?>
 <?=\sammo\getMapHtml()?><br>
 선택된 도시를 초토화 시킵니다.<br>
 도시가 공백지가 되며, 도시의 인구, 내정 상태에 따라 상당량의 국고가 확보됩니다.<br>
-국가의 수뇌들은 명성을 잃습니다.<br>
+국가의 수뇌들은 명성을 잃고, 모든 장수들은 배신 수치가 1 증가합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-<?=\sammo\optionsForCities()?><br>
+<?=\sammo\optionsForCities($calc)?><br>
 </select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
 <br>
 <?php

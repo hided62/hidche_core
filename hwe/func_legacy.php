@@ -39,10 +39,26 @@ function bar($per, $h=7) {
 }
 
 
-function optionsForCities() {
-    return join('', array_map(function($city){
-        return "<option value='{$city->id}'>{$city->name}</option>";
-    }, CityConst::all()));
+function optionsForCities(callable $infoCall=null) {
+
+    if(!$infoCall){
+        return join('', array_map(function($city){
+            return "<option value='{$city->id}'>{$city->name}</option>";
+        }, CityConst::all()));
+    }
+
+    $infoList = [];
+    $noInfoList = [];
+    foreach(CityConst::all() as $city){
+        $info = $infoCall($city);
+        if(!$info){
+            $noInfoList[] = "<option value='{$city->id}'>{$city->name}</option>";
+            continue;
+        }
+        $infoList[] = "<option value='{$city->id}'>{$city->name} ({$info})</option>";
+    }
+
+    return join('', array_merge($infoList, $noInfoList));    
 }
 
 function Submit($url, $msg="", $msg2="") {
