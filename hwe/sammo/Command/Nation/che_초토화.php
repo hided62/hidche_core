@@ -118,7 +118,7 @@ class che_초토화 extends Command\NationCommand{
         $amount = $destCity['pop'] / 5;
         foreach(['agri', 'comm', 'secu'] as $cityRes){
             $cityResMax = "{$cityRes}_max";
-            $amount *= (($destCity[$cityRes] - $destCity[$cityResMax] * 0.8) / $destCity[$cityResMax]) + 1;
+            $amount *= (($destCity[$cityRes] - $destCity[$cityResMax] * 0.5) / $destCity[$cityResMax]) + 0.8;
         }
         return Util::toInt($amount);
     }
