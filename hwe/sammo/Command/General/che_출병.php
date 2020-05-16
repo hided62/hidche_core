@@ -192,8 +192,8 @@ class che_출병 extends Command\GeneralCommand
         } while (false);
 
         $defenderCityID = (int) Util::choiceRandom($candidateCities);
-        $defenderCityName = $this->destCity['name'];
         $this->setDestCity($defenderCityID);
+        $defenderCityName = $this->destCity['name'];
         $josaRo = JosaUtil::pick($defenderCityName, '로');
         $defenderNationID = $this->destCity['nation'];
 
