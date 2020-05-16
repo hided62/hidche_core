@@ -516,6 +516,9 @@ class GeneralAI
             if(!key_exists($userGeneral->getCityID(), $this->frontCities)){
                 continue;
             }
+            if(!key_exists($userGeneral->getCityID(), $this->nationCities)){
+                continue;
+            }
             $city = $this->supplyCities[$userGeneral->getCityID()];
             $troopLeaderID = $userGeneral->getVar('troop');
             if(!$troopLeaderID || !key_exists($troopLeaderID, $this->troopLeaders)){
