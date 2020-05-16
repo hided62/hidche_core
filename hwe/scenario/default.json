@@ -4,7 +4,7 @@
         "min":10,
         "max":75,
         "npcTotal":155,
-        "npcMax":80,
+        "npcMax":75,
         "npcMin":10,
         "chiefMin":65
     },
