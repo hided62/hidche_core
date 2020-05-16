@@ -1008,7 +1008,7 @@ function checkEmperior()
     $tigers = $db->query(
         'SELECT value, name 
         FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
-        WHERE rank_data.nation_id = %i AND rank_data.type = "warnum" AND value > 0 ORDER BY value DESC LIMIT 5',
+        WHERE rank_data.nation_id = %i AND rank_data.type = "killnum" AND value > 0 ORDER BY value DESC LIMIT 5',
         $nationID
     ); // 오호장군
 
