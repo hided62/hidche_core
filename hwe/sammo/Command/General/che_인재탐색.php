@@ -263,7 +263,9 @@ class che_인재탐색 extends Command\GeneralCommand{
             ], 'nation=%i', $nationID);
         }
 
-        $age = $env['year'] - 20;
+        $age = Util::randRangeInt(20, 25);
+        $birthYear = $env['year'] - $age;
+        $deathYear = $env['year'] + Util::randRangeInt(10, 50);
 
         $newNPC = new \sammo\Scenario\NPC(
             Util::randRangeInt(1, 150),
@@ -275,8 +277,8 @@ class che_인재탐색 extends Command\GeneralCommand{
             $strength,
             $intel,
             $scoutLevel,
-            $age,
-            $env['year'] + Util::randRangeInt(10, 50),
+            $birthYear,
+            $deathYear,
             null,
             null
         );
