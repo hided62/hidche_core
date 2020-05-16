@@ -50,9 +50,12 @@
                 <?php endforeach; ?>
             </td>
         </tr>
+        <tr></tr>
         <tr>
             <td valign=top class="bg1">국가열전</td>
-            <td colspan=5 class='bg0' style="text-align:left;"><?=array_map($this->ConvertLog, $history)?></td>
+            <td colspan=5 class='bg0' style="text-align:left;"><?=join('<br>', array_map(function($item){
+                return $this->ConvertLog($item);
+            }, $history))?></td>
         </tr>
     </tbody>
 </table>
