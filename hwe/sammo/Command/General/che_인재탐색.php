@@ -1,9 +1,12 @@
 <?php
+
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -11,9 +14,9 @@ use \sammo\{
     Command
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     tryUniqueItemLottery,
     getAllNationStaticInfo
@@ -23,40 +26,43 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_인재탐색 extends Command\GeneralCommand{
+class che_인재탐색 extends Command\GeneralCommand
+{
     static protected $actionName = '인재탐색';
 
-    protected function argTest():bool{
+    protected function argTest(): bool
+    {
         $this->arg = null;
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
         $this->setNation(['gennum', 'scout']);
         $env = $this->env;
-        
+
         [$reqGold, $reqRice] = $this->getCost();
 
-        $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+        $this->fullConditionConstraints = [
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::ReqGeneralGold($reqGold),
-            ConstraintHelper::ReqGeneralRice($reqRice),  
+            ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
         $relYear = $env['year'] - $env['startyear'];
-        if($this->nation['nation'] != 0 && $relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit){
+        if ($this->nation['nation'] != 0 && $relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit) {
             $nationName = $this->nation['name'];
             $josaUn = JosaUtil::pick($nationName, '은');
             $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail("현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다.");
         }
-
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $db = DB::db();
         $env = $this->env;
 
@@ -68,13 +74,13 @@ class che_인재탐색 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
 
         $foundProp = $this->calcFoundProp($maxGenCnt, $totalGenCnt, $totalNpcCnt);
-        $foundPropText = number_format($foundProp*100, 1);
+        $foundPropText = number_format($foundProp * 100, 1);
 
         $title = "{$name}(랜덤경험";
-        if($reqGold > 0){
+        if ($reqGold > 0) {
             $title .= ", 자금{$reqGold}";
         }
-        if($reqRice > 0){
+        if ($reqRice > 0) {
             $title .= ", 군량{$reqRice}";
         }
 
@@ -82,24 +88,28 @@ class che_인재탐색 extends Command\GeneralCommand{
         return $title;
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [$this->env['develcost'], 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function calcFoundProp(int $maxGenCnt, int $totalGenCnt, int $totalNpcCnt):float{
+    public function calcFoundProp(int $maxGenCnt, int $totalGenCnt, int $totalNpcCnt): float
+    {
 
 
         $currCnt  = Util::toInt($totalGenCnt + $totalNpcCnt / 2);
         $remainSlot = $maxGenCnt - $currCnt;
-        if($remainSlot < 0){
+        if ($remainSlot < 0) {
             $remainSlot = 0;
         }
 
@@ -107,17 +117,17 @@ class che_인재탐색 extends Command\GeneralCommand{
         $foundPropSmall = 1 / ($totalNpcCnt / 3 + 1);
         $foundPropBig = 1 / $maxGenCnt;
 
-        if($totalNpcCnt < 50){
+        if ($totalNpcCnt < 50) {
             $foundProp = max($foundPropMain, $foundPropSmall);
-        }
-        else{
+        } else {
             $foundProp = max($foundPropMain, $foundPropBig);
         }
         return $foundProp;
     }
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -145,16 +155,16 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $logger = $general->getLogger();
 
-        if(!$foundNpc){
+        if (!$foundNpc) {
             $logger->pushGeneralActionLog("인재를 찾을 수 없었습니다. <1>$date</>");
 
             $incStat = Util::choiceRandomUsingWeight([
-                'leadership_exp'=>$general->getLeadership(false, false, false, false),
-                'strength_exp'=>$general->getStrength(false, false, false, false),
-                'intel_exp'=>$general->getIntel(false, false, false, false)
+                'leadership_exp' => $general->getLeadership(false, false, false, false),
+                'strength_exp' => $general->getStrength(false, false, false, false),
+                'intel_exp' => $general->getIntel(false, false, false, false)
             ]);
             [$reqGold, $reqRice] = $this->getCost();
-    
+
             $exp = 100;
             $ded = 70;
 
@@ -174,18 +184,21 @@ class che_인재탐색 extends Command\GeneralCommand{
         $exp = 200;
         $ded = 300;
 
-        $pickTypeList = ['무'=>6, '지'=>6, '무지'=>3];
+        $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];
 
         $pickType = Util::choiceRandomUsingWeight($pickTypeList);
 
-        $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
-        $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);
-        $subStat = GameConst::$defaultStatTotal - $mainStat - $otherStat;
-        if($subStat < GameConst::$defaultStatMin){
+        $totalStat = GameConst::$defaultStatNPCMax * 2 + 10;
+        $minStat = 10;
+        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, 10);
+        //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
+        $otherStat = $minStat + Util::randRangeInt(0, 5);
+        $subStat = $totalStat - $mainStat - $otherStat;
+        if ($subStat < $minStat) {
             $subStat = $otherStat;
-            $otherStat = GameConst::$defaultStatMin;
-            $mainStat = GameConst::$defaultStatTotal - $subStat - $otherStat;
-            if($mainStat){
+            $otherStat = $minStat;
+            $mainStat = $totalStat - $subStat - $otherStat;
+            if ($mainStat) {
                 throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
             }
         }
@@ -198,36 +211,34 @@ class che_인재탐색 extends Command\GeneralCommand{
         );
         $dexTotal = $avgGen['dex_t'];
 
-        if($pickType == '무'){
+        if ($pickType == '무') {
             $leadership = $subStat;
             $strength = $mainStat;
             $intel = $otherStat;
             $dexVal = Util::choiceRandom([
-                [$dexTotal*5/8, $dexTotal/8, $dexTotal/8, $dexTotal/8],
-                [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8],
-                [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8],
+                [$dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal / 8],
+                [$dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8],
+                [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8],
             ]);
-        }
-        else if($pickType == '지'){
+        } else if ($pickType == '지') {
             $leadership = $subStat;
             $strength = $otherStat;
             $intel = $mainStat;
-            $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8];
-        }
-        else{
+            $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8];
+        } else {
             $leadership = $otherStat;
             $strength = $subStat;
             $intel = $mainStat;
-            $dexVal = [$dexTotal/4, $dexTotal/4, $dexTotal/4, $dexTotal/4];
+            $dexVal = [$dexTotal / 4, $dexTotal / 4, $dexTotal / 4, $dexTotal / 4];
         }
 
         // 국내 최고능치 기준으로 랜덤성 스케일링
         $maxLPI = $avgGen['stat_sum'];
-        if($maxLPI > 210) {
+        if ($maxLPI > 210) {
             $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
             $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
             $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-        } elseif($maxLPI > 180) {
+        } elseif ($maxLPI > 180) {
             $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
             $strength *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
             $intel *= $avgGen['stat_sum'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
@@ -243,14 +254,13 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $joinProp = 0.55 * $avgCnt / (Util::valueFit($genCnt + $npcCnt, 1) / 2);
         $noScout = false;
-        if($this->nation['scout'] != 0){
+        if ($this->nation['scout'] != 0) {
             $noScout = true;
-        }
-        else if($relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit){
+        } else if ($relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit) {
             $noScout = true;
         }
 
-        if($noScout || !Util::randBool($joinProp)) {
+        if ($noScout || !Util::randBool($joinProp)) {
             $scoutType = "발견";
             $scoutLevel = 0;
             $scoutNation = 0;
@@ -259,7 +269,7 @@ class che_인재탐색 extends Command\GeneralCommand{
             $scoutLevel = 1;
             $scoutNation = $nationID;
             $db->update('nation', [
-                'gennum'=>$db->sqleval('gennum + 1')
+                'gennum' => $db->sqleval('gennum + 1')
             ], 'nation=%i', $nationID);
         }
 
@@ -286,8 +296,8 @@ class che_인재탐색 extends Command\GeneralCommand{
         $newNPC->setMoney(100, 100);
         $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
         $newNPC->setSpecYear(
-            Util::round((GameConst::$retirementYear - $age)/12) + $age,
-            Util::round((GameConst::$retirementYear - $age)/3) + $age
+            Util::round((GameConst::$retirementYear - $age) / 12) + $age,
+            Util::round((GameConst::$retirementYear - $age) / 3) + $age
         );
         $newNPC->setDex(
             $dexVal[0],
@@ -309,9 +319,9 @@ class che_인재탐색 extends Command\GeneralCommand{
         $logger->pushGeneralHistoryLog("<Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
         $incStat = Util::choiceRandomUsingWeight([
-            'leadership_exp'=>$general->getLeadership(false, false, false, false),
-            'strength_exp'=>$general->getStrength(false, false, false, false),
-            'intel_exp'=>$general->getIntel(false, false, false, false)
+            'leadership_exp' => $general->getLeadership(false, false, false, false),
+            'strength_exp' => $general->getStrength(false, false, false, false),
+            'intel_exp' => $general->getIntel(false, false, false, false)
         ]);
         [$reqGold, $reqRice] = $this->getCost();
 
@@ -329,6 +339,4 @@ class che_인재탐색 extends Command\GeneralCommand{
         $general->applyDB($db);
         return true;
     }
-
-    
 }

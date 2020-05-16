@@ -11,7 +11,9 @@
         "total":220,
         "min":40,
         "max":95,
-        "npcMax":95
+        "npcTotal":210,
+        "npcMax":95,
+        "npcMin":40
     },
     "general":[
         [0, "아이유", null, 0, null, 90, 56, 100, 0, 160, 250, "의협", "집중"],

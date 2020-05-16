@@ -1,9 +1,12 @@
 <?php
+
 namespace sammo\Command\Nation;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
+use\sammo\{
+    DB,
+    Util,
+    JosaUtil,
+    General,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -12,9 +15,9 @@ use \sammo\{
     KVStorage
 };
 
-use function \sammo\{
+use function\sammo\{
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     tryUniqueItemLottery
 };
@@ -23,15 +26,18 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_의병모집 extends Command\NationCommand{
+class che_의병모집 extends Command\NationCommand
+{
     static protected $actionName = '의병모집';
 
-    protected function argTest():bool{
+    protected function argTest(): bool
+    {
         $this->arg = null;
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
@@ -39,42 +45,47 @@ class che_의병모집 extends Command\NationCommand{
         $this->setCity();
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
-        
-        $this->fullConditionConstraints=[
+
+        $this->fullConditionConstraints = [
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::AvailableStrategicCommand(),
             ConstraintHelper::NotOpeningPart($relYear),
         ];
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
-        $reqTurn = $this->getPreReqTurn()+1;
+        $reqTurn = $this->getPreReqTurn() + 1;
         $postReqTurn = $this->getPostReqTurn();
 
         return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
-    
-    public function getPreReqTurn():int{
+
+    public function getPreReqTurn(): int
+    {
         return 2;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*10)*10);    
+        $nextTerm = Util::round(sqrt($genCount * 10) * 10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
     }
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -114,7 +125,7 @@ class che_의병모집 extends Command\NationCommand{
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
         $nationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach($nationGeneralList as $nationGeneralID){
+        foreach ($nationGeneralList as $nationGeneralID) {
             $nationGeneralLogger = new ActionLogger($nationGeneralID, $nationID, $year, $month);
             $nationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $nationGeneralLogger->flush();
@@ -133,7 +144,7 @@ class che_의병모집 extends Command\NationCommand{
         $createGenIdx = $gameStor->npccount + 1;
         $lastCreatGenIdx = $createGenIdx + $createGenCnt;
 
-        $pickTypeList = ['무'=>5, '지'=>5];
+        $pickTypeList = ['무' => 5, '지' => 5];
 
         $avgGen = $db->queryFirstRow(
             'SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp,
@@ -143,51 +154,52 @@ class che_의병모집 extends Command\NationCommand{
         );
         $dexTotal = $avgGen['dex_t'];
 
-        for(;$createGenIdx <= $lastCreatGenIdx; $createGenIdx++){
+        for (; $createGenIdx <= $lastCreatGenIdx; $createGenIdx++) {
             $pickType = Util::choiceRandomUsingWeight($pickTypeList);
 
-            $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
-            $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);
-            $subStat = GameConst::$defaultStatTotal - $mainStat - $otherStat;
-            if($subStat < GameConst::$defaultStatMin){
+            $totalStat = GameConst::$defaultStatNPCMax * 2 + 10;
+            $minStat = 10;
+            $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, 10);
+            //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
+            $otherStat = $minStat + Util::randRangeInt(0, 5);
+            $subStat = $totalStat - $mainStat - $otherStat;
+            if ($subStat < $minStat) {
                 $subStat = $otherStat;
-                $otherStat = GameConst::$defaultStatMin;
-                $mainStat = GameConst::$defaultStatTotal - $subStat - $otherStat;
-                if($mainStat){
+                $otherStat = $minStat;
+                $mainStat = $totalStat - $subStat - $otherStat;
+                if ($mainStat) {
                     throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
                 }
             }
-    
-            if($pickType == '무'){
+
+            if ($pickType == '무') {
                 $leadership = $subStat;
                 $strength = $mainStat;
                 $intel = $otherStat;
                 $dexVal = Util::choiceRandom([
-                    [$dexTotal*5/8, $dexTotal/8, $dexTotal/8, $dexTotal/8],
-                    [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8],
-                    [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8],
+                    [$dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal / 8],
+                    [$dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8],
+                    [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8],
                 ]);
-            }
-            else if($pickType == '지'){
+            } else if ($pickType == '지') {
                 $leadership = $subStat;
                 $strength = $otherStat;
                 $intel = $mainStat;
-                $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8];
-            }
-            else{
+                $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8];
+            } else {
                 $leadership = $otherStat;
                 $strength = $subStat;
                 $intel = $mainStat;
-                $dexVal = [$dexTotal/4, $dexTotal/4, $dexTotal/4, $dexTotal/4];
+                $dexVal = [$dexTotal / 4, $dexTotal / 4, $dexTotal / 4, $dexTotal / 4];
             }
-    
+
             // 국내 최고능치 기준으로 랜덤성 스케일링
             $maxLPI = $avgGen['stat_sum'];
-            if($maxLPI > 210) {
+            if ($maxLPI > 210) {
                 $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
                 $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
                 $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-            } elseif($maxLPI > 180) {
+            } elseif ($maxLPI > 180) {
                 $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
                 $strength *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
                 $intel *= $avgGen['stat_sum'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
@@ -199,9 +211,9 @@ class che_의병모집 extends Command\NationCommand{
             $leadership = Util::round($leadership);
             $strength = Util::round($strength);
             $intel = Util::round($intel);
-    
+
             $age = $avgGen['age'];
-    
+
             $newNPC = new \sammo\Scenario\NPC(
                 Util::randRangeInt(1, 150),
                 "의병장{$createGenIdx}",
@@ -228,21 +240,19 @@ class che_의병모집 extends Command\NationCommand{
                 $dexVal[3],
                 $avgGen['dex5']
             );
-    
+
             $newNPC->build($this->env);
         }
 
         $gameStor->npccount = $lastCreatGenIdx;
         $db->update('nation', [
-            'gennum'=>$db->sqleval('gennum + %i', $createGenCnt),
+            'gennum' => $db->sqleval('gennum + %i', $createGenCnt),
             'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
 
-        
+
         $general->applyDB($db);
 
         return true;
     }
-
-    
 }

@@ -10,7 +10,9 @@
         "total":220,
         "min":40,
         "max":95,
-        "npcMax":95
+        "npcTotal":170,
+        "npcMax":95,
+        "npcMin":10
     },
     "map":{
         "mapName":"miniche"

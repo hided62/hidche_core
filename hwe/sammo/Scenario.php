@@ -235,7 +235,9 @@ class Scenario{
             'defaultStatTotal'=>$this->data['stat']['total']??$default['stat']['total'],
             'defaultStatMin'=>$this->data['stat']['min']??$default['stat']['min'],
             'defaultStatMax'=>$this->data['stat']['max']??$default['stat']['max'],
+            'defaultStatNPCTotal'=>$this->data['stat']['npcTotal']??$default['stat']['npcTotal'],
             'defaultStatNPCMax'=>$this->data['stat']['npcMax']??$default['stat']['npcMax'],
+            'defaultStatNPCMin'=>$this->data['stat']['npcMin']??$default['stat']['npcMin'],
             'chiefStatMin'=>$this->data['stat']['chiefMin']??$default['stat']['chiefMin'],
         ];
 

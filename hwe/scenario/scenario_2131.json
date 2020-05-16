@@ -6,7 +6,9 @@
         "total":250,
         "min":60,
         "max":110,
-        "npcMax":100
+        "npcTotal":190,
+        "npcMax":100,
+        "npcMin":10
     },
     "iconPath":"환상향",
     "nation":[

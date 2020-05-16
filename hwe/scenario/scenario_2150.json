@@ -10,7 +10,9 @@
         "total":220,
         "min":40,
         "max":95,
-        "npcMax":95
+        "npcTotal":200,
+        "npcMax":95,
+        "npcMin":20
     },
     "general":[
         [0, "모에", null, 0, null, 68, 55, 82, 0, 160, 300, null, null],

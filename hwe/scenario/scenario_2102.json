@@ -10,7 +10,9 @@
         "total":260,
         "min":40,
         "max":120,
+        "npcTotal":120,
         "npcMax":65,
+        "npcMin":10,
         "chiefMin":55
     },
     "map":{

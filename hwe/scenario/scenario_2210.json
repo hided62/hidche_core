@@ -9,7 +9,9 @@
         "total": 240,
         "min": 40,
         "max": 110,
-        "npcMax": 90,
+        "npcTotal":200,
+        "npcMax":90,
+        "npcMin":20,
         "chiefMin": 65
     },
     "iconPath": "포켓몬스터",

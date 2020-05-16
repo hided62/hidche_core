@@ -9,7 +9,9 @@
         "total": 225,
         "min": 40,
         "max": 95,
-        "npcMax": 90,
+        "npcTotal":190,
+        "npcMax":90,
+        "npcMin":30,
         "chiefMin": 65
     },
     "iconPath": "스타1프로게이머",
