@@ -15,14 +15,17 @@ class CreateManyNPC extends \sammo\Event\Action{
 
         $pickType = Util::choiceRandomUsingWeightPair($pickTypeList);
 
-        $mainStat = GameConst::$defaultStatMax - Util::randRangeInt(0, 10);
-        $otherStat = GameConst::$defaultStatMin + Util::randRangeInt(0, 5);
-        $subStat = GameConst::$defaultStatTotal - $mainStat - $otherStat;
-        if($subStat < GameConst::$defaultStatMin){
+        $totalStat = GameConst::$defaultStatNPCMax * 2 + 10;
+        $minStat = 10;
+        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, 10);
+        //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
+        $otherStat = $minStat + Util::randRangeInt(0, 5);
+        $subStat = $totalStat - $mainStat - $otherStat;
+        if ($subStat < $minStat) {
             $subStat = $otherStat;
-            $otherStat = GameConst::$defaultStatMin;
-            $mainStat = GameConst::$defaultStatTotal - $subStat - $otherStat;
-            if($mainStat){
+            $otherStat = $minStat;
+            $mainStat = $totalStat - $subStat - $otherStat;
+            if ($mainStat) {
                 throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
             }
         }
@@ -43,21 +46,6 @@ class CreateManyNPC extends \sammo\Event\Action{
             $intel = $mainStat;
         }
 
-        // 국내 최고능치 기준으로 랜덤성 스케일링
-        $maxLPI =  GameConst::$defaultStatTotal;
-        if($maxLPI > 210) {
-            $leadership *= Util::randRange(0.6, 0.9);
-            $strength *= Util::randRange(0.6, 0.9);
-            $intel *= Util::randRange(0.6, 0.9);
-        } elseif($maxLPI > 180) {
-            $leadership *= Util::randRange(0.75, 0.95);
-            $strength *=  Util::randRange(0.75, 0.95);
-            $intel *= Util::randRange(0.75, 0.95);
-        } else {
-            $leadership *= Util::randRange(0.9, 1);
-            $strength *= Util::randRange(0.9, 1);
-            $intel *= Util::randRange(0.9, 1);
-        }
         $leadership = Util::round($leadership);
         $strength = Util::round($strength);
         $intel = Util::round($intel);

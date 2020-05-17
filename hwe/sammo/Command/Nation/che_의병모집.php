@@ -147,7 +147,7 @@ class che_의병모집 extends Command\NationCommand
         $pickTypeList = ['무' => 5, '지' => 5];
 
         $avgGen = $db->queryFirstRow(
-            'SELECT max(leadership+strength+intel) as stat_sum, avg(dedication) as ded,avg(experience) as exp,
+            'SELECT avg(dedication) as ded,avg(experience) as exp,
             avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
             from general where nation=%i',
             $nationID
@@ -193,21 +193,6 @@ class che_의병모집 extends Command\NationCommand
                 $dexVal = [$dexTotal / 4, $dexTotal / 4, $dexTotal / 4, $dexTotal / 4];
             }
 
-            // 국내 최고능치 기준으로 랜덤성 스케일링
-            $maxLPI = $avgGen['stat_sum'];
-            if ($maxLPI > 210) {
-                $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-                $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-                $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.6, 0.9);
-            } elseif ($maxLPI > 180) {
-                $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-                $strength *=  $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-                $intel *= $avgGen['stat_sum'] / GameConst::$defaultStatTotal * Util::randRange(0.75, 0.95);
-            } else {
-                $leadership *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-                $strength *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-                $intel *= $maxLPI / GameConst::$defaultStatTotal * Util::randRange(0.9, 1);
-            }
             $leadership = Util::round($leadership);
             $strength = Util::round($strength);
             $intel = Util::round($intel);
