@@ -18,7 +18,8 @@ use function \sammo\{
     CriticalScoreEx,
     tryUniqueItemLottery,
     getAllNationStaticInfo,
-    getNationStaticInfo
+    getNationStaticInfo,
+    newColor
 };
 
 use \sammo\Constraint\Constraint;
@@ -70,7 +71,6 @@ class che_등용 extends Command\GeneralCommand{
         $this->minConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotBeNeutral(), 
-            ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
         ];
@@ -87,7 +87,6 @@ class che_등용 extends Command\GeneralCommand{
         $this->fullConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotBeNeutral(), 
-            ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestGeneral(),
@@ -199,7 +198,7 @@ class che_등용 extends Command\GeneralCommand{
 등용할 장수를 목록에서 선택하세요.<br>
 <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
 <?php foreach($nationList as $destNation): ?>
-    <optgroup style='color:<?=$destNation['color']?>'>【<?=$destNation['name']?>】
+    <optgroup style='background-color:<?=$destNation['color']?>;color:<?=newColor($destNation['color'])?>;' label="【<?=$destNation['name']?>】" >
 <?php   foreach($destGenerals[$destNation['nation']]??[] as $destGeneral):
             $nameColor = \sammo\getNameColor($destGeneral['npc']);
             if($nameColor){
