@@ -33,6 +33,35 @@ jQuery(function ($) {
         var $disabled = $(itemFrameDisabled.format('&lt;비활성화 항목들&gt;')).addClass('filtered');
         $disabledList.append($disabled);
 
+        var lastInfoObj = null;
+        var lastInfoData = null;
+
+        var onChoose = function(evt){
+            //$(evt.item).find('.help-message').popopver('disable');
+            if(lastInfoObj){
+                lastInfoObj.popover('hide');
+            }
+        }
+
+        var onUnchoose = function(evt){
+            var $item = $(evt.item);//.find('.help-message').popopver('enable');
+            var $helpMessage = $item.find('.help-message');
+            if(!$helpMessage.length){
+                return;
+            }
+            if(lastInfoData != $item.data('value')){
+                $helpMessage.popover('show')
+                lastInfoData = $item.data('value');
+                lastInfoObj = $helpMessage;
+            }
+            else{
+                $helpMessage.popover('hide');
+                lastInfoData = null;
+                lastInfoObj = null;
+            }
+            
+        }
+
         $.each(availablePriority, function (key, val) {
             if (val in usedKey) {
                 return true;
@@ -45,12 +74,16 @@ jQuery(function ($) {
         $disabledList.sortable({
             group: priorityKey,
             filter: '.filtered',
+            onChoose,onChoose,
+            onUnchoose:onUnchoose,
             animation: 150
         });
 
         $enabledList.sortable({
             group: priorityKey,
             filter: '.filtered',
+            onChoose,onChoose,
+            onUnchoose:onUnchoose,
             animation: 150
         });
 
@@ -59,14 +92,18 @@ jQuery(function ($) {
             if(!(itemValue in btnHelpMessage)){
                 return true;
             }
+            
             var helpText = btnHelpMessage[itemValue];
-            $item.find('.help-message').popover({
+            var $helpMessage = $item.find('.help-message');
+            $helpMessage.popover({
                 content:helpText,
                 placement:'right',
                 html:true,
                 trigger:'hover'
             });
-
+            $item.mouseleave(function(){
+                $helpMessage.popover('hide');
+            });
         });
     }
 
