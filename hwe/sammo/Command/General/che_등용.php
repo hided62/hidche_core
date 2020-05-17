@@ -186,7 +186,7 @@ class che_등용 extends Command\GeneralCommand{
             if(!key_exists($destNationID, $destGenerals)){
                 $destGenerals[$destNationID] = [];
             }
-            $destGenerals[$destNationID] = [$destGeneral];
+            $destGenerals[$destNationID][] = $destGeneral;
         }
 
         $nationList = array_merge([0=>getNationStaticInfo(0)], getAllNationStaticInfo());
