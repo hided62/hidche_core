@@ -25,26 +25,29 @@ class TriggerOfficerLevel implements iAction{
     }
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
-        if($turnType == '농업' || $turnType == '상업'){
-            if(in_array($this->officerLevel, [12, 11, 9, 7, 5, 3])){
-                return $value * 1.05;
+        if($varType == 'score'){
+            if($turnType == '농업' || $turnType == '상업'){
+                if(in_array($this->officerLevel, [12, 11, 9, 7, 5, 3])){
+                    return $value * 1.05;
+                }
+            }
+            else if($turnType == '기술'){
+                if(in_array($this->officerLevel, [12, 11, 9, 7, 5])){
+                    return $value * 1.05;
+                }
+            }
+            else if($turnType == '민심' || $turnType == '인구'){
+                if(in_array($this->officerLevel, [12, 11, 2])){
+                    return $value * 1.05;
+                }
+            }
+            else if($turnType == '수비' || $turnType == '성벽' || $turnType == '치안'){
+                if(in_array($this->officerLevel, [12, 11, 10, 8, 6, 4])){
+                    return $value * 1.05;
+                }
             }
         }
-        else if($turnType == '기술'){
-            if(in_array($this->officerLevel, [12, 11, 9, 7, 5])){
-                return $value * 1.05;
-            }
-        }
-        else if($turnType == '민심' || $turnType == '인구'){
-            if(in_array($this->officerLevel, [12, 11, 2])){
-                return $value * 1.05;
-            }
-        }
-        else if($turnType == '수비' || $turnType == '성벽' || $turnType == '치안'){
-            if(in_array($this->officerLevel, [12, 11, 10, 8, 6, 4])){
-                return $value * 1.05;
-            }
-        }
+        
         
         return $value;
     }

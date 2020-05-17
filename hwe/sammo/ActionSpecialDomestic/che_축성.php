@@ -8,7 +8,7 @@ class che_축성 extends \sammo\BaseSpecial{
 
     protected $id = 10;
     protected $name = '축성';
-    protected $info = '[내정] 기술 연구 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
+    protected $info = '[내정] 성벽 보수 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
