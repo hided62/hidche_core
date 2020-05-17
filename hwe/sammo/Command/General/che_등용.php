@@ -205,7 +205,7 @@ class che_등용 extends Command\GeneralCommand{
                 $nameColor = " style='color:{$nameColor}'";
             }
 ?>
-            <option value='<?=$destGeneral['no']?>' <?=$nameColor?>><?=$destGeneral['name']?></option>
+            <option style="background-color:black;color:white" value='<?=$destGeneral['no']?>' <?=$nameColor?>><?=$destGeneral['name']?></option>
 <?php   endforeach; ?>
     </optgroup>
 <?php endforeach; ?>
