@@ -97,7 +97,7 @@ jQuery(function ($) {
             var $helpMessage = $item.find('.help-message');
             $helpMessage.popover({
                 content:helpText,
-                placement:'right',
+                placement:'top',
                 html:true,
                 trigger:'hover'
             });
