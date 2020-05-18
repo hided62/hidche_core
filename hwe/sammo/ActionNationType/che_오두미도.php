@@ -29,12 +29,12 @@ class che_오두미도 extends \sammo\BaseNation{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, int $amount):int{
+    public function onCalcNationalIncome(string $type, $amount){
         if($type == 'rice'){
-            return Util::toInt($amount * 1.1);
+            return $amount * 1.1;
         }
-        if($type == 'pop'){
-            return Util::toInt($amount * 1.2);
+        if($type == 'pop' && $amount > 0){
+            return $amount * 1.2;
         }
         
         return $amount;

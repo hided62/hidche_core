@@ -24,9 +24,9 @@ class che_유가 extends \sammo\BaseNation{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, int $amount):int{
+    public function onCalcNationalIncome(string $type, $amount){
         if($type == 'rice'){
-            return Util::toInt($amount * 0.9);
+            return $amount * 0.9;
         }
         
         return $amount;

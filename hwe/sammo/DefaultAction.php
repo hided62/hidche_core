@@ -29,7 +29,7 @@ trait DefaultAction{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, int $amount):int{
+    public function onCalcNationalIncome(string $type, $amount){
         return $amount;
     }
 

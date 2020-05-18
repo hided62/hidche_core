@@ -29,9 +29,9 @@ class che_태평도 extends \sammo\BaseNation{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, int $amount):int{
-        if($type == 'pop'){
-            return Util::toInt($amount * 1.2);
+    public function onCalcNationalIncome(string $type, $amount){
+        if($type == 'pop' && $amount > 0){
+            return $amount * 1.2;
         }
         
         return $amount;

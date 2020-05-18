@@ -25,12 +25,12 @@ class che_법가 extends \sammo\BaseNation{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, int $amount):int{
+    public function onCalcNationalIncome(string $type, $amount){
         if($type == 'gold'){
-            return Util::toInt($amount * 1.1);
+            return $amount * 1.1;
         }
-        if($type == 'pop'){
-            return Util::toInt($amount * 0.8);
+        if($type == 'pop' && $amount > 0){
+            return $amount * 0.8;
         }
         
         return $amount;

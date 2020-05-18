@@ -48,6 +48,9 @@ class GeneralAI
 
     protected $warRoute;
 
+    protected $prevIncomeGold;
+    protected $prevIncomeRice;
+
     /** @var General[] */
     protected $nationGenerals;
     /** @var General[] */
@@ -112,12 +115,14 @@ class GeneralAI
             'color' => '#000000',
             'name' => '재야',
         ];
-
-        $gameStor = KVStorage::getStorage($db, 'game_env');
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
+        $nationStor->cacheValues(['npc_nation_policy','npc_general_policy','prev_income_gold','prev_income_rice']);
 
         $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
         $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
+
+        $this->prevIncomeGold = $nationStor->prev_income_gold??1000;
+        $this->prevIncomeRice = $nationStor->prev_income_rice??1000;
 
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
 

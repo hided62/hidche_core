@@ -821,7 +821,7 @@ class General implements iAction{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, int $amount):int{
+    public function onCalcNationalIncome(string $type, $amount){
         foreach(array_merge([
             $this->nationType, 
             $this->officerLevelObj, 

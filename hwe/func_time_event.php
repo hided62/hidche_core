@@ -87,6 +87,8 @@ function processGoldIncome() {
 
         $incomeText = number_format($income);
         $incomeLog = "이번 수입은 금 <C>$incomeText</>입니다.";
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+        $nationStor->prev_income_gold = $income;
 
         $db->update('nation', [
             'gold'=>$nation['gold']
@@ -362,6 +364,8 @@ function processRiceIncome() {
 
         $incomeText = number_format($income);
         $incomeLog = "이번 수입은 쌀 <C>$incomeText</>입니다.";
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+        $nationStor->prev_income_rice = $income;
 
         $db->update('nation', [
             'rice'=>$nation['rice']
