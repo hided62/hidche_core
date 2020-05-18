@@ -49,6 +49,7 @@ if($btn == '참가') {
     $general['gold'] -= $admin['develcost'];
 
     $freeSlot = [
+        0=>8,
         1=>8,
         2=>8,
         3=>8,
@@ -56,7 +57,6 @@ if($btn == '참가') {
         5=>8,
         6=>8,
         7=>8,
-        8=>8,
     ];
     foreach($db->query('SELECT count(*) as cnt, grp FROM tournament WHERE grp < 10 GROUP BY grp') as $grpInfo){
         if($grpInfo['cnt'] == 8){
