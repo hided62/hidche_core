@@ -104,7 +104,7 @@ class che_징병 extends Command\GeneralCommand
     {
         $general = $this->generalObj;
 
-        $leadership = $general->getLeadership(false);
+        $leadership = $general->getLeadership(true);
         $currCrewType = $general->getCrewTypeObj();
         $maxCrew = $leadership * 100;
 
