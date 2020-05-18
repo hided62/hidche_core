@@ -90,9 +90,6 @@ class SpecialityHelper{
         if($strength >= $intel * 0.95 && $strength > GameConst::$chiefStatMin){
             $myCond |= self::STAT_STRENGTH;
         }
-        if($strength < GameConst::$chiefStatMin){
-            $myCond |= self::STAT_NOT_STRENGTH;
-        }
 
         if($intel >= $strength * 0.95 && $intel > GameConst::$chiefStatMin){
             $myCond |= self::STAT_INTEL;
