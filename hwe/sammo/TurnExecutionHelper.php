@@ -267,7 +267,8 @@ class TurnExecutionHelper
                 if($hasNationTurn){
                     if($ai){
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
-                        LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
+                        $cityName = CityConst::byID($general->getCityID())->name;
+                        LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
                     }
                     $resultNationTurn = $turnObj->processNationCommand(
                         $nationCommandObj
@@ -281,7 +282,8 @@ class TurnExecutionHelper
                         $autorunMode = true;
                         $generalCommandObj = $newGeneralCommandObj;
                     }
-                    LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
+                    $cityName = CityConst::byID($general->getCityID())->name;
+                    LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
                 }
                 
                 $turnObj->processCommand($generalCommandObj, $autorunMode);
