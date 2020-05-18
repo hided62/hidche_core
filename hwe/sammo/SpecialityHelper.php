@@ -256,7 +256,7 @@ class SpecialityHelper{
             return static::pickSpecialDomestic($general, []);
         }
 
-        throw new MustNotBeReachedException();
+        throw new MustNotBeReachedException("{$general['name']}, {$myCond}");
     }
 
     public static function pickSpecialWar(array $general, array $prevSpecials=[]) : string{
