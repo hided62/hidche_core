@@ -87,7 +87,7 @@ class che_주민선정 extends Command\GeneralCommand{
     }
 
     public function getCompensationStyle():?int{
-        return 100<=>$this->generalObj->onCalcDomestic(static::$actionKey, 'score', 100);
+        return $this->generalObj->onCalcDomestic(static::$actionKey, 'score', 100)<=>100;
     }
     
     public function getPreReqTurn():int{
