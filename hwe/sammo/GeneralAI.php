@@ -48,8 +48,7 @@ class GeneralAI
 
     protected $warRoute;
 
-    protected $prevIncomeGold;
-    protected $prevIncomeRice;
+    protected $maxResourceActionAmount;
 
     /** @var General[] */
     protected $nationGenerals;
@@ -121,8 +120,19 @@ class GeneralAI
         $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
         $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
 
-        $this->prevIncomeGold = $nationStor->prev_income_gold??1000;
-        $this->prevIncomeRice = $nationStor->prev_income_rice??1000;
+        $prevIncomeGold = $nationStor->prev_income_gold??1000;
+        $prevIncomeRice = $nationStor->prev_income_rice??1000;
+        $this->maxResourceActionAmount = Util::round(max(
+            $this->nationPolicy->minimumResourceActionAmount,
+            $prevIncomeGold / 10,
+            $prevIncomeRice / 10,
+            $this->nation['gold'] / 5,
+            $this->nation['rice'] / 5,
+            ($this->env['year'] - $this->env['startyear'] - 3) * 1000
+        ), -2);
+        if($this->maxResourceActionAmount > GameConst::$maxResourceActionAmount){
+            $this->maxResourceActionAmount = GameConst::$maxResourceActionAmount;
+        }
 
         $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
 
@@ -1145,10 +1155,12 @@ class GeneralAI
                     continue;
                 }
 
+                $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
+
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetUserGeneral->getID(),
                         'isGold' => $resName == 'gold',
-                        'amount' => Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount)
+                        'amount' => $payAmount
                     ],
                     count($userWarGenerals)-$idx
                 ];
@@ -1247,10 +1259,12 @@ class GeneralAI
                     continue;
                 }
 
+                $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
+
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetUserGeneral->getID(),
                         'isGold' => $resName == 'gold',
-                        'amount' => Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount)
+                        'amount' => $payAmount
                     ],
                     count($userGenerals)-$idx
                 ];
@@ -1331,10 +1345,12 @@ class GeneralAI
                     continue;
                 }
 
+                $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
+
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
-                        'amount' => Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount)
+                        'amount' => $payAmount
                     ],
                     count($npcWarGenerals)-$idx
                 ];
@@ -1417,7 +1433,7 @@ class GeneralAI
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
-                        'amount' => Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount)
+                        'amount' => Util::valueFit($payAmount, 100, $this->maxResourceActionAmount)
                     ],
                     max(count($npcWarGenerals), count($npcCivilGenerals))-$idx
                 ];
@@ -1435,11 +1451,11 @@ class GeneralAI
                 $enoughMoney = $reqNPCMinDevelRes * 1.5;
 
                 $payAmount = $enoughMoney - $targetNPCGeneral->getVar($resName);
-                $payAmount = Util::valueFit($payAmount, 100, GameConst::$maxResourceActionAmount);
-
                 if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
                     continue;
                 }
+
+                $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
 
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetNPCGeneral->getID(),
@@ -1506,7 +1522,7 @@ class GeneralAI
                 }
 
                 $takeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinDevelRes;
-                $takeAmount = Util::valueFit($takeAmount, 100, GameConst::$maxResourceActionAmount);
+                $takeAmount = Util::valueFit($takeAmount, 100, $this->maxResourceActionAmount);
                 if($takeAmount < $this->nationPolicy->minimumResourceActionAmount){
                     break;
                 }
@@ -1570,7 +1586,7 @@ class GeneralAI
                     break;
                 }
 
-                $takeAmount = Util::valueFit($takeAmount, 100, GameConst::$maxResourceActionAmount);
+                $takeAmount = Util::valueFit($takeAmount, 100, $this->maxResourceActionAmount);
                 $candidateArgs[] = [[
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
