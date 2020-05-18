@@ -121,6 +121,10 @@ class SpecialityHelper{
                 $myCond |= self::STAT_INTEL;
             }
         }
+
+        if(!$myCond){
+            $myCond = self::STAT_INTEL;
+        }
         
         return $myCond;
     }
