@@ -86,9 +86,6 @@ class SpecialityHelper{
         if($leadership > GameConst::$chiefStatMin){
             $myCond |= self::STAT_LEADERSHIP;
         }
-        if($leadership < GameConst::$chiefStatMin){
-            $myCond |= self::STAT_NOT_LEADERSHIP;
-        }
         
         if($strength >= $intel * 0.95 && $strength > GameConst::$chiefStatMin){
             $myCond |= self::STAT_STRENGTH;
@@ -100,8 +97,17 @@ class SpecialityHelper{
         if($intel >= $strength * 0.95 && $intel > GameConst::$chiefStatMin){
             $myCond |= self::STAT_INTEL;
         }
-        if($intel < GameConst::$chiefStatMin){
-            $myCond |= self::STAT_NOT_INTEL;
+
+        if($myCond){
+            if($leadership < GameConst::$chiefStatMin){
+                $myCond |= self::STAT_NOT_LEADERSHIP;
+            }
+            if($strength < GameConst::$chiefStatMin){
+                $myCond |= self::STAT_NOT_STRENGTH;
+            }   
+            if($intel < GameConst::$chiefStatMin){
+                $myCond |= self::STAT_NOT_INTEL;
+            }
         }
 
         if($myCond === 0){
