@@ -15,7 +15,7 @@ class che_귀병 extends \sammo\BaseSpecial{
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
     static $type = [
-        SpecialityHelper::STAT_INTEL | SpecialityHelper::ARMY_WIZARD | SpecialityHelper::REQ_DEXTERITY
+        SpecialityHelper::STAT_INTEL | SpecialityHelper::ARMY_WIZARD | SpecialityHelper::REQ_DEXTERITY | SpecialityHelper::STAT_NOT_STRENGTH
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

@@ -9,6 +9,10 @@ class SpecialityHelper{
     const STAT_STRENGTH = 0x4;
     const STAT_INTEL = 0x8;
 
+    const STAT_NOT_LEADERSHIP = 0x20;
+    const STAT_NOT_STRENGTH = 0x40;
+    const STAT_NOT_INTEL = 0x80;
+
     const ARMY_FOOTMAN = 0x100;
     const ARMY_ARCHER = 0x200;
     const ARMY_CAVALRY = 0x400;
@@ -82,13 +86,22 @@ class SpecialityHelper{
         if($leadership > GameConst::$chiefStatMin){
             $myCond |= self::STAT_LEADERSHIP;
         }
+        if($leadership < GameConst::$chiefStatMin){
+            $myCond |= self::STAT_NOT_LEADERSHIP;
+        }
         
         if($strength >= $intel * 0.95 && $strength > GameConst::$chiefStatMin){
             $myCond |= self::STAT_STRENGTH;
         }
+        if($strength < GameConst::$chiefStatMin){
+            $myCond |= self::STAT_NOT_STRENGTH;
+        }
 
         if($intel >= $strength * 0.95 && $intel > GameConst::$chiefStatMin){
             $myCond |= self::STAT_INTEL;
+        }
+        if($intel < GameConst::$chiefStatMin){
+            $myCond |= self::STAT_NOT_INTEL;
         }
 
         if($myCond === 0){
