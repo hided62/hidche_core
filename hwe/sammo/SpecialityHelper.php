@@ -9,10 +9,6 @@ class SpecialityHelper{
     const STAT_STRENGTH = 0x4;
     const STAT_INTEL = 0x8;
 
-    const STAT_NOT_LEADERSHIP = 0x20;
-    const STAT_NOT_STRENGTH = 0x40;
-    const STAT_NOT_INTEL = 0x80;
-
     const ARMY_FOOTMAN = 0x100;
     const ARMY_ARCHER = 0x200;
     const ARMY_CAVALRY = 0x400;
@@ -20,6 +16,10 @@ class SpecialityHelper{
     const ARMY_SIEGE = 0x1000;
 
     const REQ_DEXTERITY = 0x4000;
+
+    const STAT_NOT_LEADERSHIP = 0x20000;
+    const STAT_NOT_STRENGTH = 0x40000;
+    const STAT_NOT_INTEL = 0x80000;
 
     const WEIGHT_NORM = 1;
     const WEIGHT_PERCENT = 2;
