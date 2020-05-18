@@ -63,6 +63,8 @@ class che_계략시도 extends BaseWarUnitTrigger{
             [$successDamage, $failDamage] = static::$tableToGeneral[$magic];
         }
 
+        $successDamage = $general->onCalcStat($general, 'warMagicSuccessDamage', $successDamage, $magic);
+
         $self->activateSkill('계략시도', $magic);
         if(Util::randBool($magicSuccessProb)){
             $self->activateSkill('계략');
