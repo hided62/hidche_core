@@ -128,6 +128,7 @@ class che_화계 extends Command\GeneralCommand
 
     protected function initWithArg()
     {
+        $this->setNation();
         $this->setDestCity($this->arg['destCityID']);
         $this->setDestNation($this->destCity['nation']);
 
