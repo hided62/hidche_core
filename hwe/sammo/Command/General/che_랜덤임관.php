@@ -244,6 +244,12 @@ class che_랜덤임관 extends Command\GeneralCommand{
             '발길이 닿는 대로',
             '소문을 듣고',
             '점괘에 따라',
+            '천거를 받아',
+            '유명한',
+            '뜻을 펼칠 곳을 찾아',
+            '고향에 가까운',
+            '천하의 균형을 맞추기 위해',
+            '오랜 은거를 마치고',
         ];
         $randomTalk = Util::choiceRandom($talkList);
 
