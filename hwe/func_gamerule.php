@@ -1037,7 +1037,6 @@ function checkEmperior()
     }
 
     $gen = join(', ', array_column($rawGeneral, 'name'));
-    $nation['type'] = getNationType($nation['type']);
 
     $stat = $db->queryFirstRow('SELECT max(nation_count) as nc, max(gen_count) as gc FROM statistic');
     $genCnt = $db->queryFirstField('SELECT count(*) FROM general');
