@@ -93,7 +93,7 @@ switch ($type) {
     case 5: $orderSQL = "order by crew desc"; break;
     case 6: $orderSQL = "order by killturn"; break;
     case 7: $orderSQL = "order by turntime"; break;
-    case 8: $orderSQL = "order by troop_leader desc"; break;
+    case 8: $orderSQL = "order by troop desc"; break;
 }
 
 $generals = $db->query(
