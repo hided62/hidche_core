@@ -506,7 +506,7 @@ foreach($db->query('SELECT city,name,level,region,officer_set from city where na
 <?php     if(key_exists($officerLevel, $cityOfficerList)): 
 $officer = $cityOfficerList[$officerLevel];
 ?>
-<td><?=$officer['name']?>(<?=$officer['belong']?>년) 【<?=CityConst::byID($officer['city'])->name?>】</td>
+<td style="color:<?=isOfficerSet($city['officer_set'], $officerLevel)?'orange':'white'?>;"><?=$officer['name']?>(<?=$officer['belong']?>년) 【<?=CityConst::byID($officer['city'])->name?>】</td>
 <?php     else: ?>
 <td>-</td>
 <?php     endif; ?>
