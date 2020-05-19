@@ -1249,7 +1249,7 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
-                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.9, $enoughMoney - $targetUserGeneral->getVar($resName));
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes, $enoughMoney - $targetUserGeneral->getVar($resName));
 
                 if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
                     continue;
@@ -1298,12 +1298,12 @@ class GeneralAI
             'gold' => [
                 $this->nationPolicy->reqNationGold,
                 $nation['gold'],
-                $this->nationPolicy->reqNPCWarGold
+                $this->nationPolicy->reqNPCWarGold/2
             ],
             'rice' => [
                 $this->nationPolicy->reqNationRice,
                 $nation['rice'],
-                $this->nationPolicy->reqNPCWarRice
+                $this->nationPolicy->reqNPCWarRice/2
             ]
         ];
 
@@ -1335,7 +1335,7 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetNPCGeneral->getVar($resName)) * $resVal);
-                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.8, $enoughMoney - $targetNPCGeneral->getVar($resName));
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes*0.9, $enoughMoney - $targetNPCGeneral->getVar($resName));
 
                 if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
                     continue;
@@ -1424,7 +1424,7 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetNPCGeneral->getVar($resName)) * $resVal);
-                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.9, $enoughMoney - $targetNPCGeneral->getVar($resName));
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes, $enoughMoney - $targetNPCGeneral->getVar($resName));
 
                 if ($resVal < $payAmount / 2) {
                     continue;

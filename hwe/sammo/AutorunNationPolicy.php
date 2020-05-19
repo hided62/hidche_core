@@ -240,10 +240,10 @@ class AutorunNationPolicy {
         }
 
         if($this->reqHumanWarRecommandGold === 0){
-            $this->reqHumanWarRecommandGold = Util::round($this->reqHumanWarUrgentGold * 3, -2);
+            $this->reqHumanWarRecommandGold = Util::round($this->reqHumanWarUrgentGold * 2, -2);
         }
         if($this->reqHumanWarRecommandRice === 0){
-            $this->reqHumanWarRecommandRice = Util::round($this->reqHumanWarUrgentRice * 3, -2);
+            $this->reqHumanWarRecommandRice = Util::round($this->reqHumanWarUrgentRice * 2, -2);
         }
 
         if($general->getNPCType() >= 2){

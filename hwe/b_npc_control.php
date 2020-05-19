@@ -64,6 +64,7 @@ if ($currentNationPolicy['reqHumanWarUrgentGold'] ?? 0) {
     $autoPolicyVariable['reqHumanWarUrgentGold'] = $currentNationPolicy['reqHumanWarUrgentGold'];
 }
 $autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'], ['values' => $autoPolicyVariable], null, $nation, $gameStor->getAll(true));
+$zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'], null, null, $nation, $gameStor->getAll(true));
 
 
 ?>
@@ -184,7 +185,7 @@ $autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
                     </div>
                     <div style='text-align:right;'><small class="form-text text-muted">
                             유저장긴급포상시 이보다 금이 적은 장수에게 포상합니다.<br>
-                            0이면 보병 6회 징병(<?= number_format(GameConst::$defaultStatMax * 100) ?> * 6) 가능한 금을 기준으로 하며, 그 수치는 현재 <?= number_format($autoPolicy->reqHumanWarUrgentGold) ?>입니다.</small></div>
+                            0이면 보병 6회 징병(<?= number_format(GameConst::$defaultStatMax * 100) ?> * 6) 가능한 금을 기준으로 하며, 그 수치는 현재 <?= number_format($zeroPolicy->reqHumanWarUrgentGold) ?>입니다.</small></div>
                 </div>
                 <div class="col-sm-6">
                     <div class="row">
@@ -193,7 +194,7 @@ $autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
                             <input type="number" class="form-control" data-type="integer" id="reqHumanWarUrgentRice" min="0" value="0">
                         </div>
                     </div>
-                    <div style='text-align:right;'><small class="form-text text-muted">유저장긴급포상시 이보다 쌀이 적은 장수에게 포상합니다.<br>0이면 기본 병종으로 <?= number_format(GameConst::$defaultStatMax * 100 * 6) ?>명 사살 가능한 쌀을 기준으로 하며, 그 수치는 현재 <?= number_format($autoPolicy->reqHumanWarUrgentRice) ?>입니다.</small></div>
+                    <div style='text-align:right;'><small class="form-text text-muted">유저장긴급포상시 이보다 쌀이 적은 장수에게 포상합니다.<br>0이면 기본 병종으로 <?= number_format(GameConst::$defaultStatMax * 100 * 6) ?>명 사살 가능한 쌀을 기준으로 하며, 그 수치는 현재 <?= number_format($zeroPolicy->reqHumanWarUrgentRice) ?>입니다.</small></div>
                 </div>
             </div>
             <div class="form-group row">
@@ -205,7 +206,7 @@ $autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
                         </div>
                     </div>
                     <div style='text-align:right;'><small class="form-text text-muted">유저전투장에게 주는 금입니다. 이보다 적으면 포상합니다. <br>
-                            0이면 유저전투장 긴급포상 금의 3배를 기준으로 하며, 그 수치는 현재 <?= number_format($autoPolicy->reqHumanWarRecommandGold) ?>입니다.</small></div>
+                            0이면 유저전투장 긴급포상 금의 2배를 기준으로 하며, 그 수치는 현재 <?= number_format($autoPolicy->reqHumanWarRecommandGold) ?>입니다.</small></div>
                 </div>
                 <div class="col-sm-6">
                     <div class="row">
@@ -215,7 +216,7 @@ $autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
                         </div>
                     </div>
                     <div style='text-align:right;'><small class="form-text text-muted">유저전투장에게 주는 쌀입니다. 이보다 적으면 포상합니다. <br>
-                            0이면 유저전투장 긴급포상 쌀의 3배를 기준으로 하며, 그 수치는 현재 <?= number_format($autoPolicy->reqHumanWarRecommandRice) ?>입니다.</small></div>
+                            0이면 유저전투장 긴급포상 쌀의 2배를 기준으로 하며, 그 수치는 현재 <?= number_format($autoPolicy->reqHumanWarRecommandRice) ?>입니다.</small></div>
                 </div>
             </div>
             <div class="form-group row">
