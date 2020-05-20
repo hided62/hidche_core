@@ -26,7 +26,7 @@ class TurnExecutionHelper
         return $this->generalObj;
     }
 
-    public function preprocessCommand(){
+    public function preprocessCommand(array $env){
         $general = $this->getGeneral();
         $caller = $general->getPreTurnExecuteTriggerList($general);
         $caller->merge(new GeneralTriggerCaller(
@@ -34,7 +34,7 @@ class TurnExecutionHelper
             new GeneralTrigger\che_병력군량소모($general)
         ));
 
-        $caller->fire();
+        $caller->fire($env);
     }
 
     public function processBlocked():bool{
@@ -256,7 +256,7 @@ class TurnExecutionHelper
             $autorunMode = false;
             $ai = null;
 
-            $turnObj->preprocessCommand();
+            $turnObj->preprocessCommand($env);
 
             if($general->getNPCType() >= 2 || ($autorun_user['limit_minutes']??false)){
                 $ai = new GeneralAI($turnObj->getGeneral());

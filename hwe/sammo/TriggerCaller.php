@@ -118,7 +118,7 @@ abstract class TriggerCaller{
         return $this;
     }
 
-    function fire(?array $env = null, $arg = null):?array{
+    function fire(array $env, $arg = null):?array{
         foreach($this->triggerListByPriority as $priority=>$subTriggerList){
             /** @var ObjectTrigger[] $subTriggerList */
             foreach($subTriggerList as $trigger){

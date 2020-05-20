@@ -16,6 +16,10 @@ class che_아이템치료 extends BaseGeneralTrigger{
         $general = $this->object;
 
         if($general->getVar('injury') >= 10){
+            if($general->getReservedTurn(0, $env) instanceof \sammo\Command\General\che_요양){
+                return $env;
+            }
+
             $general->updateVar('injury', 0);
             $general->activateSkill('pre.부상경감', 'pre.치료');
             $itemObj = $general->getItem();
