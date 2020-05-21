@@ -1241,7 +1241,7 @@ function addAge()
             $generalID = $general['no'];
             $special = SpecialityHelper::pickSpecialDomestic(
                 $general,
-                (Json::decode($general['aux'])['prev_types_special2'])??[]
+                (Json::decode($general['aux'])['prev_types_special'])??[]
             );
             $specialClass = buildGeneralSpecialDomesticClass($special);
             $specialText = $specialClass->getName();
