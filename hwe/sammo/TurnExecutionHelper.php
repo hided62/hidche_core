@@ -234,7 +234,6 @@ class TurnExecutionHelper
             $turnObj = new static($general);
 
             $env = $gameStor->getAll(true);
-            $generalCommandObj = $general->getReservedTurn(0, $env);
 
             $hasNationTurn = false;
             if($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5){
@@ -257,6 +256,7 @@ class TurnExecutionHelper
             $ai = null;
 
             $turnObj->preprocessCommand($env);
+            $generalCommandObj = $general->getReservedTurn(0, $env);
 
             if($general->getNPCType() >= 2 || ($autorun_user['limit_minutes']??false)){
                 $ai = new GeneralAI($turnObj->getGeneral());
