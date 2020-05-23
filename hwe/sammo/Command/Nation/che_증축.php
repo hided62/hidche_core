@@ -69,7 +69,7 @@ class che_증축 extends Command\NationCommand{
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ReqDestCityValue('level', '규모', '>', 3, '수진, 진, 관문에서는 불가능합니다.'),
-            ConstraintHelper::ReqDestCityValue('level', '규모', '<', 7, '더이상 증축할 수 없습니다.'),
+            ConstraintHelper::ReqDestCityValue('level', '규모', '<', 8, '더이상 증축할 수 없습니다.'),
             ConstraintHelper::ReqNationGold(GameConst::$basegold+$reqGold),
             ConstraintHelper::ReqNationRice(GameConst::$baserice+$reqRice),
         ];
