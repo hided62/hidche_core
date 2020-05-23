@@ -2545,7 +2545,7 @@ class GeneralAI
                     ], $genRes/2];
                 }
             }
-            if($genRes < $reqRes * 1.2){
+            if($genRes < $reqRes * 1.5){
                 continue;
             }
             if(!Util::randBool(($genRes / $reqRes)-0.5)){
