@@ -1878,10 +1878,10 @@ class GeneralAI
         $cmdList = [];
 
         if ($genType & self::t통솔장) {
-            if ($develRate['trust'] < 0.95) {
+            if ($develRate['trust'] < 0.98) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($cmd->hasFullConditionMet()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']-0.2, 0.001) * 2];
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']/2-0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
@@ -2013,10 +2013,10 @@ class GeneralAI
         }
 
         if ($genType & self::t통솔장) {
-            if ($develRate['trust'] < 0.95) {
+            if ($develRate['trust'] < 0.98) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
                 if($cmd->hasFullConditionMet()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']-0.2, 0.001) * 2];
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']/2-0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
