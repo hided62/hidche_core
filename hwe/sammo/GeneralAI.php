@@ -1914,7 +1914,7 @@ class GeneralAI
             if($develRate['secu'] < 0.9){
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
                 if($cmd->hasFullConditionMet()){
-                    $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['comm'] / 0.8, 0.001, 1)];
+                    $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['secu'] / 0.8, 0.001, 1)];
                 }
             }
         }
