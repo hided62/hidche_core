@@ -72,7 +72,7 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
         ></div
         ><div
             ><?=chiefCommandTable($generalObj)
-            ?><input type='button' id='setCommand' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='실 행'
+            ?><br><input type='button' id='setCommand' style='visibility:hidden;background-color:<?=GameConst::$basecolor2?>;color:white;font-size:13px;' value='실 행'
         ></div
     ></div
 ></div
