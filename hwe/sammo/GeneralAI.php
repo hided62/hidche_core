@@ -1917,6 +1917,12 @@ class GeneralAI
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['secu'] / 0.8, 0.001, 1)];
                 }
             }
+            else if($develRate['secu'] < 1){
+                $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
+                if($cmd->hasFullConditionMet()){
+                    $cmdList[] = [$cmd, $strength / 2 / Util::valueFit($develRate['secu'], 0.001)];
+                }
+            }
         }
 
         if($genType & self::t지장){
