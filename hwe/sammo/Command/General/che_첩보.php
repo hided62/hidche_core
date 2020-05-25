@@ -106,7 +106,7 @@ class che_첩보 extends Command\GeneralCommand
     public function getCost(): array
     {
         $env = $this->env;
-        return [$env['develcost'], $env['develcost']];
+        return [$env['develcost']*3, $env['develcost']*3];
     }
 
     public function getPreReqTurn(): int
