@@ -23,7 +23,7 @@ $(function(){
         var crewtype = parseInt($parent.data('crewtype'));
         calc(crewtype);
         $formCrewtype.val(crewtype);
-        $formAmount.val($this.val());
+        $formAmount.val($this.val()*100);
 
         if(e.which === 13){
             submitAction();
