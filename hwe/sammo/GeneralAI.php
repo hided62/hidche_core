@@ -2740,7 +2740,7 @@ class GeneralAI
             }
             $realDevelRate = 0;
 
-            foreach($this->calcCityDevelRate($city) as $develKey => [$develVal, $develType]){
+            foreach($this->calcCityDevelRate($candidate) as $develKey => [$develVal, $develType]){
                 if(!($this->genType & $develType)){
                     continue;
                 }
@@ -2754,7 +2754,7 @@ class GeneralAI
                 continue;
             }
 
-            $candidateCities[$city['city']] = $realDevelRate / \sqrt(count($city['generals']??[]) + 1);
+            $candidateCities[$city['city']] = 1 / ($realDevelRate * \sqrt(count($city['generals']??[]) + 1));
         }
 
         if(!$candidateCities){
