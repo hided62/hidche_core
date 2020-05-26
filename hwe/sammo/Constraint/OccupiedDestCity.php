@@ -31,7 +31,7 @@ class OccupiedDestCity extends Constraint{
             return true;
         }
 
-        $this->reason = "아국이 아닙니다.";
+        $this->reason = "대상 도시가 아국이 아닙니다.";
         return false;
     }
 }
