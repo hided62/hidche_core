@@ -249,13 +249,13 @@ class GameConstBase
             'che_물자조달',
         ],
         '군사'=>[
+            'che_소집해제',
             'che_첩보',
             'che_징병',
             'che_모병',
             'che_훈련',
             'che_사기진작',
             'che_출병',
-            'che_소집해제',
         ],
         '인사'=>[
             'che_이동',
