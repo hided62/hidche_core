@@ -22,14 +22,17 @@ class che_격노시도 extends BaseWarUnitTrigger{
         if($self->isAttacker()){
             if(Util::randBool(1/3)){
                 $self->activateSkill('진노', '격노');
+                $oppose->deactivateSkill('회피');
             }
             else if(Util::randBool(1/4)){
                 $self->activateSkill('격노');
+                $oppose->deactivateSkill('회피');
             }
         }
         else{
             if(Util::randBool(1/2)){
                 $self->activateSkill('격노');
+                $oppose->deactivateSkill('회피');
             }
         }
 
