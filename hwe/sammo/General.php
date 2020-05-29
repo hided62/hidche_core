@@ -46,6 +46,8 @@ class General implements iAction{
         'tsw'=>1, 'tsd'=>1, 'tsl'=>1, 'tsg'=>1, 'tsp'=>1,
         'tiw'=>1, 'tid'=>1, 'til'=>1, 'tig'=>1, 'tip'=>1,
         'betwin'=>1, 'betgold'=>1, 'betwingold'=>1,
+        'kill_realcrew'=>1, 'death_realcrew'=>1, 
+        'occupied'=>1,
     ];
 
     const TURNTIME_FULL_MS = -1;
