@@ -41,24 +41,15 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $general = $this->generalObj;
 
-        $this->setNation(['gennum', 'scout']);
+        $this->setNation();
         $env = $this->env;
 
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->fullConditionConstraints = [
-            ConstraintHelper::NotBeNeutral(),
-            ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
-
-        $relYear = $env['year'] - $env['startyear'];
-        if ($this->nation['nation'] != 0 && $relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit) {
-            $nationName = $this->nation['name'];
-            $josaUn = JosaUtil::pick($nationName, '은');
-            $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail("현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다.");
-        }
     }
 
     public function getCommandDetailTitle(): string
@@ -188,11 +179,11 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $pickType = Util::choiceRandomUsingWeight($pickTypeList);
 
-        $totalStat = GameConst::$defaultStatNPCMax * 2 + 10;
-        $minStat = 10;
-        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, 10);
+        $totalStat = GameConst::$defaultStatNPCTotal;
+        $minStat = GameConst::$defaultStatNPCMin;
+        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, GameConst::$defaultStatNPCMin);
         //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
-        $otherStat = $minStat + Util::randRangeInt(0, 5);
+        $otherStat = $minStat + Util::randRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
         $subStat = $totalStat - $mainStat - $otherStat;
         if ($subStat < $minStat) {
             $subStat = $otherStat;
@@ -206,7 +197,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $avgGen = $db->queryFirstRow(
             'SELECT avg(dedication) as ded,avg(experience) as exp,
             avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
-            from general where nation=%i',
+            from general where npc < 5',
             $nationID
         );
         $dexTotal = $avgGen['dex_t'];
@@ -236,27 +227,9 @@ class che_인재탐색 extends Command\GeneralCommand
         $strength = Util::round($strength);
         $intel = Util::round($intel);
 
-
-        $joinProp = 0.55 * $avgCnt / (Util::valueFit($genCnt + $npcCnt, 1) / 2);
-        $noScout = false;
-        if ($this->nation['scout'] != 0) {
-            $noScout = true;
-        } else if ($relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit) {
-            $noScout = true;
-        }
-
-        if ($noScout || !Util::randBool($joinProp)) {
-            $scoutType = "발견";
-            $scoutLevel = 0;
-            $scoutNation = 0;
-        } else {
-            $scoutType = "영입";
-            $scoutLevel = 1;
-            $scoutNation = $nationID;
-            $db->update('nation', [
-                'gennum' => $db->sqleval('gennum + 1')
-            ], 'nation=%i', $nationID);
-        }
+        $scoutType = "발견";
+        $scoutLevel = 0;
+        $scoutNation = 0;
 
         $age = Util::randRangeInt(20, 25);
         $birthYear = $env['year'] - $age;
@@ -278,7 +251,7 @@ class che_인재탐색 extends Command\GeneralCommand
             null
         );
         $newNPC->npc = 3;
-        $newNPC->setMoney(100, 100);
+        $newNPC->setMoney(1000, 1000);
         $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
         $newNPC->setSpecYear(
             Util::round((GameConst::$retirementYear - $age) / 12) + $age,
