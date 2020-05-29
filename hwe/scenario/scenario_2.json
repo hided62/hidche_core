@@ -12,5 +12,12 @@
         "expandCityWallIncreaseAmount": 1600,
         "defaultMaxGeneral":300,
         "joinRuinedNPCProp":0
-    }
+    },
+    "events":[
+        [
+            ["Date", "==", null, 12],
+            ["CreateManyNPC", 10],
+            ["DeleteEvent"]
+        ]
+    ]
 }

@@ -6,20 +6,19 @@ use \sammo\Util;
 class CreateManyNPC extends \sammo\Event\Action{
     protected $npcCount;
     protected $avgGen;
-    public function __construct($npcCount = 200){
+    public function __construct($npcCount = 10){
         $this->npcCount = $npcCount;
     }
 
     protected function generateNPC($env){
-        $pickTypeList = ['무'=>6, '지'=>6, '무지'=>3];
+        $pickTypeList = ['무'=>1, '지'=>1];
 
-        $pickType = Util::choiceRandomUsingWeightPair($pickTypeList);
+        $pickType = Util::choiceRandomUsingWeight($pickTypeList);
 
-        $totalStat = GameConst::$defaultStatNPCMax * 2 + 10;
-        $minStat = 10;
-        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, 10);
-        //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
-        $otherStat = $minStat + Util::randRangeInt(0, 5);
+        $totalStat = GameConst::$defaultStatNPCTotal;
+        $minStat = GameConst::$defaultStatNPCMin;
+        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, GameConst::$defaultStatNPCMin);
+        $otherStat = $minStat + Util::randRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
         $subStat = $totalStat - $mainStat - $otherStat;
         if ($subStat < $minStat) {
             $subStat = $otherStat;
@@ -50,7 +49,10 @@ class CreateManyNPC extends \sammo\Event\Action{
         $strength = Util::round($strength);
         $intel = Util::round($intel);
 
-        $age = $env['year'] - 20;
+        $age = Util::randRangeInt(20, 25);
+        $birthYear = $env['year'] - $age;
+        $deathYear = $env['year'] + Util::randRangeInt(10, 50);
+
         $cityID = Util::choiceRandom(array_keys(\sammo\CityConst::all()));
         $newNPC = new \sammo\Scenario\NPC(
             Util::randRangeInt(1, 150),
@@ -62,16 +64,17 @@ class CreateManyNPC extends \sammo\Event\Action{
             $strength,
             $intel,
             0,
-            $age,
-            $env['year'] + Util::randRangeInt(10, 50),
+            $birthYear,
+            $deathYear,
             null,
             null
         );
-        $newNPC->npc = 6;
-        $newNPC->setMoney(100, 100);
+        $newNPC->npc = 3;
+        $newNPC->setMoney(1000, 1000);
+        $newNPC->setExpDed(0, 0);
         $newNPC->setSpecYear(
-            Util::round((GameConst::$retirementYear - $age)/12) + $age,
-            Util::round((GameConst::$retirementYear - $age)/3) + $age
+            Util::round((GameConst::$retirementYear - $age) / 12) + $age,
+            Util::round((GameConst::$retirementYear - $age) / 3) + $age
         );
 
         $newNPC->build($env);
@@ -93,12 +96,12 @@ class CreateManyNPC extends \sammo\Event\Action{
         if($genCnt == 1){
             $npcName = $result[0][0];
             $josaRa = \sammo\JosaUtil::pick($npcName, '라');
-            $logger->pushGlobalActionLog("운영자가 <Y>$npcName</>{$josaRa}는 장수를 <S>생성</>하였습니다.");
+            $logger->pushGlobalActionLog("<Y>$npcName</>{$josaRa}는 장수가 <S>등장</>하였습니다.");
         }
         else{
-            $logger->pushGlobalActionLog("운영자가 장수 <C>{$genCnt}</>명을 <S>생성</>하였습니다.");
+            $logger->pushGlobalActionLog("장수 <C>{$genCnt}</>명이 <S>등장</>하였습니다.");
         }
-        $logger->pushGlobalHistoryLog("운영자가 장수 <C>{$genCnt}</>명을 <S>생성</>했습니다.", \sammo\ActionLogger::NOTICE_YEAR_MONTH);
+        $logger->pushGlobalHistoryLog("장수 <C>{$genCnt}</>명이 <S>등장</>했습니다.", \sammo\ActionLogger::NOTICE_YEAR_MONTH);
         $logger->flush();
 
         return [__CLASS__, $result];   

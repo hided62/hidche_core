@@ -182,7 +182,6 @@ class che_인재탐색 extends Command\GeneralCommand
         $totalStat = GameConst::$defaultStatNPCTotal;
         $minStat = GameConst::$defaultStatNPCMin;
         $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, GameConst::$defaultStatNPCMin);
-        //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
         $otherStat = $minStat + Util::randRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
         $subStat = $totalStat - $mainStat - $otherStat;
         if ($subStat < $minStat) {
@@ -235,12 +234,13 @@ class che_인재탐색 extends Command\GeneralCommand
         $birthYear = $env['year'] - $age;
         $deathYear = $env['year'] + Util::randRangeInt(10, 50);
 
+        $cityID = Util::choiceRandom(array_keys(\sammo\CityConst::all()));
         $newNPC = new \sammo\Scenario\NPC(
             Util::randRangeInt(1, 150),
             \sammo\getRandGenName(),
             null,
             $scoutNation,
-            $general->getCityID(),
+            $cityID,
             $leadership,
             $strength,
             $intel,

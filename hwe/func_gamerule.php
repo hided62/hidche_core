@@ -565,7 +565,9 @@ function updateNationState()
             $nation['level'] = $nationlevel;
 
             $updateVals = [
-                'level' => $nationlevel
+                'level' => $nationlevel,
+                'gold'=>$db->sqleval('gold + %i', $nationlevel*1000),
+                'rice'=>$db->sqleval('rice + %i', $nationlevel*1000),
             ];
 
             switch ($nationlevel) {
@@ -708,7 +710,8 @@ function updateNationState()
                     'troop' => $npcID
                 ], 'no=%i', $npcID);
 
-                //TODO: 5턴간 집합턴 입력
+                $cmd = buildGeneralCommandClass('che_집합', General::createGeneralObjFromDB($npcID), $admin);
+                _setGeneralCommand($cmd, iterator_to_array(Util::range(GameConst::$maxTurn)));
                 $assemblerCnt += 1;
                 $gameStor->assembler_id = $lastAssemblerID;
             }

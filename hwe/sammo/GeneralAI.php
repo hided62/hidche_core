@@ -3358,7 +3358,7 @@ class GeneralAI
             return $result;
         }
 
-        if($npcType == 2 && $nationID == 0){
+        if(($npcType == 2 || $npcType == 3) && $nationID == 0){
             $result = $this->do거병();
             if($result !== null){
                 $result->reason='do거병';

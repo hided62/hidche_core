@@ -216,7 +216,7 @@ class che_의병모집 extends Command\NationCommand
             );
             $newNPC->killturn = Util::randRangeInt(64, 70);
             $newNPC->npc = 4;
-            $newNPC->setMoney(100, 100);
+            $newNPC->setMoney(1000, 1000);
             $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
             $newNPC->setDex(
                 $dexVal[0],

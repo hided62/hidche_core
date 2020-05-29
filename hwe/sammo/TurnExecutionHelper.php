@@ -376,16 +376,6 @@ class TurnExecutionHelper
 
             turnDate($nextTurn);
 
-            // 이벤트 핸들러 동작
-            foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
-                $eventID = $rawEvent['id'];
-                $cond = Json::decode($rawEvent['condition']);
-                $action = Json::decode($rawEvent['action']);
-                $event = new Event\EventHandler($cond, $action);
-
-                $event->tryRunEvent(['currentEventID'=>$eventID] + $gameStor->getAll(true));
-            }
-
             $logger = new ActionLogger(0, 0, $gameStor->year, $gameStor->month, false);
 
             // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
@@ -412,6 +402,16 @@ class TurnExecutionHelper
             } elseif($gameStor->month == 10) {
                 updateQuaterly();
                 disaster();
+            }
+
+            // 이벤트 핸들러 동작
+            foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
+                $eventID = $rawEvent['id'];
+                $cond = Json::decode($rawEvent['condition']);
+                $action = Json::decode($rawEvent['action']);
+                $event = new Event\EventHandler($cond, $action);
+
+                $event->tryRunEvent(['currentEventID'=>$eventID] + $gameStor->getAll(true));
             }
 
             postUpdateMonthly();

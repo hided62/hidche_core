@@ -18,7 +18,7 @@ class Date extends \sammo\Event\Condition{
 
     //TODO:구현
 
-    public function __construct(string $cmp, int $year, int $month){
+    public function __construct(string $cmp, ?int $year, ?int $month){
         //Cmp('==', '!=', '<=', '>=', '<', '>'), Year, Month(Optional)
         if(!array_key_exists($cmp, self::AVAILABLE_CMP)){
             throw new \InvalidArgumentException('올바르지 않은 비교연산자입니다');
