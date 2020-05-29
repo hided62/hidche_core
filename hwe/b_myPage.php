@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 
 $btn = Util::getPost('btn');
-$defence_train = Util::getPost('defence_train', 'int', 2);
+$defence_train = Util::getPost('defence_train', 'int', 80);
 $tnmt = Util::getPost('tnmt', 'int', 1);
 //$detachNPC = Util::getPost('detachNPC', 'bool');
 $detachNPC = false;
@@ -13,11 +13,12 @@ $detachNPC = false;
 $showDieImmediatelyBtn = false;
 $availableDieImmediately = false;
 
-if ($defence_train <= 60) {
-    $defence_train = 60;
+if ($defence_train <= 40) {
+    $defence_train = 40;
 }
-else if($defence_train <= 80){
-    $defence_train = 80;
+
+if($defence_train <= 90){
+    $defence_train = Util::round($defence_train, -1);
 }
 else{
     $defence_train = 999;
@@ -145,10 +146,13 @@ $('#die_immediately').click(function(){
                 <input type=radio name=tnmt value=1 <?=$me->getVar('tnmt')==1?"checked":""; ?>>자동참여
                 】<br>
                ∞<font color=orange>개막직전 남는자리가 있을경우 랜덤하게 참여합니다.</font><br><br>
-                수비 【
-                <input type=radio name=defence_train  value=80 <?=$me->getVar('defence_train')==80?"checked":""; ?>>◎(훈사80)
-                <input type=radio name=defence_train  value=60 <?=$me->getVar('defence_train')==60?"checked":""; ?>>○(훈사60)
-                <input type=radio name=defence_train  value=999 <?=$me->getVar('defence_train')==999?"checked":""; ?>>×
+                수비 【<select name='defence_train'>
+                <option value=90 <?=$me->getVar('defence_train')==90?"selected":""; ?>>☆(훈사90)</option>
+                <option value=80 <?=$me->getVar('defence_train')==80?"selected":""; ?>>◎(훈사80)</option>
+                <option value=60 <?=$me->getVar('defence_train')==60?"selected":""; ?>>○(훈사60)</option>
+                <option value=40 <?=$me->getVar('defence_train')==40?"selected":""; ?>>△(훈사40)</option>
+                <option value=999 <?=$me->getVar('defence_train')==999?"selected":""; ?>>×[훈련, 사기 -3]</option>
+                </select>
                 】<br><br>
                 <input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
                 ∞<font color=orange>설정저장은 이달중 <?=$myset?>회 남았습니다.</font><br><br>

@@ -292,7 +292,7 @@ class TurnExecutionHelper
             pullGeneralCommand($general->getID());
 
             $currentTurn = $general->getTurnTime();
-            $general->increaseVarWithLimit('myset', 1, null, 3);
+            $general->increaseVarWithLimit('myset', 3, null, 9);
 
             $turnObj->updateTurnTime();
             $turnObj->applyDB();
