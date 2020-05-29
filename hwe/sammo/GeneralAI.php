@@ -2754,7 +2754,7 @@ class GeneralAI
                 continue;
             }
 
-            $candidateCities[$city['city']] = 1 / ($realDevelRate * \sqrt(count($city['generals']??[]) + 1));
+            $candidateCities[$candidate['city']] = 1 / ($realDevelRate * \sqrt(count($candidate['generals']??[]) + 1));
         }
 
         if(!$candidateCities){
