@@ -169,9 +169,9 @@ class che_숙련전환 extends Command\GeneralCommand
         $logger = $general->getLogger();
 
         $srcDex = $general->getVar('dex' . $this->srcArmType);
-        $cutDex = Util::toInt($srcDex * 0.3);
+        $cutDex = Util::toInt($srcDex * 0.25);
         $cutDexText = number_format($cutDex);
-        $addDex = Util::toInt($cutDex * 2 / 3);
+        $addDex = Util::toInt($cutDex * 9 / 10);
         $addDexText = number_format($addDex);
 
         $general->increaseVar('dex' . $this->srcArmType, -$cutDex);
@@ -207,8 +207,8 @@ class che_숙련전환 extends Command\GeneralCommand
         foreach (GameUnitConst::allType() as $armType => $armName) {
             $dexVal = $general->getVar('dex' . $armType);
             $dexValText = number_format($dexVal);
-            $cutDex = Util::toInt($dexVal * 0.3);
-            $addDex = Util::toInt($cutDex * 2 / 3);
+            $cutDex = Util::toInt($dexVal * 0.25);
+            $addDex = Util::toInt($cutDex * 9 / 10);
             $addDexText = number_format($addDex);
             $newDex = $dexVal - $cutDex;
             $beforeDexLevel = getDexCall($dexVal);
@@ -220,7 +220,7 @@ class che_숙련전환 extends Command\GeneralCommand
 
         ob_start();
 ?>
-        본인의 특정 병종 숙련을 30% 줄이고, 줄어든 숙련 중 2/3(20%p)를 다른 병종 숙련으로 전환합니다.<br>
+        본인의 특정 병종 숙련을 25% 줄이고, 줄어든 숙련 중 9/10(90%p)를 다른 병종 숙련으로 전환합니다.<br>
 
         <select class='formInput' name="srcArmType" id="srcArmType" size='1' style='color:white;background-color:black;'>
             <?php foreach ($dexSrcTexts as $armType => $infoText) : ?>
