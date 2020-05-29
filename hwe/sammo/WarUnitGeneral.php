@@ -118,6 +118,12 @@ class WarUnitGeneral extends WarUnit{
     function addWin(){
         $general = $this->general;
         $general->increaseRankVar('killnum', 1);
+
+        $oppose = $this->getOppose();
+        if($oppose instanceof WarUnitCity){
+            $general->increaseRankVar('occupied', 1);
+        }
+
         $general->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
 
         $this->addStatExp(1);
@@ -295,6 +301,11 @@ class WarUnitGeneral extends WarUnit{
 
         $general->increaseRankVar('killcrew', $this->killed);
         $general->increaseRankVar('deathcrew', $this->dead);
+
+        if($this->getOppose() instanceof WarUnitGeneral){
+            $general->increaseRankVar('killcrew_person', $this->killed);
+            $general->increaseRankVar('deathcrew_person', $this->dead);
+        }
         
         $general->updateVar('rice', Util::round($general->getVar('rice')));
         $general->updateVar('experience', Util::round($general->getVar('experience')));

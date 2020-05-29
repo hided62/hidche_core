@@ -1336,8 +1336,11 @@ function CheckHall($no)
         ["warnum", 'rank'],
         ["killnum", 'rank'],
         ["winrate", 'calc'],
+        ["occupied", 'rank'],
         ["killcrew", 'rank'],
         ["killrate", 'calc'],
+        ["killcrew_person", 'rank'],
+        ["killrate_person", 'calc'],
         ["dex1", 'natural'],
         ["dex2", 'natural'],
         ["dex3", 'natural'],
@@ -1380,6 +1383,9 @@ function CheckHall($no)
     $kill = $generalObj->getRankVar('killcrew');
     $death = Util::valueFit($generalObj->getRankVar('deathcrew'), 1);
 
+    $killPerson = $generalObj->getRankVar('killcrew_person');
+    $deathPerson = Util::valueFit($generalObj->getRankVar('deathcrew_person'), 1);
+
     $tt = Util::valueFit($ttw + $ttd + $ttl, 1);
     $tl = Util::valueFit($tlw + $tld + $tll, 1);
     $ts = Util::valueFit($tsw + $tsd + $tsl, 1);
@@ -1393,6 +1399,7 @@ function CheckHall($no)
     $calcVar['betrate'] = $betWinGold / $betGold;
     $calcVar['winrate'] = $win / $war;
     $calcVar['killrate'] = $kill / $death;
+    $calcVar['killrate_person'] = $killPerson / $deathPerson;
 
     if ($generalObj instanceof DummyGeneral) {
         return;

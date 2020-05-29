@@ -91,6 +91,7 @@ $types = [
         }
         return $v;
     }],
+    ["점 령", "int", function($v){$v['value'] = $v['occupied']; return $v; }],
     ["사 살", "int", function($v){$v['value'] = $v['killcrew']; return $v; }],
     ["살 상 률", "percent", function($v){
         if($v['warnum'] < 10){
@@ -98,6 +99,16 @@ $types = [
         }
         else{
             $v['value'] = $v['killcrew'] / max(1, $v['deathcrew']);
+        }
+        return $v;
+    }],
+    ["대 인 사 살", "int", function($v){$v['value'] = $v['killcrew_person']; return $v; }],
+    ["대 인 살 상 률", "percent", function($v){
+        if($v['warnum'] < 10){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['killcrew_person'] / max(1, $v['deathcrew_person']);
         }
         return $v;
     }],
