@@ -1877,6 +1877,10 @@ class GeneralAI
 
         $cmdList = [];
 
+        if($nation['rice'] < GameConst::$baserice){
+            return null;
+        }
+
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.98) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
@@ -2009,6 +2013,10 @@ class GeneralAI
 
         $city = $this->city;
         $nation = $this->nation;
+
+        if($nation['rice'] < GameConst::$baserice){
+            return null;
+        }
 
         $develRate = Util::squeezeFromArray($this->calcCityDevelRate($city), 0);
         $isSpringSummer = $this->env['month'] <= 6;
@@ -2331,7 +2339,7 @@ class GeneralAI
         $riceCost = $crewType->riceWithTech(
             $this->nation['tech'],
             $this->fullLeadership*100 * 
-                $general->getRankVar('killcrew')/max($general->getRankVar('deathcrew'),1)
+                $general->getRankVar('killcrew')/max($general->getRankVar('deathcrew'),1)*1.2
         );
 
         $cmd = buildGeneralCommandClass('che_징병', $general, $env, [
@@ -2434,6 +2442,10 @@ class GeneralAI
         $general = $this->getGeneralObj();
         $city = $this->city;
         $nation = $this->nation;
+
+        if($nation['rice'] < GameConst::$baserice){
+            return null;
+        }
 
         $cityID = $city['city'];
         $nationID = $nation['nation'];
@@ -2677,6 +2689,10 @@ class GeneralAI
             return null;
         }
 
+        if($this->nation['rice'] < GameConst::$baserice){
+            return null;
+        }
+
         $this->categorizeNationCities();
         $this->categorizeNationGeneral();
 
@@ -2705,6 +2721,9 @@ class GeneralAI
 
     protected function do내정워프(): ?GeneralCommand
     {
+        if($this->nation['rice'] < GameConst::$baserice){
+            return null;
+        }
         
         $city = $this->city;
         if(Util::randBool(0.6)){
