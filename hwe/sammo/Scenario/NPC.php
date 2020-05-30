@@ -123,7 +123,13 @@ class NPC{
                 $this->charDomestic = SpecialityHelper::getDomesticClassByName($char);
             }
             catch (\Exception $e) {
-                $this->charWar = SpecialityHelper::getWarClassByName($char);
+                try{
+                    $this->charWar = SpecialityHelper::getWarClassByName($char);
+                }
+                catch (\Exception $e){
+                    
+                }
+                
             }
         }  
     }

@@ -12,7 +12,8 @@ class ChangeCity extends \sammo\Event\Action{
         'secu'=>true,
         'trust'=>true,
         'def'=>true,
-        'wall'=>true
+        'wall'=>true,
+        'trade'=>true,
     ];
     const REGEXP_PERCENT = '/^(\d+(\.\d+)?)%$/';// 123.5%   [1]=float
     const REGEXP_MATH = '/^([\+\-\/\*])(\d+(\.\d+)?)$/'; //+30 [1]=기호, [2]=float
@@ -51,6 +52,15 @@ class ChangeCity extends \sammo\Event\Action{
 
             if($key == 'trust'){
                 $queries['trust'] = $this->genSQLTrust($value);
+                continue;
+            }
+            if($key == 'trade'){
+                if($value === null){
+                    $queries['trade'] = null;
+                }
+                else{
+                    $queries['trade'] = Util::valueFit((float)$value, 95, 105);
+                }
                 continue;
             }
 

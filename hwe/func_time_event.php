@@ -78,6 +78,7 @@ function processGoldIncome() {
             // 실지급률
             $ratio = $realoutcome / $originoutcome;
         }
+        $nation['gold'] = Util::valueFit($nation['gold'], GameConst::$basegold);
         $adminLog[] = StringUtil::padStringAlignRight((string)$nation['name'],12," ")
             ." // 세금 : ".StringUtil::padStringAlignRight((string)$income,6," ")
             ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
@@ -355,6 +356,7 @@ function processRiceIncome() {
             // 실지급률
             $ratio = $realoutcome / $originoutcome;
         }
+        $nation['rice'] = Util::valueFit($nation['rice'], GameConst::$baserice);
         $adminLog[] = StringUtil::padStringAlignRight($nation['name'],12," ")
             ." // 세곡 : ".StringUtil::padStringAlignRight((string)$income,6," ")
             ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")

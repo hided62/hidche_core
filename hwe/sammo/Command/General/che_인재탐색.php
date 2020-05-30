@@ -255,7 +255,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
         $newNPC->setSpecYear(
             Util::round((GameConst::$retirementYear - $age) / 12) + $age,
-            Util::round((GameConst::$retirementYear - $age) / 3) + $age
+            Util::round((GameConst::$retirementYear - $age) / 6) + $age
         );
         $newNPC->setDex(
             $dexVal[0],

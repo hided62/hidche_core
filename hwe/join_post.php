@@ -169,7 +169,7 @@ if ($genius) {
         'dex5'=>0
     ]);
 } else {
-    $specage2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/4 - $relYear / 2), 3) + $age;
+    $specage2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/6 - $relYear / 2), 3) + $age;
     $special2 = GameConst::$defaultSpecialWar;
 }
 //내특

@@ -74,7 +74,7 @@ class CreateManyNPC extends \sammo\Event\Action{
         $newNPC->setExpDed(0, 0);
         $newNPC->setSpecYear(
             Util::round((GameConst::$retirementYear - $age) / 12) + $age,
-            Util::round((GameConst::$retirementYear - $age) / 3) + $age
+            Util::round((GameConst::$retirementYear - $age) / 6) + $age
         );
 
         $newNPC->build($env);
