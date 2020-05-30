@@ -121,7 +121,7 @@ $specialViewFilter = [
         }
         return $rawGeneral['owner_name'];
     },
-    'officerLevelText' => function ($rawGeneral) use ($nationArr, $specialViewFilter) {
+    'officerLevelText' => function ($rawGeneral) use ($nationArr) {
         $level = getOfficerLevel($rawGeneral);
         return getOfficerLevelText($level, $nationArr['level']);
     },
