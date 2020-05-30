@@ -17,7 +17,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("세력장수", 1);
 
-$me = $db->queryFirstRow('SELECT con, turntime, nation, officer_level, permission, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT con, turntime, belong, nation, officer_level, permission, penalty FROM general WHERE owner=%i', $userID);
 $con = checkLimit($me['con']);
 if ($con >= 2) {
     Json::die([
@@ -37,42 +37,44 @@ if($reqForce && $reqType > $permission){
 $permission = min($reqType, $permission);
 $nationArr = getNationStaticInfo($nationID);
 $viewColumns = [
-    'no'=>1,
-    'name'=>1,
+    'no'=>0,
+    'name'=>0,
     'owner_name'=>9,
-    'nation'=>1,
+    'nation'=>0,
     'city'=>1,
-    'officer_level'=>9,
-    'npc'=>1,
+    'officer_level'=>0,
+    'officer_city'=>2,
+    'npc'=>0,
     'defence_train'=>2,
     'troop'=>2,
-    'injury'=>1,
-    'leadership'=>1,
-    'strength'=>1,
-    'intel'=>1,
+    'injury'=>0,
+    'leadership'=>0,
+    'strength'=>0,
+    'intel'=>0,
     'experience'=>1,
-    'explevel'=>1,
+    'explevel'=>0,
     'dedication'=>1,
-    'dedlevel'=>1,
-    'gold'=>1,
-    'rice'=>1,
+    'dedlevel'=>0,
+    'gold'=>0,
+    'rice'=>0,
     'crewtype'=>2,
     'crew'=>2,
     'train'=>2,
     'atmos'=>2,
     'killturn'=>1,
     'turntime'=>2,
-    'picture'=>1,
-    'imgsvr'=>1,
-    'age'=>1,
-    'special'=>1,
-    'special2'=>1,
-    'personal'=>1,
-    'horse'=>3,
-    'weapon'=>3,
-    'book'=>3,
-    'item'=>3,
-    'connect'=>1
+    'picture'=>0,
+    'imgsvr'=>0,
+    'age'=>0,
+    'special'=>0,
+    'special2'=>0,
+    'personal'=>0,
+    'belong'=>0,
+    'horse'=>2,
+    'weapon'=>2,
+    'book'=>2,
+    'item'=>2,
+    'connect'=>0
 ];
 
 $customViewColumns = [
@@ -122,9 +124,9 @@ $specialViewFilter = [
 
 ];
 
-$queryColumns = General::mergeQueryColumn(array_keys($viewColumns), 1);
+[$queryColumns, $rankColumns] = General::mergeQueryColumn(array_keys($viewColumns), 1);
 
-$rawGeneralList = Util::convertArrayToDict($db->queryAllLists('SELECT %lb from general WHERE nation = %i', $queryColumns, $nationID), 'no');
+$rawGeneralList = Util::convertArrayToDict($db->query('SELECT %l from general WHERE nation = %i', Util::formatListOfBackticks($queryColumns), $nationID), 'no');
 
 $resultColumns = [];
 foreach($viewColumns as $column=>$reqPermission){
