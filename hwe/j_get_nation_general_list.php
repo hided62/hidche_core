@@ -12,8 +12,8 @@ $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$reqType = Util::getPost('req', 'int', 1);
-$reqForce = Util::getPost('force', 'bool', false);
+$reqType = Util::getReq('req', 'int', 1);
+$reqForce = Util::getReq('force', 'bool', false);
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("세력장수", 1);
