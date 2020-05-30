@@ -30,7 +30,7 @@ class event_전투특기_의술 extends \sammo\BaseItem{
     public function getBattlePhaseSkillTriggerList(\sammo\WarUnit $unit): ?WarUnitTriggerCaller
     {
         return new WarUnitTriggerCaller(
-            new che_전투치료시도($unit),
+            new che_전투치료시도($unit, che_전투치료시도::TYPE_ITEM),
             new che_전투치료발동($unit)
         );
     }

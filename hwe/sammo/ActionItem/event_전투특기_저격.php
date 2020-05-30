@@ -20,8 +20,8 @@ class event_전투특기_저격 extends \sammo\BaseItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_저격시도($unit, che_저격시도::TYPE_NONE, 1/3, 20, 60),
-            new che_저격발동($unit)
+            new che_저격시도($unit, che_저격시도::TYPE_ITEM, 1/3, 20, 60),
+            new che_저격발동($unit, che_저격발동::TYPE_ITEM)
         );
     }
 }
