@@ -162,9 +162,11 @@ foreach ($rawGeneralList as $rawGeneral) {
 
     $item = [];
     foreach ($resultColumns as $column) {
-        $value = $rawGeneral[$column];
         if (key_exists($column, $specialViewFilter)) {
             $value = $specialViewFilter[$column]($rawGeneral);
+        }
+        else{
+            $value = $rawGeneral[$column];
         }
         $item[] = $value;
     }
