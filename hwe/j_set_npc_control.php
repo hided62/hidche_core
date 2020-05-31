@@ -10,6 +10,7 @@ $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 $generalID = $session->generalID;
 
+increaseRefresh("NPC 정책 수정", 0);
 
 $type = Util::getPost('type', 'string');
 $data = Util::getPost('data', 'string');

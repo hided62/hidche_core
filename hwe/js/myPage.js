@@ -82,4 +82,84 @@ jQuery(function($){
     })
 
     initCustomCSSForm();
+
+    
+    $('#die_immediately').click(function(){
+        if(!confirm('정말로 삭제하시겠습니까?')){
+            return false;
+        }
+        $.post({
+                url:'j_die_immediately.php',
+                dataType:'json',
+            }).then(function(data){
+                if(!data){
+                    return quickReject('실패했습니다.');
+                }
+                if(!data.result){
+                    return quickReject(data.reason);
+                }
+                
+                location.replace('..');
+        
+            }, errUnknown)
+            .fail(function(reason){
+                alert(reason);
+                location.reload();
+            });
+            return false;
+        return false;
+    });
+
+    $('#vacation').click(function(){
+        if(!confirm('휴가 기능을 신청할까요?')){
+            return false;
+        }
+        $.post({
+                url:'j_vacation.php',
+                dataType:'json',
+            }).then(function(data){
+                if(!data){
+                    return quickReject('실패했습니다.');
+                }
+                if(!data.result){
+                    return quickReject(data.reason);
+                }
+                
+                location.reload();
+        
+            }, errUnknown)
+            .fail(function(reason){
+                alert(reason);
+                location.reload();
+            });
+            return false;
+        return false;
+    });
+
+    $('#set_my_setting').click(function(){
+        $.post({
+                url:'j_set_my_setting.php',
+                dataType:'json',
+                data:{
+                    tnmt:$('.tnmt:checked').val(),
+                    defence_train:$('#defence_train').val(),
+                }
+            }).then(function(data){
+                if(!data){
+                    return quickReject('실패했습니다.');
+                }
+                if(!data.result){
+                    return quickReject(data.reason);
+                }
+                
+                location.reload();
+        
+            }, errUnknown)
+            .fail(function(reason){
+                alert(reason);
+                location.reload();
+            });
+            return false;
+        return false;
+    });
 });

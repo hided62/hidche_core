@@ -1,0 +1,75 @@
+<?php
+namespace sammo;
+
+include "lib.php";
+include "func.php";
+
+WebUtil::requireAJAX();
+
+$session = Session::requireGameLogin([])->setReadOnly();
+$userID = Session::getUserID();
+$generalID = $session->generalID;
+
+increaseRefresh("내정보 수정", 0);
+
+$action = Util::getPost('action');
+$tnmt = Util::getPost('tnmt', 'int', 1);
+$defence_train = Util::getPost('defence_train', 'int', 80);
+//$detachNPC = Util::getPost('detachNPC', 'bool');
+$detachNPC = false;
+
+if ($defence_train <= 40) {
+    $defence_train = 40;
+}
+
+if($defence_train <= 90){
+    $defence_train = Util::round($defence_train, -1);
+}
+else{
+    $defence_train = 999;
+}
+
+if($tnmt < 0 || $tnmt > 1){
+    $tnmt = 1;
+}
+
+$db = DB::db();
+$me = General::createGeneralObjFromDB($generalID);
+
+
+if($defence_train != $me->getVar('defence_train')){
+    if($defence_train == 999){
+        $me->increaseVar('myset', -1);
+        $me->setVar('defence_train', $defence_train);
+        $me->increaseVar('train', -3);
+        $me->increaseVar('atmos', -3);
+    }
+    else{
+        $me->increaseVar('myset', -1);
+        $me->setVar('defence_train', $defence_train);
+    }
+    $myset -= 1;
+}
+
+if($me->getVar('tnmt') != $tnmt){
+    $me->setVar('tnmt', $tnmt);
+}
+
+if($me->getNPCType() == 1 && $detachNPC){
+    $turnterm = $gameStor->turnterm;
+
+    if($turnterm < 10){
+        $targetKillTurn = 30 / $turnterm;
+    }
+    else{
+        $targetKillTurn = 60 / $turnterm;
+    }
+    $me->setVar('killturn', $targetKillTurn);
+}
+
+$me->applyDB($db);
+
+Json::die([
+    'result'=>true,
+    'reason'=>'success'
+]);

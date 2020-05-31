@@ -9,6 +9,8 @@ WebUtil::requireAJAX();
 $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
+increaseRefresh("시뮬레이터", 0);
+
 $query = Util::getPost('query');
 if($query === null){
     Json::die([

@@ -4,6 +4,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+
+WebUtil::requireAJAX();
+
 $availableDieImmediately = false;
 
 //로그인 검사
@@ -16,25 +19,31 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $general = $db->queryFirstRow('SELECT no,name,owner_name,npc,lastrefresh FROM general WHERE owner=%i AND npc = 0', $userID);
 
 if(!$general){
-    header('location:b_myPage.php');
-    die();
+    Json::die([
+        'result'=>false,
+        'reason'=>'장수가 없습니다.'
+    ]);
 }
 
 increaseRefresh("장수 삭제", 1);
 $gameStor->cacheValues(['turnterm', 'opentime', 'turntime', 'year', 'month']);
 
-if($gameStor->turntime <= $gameStor->opentime){
-    //서버 가오픈시 할 수 있는 행동
-    if(addTurn($general['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::now()){
-        $availableDieImmediately = true;
-    }
+if($gameStor->turntime > $gameStor->opentime){
+    Json::die([
+        'result'=>false,
+        'reason'=>'이미 서버가 시작되었습니다.'
+    ]);
 }
 
-if(!$availableDieImmediately){
-    header('location:b_myPage.php');
-    die();
-}
 
+$targetTime = addTurn($general['lastrefresh'], $gameStor->turnterm, 2);
+if($targetTime > TimeUtil::now()){
+    $targetTimeShort = substr($targetTime, 0, 19);
+    Json::die([
+        'result'=>false,
+        'reason'=>"아직 삭제할 수 없습니다. {$targetTimeShort} 부터 가능합니다."
+    ]);
+}
 
 
 $generalObj = General::createGeneralObjFromDB($general['no']);
@@ -46,4 +55,7 @@ $josaYi = JosaUtil::pick($generalName, '이');
 $generalObj->kill($db, true, "<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>");
 
 $session->logoutGame();
-header('location:..');
+Json::die([
+    'result'=>true,
+    'reason'=>'success'
+]);

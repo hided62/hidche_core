@@ -8,6 +8,8 @@ WebUtil::requireAJAX();
 
 $session = Session::requireGameLogin([])->setReadOnly();
 
+increaseRefresh("턴 입력", 0);
+
 $generalID = $session->generalID;
 
 $action = Util::getPost('action', 'string');

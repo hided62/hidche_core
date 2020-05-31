@@ -15,6 +15,8 @@ $troop = Util::getPost('troop', 'int');
 $session = Session::requireGameLogin([])->setReadOnly();
 $userID = $session::getUserID();
 
+increaseRefresh("부대명령", 0);
+
 $db = DB::db();
 
 $me = $db->queryFirstRow('SELECT `no`, name, nation, troop FROM general WHERE `owner`=%i', $userID);
