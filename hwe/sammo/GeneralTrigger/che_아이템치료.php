@@ -9,13 +9,19 @@ use sammo\JosaUtil;
 
 class che_아이템치료 extends BaseGeneralTrigger{
     protected $priority = 20010;
+    protected $injuryTarget = 10;
+
+    public function __construct(General $general, int $injuryTarget=10){
+        $this->object = $general;
+        $this->injuryTarget = $injuryTarget;
+    }
 
     public function action(?array $env=null, $arg=null):?array{
 
         /** @var \sammo\General $general */
         $general = $this->object;
 
-        if($general->getVar('injury') >= 10){
+        if($general->getVar('injury') >= $this->injuryTarget){
             if($general->getReservedTurn(0, $env) instanceof \sammo\Command\General\che_요양){
                 return $env;
             }

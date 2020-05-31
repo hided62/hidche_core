@@ -15,6 +15,7 @@ increaseRefresh("내정보 수정", 0);
 $action = Util::getPost('action');
 $tnmt = Util::getPost('tnmt', 'int', 1);
 $defence_train = Util::getPost('defence_train', 'int', 80);
+$use_treatment = Util::getPost('use_treatment', 'int', 10);
 //$detachNPC = Util::getPost('detachNPC', 'bool');
 $detachNPC = false;
 
@@ -48,8 +49,9 @@ if($defence_train != $me->getVar('defence_train')){
         $me->increaseVar('myset', -1);
         $me->setVar('defence_train', $defence_train);
     }
-    $myset -= 1;
 }
+
+$me->setAuxVar('use_treatment', Util::valueFit($use_treatment, 10, 100));
 
 if($me->getVar('tnmt') != $tnmt){
     $me->setVar('tnmt', $tnmt);

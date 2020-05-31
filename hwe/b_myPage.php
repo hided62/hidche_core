@@ -37,6 +37,8 @@ if($gameStor->turntime <= $gameStor->opentime){
     }
 }
 
+$use_treatment = $me->getAuxVar('use_treatment')??10;
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -72,7 +74,17 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
                 <input type=radio class='tnmt' name=tnmt value=0 <?=$me->getVar('tnmt')==0?"checked":""; ?>>수동참여
                 <input type=radio class='tnmt' name=tnmt value=1 <?=$me->getVar('tnmt')==1?"checked":""; ?>>자동참여
                 】<br>
-               ∞<font color=orange>개막직전 남는자리가 있을경우 랜덤하게 참여합니다.</font><br><br>
+               ∞<span style='color:orange'>개막직전 남는자리가 있을경우 랜덤하게 참여합니다.</span><br><br>
+
+               환약 사용 【<select id='use_treatment' name='use_treatment'>
+                <option value=10 <?=$use_treatment==10?"selected":""; ?>>경상</option>
+                <option value=20 <?=$use_treatment==21?"selected":""; ?>>중상</option>
+                <option value=40 <?=$use_treatment==41?"selected":""; ?>>심각</option>
+                <option value=60 <?=$use_treatment==61?"selected":""; ?>>위독</option>
+                <option value=100 <?=$use_treatment==100?"selected":""; ?>>사용안함</option>
+                </select>】<br>
+               ∞<span style='color:orange'>부상을 입었을 때 환약을 사용하는 기준입니다.</span><br><br>
+
                 수비 【<select id='defence_train' name='defence_train'>
                 <option value=90 <?=$me->getVar('defence_train')==90?"selected":""; ?>>☆(훈사90)</option>
                 <option value=80 <?=$me->getVar('defence_train')==80?"selected":""; ?>>◎(훈사80)</option>
@@ -82,7 +94,7 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
                 </select>
                 】<br><br>
                 <input type=<?=$submit?> id='set_my_setting' name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
-                ∞<font color=orange>설정저장은 이달중 <?=$myset?>회 남았습니다.</font><br><br>
+                ∞<span style='color:orange'>설정저장은 이달중 <?=$myset?>회 남았습니다.</span><br><br>
             <?php if(!($gameStor->autorun_user['limit_minutes']??false)): ?>
             휴 가 신 청<br>
             <button type="button" id='vacation' style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button><br><br>

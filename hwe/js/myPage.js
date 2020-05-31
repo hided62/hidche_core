@@ -143,6 +143,7 @@ jQuery(function($){
                 data:{
                     tnmt:$('.tnmt:checked').val(),
                     defence_train:$('#defence_train').val(),
+                    use_treatment:$('#use_treatment').val(),
                 }
             }).then(function(data){
                 if(!data){
