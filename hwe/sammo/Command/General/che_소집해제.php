@@ -83,7 +83,7 @@ class che_소집해제 extends Command\GeneralCommand{
         $general->setVar('crew', 0);
         $general->addExperience($exp);
         $general->addDedication($ded);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 

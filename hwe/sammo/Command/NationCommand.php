@@ -9,7 +9,7 @@ abstract class NationCommand extends BaseCommand{
 
     public function __construct(General $generalObj, array $env, LastTurn $lastTurn, $arg = null){
         $this->lastTurn = $lastTurn;
-        $this->resultTurn = new LastTurn();
+        $this->resultTurn = $lastTurn->duplicate();
         parent::__construct($generalObj, $env, $arg);
     }
 

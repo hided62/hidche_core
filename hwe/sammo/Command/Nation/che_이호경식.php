@@ -197,6 +197,7 @@ class che_이호경식 extends Command\NationCommand
             'state' => 1,
         ], '(me = %i AND you = %i) OR (you = %i AND me = %i)', $nationID, $destNationID, $nationID, $destNationID);
 
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         return true;

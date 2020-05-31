@@ -95,7 +95,7 @@ class che_NPC능동 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog("NPC 전용 명령을 이용해 {$cityName}{$josaRo} 이동했습니다.");
             $general->setVar('city', $destCityID);
 
-            $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+            $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         }
 
         $general->applyDB($db);

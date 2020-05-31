@@ -232,7 +232,7 @@ class che_출병 extends Command\GeneralCommand
         $general->addDex($general->getCrewTypeObj(), $general->getVar('crew') / 100);
 
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         processWar($general, $this->nation, $this->destCity);

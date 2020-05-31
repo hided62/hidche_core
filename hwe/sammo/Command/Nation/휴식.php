@@ -32,6 +32,7 @@ class 휴식 extends Command\NationCommand{
     }
 
     public function run():bool{
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         return true;
     }
 }

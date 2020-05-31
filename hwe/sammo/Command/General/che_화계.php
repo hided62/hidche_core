@@ -297,7 +297,7 @@ class che_화계 extends Command\GeneralCommand
             $general->addDedication($ded);
             $general->increaseVar($statType . '_exp', 1);
 
-            $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+            $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
             $general->applyDB($db);
             return false;
@@ -330,7 +330,7 @@ class che_화계 extends Command\GeneralCommand
         $general->addDedication($ded);
         $general->increaseVar($statType . '_exp', 1);
         $general->increaseRankVar('firenum', 1);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 

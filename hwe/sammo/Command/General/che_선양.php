@@ -139,7 +139,7 @@ class che_선양 extends Command\GeneralCommand
         $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>의 군주자리를 <Y>{$destGeneralName}</>에게 선양");
         $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>의 군주자리를 물려 받음");
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
         $destGeneral->applyDB($db);

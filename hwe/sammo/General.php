@@ -185,7 +185,7 @@ class General implements iAction{
         return $this->lastTurn;
     }
 
-    function setResultTurn(LastTurn $resultTurn){
+    function _setResultTurn(LastTurn $resultTurn){
         $this->resultTurn = $resultTurn;
     }
 

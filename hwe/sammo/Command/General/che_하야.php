@@ -107,7 +107,7 @@ class che_하야 extends Command\GeneralCommand{
         $general->setVar('belong', 0);
         $general->setVar('makelimit', 12);
         
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 

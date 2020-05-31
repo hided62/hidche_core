@@ -235,7 +235,7 @@ class che_천도 extends Command\NationCommand
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</>를 명령하였습니다.");
         $logger->pushGlobalHistoryLog("<S><b>【천도】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</>하였습니다.");
 
-        $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
         return true;
     }

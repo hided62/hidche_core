@@ -235,7 +235,7 @@ class che_의병모집 extends Command\NationCommand
             'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
 
-
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         return true;

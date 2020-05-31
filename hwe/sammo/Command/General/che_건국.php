@@ -193,7 +193,7 @@ class che_건국 extends Command\GeneralCommand
 
         refreshNationStaticInfo();
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general, '건국');
         $general->applyDB($db);

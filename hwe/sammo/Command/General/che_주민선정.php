@@ -179,7 +179,7 @@ class che_주민선정 extends Command\GeneralCommand{
         $general->addExperience($exp);
         $general->addDedication($ded);
         $general->increaseVar(static::$statKey.'_exp', 1);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);
         $general->applyDB($db);

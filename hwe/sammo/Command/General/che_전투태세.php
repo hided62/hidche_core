@@ -99,7 +99,7 @@ class che_전투태세 extends Command\GeneralCommand{
 
         if($term < 3){
             $logger->pushGeneralActionLog("병사들을 열심히 훈련중... ({$term}/3) <1>$date</>");
-            $general->setResultTurn($turnResult);
+            $this->setResultTurn($turnResult);
             $general->applyDB($db);
 
             return true;
@@ -121,7 +121,7 @@ class che_전투태세 extends Command\GeneralCommand{
         $general->addDex($general->getCrewTypeObj(), $crew / 100 * 3, false);
         
         $general->increaseVar('leadership_exp', 3);
-        $general->setResultTurn($turnResult);
+        $this->setResultTurn($turnResult);
         $general->checkStatChange();
         tryUniqueItemLottery($general);
         $general->applyDB($db);

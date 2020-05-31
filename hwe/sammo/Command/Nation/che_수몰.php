@@ -182,7 +182,7 @@ class che_수몰 extends Command\NationCommand{
             'strategic_cmd_limit' => $this->getPostReqTurn()
         ], 'nation=%i', $nationID);
 
-        $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
 
         return true;

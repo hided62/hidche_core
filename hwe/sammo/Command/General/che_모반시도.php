@@ -100,7 +100,7 @@ class che_모반시도 extends Command\GeneralCommand{
         $logger->pushGeneralHistoryLog("모반으로 <D><b>{$nationName}</b></>의 군주자리를 찬탈");
         $lordLogger->pushGeneralHistoryLog("<D><b>{$generalName}</b></>의 모반으로 인해 <D><b>{$nationName}</b></>의 군주자리를 박탈당함");
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
         $lordGeneral->applyDB($db);

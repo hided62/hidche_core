@@ -38,7 +38,7 @@ class 휴식 extends Command\GeneralCommand{
         $date = $general->getTurnTime($general::TURNTIME_HM);
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
-        $general->setResultTurn(new LastTurn());
+        $this->setResultTurn(new LastTurn());
 
         $general->applyDB(DB::db());
         return true;

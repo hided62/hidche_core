@@ -198,7 +198,7 @@ class che_급습 extends Command\NationCommand
         $db->update('diplomacy', [
             'term' => $db->sqleval('`term` - %i', 3),
         ], '(me = %i AND you = %i) OR (you = %i AND me = %i)', $nationID, $destNationID, $nationID, $destNationID);
-
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         return true;

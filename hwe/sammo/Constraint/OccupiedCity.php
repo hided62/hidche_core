@@ -28,7 +28,7 @@ class OccupiedCity extends Constraint{
         $this->tested = true;
 
         //재야여도 허용하는 경우
-        if($this->arg[0] && $this->general['nation'] == 0){
+        if($this->arg && $this->general['nation'] == 0){
             return true;
         }
 

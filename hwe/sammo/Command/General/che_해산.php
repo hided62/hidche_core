@@ -92,7 +92,7 @@ class che_해산 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("세력을 해산했습니다. <1>$date</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 세력을 해산했습니다.");
         $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 해산");
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
 
         $nationGenerals = deleteNation($general, false);
         foreach($nationGenerals as $oldGeneral){

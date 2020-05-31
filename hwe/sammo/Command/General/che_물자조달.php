@@ -122,7 +122,7 @@ class che_물자조달 extends Command\GeneralCommand{
             $resKey=>$db->sqleval('%b + %i', $resKey, $score)
         ], 'nation=%i',$general->getNationID());
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 

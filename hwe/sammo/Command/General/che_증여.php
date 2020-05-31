@@ -175,7 +175,7 @@ class che_증여 extends Command\GeneralCommand
         $general->addDedication($ded);
         $general->increaseVar('leadership_exp', 1);
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
         $destGeneral->applyDB($db);

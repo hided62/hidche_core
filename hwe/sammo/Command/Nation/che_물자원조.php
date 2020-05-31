@@ -230,7 +230,7 @@ class che_물자원조 extends Command\NationCommand{
         $general->addExperience(5);
         $general->addDedication(5);
 
-
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         return true;

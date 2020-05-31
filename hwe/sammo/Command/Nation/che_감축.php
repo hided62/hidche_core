@@ -207,7 +207,7 @@ class che_감축 extends Command\NationCommand{
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
         $logger->pushGlobalHistoryLog("<M><b>【감축】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
 
-        $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
 
         return true;

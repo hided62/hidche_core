@@ -188,7 +188,7 @@ class che_숙련전환 extends Command\GeneralCommand
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->increaseVar('leadership_exp', 2);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);
         $general->applyDB($db);

@@ -190,7 +190,7 @@ class che_초토화 extends Command\NationCommand{
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>초토화</>하였습니다.");
         $logger->pushGlobalHistoryLog("<S><b>【초토화】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>초토화</>하였습니다.");
 
-        $general->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
         return true;
     }

@@ -119,7 +119,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("새로운 {$specialName}를 가질 준비가 되었습니다. <1>$date</>");
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         tryUniqueItemLottery($general);
         $general->applyDB($db);
 

@@ -127,7 +127,7 @@ class che_방랑 extends Command\GeneralCommand{
 
         refreshNationStaticInfo();
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         return true;

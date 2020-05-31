@@ -180,7 +180,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
         }
 
         $general->addExperience($exp);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);
         $general->applyDB($db);

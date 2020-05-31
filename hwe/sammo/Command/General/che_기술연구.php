@@ -125,7 +125,7 @@ class che_기술연구 extends che_상업투자{
         $general->addDedication($ded);
         $general->increaseVar(static::$statKey.'_exp', 1);
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general);
         $general->applyDB($db);

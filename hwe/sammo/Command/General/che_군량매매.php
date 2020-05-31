@@ -179,7 +179,7 @@ class che_군량매매 extends Command\GeneralCommand{
         $general->addDedication($ded);
         $general->increaseVar($incStat, 1);
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 

@@ -455,7 +455,7 @@ abstract class BaseCommand{
     }
 
     public function setResultTurn(LastTurn $lastTurn){
-        $this->generalObj->setResultTurn($lastTurn);
+        $this->generalObj->_setResultTurn($lastTurn);
     }
 
     public function getResultTurn():LastTurn{

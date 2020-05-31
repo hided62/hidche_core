@@ -172,7 +172,7 @@ class che_거병 extends Command\GeneralCommand{
         $general->setVar('officer_city', 0);
         $general->setVar('nation', $nationID);
 
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 

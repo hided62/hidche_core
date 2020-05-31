@@ -74,7 +74,7 @@ class che_요양 extends Command\GeneralCommand{
         $general->setVar('injury', 0);
         $general->addExperience($exp);
         $general->addDedication($ded);
-        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
 
