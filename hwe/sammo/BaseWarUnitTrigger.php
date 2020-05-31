@@ -6,7 +6,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
 
     const TYPE_NONE = 0;
     const TYPE_ITEM  = 1;
-    const TYPE_CONSUMABLE_ITEM = 2;
+    const TYPE_CONSUMABLE_ITEM = 1 | 2;
 
     protected $raiseType = self::TYPE_NONE;
 
