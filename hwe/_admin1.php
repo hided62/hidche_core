@@ -38,7 +38,7 @@ $admin = getAdmin();
     </tr>
     <tr>
         <td width=110 align=right>시작시간변경</td>
-        <td width=285><input type=text size=20 maxlength=20 style=color:white;background-color:black;text-align:right; name=starttime value='<?=$admin['starttime']?>'><input type=submit name=btn value=변경1></td>
+        <td width=285><input type=text size=20 maxlength=20 style=color:white;background-color:black;text-align:right; name=starttime value='<?=substr($admin['starttime'], 0, 19)?>'><input type=submit name=btn value=변경1></td>
         <td width=110 align=right>현재도시훈사</td>
         <td width=285><?=$admin['city_rate']?></td>
     </tr>
