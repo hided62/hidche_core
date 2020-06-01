@@ -61,12 +61,6 @@
             }
         }
     },
-    "initialEvents":[
-        [
-            true,
-            ["CreateManyNPC", 250]
-        ]
-    ],
     "events":[
         [
             ["Date", "==", null, 12],
