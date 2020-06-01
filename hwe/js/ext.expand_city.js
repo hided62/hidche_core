@@ -580,13 +580,13 @@ $(function() {
                 $this.data('username',name);
                 
                 if(cityList[cityName].$태수.text() == name){
-                    cityList[cityName].$태수.css('color','lightgreen');
+                    cityList[cityName].$태수.html('<span style="color:lightgreen">{0}</span>'.format(name));
                 }
                 if(cityList[cityName].$군사.text() == name){
-                    cityList[cityName].$군사.css('color','lightgreen');
+                    cityList[cityName].$군사.html('<span style="color:lightgreen">{0}</span>'.format(name));
                 }
                 if(cityList[cityName].$종사.text() == name){
-                    cityList[cityName].$종사.css('color','lightgreen');
+                    cityList[cityName].$종사.html('<span style="color:lightgreen">{0}</span>'.format(name));
                 }
                 
                 userList[name]={
