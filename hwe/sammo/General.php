@@ -92,10 +92,11 @@ class General implements iAction{
         $this->raw = $raw;
         $this->rawCity = $city;
 
+        $this->resultTurn = new LastTurn();
         if(key_exists('last_turn', $this->raw)){
             $this->lastTurn = LastTurn::fromJson($this->raw['last_turn']);
+            $this->resultTurn = $this->lastTurn->duplicate();
         }
-        $this->resultTurn = new LastTurn();
 
         if($year !== null && $month !== null){
             $this->initLogger($year, $month);
