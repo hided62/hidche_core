@@ -225,6 +225,17 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
                 0 => __DIR__ . '/..' . '/brandonwamboldt/utilphp/src',
             ),
         ),
+        'P' => 
+        array (
+            'ParsedownExtra' => 
+            array (
+                0 => __DIR__ . '/..' . '/erusev/parsedown-extra',
+            ),
+            'Parsedown' => 
+            array (
+                0 => __DIR__ . '/..' . '/erusev/parsedown',
+            ),
+        ),
         'J' => 
         array (
             'JsonMapper' => 

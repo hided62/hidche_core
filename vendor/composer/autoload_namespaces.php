@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'utilphp\\' => array($vendorDir . '/brandonwamboldt/utilphp/src'),
+    'ParsedownExtra' => array($vendorDir . '/erusev/parsedown-extra'),
+    'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'JsonMapper' => array($vendorDir . '/netresearch/jsonmapper/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );
