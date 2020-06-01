@@ -65,18 +65,35 @@ function reloadTable(){
             filledChiefList[chiefIdx] = true;
 
             var plateObj = chiefTableObj[chiefIdx];
-            var $name = $('<span>{0}</span>'.format(chiefInfo.name));
-            var nameColor = getNpcColor(chiefInfo.npcType);
-            if(nameColor){
-                $name.css('color',nameColor);
+            if(chiefInfo.name){
+                var $name = $('<span>{0}</span>'.format(chiefInfo.name));
+                var nameColor = getNpcColor(chiefInfo.npcType);
+                if(nameColor){
+                    $name.css('color',nameColor);
+                }
+                plateObj.name.html($name);
             }
+            else{
+                plateObj.name.html('');
+            }
+            
             plateObj.officerLevelText.text(chiefInfo.officerLevelText);
-            plateObj.name.html($name);
 
-            var turnTimeObj = moment(chiefInfo.turnTime);
+            if(chiefInfo.turnTime){
+                var turnTimeObj = moment(chiefInfo.turnTime);
+            }
+            else{
+                var turnTimeObj = null;
+            }
             var turnList = plateObj.turn;
             $.each(chiefInfo.turn, function(turnIdx, turnText){
-                turnList[turnIdx].turnTime.text(turnTimeObj.format('HH:mm'));
+                if(turnTimeObj){
+                    turnList[turnIdx].turnTime.text(turnTimeObj.format('HH:mm'));
+                }
+                else{
+                    turnList[turnIdx].turnTime.text('');
+                }
+                
                 turnList[turnIdx].turnText.html(turnText).css('font-size', '13px');
                 var oWidth = turnList[turnIdx].turnPad.innerWidth();
                 var iWidth = turnList[turnIdx].turnText.outerWidth();
@@ -84,7 +101,10 @@ function reloadTable(){
                     var newFontSize = 13 * oWidth / iWidth * 0.9;
                     turnList[turnIdx].turnText.css('font-size', '{0}px'.format(newFontSize));
                 }
-                turnTimeObj = turnTimeObj.add(turnTerm, 'minute');
+                if(turnTimeObj){
+                    turnTimeObj = turnTimeObj.add(turnTerm, 'minute');
+                }
+                
             });
         });
 

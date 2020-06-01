@@ -70,6 +70,13 @@ foreach(
 $nationTurnBrief = [];
 foreach($nationTurnList as $officer_level=>$turnBrief){
     if(!key_exists($officer_level, $generals)){
+        $nationTurnBrief[$officer_level] = [
+            'name'=>null,
+            'turnTime'=>null,
+            'officerLevelText'=>getOfficerLevelText($officer_level, $nationLevel),
+            'npcType'=>null,
+            'turn'=>$turnBrief
+        ];
         continue;
     }
     $general = $generals[$officer_level];
