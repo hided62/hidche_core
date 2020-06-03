@@ -16,6 +16,7 @@ class event_전투특기_필살 extends \sammo\BaseItem{
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
+    protected $reqSecu = 3000;
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'warCriticalRatio'){

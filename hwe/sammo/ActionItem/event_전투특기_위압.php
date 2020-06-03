@@ -17,6 +17,7 @@ class event_전투특기_위압 extends \sammo\BaseItem{
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
+    protected $reqSecu = 3000;
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         if($unit->getPhase() != 0){

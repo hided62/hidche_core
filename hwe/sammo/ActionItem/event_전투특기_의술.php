@@ -20,6 +20,7 @@ class event_전투특기_의술 extends \sammo\BaseItem{
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
+    protected $reqSecu = 3000;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller(

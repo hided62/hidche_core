@@ -16,6 +16,7 @@ class event_전투특기_공성 extends \sammo\BaseItem{
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
+    protected $reqSecu = 3000;
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if(in_array($turnType, ['징병', '모병'])){

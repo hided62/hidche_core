@@ -2,15 +2,11 @@
     "title":"【공백지】 천지비급",
     "startYear":180,
     "map":{
-        "mapName":"miniche_b"
+        "mapName":"miniche"
     },
     "history":[
     ],
     "const": {
-        "expandCityPopIncreaseAmount": 80000,
-        "expandCityDevelIncreaseAmount": 1350,
-        "expandCityWallIncreaseAmount": 1600,
-        "defaultMaxGeneral":300,
         "joinRuinedNPCProp":0,
         "availableSpecialWar":[
             "che_귀병", "che_신산", "che_환술", "che_집중", "che_신중", "che_반계", 
