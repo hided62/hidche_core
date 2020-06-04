@@ -182,7 +182,7 @@ class che_국기변경 extends Command\NationCommand
             }
             */
             ?>
-                <option value="<?= $idx ?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
+                <option value="<?= $idx ?>" data-color=<?=$color?> data-font-color="<?=newColor($color)?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
             <?php endforeach; ?> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
         <br>
 <?php

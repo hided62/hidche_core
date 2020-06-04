@@ -77,6 +77,7 @@ $cssList = $commandObj->getCSSFiles();
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
@@ -95,10 +96,13 @@ foreach($jsList as $js){
 }
 ?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/main.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
+<?=WebUtil::printCSS('css/processing.css')?>
 <?php
 foreach($cssList as $css){
     print(WebUtil::printCSS($css));

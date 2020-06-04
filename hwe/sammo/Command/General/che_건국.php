@@ -269,7 +269,7 @@ class che_건국 extends Command\GeneralCommand
             }
             */
             ?>
-                <option value="<?= $idx ?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
+                <option value="<?= $idx ?>" data-color="<?= $color ?>" data-font-color="<?=newColor($color)?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
             <?php endforeach; ?>
         </select>
         성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
