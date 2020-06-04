@@ -3028,7 +3028,11 @@ class GeneralAI
         }
 
         if($general->getNationID() == 0){
-            return buildGeneralCommandClass('che_견문', $general, $this->env);
+            $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
+            if(!$cmd->hasFullConditionMet() || Util::randBool()){
+                $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
+            }
+            return $cmd;
         }
 
         if ($general->getVar('gold') + $general->getVar('rice') == 0) {
@@ -3052,7 +3056,10 @@ class GeneralAI
     {
         $general = $this->general;
         if($general->getNationID() == 0){
-            $cmd = buildGeneralCommandClass('che_견문', $this->general, $this->env);
+            $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
+            if(!$cmd->hasFullConditionMet() || Util::randBool()){
+                $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
+            }
             return $cmd;
         }
 
