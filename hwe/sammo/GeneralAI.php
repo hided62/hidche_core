@@ -3057,7 +3057,7 @@ class GeneralAI
         $general = $this->general;
         if($general->getNationID() == 0){
             $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
-            if(!$cmd->hasFullConditionMet() || Util::randBool()){
+            if(!$cmd->hasFullConditionMet() || Util::randBool(0.8)){
                 $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
             }
             return $cmd;
