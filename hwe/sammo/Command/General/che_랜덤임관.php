@@ -178,14 +178,14 @@ class che_랜덤임관 extends Command\GeneralCommand{
             $generalsCnt = [];
             if($notIn){
                 $rawGeneralsCnt = $db->query(
-                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i AND nation.nation NOT IN %li GROUP BY general.nation, general.npc',
+                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i AND nation.scout=0 AND nation.nation NOT IN %li GROUP BY general.nation, general.npc',
                     $genLimit,
                     $notIn
                 );
             }
             else{
                 $rawGeneralsCnt = $db->query(
-                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i GROUP BY general.nation, general.npc',
+                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i AND nation.scout=0 GROUP BY general.nation, general.npc',
                     $genLimit
                 );
             }
