@@ -265,7 +265,7 @@ class TurnExecutionHelper
             if(!$turnObj->processBlocked()){
                 
                 if($hasNationTurn){
-                    if($ai){
+                    if($ai && ($general->getAuxVar('use_auto_nation_turn')??1)){
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
                         $cityName = CityConst::byID($general->getCityID())->name;
                         LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");

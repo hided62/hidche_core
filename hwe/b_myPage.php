@@ -14,6 +14,7 @@ $generalID = $session->generalID;
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$gameStor->cacheValues(['turntime', 'opentime', 'autorun_user']);
 
 increaseRefresh("내정보", 1);
 
@@ -38,7 +39,7 @@ if($gameStor->turntime <= $gameStor->opentime){
 }
 
 $use_treatment = $me->getAuxVar('use_treatment')??10;
-
+$use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn')??1;
 ?>
 <!DOCTYPE html>
 <html>
@@ -84,7 +85,13 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
                 <option value=100 <?=$use_treatment==100?"selected":""; ?>>사용안함</option>
                 </select>】<br>
                ∞<span style='color:orange'>부상을 입었을 때 환약을 사용하는 기준입니다.</span><br><br>
-
+<?php if(($gameStor->autorun_user['options']['chief'])??false) : ?>
+               자동 사령턴 허용 【<select id='use_auto_nation_turn' name='use_auto_nation_turn'>
+                <option value=1 <?=$use_auto_nation_turn?"selected":""; ?>>허용</option>
+                <option value=0 <?=(!$use_auto_nation_turn)?"selected":""; ?>>허용 안함</option>
+                </select>】<br>
+               ∞<span style='color:orange'>수뇌가 되었을 때 휴식 턴이어도 적당한 턴을 알아서 넣는 것을 허용합니다.</span><br><br>
+<?php endif; ?>
                 수비 【<select id='defence_train' name='defence_train'>
                 <option value=90 <?=$me->getVar('defence_train')==90?"selected":""; ?>>☆(훈사90)</option>
                 <option value=80 <?=$me->getVar('defence_train')==80?"selected":""; ?>>◎(훈사80)</option>

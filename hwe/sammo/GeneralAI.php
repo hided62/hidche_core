@@ -3251,6 +3251,9 @@ class GeneralAI
 
         $month = $this->env['month'];
         if($npcType >= 2){
+            if(!($general->getAuxVar('use_auto_nation_turn')??1)){
+                $general->setAuxVar('use_auto_nation_turn', 1);
+            }
             if($general->getVar('officer_level') == 12){
                 if (in_array($month, [3, 6, 9, 12])) {
                     $this->choosePromotion();
