@@ -82,7 +82,6 @@ class che_초토화 extends Command\NationCommand{
             ConstraintHelper::ReqNationValue('surlimit', '제한 턴', '==', 0, '외교제한 턴이 남아있습니다.'),
             ConstraintHelper::DisallowDiplomacyStatus($this->generalObj->getNationID(), [
                 0 => '평시에만 가능합니다.',
-                1 => '평시에만 가능합니다.'
             ], ),
         ];
     }
