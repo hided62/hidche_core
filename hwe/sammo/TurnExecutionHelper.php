@@ -380,8 +380,8 @@ class TurnExecutionHelper
 
             // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
             if($gameStor->month == 1) {
-                processGoldIncome();
                 processSpring();
+                processGoldIncome();
                 updateYearly();
                 updateQuaterly();
                 disaster();
@@ -394,8 +394,8 @@ class TurnExecutionHelper
                 updateQuaterly();
                 disaster();
             } elseif($gameStor->month == 7) {
-                processRiceIncome();
                 processFall();
+                processRiceIncome();
                 updateQuaterly();
                 disaster();
                 tradeRate();
