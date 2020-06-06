@@ -759,6 +759,9 @@ class GeneralAI
         foreach($this->userWarGenerals as $userGeneral){
             $generalID = $userGeneral->getID();
             $cityID = $userGeneral->getCityID();
+            if(key_exists($cityID, $this->nationCities)){
+                continue;
+            }
             if(key_exists($cityID, $this->frontCities)){
                 continue;
             }
@@ -993,6 +996,9 @@ class GeneralAI
             $generalID = $npcGeneral->getID();
             $cityID = $npcGeneral->getCityID();
             if(key_exists($cityID, $this->frontCities)){
+                continue;
+            }
+            if(key_exists($cityID, $this->nationCities)){
                 continue;
             }
             if($npcGeneral->getVar('crew') < $this->nationPolicy->minWarCrew){
