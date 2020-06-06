@@ -78,11 +78,11 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
                ∞<span style='color:orange'>개막직전 남는자리가 있을경우 랜덤하게 참여합니다.</span><br><br>
 
                환약 사용 【<select id='use_treatment' name='use_treatment'>
-                <option value=10 <?=$use_treatment==10?"selected":""; ?>>경상</option>
-                <option value=20 <?=$use_treatment==21?"selected":""; ?>>중상</option>
-                <option value=40 <?=$use_treatment==41?"selected":""; ?>>심각</option>
-                <option value=60 <?=$use_treatment==61?"selected":""; ?>>위독</option>
-                <option value=100 <?=$use_treatment==100?"selected":""; ?>>사용안함</option>
+                <option value=10 <?=($use_treatment==10)?"selected":""; ?>>경상</option>
+                <option value=21 <?=($use_treatment==21)?"selected":""; ?>>중상</option>
+                <option value=41 <?=($use_treatment==41)?"selected":""; ?>>심각</option>
+                <option value=61 <?=($use_treatment==61)?"selected":""; ?>>위독</option>
+                <option value=100 <?=($use_treatment==100)?"selected":""; ?>>사용안함</option>
                 </select>】<br>
                ∞<span style='color:orange'>부상을 입었을 때 환약을 사용하는 기준입니다.</span><br><br>
 <?php if(($gameStor->autorun_user['options']['chief'])??false) : ?>

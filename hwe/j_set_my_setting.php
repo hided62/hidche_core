@@ -52,11 +52,11 @@ if($defence_train != $me->getVar('defence_train')){
     }
 }
 
+$me->setAuxVar('use_treatment', Util::valueFit($use_treatment, 10, 100));
+
 if($use_auto_nation_turn != $me->getAuxVar('use_auto_nation_turn')){
     $me->setAuxVar('use_auto_nation_turn', $use_auto_nation_turn);
 }
-
-$me->setAuxVar('use_treatment', Util::valueFit($use_treatment, 10, 100));
 
 if($me->getVar('tnmt') != $tnmt){
     $me->setVar('tnmt', $tnmt);
