@@ -86,7 +86,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         $itemRawName = $item->getRawName();
         $self->activateSkill($itemName);
 
-        if (!($this->raiseType & static::TYPE_CONSUMABLE_ITEM)) {
+        if ($this->raiseType != static::TYPE_CONSUMABLE_ITEM) {
             return false;
         }
 
