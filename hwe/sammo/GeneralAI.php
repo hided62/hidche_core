@@ -1465,6 +1465,9 @@ class GeneralAI
                 if($targetNPCGeneral->getVar($resName) >= $reqNPCMinDevelRes){
                     break;
                 }
+                if($targetNPCGeneral->getVar('killturn') <= 5){
+                    continue;
+                }
 
                 $enoughMoney = $reqNPCMinDevelRes * 1.5;
 
