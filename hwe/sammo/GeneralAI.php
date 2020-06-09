@@ -1139,6 +1139,9 @@ class GeneralAI
                 if($targetUserGeneral->getVar($resName) >= $reqHumanMinRes){
                     break;
                 }
+                if($targetUserGeneral->getVar('killturn') <= 5){
+                    continue;
+                }
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
                 $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 100 * 3 * 1.1;
@@ -1227,6 +1230,9 @@ class GeneralAI
             foreach($userGenerals as $idx=>$targetUserGeneral){
                 if($targetUserGeneral->getVar($resName) >= $reqHumanMinWarRes){
                     break;
+                }
+                if($targetUserGeneral->getVar('killturn') <= 5){
+                    continue;
                 }
 
                 if(key_exists($targetUserGeneral->getID(), $this->userWarGenerals)){
@@ -1328,6 +1334,9 @@ class GeneralAI
                 if($targetNPCGeneral->getVar($resName) >= $reqNPCMinWarRes){
                     break;
                 }
+                if($targetNPCGeneral->getVar('killturn') <= 5){
+                    continue;
+                }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
                 $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetNPCGeneral->getLeadership(false)) * 100 * 1.5;
@@ -1416,6 +1425,9 @@ class GeneralAI
             foreach($npcWarGenerals as $idx=>$targetNPCGeneral){
                 if($targetNPCGeneral->getVar($resName) >= $reqNPCMinWarRes){
                     break;
+                }
+                if($targetNPCGeneral->getVar('killturn') <= 5){
+                    continue;
                 }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
