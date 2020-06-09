@@ -3212,11 +3212,11 @@ class GeneralAI
                 }
                 else if(
                     $this->dipState !== self::d평화 &&
-                    $nationGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew &&
-                    $nationGeneral->getVar('train') >= $nationGeneral->getVar('defence_train') &&
-                    $nationGeneral->getVar('atmos') >= $nationGeneral->getVar('defence_train')
+                    $nationGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew
                 ){
                     $userWarGenerals[$generalID] = $nationGeneral;
+                    //TODO: 훈련,사기 나중에 되돌릴 것
+                    //TODO: 징,모병턴 기준으로 계산하는 코드를 추가할 것
                 }
                 else{
                     $userCivilGenerals[$generalID] = $nationGeneral;
