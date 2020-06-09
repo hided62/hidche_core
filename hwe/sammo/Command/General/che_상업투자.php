@@ -142,8 +142,8 @@ class che_상업투자 extends Command\GeneralCommand{
         if($trust < 80){
             $successRatio *= $trust / 80;
         }
-        $successRatio = $general->onCalcDomestic(static::$cityKey, 'success', $successRatio);
-        $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
+        $successRatio = $general->onCalcDomestic(static::$actionKey, 'success', $successRatio);
+        $failRatio = $general->onCalcDomestic(static::$actionKey, 'fail', $failRatio);
 
         $successRatio = Util::valueFit($successRatio, 0, 1);
         $failRatio = Util::valueFit($failRatio, 0, 1 - $successRatio);

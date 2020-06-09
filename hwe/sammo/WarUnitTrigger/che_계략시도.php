@@ -30,11 +30,6 @@ class che_계략시도 extends BaseWarUnitTrigger{
         $general = $self->getGeneral();
         $crewType = $general->getCrewTypeObj();
 
-        if($crewType->magicCoef <= 0){
-            //NOTE: -인 경우를 고려해야하나? 계략 맞을 확률 증가?
-            return true;
-        }
-
         if($self->hasActivatedSkill('계략불가')){
             return true;
         }
@@ -43,6 +38,9 @@ class che_계략시도 extends BaseWarUnitTrigger{
         $magicTrialProb *= $crewType->magicCoef;
 
         $magicTrialProb = $general->onCalcStat($general, 'warMagicTrialProb', $magicTrialProb);
+        if($magicTrialProb <= 0){
+            return true;
+        }
         
         if(!Util::randBool($magicTrialProb)){
             return true;

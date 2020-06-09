@@ -128,8 +128,8 @@ class che_주민선정 extends Command\GeneralCommand{
         $score = Util::valueFit($this->calcBaseScore(), 1);
 
         ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, static::$statKey);
-        $successRatio = $general->onCalcDomestic(static::$cityKey, 'success', $successRatio);
-        $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
+        $successRatio = $general->onCalcDomestic(static::$actionKey, 'success', $successRatio);
+        $failRatio = $general->onCalcDomestic(static::$actionKey, 'fail', $failRatio);
 
         $successRatio = Util::valueFit($successRatio, 0, 1);
         $failRatio = Util::valueFit($failRatio, 0, 1 - $successRatio);

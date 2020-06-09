@@ -284,14 +284,14 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
             $turnList[$turnIdx] = true;
         }
         else if($turnIdx == -1){
-            //홀수
-            foreach(Util::range(1, GameConst::$maxTurn, 2) as $subIdx){
+            //홀수, 0부터 맞다.
+            foreach(Util::range(0, GameConst::$maxTurn, 2) as $subIdx){
                 $turnList[$subIdx] = true;
             }
         }
         else if($turnIdx == -2){
-            //짝수
-            foreach(Util::range(0, GameConst::$maxTurn, 2) as $subIdx){
+            //짝수, 1부터 맞다.
+            foreach(Util::range(1, GameConst::$maxTurn, 2) as $subIdx){
                 $turnList[$subIdx] = true;
             }
         }
