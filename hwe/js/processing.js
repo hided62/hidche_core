@@ -73,9 +73,11 @@ jQuery(function($) {
                 }
             },
             'integerArray': function($obj) {
-                return $obj.map(function() {
-                    return parseInt($(this).val());
+                var result = [];
+                $obj.each(function() {
+                    result.push(parseInt($(this).val()));
                 });
+                return result;
             }
         }
 
