@@ -22,12 +22,12 @@ jQuery(function($) {
                 $('.attacker_nation .form_is_capital:first').click();
                 $('.defender_nation .form_is_capital:first').click();
             } else {
-                $('.attacker_nation .form_is_capital:second').click();
-                $('.defender_nation .form_is_capital:second').click();
+                $('.attacker_nation .form_is_capital:last').click();
+                $('.defender_nation .form_is_capital:last').click();
             }
         } else {
-            $('.attacker_nation .form_is_capital:second').click();
-            $('.defender_nation .form_is_capital:second').click();
+            $('.attacker_nation .form_is_capital:last').click();
+            $('.defender_nation .form_is_capital:last').click();
         }
 
         $('.form_injury').change(function() {
