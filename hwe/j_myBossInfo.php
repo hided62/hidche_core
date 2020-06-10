@@ -40,6 +40,7 @@ if($action === '추방' && $destGeneralID==0){
 
 if($destGeneralID==0){
     $general = new DummyGeneral(true);
+    $general->setVar('nation', $nationID);
 }
 else{
     $general = General::createGeneralObjFromDB($destGeneralID, [
