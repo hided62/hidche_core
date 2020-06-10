@@ -523,7 +523,7 @@ var nation = <?=Json::encode($nation)?>;
       </div>
       <div class="modal-body">
           <select id="modalSelector"></select>
-        <p>타국 장수을 선택한 경우 숙련과 아이템은 0으로 초기화됩니다.</p>
+        <p>타국 장수를 선택한 경우 숙련과 아이템은 0으로 초기화됩니다.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id='importFromDB'>가져오기</button>
