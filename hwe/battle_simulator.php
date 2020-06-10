@@ -8,7 +8,34 @@ $session = Session::requireLogin()->setReadOnly();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$startYear = $gameStor->getValue('startyear');
+$gameStor->cacheValues(['startyear', 'year']);
+$startYear = $gameStor->startyear;
+$year = $gameStor->year;
+
+$me = $db->queryFirstRow('SELECT no, nation, city FROM general WHERE owner =%i', Session::getUserID());
+
+if($me){
+    $generalID = $me['no'];
+    $nationID = $me['nation'];
+    $city = $db->queryFirstRow('SELECT city, level, def, wall FROM city WHERE city = %i', $me['city']);
+}
+else{
+    $generalID = 0;
+    $nationID = 0;
+    $city = [
+        'city'=>0,
+        'level'=>5,
+        'def'=>1000,
+        'wall'=>1000,
+    ];
+}
+
+if($nationID){
+    $nation = $db->queryFirstRow('SELECT level, type, tech, capital FROM nation WHERE nation = %i', $nationID);
+}
+else{
+    $nation = null;
+}
 
 ?>
 <!DOCTYPE html>
@@ -30,6 +57,8 @@ $startYear = $gameStor->getValue('startyear');
 <?=WebUtil::printJS('js/common.js')?>
 <script>
 var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
+var city = <?=Json::encode($city)?>;
+var nation = <?=Json::encode($nation)?>;
 </script>
 <?=WebUtil::printJS('js/battle_simulator.js')?>
 </head>
@@ -47,7 +76,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                     <div class="input-group-append">
                         <span class="input-group-text">년 시작</span>
                     </div>
-                    <input type="number" class="form-control" id="year" value="<?=$startYear+3?>" min="<?=$startYear?>">
+                    <input type="number" class="form-control" id="year" value="<?=$year?>" min="<?=$startYear?>">
                     <div class="input-group-append">
                         <span class="input-group-text">년</span>
                     </div>
@@ -131,7 +160,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                             <input type="radio" name="is_attacker_capital" class="form_is_capital" value="1" autocomplete="off">Y
                         </label>
                         <label class="btn btn-secondary active">
-                            <input type="radio" name="is_attacker_capital" class="form_is_capital" value="2" autocomplete="off" checked>N
+                            <input type="radio" name="is_attacker_capital" class="form_is_capital" value="0" autocomplete="off">N
                         </label>
                     </div>
                     
@@ -145,6 +174,9 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
             <div class="card-header">
                 <div class="float-sm-left" style="line-height:25px;">출병자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-success btn-general-import-server">서버에서 가져오기</button>
+                    </div>
                     <div class="btn-group btn-group-sm mr-2" role="group">
                         <button type="button" class="btn btn-info btn-general-save">저장</button>
                         <input type="file" class="form_load_general_file" accept=".json" style="display: none;" />
@@ -203,7 +235,7 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
                             <input type="radio" name="is_defender_capital" class="form_is_capital" value="1" autocomplete="off">Y
                         </label>
                         <label class="btn btn-secondary active">
-                            <input type="radio" name="is_defender_capital" class="form_is_capital" value="0" autocomplete="off" checked>N
+                            <input type="radio" name="is_defender_capital" class="form_is_capital" value="0" autocomplete="off">N
                         </label>
                     </div>
                 </div>
@@ -236,6 +268,9 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
             <div class="card-header">
                 <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-success btn-general-import-server">서버에서 가져오기</button>
+                    </div>
                     <div class="btn-group btn-group-sm mr-2" role="group">
                         <button type="button" class="btn btn-info btn-general-save">저장</button>
                         <input type="file" class="form_load_general_file" accept=".json" style="display: none;" />
@@ -476,6 +511,26 @@ var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
         </div>
     </div>
 </div>
+</div>
+<div id="importModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">장수 목록</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <select id="modalSelector"></select>
+        <p>타국 장수을 선택한 경우 숙련과 아이템은 0으로 초기화됩니다.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id='importFromDB'>가져오기</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

@@ -3,8 +3,8 @@
  * @see https://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
  * @param {string} string escape하고자 하는 문자열
  * @returns {string}
-*/
-var escapeHtml = (function (string) {
+ */
+var escapeHtml = (function(string) {
     var entityMap = {
         '&': '&amp;',
         '<': '&lt;',
@@ -32,58 +32,70 @@ function isInt(n) {
     return +n === n && !(n % 1);
 }
 
-;(function(ns){
+;
+(function(ns) {
     //https://gist.github.com/demouth/3217440
-	/**
-	 * mb_strwidth
-	 * @param String
-	 * @return int
-	 * @see http://php.net/manual/ja/function.mb-strwidth.php
-	 */
-	var mb_strwidth = function(str){
-		var i=0,l=str.length,c='',length=0;
-		for(;i<l;i++){
-			c=str.charCodeAt(i);
-			if(0x0000<=c&&c<=0x0019){
-				length += 0;
-			}else if(0x0020<=c&&c<=0x1FFF){
-				length += 1;
-			}else if(0x2000<=c&&c<=0xFF60){
-				length += 2;
-			}else if(0xFF61<=c&&c<=0xFF9F){
-				length += 1;
-			}else if(0xFFA0<=c){
-				length += 2;
-			}
-		}
-		return length;
-	};
-	
-	/**
-	 * mb_strimwidth
-	 * @param String
-	 * @param int
-	 * @param int
-	 * @param String
-	 * @return String
-	 * @see http://www.php.net/manual/ja/function.mb-strimwidth.php
-	 */
-	var mb_strimwidth = function(str,start,width,trimmarker){
-		if(typeof trimmarker === 'undefined') trimmarker='';
-		var trimmakerWidth = mb_strwidth(trimmarker),i=start,l=str.length,trimmedLength=0,trimmedStr='';
-		for(;i<l;i++){
-			var charCode=str.charCodeAt(i),c=str.charAt(i),charWidth=mb_strwidth(c),next=str.charAt(i+1),nextWidth=mb_strwidth(next);
-			trimmedLength += charWidth;
-			trimmedStr += c;
-			if(trimmedLength+trimmakerWidth+nextWidth>width){
-				trimmedStr += trimmarker;
-				break;
-			}
-		}
-		return trimmedStr;
-	};
-	ns.mb_strwidth   = mb_strwidth;
-	ns.mb_strimwidth = mb_strimwidth;
+    /**
+     * mb_strwidth
+     * @param String
+     * @return int
+     * @see http://php.net/manual/ja/function.mb-strwidth.php
+     */
+    var mb_strwidth = function(str) {
+        var i = 0,
+            l = str.length,
+            c = '',
+            length = 0;
+        for (; i < l; i++) {
+            c = str.charCodeAt(i);
+            if (0x0000 <= c && c <= 0x0019) {
+                length += 0;
+            } else if (0x0020 <= c && c <= 0x1FFF) {
+                length += 1;
+            } else if (0x2000 <= c && c <= 0xFF60) {
+                length += 2;
+            } else if (0xFF61 <= c && c <= 0xFF9F) {
+                length += 1;
+            } else if (0xFFA0 <= c) {
+                length += 2;
+            }
+        }
+        return length;
+    };
+
+    /**
+     * mb_strimwidth
+     * @param String
+     * @param int
+     * @param int
+     * @param String
+     * @return String
+     * @see http://www.php.net/manual/ja/function.mb-strimwidth.php
+     */
+    var mb_strimwidth = function(str, start, width, trimmarker) {
+        if (typeof trimmarker === 'undefined') trimmarker = '';
+        var trimmakerWidth = mb_strwidth(trimmarker),
+            i = start,
+            l = str.length,
+            trimmedLength = 0,
+            trimmedStr = '';
+        for (; i < l; i++) {
+            var charCode = str.charCodeAt(i),
+                c = str.charAt(i),
+                charWidth = mb_strwidth(c),
+                next = str.charAt(i + 1),
+                nextWidth = mb_strwidth(next);
+            trimmedLength += charWidth;
+            trimmedStr += c;
+            if (trimmedLength + trimmakerWidth + nextWidth > width) {
+                trimmedStr += trimmarker;
+                break;
+            }
+        }
+        return trimmedStr;
+    };
+    ns.mb_strwidth = mb_strwidth;
+    ns.mb_strimwidth = mb_strimwidth;
 })(window);
 
 /**
@@ -93,7 +105,7 @@ function isInt(n) {
  */
 function convertDictById(arr) {
     var result = {};
-    arr.forEach(function (v, i) {
+    arr.forEach(function(v, i) {
         result[v.id] = v;
     });
     return result;
@@ -106,7 +118,7 @@ function convertDictById(arr) {
  */
 function convertSet(arr) {
     var result = {};
-    arr.forEach(function (v) {
+    arr.forEach(function(v) {
         result[v] = true;
     });
     return result;
@@ -115,10 +127,10 @@ function convertSet(arr) {
 
 /** 
  * {0}, {1}, {2}형태로 포맷해주는 함수
-*/
+ */
 String.prototype.format = function() {
     var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
+    return this.replace(/{(\d+)}/g, function(match, number) {
         return (typeof args[number] != 'undefined') ? args[number] : match;
     });
 };
@@ -134,12 +146,11 @@ function hexToRgb(hex) {
 }
 
 
-function isBrightColor(color){
+function isBrightColor(color) {
     color = hexToRgb(color);
-    if ((color.r*0.299 + color.g*0.587 + color.b*0.114) > 140){
+    if ((color.r * 0.299 + color.g * 0.587 + color.b * 0.114) > 140) {
         return true;
-    }
-    else{
+    } else {
         return false;
     }
 }
@@ -177,7 +188,7 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function linkifyStrWithOpt(text){
+function linkifyStrWithOpt(text) {
     return linkifyStr(text, {});
 }
 
@@ -188,14 +199,14 @@ function linkifyStrWithOpt(text){
  * @param {object} options 
  * @returns {string}
  */
-var TemplateEngine = function (html, options) {
+var TemplateEngine = function(html, options) {
     var re = /<%(.+?)%>/g,
         reExp = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g,
         code = 'with(obj) { var r=[];\n',
         cursor = 0,
         result,
         match;
-    var add = function (line, js) {
+    var add = function(line, js) {
         js ? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
             (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
         return add;
@@ -208,82 +219,97 @@ var TemplateEngine = function (html, options) {
     }
     add(html.substr(cursor, html.length - cursor));
     code = (code + 'return r.join(""); }').replace(/[\r\t\n]/g, ' ');
-    try { result = new Function('obj', code).apply(options, [options]); }
-    catch (err) { console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n"); }
+    try { result = new Function('obj', code).apply(options, [options]); } catch (err) { console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n"); }
     return result;
 }
 
-function getIconPath(imgsvr,  picture){
+function getIconPath(imgsvr, picture) {
     // ../d_shared/common_path.js 필요
-    if(!imgsvr){
-        return pathConfig.sharedIcon+'/'+picture;
-    }
-    else{
-        return pathConfig.root+'/d_pic/'+picture;
+    if (!imgsvr) {
+        return pathConfig.sharedIcon + '/' + picture;
+    } else {
+        return pathConfig.root + '/d_pic/' + picture;
     }
 }
 
-function activeFlip($obj){
+function activeFlip($obj) {
     var $result;
-    if($obj === undefined){
+    if ($obj === undefined) {
         $result = $('img[data-flip]');
-    }
-    else{
+    } else {
         $result = $obj.find('img[data-flip]');
     }
 
-    $result.each(function(){
+    $result.each(function() {
         activeFlipItem($(this));
     });
 
 }
 
-function activeFlipItem($img){
+function combineObject(item, columnList) {
+    var newItem = {};
+    for (var columnIdx in columnList) {
+        var columnName = columnList[columnIdx];
+        newItem[columnName] = item[columnIdx];
+    }
+    return newItem;
+}
+
+function combineArray(array, columnList) {
+    var result = [];
+    for (var key in array) {
+        var item = array[key];
+        result[key] = combineObject(item, columnList);
+    }
+    return result;
+}
+
+function activeFlipItem($img) {
     var imageList = [];
     imageList.push($img.attr('src'));
-    $.each($img.data('flip').split(','), function(idx, value){
+    $.each($img.data('flip').split(','), function(idx, value) {
         var value = $.trim(value);
-        if(!value){
+        if (!value) {
             return true;
         }
         imageList.push(value);
     });
-    if(imageList.length <= 1){
+    if (imageList.length <= 1) {
         return;
     }
     $img.data('computed_flip_array', imageList);
     $img.data('computed_flip_idx', 0);
 
-    $img.click(function(){
+    $img.click(function() {
         var arr = $img.data('computed_flip_array');
         var idx = $img.data('computed_flip_idx');
-        idx = (idx + 1)%(arr.length);
+        idx = (idx + 1) % (arr.length);
         $img.attr('src', arr[idx]);
         $img.data('computed_flip_idx', idx);
     });
-    $img.css('cursor','pointer');
+    $img.css('cursor', 'pointer');
 }
 
-jQuery(function($){
-    $('.obj_tooltip').mouseover(function(){
+jQuery(function($) {
+    $('.obj_tooltip').mouseover(function() {
         var $objTooltip = $(this);
-        if($objTooltip.data('setObjTooltip')){
+        if ($objTooltip.data('setObjTooltip')) {
             return true;
         }
 
         var tooltipClassText = $objTooltip.data('tooltip-class');
-        if(!tooltipClassText){
+        if (!tooltipClassText) {
             tooltipClassText = '';
         }
         var template = '<div class="tooltip {0}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
             .format(tooltipClassText);
 
         $objTooltip.tooltip({
-            title:function(){
+            title: function() {
                 return $.trim($(this).find('.tooltiptext').html());
             },
-            template:template,
-            html:true
+            template: template,
+            html: true
         }).tooltip('show');
 
         $objTooltip.data('setObjTooltip', true);
@@ -297,21 +323,21 @@ jQuery(function($){
     activeFlip();
 
     var customCSS = localStorage.getItem('sam_customCSS');
-    if(customCSS){
+    if (customCSS) {
         var $style = $('<style type="text/css"></style>');
-        $style.text(customCSS); 
+        $style.text(customCSS);
         $style.appendTo($('head'));
     }
 
-    
+
 });
 
 
-function errUnknown(){
+function errUnknown() {
     alert('작업을 실패했습니다.');
 }
 
-function errUnknownToast(){
+function errUnknownToast() {
     $.toast({
         title: '에러!',
         content: '작업을 실패했습니다.',
@@ -320,8 +346,8 @@ function errUnknownToast(){
     });
 }
 
-function quickReject(errMsg){
-    if(errMsg === undefined){
+function quickReject(errMsg) {
+    if (errMsg === undefined) {
         errMsg = '작업을 실패했습니다.';
     }
     var deferred = $.Deferred();
@@ -329,8 +355,8 @@ function quickReject(errMsg){
     return deferred.promise();
 }
 
-function nl2br(text){
-    return text.replace(/\n/g,"<br>");
+function nl2br(text) {
+    return text.replace(/\n/g, "<br>");
 }
 /*
 function br2nl (text) {   
@@ -338,11 +364,11 @@ function br2nl (text) {
 }
 */
 
-function getNpcColor(npcType){
-    if(npcType >= 2){
+function getNpcColor(npcType) {
+    if (npcType >= 2) {
         return 'cyan';
     }
-    if(npcType == 1){
+    if (npcType == 1) {
         return 'skyblue';
     }
     return null;

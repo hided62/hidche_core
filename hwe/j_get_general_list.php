@@ -6,7 +6,7 @@ include "func.php";
 
 
 //로그인 검사
-$session = Session::requireLogin();
+$session = Session::requireLogin([]);
 $userID = Session::getUserID();
 
 $db = DB::db();

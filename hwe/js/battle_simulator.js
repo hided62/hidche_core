@@ -1,4 +1,4 @@
-jQuery(function($){
+jQuery(function($) {
 
 
     var $generalForm = $('.form_sample .general_detail');
@@ -9,9 +9,28 @@ jQuery(function($){
 
     var $attackerCard = $('.attacker_form');
 
-    var initBasicEvent = function(){
+    var initBasicEvent = function() {
 
-        $('.form_injury').change(function(){
+        if (window.nation) {
+            $('.form_city_level').val(window.city.level);
+            $('.form_def').val(window.city.def);
+            $('.form_wall').val(window.city.wall);
+            $('.form_nation_type').val(window.nation.type);
+            $('.form_nation_level').val(window.nation.level);
+            $('.form_tech').val(parseInt(window.nation.tech / 1000));
+            if (window.nation.capital == window.city.city) {
+                $('.attacker_nation .form_is_capital:first').click();
+                $('.defender_nation .form_is_capital:first').click();
+            } else {
+                $('.attacker_nation .form_is_capital:second').click();
+                $('.defender_nation .form_is_capital:second').click();
+            }
+        } else {
+            $('.attacker_nation .form_is_capital:second').click();
+            $('.defender_nation .form_is_capital:second').click();
+        }
+
+        $('.form_injury').change(function() {
             var $this = $(this);
             var $general = getGeneralDetail($this);
             var $helptext = $general.find('.injury_helptext');
@@ -20,51 +39,48 @@ jQuery(function($){
             //FIXME: PHP 코드와 항상 일치하도록 변경
             var text = '건강';
             var color = 'white';
-            if(injury > 60){
+            if (injury > 60) {
                 text = '위독';
                 color = 'red';
-            }
-            else if(injury > 40){
+            } else if (injury > 40) {
                 text = '심각';
                 color = 'magenta';
-            }
-            else if(injury > 20){
+            } else if (injury > 20) {
                 text = '중상';
                 color = 'orange';
-            }
-            else if(injury > 0){
+            } else if (injury > 0) {
                 text = '경상';
                 color = 'yellow';
             }
             $helptext.html(text).css('color', color);
         });
 
-        $('.export_general').click(function(){
+        $('.export_general').click(function() {
             var $btn = $(this);
             var $general = getGeneralDetail($btn);
-            
+
             var values = exportGeneralInfo($general);
             console.log(values);
         });
-        $('.delete-defender').click(function(){
+        $('.delete-defender').click(function() {
             var $card = getGeneralFrame($(this));
             deleteDefender($card);
         });
-        $('.copy-defender').click(function(){
+        $('.copy-defender').click(function() {
             var $card = getGeneralFrame($(this));
             copyDefender($card);
         });
 
-        $('.add-defender').click(function(){
+        $('.add-defender').click(function() {
             addDefender();
         });
 
-        $('.btn-general-load').click(function(){
+        $('.btn-general-load').click(function() {
             var $file = $(this).prev();
             $file[0].click();
         })
 
-        $('.form_load_general_file').on('change', function(e){
+        $('.form_load_general_file').on('change', function(e) {
             e.preventDefault();
             var $this = $(this);
             var $card = getGeneralFrame($this);
@@ -75,26 +91,35 @@ jQuery(function($){
             return false;
         });
 
-        $('.btn-general-save').click(function(){
+        $('.btn-general-import-server').click(function() {
+            var $this = $(this);
+            var $card = getGeneralFrame($this);
+
+            var $modal = $('#importModal');
+            $modal.data('target', $card);
+            $modal.modal('show');
+        });
+
+        $('.btn-general-save').click(function() {
             var $this = $(this);
             var $general = getGeneralDetail($this);
             var generalData = exportGeneralInfo($general);
 
             var filename = "general_{0}.json".format(generalData.name);
             var saveData = JSON.stringify({
-                objType:'general',
-                data:generalData
+                objType: 'general',
+                data: generalData
             }, null, 4);
 
             download(saveData, filename, 'application/json');
         });
 
-        $('.btn-battle-load').click(function(){
+        $('.btn-battle-load').click(function() {
             var $file = $(this).prev();
             $file[0].click();
         })
 
-        $('.form_load_battle_file').on('change', function(e){
+        $('.form_load_battle_file').on('change', function(e) {
             e.preventDefault();
             var $this = $(this);
             var files = e.target.files;
@@ -103,12 +128,12 @@ jQuery(function($){
             return false;
         });
 
-        $('.btn-battle-save').click(function(){
+        $('.btn-battle-save').click(function() {
             var battleData = exportAllData();
             var filename = "battle_{0}.json".format(moment().format('YYYYMMDD_hhmmss'));
             var saveData = JSON.stringify({
-                objType:'battle',
-                data:battleData
+                objType: 'battle',
+                data: battleData
             }, null, 4);
 
             download(saveData, filename, 'application/json');
@@ -119,7 +144,7 @@ jQuery(function($){
             e.stopPropagation()
             e.preventDefault()
         })
-        $generals.bind('drop', function(e){
+        $generals.bind('drop', function(e) {
             e.preventDefault();
             var $this = $(this);
             var $card = getGeneralFrame($this);
@@ -135,7 +160,7 @@ jQuery(function($){
             e.stopPropagation()
             e.preventDefault()
         })
-        $battlePad.bind('drop', function(e){
+        $battlePad.bind('drop', function(e) {
             e.preventDefault();
 
             var files = e.originalEvent.dataTransfer.files;
@@ -145,8 +170,8 @@ jQuery(function($){
         });
     }
 
-    var importGeneralInfo = function($general, data){
-        var setVal = function(query, val){
+    var importGeneralInfo = function($general, data) {
+        var setVal = function(query, val) {
             $general.find(query).val(val).change();
         }
 
@@ -154,7 +179,6 @@ jQuery(function($){
 
         setVal('.form_officer_level', data.officer_level);
         setVal('.form_exp_level', data.explevel);
-        setVal('.form_injury', data.injury);
 
         setVal('.form_leadership', data.leadership);
         setVal('.form_general_horse', data.horse);
@@ -183,93 +207,93 @@ jQuery(function($){
         setVal('.form_dex5', data.dex5);
         setVal('.form_defence_train', data.defence_train);
 
-        if(!setGeneralNo($general, data.no)){
+        if (!setGeneralNo($general, data.no)) {
             setGeneralNo($general, generateNewGeneralNo());
         }
     }
 
-    var exportGeneralInfo = function($general){
-        var getInt = function(query){
+    var exportGeneralInfo = function($general) {
+        var getInt = function(query) {
             return parseInt($general.find(query).val());
         }
 
-        var getVal = function(query){
+        var getVal = function(query) {
             return $general.find(query).val();
         }
 
         return {
-            no:getGeneralNo($general),
-            name:getVal('.form_general_name'),
-            officer_level:getInt('.form_officer_level'),
-            explevel:getInt('.form_exp_level'),
+            no: getGeneralNo($general),
+            name: getVal('.form_general_name'),
+            officer_level: getInt('.form_officer_level'),
+            explevel: getInt('.form_exp_level'),
 
-            leadership:getInt('.form_leadership'),
-            horse:getVal('.form_general_horse'),
-            strength:getInt('.form_strength'),
-            weapon:getVal('.form_general_weap'),
-            intel:getInt('.form_intel'),
-            book:getVal('.form_general_book'),
-            item:getVal('.form_general_item'),
+            leadership: getInt('.form_leadership'),
+            horse: getVal('.form_general_horse'),
+            strength: getInt('.form_strength'),
+            weapon: getVal('.form_general_weap'),
+            intel: getInt('.form_intel'),
+            book: getVal('.form_general_book'),
+            item: getVal('.form_general_item'),
 
-            injury:getInt('.form_injury'),
+            injury: getInt('.form_injury'),
 
-            rice:getInt('.form_rice'),
+            rice: getInt('.form_rice'),
 
-            personal:getVal('.form_general_character'),
-            special2:getVal('.form_general_special_war'),
+            personal: getVal('.form_general_character'),
+            special2: getVal('.form_general_special_war'),
 
-            crew:getInt('.form_crew'),
-            crewtype:getInt('.form_crewtype'),
-            atmos:getInt('.form_atmos'),
-            train:getInt('.form_train'),
-            
-            dex1:getInt('.form_dex1'),
-            dex2:getInt('.form_dex2'),
-            dex3:getInt('.form_dex3'),
-            dex4:getInt('.form_dex4'),
-            dex5:getInt('.form_dex5'),
-            defence_train:getInt('.form_defence_train'),
+            crew: getInt('.form_crew'),
+            crewtype: getInt('.form_crewtype'),
+            atmos: getInt('.form_atmos'),
+            train: getInt('.form_train'),
+
+            dex1: getInt('.form_dex1'),
+            dex2: getInt('.form_dex2'),
+            dex3: getInt('.form_dex3'),
+            dex4: getInt('.form_dex4'),
+            dex5: getInt('.form_dex5'),
+            defence_train: getInt('.form_defence_train'),
         };
     }
 
-    var importBattleInfoByFile = function(files){
-        if(files === null){
+    var importBattleInfoByFile = function(files) {
+        if (files === null) {
             alert('파일 에러!');
             return false;
         }
 
-        if(files.length < 1){
+        if (files.length < 1) {
             alert("파일 에러!");
             return false;
         }
 
 
         var file = files[0];
-        if(file.size > 1024*1024){
+        if (file.size > 1024 * 1024) {
             alert('파일이 너무 큽니다!');
             return false;
         }
-        if(file.type === ''){
+        if (file.type === '') {
             alert('폴더를 업로드할 수 없습니다!');
             return false;
         }
 
         var reader = new FileReader();
-        reader.onload = function(){
+        reader.onload = function() {
             var battleData = {};
             try {
                 battleData = JSON.parse(reader.result);
-            } catch(e) {
+            } catch (e) {
                 alert('올바르지 않은 파일 형식입니다');
                 return false;
             }
 
-            if(!('objType' in battleData)){
+            if (!('objType' in battleData)) {
                 alert('파일 형식을 확인할 수 없습니다');
                 return false;
             }
 
-            if(battleData.objType != 'battle'){
+            if (battleData.objType != 'battle') {
                 alert('전투 데이터가 아닙니다');
                 return false;
             }
@@ -281,8 +305,7 @@ jQuery(function($){
         try {
 
             reader.readAsText(file);
-        }
-        catch(e) {
+        } catch (e) {
             alert('파일을 읽는데 실패했습니다.');
             return false;
         }
@@ -290,52 +313,52 @@ jQuery(function($){
         return true;
     }
 
-    var importGeneralInfoByFile = function(files, $card){
-        if($card === undefined){
+    var importGeneralInfoByFile = function(files, $card) {
+        if ($card === undefined) {
             $card = addDefender();
         }
 
-        if(files === null){
+        if (files === null) {
             alert('파일 에러!');
             return false;
         }
 
-        if(files.length < 1){
+        if (files.length < 1) {
             alert("파일 에러!");
             return false;
         }
 
 
         var file = files[0];
-        if(file.size > 1024*1024){
+        if (file.size > 1024 * 1024) {
             alert('파일이 너무 큽니다!');
             return false;
         }
-        if(file.type === ''){
+        if (file.type === '') {
             alert('폴더를 업로드할 수 없습니다!');
             return false;
         }
-        
+
         var reader = new FileReader();
-        reader.onload = function(){
+        reader.onload = function() {
             var generalData = {};
             try {
                 generalData = JSON.parse(reader.result);
-            } catch(e) {
+            } catch (e) {
                 alert('올바르지 않은 파일 형식입니다');
                 return false;
             }
 
-            if(!('objType' in generalData)){
+            if (!('objType' in generalData)) {
                 alert('파일 형식을 확인할 수 없습니다');
                 return false;
             }
 
-            if(generalData.objType == 'battle'){
+            if (generalData.objType == 'battle') {
                 importBattleInfo(generalData.data);
                 return true;
             }
-            if(generalData.objType != 'general'){
+            if (generalData.objType != 'general') {
                 alert('장수 데이터가 아닙니다');
                 return false;
             }
@@ -349,8 +372,7 @@ jQuery(function($){
         try {
 
             reader.readAsText(file);
-        }
-        catch(e) {
+        } catch (e) {
             alert('파일을 읽는데 실패했습니다.');
             return false;
         }
@@ -358,49 +380,49 @@ jQuery(function($){
         return true;
     }
 
-    var extendGeneralInfoForDB = function(generalData){
+    var extendGeneralInfoForDB = function(generalData) {
 
         var dbVal = {
-            nation: (generalData.no)<=1 ? 1 : 2,
-            city: (generalData.no)<=1 ? 1 : 3,
-            turntime:'2018-08-26 12:00',
-            special:defaultSpecialDomestic,
-            leadership_exp:0,
-            strength_exp:0,
-            intel_exp:0,
-            
-            gold:10000,
+            nation: (generalData.no) <= 1 ? 1 : 2,
+            city: (generalData.no) <= 1 ? 1 : 3,
+            turntime: '2018-08-26 12:00',
+            special: defaultSpecialDomestic,
+            leadership_exp: 0,
+            strength_exp: 0,
+            intel_exp: 0,
 
-            dedication:0,
+            gold: 10000,
 
-            recent_war:'2018-08-26 12:00',
-            experience:Math.pow(generalData.explevel, 2),
+            dedication: 0,
+
+            recent_war: '2018-08-26 12:00',
+            experience: Math.pow(generalData.explevel, 2),
         };
 
         return $.extend({}, generalData, dbVal);
     }
 
-    var getGeneralFrame = function($btn){
+    var getGeneralFrame = function($btn) {
         var $card = $btn.closest('.general_form');
         return $card;
     }
 
-    var getGeneralDetail = function($btn){
+    var getGeneralDetail = function($btn) {
         var $card = getGeneralFrame($btn);
         var $general = $card.find('.general_detail');
         return $general;
     }
 
-    var getGeneralNo = function($btn){
+    var getGeneralNo = function($btn) {
         return parseInt(getGeneralFrame($btn).data('general_no'));
     }
 
-    var setGeneralNo = function($btn, value){
-        if(value == 1){
+    var setGeneralNo = function($btn, value) {
+        if (value == 1) {
             //1번은 무조건 공격자임
-            return false; 
+            return false;
         }
-        if(value in defenderNoList){
+        if (value in defenderNoList) {
             return false;
         }
         var $card = getGeneralFrame($btn);
@@ -409,35 +431,34 @@ jQuery(function($){
         return true;
     }
 
-    var generateNewGeneralNo = function(){
-        while(true){
-            var newGeneralNo = parseInt(Math.random()*(1<<24))+2;
-            if(newGeneralNo in defenderNoList){
+    var generateNewGeneralNo = function() {
+        while (true) {
+            var newGeneralNo = parseInt(Math.random() * (1 << 24)) + 2;
+            if (newGeneralNo in defenderNoList) {
                 continue;
             }
             return newGeneralNo;
         }
     }
 
-    var deleteGeneralNo = function($btn){
+    var deleteGeneralNo = function($btn) {
         var $card = getGeneralFrame($btn);
         $card.removeData('general_no');
         var generalNo = getGeneralNo($card);
         delete defenderNoList[generalNo];
     }
 
-    var addDefender = function($cardAfter){
+    var addDefender = function($cardAfter) {
         var $newCard = $('<div class="card mb-2 defender_form general_form"></div>');
 
-        if($cardAfter === undefined){
+        if ($cardAfter === undefined) {
             $defenderColumn.append($newCard);
-        }
-        else{
+        } else {
             $cardAfter.after($newCard);
         }
-        
-        $newCard.append($defenderHeaderForm.clone(true,true));
-        $newCard.append($generalForm.clone(true,true));
+
+        $newCard.append($defenderHeaderForm.clone(true, true));
+        $newCard.append($generalForm.clone(true, true));
 
         $newGeneral = getGeneralDetail($newCard);
         setGeneralNo($newCard, generateNewGeneralNo());
@@ -445,12 +466,12 @@ jQuery(function($){
         return $newCard;
     }
 
-    var deleteDefender = function($card){
+    var deleteDefender = function($card) {
         deleteGeneralNo($card);
         $card.detach();
     }
 
-    var copyDefender = function($card){
+    var copyDefender = function($card) {
         var $general = getGeneralDetail($card);
 
         var generalData = exportGeneralInfo($general);
@@ -458,7 +479,7 @@ jQuery(function($){
         importGeneralInfo(getGeneralDetail($newObj), generalData);
     }
 
-    var importBattleInfo = function(battleData){
+    var importBattleInfo = function(battleData) {
 
         $('.form_load_battle_file').val('');
         console.log(battleData);
@@ -477,16 +498,15 @@ jQuery(function($){
         $('#year').val(battleData.year);
         $('#month').val(battleData.month);
         $('#repeat_cnt').val(battleData.repeatCnt);
-        
+
         $('.delete-defender').click();
 
         $attackerNation.find('.form_nation_type').val(attackerNation.type);
-        $attackerNation.find('.form_tech').val(Math.floor(attackerNation.tech/1000));
+        $attackerNation.find('.form_tech').val(Math.floor(attackerNation.tech / 1000));
         $attackerNation.find('.form_nation_level').val(attackerNation.level);
-        if(attackerNation.capital == 1){
+        if (attackerNation.capital == 1) {
             $attackerNation.find('.form_is_capital:first').click();
-        }
-        else{
+        } else {
             $attackerNation.find('.form_is_capital:last').click();
         }
         $attackerNation.find('.form_city_level').val(attackerCity.level);
@@ -494,56 +514,55 @@ jQuery(function($){
         importGeneralInfo($('.attacker_form'), attackerGeneral);
 
         $defenderNation.find('.form_nation_type').val(defenderNation.type);
-        $defenderNation.find('.form_tech').val(Math.floor(defenderNation.tech/1000));
+        $defenderNation.find('.form_tech').val(Math.floor(defenderNation.tech / 1000));
         $defenderNation.find('.form_nation_level').val(defenderNation.level);
-        if(defenderNation.capital == 1){
+        if (defenderNation.capital == 1) {
             $defenderNation.find('.form_is_capital:first').click();
-        }
-        else{
+        } else {
             $defenderNation.find('.form_is_capital:last').click();
         }
         $defenderNation.find('.form_city_level').val(defenderCity.level);
         $('#city_def').val(defenderCity.def);
         $('#city_wall').val(defenderCity.wall);
 
-        $.each(defenderGenerals, function(idx, defenderGeneral){
+        $.each(defenderGenerals, function(idx, defenderGeneral) {
             var $card = addDefender();
             importGeneralInfo($card, defenderGeneral);
         });
     }
 
-    var exportAllData = function(){
+    var exportAllData = function() {
         var $attackerNation = $('.attacker_nation');
         var $defenderNation = $('.defender_nation');
 
         var attackerGeneral = exportGeneralInfo($('.attacker_form'));
 
         var attackerCity = {
-            level:parseInt($attackerNation.find('.form_city_level').val()),
+            level: parseInt($attackerNation.find('.form_city_level').val()),
         };
 
         var attackerNation = {
-            type:$attackerNation.find('.form_nation_type').val(),
-            tech:parseInt($attackerNation.find('.form_tech').val()) * 1000,
-            level:parseInt($attackerNation.find('.form_nation_level').val()),
-            capital:$attackerNation.find('.form_is_capital:checked').val()=='1'?1:2,
+            type: $attackerNation.find('.form_nation_type').val(),
+            tech: parseInt($attackerNation.find('.form_tech').val()) * 1000,
+            level: parseInt($attackerNation.find('.form_nation_level').val()),
+            capital: $attackerNation.find('.form_is_capital:checked').val() == '1' ? 1 : 2,
         }
 
-        var defenderGenerals = $('.defender_form').map(function(){
+        var defenderGenerals = $('.defender_form').map(function() {
             return exportGeneralInfo($(this));
         }).toArray();
 
         var defenderCity = {
             def: parseInt($('#city_def').val()),
             wall: parseInt($('#city_wall').val()),
-            level:parseInt($defenderNation.find('.form_city_level').val()),
+            level: parseInt($defenderNation.find('.form_city_level').val()),
         };
 
         var defenderNation = {
-            type:$defenderNation.find('.form_nation_type').val(),
-            tech:parseInt($defenderNation.find('.form_tech').val()) * 1000,
-            level:parseInt($defenderNation.find('.form_nation_level').val()),
-            capital:$defenderNation.find('.form_is_capital:checked').val()=='1'?3:4,
+            type: $defenderNation.find('.form_nation_type').val(),
+            tech: parseInt($defenderNation.find('.form_tech').val()) * 1000,
+            level: parseInt($defenderNation.find('.form_nation_level').val()),
+            capital: $defenderNation.find('.form_is_capital:checked').val() == '1' ? 3 : 4,
         }
 
         var year = parseInt($('#year').val());
@@ -551,59 +570,59 @@ jQuery(function($){
         var repeatCnt = parseInt($('#repeat_cnt').val());
 
         return {
-            attackerGeneral:attackerGeneral,
-            attackerCity:attackerCity,
-            attackerNation:attackerNation,
+            attackerGeneral: attackerGeneral,
+            attackerCity: attackerCity,
+            attackerNation: attackerNation,
 
-            defenderGenerals:defenderGenerals,
-            defenderCity:defenderCity,
-            defenderNation:defenderNation,
+            defenderGenerals: defenderGenerals,
+            defenderCity: defenderCity,
+            defenderNation: defenderNation,
 
-            year:year,
-            month:month,
-            repeatCnt:repeatCnt,
+            year: year,
+            month: month,
+            repeatCnt: repeatCnt,
         };
     }
 
-    var extendAllDataForDB = function(allData){
+    var extendAllDataForDB = function(allData) {
         var defaultNation = {
-            nation:0,
-            name:'재야',
-            capital:0,
-            level:0,
-            gold:0,
-            rice:2000,
-            type:'None',
-            tech:0,
-            gennum:200,
+            nation: 0,
+            name: '재야',
+            capital: 0,
+            level: 0,
+            gold: 0,
+            rice: 2000,
+            type: 'None',
+            tech: 0,
+            gennum: 200,
         };
 
         var defaultCity = {
-            nation:0,
-            supply:1,
-            name:'도시',
-            
-            pop:500000,
-            agri:10000,
-            comm:10000,
-            secu:10000,
-            def:1000,
-            wall:1000,
-            
-            trust:100,
-            
-            pop_max:600000,
-            agri_max:12000,
-            comm_max:12000,
-            secu_max:10000,
-            def_max:12000,
-            wall_max:12000,
-            
-            dead:0,
+            nation: 0,
+            supply: 1,
+            name: '도시',
 
-            state:0,
+            pop: 500000,
+            agri: 10000,
+            comm: 10000,
+            secu: 10000,
+            def: 1000,
+            wall: 1000,
 
-            conflict:'{}',
+            trust: 100,
+
+            pop_max: 600000,
+            agri_max: 12000,
+            comm_max: 12000,
+            secu_max: 10000,
+            def_max: 12000,
+            wall_max: 12000,
+
+            dead: 0,
+
+            state: 0,
+
+            conflict: '{}',
         };
 
         var attackerNation = $.extend({}, defaultNation, allData.attackerNation);
@@ -615,10 +634,9 @@ jQuery(function($){
         attackerCity.city = 1;
 
         var attackerGeneral = extendGeneralInfoForDB(allData.attackerGeneral);
-        if(2 <= attackerGeneral.officer_level && attackerGeneral.officer_level <= 4){
+        if (2 <= attackerGeneral.officer_level && attackerGeneral.officer_level <= 4) {
             attackerGeneral.officer_city = 1;
-        }
-        else{
+        } else {
             attackerGeneral.officer_city = 0;
         }
 
@@ -629,16 +647,15 @@ jQuery(function($){
         var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
         defenderCity.nation = 2;
         defenderCity.city = 3;
-        defenderCity.wall_max = defenderCity.wall/5*6;
-        defenderCity.def_max = defenderCity.def/5*6;
+        defenderCity.wall_max = defenderCity.wall / 5 * 6;
+        defenderCity.def_max = defenderCity.def / 5 * 6;
 
         var defenderGenerals = [];
-        $.each(allData.defenderGenerals, function(){
+        $.each(allData.defenderGenerals, function() {
             var defenderGeneral = extendGeneralInfoForDB(this);
-            if(2 <= defenderGeneral.officer_level && defenderGeneral.officer_level <= 4){
+            if (2 <= defenderGeneral.officer_level && defenderGeneral.officer_level <= 4) {
                 defenderGeneral.officer_city = 3;
-            }
-            else{
+            } else {
                 defenderGeneral.officer_city = 0;
             }
 
@@ -647,70 +664,67 @@ jQuery(function($){
 
 
         return $.extend({}, allData, {
-            attackerGeneral:attackerGeneral,
-            attackerCity:attackerCity,
-            attackerNation:attackerNation,
+            attackerGeneral: attackerGeneral,
+            attackerCity: attackerCity,
+            attackerNation: attackerNation,
 
-            defenderGenerals:defenderGenerals,
-            defenderCity:defenderCity,
-            defenderNation:defenderNation,
+            defenderGenerals: defenderGenerals,
+            defenderCity: defenderCity,
+            defenderNation: defenderNation,
         });
     }
 
-    var parseSkillCount = function(skills){
+    var parseSkillCount = function(skills) {
         var result = [];
-        $.each(skills, function(key, value){
+        $.each(skills, function(key, value) {
             result.push("{0}({1}회)".format(key, toPretty(value)));
         })
 
-        if(result.length == 0){
+        if (result.length == 0) {
             return '-';
         }
         return result.join(', ');
     }
 
-    var toPretty = function(number){
-        if(isInt(number)){
+    var toPretty = function(number) {
+        if (isInt(number)) {
             number = parseInt(number);
-        }
-        else{
+        } else {
             number = parseFloat(number).toFixed(2);
         }
         return numberWithCommas(number);
     }
 
-    var showBattleResult = function(result){
+    var showBattleResult = function(result) {
         $('#result_datetime').html(result.datetime);
         $('#result_warcnt').html(toPretty(result.avgWar));
         $('#result_phase').html(toPretty(result.phase));
         $('#result_killed').html(toPretty(result.killed));
-        if(result.minKilled != result.maxKilled){
+        if (result.minKilled != result.maxKilled) {
             $('#result_maxKilled').html(toPretty(result.maxKilled));
             $('#result_minKilled').html(toPretty(result.minKilled));
             $('#result_varKilled').show();
-        }
-        else{
+        } else {
             $('#result_varKilled').hide();
         }
         $('#result_dead').html(toPretty(result.dead));
-        if(result.minDead != result.maxDead){
+        if (result.minDead != result.maxDead) {
             $('#result_maxDead').html(toPretty(result.maxDead));
             $('#result_minDead').html(toPretty(result.minDead));
             $('#result_varDead').show();
-        }
-        else{
+        } else {
             $('#result_varDead').hide();
         }
-        
+
         $('#result_attackerRice').html(toPretty(result.attackerRice));
         $('#result_defenderRice').html(toPretty(result.defenderRice));
         $('#result_attackerSkills').html(parseSkillCount(result.attackerSkills));
-        
+
         $('.result_defenderSkills').detach();
 
         var $summary = $('#battle_result_summary');
 
-        $.each(result.defendersSkills, function(idx, defenderSkills){
+        $.each(result.defendersSkills, function(idx, defenderSkills) {
             console.log(defenderSkills);
             var $result = $("<tr class='result_defenderSkills'><th>수비자{0} 스킬</th><td></td></tr>".format(idx + 1));
             $result.find('td').html(parseSkillCount(defenderSkills));
@@ -722,35 +736,35 @@ jQuery(function($){
 
     }
 
-    var beginBattle = function(){
+    var beginBattle = function() {
         var data = extendAllDataForDB(exportAllData());
         console.log(data);
         $.ajax({
-            type:'post',
-            url:'j_simulate_battle.php',
-            dataType:'json',
-            data:{
-                action:'battle',
-                query:JSON.stringify(data),
+            type: 'post',
+            url: 'j_simulate_battle.php',
+            dataType: 'json',
+            data: {
+                action: 'battle',
+                query: JSON.stringify(data),
             }
-        }).then(function(result){
+        }).then(function(result) {
             console.log(result);
-            if(!result.result){
+            if (!result.result) {
                 alert(result.reason);
                 return;
             }
             showBattleResult(result);
-            
-        }, function(result){
+
+        }, function(result) {
             alert('전투 개시 실패!');
         });
     }
 
 
-    var reorderDefender = function(defenderOrder){
-        $.each(defenderOrder, function(idx, generalNo){
+    var reorderDefender = function(defenderOrder) {
+        $.each(defenderOrder, function(idx, generalNo) {
 
-            if(!(generalNo in defenderNoList)){
+            if (!(generalNo in defenderNoList)) {
                 //음..?
                 alert("{0}이 수비자 리스트에 없습니다. 버그인 듯 합니다.".format(generalNo));
                 return true;
@@ -762,39 +776,147 @@ jQuery(function($){
         })
     }
 
-    var requestReorderDefender = function(){
+    var requestReorderDefender = function() {
         var data = extendAllDataForDB(exportAllData());
         console.log(data);
         $.ajax({
-            type:'post',
-            url:'j_simulate_battle.php',
-            dataType:'json',
-            data:{
-                action:'reorder',
-                query:JSON.stringify(data),
+            type: 'post',
+            url: 'j_simulate_battle.php',
+            dataType: 'json',
+            data: {
+                action: 'reorder',
+                query: JSON.stringify(data),
             }
-        }).then(function(result){
+        }).then(function(result) {
             console.log(result);
-            if(!result.result){
+            if (!result.result) {
                 alert(result.reason);
                 return;
             }
             reorderDefender(result.order);
-            
-        }, function(result){
+
+        }, function(result) {
             alert('재정렬 실패!');
         });
     }
 
+    var initGeneralList = false;
+
+    $('#importFromDB').click(function() {
+        var generalID = $('#modalSelector').val();
+        console.log(generalID);
+
+
+        $.post({
+            url: 'j_export_simulator_object.php',
+            dataType: 'json',
+            data: {
+                destGeneralID: generalID
+            }
+        }).then(function(data) {
+
+            if (!data.result) {
+                alert(data.reason);
+                return false;
+            }
+
+            var $modal = $('#importModal');
+            var $card = $modal.data('target');
+            importGeneralInfo($card, data.general);
+
+            $modal.modal('hide');
+        }, errUnknown);
+
+
+    });
+
+    $('#importModal').on('show.bs.modal', function(e) {
+        if (!initGeneralList) {
+            var $list = $('#modalSelector');
+
+            var addNation = function(generalList, nationName, color) {
+
+                generalList.sort(function(lhs, rhs) {
+                    if (lhs.npc != rhs.npc) {
+                        return lhs.npc - rhs.npc;
+                    }
+                    if (lhs.name < rhs.name) {
+                        return -1;
+                    }
+                    if (lhs.name > rhs.name) {
+                        return 1;
+                    }
+                    return 0;
+                })
+                var $optGroup = $('<optgroup label="{0}"></optgroup>'.format(nationName));
+                $optGroup.css('background-color', color);
+                $optGroup.css('color', isBrightColor(color) ? 'black' : 'white');
+
+                $.each(generalList, function(idx, general) {
+                    $item = $('<option value="{0}">{1}</option>'.format(general.no, general.name));
+                    if (general.npc) {
+                        $item.css('color', getNpcColor(general.npc));
+                    } else {
+                        $item.css('color', 'white');
+                    }
+                    $item.css('background-color', 'black');
+                    $optGroup.append($item);
+
+                });
+                $list.append($optGroup);
+            }
+            $.post({
+                url: 'j_get_basic_general_list.php',
+                dataType: 'json',
+                data: {
+                    req: 2,
+                }
+            }).then(function(data) {
+                if (!data.result) {
+                    alert(data.reason);
+                    $('#importModal').modal('hide');
+                    return false;
+                }
+
+                var nations = data.nation;
+                var myNationID = data.nationID;
+
+                $list.empty();
+                //자국 먼저
+
+                if (0 in data.list) {
+                    nations[0] = {
+                        nation: 0,
+                        name: '재야',
+                        color: '#000000'
+                    };
+                }
+
+
+
+                addNation(combineArray(data.list[myNationID], data.column), nations[myNationID].name, nations[myNationID].color);
+
+                for (var nationID in data.list) {
+                    if (nationID == myNationID) {
+                        continue;
+                    }
+                    addNation(combineArray(data.list[nationID], data.column), nations[nationID].name, nations[nationID].color);
+                }
+                initGeneralList = true;
+            }, errUnknown);
+        }
+
+    });
+
     initBasicEvent();
-    $attackerCard.append($generalForm.clone(true,true));
+    $attackerCard.append($generalForm.clone(true, true));
     addDefender();
-    
-    $('.btn-begin_battle').click(function(){
+
+    $('.btn-begin_battle').click(function() {
         beginBattle();
     });
 
-    $('.btn-reorder_defender').click(function(){
+    $('.btn-reorder_defender').click(function() {
         requestReorderDefender();
     })
 });
