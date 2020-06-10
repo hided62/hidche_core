@@ -13,8 +13,8 @@ jQuery(function($) {
 
         if (window.nation) {
             $('.form_city_level').val(window.city.level);
-            $('.form_def').val(window.city.def);
-            $('.form_wall').val(window.city.wall);
+            $('.form_def').val(parseInt(window.city.def));
+            $('.form_wall').val(parseInt(window.city.wall));
             $('.form_nation_type').val(window.nation.type);
             $('.form_nation_level').val(window.nation.level);
             $('.form_tech').val(parseInt(window.nation.tech / 1000));
@@ -647,8 +647,8 @@ jQuery(function($) {
         var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
         defenderCity.nation = 2;
         defenderCity.city = 3;
-        defenderCity.wall_max = defenderCity.wall / 5 * 6;
-        defenderCity.def_max = defenderCity.def / 5 * 6;
+        defenderCity.wall_max = parseInt(defenderCity.wall / 5 * 6);
+        defenderCity.def_max = parseInt(defenderCity.def / 5 * 6);
 
         var defenderGenerals = [];
         $.each(allData.defenderGenerals, function() {
