@@ -534,7 +534,7 @@ class GeneralAI
             if(!key_exists($userGeneral->getCityID(), $this->nationCities)){
                 continue;
             }
-            $city = $this->supplyCities[$userGeneral->getCityID()];
+            $city = $this->nationCities[$userGeneral->getCityID()];
             $troopLeaderID = $userGeneral->getVar('troop');
             if(!$troopLeaderID || !key_exists($troopLeaderID, $this->troopLeaders)){
                 continue;
@@ -2778,7 +2778,7 @@ class GeneralAI
             if($city['city'] === $candidate['city']){
                 continue;
             }
-            $realDevelRate = 0;
+            $realDevelRate = 0.0001; //하단의 나눗셈
 
             foreach($this->calcCityDevelRate($candidate) as $develKey => [$develVal, $develType]){
                 if(!($this->genType & $develType)){

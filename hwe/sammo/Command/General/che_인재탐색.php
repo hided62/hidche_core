@@ -131,16 +131,8 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $nationID = $general->getNationID();
 
-        $nationCnt = count(getAllNationStaticInfo());
-
         $totalGenCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE npc <= 2');
         $totalNpcCnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4');
-
-        $genCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc < 2', $nationID);
-        $npcCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND 3 <= npc AND npc <= 4', $nationID);
-
-        $currCnt  = Util::toInt($totalGenCnt + $totalNpcCnt / 2);
-        $avgCnt = $currCnt / $nationCnt;
 
         $foundNpc = Util::randBool($this->calcFoundProp($env['maxgeneral'], $totalGenCnt, $totalNpcCnt));
 
