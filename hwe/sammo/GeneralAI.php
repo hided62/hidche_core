@@ -992,7 +992,7 @@ class GeneralAI
         if(!$cmd->hasFullConditionMet()){
             return null;
         }
-        return null;
+        return $cmd;
     }
 
     protected function doNPC전방발령(LastTurn $lastTurn): ?NationCommand
