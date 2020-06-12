@@ -759,7 +759,7 @@ class GeneralAI
         foreach($this->userWarGenerals as $userGeneral){
             $generalID = $userGeneral->getID();
             $cityID = $userGeneral->getCityID();
-            if(key_exists($cityID, $this->nationCities)){
+            if(!key_exists($cityID, $this->nationCities)){
                 continue;
             }
             if(key_exists($cityID, $this->frontCities)){
@@ -981,6 +981,9 @@ class GeneralAI
 
     protected function doNPC전방발령(LastTurn $lastTurn): ?NationCommand
     {
+        $me = $this->general;
+        $cityName = CityConst::byID($me->getCityID())->name;
+
         if(!$this->nation['capital']){
             return null;
         }
@@ -998,7 +1001,7 @@ class GeneralAI
             if(key_exists($cityID, $this->frontCities)){
                 continue;
             }
-            if(key_exists($cityID, $this->nationCities)){
+            if(!key_exists($cityID, $this->nationCities)){
                 continue;
             }
             if($npcGeneral->getVar('crew') < $this->nationPolicy->minWarCrew){
