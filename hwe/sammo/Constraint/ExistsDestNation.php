@@ -3,7 +3,7 @@
 namespace sammo\Constraint;
 
 class ExistsDestNation extends Constraint{
-    const REQ_VALUES = Constraint::REQ_DEST_NATION;
+    const REQ_VALUES = 0;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
@@ -17,7 +17,7 @@ class ExistsDestNation extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->destNation['nation']){
+        if($this->destNation['nation']??0){
             return true;
         }
 
