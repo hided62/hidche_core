@@ -26,7 +26,7 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         $patients = $db->queryAllLists(
             'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i', 
-            $general->getVar('city'), 
+            $general->getCityID(), 
             $general->getID()
         );
 
@@ -39,12 +39,14 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         $cureList = [];
 
+        $curedPatientName = null;
         foreach($patients as [$patientID, $patientName, $patientNationID]){
             if (!Util::randBool(0.5)) {
                 continue;
             }
 
             $cureList[] = $patientID;
+            $curedPatientName = $patientName;
             $patientLogger = new ActionLogger($patientID, $patientNationID, $logger->getYear(), $logger->getMonth());
             $patientLogger->pushGeneralActionLog("<Y>{$generalName}</>{$josaYi} <C>의술</>로써 치료해줍니다!", ActionLogger::PLAIN);
             $patientLogger->flush();
@@ -56,12 +58,12 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         
         if(count($cureList) == 1){
-            $josaUl = JosaUtil::pick($patientName, "을");
-            $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수 <Y>{$patientName}</>{$josaUl} 치료합니다!", ActionLogger::PLAIN);
+            $josaUl = JosaUtil::pick($curedPatientName, "을");
+            $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수 <Y>{$curedPatientName}</>{$josaUl} 치료합니다!", ActionLogger::PLAIN);
         }
         else{
             $otherCount = count($cureList) - 1;
-            $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수들 <Y>{$patientName}</> 외 <C>{$otherCount}</>명을 치료합니다!", ActionLogger::PLAIN);
+            $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수들 <Y>{$curedPatientName}</> 외 <C>{$otherCount}</>명을 치료합니다!", ActionLogger::PLAIN);
         }
 
         $db->update('general', [
