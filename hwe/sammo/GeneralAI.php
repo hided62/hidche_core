@@ -511,7 +511,7 @@ class GeneralAI
 
     protected function do부대유저장후방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if(!$this->frontCities){
             return null;
         }
         if($this->dipState !== self::d전쟁){
@@ -519,9 +519,6 @@ class GeneralAI
         }
 
         $generalCadidates = [];
-        $db = DB::db();
-
-        $chiefTurnTime = $this->general->getTurnTime();
 
         foreach($this->userWarGenerals as $userGeneral){
             $generalID = $userGeneral->getID();
@@ -557,10 +554,9 @@ class GeneralAI
             }
 
             $generalTurnTime = $userGeneral->getTurnTime();
-            $troopLeader = $this->nationGenerals[$userGeneral->getVar('troop')];
             $troopTurnTime =  $troopLeader->getTurnTime();
 
-            if($chiefTurnTime < $generalTurnTime && $generalTurnTime < $troopTurnTime){
+            if($generalTurnTime < $troopTurnTime){//NOTE: 어차피 수뇌 턴이 제일 빠르다
                 $generalCadidates[$generalID] = $userGeneral;
             }
         }
