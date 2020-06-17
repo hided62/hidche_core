@@ -217,10 +217,14 @@ function formatDefenceTrain(int $value): string
 {
     if ($value === 999) {
         return "×";
+    } else if ($value >= 90){
+        return "☆";
     } else if ($value >= 80) {
         return "◎";
-    } else {
+    } else if ($value >= 60) {
         return "○";
+    } else{
+        return "△";
     }
 }
 

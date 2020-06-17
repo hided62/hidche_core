@@ -93,11 +93,10 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
                ∞<span style='color:orange'>수뇌가 되었을 때 휴식 턴이어도 적당한 턴을 알아서 넣는 것을 허용합니다.</span><br><br>
 <?php endif; ?>
                 수비 【<select id='defence_train' name='defence_train'>
-                <option value=90 <?=$me->getVar('defence_train')==90?"selected":""; ?>>☆(훈사90)</option>
-                <option value=80 <?=$me->getVar('defence_train')==80?"selected":""; ?>>◎(훈사80)</option>
-                <option value=60 <?=$me->getVar('defence_train')==60?"selected":""; ?>>○(훈사60)</option>
-                <option value=40 <?=$me->getVar('defence_train')==40?"selected":""; ?>>△(훈사40)</option>
-                <option value=999 <?=$me->getVar('defence_train')==999?"selected":""; ?>>×[훈련, 사기 -3]</option>
+<?php foreach([90, 80, 60, 40] as $targetDefenceTrain): ?>
+                <option value='<?=$targetDefenceTrain?>' <?=$me->getVar('defence_train')==$targetDefenceTrain?"selected":""; ?>><?=formatDefenceTrain($targetDefenceTrain)?>(훈사<?=$targetDefenceTrain?>)</option>
+<?php endforeach; ?>
+                <option value=999 <?=$me->getVar('defence_train')==999?"selected":""; ?>><?=formatDefenceTrain(999)?>[훈련, 사기 -3]</option>
                 </select>
                 】<br><br>
                 <input type=<?=$submit?> id='set_my_setting' name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
