@@ -49,11 +49,14 @@ class WarUnitGeneral extends WarUnit{
         $this->general->increaseRankVar('warnum', 1);
 
         if($this->isAttacker){
-            $general->updateVar('recent_war', $general->getTurnTime());
+            $semiTurn = $general->getTurnTime();
         }
         else if($oppose !== null){
-            $general->updateVar('recent_war', $oppose->getGeneral()->getTurnTime());
+            $semiTurn = $oppose->getGeneral()->getTurnTime();
         }
+        $semiTurn = substr($semiTurn, 0, strlen($semiTurn) - 2);
+        $semiTurn .=  sprintf("%02d", Util::valueFit($this->currPhase, 0, 99));
+        $general->setVar('recent_war', $semiTurn);
     }
 
     function getMaxPhase():int{
