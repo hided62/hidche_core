@@ -54,8 +54,9 @@ class WarUnitGeneral extends WarUnit{
         else if($oppose !== null){
             $semiTurn = $oppose->getGeneral()->getTurnTime();
         }
+        $phase = $this->getRealPhase();
         $semiTurn = substr($semiTurn, 0, strlen($semiTurn) - 2);
-        $semiTurn .=  sprintf("%02d", Util::valueFit($this->currPhase, 0, 99));
+        $semiTurn .=  sprintf("%02d", Util::valueFit($phase, 0, 99));
         $general->setVar('recent_war', $semiTurn);
     }
 
