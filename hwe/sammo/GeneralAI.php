@@ -694,19 +694,13 @@ class GeneralAI
         if(!$this->nation['capital']){
             return null;
         }
-        if (in_array($this->dipState, [self::d평화, self::d선포])) {
-            return null;
-        }
 
         //고립 도시 장수 발령
         $args = [];
         foreach ($this->lostGenerals as $lostGeneral) {
-            LogText('구출준비', "{$lostGeneral->getName()}");
             if ($lostGeneral->getNPCType() >= 2) {
                 continue;
             }
-            LogText('구출준비1', "{$lostGeneral->getName()}");
-
             if(
                 $lostGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew &&
                 $lostGeneral->getVar('train') >= $lostGeneral->getVar('defence_train') &&
@@ -715,8 +709,6 @@ class GeneralAI
                 //수비도 가능한데, 일부러 가 있는 것으로 보임
                 continue;
             }
-
-            LogText('구출준비2', "{$lostGeneral->getName()}");
 
             $troopID = $lostGeneral->getVar('troop');
             if($troopID && key_exists($troopID, $this->troopLeaders)){
@@ -730,7 +722,6 @@ class GeneralAI
                     continue;
                 }
             }
-            LogText('구출준비3', "{$lostGeneral->getName()}");
 
             if (in_array($this->dipState, [self::d직전, self::d전쟁]) && count($this->frontCities) > 2) {
                 $selCity = Util::choiceRandom($this->frontCities);
@@ -746,10 +737,12 @@ class GeneralAI
         if(!$args){
             return null;
         }
-        LogText('구출준비5', count($args));
-        $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($args));
+        
+        $arg = Util::choiceRandom($args);
+        $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, $arg);
+        
         if(!$cmd->hasFullConditionMet()){
-            LogText('구출준비5', count($args));
+            LogText('구출실패', [$arg, $cmd->getFailString()]);
             return null;
         }
         return $cmd;
