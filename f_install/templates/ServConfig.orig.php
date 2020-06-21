@@ -55,7 +55,7 @@ class ServConfig
         if (self::$serverList === null) {
             self::$serverList = [];
             foreach($servKeyList as [$servKey, $servNick, $servColor]){
-                self::$serverList[] = new Setting(ROOT.'/'.$servKey, $servNick, $servColor);
+                self::$serverList[$servKey] = new Setting(ROOT.'/'.$servKey, $servNick, $servColor);
             }
         }
         return self::$serverList;
