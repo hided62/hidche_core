@@ -187,7 +187,7 @@ if($reserve_open){
         'options'=>Json::encode($reserveInfo),
         'date'=>$open_date
     ]);
-    AppConf::getList()[DB::prefix()]->closeServer();
+    ServConfig::getServerList()[DB::prefix()]->closeServer();
     Json::die([
         'result'=>true,
         'reason'=>'예약'

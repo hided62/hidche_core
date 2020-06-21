@@ -13,6 +13,7 @@ class ServConfig
     public static $gameImagePath = "_tK_gameImagePath_";
     public static $imageRequestPath = "_tK_imageRequestPath_";
     public static $imageRequestKey = '_tK_imageRequestKey_';
+    private static $serverList = null;
 
     public static function getSharedIconPath(string $filepath = ''): string
     {
@@ -40,6 +41,24 @@ class ServConfig
         $now = time();
         $req_hash = Util::hashPassword(sprintf("%016x", $now), static::$imageRequestKey);
         return static::$imageRequestPath . "?req={$req_hash}&time={$now}";
+    }
+
+    /**
+     * 서버 설정 반환
+     *
+     * @return \sammo\Setting[]
+     */
+    public static function getServerList(): array{
+        $servKeyList = [/*_tK_serverList_*/];
+        $servKeyList[] = ['hwe', '훼', 'red'];
+
+        if (self::$serverList === null) {
+            self::$serverList = [];
+            foreach($servKeyList as [$servKey, $servNick, $servColor]){
+                self::$serverList[] = new Setting(ROOT.'/'.$servKey, $servNick, $servColor);
+            }
+        }
+        return self::$serverList;
     }
 
 

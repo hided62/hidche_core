@@ -20,9 +20,9 @@ $server = [];
 $storage = new \sammo\KVStorage(RootDB::db(), 'git_path');
 $serverGitPath = $storage->getAll();
 
-$rootServer = Util::array_last(AppConf::getList())->getShortName();
+$rootServer = Util::array_last(ServConfig::getServerList())->getShortName();
 
-foreach (AppConf::getList() as $setting) {
+foreach (ServConfig::getServerList() as $setting) {
     $serverColor = $setting->getColor();
     $serverKorName = $setting->getKorName();
 

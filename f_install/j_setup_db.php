@@ -204,7 +204,15 @@ $result = Util::generateFileUsingSimpleTemplate(
         'sharedIconPath' => $sharedIconPath,
         'gameImagePath' => $gameImagePath,
         'imageRequestPath' => $imageRequestPath,
-        'imageRequestKey' => $imageRequestKey
+        'imageRequestKey' => $imageRequestKey,
+        'serverList' => [
+            ['che', '체', 'white'],
+            ['kwe', '퀘', 'yellow'],
+            ['pwe', '풰', 'orange'],
+            ['twe', '퉤', 'magenta'],
+            ['nya', '냐', '#e67e22'],
+            ['pya', '퍄', '#9b59b6']
+        ]
     ],
     true
 );

@@ -71,7 +71,7 @@ class ResetHelper{
         }
 
         $prefix = DB::prefix();
-        AppConf::getList()[$prefix]->closeServer();
+        ServConfig::getServerList()[$prefix]->closeServer();
 
         $db = DB::db();
         $mysqli_obj = $db->get();
@@ -95,7 +95,7 @@ class ResetHelper{
             $servRoot.'/d_setting/UniqueConst.orig.php',
             $servRoot.'/d_setting/UniqueConst.php',[
                 'serverID'=>$serverID,
-                'serverName'=>AppConf::getList()[$prefix]->getKorName(),
+                'serverName'=>ServConfig::getServerList()[$prefix]->getKorName(),
                 'seasonIdx'=>$seasonIdx,
             ], true
         );
@@ -348,7 +348,7 @@ class ResetHelper{
         LogHistory(1);
 
         $prefix = DB::prefix();
-        AppConf::getList()[$prefix]->closeServer();
+        ServConfig::getServerList()[$prefix]->closeServer();
         opcache_reset();
 
         return [

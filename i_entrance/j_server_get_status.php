@@ -6,7 +6,7 @@ require(__DIR__.'/../vendor/autoload.php');
 // 외부 파라미터
 $response['server'] = [];
 
-foreach(AppConf::getList() as $setting){
+foreach(ServConfig::getServerList() as $setting){
 
     $serverObj = [
         'color'=>$setting->getColor(),

@@ -71,7 +71,7 @@ if (!$allowFullUpdate || !$target) {
     $target = $request['target'];
 }
 
-$baseServerName = Util::array_last_key(AppConf::getList());
+$baseServerName = Util::array_last_key(ServConfig::getServerList());
 
 if (!$target && $server != $baseServerName) {
     Json::die([
@@ -83,7 +83,7 @@ if (!$target && $server != $baseServerName) {
 
 $targetDir = $target . ':' . $baseServerName;
 
-if (!key_exists($server, AppConf::getList())) {
+if (!key_exists($server, ServConfig::getServerList())) {
     Json::die([
         'result' => false,
         'reason' => '불가능한 서버 이름입니다.'
@@ -230,7 +230,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 );
 
 $storage->$server = [$target, $version];
-//AppConf::getList()[$server]->closeServer();
+//ServConfig::getServerList()[$server]->closeServer();
 opcache_reset();
 
 Json::die([

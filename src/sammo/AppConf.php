@@ -11,22 +11,12 @@ class AppConf
     /**
      * 서버 설정 반환
      *
+     * @deprecated
      * @return \sammo\Setting[]
      */
     public static function getList()
     {
-        if (self::$serverList === null) {
-            self::$serverList = [
-                'che'=>new Setting(ROOT.'/che', '체', 'white'),
-                'kwe'=>new Setting(ROOT.'/kwe', '퀘', 'yellow'),
-                'pwe'=>new Setting(ROOT.'/pwe', '풰', 'orange'),
-                'twe'=>new Setting(ROOT.'/twe', '퉤', 'magenta'),
-                'nya'=>new Setting(ROOT.'/nya', '냐', '#e67e22'),
-                'pya'=>new Setting(ROOT.'/pya', '퍄', '#9b59b6'),
-                'hwe'=>new Setting(ROOT.'/hwe', '훼', 'red')
-            ];
-        }
-        return self::$serverList;
+        return ServConfig::getServerList();
     }
 
     /**

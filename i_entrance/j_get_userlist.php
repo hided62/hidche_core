@@ -41,7 +41,7 @@ foreach($db->query('SELECT member.*, max(member_log.date) as loginDate from memb
 }
 
 $serverList = [];
-foreach(AppConf::getList() as $serverName => $setting){
+foreach(ServConfig::getServerList() as $serverName => $setting){
     if($setting->isRunning()){
         $serverList[] = $serverName;
     }

@@ -32,7 +32,7 @@ if($userGrade < 5 && !$acl) {
 
 function doServerModeSet($server, $action, &$response, $session){
     
-    $serverList = AppConf::getList();
+    $serverList = ServConfig::getServerList();
     $settingObj = $serverList[$server];
     $serverAcl = $session->acl[$server]??[];
     $userGrade = $session->userGrade;

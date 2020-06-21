@@ -41,7 +41,7 @@ if($dt == $rf) {
     
     $servers = [];
 
-    foreach(AppConf::getList() as $key=>$setting){
+    foreach(ServConfig::getServerList() as $key=>$setting){
 
         if($setting->isRunning()){
             $servers[] = [$key, $setting->getKorName()];

@@ -47,7 +47,7 @@ if($member['grade'] == 6) {
 $acl = [];
 //TODO: Acl을 관리하기 위한 별도의 객체 필요
 foreach(Json::decode($member['acl']??'{}') as $serverName=>$aclList){
-    $serverKorName = AppConf::getList()[$serverName]->getKorName();
+    $serverKorName = ServConfig::getServerList()[$serverName]->getKorName();
     $aclTextList = array_map(function($aclName){
         $aclText = "알수없음[{$aclName}]";
         switch($aclName){

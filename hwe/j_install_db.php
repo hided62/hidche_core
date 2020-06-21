@@ -95,7 +95,7 @@ if($result !== true){
 
 ResetHelper::clearDB();
 
-AppConf::getList()[$prefix]->closeServer();
+ServConfig::getServerList()[$prefix]->closeServer();
 
 Json::die([
     'result'=>true,

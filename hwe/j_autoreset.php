@@ -52,7 +52,7 @@ else if(
     $now->getTimestamp() - $lastTurn->getTimestamp() > $reservedDate->getTimestamp() - $now->getTimestamp()
 ){
     //정지 상태 & 중간 넘음
-    AppConf::getList()[DB::prefix()]->closeServer();
+    ServConfig::getServerList()[DB::prefix()]->closeServer();
     $status = 'closed';
 }
 else if(
@@ -60,12 +60,12 @@ else if(
     $now->getTimestamp() - $lastTurn->getTimestamp() > ($reservedDate->getTimestamp() - $now->getTimestamp()) * 2
 ){
     //천통 & 비정지 상태 & 2/3 넘음
-    AppConf::getList()[DB::prefix()]->closeServer();
+    ServConfig::getServerList()[DB::prefix()]->closeServer();
     $status = 'closed';
 }
 else if($reservedDate->getTimestamp() - $now->getTimestamp() <= 60*10){
     //어쨌든 간에 10분 남았다면.
-    AppConf::getList()[DB::prefix()]->closeServer();
+    ServConfig::getServerList()[DB::prefix()]->closeServer();
     $status = 'closed';
 }
 
@@ -96,6 +96,6 @@ $result = ResetHelper::buildScenario(
 $result['affected']=1;
 
 $prefix = DB::prefix();
-AppConf::getList()[$prefix]->openServer();
+ServConfig::getServerList()[$prefix]->openServer();
 
 Json::die($result);

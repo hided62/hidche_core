@@ -150,7 +150,13 @@ class Util extends \utilphp\util
 
         $text = file_get_contents($srcFilePath);
         foreach ($params as $key => $value) {
-            $text = str_replace("_tK_{$key}_", $value, $text);
+            if(is_array($value)){
+                $text = str_replace("[/*_tK_{$key}_*/]", var_export($value, true), $text);
+            }
+            else{
+                $text = str_replace("_tK_{$key}_", $value, $text);
+            }
+            
         }
         file_put_contents($destFilePath, $text);
 
