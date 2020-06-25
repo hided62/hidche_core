@@ -2145,96 +2145,119 @@ class GeneralAI
     protected function do금쌀구매(): ?GeneralCommand
     {
         $general = $this->general;
-        $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
 
         if($this->city['trade'] === null && !$this->generalPolicy->can상인무시){
             return null;
         }
 
-        if($avgAmount < $this->baseDevelCost){
+        $kill = $general->getRankVar('killcrew') + 50000;
+        $death = $general->getRankVar('deathcrew') + 50000;
+        $deathRate = $death/$kill;
+
+        $absGold = $general->getVar('gold');
+        $absRice = $general->getVar('rice');
+        
+        $relGold = $absGold;
+        $relRice = $absRice * $deathRate;
+
+        if($absGold + $absRice < $this->baseDevelCost * 2){
             return null;
         }
 
-        if($this->dipState !== self::d평화 && ($this->genType & self::t통솔장)){
-            $crewType = $general->getCrewTypeObj();
-            if($this->generalPolicy->can모병){
-                $costCmd = buildGeneralCommandClass('che_모병', $general, $this->env, [
-                    'crewType'=>$crewType->id,
-                    'amount'=>$this->fullLeadership*100
-                ]);
-            }
-            else{
-                $costCmd = buildGeneralCommandClass('che_징병', $general, $this->env, [
-                    'crewType'=>$crewType->id,
-                    'amount'=>$this->fullLeadership*100
-                ]);
-            }
+        $crewType = $general->getCrewTypeObj();
+        if($this->generalPolicy->can모병){
+            $costCmd = buildGeneralCommandClass('che_모병', $general, $this->env, [
+                'crewType'=>$crewType->id,
+                'amount'=>$this->fullLeadership*100
+            ]);
+        }
+        else{
+            $costCmd = buildGeneralCommandClass('che_징병', $general, $this->env, [
+                'crewType'=>$crewType->id,
+                'amount'=>$this->fullLeadership*100
+            ]);
+        }
 
-            $goldCost = $costCmd->getCost()[0];
-            $riceCost = $crewType->riceWithTech(
-                $this->nation['tech'],
-                $this->fullLeadership*100 * 
-                    $general->getRankVar('killcrew')/max($general->getRankVar('deathcrew'),1)
-            );
+        $goldCost = $costCmd->getCost()[0];
+        $riceCost = $crewType->riceWithTech(
+            $this->nation['tech'],
+            $this->fullLeadership*100
+        );
 
-            if($avgAmount * 2 > $goldCost + $riceCost){
-                if ($general->getVar('rice') < $riceCost * 2 && $general->getVar('gold') >= $goldCost * 4) {
-                    //1:1
-                    $amount = Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount);
-                    if($amount >= $this->nationPolicy->minimumResourceActionAmount){
-                        $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
-                            [
-                                'buyRice' => true,
-                                'amount' => $amount
-                            ]
-                        );
-                        if($cmd->hasFullConditionMet()){
-                            return $cmd;
-                        }
-                    }
-                    
+        if(($relGold + $relRice) * 1.5 <= $goldCost + $riceCost){
+            return null;
+        }
+
+        $tryBuying = false;
+        if ($this->generalPolicy->can상인무시){
+            if($relRice * 1.5 < $relGold && $relRice < $riceCost * 2)
+            {
+                $tryBuying = true;
+            }
+            else if($relRice * 2 < $relGold)
+            {
+                $tryBuying = true;
+            }
+            
+        }
+        else{
+            if($relRice * 2 < $relGold && $relRice < $riceCost * 3)
+            {
+                $tryBuying = true;
+            }
+        }
+
+        if ($tryBuying) {
+            //1:1
+            $amount = Util::valueFit(Util::toInt(($relGold - $relRice) / (1 + $deathRate)), 100, GameConst::$maxResourceActionAmount);
+            if($amount >= $this->nationPolicy->minimumResourceActionAmount){
+                $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                    [
+                        'buyRice' => true,
+                        'amount' => $amount
+                    ]
+                );
+                if($cmd->hasFullConditionMet()){
+                    return $cmd;
                 }
-                if ($general->getVar('gold') < $goldCost && $general->getVar('rice') >= $riceCost * 2) {
-                    $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
-                    $amount = Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount);
-                    if($amount >= $this->nationPolicy->minimumResourceActionAmount){
-                        $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
-                            [
-                                'buyRice' => false,
-                                'amount' => $amount
-                            ]
-                        );
-                        if($cmd->hasFullConditionMet()){
-                            return $cmd;
-                        }
-                    }
+            }
+        }
+
+        $trySelling = false;
+        if ($this->generalPolicy->can상인무시){
+            if($relGold * 1.5 < $relRice && $relGold < $goldCost * 2)
+            {
+                $trySelling = true;
+            }
+            else if($relGold * 2 < $relRice)
+            {
+                $trySelling = true;
+            }
+            
+        }
+        else{
+            if($relGold * 2 < $relRice && $relGold < $goldCost * 3)
+            {
+                $trySelling = true;
+            }
+        }
+
+        if ($trySelling) {
+            $amount = Util::valueFit(Util::toInt(($relRice - $relGold) / (1 + $deathRate)), 100, GameConst::$maxResourceActionAmount);
+            if($amount >= $this->nationPolicy->minimumResourceActionAmount){
+                $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
+                    [
+                        'buyRice' => false,
+                        'amount' => $amount
+                    ]
+                );
+                if($cmd->hasFullConditionMet()){
+                    return $cmd;
                 }
             }
         }
 
-        if ($general->getVar('rice') < $this->baseDevelCost && $general->getVar('gold') >= $this->baseDevelCost * 3) { 
-            $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
-                [
-                    'buyRice' => true,
-                    'amount' => Util::valueFit(Util::toInt($general->getVar('gold') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
-                ]
-            );
-            if($cmd->hasFullConditionMet()){
-                return $cmd;
-            }
-        }
-        if ($general->getVar('gold') < $this->baseDevelCost && $general->getVar('rice') >= $this->baseDevelCost * 3) {
-            $avgAmount = ($general->getVar('gold') + $general->getVar('rice'))/2;
-            $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
-                [
-                    'buyRice' => false,
-                    'amount' => Util::valueFit(Util::toInt($general->getVar('rice') - $avgAmount), 100, GameConst::$maxResourceActionAmount)
-                ]
-            );
-            if($cmd->hasFullConditionMet()){
-                return $cmd;
-            }
-        }
+        
 
         return null;
     }
