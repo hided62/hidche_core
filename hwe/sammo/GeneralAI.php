@@ -2776,6 +2776,9 @@ class GeneralAI
         if($this->nation['rice'] < GameConst::$baserice){
             return null;
         }
+        if(($this->genType & self::t통솔장)&&in_array($this->dipState, [self::d징병, self::d직전, self::d전쟁])){
+            return null;
+        }
         
         $city = $this->city;
         if(Util::randBool(0.6)){
@@ -3116,15 +3119,14 @@ class GeneralAI
         }
 
 
-        $candidate = [];
+        $candidate = ['che_물자조달','che_인재탐색'];
         $nation = $this->nation;
         if($nation['gold'] < $this->nationPolicy->reqNationGold){
-            $candidate[] = 'che_물자조달';
+            $candidate = ['che_물자조달'];
         }
         if($nation['rice'] < $this->nationPolicy->reqNationRice){
-            $candidate[] = 'che_물자조달';
+            $candidate = ['che_물자조달'];
         }
-        $candidate[] = 'che_인재탐색';
 
 
         $cmd = buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
