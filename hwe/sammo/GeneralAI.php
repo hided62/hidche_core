@@ -1546,11 +1546,11 @@ class GeneralAI
             });
 
             foreach($npcCivilGenerals as $idx=>$targetNPCGeneral){
-                if($targetNPCGeneral->getVar($resName) <= $reqNPCMinDevelRes + 100){
+                if($targetNPCGeneral->getVar($resName) <= $reqNPCMinDevelRes * 1.5){
                     break;
                 }
 
-                $takeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinDevelRes;
+                $takeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinDevelRes * 1.2;
                 $takeAmount = Util::valueFit($takeAmount, 100, $this->maxResourceActionAmount);
                 if($takeAmount < $this->nationPolicy->minimumResourceActionAmount){
                     break;
