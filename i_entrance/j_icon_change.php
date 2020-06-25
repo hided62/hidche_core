@@ -21,7 +21,7 @@ $size = getImageSize($image['tmp_name']);
 
 $imageType = $size[2];
 
-$availableImageType = array('.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
+$availableImageType = array('.webp'=>IMAGETYPE_WEBP, '.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
 
 $db = RootDB::db();
 $member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `member` WHERE `NO` = %i', $userID);
