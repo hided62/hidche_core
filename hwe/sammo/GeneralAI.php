@@ -2680,6 +2680,9 @@ class GeneralAI
         foreach($this->backupCities as $candidateCity){
             $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
             $cityID = $candidateCity['city'];
+            if($candidateCity['city'] == $this->city['city']){
+                continue;
+            }
             if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
                 continue;
             }
@@ -2688,6 +2691,9 @@ class GeneralAI
 
         if(!$recruitableCityList){
             foreach($this->supplyCities as $candidateCity){
+                if($candidateCity['city'] == $this->city['city']){
+                    continue;
+                }
                 if($candidateCity['pop'] <= $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop){
                     continue;
                 }
