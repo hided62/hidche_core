@@ -38,7 +38,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
         $auxYearMonth = $general->getAuxVar('used_'.$this->getName())??-999;
 
-        if($yearMonth < $auxYearMonth + 60){
+        if($yearMonth < $auxYearMonth + 60 - $this->getPreReqTurn()){
             $this->minConditionConstraints=[
                 ConstraintHelper::AlwaysFail('초기화한 지 5년이 지나야합니다')
             ];
