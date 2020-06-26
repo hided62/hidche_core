@@ -54,7 +54,7 @@ $defaultPost = [
     'showMe' => false,
 ];
 
-$history = getGlobalHistoryLogRecent(15);
+$history = formatHistoryToHTML(getGlobalHistoryLogRecent(10));
 $rawMap = getWorldMap([
     'year' => null,
     'month' => null,
@@ -63,7 +63,12 @@ $rawMap = getWorldMap([
     'showMe' => false,
 ]);
 
+$db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
+$mapTheme = $gameStor->map_theme ?? 'che';
+
 $rawMap['history'] = $history;
+$rawMap['theme'] = $mapTheme;
 
 $etag = hash('sha256', $serverID.$now);
 $map = [

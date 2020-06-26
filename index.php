@@ -19,6 +19,28 @@ if ($session->isLoggedIn()) {
     die();
 }
 
+$runningServer = null;
+
+foreach(ServConfig::getServerList() as $setting){
+    if(!$setting->isExists()){
+        continue;
+    }
+    if(!$setting->isRunning()){
+        continue;
+    }
+    $runningServer = [
+        'color'=>$setting->getColor(),
+        'korName'=>$setting->getKorName(),
+        'name'=>$setting->getShortName(),
+        'exists'=>$setting->isExists(),
+        'enable'=>$setting->isRunning()
+    ];
+}
+
+if($runningServer){
+    $subTemplates = new \League\Plates\Engine(__DIR__.'/'.$runningServer['name'].'/templates');
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -28,14 +50,27 @@ if ($session->isLoggedIn()) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>삼국지 모의전투 HiDCHe</title>
+    <script>
+        var runningServer = <?=Json::encode($runningServer)?>;
+    </script>
     <?= WebUtil::printJS('e_lib/jquery-3.3.1.min.js') ?>
     <?= WebUtil::printJS('e_lib/bootstrap.bundle.min.js') ?>
     <?= WebUtil::printJS('e_lib/jquery.validate.min.js') ?>
     <?= WebUtil::printJS('e_lib/sha512.min.js') ?>
     <?= WebUtil::printJS('js/common.js') ?>
     <?= WebUtil::printJS('js/login.js') ?>
+    <?= WebUtil::printJS('d_shared/common_path.js') ?>
+    <?= WebUtil::printCSS('d_shared/common.css') ?>
     <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('css/login.css') ?>
+<?php if($runningServer): ?>
+    <script>
+        var serverNick = '<?=$runningServer['korName']?>';
+    </script>
+    <?= WebUtil::printJS($runningServer['name'].'/d_shared/base_map.js') ?>
+    <?= WebUtil::printJS($runningServer['name'].'/js/map.js') ?>
+    <?= WebUtil::printCSS($runningServer['name'].'/css/map.css') ?>
+<?php endif; ?>
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,힏체섭,히데체,히데체섭,HiDCHe,체섭">
     <meta property="og:type" content="website">
@@ -139,61 +174,75 @@ if ($session->isLoggedIn()) {
             </ul>
         </div>
     </nav>
-    <div class="full-content">
-        <div class="vertical-center">
-            <div class="container">
-                <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
-                <div class="row justify-content-md-center">
-                    <div class="col" style="max-width:450px;">
-                        <div class="card" id="login_card">
-                            <h3 class="card-header">
-                                로그인
-                            </h3>
-                            <div class="card-body">
+        <div class="container" style="margin-top:120px;">
+            <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
+            <div class="row justify-content-md-center">
+                <div class="col" style="max-width:450px;">
+                    <div class="card" id="login_card">
+                        <h3 class="card-header">
+                            로그인
+                        </h3>
+                        <div class="card-body">
 
-                                <form id="main_form" method="post" action="#">
-                                    <div class="form-group row">
-                                        <label for="username" class="col-5 col-md-4 col-form-label">계정명</label>
-                                        <div class="col-7 col-md-8">
-                                            <input autocomplete="username" type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="계정명" />
-                                        </div>
+                            <form id="main_form" method="post" action="#">
+                                <div class="form-group row">
+                                    <label for="username" class="col-5 col-md-4 col-form-label">계정명</label>
+                                    <div class="col-7 col-md-8">
+                                        <input autocomplete="username" type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="계정명" />
                                     </div>
+                                </div>
 
 
-                                    <div class="form-group row">
-                                        <label for="password" class="col-5 col-md-4 col-form-label">비밀번호</label>
-                                        <div class="col-7 col-md-8">
-                                            <input autocomplete="current-password" type="password" class="form-control" name="password" id="password" placeholder="비밀번호" />
-                                        </div>
+                                <div class="form-group row">
+                                    <label for="password" class="col-5 col-md-4 col-form-label">비밀번호</label>
+                                    <div class="col-7 col-md-8">
+                                        <input autocomplete="current-password" type="password" class="form-control" name="password" id="password" placeholder="비밀번호" />
                                     </div>
+                                </div>
 
-                                    <input type="hidden" id="global_salt" name="global_salt" value="<?= RootDB::getGlobalSalt() ?>">
-                                    <div class="form-group row">
-                                        <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login', ['account_email','talk_message']);" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
-                                        <div class="col-7 col-md-8">
-                                            <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
-                                                <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
-                                                <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                                                        <a class="dropdown-item" href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 초기화</a>
-                                                    </div>
+                                <input type="hidden" id="global_salt" name="global_salt" value="<?= RootDB::getGlobalSalt() ?>">
+                                <div class="form-group row">
+                                    <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login', ['account_email','talk_message']);" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
+                                    <div class="col-7 col-md-8">
+                                        <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
+                                            <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                                                    <a class="dropdown-item" href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 초기화</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+<?php if($runningServer): ?>
+            <div class="row justify-content-md-center" id="running_map">
+                <div class="col" style="max-width:700px;">
+                    <div class="card" style="width:700px;">
+                        <h3 class="card-header">
+                            <?=$runningServer['korName']?> 현황
+                        </h3>
+                        <div class='map-container' style='position:relative;'>
+                            <?=$subTemplates->render('map', [
+                                'mapTheme' => ''
+                            ])?>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+<?php endif; ?>
         </div>
         <div id="bottom_box">
             <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2020 • HideD
                 <br>크롬과 파이어폭스에 최적화되어있습니다.</div>
         </div>
-    </div>
 
     <div class="modal fade" id="modalOTP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
