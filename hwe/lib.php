@@ -55,3 +55,20 @@ function LogText($prefix, $variable)
     $text = sprintf('%s : %s'."\r\n", $prefix, TVarDumper::dump($variable));
     file_put_contents(ROOT.'/d_log/'.UniqueConst::$serverName.'_dbg_logs.txt', $text, FILE_APPEND);
 }
+
+function prepareDir(string $dirPath, bool $forceCreate=true):bool{
+    if(file_exists($dirPath)){
+        if(is_dir($dirPath)){
+            return true;
+        }
+        if(!$forceCreate){
+            throw new \RuntimeException('이미 파일이 있습니다');
+        }
+        if(!unlink($dirPath)){
+            return false;
+        }
+        return mkdir($dirPath);
+    }
+    
+    return mkdir($dirPath, 0777, true);
+}

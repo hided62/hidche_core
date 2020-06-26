@@ -35,6 +35,8 @@ d_setting/*.php
 */d_setting/*.php
 */d_setting/templates/*.php
 
+*/data/file_cache
+
 **/old/*
 test.php
 
