@@ -35,6 +35,7 @@ foreach(ServConfig::getServerList() as $setting){
         'exists'=>$setting->isExists(),
         'enable'=>$setting->isRunning()
     ];
+    break;
 }
 
 if($runningServer){
