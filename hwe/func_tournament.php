@@ -523,7 +523,7 @@ function selection($tnmt_type, $tnmt, $phase) {
     if($phase < 31) {
         $gameStor->phase+=1;
     } else {
-        $gameStor->tournamemt = 4;
+        $gameStor->tournament = 4;
         $gameStor->phase=0;
     }
 }
