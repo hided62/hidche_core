@@ -1,12 +1,12 @@
 {
-    "stat":{
-        "total":150,
-        "min":10,
-        "max":75,
-        "npcTotal":148,
-        "npcMax":73,
-        "npcMin":10,
-        "chiefMin":65
+    "stat": {
+        "total": 165,
+        "min": 15,
+        "max": 80,
+        "npcTotal": 150,
+        "npcMax": 75,
+        "npcMin": 10,
+        "chiefMin": 65
     },
-    "iconPath":"."
+    "iconPath": "."
 }
