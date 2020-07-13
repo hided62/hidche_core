@@ -232,7 +232,7 @@ function checkCommandArg(?array $arg):?string{
     }
     $defaultCheck = [
         /*'string'=>[
-            'nationName', 'optionText', 'itemType', 'nationType'
+            'nationName', 'optionText', 'itemType', 'nationType', 'commandType',
         ],*/
         'integer'=>[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',

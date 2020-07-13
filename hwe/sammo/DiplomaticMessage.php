@@ -89,6 +89,7 @@ class DiplomaticMessage extends Message{
         }
 
         $commandObj->run();
+        $commandObj->setNextAvailable();
 
         return [self::ACCEPTED, ''];
     }
@@ -110,6 +111,7 @@ class DiplomaticMessage extends Message{
         }
 
         $commandObj->run();
+        $commandObj->setNextAvailable();
 
         return [self::ACCEPTED, ''];
     }
@@ -131,6 +133,7 @@ class DiplomaticMessage extends Message{
         }
 
         $commandObj->run();
+        $commandObj->setNextAvailable();
 
         return [self::ACCEPTED, ''];
     }

@@ -60,7 +60,7 @@ class che_백성동원 extends Command\NationCommand{
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand()
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn())
         ];
     }
 
@@ -72,11 +72,8 @@ class che_백성동원 extends Command\NationCommand{
         $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
-                0, 1
-            ], '전쟁중이 아닙니다.'),
             ConstraintHelper::OccupiedDestCity(),
-            ConstraintHelper::AvailableStrategicCommand()
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn())
         ];
     }
 
@@ -161,7 +158,7 @@ class che_백성동원 extends Command\NationCommand{
         $logger->pushNationalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 하였습니다.");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => $this->getPostReqTurn()
+            'strategic_cmd_limit' => 12
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));

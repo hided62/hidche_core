@@ -3,7 +3,7 @@
 namespace sammo\Constraint;
 
 class AvailableStrategicCommand extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION;
+    const REQ_VALUES = Constraint::REQ_NATION | Constraint::REQ_INT_ARG;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
@@ -22,7 +22,7 @@ class AvailableStrategicCommand extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['strategic_cmd_limit'] == 0){
+        if($this->nation['strategic_cmd_limit'] <= $this->arg){
             return true;
         }
 

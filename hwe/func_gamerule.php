@@ -516,6 +516,7 @@ function checkWander()
             $logger = $wanderer->getLogger();
             $logger->pushGeneralActionLog('초반 제한후 방랑군은 자동 해산됩니다.', ActionLogger::PLAIN);
             $wanderCmd->run();
+            $wanderCmd->setNextAvailable();
         }
     }
 

@@ -67,7 +67,7 @@ class che_허보 extends Command\NationCommand
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand(),
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
         ];
     }
 
@@ -85,7 +85,7 @@ class che_허보 extends Command\NationCommand
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
-            ConstraintHelper::AvailableStrategicCommand(),
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
         ];
     }
 

@@ -47,7 +47,7 @@ class che_필사즉생 extends Command\NationCommand{
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 0
             ], '전쟁중이 아닙니다.'),
-            ConstraintHelper::AvailableStrategicCommand()
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn())
         ];
     }
     

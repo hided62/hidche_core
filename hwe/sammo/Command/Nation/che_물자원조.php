@@ -124,7 +124,16 @@ class che_물자원조 extends Command\NationCommand{
     }
 
     public function getPostReqTurn():int{
+        //NOTE: 자체 postReqTurn 사용
         return 12;
+    }
+
+    public function getNextAvailable():?int{
+        return null;
+    }
+
+    public function setNextAvailable(?int $yearMonth=null){
+        return;
     }
 
     public function getBrief():string{

@@ -35,7 +35,7 @@ jQuery(function($) {
         //checkCommandArg 참고
         var availableArgumentList = {
             'string': [
-                'nationName', 'optionText', 'itemType', 'nationType', 'itemCode',
+                'nationName', 'optionText', 'itemType', 'nationType', 'itemCode', 'commandType',
             ],
             'int': [
                 'crewType', 'destGeneralID', 'destCityID', 'destNationID',

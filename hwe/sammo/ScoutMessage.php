@@ -89,6 +89,7 @@ class ScoutMessage extends Message{
         }
 
         $commandObj->run();
+        $commandObj->setNextAvailable();
 
         //메시지 비 활성화
         $this->msgOption['used'] = true;

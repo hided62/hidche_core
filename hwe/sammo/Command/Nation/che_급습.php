@@ -72,7 +72,7 @@ class che_급습 extends Command\NationCommand
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand(),
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
         ];
     }
 
@@ -89,7 +89,7 @@ class che_급습 extends Command\NationCommand
                 12,
                 '선포 12개월 이상인 상대국에만 가능합니다.'
             ),
-            ConstraintHelper::AvailableStrategicCommand(),
+            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
         ];
     }
 

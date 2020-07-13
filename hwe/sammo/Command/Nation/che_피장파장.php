@@ -13,6 +13,7 @@ use \sammo\{
 };
 
 use function \sammo\{
+    buildNationCommandClass,
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
@@ -58,12 +59,11 @@ class che_피장파장 extends Command\NationCommand{
         $env = $this->env;
 
         $this->setCity();
-        $this->setNation(['strategic_cmd_limit']);
+        $this->setNation();
 
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -79,7 +79,6 @@ class che_피장파장 extends Command\NationCommand{
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
-            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -88,7 +87,7 @@ class che_피장파장 extends Command\NationCommand{
         $reqTurn = $this->getPreReqTurn()+1;
         $postReqTurn = $this->getPostReqTurn();
 
-        return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
+        return "{$name}/{$reqTurn}턴";
     }
 
     public function getCost():array{
@@ -96,15 +95,11 @@ class che_피장파장 extends Command\NationCommand{
     }
     
     public function getPreReqTurn():int{
-        return 2;
+        return 1;
     }
 
     public function getPostReqTurn():int{
-        $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*2)*10);    
-
-        $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
-        return $nextTerm;
+        return 0;
     }
 
     public function getBrief():string{
@@ -176,12 +171,7 @@ class che_피장파장 extends Command\NationCommand{
 
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동");
         
-        $db->update('nation', [
-            'strategic_cmd_limit' => $this->getPostReqTurn()
-        ], 'nation=%i', $nationID);
-        $db->update('nation', [
-            'strategic_cmd_limit' => $db->sqleval('strategic_cmd_limit + %i', static::$delayCnt)
-        ], 'nation = %i', $destNationID);
+
 
         $general->applyDB($db);
 
@@ -218,10 +208,28 @@ class che_피장파장 extends Command\NationCommand{
             $nationList[] = $destNation;
         }
 
+        $availableCommandTypeList = [];
+        $currYearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
+        foreach(GameConst::$availableChiefCommand['전략'] as $commandType){
+            $cmd = buildNationCommandClass($commandType, $generalObj, $this->env, new LastTurn());
+            if($cmd->getName() == $this->getName()){
+                continue;
+            }
+            $cmdName = $cmd->getName();
+            $available = true;
+            $nextAvailable = $cmd->getNextAvailable();
+            
+            if($nextAvailable !== null && $currYearMonth < $cmd->getNextAvailable() - $cmd->getPreReqTurn()){
+                $available = false;
+            }
+            $availableCommandTypeList[$commandType] = [$cmdName, $available];
+        }
+
         ob_start(); 
 ?>
 <?=\sammo\getMapHtml()?><br>
 선택된 국가에 피장파장을 발동합니다.<br>
+지정한 전략을 상대국이 <?=static::$delayCnt?>턴 동안 사용할 수 없게됩니다.<br>
 선포, 전쟁중인 상대국에만 가능합니다.<br>
 상대 국가를 목록에서 선택하세요.<br>
 배경색은 현재 피장파장 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
@@ -232,6 +240,16 @@ class che_피장파장 extends Command\NationCommand{
         style='color:<?=$nation['color']?>;<?=$nation['availableCommand']?'':'background-color:red;'?>'
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
+<select class='formInput' name="commandType" id="commandType" size='1' style='color:white;background-color:black;'>
+<?php foreach($availableCommandTypeList as $commandType=>[$cmdName, $cmdAvailable]):  
+    /** @var \sammo\Command\NationCommand $cmdObj */ 
+?>
+    <option 
+        value='<?=$commandType?>' 
+        style='color:white;<?=$cmdAvailable?'':'background-color:red;'?>'
+    >【<?=$cmdName?> 】</option>
+<?php endforeach; ?>
+</select>
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">
 <?php
         return ob_get_clean();

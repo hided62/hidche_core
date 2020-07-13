@@ -44,8 +44,8 @@ class ConstraintHelper{
         return [__FUNCTION__, $crewTypeID];
     }
 
-    static function AvailableStrategicCommand():array{
-        return [__FUNCTION__];
+    static function AvailableStrategicCommand(int $allowTurnCnt=0):array{
+        return [__FUNCTION__, $allowTurnCnt];
     }
 
     static function BattleGroundCity():array{

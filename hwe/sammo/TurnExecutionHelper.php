@@ -85,6 +85,7 @@ class TurnExecutionHelper
 
             $result = $commandObj->run();
             if($result){
+                $commandObj->setNextAvailable();
                 break;
             }
             
@@ -127,6 +128,7 @@ class TurnExecutionHelper
 
             $result = $commandObj->run();
             if($result){
+                $commandObj->setNextAvailable();
                 break;
             }
             $alt = $commandObj->getAlternativeCommand();

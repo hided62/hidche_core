@@ -17,6 +17,7 @@ use \sammo\Constraint\ConstraintHelper;
 abstract class BaseCommand{
     static protected $actionName = 'CommandName';
     static public $reqArg = false;
+    static protected $isLazyCalcReqTurn = false;
 
     public function getCommandDetailTitle():string{
         return $this->getName();
@@ -54,7 +55,6 @@ abstract class BaseCommand{
 
     static protected $isInitStatic = true;
     protected static function initStatic(){
-
     }
 
     public function __construct(General $generalObj, array $env, $arg = null){
@@ -271,6 +271,29 @@ abstract class BaseCommand{
         return $this->logger;
     }
 
+    abstract protected function getNextExecuteKey():string;
+    abstract public function getNextAvailable():?int;
+    abstract public function setNextAvailable(?int $yearMonth=null);
+
+    protected function testPostReqTurn():?array{
+        if(!$this->getPostReqTurn()){
+            return null;
+        }
+
+        $nextAvailable = $this->getNextAvailable();
+        if($nextAvailable === null){
+            return null;
+        }
+
+        $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
+        $remainTurn = $nextAvailable - $yearMonth - $this->getPreReqTurn();
+        if($remainTurn <= 0){
+            return null;
+        }
+
+        return ['testPostReqTurn', "{$remainTurn}턴 더 기다려야 합니다"];
+    }
+
     public function testPermissionToReserve():?string{
         if($this->cachedPermissionToReserve){
             return $this->reasonNoPermissionToReserve;
@@ -331,6 +354,11 @@ abstract class BaseCommand{
         ];
 
         [$this->reasonConstraint, $this->reasonNotMinConditionMet] = Constraint::testAll($this->minConditionConstraints??[], $constraintInput, $this->env);
+
+        if($this->reasonNotMinConditionMet === null && !self::$isLazyCalcReqTurn){
+            [$this->reasonConstraint, $this->reasonNotMinConditionMet] = $this->testPostReqTurn();
+        }
+
         $this->cachedMinConditionMet = true;
         return $this->reasonNotMinConditionMet;
         
@@ -364,6 +392,11 @@ abstract class BaseCommand{
         ];
 
         [$this->reasonConstraint, $this->reasonNotFullConditionMet] = Constraint::testAll($this->fullConditionConstraints??[], $constraintInput, $this->env);
+
+        if($this->reasonNotFullConditionMet === null){
+            [$this->reasonConstraint, $this->reasonNotFullConditionMet] = $this->testPostReqTurn();
+        }
+
         $this->cachedFullConditionMet = true;
         return $this->reasonNotFullConditionMet;
         

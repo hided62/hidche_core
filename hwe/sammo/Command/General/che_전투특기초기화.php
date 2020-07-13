@@ -32,24 +32,6 @@ class che_전투특기초기화 extends Command\GeneralCommand{
     }
 
     protected function init(){
-
-        $general = $this->generalObj;
-        $env = $this->env;
-        $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
-        $auxYearMonth = $general->getAuxVar('used_'.$this->getName())??-999;
-
-        if($yearMonth < $auxYearMonth + 60 - $this->getPreReqTurn()){
-            $this->minConditionConstraints=[
-                ConstraintHelper::AlwaysFail('초기화한 지 5년이 지나야합니다')
-            ];
-            
-            $this->fullConditionConstraints=[
-                ConstraintHelper::AlwaysFail('초기화한 지 5년이 지나야합니다')
-            ];
-            return;
-        }
-
-
         $this->minConditionConstraints=[
             ConstraintHelper::ReqGeneralValue(static::$specialType, static::$specialText, '!=', 'None', '특기가 없습니다.'),
         ];
@@ -57,7 +39,6 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         $this->fullConditionConstraints=[
             ConstraintHelper::ReqGeneralValue(static::$specialType, static::$specialText, '!=', 'None', '특기가 없습니다.')
         ];
-
     }
 
     public function getCommandDetailTitle():string{
@@ -82,7 +63,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
     }
 
     public function getPostReqTurn():int{
-        return 0;
+        return 60;
     }
 
     public function getTermString():string{
@@ -113,7 +94,6 @@ class che_전투특기초기화 extends Command\GeneralCommand{
 
         $general->setVar(static::$specialType, 'None');
         $general->setVar(static::$speicalAge, $general->getVar('age') + 1);
-        $general->setAuxVar('used_'.$this->getName(), $yearMonth);
 
         $logger = $general->getLogger();
 
