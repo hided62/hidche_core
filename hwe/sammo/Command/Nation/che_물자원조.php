@@ -128,7 +128,7 @@ class che_물자원조 extends Command\NationCommand{
         return 12;
     }
 
-    public function getNextAvailable():?int{
+    public function getNextAvailableTurn():?int{
         return null;
     }
 

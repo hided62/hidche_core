@@ -99,7 +99,7 @@ class che_초토화 extends Command\NationCommand{
         return 24;
     }
 
-    public function getNextAvailable():?int{
+    public function getNextAvailableTurn():?int{
         return null;
     }
 

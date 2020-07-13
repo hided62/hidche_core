@@ -61,7 +61,7 @@ class che_의병모집 extends Command\NationCommand
         $reqTurn = $this->getPreReqTurn() + 1;
         $postReqTurn = $this->getPostReqTurn();
 
-        return "{$name}/{$reqTurn}턴(전략$postReqTurn)";
+        return "{$name}/{$reqTurn}턴(재사용 대기 $postReqTurn)";
     }
 
     public function getCost(): array

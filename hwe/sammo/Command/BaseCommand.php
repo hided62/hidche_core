@@ -271,8 +271,8 @@ abstract class BaseCommand{
         return $this->logger;
     }
 
-    abstract protected function getNextExecuteKey():string;
-    abstract public function getNextAvailable():?int;
+    abstract public function getNextExecuteKey():string;
+    abstract public function getNextAvailableTurn():?int;
     abstract public function setNextAvailable(?int $yearMonth=null);
 
     protected function testPostReqTurn():?array{
@@ -280,13 +280,13 @@ abstract class BaseCommand{
             return null;
         }
 
-        $nextAvailable = $this->getNextAvailable();
-        if($nextAvailable === null){
+        $nextAvailableTurn = $this->getNextAvailableTurn();
+        if($nextAvailableTurn === null){
             return null;
         }
 
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
-        $remainTurn = $nextAvailable - $yearMonth - $this->getPreReqTurn();
+        $remainTurn = $nextAvailableTurn - $yearMonth;
         if($remainTurn <= 0){
             return null;
         }

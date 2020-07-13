@@ -321,7 +321,6 @@ class GameConstBase
             'che_감축',
         ],
         '전략'=>[
-            'che_피장파장',
             'che_필사즉생',
             'che_백성동원',
             'che_수몰',
@@ -331,6 +330,7 @@ class GameConstBase
             'che_급습',
         ],
         '기타'=>[
+            'che_피장파장',
             'che_국기변경',
             'che_국호변경',
         ]

@@ -61,7 +61,7 @@ $scenario = $gameStor->scenario_text;
 $nationID = $generalObj->getNationID();
 if($nationID){
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-    $nationStor->cacheValues(['notice', 'online_genenerals']);
+    $nationStor->cacheAll();
 }
 
 $valid = 0;

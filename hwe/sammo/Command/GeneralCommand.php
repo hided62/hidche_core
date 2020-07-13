@@ -4,14 +4,14 @@ use \sammo\Util;
 
 abstract class GeneralCommand extends BaseCommand{
 
-    protected function getNextExecuteKey():string{
+    public function getNextExecuteKey():string{
         $turnKey = static::$actionName;
         $generalID = $this->getGeneral()->getID();
         $executeKey = "next_execute_{$generalID}_{$turnKey}";
         return $executeKey;
     }
 
-    public function getNextAvailable():?int{
+    public function getNextAvailableTurn():?int{
         if($this->isArgValid && !$this->getPostReqTurn()){
             return null;
         }
@@ -25,7 +25,8 @@ abstract class GeneralCommand extends BaseCommand{
             return;            
         }
         if($yearMonth === null){
-            $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']) + $this->getPostReqTurn();
+            $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']) 
+            + $this->getPostReqTurn() - $this->getPreReqTurn();
         }
         
         $db = \sammo\DB::db();

@@ -27,13 +27,13 @@ abstract class NationCommand extends BaseCommand{
         return $this->resultTurn;
     }
     
-    protected function getNextExecuteKey():string{
+    public function getNextExecuteKey():string{
         $turnKey = static::$actionName;
         $executeKey = "next_execute_{$turnKey}";
         return $executeKey;
     }
 
-    public function getNextAvailable():?int{
+    public function getNextAvailableTurn():?int{
         if($this->isArgValid && !$this->getPostReqTurn()){
             return null;
         }
@@ -47,7 +47,8 @@ abstract class NationCommand extends BaseCommand{
             return;
         }
         if($yearMonth === null){
-            $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']) + $this->getPostReqTurn();
+            $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']) 
+                            + $this->getPostReqTurn() - $this->getPreReqTurn();
         }
 
         $db = \sammo\DB::db();

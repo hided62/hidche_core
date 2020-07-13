@@ -185,7 +185,8 @@ function myNationInfo(General $generalObj)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['startyear', 'year']);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
+    $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 
     $nationID = $generalObj->getNationID();
     $nation = $db->queryFirstRow('SELECT * FROM nation WHERE nation = %i', $nationID)??getNationStaticInfo(0);
@@ -199,6 +200,17 @@ function myNationInfo(General $generalObj)
 
     $level12Name = key_exists(12, $topChiefs)?getColoredName($topChiefs[12]['name'], $topChiefs[12]['npc']):'-';
     $level11Name = key_exists(11, $topChiefs)?getColoredName($topChiefs[11]['name'], $topChiefs[11]['npc']):'-';
+
+    $impossibleStrategicCommandLists = [];
+    $strategicCommandLists = GameConst::$availableChiefCommand['전략'];
+    $yearMonth = Util::joinYearMonth($admin['year'], $admin['month']);
+    foreach($strategicCommandLists as $command){
+        $cmd = buildNationCommandClass($command, $generalObj, $admin, new LastTurn());
+        $nextAvailableTurn = $cmd->getNextAvailableTurn();
+        if($nextAvailableTurn > $yearMonth){
+            $impossibleStrategicCommandLists[] = [$cmd->getName(), $nextAvailableTurn - $yearMonth];
+        }
+    }
 
     echo "<table width=498 class='tb_layout bg2 nation_info'>
     <tr>
@@ -282,8 +294,21 @@ function myNationInfo(General $generalObj)
     } else {
         if ($nation['strategic_cmd_limit'] != 0) {
             $nation['strategic_cmd_limit'] = "<font color=red>{$nation['strategic_cmd_limit']}턴</font>";
-        } else {
+        } else if($impossibleStrategicCommandLists) {
+            $nation['strategic_cmd_limit'] = "<font color=yellow>가 능</font>";
+        } else{
             $nation['strategic_cmd_limit'] = "<font color=limegreen>가 능</font>";
+        }
+
+        if($impossibleStrategicCommandLists){
+            $text = [];
+            foreach($impossibleStrategicCommandLists as [$cmdName, $remainTurn]){
+                $text[] = "{$cmdName}: {$remainTurn}턴 뒤";
+            }
+            $nation['strategic_cmd_limit'] = $templates->render('tooltip', [
+                'text'=>$nation['strategic_cmd_limit'],
+                'info'=>'<span class="text-left d-inline-block">'.join('<br>', $text).'</span>',
+            ]);
         }
 
         if ($nation['surlimit'] != 0) {
