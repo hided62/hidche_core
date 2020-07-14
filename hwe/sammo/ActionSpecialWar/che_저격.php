@@ -24,7 +24,7 @@ class che_저격 extends \sammo\BaseSpecial{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_저격시도($unit, che_저격시도::TYPE_NONE, 0.5, 10, 40),
+            new che_저격시도($unit, che_저격시도::TYPE_NONE, 0.5, 20, 40),
             new che_저격발동($unit)
         );
     }
