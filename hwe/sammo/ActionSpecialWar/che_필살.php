@@ -11,7 +11,7 @@ class che_필살 extends \sammo\BaseSpecial{
 
     protected $id = 71;
     protected $name = '필살';
-    protected $info = '[전투] 필살 확률 +25%p, 필살 발동시 대상 회피 불가';
+    protected $info = '[전투] 필살 확률 +30%p, 필살 발동시 대상 회피 불가';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
@@ -23,7 +23,7 @@ class che_필살 extends \sammo\BaseSpecial{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'warCriticalRatio'){
-            return $value + 0.25;
+            return $value + 0.30;
         }
         return $value;
     }
