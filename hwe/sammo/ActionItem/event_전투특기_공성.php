@@ -35,7 +35,7 @@ class event_전투특기_공성 extends \sammo\BaseItem{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if(\sammo\Util::starts_with($statName, 'dex')){
-            $myArmType = 'dex'.GameUnitConst::T_CASTLE;
+            $myArmType = 'dex'.GameUnitConst::T_SIEGE;
             $opposeArmType = 'dex'.$aux['opposeType']->armType;;
             if($aux['isAttacker'] && $opposeArmType === $statName){
                 return $value + $general->getVar($myArmType);

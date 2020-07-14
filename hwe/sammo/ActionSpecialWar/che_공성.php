@@ -36,7 +36,7 @@ class che_공성 extends \sammo\BaseSpecial{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if(\sammo\Util::starts_with($statName, 'dex')){
-            $myArmType = 'dex'.GameUnitConst::T_CASTLE;
+            $myArmType = 'dex'.GameUnitConst::T_SIEGE;
             $opposeArmType = 'dex'.$aux['opposeType']->armType;;
             if($aux['isAttacker'] && $opposeArmType === $statName){
                 return $value + $general->getVar($myArmType);
