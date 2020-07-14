@@ -14,7 +14,7 @@ class che_반계 extends \sammo\BaseSpecial{
 
     protected $id = 45;
     protected $name = '반계';
-    protected $info = '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +100%)';
+    protected $info = '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +150%)';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
@@ -24,7 +24,7 @@ class che_반계 extends \sammo\BaseSpecial{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'warMagicSuccessDamage' && $aux === '반목'){
-            return $value + 0.4;
+            return $value + 0.9;
         }
         return $value;
     }

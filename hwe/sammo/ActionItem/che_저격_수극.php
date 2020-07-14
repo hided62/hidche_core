@@ -13,7 +13,7 @@ class che_저격_수극 extends \sammo\BaseItem{
     protected $id = 2;
     protected $rawName = '수극';
     protected $name = '수극(저격)';
-    protected $info = '[전투] 전투 개시 전 20% 확률로 저격 시도. 1회용';
+    protected $info = '[전투] 전투 개시 전 50% 확률로 저격 시도. 1회용';
     protected $cost = 1000;
     protected $consumable = true;
     protected $buyable = true;
@@ -21,7 +21,7 @@ class che_저격_수극 extends \sammo\BaseItem{
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_저격시도($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 0.2, 20, 40),
+            new che_저격시도($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 0.5, 20, 40),
             new che_저격발동($unit)
         );
     }

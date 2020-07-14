@@ -25,7 +25,8 @@ class che_전투치료발동 extends BaseWarUnitTrigger{
         $oppose->getLogger()->pushGeneralBattleDetailLog("상대가 <C>치료</>했다!", ActionLogger::PLAIN);
         $self->getLogger()->pushGeneralBattleDetailLog("<C>치료</>했다!", ActionLogger::PLAIN);
 
-        $oppose->multiplyWarPowerMultiply(1/1.5);
+        $oppose->multiplyWarPowerMultiply(0.5);
+        $self->getGeneral()->setVar('injury', 0);
 
         $this->processConsumableItem();
 

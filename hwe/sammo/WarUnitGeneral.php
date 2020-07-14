@@ -62,7 +62,7 @@ class WarUnitGeneral extends WarUnit{
 
     function getMaxPhase():int{
         $phase = $this->getCrewType()->speed;
-        $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase);
+        $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase, ['isAttacker'=>$this->isAttacker]);
         return $phase + $this->bonusPhase;
     }
 
@@ -75,12 +75,16 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getDex(GameUnitDetail $crewType){
-        return $this->general->getDex($crewType);
+        $rawDex = $this->general->getDex($crewType);
+        return $this->general->onCalcStat($this->general, 'dex'.$crewType->armType, $rawDex, [
+            'isAttacker'=>$this->isAttacker,
+            'opposeType'=>$this->oppose->getCrewType()
+        ]);
     }
 
     function getComputedTrain(){
         $train = $this->general->getVar('train');
-        $train = $this->general->onCalcStat($this->general, 'bonusTrain', $train);
+        $train = $this->general->onCalcStat($this->general, 'bonusTrain', $train, ['isAttacker'=>$this->isAttacker]);
         $train += $this->trainBonus;
         
         return $train;
@@ -88,7 +92,7 @@ class WarUnitGeneral extends WarUnit{
 
     function getComputedAtmos(){
         $atmos = $this->general->getVar('atmos');
-        $atmos = $this->general->onCalcStat($this->general, 'bonusAtmos', $atmos);
+        $atmos = $this->general->onCalcStat($this->general, 'bonusAtmos', $atmos, ['isAttacker'=>$this->isAttacker]);
         $atmos += $this->atmosBonus;
         
         return $atmos;

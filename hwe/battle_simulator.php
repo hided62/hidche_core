@@ -439,7 +439,7 @@ var nation = <?=Json::encode($nation)?>;
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="input-group mb-1">
+                <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">귀병숙련</span>
                     </div>
@@ -460,10 +460,26 @@ var nation = <?=Json::encode($nation)?>;
                         <span class="input-group-text">수비여부</span>
                     </div>
                     <select class="custom-select form_defence_train only_defender">
+                        <option value="90">훈사 90</option>
                         <option value="80">훈사 80</option>
                         <option value="60">훈사 60</option>
+                        <option value="40">훈사 40</option>
                         <option value="999">안함</option>
                     </select>
+                </div>
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">전투 수</span>
+                    </div>
+                    <input type="number" class="form-control form_warnum" value="0" step="1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">승리 수</span>
+                    </div>
+                    <input type="number" class="form-control form_killnum" value="0" step="1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">사살 수</span>
+                    </div>
+                    <input type="number" class="form-control form_killcrew" value="0" step="1">
                 </div>
             </div>
         </div>

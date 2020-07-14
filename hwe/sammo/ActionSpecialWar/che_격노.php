@@ -12,7 +12,7 @@ class che_격노 extends \sammo\BaseSpecial{
 
     protected $id = 74;
     protected $name = '격노';
-    protected $info = '[전투] 상대방 필살 및 회피 시도시 일정 확률로 격노(필살) 발동, 공격 시 일정 확률로 진노(1페이즈 추가)';
+    protected $info = '[전투] 상대방 필살 시 격노(필살) 발동, 회피 시도시 25% 확률로 격노 발동, 공격 시 일정 확률로 진노(1페이즈 추가)';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;

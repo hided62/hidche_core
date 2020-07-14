@@ -13,7 +13,7 @@ class event_전투특기_격노 extends \sammo\BaseItem{
     protected $id = 74;
     protected $rawName = '비급';
     protected $name = '비급(격노)';
-    protected $info = '[전투] 상대방 필살 및 회피 시도시 일정 확률로 격노(필살) 발동, 공격 시 일정 확률로 진노(1페이즈 추가)';
+    protected $info = '[전투] 상대방 필살 시 격노(필살) 발동, 회피 시도시 25% 확률로 격노 발동, 공격 시 일정 확률로 진노(1페이즈 추가)';
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;

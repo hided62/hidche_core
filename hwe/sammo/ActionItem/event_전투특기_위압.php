@@ -13,7 +13,7 @@ class event_전투특기_위압 extends \sammo\BaseItem{
     protected $id = 63;
     protected $rawName = '비급';
     protected $name = '비급(위압)';
-    protected $info = '[전투] 훈련/사기≥90, 병력≥1,000 일 때 첫 페이즈 위압 발동(적 공격 불가)';
+    protected $info = '[전투] 첫 페이즈 위압 발동(적 공격, 회피 불가, 사기 5 감소)';
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;

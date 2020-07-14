@@ -4,13 +4,14 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityHelper;
 use \sammo\WarUnit;
+use \sammo\Util;
 
 class event_전투특기_무쌍 extends \sammo\BaseItem{
 
     protected $id = 61;
     protected $rawName = '비급';
     protected $name = '비급(무쌍)';
-    protected $info = '[전투] 대미지 +10%, 공격 시 필살 확률 +10%p';
+    protected $info = '[전투] 대미지 +10%, 공격 시 필살 확률 +10%p, <br>승리 수만큼 대미지 0.20%씩 추가 상승(최대40%)<br>승리 수만큼 피해 0.05%씩 감소(최대50%)';
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
@@ -24,6 +25,11 @@ class event_전투특기_무쌍 extends \sammo\BaseItem{
     }
 
     public function getWarPowerMultiplier(WarUnit $unit):array{
-        return [1.1, 1];
+        $attackMultiplier = 1.1;
+        $defenceMultiplier = 1;
+        $killnum = $unit->getGeneral()->getRankVar('killnum');
+        $attackMultiplier += Util::valueFit($killnum * 0.01 * 0.2, null, 0.4);
+        $defenceMultiplier -= Util::valueFit($killnum * 0.01 * 0.05, null, 0.5);
+        return [$attackMultiplier, $defenceMultiplier];
     }
 }

@@ -87,12 +87,13 @@ $generalCheck = [
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
         'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item', 
         'explevel', 'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
-        'recent_war'
+        'recent_war', 'warnum', 'killnum', 'killcrew',
     ],
     'integer'=>[
         'no', 'nation', 'crew', 'crewtype', 'atmos', 'train',
         'intel', 'intel_exp', 'strength', 'strength_exp',  'injury', 'leadership', 'leadership_exp', 
         'explevel', 'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
+        'warnum', 'killnum', 'killcrew',
     ],
     'min'=>[
         ['no', 1],
@@ -109,6 +110,9 @@ $generalCheck = [
         ['dex3', 0],
         ['dex4', 0],
         ['dex5', 0],
+        ['warnum', 0],
+        ['killnum', 0],
+        ['killcrew', 0],
     ],
     'between'=>[
         ['train', [40, GameConst::$maxTrainByWar]],
@@ -148,7 +152,8 @@ foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
             'reason'=>"[수비자{$idx}]".$v->errorStr()
         ]);
     }
-    $defenderList[] = new General($rawDefenderGeneral, null, $rawDefenderCity, $rawAttackerNation, $year, $month, true);
+    
+    $defenderList[] = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), $rawDefenderCity, $rawAttackerNation, $year, $month, true);
 }
 
 
@@ -273,6 +278,15 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $startYear = $gameStor->startyear;
 $cityRate = Util::round(($year - $startYear) / 1.5) + 60;
 
+function extractRankVar(array $rawVal):array{
+    $rankVars = [];
+    foreach($rawVal as $rawKey=>$rawVal){
+        if(key_exists($rawKey, General::RANK_COLUMN)){
+            $rankVars[$rawKey] = $rawVal;
+        }
+    }
+    return $rankVars;
+}
 
 function simulateBattle(
     $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
@@ -280,7 +294,7 @@ function simulateBattle(
     $startYear, $year, $month, $cityRate
 ){
     $attacker = new WarUnitGeneral(
-        new General($rawAttacker, null, $rawAttackerCity, $rawAttackerNation, $year, $month),
+        new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month),
         $rawAttackerNation,
         true
     );
@@ -312,7 +326,7 @@ function simulateBattle(
             return null;
         }
 
-        $defenderObj = new General($iterDefender->current(), null, $rawDefenderCity, $rawDefenderNation, $year, $month);
+        $defenderObj = new General($iterDefender->current(), extractRankVar($iterDefender->current()), $rawDefenderCity, $rawDefenderNation, $year, $month);
         if(extractBattleOrder($defenderObj) <= 0){
             return null;
         }

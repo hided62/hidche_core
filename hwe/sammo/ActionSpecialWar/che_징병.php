@@ -9,7 +9,7 @@ class che_징병 extends \sammo\BaseSpecial{
 
     protected $id = 72;
     protected $name = '징병';
-    protected $info = '[군사] 징·모병비 -50%, 통솔 순수 능력치 보정 +15%';
+    protected $info = '[군사] 징·모병비 -50%, 통솔 순수 능력치 보정 +25%';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
@@ -29,7 +29,7 @@ class che_징병 extends \sammo\BaseSpecial{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'leadership'){
-            return $value *= 1.15;
+            return $value + $general->getVar('leadership') * 0.25;
         }
         return $value;
     }

@@ -20,6 +20,7 @@ class che_위압발동 extends BaseWarUnitTrigger{
         $oppose->getLogger()->pushGeneralBattleDetailLog('상대에게 <R>위압</>받았다!</>', ActionLogger::PLAIN);
         $self->getLogger()->pushGeneralBattleDetailLog('상대에게 <C>위압</>을 줬다!</>', ActionLogger::PLAIN);
         $oppose->setWarPowerMultiply(0);
+        $oppose->increaseVarWithLimit('atmos', -5, 40);
 
         return true;
     }

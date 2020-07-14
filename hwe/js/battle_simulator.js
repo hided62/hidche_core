@@ -207,6 +207,10 @@ jQuery(function($) {
         setVal('.form_dex5', data.dex5);
         setVal('.form_defence_train', data.defence_train);
 
+        setVal('.form_warnum', data.warnum);
+        setVal('.form_killnum', data.killnum);
+        setVal('.form_killcrew', data.killcrew);
+
         if (!setGeneralNo($general, data.no)) {
             setGeneralNo($general, generateNewGeneralNo());
         }
@@ -252,7 +256,13 @@ jQuery(function($) {
             dex3: getInt('.form_dex3'),
             dex4: getInt('.form_dex4'),
             dex5: getInt('.form_dex5'),
+
             defence_train: getInt('.form_defence_train'),
+
+            warnum: getInt('.form_warnum'),
+            killnum: getInt('.form_killnum'),
+            killcrew: getInt('.form_killcrew'),
+
         };
     }
 

@@ -9,7 +9,7 @@ class che_척사 extends \sammo\BaseSpecial{
 
     protected $id = 75;
     protected $name = '척사';
-    protected $info = '[전투] 지역·도시 병종 상대로 대미지 +10%, 아군 피해 -10%';
+    protected $info = '[전투] 지역·도시 병종 상대로 대미지 +15%, 아군 피해 -15%';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
@@ -22,7 +22,7 @@ class che_척사 extends \sammo\BaseSpecial{
     public function getWarPowerMultiplier(WarUnit $unit):array{
         $opposeCrewType = $unit->getOppose()->getCrewType();
         if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
-            return [1.1, 0.9];
+            return [1.15, 0.85];
         }
         return [1, 1];
     }

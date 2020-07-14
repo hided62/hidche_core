@@ -247,9 +247,9 @@ class WarUnit{
         $warPower *= $this->getComputedAtmos();
         $warPower /= $oppose->getComputedTrain();
 
-        $genDexAtt = $this->getDex($this->getCrewType());
+        $genDexAtt = $this->getDex($this->getCrewType(), true);
         
-        $oppDexDef = $oppose->getDex($this->getCrewType());
+        $oppDexDef = $oppose->getDex($this->getCrewType(), false);
         
         $warPower *= getDexLog($genDexAtt, $oppDexDef);
         

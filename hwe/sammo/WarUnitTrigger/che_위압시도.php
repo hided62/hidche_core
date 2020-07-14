@@ -16,16 +16,7 @@ class che_위압시도 extends BaseWarUnitTrigger{
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         assert($self instanceof WarUnitGeneral, 'General만 발동 가능');
-        if($self->getPhase() != 0){
-            return true;
-        }
-        if($self->getHP() < 1000){
-            return true;
-        }
-        if($self->getComputedAtmos() < 90){
-            return true;
-        }
-        if($self->getComputedTrain() < 90){
+        if($self->getPhase() !== 0 && $oppose->getPhase() !== 0){
             return true;
         }
         if($self->hasActivatedSkill('위압불가')){
@@ -33,6 +24,7 @@ class che_위압시도 extends BaseWarUnitTrigger{
         }
 
         $self->activateSkill('위압');
+        $oppose->activateSkill('회피불가', '필살불가', '계략불가');
         return true;
     }
 }

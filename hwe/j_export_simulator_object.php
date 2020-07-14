@@ -32,11 +32,16 @@ $reqColumns = [
     'leadership', 'horse', 'strength', 'weapon', 'intel', 'book', 'item', 
     'rice', 'personal', 'special2', 
     'crew', 'crewtype', 
-    'atmos', 'train', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'defence_train'
+    'atmos', 'train', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'defence_train',
+];
+
+$reqRankColumns = [
+    'warnum', 'killnum', 'killcrew'
 ];
 
 $dummyItems = [
     'officer_level'=>1,
+    'horse'=>'None',
     'weapon'=>'None',
     'book'=>'None',
     'item'=>'None',
@@ -50,7 +55,10 @@ $dummyItems = [
     'dex3'=>0,
     'dex4'=>0,
     'dex5'=>0,
-    'defence_train'=>80
+    'defence_train'=>80,
+    'warnum'=>0,
+    'killnum'=>0,
+    'killcrew'=>0,
 ];
 
 $rawDestGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no=%i', Util::formatListOfBackticks($reqColumns), $destGeneralID);
@@ -58,6 +66,12 @@ $rawDestGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no=%i', Util:
 if($nationID == 0 || $rawDestGeneral['nation'] != $nationID){
     foreach($dummyItems as $key=>$val){
         $rawDestGeneral[$key] = $val;
+    }
+}
+else{
+    $rawRankValue = $db->queryAllLists('SELECT `type`, `value` FROM rank_data WHERE general_id = %i AND `type` IN %ls', $destGeneralID, $reqRankColumns);
+    foreach($rawRankValue as [$rankType, $rankValue]){
+        $rawDestGeneral[$rankType] = $rankValue;
     }
 }
 
