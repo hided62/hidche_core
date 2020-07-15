@@ -306,7 +306,7 @@ function myNationInfo(General $generalObj)
                 $text[] = "{$cmdName}: {$remainTurn}턴 뒤";
             }
             $nation['strategic_cmd_limit'] = $templates->render('tooltip', [
-                'text'=>$nation['strategic_cmd_limit'],
+                'text'=>'<span style="text-decoration:underline dashed;">'.$nation['strategic_cmd_limit'].'</span>',
                 'info'=>'<span class="text-left d-inline-block">'.join('<br>', $text).'</span>',
             ]);
         }

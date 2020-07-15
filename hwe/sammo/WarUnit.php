@@ -314,14 +314,11 @@ class WarUnit{
     }
 
     function hasActivatedSkill(string $skillName):bool{
-        return $this->activatedSkill[$skillName] ?? false;
+        return $this->activatedSkill[$skillName]??false;
     }
 
-    function hasActivatedSkillOnLog(string $skillName):bool{
-        if(key_exists($skillName, $this->logActivatedSkill)){
-            return true;
-        }
-        return $this->hasActivatedSkill($skillName);
+    function hasActivatedSkillOnLog(string $skillName):int{
+        return ($this->logActivatedSkill[$skillName]??0)+($this->hasActivatedSkill($skillName)?1:0);
     }
 
     function activateSkill(... $skillNames){
