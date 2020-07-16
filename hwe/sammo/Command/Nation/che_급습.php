@@ -72,7 +72,7 @@ class che_급습 extends Command\NationCommand
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -89,7 +89,7 @@ class che_급습 extends Command\NationCommand
                 12,
                 '선포 12개월 이상인 상대국에만 가능합니다.'
             ),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -193,7 +193,7 @@ class che_급습 extends Command\NationCommand
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => $this->getPostReqTurn()
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
         $db->update('diplomacy', [
             'term' => $db->sqleval('`term` - %i', 3),

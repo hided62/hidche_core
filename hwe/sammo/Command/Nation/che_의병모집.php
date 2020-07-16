@@ -50,7 +50,7 @@ class che_의병모집 extends Command\NationCommand
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
             ConstraintHelper::NotOpeningPart($relYear),
         ];
     }
@@ -232,7 +232,7 @@ class che_의병모집 extends Command\NationCommand
         $gameStor->npccount = $lastCreatGenIdx;
         $db->update('nation', [
             'gennum' => $db->sqleval('gennum + %i', $createGenCnt),
-            'strategic_cmd_limit' => 12
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));

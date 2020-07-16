@@ -37,6 +37,9 @@ class che_종횡가 extends \sammo\BaseNation{
         if($varType == 'delay'){
             return Util::round($value / 2);
         }
+        if($varType == 'globalDelay'){
+            return Util::round($value / 2);
+        }
         return $value;
     }
 }

@@ -70,7 +70,7 @@ class che_이호경식 extends Command\NationCommand
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -86,7 +86,7 @@ class che_이호경식 extends Command\NationCommand
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -190,7 +190,7 @@ class che_이호경식 extends Command\NationCommand
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => 12
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
         $db->update('diplomacy', [
             'term' => $db->sqleval('IF(`state`=0, %i, `term`+ %i)', 3, 3),

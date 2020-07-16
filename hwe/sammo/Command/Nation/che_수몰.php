@@ -60,7 +60,7 @@ class che_수몰 extends Command\NationCommand{
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -75,7 +75,7 @@ class che_수몰 extends Command\NationCommand{
             ConstraintHelper::NotNeutralDestCity(),
             ConstraintHelper::NotOccupiedDestCity(),
             ConstraintHelper::BattleGroundCity(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -179,7 +179,7 @@ class che_수몰 extends Command\NationCommand{
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => 12
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));

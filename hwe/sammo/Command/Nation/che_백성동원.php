@@ -60,7 +60,7 @@ class che_백성동원 extends Command\NationCommand{
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn())
+            ConstraintHelper::AvailableStrategicCommand()
         ];
     }
 
@@ -73,7 +73,7 @@ class che_백성동원 extends Command\NationCommand{
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::OccupiedDestCity(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn())
+            ConstraintHelper::AvailableStrategicCommand()
         ];
     }
 
@@ -158,7 +158,7 @@ class che_백성동원 extends Command\NationCommand{
         $logger->pushNationalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 하였습니다.");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => 12
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));

@@ -47,7 +47,7 @@ class che_필사즉생 extends Command\NationCommand{
             ConstraintHelper::AllowDiplomacyStatus($this->generalObj->getNationID(), [
                 0
             ], '전쟁중이 아닙니다.'),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn())
+            ConstraintHelper::AvailableStrategicCommand()
         ];
     }
     
@@ -123,7 +123,7 @@ class che_필사즉생 extends Command\NationCommand{
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => $this->getPostReqTurn()
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));

@@ -67,7 +67,7 @@ class che_허보 extends Command\NationCommand
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -85,7 +85,7 @@ class che_허보 extends Command\NationCommand
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
-            ConstraintHelper::AvailableStrategicCommand($this->getPreReqTurn()),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -204,7 +204,7 @@ class che_허보 extends Command\NationCommand
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>허보</>를 발동");
 
         $db->update('nation', [
-            'strategic_cmd_limit' => $this->getPostReqTurn()
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
