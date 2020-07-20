@@ -18,7 +18,11 @@ class event_전투특기_격노 extends \sammo\BaseItem{
     protected $buyable = true;
     protected $consumable = false;
     protected $reqSecu = 3000;
-    
+
+    public function getWarPowerMultiplier(WarUnit $unit):array{
+        $activatedCnt = $unit->hasActivatedSkillOnLog('격노');
+        return [1 + 0.2*$activatedCnt, 1];
+    }
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
