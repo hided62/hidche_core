@@ -98,7 +98,7 @@ class che_방랑 extends Command\GeneralCommand{
             'name'=>$generalName,
             'color'=>'#330000', //TODO: 기본 방랑군색 별도 지정
             'level'=>0,
-            'type'=>0,
+            'type'=>'None',
             'tech'=>0,
             'capital'=>0
         ], 'nation=%i', $nationID);
