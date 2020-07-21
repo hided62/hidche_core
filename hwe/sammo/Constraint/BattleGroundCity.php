@@ -40,7 +40,7 @@ class BattleGroundCity extends Constraint{
 
         $db = DB::db();
         $diplomacy = $db->queryFirstField('SELECT state FROM diplomacy WHERE me = %i AND you = %i', $nationID, $destNationID);
-        if($diplomacy === 0){
+        if($diplomacy == 0){
             return true;
         }
 
