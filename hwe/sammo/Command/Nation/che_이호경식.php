@@ -176,7 +176,7 @@ class che_이호경식 extends Command\NationCommand
 
         $broadcastMessage = "아국에 <M>{$commandName}</>{$josaYiCommand} 발동되었습니다.";
 
-        $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
+        $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $destNationID, $generalID);
         foreach ($destNationGeneralList as $destNationGeneralID) {
             $destNationGeneralLogger = new ActionLogger($destNationGeneralID, $destNationID, $year, $month);
             $destNationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
@@ -196,6 +196,10 @@ class che_이호경식 extends Command\NationCommand
             'term' => $db->sqleval('IF(`state`=0, %i, `term`+ %i)', 3, 3),
             'state' => 1,
         ], '(me = %i AND you = %i) OR (you = %i AND me = %i)', $nationID, $destNationID, $nationID, $destNationID);
+
+        \sammo\SetNationFront($nationID);
+        \sammo\SetNationFront($destNationID);
+
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
