@@ -31,6 +31,6 @@ class che_저지발동 extends BaseWarUnitTrigger{
         $self->setWarPowerMultiply(0);
         $oppose->setWarPowerMultiply(0);
 
-        return false; //저지는 모든 특수 이벤트를 중지시킨다.
+        return false; //저지는 모든 이벤트를 중지시킨다.
     }
 }

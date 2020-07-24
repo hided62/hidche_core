@@ -26,7 +26,7 @@ class che_회피시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        $self->activateSkill('특수', '회피시도', '회피');
+        $self->activateSkill('회피시도', '회피');
 
         
         return true;

@@ -26,7 +26,7 @@ class che_필살시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        $self->activateSkill('특수', '필살시도', '필살');
+        $self->activateSkill('필살시도', '필살');
 
         
         return true;
