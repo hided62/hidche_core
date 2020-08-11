@@ -41,6 +41,10 @@ class che_계략시도 extends BaseWarUnitTrigger{
         if($magicTrialProb <= 0){
             return true;
         }
+
+        if($self->getPhase() == 0){
+            $magicTrialProb *= 3;
+        }
         
         if(!Util::randBool($magicTrialProb)){
             return true;
