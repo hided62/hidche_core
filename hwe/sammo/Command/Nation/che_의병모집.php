@@ -185,7 +185,7 @@ class che_의병모집 extends Command\NationCommand
                 $leadership = $subStat;
                 $strength = $otherStat;
                 $intel = $mainStat;
-                $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8];
+                $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8];
             } else {
                 $leadership = $otherStat;
                 $strength = $subStat;

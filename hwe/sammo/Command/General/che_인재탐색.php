@@ -134,7 +134,8 @@ class che_인재탐색 extends Command\GeneralCommand
         $totalGenCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE npc <= 2');
         $totalNpcCnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4');
 
-        $foundNpc = Util::randBool($this->calcFoundProp($env['maxgeneral'], $totalGenCnt, $totalNpcCnt));
+        $foundProp = $this->calcFoundProp($env['maxgeneral'], $totalGenCnt, $totalNpcCnt);
+        $foundNpc = Util::randBool($foundProp);
 
         $logger = $general->getLogger();
 
@@ -164,8 +165,8 @@ class che_인재탐색 extends Command\GeneralCommand
         }
         //인간적으로 너무 길어서 끊었다!
 
-        $exp = 200;
-        $ded = 300;
+        $exp = 100 * (sqrt(1 / $foundProp) + 1);
+        $ded = 150 * (sqrt(1 / $foundProp) + 1);
 
         $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];
 
@@ -206,7 +207,7 @@ class che_인재탐색 extends Command\GeneralCommand
             $leadership = $subStat;
             $strength = $otherStat;
             $intel = $mainStat;
-            $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8];
+            $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8];
         } else {
             $leadership = $otherStat;
             $strength = $subStat;
