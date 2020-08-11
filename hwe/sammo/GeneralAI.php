@@ -1723,7 +1723,15 @@ class GeneralAI
             return null;
         }
 
+        $db = DB::db();
+        $lowTargetNations = Util::convertArrayToSetLike($db->queryFirstColumn(
+            'SELECT DISTINCT(me) FROM diplomacy WHERE me != %i AND state IN %li',
+            $nationID,
+            [0, 1]
+        ));
+
         $nations = [];
+        $warNations = [];
         foreach(getAllNationStaticInfo() as $destNation){
             if($destNation['level'] == 0){
                 continue;
@@ -1733,10 +1741,26 @@ class GeneralAI
             if (!isNeighbor($nationID, $destNationID)) {
                 continue;
             }
-            $nations[$destNationID] = 1 / sqrt($destNationPower + 1);
+
+            if(!key_exists($destNationID, $lowTargetNations)){
+                $nations[$destNationID] = 1 / sqrt($destNationPower + 1);
+            }
+            else{
+                $warNations[$destNationID] = 1 / sqrt($destNationPower + 1);
+            }
+            
         }
         if (!$nations) {
-            return null;
+            if(!$warNations){
+                return null;
+            }
+            if(!$lowTargetNations){
+                return null;
+            }
+            if(Util::randBool(1/count($lowTargetNations))){
+                return null;
+            }
+            $nations = $warNations;
         }
 
         $cmd = buildNationCommandClass('che_선전포고', $this->general, $this->env, $lastTurn, [
