@@ -48,7 +48,7 @@ class GameConstBase
     /** @var int 계략시 최소 수치 감소량*/
     public static $sabotageDamageMin = 100;
     /** @var int 계략시 최대 수치 감소량*/
-    public static $sabotageDamageMax = 500;
+    public static $sabotageDamageMax = 800;
     /** @var string 기본 배경색깔 푸른색*/
     public static $basecolor = "#000044";
     /** @var string 기본 배경색깔 초록색*/

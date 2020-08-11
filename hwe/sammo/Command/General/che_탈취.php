@@ -31,9 +31,10 @@ class che_탈취 extends che_화계{
         $commandName = $this->getName();
         $db = DB::db();
 
-        // 탈취 최대 400 * 8
-        $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'];
-        $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'];
+        // 탈취 최대 800 * 8 * sqrt(1 + (year - startyear) / 5) / 2
+        $yearCoef = sqrt(1 + ($this->env['year'] - $this->env['startyear']) / 5) / 2;
+        $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef;
+        $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef;
 
         if($destCity['supply']){
             [$destNationGold, $destNationRice] = $db->queryFirstList('SELECT gold,rice FROM nation WHERE nation=%i', $destNationID);
