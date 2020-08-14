@@ -235,10 +235,10 @@ function reloadWorldMap(option, drawTarget) {
         }
 
         function mergeClickable(city) {
-            //clickable = (remainSpy << 3) | (ourCity << 2) | (shownByGeneral << 1) | clickableAll
+            //clickable = (defaultCity << 4 ) | (remainSpy << 3) | (ourCity << 2) | (shownByGeneral << 1) | clickableAll
             var id = city.id;
             var nationId = city.nationId;
-            var clickable = 0;
+            var clickable = 16;
             if (id in spyList) {
                 clickable |= spyList[id] << 3;
             }

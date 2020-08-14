@@ -40,7 +40,7 @@
 <?php else: ?>
     <td>?</td>
     <td class="general_crew_type">?</td>
-    <td><?=$crew?></td>
+    <td><?=$crew>=0?$crew:'?'?></td>
     <td>?</td>
     <td>?</td>
     <?php if($nation!==0): ?>

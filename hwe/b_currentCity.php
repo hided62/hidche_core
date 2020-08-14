@@ -148,8 +148,30 @@ echo "
 unset($city);
 
 // 첩보된 도시까지만 허용
-if($valid == 0 && $userGrade < 5) {
+
+$showDetailedInfo = false;
+if($valid){
+    $showDetailedInfo = true;
+}
+
+if(!key_exists($citylist, CityConst::all())){
     $citylist = $me['city'];
+    $showDetailedInfo = true;
+    $valid = 1;
+}
+
+if($userGrade >= 5){
+    $valid = true;
+}
+
+if(!$valid) {
+    $ownCities = Util::convertArrayToSetLike($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i AND nation != 0', $me['nation']));
+    foreach(array_keys(CityConst::byID($citylist)->path) as $pathID){
+        if(key_exists($pathID, $ownCities)){
+            $showDetailedInfo = true;
+            break;
+        }
+    }
 }
 
 
@@ -172,11 +194,35 @@ if($city['trade'] === null) {
 }
 
 $dbColumns = General::mergeQueryColumn(['npc', 'defence_train', 'no', 'picture', 'imgsvr', 'name', 'injury', 'leadership', 'strength', 'intel', 'officer_level', 'nation', 'crewtype', 'crew', 'train', 'atmos'], 2)[0];
-$generals = $db->query(
-    'SELECT %l from general where city=%i order by name',
-    Util::formatListOfBackticks($dbColumns),
-    $city['city']
-);
+if($showDetailedInfo){
+    $generals = $db->query(
+        'SELECT %l from general where city=%i order by name',
+        Util::formatListOfBackticks($dbColumns),
+        $city['city']
+    );
+}
+else{
+    $generals = [];
+}
+
+if($valid){
+    $city['trustText'] = round($city['trust'], 1);
+    $city['popRateText'] = round($city['pop']/$city['pop_max']*100, 2);
+}
+else{
+    $city['agri'] = '?';
+    $city['comm'] = '?';
+    $city['pop'] = '?';
+    $city['secu'] = '?';
+    $city['trustText'] = '?';
+    $city['popRateText'] = '?';
+
+    if($city['nation'] != 0){
+        $city['def'] = '?';
+        $city['wall'] = '?';
+    }
+}
+
 
 $generalTurnList = [];
 
@@ -257,6 +303,10 @@ foreach($generals as $general){
         $crew = $general['crew'];
         $train = -1;
         $atmos = -1;
+
+        if(!$valid){
+            $crew = -1;
+        }
     }
 
     $nation = $general['nation'];
@@ -331,7 +381,9 @@ foreach($generalsFormat as $general){
     }
     if($general['nation'] != $myNation['nation']){
         $enemyCnt += 1;
-        $enemyCrew += $general['crew'];
+        if($general['crew'] >= 0){
+            $enemyCrew += $general['crew'];
+        }
         if($general['crew'] > 0){
             $enemyArmedCnt += 1;
         }
@@ -402,11 +454,11 @@ foreach($generalsFormat as $general){
     </tr>
     <tr>
         <td align=center class=bg1>민심</td>
-        <td align=center><?=round($city['trust'], 1)?></td>
+        <td align=center><?=$city['trustText']?></td>
         <td align=center class=bg1>시세</td>
         <td align=center><?=$city['trade']?>%</td>
         <td align=center class=bg1>인구</td>
-        <td align=center><?=round($city['pop']/$city['pop_max']*100, 2)?>%</td>
+        <td align=center><?=$city['popRateText']?>%</td>
         <td align=center class=bg1>태수</td>
         <td align=center><?=$officer[4]['name']?></td>
         <td align=center class=bg1>군사</td>
@@ -430,11 +482,12 @@ foreach($generalsFormat as $general){
     </tr>
     <tr>
         <td align=center class=bg1>장수</td>
-        <td colspan=11><?=join(', ', $generalsName)?></td>
+        <td colspan=11><?=$showDetailedInfo?join(', ', $generalsName):'<span style="color:gray">알 수 없음</span>'?></td>
     </tr>
 </table>
 
 <br>
+<?php if($showDetailedInfo): ?>
 <table align=center class='tb_layout bg0'>
 <thead>
     <tr>
@@ -459,7 +512,7 @@ foreach($generalsFormat as $general){
 ?>
 </tbody>
 </table>
-
+<?php endif; ?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
