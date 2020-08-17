@@ -43,8 +43,8 @@ if($defence_train != $me->getVar('defence_train')){
     if($defence_train == 999){
         $me->increaseVar('myset', -1);
         $me->setVar('defence_train', $defence_train);
-        $me->increaseVar('train', -3);
-        $me->increaseVar('atmos', -3);
+        $me->increaseVarWithLimit('train', -3, 20);
+        $me->increaseVarWithLimit('atmos', -3, 20);
     }
     else{
         $me->increaseVar('myset', -1);
