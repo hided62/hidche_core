@@ -29,12 +29,8 @@ class BattleGroundCity extends Constraint{
         $this->tested = true;
 
         $nationID = $this->general['nation'];
-        $destNationID = $this->city['nation'];
+        $destNationID = $this->destCity['nation'];
         if($destNationID == 0){
-            return true;
-        }
-
-        if($this->arg && $destNationID == $nationID){
             return true;
         }
 
