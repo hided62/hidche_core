@@ -22,7 +22,14 @@ class che_저격_수극 extends \sammo\BaseItem{
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
             new che_저격시도($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 0.5, 20, 40),
-            new che_저격발동($unit)
+            new che_저격발동($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM)
         );
+    }
+
+    function isConsumableNow(string $actionType, string $command):bool{
+        if($actionType == 'GeneralTrigger' && $command == 'che_아이템치료'){
+            return true;
+        }
+        return false;
     }
 }
