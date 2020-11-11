@@ -196,7 +196,7 @@ if($city['trade'] === null) {
 $dbColumns = General::mergeQueryColumn(['npc', 'defence_train', 'no', 'picture', 'imgsvr', 'name', 'injury', 'leadership', 'strength', 'intel', 'officer_level', 'nation', 'crewtype', 'crew', 'train', 'atmos'], 2)[0];
 if($showDetailedInfo){
     $generals = $db->query(
-        'SELECT %l from general where city=%i order by name',
+        'SELECT %l from general where city=%i order by turntime',
         Util::formatListOfBackticks($dbColumns),
         $city['city']
     );
