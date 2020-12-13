@@ -172,6 +172,9 @@ class che_종전수락 extends Command\NationCommand
             $destNationID
         );
 
+        \sammo\SetNationFront($nationID);
+        \sammo\SetNationFront($destNationID);
+
         $josaYiGeneral = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
