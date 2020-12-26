@@ -43,7 +43,7 @@ $session = Session::requireLogin([
     'game'=>null,
     'me'=>null
 ])->setReadOnly();
-$userID = Session::getUserID();
+$userID = $session->userID;
 
 if(!class_exists('\\sammo\\DB')){
     Json::die([

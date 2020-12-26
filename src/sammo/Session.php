@@ -83,7 +83,7 @@ class Session
 
     public static function requireLogin($actionOnError = '..'): Session
     {
-        $session = Session::getInstance();
+        $session = static::getInstance();
         if ($session->isLoggedIn()) {
             return $session;
         }
@@ -93,7 +93,7 @@ class Session
 
     public static function requireGameLogin($actionOnError = '..'): Session
     {
-        $session = Session::requireLogin($actionOnError)->loginGame();
+        $session = static::requireLogin($actionOnError)->loginGame();
 
         if ($session->generalID) {
             return $session;

@@ -132,4 +132,15 @@ class Setting
         }
         return true;
     }
+
+    public function getDetailStatus()
+    {
+        if(!$this->isRunning()){
+            return [
+                'game'=>null,
+                'me'=>null
+            ];
+        }
+        throw new NotImplementedException();
+    }
 }
