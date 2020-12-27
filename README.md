@@ -9,9 +9,8 @@
   * <code>mpm_event</code> 권장
 * PHP 7.3 이상 
   * <code>php-fpm</code> 권장
-  * php에서 curl, pdo-sqlite을 실행가능해야 합니다. (기본값: 지원)
-  * mysqlnd가 지원되어야합니다. (기본값: 지원)
-  * mysqli
+  * php에서 curl, pdo-sqlite을 실행가능해야 합니다.
+  * mysqli, mysqlnd
   * gd
   * mbstring
 * MariaDB 10.2.1 이상
