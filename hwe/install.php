@@ -102,7 +102,7 @@ if($session->userGrade < 5 && !$allowReset){
                     </div>
 
                     <div class="form-group row">
-                        <label for="confirm_password" class="col-sm-3 col-form-label">시나리오 선택</label>
+                        <label for="scenario_sel" class="col-sm-3 col-form-label">시나리오 선택</label>
                         <div class="col-sm-9">
                         <select class="form-control" name="scenario" size="1" id="scenario_sel">
                         </select>
@@ -139,6 +139,20 @@ if($session->userGrade < 5 && !$allowReset){
                     </div>
 
                     <div class="form-group row">
+                        <label for="block_general_create" class="col-sm-3 col-form-label">장수 임의 생성</label>
+                        <div class="col-sm-9">
+                            <div id="block_general_create" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="block_general_create" value="0" checked>가능
+                                </label>
+                                <label class="btn btn-secondary active">
+                                    <input type="radio" name="block_general_create" value="1">불가
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label for="npcmode" class="col-sm-3 col-form-label">NPC 빙의</label>
                         <div class="col-sm-9">
                             <div id="npcmode" class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -147,6 +161,9 @@ if($session->userGrade < 5 && !$allowReset){
                                 </label>
                                 <label class="btn btn-secondary active">
                                     <input type="radio" name="npcmode" value="0" checked>불가
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="npcmode" value="2">선택 생성 가능
                                 </label>
                             </div>
                         </div>

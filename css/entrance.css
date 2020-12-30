@@ -1,141 +1,156 @@
 @charset "utf-8";
-
-body{
+body {
     line-height: 1.3;
 }
 
 #server_notice {
-    margin:10px 0;
+    margin: 10px 0;
     border: none;
-    text-align:center;
+    text-align: center;
 }
 
-#server_list_container{
-    width:800px;
-    position:absolute;
-    left:50%;
-    margin-left:-400px;
+#server_list_container {
+    width: 800px;
+    position: absolute;
+    left: 50%;
+    margin-left: -400px;
 }
 
-#server_list_table{
-    width:100%;
+#server_list_table {
+    width: 100%;
 }
 
-#server_list tr{
-    height:66px;
+#server_list tr {
+    height: 66px;
 }
 
-#server_list .server_create_and_select .general_create,
-#server_list .server_create_and_select .general_select {
-    width: 120px; height: 33px;
-    float: left;
-}
-
-#server_list .general_create,
-#server_list .general_login {
-    width: 120px; height: 66px;
-    float: left;
-}
-
-.ignore_border{
-    border:0;
-    margin:0;
-    padding:0;
+.ignore_border {
+    border: 0;
+    margin: 0;
+    padding: 0;
 }
 
 #user_info {
-    margin-top:20px;
-    width: 800px; height: 130px;
+    margin-top: 20px;
+    width: 800px;
+    height: 130px;
 }
 
-
-#user_info button{
+#user_info button {
     width: 200px;
     height: 50px;
     margin: 10px 50px;
 }
 
-.center_ordered_items{
-    text-align:center;
+.center_ordered_items {
+    text-align: center;
 }
 
 .Entrance_ServerList {
-    width: 800px; height: 64px;
+    width: 800px;
+    height: 64px;
     border: none;
     float: left;
 }
 
 .Entrance_ServerListServer {
-    width: 98px; height: 64px;
+    width: 98px;
+    height: 64px;
     float: left;
 }
 
 .Entrance_ServerListDown {
-    width: 698px; height: 64px;
+    width: 698px;
+    height: 64px;
     float: left;
 }
 
 .Entrance_ServerListInfo {
-    width: 398px; height: 64px;
+    width: 398px;
+    height: 64px;
     float: left;
 }
 
 .Entrance_ServerListBlock {
-    width: 298px; height: 64px;
+    width: 298px;
+    height: 64px;
     float: left;
     line-height: 64px;
 }
 
 .Entrance_ServerListCharacter {
-    width: 64px; height: 64px;
+    width: 64px;
+    height: 64px;
     float: left;
 }
 
 .Entrance_ServerListName {
-    width: 112px; height: 64px;
+    width: 112px;
+    height: 64px;
     float: left;
     line-height: 64px;
 }
 
-
 .Entrance_ServerListSelect {
-    width: 120px; height: 32px;
+    width: 120px;
+    height: 32px;
     float: left;
 }
 
 #Entrance_000003 {
-    width: 798px; height: 155px;
+    width: 798px;
+    height: 155px;
     text-align: left;
 }
 
 .Entrance_Alert {
-    color: red; font-size: 15px; font-weight: bold;
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Che {
-    color: white; font-size: 15px; font-weight: bold;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Kwe {
-    color: yellow; font-size: 15px; font-weight: bold;
+    color: yellow;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Pwe {
-    color: orange; font-size: 15px; font-weight: bold;
+    color: orange;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Twe {
-    color: magenta; font-size: 15px; font-weight: bold;
+    color: magenta;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Nya {
-    color: #e67e22; font-size: 15px; font-weight: bold;
+    color: #e67e22;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Pya {
-    color: #9b59b6; font-size: 15px; font-weight: bold;
+    color: #9b59b6;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .Entrance_Hwe {
-    color: red; font-size: 15px; font-weight: bold;
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.BtnPlate {
+    height: inherit;
 }

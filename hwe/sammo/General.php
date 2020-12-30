@@ -569,7 +569,12 @@ class General implements iAction{
             }
             $logger->flush();    
         }
-        
+
+        $db->update('select_pool', [
+            'general_id'=>null,
+            'owner'=>null,
+            'reserved_until'=>null,
+        ], 'general_id=%i', $generalID);
 
         $db->delete('general', 'no=%i', $generalID);
         $db->delete('general_turn', 'general_id=%i', $generalID);

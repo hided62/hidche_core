@@ -48,6 +48,7 @@ DROP TABLE IF EXISTS world_history;
 DROP TABLE IF EXISTS general_record;
 
 DROP TABLE IF EXISTS select_npc_token;
+DROP TABLE IF EXISTS select_pool;
 
 DROP TABLE IF EXISTS betting;
 DROP TABLE IF EXISTS rank_data;

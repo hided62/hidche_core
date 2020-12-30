@@ -143,7 +143,7 @@ class Nation{
         
     }
 
-    public function addGeneral(NPC $general){
+    public function addGeneral(GeneralBuilder $general){
         $this->generals[] = $general;
     }
 

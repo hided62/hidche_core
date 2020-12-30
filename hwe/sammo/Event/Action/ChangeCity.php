@@ -126,7 +126,7 @@ class ChangeCity extends \sammo\Event\Action{
             if($op == '/' && $value == 0){
                 throw new \InvalidArgumentException('0으로 나눌 수 없습니다.');
             }
-            return DB::db()->sqleval('least(%b, greatest(0, ROUND($b %l %d, 0)))', $keyMax, $key, $op, $value);
+            return DB::db()->sqleval('least(%b, greatest(0, ROUND(%b '.$op.' %i, 0)))', $keyMax, $key, $value);
         }
         
         throw new \InvalidArgumentException('알 수 없는 패턴입니다.');

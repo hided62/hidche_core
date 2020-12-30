@@ -1,0 +1,27 @@
+{
+    "title": "【공백지】 영웅전설",
+    "startYear": 180,
+    "map": {
+        "mapName": "miniche",
+        "targetGeneralPool": "SPoolUnderU30",
+        "generalPoolAllowOption": ["ego"]
+    },
+    "history": [
+        "<C>●</>180년 1월:<L><b>【이벤트】</b></>29기까지 내로라 하는 모든 장수들이 모였다!"
+    ],
+    "events": [
+        [
+            ["Date", "==", null, 12],
+            ["CreateManyNPC", 100],
+            ["DeleteEvent"]
+        ],
+        [
+            ["Date", "==", 181, 12],
+            ["ChangeCity", "occupied", {
+                "pop": "+60000",
+                "agri": "+1200",
+                "comm": "+1200"
+            }]
+        ]
+    ]
+}

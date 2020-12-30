@@ -25,8 +25,11 @@ class Scenario{
 
     private $diplomacy;
 
+    /** @var \sammo\Scenario\GeneralBuilder[] */
     private $generals;
+    /** @var \sammo\Scenario\GeneralBuilder[] */
     private $generalsEx;
+    /** @var \sammo\Scenario\GeneralBuilder[] */
     private $generalsNeutral;
 
     private $tmpGeneralQueue = [];
@@ -38,12 +41,17 @@ class Scenario{
 
     private $gameConf = null;
 
-    private function initFull(){
+    public function initFull(){
         if($this->initOK){
             return;
         }
         $this->initOK = true;
         $data = $this->data;
+        $this->tmpEnv = [
+            'startyear'=>$this->year,
+            'year'=>$this->year,
+            'month'=>0 //포인트
+        ];
 
         $neutralNation = new Scenario\Nation(0, '재야', '#000000', 0, 0);
         $this->nations = [];
@@ -97,22 +105,21 @@ class Scenario{
 
             $this->tmpGeneralQueue[$name] = $rawGeneral;
 
-            return new Scenario\NPC(
-                $affinity, 
+            return (new Scenario\GeneralBuilder(
                 $name, 
+                false,
                 $picturePath, 
-                $nationID, 
-                $locatedCity, 
-                $leadership, 
-                $strength, 
-                $intel, 
-                $officerLevel, 
-                $birth, 
-                $death, 
-                $ego,
-                $char, 
-                $text
-            );
+                $nationID
+            ))
+            ->setCity($locatedCity)
+            ->setStat($leadership, $strength, $intel)
+            ->setOfficerLevel($officerLevel)
+            ->setEgo($ego)
+            ->setSpecialSingle($char)
+            ->setNPCText($text)
+            ->setAffinity($affinity)
+            ->setLifeSpan($birth, $death)
+            ->fillRemainSpecAsZero($this->tmpEnv);
         }, Util::array_get($data['general'], []));
 
         $this->generalsEx = array_map(function($rawGeneral){
@@ -138,22 +145,21 @@ class Scenario{
 
             $this->tmpGeneralQueue[$name] = $rawGeneral;
 
-            return new Scenario\NPC(
-                $affinity, 
+            return (new Scenario\GeneralBuilder(
                 $name, 
+                false,
                 $picturePath, 
-                $nationID, 
-                $locatedCity, 
-                $leadership, 
-                $strength, 
-                $intel, 
-                $officerLevel, 
-                $birth, 
-                $death, 
-                $ego,
-                $char, 
-                $text
-            );
+                $nationID
+            ))
+            ->setCity($locatedCity, true)
+            ->setStat($leadership, $strength, $intel)
+            ->setOfficerLevel($officerLevel)
+            ->setEgo($ego)
+            ->setSpecialSingle($char)
+            ->setNPCText($text)
+            ->setAffinity($affinity)
+            ->setLifeSpan($birth, $death)
+            ->fillRemainSpecAsZero($this->tmpEnv);
 
         }, Util::array_get($data['general_ex'], []));
 
@@ -180,25 +186,22 @@ class Scenario{
 
             $this->tmpGeneralQueue[$name] = $rawGeneral;
 
-            $npc = new Scenario\NPC(
-                $affinity, 
+            return (new Scenario\GeneralBuilder(
                 $name, 
+                false,
                 $picturePath, 
-                $nationID, 
-                $locatedCity, 
-                $leadership, 
-                $strength, 
-                $intel, 
-                $officerLevel, 
-                $birth, 
-                $death, 
-                $ego,
-                $char, 
-                $text
-            );
-            $npc->npc = 6;
-            return $npc;
-
+                $nationID
+            ))
+            ->setCity($locatedCity, true)
+            ->setStat($leadership, $strength, $intel)
+            ->setOfficerLevel($officerLevel)
+            ->setEgo($ego)
+            ->setSpecialSingle($char)
+            ->setNPCText($text)
+            ->setAffinity($affinity)
+            ->setLifeSpan($birth, $death)
+            ->setNPCType(6)
+            ->fillRemainSpecAsZero($this->tmpEnv);
         }, Util::array_get($data['general_neutral'], []));
 
         $this->initialEvents = array_map(function($rawEvent){
@@ -326,7 +329,7 @@ class Scenario{
         $nationGeneralNeutralCnt = [];
 
         foreach($this->generals as $general){
-            $nationID = $general->nationID;
+            $nationID = $general->getNationID();
             if(!key_exists($nationID, $nationGeneralCnt)){
                 $nationGeneralCnt[$nationID] = 1;
             }
@@ -336,7 +339,7 @@ class Scenario{
         }
 
         foreach($this->generalsEx as $general){
-            $nationID = $general->nationID;
+            $nationID = $general->getNationID();
             if(!key_exists($nationID, $nationGeneralExCnt)){
                 $nationGeneralExCnt[$nationID] = 1;
             }
@@ -346,7 +349,7 @@ class Scenario{
         }
 
         foreach($this->generalsNeutral as $general){
-            $nationID = $general->nationID;
+            $nationID = $general->getNationID();
             if(!key_exists($nationID, $nationGeneralNeutralCnt)){
                 $nationGeneralNeutralCnt[$nationID] = 1;
             }
@@ -389,14 +392,14 @@ class Scenario{
         $remainGenerals = [];
         foreach($this->generals as $general){
             if($general->build($env)){
-                if($general->nationID){
-                    $this->nations[$general->nationID]->addGeneral($general);
+                if($general->getNationID()){
+                    $this->nations[$general->getNationID()]->addGeneral($general);
                 }
                 continue;
             }
 
-            $rawGeneral = $this->tmpGeneralQueue[$general->name];
-            $birth = $general->birth; 
+            $rawGeneral = $this->tmpGeneralQueue[$general->getGeneralRawName()];
+            $birth = $general->getBirthYear(); 
             if(!key_exists($birth, $remainGenerals)){
                 $remainGenerals[$birth] = [];
             }
@@ -406,14 +409,14 @@ class Scenario{
         if($env['extended_general']){
             foreach($this->generalsEx as $general){
                 if($general->build($env)){
-                    if($general->nationID){
-                        $this->nations[$general->nationID]->addGeneral($general);
+                    if($general->getNationID()){
+                        $this->nations[$general->getNationID()]->addGeneral($general);
                     }
                     continue;
                 }
 
-                $rawGeneral = $this->tmpGeneralQueue[$general->name];
-                $birth = $general->birth;
+                $rawGeneral = $this->tmpGeneralQueue[$general->getGeneralRawName()];
+                $birth = $general->getBirthYear();
                 if(!key_exists($birth, $remainGenerals)){
                     $remainGenerals[$birth] = [];
                 }
@@ -423,14 +426,14 @@ class Scenario{
 
         foreach($this->generalsNeutral as $general){
             if($general->build($env)){
-                if($general->nationID){
-                    $this->nations[$general->nationID]->addGeneral($general);
+                if($general->getGeneralID()){
+                    $this->nations[$general->getNationID()]->addGeneral($general);
                 }
                 continue;
             }
 
-            $rawGeneral = $this->tmpGeneralQueue[$general->name];
-            $birth = $general->birth; 
+            $rawGeneral = $this->tmpGeneralQueue[$general->getGeneralRawName()];
+            $birth = $general->getBirthYear(); 
             if(!key_exists($birth, $remainGenerals)){
                 $remainGenerals[$birth] = [];
             }
@@ -453,6 +456,10 @@ class Scenario{
                 'term'=>$remain - $monthDiff
             ], '(me = %i AND you = %i) OR (me = %i AND you = %i)', $me, $you, $you, $me);
         }
+    }
+
+    public function addGameConf(string $key, $value){
+        $this->gameConf[$key] = $value;
     }
 
     public function buildConf(){
@@ -479,8 +486,9 @@ class Scenario{
     }
 
     public function build($env=[]){
-        
 
+        $db = DB::db();
+        getGeneralPoolClass(GameConst::$targetGeneralPool)::initPool($db);
         $this->initFull();
 
         //NOTE: 초기화가 되어있다고 가정함.
@@ -493,11 +501,6 @@ class Scenario{
 
         event변수 : currentEventID
         */
-
-        
-
-
-        $db = DB::db();
 
         foreach($this->nations as $id=>$nation){
             if($id == 0){

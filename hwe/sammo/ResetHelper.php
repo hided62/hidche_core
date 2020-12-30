@@ -128,6 +128,8 @@ class ResetHelper{
             }
         }
 
+        opcache_reset();
+
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->resetValues();
         $gameStor->next_season_idx = $seasonIdx;
@@ -148,6 +150,7 @@ class ResetHelper{
         int $scenario,
         int $fiction,
         int $extend,
+        bool $block_general_create,
         int $npcmode,
         int $show_img_level,
         int $tournament_trig,
@@ -178,8 +181,9 @@ class ResetHelper{
         $serverID = $clearResult['serverID'];
         $seasonIdx = $clearResult['seasonIdx'];
         
-        $scenarioObj = new Scenario($scenario, false);
+        $scenarioObj = new Scenario($scenario, true);
         $scenarioObj->buildConf();
+        $scenarioObj->initFull();
 
         $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
 
@@ -258,6 +262,7 @@ class ResetHelper{
             'genius'=>GameConst::$defaultMaxGenius,
             'show_img_level'=>$show_img_level,
             'join_mode'=>$join_mode,
+            'block_general_create'=>$block_general_create,
             'npcmode'=>$npcmode,
             'extended_general'=>$extend,
             'fiction'=>$fiction,
@@ -352,7 +357,6 @@ class ResetHelper{
 
         $prefix = DB::prefix();
         ServConfig::getServerList()[$prefix]->closeServer();
-        opcache_reset();
 
         return [
             'result'=>true

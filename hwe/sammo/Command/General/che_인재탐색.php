@@ -19,7 +19,8 @@ use function\sammo\{
     CriticalRatioDomestic,
     CriticalScoreEx,
     tryUniqueItemLottery,
-    getAllNationStaticInfo
+    getAllNationStaticInfo,
+    pickGeneralFromPool,
 };
 
 use \sammo\Constraint\Constraint;
@@ -167,99 +168,37 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $exp = 100 * (sqrt(1 / $foundProp) + 1);
         $ded = 150 * (sqrt(1 / $foundProp) + 1);
-
-        $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];
-
-        $pickType = Util::choiceRandomUsingWeight($pickTypeList);
-
-        $totalStat = GameConst::$defaultStatNPCTotal;
-        $minStat = GameConst::$defaultStatNPCMin;
-        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, GameConst::$defaultStatNPCMin);
-        $otherStat = $minStat + Util::randRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
-        $subStat = $totalStat - $mainStat - $otherStat;
-        if ($subStat < $minStat) {
-            $subStat = $otherStat;
-            $otherStat = $minStat;
-            $mainStat = $totalStat - $subStat - $otherStat;
-            if ($mainStat) {
-                throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
-            }
-        }
-
-        $avgGen = $db->queryFirstRow(
-            'SELECT avg(dedication) as ded,avg(experience) as exp,
-            avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
-            from general where npc < 5',
-            $nationID
-        );
-        $dexTotal = $avgGen['dex_t'];
-
-        if ($pickType == '무') {
-            $leadership = $subStat;
-            $strength = $mainStat;
-            $intel = $otherStat;
-            $dexVal = Util::choiceRandom([
-                [$dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal / 8],
-                [$dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8],
-                [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8],
-            ]);
-        } else if ($pickType == '지') {
-            $leadership = $subStat;
-            $strength = $otherStat;
-            $intel = $mainStat;
-            $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8];
-        } else {
-            $leadership = $otherStat;
-            $strength = $subStat;
-            $intel = $mainStat;
-            $dexVal = [$dexTotal / 4, $dexTotal / 4, $dexTotal / 4, $dexTotal / 4];
-        }
-
-        $leadership = Util::round($leadership);
-        $strength = Util::round($strength);
-        $intel = Util::round($intel);
-
+        
         $scoutType = "발견";
-        $scoutLevel = 0;
-        $scoutNation = 0;
 
         $age = Util::randRangeInt(20, 25);
         $birthYear = $env['year'] - $age;
         $deathYear = $env['year'] + Util::randRangeInt(10, 50);
 
-        $cityID = Util::choiceRandom(array_keys(\sammo\CityConst::all()));
-        $newNPC = new \sammo\Scenario\NPC(
-            Util::randRangeInt(1, 150),
-            \sammo\getRandGenName(),
-            null,
-            $scoutNation,
-            $cityID,
-            $leadership,
-            $strength,
-            $intel,
-            $scoutLevel,
-            $birthYear,
-            $deathYear,
-            null,
-            null
+        $avgGen = $db->queryFirstRow(
+            'SELECT avg(dedication) as ded,avg(experience) as exp,
+            avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
+            from general where npc < 5'
         );
-        $newNPC->npc = 3;
+        
+        $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];
+
+        $pickedNPC = pickGeneralFromPool($db, 0, 1)[0];
+        $newNPC = $pickedNPC->getGeneralBuilder();
+
+        $newNPC->setSpecial('None', 'None');
+        $newNPC->setNPCType(3);
         $newNPC->setMoney(1000, 1000);
-        $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
+        $newNPC->setLifeSpan($birthYear, $deathYear);
         $newNPC->setSpecYear(
             Util::round((GameConst::$retirementYear - $age) / 12) + $age,
             Util::round((GameConst::$retirementYear - $age) / 6) + $age
         );
-        $newNPC->setDex(
-            $dexVal[0],
-            $dexVal[1],
-            $dexVal[2],
-            $dexVal[3],
-            $avgGen['dex5']
-        );
+        $newNPC->fillRemainSpecAsRandom($pickTypeList, $avgGen, $env);
 
         $newNPC->build($this->env);
-        $npcName = $newNPC->realName;
+        $pickedNPC->occupyGeneralName();
+        $npcName = $newNPC->getGeneralName();
         $josaRa = JosaUtil::pick($npcName, '라');
 
         $generalName = $general->getName();

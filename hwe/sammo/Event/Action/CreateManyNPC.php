@@ -2,6 +2,10 @@
 namespace sammo\Event\Action;
 use \sammo\GameConst;
 use \sammo\Util;
+use \sammo\DB;
+
+use function sammo\pickGeneralFromPool;
+
 //기존 event_3.php
 class CreateManyNPC extends \sammo\Event\Action{
     protected $npcCount;
@@ -10,75 +14,30 @@ class CreateManyNPC extends \sammo\Event\Action{
         $this->npcCount = $npcCount;
     }
 
-    protected function generateNPC($env){
+    protected function generateNPC($env, int $cnt){
         $pickTypeList = ['무'=>1, '지'=>1];
-
-        $pickType = Util::choiceRandomUsingWeight($pickTypeList);
-
-        $totalStat = GameConst::$defaultStatNPCTotal;
-        $minStat = GameConst::$defaultStatNPCMin;
-        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, GameConst::$defaultStatNPCMin);
-        $otherStat = $minStat + Util::randRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
-        $subStat = $totalStat - $mainStat - $otherStat;
-        if ($subStat < $minStat) {
-            $subStat = $otherStat;
-            $otherStat = $minStat;
-            $mainStat = $totalStat - $subStat - $otherStat;
-            if ($mainStat) {
-                throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
-            }
-        }
-
-        if($pickType == '무'){
-            $leadership = $subStat;
-            $strength = $mainStat;
-            $intel = $otherStat;
-        }
-        else if($pickType == '지'){
-            $leadership = $subStat;
-            $strength = $otherStat;
-            $intel = $mainStat;
-        }
-        else{
-            $leadership = $otherStat;
-            $strength = $subStat;
-            $intel = $mainStat;
-        }
-
-        $leadership = Util::round($leadership);
-        $strength = Util::round($strength);
-        $intel = Util::round($intel);
 
         $age = Util::randRangeInt(20, 25);
         $birthYear = $env['year'] - $age;
         $deathYear = $env['year'] + Util::randRangeInt(10, 50);
 
-        $cityID = Util::choiceRandom(array_keys(\sammo\CityConst::all()));
-        $newNPC = new \sammo\Scenario\NPC(
-            Util::randRangeInt(1, 150),
-            \sammo\getRandGenName(),
-            null,
-            0,
-            $cityID,
-            $leadership,
-            $strength,
-            $intel,
-            0,
-            $birthYear,
-            $deathYear,
-            null,
-            null
-        );
-        $newNPC->npc = 3;
-        $newNPC->setMoney(1000, 1000);
-        $newNPC->setExpDed(0, 0);
-        $newNPC->setSpecYear(
-            Util::round((GameConst::$retirementYear - $age) / 12) + $age,
-            Util::round((GameConst::$retirementYear - $age) / 6) + $age
-        );
-
-        $newNPC->build($env);
-        return [$newNPC->realName, $newNPC->generalID];
+        $result = [];
+        foreach(pickGeneralFromPool(DB::db(), 0, $cnt) as $pickedNPC){
+            $newNPC = $pickedNPC->getGeneralBuilder();
+            $newNPC->setNationID(0)
+            ->setNPCType(3)
+            ->setMoney(1000, 1000)
+            ->setExpDed(0, 0)
+            ->setLifeSpan($birthYear, $deathYear)
+            ->fillRandomStat($pickTypeList)
+            ->fillRemainSpecAsZero($env);
+            $newNPC->build($env);
+            $pickedNPC->occupyGeneralName();
+            $result[] = [
+                $newNPC->getGeneralName(), $newNPC->getGeneralID()
+            ];
+        }
+        return $result;
     }
     
 
@@ -86,10 +45,7 @@ class CreateManyNPC extends \sammo\Event\Action{
         if($this->npcCount <= 0){
             return [__CLASS__, []];   
         }
-        $result = [];
-        foreach(Util::range($this->npcCount) as $idx){
-            $result[] = $this->generateNPC($env);
-        }
+        $result = $this->generateNPC($env, $this->npcCount);
 
         $logger = new \sammo\ActionLogger(0, 0, $env['year'], $env['month']);
         $genCnt = count($result);

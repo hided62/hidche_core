@@ -572,6 +572,25 @@ CREATE TABLE `select_npc_token` (
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria;
 
+######
+# 장수 생성 풀 토큰
+CREATE TABLE `select_pool` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`unique_name` VARCHAR(20) NOT NULL,
+	`owner` INT(11) NULL DEFAULT NULL,
+	`general_id` INT(11) NULL DEFAULT NULL,
+	`reserved_until` DATETIME NULL DEFAULT NULL,
+	`info` TEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `unique_name` (`unique_name`),
+	UNIQUE INDEX `general_id` (`general_id`),
+	INDEX `owner` (`owner`),
+	INDEX `reserved_until` (`reserved_until`, `general_id`)
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria
+;
+
 ###################
 # KV storage
 ###################

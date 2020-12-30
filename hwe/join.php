@@ -24,7 +24,12 @@ if (!$member) {
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-
+$admin = $gameStor->getValues(['block_general_create','show_img_level','maxgeneral']);
+if($admin['block_general_create']){
+    MessageBox("잘못된 접근입니다!!!");
+    echo "<script>history.go(-1);</script>";
+    exit(1);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,7 +71,6 @@ echo Json::encode((object)$charInfoText);
         <tr><td align=center><?=info(0)?></td></tr>
     </table>
 <?php
-$admin = $gameStor->getValues(['show_img_level','maxgeneral']);
 
 $gencount = $db->queryFirstField('SELECT count(no) FROM general WHERE npc<2');
 

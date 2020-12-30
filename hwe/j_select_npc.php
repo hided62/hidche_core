@@ -59,7 +59,7 @@ list(
     $npcmode
 ) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode']);
 
-if(!$npcmode){
+if($npcmode!=1){
     Json::die([
         'result'=>false,
         'reason'=>'빙의 가능한 서버가 아닙니다'

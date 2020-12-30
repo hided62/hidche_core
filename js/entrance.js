@@ -30,29 +30,50 @@ var serverFullTemplate = "\
 <td colspan='4' class='server_full'>- 장수 등록 마감 -</td>\
 ";
 
-var serverCreateAndSelectTemplate = "\
+var serverSelectPoolTemplate = "\
 <td colspan='2' class='not_registered'>- 미 등 록 -</td>\
 <td class='ignore_border'>\
-<a href='<%serverPath%>/select_npc.php'><button type='button' class='general_select with_skin'>장수선택</button></a>\
-<a href='<%serverPath%>/join.php'><button type='button' class='general_create with_skin'>장수생성</button></a>\
+<a href='<%serverPath%>/select_general_from_pool.php'><button type='button' class='general_select with_skin'>장수선택</button></a>\
 </td>\
 ";
 
+var serverLoginBtn = "<a href='<%serverPath%>/' class='item'\
+><button type='button' class='fill_box with_skin'>입장</button\
+></a>";
+
+var serverCreateBtn = "<a href='<%serverPath%>/join.php' class='item'\
+><button type='button' class='fill_box with_skin'>장수생성</button\
+></a>";
+
+var serverSelectNPCBtn = "<a href='<%serverPath%>/select_npc.php' class='item'\
+><button type='button' class='fill_box with_skin'>장수빙의</button\
+></a>";
+
+var serverSelectPoolBtn = "<a href='<%serverPath%>/select_general_from_pool.php' class='item'\
+><button type='button' class='fill_box with_skin'>장수선택</button\
+></a>";
+
 var serverCreateTemplate = "\
 <td colspan='2' class='not_registered'>- 미 등 록 -</div>\
-<td class='ignore_border'>\
-<a href='<%serverPath%>/join.php'><button type='button' class='general_create with_skin'>장수생성</button></a>\
-</td>\
-";
+<td class='ignore_border vertical_flex BtnPlate'>\
+<%if(canCreate) {%>\
+<a href='<%serverPath%>/join.php' class='item'><button type='button' class='fill_box with_skin'>장수생성</button></a>\
+<%}%>\
+<%if(canSelectNPC) {%>\
+<a href='<%serverPath%>/select_npc.php' class='item'><button type='button' class='fill_box with_skin'>장수빙의</button></a>\
+<%}%>\
+<%if(canSelectPool) {%>\
+<a href='<%serverPath%>/select_general_from_pool.php' class='item'><button type='button' class='fill_box with_skin'>장수선택</button></a>\
+<%}%>\
+</td>";
 
 var serverLoginTemplate = "\
 <td style='background:url(\"<%picture%>\");background-size: 64px 64px;'></td>\
 <td><%name%></td>\
-<td class='ignore_border'>\
-<a href='<%serverPath%>/'><button type='button' class='general_login with_skin'>입장</button></a>\
+<td class='ignore_border vertical_flex BtnPlate'>\
+<a href='<%serverPath%>/' class='item'><button type='button' class='fill_box with_skin'>입장</button></a>\
 </td>\
 ";
-
 
 var serverReservedTemplate = "\
 <td colspan='4' class='server_reserved'>\
@@ -63,38 +84,38 @@ var serverReservedTemplate = "\
 </td>\
 ";
 
-$(function(){
+$(function() {
     $("#btn_logout").click(Entrance_Logout);
     Entrance_UpdateServer();
 });
 
 function Entrance_UpdateServer() {
     $.ajax({
-        type:'post',
-        url:"j_server_get_status.php",
-        dataType:'json',
-    }).then(function(response){
-        if(response.result == "SUCCESS") {
+        type: 'post',
+        url: "j_server_get_status.php",
+        dataType: 'json',
+    }).then(function(response) {
+        if (response.result == "SUCCESS") {
             Entrance_drawServerList(response.server);
         }
     });
 }
 
-function Entrance_drawServerList(serverInfos){
+function Entrance_drawServerList(serverInfos) {
     var $serverList = $('#server_list');
     var now = moment().format('YYYY-MM-DD HH:mm:ss');
-    $.each(serverInfos, function(idx, serverInfo){
+    $.each(serverInfos, function(idx, serverInfo) {
         var $serverHtml = $(TemplateEngine(serverListTemplate, serverInfo));
         $serverList.append($serverHtml);
-        if(!serverInfo.exists){
+        if (!serverInfo.exists) {
             return true;
         }
 
-        var serverPath = "../"+serverInfo.name;
+        var serverPath = "../" + serverInfo.name;
 
 
-        $.getJSON("../"+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
-            if(result.reserved){
+        $.getJSON("../" + serverInfo.name + '/j_server_basic_info.php', {}, function(result) {
+            if (result.reserved) {
                 $serverHtml.find('.server_down').detach();
                 $serverHtml.append(
                     TemplateEngine(serverReservedTemplate, result.reserved)
@@ -103,64 +124,59 @@ function Entrance_drawServerList(serverInfos){
                 return;
             }
 
-            if(!result.game){
+            if (!result.game) {
                 return;
             }
 
 
-            var game= result.game;
+            var game = result.game;
             //TODO: 서버 폐쇄 방식을 새롭게 변경
             $serverHtml.find('.server_down').detach();
             var serverTime = '%s ~ %s'.format(game.startFrom)
 
-            if(game.isUnited == 2){
+            if (game.isUnited == 2) {
                 $serverHtml.find('.n_country').html('§천하통일§');
                 $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
-            }
-            else if(game.opentime <= now){
+            } else if (game.opentime <= now) {
                 $serverHtml.find('.n_country').html('<{0}국 경쟁중>'.format(game.nationCnt));
                 $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
-            }
-            else{
+            } else {
                 $serverHtml.find('.n_country').html('-가오픈 중-');
                 $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
             }
 
-            if(game.opentime <= now){
+            if (game.opentime <= now) {
                 $serverHtml.append(
                     TemplateEngine(serverTextInfo, game)
                 );
-            }
-            else{
+            } else {
                 $serverHtml.append(
                     TemplateEngine(serverProvisionalInfo, game)
                 );
             }
-            
 
-            if(result.me && result.me.name){
+
+            console.log(game.npcMode);
+            if (result.me && result.me.name) {
                 var me = result.me;
                 me.serverPath = serverPath;
                 $serverHtml.append(
                     TemplateEngine(serverLoginTemplate, me)
                 );
-            }
-            else if(game.userCnt >= game.maxUserCnt){
+            } else if (game.userCnt >= game.maxUserCnt) {
                 $serverHtml.append(
                     TemplateEngine(serverFullTemplate, {})
                 );
-            }
-            else if(game.npcMode == '가능'){
+            } else {
                 $serverHtml.append(
-                    TemplateEngine(serverCreateAndSelectTemplate, {serverPath:serverPath})
-                ).addClass('server_create_and_select');
+                    TemplateEngine(serverCreateTemplate, {
+                        serverPath: serverPath,
+                        canCreate: !game.block_general_create,
+                        canSelectNPC: game.npcMode == '가능',
+                        canSelectPool: game.npcMode == '선택 생성'
+                    })
+                )
             }
-            else{
-                $serverHtml.append(
-                    TemplateEngine(serverCreateTemplate, {serverPath:serverPath})
-                );
-            }
-
             initTooltip($serverHtml);
         });
     });
@@ -168,12 +184,12 @@ function Entrance_drawServerList(serverInfos){
 
 function Entrance_Logout() {
     $.ajax({
-        type:'post',
-        url:"j_logout.php",
-        dataType:'json',
+        type: 'post',
+        url: "j_logout.php",
+        dataType: 'json',
     }).then(function(response) {
-        if(response.result) {
-            location.href="../";
+        if (response.result) {
+            location.href = "../";
         } else {
             alert('로그아웃 실패');
         }

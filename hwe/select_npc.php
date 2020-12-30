@@ -11,7 +11,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 list($npcmode, $maxgeneral) = $gameStor->getValuesAsArray(['npcmode', 'maxgeneral']);
 
-if(!$npcmode) {
+if($npcmode!=1) {
     header('location:..');
     die();
 }
@@ -33,7 +33,7 @@ foreach($scoutMsgs as $nationID=>$scoutMsg){
 <title><?=UniqueConst::$serverName?>: NPC빙의</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="style='width:1024" />
+<meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('../css/config.css')?>

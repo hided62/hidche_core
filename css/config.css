@@ -1,19 +1,34 @@
 @charset "utf-8";
-
 body {
-    color:white; background-color:black; font-family: '맑은 고딕';
+    color: white;
+    background-color: black;
+    font-family: '맑은 고딕';
 }
 
 table {
-    border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
+    border: solid 1px;
+    border-spacing: 0px;
+    border-collapse: separate;
+    border-top-color: gray;
+    border-left-color: gray;
+    border-right-color: black;
+    border-bottom-color: black;
     padding: 0px;
     font-size: 13px;
     word-break: break-all;
     text-align: center;
     font-family: '맑은 고딕';
 }
-th, td      {
-    border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
+
+th,
+td {
+    border: solid 1px;
+    border-spacing: 0px;
+    border-collapse: separate;
+    border-top-color: gray;
+    border-left-color: gray;
+    border-right-color: black;
+    border-bottom-color: black;
     padding: 0px;
     font-size: 13px;
     word-break: break-all;
@@ -25,8 +40,8 @@ a.just_link {
     text-decoration: none;
 }
 
-.with_border{
-    margin:0;
+.with_border {
+    margin: 0;
     border: solid 1px;
     border-spacing: 0px;
     border-collapse: separate;
@@ -37,42 +52,52 @@ a.just_link {
 }
 
 .section_title {
-    height:50px;
-    line-height:50px;
-    font-size: 30px; font-weight: bold;
+    height: 50px;
+    line-height: 50px;
+    font-size: 30px;
+    font-weight: bold;
     text-align: center;
-    color:white;
-    padding:0;
+    color: white;
+    padding: 0;
 }
 
-.legacy_layout div     {
-    border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
+.legacy_layout div {
+    border: solid 1px;
+    border-spacing: 0px;
+    border-collapse: separate;
+    border-top-color: gray;
+    border-left-color: gray;
+    border-right-color: black;
+    border-bottom-color: black;
     padding: 0px;
     font-size: 13px;
     word-break: break-all;
     text-align: center;
-    font-family: '맑은 고딕';;
+    font-family: '맑은 고딕';
+    ;
 }
 
-.obj_fill{
-    display:block;
-    width:100%;
-    height:100%;
+.obj_fill {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 button.with_skin {
-    padding:0 4px;
-    background-color: black; color: white;
+    padding: 0 4px;
+    background-color: black;
+    color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
 }
 
 button.with_skin:disabled {
-    background-color:#333333;
+    background-color: #333333;
 }
 
-input.with_skin   {
-    background-color: black; color: white;
+input.with_skin {
+    background-color: black;
+    color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
 }
@@ -81,25 +106,41 @@ input.with_skin:disabled {
     background-color: #333333;
 }
 
-.font0  { font-size: 10px; }
-.font1  { font-size: 13px; }
-.font2  { font-size: 15px; }
-.font3  { font-size: 20px; }
-.font4  { font-size: 30px; }
-.font5  { font-size: 50px; }
-
-caption.section_title {
-    caption-side:top;
+.font0 {
+    font-size: 10px;
 }
 
+.font1 {
+    font-size: 13px;
+}
 
-.samButton{
-    float:left;
-    display:block;
-    padding:0;
-    margin:0;
+.font2 {
+    font-size: 15px;
+}
+
+.font3 {
+    font-size: 20px;
+}
+
+.font4 {
+    font-size: 30px;
+}
+
+.font5 {
+    font-size: 50px;
+}
+
+caption.section_title {
+    caption-side: top;
+}
+
+.samButton {
+    float: left;
+    display: block;
+    padding: 0;
+    margin: 0;
     text-decoration: none;
-    position:relative;
+    position: relative;
 }
 
 a.samButton.disabled {
@@ -107,24 +148,23 @@ a.samButton.disabled {
     cursor: default;
 }
 
-.samButtonOuter{
+.samButtonOuter {
     display: table;
     border: outset 2px white;
     box-sizing: border-box;
-    font-weight:bold;
+    font-weight: bold;
     padding: 1px 6px;
-    width:125px;
-    height:30px;
-    background-color:#000000;
-    color:#ffffff;
+    width: 125px;
+    height: 30px;
+    background-color: #000000;
+    color: #ffffff;
 }
 
-.samButtonOuter:active{
+.samButtonOuter:active {
     border: inset 2px white;
 }
 
-
-.samButtonInner{
+.samButtonInner {
     display: table-cell;
     vertical-align: middle;
     width: 100%;
@@ -133,42 +173,42 @@ a.samButton.disabled {
     user-select: none;
 }
 
-.samToolbarButton > .samButtonOuter{
-    width:125px;
-    height:30px;
-    background-color:#225500;
-    color:white;
+.samToolbarButton>.samButtonOuter {
+    width: 125px;
+    height: 30px;
+    background-color: #225500;
+    color: white;
 }
 
-.samToolbarButton2 > .samButtonOuter{
-    width:125px;
-    height:30px;
-    background-color:#225500;
-    color:magenta;
+.samToolbarButton2>.samButtonOuter {
+    width: 125px;
+    height: 30px;
+    background-color: #225500;
+    color: magenta;
 }
 
-.samCommandButton > .samButtonOuter{
-    width:111px;
-    height:30px;
+.samCommandButton>.samButtonOuter {
+    width: 111px;
+    height: 30px;
 }
 
-.samCommandButton.disabled > .samButtonOuter{
-    background-color:transparent !important;
-    color:gray !important;
-    border-color:transparent !important;
+.samCommandButton.disabled>.samButtonOuter {
+    background-color: transparent !important;
+    color: gray !important;
+    border-color: transparent !important;
 }
 
-.samCommandButton.disabled > .samButtonOuter > .samButtonInner::before{
-    content:'【'
+.samCommandButton.disabled>.samButtonOuter>.samButtonInner::before {
+    content: '【'
 }
 
-.samCommandButton.disabled > .samButtonOuter > .samButtonInner::after{
-    content:'】'
+.samCommandButton.disabled>.samButtonOuter>.samButtonInner::after {
+    content: '】'
 }
 
-.tooltip_copyable_info .tooltiptext{
+.tooltip_copyable_info .tooltiptext {
     display: inline;
-    color: rgba(0,0,0,0);
+    color: rgba(0, 0, 0, 0);
     font-size: 0;
 }
 
@@ -176,7 +216,26 @@ a.samButton.disabled {
     display: none;
 }
 
-.hidden_but_copyable{
-    color: rgba(0,0,0,0);
+.hidden_but_copyable {
+    color: rgba(0, 0, 0, 0);
     font-size: 0;
+}
+
+.vertical_flex {
+    height: 100%;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.vertical_flex .item {
+    display: block;
+    flex-grow: 1;
+}
+
+.fill_box {
+    display: block;
+    width: 100%;
+    height: 100%;
 }

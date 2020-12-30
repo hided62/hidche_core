@@ -339,6 +339,9 @@ class GameConstBase
     ];
     public static $retirementYear = 80;
 
+    public static $targetGeneralPool = 'RandomNameGeneral';
+    public static $generalPoolAllowOption = ['stat', 'ego', 'picture'];
+
     public static $randGenFirstName = [
         '가', '간', '감', '강', '고', '공', '공손', '곽', '관', '괴', '교', '금', '노', '뇌', '능', '도', '동', '두',
         '등', '마', '맹', '문', '미', '반', '방', '부', '비', '사', '사마', '서', '설', '성', '소', '손', '송', '순',

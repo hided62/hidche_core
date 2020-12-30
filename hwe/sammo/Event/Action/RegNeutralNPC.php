@@ -20,22 +20,21 @@ class RegNeutralNPC extends \sammo\Event\Action{
         $char = '', 
         $text = ''
     ){
-        $this->npc = new \sammo\Scenario\NPC(
-            $affinity, 
+        return (new \sammo\Scenario\GeneralBuilder(
             $name, 
+            0,
             $picturePath, 
-            $nationID, 
-            $locatedCity, 
-            $leadership, 
-            $strength, 
-            $intel, 
-            $birth, 
-            $death, 
-            $ego, 
-            $char, 
-            $text?:''
-        );
-        $this->npc = 6;
+            $nationID 
+        ))
+        ->setCity($locatedCity)
+        ->setStat($leadership, $strength, $intel)
+        ->setEgo($ego)
+        ->setSpecialSingle($char)
+        ->setNPCText($text?:'')
+        ->setAffinity($affinity)
+        ->setLifeSpan($birth, $death)
+        ->setNPCType(6)
+        ->fillRemainSpecAsZero();
     }
 
     public function run($env=null){

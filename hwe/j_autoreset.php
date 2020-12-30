@@ -85,6 +85,7 @@ $result = ResetHelper::buildScenario(
     $options['scenario'],
     $options['fiction'],
     $options['extend'],
+    $options['block_general_create'],
     $options['npcmode'],
     $options['show_img_level'],
     $options['tournament_trig'],

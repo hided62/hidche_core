@@ -378,6 +378,30 @@ function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = n
     return $class->newInstanceArgs(array_merge([$unit], $args));
 }
 
+function getGeneralPoolClass(string $type){
+    static $basePath = __NAMESPACE__.'\\GeneralPool\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 GeneralPool이 아님");
+}
+
+/**
+ * @param \MeekroDB $db
+ * @param int $owner 
+ * @param int $pickCnt 
+ * @param null|string $prefix
+ * @return AbsGeneralPool[]
+ */
+function pickGeneralFromPool(\MeekroDB $db, int $owner, int $pickCnt, ?string $prefix=null):array{
+    /** @var AbsGeneralPool */
+    $class = getGeneralPoolClass(GameConst::$targetGeneralPool);
+    return $class::pickGeneralFromPool($db, $owner, $pickCnt, $prefix);
+}
+
 function countPureGeneralFromRawList(?array $rawGeneralList=null):int{
     if(!$rawGeneralList){
         return 0;

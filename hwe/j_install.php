@@ -57,6 +57,7 @@ $v->rule('required', [
     'scenario',
     'fiction',
     'extend',
+    'block_general_create',
     'join_mode',
     'npcmode',
     'show_img_level',
@@ -67,6 +68,7 @@ $v->rule('required', [
     'scenario',
     'fiction',
     'extend',
+    'block_general_create',
     'npcmode',
     'show_img_level',
     'tournament_trig',
@@ -109,11 +111,13 @@ $scenario = (int)$_POST['scenario'];
 $fiction = (int)$_POST['fiction'];
 $extend = (int)$_POST['extend'];
 $npcmode = (int)$_POST['npcmode'];
+$block_general_create = (bool)$_POST['block_general_create'];
 $show_img_level = (int)$_POST['show_img_level'];
 $tournament_trig = (int)$_POST['tournament_trig'];
 $join_mode = $_POST['join_mode'];
 $autorun_user_minutes = (int)$_POST['autorun_user_minutes'];
 $autorun_user_options = [];
+
 foreach(Util::getPost('autorun_user', 'array_string', []) as $autorun_option){
     $autorun_user_options[$autorun_option] = 1;
 }
@@ -165,6 +169,7 @@ if($reserve_open){
         'scenarioName'=>$scenarioObj->getTitle(),
         'fiction'=>$fiction,
         'extend'=>$extend,
+        'block_general_create'=>$block_general_create,
         'npcmode'=>$npcmode,
         'show_img_level'=>$show_img_level,
         'tournament_trig'=>$tournament_trig,
@@ -200,6 +205,7 @@ Json::die(ResetHelper::buildScenario(
     $scenario,
     $fiction,
     $extend,
+    $block_general_create,
     $npcmode,
     $show_img_level,
     $tournament_trig,

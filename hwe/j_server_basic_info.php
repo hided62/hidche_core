@@ -91,7 +91,8 @@ if(file_exists(__DIR__.'/.htaccess')){
             'scenarioName'=>$options['scenarioName'],
             'turnterm'=>$options['turnterm'],
             'fictionMode'=>($options['fiction']?'가상':'사실'),
-            'npcMode'=>($options['npcmode']?'가능':'불가'),
+            'block_general_create'=>(!!$options['block_general_create']),
+            'npcMode'=>([0=>'불가',1=>'가능',2=>'선택 생성'][$options['npcmode']]),
             'openDatetime'=>$reserved['date'],
             'starttime'=>$options['starttime'],
             'gameConf'=>$options['gameConf'],
@@ -104,7 +105,7 @@ if(file_exists(__DIR__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction', 'autorun_user']);
+$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction', 'block_general_create', 'autorun_user']);
 $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
@@ -124,8 +125,8 @@ $admin['scenario'] = $admin['scenario_text'];
 $admin['userCnt'] = $genCnt;
 $admin['npcCnt'] = $npcCnt;
 $admin['nationCnt'] = $nationCnt;
-
-$admin['npcMode'] = $admin['npcMode']?'가능':'불가';
+$admin['block_general_create'] = !!$admin['block_general_create'];
+$admin['npcMode'] = [0=>'불가',1=>'가능',2=>'선택 생성'][$admin['npcMode']];
 $admin['fictionMode'] = $admin['fiction']?'가상':'사실';
 
 $otherTextInfo = [];

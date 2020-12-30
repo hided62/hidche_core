@@ -14,7 +14,7 @@ $generalID = $session->generalID;
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$gameStor->cacheValues(['turntime', 'opentime', 'autorun_user']);
+$gameStor->cacheValues(['turntime', 'opentime', 'autorun_user', 'npcmode']);
 
 increaseRefresh("내정보", 1);
 
@@ -111,6 +111,11 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
 <?php if($showDieImmediatelyBtn): ?>
             가오픈 기간 내 장수 삭제 (<?=substr($targetTime, 0, 19)?> 부터)<br>
             <a href="c_die_immediately.php" id='die_immediately'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>장수 삭제</button></a><br><br>
+<?php endif; ?>
+
+<?php if($gameStor->npcmode==2 && $me->getNPCType()==0): ?>
+            다른 장수 선택 (<?=substr($me->getAuxVar('next_change')??TimeUtil::now(), 0, 19)?> 부터)<br>
+            <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>다른 장수 선택</button></a><br><br>
 <?php endif; ?>
 
             개인용 CSS<br>

@@ -680,31 +680,22 @@ function updateNationState()
 
             while ($assemblerCnt < $maxAssemblerCnt) {
                 $lastAssemblerID += 1;
-                $npcObj = new Scenario\NPC(
-                    999,
+                $npcObj = new Scenario\GeneralBuilder(
                     sprintf('부대장%4d', $lastAssemblerID),
+                    0,
                     null,
-                    $nation['nation'],
-                    null,
-                    10,
-                    10,
-                    10,
-                    1,
-                    $admin['year'] - 15,
-                    $admin['year'] + 15,
-                    '은둔',
-                    '척사'
+                    $nation['nation']
                 );
-                $npcObj->killturn = 70;
-                $npcObj->gold = 0;
-                $npcObj->rice = 0;
-                $npcObj->npc = 5;
+                $npcObj->setAffinity(999)->setStat(10, 10, 10)
+                ->setSpecialSingle('척사')->setEgo('은둔')
+                ->setKillturn(70)->setGoldRice(0, 0)
+                ->setNPCType(5)->fillRemainSpecAsZero($admin);
                 $npcObj->build($admin);
-                $npcID = $npcObj->generalID;
+                $npcID = $npcObj->getGeneralID();
 
                 $db->insert('troop', [
                     'troop_leader' => $npcID,
-                    'name' => $npcObj->realName,
+                    'name' => $npcObj->getGeneralName(),
                     'nation' => $nation['nation'],
                 ]);
                 $db->update('general', [

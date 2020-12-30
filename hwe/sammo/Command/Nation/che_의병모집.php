@@ -152,81 +152,21 @@ class che_의병모집 extends Command\NationCommand
             from general where nation=%i',
             $nationID
         );
-        $dexTotal = $avgGen['dex_t'];
+        foreach(\sammo\pickGeneralFromPool($db, 0, $createGenCnt) as $pickedNPC){
+            
+            $newNPC = $pickedNPC->getGeneralBuilder();
 
-        for (; $createGenIdx <= $lastCreatGenIdx; $createGenIdx++) {
-            $pickType = Util::choiceRandomUsingWeight($pickTypeList);
+            $newNPC->setCityID($general->getCityID());
 
-            $totalStat = GameConst::$defaultStatNPCMax * 2 + 10;
-            $minStat = 10;
-            $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, 10);
-            //TODO: defaultStatNPCTotal, defaultStatNPCMin 추가
-            $otherStat = $minStat + Util::randRangeInt(0, 5);
-            $subStat = $totalStat - $mainStat - $otherStat;
-            if ($subStat < $minStat) {
-                $subStat = $otherStat;
-                $otherStat = $minStat;
-                $mainStat = $totalStat - $subStat - $otherStat;
-                if ($mainStat) {
-                    throw new \LogicException('기본 스탯 설정값이 잘못되어 있음');
-                }
-            }
-
-            if ($pickType == '무') {
-                $leadership = $subStat;
-                $strength = $mainStat;
-                $intel = $otherStat;
-                $dexVal = Util::choiceRandom([
-                    [$dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal / 8],
-                    [$dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8],
-                    [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8],
-                ]);
-            } else if ($pickType == '지') {
-                $leadership = $subStat;
-                $strength = $otherStat;
-                $intel = $mainStat;
-                $dexVal = [$dexTotal / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8];
-            } else {
-                $leadership = $otherStat;
-                $strength = $subStat;
-                $intel = $mainStat;
-                $dexVal = [$dexTotal / 4, $dexTotal / 4, $dexTotal / 4, $dexTotal / 4];
-            }
-
-            $leadership = Util::round($leadership);
-            $strength = Util::round($strength);
-            $intel = Util::round($intel);
-
-            $age = $avgGen['age'];
-
-            $newNPC = new \sammo\Scenario\NPC(
-                Util::randRangeInt(1, 150),
-                "의병장{$createGenIdx}",
-                null,
-                $nationID,
-                $general->getCityID(),
-                $leadership,
-                $strength,
-                $intel,
-                1,
-                $env['year'] - 20,
-                $env['year'] + 6,
-                null,
-                null
-            );
-            $newNPC->killturn = Util::randRangeInt(64, 70);
-            $newNPC->npc = 4;
+            $newNPC->setSpecial('None', 'None');
+            $newNPC->setKillturn(Util::randRangeInt(64, 70));
+            $newNPC->setNPCType(4);
             $newNPC->setMoney(1000, 1000);
-            $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
-            $newNPC->setDex(
-                $dexVal[0],
-                $dexVal[1],
-                $dexVal[2],
-                $dexVal[3],
-                $avgGen['dex5']
-            );
-
+            $newNPC->setSpecYear(19, 19);
+            $newNPC->fillRemainSpecAsRandom($pickTypeList, $avgGen, $env);
+            
             $newNPC->build($this->env);
+            $pickedNPC->occupyGeneralName();
         }
 
         $gameStor->npccount = $lastCreatGenIdx;
