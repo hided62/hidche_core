@@ -36,8 +36,9 @@ list(
     $year,
     $month,
     $maxgeneral,
-    $npcmode
-) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode']);
+    $npcmode,
+    $turnterm
+) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode', 'turnterm']);
 
 if($npcmode!=2){
     Json::die([
@@ -128,7 +129,7 @@ if(key_exists('specialDomestic', $info)){
 if(key_exists('specialWar', $info)){
     $generalObj->updateVar('special2', $info['specialWar']);
 }
-$generalObj->setAuxVar('next_change', TimeUtil::nowAddDays(1));
+$generalObj->setAuxVar('next_change', TimeUtil::nowAddMinutes(24 * $turnterm));
 
 $userNick = $ownerInfo['name'];
 $josaYi = JosaUtil::pick($userNick, '이');

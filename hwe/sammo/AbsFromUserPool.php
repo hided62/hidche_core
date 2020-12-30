@@ -7,7 +7,6 @@ use sammo\Json;
 use sammo\Util;
 
 abstract class AbsFromUserPool extends AbsGeneralPool{
-    static $valid_seconds = 3600*24;
 
     public function occupyGeneralName(): bool
     {
@@ -45,9 +44,9 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
             throw new \RuntimeException('pool 부족');
         }
 
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         $result = [];
-        $validUntil = $oNow->add(new \DateInterval(sprintf('PT%dS', static::$valid_seconds)));
-        $validUntilText = $validUntil->format('Y-m-d H:i:s');
+        $validUntil = TimeUtil::nowAddMinutes(24 * $gameStor->turnterm);
         while(count($result) < $pickCnt){
             $cand = Util::choiceRandomUsingWeightPair($pool);
             $poolID = $cand['id'];
@@ -60,12 +59,12 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
             //하나씩 한다.
             $db->update('select_pool', [
                 'owner'=>$owner,
-                'reserved_until'=>$validUntilText,
+                'reserved_until'=>$validUntil,
             ], 'id = %i AND reserved_until IS NULL AND owner IS NULL and general_id IS NULL', $poolID);
             if($db->affectedRows()==0){
                 continue;
             }
-            $result[$poolID] = new static($db, $candInfo, $validUntilText);
+            $result[$poolID] = new static($db, $candInfo, $validUntil);
         }
 
         return array_values($result);

@@ -118,7 +118,7 @@ foreach(GameConst::$generalPoolAllowOption as $allowOption){
 $builder->setOwner($userID);
 $builder->setKillturn(5);
 $builder->setNPCType(0);
-$builder->setAuxVar('next_change', TimeUtil::nowAddDays(1));
+$builder->setAuxVar('next_change', TimeUtil::nowAddMinutes(24 * $env['turnterm']));
 $builder->fillRemainSpecAsZero($env);
 $builder->build($env);
 $generalID = $builder->getGeneralID();
