@@ -10,8 +10,6 @@ use \sammo\GameConst;
 use \sammo\SpecialityHelper;
 
 use function sammo\buildGeneralSpecialClass;
-use function sammo\buildGeneralSpecialDomesticClass;
-use function sammo\buildGeneralSpecialWarClass;
 
 class GeneralBuilder{
 
@@ -134,12 +132,12 @@ class GeneralBuilder{
             $this->specialWar = GameConst::$defaultSpecialWar;
         }
         try{
-            $this->specialDomestic = buildGeneralSpecialDomesticClass($special);
+            $this->specialDomestic = SpecialityHelper::getDomesticClassByName($special);
             $this->specialWar = GameConst::$defaultSpecialWar;
         }
         catch (\Exception $e){
             $this->specialDomestic = GameConst::$defaultSpecialDomestic;
-            $this->specialWar = buildGeneralSpecialWarClass($special);
+            $this->specialWar = SpecialityHelper::getWarClassByName($special);
         }
         return $this;
     }
