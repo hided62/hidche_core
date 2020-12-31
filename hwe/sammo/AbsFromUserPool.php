@@ -46,7 +46,7 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $result = [];
-        $validUntil = TimeUtil::nowAddMinutes(24 * $gameStor->turnterm);
+        $validUntil = TimeUtil::nowAddMinutes(2 * $gameStor->turnterm);
         while(count($result) < $pickCnt){
             $cand = Util::choiceRandomUsingWeightPair($pool);
             $poolID = $cand['id'];

@@ -8,6 +8,7 @@ use \sammo\GameUnitConst;
 use \sammo\CityConst;
 use \sammo\GameConst;
 use \sammo\SpecialityHelper;
+use sammo\TimeUtil;
 
 use function sammo\buildGeneralSpecialClass;
 
@@ -692,7 +693,8 @@ class GeneralBuilder{
             'dex3'=>$this->dex3,
             'dex4'=>$this->dex4,
             'dex5'=>$this->dex5,
-            'aux'=>\sammo\Json::encode($this->aux)
+            'aux'=>\sammo\Json::encode($this->aux),
+            'lastrefresh'=>TimeUtil::now(),
         ]);
         $this->generalID = $db->insertId();
         $turnRows = [];
