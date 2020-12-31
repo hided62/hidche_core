@@ -687,7 +687,7 @@ function updateNationState()
                     $nation['nation']
                 );
                 $npcObj->setAffinity(999)->setStat(10, 10, 10)
-                ->setSpecialSingle('척사')->setEgo('che_은둔')
+                ->setSpecialSingle('che_척사')->setEgo('che_은둔')
                 ->setKillturn(70)->setGoldRice(0, 0)
                 ->setNPCType(5)->fillRemainSpecAsZero($admin);
                 $npcObj->build($admin);
