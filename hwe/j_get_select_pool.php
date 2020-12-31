@@ -76,7 +76,7 @@ if($tokens){
 
 $pick = [];
 $valid_until = null;
-foreach(pickGeneralFromPool($db, $userID, 5) as $pickObj){
+foreach(pickGeneralFromPool($db, $userID, 14) as $pickObj){
     $valid_until = $pickObj->getValidUntil();
     $info = $pickObj->getInfo();
     putInfoText($info);
