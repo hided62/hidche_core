@@ -192,6 +192,10 @@ $(function($) {
         printGenerals(value);
     });
 
+    if (hasGeneralID) {
+        $('#create_plate').hide();
+    }
+
     $('#build_general').on('click', buildGeneral);
 
     $.each(validCustomOption, function(idx, value) {

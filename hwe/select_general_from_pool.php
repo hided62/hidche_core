@@ -106,7 +106,7 @@ history.go(-1);
 </div>
 </div>
 
-<div class="bg0">
+<div class="bg0" id="create_plate">
 <div class="bg1 with_border legacy_layout font1" style="text-align:center;font-weight:bold;margin-top:10px;">장수 생성</div>
 <div class="with_border legacy_layout" style="display:flex">
 <div style='flex:1;' id='left_pad'>
@@ -184,7 +184,8 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
 </div>
 </table>
 </div>
-
+</div>
+<div class="bg0">
 <div class="with_border legacy_layout"><?=backButton()?></div>
 <div class="with_border legacy_layout"><?=banner()?></div>
 </div>
