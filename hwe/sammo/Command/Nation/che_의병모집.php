@@ -157,6 +157,7 @@ class che_의병모집 extends Command\NationCommand
             $newNPC = $pickedNPC->getGeneralBuilder();
 
             $newNPC->setCityID($general->getCityID());
+            $newNPC->setNationID($general->getNationID());
 
             $newNPC->setSpecial('None', 'None');
             $newNPC->setLifeSpan($env['year']-20, $env['year']+10);
