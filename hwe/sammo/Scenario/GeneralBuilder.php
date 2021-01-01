@@ -260,6 +260,14 @@ class GeneralBuilder{
         return $this;
     }
 
+    public function getStat():array{
+        return [
+            $this->leadership,
+            $this->strength,
+            $this->intel
+        ];
+    }
+
     public function setAuxVar(string $key, $value):self{
         if($value === null){
             unset($this->aux[$key]);
@@ -416,7 +424,9 @@ class GeneralBuilder{
             $this->specAge2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/6 - $relYear / 2), 3) + $age;
         }
 
-        if($this->leadership!==null && $this->strength!==null && $this->intel!== null){
+        if ($this->leadership===null || $this->strength===null || $this->intel === null){
+            $this->fillRandomStat($pickTypeList, $pickType);
+        }else{
             $leadership = $this->leadership;
             $strength = $this->strength;
             $intel = $this->intel;
@@ -441,9 +451,6 @@ class GeneralBuilder{
                 ]);
 
             }while(0);
-        }
-        else{
-            $this->fillRandomStat($pickTypeList, $pickType);
         }
 
         if($this->officerLevel === null){

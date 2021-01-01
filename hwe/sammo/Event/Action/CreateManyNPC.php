@@ -28,9 +28,11 @@ class CreateManyNPC extends \sammo\Event\Action{
             ->setNPCType(3)
             ->setMoney(1000, 1000)
             ->setExpDed(0, 0)
-            ->setLifeSpan($birthYear, $deathYear)
-            ->fillRandomStat($pickTypeList)
-            ->fillRemainSpecAsZero($env);
+            ->setLifeSpan($birthYear, $deathYear);
+            if($newNPC->getStat()[0]===null){
+                $newNPC->fillRandomStat($pickTypeList);
+            }
+            $newNPC->fillRemainSpecAsZero($env);
             $newNPC->build($env);
             $pickedNPC->occupyGeneralName();
             $result[] = [
