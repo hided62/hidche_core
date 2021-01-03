@@ -132,6 +132,7 @@ if(key_exists('specialWar', $info)){
 $generalObj->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $turnterm));
 
 $userNick = $ownerInfo['name'];
+$generalObj->setVar('owner_name', $userNick);
 $josaYi = JosaUtil::pick($userNick, '이');
 
 $generalName = $info['generalName'];

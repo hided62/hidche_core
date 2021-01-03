@@ -115,7 +115,10 @@ foreach(GameConst::$generalPoolAllowOption as $allowOption){
     }
 }
 
+$userNick = $ownerInfo['name'];
+
 $builder->setOwner($userID);
+$builder->setOwnerName($userNick);
 $builder->setKillturn(5);
 $builder->setNPCType(0);
 $builder->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $env['turnterm']));
@@ -135,7 +138,7 @@ $db->update('select_pool',[
     'reserved_until'=>null,
 ], '(owner=%i or reserved_until < %s) AND general_id is NULL', $userID, $now);
 
-$userNick = $ownerInfo['name'];
+
 $josaYi = JosaUtil::pick($userNick, '이');
 $generalName = $builder->getGeneralName();
 $josaRo = JosaUtil::pick($generalName, '로');

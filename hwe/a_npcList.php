@@ -59,8 +59,13 @@ foreach (getAllNationStaticInfo() as $nation) {
     $nationName[$nation['nation']] = $nation['name'];
 }
 
-
 $generalList = $db->query('SELECT npc,nation,name,owner_name,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general where npc=1');
+$generalListFromPool = $db->query('SELECT npc,nation,name,owner_name,special,special2,personal,leadership,strength,intel,leadership+strength+intel as sum,explevel,experience,dedication from general JOIN select_pool on general.no = select_pool.general_id where npc=0');
+
+if($generalListFromPool){
+    $generalList = array_merge($generalListFromPool, $generalList);
+}
+
 $sortType = [
     1 => ['name', true],
     2 => ['nation', true],

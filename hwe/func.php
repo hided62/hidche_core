@@ -1224,7 +1224,7 @@ function updateOnline()
 
     //동접수
     $before5Min = TimeUtil::nowAddMinutes(-5);
-    $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh > %s', $before5Min);
+    $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh > %s AND npc < 2', $before5Min);
     $onlineNum = count($onlineUser);
     $onlineNationUsers = Util::arrayGroupBy($onlineUser, 'nation');
     
