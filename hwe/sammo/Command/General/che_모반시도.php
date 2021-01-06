@@ -81,7 +81,7 @@ class che_모반시도 extends Command\GeneralCommand{
         $nationName = $this->nation['name'];
         
         $logger = $general->getLogger();
-        $lordLogger = $this->destGeneralObj->getLogger();
+        $lordLogger = $lordGeneral->getLogger();
 
         $general->setVar('officer_level', 12);
         $general->setVar('officer_city', 0);
