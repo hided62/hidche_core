@@ -162,6 +162,7 @@ if(!key_exists($citylist, CityConst::all())){
 
 if($userGrade >= 5){
     $valid = true;
+    $showDetailedInfo = true;
 }
 
 if(!$valid) {
