@@ -95,6 +95,7 @@ class che_선전포고 extends Command\NationCommand
             ConstraintHelper::DisallowDiplomacyBetweenStatus([
                 0 => '아국과 이미 교전중입니다.',
                 1 => '아국과 이미 선포중입니다.',
+                7 => '불가침국입니다.'
             ]),
         ];
     }
