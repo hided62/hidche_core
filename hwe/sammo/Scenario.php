@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Scenario\GeneralBuilder;
+
 class Scenario{
     const SCENARIO_PATH = __DIR__.'/../scenario';
 
@@ -37,9 +39,114 @@ class Scenario{
     private $initialEvents;
     private $events;
 
+    private $initBasic = false;
     private $initOK = false;
 
     private $gameConf = null;
+
+    public function generateGeneral($rawGeneral, $initFull, $npcType=2): GeneralBuilder{
+        while(count($rawGeneral) < 14){
+            $rawGeneral[] = null;
+        }
+
+        list(
+            $affinity, $name, $picturePath, $nationName, $locatedCity, 
+            $leadership, $strength, $intel, $officerLevel, $birth, $death, $ego,
+            $char, $text
+        ) = $rawGeneral;
+
+        if(key_exists($nationName, $this->nationsInv)){
+            $nationID = $this->nationsInv[$nationName]->getID();
+        }
+        else if(key_exists($nationName, $this->nations)){
+            $nationID = (int)$nationName;
+        }
+        else{
+            $nationID = 0;
+        }
+
+        $this->tmpGeneralQueue[$name] = $rawGeneral;
+
+        $obj = (new Scenario\GeneralBuilder(
+            $name, 
+            false,
+            $picturePath, 
+            $nationID
+        ));
+        if(!$initFull){
+            return $obj;
+        }
+        return $obj
+        ->setCity($locatedCity, true)
+        ->setStat($leadership, $strength, $intel)
+        ->setOfficerLevel($officerLevel)
+        ->setEgo($ego)
+        ->setSpecialSingle($char)
+        ->setNPCText($text)
+        ->setAffinity($affinity)
+        ->setLifeSpan($birth, $death)
+        ->setNPCType($npcType)
+        ->fillRemainSpecAsZero($this->tmpEnv);
+    }
+
+    public function initLite(){
+        if($this->initOK){
+            return;
+        }
+        if($this->initBasic){
+            return;
+        }
+
+        $data = $this->data;
+        $this->tmpEnv = [
+            'startyear'=>$this->year,
+            'year'=>$this->year,
+            'month'=>0 //포인트
+        ];
+
+        $neutralNation = new Scenario\Nation(0, '재야', '#000000', 0, 0);
+        $this->nations = [];
+        $this->nations[0] = $neutralNation;
+        $this->nationsInv = [$neutralNation->getName() => $neutralNation];
+        
+        foreach (Util::array_get($data['nation'],[]) as $idx=>$rawNation) {
+            list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $rawNation;
+            $nationID = $idx+1;
+
+            
+            $nation = new Scenario\Nation(
+                $nationID, 
+                $name, 
+                $color, 
+                $gold, 
+                $rice, 
+                $infoText, 
+                $tech, 
+                $type, 
+                $nationLevel, 
+                $cities
+            );
+            $this->nations[$nationID] = $nation;
+            $this->nationsInv[$nation->getName()] = $nation;
+        }
+
+        $this->diplomacy = Util::array_get($data['diplomacy'], []);
+
+        
+        $this->generals = array_map(function($rawGeneral){
+            return $this->generateGeneral($rawGeneral, false, 2);
+        }, Util::array_get($data['general'], []));
+
+        $this->generalsEx = array_map(function($rawGeneral){
+            return $this->generateGeneral($rawGeneral, false, 2);
+        }, Util::array_get($data['general_ex'], []));
+
+        $this->generalsNeutral = array_map(function($rawGeneral){
+            return $this->generateGeneral($rawGeneral, false, 6);
+        }, Util::array_get($data['general_neutral'], []));
+
+        $this->initBasic = true;
+    }
 
     public function initFull(){
         if($this->initOK){
@@ -83,125 +190,15 @@ class Scenario{
 
         
         $this->generals = array_map(function($rawGeneral){
-            while(count($rawGeneral) < 14){
-                $rawGeneral[] = null;
-            }
-
-            list(
-                $affinity, $name, $picturePath, $nationName, $locatedCity, 
-                $leadership, $strength, $intel, $officerLevel, $birth, $death, $ego,
-                $char, $text
-            ) = $rawGeneral;
-
-            if(key_exists($nationName, $this->nationsInv)){
-                $nationID = $this->nationsInv[$nationName]->getID();
-            }
-            else if(key_exists($nationName, $this->nations)){
-                $nationID = (int)$nationName;
-            }
-            else{
-                $nationID = 0;
-            }
-
-            $this->tmpGeneralQueue[$name] = $rawGeneral;
-
-            return (new Scenario\GeneralBuilder(
-                $name, 
-                false,
-                $picturePath, 
-                $nationID
-            ))
-            ->setCity($locatedCity)
-            ->setStat($leadership, $strength, $intel)
-            ->setOfficerLevel($officerLevel)
-            ->setEgo($ego)
-            ->setSpecialSingle($char)
-            ->setNPCText($text)
-            ->setAffinity($affinity)
-            ->setLifeSpan($birth, $death)
-            ->fillRemainSpecAsZero($this->tmpEnv);
+            return $this->generateGeneral($rawGeneral, true, 2);
         }, Util::array_get($data['general'], []));
 
         $this->generalsEx = array_map(function($rawGeneral){
-            while(count($rawGeneral) < 14){
-                $rawGeneral[] = null;
-            }
-
-            list(
-                $affinity, $name, $picturePath, $nationName, $locatedCity, 
-                $leadership, $strength, $intel, $officerLevel, $birth, $death, $ego,
-                $char, $text
-            ) = $rawGeneral;
-
-            if(key_exists($nationName, $this->nationsInv)){
-                $nationID = $this->nationsInv[$nationName]->getID();
-            }
-            else if(key_exists($nationName, $this->nations)){
-                $nationID = (int)$nationName;
-            }
-            else{
-                $nationID = 0;
-            }
-
-            $this->tmpGeneralQueue[$name] = $rawGeneral;
-
-            return (new Scenario\GeneralBuilder(
-                $name, 
-                false,
-                $picturePath, 
-                $nationID
-            ))
-            ->setCity($locatedCity, true)
-            ->setStat($leadership, $strength, $intel)
-            ->setOfficerLevel($officerLevel)
-            ->setEgo($ego)
-            ->setSpecialSingle($char)
-            ->setNPCText($text)
-            ->setAffinity($affinity)
-            ->setLifeSpan($birth, $death)
-            ->fillRemainSpecAsZero($this->tmpEnv);
-
+            return $this->generateGeneral($rawGeneral, true, 2);
         }, Util::array_get($data['general_ex'], []));
 
         $this->generalsNeutral = array_map(function($rawGeneral){
-            while(count($rawGeneral) < 14){
-                $rawGeneral[] = null;
-            }
-
-            list(
-                $affinity, $name, $picturePath, $nationName, $locatedCity, 
-                $leadership, $strength, $intel, $officerLevel, $birth, $death, $ego,
-                $char, $text
-            ) = $rawGeneral;
-
-            if(key_exists($nationName, $this->nationsInv)){
-                $nationID = $this->nationsInv[$nationName]->getID();
-            }
-            else if(key_exists($nationName, $this->nations)){
-                $nationID = (int)$nationName;
-            }
-            else{
-                $nationID = 0;
-            }
-
-            $this->tmpGeneralQueue[$name] = $rawGeneral;
-
-            return (new Scenario\GeneralBuilder(
-                $name, 
-                false,
-                $picturePath, 
-                $nationID
-            ))
-            ->setCity($locatedCity, true)
-            ->setStat($leadership, $strength, $intel)
-            ->setOfficerLevel($officerLevel)
-            ->setEgo($ego)
-            ->setSpecialSingle($char)
-            ->setNPCText($text)
-            ->setAffinity($affinity)
-            ->setLifeSpan($birth, $death)
-            ->setNPCType(6)
-            ->fillRemainSpecAsZero($this->tmpEnv);
+            return $this->generateGeneral($rawGeneral, true, 6);
         }, Util::array_get($data['general_neutral'], []));
 
         $this->initialEvents = array_map(function($rawEvent){
@@ -293,22 +290,22 @@ class Scenario{
     }
 
     public function getNPC(){
-        $this->initFull();
+        $this->initLite();
         return $this->generals;
     }
 
     public function getNPCex(){
-        $this->initFull();
+        $this->initLite();
         return $this->generalsEx;
     }
 
     public function getNPCneutral(){
-        $this->initFull();
+        $this->initLite();
         return $this->generalsNeutral;
     }
 
     public function getNation(){
-        $this->initFull();
+        $this->initLite();
         return $this->nations;
     }
     
@@ -321,7 +318,7 @@ class Scenario{
     }
 
     public function getScenarioBrief(){
-        $this->initFull();
+        $this->initLite();
 
         $nations = [];
         $nationGeneralCnt = [];
