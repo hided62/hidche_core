@@ -4,8 +4,6 @@ namespace sammo;
 
 require(__DIR__ . '/vendor/autoload.php');
 
-WebUtil::requireAJAX();
-
 function getVersion($target = null)
 {
     if ($target) {
