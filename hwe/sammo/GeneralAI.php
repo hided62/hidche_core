@@ -2670,18 +2670,22 @@ class GeneralAI
     protected function do후방워프(): ?GeneralCommand
     {
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
+            LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 외교 상태", $this->dipState);
             return null;
         }
 
         if(!$this->generalPolicy->can징병){
+            LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 징병 금지", '');
             return null;
         }
 
         if(!($this->genType & self::t통솔장)){
+            LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 통솔장", [$this->genType, $this->general->getLeadership(false)]);
             return null;
         }
 
         if($this->general->getVar('crew') >= $this->nationPolicy->minWarCrew){
+            LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 병력 충분", [$this->general->getVar('crew'), $this->nationPolicy->minWarCrew]);
             return null;
         }
 
@@ -2693,6 +2697,7 @@ class GeneralAI
         }
         else{
             if($city['pop']/$city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+                LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 인구 충분", [$city['pop']/$city['pop_max'], $this->nationPolicy->safeRecruitCityPopulationRatio]);
                 return null;
             }
         }
@@ -2733,6 +2738,7 @@ class GeneralAI
         }
 
         if(!$recruitableCityList){
+            LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 배후 도시", [count($this->backupCities), count($this->supplyCities)]);
             return null;
         }
 
@@ -2744,6 +2750,7 @@ class GeneralAI
     
 
         if(!$cmd->hasFullConditionMet()){
+            LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 조건 불충족", $cmd->getArg());
             return null;
         }
 
