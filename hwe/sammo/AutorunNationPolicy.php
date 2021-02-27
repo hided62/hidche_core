@@ -180,6 +180,7 @@ class AutorunNationPolicy {
         if($serverPolicy){
             foreach($serverPolicy['values']??[] as $policy=>$value){
                 if(!property_exists($this, $policy)){
+                    trigger_error ("{$policy}이 없음", E_USER_NOTICE );
                     continue;
                 }
                 $this->{$policy} = $value;
@@ -194,6 +195,7 @@ class AutorunNationPolicy {
         if($nationPolicy){
             foreach($nationPolicy['values']??[] as $policy=>$value){
                 if(!property_exists($this, $policy)){
+                    trigger_error ("{$policy}이 없음", E_USER_NOTICE );
                     continue;
                 }
                 $this->{$policy} = $value;

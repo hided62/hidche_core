@@ -120,6 +120,7 @@ class AutorunGeneralPolicy{
             $priority = [];
             foreach($serverPolicy['priority'] as $priorityItem){
                 if(!property_exists($this, $priorityItem)){
+                    trigger_error ("{$priorityItem}이 없음", E_USER_NOTICE );
                     continue;
                 }
                 $priority[] = $priorityItem;
@@ -133,6 +134,7 @@ class AutorunGeneralPolicy{
             $priority = [];
             foreach($nationPolicy['priority'] as $priorityItem){
                 if(!property_exists($this, $priorityItem)){
+                    trigger_error ("{$priorityItem}이 없음", E_USER_NOTICE );
                     continue;
                 }
                 $priority[] = $priorityItem;
