@@ -3371,6 +3371,7 @@ class GeneralAI
         foreach($this->nationPolicy->priority as $actionName){
             
             if(!property_exists($this->nationPolicy, 'can'.$actionName)){
+                trigger_error ("can{$actionName}이 없음", E_USER_NOTICE );
                 continue;
             }
             if(!$this->nationPolicy->{'can'.$actionName}){
@@ -3524,6 +3525,7 @@ class GeneralAI
 
         foreach($this->generalPolicy->priority as $actionName){
             if(!property_exists($this->generalPolicy, 'can'.$actionName)){
+                trigger_error ("can{$actionName}이 없음", E_USER_NOTICE );
                 continue;
             }
             if(!($this->generalPolicy->{'can'.$actionName})){
