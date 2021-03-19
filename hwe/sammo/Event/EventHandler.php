@@ -14,7 +14,7 @@ class EventHandler{
         
     }
 
-    public function tryRunEvent(array $env=null){
+    public function tryRunEvent(array $env){
         $result = $this->condition->eval($env);
 
         if(!$result['value']){

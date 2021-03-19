@@ -3,7 +3,7 @@ namespace sammo\Event;
 
 abstract class Action{
     //public abstract function __construct(...$args);
-    public abstract function run($env=null);
+    public abstract function run($env);
 
     public static function build($actionArgs):Action{
         if(!is_array($actionArgs)){

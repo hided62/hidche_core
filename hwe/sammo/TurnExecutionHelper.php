@@ -407,13 +407,22 @@ class TurnExecutionHelper
             }
 
             // 이벤트 핸들러 동작
+            $e_env = null;
             foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
+                if($e_env === null){
+                    $e_env = $gameStor->getAll(false);
+                }
                 $eventID = $rawEvent['id'];
                 $cond = Json::decode($rawEvent['condition']);
                 $action = Json::decode($rawEvent['action']);
                 $event = new Event\EventHandler($cond, $action);
+                $e_env['currentEventID'] = $eventID;
 
-                $event->tryRunEvent(['currentEventID'=>$eventID] + $gameStor->getAll(true));
+                $event->tryRunEvent($e_env);
+            }
+
+            if($e_env !== null){
+                $gameStor->resetCache(true);
             }
 
             postUpdateMonthly();

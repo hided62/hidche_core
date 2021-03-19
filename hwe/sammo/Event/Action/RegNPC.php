@@ -3,6 +3,7 @@ namespace sammo\Event\Action;
 
 //이전 RegNPC 함수를 EventAction으로 재구성
 class RegNPC extends \sammo\Event\Action{
+    /** @var \sammo\Scenario\GeneralBuilder */
     private $npc;
 
     public function __construct(
@@ -22,7 +23,7 @@ class RegNPC extends \sammo\Event\Action{
         $text = ''
     ){
 
-        return (new \sammo\Scenario\GeneralBuilder(
+        $this->npc=(new \sammo\Scenario\GeneralBuilder(
             $name, 
             0,
             $picturePath, 
@@ -38,7 +39,7 @@ class RegNPC extends \sammo\Event\Action{
         ->setLifeSpan($birth, $death);
     }
 
-    public function run($env=null){
+    public function run($env){
         $result = $this->npc->fillRemainSpecAsZero($env)->build($env);
         return [__CLASS__, $result];
     }

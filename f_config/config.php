@@ -117,7 +117,7 @@ function logError(string $err, string $errstr, string $errpath, array $trace)
     ]);
 }
 
-function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext)
+function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=null)
 {
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall

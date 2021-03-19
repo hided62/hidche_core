@@ -21,7 +21,7 @@ class RegNeutralNPC extends \sammo\Event\Action{
         $char = '', 
         $text = ''
     ){
-        return (new \sammo\Scenario\GeneralBuilder(
+        $this->npc=(new \sammo\Scenario\GeneralBuilder(
             $name, 
             0,
             $picturePath, 
