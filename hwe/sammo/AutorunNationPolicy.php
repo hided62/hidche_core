@@ -85,6 +85,7 @@ class AutorunNationPolicy {
 
     public $can부대전방발령 = true;
     public $can부대후방발령 = true;
+    public $can부대구출발령 = true;
 
     public $can부대유저장후방발령 = true;
     public $can유저장후방발령 = true;
