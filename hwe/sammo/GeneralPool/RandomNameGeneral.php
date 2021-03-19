@@ -26,7 +26,7 @@ class RandomNameGeneral extends AbsGeneralPool{
         return $db->affectedRows()!=0;
     }
 
-    public function giveGeneralSpec(array $pickTypeList, array $avgGen, array $env=[]){
+    public function giveGeneralSpec(array $pickTypeList, array $avgGen, array $env){
         //do Nothing
         $dexTotal = $avgGen['dex_t'];
         

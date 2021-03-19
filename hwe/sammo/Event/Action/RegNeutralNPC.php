@@ -3,6 +3,7 @@ namespace sammo\Event\Action;
 
 class RegNeutralNPC extends \sammo\Event\Action{
 
+    /** @var \sammo\Scenario\GeneralBuilder */
     private $npc;
 
     public function __construct(
@@ -33,12 +34,11 @@ class RegNeutralNPC extends \sammo\Event\Action{
         ->setNPCText($text?:'')
         ->setAffinity($affinity)
         ->setLifeSpan($birth, $death)
-        ->setNPCType(6)
-        ->fillRemainSpecAsZero();
+        ->setNPCType(6);
     }
 
     public function run($env=null){
-        $result = $this->npc->build($env);
+        $result = $this->npc->fillRemainSpecAsZero($env)->build($env);
         return [__CLASS__, $result];
     }
 

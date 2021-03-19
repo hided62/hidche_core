@@ -35,12 +35,11 @@ class RegNPC extends \sammo\Event\Action{
         ->setSpecialSingle($char)
         ->setNPCText($text?:'')
         ->setAffinity($affinity)
-        ->setLifeSpan($birth, $death)
-        ->fillRemainSpecAsZero();
+        ->setLifeSpan($birth, $death);
     }
 
     public function run($env=null){
-        $result = $this->npc->build($env);
+        $result = $this->npc->fillRemainSpecAsZero($env)->build($env);
         return [__CLASS__, $result];
     }
 

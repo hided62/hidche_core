@@ -482,7 +482,7 @@ class Scenario{
         copy("$unitPath/$unitSet.php", $path.'/GameUnitConst.php');
     }
 
-    public function build($env=[]){
+    public function build($env){
 
         $db = DB::db();
         getGeneralPoolClass(GameConst::$targetGeneralPool)::initPool($db);

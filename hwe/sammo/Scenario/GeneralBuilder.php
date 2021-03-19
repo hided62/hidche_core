@@ -337,7 +337,7 @@ class GeneralBuilder{
         return $this;
     }
 
-    public function fillRemainSpecAsZero(array $env=[]):self{
+    public function fillRemainSpecAsZero(array $env):self{
         if($this->leadership===null){
             throw new \RuntimeException('stat이 설정되어 있지 않음');
         }
@@ -390,7 +390,7 @@ class GeneralBuilder{
         return $this;
     }
 
-    public function fillRemainSpecAsRandom(array $pickTypeList, array $avgGen, array $env=[]):self{
+    public function fillRemainSpecAsRandom(array $pickTypeList, array $avgGen, array $env):self{
 
         $isFictionMode = (Util::array_get($env['fiction'], 0)!=0);
 
@@ -532,7 +532,7 @@ class GeneralBuilder{
         return $this->death;
     }
 
-    public function build($env=[]){
+    public function build($env){
         //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
 
         

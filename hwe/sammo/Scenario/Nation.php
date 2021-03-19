@@ -64,7 +64,7 @@ class Nation{
         return $this->name;
     }
 
-    public function build($env=[]){
+    public function build($env){
         //NOTE: NPC의 숫자는 아직 확정된 것이 아니다.
         $cities = array_map(function($cityName){
             return \sammo\CityHelper::getCityByName($cityName)['id'];
@@ -147,7 +147,7 @@ class Nation{
         $this->generals[] = $general;
     }
 
-    public function postBuild($env=[]){
+    public function postBuild($env){
         $npc_cnt = count($this->generals);
 
         $db = DB::db();
