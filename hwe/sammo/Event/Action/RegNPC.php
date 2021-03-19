@@ -14,6 +14,7 @@ class RegNPC extends \sammo\Event\Action{
         int $leadership, 
         int $strength, 
         int $intel, 
+        int $officerLevel,
         int $birth = 160, 
         int $death = 300, 
         $ego = null,
@@ -29,6 +30,7 @@ class RegNPC extends \sammo\Event\Action{
         ))
         ->setCity($locatedCity)
         ->setStat($leadership, $strength, $intel)
+        ->setOfficerLevel($officerLevel)
         ->setEgo($ego)
         ->setSpecialSingle($char)
         ->setNPCText($text?:'')
