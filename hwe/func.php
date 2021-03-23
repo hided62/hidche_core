@@ -1736,7 +1736,7 @@ function nextRuler(General $general)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+    [$year, $month, $fiction] = $gameStor->getValuesAsArray(['year', 'month', 'fiction']);
     $nation = $general->getStaticNation();
     $nationName = $nation['name'];
     $nationID = $nation['nation'];
@@ -1744,7 +1744,7 @@ function nextRuler(General $general)
     $candidate = null;
 
     //npc or npc유저인 경우 후계 찾기
-    if ($general->getNPCType() > 0) {
+    if (!$fiction && $general->getNPCType() > 0) {
         $candidate = $db->queryFirstRow(
             'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and 1 <= npc and npc<=3 order by npcmatch2,rand() LIMIT 1',
             $general->getVar('affinity'),
