@@ -7,7 +7,7 @@ class CreateAdminNPC extends \sammo\Event\Action{
         
     }
 
-    public function run($env=null){
+    public function run(array $env){
         return [__CLASS__, 'NYI'];   
     }
 

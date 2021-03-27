@@ -7,7 +7,7 @@ class DeleteEvent extends \sammo\Event\Action{
     public function __construct(){
     }
 
-    public function run($env=null){
+    public function run(array $env){
 
         $eventID = \sammo\Util::array_get($env['currentEventID']);
         if(!$eventID){

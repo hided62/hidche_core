@@ -39,7 +39,7 @@ class RegNPC extends \sammo\Event\Action{
         ->setLifeSpan($birth, $death);
     }
 
-    public function run($env){
+    public function run(array $env){
         $result = $this->npc->fillRemainSpecAsZero($env)->build($env);
         return [__CLASS__, $result];
     }

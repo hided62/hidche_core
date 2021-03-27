@@ -37,7 +37,7 @@ class RegNeutralNPC extends \sammo\Event\Action{
         ->setNPCType(6);
     }
 
-    public function run($env=null){
+    public function run(array $env){
         $result = $this->npc->fillRemainSpecAsZero($env)->build($env);
         return [__CLASS__, $result];
     }

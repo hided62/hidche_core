@@ -161,7 +161,7 @@ class ChangeCity extends \sammo\Event\Action{
         throw new \InvalidArgumentException('올바르지 않은 cond 입니다.');
     }
 
-    public function run($env=null){
+    public function run(array $env){
         $cities = $this->getTargetCities($env);
 
         DB::db()->update('city', 
