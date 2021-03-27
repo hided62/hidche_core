@@ -11,6 +11,9 @@ use sammo\Scenario\Nation;
 use sammo\UniqueConst;
 use sammo\Util;
 
+use function sammo\getNationStaticInfo;
+use function sammo\refreshNationStaticInfo;
+
 /**
  * 이민족 침입을 모사
  * 
@@ -74,8 +77,8 @@ class RaiseInvader extends \sammo\Event\Action
 
         $db->update('city', [
             'nation' => 0,
-            'front'=>0,
-            'supply'=>1,
+            'front' => 0,
+            'supply' => 1,
         ], 'city in %li', $cities);
     }
 
@@ -137,7 +140,7 @@ class RaiseInvader extends \sammo\Event\Action
         $year = $env['year'];
 
         $invaderNationIDList = [];
-
+        refreshNationStaticInfo();
         foreach ($cities as $cityObj) {
             if ($cityObj->level != 4) {
                 continue;
@@ -149,17 +152,20 @@ class RaiseInvader extends \sammo\Event\Action
 
             $invaderName = $cityObj->name;
             $nationName = "ⓞ{$invaderName}족";
-            $cityID = $cityObj->id;
-            $nationObj = new Nation($invaderNationID, $nationName, '#800080', 9999999, 9999999, "중원의 부패를 물리쳐라! 이민족 침범!", $tech, "che_병가", 2, [$cityID]);
-            $nationObj->addGeneral((new GeneralBuilder("{$invaderName}대왕", false, null, $lastNationID))
-                    ->setEgo('che_패권')
-                    ->setSpecial('che_인덕', 'che_척사')
-                    ->setLifeSpan($year - 20, $year + 20)
-                    ->setNPCType(9)
-                    ->setStat(Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.2))
-                    ->setAffinity(999)
-                    ->setGoldRice(99999, 99999)
-            );
+            $nationObj = new Nation($invaderNationID, $nationName, '#800080', 9999999, 9999999, "중원의 부패를 물리쳐라! 이민족 침범!", $tech, "che_병가", 2, [$cityObj->name]);
+            $nationObj->build($env);
+
+            $ruler = (new GeneralBuilder("{$invaderName}대왕", false, null, $lastNationID))
+                ->setEgo('che_패권')
+                ->setSpecial('che_인덕', 'che_척사')
+                ->setLifeSpan($year - 20, $year + 20)
+                ->setNPCType(9)
+                ->setStat(Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.2))
+                ->setAffinity(999)
+                ->setGoldRice(99999, 99999);
+            $ruler->build($env);
+            
+            $nationObj->addGeneral($ruler);
 
             foreach (Util::range(1, $npcEachCount) as $invaderGenIdx) {
                 $gen = (new GeneralBuilder("{$invaderName}장수{$invaderGenIdx}", false, null, $invaderNationID))
@@ -185,14 +191,15 @@ class RaiseInvader extends \sammo\Event\Action
                     $gen->setStat($leadership, $subStat, $mainStat)
                         ->setDex($dex, $dex, $dex, $dex * 2, 0);
                 }
+                $gen->build($env);
                 $nationObj->addGeneral($gen);
             }
-
-            $nationObj->build($env);
+            
             $nationObj->postBuild($env);
+            refreshNationStaticInfo();
             $db->insert('event', [
-                'condition'=>Json::encode(true),
-                'action'=>Json::encode(["AutoDeleteInvader", $invaderNationID]),
+                'condition' => Json::encode(true),
+                'action' => Json::encode(["AutoDeleteInvader", $invaderNationID]),
             ]);
         }
 
@@ -204,22 +211,26 @@ class RaiseInvader extends \sammo\Event\Action
             'term' => 24,
         ], '(me IN %li AND you IN %li) OR (me IN %li AND you IN %li)', $existNations, $invaderNationIDList, $invaderNationIDList, $existNations);
 
-        $cityMaxPop = $specAvg*$npcEachCount*100;
+        $cityMaxPop = $specAvg * $npcEachCount * 100;
         $db->update('city', [
-            'pop_max'=>$cityMaxPop,
-            'def_max'=>10000,
-            'wall_max'=>1000,
+            'pop_max' => $cityMaxPop,
+            'def_max' => 10000,
+            'wall_max' => 1000,
         ], 'nation IN %li', $invaderNationIDList);
 
         $db->update('city', [
-            'pop'=>$db->sqleval('pop_max'),
-            'secu'=>$db->sqleval('secu_max'),
-            'def'=>$db->sqleval('def_max'),
-            'wall'=>$db->sqleval('wall_max'),
+            'pop' => $db->sqleval('pop_max'),
+            'secu' => $db->sqleval('secu_max'),
+            'def' => $db->sqleval('def_max'),
+            'wall' => $db->sqleval('wall_max'),
         ], true);
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->isunited = 1;
+        refreshNationStaticInfo();
+
+        //TODO: 락풀기
+        //TODO: 공지 띄우기
 
         return [__CLASS__, count($invaderNationIDList)];
     }
