@@ -43,7 +43,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderNation, $db) {
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderNation, $rawDefenderCity, $db) {
         if($prevDefender !== null){
             $prevDefender->applyDB($db);
         }
@@ -57,6 +57,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
         }
 
         $nextDefender = $iterDefender->current();
+        $nextDefender->setRawCity($rawDefenderCity);
         if(extractBattleOrder($nextDefender) <= 0){
             return null;
         }

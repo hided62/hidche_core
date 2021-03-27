@@ -115,7 +115,7 @@ class RaiseInvader extends \sammo\Event\Action
 
         $dex = $this->dex;
         if ($dex < 0) {
-            $dex = $db->queryFirstField("SELECT avg(dex1 + dex2 + dex3 + dex4 + dex5)/5 from nation where `level`>0");
+            $dex = $db->queryFirstField("SELECT avg((dex1 + dex2 + dex3 + dex4 + dex5)/5) from general where npc < 5");
             $dex *= -1 * $this->dex;
         }
         $dex = Util::toInt($dex);
@@ -150,7 +150,7 @@ class RaiseInvader extends \sammo\Event\Action
             $invaderName = $cityObj->name;
             $nationName = "ⓞ{$invaderName}족";
             $cityID = $cityObj->id;
-            $nationObj = new Nation($invaderNationID, $nationName, '#800080', 9999999, 9999999, "중원의 부패를 물리쳐라! 이민족 침범!", $tech, "che_병가", 1, [$cityID]);
+            $nationObj = new Nation($invaderNationID, $nationName, '#800080', 9999999, 9999999, "중원의 부패를 물리쳐라! 이민족 침범!", $tech, "che_병가", 2, [$cityID]);
             $nationObj->addGeneral((new GeneralBuilder("{$invaderName}대왕", false, null, $lastNationID))
                     ->setEgo('che_패권')
                     ->setSpecial('che_인덕', 'che_척사')
