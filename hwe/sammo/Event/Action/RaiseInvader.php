@@ -2,6 +2,7 @@
 
 namespace sammo\Event\Action;
 
+use sammo\ActionLogger;
 use sammo\CityConst;
 use sammo\DB;
 use sammo\Json;
@@ -32,10 +33,10 @@ class RaiseInvader extends \sammo\Event\Action
     private $dex;
 
     public function __construct(
-        $npcEachCount = -0.5,
-        int $specAvg = 50,
+        $npcEachCount = -2,
+        int $specAvg = -1,
         int $tech = -1,
-        $dex = -0.01
+        $dex = -1
     ) {
         $this->npcEachCount = $npcEachCount;
         $this->specAvg = $specAvg;
@@ -105,7 +106,7 @@ class RaiseInvader extends \sammo\Event\Action
 
         $specAvg = $this->specAvg;
         if ($specAvg < 0) {
-            $specAvg = $db->queryFirstField('SELECT avg(sum(`leadership` + `strength` + `intel`)) from general where npc < 5');
+            $specAvg = $db->queryFirstField('SELECT avg((`leadership` + `strength` + `intel`)/3) from general where npc < 5');
             $specAvg *= -1 * $this->specAvg;
         }
         $specAvg = Util::toInt($specAvg);
@@ -159,6 +160,7 @@ class RaiseInvader extends \sammo\Event\Action
                 ->setEgo('che_패권')
                 ->setSpecial('che_인덕', 'che_척사')
                 ->setLifeSpan($year - 20, $year + 20)
+                ->setCityID($cityObj->id)
                 ->setNPCType(9)
                 ->setStat(Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.2))
                 ->setAffinity(999)
@@ -172,6 +174,7 @@ class RaiseInvader extends \sammo\Event\Action
                     ->setEgo('che_패권')
                     ->setSpecial('che_인덕', 'che_척사')
                     ->setLifeSpan($year - 20, $year + 20)
+                    ->setCityID($cityObj->id)
                     ->setNPCType(9)
                     ->setAffinity(999)
                     ->setGoldRice(99999, 99999);
@@ -199,7 +202,7 @@ class RaiseInvader extends \sammo\Event\Action
             refreshNationStaticInfo();
             $db->insert('event', [
                 'condition' => Json::encode(true),
-                'action' => Json::encode(["AutoDeleteInvader", $invaderNationID]),
+                'action' => Json::encode([["AutoDeleteInvader", $invaderNationID]]),
             ]);
         }
 
@@ -211,7 +214,12 @@ class RaiseInvader extends \sammo\Event\Action
             'term' => 24,
         ], '(me IN %li AND you IN %li) OR (me IN %li AND you IN %li)', $existNations, $invaderNationIDList, $invaderNationIDList, $existNations);
 
-        $cityMaxPop = $specAvg * $npcEachCount * 100;
+        $db->update('diplomacy', [
+            'state' => 7,
+            'term' => 480,
+        ], '(me IN %li AND you IN %li)', $invaderNationIDList, $invaderNationIDList);
+
+        $cityMaxPop = $specAvg * $npcEachCount * 100 * 2;
         $db->update('city', [
             'pop_max' => $cityMaxPop,
             'def_max' => 10000,
@@ -220,17 +228,24 @@ class RaiseInvader extends \sammo\Event\Action
 
         $db->update('city', [
             'pop' => $db->sqleval('pop_max'),
+            'agri' => $db->sqleval('agri_max'),
+            'comm' => $db->sqleval('comm_max'),
             'secu' => $db->sqleval('secu_max'),
-            'def' => $db->sqleval('def_max'),
-            'wall' => $db->sqleval('wall_max'),
         ], true);
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $gameStor->isunited = 1;
+        $gameStor->setValue('isunited', 1);
         refreshNationStaticInfo();
 
-        //TODO: 락풀기
-        //TODO: 공지 띄우기
+        $logger = new ActionLogger(0, 0, $year, $env['month']);
+        $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>각지의 이민족들이 <M>궐기</>합니다!");
+        $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>중원의 전 국가에 <M>선전포고</> 합니다!");
+        $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>이민족의 기세는 그 누구도 막을 수 없을듯 합니다!");
+        $logger->flush();
+
+        $db->update('plock', [
+            'plock' => 0
+        ], true);
 
         return [__CLASS__, count($invaderNationIDList)];
     }
