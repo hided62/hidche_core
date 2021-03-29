@@ -33,9 +33,9 @@ class RaiseInvader extends \sammo\Event\Action
     private $dex;
 
     public function __construct(
-        $npcEachCount = -2,
-        int $specAvg = -1,
-        int $tech = -1,
+        $npcEachCount = -3,
+        $specAvg = -1.2,
+        $tech = -1.2,
         $dex = -1
     ) {
         $this->npcEachCount = $npcEachCount;
@@ -219,11 +219,11 @@ class RaiseInvader extends \sammo\Event\Action
             'term' => 480,
         ], '(me IN %li AND you IN %li)', $invaderNationIDList, $invaderNationIDList);
 
-        $cityMaxPop = $specAvg * $npcEachCount * 100 * 2;
+        $cityMaxPop = $specAvg * $npcEachCount * 100 * 4;
         $db->update('city', [
             'pop_max' => $cityMaxPop,
-            'def_max' => 10000,
-            'wall_max' => 1000,
+            'def_max' => 100000,
+            'wall_max' => 10000,
         ], 'nation IN %li', $invaderNationIDList);
 
         $db->update('city', [
