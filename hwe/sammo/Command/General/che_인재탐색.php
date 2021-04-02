@@ -178,7 +178,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $avgGen = $db->queryFirstRow(
             'SELECT avg(dedication) as ded,avg(experience) as exp,
             avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
-            from general where npc < 5'
+            from general where npc < 4'
         );
         
         $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];

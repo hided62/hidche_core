@@ -99,14 +99,14 @@ class RaiseInvader extends \sammo\Event\Action
 
         if ($npcEachCount < 0) {
             $npcEachCount =
-                $db->queryFirstField('SELECT count(no) from general where npc < 5') / count($cities);
+                $db->queryFirstField('SELECT count(no) from general where npc < 4') / count($cities);
             $npcEachCount *= -1 * $this->npcEachCount;
         }
         $npcEachCount = max(10, Util::toInt($npcEachCount));
 
         $specAvg = $this->specAvg;
         if ($specAvg < 0) {
-            $specAvg = $db->queryFirstField('SELECT avg((`leadership` + `strength` + `intel`)/3) from general where npc < 5');
+            $specAvg = $db->queryFirstField('SELECT avg((`leadership` + `strength` + `intel`)/3) from general where npc < 4');
             $specAvg *= -1 * $this->specAvg;
         }
         $specAvg = Util::toInt($specAvg);
@@ -119,7 +119,7 @@ class RaiseInvader extends \sammo\Event\Action
 
         $dex = $this->dex;
         if ($dex < 0) {
-            $dex = $db->queryFirstField("SELECT avg((dex1 + dex2 + dex3 + dex4 + dex5)/5) from general where npc < 5");
+            $dex = $db->queryFirstField("SELECT avg((dex1 + dex2 + dex3 + dex4 + dex5)/5) from general where npc < 4");
             $dex *= -1 * $this->dex;
         }
         $dex = Util::toInt($dex);
