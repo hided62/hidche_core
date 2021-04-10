@@ -657,29 +657,59 @@ class GeneralAI
             return null;
         }
 
-        $cityCandidates = [];
+        /** @var General */
+        $pickedGeneral = Util::choiceRandom($generalCadidates);
+        $minRecruitPop = $pickedGeneral->getLeadership(false) * 100 + GameConst::$minAvailableRecruitPop;
 
-        if($this->backupCities){
-            $cities = $this->backupCities;
-        }
-        else{
-            $cities = $this->supplyCities;
-        }
+        $recruitableCityList = [];
 
-        foreach($cities as $city){
-            if($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio){
+        foreach($this->backupCities as $candidateCity){
+            $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+            $cityID = $candidateCity['city'];
+            if($candidateCity['city'] == $this->city['city']){
                 continue;
             }
-            $cityCandidates[] = $city;
+            if($candidateCity['pop'] < $minRecruitPop){
+                continue;
+            }
+
+            if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                $pop_ratio /= 4;
+            }
+            
+            $recruitableCityList[$cityID] = $pop_ratio;
         }
 
-        if(!$cityCandidates){
+        if(!$recruitableCityList){
+            foreach($this->supplyCities as $candidateCity){
+                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+                $cityID = $candidateCity['city'];
+                if($candidateCity['city'] == $this->city['city']){
+                    continue;
+                }
+                if($candidateCity['pop'] <= $minRecruitPop){
+                    continue;
+                }
+
+                if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                    $pop_ratio /= 2;
+                }
+
+                if(key_exists($cityID, $this->frontCities)){
+                    $pop_ratio / 2;
+                }
+
+                $recruitableCityList[$cityID] = $pop_ratio;
+            }
+        }
+
+        if(!$recruitableCityList){
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($generalCadidates)->getID(),
-            'destCityID'=>Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID'=>$pickedGeneral->getID(),
+            'destCityID'=>Util::choiceRandom($recruitableCityList)['city']
         ]);
 
         if(!$cmd->hasFullConditionMet()){
@@ -923,29 +953,63 @@ class GeneralAI
             return null;
         }
 
-        $cityCandidates = [];
+        /** @var General */
+        $pickedGeneral = Util::choiceRandom($generalCadidates);
+        $minRecruitPop = $pickedGeneral->getLeadership(false) * 100 + GameConst::$minAvailableRecruitPop;
 
-        if($this->backupCities){
-            $cities = $this->backupCities;
-        }
-        else{
-            $cities = $this->supplyCities;
-        }
+        $recruitableCityList = [];
 
-        foreach($cities as $city){
-            if($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio){
+        foreach($this->backupCities as $candidateCity){
+            $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+            $cityID = $candidateCity['city'];
+            if($candidateCity['city'] == $this->city['city']){
                 continue;
             }
-            $cityCandidates[] = $city;
+            if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+                continue;
+            }
+            if($candidateCity['pop'] < $minRecruitPop){
+                continue;
+            }
+            if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                continue;
+            }
+            
+            $recruitableCityList[$cityID] = $pop_ratio;
         }
 
-        if(!$cityCandidates){
+        if(!$recruitableCityList){
+            foreach($this->supplyCities as $candidateCity){
+                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+                $cityID = $candidateCity['city'];
+                if($candidateCity['city'] == $this->city['city']){
+                    continue;
+                }
+                if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+                    continue;
+                }
+                if($candidateCity['pop'] <= $minRecruitPop){
+                    continue;
+                }
+                if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                    continue;
+                }
+
+                if(key_exists($cityID, $this->frontCities)){
+                    $pop_ratio / 2;
+                }
+
+                $recruitableCityList[$cityID] = $pop_ratio;
+            }
+        }
+
+        if(!$recruitableCityList){
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($generalCadidates)->getID(),
-            'destCityID'=>Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID'=>$pickedGeneral->getID(),
+            'destCityID'=>Util::choiceRandom($recruitableCityList)['city']
         ]);
 
         if(!$cmd->hasFullConditionMet()){
@@ -2669,6 +2733,7 @@ class GeneralAI
 
     protected function do후방워프(): ?GeneralCommand
     {
+        $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 외교 상태", $this->dipState);
             return null;
@@ -2691,14 +2756,16 @@ class GeneralAI
 
         $city = $this->city;
         if($this->generalPolicy->can한계징병){
-            if($city['pop'] >= $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop){
+            if($city['pop'] >= $minRecruitPop){
                 return null;
             }
         }
         else{
             if($city['pop']/$city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
-                LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 인구 충분", [$city['pop']/$city['pop_max'], $this->nationPolicy->safeRecruitCityPopulationRatio]);
-                return null;
+                if($city['pop'] >= $this->nationPolicy->minNPCRecruitCityPopulation && $city['pop'] >= $minRecruitPop){
+                    LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 인구 충분", [$city['pop']/$city['pop_max'], $this->nationPolicy->safeRecruitCityPopulationRatio]);
+                    return null;
+                }
             }
         }
 
@@ -2715,19 +2782,31 @@ class GeneralAI
             if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
                 continue;
             }
+            if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+                continue;
+            }
+            if($candidateCity['pop'] < $minRecruitPop){
+                continue;
+            }
             $recruitableCityList[$cityID] = $pop_ratio;
         }
 
         if(!$recruitableCityList){
             foreach($this->supplyCities as $candidateCity){
+                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+                $cityID = $candidateCity['city'];
                 if($candidateCity['city'] == $this->city['city']){
                     continue;
                 }
-                if($candidateCity['pop'] <= $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop){
+                if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
                     continue;
                 }
-                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
-                $cityID = $candidateCity['city'];
+                if($candidateCity['pop'] <= $minRecruitPop){
+                    continue;
+                }
+                if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                    continue;
+                }
                 if(key_exists($cityID, $this->frontCities)){
                     $recruitableCityList[$cityID] = $pop_ratio / 2;
                 }
