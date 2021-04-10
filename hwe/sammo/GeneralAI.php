@@ -709,7 +709,7 @@ class GeneralAI
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
             'destGeneralID'=>$pickedGeneral->getID(),
-            'destCityID'=>Util::choiceRandom($recruitableCityList)['city']
+            'destCityID'=>Util::choiceRandomUsingWeight($recruitableCityList)
         ]);
 
         if(!$cmd->hasFullConditionMet()){
@@ -1009,7 +1009,7 @@ class GeneralAI
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
             'destGeneralID'=>$pickedGeneral->getID(),
-            'destCityID'=>Util::choiceRandom($recruitableCityList)['city']
+            'destCityID'=>Util::choiceRandomUsingWeight($recruitableCityList)
         ]);
 
         if(!$cmd->hasFullConditionMet()){
