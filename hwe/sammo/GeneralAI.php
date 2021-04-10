@@ -659,7 +659,10 @@ class GeneralAI
 
         /** @var General */
         $pickedGeneral = Util::choiceRandom($generalCadidates);
-        $minRecruitPop = $pickedGeneral->getLeadership(false) * 100 + GameConst::$minAvailableRecruitPop;
+        $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
+        if(!$this->generalPolicy->can한계징병){
+            $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
+        }
 
         $recruitableCityList = [];
 
@@ -955,7 +958,10 @@ class GeneralAI
 
         /** @var General */
         $pickedGeneral = Util::choiceRandom($generalCadidates);
-        $minRecruitPop = $pickedGeneral->getLeadership(false) * 100 + GameConst::$minAvailableRecruitPop;
+        $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
+        if(!$this->generalPolicy->can한계징병){
+            $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
+        }
 
         $recruitableCityList = [];
 
@@ -2734,6 +2740,9 @@ class GeneralAI
     protected function do후방워프(): ?GeneralCommand
     {
         $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
+        if(!$this->generalPolicy->can한계징병){
+            $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
+        }
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 외교 상태", $this->dipState);
             return null;
