@@ -204,7 +204,12 @@ class RaiseInvader extends \sammo\Event\Action
                 'condition' => Json::encode(true),
                 'action' => Json::encode([["AutoDeleteInvader", $invaderNationID]]),
             ]);
+            
         }
+        $db->insert('event', [
+            'condition' => Json::encode(true),
+            'action' => Json::encode([["InvaderEnding"]]),
+        ]);
 
         $db->update('nation', [
             'scout' => 1

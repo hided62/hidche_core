@@ -84,7 +84,7 @@ var serverReservedTemplate = "\
 </td>\
 ";
 
-$(function() {
+$(function () {
     $("#btn_logout").click(Entrance_Logout);
     Entrance_UpdateServer();
 });
@@ -94,7 +94,7 @@ function Entrance_UpdateServer() {
         type: 'post',
         url: "j_server_get_status.php",
         dataType: 'json',
-    }).then(function(response) {
+    }).then(function (response) {
         if (response.result == "SUCCESS") {
             Entrance_drawServerList(response.server);
         }
@@ -104,7 +104,7 @@ function Entrance_UpdateServer() {
 function Entrance_drawServerList(serverInfos) {
     var $serverList = $('#server_list');
     var now = moment().format('YYYY-MM-DD HH:mm:ss');
-    $.each(serverInfos, function(idx, serverInfo) {
+    $.each(serverInfos, function (idx, serverInfo) {
         var $serverHtml = $(TemplateEngine(serverListTemplate, serverInfo));
         $serverList.append($serverHtml);
         if (!serverInfo.exists) {
@@ -114,7 +114,7 @@ function Entrance_drawServerList(serverInfos) {
         var serverPath = "../" + serverInfo.name;
 
 
-        $.getJSON("../" + serverInfo.name + '/j_server_basic_info.php', {}, function(result) {
+        $.getJSON("../" + serverInfo.name + '/j_server_basic_info.php', {}, function (result) {
             if (result.reserved) {
                 $serverHtml.find('.server_down').detach();
                 $serverHtml.append(
@@ -134,7 +134,13 @@ function Entrance_drawServerList(serverInfos) {
             $serverHtml.find('.server_down').detach();
             var serverTime = '%s ~ %s'.format(game.startFrom)
 
-            if (game.isUnited == 2) {
+            if (game.isUnited == 3) {
+                $serverHtml.find('.n_country').html('§이벤트 종료§');
+                $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
+            } else if (game.isUnited == 1) {
+                $serverHtml.find('.n_country').html('§이벤트 진행중§');
+                $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
+            } else if (game.isUnited == 2) {
                 $serverHtml.find('.n_country').html('§천하통일§');
                 $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
             } else if (game.opentime <= now) {
@@ -187,7 +193,7 @@ function Entrance_Logout() {
         type: 'post',
         url: "j_logout.php",
         dataType: 'json',
-    }).then(function(response) {
+    }).then(function (response) {
         if (response.result) {
             location.href = "../";
         } else {
