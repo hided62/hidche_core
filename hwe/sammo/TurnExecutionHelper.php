@@ -321,7 +321,7 @@ class TurnExecutionHelper
             return;
         }
 
-        if ($gameStor->isunited == 2) {
+        if ($gameStor->isunited == 2 || $gameStor->isunited == 3) {
             //천통시에는 동결
             return;
         }

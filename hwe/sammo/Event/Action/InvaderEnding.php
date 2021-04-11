@@ -51,9 +51,6 @@ class InvaderEnding extends \sammo\Event\Action{
         $logger->flush();
 
         $gameStor->conlimit = $gameStor->conlimit * 100;
-        $db->update('plock', [
-            'plock' => 1
-        ], true);
 
         $eventID = Util::array_get($env['currentEventID']);
         $db->delete('event', 'id = %i', $eventID);
