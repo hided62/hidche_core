@@ -270,6 +270,9 @@ class WarUnitGeneral extends WarUnit{
         if($this->hasActivatedSkillOnLog('부상무효')){
             return false;
         }
+        if($this->hasActivatedSkillOnLog('퇴각부상무효')){
+            return false;
+        }
         if(!Util::randBool(0.05)){
             return false;
         }
