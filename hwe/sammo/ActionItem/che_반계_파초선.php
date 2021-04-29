@@ -21,8 +21,8 @@ class che_반계_파초선 extends \sammo\BaseItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '계략약화'),
-            new che_반계시도($unit),
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM +BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*302, false, '계략약화'),
+            new che_반계시도($unit, BaseWarUnitTrigger::TYPE_ITEM +BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*302),
             new che_반계발동($unit)
         );
     }

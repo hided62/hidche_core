@@ -20,7 +20,7 @@ class che_서적_07_논어 extends \sammo\BaseStatItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM, false, '계략약화')
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM+BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*207, false, '계략약화')
         );
     }
 }

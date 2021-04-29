@@ -27,7 +27,7 @@ class che_의술_상한잡병론 extends \sammo\BaseItem{
     public function getBattlePhaseSkillTriggerList(\sammo\WarUnit $unit): ?WarUnitTriggerCaller
     {
         return new WarUnitTriggerCaller(
-            new che_전투치료시도($unit, BaseWarUnitTrigger::TYPE_ITEM),
+            new che_전투치료시도($unit, BaseWarUnitTrigger::TYPE_ITEM+BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*301),
             new che_전투치료발동($unit, BaseWarUnitTrigger::TYPE_ITEM)
             
         );

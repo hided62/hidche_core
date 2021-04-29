@@ -21,7 +21,7 @@ class che_서적_07_사마법 extends \sammo\BaseStatItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_반계시도($unit, BaseWarUnitTrigger::TYPE_ITEM, 0.2),
+            new che_반계시도($unit, BaseWarUnitTrigger::TYPE_ITEM+BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*207, 0.2),
             new che_반계발동($unit)
         );
     }
