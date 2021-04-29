@@ -1652,7 +1652,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         $prob = 1 / ($genCount * $itemTypeCnt / 10 / 4); // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
     }
 
-    $prob = Util::valueFit($prob, null, 1 / 3);
+    $prob = Util::valueFit($prob, null, 1 / 4);//최대치 감소
     $result = false;
 
 
