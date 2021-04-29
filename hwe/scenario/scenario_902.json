@@ -60,7 +60,7 @@
     "events":[
         [
             ["Date", "==", null, 12],
-            ["CreateManyNPC", 10],
+            ["CreateManyNPC", 30],
             ["DeleteEvent"]
         ],
         [
