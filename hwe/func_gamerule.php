@@ -627,14 +627,15 @@ function updateNationState()
 
                 $uniqueLotteryWeightList = [];
                 foreach ($nationGenList as $nationGen) {
-                    $hasUnique = false;
+                    $trialCnt = count(GameConst::$allItems);
+
                     foreach ($nationGen->getItems() as $item) {
                         if (!$item->isBuyable()) {
-                            $hasUnique = true;
-                            break;
+                            $trialCnt -= 1;
                         }
                     }
-                    if ($hasUnique) {
+
+                    if ($trialCnt <= 0) {
                         continue;
                     }
 
@@ -647,6 +648,9 @@ function updateNationState()
                     } else if ($nationGen->getVar('officer_level') > 4) {
                         $score += 35;
                     }
+
+                    $score *= $trialCnt;
+                    
                     $uniqueLotteryWeightList[$nationGen->getID()] = [$nationGen, $score];
                 }
 

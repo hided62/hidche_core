@@ -1624,7 +1624,6 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     foreach ($general->getItems() as $item) {
         if (!$item->isBuyable()) {
             $trialCnt -= 1;
-            continue;
         }
     }
 
