@@ -1537,7 +1537,18 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     //일단은 '획득' 시에만 동작하므로 이대로 사용하기로...
     $occupiedUnique = [];
 
+    $invalidItemType = [];
+    foreach(array_keys(GameConst::$allItems) as $itemType){
+        $ownItem = $general->getItems()[$itemType]??null;
+        if($ownItem !== null && !$ownItem->isBuyable()){
+            $invalidItemType[$itemType] = true;
+        }
+    }
+
     foreach (array_keys(GameConst::$allItems) as $itemType) {
+        if(key_exists($itemType, $invalidItemType)){
+            continue;
+        }
         foreach ($db->queryAllLists('SELECT %b, count(*) as cnt FROM general GROUP BY %b', $itemType, $itemType) as [$itemCode, $cnt]) {
             $itemClass = buildItemClass($itemCode);
             if (!$itemClass) {
@@ -1551,6 +1562,9 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     }
 
     foreach (GameConst::$allItems as $itemType => $itemCategories) {
+        if(key_exists($itemType, $invalidItemType)){
+            continue;
+        }
         foreach ($itemCategories as $itemCode => $cnt) {
             if (!key_exists($itemCode, $occupiedUnique)) {
                 $availableUnique[] = [[$itemType, $itemCode], $cnt];
@@ -1604,38 +1618,57 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         return false;
     }
 
+    $itemTypeCnt = count(GameConst::$allItems);
+    $trialCnt = $itemTypeCnt;
+
     foreach ($general->getItems() as $item) {
-        if (!$item) {
+        if (!$item->isBuyable()) {
+            $trialCnt -= 1;
             continue;
         }
-        if (!$item->isBuyable()) {
-            return false;
-        }
     }
+
+    if($trialCnt <= 0){
+        LogText("{$general->getName()}, {$general->getID()} 모든 아이템", $trialCnt);
+        return false;
+    }
+
+
 
     $scenario = $gameStor->scenario;
     $genCount = $db->queryFirstField('SELECT count(*) FROM general WHERE npc<2');
 
     if ($scenario < 100) {
-        $prob = 1 / ($genCount * 5); // 5~6개월에 하나씩 등장
+        $prob = 1 / ($genCount * 3 * $itemTypeCnt); // 3~4개월에 하나씩 등장
     } else {
-        $prob = 1 / $genCount; // 1~2개월에 하나씩 등장
+        $prob = 1 / ($genCount * $itemTypeCnt); // 1~2개월에 하나씩 등장
     }
 
     if ($acquireType == '설문조사') {
-        $prob = 1 / ($genCount * 0.7 / 3); // 투표율 70%, 설문조사 한번에 2~3개 등장
+        $prob = 1 / ($genCount * $itemTypeCnt * 0.7 / 3); // 투표율 70%, 설문조사 한번에 2~3개 등장
     } else if ($acquireType == '랜덤 임관') {
-        $prob = 1 / ($genCount / 10 / 2); // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
+        $prob = 1 / ($genCount * $itemTypeCnt / 10 / 2); // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
     } else if ($acquireType == '건국') {
-        $prob = 1 / ($genCount / 10 / 4); // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
+        $prob = 1 / ($genCount * $itemTypeCnt / 10 / 4); // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
     }
 
     $prob = Util::valueFit($prob, null, 1 / 3);
+    $result = false;
 
-    if (!Util::randBool($prob)) {
+
+
+    foreach(Util::range($trialCnt) as $_idx){
+        if (Util::randBool($prob)) {
+            $result = true;
+            break;
+        }
+    }
+    if(!$result){
+        LogText("{$general->getName()}, {$general->getID()} 유니크 실패 {$trialCnt}", $prob);
         return false;
     }
-
+    LogText("{$general->getName()}, {$general->getID()} 유니크 성공 {$trialCnt}", $prob);
+    
     return giveRandomUniqueItem($general, $acquireType);
 }
 
