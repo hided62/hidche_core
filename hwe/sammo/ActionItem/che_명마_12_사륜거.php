@@ -15,7 +15,7 @@ class che_명마_12_사륜거 extends \sammo\BaseStatItem{
     public function __construct()
     {
         parent::__construct();
-        $this->info .= "<br>[전투] 퇴각 시 부상 없음";
+        $this->info .= "<br>[전투] 전투 종료로 인한 부상 없음";
     }
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
