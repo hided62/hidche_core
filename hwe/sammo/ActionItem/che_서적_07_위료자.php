@@ -14,6 +14,7 @@ class che_서적_07_위료자 extends \sammo\BaseStatItem{
     }
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        $value = parent::onCalcStat($general, $statName, $value, $aux);
         if($statName === 'warMagicTrialProb'){
             return $value + 0.2;
         }

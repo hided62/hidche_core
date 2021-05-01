@@ -14,6 +14,7 @@ class che_명마_07_기주마 extends \sammo\BaseStatItem{
     }
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        $value = parent::onCalcStat($general, $statName, $value, $aux);
         if($statName === 'initWarPhase'){
             return $value + 1;
         }

@@ -14,6 +14,7 @@ class che_서적_08_전론 extends \sammo\BaseStatItem{
     }
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        $value = parent::onCalcStat($general, $statName, $value, $aux);
         if($statName === 'warMagicSuccessDamage'){
             return $value * 1.2;
         }
