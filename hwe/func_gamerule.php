@@ -642,9 +642,9 @@ function updateNationState()
                     $score = $nationGen->getVar('belong') + 5;
 
                     if ($nationGen->getVar('officer_level') == 12) {
-                        $score += 200; //NOTE: 꼬우면 군주하세요.
+                        $score += 100; //NOTE: 꼬우면 군주하세요.
                     } else if ($nationGen->getVar('officer_level') == 11) {
-                        $score += 70;
+                        $score += 50;
                     } else if ($nationGen->getVar('officer_level') > 4) {
                         $score += 35;
                     }
