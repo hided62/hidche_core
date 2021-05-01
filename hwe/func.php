@@ -1570,6 +1570,9 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
                 $availableUnique[] = [[$itemType, $itemCode], $cnt];
                 continue;
             }
+            if($cnt == 0){
+                continue;
+            }
 
             $remain = $cnt - $occupiedUnique[$itemCode];
             if ($remain > 0) {
