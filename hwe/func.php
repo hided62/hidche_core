@@ -1566,11 +1566,11 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
             continue;
         }
         foreach ($itemCategories as $itemCode => $cnt) {
-            if (!key_exists($itemCode, $occupiedUnique)) {
-                $availableUnique[] = [[$itemType, $itemCode], $cnt];
+            if($cnt == 0){
                 continue;
             }
-            if($cnt == 0){
+            if (!key_exists($itemCode, $occupiedUnique)) {
+                $availableUnique[] = [[$itemType, $itemCode], $cnt];
                 continue;
             }
 
