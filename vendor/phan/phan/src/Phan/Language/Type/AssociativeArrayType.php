@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phan\Language\Type;
 
+use Phan\CodeBase;
 use Phan\Language\Type;
 
 /**
@@ -26,7 +27,7 @@ class AssociativeArrayType extends GenericArrayType
         int $key_type = GenericArrayType::KEY_MIXED
     ): GenericArrayType {
         if ($key_type === GenericArrayType::KEY_STRING) {
-            return GenericArrayType::fromElementType($type, $is_nullable, $key_type);
+            return GenericArrayType::fromElementType($type, $is_nullable, GenericArrayType::KEY_STRING);
         }
         // Make sure we only ever create exactly one
         // object for any unique type
@@ -57,16 +58,16 @@ class AssociativeArrayType extends GenericArrayType
      * True if this Type can be cast to the given Type
      * cleanly
      */
-    protected function canCastToNonNullableType(Type $type): bool
+    protected function canCastToNonNullableType(Type $type, CodeBase $code_base): bool
     {
         return $this->canCastToTypeCommon($type) &&
-            parent::canCastToNonNullableType($type);
+            parent::canCastToNonNullableType($type, $code_base);
     }
 
-    protected function canCastToNonNullableTypeWithoutConfig(Type $type): bool
+    protected function canCastToNonNullableTypeWithoutConfig(Type $type, CodeBase $code_base): bool
     {
         return $this->canCastToTypeCommon($type) &&
-            parent::canCastToNonNullableTypeWithoutConfig($type);
+            parent::canCastToNonNullableTypeWithoutConfig($type, $code_base);
     }
 
     private function canCastToTypeCommon(Type $type): bool
@@ -99,7 +100,10 @@ class AssociativeArrayType extends GenericArrayType
             'associative-array<' . self::KEY_NAMES[$this->key_type] . ',' . $this->element_type->__toString() . '>';
     }
 
-    public function asAssociativeArrayType(bool $unused_can_reduce_size): ArrayType
+    /**
+     * @unused-param $can_reduce_size
+     */
+    public function asAssociativeArrayType(bool $can_reduce_size): ArrayType
     {
         return $this;
     }

@@ -14,12 +14,9 @@ class NamedLabelStatement extends StatementNode {
     public $name;
     /** @var Token */
     public $colon;
-    /** @var StatementNode */
-    public $statement;
 
     const CHILD_NAMES = [
         'name',
         'colon',
-        'statement'
     ];
 }

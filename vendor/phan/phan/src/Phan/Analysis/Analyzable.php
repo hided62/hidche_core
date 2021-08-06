@@ -72,7 +72,7 @@ trait Analyzable
 
     /**
      * Clears the node so that it won't be used for analysis.
-     * @suppress PhanTypeMismatchProperty
+     * @suppress PhanTypeMismatchPropertyProbablyReal
      */
     protected function clearNode(): void
     {
@@ -113,7 +113,7 @@ trait Analyzable
         if (!$definition_node) {
             return $context;
         }
-        self::ensureDidAnnotate($definition_node);
+        static::ensureDidAnnotate($definition_node);
 
         // Closures depend on the context surrounding them such
         // as for getting `use(...)` variables. Since we don't

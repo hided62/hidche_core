@@ -17,6 +17,8 @@
  * - Add ways to integrate this with building a phar file (unsafe)
  * - Integrate other optimizations Phan can already do, such as --automatic-fix for NotFullyQualifiedUsagePlugin.
  * - Use Phan's signature map/documentation map information about which constants, classes, and functions/methods are internal
+ *
+ * @phan-file-suppress PhanPluginRemoveDebugAny
  */
 
 use Phan\CLI;
@@ -74,13 +76,9 @@ call_user_func(static function () : void {
         return;
     }
 
-    $code_base = require_once(__DIR__ . '/../src/codebase.php');
     require_once(__DIR__ . '/../src/Phan/Bootstrap.php');
 
     $cli_builder = new CLIBuilder();
-    if ($has_any_option('p', 'progress-bar')) {
-        $cli_builder->setOption('progress-bar');
-    }
     if ($has_any_option('p', 'progress-bar')) {
         $cli_builder->setOption('progress-bar');
     }
@@ -113,6 +111,8 @@ call_user_func(static function () : void {
         CLI::printErrorToStderr("Must either pass --output-directory <dir> or --in-place\n");
         phantasm_usage(1);
     }
+    // Generate codebase info after parsing configs (e.g. included_extension_subset)
+    $code_base = require(__DIR__ . '/../src/codebase.php');
 
     // @phan-suppress-next-line PhanThrowTypeAbsentForCall
     Phan::analyzeFileList($code_base, /** @return string[] */ static function () use($cli) : array {

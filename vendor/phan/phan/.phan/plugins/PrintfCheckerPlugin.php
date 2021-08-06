@@ -190,7 +190,10 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
         return new PrimitiveValue($str);
     }
 
-    public function getReturnTypeOverrides(CodeBase $unused_code_base): array
+    /**
+     * @unused-param $code_base
+     */
+    public function getReturnTypeOverrides(CodeBase $code_base): array
     {
         $string_union_type = StringType::instance(false)->asPHPDocUnionType();
         /**
@@ -468,7 +471,7 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
                 // emit issues with 1-based offsets
                 $emit_issue(
                     'PhanPluginPrintfNonexistentArgument',
-                    'Format string {STRING_LITERAL} refers to nonexistent argument #{INDEX} in {STRING_LITERAL}. This will be an ArgumentCountError in PHP 8',
+                    'Format string {STRING_LITERAL} refers to nonexistent argument #{INDEX} in {STRING_LITERAL}. This will be an ArgumentCountError in PHP 8.',
                     [self::encodeString($fmt_str), $largest_positional, \implode(',', $examples)],
                     Issue::SEVERITY_CRITICAL,
                     self::ERR_UNTRANSLATED_NONEXISTENT
@@ -505,9 +508,9 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
                 // emit issues with 1-based offsets
                 $emit_issue(
                     'PhanPluginPrintfNonexistentArgument',
-                    'Format string {STRING_LITERAL} refers to nonexistent argument #{INDEX} in {STRING_LITERAL}',
+                    'Format string {STRING_LITERAL} refers to nonexistent argument #{INDEX} in {STRING_LITERAL}. This will be an ArgumentCountError in PHP 8.',
                     [self::encodeString($fmt_str), $largest_positional, \implode(',', $examples)],
-                    Issue::SEVERITY_NORMAL,
+                    Issue::SEVERITY_CRITICAL,
                     self::ERR_UNTRANSLATED_NONEXISTENT
                 );
             } elseif ($largest_positional < count($arg_nodes)) {
@@ -592,7 +595,7 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
                     // @phan-suppress-next-line PhanThrowTypeAbsentForCall getExpectedUnionTypeName should only return valid union types
                     $expected_union_type = $expected_union_type->withType(Type::fromFullyQualifiedString($type_name));
                 }
-                if ($actual_union_type->canCastToUnionType($expected_union_type)) {
+                if ($actual_union_type->canCastToUnionType($expected_union_type, $code_base)) {
                     continue;
                 }
                 if (isset($expected_set['string'])) {
@@ -600,8 +603,8 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
                     // Allow passing objects with __toString() to printf whether or not strict types are used in the caller.
                     // TODO: Move into a common helper method?
                     try {
-                        foreach ($actual_union_type->asExpandedTypes($code_base)->asClassList($code_base, $context) as $clazz) {
-                            if ($clazz->hasMethodWithName($code_base, '__toString')) {
+                        foreach ($actual_union_type->asClassList($code_base, $context) as $clazz) {
+                            if ($clazz->hasMethodWithName($code_base, '__toString', true)) {
                                 $can_cast_to_string = true;
                                 break;
                             }
@@ -615,7 +618,7 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
                 }
 
                 $expected_union_type_string = (string)$expected_union_type;
-                if (self::canWeakCast($actual_union_type, $expected_set)) {
+                if (self::canWeakCast($actual_union_type, $expected_set, $code_base)) {
                     // This can be resolved by casting the arg to (string) manually in printf.
                     $emit_issue(
                         'PhanPluginPrintfIncompatibleArgumentTypeWeak',
@@ -673,14 +676,14 @@ class PrintfCheckerPlugin extends PluginV3 implements AnalyzeFunctionCallCapabil
     /**
      * @param array<string,true> $expected_set the types being checked for the ability to weakly cast to
      */
-    private static function canWeakCast(UnionType $actual_union_type, array $expected_set): bool
+    private static function canWeakCast(UnionType $actual_union_type, array $expected_set, CodeBase $code_base): bool
     {
         if (isset($expected_set['string'])) {
             static $string_weak_types;
             if ($string_weak_types === null) {
                 $string_weak_types = UnionType::fromFullyQualifiedPHPDocString('int|string|float');
             }
-            return $actual_union_type->canCastToUnionType($string_weak_types);
+            return $actual_union_type->canCastToUnionType($string_weak_types, $code_base);
         }
         // We already allow int->float conversion
         return false;

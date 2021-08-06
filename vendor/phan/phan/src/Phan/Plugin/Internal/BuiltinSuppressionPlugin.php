@@ -102,6 +102,7 @@ final class BuiltinSuppressionPlugin extends PluginV3 implements
     }
 
     /**
+     * @unused-param $code_base
      * @return array<string,array<int, int>> Maps 0 or more issue types to a *list* of lines corresponding to issues that this plugin is going to suppress.
      *
      * An empty array can be returned if this is unknown.
@@ -131,7 +132,7 @@ final class BuiltinSuppressionPlugin extends PluginV3 implements
         if (($cached_suppressions['contents'] ?? null) === $file_contents) {
             return $cached_suppressions['suppressions'] ?? [];
         }
-        $suppress_issue_list = self::computeIssueSuppressionList($code_base, $file_contents);
+        $suppress_issue_list = self::computeIssueSuppressionList($file_contents);
         $this->current_line_suppressions[$absolute_file_path] = [
             'contents' => $file_contents,
             'suppressions' => $suppress_issue_list,
@@ -147,7 +148,6 @@ final class BuiltinSuppressionPlugin extends PluginV3 implements
      * The line number of 0 represents suppressing issues in the entire file.
      */
     private static function computeIssueSuppressionList(
-        CodeBase $unused_code_base,
         string $file_contents
     ): array {
         if (!\preg_match(self::SUPPRESS_ISSUE_REGEX, $file_contents)) {
@@ -210,7 +210,7 @@ final class BuiltinSuppressionPlugin extends PluginV3 implements
         string $file_contents
     ): Generator {
         // @phan-suppress-next-line PhanUndeclaredClassReference
-        if (\PHP_VERSION_ID >= 80000 && \class_exists(PhpToken::class)) {
+        if (\PHP_VERSION_ID >= 80000 && \class_exists(PhpToken::class) && \method_exists(PhpToken::class, 'tokenize')) {
             return self::yieldSuppressionCommentsPhpToken($file_contents);
         }
         return self::yieldSuppressionCommentsOld($file_contents);
@@ -219,13 +219,13 @@ final class BuiltinSuppressionPlugin extends PluginV3 implements
     /**
      * @return Generator<array{0:string,1:int,2:int,3:string,4:string}>
      * yields [$comment_text, $comment_start_line, $comment_start_offset, $comment_name, $kind_list_text];
-     * (using the faster PhpToken::getAll())
+     * (using the faster PhpToken::tokenize())
      */
     private static function yieldSuppressionCommentsPhpToken(
         string $file_contents
     ): Generator {
-        // @phan-suppress-next-line PhanUndeclaredClassMethod missing in php 7
-        foreach (PhpToken::getAll($file_contents) as $token) {
+        // @phan-suppress-next-line PhanUndeclaredClassMethod missing in php 8 before 8.0.0RC4
+        foreach (PhpToken::tokenize($file_contents) as $token) {
             $kind = $token->id;
             if ($kind !== \T_COMMENT && $kind !== \T_DOC_COMMENT) {
                 continue;

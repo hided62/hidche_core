@@ -50,7 +50,7 @@ class FullyQualifiedClassName extends FullyQualifiedGlobalStructuralElement
         );
     }
 
-    public const VALID_CLASS_REGEX = '/^\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*$/';
+    public const VALID_CLASS_REGEX = '/^\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*$/D';
 
     /**
      * Asserts that something is a valid class FQSEN in PHPDoc.
@@ -72,17 +72,6 @@ class FullyQualifiedClassName extends FullyQualifiedGlobalStructuralElement
         return Type::fromFullyQualifiedString(
             $this->__toString()
         );
-    }
-
-    /**
-     * @return UnionType
-     * The union type of just this class type
-     * @deprecated use asPHPDocUnionType()
-     * @suppress PhanUnreferencedPublicMethod
-     */
-    public function asUnionType(): UnionType
-    {
-        return $this->asType()->asPHPDocUnionType();
     }
 
     /**

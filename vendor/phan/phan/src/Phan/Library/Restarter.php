@@ -56,6 +56,7 @@ class Restarter extends XdebugHandler
         );
         $this->required = (bool) $excluded_extensions;
         if ($this->required) {
+            // @phan-suppress-next-line PhanPluginRemoveDebugCall
             \fprintf(
                 \STDERR,
                 "[debug] Because %s %s installed, Phan will restart." . \PHP_EOL,
@@ -68,6 +69,7 @@ class Restarter extends XdebugHandler
     }
 
     /**
+     * @param list<string> $command
      * @return void
      * @override
      */

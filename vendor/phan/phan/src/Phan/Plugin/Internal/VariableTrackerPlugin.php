@@ -9,6 +9,8 @@ use ast;
 use ast\Node;
 use Exception;
 use Phan\AST\ArrowFunc;
+use Phan\AST\ASTReverter;
+use Phan\AST\UnionTypeVisitor;
 use Phan\Config;
 use Phan\Exception\CodeBaseException;
 use Phan\Issue;
@@ -23,6 +25,7 @@ use Phan\PluginV3\PluginAwarePostAnalysisVisitor;
 use Phan\PluginV3\PostAnalyzeNodeCapability;
 use Phan\Suggestion;
 
+use function array_key_exists;
 use function count;
 use function is_string;
 use function strlen;
@@ -95,14 +98,165 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
         try {
             VariableTrackerVisitor::$variable_graph = $variable_graph;
             $variable_tracker_visitor = new VariableTrackerVisitor($this->code_base, $this->context, $scope);
-            // TODO: Add params and use variables.
             $variable_tracker_visitor->__invoke($stmts_node);
+
+            $this->checkSideEffectFreeLoopNodes($variable_graph, $variable_tracker_visitor);
+            $this->checkPossiblyInfiniteLoopNodes($variable_graph, $variable_tracker_visitor);
         } finally {
-            // @phan-suppress-next-line PhanTypeMismatchProperty
+            // @phan-suppress-next-line PhanTypeMismatchPropertyProbablyReal
             VariableTrackerVisitor::$variable_graph = null;
         }
         $this->warnAboutVariableGraph($node, $variable_graph, $issue_categories);
     }
+
+    private function checkSideEffectFreeLoopNodes(
+        VariableGraph $variable_graph,
+        VariableTrackerVisitor $variable_tracker_visitor
+    ): void {
+        $loop_nodes = $variable_tracker_visitor->getSideEffectFreeLoopNodes();
+        if (!$loop_nodes) {
+            // Nothing to do
+            return;
+        }
+        $combined_def_uses = $variable_graph->computeCombinedDefUses();
+        foreach ($loop_nodes as $loop_node) {
+            if (!self::definitionInsideNodeHasUseOutsideNode($combined_def_uses, $loop_node)) {
+                $this->emitIssue(
+                    self::SIDE_EFFECT_FREE_LOOP_ISSUE[$loop_node->kind] ?? Issue::SideEffectFreeForBody,
+                    $loop_node->lineno
+                );
+            }
+        }
+    }
+
+    private function checkPossiblyInfiniteLoopNodes(
+        VariableGraph $variable_graph,
+        VariableTrackerVisitor $variable_tracker_visitor
+    ): void {
+        $loop_nodes = $variable_tracker_visitor->getPossiblyInfiniteLoopNodes();
+        if (!$loop_nodes) {
+            // Nothing to do
+            return;
+        }
+        $combined_use_defs = $variable_graph->computeCombinedUseDefs();
+        foreach ($loop_nodes as $loop_node) {
+            // Check if any variables read by the loop condition were set within the statements.
+            $cond = $loop_node->children['cond'];
+            if ($cond instanceof Node && $cond->kind === ast\AST_EXPR_LIST) {
+                $cond = \end($cond->children);
+            }
+            if ($cond instanceof Node) {
+                if (UnionTypeVisitor::checkCondUnconditionalTruthiness($cond) !== null) {
+                    // e.g. false, null
+                    continue;
+                }
+                $id_set_in_loop = self::extractNodeIdSet($cond);
+                if ($id_set_in_loop) {
+                    foreach ($id_set_in_loop as $id => $_) {
+                        if (isset($combined_use_defs[$id][VariableGraph::USE_ID_FOR_SHARED_STATE])) {
+                            continue 2;
+                        }
+                    }
+                    $stmts_node = $loop_node->children['stmts'];
+                    $id_set_of_stmts = $stmts_node instanceof Node ? self::extractNodeIdSet($stmts_node) : [];
+                    if (isset($loop_node->children['loop'])) {
+                        // @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+                        $id_set_of_stmts += self::extractNodeIdSet($loop_node->children['loop']);
+                    }
+                    if ($id_set_of_stmts) {
+                        foreach ($id_set_in_loop as $id => $_) {
+                            if (!isset($combined_use_defs[$id])) {
+                                continue;
+                            }
+                            if (\array_intersect_key($combined_use_defs[$id], $id_set_of_stmts)) {
+                                continue 2;
+                            }
+                        }
+                    }
+                }
+            } elseif (!$cond) {  // @phan-suppress-current-line PhanSuspiciousTruthyString
+                continue;
+            }
+
+            $this->emitIssue(
+                Issue::PossiblyInfiniteLoop,
+                $loop_node->lineno,
+                ASTReverter::toShortString($cond)
+            );
+        }
+    }
+
+    private const SIDE_EFFECT_FREE_LOOP_ISSUE = [
+        ast\AST_FOR      => Issue::SideEffectFreeForBody,
+        ast\AST_FOREACH  => Issue::SideEffectFreeForeachBody,
+        ast\AST_WHILE    => Issue::SideEffectFreeWhileBody,
+        ast\AST_DO_WHILE => Issue::SideEffectFreeDoWhileBody,
+    ];
+
+    /**
+     * Returns true if at least one of the variable declarations inside the loop body has a use outside of the loop body
+     *
+     * @param associative-array<int, associative-array<int, true>> $combined_def_uses
+     */
+    private static function definitionInsideNodeHasUseOutsideNode(array $combined_def_uses, Node $loop_node): bool
+    {
+        if (!$combined_def_uses) {
+            return false;
+        }
+        $id_set_in_loop = self::extractNodeIdSet($loop_node);
+        foreach ($id_set_in_loop as $possible_def_id) {
+            if (array_key_exists($possible_def_id, $combined_def_uses)) {
+                foreach ($combined_def_uses[$possible_def_id] as $use_id => $_) {
+                    if (!array_key_exists($use_id, $id_set_in_loop)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return associative-array<int, int> the node ids that occurred within the loop node, mapped to themselves
+     */
+    private static function extractNodeIdSet(Node $loop_node): array
+    {
+        $id_set = [];
+        self::extractNodeIdSetInner($loop_node, $id_set);
+        return $id_set;
+    }
+
+    /**
+     * @param Node|string|int|float|null $node
+     * @param associative-array<int, int> $id_set
+     */
+    private static function extractNodeIdSetInner($node, array &$id_set): void
+    {
+        if (!$node instanceof Node) {
+            return;
+        }
+        $id = \spl_object_id($node);
+        $id_set[$id] = $id;
+        switch ($node->kind) {
+            case ast\AST_CLASS:
+            case ast\AST_FUNC_DECL:
+            case ast\AST_ARROW_FUNC:
+                return;
+            case ast\AST_CLOSURE:
+                self::extractNodeIdSetInner($node->children['uses'], $id_set);
+                return;
+            default:
+                foreach ($node->children as $child_node) {
+                    self::extractNodeIdSetInner($child_node, $id_set);
+                }
+                return;
+        }
+    }
+
+    private const PARAM_MODIFIER_FLAG_SET =
+        ast\flags\PARAM_MODIFIER_PUBLIC |
+        ast\flags\PARAM_MODIFIER_PROTECTED |
+        ast\flags\PARAM_MODIFIER_PRIVATE;
 
     /**
      * @return array<int, string> maps unique definition ids to issue types
@@ -129,6 +283,11 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
             if ($parameter->flags & ast\flags\PARAM_REF) {
                 $graph->markAsReference($parameter_name);
             }
+            if ($parameter->flags & self::PARAM_MODIFIER_FLAG_SET) {
+                // Workaround to stop warning about `__construct(public string $flags)`.
+                // Deliberately use a different arbitrary node.
+                $graph->recordVariableUsage($parameter_name, $node, $scope);
+            }
         }
         foreach ($node->children['uses']->children ?? [] as $closure_use) {
             if (!($closure_use instanceof Node)) {
@@ -141,7 +300,7 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
             $result[\spl_object_id($closure_use)] = Issue::UnusedClosureUseVariable;
 
             $graph->recordVariableDefinition($name, $closure_use, $scope, null);
-            if ($closure_use->flags & ast\flags\PARAM_REF) {
+            if ($closure_use->flags & ast\flags\CLOSURE_USE_REF) {
                 $graph->markAsReference($name);
             }
         }
@@ -237,7 +396,7 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
             if ($variable_name === 'this') {
                 continue;
             }
-            if (\preg_match('/^(_$|(unused|raii))/i', $variable_name) > 0) {
+            if (\preg_match('/^(_$|(unused|raii))/iD', $variable_name) > 0) {
                 // Skip over $_, $unused*, and $raii*
                 continue;
             }
@@ -259,14 +418,18 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
                     // Don't warn if there's at least one usage of that definition
                     continue;
                 }
+                if (($graph->def_bitset[$definition_id] ?? 0) & (VariableGraph::IS_UNSET | VariableGraph::IS_DISABLED_WARNINGS)) {
+                    // Don't warn about unset($x)
+                    continue;
+                }
                 $line = $graph->def_lines[$variable_name][$definition_id] ?? 1;
                 $issue_type = $issue_overrides_for_definition_ids[$definition_id] ?? Issue::UnusedVariable;
                 // Choose a more precise issue type
                 if ($issue_type === Issue::UnusedPublicMethodParameter) {
                     // Narrow down issues about parameters into more specific issues
                     $doc_comment = $method_node->children['docComment'] ?? null;
-                    if (is_string($doc_comment) && \preg_match('/@param[^$]*\$' . \preg_quote($variable_name) . '\b.*@phan-unused-param\b/', $doc_comment)) {
-                        // Don't warn about parameters marked with phan-unused-param
+                    if (is_string($doc_comment) && \preg_match('/@param\b[^$\n]*\$' . \preg_quote($variable_name) . '\b.*@(phan-)?unused-param\b|@(phan-)?unused-param\b[^$\n]*\$' . \preg_quote($variable_name) . '\b/', $doc_comment)) {
+                        // Don't warn about parameters marked with @phan-unused-param or @unused-param
                         continue;
                     }
                     $issue_type = $this->getParameterCategory($method_node);
@@ -329,6 +492,10 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
         }
         $type_bitmask = $graph->variable_types[$variable_name] ?? 0;
         $line = $graph->def_lines[$variable_name][$definition_id] ?? 1;
+        $def_bitmask = $graph->def_bitset[$definition_id] ?? 0;
+        if ($def_bitmask & VariableGraph::IS_DISABLED_WARNINGS) {
+            return;
+        }
         if ($type_bitmask === VariableGraph::IS_REFERENCE) {
             Issue::maybeEmitWithParameters(
                 $this->code_base,

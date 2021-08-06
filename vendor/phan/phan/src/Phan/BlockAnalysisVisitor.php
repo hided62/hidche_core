@@ -20,6 +20,7 @@ use Phan\Analysis\RedundantCondition;
 use Phan\AST\AnalysisVisitor;
 use Phan\AST\ASTReverter;
 use Phan\AST\ContextNode;
+use Phan\AST\InferPureSnippetVisitor;
 use Phan\AST\ScopeImpactCheckingVisitor;
 use Phan\AST\UnionTypeVisitor;
 use Phan\AST\Visitor\Element;
@@ -36,15 +37,21 @@ use Phan\Language\Scope\BranchScope;
 use Phan\Language\Scope\GlobalScope;
 use Phan\Language\Scope\PropertyScope;
 use Phan\Language\Type;
+use Phan\Language\Type\ArrayType;
+use Phan\Language\Type\IterableType;
 use Phan\Language\UnionType;
 use Phan\Library\StringUtil;
 use Phan\Parse\ParseVisitor;
 use Phan\Plugin\ConfigPluginSet;
+use Phan\Plugin\Internal\RedundantConditionVisitor;
+use Phan\Plugin\Internal\VariableTracker\VariableTrackerVisitor;
 
 use function array_map;
 use function count;
 use function end;
 use function explode;
+use function is_object;
+use function is_string;
 use function preg_match;
 use function rtrim;
 
@@ -310,6 +317,11 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             $node
         );
 
+        $key = $node->children['key'];
+        if ($key !== null) {
+            $this->analyzeArrayKeyType($key, $node->lineno);
+        }
+
         // With a context that is inside of the node passed
         // to this method, we analyze all children of the
         // node.
@@ -333,6 +345,45 @@ class BlockAnalysisVisitor extends AnalysisVisitor
     }
 
     /**
+     * @param int|string|float|Node $key_node
+     */
+    private function analyzeArrayKeyType($key_node, int $start_line): void
+    {
+        if (is_object($key_node)) {
+            $union_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $key_node);
+            $key = $union_type->asSingleScalarValueOrNullOrSelf();
+            if (is_object($key)) {
+                if (!$union_type->canCastToUnionType(UnionType::fromFullyQualifiedPHPDocString('?int|?string'), $this->code_base)) {
+                    $this->emitIssue(
+                        Issue::TypeInvalidArrayKey,
+                        $start_line,
+                        ASTReverter::toShortString($key_node),
+                        $union_type
+                    );
+                }
+                return;
+            }
+        } else {
+            $key = $key_node;
+        }
+        if (\is_int($key) || is_string($key)) {
+            return;
+        }
+        if (\is_float($key) && (float)(int)$key === $key) {
+            // php 8.1 deprecates casting floats to integers.
+            return;
+        }
+        // php 8.1 deprecates casting resources to integers implicitly as well
+
+        $this->emitIssue(
+            Issue::TypeInvalidArrayKeyLiteral,
+            $start_line,
+            ASTReverter::toShortString($key_node),
+            \var_representation($key)
+        );
+    }
+
+    /**
      * @param Node $node
      * @param Context $context
      * @param int|float|string|null $child_node (probably not null)
@@ -340,10 +391,14 @@ class BlockAnalysisVisitor extends AnalysisVisitor
     private function handleScalarStmt(Node $node, Context $context, $child_node): void
     {
         if (\is_string($child_node)) {
+            $consumed = false;
             if (\strpos($child_node, '@phan-') !== false) {
                 // Add @phan-var and @phan-suppress annotations in string literals to the local scope
                 $this->analyzeSubstituteVarAssert($this->code_base, $context, $child_node);
-            } else {
+                $consumed = true;
+            }
+            $consumed = ConfigPluginSet::instance()->analyzeStringLiteralStatement($this->code_base, $context, $child_node) || $consumed;
+            if (!$consumed) {
                 Issue::maybeEmit(
                     $this->code_base,
                     $context,
@@ -358,7 +413,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 $context,
                 Issue::NoopNumericLiteral,
                 $context->getLineNumberStart() ?: $this->getLineNumberOfParent() ?: $node->lineno,
-                \var_export($child_node, true)
+                \var_representation($child_node)
             );
         }
     }
@@ -418,7 +473,8 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         if (\preg_match_all(self::PHAN_DEBUG_VAR_REGEX, $text, $matches, \PREG_SET_ORDER) > 0) {
             $has_known_annotations = true;
             foreach ($matches as $group) {
-                foreach (array_map('trim', explode(',', $group[1])) as $var_name) {
+                foreach (explode(',', $group[1]) as $var_name) {
+                    $var_name = \ltrim(\trim($var_name), '$');
                     if ($context->getScope()->hasVariableWithName($var_name)) {
                         $union_type_string = $context->getScope()->getVariableByName($var_name)->getUnionType()->getDebugRepresentation();
                     } else {
@@ -625,6 +681,14 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             $node->lineno
         );
 
+        // Let any configured plugins do a pre-order
+        // analysis of the node.
+        ConfigPluginSet::instance()->preAnalyzeNode(
+            $this->code_base,
+            $context,
+            $node
+        );
+
         $init_node = $node->children['init'];
         if ($init_node instanceof Node) {
             $context = $this->analyzeAndGetUpdatedContext(
@@ -655,7 +719,24 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             } finally {
                 \array_pop($this->parent_node_list);
             }
-            $always_iterates_at_least_once = $condition_subnode instanceof Node ? UnionTypeVisitor::checkCondUnconditionalTruthiness($condition_subnode) : (bool) $condition_subnode;
+            if ($condition_subnode instanceof Node) {
+                // Analyze the cond expression for its side effects and the code it contains,
+                // not the effect of the condition.
+                // e.g. `while ($x = foo())`
+                $context = $this->analyzeAndGetUpdatedContext(
+                    $context->withLineNumberStart($condition_subnode->lineno),
+                    $node,
+                    $condition_subnode
+                );
+                if (!$this->context->isInGlobalScope() && !$this->context->isInLoop()) {
+                    $condition_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $context, $condition_subnode);
+                    $always_iterates_at_least_once = !$condition_type->containsFalsey() && !$condition_type->isEmpty();
+                } else {
+                    $always_iterates_at_least_once = UnionTypeVisitor::checkCondUnconditionalTruthiness($condition_subnode);
+                }
+            } else {
+                $always_iterates_at_least_once = (bool)$condition_subnode;
+            }
         } else {
             $always_iterates_at_least_once = true;
         }
@@ -694,6 +775,14 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 BlockExitStatusChecker::willUnconditionallyProceed($stmts_node)
             ))->checkRedundantOrImpossibleTruthyCondition($condition_node, $context, null, false);
         }
+
+        // Give plugins a chance to analyze the loop condition now
+        ConfigPluginSet::instance()->analyzeLoopBeforeBody(
+            $this->code_base,
+            $context,
+            $node
+        );
+
         $context = $this->analyzeAndGetUpdatedContext(
             $context->withScope(
                 new BranchScope($context->getScope())
@@ -720,6 +809,14 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         $context = $context->withExitLoop($node);
         if (!$always_iterates_at_least_once) {
             $context = (new ContextMergeVisitor($context, [$context, $original_context]))->combineChildContextList();
+        }
+
+        // Check if this is side effect free with the variable types inferred by analyzing the loop body (heuristic).
+        if (Config::getValue('unused_variable_detection') &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $context, $loop_node) &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $context, $condition_node) &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $context, $stmts_node)) {
+            VariableTrackerVisitor::recordHasLoopBodyWithoutSideEffects($node);
         }
 
         // Now that we know all about our context (like what
@@ -791,7 +888,12 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 $node,
                 $condition_node
             );
-            $always_iterates_at_least_once = UnionTypeVisitor::checkCondUnconditionalTruthiness($condition_node);
+            if (!$this->context->isInGlobalScope() && !$this->context->isInLoop()) {
+                $condition_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $context, $condition_node);
+                $always_iterates_at_least_once = !$condition_type->containsFalsey() && !$condition_type->isEmpty();
+            } else {
+                $always_iterates_at_least_once = UnionTypeVisitor::checkCondUnconditionalTruthiness($condition_node);
+            }
         } else {
             $always_iterates_at_least_once = (bool)$condition_node;
         }
@@ -826,6 +928,13 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             ))->checkRedundantOrImpossibleTruthyCondition($condition_node, $context, null, false);
         }
 
+        // Give plugins a chance to analyze the loop condition now
+        ConfigPluginSet::instance()->analyzeLoopBeforeBody(
+            $this->code_base,
+            $context,
+            $node
+        );
+
         $context = $this->analyzeAndGetUpdatedContext(
             $context->withScope(
                 new BranchScope($context->getScope())
@@ -843,6 +952,12 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         $context = $context->withExitLoop($node);
         if (!$always_iterates_at_least_once) {
             $context = (new ContextMergeVisitor($context, [$context, $original_context]))->combineChildContextList();
+        }
+
+        // Check if this is side effect free with the variable types inferred by analyzing the loop body (heuristic).
+        if (Config::getValue('unused_variable_detection') &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $context, $node)) {
+            VariableTrackerVisitor::recordHasLoopBodyWithoutSideEffects($node);
         }
 
         // Now that we know all about our context (like what
@@ -885,9 +1000,11 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             } else {
                 // e.g. look up global constants and class constants.
                 // TODO: Handle non-empty-array, etc.
-                $expr_value = (new ContextNode($code_base, $this->context, $expr_node))->getEquivalentPHPScalarValue();
-
-                $has_at_least_one_iteration = \is_array($expr_value) && count($expr_value) > 0;
+                $union_type = UnionTypeVisitor::unionTypeFromNode($code_base, $this->context, $expr_node);
+                $has_at_least_one_iteration = !$union_type->containsFalsey() && !$union_type->isEmpty() &&
+                    !$union_type->hasTypeMatchingCallback(static function (Type $type): bool {
+                        return !$type instanceof ArrayType;
+                    });
             }
         }
 
@@ -900,14 +1017,6 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             $context = $this->analyzeAndGetUpdatedContext($context, $node, $expr_node);
         }
 
-        $context = $context->withEnterLoop($node);
-
-        // Add types of the key and value expressions,
-        // and check for errors in the foreach expression
-        $context = $this->analyzeForeachIteration($context, $expression_union_type, $node);
-
-        // PreOrderAnalysisVisitor is not used, to avoid issues analyzing edge cases such as `foreach ($x->method() as $x)`
-
         // Let any configured plugins do a pre-order
         // analysis of the node.
         ConfigPluginSet::instance()->preAnalyzeNode(
@@ -916,12 +1025,22 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             $node
         );
 
+        // PreOrderAnalysisVisitor is not used, to avoid issues analyzing edge cases such as `foreach ($x->method() as $x)`
+
         // Analyze the context inside the loop. The keys/values would not get created in the outer scope if the iterable expression was empty.
         if ($has_at_least_one_iteration) {
-            $inner_context = $context;
+            $context_inside_loop_start = $context;
         } else {
-            $inner_context = $context->withScope(new BranchScope($context->getScope()));
+            $context_inside_loop_start = $context->withScope(new BranchScope($context->getScope()));
         }
+
+        // withEnterLoop and withExitLoop must get called on the same Scope,
+        // so that the deferred callbacks get called.
+        $context_inside_loop_start = $context_inside_loop_start->withEnterLoop($node);
+
+        // Add types of the key and value expressions,
+        // and check for errors in the foreach expression
+        $inner_context = $this->analyzeForeachIteration($context_inside_loop_start, $expression_union_type, $node);
 
         $value_node = $node->children['value'];
         if ($value_node instanceof Node) {
@@ -931,29 +1050,92 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         if ($key_node instanceof Node) {
             $inner_context = $this->analyzeAndGetUpdatedContext($inner_context, $node, $key_node);
         }
+
+        // Give plugins a chance to analyze the loop condition now
+        ConfigPluginSet::instance()->analyzeLoopBeforeBody(
+            $code_base,
+            $inner_context,
+            $node
+        );
+
         $stmts_node = $node->children['stmts'];
         if ($stmts_node instanceof Node) {
             $inner_context = $this->analyzeAndGetUpdatedContext($inner_context, $node, $stmts_node);
         }
 
+        // TODO: Also warn about object types when iterating over that class should not have side effects
+        if (Config::getValue('unused_variable_detection') &&
+            !$expression_union_type->isEmpty() && !$expression_union_type->hasPossiblyObjectTypes() &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $inner_context, $stmts_node) &&
+            self::isLoopVariableWithoutSideEffects($node->children['key']) &&
+            self::isLoopVariableWithoutSideEffects($node->children['value'])
+        ) {
+            VariableTrackerVisitor::recordHasLoopBodyWithoutSideEffects($node);
+        }
+
         if ($has_at_least_one_iteration) {
             $context = $inner_context;
             $context_list = [$inner_context];
-        } else {
-            $context_list = [$context, $inner_context];
-        }
-        if (isset($node->phan_loop_contexts)) {
-            $context_list = \array_merge($context_list, $node->phan_loop_contexts);
-            // Combine contexts from continue/break statements within this foreach loop
-            unset($node->phan_loop_contexts);
-        }
+            if (isset($node->phan_loop_contexts)) {
+                $context_list = \array_merge($context_list, $node->phan_loop_contexts);
+                // Combine contexts from continue/break statements within this foreach loop
+                unset($node->phan_loop_contexts);
+            }
 
-        if (\count($context_list) >= 2) {
+            if (\count($context_list) >= 2) {
+                $context = (new ContextMergeVisitor($context, $context_list))->combineChildContextList();
+            }
+            // Perform deferred checks about the inside of the loop.
+            $context = $context->withExitLoop($node);
+
+            // This is the context after performing at least one iteration of the foreach loop.
+        } else {
+            $inner_context_list = [$context_inside_loop_start, $inner_context];
+
+            if (isset($node->phan_loop_contexts)) {
+                $inner_context_list = \array_merge($inner_context_list, $node->phan_loop_contexts);
+                // Combine contexts from continue/break statements within this foreach loop
+                unset($node->phan_loop_contexts);
+            }
+            // Perform deferred checks about the inside of the loop.
+            // Here, this combines the states of the inner loop (but not the outer loop) to avoid some types of false positives
+            // such as undeclared variable warnings. (imperfect heuristic but works well for most uses)
+            $context_inside_loop_start = (new ContextMergeVisitor($context_inside_loop_start, $inner_context_list))->combineChildContextList();
+            $context_inside_loop_start = $context_inside_loop_start->withExitLoop($node);
+
+            // Combine the outer scope with the inner scope
+            $context_list = [$context, $context_inside_loop_start];
             $context = (new ContextMergeVisitor($context, $context_list))->combineChildContextList();
         }
-        $context = $context->withExitLoop($node);
 
         return $this->postOrderAnalyze($context, $node);
+    }
+
+    /**
+     * @param Node|string|int|float|null $node
+     *
+     * Returns true if this is probably a loop variable without side effects
+     * (e.g. not a reference, not modifying properties, etc)
+     */
+    private static function isLoopVariableWithoutSideEffects($node): bool
+    {
+        if (!$node instanceof Node) {
+            return true;
+        }
+        switch ($node->kind) {
+            case ast\AST_VAR:
+                return is_string($node->children['name']);
+            case ast\AST_ARRAY:
+            case ast\AST_ARRAY_ELEM:
+                foreach ($node->children as $child_node) {
+                    if (!self::isLoopVariableWithoutSideEffects($child_node)) {
+                        return false;
+                    }
+                }
+                return true;
+            default:
+                return ParseVisitor::isConstExpr($node, ParseVisitor::CONSTANT_EXPRESSION_FORBID_NEW_EXPRESSION);
+        }
     }
 
     /**
@@ -965,7 +1147,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         if ($union_type->isEmpty()) {
             return;
         }
-        if (!$union_type->hasPossiblyObjectTypes() && !$union_type->hasIterable()) {
+        if (!$union_type->hasPossiblyObjectTypes() && !$union_type->hasIterable($this->code_base)) {
             $this->emitIssue(
                 Issue::TypeMismatchForeach,
                 $node->children['expr']->lineno ?? $node->lineno,
@@ -975,11 +1157,12 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         }
         $has_object = false;
         foreach ($union_type->getTypeSet() as $type) {
-            if (!$type->isObjectWithKnownFQSEN()) {
+            if (!$type->hasObjectWithKnownFQSEN()) {
                 continue;
             }
             try {
-                if ($type->asExpandedTypes($this->code_base)->hasTraversable()) {
+                // e.g. don't warn about ArrayObject&CustomInterface because the expanded type set includes Traversable
+                if ($type->isTraversable($this->code_base)) {
                     continue;
                 }
             } catch (RecursionDepthException $_) {
@@ -1000,15 +1183,17 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 Closure::fromCallable([self::class, 'isEmptyIterable'])
             );
         }
-        if (!($node->children['stmts']->children ?? null) && self::isDefinitelyNotObject($union_type)) {
-            RedundantCondition::emitInstance(
-                $node->children['expr'],
-                $this->code_base,
-                (clone($this->context))->withLineNumberStart($node->children['expr']->lineno ?? $node->lineno),
-                Issue::EmptyForeachBody,
-                [(string)$union_type],
-                Closure::fromCallable([self::class, 'isDefinitelyNotObject'])
-            );
+        if (self::isDefinitelyNotObject($union_type)) {
+            if (!($node->children['stmts']->children ?? null)) {
+                RedundantCondition::emitInstance(
+                    $node->children['expr'],
+                    $this->code_base,
+                    (clone($this->context))->withLineNumberStart($node->children['expr']->lineno ?? $node->lineno),
+                    Issue::EmptyForeachBody,
+                    [(string)$union_type],
+                    Closure::fromCallable([self::class, 'isDefinitelyNotObject'])
+                );
+            }
         }
     }
 
@@ -1037,7 +1222,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             if ($type->isPossiblyObject()) {
                 return false;
             }
-            if (!$type->isIterable()) {
+            if (!$type instanceof IterableType) {
                 continue;
             }
             if ($type->isPossiblyTruthy()) {
@@ -1052,36 +1237,44 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
     private function warnAboutNonTraversableType(Node $node, Type $type): void
     {
-        $fqsen = FullyQualifiedClassName::fromType($type);
-        if (!$this->code_base->hasClassWithFQSEN($fqsen)) {
-            return;
-        }
-        if ($fqsen->__toString() === '\stdClass') {
-            // stdClass is the only non-Traversable that I'm aware of that's commonly traversed over.
-            return;
-        }
-        $class = $this->code_base->getClassByFQSEN($fqsen);
-        $status = $class->checkCanIterateFromContext(
-            $this->code_base,
-            $this->context
-        );
-        switch ($status) {
-            case Clazz::CAN_ITERATE_STATUS_NO_ACCESSIBLE_PROPERTIES:
-                $issue = Issue::TypeNoAccessiblePropertiesForeach;
-                break;
-            case Clazz::CAN_ITERATE_STATUS_NO_PROPERTIES:
-                $issue = Issue::TypeNoPropertiesForeach;
-                break;
-            default:
-                $issue = Issue::TypeSuspiciousNonTraversableForeach;
-                break;
-        }
+        // @phan-suppress-next-line PhanPluginUseReturnValueKnown
+        $type->anyTypePartsMatchCallback(function (Type $part) use ($node, $type): bool {
+            if (!$part->isObjectWithKnownFQSEN()) {
+                return false;
+            }
+            $fqsen = FullyQualifiedClassName::fromType($part);
+            if (!$this->code_base->hasClassWithFQSEN($fqsen)) {
+                return true;
+            }
+            if (\in_array($fqsen->__toString(), ['\stdClass', '\Countable'], true)) {
+                // stdClass is the only non-Traversable that I'm aware of that's commonly traversed over.
+                // Countable as the only known interface is a common false positive. (`if (count(x)) {foreach...}`)
+                return true;
+            }
+            $class = $this->code_base->getClassByFQSEN($fqsen);
+            $status = $class->checkCanIterateFromContext(
+                $this->code_base,
+                $this->context
+            );
+            switch ($status) {
+                case Clazz::CAN_ITERATE_STATUS_NO_ACCESSIBLE_PROPERTIES:
+                    $issue = Issue::TypeNoAccessiblePropertiesForeach;
+                    break;
+                case Clazz::CAN_ITERATE_STATUS_NO_PROPERTIES:
+                    $issue = Issue::TypeNoPropertiesForeach;
+                    break;
+                default:
+                    $issue = Issue::TypeSuspiciousNonTraversableForeach;
+                    break;
+            }
 
-        $this->emitIssue(
-            $issue,
-            $node->children['expr']->lineno ?? $node->lineno,
-            $type
-        );
+            $this->emitIssue(
+                $issue,
+                $node->children['expr']->lineno ?? $node->lineno,
+                $type
+            );
+            return true;
+        });
     }
 
     private function analyzeForeachIteration(Context $context, UnionType $expression_union_type, Node $node): Context
@@ -1091,7 +1284,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         if ($value_node instanceof Node) {
             // should be a parse error when not a Node
             if ($value_node->kind === ast\AST_ARRAY) {
-                if (Config::get_closest_target_php_version_id() < 70100) {
+                if (Config::get_closest_minimum_target_php_version_id() < 70100) {
                     self::analyzeArrayAssignBackwardsCompatibility($code_base, $context, $value_node);
                 }
             }
@@ -1133,6 +1326,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
     /**
      * Analyze an expression such as `[$a] = $values` or `list('key' => $v) = $values` for backwards compatibility issues
+     * Precondition: minimum_target_php_version_id >-= 70100
      */
     public static function analyzeArrayAssignBackwardsCompatibility(CodeBase $code_base, Context $context, Node $node): void
     {
@@ -1217,6 +1411,12 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             unset($node->phan_loop_contexts);
         }
         $context = $context->withExitLoop($node);
+
+        // Check if this is side effect free with the variable types inferred by analyzing the loop body (heuristic).
+        if (Config::getValue('unused_variable_detection') &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $context, $node)) {
+            VariableTrackerVisitor::recordHasLoopBodyWithoutSideEffects($node);
+        }
 
         return $this->postOrderAnalyze($context, $node);
     }
@@ -1370,7 +1570,6 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         $context->setLineNumberStart($node->lineno);
         $context = $this->preOrderAnalyze(clone($context), $node);
 
-        $scope = $context->getScope();
         $child_context_list = [];
 
         // TODO: Improve inferences in switch statements?
@@ -1378,14 +1577,23 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         $has_default = false;
         // parent_node_list should always end in AST_SWITCH
         // @phan-suppress-next-next-line PhanPossiblyUndeclaredProperty
-        [$switch_variable_node, $switch_variable_condition] = $this->createSwitchConditionAnalyzer(
+        [$switch_variable_node, $switch_variable_condition, $switch_variable_negated_condition] = $this->createSwitchConditionAnalyzer(
             end($this->parent_node_list)->children['cond']
         );
-        if ($switch_variable_condition && $switch_variable_node instanceof Node) {
+        if (($switch_variable_condition || $switch_variable_negated_condition) && $switch_variable_node instanceof Node) {
             $switch_variable_cond_variable_set = RedundantCondition::getVariableSet($switch_variable_node);
         } else {
             $switch_variable_cond_variable_set = [];
         }
+        $children = $node->children;
+        if (\count($children) <= 1 && !isset($children[0]->children['cond'])) {
+            $this->emitIssue(
+                Issue::NoopSwitchCases,
+                end($this->parent_node_list)->lineno ?? $node->lineno
+            );
+        }
+        $fallthrough_context = $context;
+
         $previous_child_context = null;
         foreach ($node->children as $i => $child_node) {
             if (!$child_node instanceof Node) {
@@ -1395,38 +1603,39 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             // Step into each child node and get an
             // updated context for the node
 
-            if ($previous_child_context instanceof Context) {
-                // The previous case statement fell through some of the time or all of the time.
-                $child_context = (new ContextMergeVisitor(
-                    $previous_child_context,
-                    [$previous_child_context, $context]
-                ))->combineScopeList([$previous_child_context->getScope(), $scope]);
-            } else {
-                // The previous case statement did not fall through, or does not exist.
-                $child_context = $context->withScope(new BranchScope($scope));
-            }
-            $child_context->withLineNumberStart($child_node->lineno);
             try {
                 $this->parent_node_list[] = $node;
+                $fallthrough_context->withLineNumberStart($child_node->lineno);
                 ConfigPluginSet::instance()->preAnalyzeNode(
                     $this->code_base,
-                    $context,
+                    $fallthrough_context,
                     $child_node
                 );
+                // Statements such as `case $x = 2;` should affect both the body of that case statements and following case statements.
+                // Modify the $fallthrough_context.
+                if ($case_cond_node instanceof Node) {
+                    $fallthrough_context = $this->analyzeAndGetUpdatedContext($fallthrough_context, $child_node, $case_cond_node);
+                }
+                if ($previous_child_context instanceof Context) {
+                    // The previous case statement fell through some of the time or all of the time.
+                    $child_context = (new ContextMergeVisitor(
+                        $previous_child_context,
+                        [$previous_child_context, $fallthrough_context]
+                    ))->combineScopeList([$previous_child_context->getScope(), $fallthrough_context->getScope()]);
+                } else {
+                    // The previous case statement did not fall through, or does not exist.
+                    $child_context = $fallthrough_context->withScope(clone($fallthrough_context->getScope()));
+                }
                 if ($case_cond_node !== null) {
-                    if ($case_cond_node instanceof Node) {
-                        $child_context = $this->analyzeAndGetUpdatedContext($child_context, $child_node, $case_cond_node);
-                    }
                     if ($switch_variable_condition) {
                         // e.g. make sure to handle $x from `switch (true) { case $x instanceof stdClass: }` or `switch ($x)`
                         // Note that this won't properly combine types from `case $x = expr: case $x = expr2:` (latter would override former),
                         // but I don't expect to see that in reasonable code.
                         $variables_to_check = $switch_variable_cond_variable_set + RedundantCondition::getVariableSet($case_cond_node);
+                        // Add the variable type from the above case statements, if it was possible for it to fall through
+                        // TODO: Also support switch(get_class($variable))
+                        $child_context = $switch_variable_condition($child_context, $case_cond_node);
                         foreach ($variables_to_check as $var_name) {
-                            // Add the variable type from the above case statements, if it was possible for it to fall through
-                            // TODO: Also support switch(get_class($variable))
-                            $child_context = $switch_variable_condition($child_context, $case_cond_node);
-                            '@phan-var Context $child_context';
                             if ($previous_child_context !== null) {
                                 $variable = $child_context->getScope()->getVariableByNameOrNull($var_name);
                                 if ($variable) {
@@ -1441,6 +1650,36 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                             }
                         }
                     }
+                    if ($switch_variable_negated_condition) {
+                        // e.g. make sure to handle $x from `switch (true) { case $x instanceof stdClass: }` or `switch ($x)`
+                        // Note that this won't properly combine types from `case $x = expr: case $x = expr2:` (latter would override former),
+                        // but I don't expect to see that in reasonable code.
+                        $variables_to_check = $switch_variable_cond_variable_set + RedundantCondition::getVariableSet($case_cond_node);
+                        foreach ($variables_to_check as $var_name) {
+                            // Add the variable type that were ruled out by the above case statements, if it was possible for it to fall through
+                            // TODO: Also support switch(get_class($variable))
+                            $fallthrough_context = $switch_variable_negated_condition($fallthrough_context, $case_cond_node);
+                        }
+                    }
+                } else {
+                    foreach ($switch_variable_cond_variable_set as $var_name) {
+                        // Add the variable types from the default to the
+                        // TODO: Handle the default not being the last case statement
+                        // TODO: Improve handling of possibly undefined variables
+                        $variable = $child_context->getScope()->getVariableByNameOrNull($var_name);
+                        if (!$variable) {
+                            continue;
+                        }
+                        if ($previous_child_context) {
+                            $old_variable = $previous_child_context->getScope()->getVariableByNameOrNull($var_name);
+
+                            if ($old_variable) {
+                                $variable = clone($variable);
+                                $variable->setUnionType($variable->getUnionType()->withUnionType($old_variable->getUnionType()));
+                                $child_context->addScopeVariable($variable);
+                            }
+                        }
+                    }
                 }
 
                 if ($case_stmts_node instanceof Node) {
@@ -1448,7 +1687,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 }
                 ConfigPluginSet::instance()->postAnalyzeNode(
                     $this->code_base,
-                    $context,
+                    $fallthrough_context,
                     $child_node
                 );
             } finally {
@@ -1470,10 +1709,12 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 // Skip over case statements that only ever throw or return
                 if (count($stmts_node->children ?? []) !== 0 || $i === count($node->children) - 1) {
                     // and skip over empty statement lists, unless they're the last in a long line of empty statement lists
+                    // @phan-suppress-next-line PhanPossiblyUndeclaredVariable the finally block is not perfectly analyzed by Phan
                     $child_context_list[] = $child_context;
                 }
 
                 if ($block_exit_status & BlockExitStatusChecker::STATUS_PROCEED) {
+                    // @phan-suppress-next-line PhanPossiblyUndeclaredVariable the finally block is not perfectly analyzed by Phan
                     $previous_child_context = $child_context;
                 }
             }
@@ -1481,8 +1722,266 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
         if (count($child_context_list) > 0) {
             if (!$has_default) {
-                $child_context_list[] = $context;
+                $child_context_list[] = $fallthrough_context;
             }
+            if (count($child_context_list) >= 2) {
+                // For case statements, we need to merge the contexts
+                // of all child context into a single scope based
+                // on any possible branching structure
+                $context = (new ContextMergeVisitor(
+                    $context,
+                    $child_context_list
+                ))->combineChildContextList();
+            } else {
+                $context = $child_context_list[0];
+            }
+        }
+
+        // @phan-suppress-next-line PhanTypeMismatchArgumentNullable Phan cannot infer child_context_list was non-empty due to finally block
+        return $this->postOrderAnalyze($context, $node);
+    }
+
+    private const NOOP_SWITCH_COND_ANALYZER = [null, null, null];
+
+    /**
+     * @param Node|int|string|float $switch_case_node
+     * @return array{0:?Node, 1:?Closure(Context, mixed): Context, 2:?Closure(Context, mixed): Context}
+     */
+    private function createSwitchConditionAnalyzer($switch_case_node): array
+    {
+        $switch_kind = ($switch_case_node->kind ?? null);
+        try {
+            if ($switch_kind === ast\AST_VAR) {
+                $switch_variable = (new ConditionVisitor($this->code_base, $this->context))->getVariableFromScope($switch_case_node, $this->context);
+                if (!$switch_variable) {
+                    return self::NOOP_SWITCH_COND_ANALYZER;
+                }
+                return [
+                    $switch_case_node,
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($switch_case_node): Context {
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->updateVariableToBeEqual($switch_case_node, $cond_node, $child_context);
+                    },
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($switch_case_node): Context {
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->updateVariableToBeNotEqual($switch_case_node, $cond_node, $child_context);
+                    },
+                ];
+            } elseif ($switch_kind === ast\AST_CALL) {
+                $name = $switch_case_node->children['expr']->children['name'] ?? null;
+                if (\is_string($name)) {
+                    $name = \strtolower($name);
+                    if ($name === 'get_class') {
+                        $switch_variable_node = $switch_case_node->children['args']->children[0] ?? null;
+                        if (!$switch_variable_node instanceof Node) {
+                            return self::NOOP_SWITCH_COND_ANALYZER;
+                        }
+                        if ($switch_variable_node->kind !== ast\AST_VAR) {
+                            return self::NOOP_SWITCH_COND_ANALYZER;
+                        }
+                        $switch_variable = (new ConditionVisitor($this->code_base, $this->context))->getVariableFromScope($switch_variable_node, $this->context);
+                        if (!$switch_variable) {
+                            return self::NOOP_SWITCH_COND_ANALYZER;
+                        }
+                        return [
+                            $switch_variable_node,
+                            /**
+                             * @param Node|string|int|float $cond_node
+                             */
+                            function (Context $child_context, $cond_node) use ($switch_variable_node): Context {
+                                $visitor = new ConditionVisitor($this->code_base, $child_context);
+                                return $visitor->analyzeClassAssertion(
+                                    $switch_variable_node,
+                                    $cond_node
+                                ) ?? $child_context;
+                            },
+                            null,
+                        ];
+                    }
+                }
+            }
+
+            if (!ScopeImpactCheckingVisitor::hasPossibleImpact($this->code_base, $this->context, $switch_case_node)) {
+                // e.g. switch(true), switch(MY_CONST), switch(['x'])
+                return [
+                    $switch_case_node,
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($switch_case_node): Context {
+                        // Handle match(cond) { $x = constexpr => ... }. The assignment was already analyzed.
+                        while ($cond_node instanceof Node && \in_array($cond_node->kind, [ast\AST_ASSIGN, ast\AST_ASSIGN_REF, ast\AST_ASSIGN_OP], true)) {
+                            $cond_node = $cond_node->children['var'];
+                        }
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->analyzeAndUpdateToBeEqual($switch_case_node, $cond_node);
+                    },
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($switch_case_node): Context {
+                        // Handle match(cond) { $x = constexpr => ... }. The assignment was already analyzed.
+                        while ($cond_node instanceof Node && \in_array($cond_node->kind, [ast\AST_ASSIGN, ast\AST_ASSIGN_REF, ast\AST_ASSIGN_OP], true)) {
+                            $cond_node = $cond_node->children['var'];
+                        }
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->analyzeAndUpdateToBeNotEqual($switch_case_node, $cond_node);
+                    },
+                ];
+            }
+        } catch (IssueException $_) {
+            // do nothing, we warn elsewhere
+        }
+        return self::NOOP_SWITCH_COND_ANALYZER;
+    }
+
+    /**
+     * @param Node $node
+     * An AST node we'd like to analyze the statements for
+     *
+     * @return Context
+     * The updated context after visiting the node
+     *
+     * Based on visitSwitchList
+     */
+    public function visitMatchArmList(Node $node): Context
+    {
+        // Make a copy of the internal context so that we don't
+        // leak any changes within the closed context to the
+        // outer scope
+        $context = $this->context;
+        $context->setLineNumberStart($node->lineno);
+        $context = $this->preOrderAnalyze(clone($context), $node);
+
+        $child_context_list = [];
+
+        // parent_node_list should always end in kind ast\AST_MATCH
+        $match_expression_node = end($this->parent_node_list);
+        if (!$match_expression_node instanceof Node) {
+            throw new AssertionError('Expected AST_MATCH node as parent of AST_MATCH_ARM_LIST');
+        }
+        $children = $node->children;
+        if (\count($children) <= 1 && !isset($children[0]->children['cond'])) {
+            // Warn about match expressions with only the default condition.
+            $this->emitIssue(
+                Issue::NoopMatchArms,
+                $match_expression_node->lineno,
+                ASTReverter::toShortString($match_expression_node)
+            );
+        }
+        // Create closures to infer the effects of checking the match expression against the match condition lists (assertions and their negations)
+        $cond_node = $match_expression_node->children['cond'];
+        [$unused_match_variable_node, $match_variable_condition, $match_variable_negated_condition] = $this->createMatchConditionAnalyzer(
+            $cond_node
+        );
+        if (Config::getValue('redundant_condition_detection')) {
+            $cond_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $context, $match_expression_node->children['cond']);
+            if ($cond_type->hasRealTypeSet()) {
+                $cond_type = $cond_type->getRealUnionType()->withStaticResolvedInContext($context);
+            } else {
+                $cond_type = null;
+            }
+        } else {
+            $cond_type = null;
+        }
+        /*
+        if (($match_variable_condition || $match_variable_negated_condition) && $match_variable_node instanceof Node) {
+            $match_variable_cond_variable_set = RedundantCondition::getVariableSet($match_variable_node);
+        } else {
+            $match_variable_cond_variable_set = [];
+        }
+         */
+        $fallthrough_context = $context;
+
+        $default_arm_node = null;
+
+        foreach ($node->children as $arm_node) {
+            if (!$arm_node instanceof Node) {
+                throw new AssertionError("Match arm must be a node");
+            }
+
+            if ($arm_node->children['cond'] === null) {
+                if ($default_arm_node !== null) {
+                    $this->emitIssue(
+                        Issue::InvalidNode,
+                        $arm_node->lineno,
+                        'Saw an invalid match arm with multiple default nodes'
+                    );
+                    // fall through
+                } else {
+                    // TODO: Warn about duplicate default nodes
+                    $default_arm_node = $arm_node;
+                    continue;
+                }
+            }
+            // Step into each child node and get an
+            // updated context for the node
+
+            $child_context = $fallthrough_context->withScope(clone($fallthrough_context->getScope()));
+
+            $child_context->withLineNumberStart($arm_node->lineno);
+            try {
+                $this->parent_node_list[] = $node;
+                [$child_context, $fallthrough_context] = $this->analyzeMatchArm(
+                    $child_context,
+                    $fallthrough_context,
+                    $match_variable_condition,
+                    $match_variable_negated_condition,
+                    $arm_node,
+                    $cond_node,
+                    $cond_type
+                );
+            } finally {
+                \array_pop($this->parent_node_list);
+            }
+
+            // We can improve analysis of arms by using
+            // a BlockExitStatusChecker to avoid propagating invalid inferences.
+            if (self::willExecutionProceedAfterMatchArm($arm_node)) {
+                $child_context_list[] = $child_context;
+            }
+        }
+
+        if ($default_arm_node instanceof Node) {
+            // Duplicates above code
+            // TODO: Check if the default is unreachable
+
+            // Step into each child node and get an
+            // updated context for the node
+
+            $child_context = $fallthrough_context->withScope(clone($fallthrough_context->getScope()));
+
+            $child_context->withLineNumberStart($default_arm_node->lineno);
+            try {
+                $this->parent_node_list[] = $node;
+                [$child_context, $unused_fallthrough_context] = $this->analyzeMatchArm(
+                    $child_context,
+                    $fallthrough_context,
+                    $match_variable_condition,
+                    $match_variable_negated_condition,
+                    $default_arm_node,
+                    $cond_node,
+                    $cond_type
+                );
+            } finally {
+                \array_pop($this->parent_node_list);
+            }
+
+            // We can improve analysis of arms by using
+            // a BlockExitStatusChecker to avoid propagating invalid inferences.
+            if (self::willExecutionProceedAfterMatchArm($default_arm_node)) {
+                $child_context_list[] = $child_context;
+            }
+        }
+
+        // Match will throw an UnhandledMatchError if none of the arms apply.
+        if (count($child_context_list) > 0) {
             if (count($child_context_list) >= 2) {
                 // For case statements, we need to merge the contexts
                 // of all child context into a single scope based
@@ -1499,77 +1998,74 @@ class BlockAnalysisVisitor extends AnalysisVisitor
         return $this->postOrderAnalyze($context, $node);
     }
 
-    /**
-     * @param Node|int|string|float $switch_case_node
-     * @return array{0:?Node,1:?Closure}
-     */
-    private function createSwitchConditionAnalyzer($switch_case_node): array
+    private static function willExecutionProceedAfterMatchArm(Node $arm_node): bool
     {
-        $switch_kind = ($switch_case_node->kind ?? null);
-        try {
-            if ($switch_kind === ast\AST_VAR) {
-                $switch_variable = (new ConditionVisitor($this->code_base, $this->context))->getVariableFromScope($switch_case_node, $this->context);
-                if (!$switch_variable) {
-                    return [null, null];
-                }
-                return [
-                    $switch_case_node,
-                    /**
-                     * @param Node|string|int|float $cond_node
-                     */
-                    function (Context $child_context, $cond_node) use ($switch_case_node): Context {
-                        $visitor = new ConditionVisitor($this->code_base, $child_context);
-                        return $visitor->updateVariableToBeEqual($switch_case_node, $cond_node, $child_context);
-                    },
-                ];
-            } elseif ($switch_kind === ast\AST_CALL) {
-                $name = $switch_case_node->children['expr']->children['name'] ?? null;
-                if (\is_string($name)) {
-                    $name = \strtolower($name);
-                    if ($name === 'get_class') {
-                        $switch_variable_node = $switch_case_node->children['args']->children[0] ?? null;
-                        if (!$switch_variable_node instanceof Node) {
-                            return [null, null];
-                        }
-                        if ($switch_variable_node->kind !== ast\AST_VAR) {
-                            return [null, null];
-                        }
-                        $switch_variable = (new ConditionVisitor($this->code_base, $this->context))->getVariableFromScope($switch_variable_node, $this->context);
-                        if (!$switch_variable) {
-                            return [null, null];
-                        }
-                        return [
-                            $switch_variable_node,
-                            /**
-                             * @param Node|string|int|float $cond_node
-                             */
-                            function (Context $child_context, $cond_node) use ($switch_variable_node): Context {
-                                $visitor = new ConditionVisitor($this->code_base, $child_context);
-                                return $visitor->analyzeClassAssertion(
-                                    $switch_variable_node,
-                                    $cond_node
-                                ) ?? $child_context;
-                            },
-                        ];
-                    }
-                }
-            } elseif (ParseVisitor::isConstExpr($switch_case_node)) {
-                // e.g. switch(true), switch(MY_CONST), switch(['x'])
-                return [
-                    $switch_case_node,
-                    /**
-                     * @param Node|string|int|float $cond_node
-                     */
-                    function (Context $child_context, $cond_node) use ($switch_case_node): Context {
-                        $visitor = new ConditionVisitor($this->code_base, $child_context);
-                        return $visitor->analyzeAndUpdateToBeEqual($switch_case_node, $cond_node);
-                    },
-                ];
-            }
-        } catch (IssueException $_) {
-            // do nothing, we warn elsewhere
+        $expr_node = $arm_node->children['expr'];
+        if (!$expr_node instanceof Node) {
+            return true;
         }
-        return [null, null];
+        $block_exit_status = (new BlockExitStatusChecker())->__invoke($expr_node);
+        // Skip over arms that only ever throw/exit.
+        // equivalent to !willUnconditionallyThrowOrReturn()
+        return ($block_exit_status & ~BlockExitStatusChecker::STATUS_THROW_OR_RETURN_BITMASK) !== 0;
+    }
+
+    /**
+     * @param ?Closure(Context, mixed): Context $match_variable_condition
+     * @param ?Closure(Context, mixed): Context $match_variable_negated_condition
+     * @param Node|int|string|float $match_cond_node
+     * @param ?UnionType $cond_type for impossible condition detection
+     * @return array{0: Context, 1: Context} new values of [$child_context, $fallthrough_context]
+     */
+    private function analyzeMatchArm(
+        Context $child_context,
+        Context $fallthrough_context,
+        ?Closure $match_variable_condition,
+        ?Closure $match_variable_negated_condition,
+        Node $arm_node,
+        $match_cond_node,
+        ?UnionType $cond_type
+    ): array {
+        ConfigPluginSet::instance()->preAnalyzeNode(
+            $this->code_base,
+            $fallthrough_context,
+            $arm_node
+        );
+        ['expr' => $arm_expr_node, 'cond' => $arm_cond_node] = $arm_node->children;
+        if ($arm_cond_node !== null) {
+            if ($arm_cond_node instanceof Node) {
+                $child_context = $this->analyzeAndGetUpdatedContext($child_context, $arm_node, $arm_cond_node);
+            }
+            if ($cond_type) {
+                (new RedundantConditionVisitor($this->code_base, $child_context))->checkImpossibleMatchArm($match_cond_node, $cond_type, $arm_node);
+            }
+            if ($match_variable_condition) {
+                // e.g. make sure to handle $x from `match (true) { $x instanceof stdClass => ... }` or `match ($x)`
+                // Note that this won't properly combine types from `($x = expr) => ... , ($x = expr2) => ...` (latter would override former),
+                // but I don't expect to see that in reasonable code.
+                //$variables_to_check = $match_variable_cond_variable_set + RedundantCondition::getVariableSet($arm_cond_node);
+
+                // Add the variable type from the **conditions of the** above arms,
+                // if it was possible for it to fall through
+                // TODO: Also support match(get_class($variable))
+                $child_context = $match_variable_condition($child_context, $arm_cond_node);
+            }
+            if ($match_variable_negated_condition) {
+                // Add the variable types that were ruled out by the above case statements, if it was possible for it to fall through.
+                // TODO: Also support match(get_class($variable))
+                $fallthrough_context = $match_variable_negated_condition($fallthrough_context, $arm_cond_node);
+            }
+        }
+
+        if ($arm_expr_node instanceof Node) {
+            $child_context = $this->analyzeAndGetUpdatedContext($child_context, $arm_node, $arm_expr_node);
+        }
+        ConfigPluginSet::instance()->postAnalyzeNode(
+            $this->code_base,
+            $fallthrough_context,
+            $arm_node
+        );
+        return [$child_context, $fallthrough_context];
     }
 
     /**
@@ -1643,20 +2139,8 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 // But we want to let BlockAnalysisVisitor modify the context for cases such as the below:
                 //
                 // $result = !($x instanceof User) || $x->meetsCondition()
+                [$child_context, $fallthrough_context] = $this->preAnalyzeIfElemCondition($child_node, $fallthrough_context);
                 $condition_node = $child_node->children['cond'];
-                if ($condition_node instanceof Node) {
-                    $fallthrough_context = $this->analyzeAndGetUpdatedContext(
-                        $fallthrough_context->withLineNumberStart($condition_node->lineno),
-                        $child_node,
-                        $condition_node
-                    );
-                } elseif (Config::getValue('redundant_condition_detection')) {
-                    (new ConditionVisitor($this->code_base, $fallthrough_context))->checkRedundantOrImpossibleTruthyCondition($condition_node, $fallthrough_context, null, false);
-                }
-
-                $child_context = $fallthrough_context->withClonedScope();
-
-                $child_context = $this->preOrderAnalyze($child_context, $child_node);
 
                 $stmts_node = $child_node->children['stmts'];
                 if (!$stmts_node instanceof Node) {
@@ -1761,6 +2245,187 @@ class BlockAnalysisVisitor extends AnalysisVisitor
     }
 
     /**
+     * Returns contexts in which the condition was true and which the condition was false.
+     *
+     * This has special cases for handling `if (A && (B = C)) {}`
+     *
+     * @param Node $if_elem_node a node of kind ast\AST_IF_ELEM
+     * @return array{0:Context,1:Context} [$child_context, new value of $fallthrough_context]
+     */
+    private function preAnalyzeIfElemCondition(Node $if_elem_node, Context $fallthrough_context): array
+    {
+        $condition_node = $if_elem_node->children['cond'];
+        if ($condition_node instanceof Node) {
+            if ($condition_node->kind === ast\AST_BINARY_OP) {
+                // TODO: Support BINARY_BOOL_OR for fallthrough_context.
+                // This will be inconvenient with needing to check for initially false/initially true condition nodes in loops.
+                if ($condition_node->flags === ast\flags\BINARY_BOOL_AND) {
+                    $child_context = $this->analyzeAndGetUpdatedContextAndAssertTruthy(
+                        $fallthrough_context,
+                        $if_elem_node,
+                        $condition_node
+                    );
+                    $fallthrough_context = $this->analyzeAndGetUpdatedContext(
+                        $fallthrough_context->withLineNumberStart($condition_node->lineno),
+                        $if_elem_node,
+                        $condition_node
+                    );
+                    return [$child_context, $fallthrough_context];
+                }
+            }
+            $fallthrough_context = $this->analyzeAndGetUpdatedContext(
+                $fallthrough_context->withLineNumberStart($condition_node->lineno),
+                $if_elem_node,
+                $condition_node
+            );
+        } elseif (Config::getValue('redundant_condition_detection')) {
+            (new ConditionVisitor($this->code_base, $fallthrough_context))->checkRedundantOrImpossibleTruthyCondition($condition_node, $fallthrough_context, null, false);
+        }
+
+        $child_context = $fallthrough_context->withClonedScope();
+        $child_context = $this->preOrderAnalyze($child_context, $if_elem_node);
+
+        return [$child_context, $fallthrough_context];
+    }
+
+    /**
+     * @param Node|string|int|float $condition_node
+     */
+    private function analyzeAndGetUpdatedContextAndAssertTruthy(
+        Context $context,
+        Node $parent_node,
+        $condition_node
+    ): Context {
+        if (!$condition_node instanceof Node) {
+            return $context;
+        }
+        if ($condition_node->kind === ast\AST_BINARY_OP) {
+            if ($condition_node->flags === ast\flags\BINARY_BOOL_AND) {
+                return $this->analyzeAndGetUpdatedContextAndAssertTruthy(
+                    $this->analyzeAndGetUpdatedContextAndAssertTruthy(
+                        $context,
+                        $condition_node,
+                        $condition_node->children['left']
+                    ),
+                    $condition_node,
+                    $condition_node->children['right']
+                );
+            }
+        }
+        // Let any configured plugins do a pre-order
+        // analysis of the node.
+        // This may run multiple times on the same node due to need to analyze conditions and their negation.
+        ConfigPluginSet::instance()->preAnalyzeNode(
+            $this->code_base,
+            $context,
+            $condition_node
+        );
+        // Infer the side effects of a generic node kind
+        $context = $this->analyzeAndGetUpdatedContext(
+            $context->withLineNumberStart($condition_node->lineno),
+            $parent_node,
+            $condition_node
+        );
+        // Assert the generic node kind is truthy
+        return (new ConditionVisitor(
+            $this->code_base,
+            $context
+        ))->__invoke($condition_node);
+    }
+
+    /**
+     * Returns a closure to analyze the conditions for match expressions for a match arm
+     *
+     * @param Node|int|string|float $match_case_node
+     * @return array{0:?Node, 1:?Closure(Context, mixed): Context, 2:?Closure(Context, mixed): Context}
+     * @see self::createSwitchConditionAnalyzer() - Based on that but uses strict equality instead
+     */
+    private function createMatchConditionAnalyzer($match_case_node): array
+    {
+        $match_kind = ($match_case_node->kind ?? null);
+        try {
+            if ($match_kind === ast\AST_VAR) {
+                $match_variable = (new ConditionVisitor($this->code_base, $this->context))->getVariableFromScope($match_case_node, $this->context);
+                if (!$match_variable) {
+                    return self::NOOP_SWITCH_COND_ANALYZER;
+                }
+                return [
+                    $match_case_node,
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($match_case_node): Context {
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->updateVariableToBeIdentical($match_case_node, $cond_node, $child_context);
+                    },
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($match_case_node): Context {
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->updateVariableToBeNotIdentical($match_case_node, $cond_node, $child_context);
+                    },
+                ];
+            } elseif ($match_kind === ast\AST_CALL) {
+                $name = $match_case_node->children['expr']->children['name'] ?? null;
+                if (\is_string($name)) {
+                    $name = \strtolower($name);
+                    if ($name === 'get_class') {
+                        $match_variable_node = $match_case_node->children['args']->children[0] ?? null;
+                        if (!$match_variable_node instanceof Node) {
+                            return self::NOOP_SWITCH_COND_ANALYZER;
+                        }
+                        if ($match_variable_node->kind !== ast\AST_VAR) {
+                            return self::NOOP_SWITCH_COND_ANALYZER;
+                        }
+                        $match_variable = (new ConditionVisitor($this->code_base, $this->context))->getVariableFromScope($match_variable_node, $this->context);
+                        if (!$match_variable) {
+                            return self::NOOP_SWITCH_COND_ANALYZER;
+                        }
+                        return [
+                            $match_variable_node,
+                            /**
+                             * @param Node|string|int|float $cond_node
+                             */
+                            function (Context $child_context, $cond_node) use ($match_variable_node): Context {
+                                $visitor = new ConditionVisitor($this->code_base, $child_context);
+                                return $visitor->analyzeClassAssertion(
+                                    $match_variable_node,
+                                    $cond_node
+                                ) ?? $child_context;
+                            },
+                            null,
+                        ];
+                    }
+                }
+            }
+            if (!ScopeImpactCheckingVisitor::hasPossibleImpact($this->code_base, $this->context, $match_case_node)) {
+                // e.g. match(true), match(MY_CONST), match(['x'])
+                return [
+                    $match_case_node,
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($match_case_node): Context {
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->analyzeAndUpdateToBeIdentical($match_case_node, $cond_node);
+                    },
+                    /**
+                     * @param Node|string|int|float $cond_node
+                     */
+                    function (Context $child_context, $cond_node) use ($match_case_node): Context {
+                        $visitor = new ConditionVisitor($this->code_base, $child_context);
+                        return $visitor->analyzeAndUpdateToBeNotIdentical($match_case_node, $cond_node);
+                    },
+                ];
+            }
+        } catch (IssueException $_) {
+            // do nothing, we warn elsewhere
+        }
+        return self::NOOP_SWITCH_COND_ANALYZER;
+    }
+
+    /**
      * Handle break/continue statements in conditionals within a loop.
      * Record scope with the inferred variable types so it can be merged later outside of the loop.
      *
@@ -1834,9 +2499,10 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
         // Analyze the catch blocks and finally blocks with a mix of the types
         // from the try block and the catch blocks.
-        // NOTE: when strict_mode = 1, variables that are only defined in some Contexts
-        // but not others will be treated as absent.
-        // TODO: Improve in future releases
+        // There's still some ways this could be improved for combining contexts.
+        // (It's difficult to do this perfectly, especially since almost any expression in a try block
+        // may throw under some circumstances)
+        //
         // NOTE: We let ContextMergeVisitor->visitTry decide if the block exit status is valid.
         $context = (new ContextMergeVisitor(
             $context,
@@ -1938,7 +2604,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
             $catch_line = $catch_node->lineno;
 
-            foreach ($union_type->getTypeSet() as $type) {
+            foreach ($union_type->getUniqueFlattenedTypeSet() as $type) {
                 foreach ($type->asExpandedTypes($code_base)->getTypeSet() as $ancestor_type) {
                     // Check if any of the ancestors were already caught by a previous catch statement
                     $line = $caught_union_types[\spl_object_id($ancestor_type)] ?? null;
@@ -2038,10 +2704,18 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
         if ($right_node instanceof Node) {
             $right_context = $this->analyzeAndGetUpdatedContext($context_with_left_condition, $node, $right_node);
-            $context = (new ContextMergeVisitor(
-                $context,
-                [$context, $context_with_false_left_condition, $right_context]
-            ))->combineChildContextList();
+            if (BlockExitStatusChecker::willUnconditionallySkipRemainingStatements($right_node)) {
+                return $this->postOrderAnalyze($context_with_false_left_condition, $node);
+            }
+            if (ScopeImpactCheckingVisitor::hasPossibleImpact($this->code_base, $context, $right_node)) {
+                // If the expression on the right side does have side effects (e.g. `$cond || $x = foo()`), then we need to merge all possibilities.
+                //
+                // However, if it doesn't have side effects (e.g. `$a && $b` in `var_export($a || $b)`, then adding the inferences is counterproductive)
+                $context = (new ContextMergeVisitor(
+                    $context,
+                    [$context, $context_with_false_left_condition, $right_context]
+                ))->combineChildContextList();
+            }
         }
 
         return $this->postOrderAnalyze($context, $node);
@@ -2099,6 +2773,9 @@ class BlockAnalysisVisitor extends AnalysisVisitor
 
         if ($right_node instanceof Node) {
             $right_context = $this->analyzeAndGetUpdatedContext($context_with_false_left_condition, $node, $right_node);
+            if (BlockExitStatusChecker::willUnconditionallySkipRemainingStatements($right_node)) {
+                return $this->postOrderAnalyze($context_with_true_left_condition, $node);
+            }
             if (ScopeImpactCheckingVisitor::hasPossibleImpact($this->code_base, $context, $right_node)) {
                 // If the expression on the right side does have side effects (e.g. `$cond || $x = foo()`), then we need to merge all possibilities.
                 //
@@ -2159,11 +2836,49 @@ class BlockAnalysisVisitor extends AnalysisVisitor
     }
 
     /**
+     * Returns true if $node represents an expression that can't be undefined
+     */
+    private static function isAlwaysDefined(Context $context, Node $node): bool
+    {
+        switch ($node->kind) {
+            case ast\AST_VAR:
+                $var_name = $node->children['name'];
+                if (is_string($var_name) && !$context->isInLoop() && $context->isInFunctionLikeScope() && !Variable::isSuperglobalVariableWithName($var_name)) {
+                    $variable = $context->getScope()->getVariableByNameOrNull($var_name);
+                    return $variable && !$variable->getUnionType()->isPossiblyUndefined();
+                }
+                return false;
+            case ast\AST_BINARY_OP:
+                if ($node->flags === ast\flags\BINARY_COALESCE) {
+                    $right_node = $node->children['right'];
+                    return !($right_node instanceof Node) || self::isAlwaysDefined($context, $right_node);
+                }
+                return true;
+            case ast\AST_PROP:
+            case ast\AST_DIM:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
      * Checks if the left hand side of a null coalescing operator is never null or always null
      */
     private function analyzeBinaryCoalesceForRedundantCondition(Context $context, Node $node): void
     {
         $left_node = $node->children['left'];
+        $right_node = $node->children['right'];
+        // @phan-suppress-next-line PhanPartialTypeMismatchArgumentInternal
+        if ($right_node instanceof Node && $right_node->kind === ast\AST_CONST && \strcasecmp($right_node->children['name']->children['name'] ?? '', 'null') === 0) {
+            if ($left_node instanceof Node && self::isAlwaysDefined($context, $left_node)) {
+                $this->emitIssue(
+                    Issue::CoalescingNeverUndefined,
+                    $node->lineno,
+                    ASTReverter::toShortString($left_node)
+                );
+            }
+        }
         $left = UnionTypeVisitor::unionTypeFromNode($this->code_base, $context, $left_node);
         if (!$left->hasRealTypeSet()) {
             return;
@@ -2187,6 +2902,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                 },
                 self::canNodeKindBeNull($left_node)
             );
+            return;
         } elseif ($left->isNull()) {
             RedundantCondition::emitInstance(
                 $left_node,
@@ -2201,6 +2917,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
                     return $type->isNull();
                 }
             );
+            return;
         }
     }
 
@@ -2235,6 +2952,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             case ast\AST_YIELD:
             case ast\AST_DIM:
             case ast\AST_PROP:
+            case ast\AST_NULLSAFE_PROP:
             case ast\AST_STATIC_PROP:
             case ast\AST_CALL:
             case ast\AST_CLASS_CONST:
@@ -2242,6 +2960,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
             case ast\AST_ASSIGN_REF:
             case ast\AST_ASSIGN_OP:  // XXX could figure out what kinds of assign ops are guaranteed to be non-null
             case ast\AST_METHOD_CALL:
+            case ast\AST_NULLSAFE_METHOD_CALL:
             case ast\AST_STATIC_CALL:
                 return true;
             case ast\AST_CONDITIONAL:

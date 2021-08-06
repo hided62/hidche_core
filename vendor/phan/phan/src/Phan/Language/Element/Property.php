@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phan\Language\Element;
 
 use Closure;
+use Phan\AST\ASTReverter;
 use Phan\Exception\IssueException;
 use Phan\Issue;
 use Phan\Language\Context;
@@ -26,6 +27,7 @@ class Property extends ClassElement
 {
     use ElementFutureUnionType;
     use ClosedScopeElement;
+    use HasAttributesTrait;
 
     /**
      * @var ?FullyQualifiedPropertyName If this was originally defined in a trait, this is the trait's defining fqsen.
@@ -104,8 +106,6 @@ class Property extends ClassElement
     /**
      * @return FullyQualifiedPropertyName the FQSEN with the original definition (Even if this is private/protected and inherited from a trait). Used for dead code detection.
      *                                    Inheritance tests use getDefiningFQSEN() so that access checks won't break.
-     *
-     * @suppress PhanPartialTypeMismatchReturn TODO: Allow subclasses to make property types more specific
      */
     public function getRealDefiningFQSEN(): FullyQualifiedPropertyName
     {
@@ -195,6 +195,7 @@ class Property extends ClassElement
      * @return FullyQualifiedPropertyName
      * The fully-qualified structural element name of this
      * structural element
+     * @suppress PhanTypeMismatchReturn
      */
     public function getFQSEN(): FullyQualifiedPropertyName
     {
@@ -221,7 +222,17 @@ class Property extends ClassElement
      */
     public function toStub(): string
     {
-        $string = '    ' . $this->getVisibilityName() . ' ';
+        $string = '';
+        if (self::shouldAddDescriptionsToStubs()) {
+            $description = (string)MarkupDescription::extractDescriptionFromDocComment($this);
+            if ($description !== '') {
+                if ($this->real_union_type->isEmptyOrMixed() && !$this->getUnionType()->isEmptyOrMixed()) {
+                    $description = "@var {$this->getUnionType()} $description";
+                }
+                $string .= MarkupDescription::convertStringToDocComment($description, '    ');
+            }
+        }
+        $string .= '    ' . $this->getVisibilityName() . ' ';
 
         if ($this->isStatic()) {
             $string .= 'static ';
@@ -425,9 +436,11 @@ class Property extends ClassElement
     {
         $union_type = $this->getUnionType();
         foreach ($union_type->getTypeSet() as $type) {
+            // TODO: Replace $old in intersection types as well?
             if (!$type->isObjectWithKnownFQSEN()) {
                 continue;
             }
+            // $type is the name of a class - replace it with $new and preserve nullability.
             if (FullyQualifiedClassName::fromType($type) === $old) {
                 $union_type = $union_type
                     ->withoutType($type)
@@ -464,10 +477,11 @@ class Property extends ClassElement
                     Issue::maybeEmit(
                         $future_union_type->getCodeBase(),
                         $future_union_type->getContext(),
-                        Issue::TypeInvalidPropertyDefaultReal,
+                        Issue::TypeMismatchPropertyDefaultReal,
                         $future_union_type->getContext()->getLineNumberStart(),
                         $this->real_union_type,
                         $this->name,
+                        ASTReverter::toShortString($future_union_type->getNode()),
                         $union_type
                     );
             }

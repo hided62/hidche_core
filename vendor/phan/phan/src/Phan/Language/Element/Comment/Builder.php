@@ -15,6 +15,7 @@ use Phan\Language\Element\Flags;
 use Phan\Language\FQSEN;
 use Phan\Language\Scope\TemplateScope;
 use Phan\Language\Type;
+use Phan\Language\Type\StaticType;
 use Phan\Language\Type\TemplateType;
 use Phan\Language\Type\VoidType;
 use Phan\Language\UnionType;
@@ -115,6 +116,10 @@ final class Builder
     public const PARAM_COMMENT_REGEX =
         '/@(?:phan-)?(param|var)\b\s*(' . UnionType::union_type_regex . ')?(?:\s*(\.\.\.)?\s*&?(?:\\$' . self::WORD_REGEX . '))?/';
 
+    /** @internal */
+    public const UNUSED_PARAM_COMMENT_REGEX =
+        '/@(?:phan-)?unused-param\b\s*(' . UnionType::union_type_regex . ')?(?:\s*(\.\.\.)?\s*&?(?:\\$' . self::WORD_REGEX . '))/';
+
     /**
      * @param string $line
      * An individual line of a comment
@@ -155,7 +160,7 @@ final class Builder
                 if ($is_var && $variable_name === '' && $this->comment_type === Comment::ON_PROPERTY) {
                     $end_offset = (int)\strpos($line, $match[0]) + \strlen($match[0]);
                     $char_at_end_offset = $line[$end_offset] ?? ' ';
-                    if (\ord($char_at_end_offset) > 32 && !\preg_match('@^\*+/$@', (string)\substr($line, $end_offset))) {  // Not a control character or space
+                    if (\ord($char_at_end_offset) > 32 && !\preg_match('@^\*+/$@D', (string)\substr($line, $end_offset))) {  // Not a control character or space
                         $this->emitIssue(
                             Issue::UnextractableAnnotationSuffix,
                             $this->guessActualLineLocation($i),
@@ -186,6 +191,7 @@ final class Builder
             }
             $is_output_parameter = \strpos($line, '@phan-output-reference') !== false;
             $is_ignored_parameter = \strpos($line, '@phan-ignore-reference') !== false;
+            $is_mandatory_in_phpdoc = \strpos($line, '@phan-mandatory-param') !== false;
 
             return new Parameter(
                 $variable_name,
@@ -194,7 +200,8 @@ final class Builder
                 $is_variadic,
                 false,  // has_default_value
                 $is_output_parameter,
-                $is_ignored_parameter
+                $is_ignored_parameter,
+                $is_mandatory_in_phpdoc
             );
         }
 
@@ -234,7 +241,7 @@ final class Builder
             $raw_match = $match[0];
             $end_offset = (int)\strpos($line, $raw_match) + \strlen($raw_match);
             $char_at_end_offset = $line[$end_offset] ?? ' ';
-            if (\ord($char_at_end_offset) > 32 && !\preg_match('@^\*+/$@', (string)\substr($line, $end_offset))) {  // Not a control character or space
+            if (\ord($char_at_end_offset) > 32 && !\preg_match('@^\*+/$@D', (string)\substr($line, $end_offset))) {  // Not a control character or space
                 $this->emitIssue(
                     Issue::UnextractableAnnotationSuffix,
                     $this->guessActualLineLocation($i),
@@ -330,6 +337,23 @@ final class Builder
             $this->emitDeferredIssues();
         }
 
+        if (!$this->comment_flags &&
+            !$this->return_comment &&
+            !$this->parameter_list &&
+            !$this->variable_list &&
+            !$this->template_type_list &&
+            $this->inherited_type instanceof None &&
+            !$this->suppress_issue_set &&
+            !$this->magic_property_list &&
+            !$this->magic_method_list &&
+            !$this->phan_overrides &&
+            $this->closure_scope instanceof None &&
+            $this->throw_union_type->isEmpty() &&
+            !$this->param_assertion_map
+        ) {
+            // Don't create an extra object if the string contained `@` but nothing of use was actually extracted.
+            return NullComment::instance();
+        }
         // @phan-suppress-next-line PhanAccessMethodInternal
         return new Comment(
             $this->comment_flags,
@@ -372,7 +396,7 @@ final class Builder
         // https://secure.php.net/manual/en/regexp.reference.internal-options.php
         // (?i) makes this case-sensitive, (?-1) makes it case-insensitive
         // phpcs:ignore Generic.Files.LineLength.MaxExceeded
-        if (\preg_match('/@((?i)param|deprecated|var|return|throws|throw|returns|inherits|extends|suppress|phan-[a-z0-9_-]*(?-i)|method|property|property-read|property-write|template|PhanClosureScope|readonly|mixin|seal-(?:methods|properties))(?:[^a-zA-Z0-9_\x7f-\xff-]|$)/', $line, $matches)) {
+        if (\preg_match('/@((?i)param|deprecated|var|return|throws|throw|returns|inherits|extends|suppress|unused-param|phan-[a-z0-9_-]*(?-i)|method|property|property-read|property-write|abstract|template(?:-covariant)?|PhanClosureScope|readonly|mixin|seal-(?:methods|properties))(?:[^a-zA-Z0-9_\x7f-\xff-]|$)/D', $line, $matches)) {
             $case_sensitive_type = $matches[1];
             $type = \strtolower($case_sensitive_type);
 
@@ -380,11 +404,15 @@ final class Builder
                 case 'param':
                     $this->parseParamLine($i, $line);
                     break;
+                case 'unused-param':
+                    $this->parseUnusedParamLine($i, $line);
+                    break;
                 case 'var':
                     $this->maybeParseVarLine($i, $line);
                     break;
                 case 'template':
-                    $this->maybeParseTemplateType($i, $line);
+                case 'template-covariant': // XXX Phan does not actually support @template-covariant semantics, it is just better than treating `T` as a classlike name.
+                    $this->maybeParseTemplateType($i, $line, $type);
                     break;
                 case 'inherits':
                 case 'extends':
@@ -448,6 +476,11 @@ final class Builder
                         $this->comment_flags |= Flags::IS_DEPRECATED;
                     }
                     break;
+                case 'abstract':
+                    if (\preg_match('/@abstract\b/', $line, $match)) {
+                        $this->comment_flags |= Flags::IS_PHPDOC_ABSTRACT;
+                    }
+                    break;
                 default:
                     if (\strpos($type, 'phan-') === 0) {
                         $this->maybeParsePhanCustomAnnotation($i, $line, $type, $case_sensitive_type);
@@ -465,7 +498,7 @@ final class Builder
         if (\strpos($line, 'verride') !== false) {
             if (\preg_match('/@([Oo]verride)\b/', $line, $match)) {
                 // TODO: split class const and global const.
-                if ($this->checkCompatible('@override', [Comment::ON_METHOD, Comment::ON_CONST], $i)) {
+                if ($this->checkCompatible('@override', [Comment::ON_METHOD, Comment::ON_CONST, Comment::ON_PROPERTY], $i)) {
                     $this->comment_flags |= Flags::IS_OVERRIDE_INTENDED;
                 }
             }
@@ -508,8 +541,26 @@ final class Builder
         if (!$this->checkCompatible('@param', Comment::FUNCTION_LIKE, $i)) {
             return;
         }
-        $this->parameter_list[] =
-            self::parameterFromCommentLine($line, false, $i);
+        $param = self::parameterFromCommentLine($line, false, $i);
+        $this->parameter_list[] = $param;
+    }
+
+    private function parseUnusedParamLine(int $i, string $line): void
+    {
+        if (!$this->checkCompatible('@unused-param', Comment::FUNCTION_LIKE, $i)) {
+            return;
+        }
+        if (\preg_match(self::UNUSED_PARAM_COMMENT_REGEX, $line, $match)) {
+            // Currently only used in VariableTrackerPlugin
+            $name = $match[16];
+            $this->phan_overrides['unused-param'][$name] = $name;
+        } else {
+            $this->emitIssue(
+                Issue::UnextractableAnnotation,
+                $this->guessActualLineLocation($i),
+                \trim($line)
+            );
+        }
     }
 
     private function maybeParseVarLine(int $i, string $line): void
@@ -533,11 +584,11 @@ final class Builder
         }
     }
 
-    private function maybeParseTemplateType(int $i, string $line): void
+    private function maybeParseTemplateType(int $i, string $line, string $tag_name): void
     {
         // Make sure support for generic types is enabled
         if (Config::getValue('generic_types_enabled')) {
-            if ($this->checkCompatible('@template', Comment::HAS_TEMPLATE_ANNOTATION, $i)) {
+            if ($this->checkCompatible("@$tag_name", Comment::HAS_TEMPLATE_ANNOTATION, $i)) {
                 $template_type = $this->templateTypeFromCommentLine($line);
                 if ($template_type) {
                     $this->template_type_list[$template_type->getName()] = $template_type;
@@ -744,6 +795,9 @@ final class Builder
                     $this->comment_flags |= Flags::IS_OVERRIDE_INTENDED;
                 }
                 return;
+            case 'phan-abstract':
+                $this->comment_flags |= Flags::IS_PHPDOC_ABSTRACT;
+                return;
             case 'phan-var':
                 if (!$this->checkCompatible('@phan-var', Comment::HAS_VAR_ANNOTATION, $i)) {
                     return;
@@ -765,6 +819,9 @@ final class Builder
                 return;
             case 'phan-file-suppress':
                 // See BuiltinSuppressionPlugin
+                return;
+            case 'phan-unused-param':
+                $this->parseUnusedParamLine($i, $line);
                 return;
             case 'phan-suppress':
                 $this->maybeParseSuppress($i, $line);
@@ -799,7 +856,7 @@ final class Builder
                 // Do nothing, see BuiltinSuppressionPlugin
                 return;
             case 'phan-template':
-                $this->maybeParseTemplateType($i, $line);
+                $this->maybeParseTemplateType($i, $line, $type);
                 return;
             case 'phan-inherits':
             case 'phan-extends':
@@ -985,10 +1042,11 @@ final class Builder
 
     /**
      * @param list<int> $valid_types
+     * @suppress PhanAccessClassConstantInternal
      */
     private function checkCompatible(string $param_name, array $valid_types, int $i): bool
     {
-        if (\in_array($this->comment_type, $valid_types, true)) {
+        if (\in_array($this->comment_type, $valid_types, true) || $this->comment_type === Comment::ON_ANY) {
             return true;
         }
         $this->emitInvalidCommentForDeclarationType(
@@ -1022,7 +1080,7 @@ final class Builder
         string $line
     ): ?TemplateType {
         // Backslashes or nested templates wouldn't make sense, so use WORD_REGEX.
-        if (\preg_match('/@(?:phan-)?template\s+(' . self::WORD_REGEX . ')/', $line, $match)) {
+        if (\preg_match('/@(?:phan-)?template(?:-covariant)?\s+(' . self::WORD_REGEX . ')/', $line, $match)) {
             $template_type_identifier = $match[1];
             return TemplateType::instanceForId($template_type_identifier, false);
         }
@@ -1135,17 +1193,19 @@ final class Builder
             $default_str = $param_match[17];
             $has_default_value = $default_str !== '';
             if ($has_default_value) {
-                $default_value_repr = \trim(\explode('=', $default_str, 2)[1]);
-                if (\strcasecmp($default_value_repr, 'null') === 0) {
+                $default_value_representation = \trim(\explode('=', $default_str, 2)[1]);
+                if (\strcasecmp($default_value_representation, 'null') === 0) {
                     $union_type = $union_type->nullableClone();
                 }
+            } else {
+                $default_value_representation = null;
             }
             $var_name = $param_match[16];
             if ($var_name === '') {
                 // placeholder names are p1, p2, ...
                 $var_name = 'p' . ($param_index + 1);
             }
-            return new Parameter($var_name, $union_type, $this->guessActualLineLocation($comment_line_offset), $is_variadic, $has_default_value);
+            return new Parameter($var_name, $union_type, $this->guessActualLineLocation($comment_line_offset), $is_variadic, $has_default_value, false, false, false, $default_value_representation);
         }
         return null;
     }
@@ -1184,7 +1244,13 @@ final class Builder
             } else {
                 // From https://phpdoc.org/docs/latest/references/phpdoc/tags/method.html
                 // > When the intended method does not have a return value then the return type MAY be omitted; in which case 'void' is implied.
-                $return_union_type = VoidType::instance(false)->asPHPDocUnionType();
+                if ($is_static) {
+                    // > `static` on its own would mean that the method returns an instance of the child class which the method is called on.
+                    $return_union_type = StaticType::instance(false)->asPHPDocUnionType();
+                    $is_static = false;
+                } else {
+                    $return_union_type = VoidType::instance(false)->asPHPDocUnionType();
+                }
             }
             $method_name = $match[22];
 
@@ -1195,7 +1261,6 @@ final class Builder
                 // TODO: Would need to use a different approach if templates were ever supported
                 //       e.g. The magic method parsing doesn't support commas?
                 $params_strings = self::extractMethodParts($arg_list);
-                $failed = false;
                 foreach ($params_strings as $i => $param_string) {
                     $param = $this->magicParamFromMagicMethodParamString($param_string, $i, $comment_line_offset);
                     if ($param === null) {
@@ -1205,13 +1270,9 @@ final class Builder
                             \trim($line),
                             $param_string
                         );
-                        $failed = true;
+                        return null;
                     }
                     $comment_params[] = $param;
-                }
-                if ($failed) {
-                    // Emit everything that was wrong with the parameters of the @method annotation at once, then reject it.
-                    return null;
                 }
             }
 

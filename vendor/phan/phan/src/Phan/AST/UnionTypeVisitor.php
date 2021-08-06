@@ -10,6 +10,7 @@ use ast\Node;
 use Closure;
 use Phan\Analysis\AssignOperatorFlagVisitor;
 use Phan\Analysis\BinaryOperatorFlagVisitor;
+use Phan\Analysis\BlockExitStatusChecker;
 use Phan\Analysis\ConditionVisitor;
 use Phan\Analysis\NegatedConditionVisitor;
 use Phan\AST\Visitor\Element;
@@ -24,6 +25,7 @@ use Phan\Exception\IssueException;
 use Phan\Exception\NodeException;
 use Phan\Exception\RecursionDepthException;
 use Phan\Exception\UnanalyzableException;
+use Phan\Exception\UnanalyzableMagicPropertyException;
 use Phan\Issue;
 use Phan\IssueFixSuggester;
 use Phan\Language\Context;
@@ -44,16 +46,19 @@ use Phan\Language\Type\AssociativeArrayType;
 use Phan\Language\Type\BoolType;
 use Phan\Language\Type\CallableType;
 use Phan\Language\Type\ClassStringType;
+use Phan\Language\Type\ClosureDeclarationType;
 use Phan\Language\Type\ClosureType;
 use Phan\Language\Type\FalseType;
 use Phan\Language\Type\FloatType;
 use Phan\Language\Type\GenericArrayType;
+use Phan\Language\Type\IntersectionType;
 use Phan\Language\Type\IntType;
 use Phan\Language\Type\IterableType;
 use Phan\Language\Type\ListType;
 use Phan\Language\Type\LiteralIntType;
 use Phan\Language\Type\LiteralStringType;
 use Phan\Language\Type\MixedType;
+use Phan\Language\Type\NeverType;
 use Phan\Language\Type\NonEmptyMixedType;
 use Phan\Language\Type\NullType;
 use Phan\Language\Type\ObjectType;
@@ -169,7 +174,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $union_type = (new self(
                     $code_base,
                     $context,
-                    $should_catch_issue_exception
+                    true
                 ))->{Element::VISIT_LOOKUP_TABLE[$node->kind] ?? 'visit'}($node);
                 $context->setCachedUnionTypeOfNode($node_id, $union_type, true);
                 return $union_type;
@@ -186,7 +191,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         $union_type = (new self(
             $code_base,
             $context,
-            $should_catch_issue_exception
+            false
         ))->{Element::VISIT_LOOKUP_TABLE[$node->kind] ?? 'visit'}($node);
 
         $context->setCachedUnionTypeOfNode($node_id, $union_type, false);
@@ -233,7 +238,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         return self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['var']
+            $node->children['var'],
+            $this->should_catch_issue_exception
         )->asNonLiteralType();
     }
 
@@ -255,7 +261,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         return self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['var']
+            $node->children['var'],
+            $this->should_catch_issue_exception
         )->asNonLiteralType();
     }
 
@@ -277,7 +284,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         return self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['var']
+            $node->children['var'],
+            $this->should_catch_issue_exception
         )->asNonLiteralType()->getTypeAfterIncOrDec();
     }
 
@@ -301,7 +309,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         return self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['var']
+            $node->children['var'],
+            $this->should_catch_issue_exception
         )->asNonLiteralType()->getTypeAfterIncOrDec();
     }
 
@@ -322,7 +331,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         $type = self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['expr']
+            $node->children['expr'],
+            $this->should_catch_issue_exception
         )->objectTypes();
         if ($type->isEmpty()) {
             return ObjectType::instance(false)->asRealUnionType();
@@ -440,7 +450,24 @@ class UnionTypeVisitor extends AnalysisVisitor
             case ast\flags\MAGIC_FUNCTION:
                 if ($this->context->isInFunctionLikeScope()) {
                     $fqsen = $this->context->getFunctionLikeFQSEN();
-                    return self::literalStringUnionType($fqsen->isClosure() ? '{closure}' : $fqsen->getName());
+                    if ($fqsen instanceof FullyQualifiedMethodName) {
+                        // For NS\MyClass::methodName, return 'methodName'
+                        $value = $fqsen->getName();
+                    } else {
+                        if ($fqsen->isClosure()) {
+                            $this->emitIssue(
+                                Issue::SuspiciousMagicConstant,
+                                $node->lineno,
+                                '__FUNCTION__',
+                                "used inside of a closure instead of a function/method - the value is always '{closure}'"
+                            );
+                            $value = '{closure}';
+                        } else {
+                            // For \NS\my_function, return 'NS\my_function'.
+                            $value = \ltrim($fqsen->__toString(), '\\');
+                        }
+                    }
+                    return self::literalStringUnionType($value);
                 }
                 $this->warnAboutUndeclaredMagicConstant($node, 'used outside of functionlike');
                 break;
@@ -649,11 +676,64 @@ class UnionTypeVisitor extends AnalysisVisitor
                 return FalseType::instance(false)->asRealUnionType();
             case \ast\flags\TYPE_STATIC:
                 return StaticType::instance(false)->asRealUnionType();
+            case \ast\flags\TYPE_MIXED:
+                return MixedType::instance(false)->asRealUnionType();
+            case \ast\flags\TYPE_NEVER:
+                return NeverType::instance(false)->asRealUnionType();
             default:
                 \Phan\Debug::printNode($node);
                 throw new AssertionError("All flags must match. Found ($node->flags) "
                     . Debug::astFlagDescription($node->flags ?? 0, $node->kind));
         }
+    }
+
+    /**
+     * Visit a node with kind `\ast\AST_TYPE_INTERSECTION`
+     *
+     * @param Node $node
+     * A node of the type indicated by the method name that we'd
+     * like to figure out the type that it produces.
+     *
+     * @return UnionType
+     * The set of types that are possibly produced by the
+     * given node
+     *
+     * @throws AssertionError if the type flags were unknown
+     */
+    public function visitTypeIntersection(Node $node): UnionType
+    {
+        // TODO: Validate that there aren't any duplicates
+        if (\count($node->children) === 1) {
+            // Might be possible due to the polyfill in the future.
+            // @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+            return $this->__invoke($node->children[0]);
+        }
+        $types = [];
+        foreach ($node->children as $c) {
+            if (!$c instanceof Node) {
+                throw new AssertionError("Saw non-node in union type");
+            }
+            $kind = $c->kind;
+            if ($kind === ast\AST_TYPE) {
+                $types[] = $this->visitType($c);
+            } elseif ($kind === ast\AST_NAME) {
+                if ($this->context->getScope()->isInTraitScope()) {
+                    $name = \strtolower($c->children['name']);
+                    if ($name === 'self') {
+                        $types[] = SelfType::instance(false)->asRealUnionType();
+                        continue;
+                    } elseif ($name === 'static') {
+                        $types[] = StaticType::instance(false)->asRealUnionType();
+                        continue;
+                    }
+                }
+                $types[] = $this->visitName($c);
+            } else {
+                throw new AssertionError("Expected union type to be composed of types and names");
+            }
+        }
+        $result = [IntersectionType::createFromTypes($types, $this->code_base, $this->context)];
+        return UnionType::of($result, $result);
     }
 
     /**
@@ -687,7 +767,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $types[] = $this->visitType($c);
             } elseif ($kind === ast\AST_NAME) {
                 if ($this->context->getScope()->isInTraitScope()) {
-                    $name = \strtolower($node->children['name']);
+                    $name = \strtolower($c->children['name']);
                     if ($name === 'self') {
                         $types[] = SelfType::instance(false)->asRealUnionType();
                         continue;
@@ -794,8 +874,10 @@ class UnionTypeVisitor extends AnalysisVisitor
             $result = $this->visitName($node);
         } elseif ($kind === ast\AST_TYPE_UNION) {
             $result = $this->visitTypeUnion($node);
+        } elseif ($kind === ast\AST_TYPE_INTERSECTION) {
+            $result = $this->visitTypeIntersection($node);
         } else {
-            throw new AssertionError("Expected a type, union type, or a name in the signature: node: " . Debug::nodeToString($node));
+            throw new AssertionError("Expected a type, union type, intersection type, or a name in the signature: node: " . Debug::nodeToString($node));
         }
         if ($is_nullable) {
             return $result->nullableClone();
@@ -854,16 +936,18 @@ class UnionTypeVisitor extends AnalysisVisitor
         // For the shorthand $a ?: $b, the cond node will be the truthy value.
         // Note: an ast node will never be null(can be unset), it will be a const AST node with the name null.
         $true_node = $node->children['true'] ?? $cond_node;
+        $false_node = $node->children['false'];
 
         // Rarely, a conditional will always be true or always be false.
         if ($cond_truthiness !== null) {
             // TODO: Add no-op checks in another PR, if they don't already exist for conditional.
-            if ($cond_truthiness === true) {
+            if ($cond_truthiness) {
                 // The condition is unconditionally true
                 return UnionTypeVisitor::unionTypeFromNode(
                     $this->code_base,
                     $this->context,
-                    $true_node
+                    $true_node,
+                    $this->should_catch_issue_exception
                 );
             } else {
                 // The condition is unconditionally false
@@ -872,7 +956,8 @@ class UnionTypeVisitor extends AnalysisVisitor
                 return UnionTypeVisitor::unionTypeFromNode(
                     $this->code_base,
                     $this->context,
-                    $node->children['false']
+                    $node->children['false'],
+                    $this->should_catch_issue_exception
                 );
             }
         }
@@ -881,7 +966,8 @@ class UnionTypeVisitor extends AnalysisVisitor
             UnionTypeVisitor::unionTypeFromNode(
                 $this->code_base,
                 $this->context,
-                $cond_node
+                $cond_node,
+                $this->should_catch_issue_exception
             );
         }
         // TODO: emit no-op if $cond_node is a literal, such as `if (2)`
@@ -910,14 +996,20 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $true_type = UnionTypeVisitor::unionTypeFromNode(
                     $this->code_base,
                     $true_context,
-                    $true_node
+                    $true_node,
+                    $this->should_catch_issue_exception
                 );
 
                 $false_type = UnionTypeVisitor::unionTypeFromNode(
                     $this->code_base,
                     $false_context,
-                    $node->children['false']
+                    $false_node,
+                    $this->should_catch_issue_exception
                 );
+                if ($false_node instanceof Node && BlockExitStatusChecker::willUnconditionallyThrowOrReturn($false_node)) {
+                    return $true_type->nonFalseyClone();
+                }
+
                 $true_type_is_empty = $true_type->isEmpty();
                 if (!$false_type->isEmpty()) {
                     // E.g. `foo() ?: 2` where foo is nullable or possibly false.
@@ -952,14 +1044,22 @@ class UnionTypeVisitor extends AnalysisVisitor
         $true_type = UnionTypeVisitor::unionTypeFromNode(
             $this->code_base,
             $true_context,
-            $true_node
+            $true_node,
+            $this->should_catch_issue_exception
         );
 
         $false_type = UnionTypeVisitor::unionTypeFromNode(
             $this->code_base,
             $false_context,
-            $node->children['false']
+            $node->children['false'],
+            $this->should_catch_issue_exception
         );
+        if ($false_type->isNeverType()) {
+            return $true_type;
+        }
+        if ($true_type->isNeverType()) {
+            return $false_type;
+        }
 
         // Add the type for the 'true' side to the 'false' side
         $union_type = $true_type->withUnionType($false_type);
@@ -977,6 +1077,38 @@ class UnionTypeVisitor extends AnalysisVisitor
         }
 
         return $union_type;
+    }
+
+    /**
+     * Visit a node with kind `\ast\AST_MATCH`
+     *
+     * @param Node $node
+     * A node of the type indicated by the method name that we'd
+     * like to figure out the type that it produces.
+     *
+     * @return UnionType
+     * The set of types that are possibly produced by the
+     * given node
+     * @suppress PhanPossiblyUndeclaredProperty
+     */
+    public function visitMatch(Node $node): UnionType
+    {
+        // TODO: Support inferring the type from the conditional
+        $union_types = [];
+        foreach ($node->children['stmts']->children as $arm_node) {
+            if (!BlockExitStatusChecker::willUnconditionallyThrowOrReturn($arm_node)) {
+                $union_types[] = UnionTypeVisitor::unionTypeFromNode(
+                    $this->code_base,
+                    clone($this->context),
+                    $arm_node->children['expr'],
+                    $this->should_catch_issue_exception
+                );
+            }
+        }
+        if (!$union_types) {
+            return VoidType::instance(false)->asRealUnionType();
+        }
+        return UnionType::merge($union_types);
     }
 
     /**
@@ -1019,6 +1151,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             // XXX is this slow for extremely large arrays because of in_array check in UnionTypeBuilder?
             $is_definitely_non_empty = false;
             $has_key = false;
+            $has_unpack_string_key = false;
             foreach ($children as $child) {
                 if (!($child instanceof Node)) {
                     // Skip this, we already emitted a syntax error.
@@ -1028,7 +1161,13 @@ class UnionTypeVisitor extends AnalysisVisitor
                 }
                 if ($child->kind === ast\AST_UNPACK) {
                     // Analyze PHP 7.4's array spread operator, e.g. `[$a, ...$array, $b]`
-                    $new_union_type = $this->analyzeUnpack($child, true);
+                    [$new_union_type, $new_union_type_has_string_keys] = $this->analyzeUnpack($child, true);
+                    if ($new_union_type_has_string_keys) {
+                        $has_key = true;
+                        $has_unpack_string_key = true;
+                    }
+
+                    $has_key = $has_key || $new_union_type_has_string_keys;
                     $value_types_builder->addUnionType($new_union_type);
                     $record_real_union_type($new_union_type);
                     continue;
@@ -1047,6 +1186,13 @@ class UnionTypeVisitor extends AnalysisVisitor
                         $value_types_builder->addType(MixedType::instance(false));
                         $real_value_types_builder = null;
                     } else {
+                        if ($element_value_type->isVoidType()) {
+                            $this->emitIssue(
+                                Issue::TypeVoidExpression,
+                                $node->lineno,
+                                ASTReverter::toShortString($value)
+                            );
+                        }
                         $value_types_builder->addUnionType($element_value_type);
                         $record_real_union_type($element_value_type);
                     }
@@ -1067,7 +1213,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             } else {
                 $result = $result->asNonEmptyListTypes();
             }
-            $result = $result->withRealTypeSet(self::arrayTypeFromRealTypeBuilder($real_value_types_builder, $has_key));
+            $result = $result->withRealTypeSet($this->arrayTypeFromRealTypeBuilder($real_value_types_builder, $node, $has_key, $has_unpack_string_key));
             if ($is_definitely_non_empty) {
                 return $result->nonFalseyClone();
             }
@@ -1082,21 +1228,49 @@ class UnionTypeVisitor extends AnalysisVisitor
     /**
      * @return list<ArrayType>
      */
-    private static function arrayTypeFromRealTypeBuilder(?UnionTypeBuilder $builder, bool $has_key): array
+    private function arrayTypeFromRealTypeBuilder(?UnionTypeBuilder $builder, Node $node, bool $has_key, bool $has_unpack_string_key): array
     {
-        if (!$builder || $builder->isEmpty()) {
-            static $array_type_set = null;
-            if ($array_type_set === null) {
-                $array_type_set = [ArrayType::instance(false)];
+        // Here, we only check for the real type being an integer.
+        // Unknown strings such as '0' will cast to integers when used as array keys,
+        // and if we knew all of the array keys were literals we would have generated an array shape instead.
+        $has_exclusively_int_keys = !$has_unpack_string_key;
+        if ($has_key && $has_exclusively_int_keys) {
+            foreach ($node->children as $child_node) {
+                $key = $child_node->children['key'] ?? null;
+                if (!isset($key)) {
+                    continue;
+                }
+                $key_type = UnionTypeVisitor::unionTypeFromNode(
+                    $this->code_base,
+                    $this->context,
+                    $key,
+                    $this->should_catch_issue_exception
+                );
+                if (!$key_type->getRealUnionType()->isIntTypeOrNull()) {
+                    $has_exclusively_int_keys = false;
+                    break;
+                }
             }
-            return $array_type_set;
+        }
+        if (!$builder || $builder->isEmpty()) {
+            if (!$has_key) {
+                // @phan-suppress-next-line PhanTypeMismatchReturn
+                return UnionType::typeSetFromString('list');
+            }
+            // @phan-suppress-next-line PhanTypeMismatchReturn
+            return UnionType::typeSetFromString($has_exclusively_int_keys ? 'array<int,mixed>' : 'array');
         }
         $real_types = [];
         foreach ($builder->getTypeSet() as $type) {
             if ($has_key) {
-                $real_types[] = ListType::fromElementType($type, false, GenericArrayType::KEY_MIXED);
+                // TODO: Could be more precise if all keys are known to be non-numeric strings or integers
+                $real_types[] = GenericArrayType::fromElementType(
+                    $type,
+                    false,
+                    $has_exclusively_int_keys ? GenericArrayType::KEY_INT : GenericArrayType::KEY_MIXED
+                );
             } else {
-                $real_types[] = GenericArrayType::fromElementType($type, false, GenericArrayType::KEY_MIXED);
+                $real_types[] = ListType::fromElementType($type, false, GenericArrayType::KEY_MIXED);
             }
         }
         return $real_types;
@@ -1105,14 +1279,14 @@ class UnionTypeVisitor extends AnalysisVisitor
     /**
      * Visit a node with kind `\ast\AST_YIELD`
      *
-     * @param Node $unused_node
+     * @param Node $node @unused-param
      * A yield node. Does not affect the union type
      *
      * @return UnionType
      * The set of types that are possibly produced by the
      * given node
      */
-    public function visitYield(Node $unused_node): UnionType
+    public function visitYield(Node $node): UnionType
     {
         $context = $this->context;
         if (!$context->isInFunctionLikeScope()) {
@@ -1160,19 +1334,32 @@ class UnionTypeVisitor extends AnalysisVisitor
             // NOTE: this has some overlap with DuplicateKeyPlugin
             if ($key_node === null) {
                 $elements[] = $child_node;
-            } elseif (is_scalar($key_node)) {
-                $elements[$key_node] = $child_node;  // Check for float?
-            } else {
+                continue;
+            }
+            if (\is_object($key_node)) {
                 if ($context_node === null) {
                     $context_node = new ContextNode($this->code_base, $this->context, null);
                 }
-                $key = $context_node->getEquivalentPHPValueForNode($key_node, ContextNode::RESOLVE_CONSTANTS);
-                if (is_scalar($key)) {
-                    $elements[$key] = $child_node;
-                } else {
+                $key_node = $context_node->getEquivalentPHPValueForNode($key_node, ContextNode::RESOLVE_CONSTANTS);
+                if (\is_object($key_node)) {
                     return null;
                 }
             }
+            // TODO: Add a warning elsewhere about implicit float to int conversion when analyzing arrays
+            // PHP 8.1 deprecated implicit float to int conversions
+            if (\is_scalar($key_node)) {
+                if (!\is_string($key_node)) {
+                    $key_node = (int)$key_node;
+                }
+            } elseif (\is_array($key_node)) {
+                return null;
+            } elseif (\is_resource($key_node)) {
+                $key_node = \get_resource_id($key_node);
+            } else {
+                // null
+                $key_node = (string)$key_node;
+            }
+            $elements[$key_node] = $child_node;  // Check for float?
         }
         return $elements;
     }
@@ -1189,7 +1376,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         }
         // e.g. `[$x, ...$array]` in PHP 7.4
         // TODO: Support array expressions when their value is constant
-        $union_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $expr);
+        $union_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $expr, $this->should_catch_issue_exception);
         // TODO: Warn if non-array
 
         if ($union_type->typeCount() === 1 && $union_type->hasTopLevelArrayShapeTypeInstances() && !$union_type->hasTopLevelNonArrayShapeTypeInstances()) {
@@ -1247,6 +1434,8 @@ class UnionTypeVisitor extends AnalysisVisitor
                 );
                 if ($element_value_type->isEmpty()) {
                     $element_value_type = MixedType::instance(false)->asPHPDocUnionType();
+                } else {
+                    $element_value_type = $element_value_type->convertUndefinedToNullable();
                 }
             } else {
                 $element_value_type = Type::fromObject($value)->asRealUnionType();
@@ -1318,11 +1507,21 @@ class UnionTypeVisitor extends AnalysisVisitor
         // TODO: Check if the cast would throw an error at runtime, based on the type (e.g. casting object to string/int)
 
         // RedundantConditionCallPlugin contains unrelated checks of whether this is redundant.
+        $expr = $node->children['expr'];
+        $expr_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $expr, $this->should_catch_issue_exception);
+        if ($expr_type->isVoidType()) {
+            $this->emitIssue(
+                Issue::TypeVoidExpression,
+                $expr->lineno ?? $node->lineno,
+                ASTReverter::toShortString($expr)
+            );
+        }
         switch ($node->flags) {
             case \ast\flags\TYPE_NULL:
                 return NullType::instance(false)->asRealUnionType();
             case \ast\flags\TYPE_BOOL:
-                return BoolType::instance(false)->asRealUnionType();
+                return $expr_type->applyBoolCast();
+                // TODO: Warn about invalid casts (#2806)
             case \ast\flags\TYPE_LONG:
                 return IntType::instance(false)->asRealUnionType();
             case \ast\flags\TYPE_DOUBLE:
@@ -1332,7 +1531,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             case \ast\flags\TYPE_ARRAY:
                 return ArrayType::instance(false)->asRealUnionType();
             case \ast\flags\TYPE_OBJECT:
-                return $this->typeAfterCastToObject($node->children['expr']);
+                return $this->typeAfterCastToObject($expr_type);
             default:
                 throw new NodeException(
                     $node,
@@ -1342,16 +1541,14 @@ class UnionTypeVisitor extends AnalysisVisitor
     }
 
     /**
-     * @param Node|string|int|float $expr
      * @suppress PhanThrowTypeAbsentForCall
      */
-    private function typeAfterCastToObject($expr): UnionType
+    private static function typeAfterCastToObject(UnionType $expr_type): UnionType
     {
         static $stdclass;
         if ($stdclass === null) {
             $stdclass = Type::fromFullyQualifiedString('\stdClass');
         }
-        $expr_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $expr);
         $has_array = $expr_type->hasArray();
         if ($has_array) {
             if ($expr_type->isExclusivelyArray()) {
@@ -1403,6 +1600,15 @@ class UnionTypeVisitor extends AnalysisVisitor
             );
             return $object_type->asRealUnionType();
         }
+        $args_node = $node->children['args'];
+        if ($args_node->kind !== ast\AST_ARG_LIST) {
+            $this->emitIssue(
+                Issue::InvalidNode,
+                $node->lineno,
+                "Cannot create Closure for new expression"
+            );
+            return $object_type->asRealUnionType();
+        }
         $union_type = $this->visitClassNameNode($class_node);
         if ($union_type->isEmpty()) {
             return $object_type->asRealUnionType();
@@ -1413,7 +1619,7 @@ class UnionTypeVisitor extends AnalysisVisitor
 
         // For any types that are templates, map them to concrete
         // types based on the parameters passed in.
-        $type_set = \array_map(function (Type $type) use ($node): Type {
+        $type_set = \array_map(function (Type $type) use ($args_node): Type {
 
             // Get a fully qualified name for the type
             // TODO: Add a test of `new $closure()` warning.
@@ -1443,9 +1649,10 @@ class UnionTypeVisitor extends AnalysisVisitor
                 return UnionTypeVisitor::unionTypeFromNode(
                     $this->code_base,
                     $this->context,
-                    $arg_node
+                    $arg_node,
+                    $this->should_catch_issue_exception
                 );
-            }, $node->children['args']->children);
+            }, $args_node->children);
 
             // Get closures to extract template types based on the types of the constructor
             // so that we can figure out what template types we're going to be mapping
@@ -1491,7 +1698,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         $code_base = $this->code_base;
         $context = $this->context;
         // Check to make sure the left side is valid
-        UnionTypeVisitor::unionTypeFromNode($code_base, $context, $node->children['expr']);
+        UnionTypeVisitor::unionTypeFromNode($code_base, $context, $node->children['expr'], $this->should_catch_issue_exception);
         // Get the type that we're checking it against, check if it is valid.
         $class_node = $node->children['class'];
         if (!($class_node instanceof Node)) {
@@ -1500,19 +1707,18 @@ class UnionTypeVisitor extends AnalysisVisitor
         $type = UnionTypeVisitor::unionTypeFromNode(
             $code_base,
             $context,
-            $class_node
+            $class_node,
+            $this->should_catch_issue_exception
         );
         // TODO: Unify UnionTypeVisitor, AssignmentVisitor, and PostOrderAnalysisVisitor
-        if (!$type->isEmpty() && !$type->hasObjectTypes()) {
-            if ($class_node->kind !== \ast\AST_NAME &&
-                    !$type->canCastToUnionType(StringType::instance(false)->asPHPDocUnionType())
-            ) {
+        if (!$type->isEmpty() && $type->objectTypesWithKnownFQSENs()->isEmpty()) {
+            if ($class_node->kind === \ast\AST_NAME || !$type->hasStringType()) {
                 Issue::maybeEmit(
                     $code_base,
                     $context,
                     Issue::TypeInvalidInstanceof,
                     $context->getLineNumberStart(),
-                    ASTReverter::toShortString($node),
+                    ASTReverter::toShortString($class_node),
                     (string)$type
                 );
             }
@@ -1540,12 +1746,14 @@ class UnionTypeVisitor extends AnalysisVisitor
      */
     public function visitDim(Node $node, bool $treat_undef_as_nullable = false): UnionType
     {
+        $code_base = $this->code_base;
+        $context = $this->context;
         $union_type = self::unionTypeFromNode(
-            $this->code_base,
-            $this->context,
+            $code_base,
+            $context,
             $node->children['expr'],
             $this->should_catch_issue_exception
-        )->withStaticResolvedInContext($this->context);
+        )->withStaticResolvedInContext($context);
 
         if ($union_type->isEmpty()) {
             return UnionType::empty();
@@ -1584,6 +1792,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                         Issue::TypePossiblyInvalidDimOffset,
                         $node->lineno,
                         ASTReverter::toShortString($node->children['dim']),
+                        ASTReverter::toShortString($node->children['expr']),
                         $union_type
                     );
                     if ($treat_undef_as_nullable || Config::getValue('convert_possibly_undefined_offset_to_nullable')) {
@@ -1597,30 +1806,31 @@ class UnionTypeVisitor extends AnalysisVisitor
         }
 
         $dim_type = self::unionTypeFromNode(
-            $this->code_base,
-            $this->context,
+            $code_base,
+            $context,
             $node->children['dim'],
-            true
+            $this->should_catch_issue_exception
         );
 
         // Figure out what the types of accessed array
         // elements would be.
-        $generic_types = $union_type->genericArrayElementTypes(true);
+        $generic_types = $union_type->genericArrayElementTypes(true, $code_base);
 
         // If we have generics, we're all set
         if (!$generic_types->isEmpty()) {
             $generic_types = $generic_types->asNormalizedTypes();
-            if (!($node->flags & self::FLAG_IGNORE_NULLABLE) && $union_type->containsNullable()) {
+            if (!($node->flags & self::FLAG_IGNORE_NULLABLE) && $union_type->containsNonMixedNullable()) {
                 $this->emitIssue(
                     Issue::TypeArraySuspiciousNullable,
                     $node->lineno,
+                    ASTReverter::toShortString($node->children['expr']),
                     (string)$union_type
                 );
             }
 
             if (!$dim_type->isEmpty()) {
                 try {
-                    $should_check = !$union_type->hasMixedType() && !$union_type->asExpandedTypes($this->code_base)->hasArrayAccess();
+                    $should_check = !$union_type->hasMixedOrNonEmptyMixedType() && !$union_type->hasArrayAccess($code_base);
                 } catch (RecursionDepthException $_) {
                     $should_check = false;
                 }
@@ -1634,10 +1844,10 @@ class UnionTypeVisitor extends AnalysisVisitor
                         );
                     }
 
-                    if (!$dim_type->canCastToUnionType($expected_key_type)) {
+                    if (!$dim_type->canCastToUnionType($expected_key_type, $code_base)) {
                         $issue_type = Issue::TypeMismatchDimFetch;
 
-                        if ($dim_type->containsNullable() && $dim_type->nonNullableClone()->canCastToUnionType($expected_key_type)) {
+                        if ($dim_type->containsNullable() && $dim_type->nonNullableClone()->canCastToUnionType($expected_key_type, $code_base)) {
                             $issue_type = Issue::TypeMismatchDimFetchNullable;
                         }
 
@@ -1654,7 +1864,7 @@ class UnionTypeVisitor extends AnalysisVisitor
 
                         throw new IssueException(
                             Issue::fromType($issue_type)(
-                                $this->context->getFile(),
+                                $context->getFile(),
                                 $node->lineno,
                                 [(string)$union_type, (string)$dim_type, (string)$expected_key_type]
                             )
@@ -1671,7 +1881,8 @@ class UnionTypeVisitor extends AnalysisVisitor
             if (!($node->flags & self::FLAG_IGNORE_NULLABLE)) {
                 $this->emitIssue(
                     Issue::TypeArraySuspiciousNull,
-                    $node->lineno
+                    $node->lineno,
+                    ASTReverter::toShortString($node->children['expr'])
                 );
             }
             if ($union_type->getRealUnionType()->isNull()) {
@@ -1686,16 +1897,15 @@ class UnionTypeVisitor extends AnalysisVisitor
         // so we'll add the string type to the result if we're
         // indexing something that could be a string
         if ($union_type->isNonNullStringType()
-            || ($union_type->canCastToUnionType($string_union_type) && !$union_type->hasMixedType())
+            || ($union_type->canCastToUnionType($string_union_type, $code_base) && !$union_type->hasMixedOrNonEmptyMixedType())
         ) {
-            if (Config::get_closest_target_php_version_id() < 70100 && $union_type->isNonNullStringType()) {
+            if (Config::get_closest_minimum_target_php_version_id() < 70100 && $union_type->isNonNullStringType()) {
                 $this->analyzeNegativeStringOffsetCompatibility($node, $dim_type);
             }
             $this->checkIsValidStringOffset($union_type, $node, $dim_type);
 
-            if (!$dim_type->isEmpty() && !$dim_type->canCastToUnionType($int_union_type)) {
-                // TODO: Efficient implementation of asExpandedTypes()->hasArrayAccess()?
-                if (!$union_type->isEmpty() && !$union_type->asExpandedTypes($this->code_base)->hasArrayLike()) {
+            if (!$dim_type->isEmpty() && !$dim_type->canCastToUnionType($int_union_type, $code_base)) {
+                if (!$union_type->isEmpty() && !$union_type->hasArrayLike($code_base)) {
                     $this->emitIssue(
                         Issue::TypeMismatchDimFetch,
                         $node->lineno,
@@ -1708,7 +1918,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             $element_types = $element_types->withType($string_type);
             if ($union_type->hasRealTypeSet()) {
                 // @phan-suppress-next-line PhanAccessMethodInternal
-                $element_types = $element_types->withRealTypeSet(UnionType::computeRealElementTypesForDimAccess($union_type->getRealTypeSet()));
+                $element_types = $element_types->withRealTypeSet(UnionType::computeRealElementTypesForDimAccess($union_type->getRealTypeSet(), $code_base));
             }
         }
 
@@ -1716,22 +1926,23 @@ class UnionTypeVisitor extends AnalysisVisitor
             // Hunt for any types that are viable class names and
             // see if they inherit from ArrayAccess
             try {
-                foreach ($union_type->asClassList($this->code_base, $this->context) as $class) {
-                    $expanded_types = $class->getUnionType()->asExpandedTypes($this->code_base);
+                foreach ($union_type->asClassList($code_base, $context) as $class) {
+                    $expanded_types = $class->getUnionType()->asExpandedTypes($code_base);
                     if ($expanded_types->hasType($array_access_type) ||
                             $expanded_types->hasType($simple_xml_element_type)
                     ) {
                         return $element_types;
                     }
                 }
-            } catch (CodeBaseException $_) {
-            } catch (RecursionDepthException $_) {
+            } catch (CodeBaseException | RecursionDepthException $_) {
+                // ignore
             }
 
-            if (!$union_type->hasArrayLike() && !$union_type->hasMixedType()) {
+            if (!$union_type->hasArrayLike($code_base) && !$union_type->hasMixedOrNonEmptyMixedType()) {
                 $this->emitIssue(
                     Issue::TypeArraySuspicious,
                     $node->lineno,
+                    ASTReverter::toShortString($node->children['expr']),
                     (string)$union_type
                 );
                 return $element_types;
@@ -1740,6 +1951,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $this->emitIssue(
                     Issue::TypeArraySuspiciousNullable,
                     $node->lineno,
+                    ASTReverter::toShortString($node->children['expr']),
                     (string)$union_type
                 );
             }
@@ -1791,6 +2003,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $node->children['dim']->lineno ?? $node->lineno,
                 [
                     $dim_type,
+                    ASTReverter::toShortString($node->children['expr']),
                     (string)$union_type
                 ]
             )
@@ -1846,6 +2059,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                         $dim_node->lineno ?? $node->lineno,
                         [
                             is_scalar($dim_value) ? StringUtil::jsonEncode($dim_value) : ASTReverter::toShortString($dim_value),
+                            ASTReverter::toShortString($node->children['expr']),
                             (string)$union_type
                         ]
                     )
@@ -1862,7 +2076,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             return null;
         }
 
-        $resulting_element_type = self::resolveArrayShapeElementTypesForOffset($union_type, $dim_value);
+        $resulting_element_type = self::resolveArrayShapeElementTypesForOffset($union_type, $dim_value, false, $this->code_base);
 
         if ($resulting_element_type === null) {
             return null;
@@ -1874,7 +2088,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                     Issue::fromType(Issue::TypeInvalidDimOffset)(
                         $this->context->getFile(),
                         $dim_node->lineno ?? $node->lineno,
-                        [StringUtil::jsonEncode($dim_value), (string)$union_type]
+                        [StringUtil::jsonEncode($dim_value), ASTReverter::toShortString($node->children['expr']), (string)$union_type]
                     )
                 );
                 if ($this->should_catch_issue_exception) {
@@ -1885,9 +2099,35 @@ class UnionTypeVisitor extends AnalysisVisitor
             }
             // $union_type is exclusively array shape types, but those don't contain the field $dim_value.
             // It's undefined (which becomes null)
-            return NullType::instance(false)->asPHPDocUnionType();
+            if (self::couldRealTypesHaveKey($union_type->getRealTypeSet(), $dim_value)) {
+                return NullType::instance(false)->asPHPDocUnionType();
+            }
+            return NullType::instance(false)->asRealUnionType();
         }
         return $resulting_element_type;
+    }
+
+    /**
+     * @param list<Type> $real_type_set
+     * @param int|string|float $dim_value
+     */
+    private static function couldRealTypesHaveKey(array $real_type_set, $dim_value): bool
+    {
+        foreach ($real_type_set as $type) {
+            if ($type instanceof ArrayShapeType) {
+                if (\array_key_exists($dim_value, $type->getFieldTypes())) {
+                    return true;
+                }
+            } elseif ($type instanceof ListType) {
+                $filtered = \is_int($dim_value) ? $dim_value : \filter_var($dim_value, \FILTER_VALIDATE_INT);
+                if (\is_int($filtered) && $filtered >= 0) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+        return \count($real_type_set) === 0;
     }
 
     /**
@@ -1897,7 +2137,7 @@ class UnionTypeVisitor extends AnalysisVisitor
      *  returns false if there the offset was invalid and there are no ways to get that offset
      *  returns null if the dim_value offset could not be found, but there were other generic array types
      */
-    public static function resolveArrayShapeElementTypesForOffset(UnionType $union_type, $dim_value, bool $is_computing_real_type_set = false)
+    public static function resolveArrayShapeElementTypesForOffset(UnionType $union_type, $dim_value, bool $is_computing_real_type_set, CodeBase $code_base)
     {
         /**
          * @var bool $has_non_array_shape_type this will be true if there are types that support array access
@@ -1921,9 +2161,14 @@ class UnionTypeVisitor extends AnalysisVisitor
                     } else {
                         // TODO: Warn about string indices of strings?
                     }
-                } elseif ($type->isArrayLike() || $type->isObject() || $type instanceof MixedType) {
+                } elseif ($type->isArrayLike($code_base) || $type->isObject() || $type instanceof MixedType) {
                     if ($type instanceof ListType && (!\is_numeric($dim_value) || $dim_value < 0)) {
                         continue;
+                    }
+                    if ($is_computing_real_type_set) {
+                        // Avoid false positives for real type checking.
+                        // TODO: Improve handling for GenericArrayType, strings, etc.
+                        return null;
                     }
                     // TODO: Could be more precise about check for ArrayAccess
                     $has_generic_array = true;
@@ -1964,10 +2209,11 @@ class UnionTypeVisitor extends AnalysisVisitor
             }
         }
         if (!$resulting_element_type->containsNullableOrUndefined() && $union_type->containsNullableOrUndefined()) {
-            $resulting_element_type = $resulting_element_type->nullableClone();
+            // Here, this uses Foo|null instead of ?Foo to only warn when strict types are used.
+            $resulting_element_type = $resulting_element_type->withType(NullType::instance(false));
         }
         if (!$is_computing_real_type_set) {
-            $resulting_real_element_type = self::resolveArrayShapeElementTypesForOffset($union_type->getRealUnionType(), $dim_value, true);
+            $resulting_real_element_type = self::resolveArrayShapeElementTypesForOffset($union_type->getRealUnionType(), $dim_value, true, $code_base);
             return $resulting_element_type->withRealTypeSet(
                 \is_object($resulting_real_element_type) ? $resulting_real_element_type->getRealTypeSet() : []
             );
@@ -1984,7 +2230,7 @@ class UnionTypeVisitor extends AnalysisVisitor
      *
      * @return UnionType
      * The set of types that are possibly produced by the
-     * given node
+     * given node (the type of a value OF the unpacked iterable)
      *
      * @throws IssueException
      * if the unpack is on an invalid expression
@@ -1992,7 +2238,7 @@ class UnionTypeVisitor extends AnalysisVisitor
      */
     public function visitUnpack(Node $node): UnionType
     {
-        return $this->analyzeUnpack($node, isset($node->is_in_array));
+        return $this->analyzeUnpack($node, isset($node->is_in_array))[0];
     }
 
     /**
@@ -2006,14 +2252,15 @@ class UnionTypeVisitor extends AnalysisVisitor
      * If true, this is the array spread operator,
      * which tolerates integers that aren't consecutive.
      *
-     * @return UnionType
+     * @return array{0:UnionType, 1:bool}
      * The set of types that are possibly produced by the
-     * given node
+     * given node (the type of a value OF the unpacked iterable),
+     * as well as whether this is likely to contain non-integer keys (imperfect check).
      *
      * @throws IssueException
      * if the unpack is on an invalid expression
      */
-    private function analyzeUnpack(Node $node, bool $is_array_spread): UnionType
+    private function analyzeUnpack(Node $node, bool $is_array_spread): array
     {
         $union_type = self::unionTypeFromNode(
             $this->code_base,
@@ -2023,7 +2270,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         )->withStaticResolvedInContext($this->context);
 
         if ($union_type->isEmpty()) {
-            return $union_type;
+            return [$union_type, false];
         }
 
         // Figure out what the types of accessed array
@@ -2035,8 +2282,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         // If we have generics, we're all set
         try {
             if ($generic_types->isEmpty()) {
-                if (!$union_type->asExpandedTypes($this->code_base)->hasIterable() && !$union_type->hasTypeMatchingCallback(static function (Type $type): bool {
-                    return !$type->isNullable() && $type instanceof MixedType;
+                if (!$union_type->hasIterable($this->code_base) && !$union_type->hasTypeMatchingCallback(static function (Type $type): bool {
+                    return !$type->isNullableLabeled() && $type instanceof MixedType;
                 })) {
                     throw new IssueException(
                         Issue::fromType(Issue::TypeMismatchUnpackValue)(
@@ -2046,21 +2293,29 @@ class UnionTypeVisitor extends AnalysisVisitor
                         )
                     );
                 }
-                return $generic_types;
+                return [$generic_types, false];
             }
             $this->checkInvalidUnpackKeyType($node, $union_type, $is_array_spread);
+            foreach ($union_type->iterableKeyUnionType($this->code_base)->getTypeSet() as $key_type) {
+                if ($key_type instanceof StringType) {
+                    return [$generic_types, true];
+                }
+            }
         } catch (IssueException $exception) {
             Issue::maybeEmitInstance($this->code_base, $this->context, $exception->getIssueInstance());
+            return [$generic_types, true];
         }
-        return $generic_types;
+        return [$generic_types, false];
     }
 
     private function checkInvalidUnpackKeyType(Node $node, UnionType $union_type, bool $is_array_spread): void
     {
         $is_invalid_because_associative = false;
-        if (!$is_array_spread) {
+        $minimum_target_php_version_id = Config::get_closest_minimum_target_php_version_id();
+        // Treat foo(...$associativeArgs) as invalid unless the minimum target php version is 8.0 (i.e. array unpacking is supported)
+        if (!$is_array_spread && $minimum_target_php_version_id < 80000) {
             foreach ($union_type->getTypeSet() as $type) {
-                if ($type->isIterable()) {
+                if ($type->isIterable($this->code_base)) {
                     if ($type instanceof AssociativeArrayType) {
                         $is_invalid_because_associative = true;
                     } else {
@@ -2074,10 +2329,16 @@ class UnionTypeVisitor extends AnalysisVisitor
         // Check that this is possibly valid, e.g. array<int, mixed>, Generator<int, mixed>, or iterable<int, mixed>
         // TODO: Warn if key_type contains nullable types (excluding VoidType)
         // TODO: Warn about union types that are partially invalid.
-        if ($is_invalid_because_associative || !$key_type->isEmpty() && !$key_type->hasTypeMatchingCallback(static function (Type $type): bool {
-            return $type instanceof IntType || $type instanceof MixedType;
-        })
-        ) {
+        if ($is_invalid_because_associative || (!$key_type->isEmpty() && !$key_type->hasTypeMatchingCallback(static function (Type $type) use ($minimum_target_php_version_id, $is_array_spread): bool {
+            if ($type instanceof IntType || $type instanceof MixedType) {
+                return true;
+            }
+            if ($type instanceof StringType) {
+                // TODO: Forbid invalid parameter identifiers such as 'foo-bar' in the overall array shape?
+                return ($is_array_spread ? $minimum_target_php_version_id >= 80100 : $minimum_target_php_version_id >= 80000);
+            }
+            return false;
+        }))) {
             throw new IssueException(
                 Issue::fromType($is_array_spread ? Issue::TypeMismatchUnpackKeyArraySpread : Issue::TypeMismatchUnpackKey)(
                     $this->context->getFile(),
@@ -2162,7 +2423,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             if ($int_or_string_type === null) {
                 $int_or_string_type = UnionType::fromFullyQualifiedPHPDocString('int|string|null');
             }
-            if (!$name_node_type->canCastToUnionType($int_or_string_type)) {
+            if (!$name_node_type->canCastToUnionType($int_or_string_type, $this->code_base)) {
                 Issue::maybeEmit($this->code_base, $this->context, Issue::TypeSuspiciousIndirectVariable, $name_node->lineno, (string)$name_node_type);
                 return MixedType::instance(false)->asPHPDocUnionType();
             }
@@ -2177,47 +2438,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         $variable_name =
             (string)$name_node;
 
-        if (!$this->context->getScope()->hasVariableWithName($variable_name)) {
-            if (Variable::isHardcodedVariableInScopeWithName($variable_name, $this->context->isInGlobalScope())) {
-                // @phan-suppress-next-line PhanTypeMismatchReturnNullable variable existence was checked
-                return Variable::getUnionTypeOfHardcodedGlobalVariableWithName($variable_name);
-            }
-            if ($node->flags & PhanAnnotationAdder::FLAG_IGNORE_UNDEF) {
-                if (!$this->context->isInGlobalScope()) {
-                    if ($this->should_catch_issue_exception && !(($node->flags & PhanAnnotationAdder::FLAG_INITIALIZES) && $this->context->isInLoop())) {
-                        // Warn about `$var ??= expr;`, except when it's done in a loop.
-                        $this->emitIssueWithSuggestion(
-                            Variable::chooseIssueForUndeclaredVariable($this->context, $variable_name),
-                            $node->lineno,
-                            [$variable_name],
-                            IssueFixSuggester::suggestVariableTypoFix($this->code_base, $this->context, $variable_name)
-                        );
-                    }
-                    if ($variable_name === 'this') {
-                        return ObjectType::instance(false)->asRealUnionType();
-                    }
-                    return NullType::instance(false)->asRealUnionType();
-                }
-                if ($variable_name === 'this') {
-                    return ObjectType::instance(false)->asRealUnionType();
-                }
-                return NullType::instance(false)->asPHPDocUnionType();
-            }
-
-            if (!($this->context->isInGlobalScope() && Config::getValue('ignore_undeclared_variables_in_global_scope'))) {
-                throw new IssueException(
-                    Issue::fromType(Variable::chooseIssueForUndeclaredVariable($this->context, $variable_name))(
-                        $this->context->getFile(),
-                        $node->lineno,
-                        [$variable_name],
-                        IssueFixSuggester::suggestVariableTypoFix($this->code_base, $this->context, $variable_name)
-                    )
-                );
-            }
-            if ($variable_name === 'this') {
-                return ObjectType::instance(false)->asRealUnionType();
-            }
-        } else {
+        if ($this->context->getScope()->hasVariableWithName($variable_name)) {
             $variable = $this->context->getScope()->getVariableByName(
                 $variable_name
             );
@@ -2253,6 +2474,63 @@ class UnionTypeVisitor extends AnalysisVisitor
 
             return $union_type;
         }
+        if (Variable::isHardcodedVariableInScopeWithName($variable_name, $this->context->isInGlobalScope())) {
+            // @phan-suppress-next-line PhanTypeMismatchReturnNullable variable existence was checked
+            return Variable::getUnionTypeOfHardcodedGlobalVariableWithName($variable_name);
+        }
+        if ($node->flags & PhanAnnotationAdder::FLAG_IGNORE_UNDEF) {
+            if (!$this->context->isInGlobalScope()) {
+                if ($this->should_catch_issue_exception && !(($node->flags & PhanAnnotationAdder::FLAG_INITIALIZES) && $this->context->isInLoop())) {
+                    // Warn about `$var ??= expr;`, except when it's done in a loop.
+                    $this->emitIssueWithSuggestion(
+                        Variable::chooseIssueForUndeclaredVariable($this->context, $variable_name),
+                        $node->lineno,
+                        [$variable_name],
+                        IssueFixSuggester::suggestVariableTypoFix($this->code_base, $this->context, $variable_name)
+                    );
+                }
+                if ($variable_name === 'this') {
+                    return ObjectType::instance(false)->asRealUnionType();
+                }
+                // Be more certain that unknown variables are not set inside of function scopes than the global scope.
+                return NullType::instance(false)->asRealUnionType();
+            }
+            if ($variable_name === 'this') {
+                return ObjectType::instance(false)->asRealUnionType();
+            }
+            return NullType::instance(false)->asPHPDocUnionType();
+        }
+
+        if (!($this->context->isInGlobalScope() && Config::getValue('ignore_undeclared_variables_in_global_scope'))) {
+            if (!$this->should_catch_issue_exception) {
+                throw new IssueException(
+                    Issue::fromType(Variable::chooseIssueForUndeclaredVariable($this->context, $variable_name))(
+                        $this->context->getFile(),
+                        $node->lineno,
+                        [$variable_name],
+                        IssueFixSuggester::suggestVariableTypoFix($this->code_base, $this->context, $variable_name)
+                    )
+                );
+            }
+            Issue::maybeEmitWithParameters(
+                $this->code_base,
+                $this->context,
+                Variable::chooseIssueForUndeclaredVariable($this->context, $variable_name),
+                $node->lineno,
+                [$variable_name],
+                IssueFixSuggester::suggestVariableTypoFix($this->code_base, $this->context, $variable_name)
+            );
+        }
+        if ($variable_name === 'this') {
+            return ObjectType::instance(false)->asRealUnionType();
+        }
+
+        if (!$this->context->isInGlobalScope()) {
+            if (!$this->context->isInLoop()) {
+                return NullType::instance(false)->asRealUnionType()->withIsDefinitelyUndefined();
+            }
+            return NullType::instance(false)->asRealUnionType();
+        }
 
         return UnionType::empty();
     }
@@ -2275,7 +2553,8 @@ class UnionTypeVisitor extends AnalysisVisitor
             $part_string = $part instanceof Node ? UnionTypeVisitor::unionTypeFromNode(
                 $this->code_base,
                 $this->context,
-                $part
+                $part,
+                $this->should_catch_issue_exception
             )->asSingleScalarValueOrNullOrSelf() : $part;
             if (\is_object($part_string)) {
                 return StringType::instance(false)->asRealUnionType();
@@ -2377,6 +2656,9 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $node
             ))->getClassConst();
             $union_type = $constant->getUnionType();
+            if ($constant->isFinal()) {
+                return $union_type;
+            }
             $class_node = $node->children['class'];
             if (!$class_node instanceof Node || $class_node->kind !== ast\AST_NAME) {
                 // ignore nonsense like (0)::class, and dynamic accesses such as $var::CLASS
@@ -2459,10 +2741,43 @@ class UnionTypeVisitor extends AnalysisVisitor
                 false
             );
         }
-        if (\is_string($name) && \strcasecmp($name, 'static') === 0 && (!$class || !$class->isFinal())) {
+        if (\is_string($name) && \strcasecmp($name, 'static') === 0 && (!isset($class) || !$class->isFinal())) {
             return UnionType::of($types, [ClassStringType::instance(false)]);
         }
         return UnionType::of($types, $types);
+    }
+
+    /**
+     * Visit a node with kind `\ast\AST_NULLSAFE_PROP`
+     *
+     * @param Node $node
+     * A node of the type indicated by the method name that we'd
+     * like to figure out the type that it produces.
+     *
+     * @return UnionType
+     * The set of types that are possibly produced by the
+     * given node
+     * @override
+     */
+    public function visitNullsafeProp(Node $node): UnionType
+    {
+        $expr_type = UnionTypeVisitor::unionTypeFromNode(
+            $this->code_base,
+            $this->context,
+            $node->children['expr'],
+            $this->should_catch_issue_exception
+        )->getRealUnionType();
+        $result = $this->analyzeProp($node, false);
+        if ($expr_type->isEmpty()) {
+            return $result->nullableClone();
+        }
+        if ($expr_type->isNull()) {
+            return NullType::instance(false)->asRealUnionType();
+        }
+        if ($expr_type->containsNullableOrUndefined()) {
+            return $result->nullableClone();
+        }
+        return $result;
     }
 
     /**
@@ -2536,7 +2851,8 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $expression_type = UnionTypeVisitor::unionTypeFromNode(
                     $this->code_base,
                     $this->context,
-                    $expr_node
+                    $expr_node,
+                    $this->should_catch_issue_exception
                 );
 
                 $union_type = $union_type->withTemplateParameterTypeMap(
@@ -2591,9 +2907,9 @@ class UnionTypeVisitor extends AnalysisVisitor
                 ["{$exception_fqsen}->{$property_name}"],
                 $suggestion
             );
-        } catch (UnanalyzableException $_) {
-            // Swallow it. There are some constructs that we
-            // just can't figure out.
+        } catch (UnanalyzableMagicPropertyException $exception) {
+            $class = $exception->getClass();
+            return $class->getMethodByName($this->code_base, '__get')->getUnionType();
         } catch (NodeException $_) {
             // Swallow it. There are some constructs that we
             // just can't figure out.
@@ -2670,11 +2986,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         foreach ($function_list_generator as $function) {
             $function->analyzeReturnTypes($this->code_base);  // For daemon/server mode, call this to consistently ensure accurate return types.
 
-            if ($function->hasDependentReturnType()) {
-                $function_types = $function->getDependentReturnType($this->code_base, $this->context, $node->children['args']->children);
-            } else {
-                $function_types = $function->getUnionType();
-            }
+            $function_types = $this->getDependentReturnTypeOfCall($function, $node);
             if ($possible_types) {
                 '@phan-var UnionType $possible_types';
                 $possible_types = $possible_types->withUnionType($function_types);
@@ -2684,6 +2996,23 @@ class UnionTypeVisitor extends AnalysisVisitor
         }
 
         return $possible_types ?? UnionType::empty();
+    }
+
+    /**
+     * @return UnionType - the union type of the result of the call, or of the closure generated by first-class callable conversion
+     */
+    private function getDependentReturnTypeOfCall(FunctionInterface $function, Node $node): UnionType
+    {
+        if ($node->children['args']->kind === ast\AST_CALLABLE_CONVERT) {
+            if ($function instanceof ClosureDeclarationType) {
+                return $function->asRealUnionType();
+            } else {
+                return ClosureType::instanceWithClosureFQSEN($function->getFQSEN(), $function)->asRealUnionType();
+            }
+        } elseif ($function->hasDependentReturnType()) {
+            return $function->getDependentReturnType($this->code_base, $this->context, $node->children['args']->children);
+        }
+        return $function->getUnionType();
     }
 
     /**
@@ -2700,6 +3029,38 @@ class UnionTypeVisitor extends AnalysisVisitor
     public function visitStaticCall(Node $node): UnionType
     {
         return $this->visitMethodCall($node);
+    }
+
+    /**
+     * Visit a node with kind `\ast\AST_NULLSAFE_METHOD_CALL`
+     *
+     * @param Node $node
+     * A node of the type indicated by the method name that we'd
+     * like to figure out the type that it produces.
+     *
+     * @return UnionType
+     * The set of types that are possibly produced by the
+     * given node
+     */
+    public function visitNullsafeMethodCall(Node $node): UnionType
+    {
+        $expr_type = UnionTypeVisitor::unionTypeFromNode(
+            $this->code_base,
+            $this->context,
+            $node->children['expr'],
+            $this->should_catch_issue_exception
+        )->getRealUnionType();
+        $result = $this->visitMethodCall($node);
+        if ($result->isEmpty()) {
+            return $result->nullableClone();
+        }
+        if ($expr_type->isNull()) {
+            return NullType::instance(false)->asRealUnionType();
+        }
+        if ($expr_type->containsNullableOrUndefined()) {
+            return $result->nullableClone();
+        }
+        return $result;
     }
 
     /**
@@ -2734,7 +3095,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         }
 
         try {
-            $class_node = $node->children['class'] ?? $node->children['expr'];
+            $static_class_node = $node->children['class'] ?? null;
+            $class_node = $static_class_node ?? $node->children['expr'];
             if (!($class_node instanceof Node)) {
                 // E.g. `'string_literal'->method()`
                 // Other places will also emit NonClassMethodCall for the same node
@@ -2742,17 +3104,18 @@ class UnionTypeVisitor extends AnalysisVisitor
                     Issue::NonClassMethodCall,
                     $node->lineno,
                     $method_name,
-                    UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $class_node)
+                    UnionTypeVisitor::unionTypeFromNode(
+                        $this->code_base,
+                        $this->context,
+                        $class_node,
+                        $this->should_catch_issue_exception
+                    )
                 );
                 return UnionType::empty();
             }
             $combined_union_type = null;
             foreach ($this->classListFromNode($class_node) as $class) {
-                if (!$class->hasMethodWithName(
-                    $this->code_base,
-                    $method_name
-                )
-                ) {
+                if (!$class->hasMethodWithName($this->code_base, $method_name, true)) {
                     continue;
                 }
 
@@ -2767,17 +3130,18 @@ class UnionTypeVisitor extends AnalysisVisitor
                         try {
                             $method = $method->resolveTemplateType(
                                 $this->code_base,
-                                UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $class_node)
+                                UnionTypeVisitor::unionTypeFromNode(
+                                    $this->code_base,
+                                    $this->context,
+                                    $class_node,
+                                    $this->should_catch_issue_exception
+                                )
                             );
                         } catch (RecursionDepthException $_) {
                         }
                     }
 
-                    if ($method->hasDependentReturnType()) {
-                        $union_type = $method->getDependentReturnType($this->code_base, $this->context, $node->children['args']->children);
-                    } else {
-                        $union_type = $method->getUnionType();
-                    }
+                    $union_type = $this->getDependentReturnTypeOfCall($method, $node);
 
                     // Map template types to concrete types
                     // TODO: When the template types are part of the method doc comment, don't look it up in the class union type
@@ -2786,7 +3150,8 @@ class UnionTypeVisitor extends AnalysisVisitor
                         $expression_type = UnionTypeVisitor::unionTypeFromNode(
                             $this->code_base,
                             $this->context,
-                            $node->children['expr']
+                            $node->children['expr'],
+                            $this->should_catch_issue_exception
                         );
 
                         // Map template types to concrete types
@@ -2795,8 +3160,16 @@ class UnionTypeVisitor extends AnalysisVisitor
                         );
                     }
 
-                    // Resolve any references to \static or \static[]
-                    $union_type = $union_type->withStaticResolvedInContext($class->getInternalContext());
+                    // Resolve any references to `static` or `static[]`
+                    if ($this->context->isInClassScope() &&
+                        $static_class_node instanceof Node &&
+                        $static_class_node->kind === ast\AST_NAME &&
+                        \strcasecmp($static_class_node->children['name'], 'parent') === 0) {
+                        // If parent::foo() returns `static`, then use the current class instead of the parent class
+                        $union_type = $union_type->withStaticResolvedInContext($this->context);
+                    } else {
+                        $union_type = $union_type->withStaticResolvedInContext($class->getInternalContext());
+                    }
 
                     if ($combined_union_type) {
                         '@phan-var UnionType $combined_union_type';
@@ -2842,7 +3215,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         return self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['expr']
+            $node->children['expr'],
+            $this->should_catch_issue_exception
         );
     }
 
@@ -2859,17 +3233,19 @@ class UnionTypeVisitor extends AnalysisVisitor
      */
     public function visitUnaryOp(Node $node): UnionType
     {
-        // Shortcut some easy operators
-        $flags = $node->flags;
-        if ($flags === \ast\flags\UNARY_BOOL_NOT) {
-            return BoolType::instance(false)->asRealUnionType();
-        }
-
         $result = self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node->children['expr']
+            $node->children['expr'],
+            $this->should_catch_issue_exception
         );
+
+        // Shortcut some easy operators
+        $flags = $node->flags;
+        if ($flags === \ast\flags\UNARY_BOOL_NOT) {
+            return $result->applyUnaryNotOperator();
+        }
+
         if ($flags === \ast\flags\UNARY_MINUS) {
             $this->warnAboutInvalidUnaryOp(
                 $node,
@@ -2899,7 +3275,8 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $node,
                 static function (Type $type): bool {
                     // Adding $type instanceof StringType in case it becomes necessary later
-                    return $type->isValidNumericOperand() || $type instanceof StringType;
+                    // @phan-suppress-next-line PhanAccessMethodInternal
+                    return ($type->isValidNumericOperand() && $type->isValidBitwiseOperand()) || $type instanceof StringType;
                 },
                 $result,
                 '~',
@@ -2945,7 +3322,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         return LiteralIntType::instanceForValue(1, false)->asRealUnionType();
     }
 
-    /*
+    /**
      * @param Node $node
      * A node holding a class name
      *
@@ -2973,7 +3350,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 ))->getUnqualifiedNameForAnonymousClass();
 
             // Turn that into a fully qualified name, and that into a union type
-            // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+            // @phan-suppress-next-line PhanThrowTypeMismatchForCall
             $fqsen = FullyQualifiedClassName::fromStringInContext(
                 $anonymous_class_name,
                 $this->context
@@ -2997,7 +3374,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             return StaticType::instance(false)->asRealUnionType();
         }
         if (!Type::isSelfTypeString($class_name)) {
-            // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+            // @phan-suppress-next-line PhanThrowTypeMismatchForCall assuming FQSENException won't be thrown optimistically for valid ASTs
             return self::unionTypeFromClassNode(
                 $this->code_base,
                 $this->context,
@@ -3017,7 +3394,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         }
 
         // Reference to a parent class
-        if ($class_name === 'parent') {
+        if (\strcasecmp($class_name, 'parent') === 0) {
             $class = $this->context->getClassInScope(
                 $this->code_base
             );
@@ -3039,12 +3416,25 @@ class UnionTypeVisitor extends AnalysisVisitor
         return $this->context->getClassFQSEN()->asType()->asRealUnionType();
     }
 
+    /**
+     * @param Node $node @phan-unused-param
+     * A node containing a throw expression.
+     *
+     * @return UnionType
+     * `void` is as close as possible to `no-return` or `never` for types currently available in Phan.
+     */
+    public function visitThrow(Node $node): UnionType
+    {
+        return NeverType::instance(false)->asRealUnionType();
+    }
+
     private function classTypesForNonName(Node $node): UnionType
     {
         $node_type = UnionTypeVisitor::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node
+            $node,
+            $this->should_catch_issue_exception
         );
         if ($node_type->isEmpty()) {
             return UnionType::empty();
@@ -3216,7 +3606,7 @@ class UnionTypeVisitor extends AnalysisVisitor
 
         // Check to see if the name is fully qualified
         if ($node->flags & \ast\flags\NAME_NOT_FQ) {
-            self::checkValidClassFQSEN($class_name);
+            self::checkValidClassFQSEN($context, $node, $class_name);
             $type = Type::fromStringInContext(
                 $class_name,
                 $context,
@@ -3237,7 +3627,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 $class_name = '\\' . $class_name;
             }
 
-            self::checkValidClassFQSEN($class_name);
+            self::checkValidClassFQSEN($context, $node, $class_name);
             $type = Type::fromFullyQualifiedString(
                 $class_name
             );
@@ -3249,17 +3639,19 @@ class UnionTypeVisitor extends AnalysisVisitor
     /**
      * @throws FQSENException if invalid
      */
-    private static function checkValidClassFQSEN(string $class_name): void
+    private static function checkValidClassFQSEN(Context $context, Node $node, string $class_name): void
     {
         // @phan-suppress-next-line PhanAccessClassConstantInternal
         if (\preg_match(FullyQualifiedGlobalStructuralElement::VALID_STRUCTURAL_ELEMENT_REGEX, $class_name)) {
             return;
         }
-        if ($class_name === '\\') {
-            throw new EmptyFQSENException("empty fqsen", $class_name);
-        } else {
-            throw new InvalidFQSENException("invalid fqsen", $class_name);
-        }
+        throw new IssueException(
+            Issue::fromType($class_name === '\\' ? Issue::EmptyFQSENInClasslike : Issue::InvalidFQSENInClasslike)(
+                $context->getFile(),
+                $node->lineno,
+                [ $class_name ]
+            )
+        );
     }
 
     /**
@@ -3285,14 +3677,28 @@ class UnionTypeVisitor extends AnalysisVisitor
         $union_type = self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node
+            $node,
+            $this->should_catch_issue_exception
         )->withStaticResolvedInContext($this->context);
 
         // Iterate over each viable class type to see if any
         // have the constant we're looking for
-        foreach ($union_type->nonNativeTypes()->getTypeSet() as $class_type) {
+        foreach ($union_type->nonNativeTypes()->getUniqueFlattenedTypeSet() as $class_type) {
+            if (!$class_type->isObjectWithKnownFQSEN()) {
+                continue;
+            }
             // Get the class FQSEN
-            $class_fqsen = FullyQualifiedClassName::fromType($class_type);
+            try {
+                $class_fqsen = FullyQualifiedClassName::fromType($class_type);
+            } catch (InvalidFQSENException $e) {
+                throw new IssueException(
+                    Issue::fromType($e instanceof EmptyFQSENException ? Issue::EmptyFQSENInClasslike : Issue::InvalidFQSENInClasslike)(
+                        $this->context->getFile(),
+                        $node->lineno,
+                        [ (string)$class_type ]
+                    )
+                );
+            }
 
             // See if the class exists
             if (!$this->code_base->hasClassWithFQSEN($class_fqsen)) {
@@ -3434,13 +3840,13 @@ class UnionTypeVisitor extends AnalysisVisitor
         $code_base = $this->code_base;
         $context = $this->context;
 
-        $union_type = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $class_or_expr);
+        $union_type = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $class_or_expr, $this->should_catch_issue_exception);
         if ($union_type->isEmpty()) {
             return [];
         }
         $object_types = $union_type->objectTypes();
         if ($object_types->isEmpty()) {
-            if (!$union_type->canCastToUnionType(StringType::instance(false)->asPHPDocUnionType())) {
+            if (!$union_type->canCastToUnionType(StringType::instance(false)->asPHPDocUnionType(), $code_base)) {
                 $this->emitIssue(
                     Issue::TypeInvalidCallableObjectOfMethod,
                     $context->getLineNumberStart(),
@@ -3480,7 +3886,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                 continue;
             }
             $class = $code_base->getClassByFQSEN($class_fqsen);
-            if (!$class->hasMethodWithName($code_base, $method_name)) {
+            if (!$class->hasMethodWithName($code_base, $method_name, true)) {
                 // emit error below
                 continue;
             }
@@ -3583,13 +3989,13 @@ class UnionTypeVisitor extends AnalysisVisitor
             }
             $method_name = (new ContextNode($code_base, $context, $method_name))->getEquivalentPHPScalarValue();
             if (!is_string($method_name)) {
-                $method_name_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $method_name);
-                if (!$method_name_type->canCastToUnionType(StringType::instance(false)->asPHPDocUnionType())) {
+                $method_name_type = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $method_name, $this->should_catch_issue_exception);
+                if (!$method_name_type->canCastToUnionType(StringType::instance(false)->asPHPDocUnionType(), $code_base)) {
                     Issue::maybeEmit(
-                        $this->code_base,
-                        $this->context,
+                        $code_base,
+                        $context,
                         Issue::TypeInvalidCallableMethodName,
-                        $method_name->lineno ?? $this->context->getLineNumberStart(),
+                        $method_name->lineno ?? $context->getLineNumberStart(),
                         $method_name_type
                     );
                 }
@@ -3642,7 +4048,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             return [];
         }
         $class = $code_base->getClassByFQSEN($class_fqsen);
-        if (!$class->hasMethodWithName($code_base, $method_name)) {
+        if (!$class->hasMethodWithName($code_base, $method_name, true)) {
             $this->emitIssue(
                 Issue::UndeclaredStaticMethodInCallable,
                 $context->getLineNumberStart(),
@@ -3746,7 +4152,8 @@ class UnionTypeVisitor extends AnalysisVisitor
         $union_type = self::unionTypeFromNode(
             $this->code_base,
             $this->context,
-            $node
+            $node,
+            $this->should_catch_issue_exception
         );
 
         $closure_types = [];
@@ -3844,6 +4251,7 @@ class UnionTypeVisitor extends AnalysisVisitor
         return null;
     }
 
+    // Precondition: minimum_target_php_version_id < 70100
     private function analyzeNegativeStringOffsetCompatibility(Node $node, UnionType $dim_type): void
     {
         $dim_value = $dim_type->asSingleScalarValueOrNull();
@@ -3854,5 +4262,32 @@ class UnionTypeVisitor extends AnalysisVisitor
             Issue::CompatibleNegativeStringOffset,
             $node->children['dim']->lineno ?? $node->lineno
         );
+    }
+
+    /**
+     * Returns the union of all union types of expressions in this expression list (ast\AST_EXPR_LIST).
+     *
+     * This is useful for match arm conditions.
+     *
+     * For other use cases, get the union type of the last node (if one exists) instead.
+     *
+     * @override
+     */
+    public function visitExprList(Node $node): UnionType
+    {
+        $types = [];
+        foreach ($node->children as $child_node) {
+            $types[] = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $child_node, $this->should_catch_issue_exception);
+        }
+        return UnionType::merge($types);
+    }
+
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitExit(Node $node): UnionType
+    {
+        return NeverType::instance(false)->asRealUnionType();
     }
 }

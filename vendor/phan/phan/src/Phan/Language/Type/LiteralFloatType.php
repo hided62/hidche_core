@@ -16,6 +16,8 @@ use RuntimeException;
  */
 final class LiteralFloatType extends FloatType implements LiteralTypeInterface
 {
+    use NativeTypeTrait;
+
     /** @var float $value */
     private $value;
 
@@ -27,16 +29,17 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
 
     /**
      * Only exists to prevent accidentally calling this
+     * @unused-param $is_nullable
      * @internal - do not call
      * @deprecated
      */
-    public static function instance(bool $unused_is_nullable)
+    public static function instance(bool $is_nullable)
     {
         throw new RuntimeException('Call ' . self::class . '::instanceForValue() instead');
     }
 
     /**
-     * @return LiteralFloatType a unique LiteralFloatType for $value (and the nullability)
+     * @return FloatType a unique LiteralFloatType for $value if $value is finite (and sets nullability)
      */
     public static function instanceForValue(float $value, bool $is_nullable): FloatType
     {
@@ -133,7 +136,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
      * True if this Type can be cast to the given Type
      * cleanly
      */
-    protected function canCastToNonNullableType(Type $type): bool
+    protected function canCastToNonNullableType(Type $type, CodeBase $code_base): bool
     {
         if ($type instanceof ScalarType) {
             switch ($type::NAME) {
@@ -172,7 +175,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
             }
         }
 
-        return parent::canCastToNonNullableType($type);
+        return parent::canCastToNonNullableType($type, $code_base);
     }
 
     /**
@@ -180,7 +183,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
      * True if this Type can be cast to the given Type
      * cleanly, ignoring permissive config casting rules
      */
-    protected function canCastToNonNullableTypeWithoutConfig(Type $type): bool
+    protected function canCastToNonNullableTypeWithoutConfig(Type $type, CodeBase $code_base): bool
     {
         if ($type instanceof ScalarType) {
             switch ($type::NAME) {
@@ -194,7 +197,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
             }
         }
 
-        return parent::canCastToNonNullableType($type);
+        return parent::canCastToNonNullableType($type, $code_base);
     }
 
     /**
@@ -202,7 +205,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
      * True if this Type can be cast to the given Type
      * cleanly
      */
-    protected function isSubtypeOfNonNullableType(Type $type): bool
+    protected function isSubtypeOfNonNullableType(Type $type, CodeBase $code_base): bool
     {
         if ($type instanceof ScalarType) {
             if ($type::NAME === 'float') {
@@ -214,7 +217,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
             return false;
         }
 
-        return parent::isSubtypeOfNonNullableType($type);
+        return parent::isSubtypeOfNonNullableType($type, $code_base);
     }
 
     /**
@@ -254,7 +257,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
         return FloatType::instance($this->is_nullable);
     }
 
-    public function weaklyOverlaps(Type $other): bool
+    public function weaklyOverlaps(Type $other, CodeBase $code_base): bool
     {
         // TODO: Could be stricter
         if ($other instanceof ScalarType) {
@@ -269,7 +272,7 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
             }
             return true;
         }
-        return parent::weaklyOverlaps($other);
+        return parent::weaklyOverlaps($other, $code_base);
     }
 
     public function canCastToDeclaredType(CodeBase $code_base, Context $context, Type $other): bool
@@ -278,6 +281,21 @@ final class LiteralFloatType extends FloatType implements LiteralTypeInterface
             return $other->value === $this->value;
         }
         return parent::canCastToDeclaredType($code_base, $context, $other);
+    }
+
+    public function asNonTruthyType(): Type
+    {
+        return $this->value ? NullType::instance(false) : $this;
+    }
+
+    /**
+     * Returns true if the value can be used in bitwise operands and cast to integers without precision loss.
+     *
+     * @override
+     */
+    public function isValidBitwiseOperand(): bool
+    {
+        return \fmod($this->value, 1.0) === 0.0 && $this->value >= -0xffffffffffffffff && $this->value <= 0xffffffffffffffff;
     }
 }
 

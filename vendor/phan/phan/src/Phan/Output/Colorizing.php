@@ -79,6 +79,7 @@ class Colorizing
         'CONST'         => 'light_red',
         'COUNT'         => 'light_magenta',
         'DETAILS'       => 'light_green',
+        'ENUM'          => 'green',
         'FILE'          => 'light_cyan',
         'FUNCTIONLIKE'  => 'light_yellow',
         'FUNCTION'      => 'light_yellow',
@@ -187,10 +188,10 @@ class Colorizing
         $color_codes = [];
         foreach (\explode(',', $color) as $color_component) {
             $color_code = self::STYLES[$color_component] ?? null;
-            $color_codes[] = $color_code;
             if ($color_code === null) {
                 return null;
             }
+            $color_codes[] = $color_code;
         }
         return \implode(';', $color_codes);
     }
@@ -226,6 +227,7 @@ class Colorizing
         'eclipse_dark' => \Phan\Output\ColorScheme\EclipseDark::class,
         'light' => \Phan\Output\ColorScheme\Light::class,
         'vim' => \Phan\Output\ColorScheme\Vim::class,
+        'light_high_contrast' => \Phan\Output\ColorScheme\LightHighContrast::class,
     ];
 
     /**
@@ -253,6 +255,7 @@ class Colorizing
             if ($data) {
                 self::$color_scheme = $data;
             } else {
+                // @phan-suppress-next-line PhanPluginRemoveDebugCall
                 \fwrite(\STDERR, "Unknown PHAN_COLOR_SCHEME $env_color_scheme. Supported values: " . \implode(',', \array_keys(self::COLOR_SCHEMES)) . "\n");
             }
         }

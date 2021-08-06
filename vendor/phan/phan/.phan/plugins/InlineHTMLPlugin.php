@@ -13,6 +13,7 @@ use Phan\PluginV3;
 use Phan\PluginV3\AfterAnalyzeFileCapability;
 use Phan\PluginV3\PluginAwarePostAnalysisVisitor;
 use Phan\PluginV3\PostAnalyzeNodeCapability;
+use Phan\PluginV3\UnloadablePluginException;
 
 /**
  * This plugin checks for accidental whitespace in regular php files.
@@ -160,9 +161,10 @@ class InlineHTMLVisitor extends PluginAwarePostAnalysisVisitor
 {
     /**
      * @override
+     * @param Node $node @unused-param
      * @return void
      */
-    public function visitEcho(Node $_)
+    public function visitEcho(Node $node)
     {
         InlineHTMLPlugin::$file_set_to_analyze[$this->context->getFile()] = true;
     }
@@ -170,4 +172,7 @@ class InlineHTMLVisitor extends PluginAwarePostAnalysisVisitor
 
 // Every plugin needs to return an instance of itself at the
 // end of the file in which it's defined.
+if (!function_exists('token_get_all')) {
+    throw new UnloadablePluginException("InlineHTMLPlugin requires the tokenizer extension, which is not enabled (this plugin uses token_get_all())");
+}
 return new InlineHTMLPlugin();

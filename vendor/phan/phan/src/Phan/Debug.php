@@ -20,6 +20,8 @@ Shim::load();
  *
  * Mostly utilities for printing representations of AST nodes.
  * Also see `Debug/`
+ *
+ * @phan-file-suppress PhanPluginRemoveDebugAny
  */
 class Debug
 {
@@ -115,6 +117,8 @@ class Debug
      *
      * @return string
      * A string representation of an AST node
+     *
+     * @phan-side-effect-free
      */
     public static function nodeToString(
         $node,
@@ -436,6 +440,11 @@ class Debug
                 ast\AST_CLOSURE => $function_modifiers,
                 ast\AST_ARROW_FUNC => $function_modifiers,
                 ast\AST_CLASS_CONST_DECL => [
+                    flags\MODIFIER_PUBLIC => 'MODIFIER_PUBLIC',
+                    flags\MODIFIER_PROTECTED => 'MODIFIER_PROTECTED',
+                    flags\MODIFIER_PRIVATE => 'MODIFIER_PRIVATE',
+                ],
+                ast\AST_CLASS_CONST_GROUP => [
                     flags\MODIFIER_PUBLIC => 'MODIFIER_PUBLIC',
                     flags\MODIFIER_PROTECTED => 'MODIFIER_PROTECTED',
                     flags\MODIFIER_PRIVATE => 'MODIFIER_PRIVATE',

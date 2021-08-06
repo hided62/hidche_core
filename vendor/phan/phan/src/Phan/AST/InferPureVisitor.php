@@ -11,12 +11,15 @@ use Phan\CodeBase;
 use Phan\Exception\CodeBaseException;
 use Phan\Exception\NodeException;
 use Phan\Language\Context;
+use Phan\Language\Element\Clazz;
 use Phan\Language\Element\FunctionInterface;
 use Phan\Language\FQSEN\FullyQualifiedClassName;
 use Phan\Language\FQSEN\FullyQualifiedFunctionName;
 use Phan\Plugin\Internal\UseReturnValuePlugin;
 use Phan\Plugin\Internal\UseReturnValuePlugin\PureMethodGraph;
 use Phan\Plugin\Internal\UseReturnValuePlugin\UseReturnValueVisitor;
+
+use function is_string;
 
 /**
  * Used to check if a method is pure.
@@ -114,22 +117,34 @@ class InferPureVisitor extends AnalysisVisitor
         }
     }
 
-    /** @override */
-    public function visitClassName(Node $_): void
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitClassName(Node $node): void
     {
     }
 
-    /** @override */
-    public function visitMagicConst(Node $_): void
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitMagicConst(Node $node): void
     {
     }
 
-    /** @override */
-    public function visitConst(Node $_): void
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitConst(Node $node): void
     {
     }
 
-    /** @override */
+    /**
+     * @unused-param $node
+     * @override
+     */
     public function visitEmpty(Node $node): void
     {
         $this->maybeInvoke($node->children['expr']);
@@ -141,13 +156,19 @@ class InferPureVisitor extends AnalysisVisitor
         $this->maybeInvoke($node->children['var']);
     }
 
-    /** @override */
-    public function visitContinue(Node $_): void
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitContinue(Node $node): void
     {
     }
 
-    /** @override */
-    public function visitBreak(Node $_): void
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitBreak(Node $node): void
     {
     }
 
@@ -202,7 +223,7 @@ class InferPureVisitor extends AnalysisVisitor
         $this->checkPureIncDec($node);
     }
 
-    private function checkPureIncDec(Node $node): void
+    protected function checkPureIncDec(Node $node): void
     {
         $var = $node->children['var'];
         if (!$var instanceof Node) {
@@ -239,6 +260,11 @@ class InferPureVisitor extends AnalysisVisitor
     {
         $this->maybeInvoke($node->children['expr']);
         $this->maybeInvoke($node->children['dim']);
+    }
+
+    public function visitNullsafeProp(Node $node): void
+    {
+        $this->visitProp($node);
     }
 
     public function visitProp(Node $node): void
@@ -352,12 +378,42 @@ class InferPureVisitor extends AnalysisVisitor
     }
 
     /** @override */
-    public function visitGoto(Node $_): void
+    public function visitMatch(Node $node): void
     {
+        $this->maybeInvokeAllChildNodes($node);
     }
 
     /** @override */
-    public function visitLabel(Node $_): void
+    public function visitMatchArmList(Node $node): void
+    {
+        $this->maybeInvokeAllChildNodes($node);
+    }
+
+    /** @override */
+    public function visitMatchArm(Node $node): void
+    {
+        $this->maybeInvokeAllChildNodes($node);
+    }
+
+    /** @override */
+    public function visitExprList(Node $node): void
+    {
+        $this->maybeInvokeAllChildNodes($node);
+    }
+
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitGoto(Node $node): void
+    {
+    }
+
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitLabel(Node $node): void
     {
     }
 
@@ -388,7 +444,7 @@ class InferPureVisitor extends AnalysisVisitor
         } elseif ($var->kind === ast\AST_PROP) {
             // Functions that assign to properties aren't pure,
             // unless assigning to $this->prop in a constructor.
-            if (\preg_match('/::__construct$/i', $this->function_fqsen_label)) {
+            if (\preg_match('/::__construct$/iD', $this->function_fqsen_label)) {
                 $name = $var->children['expr'];
                 if ($name instanceof Node && $name->kind === ast\AST_VAR && $name->children['name'] === 'this') {
                     return;
@@ -404,7 +460,8 @@ class InferPureVisitor extends AnalysisVisitor
         if (!($name_node instanceof Node && $name_node->kind === ast\AST_NAME)) {
             throw new NodeException($node);
         }
-        $this->visitArgList($node->children['args']);
+        // "Fatal error: Cannot create Closure for new expression" (for AST_CALLABLE_CONVERT) is caught elsewhere
+        $this->__invoke($node->children['args']);
         try {
             $class_list = (new ContextNode($this->code_base, $this->context, $name_node))->getClassList(false, ContextNode::CLASS_LIST_ACCEPT_OBJECT_OR_CLASS_NAME);
         } catch (Exception $_) {
@@ -418,7 +475,7 @@ class InferPureVisitor extends AnalysisVisitor
                 // TODO build a list of internal classes where result of new() is often unused.
                 continue;
             }
-            if (!$class->hasMethodWithName($this->code_base, '__construct')) {
+            if (!$class->hasMethodWithName($this->code_base, '__construct', true)) {
                 throw new NodeException($name_node, 'no __construct found');
             }
             $this->checkCalledFunction($node, $class->getMethodByName($this->code_base, '__construct'));
@@ -447,8 +504,11 @@ class InferPureVisitor extends AnalysisVisitor
         $this->maybeInvoke($node->children['expr']);
     }
 
-    /** @override */
-    public function visitName(Node $_): void
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitName(Node $node): void
     {
         // do nothing
     }
@@ -483,7 +543,7 @@ class InferPureVisitor extends AnalysisVisitor
         if (!$found_function) {
             throw new NodeException($expr, 'not a function');
         }
-        $this->visitArgList($node->children['args']);
+        $this->__invoke($node->children['args']);
     }
 
     public function visitStaticCall(Node $node): void
@@ -508,6 +568,7 @@ class InferPureVisitor extends AnalysisVisitor
         } catch (Exception $_) {
             throw new NodeException($class, 'could not get type');
         }
+        // TODO: Check all classes in union and intersection types instead up to a limit?
         if ($union_type->typeCount() !== 1) {
             throw new NodeException($class);
         }
@@ -527,48 +588,66 @@ class InferPureVisitor extends AnalysisVisitor
         } catch (Exception $_) {
             throw new NodeException($node);
         }
-        if (!$class->hasMethodWithName($this->code_base, $method)) {
+        if (!$class->hasMethodWithName($this->code_base, $method, true)) {
             throw new NodeException($node, 'no method');
         }
 
         $this->checkCalledFunction($node, $class->getMethodByName($this->code_base, $method));
-        $this->visitArgList($node->children['args']);
+        $this->__invoke($node->children['args']);
+    }
+
+    public function visitNullsafeMethodCall(Node $node): void
+    {
+        $this->visitMethodCall($node);
     }
 
     public function visitMethodCall(Node $node): void
     {
-        if (!$this->context->isInClassScope()) {
-            // We don't track variables in UseReturnValuePlugin
-            throw new NodeException($node, 'method call seen outside class scope');
-        }
-
         $method_name = $node->children['method'];
         if (!\is_string($method_name)) {
             throw new NodeException($node);
         }
         $expr = $node->children['expr'];
-        if (!($expr instanceof Node)) {
+        if (!$expr instanceof Node) {
             throw new NodeException($node);
         }
-        if ($expr->kind !== ast\AST_VAR) {
-            throw new NodeException($expr, 'not a var');
-        }
-        if ($expr->children['name'] !== 'this') {
-            throw new NodeException($expr, 'not $this');
-        }
-        $class = $this->context->getClassInScope($this->code_base);
-        if (!$class->hasMethodWithName($this->code_base, $method_name)) {
+        $class = $this->getClassForVariable($expr);
+        if (!$class->hasMethodWithName($this->code_base, $method_name, true)) {
             throw new NodeException($expr, 'does not have method');
         }
         $this->checkCalledFunction($node, $class->getMethodByName($this->code_base, $method_name));
 
-        $this->visitArgList($node->children['args']);
+        $this->__invoke($node->children['args']);
+    }
+
+    protected function getClassForVariable(Node $expr): Clazz
+    {
+        if (!$this->context->isInClassScope()) {
+            // We don't track variables in UseReturnValuePlugin
+            throw new NodeException($expr, 'method call seen outside class scope');
+        }
+        if ($expr->kind !== ast\AST_VAR) {
+            throw new NodeException($expr, 'expected simple variable');
+        }
+
+        $var_name = $expr->children['name'];
+        if (!is_string($var_name)) {
+            // TODO: Support static properties, (new X()), other expressions with inferable types
+            throw new NodeException($expr, 'variable name is not a string');
+        }
+        if ($var_name !== 'this') {
+            throw new NodeException($expr, 'not $this');
+        }
+        if (!$this->context->isInClassScope()) {
+            throw new NodeException($expr, 'Not in class scope');
+        }
+        return $this->context->getClassInScope($this->code_base);
     }
 
     /**
      * @param Node $node the node of the call, with 'args'
      */
-    private function checkCalledFunction(Node $node, FunctionInterface $method): void
+    protected function checkCalledFunction(Node $node, FunctionInterface $method): void
     {
         if ($method->isPure()) {
             return;
@@ -622,6 +701,22 @@ class InferPureVisitor extends AnalysisVisitor
             if ($x instanceof Node) {
                 $this->__invoke($x);
             }
+        }
+    }
+
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitCallableConvert(Node $node): void
+    {
+    }
+
+    public function visitNamedArg(Node $node): void
+    {
+        $expr = $node->children['expr'];
+        if ($expr instanceof Node) {
+            $this->__invoke($expr);
         }
     }
 }

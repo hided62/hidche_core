@@ -10,6 +10,15 @@ namespace Microsoft\PhpParser;
 // The replacement value is arbitrary - it just has to be different from other values of token constants.
 define(__NAMESPACE__ . '\T_COALESCE_EQUAL', defined('T_COALESCE_EQUAL') ? constant('T_COALESCE_EQUAL') : 'T_COALESCE_EQUAL');
 define(__NAMESPACE__ . '\T_FN', defined('T_FN') ? constant('T_FN') : 'T_FN');
+// If this predates PHP 8.0, T_MATCH is unavailable. The replacement value is arbitrary - it just has to be different from other values of token constants.
+define(__NAMESPACE__ . '\T_MATCH', defined('T_MATCH') ? constant('T_MATCH') : 'T_MATCH');
+define(__NAMESPACE__ . '\T_NULLSAFE_OBJECT_OPERATOR', defined('T_NULLSAFE_OBJECT_OPERATOR') ? constant('T_NULLSAFE_OBJECT_OPERATOR') : 'T_NULLSAFE_OBJECT_OPERATOR');
+define(__NAMESPACE__ . '\T_ATTRIBUTE', defined('T_ATTRIBUTE') ? constant('T_ATTRIBUTE') : 'T_ATTRIBUTE');
+// If this predates PHP 8.1, T_ENUM is unavailable. The replacement value is arbitrary - it just has to be different from other values of token constants.
+define(__NAMESPACE__ . '\T_ENUM', defined('T_ENUM') ? constant('T_ENUM') : 'T_ENUM');
+define(__NAMESPACE__ . '\T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG', defined('T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG') ? constant('T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG') : 'T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG');
+define(__NAMESPACE__ . '\T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG', defined('T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG') ? constant('T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG') : 'T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG');
+define(__NAMESPACE__ . '\T_READONLY', defined('T_READONLY') ? constant('T_READONLY') : 'T_READONLY');
 
 /**
  * Tokenizes content using PHP's built-in `token_get_all`, and converts to "lightweight" Token representation.
@@ -74,9 +83,9 @@ class PhpTokenizer implements TokenStreamProviderInterface {
             $content = $prefix . $content;
         }
 
-        $tokens = @\token_get_all($content);
+        $tokens = static::tokenGetAll($content, $parseContext);
 
-        $arr = array();
+        $arr = [];
         $fullStart = $start = $pos = $initialPos;
         if ($parseContext !== null) {
             // If needed, skip over the prefix we added for token_get_all and remove those tokens.
@@ -128,6 +137,57 @@ class PhpTokenizer implements TokenStreamProviderInterface {
                     $arr[] = new Token(TokenKind::ScriptSectionStartTag, $fullStart, $start, $pos-$fullStart);
                     $start = $fullStart = $pos;
                     break;
+                case \PHP_VERSION_ID >= 80000 ? \T_NAME_QUALIFIED : -1000:
+                case \PHP_VERSION_ID >= 80000 ? \T_NAME_FULLY_QUALIFIED : -1001:
+                    // NOTE: This switch is called on every token of every file being parsed, so this traded performance for readability.
+                    //
+                    // PHP's Opcache is able to optimize switches that are exclusively known longs,
+                    // but not switches that mix strings and longs or have unknown longs.
+                    // Longs are only known if they're declared within the same *class* or an internal constant (tokenizer).
+                    //
+                    // For some reason, the SWITCH_LONG opcode was not generated when the expression was part of a class constant.
+                    // (seen with php -d opcache.opt_debug_level=0x20000)
+                    //
+                    // Use negative values because that's not expected to overlap with token kinds that token_get_all() will return.
+                    //
+                    // T_NAME_* was added in php 8.0 to forbid whitespace between parts of names.
+                    // Here, emulate the tokenization of php 7 by splitting it up into 1 or more tokens.
+                    foreach (\explode('\\', $token[1]) as $i => $name) {
+                        if ($i) {
+                            $arr[] = new Token(TokenKind::BackslashToken, $fullStart, $start, 1 + $start - $fullStart);
+                            $start++;
+                            $fullStart = $start;
+                        }
+                        if ($name === '') {
+                            continue;
+                        }
+                        // TODO: TokenStringMaps::RESERVED_WORDS[$name] ?? TokenKind::Name for compatibility?
+                        $len = \strlen($name);
+                        $arr[] = new Token(TokenKind::Name, $fullStart, $start, $len + $start - $fullStart);
+                        $start += $len;
+                        $fullStart = $start;
+                    }
+                    break;
+                case \PHP_VERSION_ID >= 80000 ? \T_NAME_RELATIVE : -1002:
+                    // This is a namespace-relative name: namespace\...
+                    foreach (\explode('\\', $token[1]) as $i => $name) {
+                        $len = \strlen($name);
+                        if (!$i) {
+                            $arr[] = new Token(TokenKind::NamespaceKeyword, $fullStart, $start, $len + $start - $fullStart);
+                            $start += $len;
+                            $fullStart = $start;
+                            continue;
+                        }
+                        $arr[] = new Token(TokenKind::BackslashToken, $fullStart, $start, 1);
+                        $start++;
+
+                        // TODO: TokenStringMaps::RESERVED_WORDS[$name] ?? TokenKind::Name for compatibility?
+                        $arr[] = new Token(TokenKind::Name, $start, $start, $len);
+
+                        $start += $len;
+                        $fullStart = $start;
+                    }
+                    break;
                 case \T_COMMENT:
                 case \T_DOC_COMMENT:
                     if ($treatCommentsAsTrivia) {
@@ -145,6 +205,22 @@ class PhpTokenizer implements TokenStreamProviderInterface {
 
         $arr[] = new Token(TokenKind::EndOfFileToken, $fullStart, $start, $pos - $fullStart);
         return $arr;
+    }
+
+    /**
+     * @param string $content the raw php code
+     * @param ?int $parseContext can be SourceElements when extracting doc comments.
+     *                           Having this available may be useful for subclasses to decide whether or not to post-process results, cache results, etc.
+     * @return array[]|string[] an array of tokens. When concatenated, these tokens must equal $content.
+     *
+     * This exists so that it can be overridden in subclasses, e.g. to cache the result of tokenizing entire files.
+     * Applications using tolerant-php-parser may often end up needing to use the token stream for other reasons that are hard to do in the resulting AST,
+     * such as iterating over T_COMMENTS, checking for inline html,
+     * looking up all tokens (including skipped tokens) on a given line, etc.
+     */
+    protected static function tokenGetAll(string $content, $parseContext): array
+    {
+        return @\token_get_all($content);
     }
 
     const TOKEN_MAP = [
@@ -186,6 +262,7 @@ class PhpTokenizer implements TokenStreamProviderInterface {
         T_ENDIF => TokenKind::EndIfKeyword,
         T_ENDSWITCH => TokenKind::EndSwitchKeyword,
         T_ENDWHILE => TokenKind::EndWhileKeyword,
+        T_ENUM => TokenKind::EnumKeyword,
         T_EVAL => TokenKind::EvalKeyword,
         T_EXIT => TokenKind::ExitKeyword,
         T_EXTENDS => TokenKind::ExtendsKeyword,
@@ -206,6 +283,7 @@ class PhpTokenizer implements TokenStreamProviderInterface {
         T_INTERFACE => TokenKind::InterfaceKeyword,
         T_ISSET => TokenKind::IsSetKeyword,
         T_LIST => TokenKind::ListKeyword,
+        T_MATCH => TokenKind::MatchKeyword,
         T_NAMESPACE => TokenKind::NamespaceKeyword,
         T_NEW => TokenKind::NewKeyword,
         T_LOGICAL_OR => TokenKind::OrKeyword,
@@ -213,6 +291,7 @@ class PhpTokenizer implements TokenStreamProviderInterface {
         T_PRIVATE => TokenKind::PrivateKeyword,
         T_PROTECTED => TokenKind::ProtectedKeyword,
         T_PUBLIC => TokenKind::PublicKeyword,
+        T_READONLY => TokenKind::ReadonlyKeyword,
         T_REQUIRE => TokenKind::RequireKeyword,
         T_REQUIRE_ONCE => TokenKind::RequireOnceKeyword,
         T_RETURN => TokenKind::ReturnKeyword,
@@ -237,6 +316,8 @@ class PhpTokenizer implements TokenStreamProviderInterface {
         "}" => TokenKind::CloseBraceToken,
         "." => TokenKind::DotToken,
         T_OBJECT_OPERATOR => TokenKind::ArrowToken,
+        T_NULLSAFE_OBJECT_OPERATOR => TokenKind::QuestionArrowToken,
+        T_ATTRIBUTE => TokenKind::AttributeToken,
         T_INC => TokenKind::PlusPlusToken,
         T_DEC => TokenKind::MinusMinusToken,
         T_POW => TokenKind::AsteriskAsteriskToken,
@@ -261,6 +342,8 @@ class PhpTokenizer implements TokenStreamProviderInterface {
         "^" => TokenKind::CaretToken,
         "|" => TokenKind::BarToken,
         "&" => TokenKind::AmpersandToken,
+        T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG => TokenKind::AmpersandToken,
+        T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG => TokenKind::AmpersandToken,
         T_BOOLEAN_AND => TokenKind::AmpersandAmpersandToken,
         T_BOOLEAN_OR => TokenKind::BarBarToken,
         ":" => TokenKind::ColonToken,

@@ -18,6 +18,8 @@ use Phan\Language\Type;
  */
 final class BoolType extends ScalarType
 {
+    use NativeTypeTrait;
+
     /** @phan-override */
     public const NAME = 'bool';
     public function isPossiblyFalsey(): bool
@@ -47,7 +49,10 @@ final class BoolType extends ScalarType
 
     public function canCastToDeclaredType(CodeBase $code_base, Context $context, Type $other): bool
     {
-        return $other->isInBoolFamily() || (!$context->isStrictTypes() && parent::canCastToDeclaredType($code_base, $context, $other));
+        return $other->isInBoolFamily() ||
+            $other instanceof MixedType ||
+            $other instanceof TemplateType ||
+            (!$context->isStrictTypes() && parent::canCastToDeclaredType($code_base, $context, $other));
     }
 
     public function isPossiblyTrue(): bool
@@ -99,6 +104,14 @@ final class BoolType extends ScalarType
     {
         return self::performComparison(false, $scalar, $flags) ||
             self::performComparison(true, $scalar, $flags);
+    }
+
+    /**
+     * @unused-param $code_base
+     */
+    public function isSubtypeOf(Type $type, CodeBase $code_base): bool
+    {
+        return $type instanceof BoolType || $type instanceof ScalarRawType || $type instanceof MixedType;
     }
 }
 

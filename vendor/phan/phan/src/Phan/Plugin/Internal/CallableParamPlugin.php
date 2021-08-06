@@ -130,8 +130,7 @@ final class CallableParamPlugin extends PluginV3 implements
     }
 
     /**
-     * @return array<string,\Closure>
-     * @phan-return array<string,Closure(CodeBase,Context,FunctionInterface,array):void>
+     * @return array<string,Closure(CodeBase,Context,FunctionInterface,array,?Node):void>
      */
     private static function getAnalyzeFunctionCallClosuresStatic(CodeBase $code_base): array
     {
@@ -173,7 +172,7 @@ final class CallableParamPlugin extends PluginV3 implements
         $result['\\ReflectionFunction::__construct'] = self::generateClosure([0], []);
         $result['\\ReflectionClass::__construct'] = self::generateClosure([], [0]);
 
-        // When a codebase calls function_exists(string|callable) is to **check** if a function exists,
+        // When a codebase calls function_exists(string|callable) to **check** if a function exists,
         // don't emit PhanUndeclaredFunctionInCallable as a side effect.
         unset($result['\\function_exists']);
 
@@ -191,9 +190,10 @@ final class CallableParamPlugin extends PluginV3 implements
     /**
      * When a function is loaded into the CodeBase for the first time during analysis
      * (e.g. `register_shutdown_function()`, this is called to conditionally add any checkers for callable/closure.
+     * @unused-param $code_base
      */
     public function handleLazyLoadInternalFunction(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         Func $function
     ): void {
         $closure = self::generateClosureForFunctionInterface($function);
@@ -203,7 +203,7 @@ final class CallableParamPlugin extends PluginV3 implements
     }
 
     /**
-     * @return array<string,Closure(CodeBase,Context,FunctionInterface,array):void>
+     * @return array<string,Closure(CodeBase,Context,FunctionInterface,array,?Node):void>
      * @override
      */
     public function getAnalyzeFunctionCallClosures(CodeBase $code_base): array

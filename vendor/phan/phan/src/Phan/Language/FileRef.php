@@ -73,19 +73,41 @@ class FileRef implements \Serializable
      */
     public static function getProjectRelativePathForPath(string $cwd_relative_path): string
     {
+        if ($cwd_relative_path === '') {
+            return '';
+        }
         // Get a path relative to the project root
         // e.g. if the path is /my-project, then strip the beginning of "/my-project/src/a.php" to "src/a.php" but should not change /my-project-unrelated-src/a.php
         // And don't strip subdirectories of the same name, e.g. should convert "/my-project/subdir/my-project/file.php" to "subdir/my-project/file.php"
+        // And convert "/my-project/.//src/a.php" to "src/a.php"
         $path = \realpath($cwd_relative_path) ?: $cwd_relative_path;
         $root_directory = Config::getProjectRootDirectory();
         $n = \strlen($root_directory);
         if (\strncmp($path, $root_directory, $n) === 0) {
             if (\in_array($path[$n] ?? '', [\DIRECTORY_SEPARATOR, '/'], true)) {
                 $path = (string)\substr($path, $n + 1);
+                // Strip any extra beginning directory separators
+                $path = \ltrim($path, '/' . \DIRECTORY_SEPARATOR);
+                return $path;
             }
         }
-        // Strip any extra beginning directory separators
-        $path = \ltrim($path, '/' . \DIRECTORY_SEPARATOR);
+
+        // Deal with a wide variety of cases
+        // E.g. the project in question is a symlink,
+        // or uses directory separators that were converted to Windows directory by the call to realpath.
+        // (On Windows, 'c:/Project/Xyz/./other' gets normalized to 'C:\Project\Xyz\other' (uppercase drive letter))
+        $root_directory_realpath = (string)\realpath($root_directory);
+        if ($root_directory_realpath !== '' && $root_directory_realpath !== $root_directory) {
+            $n = \strlen($root_directory_realpath);
+            if (\strncmp($path, $root_directory_realpath, $n) === 0) {
+                if (\in_array($path[$n] ?? '', [\DIRECTORY_SEPARATOR, '/'], true)) {
+                    $path = (string)\substr($path, $n + 1);
+                    // Strip any extra beginning directory separators
+                    $path = \ltrim($path, '/' . \DIRECTORY_SEPARATOR);
+                    return $path;
+                }
+            }
+        }
 
         return $path;
     }
@@ -109,7 +131,7 @@ class FileRef implements \Serializable
     }
 
     /**
-     * @var int $line_number
+     * @param int $line_number
      * The starting line number of the element within the file
      *
      * @return static
@@ -122,7 +144,7 @@ class FileRef implements \Serializable
     }
 
     /**
-     * @var int $line_number
+     * @param int $line_number
      * The starting line number of the element within the file
      *
      * @return void
@@ -167,19 +189,31 @@ class FileRef implements \Serializable
 
     public function serialize(): string
     {
-        return $this->__toString();
+        return \serialize($this->__serialize());
     }
 
     /**
      * @param string $serialized
-     * @suppress PhanParamSignatureRealMismatchHasNoParamTypeInternal, PhanUnusedSuppression parameter type widening was allowed in php 7.2, signature changed in php 8
      */
     public function unserialize($serialized): void
     {
-        $map = \explode(':', $serialized);
-        $this->file = $map[0];
-        $this->line_number_start = (int)$map[1];
-        $this->line_number_end = (int)($map[2] ?? 0);
+        $this->__unserialize(\unserialize($serialized));
+    }
+
+    /**
+     * @return array{0:string, 1:int, 2:int}
+     */
+    public function __serialize(): array
+    {
+        return [$this->file, $this->line_number_start, $this->line_number_end];
+    }
+
+    /**
+     * @param array{0:string, 1:int, 2:int} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        [$this->file, $this->line_number_start, $this->line_number_end] = $data;
     }
 
     /**

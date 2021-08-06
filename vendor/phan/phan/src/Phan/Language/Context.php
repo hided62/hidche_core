@@ -7,14 +7,17 @@ namespace Phan\Language;
 use AssertionError;
 use ast\Node;
 use Closure;
+use Exception;
 use Phan\CodeBase;
 use Phan\Exception\CodeBaseException;
 use Phan\Issue;
+use Phan\Language\Element\ClassElement;
 use Phan\Language\Element\Clazz;
 use Phan\Language\Element\FunctionInterface;
 use Phan\Language\Element\Property;
 use Phan\Language\Element\TypedElement;
 use Phan\Language\Element\Variable;
+use Phan\Language\FQSEN\FullyQualifiedClassConstantName;
 use Phan\Language\FQSEN\FullyQualifiedClassName;
 use Phan\Language\FQSEN\FullyQualifiedFunctionLikeName;
 use Phan\Language\FQSEN\FullyQualifiedFunctionName;
@@ -144,19 +147,17 @@ class Context extends FileRef
         // slash
         $name_parts = \explode('\\', $name, 2);
         if (\count($name_parts) > 1) {
-            // We're looking for a namespace if there's more than one part
-            // Namespaces are case-insensitive.
-            $namespace_map_key = \strtolower($name_parts[0]);
+            $name = $name_parts[0];
+            // In php, namespaces, functions, and classes are case-insensitive.
+            // However, constants are almost always case-insensitive.
+            // The name we're looking for is a namespace(USE_NORMAL).
+            // The suffix has type $flags
             $flags = \ast\flags\USE_NORMAL;
-        } else {
-            if ($flags !== \ast\flags\USE_CONST) {
-                $namespace_map_key = \strtolower($name);
-            } else {
-                // Constants are case-sensitive, and stored in a case-sensitive manner.
-                $namespace_map_key = $name;
-            }
         }
-        return isset($this->namespace_map[$flags][$namespace_map_key]);
+        if ($flags !== \ast\flags\USE_CONST) {
+            $name = \strtolower($name);
+        }
+        return isset($this->namespace_map[$flags][$name]);
     }
 
     /**
@@ -172,28 +173,27 @@ class Context extends FileRef
         // slash
         $name_parts = \explode('\\', $name, 2);
         if (\count($name_parts) > 1) {
-            $name = \strtolower($name_parts[0]);
+            $name = $name_parts[0];
             $suffix = $name_parts[1];
             // In php, namespaces, functions, and classes are case-insensitive.
             // However, constants are almost always case-insensitive.
-            if ($flags !== \ast\flags\USE_CONST) {
-                $suffix = \strtolower($suffix);
-            }
             // The name we're looking for is a namespace(USE_NORMAL).
             // The suffix has type $flags
             $map_flags = \ast\flags\USE_NORMAL;
         } else {
             $suffix = '';
             $map_flags = $flags;
-            if ($flags !== \ast\flags\USE_CONST) {
-                $name = \strtolower($name);
-            }
+        }
+        if ($map_flags !== \ast\flags\USE_CONST) {
+            $name_key = \strtolower($name);
+        } else {
+            $name_key = $name;
         }
 
-        $namespace_map_entry = $this->namespace_map[$map_flags][$name] ?? null;
+        $namespace_map_entry = $this->namespace_map[$map_flags][$name_key] ?? null;
 
         if (!$namespace_map_entry) {
-            throw new AssertionError('No namespace defined for name');
+            throw new AssertionError("No namespace defined for name '$name_key'");
         }
         $fqsen = $namespace_map_entry->fqsen;
         $namespace_map_entry->is_used = true;
@@ -309,16 +309,6 @@ class Context extends FileRef
     public function isStrictTypes(): bool
     {
         return (1 === $this->strict_types);
-    }
-
-    /**
-     * Returns true if strict_types is set to 1 in this context. (deprecated)
-     * @deprecated use isStrictTypes
-     * @suppress PhanUnreferencedPublicMethod
-     */
-    final public function getIsStrictTypes(): bool
-    {
-        return $this->isStrictTypes();
     }
 
     /**
@@ -663,7 +653,7 @@ class Context extends FileRef
 
         if ($fqsen instanceof FullyQualifiedMethodName) {
             if (!$code_base->hasMethodWithFQSEN($fqsen)) {
-                throw new RuntimeException("Method does not exist");
+                throw new RuntimeException("Method $fqsen does not exist");
             }
             return $code_base->getMethodByFQSEN($fqsen);
         }
@@ -745,14 +735,28 @@ class Context extends FileRef
             return false;
         }
 
-        $has_suppress_issue =
-            $this->getElementInScope($code_base)->hasSuppressIssue(
-                $issue_name
-            );
+        try {
+            $element = $this->getElementInScope($code_base);
+        } catch (Exception $_) {
+            return false;
+        }
+        if ($element instanceof ClassElement) {
+            $defining_fqsen = $element->getRealDefiningFQSEN();
+            if ($defining_fqsen !== $element->getFQSEN()) {
+                if ($defining_fqsen instanceof FullyQualifiedMethodName) {
+                    $element = $code_base->getMethodByFQSEN($defining_fqsen);
+                } elseif ($defining_fqsen instanceof FullyQualifiedPropertyName) {
+                    $element = $code_base->getPropertyByFQSEN($defining_fqsen);
+                } elseif ($defining_fqsen instanceof FullyQualifiedClassConstantName) {
+                    $element = $code_base->getClassConstantByFQSEN($defining_fqsen);
+                }
+            }
+        }
+        $has_suppress_issue = $element->hasSuppressIssue($issue_name);
 
         // Increment the suppression use count
         if ($has_suppress_issue) {
-            $this->getElementInScope($code_base)->incrementSuppressIssueCount($issue_name);
+            $element->incrementSuppressIssueCount($issue_name);
         }
 
         return $has_suppress_issue;

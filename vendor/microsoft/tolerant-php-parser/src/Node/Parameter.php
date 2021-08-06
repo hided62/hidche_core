@@ -6,19 +6,21 @@
 
 namespace Microsoft\PhpParser\Node;
 
+use Microsoft\PhpParser\MissingToken;
 use Microsoft\PhpParser\Node;
 use Microsoft\PhpParser\Token;
 
 class Parameter extends Node {
+    /** @var AttributeGroup[]|null */
+    public $attributes;
+    /** @var Token|null */
+    public $visibilityToken;
+    /** @var Token[]|null */
+    public $modifiers;
     /** @var Token|null */
     public $questionToken;
-    /** @var QualifiedName|Token|null */
-    public $typeDeclaration;
-    /**
-     * @var DelimitedList\QualifiedNameList a list of other types, to support php 8 union types while remaining backwards compatible.
-     * TODO: Merge with typeDeclaration in a future backwards incompatible release.
-     */
-    public $otherTypeDeclarations;
+    /** @var DelimitedList\QualifiedNameList|MissingToken|null */
+    public $typeDeclarationList;
     /** @var Token|null */
     public $byRefToken;
     /** @var Token|null */
@@ -31,9 +33,11 @@ class Parameter extends Node {
     public $default;
 
     const CHILD_NAMES = [
+        'attributes',
+        'visibilityToken',
+        'modifiers',
         'questionToken',
-        'typeDeclaration',
-        'otherTypeDeclarations',
+        'typeDeclarationList',
         'byRefToken',
         'dotDotDotToken',
         'variableName',

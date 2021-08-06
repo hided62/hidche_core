@@ -2,7 +2,7 @@
 <?php
 /**
  * Usage: phan_client -l path/to/file.php
- * Compatible with php 5.6 and php 7.x
+ * Compatible with php 5.6-8.1
  * (The server itself requires a newer php version)
  *
  * See plugins/vim/snippet.vim for an example of a use of this program.
@@ -29,6 +29,7 @@
  * @phan-file-suppress PhanPartialTypeMismatchArgumentInternal
  * @phan-file-suppress PhanPluginDuplicateConditionalNullCoalescing this can't use the `??` operator because it's compatible with php 5.6
  * @phan-file-suppress PhanPluginCanUseParamType, PhanPluginCanUsePHP71Void, PhanPluginCanUseReturnType
+ * @phan-file-suppress PhanPluginRemoveDebugEcho
  */
 class PhanPHPLinter
 {
@@ -130,6 +131,11 @@ class PhanPHPLinter
             exit($failure_code);
         }
 
+        if (!isset($path)) {
+            self::debugError("Unexpectedly parsed no files\n");
+            exit($failure_code);
+        }
+
         // TODO: Check that everything in $this->file_list is in the same path.
         // $path = reset($opts->file_list);
         $real = realpath($path);
@@ -166,8 +172,11 @@ class PhanPHPLinter
                 continue;
             }
             // Convert this to a relative path
-            if (strncmp($dirname . '/', $real, strlen($dirname . '/')) === 0) {
-                $real = substr($real, strlen($dirname . '/'));
+            if (in_array(substr($real, 0, strlen($dirname) + 1),
+                [$dirname . DIRECTORY_SEPARATOR, $dirname . '/'],
+                true
+            )) {
+                $real = substr($real, strlen($dirname) + 1);
                 // @phan-suppress-next-line PhanTypeArraySuspiciousNullable not able to analyze. Not using coalescing because this supports php 5.
                 $mapped_path = isset($opts->temporary_file_map[$path]) ? $opts->temporary_file_map[$path] : $path;
                 // If we are analyzing a temporary file, but it's within a project, then output the path to a temporary file for consistency.
@@ -211,7 +220,8 @@ class PhanPHPLinter
         // TODO: check if the folder is within a folder with subdirectory .phan/config.php
         // TODO: Check if there is a lock before attempting to connect?
         $client = @stream_socket_client($opts->url, $errno, $errstr, 20.0);
-        if (!\is_resource($client)) {
+        // NOTE: Some future release of php may change stream_socket_client to return an object on success.
+        if (!$client) {
             // TODO: This should attempt to start up the phan daemon for the given folder?
             self::debugError("Phan daemon not running on " . ($opts->url));
             exit(0);
@@ -743,6 +753,9 @@ EOB;
             }
             return '';
         } elseif ($key === '') {
+            return '';
+        } elseif (strlen($key) > 255) {
+            // levenshtein refuses to run for longer keys
             return '';
         }
         // include short options in case a typo is made like -aa instead of -a

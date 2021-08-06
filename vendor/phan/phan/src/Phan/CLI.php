@@ -36,17 +36,26 @@ use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Terminal;
 
 use function array_map;
+use function array_merge;
 use function array_slice;
+use function array_unique;
+use function array_values;
 use function count;
+use function escapeshellarg;
 use function fwrite;
 use function getenv;
 use function in_array;
 use function is_array;
-use function is_resource;
+use function is_executable;
 use function is_string;
+use function min;
+use function phpversion;
+use function printf;
+use function shell_exec;
 use function str_repeat;
 use function strcasecmp;
 use function strlen;
+use function trim;
 
 use const DIRECTORY_SEPARATOR;
 use const EXIT_FAILURE;
@@ -66,20 +75,21 @@ use const STR_PAD_LEFT;
  *
  * @phan-file-suppress PhanPartialTypeMismatchArgumentInternal
  * @phan-file-suppress PhanPluginDescriptionlessCommentOnPublicMethod
+ * @phan-file-suppress PhanPluginRemoveDebugAny
  */
 class CLI
 {
     /**
      * This should be updated to x.y.z-dev after every release, and x.y.z before a release.
      */
-    public const PHAN_VERSION = '2.7.1';
+    public const PHAN_VERSION = '5.0.0';
 
     /**
      * List of short flags passed to getopt
      * still available: g,n,w
      * @internal
      */
-    public const GETOPT_SHORT_OPTIONS = 'f:m:o:c:k:aeqbr:pid:3:y:l:tuxj:zhvs:SCP:I:DB:';
+    public const GETOPT_SHORT_OPTIONS = 'f:m:o:c:k:aeqbr:pid:3:y:l:tuxXj:zhvs:SCP:I:DB:';
 
     /**
      * List of long flags passed to getopt
@@ -92,6 +102,7 @@ class CLI
         'assume-real-types-for-internal-functions',
         'automatic-fix',
         'backward-compatibility-checks',
+        'baseline-summary-type:',
         'color',
         'color-scheme:',
         'config-file:',
@@ -100,6 +111,7 @@ class CLI
         'daemonize-tcp-host:',
         'daemonize-tcp-port:',
         'dead-code-detection',
+        'dead-code-detection-prefer-false-positive',
         'debug',
         'debug-emitted-issues:',
         'debug-signal-handler',
@@ -142,7 +154,6 @@ class CLI
         'language-server-enable-hover',
         'language-server-force-missing-pcntl',
         'language-server-hide-category',
-        'language-server-min-diagnostics-delay-ms:',
         'language-server-on-stdin',
         'language-server-require-pcntl',
         'language-server-tcp-connect:',
@@ -150,16 +161,18 @@ class CLI
         'language-server-verbose',
         'load-baseline:',
         'analyze-twice',
+        'always-exit-successfully-after-analysis',
         'long-progress-bar',
         'markdown-issue-messages',
         'memory-limit:',
         'minimum-severity:',
+        'minimum-target-php-version:',
+        'native-syntax-check:',
         'no-color',
         'no-progress-bar',
         'output:',
         'output-mode:',
         'parent-constructor-required:',
-        'polyfill-parse-all-element-doc-comments',
         'plugin:',
         'print-memory-usage-summary',
         'processes:',
@@ -361,9 +374,14 @@ class CLI
             throw new ExitException($result, EXIT_SUCCESS);
         }
         if (\array_key_exists('v', $opts) || \array_key_exists('version', $opts)) {
-            \printf("Phan %s\n", self::PHAN_VERSION);
+            printf("Phan %s" . PHP_EOL, self::PHAN_VERSION);
+            $ast_version = (string) phpversion('ast');
+            $ast_version_repr = $ast_version !== '' ? "version $ast_version" : "is not installed";
+            printf("php-ast %s" . PHP_EOL, $ast_version_repr);
+            printf("PHP version used to run Phan: %s" . PHP_EOL, \PHP_VERSION);
             throw new ExitException('', EXIT_SUCCESS);
         }
+        self::restartWithoutProblematicExtensions();
         $this->warnSuspiciousShortOptions($argv);
 
         // Determine the root directory of the project from which
@@ -599,7 +617,7 @@ class CLI
                         throw new UsageException(\sprintf("Invalid arguments to --output: args=%s\n", StringUtil::jsonEncode($value)), EXIT_FAILURE);
                     }
                     $output_file = \fopen($value, 'w');
-                    if (!is_resource($output_file)) {
+                    if (!$output_file) {
                         throw new UsageException("Failed to open output file '$value'\n", EXIT_FAILURE, null, true);
                     }
                     $this->output = new StreamOutput($output_file);
@@ -626,11 +644,15 @@ class CLI
                     break;
                 case 'j':
                 case 'processes':
-                    Config::setValue('processes', (int)$value);
+                    $processes = \filter_var($value, FILTER_VALIDATE_INT);
+                    if ($processes <= 0) {
+                        throw new UsageException(\sprintf("Invalid arguments to --processes: %s (expected a positive integer)\n", StringUtil::jsonEncode($value)), EXIT_FAILURE);
+                    }
+                    Config::setValue('processes', $processes);
                     break;
                 case 'z':
                 case 'signature-compatibility':
-                    Config::setValue('analyze_signature_compatibility', (bool)$value);
+                    Config::setValue('analyze_signature_compatibility', true);
                     break;
                 case 'y':
                 case 'minimum-severity':
@@ -648,9 +670,8 @@ class CLI
                 case 'target-php-version':
                     Config::setValue('target_php_version', $value);
                     break;
-                case 'polyfill-parse-all-element-doc-comments':
-                    // TODO: Drop in Phan 3
-                    fwrite(STDERR, "--polyfill-parse-all-element-doc-comments is a no-op and will be removed in a future Phan release (no longer needed since PHP 7.0 support was dropped)\n");
+                case 'minimum-target-php-version':
+                    Config::setValue('minimum_target_php_version', $value);
                     break;
                 case 'd':
                 case 'project-root-directory':
@@ -667,8 +688,14 @@ class CLI
                 case 'language-server-hide-category':
                     Config::setValue('language_server_hide_category_of_issues', true);
                     break;
-                case 'language-server-min-diagnostics-delay-ms':
-                    Config::setValue('language_server_min_diagnostics_delay_ms', (float)$value);
+                case 'native-syntax-check':
+                    if ($value === '') {
+                        throw new UsageException(\sprintf("Invalid arguments to --native-syntax-check: args=%s\n", StringUtil::jsonEncode($value)), EXIT_FAILURE);
+                    }
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+                    self::addPHPBinariesForSyntaxCheck($value);
                     break;
                 case 'disable-cache':
                     Config::setValue('cache_polyfill_asts', false);
@@ -682,10 +709,7 @@ class CLI
                     if (!is_array($value)) {
                         $value = [$value];
                     }
-                    Config::setValue(
-                        'plugins',
-                        \array_unique(\array_merge(Config::getValue('plugins'), $value))
-                    );
+                    self::addPlugins($value);
                     break;
                 case 'use-fallback-parser':
                     Config::setValue('use_fallback_parser', true);
@@ -737,7 +761,7 @@ class CLI
                     Config::setValue('daemonize_tcp', true);
                     $host = \filter_var($value, FILTER_VALIDATE_IP);
                     if (\strcasecmp($value, 'default') !== 0 && !$host) {
-                        throw new UsageException("--daemonize-tcp-host must be the string 'default' or a valid hostname, got '$value'", 1);
+                        throw new UsageException("--daemonize-tcp-host must be the string 'default' or a valid ip address to listen on, got '$value'", 1);
                     }
                     if ($host) {
                         Config::setValue('daemonize_tcp_host', $host);
@@ -796,6 +820,11 @@ class CLI
                 case 'dead-code-detection':
                     Config::setValue('dead_code_detection', true);
                     break;
+                case 'X':
+                case 'dead-code-detection-prefer-false-positive':
+                    Config::setValue('dead_code_detection', true);
+                    Config::setValue('dead_code_detection_prefer_false_negative', false);
+                    break;
                 case 'u':
                 case 'unused-variable-detection':
                     Config::setValue('unused_variable_detection', true);
@@ -819,7 +848,8 @@ class CLI
                         break;
                     }
                     $ast_version = (new ReflectionExtension('ast'))->getVersion();
-                    if (\version_compare($ast_version, '1.0.0') <= 0) {
+                    // In order to parse with AST version 85, 1.0.11+ is required
+                    if (\version_compare($ast_version, Config::MINIMUM_AST_EXTENSION_VERSION) < 0) {
                         Config::setValue('use_polyfill_parser', true);
                         break;
                     }
@@ -832,7 +862,7 @@ class CLI
                     Config::setValue('__parser_keep_original_node', true);
                     break;
                 case 'memory-limit':
-                    if (\preg_match('@^([1-9][0-9]*)([KMG])?$@', $value, $match)) {
+                    if (\preg_match('@^([1-9][0-9]*)([KMG])?$@D', $value, $match)) {
                         \ini_set('memory_limit', $value);
                     } else {
                         fwrite(STDERR, "Invalid --memory-limit '$value', ignoring\n");
@@ -876,8 +906,17 @@ class CLI
                     }
                     Config::setValue('baseline_path', $value);
                     break;
+                case 'baseline-summary-type':
+                    if (!is_string($value)) {
+                        throw new UsageException("--baseline-summary-type expects 'ordered_by_count', 'ordered_by_count', 'or 'none', but got multiple values", 1);
+                    }
+                    Config::setValue('baseline_summary_type', $value);
+                    break;
                 case 'analyze-twice':
                     Config::setValue('__analyze_twice', true);
+                    break;
+                case 'always-exit-successfully-after-analysis':
+                    Config::setValue('__always_exit_successfully_after_analysis', true);
                     break;
                 default:
                     // All of phan's long options are currently at least 2 characters long.
@@ -891,13 +930,12 @@ class CLI
         if (isset($opts['language-server-completion-vscode']) && Config::getValue('language_server_enable_completion')) {
             Config::setValue('language_server_enable_completion', Config::COMPLETION_VSCODE);
         }
-        if (Config::getValue('color_issue_messages') === null && $printer_type === 'text') {
+        if (Config::getValue('color_issue_messages') === null && in_array($printer_type, ['text', 'verbose'], true)) {
             if (Config::getValue('color_issue_messages_if_supported') && self::supportsColor(\STDOUT)) {
                 Config::setValue('color_issue_messages', true);
             }
         }
         self::ensureASTParserExists();
-        self::restartWithoutProblematicExtensions();
         self::checkPluginsExist();
         self::checkValidFileConfig();
         if (\is_null($progress_bar)) {
@@ -943,12 +981,57 @@ class CLI
         // way during analysis. With our parallelization mechanism, there
         // is no shared state between processes, making it impossible to
         // have a complete set of reference lists.
-        if (Config::getValue('processes') !== 1
-            && Config::getValue('dead_code_detection')) {
-            throw new AssertionError("We cannot run dead code detection on more than one core.");
+        if (Config::getValue('processes') !== 1) {
+            if (Config::getValue('dead_code_detection')) {
+                throw new AssertionError("We cannot run dead code detection on more than one core.");
+            }
         }
         self::checkSaveBaselineOptionsAreValid();
         self::ensureServerRunsSingleAnalysisProcess();
+    }
+
+    /**
+     * @param list<string> $plugins plugins to add to the plugin list
+     */
+    private static function addPlugins(array $plugins): void
+    {
+        Config::setValue(
+            'plugins',
+            \array_unique(\array_merge(Config::getValue('plugins'), $plugins))
+        );
+    }
+
+    /**
+     * @param list<string> $binaries - various binaries, such as 'php72' and '/usr/bin/php'
+     * @throws UsageException
+     */
+    private static function addPHPBinariesForSyntaxCheck(array $binaries): void
+    {
+        $resolved_binaries = [];
+        foreach ($binaries as $binary) {
+            if ($binary === '') {
+                throw new UsageException(\sprintf("Invalid arguments to --native-syntax-check: args=%s\n", StringUtil::jsonEncode($binaries)), EXIT_FAILURE);
+            }
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $cmd = 'where ' . escapeshellarg($binary);
+            } else {
+                $cmd = 'command -v ' . escapeshellarg($binary);
+            }
+            $resolved = trim((string) shell_exec($cmd));
+            if ($resolved === '') {
+                throw new UsageException(\sprintf("Could not find PHP binary for --native-syntax-check: arg=%s\n", StringUtil::jsonEncode($binary)), EXIT_FAILURE);
+            }
+            if (!is_executable($resolved)) {
+                throw new UsageException(\sprintf("PHP binary for --native-syntax-check is not executable: arg=%s\n", StringUtil::jsonEncode($binary)), EXIT_FAILURE);
+            }
+            $resolved_binaries[] = $resolved;
+        }
+        self::addPlugins(['InvokePHPNativeSyntaxCheckPlugin']);
+        $plugin_config = Config::getValue('plugin_config') ?: [];
+        $old_resolved_binaries = $plugin_config['php_native_syntax_check_binaries'] ?? [];
+        $resolved_binaries = array_values(array_unique(array_merge($old_resolved_binaries, $resolved_binaries)));
+        $plugin_config['php_native_syntax_check_binaries'] = $resolved_binaries;
+        Config::setValue('plugin_config', $plugin_config);
     }
 
     /**
@@ -961,7 +1044,7 @@ class CLI
             $opt_set['-' . \rtrim($opt, ':')] = true;
         }
         foreach (array_slice($argv, 1) as $arg) {
-            $arg = \preg_replace('/=.*$/', '', $arg);
+            $arg = \preg_replace('/=.*$/D', '', $arg);
             if (\array_key_exists($arg, $opt_set)) {
                 self::printHelpSection(
                     "WARNING: Saw suspicious CLI arg '$arg' (did you mean '-$arg')\n",
@@ -1040,7 +1123,7 @@ class CLI
                 }
             }
             if ($valid_files === 0) {
-                // TODO convert this to an error in Phan 3.
+                // TODO convert this to an error in Phan 5.
                 $error_message = \sprintf(
                     "None of the files to analyze in %s exist - This will be an error in future Phan releases." . PHP_EOL,
                     Config::getProjectRootDirectory()
@@ -1422,7 +1505,7 @@ EOT;
   `.phan/config.php`).
 
  -m, --output-mode <mode>
-  Output mode from 'text', 'json', 'csv', 'codeclimate', 'checkstyle', 'pylint', or 'html'
+  Output mode from 'text', 'verbose', 'json', 'csv', 'codeclimate', 'checkstyle', 'pylint', or 'html'
 
  -o, --output <filename>
   Output filename
@@ -1430,9 +1513,9 @@ EOT;
 $init_help
  -C, --color, --no-color
   Add colors to the outputted issues.
-  This is recommended for only the default --output-mode ('text')
+  This is recommended for only --output-mode=text (the default) and 'verbose'
 
-  [--color-scheme={default,code,light,eclipse_dark,vim}]
+  [--color-scheme={default,code,eclipse_dark,vim,light,light_high_contrast}]
     This (or the environment variable PHAN_COLOR_SCHEME) can be used to set the color scheme for emitted issues.
 
  -p, --progress-bar, --no-progress-bar, --long-progress-bar
@@ -1453,6 +1536,9 @@ $init_help
   For best results, the PHP binary used to run Phan should have the same PHP version.
   (Phan relies on Reflection for some param counts
    and checks for undefined classes/methods/functions)
+
+ --minimum-target-php-version {7.0,7.1,7.2,7.3,7.4,8.0,native}
+  The PHP version that will be used for feature/syntax compatibility warnings.
 
  -i, --ignore-undeclared
   Ignore undeclared functions and classes
@@ -1626,6 +1712,10 @@ Extended help:
   and not variable definitions.
   This should be used with --quick, and can't be used with --processes <int>.
 
+ --always-exit-successfully-after-analysis
+  Always exit with an exit code of 0, even if unsuppressed issues were emitted.
+  This helps in checking if Phan crashed.
+
  --automatic-fix
   Automatically fix any issues Phan is capable of fixing.
   NOTE: This is a work in progress and limited to a small subset of issues
@@ -1671,6 +1761,11 @@ Extended help:
   This is almost entirely false positives for most coding styles.
   Implies --unused-variable-detection
 
+ -X, --dead-code-detection-prefer-false-positive
+  When performing dead code detection, prefer emitting false positives
+  (reporting dead code that is not actually dead) over false negatives
+  (failing to report dead code). This implies `--dead-code-detection`.
+
  --debug-emitted-issues={basic,verbose}
   Print backtraces of emitted issues which weren't suppressed to stderr.
 
@@ -1682,6 +1777,9 @@ Extended help:
   (This is useful for diagnosing why Phan or a plugin is slow or not responding)
   kill -USR1 <pid> can be used to print a backtrace and continue running.
   kill -USR2 <pid> can be used to print a backtrace, plus values of parameters, and continue running.
+
+ --baseline-summary-type={ordered_by_count,ordered_by_type,none}
+  Configures the summary comment generated by --save-baseline. Does not affect analysis.
 
  --language-server-on-stdin
   Start the language server (For the Language Server protocol).
@@ -1739,10 +1837,13 @@ Extended help:
  --language-server-require-pcntl
   Don't start the language server if PCNTL isn't installed (don't use the fallback). Useful for debugging.
 
- --language-server-min-diagnostics-delay-ms <0..1000>
-  Sets a minimum delay between publishing diagnostics (i.e. Phan issues) to the language client.
-  This can be increased to work around race conditions in clients processing Phan issues (e.g. if your editor/IDE shows outdated diagnostics)
-  Defaults to 0. (no delay)
+ --native-syntax-check </path/to/php_binary>
+  If php_binary (e.g. `php72`, `/usr/bin/php`) can be found in `\$PATH`, enables `InvokePHPNativeSyntaxCheckPlugin`
+  and adds `php_binary` (resolved using `\$PATH`) to the `php_native_syntax_check_binaries` array of `plugin_config`
+  (treated here as initially being the empty array)
+  Phan exits if any php binary could not be found.
+
+  This can be repeated to run native syntax checks with multiple php versions.
 
  --require-config-exists
   Exit immediately with an error code if `.phan/config.php` does not exist.
@@ -1794,7 +1895,13 @@ EOB
             // > Clears all characters from the cursor position to the end of the line (including the character at the cursor position).
             $message = "\033[2K" . $message;
         }
-        fwrite(STDERR, $message);
+        if (\defined('STDERR')) {
+            fwrite(STDERR, $message);
+        } else {
+            // Fallback in case Phan runs interactively or in non-CLI SAPIs.
+            // This is incomplete.
+            echo $message;
+        }
     }
 
     /**
@@ -1826,7 +1933,7 @@ EOB
             $section = self::colorizeHelpSectionIfSupported($section);
         }
         if ($toStderr) {
-            fwrite(STDERR, $section);
+            CLI::printToStderr($section);
         } else {
             echo $section;
         }
@@ -1896,12 +2003,18 @@ EOB
         };
         $short_options = \array_filter(array_map($trim, \str_split(self::GETOPT_SHORT_OPTIONS)));
         if (strlen($key) === 1) {
+            if (in_array($key, $short_options, true)) {
+                return $generate_suggestion_text($key);
+            }
             $alternate = \ctype_lower($key) ? \strtoupper($key) : \strtolower($key);
             if (in_array($alternate, $short_options, true)) {
                 return $generate_suggestion_text($alternate);
             }
             return '';
         } elseif ($key === '') {
+            return '';
+        } elseif (strlen($key) > 255) {
+            // levenshtein refuses to compute for longer strings
             return '';
         }
         // include short options in case a typo is made like -aa instead of -a
@@ -2020,7 +2133,7 @@ EOB
                     if (!$file_info->isFile()) {
                         // Handle symlinks to invalid real paths
                         $file_path = $file_info->getRealPath() ?: $file_info->__toString();
-                        CLI::printErrorToStderr("Unable to read file $file_path: SplFileInfo->isFile() is false for SplFileInfo->getType() == " . \var_export(self::getSplFileInfoType($file_info), true) . "\n");
+                        CLI::printErrorToStderr("Unable to read file $file_path: SplFileInfo->isFile() is false for SplFileInfo->getType() == " . \var_representation(self::getSplFileInfoType($file_info)) . "\n");
                         return false;
                     }
                     if (!$file_info->isReadable()) {
@@ -2267,7 +2380,8 @@ EOB
         }
 
         // Build up a string, then make a single call to fwrite(). Should be slightly faster and smoother to render to the console.
-        $msg = $left_side .
+        $msg = "\r" .
+               $left_side .
                $progress_bar .
                $right_side .
                "\r";
@@ -2281,7 +2395,7 @@ EOB
     {
         static $did_end = false;
         if ($did_end) {
-            // Overkill as a sanity check
+            // Overkill to prevent redundant output.
             return;
         }
         $did_end = true;
@@ -2290,7 +2404,7 @@ EOB
             return;
         }
         if (self::shouldShowProgress()) {
-            // Print a newline to stderr to visuall separate stderr from stdout
+            // Print a newline to stderr to visually separate stderr from stdout
             fwrite(STDERR, PHP_EOL);
             \fflush(\STDOUT);
         }
@@ -2368,7 +2482,20 @@ EOB
         } else {
             $progress_bar .= str_repeat("\u{2591}", $rest);
         }
-        return $progress_bar;
+        return self::colorizeProgressBarSegment($progress_bar);
+    }
+
+    private static function colorizeProgressBarSegment(string $segment): string
+    {
+        if ($segment === '') {
+            return '';
+        }
+        $progress_bar_color = $_ENV['PHAN_COLOR_PROGRESS_BAR'] ?? '';
+        if ($progress_bar_color !== '' && CLI::supportsColor(STDERR)) {
+            $progress_bar_color = Colorizing::STYLES[\strtolower($progress_bar_color)] ?? $progress_bar_color;
+            return Colorizing::colorizeTextWithColorCode($progress_bar_color, $segment);
+        }
+        return $segment;
     }
 
     /**
@@ -2400,34 +2527,51 @@ EOB
         if ($msg !== self::$current_progress_state_long_progress) {
             switch ($msg) {
                 case 'parse':
-                    $buf .= "Parsing files..." . PHP_EOL;
+                    $buf = "Parsing files..." . PHP_EOL;
+                    break;
+                case 'classes':
+                    $buf = "Analyzing classes..." . PHP_EOL;
                     break;
                 case 'function':
-                    $buf .= "Analyzing functions..." . PHP_EOL;
+                    $buf = "Analyzing functions..." . PHP_EOL;
                     break;
                 case 'method':
-                    $buf .= "Analyzing methods..." . PHP_EOL;
+                    $buf = "Analyzing methods..." . PHP_EOL;
                     break;
                 case 'analyze':
-                    $buf .= "Analyzing files..." . PHP_EOL;
+                    static $did_print = false;
+                    if ($did_print) {
+                        $buf = "Analyzing files a second time..." . PHP_EOL;
+                    } else {
+                        $buf = "Analyzing files..." . PHP_EOL;
+                        $did_print = true;
+                    }
                     break;
                 case 'dead code':
-                    $buf .= "Checking for dead code..." . PHP_EOL;
+                    $buf = "Checking for dead code..." . PHP_EOL;
                     break;
                 default:
-                    $buf .= "In '$msg' phase\n";
+                    $buf = "In '$msg' phase\n";
             }
             self::$current_progress_state_long_progress = $msg;
             self::$current_progress_offset_long_progress = 0;
         }
+        if (self::doesTerminalSupportUtf8()) {
+            $chr = "\u{2591}";
+        } else {
+            $chr = ".";
+        }
         if (in_array($msg, ['analyze', 'parse'], true)) {
             while (self::$current_progress_offset_long_progress < $offset) {
-                self::$current_progress_offset_long_progress++;
-                if (self::doesTerminalSupportUtf8()) {
-                    $buf .= "\u{2591}";
-                } else {
-                    $buf .= ".";
+                $old_mod = self::$current_progress_offset_long_progress % self::PROGRESS_WIDTH;
+                $len = (int) min($offset - self::$current_progress_offset_long_progress, self::PROGRESS_WIDTH - $old_mod);
+                if (!$len) {
+                    // impossible
+                    break;
                 }
+
+                $buf .= self::colorizeProgressBarSegment(str_repeat($chr, $len));
+                self::$current_progress_offset_long_progress += $len;
                 $mod = self::$current_progress_offset_long_progress % self::PROGRESS_WIDTH;
                 if ($mod === 0 || self::$current_progress_offset_long_progress === $count) {
                     if ($mod) {
@@ -2436,7 +2580,7 @@ EOB
                     // @phan-suppress-next-line PhanPluginPrintfVariableFormatString
                     $buf .= " " . \sprintf(
                         "%" . strlen((string)(int)$count) . "d / %d (%3d%%) %.0fMB" . PHP_EOL,
-                        $offset ?? 0,
+                        min(self::$current_progress_offset_long_progress, $count),
                         (int)$count,
                         100 * $p,
                         $memory
@@ -2445,19 +2589,11 @@ EOB
             }
         } else {
             $offset = (int)($p * self::PROGRESS_WIDTH);
-            while (self::$current_progress_offset_long_progress < $offset) {
-                self::$current_progress_offset_long_progress++;
-                if (self::doesTerminalSupportUtf8()) {
-                    $buf .= "\u{2591}";
-                } else {
-                    $buf .= ".";
-                }
-                $mod = self::$current_progress_offset_long_progress % self::PROGRESS_WIDTH;
-                if ($mod === 0 || self::$current_progress_offset_long_progress === $count) {
-                    if ($mod) {
-                        $buf .= str_repeat(" ", self::PROGRESS_WIDTH - $mod);
-                    }
-                    $buf .= " " . \sprintf("%.0fMB" . PHP_EOL, $memory);
+            if (self::$current_progress_offset_long_progress < $offset) {
+                $buf .= self::colorizeProgressBarSegment(str_repeat($chr, $offset - self::$current_progress_offset_long_progress));
+                self::$current_progress_offset_long_progress = $offset;
+                if (self::$current_progress_offset_long_progress === self::PROGRESS_WIDTH) {
+                    $buf .= ' ' . \sprintf("%.0fMB" . PHP_EOL, $memory);
                 }
             }
         }
@@ -2478,8 +2614,7 @@ EOB
         if (getenv('PHAN_NO_UTF8')) {
             return false;
         }
-        // TODO: Use PHP_OS_FAMILY once the minimum supported php version is 7.2 or higher.
-        if (\DIRECTORY_SEPARATOR === '\\') {
+        if (\PHP_OS_FAMILY === 'Windows') {
             if (!\function_exists('sapi_windows_cp_is_utf8') || !\sapi_windows_cp_is_utf8()) {
                 return false;
             }
@@ -2553,7 +2688,7 @@ EOB
             \phan_output_ast_installation_instructions();
             exit(EXIT_FAILURE);
         }
-        self::sanityCheckAstVersion();
+        self::exitIfAstVersionIsInvalid();
 
         try {
             // Split up the opening PHP tag to fix highlighting in vim.
@@ -2568,7 +2703,7 @@ EOB
                 . ') in configuration. '
                 . "You may need to rebuild the latest version of the php-ast extension.\n"
                 . "See https://github.com/phan/phan#getting-started for more details.\n"
-                . "(You are using php-ast " . (new ReflectionExtension('ast'))->getVersion() . ", but " . Config::MINIMUM_AST_EXTENSION_VERSION . " or newer is required. Alternately, test with --force-polyfill-parser (which is noticeably slower))\n",
+                . "(You are using php-ast " . (new ReflectionExtension('ast'))->getVersion() . ", but " . Config::MINIMUM_AST_EXTENSION_VERSION . " or newer is required. Alternately, test with --allow-polyfill-parser or --force-polyfill-parser (which are noticeably slower))\n",
                 false,
                 true
             );
@@ -2598,7 +2733,7 @@ EOB
     /**
      * This duplicates the check in Bootstrap.php, in case opcache.file_cache has outdated information about whether extension_loaded('ast') is true. exists.
      */
-    private static function sanityCheckAstVersion(): void
+    private static function exitIfAstVersionIsInvalid(): void
     {
         $ast_version = (string)\phpversion('ast');
         if (\version_compare($ast_version, '1.0.0') <= 0) {
@@ -2606,13 +2741,11 @@ EOB
                 // Seen in php 7.3 with file_cache when ast is initially enabled but later disabled, due to the result of extension_loaded being assumed to be a constant by opcache.
                 fwrite(STDERR, "ERROR: extension_loaded('ast') is true, but phpversion('ast') is the empty string. You probably need to clear opcache (opcache.file_cache='" . \ini_get('opcache.file_cache') . "')" . PHP_EOL);
             }
-            // TODO: Change this to a warning for 0.1.5 - 1.0.0. (https://github.com/phan/phan/issues/2954)
-            // 0.1.5 introduced the ast\Node constructor, which is required by the polyfill
-            //
             // NOTE: We haven't loaded the autoloader yet, so these issue messages can't be colorized.
             \fprintf(
                 STDERR,
-                "ERROR: Phan 2.x requires php-ast 1.0.1+ because it depends on AST version 70. php-ast '%s' is installed." . PHP_EOL,
+                "ERROR: Phan 5.x requires php-ast %s+ because it depends on AST version 85. php-ast '%s' is installed." . PHP_EOL,
+                Config::MINIMUM_AST_EXTENSION_VERSION,
                 $ast_version
             );
             require_once __DIR__ . '/Bootstrap.php';
@@ -2659,11 +2792,18 @@ EOT
             }
         }
         if (self::shouldRestartToExclude('uopz')) {
+            // NOTE: uopz seems to cause instability when used and switched from enabled to disabled.
+            //
+            // TODO create and link to stubs if https://github.com/krakjoe/uopz/issues/123 is completed.
             $extensions_to_disable[] = 'uopz';
             fwrite(
                 STDERR,
-                "[info] Restarting with uopz disabled, it can cause unpredictable behavior." . PHP_EOL .
-                "[info] Set the environment variable PHAN_ALLOW_UOPZ to 1 to disable this message and to allow uopz." . PHP_EOL
+                <<<EOT
+[info] Restarting with uopz disabled, it can cause unpredictable behavior.
+[info] Set the environment variable PHAN_ALLOW_UOPZ to 1 to disable this message and to allow uopz.
+[info] If you are not using uopz to debug Phan, removing uopz from php.ini or setting the ini setting uopz.disable=1 is recommended before running Phan.
+
+EOT
             );
         }
         if (self::shouldRestartToExclude('grpc') && self::willUseMultipleProcesses()) {

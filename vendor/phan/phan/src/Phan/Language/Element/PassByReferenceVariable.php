@@ -6,8 +6,8 @@ namespace Phan\Language\Element;
 
 use Phan\Analysis\AssignmentVisitor;
 use Phan\CodeBase;
+use Phan\Issue;
 use Phan\Language\Context;
-use Phan\Language\FileRef;
 use Phan\Language\UnionType;
 
 /**
@@ -19,18 +19,12 @@ use Phan\Language\UnionType;
  */
 class PassByReferenceVariable extends Variable
 {
+    use ElementProxyTrait;
 
     /**
      * @var Variable the parameter which accepts references
      */
     private $parameter;
-
-    /**
-     * The element that was passed in as an argument (e.g. variable or static property)
-     * @var TypedElement|UnaddressableTypedElement
-     * TODO: Make a common interface which has methods implemented
-     */
-    private $element;
 
     /**
      * @var ?CodeBase set to a CodeBase if $element is a Property, for type checking
@@ -59,7 +53,38 @@ class PassByReferenceVariable extends Variable
         if ($element instanceof Property) {
             $this->code_base = $code_base;
             $this->context_of_created_reference = $context_of_created_reference;
+            if ($code_base && $context_of_created_reference) {
+                self::checkCanMutateProperty($code_base, $context_of_created_reference, $element);
+            }
         }
+    }
+
+    /**
+     * This detects uses of `pass_by_ref($enum_case->immutableProperty)` or `$a = &$enum_case->name;`
+     *
+     * TODO: This approach in general does not detect getting array offsets of immutable properties?
+     */
+    private static function checkCanMutateProperty(CodeBase $code_base, Context $context, Property $property): void
+    {
+        $class_fqsen = $property->getRealDefiningFQSEN()->getFullyQualifiedClassName();
+        if (!$code_base->hasClassWithFQSEN($class_fqsen)) {
+            return;
+        }
+        $class = $code_base->getClassByFQSEN($class_fqsen);
+        if (!$class->isImmutableAtRuntime()) {
+            return;
+        }
+        Issue::maybeEmit(
+            $code_base,
+            $context,
+            Issue::TypeModifyImmutableObjectProperty,
+            $context->getLineNumberStart(),
+            $class->getClasslikeType(),
+            $class_fqsen,
+            $property->getName(),
+            $property->getContext()->getFile(),
+            $property->getContext()->getLineNumberStart()
+        );
     }
 
     public function getName(): string
@@ -101,53 +126,6 @@ class PassByReferenceVariable extends Variable
         $this->element->setUnionType($type->eraseRealTypeSetRecursively());
     }
 
-    public function getFlags(): int
-    {
-        return $this->element->getFlags();
-    }
-
-    public function getFlagsHasState(int $bits): bool
-    {
-        return $this->element->getFlagsHasState($bits);
-    }
-
-    public function setFlags(int $flags): void
-    {
-        $this->element->setFlags($flags);
-    }
-
-    public function getPhanFlags(): int
-    {
-        return $this->element->getPhanFlags();
-    }
-
-    public function getPhanFlagsHasState(int $bits): bool
-    {
-        return $this->element->getPhanFlagsHasState($bits);
-    }
-
-    public function setPhanFlags(int $phan_flags): void
-    {
-        $this->element->setPhanFlags($phan_flags);
-    }
-
-    public function getFileRef(): FileRef
-    {
-        return $this->element->getFileRef();
-    }
-
-    /**
-     * Gets the context (only set if this is a reference to an AddressableElement such as a property)
-     * @deprecated - use getElement() instead and check if the result is an AddressableElement.
-     * @throws \Error if the element is an UnaddressableElement
-     * @suppress PhanPossiblyUndeclaredMethod
-     * @suppress PhanUnreferencedPublicMethod not sure why
-     */
-    public function getContext(): Context
-    {
-        return $this->element->getContext();
-    }
-
     /**
      * Returns the context where this reference was created.
      * This is currently only available for references to properties.
@@ -165,14 +143,5 @@ class PassByReferenceVariable extends Variable
     public function isPHPInternal(): bool
     {
         return $this->element instanceof AddressableElement && $this->element->isPHPInternal();
-    }
-
-    /**
-     * Get the argument passed in to this object.
-     * @return TypedElement|UnaddressableTypedElement
-     */
-    public function getElement()
-    {
-        return $this->element;
     }
 }

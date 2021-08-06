@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phan\Analysis;
 
+use AssertionError;
 use Phan\CLI;
 use Phan\CodeBase;
 use Phan\CodeBase\ClassMap;
@@ -13,6 +14,8 @@ use Phan\Language\Element\AddressableElement;
 use Phan\Language\Element\ClassConstant;
 use Phan\Language\Element\ClassElement;
 use Phan\Language\Element\Clazz;
+use Phan\Language\Element\EnumCase;
+use Phan\Language\Element\Flags;
 use Phan\Language\Element\Func;
 use Phan\Language\Element\Method;
 use Phan\Language\Element\Property;
@@ -94,6 +97,7 @@ class ReferenceCountsAnalyzer
 
         static $issue_types = [
             ClassConstant::class => Issue::UnreferencedPublicClassConstant,  // This is overridden
+            EnumCase::class      => Issue::UnreferencedEnumCase,  // enum cases are always public
             Method::class        => Issue::UnreferencedPublicMethod,  // This is overridden
             Property::class      => Issue::UnreferencedPublicProperty,  // This is overridden
         ];
@@ -189,9 +193,12 @@ class ReferenceCountsAnalyzer
         foreach ($element_list as $element) {
             CLI::progress('dead code', (++$i) / $total_count, $element);
             // Don't worry about internal elements
-            if ($element->isPHPInternal()) {
+            if ($element->isPHPInternal() || $element->getContext()->isPHPInternal()) {
+                // The extra check of the context is necessary for code in internal_stubs
+                // which aren't exactly internal to PHP.
                 continue;
             }
+
             // Currently, deferred analysis is only needed for class elements, which can be inherited
             // (And we may track the references to the inherited version of the original)
             if (!$element instanceof ClassElement) {
@@ -202,8 +209,14 @@ class ReferenceCountsAnalyzer
                 continue;
             }
             $fqsen = $element->getFQSEN();
-            if ($element instanceof Method || $element instanceof Property) {
+            if ($element instanceof Method) {
                 $defining_fqsen = $element->getRealDefiningFQSEN();
+            } elseif ($element instanceof Property) {
+                $defining_fqsen = $element->getRealDefiningFQSEN();
+                if ($element->getPhanFlagsHasState(Flags::IS_ENUM_PROPERTY)) {
+                    // Don't warn about immutable enum properties automatically created by php itself.
+                    continue;
+                }
             } else {
                 $defining_fqsen = $element->getDefiningFQSEN();
             }
@@ -211,7 +224,7 @@ class ReferenceCountsAnalyzer
             // copy references to methods, properties, and constants into the defining trait or class.
             if ($fqsen !== $defining_fqsen) {
                 $has_references = $element->getReferenceCount($code_base) > 0;
-                if ($has_references || ($element instanceof Method && $element->isOverride())) {
+                if ($has_references || ($element instanceof Method && ($element->isOverride() && !$element->isPrivate()))) {
                     $defining_element = null;
                     if ($defining_fqsen instanceof FullyQualifiedMethodName) {
                         if ($code_base->hasMethodWithFQSEN($defining_fqsen)) {
@@ -241,7 +254,7 @@ class ReferenceCountsAnalyzer
 
             // Don't analyze elements defined in a parent class.
             // We copy references to methods, properties, and constants into the defining trait or class before this.
-            if ($element->isOverride()) {
+            if ($element->isOverride() && !$element->isPrivate()) {
                 continue;
             }
 
@@ -379,6 +392,20 @@ class ReferenceCountsAnalyzer
             }
         }
         // If there are duplicate declarations, display issues for unreferenced elements on each declaration.
+        if ($issue_type === Issue::UnreferencedClass) {
+            if (!$element instanceof Clazz) {
+                throw new AssertionError('Expected ' . Clazz::class . ' instance but got ' . \get_class($element));
+            }
+            Issue::maybeEmit(
+                $code_base,
+                $element->getContext(),
+                $issue_type,
+                $element->getFileRef()->getLineNumberStart(),
+                $element->getClasslikeType(),
+                $element->getRepresentationForIssue()
+            );
+            return;
+        }
         Issue::maybeEmit(
             $code_base,
             $element->getContext(),

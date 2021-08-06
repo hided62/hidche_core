@@ -29,9 +29,10 @@ class Fixers
 {
     /**
      * Remove a redundant phpdoc return type from the real signature
+     * @param CodeBase $code_base @unused-param
      */
     public static function fixRedundantFunctionLikeComment(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         FileCacheEntry $contents,
         IssueInstance $instance
     ): ?FileEditSet {
@@ -98,9 +99,10 @@ class Fixers
 
     /**
      * Add a missing return type to the real signature
+     * @param CodeBase $code_base @unused-param
      */
     public static function fixRedundantReturnComment(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         FileCacheEntry $contents,
         IssueInstance $instance
     ): ?FileEditSet {
@@ -143,7 +145,7 @@ class Fixers
         $leadingTriviaTokens = PhpTokenizer::getTokensArrayFromContent(
             $leadingTriviaText,
             ParseContext::SourceElements,
-            $node->getFullStart(),
+            $node->getFullStartPosition(),
             false
         );
         for ($i = \count($leadingTriviaTokens) - 1; $i >= 0; $i--) {

@@ -6,26 +6,24 @@
 
 namespace Microsoft\PhpParser\Node;
 
+use Microsoft\PhpParser\MissingToken;
+use Microsoft\PhpParser\ModifiedTypeInterface;
+use Microsoft\PhpParser\ModifiedTypeTrait;
 use Microsoft\PhpParser\Node;
+use Microsoft\PhpParser\Node\DelimitedList\QualifiedNameList;
 use Microsoft\PhpParser\Token;
-use Microsoft\PhpParser\TokenKind;
 
-class PropertyDeclaration extends Node {
+class PropertyDeclaration extends Node implements ModifiedTypeInterface {
+    use ModifiedTypeTrait;
 
-    /** @var Token[] */
-    public $modifiers;
+    /** @var AttributeGroup[]|null */
+    public $attributes;
 
     /** @var Token|null question token for PHP 7.4 type declaration */
     public $questionToken;
 
-    /** @var QualifiedName|Token|null */
-    public $typeDeclaration;
-
-    /**
-     * @var DelimitedList\QualifiedNameList|null
-     * TODO: Unify with typeDeclaration in a future backwards incompatible release
-     */
-    public $otherTypeDeclarations;
+    /** @var QualifiedNameList|MissingToken|null */
+    public $typeDeclarationList;
 
     /** @var DelimitedList\ExpressionList */
     public $propertyElements;
@@ -34,23 +32,11 @@ class PropertyDeclaration extends Node {
     public $semicolon;
 
     const CHILD_NAMES = [
+        'attributes',
         'modifiers',
         'questionToken',
-        'typeDeclaration',
-        'otherTypeDeclarations',
+        'typeDeclarationList',
         'propertyElements',
         'semicolon'
     ];
-
-    public function isStatic() : bool {
-        if ($this->modifiers === null) {
-            return false;
-        }
-        foreach ($this->modifiers as $modifier) {
-            if ($modifier->kind === TokenKind::StaticKeyword) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

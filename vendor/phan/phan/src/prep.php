@@ -8,6 +8,7 @@ declare(strict_types=1);
 gc_disable();
 
 // Check the environment to make sure Phan can run successfully
+// @phan-file-suppress PhanPluginRemoveDebugEcho
 require_once __DIR__ . '/requirements.php';
 require_once __DIR__ . '/Phan/Bootstrap.php';
 
@@ -28,8 +29,8 @@ $visit_node = static function (\ast\Node $node, string $file_path): void {
     if ($node->kind === \ast\AST_CLASS_CONST) {
         // Debug::printNode($node);
 
-        if (\is_string($node->children['const'])) {
-            $name = $node->children['const'];
+        $name = $node->children['const'];
+        if (\is_string($name)) {
             if (preg_match('/.*SEARCH.*/', $name)) {
                 print "$file_path:{$node->lineno} $name\n";
             }

@@ -6,10 +6,16 @@
 
 namespace Microsoft\PhpParser\Node;
 
+use Microsoft\PhpParser\ModifiedTypeInterface;
+use Microsoft\PhpParser\ModifiedTypeTrait;
 use Microsoft\PhpParser\Node;
 use Microsoft\PhpParser\Token;
 
-class ClassConstDeclaration extends Node {
+class ClassConstDeclaration extends Node implements ModifiedTypeInterface {
+    use ModifiedTypeTrait;
+
+    /** @var AttributeGroup[]|null */
+    public $attributes;
 
     /** @var Token[] */
     public $modifiers;
@@ -24,6 +30,7 @@ class ClassConstDeclaration extends Node {
     public $semicolon;
 
     const CHILD_NAMES = [
+        'attributes',
         'modifiers',
         'constKeyword',
         'constElements',

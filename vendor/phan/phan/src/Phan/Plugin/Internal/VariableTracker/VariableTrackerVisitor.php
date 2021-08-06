@@ -10,6 +10,7 @@ use ast\Node;
 use Phan\Analysis\BlockExitStatusChecker;
 use Phan\AST\AnalysisVisitor;
 use Phan\AST\ArrowFunc;
+use Phan\AST\InferPureSnippetVisitor;
 use Phan\AST\Visitor\Element;
 use Phan\CodeBase;
 use Phan\Issue;
@@ -28,7 +29,6 @@ use function is_string;
  * 4. Track based on an identifier corresponding to the \ast\Node of the assignment (e.g. using \spl_object_id())
  *
  * TODO: Improve analysis within the ternary operator (cond() ? ($x = 2) : ($x = 3);
- * TODO: Support unset
  * TODO: Fix tests/files/src/0426_inline_var_force.php
  *
  * @phan-file-suppress PhanTypeMismatchArgumentNullable child nodes as used here are non-null
@@ -58,6 +58,17 @@ final class VariableTrackerVisitor extends AnalysisVisitor
      * Tracking the parent_node_list is possible, but would be much more verbose.
      */
     private $top_level_statement;
+
+    /**
+     * @var list<Node> a list of loop nodes that appeared to have no side effects.
+     * VariableTrackerPlugin should check that some of the variables defined or redefined in the loop were used outside of the loop.
+     */
+    private $side_effect_free_loop_nodes = [];
+
+    /**
+     * @var list<Node> a list of loop nodes that may have infinite loops with conditions on variables that aren't reassigned in the loop.
+     */
+    private $possibly_infinite_loop_nodes = [];
 
     public function __construct(CodeBase $code_base, Context $context, VariableTrackingScope $scope)
     {
@@ -98,6 +109,37 @@ final class VariableTrackerVisitor extends AnalysisVisitor
     }
 
     /**
+     * Record the fact that the loop body doesn't seem to have side effects
+     * (other than creating variables)
+     *
+     * @param Node $node a node that's some form of loop
+     * @suppress PhanUndeclaredProperty
+     */
+    public static function recordHasLoopBodyWithoutSideEffects(Node $node): void
+    {
+        $node->has_loop_body_without_side_effects = true;
+    }
+
+    /**
+     * @return list<Node>
+     * A list of loop nodes that appeared to have no side effects.
+     * VariableTrackerPlugin should check that some of the variables defined or redefined in the loop were used outside of the loop.
+     */
+    public function getSideEffectFreeLoopNodes(): array
+    {
+        return $this->side_effect_free_loop_nodes;
+    }
+
+    /**
+     * @return list<Node>
+     * A list of loop nodes that are possibly infinite loops.
+     */
+    public function getPossiblyInfiniteLoopNodes(): array
+    {
+        return $this->possibly_infinite_loop_nodes;
+    }
+
+    /**
      * @suppress PhanUndeclaredProperty
      */
     public function visitCall(Node $node): VariableTrackingScope
@@ -116,6 +158,11 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             $this->scope = $this->{Element::VISIT_LOOKUP_TABLE[$child_node->kind] ?? 'handleMissingNodeKind'}($child_node);
         }
         return $this->scope;
+    }
+
+    public function visitNullsafeMethodCall(Node $node): VariableTrackingScope
+    {
+        return $this->visitCall($node);
     }
 
     public function visitMethodCall(Node $node): VariableTrackingScope
@@ -158,7 +205,7 @@ final class VariableTrackerVisitor extends AnalysisVisitor
     }
 
     /**
-     * This is the default implementation for node types which don't have any overrides
+     * Visit a statement list
      * @override
      */
     public function visitStmtList(Node $node): VariableTrackingScope
@@ -174,6 +221,47 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             $this->scope = $this->{Element::VISIT_LOOKUP_TABLE[$child_node->kind] ?? 'handleMissingNodeKind'}($child_node);
         }
         $this->top_level_statement = $top_level_statement;
+        return $this->scope;
+    }
+
+    /**
+     * Visit an expression list
+     * @override
+     */
+    public function visitExprList(Node $node): VariableTrackingScope
+    {
+        $top_level_statement = $this->top_level_statement;
+        foreach ($node->children as $child_node) {
+            if (!($child_node instanceof Node)) {
+                continue;
+            }
+
+            // TODO: Specialize?
+            $this->top_level_statement = $child_node;
+            $this->scope = $this->{Element::VISIT_LOOKUP_TABLE[$child_node->kind] ?? 'handleMissingNodeKind'}($child_node);
+        }
+        $this->top_level_statement = $top_level_statement;
+        return $this->scope;
+    }
+
+    /**
+     * Visit a node of kind ast\AST_MATCH_ARM
+     * @override
+     */
+    public function visitMatchArm(Node $node): VariableTrackingScope
+    {
+        // Traverse the AST_EXPR_LIST or null
+        foreach ($node->children['cond']->children ?? [] as $cond_child_node) {
+            if (!($cond_child_node instanceof Node)) {
+                continue;
+            }
+
+            $this->scope = $this->{Element::VISIT_LOOKUP_TABLE[$cond_child_node->kind] ?? 'handleMissingNodeKind'}($cond_child_node);
+        }
+        $expr = $node->children['expr'];
+        if ($expr instanceof Node) {
+            $this->scope = $this->{Element::VISIT_LOOKUP_TABLE[$expr->kind] ?? 'handleMissingNodeKind'}($expr);
+        }
         return $this->scope;
     }
 
@@ -258,11 +346,12 @@ final class VariableTrackerVisitor extends AnalysisVisitor
                 // $node is the usage of this variable
                 // Here, we use $node instead of $var_node as the declaration node so that recordVariableUsage won't treat increments in loops as using themselves.
                 self::$variable_graph->recordVariableUsage($name, $node, $this->scope);
-                if ($this->top_level_statement === $node) {
-                    // And the whole inc/dec operation is the redefinition of this variable.
-                    // To reduce false positives, treat `;$x++;` as a redefinition, but not `foo($x++)`
-                    self::$variable_graph->recordVariableDefinition($name, $node, $this->scope, null);
-                    $this->scope->recordDefinition($name, $node);
+                // And the whole inc/dec operation is the redefinition of this variable.
+                self::$variable_graph->recordVariableDefinition($name, $node, $this->scope, null);
+                $this->scope->recordDefinition($name, $node);
+                if ($this->top_level_statement !== $node) {
+                    // To reduce false positives, warn about `;$x++;` but not `foo($x++)`
+                    self::$variable_graph->markAsDisabledWarnings($node);
                 }
                 return $this->scope;
             }
@@ -321,13 +410,27 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         return $this->analyzeAssignmentTarget($node->children['var'], false, self::getConstExprOrNull($expr));
     }
 
+    public function visitUnset(Node $node): VariableTrackingScope
+    {
+        $var_node = $node->children['var'];
+        if (!$var_node instanceof Node) {
+            return $this->scope;
+        }
+        self::$variable_graph->markAsUnset($var_node);
+        // @phan-suppress-next-line PhanUndeclaredProperty
+        $var_node->is_unset_target = true;
+
+        return $this->analyzeAssignmentTarget($var_node, false, null);
+    }
+
     /**
      * @param Node|string|int|float $expr
      * @return Node|string|int|float|null
      */
     private static function getConstExprOrNull($expr)
     {
-        return ParseVisitor::isConstExpr($expr) ? $expr : null;
+        // Don't allow new expressions
+        return ParseVisitor::isConstExpr($expr, ParseVisitor::CONSTANT_EXPRESSION_FORBID_NEW_EXPRESSION) ? $expr : null;
     }
 
     /**
@@ -390,6 +493,9 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         return $this->scope;
     }
 
+    /**
+     * @suppress PhanUndeclaredProperty
+     */
     private function analyzePropAssignmentTarget(Node $node): VariableTrackingScope
     {
         // Treat $y in `$x->$y = $z;` as a usage of $y
@@ -399,6 +505,9 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             $name = $expr->children['name'];
             if (is_string($name)) {
                 // treat $x->prop = 2 like a usage of $x
+                if (isset($node->is_unset_target)) {
+                    self::$variable_graph->markAsUnset($expr);
+                }
                 self::$variable_graph->recordVariableUsage($name, $expr, $this->scope);
                 self::$variable_graph->recordVariableModification($name);
             }
@@ -425,6 +534,10 @@ final class VariableTrackerVisitor extends AnalysisVisitor
                     // @phan-suppress-next-line PhanUndeclaredProperty
                     if (isset($expr->phan_is_assignment_to_real_array)) {
                         self::$variable_graph->recordVariableDefinition($name, $expr, $this->scope, null);
+                    // @phan-suppress-next-line PhanUndeclaredProperty
+                    } elseif (isset($node->is_unset_target)) {
+                        self::$variable_graph->markAsUnset($expr);
+                        self::$variable_graph->recordVariableDefinition($name, $expr, $this->scope, null);
                     } else {
                         self::$variable_graph->recordVariableModification($name);
                     }
@@ -441,7 +554,10 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         // return $this->analyzeAssignmentTarget($expr, false);
     }
 
-    public function handleMissingNodeKind(Node $unused_node): VariableTrackingScope
+    /**
+     * @unused-param $node
+     */
+    public function handleMissingNodeKind(Node $node): VariableTrackingScope
     {
         // do nothing
         return $this->scope;
@@ -478,18 +594,20 @@ final class VariableTrackerVisitor extends AnalysisVisitor
 
     /**
      * Do not recurse into function declarations within a scope
+     * @unused-param $node
      * @override
      */
-    public function visitFuncDecl(Node $unused_node): VariableTrackingScope
+    public function visitFuncDecl(Node $node): VariableTrackingScope
     {
         return $this->scope;
     }
 
     /**
      * Do not recurse into class declarations within a scope
+     * @unused-param $node
      * @override
      */
-    public function visitClass(Node $unused_node): VariableTrackingScope
+    public function visitClass(Node $node): VariableTrackingScope
     {
         return $this->scope;
     }
@@ -510,7 +628,7 @@ final class VariableTrackerVisitor extends AnalysisVisitor
                 continue;
             }
 
-            if ($closure_use->flags & ast\flags\PARAM_REF) {
+            if ($closure_use->flags & ast\flags\CLOSURE_USE_REF) {
                 self::$variable_graph->recordVariableDefinition($name, $closure_use, $this->scope, null);
                 self::$variable_graph->markAsReference($name);
             } else {
@@ -535,11 +653,12 @@ final class VariableTrackerVisitor extends AnalysisVisitor
     }
 
     /**
-     * @override
-     * @return VariableTrackingScope
      * Common no-op
+     *
+     * @override
+     * @unused-param $node
      */
-    public function visitName(Node $unused_node): VariableTrackingScope
+    public function visitName(Node $node): VariableTrackingScope
     {
         return $this->scope;
     }
@@ -553,7 +672,12 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         $name = $node->children['name'];
         if (\is_string($name)) {
             self::$variable_graph->recordVariableUsage($name, $node, $this->scope);
-            if ($node === $this->top_level_statement) {
+            // @phan-suppress-next-line PhanUndeclaredProperty
+            if ($node === $this->top_level_statement || isset($node->modified_by_reference)) {
+                // @phan-suppress-next-line PhanUndeclaredProperty
+                if (isset($node->modified_by_reference)) {
+                    self::$variable_graph->markAsDisabledWarnings($node);
+                }
                 self::$variable_graph->recordVariableDefinition($name, $node, $this->scope, null);
                 $this->scope->recordDefinition($name, $node);
             }
@@ -561,6 +685,16 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             return $this->analyze($this->scope, $name);
         }
         return $this->scope;
+    }
+
+    /**
+     * Marks a node of kind ast\AST_VAR as modified by reference (e.g. by a call)
+     *
+     * @suppress PhanUndeclaredProperty
+     */
+    public static function markVariableAsModifiedByReference(Node $node): void
+    {
+        $node->modified_by_reference = true;
     }
 
     /**
@@ -593,6 +727,8 @@ final class VariableTrackerVisitor extends AnalysisVisitor
      */
     public function visitForeach(Node $node): VariableTrackingScope
     {
+        $this->checkIsSideEffectFreeLoopNode($node);
+
         $expr_node = $node->children['expr'];
         $outer_scope_unbranched = $this->analyzeWhenValidNode($this->scope, $expr_node);
         $outer_scope = new VariableTrackingBranchScope($outer_scope_unbranched);
@@ -614,18 +750,20 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         $inner_scope = $this->analyze($this->scope, $node->children['stmts']);
 
         // Merge inner scope into outer scope
-        // @phan-suppress-next-line PhanTypeMismatchArgument
+        // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType
         $outer_scope = $outer_scope->mergeInnerLoopScope($inner_scope, self::$variable_graph);
 
         return $outer_scope_unbranched->mergeWithSingleBranchScope($outer_scope);
     }
 
     /**
-     * Analyzes `while (cond) { stmts }`
+     * Analyzes `while (cond) { stmts }` with kind ast\AST_WHILE
      * @override
      */
     public function visitWhile(Node $node): VariableTrackingScope
     {
+        $this->checkIsSideEffectFreeLoopNode($node);
+
         $outer_scope_unbranched = $this->analyzeWhenValidNode($this->scope, $node->children['cond']);
         $outer_scope = new VariableTrackingBranchScope($outer_scope_unbranched);
 
@@ -649,6 +787,8 @@ final class VariableTrackerVisitor extends AnalysisVisitor
      */
     public function visitDoWhile(Node $node): VariableTrackingScope
     {
+        $this->checkIsSideEffectFreeLoopNode($node);
+
         $outer_scope_unbranched = $this->scope;
         $outer_scope = new VariableTrackingBranchScope($outer_scope_unbranched);
 
@@ -670,6 +810,8 @@ final class VariableTrackerVisitor extends AnalysisVisitor
      */
     public function visitFor(Node $node): VariableTrackingScope
     {
+        $this->checkIsSideEffectFreeLoopNode($node);
+
         $top_level_statement = $this->top_level_statement;
         $init_node = $node->children['init'];
         if ($init_node instanceof Node) {
@@ -678,7 +820,7 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         } else {
             $outer_scope_unbranched = $this->scope;
         }
-        $outer_scope_unbranched = $this->analyzeWhenValidNode($outer_scope_unbranched, $node->children['cond']);
+        $outer_scope_unbranched = $this->analyzeCondExprList($outer_scope_unbranched, $node->children['cond']);
         $outer_scope = new VariableTrackingBranchScope($outer_scope_unbranched);
 
         $inner_scope = new VariableTrackingLoopScope($outer_scope);
@@ -689,25 +831,51 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             }
             $this->top_level_statement = $loop_node;
             $loop_scope = $this->analyze(new VariableTrackingBranchScope($inner_scope), $loop_node);
-            // @phan-suppress-next-line PhanTypeMismatchArgument
+            // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType
             $inner_scope = $inner_scope->mergeWithSingleBranchScope($loop_scope);
             $this->top_level_statement = $top_level_statement;
         }
         // TODO: If the graph analysis is improved, look into making this stop analyzing 'loop' twice
-        $inner_scope = $this->analyzeWhenValidNode($inner_scope, $node->children['cond']);
+        $inner_scope = $this->analyzeCondExprList($inner_scope, $node->children['cond']);
         $inner_scope = $this->analyze($inner_scope, $node->children['stmts']);
         foreach ($node->children['loop']->children ?? [] as $loop_node) {
             if ($loop_node instanceof Node) {
+                $this->top_level_statement = $loop_node;
                 $loop_scope = $this->analyze(new VariableTrackingBranchScope($inner_scope), $loop_node);
-                // @phan-suppress-next-line PhanTypeMismatchArgument
+                // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType
                 $inner_scope = $inner_scope->mergeWithSingleBranchScope($loop_scope);
+                $this->top_level_statement = $top_level_statement;
             }
         }
+        $inner_scope = $this->analyzeCondExprList($inner_scope, $node->children['cond']);
 
         // Merge inner scope into outer scope
-        // @phan-suppress-next-line PhanTypeMismatchArgument
+        // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType
         $outer_scope = $outer_scope->mergeInnerLoopScope($inner_scope, self::$variable_graph);
         return $outer_scope_unbranched->mergeWithSingleBranchScope($outer_scope);
+    }
+
+    /**
+     * @param Node|float|int|string|null $cond
+     */
+    private function analyzeCondExprList(VariableTrackingScope $scope, $cond): VariableTrackingScope
+    {
+        if (!$cond instanceof Node) {
+            return $scope;
+        }
+        $children = $cond->children;
+        $last_child_node = \end($children);
+        $top_level_statement = $this->top_level_statement;
+        foreach ($children as $child_node) {
+            if (!($child_node instanceof Node)) {
+                continue;
+            }
+
+            $this->top_level_statement = $child_node === $last_child_node ? $cond : $child_node;
+            $scope = $this->analyze($scope, $child_node);
+        }
+        $this->top_level_statement = $top_level_statement;
+        return $scope;
     }
 
     /**
@@ -740,6 +908,7 @@ final class VariableTrackerVisitor extends AnalysisVisitor
                 '@phan-var VariableTrackingBranchScope $inner_cond_scope';
                 $outer_scope = $outer_scope->mergeBranchScopeList([$inner_cond_scope], $merge_parent_scope, []);
             }
+            $this->scope = $outer_scope;
 
             $inner_scope = new VariableTrackingBranchScope($outer_scope);
             $inner_scope = $this->analyze($inner_scope, $stmts_node);
@@ -811,7 +980,8 @@ final class VariableTrackerVisitor extends AnalysisVisitor
                 $block_exit_status = (new BlockExitStatusChecker())->__invoke($stmts_node);
                 if (($block_exit_status & BlockExitStatusChecker::STATUS_THROW_OR_RETURN_BITMASK) === $block_exit_status) {
                     $inner_exiting_scope_list[] = $inner_scope;
-                } else {
+                } elseif ($block_exit_status !== BlockExitStatusChecker::STATUS_PROCEED ||
+                        $i === \count($node->children) - 1) {
                     $inner_scope_list[] = $inner_scope;
                 }
                 if (!($block_exit_status & BlockExitStatusChecker::STATUS_PROCEED)) {
@@ -876,7 +1046,7 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         if (\count($catch_node_list) > 0) {
             $catches_scope = new VariableTrackingBranchScope($main_scope);
             $catches_scope = $this->analyze($catches_scope, $node->children['catches']);
-            // @phan-suppress-next-line PhanTypeMismatchArgument
+            // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType
             $main_scope = $main_scope->mergeWithSingleBranchScope($catches_scope);
         }
         $finally_node = $node->children['finally'];
@@ -922,7 +1092,7 @@ final class VariableTrackerVisitor extends AnalysisVisitor
     {
         $var_node = $node->children['var'];
         if (!$var_node instanceof Node) {
-            // impossible for AST_CATCH, except with polyfill?
+            // This is a non-capturing catch. Or it could be an invalid node from the polyfill.
             return $this->scope;
         }
 
@@ -936,5 +1106,80 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             }
         }
         return $this->analyze($scope, $node->children['stmts']);
+    }
+
+    private function checkIsSideEffectFreeLoopNode(Node $node): void
+    {
+        // @phan-suppress-next-line PhanUndeclaredProperty
+        if (isset($node->has_loop_body_without_side_effects)) {
+            $this->side_effect_free_loop_nodes[] = $node;
+        }
+        $cond = $node->children['cond'] ?? null;
+        if ($cond instanceof Node &&
+            !((new BlockExitStatusChecker())($node->children['stmts']) & ~(BlockExitStatusChecker::STATUS_PROCEED | BlockExitStatusChecker::STATUS_CONTINUE)) &&
+            InferPureSnippetVisitor::isSideEffectFreeSnippet($this->code_base, $this->context, $cond) &&
+            !self::hasUnknownTypeLoopNodeKinds($cond)) {
+            if (!isset($node->children['loop']) ||
+                !((new BlockExitStatusChecker())($node->children['loop']) & ~(BlockExitStatusChecker::STATUS_PROCEED))) {
+                $this->possibly_infinite_loop_nodes[] = $node;
+            }
+        }
+    }
+
+    private static function hasUnknownTypeLoopNodeKinds(Node $node): bool
+    {
+        switch ($node->kind) {
+            case ast\AST_CLOSURE:
+            case ast\AST_ARROW_FUNC:
+            case ast\AST_PROP:
+            case ast\AST_STATIC_PROP:
+            case ast\AST_PRE_DEC:
+            case ast\AST_PRE_INC:
+            case ast\AST_POST_DEC:
+            case ast\AST_POST_INC:
+            case ast\AST_ASSIGN_OP:
+                return true;
+            case ast\AST_CALL:
+                if (self::isNonDeterministicCall($node)) {
+                    return true;
+                }
+                break;
+        }
+        foreach ($node->children as $c) {
+            if ($c instanceof Node && self::hasUnknownTypeLoopNodeKinds($c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private const NON_DETERMINISTIC_FUNCTIONS = [
+        'feof' => true,
+        'fgetcsv' => true,
+        'fgets' => true,
+        'fread' => true,
+        'ftell' => true,
+        'readdir' => true,
+        'rand' => true,
+        'array_rand' => true,
+        'mt_rand' => true,
+        'openssl_random_pseudo_bytes' => true,
+        'random_bytes' => true,
+        'random_int' => true,
+        'next' => true,
+        'prev' => true,
+    ];
+
+    private static function isNonDeterministicCall(Node $node): bool
+    {
+        $name_node = $node->children['expr'];
+        if (!$name_node instanceof Node || $name_node->kind !== ast\AST_NAME) {
+            return false;
+        }
+        $name = $name_node->children['name'];
+        if (!is_string($name)) {
+            return false;
+        }
+        return \array_key_exists($name, self::NON_DETERMINISTIC_FUNCTIONS);
     }
 }

@@ -43,8 +43,10 @@ use function preg_match;
  * The logging to STDERR can be uncommented if you have issues debugging why
  * Phan can't locate a given node's definition.
  */
-class TolerantASTConverterWithNodeMapping extends TolerantASTConverter
+final class TolerantASTConverterWithNodeMapping extends TolerantASTConverter
 {
+    use TolerantASTConverterTrait;
+
     /**
      * @var PhpParser\Node|Token|null
      * This is the closest node or token from tolerant-php-parser
@@ -99,10 +101,11 @@ class TolerantASTConverterWithNodeMapping extends TolerantASTConverter
 
     /**
      * @param Diagnostic[] &$errors @phan-output-reference
+     * @unused-param $cache
      * @throws InvalidArgumentException for invalid $version
      * @throws Throwable (after logging) if anything is thrown by the parser
      */
-    public function parseCodeAsPHPAST(string $file_contents, int $version, array &$errors = [], Cache $unused_cache = null): \ast\Node
+    public function parseCodeAsPHPAST(string $file_contents, int $version, array &$errors = [], Cache $cache = null): \ast\Node
     {
         // Force the byte offset to be within the
         $byte_offset = \max(0, \min(\strlen($file_contents), $this->instance_desired_byte_offset));
@@ -130,9 +133,11 @@ class TolerantASTConverterWithNodeMapping extends TolerantASTConverter
     }
 
     /**
+     * @unused-param $file_contents
+     * @unused-param $version
      * @return ?string - null if this should not be cached
      */
-    public function generateCacheKey(string $unused_file_contents, int $unused_version): ?string
+    public function generateCacheKey(string $file_contents, int $version): ?string
     {
         return null;
     }

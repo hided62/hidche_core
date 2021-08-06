@@ -269,17 +269,10 @@ class AssignOperatorFlagVisitor extends FlagVisitorImplementation
             $probably_array_type = UnionType::of([ArrayType::instance(false)], $int_or_float_or_array);
             $unknown_type = UnionType::of([], $int_or_float_or_array);
         }
-        $left = UnionTypeVisitor::unionTypeFromNode(
-            $this->code_base,
-            $this->context,
-            $node->children['var']
-        );
-
-        $right = UnionTypeVisitor::unionTypeFromNode(
-            $this->code_base,
-            $this->context,
-            $node->children['expr']
-        );
+        $code_base = $this->code_base;
+        $context = $this->context;
+        $left = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $node->children['var']);
+        $right = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $node->children['expr']);
 
         // fast-track common cases
         if ($left->isNonNullIntType()
@@ -308,33 +301,37 @@ class AssignOperatorFlagVisitor extends FlagVisitorImplementation
         }
 
         $left_is_array = (
-            !$left->genericArrayElementTypes()->isEmpty()
+            !$left->genericArrayElementTypes(false, $code_base)->isEmpty()
             && $left->nonArrayTypes()->isEmpty()
         ) || $left->isType(ArrayType::instance(false));
 
         $right_is_array = (
-            !$right->genericArrayElementTypes()->isEmpty()
+            !$right->genericArrayElementTypes(false, $code_base)->isEmpty()
             && $right->nonArrayTypes()->isEmpty()
         ) || $right->isType(ArrayType::instance(false));
 
         if ($left_is_array
             && !$right->canCastToUnionType(
-                ArrayType::instance(false)->asPHPDocUnionType()
+                ArrayType::instance(false)->asPHPDocUnionType(),
+                $code_base
             )
         ) {
             Issue::maybeEmit(
-                $this->code_base,
-                $this->context,
+                $code_base,
+                $context,
                 Issue::TypeInvalidRightOperand,
                 $node->lineno ?? 0
             );
             return $unknown_type;
         } elseif ($right_is_array
-            && !$left->canCastToUnionType(ArrayType::instance(false)->asPHPDocUnionType())
+            && !$left->canCastToUnionType(
+                ArrayType::instance(false)->asPHPDocUnionType(),
+                $code_base
+            )
         ) {
             Issue::maybeEmit(
-                $this->code_base,
-                $this->context,
+                $code_base,
+                $context,
                 Issue::TypeInvalidLeftOperand,
                 $node->lineno ?? 0
             );
@@ -348,8 +345,11 @@ class AssignOperatorFlagVisitor extends FlagVisitorImplementation
         return $probably_int_or_float_type;
     }
 
-    /** @override */
-    public function visitBinaryDiv(Node $_): UnionType
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitBinaryDiv(Node $node): UnionType
     {
         // analyzed in AssignOperatorAnalysisVisitor
         return FloatType::instance(false)->asRealUnionType();
@@ -391,28 +391,40 @@ class AssignOperatorFlagVisitor extends FlagVisitorImplementation
         return FloatType::instance(false)->asRealUnionType();
     }
 
-    /** @override */
-    public function visitBinaryMod(Node $_): UnionType
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitBinaryMod(Node $node): UnionType
     {
         // analyzed in AssignOperatorAnalysisVisitor
         return IntType::instance(false)->asRealUnionType();
     }
 
-    /** @override */
-    public function visitBinaryPow(Node $_): UnionType
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitBinaryPow(Node $node): UnionType
     {
         // analyzed in AssignOperatorAnalysisVisitor
         return FloatType::instance(false)->asRealUnionType();
     }
 
-    /** @override */
-    public function visitBinaryShiftLeft(Node $_): UnionType
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitBinaryShiftLeft(Node $node): UnionType
     {
         return IntType::instance(false)->asRealUnionType();
     }
 
-    /** @override */
-    public function visitBinaryShiftRight(Node $_): UnionType
+    /**
+     * @unused-param $node
+     * @override
+     */
+    public function visitBinaryShiftRight(Node $node): UnionType
     {
         return IntType::instance(false)->asRealUnionType();
     }

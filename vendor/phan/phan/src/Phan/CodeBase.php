@@ -39,6 +39,10 @@ use Phan\Plugin\ConfigPluginSet;
 use ReflectionClass;
 
 use function count;
+use function get_defined_constants;
+use function get_extension_funcs;
+use function get_loaded_extensions;
+use function is_array;
 use function strtolower;
 
 use const STDERR;
@@ -392,13 +396,48 @@ class CodeBase
      */
     private function addClassesByNames(array $class_name_list): void
     {
+        $included_extension_subset = self::getIncludedExtensionSubset();
         foreach ($class_name_list as $class_name) {
             $reflection_class = new \ReflectionClass($class_name);
-            if (!$reflection_class->isUserDefined()) {
-                // include internal classes, but not external classes such as composer
-                $this->addReflectionClass($reflection_class);
+            if ($reflection_class->isUserDefined()) {
+                continue;
             }
+            if (is_array($included_extension_subset) && !isset($included_extension_subset[strtolower($reflection_class->getExtensionName() ?: '')])) {
+                // Allow preventing Phan from loading type information for a subset of extensions.
+                // This is useful if you have an extension installed locally (e.g. FFI, ast) but it won't be available in the target environment/php version.
+                continue;
+            }
+            // include internal classes, but not external classes such as composer
+            $this->addReflectionClass($reflection_class);
         }
+    }
+
+    /**
+     * @return ?array<string,true> if non-null, the subset of extensions phan will limit the loading of reflection information to.
+     */
+    private static function getIncludedExtensionSubset(): ?array
+    {
+        $included_extension_subset = Config::getValue('included_extension_subset');
+        if (!is_array($included_extension_subset)) {
+            return null;
+        }
+        $map = [
+            'core' => true,
+            'date' => true,
+            // 'hash' => true,  // always enabled in 7.4.0, too new
+            // 'json' => true,  // always enabled in 8.0.0, too new
+            'pcre' => true,
+            'reflection' => true,
+            'spl' => true,
+            'standard' => true,
+        ];
+        foreach ($included_extension_subset as $name) {
+            if ($name === 'user') {
+                continue;
+            }
+            $map[strtolower($name)] = true;
+        }
+        return $map;
     }
 
     /**
@@ -407,10 +446,28 @@ class CodeBase
      */
     private function addGlobalConstantsByNames(array $const_name_list): void
     {
+        $included_extension_subset = self::getIncludedExtensionSubset();
+        if (is_array($included_extension_subset)) {
+            $excluded_constant_set = [];
+            foreach (get_defined_constants(true) as $ext_name => $constant_values) {
+                if (isset($included_extension_subset[strtolower($ext_name)])) {
+                    continue;
+                }
+                foreach ($constant_values as $constant_name => $_) {
+                    $excluded_constant_set[$constant_name] = true;
+                }
+            }
+            foreach ($const_name_list as $i => $const_name) {
+                if (isset($excluded_constant_set[$const_name])) {
+                    unset($const_name_list[$i]);
+                }
+            }
+        }
         foreach ($const_name_list as $const_name) {
             // #1015 workaround for empty constant names ('' and '0').
             if (!\is_string($const_name)) {
-                \fprintf(STDERR, "Saw constant with non-string name of %s. There may be a bug in a PECL extension you are using (php -m will list those)\n", \var_export($const_name, true));
+                // @phan-suppress-next-line PhanPluginRemoveDebugCall
+                \fprintf(STDERR, "Saw constant with non-string name of %s. There may be a bug in a PECL extension you are using (php -m will list those)\n", \var_representation($const_name));
                 continue;
             }
             try {
@@ -432,7 +489,8 @@ class CodeBase
         if (\strncmp($const_name, "\x00apc_", 5) === 0) {
             return;
         }
-        \fprintf(STDERR, "Failed to load global constant value for %s, continuing: %s\n", \var_export($const_name, true), $e->getMessage());
+        // @phan-suppress-next-line PhanPluginRemoveDebugCall
+        \fprintf(STDERR, "Failed to load global constant value for %s, continuing: %s\n", \var_representation($const_name), $e->getMessage());
     }
 
     /**
@@ -515,6 +573,25 @@ class CodeBase
      */
     private function addInternalFunctionsByNames(array $internal_function_name_list): void
     {
+        $included_extension_subset = self::getIncludedExtensionSubset();
+        if (is_array($included_extension_subset)) {
+            $forbidden_function_set = [];
+            // Forbid functions both from extensions and zend_extensions such as xdebug
+            foreach (get_loaded_extensions() as $ext_name) {
+                if (isset($included_extension_subset[strtolower($ext_name)])) {
+                    continue;
+                }
+                foreach (get_extension_funcs($ext_name) ?: [] as $function_name) {
+                    $forbidden_function_set[strtolower($function_name)] = true;
+                }
+            }
+            foreach ($internal_function_name_list as $i => $function_name) {
+                if (isset($forbidden_function_set[$function_name])) {
+                    unset($internal_function_name_list[$i]);
+                }
+            }
+        }
+
         foreach ($internal_function_name_list as $function_name) {
             $this->internal_function_fqsen_set->attach(FullyQualifiedFunctionName::fromFullyQualifiedString($function_name));
         }
@@ -572,7 +649,7 @@ class CodeBase
     }
 
     /**
-     * @param array{clone:CodeBase,callbacks:?(Closure():void)[]} $restore_point
+     * @param array{clone:CodeBase,callbacks:(?Closure():void)[]} $restore_point
      */
     public function restoreFromRestorePoint(array $restore_point): void
     {
@@ -1106,7 +1183,7 @@ class CodeBase
     {
         $set = clone($this->method_set);
         foreach ($this->fqsen_func_map as $value) {
-            // @phan-suppress-next-line PhanTypeMismatchArgument deliberately adding different class instances to an existing set
+            // @phan-suppress-next-line PhanTypeMismatchArgument, PhanPartialTypeMismatchArgument deliberately adding different class instances to an existing set
             $set->attach($value);
         }
         return $set;
@@ -1119,25 +1196,6 @@ class CodeBase
     public function getMethodSet(): Set
     {
         return $this->method_set;
-    }
-
-    /**
-     * @return array<string,list<Method>>
-     * @deprecated
-     * @suppress PhanUnreferencedPublicMethod
-     */
-    public function getMethodsGroupedByDefiningFQSEN(): array
-    {
-        $methods_by_defining_fqsen = [];
-        foreach ($this->method_set as $method) {
-            $defining_fqsen = $method->getDefiningFQSEN()->__toString();
-            $real_defining_fqsen = $method->getRealDefiningFQSEN()->__toString();
-            $methods_by_defining_fqsen[$defining_fqsen][] = $method;
-            if ($real_defining_fqsen !== $defining_fqsen) {
-                $methods_by_defining_fqsen[$real_defining_fqsen][] = $method;
-            }
-        }
-        return $methods_by_defining_fqsen;
     }
 
     /**
@@ -1504,10 +1562,15 @@ class CodeBase
                 $canonical_fqsen,
                 $signature
             ) as $function) {
+                if ($name === 'each' && Config::get_closest_target_php_version_id() >= 70200) {
+                    $function->setIsDeprecated(true);
+                }
                 if ($found) {
                     $reflection_function = new \ReflectionFunction($name);
-                    $function->setIsDeprecated($reflection_function->isDeprecated());
-                    $real_return_type = UnionType::fromReflectionType($reflection_function->getReturnType());
+                    if ($reflection_function->isDeprecated()) {
+                        $function->setIsDeprecated(true);
+                    }
+                    $real_return_type = FunctionFactory::getRealReturnTypeFromReflection($reflection_function);
                     if (Config::getValue('assume_real_types_for_internal_functions')) {
                         // @phan-suppress-next-line PhanAccessMethodInternal
                         $real_type_string = UnionType::getLatestRealFunctionSignatureMap(Config::get_closest_target_php_version_id())[$name] ?? null;
@@ -1521,7 +1584,10 @@ class CodeBase
                         $function->setUnionType(UnionType::of($function->getUnionType()->getTypeSet() ?: $real_type_set, $real_type_set));
                     }
 
-                    $function->setRealParameterList(Parameter::listFromReflectionParameterList($reflection_function->getParameters()));
+                    $real_parameter_list = Parameter::listFromReflectionParameterList($reflection_function->getParameters());
+                    $function->setRealParameterList($real_parameter_list);
+                    // @phan-suppress-next-line PhanAccessMethodInternal
+                    $function->inheritRealParameterDefaults();
                 }
                 $this->addFunction($function);
                 $this->updatePluginsOnLazyLoadInternalFunction($function);
@@ -1983,11 +2049,12 @@ class CodeBase
     }
 
     /**
+     * @unused-param $context
      * @return list<FullyQualifiedClassName> 0 or more namespaced class names found in this code base
      */
     public function suggestSimilarClassInOtherNamespace(
         FullyQualifiedClassName $missing_class,
-        Context $unused_context
+        Context $context
     ): array {
         $class_name = $missing_class->getName();
         $class_name_lower = strtolower($class_name);
@@ -2010,12 +2077,13 @@ class CodeBase
     }
 
     /**
+     * @unused-param $context
      * @return list<FullyQualifiedFunctionName> 0 or more namespaced function names found in this code base with the same name but different namespaces
      */
     public function suggestSimilarGlobalFunctionInOtherNamespace(
         string $namespace,
         string $function_name,
-        Context $unused_context,
+        Context $context,
         bool $include_same_namespace = false
     ): array {
         $function_name_lower = strtolower($function_name);
@@ -2037,6 +2105,53 @@ class CodeBase
         return \array_map(static function (string $namespace_name) use ($function_name): FullyQualifiedFunctionName {
             return FullyQualifiedFunctionName::make($namespace_name, $function_name);
         }, $namespaces_for_function);
+    }
+
+    private static function phpVersionIdToString(int $php_version_id): string
+    {
+        return \sprintf('%d.%d', $php_version_id / 10000, ($php_version_id / 100) % 100);
+    }
+
+    /**
+     * @unused-param $context
+     * @return list<string> 0 or more namespaced function names found in this code base for newer php versions
+     */
+    public function suggestSimilarGlobalFunctionInNewerVersion(
+        string $namespace,
+        string $function_name,
+        Context $context,
+        bool $suggest_in_global_namespace
+    ): array {
+        if (!$suggest_in_global_namespace && $namespace !== '\\') {
+            return [];
+        }
+        $target_php_version_config = Config::get_closest_target_php_version_id();
+        $target_php_version = (int)\floor(\min($target_php_version_config, \PHP_VERSION_ID) / 100) * 100;
+        $targets = [50600, 70000, 70100, 70200, 70300, 70400, 80000];
+        $function_name_lower = strtolower($function_name);
+        foreach ($targets as $i => $target) {
+            // If $target_php_version is 7.1 only check for functions added in 7.2 or newer that weren't in the previous version.
+            // Don't suggest functions added in 7.1
+            $next_target = $targets[$i + 1] ?? 0;
+            if (!$next_target || $next_target <= $target_php_version) {
+                continue;
+            }
+            $signature_map = UnionType::internalFunctionSignatureMap($next_target);
+            if (isset($signature_map[$function_name_lower])) {
+                $old_signature_map = UnionType::internalFunctionSignatureMap($target);
+                if (!isset($old_signature_map[$function_name_lower])) {
+                    $details = \sprintf('target_php_version=%s run with PHP %s', self::phpVersionIdToString($target_php_version_config), self::phpVersionIdToString(\PHP_VERSION_ID));
+                    $suggestion = \sprintf(
+                        '(to use the function %s() added in PHP %s in a project with %s without a polyfill parsed by Phan)',
+                        $function_name,
+                        self::phpVersionIdToString($next_target),
+                        $details
+                    );
+                    return [$suggestion];
+                }
+            }
+        }
+        return [];
     }
 
     /**
@@ -2094,8 +2209,9 @@ class CodeBase
         if (!$class->isClass()) {
             return null;
         }
-        if (!$class->hasMethodWithName($this, '__construct')) {
-            return null;
+        if (!$class->hasMethodWithName($this, '__construct', true)) {
+            // Allow both the constructor and the absence of a constructor
+            return $fqsen;
         }
         $class_fqsen_in_current_scope = IssueFixSuggester::maybeGetClassInCurrentScope($context);
         if ($class->getMethodByName($this, '__construct')->isAccessibleFromClass($this, $class_fqsen_in_current_scope)) {
@@ -2163,12 +2279,13 @@ class CodeBase
     }
 
     /**
+     * @unused-param $context
      * @return list<FullyQualifiedFunctionName> 0 or more namespaced function names found in this code base, from various namespaces
      */
     public function suggestSimilarGlobalFunctionForNamespaceAndName(
         string $namespace,
         string $name,
-        Context $unused_context
+        Context $context
     ): array {
         $suggester = $this->getFunctionNameSuggesterForNamespace($namespace);
         $suggested_function_names = $suggester->getSuggestions($name);
@@ -2201,6 +2318,7 @@ class CodeBase
 
     /**
      * @param int $class_suggest_type value from IssueFixSuggester::CLASS_SUGGEST_*
+     * @unused-param $context
      *
      * @return list<FullyQualifiedClassName|string> 0 or more namespaced class names found in this code base
      *
@@ -2209,7 +2327,7 @@ class CodeBase
      */
     public function suggestSimilarClassInSameNamespace(
         FullyQualifiedClassName $missing_class,
-        Context $unused_context,
+        Context $context,
         int $class_suggest_type = IssueFixSuggester::CLASS_SUGGEST_ONLY_CLASSES
     ): array {
         $namespace = $missing_class->getNamespace();

@@ -28,6 +28,22 @@ interface KindVisitor
      */
     public function visitArrayElem(Node $node);
 
+    // Attributes require AST version 80
+    /**
+     * Visit a node with kind `ast\AST_ATTRIBUTE`
+     */
+    public function visitAttribute(Node $node);
+
+    /**
+     * Visit a node with kind `ast\AST_ATTRIBUTE_LIST`
+     */
+    public function visitAttributeList(Node $node);
+
+    /**
+     * Visit a node with kind `ast\AST_ATTRIBUTE_GROUP`
+     */
+    public function visitAttributeGroup(Node $node);
+
     /**
      * Visit a node with kind `ast\AST_ARROW_FUNC`
      */
@@ -64,6 +80,11 @@ interface KindVisitor
     public function visitCall(Node $node);
 
     /**
+     * Visit a node with kind `\ast\AST_CALLABLE_CONVERT`
+     */
+    public function visitCallableConvert(Node $node);
+
+    /**
      * Visit a node with kind `\ast\AST_CAST`
      */
     public function visitCast(Node $node);
@@ -87,6 +108,11 @@ interface KindVisitor
      * Visit a node with kind `\ast\AST_CLASS_CONST_DECL`
      */
     public function visitClassConstDecl(Node $node);
+
+    /**
+     * Visit a node with kind `\ast\AST_CLASS_CONST_GROUP`
+     */
+    public function visitClassConstGroup(Node $node);
 
     /**
      * Visit a node with kind `\ast\AST_CLASS_NAME`
@@ -154,6 +180,11 @@ interface KindVisitor
     public function visitEncapsList(Node $node);
 
     /**
+     * Visit a node with kind `\ast\AST_ENUM_CASE`
+     */
+    public function visitEnumCase(Node $node);
+
+    /**
      * Visit a node with kind `\ast\AST_EXIT`
      */
     public function visitExit(Node $node);
@@ -219,9 +250,19 @@ interface KindVisitor
     public function visitMethodCall(Node $node);
 
     /**
+     * Visit a node with kind `\ast\AST_NULLSAFE_METHOD_CALL`
+     */
+    public function visitNullsafeMethodCall(Node $node);
+
+    /**
      * Visit a node with kind `\ast\AST_NAME`
      */
     public function visitName(Node $node);
+
+    /**
+     * Visit a node with kind `\ast\AST_NAMED_ARG`
+     */
+    public function visitNamedArg(Node $node);
 
     /**
      * Visit a node with kind `\ast\AST_NAMESPACE`
@@ -257,6 +298,11 @@ interface KindVisitor
      * Visit a node with kind `\ast\AST_PROP`
      */
     public function visitProp(Node $node);
+
+    /**
+     * Visit a node with kind `\ast\AST_NULLSAFE_PROP`
+     */
+    public function visitNullsafeProp(Node $node);
 
     /**
      * Visit a node with kind `\ast\AST_PROP_DECL`
@@ -314,9 +360,29 @@ interface KindVisitor
     public function visitSwitchList(Node $node);
 
     /**
+     * Visit a node with kind `\ast\AST_MATCH`
+     */
+    public function visitMatch(Node $node);
+
+    /**
+     * Visit a node with kind `\ast\AST_MATCH_ARM`
+     */
+    public function visitMatchArm(Node $node);
+
+    /**
+     * Visit a node with kind `\ast\AST_MATCH_ARM_LIST`
+     */
+    public function visitMatchArmList(Node $node);
+
+    /**
      * Visit a node with kind `\ast\AST_TYPE`
      */
     public function visitType(Node $node);
+
+    /**
+     * Visit a node with kind `\ast\AST_TYPE_INTERSECTION`
+     */
+    public function visitTypeIntersection(Node $node);
 
     /**
      * Visit a node with kind `\ast\AST_TYPE_UNION`

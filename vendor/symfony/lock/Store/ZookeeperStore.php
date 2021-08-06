@@ -37,12 +37,12 @@ class ZookeeperStore implements StoreInterface
 
     public static function createConnection(string $dsn): \Zookeeper
     {
-        if (0 !== strpos($dsn, 'zookeeper:')) {
-            throw new InvalidArgumentException(sprintf('Unsupported DSN: %s.', $dsn));
+        if (!str_starts_with($dsn, 'zookeeper:')) {
+            throw new InvalidArgumentException(sprintf('Unsupported DSN: "%s".', $dsn));
         }
 
         if (false === $params = parse_url($dsn)) {
-            throw new InvalidArgumentException(sprintf('Invalid Zookeeper DSN: %s.', $dsn));
+            throw new InvalidArgumentException(sprintf('Invalid Zookeeper DSN: "%s".', $dsn));
         }
 
         $host = $params['host'] ?? '';
@@ -108,7 +108,7 @@ class ZookeeperStore implements StoreInterface
      */
     public function waitAndSave(Key $key)
     {
-        @trigger_error(sprintf('%s() is deprecated since Symfony 4.4 and will be removed in Symfony 5.0.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('%s() is deprecated since Symfony 4.4 and will be removed in Symfony 5.0.', __METHOD__), \E_USER_DEPRECATED);
         throw new NotSupportedException();
     }
 
@@ -153,7 +153,7 @@ class ZookeeperStore implements StoreInterface
         // For example: foo/bar will become /foo-bar and /foo/bar will become /-foo-bar
         $resource = (string) $key;
 
-        if (false !== strpos($resource, '/')) {
+        if (str_contains($resource, '/')) {
             $resource = strtr($resource, ['/' => '-']).'-'.sha1($resource);
         }
 

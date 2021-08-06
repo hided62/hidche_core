@@ -29,8 +29,8 @@ use Symfony\Component\Lock\Strategy\StrategyInterface;
  */
 class CombinedStore implements StoreInterface, LoggerAwareInterface
 {
-    use LoggerAwareTrait;
     use ExpiringStoreTrait;
+    use LoggerAwareTrait;
 
     /** @var PersistingStoreInterface[] */
     private $stores;
@@ -99,8 +99,8 @@ class CombinedStore implements StoreInterface, LoggerAwareInterface
      */
     public function waitAndSave(Key $key)
     {
-        @trigger_error(sprintf('%s() is deprecated since Symfony 4.4 and will be removed in Symfony 5.0.', __METHOD__), E_USER_DEPRECATED);
-        throw new NotSupportedException(sprintf('The store "%s" does not support blocking locks.', \get_class($this)));
+        @trigger_error(sprintf('%s() is deprecated since Symfony 4.4 and will be removed in Symfony 5.0.', __METHOD__), \E_USER_DEPRECATED);
+        throw new NotSupportedException(sprintf('The store "%s" does not support blocking locks.', static::class));
     }
 
     /**
@@ -171,9 +171,14 @@ class CombinedStore implements StoreInterface, LoggerAwareInterface
         $storesCount = \count($this->stores);
 
         foreach ($this->stores as $store) {
-            if ($store->exists($key)) {
-                ++$successCount;
-            } else {
+            try {
+                if ($store->exists($key)) {
+                    ++$successCount;
+                } else {
+                    ++$failureCount;
+                }
+            } catch (\Exception $e) {
+                $this->logger->debug('One store failed to check the "{resource}" lock.', ['resource' => $key, 'store' => $store, 'exception' => $e]);
                 ++$failureCount;
             }
 

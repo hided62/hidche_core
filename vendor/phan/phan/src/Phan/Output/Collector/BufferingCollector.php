@@ -49,6 +49,7 @@ final class BufferingCollector implements IssueCollectorInterface
     /**
      * Collect issue
      * @param IssueInstance $issue
+     * @suppress PhanPluginRemoveDebugCall
      */
     public function collectIssue(IssueInstance $issue): void
     {
@@ -56,7 +57,7 @@ final class BufferingCollector implements IssueCollectorInterface
             return;
         }
         if (self::$trace_issues) {
-            CLI::printToStderr("Backtrace of $issue is:\n");
+            CLI::printToStderr("Backtrace of {$issue->getIssue()->getType()} $issue is:\n");
             if (self::$trace_issues === Issue::TRACE_VERBOSE) {
                 \phan_print_backtrace();
             } else {

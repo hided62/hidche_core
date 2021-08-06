@@ -16,9 +16,8 @@ final class None extends Option
 {
     /**
      * Get a new instance of nothing
-     * @deprecated
      */
-    public function __construct()
+    private function __construct()
     {
     }
 
@@ -70,7 +69,6 @@ final class None extends Option
     /**
      * Called automatically to instantiate shared instance
      * @internal
-     * @suppress PhanDeprecatedFunction
      */
     public static function init(): void
     {

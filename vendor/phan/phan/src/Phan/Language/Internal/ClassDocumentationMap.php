@@ -38,6 +38,7 @@ namespace Phan\Language\Internal;
  *   and what makes sense for Phan may not make sense for those projects, and vice versa.
  */
 return [
+'__PhanMissingTestClass' => 'Missing class name used by Phan for unit tests',
 'AMQPBasicProperties' => 'stub class representing AMQPBasicProperties from pecl-amqp',
 'AMQPChannel' => 'stub class representing AMQPChannel from pecl-amqp',
 'AMQPChannelException' => 'stub class representing AMQPChannelException from pecl-amqp',
@@ -322,6 +323,7 @@ created using:',
 'CommonMark\CQL' => 'CommonMark Query Language is a DSL for describing how to travel through a CommonMark Node tree implemented as a parser and compiler for a small set of instructions, and a virtual machine for executing those instructions.',
 'CommonMark\Node' => 'Represents an Abstract Node, this final abstract is not for direct use by the programmer.',
 'CommonMark\Parser' => 'Provides an incremental parser as an alternative to the simple Parsing API function',
+'COMPersistHelper' => '`COMPersistHelper` improves the interoperability of COM and PHP with regard to the `php.ini` directive open_basedir, and stream `resource`s.',
 'CompileError' => '`CompileError` is thrown for some compilation errors, which formerly issued a fatal error.',
 'Componere\Abstract\Definition' => 'This final abstract represents a class entry, and should not be used by the programmer.',
 'Componere\Definition' => 'The Definition class allows the programmer to build and register a type at runtime.
@@ -864,6 +866,7 @@ Using ObjectIds for the `_id` field provides the following additional benefits:'
 'MongoDB\Driver\BulkWrite' => 'The `MongoDB\Driver\BulkWrite` collects one or more write operations that should be sent to the server. After adding any number of insert, update, and delete operations, the collection may be executed via `MongoDB\Driver\Manager::executeBulkWrite`.
 
 Write operations may either be ordered (default) or unordered. Ordered write operations are sent to the server, in the order provided, for serial execution. If a write fails, any remaining operations will be aborted. Unordered operations are sent to the server in an arbitrary order where they may be executed in parallel. Any errors that occur are reported after all operations have been attempted.',
+'MongoDB\Driver\ClientEncryption' => 'The `MongoDB\Driver\ClientEncryption` class handles creation of data keys for client-side encryption, as well as manually encrypting and decrypting values.',
 'MongoDB\Driver\Command' => 'The `MongoDB\Driver\Command` class is a value object that represents a database command.
 
 To provide Command Helpers the `MongoDB\Driver\Command` object should be composed.',
@@ -875,6 +878,7 @@ To provide Command Helpers the `MongoDB\Driver\Command` object should be compose
 'MongoDB\Driver\Exception\CommandException' => 'Thrown when a command fails.',
 'MongoDB\Driver\Exception\ConnectionException' => 'Base class for exceptions thrown when the driver fails to establish a database connection.',
 'MongoDB\Driver\Exception\ConnectionTimeoutException' => 'Thrown when the driver fails to establish a database connection within a specified time limit (connectTimeoutMS) or server selection fails (serverSelectionTimeoutMS).',
+'MongoDB\Driver\Exception\EncryptionException' => 'Base class for exceptions thrown during client-side encryption.',
 'MongoDB\Driver\Exception\Exception' => 'Common interface for all driver exceptions. This may be used to catch only exceptions originating from the driver itself.',
 'MongoDB\Driver\Exception\ExecutionTimeoutException' => 'Thrown when a query or command fails to complete within a specified time limit (e.g. maxTimeMS).',
 'MongoDB\Driver\Exception\InvalidArgumentException' => 'Thrown when a driver method is given invalid arguments (e.g. invalid option types).',
@@ -999,8 +1003,8 @@ Prior to MongoDB 2.6.0, the getLastError command would determine whether a write
 See also an external in-depth tutorial titled Writing an OAuth Provider Service, which takes a hands-on approach to providing this service. There are also OAuth provider examples within the OAuth extensions sources.',
 'OCI-Collection' => 'OCI8 Collection functionality.',
 'OCI-Lob' => 'OCI8 LOB functionality for large binary (BLOB) and character (CLOB) objects.',
-'OCI_Collection' => 'OCI8 Collection functionality.',
-'OCI_Lob' => 'OCI8 LOB functionality for large binary (BLOB) and character (CLOB) objects.',
+'OCICollection' => 'OCI8 Collection functionality.',
+'OCILob' => 'OCI8 LOB functionality for large binary (BLOB) and character (CLOB) objects.',
 'OuterIterator' => 'Classes implementing `OuterIterator` can be used to iterate over iterators.',
 'OutOfBoundsException' => 'Exception thrown if a value is not a valid key. This represents errors that cannot be detected at compile time.',
 'OutOfRangeException' => 'Exception thrown when an illegal index was requested. This represents errors that should be detected at compile time.',

@@ -82,6 +82,8 @@ This plugin is able to resolve literals, global constants, and class constants a
 
 - **PhanPluginInvalidPregRegex**: The provided regex is invalid, according to PHP.
 - **PhanPluginInvalidPregRegexReplacement**: The replacement string template of `preg_replace` refers to a match group that doesn't exist. (e.g. `preg_replace('/x(a)/', 'y$2', $strVal)`)
+- **PhanPluginRegexDollarAllowsNewline**: `Call to {FUNCTION} used \'$\' in {STRING_LITERAL}, which allows a newline character \'\n\' before the end of the string. Add D to qualifiers to forbid the newline, m to match any newline, or suppress this issue if this is deliberate`
+  (This issue type is specific to coding style, and only checked for when configuration includes `['plugin_config' => ['regex_warn_if_newline_allowed_at_end' => true]]`)
 
 #### PrintfCheckerPlugin
 
@@ -151,12 +153,20 @@ Configuration settings can be added to `.phan/config.php`:
 If you wish to make sure that analyzed files would be accepted by those PHP versions
 (Requires that php72, php70, and php56 be locatable with the `$PATH` environment variable)
 
+As of Phan 2.7.2, it is also possible to locally configure the PHP binary (or binaries) to run syntax checks with.
+e.g. `phan --native-syntax-check php --native-syntax-check /usr/bin/php7.4` would run checks both with `php` (resolved with `$PATH`)
+and the absolute path `/usr/bin/php7.4`. (see `phan --extended-help`)
+
 #### UseReturnValuePlugin.php
 
 This plugin warns when code fails to use the return value of internal functions/methods such as `sprintf` or `array_merge` or `Exception->getCode()`.
 (functions/methods where the return value should almost always be used)
 
-- **PhanPluginUseReturnValueInternalKnown**: `Expected to use the return value of the internal function/method {FUNCTION}`,
+This also warns when using a return value of a function that returns the type `never`.
+
+- **PhanPluginUseReturnValueInternalKnown**: `Expected to use the return value of the internal function/method {FUNCTION}` (and similar issues),
+- **PhanPluginUseReturnValueGenerator**: `Expected to use the return value of the function/method {FUNCTION} returning a generator of type {TYPE}`,
+- **PhanUseReturnValueOfNever**: `Saw use of value of expression {CODE} which likely uses the function {FUNCTIONLIKE} with a return type of '{TYPE}' - this will not return normally`,
 
 `'plugin_config' => ['infer_pure_method' => true]` will make this plugin automatically infer which methods are pure, recursively.
 This is a best-effort heuristic.
@@ -177,6 +187,7 @@ Note that this prevents the hardcoded checks from working.
 
 - **PhanPluginUseReturnValue**: `Expected to use the return value of the user-defined function/method {FUNCTION} - {SCALAR}%% of calls use it in the rest of the codebase`,
 - **PhanPluginUseReturnValueInternal**: `Expected to use the return value of the internal function/method {FUNCTION} - {SCALAR}%% of calls use it in the rest of the codebase`,
+- **PhanPluginUseReturnValueGenerator**: `Expected to use the return value of the function/method {FUNCTION} returning a generator of type {TYPE}`,
 
 See [UseReturnValuePlugin.php](./UseReturnValuePlugin.php) for configuration options.
 
@@ -253,6 +264,14 @@ This uses the following heuristics to reduce the number of false positives.
 - Avoids warning when the actual return type contains multiple types and the declared return type is a single FQSEN
   (e.g. don't warn about `Subclass1|Subclass2` being more specific than `BaseClass`)
 
+#### UnsafeCodePlugin.php
+
+This warns about code constructs that may be unsafe and prone to being used incorrectly in general.
+
+- **PhanPluginUnsafeEval**: `eval() is often unsafe and may have better alternatives such as closures and is unanalyzable. Suppress this issue if you are confident that input is properly escaped for this use case and there is no better way to do this.`
+- **PhanPluginUnsafeShellExec**: `This syntax for shell_exec() ({CODE}) is easily confused for a string and does not allow proper exit code/stderr handling. Consider proc_open() instead.`
+- **PhanPluginUnsafeShellExecDynamic**: `This syntax for shell_exec() ({CODE}) is easily confused for a string and does not allow proper exit code/stderr handling, and is used with a non-constant. Consider proc_open() instead.`
+
 ### 3. Plugins Specific to Code Styles
 
 These plugins may be useful to enforce certain code styles,
@@ -300,6 +319,14 @@ The warning types for methods are below:
 - **PhanPluginDescriptionlessCommentOnPublicMethod**: `Public method {METHOD} has no readable description: {STRING_LITERAL}` (Also exists for Private and Protected)
 - **PhanPluginDuplicatePropertyDescription**: `Property {PROPERTY} has the same description as the property {PROPERTY} on line {LINE}: {COMMENT}`
 - **PhanPluginDuplicateMethodDescription**: `Method {METHOD} has the same description as the method {METHOD} on line {LINE}: {COMMENT}`
+
+#### PHPDocInWrongCommentPlugin
+
+This plugin warns about using phpdoc annotations such as `@param` in block comments(`/*`) instead of phpdoc comments(`/**`).
+This also warns about using `#` instead of `//` for line comments, because `#[` is used for php 8.0 attributes and will cause confusion.
+
+- **PhanPluginPHPDocInWrongComment**: `Saw possible phpdoc annotation in ordinary block comment {COMMENT}. PHPDoc comments should start with "/**", not "/*"`
+- **PhanPluginPHPDocHashComment**: `Saw comment starting with # in {COMMENT} - consider using // instead to avoid confusion with php 8.0 #[ attributes`
 
 #### InvalidVariableIssetPlugin.php
 
@@ -378,12 +405,18 @@ Warns about elements containing unknown types (function/method/closure return ty
 This plugin checks for duplicate expressions in a statement
 that are likely to be a bug. (e.g. `expr1 == expr`)
 
+This will significantly increase the memory used by Phan, but that's rarely an issue in small projects.
+
 - **PhanPluginDuplicateExpressionAssignment**: `Both sides of the assignment {OPERATOR} are the same: {CODE}`
 - **PhanPluginDuplicateExpressionBinaryOp**: `Both sides of the binary operator {OPERATOR} are the same: {CODE}`
 - **PhanPluginDuplicateConditionalTernaryDuplication**: `"X ? X : Y" can usually be simplified to "X ?: Y". The duplicated expression X was {CODE}`
 - **PhanPluginDuplicateConditionalNullCoalescing**: `"isset(X) ? X : Y" can usually be simplified to "X ?? Y" in PHP 7. The duplicated expression X was {CODE}`
 - **PhanPluginBothLiteralsBinaryOp**: `Suspicious usage of a binary operator where both operands are literals. Expression: {CODE} {OPERATOR} {CODE} (result is {CODE})` (e.g. warns about `null == 'a literal` in `$x ?? null == 'a literal'`)
 - **PhanPluginDuplicateConditionalUnnecessary**: `"X ? Y : Y" results in the same expression Y no matter what X evaluates to. Y was {CODE}`
+- **PhanPluginDuplicateCatchStatementBody**: `The implementation of catch({CODE}) and catch({CODE}) are identical, and can be combined if the application only needs to supports php 7.1 and newer`
+- **PhanPluginDuplicateAdjacentStatement**: `Statement {CODE} is a duplicate of the statement on the above line. Suppress this issue instance if there's a good reason for this.`
+
+  Note that equivalent catch statements may be deliberate or a coding style choice, and this plugin does not check for TODOs.
 
 #### WhitespacePlugin.php
 
@@ -496,6 +529,32 @@ Checks for complex variable access expressions `$$x`, which may be hard to read,
 
 - **PhanPluginDollarDollar**: Warns about the use of $$x, ${(expr)}, etc.
 
+### DeprecateAliasPlugin.php
+
+Makes Phan analyze aliases of global functions (e.g. `join()`, `sizeof()`) as if they were deprecated.
+Supports `--automatic-fix`.
+
+#### PHP53CompatibilityPlugin.php
+
+Catches common incompatibilities from PHP 5.3 to 5.6.
+**This plugin does not aim to be comprehensive - read the guides on https://www.php.net/manual/en/appendices.php if you need to migrate from php versions older than 5.6**
+
+`InvokePHPNativeSyntaxCheckPlugin` with `'php_native_syntax_check_binaries' => [PHP_BINARY, '/path/to/php53']` in the `'plugin_config'` is a better but slower way to check that syntax used does not cause errors in PHP 5.3.
+
+`backward_compatibility_checks` should also be enabled if migrating a project from php 5 to php 7.
+
+Emitted issue types:
+
+- **PhanPluginCompatibilityShortArray**: `Short arrays ({CODE}) require support for php 5.4+`
+- **PhanPluginCompatibilityArgumentUnpacking**: `Argument unpacking ({CODE}) requires support for php 5.6+`
+- **PhanPluginCompatibilityVariadicParam**: `Variadic functions ({CODE}) require support for php 5.6+`
+
+#### DuplicateConstantPlugin.php
+
+Checks for duplicate constant names for calls to `define()` or `const X =` within the same statement list.
+
+- **PhanPluginDuplicateConstant**: `Constant {CONST} was previously declared at line {LINE} - the previous declaration will be used instead`
+
 #### AvoidableGetterPlugin.php
 
 This plugin checks for uses of getters on `$this` that can be avoided inside of a class.
@@ -509,6 +568,33 @@ but may break code outside of the library that overrides those getters,
 or hurt the readability of code.
 
 This will also remove runtime type checks that were enforced by the getter's return type.
+
+#### ConstantVariablePlugin.php
+
+This plugin warns about using variables when they probably have only one possible scalar value (or the only inferred type is `null`).
+This may catch some logic errors such as `echo($result === null ? json_encode($result) : 'default')`, or indicate places where it may or may not be clearer to use the constant itself.
+Most of the reported issues will likely not be worth fixing, or be false positives due to references/loops.
+
+- **PhanPluginConstantVariableBool**: `Variable ${VARIABLE} is probably constant with a value of {TYPE}`
+- **PhanPluginConstantVariableNull**: `Variable ${VARIABLE} is probably constant with a value of {TYPE}`
+- **PhanPluginConstantVariableScalar**: `Variable ${VARIABLE} is probably constant with a value of {TYPE}`
+
+#### ShortArrayPlugin.php
+
+This suggests using shorter array syntaxes if supported by the `minimum_target_php_version`.
+
+- **PhanPluginLongArray**: `Should use [] instead of array()`
+- **PhanPluginLongArrayList**: `Should use [] instead of list()`
+
+#### RemoveDebugStatementPlugin.php
+
+This suggests removing debugging output statements such as `echo`, `print`, `printf`, fwrite(STDERR)`, `var_export()`, inline html, etc.
+This is only useful in applications or libraries that print output in only a few places, as a sanity check that debugging statements are not accidentally left in code.
+
+- **PhanPluginRemoveDebugEcho**: `Saw output expression/statement in {CODE}`
+- **PhanPluginRemoveDebugCall**: `Saw call to {FUNCTION} for debugging`
+
+Suppression comments can use the issue name `PhanPluginRemoveDebugAny` to suppress all issue types emitted by this plugin.
 
 ### 4. Demo plugins:
 

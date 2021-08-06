@@ -18,6 +18,10 @@ use Phan\Library\StringUtil;
 class ClassConstant extends ClassElement implements ConstantInterface
 {
     use ConstantTrait;
+    use HasAttributesTrait;
+
+    /** @var ?Comment the phpdoc comment associated with this declaration, if any exists. */
+    private $comment;
 
     /**
      * @param Context $context
@@ -78,6 +82,7 @@ class ClassConstant extends ClassElement implements ConstantInterface
      * @return FullyQualifiedClassConstantName
      * The fully-qualified structural element name of this
      * structural element
+     * @suppress PhanTypeMismatchReturn (FQSEN on declaration)
      */
     public function getFQSEN(): FQSEN
     {
@@ -100,31 +105,6 @@ class ClassConstant extends ClassElement implements ConstantInterface
             $this->name;
     }
 
-    /**
-     * @return bool
-     * True if this class constant is intended to be an override of another class constant (contains (at)override)
-     */
-    public function isOverrideIntended(): bool
-    {
-        return $this->getPhanFlagsHasState(Flags::IS_OVERRIDE_INTENDED);
-    }
-
-    /**
-     * Records whether or not this class constant is intended to be an override of another class constant (contains (at)override in PHPDoc)
-     * @param bool $is_override_intended
-
-     */
-    public function setIsOverrideIntended(bool $is_override_intended): void
-    {
-        $this->setPhanFlags(
-            Flags::bitVectorWithState(
-                $this->getPhanFlags(),
-                Flags::IS_OVERRIDE_INTENDED,
-                $is_override_intended
-            )
-        );
-    }
-
     public function getMarkupDescription(): string
     {
         $string = '';
@@ -133,6 +113,9 @@ class ClassConstant extends ClassElement implements ConstantInterface
             $string .= 'protected ';
         } elseif ($this->isPrivate()) {
             $string .= 'private ';
+        }
+        if ($this->isFinal()) {
+            $string .= 'final ';
         }
 
         $string .= 'const ' . $this->name . ' = ';
@@ -157,11 +140,24 @@ class ClassConstant extends ClassElement implements ConstantInterface
     }
 
     /**
+     * Returns true if this is a final element
+     */
+    public function isFinal(): bool
+    {
+        return $this->getFlagsHasState(\ast\flags\MODIFIER_FINAL);
+    }
+
+    /**
      * Converts this class constant to a stub php snippet that can be used by `tool/make_stubs`
      */
     public function toStub(): string
     {
-        $string = '    ';
+        $string = '';
+        if (self::shouldAddDescriptionsToStubs()) {
+            $description = (string)MarkupDescription::extractDescriptionFromDocComment($this);
+            $string .= MarkupDescription::convertStringToDocComment($description, '    ');
+        }
+        $string .= '    ';
         if ($this->isPrivate()) {
             $string .= 'private ';
         } elseif ($this->isProtected()) {
@@ -181,5 +177,21 @@ class ClassConstant extends ClassElement implements ConstantInterface
             $string .= "null;  // could not find";
         }
         return $string;
+    }
+
+    /**
+     * Set the phpdoc comment associated with this class comment.
+     */
+    public function setComment(?Comment $comment): void
+    {
+        $this->comment = $comment;
+    }
+
+    /**
+     * Get the phpdoc comment associated with this class comment.
+     */
+    public function getComment(): ?Comment
+    {
+        return $this->comment;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phan\Analysis;
 
 use AssertionError;
+use ast;
 use ast\Node;
 use Phan\AST\Visitor\KindVisitorImplementation;
 
@@ -102,7 +103,7 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
     {
         if ($cond instanceof Node) {
             // TODO: Could look up values for remaining constants and inline expressions, but doing that has low value.
-            if ($cond->kind === \ast\AST_CONST) {
+            if ($cond->kind === ast\AST_CONST) {
                 $cond_name_string = $cond->children['name']->children['name'] ?? null;
                 return \is_string($cond_name_string) && \strcasecmp($cond_name_string, 'true') === 0;
             }
@@ -166,7 +167,7 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
             // TODO: Could emit an issue as a side effect
             // Having any sort of status in a finally statement is
             // likely to have unintuitive behavior.
-            if ($finally_status & (~self::STATUS_THROW_OR_RETURN_BITMASK) === 0) {
+            if (($finally_status & (~self::STATUS_THROW_OR_RETURN_BITMASK)) === 0) {
                 return $finally_status;
             }
         } else {
@@ -236,7 +237,17 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
      */
     public function visitSwitch(Node $node): int
     {
-        return $this->visitSwitchList($node->children['stmts']);
+        $cond = $node->children['cond'];
+        if ($cond instanceof Node) {
+            $cond_status = $this->check($cond);
+            if (($cond_status & self::STATUS_PROCEED) === 0) {
+                // handle throw expressions, switch(exit()), etc.
+                return $cond_status;
+            }
+        } else {
+            $cond_status = self::STATUS_PROCEED;
+        }
+        return $this->visitSwitchList($node->children['stmts']) | ($cond_status & ~self::STATUS_PROCEED);
     }
 
     /**
@@ -317,6 +328,84 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
         return ($status & ~self::STATUS_PROCEED) | $next_status;
     }
 
+    /**
+     * @return int the corresponding status code
+     * @suppress PhanTypeMismatchArgumentNullable
+     */
+    public function visitMatch(Node $node): int
+    {
+        $status = $node->flags & self::STATUS_BITMASK;
+        if ($status) {
+            return $status;
+        }
+        $cond_status = $this->check($node->children['cond']);
+        if (($cond_status & self::STATUS_PROCEED) === 0) {
+            return $cond_status;
+        }
+        return $this->visitMatchArmList($node->children['stmts']) | ($cond_status & ~self::STATUS_PROCEED);
+    }
+
+    /**
+     * @return int the corresponding status code for the match arm list
+     */
+    public function visitMatchArmList(Node $node): int
+    {
+        $status = $node->flags & self::STATUS_BITMASK;
+        if ($status) {
+            return $status;
+        }
+        $status = $this->computeStatusOfMatchArmList($node);
+        $node->flags = $status;
+        return $status;
+    }
+
+    /**
+     * @return int the corresponding status code
+     */
+    public function visitMatchArm(Node $node): int
+    {
+        $status = $node->flags & self::STATUS_BITMASK;
+        if ($status) {
+            return $status;
+        }
+        $status = $this->computeMatchArmStatus($node);
+        $node->flags |= $status;
+        return $status;
+    }
+
+    private function computeMatchArmStatus(Node $node): int
+    {
+        ['cond' => $cond, 'expr' => $expr] = $node->children;
+        $cond_status = 0;
+        foreach ($cond->children ?? [] as $cond_expr) {
+            if (!$cond_expr instanceof Node) {
+                $cond_status |= self::STATUS_PROCEED;
+                continue;
+            }
+            $cond_status |= $this->check($cond_expr);
+            if (($cond_status & self::STATUS_PROCEED) === 0) {
+                return $cond_status;
+            }
+        }
+        return ($cond_status & ~self::STATUS_PROCEED) | ($expr instanceof Node ? $this->check($expr) : self::STATUS_PROCEED);
+    }
+
+    private function computeStatusOfMatchArmList(Node $node): int
+    {
+        $default_status = self::STATUS_THROW;  // UnhandledMatchError if no default node exists
+        $combined_status = 0;
+        foreach ($node->children as $arm_node) {
+            // @phan-suppress-next-line PhanPossiblyUndeclaredProperty
+            $arm_cond = $arm_node->children['cond'];
+            if ($arm_cond === null) {
+                $default_status = $this->visitMatchArm($arm_node);
+                continue;
+            }
+            $combined_status |= $this->visitMatchArm($arm_node);
+        }
+        return $default_status | $combined_status;
+    }
+
     public const UNEXITABLE_LOOP_INNER_STATUS = self::STATUS_PROCEED | self::STATUS_CONTINUE;
 
     public const STATUS_CONTINUE_OR_BREAK = self::STATUS_CONTINUE | self::STATUS_BREAK;
@@ -325,7 +414,6 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
     {
         // We assume foreach loops are over a finite sequence, and that it's possible for that sequence to have at least one element.
         $inner_status = $this->check($node->children['stmts']);
-
 
         // 1. break/continue apply to the inside of a loop, not outside. Not going to analyze "break 2;", may emit an info level issue in the future.
         // 2. We assume that it's possible that any given loop can have 0 iterations.
@@ -421,7 +509,7 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
     public function visitUnaryOp(Node $node): int
     {
         // Don't modify $node->flags, use unmodified flags here
-        if ($node->flags !== \ast\flags\UNARY_SILENCE) {
+        if ($node->flags !== ast\flags\UNARY_SILENCE) {
             return self::STATUS_PROCEED;
         }
         // Analyze exit status of `@expr` like `expr` (e.g. @trigger_error())
@@ -449,11 +537,47 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
         return $status;
     }
 
+    /**
+     * Determines the exit status of a static method call.
+     *
+     * @return int the corresponding status code
+     */
+    public function visitStaticCall(Node $node): int
+    {
+        // TODO: The expression or arguments might unconditionally throw, though that is rare in practice.
+        return ($node->flags & self::STATUS_BITMASK) ?: self::STATUS_PROCEED;
+    }
+
+    /**
+     * Determines the exit status of an instance method call.
+     *
+     * @return int the corresponding status code
+     * @override
+     * @see UseReturnValueVisitor::checkIfUsingFunctionThatNeverReturns()
+     */
+    public function visitMethodCall(Node $node): int
+    {
+        // TODO: The expression or arguments might unconditionally throw, though that is rare in practice.
+        return ($node->flags & self::STATUS_BITMASK) ?: self::STATUS_PROCEED;
+    }
+
+    /**
+     * Determines the exit status of an instance method call.
+     *
+     * @return int the corresponding status code
+     * @override
+     */
+    public function visitNullsafeMethodCall(Node $node): int
+    {
+        // TODO: The expression or arguments might unconditionally throw, though that is rare in practice.
+        return ($node->flags & self::STATUS_BITMASK) ?: self::STATUS_PROCEED;
+    }
+
     private static function computeStatusOfCall(Node $node): int
     {
         $expression = $node->children['expr'];
         if ($expression instanceof Node) {
-            if ($expression->kind !== \ast\AST_NAME) {
+            if ($expression->kind !== ast\AST_NAME) {
                 return self::STATUS_PROCEED;  // best guess
             }
             $function_name = $expression->children['name'];
@@ -467,7 +591,12 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
             $function_name = $expression;
         }
         if ($function_name === '') {
+            // TODO: Check for all invalid fqsens, allowing 'NS\ClassName::methodName'
             return self::STATUS_THROW;  // nonsense such as ''();
+        }
+        if ($node->children['args']->kind === ast\AST_CALLABLE_CONVERT) {
+            // This is creating a closure, not calling it.
+            return self::STATUS_PROCEED;
         }
         if ($function_name[0] === '\\') {
             $function_name = \substr($function_name, 1);
@@ -491,13 +620,14 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
         if (!($constant_ast instanceof Node)) {
             return self::STATUS_PROCEED;
         }
-        if ($constant_ast->kind !== \ast\AST_CONST) {
+        if ($constant_ast->kind !== ast\AST_CONST) {
             return self::STATUS_PROCEED;
         }
         $name = $constant_ast->children['name']->children['name'] ?? null;
         if (!\is_string($name)) {
             return self::STATUS_PROCEED;
         }
+        // The returned code for exit() is 'return', e.g. E_USER_ERROR makes trigger_error emit an error then abort execution.
         if (\in_array($name, ['E_ERROR', 'E_PARSE', 'E_CORE_ERROR', 'E_COMPILE_ERROR', 'E_USER_ERROR'], true)) {
             return self::STATUS_RETURN;
         }
@@ -515,6 +645,22 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
      * @return int the corresponding status code
      */
     public function visitStmtList(Node $node): int
+    {
+        $status = $node->flags & self::STATUS_BITMASK;
+        if ($status) {
+            return $status;
+        }
+        $status = $this->computeStatusOfBlock($node->children);
+        $node->flags = $status;
+        return $status;
+    }
+
+    /**
+     * An expression list has the weakest return status out of all of the (non-PROCEEDing) statements.
+     * @return int the corresponding status code
+     * @override
+     */
+    public function visitExprList(Node $node): int
     {
         $status = $node->flags & self::STATUS_BITMASK;
         if ($status) {
@@ -633,7 +779,7 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
             }
             $status = $this->check($child);
             if (($status & self::STATUS_PROCEED) === 0) {
-                // If it's guaranteed we won't stop after this statement,
+                // If it's guaranteed we won't proceed after this statement,
                 // then skip the subsequent statements.
                 return $status | ($maybe_status & ~self::STATUS_PROCEED);
             }

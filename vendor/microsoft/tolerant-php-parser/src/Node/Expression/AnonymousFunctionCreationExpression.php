@@ -21,6 +21,7 @@ class AnonymousFunctionCreationExpression extends Expression implements Function
     use FunctionHeader, FunctionUseClause, FunctionReturnType, FunctionBody;
 
     const CHILD_NAMES = [
+        'attributes',
         'staticModifier',
 
         // FunctionHeader
@@ -37,8 +38,7 @@ class AnonymousFunctionCreationExpression extends Expression implements Function
         // FunctionReturnType
         'colonToken',
         'questionToken',
-        'returnType',
-        'otherReturnTypes',
+        'returnTypeList',
 
         // FunctionBody
         'compoundStatementOrSemicolon'

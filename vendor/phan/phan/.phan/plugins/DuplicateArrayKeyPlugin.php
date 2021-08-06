@@ -7,6 +7,7 @@ use Phan\AST\ASTHasher;
 use Phan\AST\ASTReverter;
 use Phan\AST\UnionTypeVisitor;
 use Phan\Issue;
+use Phan\Parse\ParseVisitor;
 use Phan\PluginV3;
 use Phan\PluginV3\PluginAwarePostAnalysisVisitor;
 use Phan\PluginV3\PostAnalyzeNodeCapability;
@@ -68,10 +69,10 @@ class DuplicateArrayKeyVisitor extends PluginAwarePostAnalysisVisitor
             }
             // Skip array entries without literal keys. (Do it before resolving the key value)
             if (!is_scalar($case_cond)) {
+                $original_case_cond = $case_cond;
                 $case_cond = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $case_cond)->asSingleScalarValueOrNullOrSelf();
                 if (is_object($case_cond)) {
-                    // Skip non-literal keys.
-                    continue;
+                    $case_cond = $original_case_cond;
                 }
             }
             if (is_string($case_cond)) {
@@ -80,14 +81,18 @@ class DuplicateArrayKeyVisitor extends PluginAwarePostAnalysisVisitor
             } elseif (is_int($case_cond)) {
                 $cond_key = $case_cond;
                 $values_to_check[$i] = $case_cond;
+            } elseif (is_bool($case_cond)) {
+                $cond_key = $case_cond ? "T" : "F";
+                $values_to_check[$i] = $case_cond;
             } else {
-                $cond_key = json_encode($case_cond);
-                if (is_scalar($case_cond)) {
+                // could be literal null?
+                $cond_key = ASTHasher::hash($case_cond);
+                if (!is_object($case_cond)) {
                     $values_to_check[$i] = $case_cond;
                 }
             }
             if (isset($case_constant_set[$cond_key])) {
-                $normalized_case_cond = self::normalizeSwitchKey($case_cond);
+                $normalized_case_cond = is_object($case_cond) ? ASTReverter::toShortString($case_cond) : self::normalizeSwitchKey($case_cond);
                 $this->emitPluginIssue(
                     $this->code_base,
                     clone($this->context)->withLineNumberStart($case_node->lineno),
@@ -166,7 +171,7 @@ class DuplicateArrayKeyVisitor extends PluginAwarePostAnalysisVisitor
             if ($old_index !== null) {
                 $this->emitPluginIssue(
                     $this->code_base,
-                    clone($this->context)->withLineNumberStart($children[$i]->lineno),
+                    (clone($this->context))->withLineNumberStart($children[$i]->lineno),
                     'PhanPluginDuplicateSwitchCaseLooseEquality',
                     "Switch case({STRING_LITERAL}) is loosely equivalent (==) to an earlier case ({STRING_LITERAL}) in switch statement - the earlier entry may be chosen instead.",
                     [self::normalizeSwitchKey($values_to_check[$i]), self::normalizeSwitchKey($values_to_check[$old_index])],
@@ -174,6 +179,64 @@ class DuplicateArrayKeyVisitor extends PluginAwarePostAnalysisVisitor
                     Issue::REMEDIATION_A,
                     15072
                 );
+            }
+        }
+    }
+
+    /**
+     * @param Node $node
+     * A match expressions's arms list (AST_MATCH_ARM_LIST) node to analyze
+     * @override
+     * @suppress PhanPossiblyUndeclaredProperty
+     */
+    public function visitMatchArmList(Node $node): void
+    {
+        $children = $node->children;
+        if (!$children) {
+            // This plugin will never emit errors if there are 0 elements.
+            return;
+        }
+
+        $arm_expr_constant_set = [];
+        foreach ($children as $arm_node) {
+            foreach ($arm_node->children['cond']->children ?? [] as $arm_expr_cond) {
+                if ($arm_expr_cond === null) {
+                    continue;  // This is `default:`. php --syntax-check already checks for duplicates.
+                }
+                $lineno = $arm_expr_cond->lineno ?? $arm_node->lineno;
+                // Skip array entries without literal keys. (Do it before resolving the key value)
+                if (is_object($arm_expr_cond) && ParseVisitor::isConstExpr($arm_expr_cond, ParseVisitor::CONSTANT_EXPRESSION_FORBID_NEW_EXPRESSION)) {
+                    // Only infer the value for values not affected by conditions - that will change after the expressions are analyzed
+                    $original_cond = $arm_expr_cond;
+                    $arm_expr_cond = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $arm_expr_cond)->asSingleScalarValueOrNullOrSelf();
+                    if (is_object($arm_expr_cond)) {
+                        $arm_expr_cond = $original_cond;
+                    }
+                }
+                if (is_string($arm_expr_cond)) {
+                    $cond_key = "s$arm_expr_cond";
+                } elseif (is_int($arm_expr_cond)) {
+                    $cond_key = $arm_expr_cond;
+                } elseif (is_bool($arm_expr_cond)) {
+                    $cond_key = $arm_expr_cond ? "T" : "F";
+                } else {
+                    // TODO: This seems like it'd be flaky with ast\Node->flags and lineno?
+                    $cond_key = ASTHasher::hash($arm_expr_cond);
+                }
+                if (isset($arm_expr_constant_set[$cond_key])) {
+                    $normalized_arm_expr_cond = ASTReverter::toShortString($arm_expr_cond);
+                    $this->emitPluginIssue(
+                        $this->code_base,
+                        clone($this->context)->withLineNumberStart($lineno),
+                        'PhanPluginDuplicateMatchArmExpression',
+                        "Duplicate match arm expression({STRING_LITERAL}) detected in match expression - the later entry will be ignored in favor of expression {CODE} at line {LINE}.",
+                        [$normalized_arm_expr_cond, ASTReverter::toShortString($arm_expr_constant_set[$cond_key][0]), $arm_expr_constant_set[$cond_key][1]],
+                        Issue::SEVERITY_NORMAL,
+                        Issue::REMEDIATION_A,
+                        15071
+                    );
+                }
+                $arm_expr_constant_set[$cond_key] = [$arm_expr_cond, $arm_node->lineno];
             }
         }
     }
@@ -199,11 +262,11 @@ class DuplicateArrayKeyVisitor extends PluginAwarePostAnalysisVisitor
             }
             $key = $entry->children['key'] ?? null;
             // Skip array entries without literal keys. (Do it before resolving the key value)
-            if ($key === null) {
+            if (is_null($key)) {
                 $has_entry_without_key = true;
                 continue;
             }
-            if (!is_scalar($key)) {
+            if (is_object($key)) {
                 $key = UnionTypeVisitor::unionTypeFromNode($this->code_base, $this->context, $key)->asSingleScalarValueOrNullOrSelf();
                 if (is_object($key)) {
                     $key = self::HASH_PREFIX . ASTHasher::hash($entry->children['key']);

@@ -13,9 +13,11 @@ use Phan\CodeBase;
 use Phan\Config;
 use Phan\Language\Context;
 use Phan\Language\ElementContext;
+use Phan\Language\FileRef;
 use Phan\Language\FQSEN\FullyQualifiedMethodName;
+use Phan\Language\Scope\ClassScope;
 use Phan\Language\Scope\FunctionLikeScope;
-use Phan\Language\Type\GenericArrayType;
+use Phan\Language\Scope\GlobalScope;
 use Phan\Language\UnionType;
 use Phan\Memoize;
 
@@ -157,46 +159,11 @@ class Method extends ClassElement implements FunctionInterface
     }
 
     /**
-     * @return bool
-     * True if this method is intended to be an override of another method (contains (at)override)
-     */
-    public function isOverrideIntended(): bool
-    {
-        return $this->getPhanFlagsHasState(Flags::IS_OVERRIDE_INTENDED);
-    }
-
-    /**
-     * Sets whether this method is intended to be an override of another method (contains (at)override)
-     * @param bool $is_override_intended
-
-     */
-    public function setIsOverrideIntended(bool $is_override_intended): void
-    {
-        $this->setPhanFlags(
-            Flags::bitVectorWithState(
-                $this->getPhanFlags(),
-                Flags::IS_OVERRIDE_INTENDED,
-                $is_override_intended
-            )
-        );
-    }
-
-    /**
      * Returns true if this element is overridden by at least one other element
      */
     public function isOverriddenByAnother(): bool
     {
         return $this->getPhanFlagsHasState(Flags::IS_OVERRIDDEN_BY_ANOTHER);
-    }
-
-    /**
-     * Returns true if this element is overridden by at least one other element
-     * @deprecated use isOverriddenByAnother
-     * @suppress PhanUnreferencedPublicMethod
-     */
-    final public function getIsOverriddenByAnother(): bool
-    {
-        return $this->isOverriddenByAnother();
     }
 
     /**
@@ -274,16 +241,6 @@ class Method extends ClassElement implements FunctionInterface
     }
 
     /**
-     * Returns true if this is a magic method
-     * @deprecated use isMagic
-     * @suppress PhanUnreferencedPublicMethod
-     */
-    final public function getIsMagic(): bool
-    {
-        return $this->isMagic();
-    }
-
-    /**
      * Returns true if this is a magic method which should have return type of void
      * (Names are all normalized in FullyQualifiedMethodName::make())
      */
@@ -293,22 +250,21 @@ class Method extends ClassElement implements FunctionInterface
     }
 
     /**
-     * Returns true if this is a magic method which should have return type of void
-     * @deprecated use isMagicAndVoid
-     * @suppress PhanUnreferencedPublicMethod
-     */
-    final public function getIsMagicAndVoid(): bool
-    {
-        return $this->isMagicAndVoid();
-    }
-
-    /**
      * Returns true if this is the `__construct` method
      * (Does not return true for php4 constructors)
      */
     public function isNewConstructor(): bool
     {
+        // NOTE: This is normalized to lowercase by canonicalName
         return $this->name === '__construct';
+    }
+
+    /**
+     * Returns true if this is a placeholder for the `__construct` method that was never declared
+     */
+    public function isFakeConstructor(): bool
+    {
+        return ($this->getPhanFlags() & Flags::IS_FAKE_CONSTRUCTOR) !== 0;
     }
 
     /**
@@ -316,6 +272,7 @@ class Method extends ClassElement implements FunctionInterface
      */
     public function isMagicCall(): bool
     {
+        // NOTE: This is normalized to lowercase by canonicalName
         return $this->name === '__call';
     }
 
@@ -324,6 +281,7 @@ class Method extends ClassElement implements FunctionInterface
      */
     public function isMagicCallStatic(): bool
     {
+        // NOTE: This is normalized to lowercase by canonicalName
         return $this->name === '__callStatic';
     }
 
@@ -335,7 +293,7 @@ class Method extends ClassElement implements FunctionInterface
         Clazz $clazz,
         CodeBase $code_base
     ): Method {
-        if ($clazz->getFQSEN()->getNamespace() === '\\' && $clazz->hasMethodWithName($code_base, $clazz->getName())) {
+        if ($clazz->getFQSEN()->getNamespace() === '\\' && $clazz->hasMethodWithName($code_base, $clazz->getName(), true)) {
             $old_style_constructor = $clazz->getMethodByName($code_base, $clazz->getName());
         } else {
             $old_style_constructor = null;
@@ -363,7 +321,7 @@ class Method extends ClassElement implements FunctionInterface
             $method->setUnionType($old_style_constructor->getUnionType());
         }
 
-        $method->setPhanFlags(Flags::IS_FAKE_CONSTRUCTOR);
+        $method->setPhanFlags($method->getPhanFlags() | Flags::IS_FAKE_CONSTRUCTOR);
 
         return $method;
     }
@@ -483,8 +441,8 @@ class Method extends ClassElement implements FunctionInterface
      * @param Node $node
      * An AST node representing a method
      *
-     * @param ?Clazz $class
-     * This will be mandatory in a future Phan release
+     * @param ?Clazz $class @phan-mandatory-param
+     * This will be mandatory in a future Phan release.
      *
      * @return Method
      * A Method representing the AST node in the
@@ -538,6 +496,11 @@ class Method extends ClassElement implements FunctionInterface
             $node->children['params']
         );
         $method->setParameterList($parameter_list);
+        $method->setAttributeList(Attribute::fromNodeForAttributeList(
+            $code_base,
+            $element_context,
+            $node->children['attributes'] ?? null
+        ));
         foreach ($parameter_list as $parameter) {
             if ($parameter->getUnionType()->hasTemplateTypeRecursive()) {
                 $method->recordHasTemplateType();
@@ -710,22 +673,12 @@ class Method extends ClassElement implements FunctionInterface
             $union_type = parent::getUnionType();
         }
 
-        // If the type is 'static', add this context's class
-        // to the return type
-        if ($union_type->hasStaticType()) {
-            $union_type = $union_type->withType(
-                $this->getFQSEN()->getFullyQualifiedClassName()->asType()
-            );
-        }
-
-        // If the type is a generic array of 'static', add
-        // a generic array of this context's class to the return type
-        if ($union_type->genericArrayElementTypes()->hasStaticType()) {
-            // TODO: Base this on the static array type...
-            $key_type_enum = GenericArrayType::keyTypeFromUnionTypeKeys($union_type);
-            $union_type = $union_type->withType(
-                $this->getFQSEN()->getFullyQualifiedClassName()->asType()->asGenericArrayType($key_type_enum)
-            );
+        // If the type contains 'static', add this method's class
+        // to the return type.
+        $scope = new ClassScope(new GlobalScope(), $this->getFQSEN()->getFullyQualifiedClassName(), 0);
+        $new_union_type = $union_type->withStaticResolvedInContext((clone $this->getContext())->withScope($scope));
+        if ($new_union_type !== $union_type) {
+            $union_type = $union_type->withUnionType($new_union_type);
         }
 
         return $union_type;
@@ -736,6 +689,7 @@ class Method extends ClassElement implements FunctionInterface
         return parent::getUnionType();
     }
 
+    /** @suppress PhanTypeMismatchReturn */
     public function getFQSEN(): FullyQualifiedMethodName
     {
         return $this->fqsen;
@@ -745,7 +699,6 @@ class Method extends ClassElement implements FunctionInterface
      * @return \Generator
      * @phan-return \Generator<Method>
      * The set of all alternates to this method
-     * @suppress PhanParamSignatureMismatch
      */
     public function alternateGenerator(CodeBase $code_base): \Generator
     {
@@ -791,7 +744,7 @@ class Method extends ClassElement implements FunctionInterface
             // TODO: Handle edge cases in traits.
             // A trait may be earlier in $ancestor_class_list than the parent, but the parent may define abstract classes.
             // TODO: What about trait aliasing rules?
-            if ($ancestor_class->hasMethodWithName($code_base, $this->name)) {
+            if ($ancestor_class->hasMethodWithName($code_base, $this->name, true)) {
                 $method = $ancestor_class->getMethodByName(
                     $code_base,
                     $this->name
@@ -914,7 +867,8 @@ class Method extends ClassElement implements FunctionInterface
             $return_type = $this->real_return_type;
         }
         if ($return_type && !$return_type->isEmpty()) {
-            $string .= ' : ' . (string)$return_type;
+            // Use PSR-12 style with no space before `:`
+            $string .= ': ' . (string)$return_type;
         }
 
         return $string;
@@ -939,7 +893,14 @@ class Method extends ClassElement implements FunctionInterface
      */
     public function toStub(bool $class_is_interface = false): string
     {
-        $string = '    ';
+        $string = '';
+        if (self::shouldAddDescriptionsToStubs()) {
+            $description = (string)MarkupDescription::extractDescriptionFromDocComment($this);
+            if ($description !== '') {
+                $string .= MarkupDescription::convertStringToDocComment($description, '    ');
+            }
+        }
+        $string .= '    ';
         if ($this->isFinal()) {
             $string .= 'final ';
         }
@@ -1006,6 +967,7 @@ class Method extends ClassElement implements FunctionInterface
         }
         $expected_type = $defining_fqsen->asType();
 
+        // TODO: Handle intersection types?
         foreach ($object_union_type->getTypeSet() as $type) {
             if (!$type->hasTemplateParameterTypes()) {
                 continue;
@@ -1064,5 +1026,25 @@ class Method extends ClassElement implements FunctionInterface
             $result->reference_list = &$this->reference_list;
         }
         return $result;
+    }
+
+    /**
+     * @override
+     */
+    public function addReference(FileRef $file_ref): void
+    {
+        if (Config::get_track_references()) {
+            // Currently, we don't need to track references to PHP-internal methods/functions/constants
+            // such as PHP_VERSION, strlen(), Closure::bind(), etc.
+            // This may change in the future.
+            if ($this->isPHPInternal()) {
+                return;
+            }
+            if ($file_ref instanceof Context && $file_ref->isInFunctionLikeScope() && $file_ref->getFunctionLikeFQSEN() === $this->fqsen) {
+                // Don't track methods calling themselves
+                return;
+            }
+            $this->reference_list[$file_ref->__toString()] = $file_ref;
+        }
     }
 }

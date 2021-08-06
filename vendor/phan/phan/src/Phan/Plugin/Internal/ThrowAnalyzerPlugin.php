@@ -7,6 +7,7 @@ namespace Phan\Plugin\Internal;
 use AssertionError;
 use ast;
 use ast\Node;
+use Phan\AST\ASTReverter;
 use Phan\AST\ContextNode;
 use Phan\AST\UnionTypeVisitor;
 use Phan\CodeBase;
@@ -97,19 +98,25 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitThrow(Node $node): void
     {
-        $context = $this->context;
-        if (!$context->isInFunctionLikeScope()) {
-            return;
-        }
         $code_base = $this->code_base;
-
+        $context = $this->context;
         $union_type = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $node->children['expr']);
         $union_type = $this->withoutCaughtUnionTypes($union_type, true);
         if ($union_type->isEmpty()) {
             // Give up if we don't know
             return;
         }
+        if (!$context->isInFunctionLikeScope()) {
+            $this->warnAboutPossiblyThrownTypeIgnoringFunctionThrowsComment($node, $union_type, null);
+            return;
+        }
+
         $analyzed_function = $context->getFunctionLikeInScope($code_base);
+        if (!Config::getValue('warn_about_undocumented_throw_statements')) {
+            $this->warnAboutPossiblyThrownTypeIgnoringFunctionThrowsComment($node, $union_type, $analyzed_function);
+            return;
+        }
+
         if (Config::get_closest_target_php_version_id() < 70400) {
             if ($analyzed_function instanceof Method && \strcasecmp('__toString', $analyzed_function->getName()) === 0) {
                 $this->emitIssue(
@@ -133,7 +140,7 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
                 // @phan-suppress-next-line PhanThrowTypeAbsentForCall hopefully impossible to see for this AST
                 $caught_union_type = UnionTypeVisitor::unionTypeFromClassNode($code_base, $context, $catch_node->children['class']);
                 foreach ($union_type->getTypeSet() as $type) {
-                    if (!$type->asExpandedTypes($code_base)->canCastToUnionType($caught_union_type)) {
+                    if (!$type->asPHPDocUnionType()->canCastToUnionType($caught_union_type, $code_base)) {
                         $union_type = $union_type->withoutType($type);
                         if ($union_type->isEmpty()) {
                             return;
@@ -172,7 +179,7 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
                 // @phan-suppress-next-line PhanThrowTypeAbsentForCall hopefully impossible to see for this AST
                 $caught_union_type = UnionTypeVisitor::unionTypeFromClassNode($this->code_base, $this->context, $catch_node->children['class']);
                 foreach ($union_type->getTypeSet() as $type) {
-                    if ($type->asExpandedTypes($this->code_base)->canCastToUnionType($caught_union_type)) {
+                    if ($type->asPHPDocUnionType()->canCastToUnionType($caught_union_type, $this->code_base)) {
                         $union_type = $union_type->withoutType($type);
                         if ($union_type->isEmpty()) {
                             return $union_type;
@@ -184,15 +191,30 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
         return $union_type;
     }
 
+    /**
+     * @param Node $node a node of kind ast\AST_THROW
+     */
     protected function warnAboutPossiblyThrownType(
         Node $node,
         FunctionInterface $analyzed_function,
         UnionType $union_type,
         FunctionInterface $call = null
     ): void {
+        if ($union_type->isEmpty()) {
+            return;
+        }
+        if (!$union_type->canCastToDeclaredType($this->code_base, $this->context, UnionType::fromFullyQualifiedRealString('\Throwable'))) {
+            $this->emitIssue(
+                Issue::TypeInvalidThrowStatementNonThrowable,
+                $node->lineno,
+                $analyzed_function->getRepresentationForIssue(),
+                ASTReverter::toShortString($node->children['expr']),
+                (string)$union_type,
+                '\Throwable'
+            );
+        }
         foreach ($union_type->getTypeSet() as $type) {
-            $expanded_type = $type->asExpandedTypes($this->code_base);
-            if (!$this->shouldWarnAboutThrowType($expanded_type)) {
+            if (!$this->shouldWarnAboutThrowType($type)) {
                 continue;
             }
             if ($type->hasTemplateTypeRecursive()) {
@@ -213,12 +235,13 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
                         Issue::ThrowTypeAbsent,
                         $node->lineno,
                         $analyzed_function->getRepresentationForIssue(),
+                        ASTReverter::toShortString($node->children['expr']),
                         (string)$union_type
                     );
                 }
                 continue;
             }
-            if (!$expanded_type->canCastToUnionType($throws_union_type)) {
+            if (!$type->asPHPDocUnionType()->canCastToUnionType($throws_union_type, $this->code_base)) {
                 if ($call !== null) {
                     $this->emitIssue(
                         Issue::ThrowTypeMismatchForCall,
@@ -233,11 +256,36 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
                         Issue::ThrowTypeMismatch,
                         $node->lineno,
                         $analyzed_function->getRepresentationForIssue(),
+                        ASTReverter::toShortString($node->children['expr']),
                         (string)$union_type,
                         $throws_union_type
                     );
                 }
             }
+        }
+    }
+
+    /**
+     * @param Node $node a node of kind ast\AST_THROW
+     */
+    protected function warnAboutPossiblyThrownTypeIgnoringFunctionThrowsComment(
+        Node $node,
+        UnionType $union_type,
+        ?FunctionInterface $analyzed_function
+    ): void {
+        if ($union_type->isEmpty()) {
+            return;
+        }
+        $throwable = UnionType::fromFullyQualifiedRealString('\Throwable');
+        if (!$union_type->canCastToDeclaredType($this->code_base, $this->context, $throwable)) {
+            $this->emitIssue(
+                Issue::TypeInvalidThrowStatementNonThrowable,
+                $node->lineno,
+                $analyzed_function ? $analyzed_function->getRepresentationForIssue() : '(top level statement)',
+                ASTReverter::toShortString($node->children['expr']),
+                (string)$union_type,
+                '\Throwable'
+            );
         }
     }
 
@@ -261,13 +309,13 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
     /**
      * Check if the user wants to warn about a given throw type.
      */
-    protected function shouldWarnAboutThrowType(UnionType $expanded_type): bool
+    protected function shouldWarnAboutThrowType(Type $type): bool
     {
         $ignore_union_type = $this->getConfiguredIgnoreThrowsUnionType();
         if ($ignore_union_type->isEmpty()) {
             return true;
         }
-        return !$expanded_type->canCastToUnionType($ignore_union_type);
+        return !$type->isSubtypeOfAnyTypeInSet($ignore_union_type->getTypeSet(), $this->code_base);
     }
 }
 
@@ -285,6 +333,10 @@ class ThrowRecursiveVisitor extends ThrowVisitor
     {
         $context = $this->context;
         if (!$context->isInFunctionLikeScope()) {
+            return;
+        }
+        if ($node->children['args']->kind === ast\AST_CALLABLE_CONVERT) {
+            // This is creating a callable instead of calling the function.
             return;
         }
         $code_base = $this->code_base;
@@ -312,10 +364,22 @@ class ThrowRecursiveVisitor extends ThrowVisitor
     /**
      * @override
      */
+    public function visitNullsafeMethodCall(Node $node): void
+    {
+        $this->visitMethodCall($node);
+    }
+
+    /**
+     * @override
+     */
     public function visitMethodCall(Node $node): void
     {
         $context = $this->context;
         if (!$context->isInFunctionLikeScope()) {
+            return;
+        }
+        if ($node->children['args']->kind === ast\AST_CALLABLE_CONVERT) {
+            // This is creating a callable instead of calling the method.
             return;
         }
         $code_base = $this->code_base;
@@ -334,10 +398,8 @@ class ThrowRecursiveVisitor extends ThrowVisitor
                 $context,
                 $node
             ))->getMethod($method_name, false, true);
-        } catch (IssueException $_) {
+        } catch (IssueException | NodeException $_) {
             // do nothing, PostOrderAnalysisVisitor should catch this
-            return;
-        } catch (NodeException $_) {
             return;
         }
         $analyzed_function = $context->getFunctionLikeInScope($code_base);
@@ -357,6 +419,10 @@ class ThrowRecursiveVisitor extends ThrowVisitor
     {
         $context = $this->context;
         if (!$context->isInFunctionLikeScope()) {
+            return;
+        }
+        if ($node->children['args']->kind === ast\AST_CALLABLE_CONVERT) {
+            // This is creating a callable instead of calling the method.
             return;
         }
         $code_base = $this->code_base;

@@ -88,10 +88,9 @@ class VariadicParameter extends Parameter
      *
      * If this parameter is not variadic, returns $this.
      *
-     * @return static
      * @override
      */
-    public function asNonVariadic()
+    public function asNonVariadic(): Parameter
     {
         // TODO: Is it possible to cache this while maintaining
         //       correctness? PostOrderAnalysisVisitor clones the
@@ -104,7 +103,7 @@ class VariadicParameter extends Parameter
         // e.g. $this->getUnionType() is of type T[]
         //      $this->non_variadic->getUnionType() is of type T
         return new Parameter(
-            // @phan-suppress-next-line PhanTypeMismatchArgument Here it's fine to pass a FileRef
+            // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType Here it's fine to pass a FileRef
             $this->getFileRef(),
             $this->getName(),
             $this->type,

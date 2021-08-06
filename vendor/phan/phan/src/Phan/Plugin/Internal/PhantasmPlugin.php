@@ -77,7 +77,6 @@ final class PhantasmPlugin extends PluginV3 implements
                 }
                 return $result;
             } elseif ($token instanceof Token) {
-                // @phan-suppress-next-line PhanPartialTypeMismatchReturn
                 $token_text = $token->getFullText($file_contents);
                 // echo "token_text='''$token_text'''\n";
                 return $token_text;
@@ -88,8 +87,11 @@ final class PhantasmPlugin extends PluginV3 implements
         throw new AssertionError("Unexpected node type " . gettype($token));
     }
 
-    /** @suppress PhanUndeclaredProperty */
-    public function afterAnalyzeFile(CodeBase $unused_code_base, Context $context, string $file_contents, Node $node): void
+    /**
+     * @unused-param $code_base
+     * @suppress PhanUndeclaredProperty
+     */
+    public function afterAnalyzeFile(CodeBase $code_base, Context $context, string $file_contents, Node $node): void
     {
         $path = $context->getFile();
         if (Paths::isAbsolutePath($path) ||  \strpos($path, '../') !== false) {
@@ -138,7 +140,10 @@ final class PhantasmPlugin extends PluginV3 implements
         }
     }
 
-    public function finalizeProcess(CodeBase $unused_code_base): void
+    /**
+     * @unused-param $code_base
+     */
+    public function finalizeProcess(CodeBase $code_base): void
     {
         foreach ($this->deferred_writes as $output_file => $new_file_contents) {
             $output_file = (string)$output_file;

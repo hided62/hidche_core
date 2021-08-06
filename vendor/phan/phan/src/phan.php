@@ -10,18 +10,20 @@ gc_disable();
 // Check the environment to make sure Phan can run successfully
 require_once(__DIR__ . '/requirements.php');
 
-// Build a code base based on PHP internally defined
-// functions, methods and classes before loading our
-// own
-$code_base = require_once(__DIR__ . '/codebase.php');
-
 require_once(__DIR__ . '/Phan/Bootstrap.php');
 
 use Phan\CLI;
+use Phan\Config;
 use Phan\Phan;
 
 // Create our CLI interface and load arguments
 $cli = CLI::fromArgv();
+
+// Build a code base based after parsing the configuration,
+// so that included_extension_subset will work.
+//
+// Phan filters out user-defined functions/classes/constants.
+$code_base = require(__DIR__ . '/codebase.php');
 
 // Analyze the file list provided via the CLI
 $is_issue_found =
@@ -38,4 +40,4 @@ $is_issue_found =
 
 // Provide an exit status code based on if
 // issues were found
-exit($is_issue_found ? EXIT_ISSUES_FOUND : EXIT_SUCCESS);
+exit($is_issue_found && !Config::getValue('__always_exit_successfully_after_analysis') ? EXIT_ISSUES_FOUND : EXIT_SUCCESS);

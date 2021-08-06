@@ -89,15 +89,24 @@ final class CompletionRequest extends NodeInfoRequest
         $this->recordCompletionItem($item);
     }
 
-    private function recordCompletionItem(CompletionItem $item): void
+    /**
+     * Record the existence of a completion item.
+     *
+     * A completion item should include a 'label', a valid 'kind', and 'insertText'. 'detail' and 'documentation' are optional.
+     * @see self::useVSCodeCompletion()
+     */
+    public function recordCompletionItem(CompletionItem $item): void
     {
         $this->completions[$item->label . ':' . $item->kind] = $item;
     }
 
+    /**
+     * @unused-param $code_base
+     */
     private static function createCompletionItem(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         TypedElementInterface $element,
-        string $prefix = null
+        ?string $prefix = null
     ): CompletionItem {
         $item = new CompletionItem();
         $item->label = self::labelForElement($element);

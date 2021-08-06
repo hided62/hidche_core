@@ -101,7 +101,7 @@ class Daemon
                     \restore_error_handler();
                 }
 
-                if (!\is_resource($conn)) {
+                if (!$conn) {
                     // If we didn't get a connection, and it wasn't due to a signal from a child process, then stop the daemon.
                     break;
                 }
@@ -156,7 +156,7 @@ class Daemon
                     \restore_error_handler();
                 }
 
-                if (!\is_resource($conn)) {
+                if (!$conn) {
                     // If we didn't get a connection, and it wasn't due to a signal from a child process, then stop the daemon.
                     break;
                 }
@@ -188,18 +188,18 @@ class Daemon
      */
     private static function analyzeDaemonRequestOnMainThread(CodeBase $code_base, Request $request): void
     {
-        $restore_point = $code_base->createRestorePoint();
-
         // Stop tracking undo operations, now that the parse phase is done.
         // TODO: Save and reset $code_base in place
         $analyze_file_path_list = $request->filterFilesToAnalyze($code_base->getParsedFilePathList());
-        $code_base->disableUndoTracking();
         Phan::setPrinter($request->getPrinter());
         if (\count($analyze_file_path_list) === 0) {
             // Nothing to do, don't start analysis
             $request->respondWithNoFilesToAnalyze();  // respond and exit.
             return;
         }
+        $restore_point = $code_base->createRestorePoint();
+        $code_base->disableUndoTracking();
+
         $temporary_file_mapping = $request->getTemporaryFileMapping();
 
         try {
@@ -224,10 +224,11 @@ class Daemon
         } else {
             throw new InvalidArgumentException("Should not happen, no port/socket for daemon to listen on.");
         }
+        // @phan-suppress-next-line PhanPluginRemoveDebugCall this is deliberate output.
         \printf(
             "Listening for Phan analysis requests at %s\nAwaiting analysis requests for directory %s\n",
             $listen_url,
-            \var_export(Config::getProjectRootDirectory(), true)
+            \var_representation(Config::getProjectRootDirectory())
         );
         $socket_server = \stream_socket_server($listen_url, $errno, $errstr);
         if (!$socket_server) {
@@ -253,6 +254,7 @@ class Daemon
             } else {
                 $message = $format;
             }
+            // @phan-suppress-next-line PhanPluginRemoveDebugCall printing to stderr is deliberate
             \fwrite(\STDERR, $message . "\n");
         }
     }

@@ -50,6 +50,9 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
     public static function getReturnTypeOverridesStatic(CodeBase $code_base): array
     {
         $string_union_type = StringType::instance(false)->asPHPDocUnionType();
+        $string_union_type_real = StringType::instance(false)->asRealUnionType();
+        $string_union_type_with_false_in_real = UnionType::fromFullyQualifiedPHPDocAndRealString('string', 'string|false');
+        $string_union_type_with_null_in_real = UnionType::fromFullyQualifiedPHPDocAndRealString('string', '?string');
         $true_union_type = TrueType::instance(false)->asPHPDocUnionType();
         $string_or_true_union_type = $string_union_type->withUnionType($true_union_type);
         $void_union_type = VoidType::instance(false)->asPHPDocUnionType();
@@ -108,7 +111,7 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
             $string_union_type
         ): UnionType {
             //PHP 8 will throw a DivisionByZero error instead of returning null
-            if (Config::getValue('target_php_version') >= 80000) {
+            if (Config::get_closest_target_php_version_id() >= 80000) {
                 return $string_union_type;
             }
             if (count($args) <= 1) {
@@ -217,12 +220,12 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
             }
             $union_type = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $args[2]);
             $has_array = $union_type->hasArray();
-            if ($union_type->canCastToUnionType($string_union_type)) {
+            if ($union_type->canCastToUnionType($string_union_type, $code_base)) {
                 return $has_array ? $str_replace_types : $string_union_type;
             }
             return $has_array ? $str_array_type : $str_replace_types;
         };
-        $string_or_false = UnionType::fromFullyQualifiedPHPDocString('string|false');
+        $string_or_false = UnionType::fromFullyQualifiedRealString('string|false');
         /**
          * @param list<Node|int|float|string> $args
          */
@@ -247,11 +250,20 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
             array $args
         ) use (
             $string_or_false,
-            $string_union_type
-): UnionType {
+            $string_union_type_with_false_in_real,
+            $string_union_type_real
+        ): UnionType {
+            if (Config::get_closest_target_php_version_id() >= 80000) {
+                if (Config::get_closest_minimum_target_php_version_id() >= 80000) {
+                    // Avoid false positive PhanRedundantCondition in projects that need to support php versions before 8.0
+                    return $string_union_type_real;
+                }
+                // Avoid false positives with strict type checking and assume phpdoc type of string.
+                return $string_union_type_with_false_in_real;
+            }
             if (count($args) >= 2 && is_int($args[1]) && $args[1] <= 0) {
                 // Cut down on false positive warnings about substr($str, 0, $len) possibly being false
-                return $string_union_type;
+                return $string_union_type_with_false_in_real;
             }
             return $string_or_false;
         };
@@ -306,16 +318,16 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
             Func $unused_function,
             array $args
         ) use (
-            $string_union_type
+            $string_union_type_with_null_in_real
 ): UnionType {
             if (count($args) !== 1) {
                 if (count($args) !== 2) {
                     // Cut down on false positive warnings about substr($str, 0, $len) possibly being false
-                    return $string_union_type;
+                    return $string_union_type_with_null_in_real;
                 }
                 $levels = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $args[1])->asSingleScalarValueOrNull();
                 if (!is_int($levels)) {
-                    return $string_union_type;
+                    return $string_union_type_with_null_in_real;
                 }
                 if ($levels <= 0) {
                     // TODO: Could warn but not common
@@ -326,7 +338,7 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
             }
             $arg = UnionTypeVisitor::unionTypeFromNode($code_base, $context, $args[0])->asSingleScalarValueOrNull();
             if (!is_string($arg)) {
-                return $string_union_type;
+                return $string_union_type_with_null_in_real;
             }
 
             $result = \dirname($arg, $levels);
@@ -360,6 +372,27 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
                 $is_php8 ? 'non-empty-list<string>' : '?non-empty-list<string>'
             );
         };
+        /**
+         * @param list<Node|int|float|string> $args
+         */
+        $one_or_two_string_handler = static function (
+            CodeBase $code_base,
+            Context $context,
+            Func $function,
+            array $args
+        ): UnionType {
+            if (Config::get_closest_target_php_version_id() >= 80000) {
+                return StringType::instance(false)->asRealUnionType();
+            }
+            if (count($args) >= 1 && count($args) <= 2) {
+                if (UnionTypeVisitor::unionTypeFromNode($code_base, $context, $args[0])->getRealUnionType()->isNonNullStringType()) {
+                    if (!isset($args[1]) || is_string($args[1]) || UnionTypeVisitor::unionTypeFromNode($code_base, $context, $args[1])->getRealUnionType()->isNonNullStringType()) {
+                        return StringType::instance(false)->asRealUnionType();
+                    }
+                }
+            }
+            return $function->getUnionType();
+        };
 
         // TODO: Handle flags of preg_split.
         return [
@@ -384,6 +417,9 @@ final class DependentReturnTypeOverridePlugin extends PluginV3 implements
             'basename'                    => self::makeStringFunctionHandler('basename'),
             'bcdiv'                       => $bcdiv_callback,
             'explode'                     => $explode_handler,
+            'trim'                        => $one_or_two_string_handler,
+            'ltrim'                       => $one_or_two_string_handler,
+            'rtrim'                       => $one_or_two_string_handler,
         ];
     }
 

@@ -23,7 +23,6 @@ return [
         'f_config/config.php',
         'hwe/a_bestGeneral.php',
         'hwe/a_emperior.php',
-        'hwe/a_emperior2.php',
         'hwe/a_emperior_detail.php',
         'hwe/a_genList.php',
         'hwe/a_hallOfFame.php',

@@ -118,6 +118,19 @@ use Phan\PluginV3\IssueEmitter;
  *     and to avoid interfering with baselines.
  *
  *     (implement \Phan\PluginV3\SubscribeEmitIssueCapability)
+ * 18. public function analyzeStringLiteralStatement(CodeBase $code_base, Context $context, string $statement): bool
+ *
+ *     This method is called when phan finds a string literal statement.
+ *     Returns true if the statement was consumed (e.g. to infer types, or emit debug info).
+ *
+ *     (implement \Phan\PluginV3\AnalyzeLiteralStatementCapability)
+ * 19. public static function getBeforeLoopBodyAnalysisVisitorClassName() : string
+ *     Returns the name of a class extending BeforeLoopBodyAnalysisVisitor, which will be used to analyze loop conditions
+ *     before analyzing the body.
+ *     (implement \Phan\PluginV3\BeforeLoopBodyAnalysisCapability)
+ * 20. public function getMergeVariableInfoClosure(): Closure
+ *     Returns a closure used in ContextMergeVisitor to merge data about a variable from different branches.
+ *     (implement \Phan\PluginV3\MergeVariableInfoCapability)
  */
 abstract class PluginV3
 {

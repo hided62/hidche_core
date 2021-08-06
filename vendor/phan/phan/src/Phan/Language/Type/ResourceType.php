@@ -14,6 +14,8 @@ use Phan\Language\Type;
  */
 final class ResourceType extends NativeType
 {
+    use NativeTypeTrait;
+
     /** @phan-override */
     public const NAME = 'resource';
 
@@ -32,9 +34,14 @@ final class ResourceType extends NativeType
         return false;
     }
 
-    public function canCastToDeclaredType(CodeBase $unused_code_base, Context $unused_context, Type $other): bool
+    /**
+     * @unused-param $code_base
+     * @unused-param $context
+     * @override
+     */
+    public function canCastToDeclaredType(CodeBase $code_base, Context $context, Type $other): bool
     {
         // Allow casting resources to other resources.
-        return $other instanceof ResourceType;
+        return $other instanceof ResourceType || $other instanceof MixedType;
     }
 }

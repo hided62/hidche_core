@@ -43,11 +43,11 @@ class MemcachedStore implements StoreInterface
     public function __construct(\Memcached $memcached, int $initialTtl = 300)
     {
         if (!static::isSupported()) {
-            throw new InvalidArgumentException('Memcached extension is required');
+            throw new InvalidArgumentException('Memcached extension is required.');
         }
 
         if ($initialTtl < 1) {
-            throw new InvalidArgumentException(sprintf('%s() expects a strictly positive TTL. Got %d.', __METHOD__, $initialTtl));
+            throw new InvalidArgumentException(sprintf('"%s()" expects a strictly positive TTL. Got %d.', __METHOD__, $initialTtl));
         }
 
         $this->memcached = $memcached;
@@ -76,8 +76,8 @@ class MemcachedStore implements StoreInterface
      */
     public function waitAndSave(Key $key)
     {
-        @trigger_error(sprintf('%s() is deprecated since Symfony 4.4 and will be removed in Symfony 5.0.', __METHOD__), E_USER_DEPRECATED);
-        throw new NotSupportedException(sprintf('The store "%s" does not support blocking locks.', \get_class($this)));
+        @trigger_error(sprintf('%s() is deprecated since Symfony 4.4 and will be removed in Symfony 5.0.', __METHOD__), \E_USER_DEPRECATED);
+        throw new NotSupportedException(sprintf('The store "%s" does not support blocking locks.', static::class));
     }
 
     /**
@@ -86,7 +86,7 @@ class MemcachedStore implements StoreInterface
     public function putOffExpiration(Key $key, $ttl)
     {
         if ($ttl < 1) {
-            throw new InvalidTtlException(sprintf('%s() expects a TTL greater or equals to 1 second. Got %s.', __METHOD__, $ttl));
+            throw new InvalidTtlException(sprintf('"%s()" expects a TTL greater or equals to 1 second. Got %s.', __METHOD__, $ttl));
         }
 
         // Interface defines a float value but Store required an integer.
@@ -94,7 +94,7 @@ class MemcachedStore implements StoreInterface
 
         $token = $this->getUniqueToken($key);
 
-        list($value, $cas) = $this->getValueAndCas($key);
+        [$value, $cas] = $this->getValueAndCas($key);
 
         $key->reduceLifetime($ttl);
         // Could happens when we ask a putOff after a timeout but in luck nobody steal the lock
@@ -126,7 +126,7 @@ class MemcachedStore implements StoreInterface
     {
         $token = $this->getUniqueToken($key);
 
-        list($value, $cas) = $this->getValueAndCas($key);
+        [$value, $cas] = $this->getValueAndCas($key);
 
         if ($value !== $token) {
             // we are not the owner of the lock. Nothing to do.

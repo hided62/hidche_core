@@ -6,7 +6,8 @@
 
 namespace Microsoft\PhpParser\Node\Statement;
 
-use Microsoft\PhpParser\Node;
+use Microsoft\PhpParser\MissingToken;
+use Microsoft\PhpParser\Node\DelimitedList;
 use Microsoft\PhpParser\Node\StatementNode;
 use Microsoft\PhpParser\Token;
 
@@ -15,8 +16,9 @@ class DeclareStatement extends StatementNode {
     public $declareKeyword;
     /** @var Token */
     public $openParen;
-    /** @var Node */
-    public $declareDirective;
+    // TODO Maybe create a delimited list with a missing token instead? Probably more consistent.
+    /** @var DelimitedList\DeclareDirectiveList|MissingToken */
+    public $declareDirectiveList;
     /** @var Token */
     public $closeParen;
     /** @var Token|null */
@@ -31,7 +33,7 @@ class DeclareStatement extends StatementNode {
     const CHILD_NAMES = [
         'declareKeyword',
         'openParen',
-        'declareDirective',
+        'declareDirectiveList',
         'closeParen',
         'colon',
         'statements',

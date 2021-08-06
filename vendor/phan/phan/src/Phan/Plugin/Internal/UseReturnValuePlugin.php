@@ -19,6 +19,8 @@ use Phan\PluginV3\PostAnalyzeNodeCapability;
  * A plugin that checks for invocations of functions/methods where the return value should be used.
  * Also, gathers statistics on how often those functions/methods are used.
  *
+ * This also warns when the return value of an expression returning `never` is used.
+ *
  * This can be configured by fields of 'plugin_config', or by setting environment variables.
  *
  * Note: When this is using dynamic checks of the whole codebase, the run should be limited to a single process. That check is memory intensive.
@@ -54,6 +56,9 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     public const UseReturnValueInternal = 'PhanPluginUseReturnValueInternal';
     public const UseReturnValueInternalKnown = 'PhanPluginUseReturnValueInternalKnown';
     public const UseReturnValueNoopVoid = 'PhanPluginUseReturnValueNoopVoid';
+    public const UseReturnValueGenerator = 'PhanPluginUseReturnValueGenerator';
+    public const UseReturnValueOfNever = 'PhanUseReturnValueOfNever';
+    public const UseReturnValueCallableConvert = 'PhanUseReturnValueCallableConvert';
     // phpcs:enable Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase
 
     public const DEFAULT_THRESHOLD_PERCENTAGE = 98;
@@ -125,6 +130,7 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
             $used_percentage = $used_count / $total_count * 100;
             if ($total_count >= 5) {
                 if (self::$debug) {
+                    // @phan-suppress-next-line PhanPluginRemoveDebugCall
                     \fprintf(\STDERR, "%09.4f %% used: (%4d uses): %s (%s)\n", $used_percentage, $total_count, $fqsen, $counter->is_internal ? 'internal' : 'user-defined');
                 }
             }
@@ -136,7 +142,8 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
             if ($unused_count > 0 && $used_percentage >= $threshold_percentage) {
                 $percentage_string = \number_format($used_percentage, 2);
                 foreach ($counter->unused_locations as $key => $context) {
-                    if (!\preg_match('/:(\d+)$/', $key, $matches)) {
+                    if (!\preg_match('/:(\d+)$/D', $key, $matches)) {
+                        // @phan-suppress-next-line PhanPluginRemoveDebugCall
                         \fprintf(\STDERR, "Failed to extract line number from %s\n", $key);
                         continue;
                     }
@@ -201,6 +208,7 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'array_intersect_assoc' => true,
     'array_intersect_key' => true,
     'array_intersect' => true,
+    'array_is_list' => true,
     'arrayiterator::current' => true,
     'arrayiterator::key' => true,
     'arrayiterator::valid' => true,
@@ -398,6 +406,7 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'get_class' => true,
     'getcwd' => true,
     'getdate' => true,
+    'get_debug_type' => true,
     'get_declared_classes' => true,
     'get_declared_interfaces' => true,
     'get_declared_traits' => true,
@@ -414,6 +423,7 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'get_object_vars' => true,
     'get_parent_class' => true,
     'getrandmax' => true,
+    'get_resource_id' => true,
     'get_resource_type' => true,
     'gettext' => true,
     'gettype' => true,
@@ -572,9 +582,12 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'long2ip' => true,
     'ltrim' => true,
     'max' => true,
+    'mb_chr' => true,
     'mb_convert_case' => true,
     'mb_convert_encoding' => true,
     'mb_detect_encoding' => true,
+    'mb_list_encodings' => true,
+    'mb_ord' => true,
     'mb_strlen' => true,
     'mb_strpos' => true,
     'mb_strtolower' => true,
@@ -619,7 +632,7 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'pdo::getattribute' => true,
     'pdo::prepare' => true,
     'pdo::quote' => true,
-    'pdostatement::execute' => true,
+    'pdostatement::execute' => false,  // Callers may check the return value of fetch() or configure the pdo to throw on exceptions
     'pdostatement::fetchall' => true,
     'pdostatement::fetchcolumn' => true,
     'pdostatement::fetch' => true,
@@ -780,6 +793,8 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'strchr' => true,
     'strcmp' => true,
     'str_contains' => true,
+    'str_ends_with' => true,
+    'str_starts_with' => true,
     'strcoll' => true,
     'strcspn' => true,
     'stream_context_create' => true,
@@ -849,6 +864,7 @@ class UseReturnValuePlugin extends PluginV3 implements PostAnalyzeNodeCapability
     'urlencode' => true,
     'utf8_decode' => true,
     'utf8_encode' => true,
+    'var_representation' => true,
     'version_compare' => true,
     'vsprintf' => true,
     'weakreference::create' => true,

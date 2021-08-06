@@ -37,18 +37,14 @@ class PHPUnitAssertionPlugin extends PluginV3 implements AnalyzeFunctionCallCapa
         $assert_class_fqsen = FullyQualifiedClassName::fromFullyQualifiedString('PHPUnit\Framework\Assert');
         if (!$code_base->hasClassWithFQSEN($assert_class_fqsen)) {
             if (!getenv('PHAN_PHPUNIT_ASSERTION_PLUGIN_QUIET')) {
+                // @phan-suppress-next-line PhanPluginRemoveDebugCall
                 fwrite(STDERR, "PHPUnitAssertionPlugin failed to find class PHPUnit\Framework\Assert, giving up (set environment variable PHAN_PHPUNIT_ASSERTION_PLUGIN_QUIET=1 to ignore this)\n");
             }
             return [];
         }
         $result = [];
-        foreach ($code_base->getMethodSet() as $method) {
-            $method_fqsen = $method->getDefiningFQSEN();
-            $class_fqsen = $method_fqsen->getFullyQualifiedClassName();
-            if ($class_fqsen !== $assert_class_fqsen) {
-                continue;
-            }
-            $closure = $this->createClosureForMethod($code_base, $method, $method_fqsen->getName());
+        foreach ($code_base->getClassByFQSEN($assert_class_fqsen)->getMethodMap($code_base) as $method) {
+            $closure = $this->createClosureForMethod($code_base, $method, $method->getName());
             if (!$closure) {
                 continue;
             }
@@ -184,7 +180,7 @@ class PHPUnitAssertionPlugin extends PluginV3 implements AnalyzeFunctionCallCapa
                                 return $result;
 
                             case 'callable':
-                                $result = $original_type->callableTypes();
+                                $result = $original_type->callableTypes($code_base);
                                 if ($result->isEmpty()) {
                                     return UnionType::fromFullyQualifiedPHPDocString('callable');
                                 }

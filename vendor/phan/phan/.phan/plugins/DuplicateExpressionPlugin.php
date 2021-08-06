@@ -8,6 +8,7 @@ use Phan\Analysis\PostOrderAnalysisVisitor;
 use Phan\AST\ASTHasher;
 use Phan\AST\ASTReverter;
 use Phan\AST\InferValue;
+use Phan\Config;
 use Phan\PluginV3;
 use Phan\PluginV3\PluginAwarePostAnalysisVisitor;
 use Phan\PluginV3\PluginAwarePreAnalysisVisitor;
@@ -191,6 +192,22 @@ class RedundantNodePostAnalysisVisitor extends PluginAwarePostAnalysisVisitor
         $this->visitAssign($node);
     }
 
+    private const ASSIGN_OP_FLAGS = [
+        flags\BINARY_BITWISE_OR => '|',
+        flags\BINARY_BITWISE_AND => '&',
+        flags\BINARY_BITWISE_XOR => '^',
+        flags\BINARY_CONCAT => '.',
+        flags\BINARY_ADD => '+',
+        flags\BINARY_SUB => '-',
+        flags\BINARY_MUL => '*',
+        flags\BINARY_DIV => '/',
+        flags\BINARY_MOD => '%',
+        flags\BINARY_POW => '**',
+        flags\BINARY_SHIFT_LEFT => '<<',
+        flags\BINARY_SHIFT_RIGHT => '>>',
+        flags\BINARY_COALESCE => '??',
+    ];
+
     /**
      * @param Node $node
      * An assignment operation node to analyze
@@ -198,8 +215,37 @@ class RedundantNodePostAnalysisVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitAssign(Node $node): void
     {
-        $var = $node->children['var'];
         $expr = $node->children['expr'];
+        if (!$expr instanceof Node) {
+            // Guaranteed not to contain duplicate expressions in valid php assignments.
+            return;
+        }
+        $var = $node->children['var'];
+        if ($expr->kind === ast\AST_BINARY_OP) {
+            $op_str = self::ASSIGN_OP_FLAGS[$expr->flags] ?? null;
+            if (is_string($op_str) && ASTHasher::hash($var) === ASTHasher::hash($expr->children['left'])) {
+                $message = 'Can simplify this assignment to {CODE} {OPERATOR} {CODE}';
+                if ($expr->flags === ast\flags\BINARY_COALESCE) {
+                    if (Config::get_closest_minimum_target_php_version_id() < 70400) {
+                        return;
+                    }
+                    $message .= ' (requires php version 7.4 or newer)';
+                }
+
+                $this->emitPluginIssue(
+                    $this->code_base,
+                    $this->context,
+                    'PhanPluginDuplicateExpressionAssignmentOperation',
+                    $message,
+                    [
+                        ASTReverter::toShortString($var),
+                        $op_str . '=',
+                        ASTReverter::toShortString($expr->children['right']),
+                    ]
+                );
+            }
+            return;
+        }
         if (ASTHasher::hash($var) === ASTHasher::hash($expr)) {
             $this->emitPluginIssue(
                 $this->code_base,
@@ -285,6 +331,33 @@ class RedundantNodePostAnalysisVisitor extends PluginAwarePostAnalysisVisitor
             case ast\AST_UNARY_OP:
                 $this->checkUnaryOpOfConditional($cond_node, $true_node_hash);
                 break;
+        }
+    }
+
+    /**
+     * @param Node $node
+     * A statement list of kind ast\AST_STMT_LIST to analyze.
+     * @override
+     */
+    public function visitStmtList(Node $node): void
+    {
+        $children = $node->children;
+        if (count($children) < 2) {
+            return;
+        }
+        $prev_hash = null;
+        foreach ($children as $child) {
+            $hash = ASTHasher::hash($child);
+            if ($hash === $prev_hash) {
+                $this->emitPluginIssue(
+                    $this->code_base,
+                    (clone($this->context))->withLineNumberStart($child->lineno ?? $node->lineno),
+                    'PhanPluginDuplicateAdjacentStatement',
+                    "Statement {CODE} is a duplicate of the statement on the above line. Suppress this issue instance if there's a good reason for this.",
+                    [ASTReverter::toShortString($child)]
+                );
+            }
+            $prev_hash = $hash;
         }
     }
 
@@ -421,6 +494,41 @@ class RedundantNodePreAnalysisVisitor extends PluginAwarePreAnalysisVisitor
                     'PhanPluginDuplicateIfStatements',
                     'The statements of the else duplicate the statements of the previous if/elseif statement with condition {CODE}',
                     [ASTReverter::toShortString($children[$N - 2]->children['cond'])]
+                );
+            }
+        }
+    }
+
+    /**
+     * Visit a node of kind ast\AST_TRY, to check for adjacent catch blocks
+     *
+     * @override
+     * @suppress PhanPossiblyUndeclaredProperty
+     */
+    public function visitTry(Node $node): void
+    {
+        if (Config::get_closest_target_php_version_id() < 70100) {
+            return;
+        }
+        $catches = $node->children['catches']->children ?? [];
+        $n = count($catches);
+        if ($n <= 1) {
+            // There can't be any duplicates.
+            return;
+        }
+        $prev_hash = ASTHasher::hash($catches[0]->children['stmts']) . ASTHasher::hash($catches[0]->children['var']);
+        for ($i = 1; $i < $n; $prev_hash = $cur_hash, $i++) {
+            $cur_hash = ASTHasher::hash($catches[$i]->children['stmts']) . ASTHasher::hash($catches[$i]->children['var']);
+            if ($prev_hash === $cur_hash) {
+                $this->emitPluginIssue(
+                    $this->code_base,
+                    clone($this->context)->withLineNumberStart($catches[$i]->lineno),
+                    'PhanPluginDuplicateCatchStatementBody',
+                    'The implementation of catch({CODE}) and catch({CODE}) are identical, and can be combined if the application only needs to supports php 7.1 and newer',
+                    [
+                        ASTReverter::toShortString($catches[$i - 1]->children['class']),
+                        ASTReverter::toShortString($catches[$i]->children['class']),
+                    ]
                 );
             }
         }

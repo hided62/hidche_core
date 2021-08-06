@@ -144,7 +144,7 @@ interface FunctionInterface extends AddressableElementInterface
      * Set to true to mark this method as having a
      * yield statement (Only through `yield`)
      * This implies that it has a return value of \Generator.
-     * (or a parent interface)
+     * (or a parent interface or type)
      */
     public function setHasYield(bool $has_yield): void;
 
@@ -155,10 +155,38 @@ interface FunctionInterface extends AddressableElementInterface
     public function hasYield(): bool;
 
     /**
+     * @param bool $has_static_variable
+     * Set to true to mark this method as having a
+     * static variable.
+     */
+    public function setHasStaticVariable(bool $has_static_variable): void;
+
+    /**
+     * @return bool
+     * True if this method has any static variables
+     */
+    public function hasStaticVariable(): bool;
+
+
+    /**
      * @return list<Parameter>
      * A list of parameters on the method
      */
     public function getParameterList();
+
+    /**
+     * @param list<Parameter> $parameter_list
+     * A list of parameters to set on this method
+     * (When quick_mode is false, this is also called to temporarily
+     * override parameter types, etc.)
+     * @internal
+     */
+    public function setParameterList(array $parameter_list): void;
+
+    /**
+     * @internal - moves real parameter defaults to the inferred phpdoc parameters
+     */
+    public function inheritRealParameterDefaults(): void;
 
     /**
      * Gets the $ith parameter for the **caller**.
@@ -325,7 +353,7 @@ interface FunctionInterface extends AddressableElementInterface
      *
      * @param CodeBase $code_base
      * @param Context $context
-     * @param list<Node|int|string> $args
+     * @param list<Node|int|string|float> $args
      * @param ?Node $node - the node causing the call. This may be dynamic, e.g. call_user_func_array. This will be required in Phan 3.
      */
     public function analyzeFunctionCall(CodeBase $code_base, Context $context, array $args, Node $node = null): void;
@@ -375,6 +403,16 @@ interface FunctionInterface extends AddressableElementInterface
      * Check if this function or method is marked as pure (having no visible side effects)
      */
     public function isPure(): bool;
+
+    /**
+     * Mark this function or method as having a tentative return type
+     */
+    public function setHasTentativeReturnType(): void;
+
+    /**
+     * Check if this function has a tentative return type
+     */
+    public function hasTentativeReturnType(): bool;
 
     /**
      * @return UnionType of 0 or more types from (at)throws annotations on this function-like
@@ -439,7 +477,7 @@ interface FunctionInterface extends AddressableElementInterface
     /**
      * Create any plugins that exist due to doc comment annotations.
      * Must be called after adding this FunctionInterface to the $code_base, so that issues can be emitted if needed.
-     * @return ?Closure(CodeBase, Context, array):UnionType
+     * @return ?Closure(CodeBase, Context, FunctionInterface, list<Node|string|int|float>):UnionType
      * @internal
      */
     public function getCommentParamAssertionClosure(CodeBase $code_base): ?Closure;
@@ -460,4 +498,21 @@ interface FunctionInterface extends AddressableElementInterface
      * This is populated the first time it is called.
      */
     public function getOriginalReturnType(): UnionType;
+
+    /**
+     * Record the existence of a parameter with an `(at)phan-mandatory-param` comment at $offset
+     */
+    public function recordHasMandatoryPHPDocParamAtOffset(int $parameter_offset): void;
+
+    /**
+     * Set the attributes associated with this function-like
+     * @param list<Attribute> $attribute_list
+     */
+    public function setAttributeList(array $attribute_list): void;
+
+    /**
+     * Get the attributes associated with this function-like
+     * @return list<Attribute>
+     */
+    public function getAttributeList(): array;
 }

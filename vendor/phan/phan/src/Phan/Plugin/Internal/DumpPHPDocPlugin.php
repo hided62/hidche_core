@@ -24,6 +24,8 @@ use Phan\PluginV3\FinalizeProcessCapability;
  * This file dumps Phan's inferred signatures and markup descriptions as markdown.
  *
  * NOTE: This is automatically loaded by phan. Do not include it in a config.
+ *
+ * @phan-file-suppress PhanPluginRemoveDebugEcho outputting is deliberate
  */
 final class DumpPHPDocPlugin extends PluginV3 implements
     AnalyzeClassCapability,
@@ -44,7 +46,7 @@ final class DumpPHPDocPlugin extends PluginV3 implements
     }
 
     /**
-     * @param CodeBase $unused_code_base
+     * @param CodeBase $code_base @unused-param
      * The code base in which the class exists
      *
      * @param Clazz $class
@@ -52,7 +54,7 @@ final class DumpPHPDocPlugin extends PluginV3 implements
      * @override
      */
     public function analyzeClass(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         Clazz $class
     ): void {
         if ($class->getFQSEN()->isAlternate()) {
@@ -82,7 +84,7 @@ final class DumpPHPDocPlugin extends PluginV3 implements
     }
 
     /**
-     * @param CodeBase $unused_code_base
+     * @param CodeBase $code_base @unused-param
      * The code base in which the property exists
      *
      * @param Property $property
@@ -90,7 +92,7 @@ final class DumpPHPDocPlugin extends PluginV3 implements
      * @override
      */
     public function analyzeProperty(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         Property $property
     ): void {
         if ($property->isDynamicProperty()) {
@@ -116,7 +118,7 @@ final class DumpPHPDocPlugin extends PluginV3 implements
     }
 
     /**
-     * @param CodeBase $unused_code_base
+     * @param CodeBase $code_base @unused-param
      * The code base in which the method exists
      *
      * @param Method $method
@@ -124,7 +126,7 @@ final class DumpPHPDocPlugin extends PluginV3 implements
      * @override
      */
     public function analyzeMethod(
-        CodeBase $unused_code_base,
+        CodeBase $code_base,
         Method $method
     ): void {
         if ($method->isFromPHPDoc()) {
@@ -201,9 +203,11 @@ final class DumpPHPDocPlugin extends PluginV3 implements
 
     /**
      * Executed before the analysis phase starts.
+     *
+     * @unused-param $code_base
      * @override
      */
-    public function finalizeProcess(CodeBase $unused_code_base): void
+    public function finalizeProcess(CodeBase $code_base): void
     {
         \ksort($this->stubs);
         echo "# Phan Signatures\n\n";

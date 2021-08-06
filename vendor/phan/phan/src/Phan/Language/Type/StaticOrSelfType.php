@@ -13,9 +13,13 @@ use Phan\Language\Type;
  * @see self::withStaticResolvedInContext()
  * @phan-pure
  */
-class StaticOrSelfType extends Type
+abstract class StaticOrSelfType extends Type
 {
-    public function hasStaticOrSelfTypesRecursive(CodeBase $_): bool
+    /**
+     * @unused-param $code_base
+     * @override
+     */
+    public function hasStaticOrSelfTypesRecursive(CodeBase $code_base): bool
     {
         return true;
     }

@@ -37,6 +37,7 @@ abstract class KindVisitorImplementation implements KindVisitor
 
     /**
      * @suppress PhanUnreferencedPublicMethod
+     * @suppress PhanPluginRemoveDebugAny deliberate warning for unhandled node kind
      */
     public function handleMissingNodeKind(Node $node)
     {
@@ -79,6 +80,22 @@ abstract class KindVisitorImplementation implements KindVisitor
         return $this->visit($node);
     }
 
+    // Attributes require AST version 80
+    public function visitAttribute(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitAttributeList(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitAttributeGroup(Node $node)
+    {
+        return $this->visit($node);
+    }
+
     public function visitBinaryOp(Node $node)
     {
         return $this->visit($node);
@@ -90,6 +107,11 @@ abstract class KindVisitorImplementation implements KindVisitor
     }
 
     public function visitCall(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitCallableConvert(Node $node)
     {
         return $this->visit($node);
     }
@@ -115,6 +137,11 @@ abstract class KindVisitorImplementation implements KindVisitor
     }
 
     public function visitClassConstDecl(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitClassConstGroup(Node $node)
     {
         return $this->visit($node);
     }
@@ -175,6 +202,11 @@ abstract class KindVisitorImplementation implements KindVisitor
     }
 
     public function visitEmpty(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitEnumCase(Node $node)
     {
         return $this->visit($node);
     }
@@ -254,12 +286,27 @@ abstract class KindVisitorImplementation implements KindVisitor
         return $this->visit($node);
     }
 
+    public function visitNamedArg(Node $node)
+    {
+        return $this->visit($node);
+    }
+
     public function visitNamespace(Node $node)
     {
         return $this->visit($node);
     }
 
     public function visitNew(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitNullsafeMethodCall(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitNullsafeProp(Node $node)
     {
         return $this->visit($node);
     }
@@ -344,7 +391,27 @@ abstract class KindVisitorImplementation implements KindVisitor
         return $this->visit($node);
     }
 
+    public function visitMatch(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitMatchArm(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitMatchArmList(Node $node)
+    {
+        return $this->visit($node);
+    }
+
     public function visitType(Node $node)
+    {
+        return $this->visit($node);
+    }
+
+    public function visitTypeIntersection(Node $node)
     {
         return $this->visit($node);
     }

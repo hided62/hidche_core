@@ -9,6 +9,7 @@ use ast\Node;
 use CompileError;
 use InvalidArgumentException;
 use ParseError;
+use Phan\Analysis\AttributeAnalyzer;
 use Phan\Analysis\DuplicateFunctionAnalyzer;
 use Phan\Analysis\ParameterTypesAnalyzer;
 use Phan\Analysis\ReferenceCountsAnalyzer;
@@ -34,6 +35,7 @@ use Phan\Parse\ParseVisitor;
 use Phan\Plugin\ConfigPluginSet;
 use Throwable;
 
+use function count;
 use function strlen;
 
 use const STDERR;
@@ -106,17 +108,15 @@ class Analysis
 
             return $context;
         }
+        // TODO: Figure out why Phan doesn't suggest combining these catches except in language server mode
         try {
             $node = Parser::parseCode($code_base, $context, $request, $file_path, $file_contents, $suppress_parse_errors);
-        } catch (ParseError $_) {
-            return $context;
-        } catch (CompileError $_) {
-            return $context;
-        } catch (ParseException $_) {
+        } catch (ParseError | CompileError | ParseException $_) {
             return $context;
         }
 
         if (Config::getValue('dump_ast')) {
+            // @phan-file-suppress PhanPluginRemoveDebugEcho
             echo $file_path . "\n"
                 . \str_repeat("\u{00AF}", strlen($file_path))
                 . "\n";
@@ -199,7 +199,7 @@ class Analysis
         if ($kind === ast\AST_DECLARE) {
             // Check for class declarations, etc. within the statements of a declare directive.
             $child_node = $node->children['stmts'];
-            if ($child_node !== null) {
+            if (\is_object($child_node)) {
                 // Step into each child node and get an
                 // updated context for the node
                 return self::parseNodeInContext($code_base, $inner_context, $child_node);
@@ -218,25 +218,23 @@ class Analysis
             }
         }
 
-        // For closed context elements (that have an inner scope)
-        // return the outer context instead of their inner context
-        // after we finish parsing their children.
-        if (\in_array($kind, [
-            ast\AST_CLASS,
-            ast\AST_METHOD,
-            ast\AST_FUNC_DECL,
-            ast\AST_ARROW_FUNC,
-            ast\AST_CLOSURE,
-        ], true)) {
-            return $context;
+        switch ($kind) {
+            case ast\AST_CLASS:
+            case ast\AST_METHOD:
+            case ast\AST_FUNC_DECL:
+            case ast\AST_ARROW_FUNC:
+            case ast\AST_CLOSURE:
+                // For closed context elements (that have an inner scope)
+                // return the outer context instead of their inner context
+                // after we finish parsing their children.
+                return $context;
+            case ast\AST_STMT_LIST:
+                // Workaround that ensures that the context from namespace blocks gets passed to the caller.
+                return $child_context;
+            default:
+                // Pass the context back up to our parent
+                return $inner_context;
         }
-        if ($kind === ast\AST_STMT_LIST) {
-            // Workaround that ensures that the context from namespace blocks gets passed to the caller.
-            return $child_context;
-        }
-
-        // Pass the context back up to our parent
-        return $inner_context;
     }
 
     /**
@@ -278,6 +276,11 @@ class Analysis
                 $function_or_method
             );
 
+            AttributeAnalyzer::analyzeAttributesOfFunctionInterface(
+                $code_base,
+                $function_or_method
+            );
+
             // Infer more accurate return types
             // For daemon mode/the language server, we also call this whenever we use the return type of a function/method.
             $function_or_method->analyzeReturnTypes($code_base);
@@ -313,7 +316,7 @@ class Analysis
         $function_map = $code_base->getFunctionMap();
         foreach ($function_map as $function) {  // iterate, ignoring $fqsen
             if ($show_progress) {
-                CLI::progress('function', (++$i) / (\count($function_map)), $function);
+                CLI::progress('function', (++$i) / (count($function_map)), $function);
             }
             $analyze_function_or_method($function);
         }
@@ -328,7 +331,7 @@ class Analysis
                 // I suspect that method analysis is hydrating some of the classes,
                 // adding even more inherited methods to the end of the set.
                 // This recalculation is needed so that the progress bar is accurate.
-                CLI::progress('method', (++$i) / (\count($method_set)), $method);
+                CLI::progress('method', (++$i) / (count($method_set)), $method);
             }
             $analyze_function_or_method($method);
         }
@@ -348,6 +351,7 @@ class Analysis
                 try {
                     $fqsen = FullyQualifiedMethodName::fromFullyQualifiedString($fqsen_string);
                 } catch (FQSENException | InvalidArgumentException $e) {
+                    // @phan-suppress-next-line PhanPluginRemoveDebugCall
                     \fprintf(STDERR, "getReturnTypeOverrides returned an invalid FQSEN %s: %s\n", $fqsen_string, $e->getMessage());
                     continue;
                 }
@@ -403,6 +407,7 @@ class Analysis
                     }
                 }
             } catch (FQSENException | InvalidArgumentException $e) {
+                // @phan-suppress-next-line PhanPluginRemoveDebugCall
                 \fprintf(STDERR, "getReturnTypeOverrides returned an invalid FQSEN %s: %s\n", $fqsen_string, $e->getMessage());
             }
         }
@@ -420,7 +425,17 @@ class Analysis
                     // Note: This is used because it will create methods such as __construct if they do not exist.
                     if ($class->hasMethodWithName($code_base, $method_name, false)) {
                         $method = $class->getMethodByName($code_base, $method_name);
-                        $method->setFunctionCallAnalyzer($closure);
+                        $method->addFunctionCallAnalyzer($closure);
+
+                        $methods_by_defining_fqsen = $methods_by_defining_fqsen ?? $code_base->getMethodsMapGroupedByDefiningFQSEN();
+                        $fqsen = FullyQualifiedMethodName::fromFullyQualifiedString($fqsen_string);
+                        if (!$methods_by_defining_fqsen->offsetExists($fqsen)) {
+                            continue;
+                        }
+
+                        foreach ($methods_by_defining_fqsen->offsetGet($fqsen) as $child_method) {
+                            $child_method->addFunctionCallAnalyzer($closure);
+                        }
                     }
                 } else {
                     // This is an override of a function.
@@ -430,8 +445,9 @@ class Analysis
                         $function->setFunctionCallAnalyzer($closure);
                     }
                 }
-            } catch (FQSENException $e) {
-                \fprintf(STDERR, "getAnalyzeFunctionCallClosures returned an invalid FQSEN %s\n", $e->getFQSEN());
+            } catch (FQSENException | InvalidArgumentException $e) {
+                // @phan-suppress-next-line PhanPluginRemoveDebugCall
+                \fprintf(STDERR, "getAnalyzeFunctionCallClosures returned an invalid FQSEN %s: %s\n", $fqsen_string, $e->getMessage());
             }
         }
     }
@@ -444,6 +460,7 @@ class Analysis
      */
     public static function analyzeClasses(CodeBase $code_base, array $path_filter = null): void
     {
+        CLI::progress('classes', 0.0, null);
         $classes = $code_base->getUserDefinedClassMap();
         if (\is_array($path_filter)) {
             // If a list of files is provided, then limit analysis to classes defined in those files.
@@ -455,13 +472,20 @@ class Analysis
                 }
             }
         }
+        $i = 0;
         foreach ($classes as $class) {
+            CLI::progress('classes', $i++ / count($classes), null);
             try {
                 $class->analyze($code_base);
             } catch (RecursionDepthException $_) {
                 continue;
             }
+            AttributeAnalyzer::analyzeAttributesOfClass(
+                $code_base,
+                $class
+            );
         }
+        CLI::progress('classes', 1.0, null);
     }
 
     /**
@@ -533,13 +557,7 @@ class Analysis
                 return $context;
             }
             $node = Parser::parseCode($code_base, $context, $request, $file_path, $file_contents, false);
-        } catch (ParseException $_) {
-            // Issue::SyntaxError was already emitted.
-            return $context;
-        } catch (ParseError $_) {
-            // Issue::SyntaxError was already emitted.
-            return $context;
-        } catch (CompileError $_) {
+        } catch (ParseException | ParseError | CompileError $_) {
             // Issue::SyntaxError was already emitted.
             return $context;
         }

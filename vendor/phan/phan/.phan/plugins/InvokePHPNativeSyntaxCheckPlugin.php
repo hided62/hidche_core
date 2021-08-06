@@ -7,6 +7,7 @@ use Phan\AST\Parser;
 use Phan\CLI;
 use Phan\CodeBase;
 use Phan\Config;
+use Phan\Issue;
 use Phan\Language\Context;
 use Phan\PluginV3;
 use Phan\PluginV3\AfterAnalyzeFileCapability;
@@ -36,7 +37,7 @@ class InvokePHPNativeSyntaxCheckPlugin extends PluginV3 implements
     BeforeAnalyzeFileCapability,
     FinalizeProcessCapability
 {
-    private const LINE_NUMBER_REGEX = "@ on line ([1-9][0-9]*)$@";
+    private const LINE_NUMBER_REGEX = "@ on line ([1-9][0-9]*)$@D";
     private const STDIN_FILENAME_REGEX = "@ in (Standard input code|-)@";
 
     /**
@@ -141,7 +142,6 @@ class InvokePHPNativeSyntaxCheckPlugin extends PluginV3 implements
         }
         $check_error_message = preg_replace(self::STDIN_FILENAME_REGEX, '', $check_error_message);
 
-
         self::emitIssue(
             $code_base,
             clone($context)->withLineNumberStart($lineno),
@@ -151,7 +151,8 @@ class InvokePHPNativeSyntaxCheckPlugin extends PluginV3 implements
                 $binary === PHP_BINARY ? 'php' : $binary,
                 json_encode($check_error_message),
 
-            ]
+            ],
+            Issue::SEVERITY_CRITICAL
         );
     }
 }
@@ -242,7 +243,7 @@ class InvokeExecutionPromise
                 ['pipe', 'wb'],
             ];
             $this->binary = $binary;
-            // @phan-suppress-next-line PhanPartialTypeMismatchArgumentInternal
+            // @phan-suppress-next-line PhanPartialTypeMismatchArgumentInternal PHP 7.3 does not accept arrays
             $process = proc_open($cmd, $descriptorspec, $pipes);
             if (!is_resource($process)) {
                 $this->done = true;

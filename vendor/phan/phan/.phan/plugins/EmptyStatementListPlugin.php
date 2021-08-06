@@ -79,6 +79,10 @@ final class EmptyStatementListVisitor extends PluginAwarePostAnalysisVisitor
     {
         // @phan-suppress-next-line PhanUndeclaredProperty set by ASTSimplifier
         if (isset($node->is_simplified)) {
+            $first_child = end($node->children);
+            if (!$first_child instanceof Node || $first_child->children['cond'] === null) {
+                return;
+            }
             $last_if_elem = reset($node->children);
         } else {
             $last_if_elem = end($node->children);
@@ -338,7 +342,7 @@ final class EmptyStatementListVisitor extends PluginAwarePostAnalysisVisitor
                     }
                 }
             }
-            if (!ParseVisitor::isConstExpr($c->children['cond'])) {
+            if (!ParseVisitor::isConstExpr($c->children['cond'], ParseVisitor::CONSTANT_EXPRESSION_FORBID_NEW_EXPRESSION)) {
                 return;
             }
         }

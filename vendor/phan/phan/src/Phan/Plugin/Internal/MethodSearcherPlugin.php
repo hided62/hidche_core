@@ -26,6 +26,8 @@ use function count;
  *
  * NOTE: This is automatically loaded by phan. Do not include it in a config.
  *
+ * @phan-file-suppress PhanPluginRemoveDebugAny outputting is deliberate
+ *
  * @internal
  */
 final class MethodSearcherPlugin extends PluginV3 implements
@@ -70,7 +72,7 @@ final class MethodSearcherPlugin extends PluginV3 implements
             }
             $result[] = UnionType::fromStringInContext($part, new Context(), Type::FROM_PHPDOC);
         }
-        // @phan-suppress-next-line PhanPossiblyFalseTypeMismatchProperty
+        // @phan-suppress-next-line PhanPossiblyNullTypeMismatchProperty
         self::$return_type = \array_pop($result);
         self::$param_types = $result;
         echo "Searching for function/method signatures similar to: " . \implode(' -> ', \array_merge(self::$param_types, [self::$return_type])) . "\n";
@@ -82,7 +84,7 @@ final class MethodSearcherPlugin extends PluginV3 implements
      */
     public static function addMissingNamespaces(CodeBase $code_base, UnionType $union_type): UnionType
     {
-        foreach ($union_type->getTypeSet() as $type) {
+        foreach ($union_type->getUniqueFlattenedTypeSet() as $type) {
             if ($type->isObjectWithKnownFQSEN()) {
                 $replacements = self::getReplacementTypesForFullyQualifiedClassName($code_base, $type);
                 if ($replacements === [$type]) {
@@ -111,6 +113,7 @@ final class MethodSearcherPlugin extends PluginV3 implements
     }
 
     /**
+     * @param Type $type a type with the name of a class
      * @return Type[] a list of types to replace $type with
      */
     public static function getReplacementTypesForFullyQualifiedClassName(
@@ -224,7 +227,7 @@ final class MethodSearcherPlugin extends PluginV3 implements
         if ($return_type->isEmpty()) {
             $return_type = $this->guessUnionType($function);
         }
-        if (!$return_type->asExpandedTypes($code_base)->canCastToUnionType(self::$return_type)) {
+        if (!$return_type->canCastToUnionType(self::$return_type, $code_base)) {
             return 0;
         }
         $signature_param_types = [];
@@ -268,6 +271,7 @@ final class MethodSearcherPlugin extends PluginV3 implements
         return UnionType::empty();
     }
 
+    // TODO: Handle non-null-mixed/non-empty-mixed
     private static function isMixed(UnionType $union_type): bool
     {
         foreach ($union_type->getTypeSet() as $type) {
@@ -296,18 +300,19 @@ final class MethodSearcherPlugin extends PluginV3 implements
         $expanded_actual_signature_type = $actual_signature_type->asExpandedTypes($code_base);
         $result = 0;
         // TODO: This should handle Liskov Substitution Principle
+        // TODO: Handle intersection types?
         foreach ($desired_type_normalized->getTypeSet() as $inner_type) {
             if ($expanded_actual_signature_type->hasType($inner_type) || $expanded_actual_signature_type->hasType($inner_type->withIsNullable(false))) {
                 if ($inner_type->isObjectWithKnownFQSEN() && !$desired_type->objectTypesWithKnownFQSENs()->isEmpty()) {
                     $result += 5;
                 } else {
-                    if ($inner_type->isScalar() && !$actual_signature_type->canCastToUnionType($inner_type->asPHPDocUnionType())) {
+                    if ($inner_type->isScalar() && !$actual_signature_type->canCastToUnionType($inner_type->asPHPDocUnionType(), $code_base)) {
                         $result += 0.5;
                         continue;
                     }
                     $result += 1;
                 }
-            } elseif ($expanded_actual_signature_type->canCastToUnionType($inner_type->asPHPDocUnionType())) {
+            } elseif ($actual_signature_type->canCastToUnionType($inner_type->asPHPDocUnionType(), $code_base)) {
                 if (self::isCastableButNotSubtype($expanded_actual_signature_type, $inner_type)) {
                     continue;
                 }
@@ -353,7 +358,7 @@ final class MethodSearcherPlugin extends PluginV3 implements
             $desired_param_type_for_comparison = $desired_param_type->nullableClone();
         }
         foreach ($signature_param_types as $i => $actual_type) {
-            if ($actual_type->asExpandedTypes($code_base)->canCastToUnionType($desired_param_type_for_comparison)) {
+            if ($actual_type->canCastToUnionType($desired_param_type_for_comparison, $code_base)) {
                 $signature_subset = $signature_param_types;
                 unset($signature_subset[$i]);
                 $result = self::matchesParamTypes($code_base, $search_param_types, $signature_subset);

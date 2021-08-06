@@ -355,7 +355,7 @@ class UnknownElementTypePlugin extends PluginV3 implements
     }
 
     /**
-     * @param CodeBase $_
+     * @param CodeBase $code_base @unused-param
      * The code base in which the property exists
      *
      * @param Property $property
@@ -363,7 +363,7 @@ class UnknownElementTypePlugin extends PluginV3 implements
      * @override
      */
     public function analyzeProperty(
-        CodeBase $_,
+        CodeBase $code_base,
         Property $property
     ): void {
         if ($property->getFQSEN() !== $property->getRealDefiningFQSEN()) {
@@ -380,8 +380,13 @@ class UnknownElementTypePlugin extends PluginV3 implements
 
     public function finalizeProcess(CodeBase $code_base): void
     {
-        foreach ($this->deferred_checks as $check) {
-            $check($code_base);
+        try {
+            foreach ($this->deferred_checks as $check) {
+                $check($code_base);
+            }
+        } finally {
+            // There were errors in unit tests if this wasn't cleared.
+            $this->deferred_checks = [];
         }
     }
 }

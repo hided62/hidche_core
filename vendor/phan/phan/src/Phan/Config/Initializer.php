@@ -6,9 +6,12 @@ namespace Phan\Config;
 
 use ast\Node;
 use Closure;
+use CompileError;
 use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\VersionParser;
+use ParseError;
 use Phan\AST\Parser;
+use Phan\AST\TolerantASTConverter\ParseException;
 use Phan\CLI;
 use Phan\CodeBase;
 use Phan\Config;
@@ -30,6 +33,7 @@ use const FILTER_VALIDATE_INT;
 /**
  * This class is used by 'phan --init' to generate a phan config for a composer project.
  * @phan-file-suppress PhanPluginDescriptionlessCommentOnPublicMethod
+ * @phan-file-suppress PhanPluginRemoveDebugEcho, PhanPluginRemoveDebugCall
  */
 class Initializer
 {
@@ -145,7 +149,7 @@ class Initializer
             $source .= "    // $line\n";
         }
         $source .= '    ';
-        $source .= \var_export($setting_name, true) . ' => ';
+        $source .= \var_representation($setting_name) . ' => ';
         if (is_array($setting_value)) {
             if (count($setting_value) > 0) {
                 $source .= "[\n";
@@ -201,15 +205,16 @@ use Phan\Issue;
  *
  * - Go through this file and verify that there are no missing/unnecessary files/directories.
  *   (E.g. this only includes direct composer dependencies - You may have to manually add indirect composer dependencies to 'directory_list')
- * - Look at 'plugins' and add or remove plugins if appropriate (see https://github.com/phan/phan/tree/master/.phan/plugins#plugins)
+ * - Look at 'plugins' and add or remove plugins if appropriate (see https://github.com/phan/phan/tree/v5/.phan/plugins#plugins)
  * - Add global suppressions for pre-existing issues to suppress_issue_types (https://github.com/phan/phan/wiki/Tutorial-for-Analyzing-a-Large-Sloppy-Code-Base)
+ *   - Consider setting up a baseline if there are a large number of pre-existing issues (see `phan --extended-help`)
  *
  * This configuration will be read and overlaid on top of the
  * default configuration. Command line arguments will be applied
  * after this file is read.
  *
- * @see src/Phan/Config.php
- * See Config for all configurable options.
+ * @see https://github.com/phan/phan/wiki/Phan-Config-Settings for all configurable options
+ * @see https://github.com/phan/phan/tree/v5/src/Phan/Config.php
  *
  * A Note About Paths
  * ==================
@@ -482,7 +487,7 @@ EOT;
                 }
                 $composer_lib_relative_path = \trim(\str_replace(\DIRECTORY_SEPARATOR, '/', $composer_lib_relative_path), '/');
 
-                $composer_lib_relative_path = \preg_replace('@(/+\.)+$@', '', $composer_lib_relative_path);
+                $composer_lib_relative_path = \preg_replace('@(/+\.)+$@D', '', $composer_lib_relative_path);
                 if (\is_dir($composer_lib_absolute_path)) {
                     $directory_list[] = \trim($composer_lib_relative_path, '/');
                 } elseif (\is_file($composer_lib_relative_path)) {
@@ -587,11 +592,7 @@ EOT;
                 return true;
             }
             return $node->kind !== \ast\AST_ECHO || !is_string($node->children['expr']);
-        } catch (\ParseError $_) {
-            return false;
-        } catch (\CompileError $_) {
-            return false;
-        } catch (\Phan\AST\TolerantASTConverter\ParseException $_) {
+        } catch (ParseError | CompileError | ParseException $_) {
             return false;
         }
     }

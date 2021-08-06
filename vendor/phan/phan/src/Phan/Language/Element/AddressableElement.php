@@ -275,7 +275,10 @@ abstract class AddressableElement extends TypedElement implements AddressableEle
         $this->hydrateOnce($code_base);
     }
 
-    protected function hydrateOnce(CodeBase $unused_code_base): void
+    /**
+     * @unused-param $code_base
+     */
+    protected function hydrateOnce(CodeBase $code_base): void
     {
         // Do nothing unless overridden
     }
@@ -328,7 +331,7 @@ abstract class AddressableElement extends TypedElement implements AddressableEle
             if (!\preg_match('/@deprecated\b/', $this->doc_comment, $matches, \PREG_OFFSET_CAPTURE)) {
                 return '';
             }
-            $doc_comment = \preg_replace('@(^/\*)|(\*/$)@', '', $this->doc_comment);
+            $doc_comment = \preg_replace('@(^/\*)|(\*/$)@D', '', $this->doc_comment);
             $lines = \explode("\n", $doc_comment);
             foreach ($lines as $i => $line) {
                 $line = MarkupDescription::trimLine($line);
@@ -359,5 +362,13 @@ abstract class AddressableElement extends TypedElement implements AddressableEle
     public function getRepresentationForIssue(): string
     {
         return $this->getFQSEN()->__toString();
+    }
+
+    /**
+     * Returns true if Phan should include doc comments in the output of tool/make_stubs
+     */
+    public static function shouldAddDescriptionsToStubs(): bool
+    {
+        return (bool)($_ENV['PHAN_STUB_INCLUDE_DOC'] ?? false);
     }
 }

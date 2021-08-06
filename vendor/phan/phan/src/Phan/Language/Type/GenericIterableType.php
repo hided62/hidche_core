@@ -7,10 +7,16 @@ namespace Phan\Language\Type;
 use Closure;
 use Generator;
 use Phan\CodeBase;
+use Phan\Config;
+use Phan\Debug\Frame;
+use Phan\Exception\RecursionDepthException;
 use Phan\Language\Context;
+use Phan\Language\FQSEN\FullyQualifiedClassName;
 use Phan\Language\Type;
 use Phan\Language\UnionType;
+use Phan\Language\UnionTypeBuilder;
 
+use function count;
 use function json_encode;
 
 /**
@@ -19,6 +25,8 @@ use function json_encode;
  */
 final class GenericIterableType extends IterableType
 {
+    use NativeTypeTrait;
+
     /** @phan-override */
     public const NAME = 'iterable';
 
@@ -73,23 +81,25 @@ final class GenericIterableType extends IterableType
     }
 
     /**
+     * @unused-param $code_base
      * @return UnionType returns the iterable key's union type
      * @phan-override
      *
      * @see self::getKeyUnionType()
      */
-    public function iterableKeyUnionType(CodeBase $unused_code_base): UnionType
+    public function iterableKeyUnionType(CodeBase $code_base): UnionType
     {
         return $this->key_union_type;
     }
 
     /**
+     * @unused-param $code_base
      * @return UnionType returns the iterable value's union type
      * @phan-override
      *
      * @see self::getElementUnionType()
      */
-    public function iterableValueUnionType(CodeBase $unused_code_base): UnionType
+    public function iterableValueUnionType(CodeBase $code_base): UnionType
     {
         return $this->element_union_type;
     }
@@ -105,33 +115,33 @@ final class GenericIterableType extends IterableType
         return $cache[$key] ?? ($cache[$key] = new self($key_union_type, $element_union_type, $is_nullable));
     }
 
-    public function canCastToNonNullableType(Type $type): bool
+    public function canCastToNonNullableType(Type $type, CodeBase $code_base): bool
     {
         if ($type instanceof GenericIterableType) {
             // TODO: Account for scalar key casting config?
-            if (!$this->key_union_type->canCastToUnionType($type->key_union_type)) {
+            if (!$this->key_union_type->canCastToUnionType($type->key_union_type, $code_base)) {
                 return false;
             }
-            if (!$this->element_union_type->canCastToUnionType($type->element_union_type)) {
+            if (!$this->element_union_type->canCastToUnionType($type->element_union_type, $code_base)) {
                 return false;
             }
             return true;
         }
-        return parent::canCastToNonNullableType($type);
+        return parent::canCastToNonNullableType($type, $code_base);
     }
 
-    public function canCastToNonNullableTypeWithoutConfig(Type $type): bool
+    public function canCastToNonNullableTypeWithoutConfig(Type $type, CodeBase $code_base): bool
     {
         if ($type instanceof GenericIterableType) {
-            if (!$this->key_union_type->canCastToUnionTypeWithoutConfig($type->key_union_type)) {
+            if (!$this->key_union_type->canCastToUnionTypeWithoutConfig($type->key_union_type, $code_base)) {
                 return false;
             }
-            if (!$this->element_union_type->canCastToUnionTypeWithoutConfig($type->element_union_type)) {
+            if (!$this->element_union_type->canCastToUnionTypeWithoutConfig($type->element_union_type, $code_base)) {
                 return false;
             }
             return true;
         }
-        return parent::canCastToNonNullableTypeWithoutConfig($type);
+        return parent::canCastToNonNullableTypeWithoutConfig($type, $code_base);
     }
     /**
      * Returns true for `T` and `T[]` and `\MyClass<T>`, but not `\MyClass<\OtherClass>` or `false`
@@ -215,7 +225,7 @@ final class GenericIterableType extends IterableType
         return IterableType::instance($this->is_nullable);
     }
 
-    public function asArrayType(): ?Type
+    public function asArrayType(): Type
     {
         $key_type = GenericArrayType::keyTypeFromUnionTypeValues($this->key_union_type);
         if ($this->element_union_type->typeCount() === 1) {
@@ -265,5 +275,237 @@ final class GenericIterableType extends IterableType
         yield $this;
         yield from $this->key_union_type->getTypesRecursively();
         yield from $this->element_union_type->getTypesRecursively();
+    }
+
+    /**
+     * @param CodeBase $code_base
+     * The code base to use in order to find super classes, etc.
+     *
+     * @param $recursion_depth
+     * This thing has a tendency to run-away on me. This tracks
+     * how bad I messed up by seeing how far the expanded types
+     * go
+     *
+     * @return UnionType
+     * Expands class types to all inherited classes returning
+     * a superset of this type.
+     *
+     * TODO: Support expanding key types. Support better checks for casting from Traversable/array.
+     * Copy those fixes to asExpandedTypesPreservingTemplate().
+     * @override
+     */
+    public function asExpandedTypes(
+        CodeBase $code_base,
+        int $recursion_depth = 0
+    ): UnionType {
+        // We're going to assume that if the type hierarchy
+        // is taller than some value we probably messed up
+        // and should bail out.
+        if ($recursion_depth >= 20) {
+            throw new RecursionDepthException("Recursion has gotten out of hand: " . Frame::getExpandedTypesDetails());
+        }
+
+        return $this->memoize(__METHOD__, function () use ($code_base, $recursion_depth): UnionType {
+            // TODO: convert (A&B)[] to (A&B)[]|A[]|B[]
+            $element_types = $this->element_union_type->getTypeSet();
+            if (count($element_types) >= 2) {
+                $union_type_builder = new UnionTypeBuilder();
+                foreach ($element_types as $element_type) {
+                    $new_type = self::fromKeyAndValueTypes($this->key_union_type, $element_type->asPHPDocUnionType(), $this->is_nullable);
+                    $union_type_builder->addUnionType($new_type->asExpandedTypes($code_base, $recursion_depth + 1));
+                }
+                return $union_type_builder->getPHPDocUnionType();
+            }
+            $element_type = \reset($element_types);
+            $union_type = $this->asPHPDocUnionType();
+            if (!$element_type instanceof Type) {
+                return $union_type;
+            }
+            $union_type = $this->asPHPDocUnionType();
+            $recursive_union_type_builder = new UnionTypeBuilder();
+
+            if (!$element_type->isObjectWithKnownFQSEN()) {
+                return $union_type;
+            }
+            $class_fqsen = FullyQualifiedClassName::fromType($element_type);
+
+            if (!$code_base->hasClassWithFQSEN($class_fqsen)) {
+                return $union_type;
+            }
+
+            $clazz = $code_base->getClassByFQSEN($class_fqsen);
+
+            $class_union_type = $clazz->getUnionType();
+            $additional_union_type = $clazz->getAdditionalTypes();
+            if ($additional_union_type !== null) {
+                $class_union_type = $class_union_type->withUnionType($additional_union_type);
+            }
+
+            // TODO: Use helpers for list, non-empty-array, etc.
+            foreach ($class_union_type->getTypeSet() as $type) {
+                $union_type = $union_type->withType(self::fromKeyAndValueTypes($this->key_union_type, $type->asPHPDocUnionType(), $this->is_nullable));
+            }
+
+            // Recurse up the tree to include all types
+            $representation = $this->__toString();
+            try {
+                foreach ($union_type->getTypeSet() as $clazz_type) {
+                    if ($clazz_type->__toString() !== $representation) {
+                        $recursive_union_type_builder->addUnionType(
+                            $clazz_type->asExpandedTypes(
+                                $code_base,
+                                $recursion_depth + 1
+                            )
+                        );
+                    } else {
+                        $recursive_union_type_builder->addType($clazz_type);
+                    }
+                }
+            } catch (RecursionDepthException $_) {
+                return GenericIterableType::fromKeyAndValueTypes($this->key_union_type, UnionType::fromFullyQualifiedPHPDocString('mixed'), $this->is_nullable)->asPHPDocUnionType();
+            }
+
+            // Add in aliases
+            // (If enable_class_alias_support is false, this will do nothing)
+            if (Config::getValue('enable_class_alias_support')) {
+                $this->addClassAliases($code_base, $recursive_union_type_builder, $class_fqsen);
+            }
+            return $recursive_union_type_builder->getPHPDocUnionType();
+        });
+    }
+
+    /**
+     * @param CodeBase $code_base
+     * The code base to use in order to find super classes, etc.
+     *
+     * @param $recursion_depth
+     * This thing has a tendency to run-away on me. This tracks
+     * how bad I messed up by seeing how far the expanded types
+     * go
+     *
+     * @return UnionType
+     * Expands class types to all inherited classes returning
+     * a superset of this type.
+     * @override
+     */
+    public function asExpandedTypesPreservingTemplate(
+        CodeBase $code_base,
+        int $recursion_depth = 0
+    ): UnionType {
+        // We're going to assume that if the type hierarchy
+        // is taller than some value we probably messed up
+        // and should bail out.
+        if ($recursion_depth >= 20) {
+            throw new RecursionDepthException("Recursion has gotten out of hand: " . Frame::getExpandedTypesDetails());
+        }
+
+        return $this->memoize(__METHOD__, function () use ($code_base, $recursion_depth): UnionType {
+            // TODO: convert (A&B)[] to (A&B)[]|A[]|B[]
+            $element_types = $this->element_union_type->getTypeSet();
+            if (count($element_types) >= 2) {
+                $union_type_builder = new UnionTypeBuilder();
+                foreach ($element_types as $element_type) {
+                    $new_type = self::fromKeyAndValueTypes($this->key_union_type, $element_type->asPHPDocUnionType(), $this->is_nullable);
+                    $union_type_builder->addUnionType($new_type->asExpandedTypesPreservingTemplate($code_base, $recursion_depth + 1));
+                }
+                return $union_type_builder->getPHPDocUnionType();
+            }
+            $element_type = \reset($element_types);
+            $union_type = $this->asPHPDocUnionType();
+            if (!$element_type instanceof Type) {
+                return $union_type;
+            }
+            $union_type = $this->asPHPDocUnionType();
+            $recursive_union_type_builder = new UnionTypeBuilder();
+
+            if (!$element_type->isObjectWithKnownFQSEN()) {
+                return $union_type;
+            }
+            $class_fqsen = FullyQualifiedClassName::fromType($element_type);
+
+            if (!$code_base->hasClassWithFQSEN($class_fqsen)) {
+                return $union_type;
+            }
+
+            $clazz = $code_base->getClassByFQSEN($class_fqsen);
+
+            $class_union_type = $clazz->getUnionType();
+            $additional_union_type = $clazz->getAdditionalTypes();
+            if ($additional_union_type !== null) {
+                $class_union_type = $class_union_type->withUnionType($additional_union_type);
+            }
+
+            // TODO: Use helpers for list, non-empty-array, etc.
+            foreach ($class_union_type->getTypeSet() as $type) {
+                $union_type = $union_type->withType(self::fromKeyAndValueTypes($this->key_union_type, $type->asPHPDocUnionType(), $this->is_nullable));
+            }
+
+            // Recurse up the tree to include all types
+            $representation = $this->__toString();
+            try {
+                foreach ($union_type->getTypeSet() as $clazz_type) {
+                    if ($clazz_type->__toString() !== $representation) {
+                        $recursive_union_type_builder->addUnionType(
+                            $clazz_type->asExpandedTypesPreservingTemplate(
+                                $code_base,
+                                $recursion_depth + 1
+                            )
+                        );
+                    } else {
+                        $recursive_union_type_builder->addType($clazz_type);
+                    }
+                }
+            } catch (RecursionDepthException $_) {
+                return GenericIterableType::fromKeyAndValueTypes($this->key_union_type, UnionType::fromFullyQualifiedPHPDocString('mixed'), $this->is_nullable)->asPHPDocUnionType();
+            }
+
+            // Add in aliases
+            // (If enable_class_alias_support is false, this will do nothing)
+            if (Config::getValue('enable_class_alias_support')) {
+                $this->addClassAliases($code_base, $recursive_union_type_builder, $class_fqsen);
+            }
+            return $recursive_union_type_builder->getPHPDocUnionType();
+        });
+    }
+
+    // (If enable_class_alias_support is false, this will not be called)
+    private function addClassAliases(
+        CodeBase $code_base,
+        UnionTypeBuilder $union_type_builder,
+        FullyQualifiedClassName $class_fqsen
+    ): void {
+        $fqsen_aliases = $code_base->getClassAliasesByFQSEN($class_fqsen);
+        foreach ($fqsen_aliases as $alias_fqsen_record) {
+            $alias_fqsen = $alias_fqsen_record->alias_fqsen;
+            $union_type_builder->addType(
+                GenericIterableType::fromKeyAndValueTypes($this->key_union_type, $alias_fqsen->asType()->asPHPDocUnionType(), $this->is_nullable)
+            );
+        }
+    }
+
+    public function getReferencedClasses(): Generator
+    {
+        yield from $this->key_union_type->getReferencedClasses();
+        yield from $this->element_union_type->getReferencedClasses();
+    }
+
+    public function asObjectType(): Type
+    {
+        return Type::make(
+            '\\',
+            'Traversable',
+            $this->key_union_type->isEmpty() ? [$this->element_union_type] : [$this->key_union_type, $this->element_union_type],
+            false,
+            Type::FROM_TYPE
+        );
+    }
+
+    public function isSubtypeOf(Type $type, CodeBase $code_base): bool
+    {
+        if ($type instanceof GenericIterableType) {
+            return $this->key_union_type->isStrictSubtypeOf($code_base, $type->key_union_type) &&
+                $this->element_union_type->isStrictSubtypeOf($code_base, $type->element_union_type);
+        }
+        return \get_class($type) === IterableType::class || $type instanceof MixedType;
     }
 }

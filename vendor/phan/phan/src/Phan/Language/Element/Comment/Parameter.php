@@ -49,9 +49,20 @@ class Parameter
     private $has_default_value;
 
     /**
+     * @var bool
+     * Whether or not the parameter is marked as mandatory in phpdoc
+     */
+    private $is_mandatory_in_phpdoc;
+
+    /**
      * @var int one of the REFERENCE_* constants.
      */
     private $reference_type;
+
+    /**
+     * @var ?string the original string for the default value representation
+     */
+    private $default_value_representation;
 
     /**
      * @param string $name
@@ -67,13 +78,17 @@ class Parameter
         bool $is_variadic = false,
         bool $has_default_value = false,
         bool $is_output_reference = false,
-        bool $is_ignored_reference = false
+        bool $is_ignored_reference = false,
+        bool $is_mandatory_in_phpdoc = false,
+        ?string $default_value_representation = null
     ) {
         $this->name = $name;
         $this->type = $type;
         $this->lineno = $lineno;
         $this->is_variadic = $is_variadic;
         $this->has_default_value = $has_default_value;
+        $this->is_mandatory_in_phpdoc = $is_mandatory_in_phpdoc;
+        $this->default_value_representation = $default_value_representation;
         if ($is_ignored_reference) {
             $this->reference_type = self::REFERENCE_IGNORED;
         } elseif ($is_output_reference) {
@@ -123,6 +138,7 @@ class Parameter
             // If given '= "Default"', then extract the default from '<?php ("Default");'
             // Then get the type from UnionTypeVisitor, for defaults such as SomeClass::CONST.
         }
+        $param->setDefaultValueRepresentation($this->default_value_representation);
         return $param;
     }
 
@@ -207,6 +223,15 @@ class Parameter
     public function isOptional(): bool
     {
         return $this->has_default_value || $this->is_variadic;
+    }
+
+    /**
+     * @return bool
+     * Whether or not the parameter is marked as mandatory in phpdoc
+     */
+    public function isMandatoryInPHPDoc(): bool
+    {
+        return $this->is_mandatory_in_phpdoc;
     }
 
     public function __toString(): string

@@ -5,7 +5,7 @@ class WhereClauseTest extends SimpleTest {
     $where->add('username=%s', 'Bart');
     $where->add('password=%s', 'hello');
     
-    $result = DB::query("SELECT * FROM accounts WHERE %l", $where->text());
+    $result = DB::query("SELECT * FROM accounts WHERE %l", $where);
     $this->assert(count($result) === 1);
     $this->assert($result[0]['age'] === '15');
   }
@@ -17,7 +17,7 @@ class WhereClauseTest extends SimpleTest {
     $subclause->add('age=%i', 15);
     $subclause->add('age=%i', 14);
     
-    $result = DB::query("SELECT * FROM accounts WHERE %l", $where->text());
+    $result = DB::query("SELECT * FROM accounts WHERE %l", $where);
     $this->assert(count($result) === 1);
     $this->assert($result[0]['age'] === '15');
   }
@@ -29,7 +29,7 @@ class WhereClauseTest extends SimpleTest {
     $subclause->add('username!=%s', 'Bart');
     $subclause->negateLast();
     
-    $result = DB::query("SELECT * FROM accounts WHERE %l", $where->text());
+    $result = DB::query("SELECT * FROM accounts WHERE %l", $where);
     $this->assert(count($result) === 1);
     $this->assert($result[0]['age'] === '15');
   }
@@ -58,7 +58,17 @@ class WhereClauseTest extends SimpleTest {
     $this->assert($result[0]['age'] === '15');
   }
 
-  function test_6_or() {
+  function test_6_negate_two() {
+    $where = new WhereClause('and');
+    $where->add('password=%s', 'hello');
+    $where->add('username=%s', 'Bart');
+    $where->negate();
+    
+    $result = DB::query("SELECT * FROM accounts WHERE %l", $where);
+    $this->assert(count($result) === 7);
+  }
+
+  function test_7_or() {
     $where = new WhereClause('or');
     $where->add('username=%s', 'Bart');
     $where->add('username=%s', 'Abe');

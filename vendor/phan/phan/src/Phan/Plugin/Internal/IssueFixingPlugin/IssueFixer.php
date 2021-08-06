@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Phan\Plugin\Internal\IssueFixingPlugin;
 
 use Closure;
-use Microsoft\PhpParser;
 use Microsoft\PhpParser\Node\NamespaceUseClause;
 use Microsoft\PhpParser\Node\QualifiedName;
 use Microsoft\PhpParser\Node\Statement\NamespaceUseDeclaration;
@@ -102,7 +101,7 @@ class IssueFixer
         $end = $declaration->getEndPosition();
         $end = self::skipTrailingWhitespaceAndNewlines($file_contents, $end);
         // @phan-suppress-next-line PhanThrowTypeAbsentForCall
-        return new FileEdit($declaration->getStart(), $end);
+        return new FileEdit($declaration->getStartPosition(), $end);
     }
 
     private static function skipTrailingWhitespaceAndNewlines(string $file_contents, int $end): int
@@ -255,7 +254,7 @@ class IssueFixer
     }
 
     /**
-     * @param list<Closure(CodeBase,string,PhpParser\Node):(?FileEditSet)> $fixers one or more fixers. These return 0 edits if nothing works.
+     * @param list<Closure(CodeBase,FileCacheEntry):(?FileEditSet)>  $fixers one or more fixers. These return 0 edits if nothing works.
      */
     private static function attemptFixForIssues(
         CodeBase $code_base,
@@ -333,6 +332,7 @@ class IssueFixer
      */
     public static function error(string $message): void
     {
+        // @phan-suppress-next-line PhanPluginRemoveDebugCall
         \fwrite(\STDERR, $message);
     }
 
@@ -342,6 +342,7 @@ class IssueFixer
     public static function debug(string $message): void
     {
         if (\getenv('PHAN_DEBUG_AUTOMATIC_FIX')) {
+            // @phan-suppress-next-line PhanPluginRemoveDebugCall
             \fwrite(\STDERR, $message);
         }
     }

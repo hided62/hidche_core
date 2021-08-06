@@ -20,6 +20,7 @@ class FunctionDeclaration extends StatementNode implements NamespacedNameInterfa
 
     const CHILD_NAMES = [
         // FunctionHeader
+        'attributes',
         'functionKeyword',
         'byRefToken',
         'name',
@@ -30,8 +31,7 @@ class FunctionDeclaration extends StatementNode implements NamespacedNameInterfa
         // FunctionReturnType
         'colonToken',
         'questionToken',
-        'returnType',
-        'otherReturnTypes',
+        'returnTypeList',
 
         // FunctionBody
         'compoundStatementOrSemicolon'

@@ -8,6 +8,7 @@ use AssertionError;
 use ast;
 use ast\Node;
 use Closure;
+use Exception;
 use Phan\AST\ASTReverter;
 use Phan\AST\ContextNode;
 use Phan\AST\UnionTypeVisitor;
@@ -17,7 +18,9 @@ use Phan\Exception\CodeBaseException;
 use Phan\Exception\IssueException;
 use Phan\Exception\RecursionDepthException;
 use Phan\Issue;
+use Phan\IssueFixSuggester;
 use Phan\Language\Context;
+use Phan\Language\Element\Func;
 use Phan\Language\Element\FunctionInterface;
 use Phan\Language\Element\Method;
 use Phan\Language\Element\Parameter;
@@ -27,6 +30,7 @@ use Phan\Language\Type\FalseType;
 use Phan\Language\Type\NullType;
 use Phan\Language\UnionType;
 use Phan\PluginV3\StopParamAnalysisException;
+use Phan\Suggestion;
 
 use function is_string;
 
@@ -67,7 +71,7 @@ final class ArgumentType
         self::checkIsDeprecatedOrInternal($code_base, $context, $method);
         if ($method->hasFunctionCallAnalyzer()) {
             try {
-                $method->analyzeFunctionCall($code_base, $context->withLineNumberStart($node->lineno), $node->children['args']->children, $node);
+                $method->analyzeFunctionCall($code_base, $context->withLineNumberStart($node->lineno), $node->children['args']->children ?? [], $node);
             } catch (StopParamAnalysisException $_) {
                 return;
             }
@@ -75,10 +79,11 @@ final class ArgumentType
 
         // Emit an issue if this is an externally accessed internal method
         $arglist = $node->children['args'];
-        $argcount = \count($arglist->children);
+        $arglist_children = $arglist->children ?? [];
+        $argcount = \count($arglist_children);
 
         // Make sure we have enough arguments
-        if ($argcount < $method->getNumberOfRequiredParameters() && !self::isUnpack($arglist->children)) {
+        if ($argcount < $method->getNumberOfRequiredParameters() && !self::isUnpack($arglist_children)) {
             $alternate_found = false;
             foreach ($method->alternateGenerator($code_base) as $alternate_method) {
                 $alternate_found = $alternate_found || (
@@ -130,12 +135,16 @@ final class ArgumentType
         }
 
         // Check the parameter types
-        self::analyzeParameterList(
-            $code_base,
-            $method,
-            $arglist,
-            $context
-        );
+        // NOTE: Attributes have an optional arg list, which is the same as 0 args.
+        // Because there are 0 args, no argument types need to be checked.
+        if ($arglist instanceof Node) {
+            self::analyzeParameterList(
+                $code_base,
+                $method,
+                $arglist,
+                $context
+            );
+        }
     }
 
     /**
@@ -183,13 +192,27 @@ final class ArgumentType
                     }
                 }
             }
+        } else {
+            try {
+                $class_type = UnionTypeVisitor::unionTypeFromNode(
+                    $code_base,
+                    $context,
+                    $class_node
+                );
+            } catch (Exception $_) {
+                return;
+            }
+            if ($class_type->isEmpty() || $class_type->hasPossiblyObjectTypes()) {
+                return;
+            }
         }
         Issue::maybeEmit(
             $code_base,
             $context,
             $issue_type,
             $node->lineno,
-            $method->getRepresentationForIssue()
+            $method->getRepresentationForIssue(),
+            ASTReverter::toShortString($node)
         );
     }
 
@@ -239,7 +262,8 @@ final class ArgumentType
                     $context,
                     Issue::DeprecatedFunctionInternal,
                     $context->getLineNumberStart(),
-                    $method->getRepresentationForIssue()
+                    $method->getRepresentationForIssue(),
+                    $method->getDeprecationReason()
                 );
             }
         } else {
@@ -341,10 +365,10 @@ final class ArgumentType
         if ($argcount < $method->getNumberOfRequiredParameters() && !self::isUnpack($arg_nodes)) {
             $alternate_found = false;
             foreach ($method->alternateGenerator($code_base) as $alternate_method) {
-                $alternate_found = $alternate_found || (
-                    $argcount >=
-                    $alternate_method->getNumberOfRequiredParameters()
-                );
+                if ($argcount >= $alternate_method->getNumberOfRequiredParameters()) {
+                    $alternate_found = true;
+                    break;
+                }
             }
 
             if (!$alternate_found) {
@@ -426,10 +450,82 @@ final class ArgumentType
                 return;
             }
         }
+        $positions_used = null;
 
-        foreach ($arg_nodes as $i => $argument) {
-            // Get the parameter associated with this argument
-            $parameter = $method->getParameterForCaller($i);
+        foreach ($arg_nodes as $original_i => $argument) {
+            if (!\is_int($original_i)) {
+                throw new AssertionError("Expected argument index to be an integer");
+            }
+            $i = $original_i;
+            if ($argument instanceof Node && $argument->kind === ast\AST_NAMED_ARG) {
+                ['name' => $argument_name, 'expr' => $argument_expression] = $argument->children;
+                if ($argument_expression === null) {
+                    throw new AssertionError("Expected argument to have an expression");
+                }
+                $found = false;
+                // TODO: Could optimize for long lists by precomputing a map, probably not worth it
+                foreach ($method->getRealParameterList() as $j => $parameter) {
+                    if ($parameter->getName() === $argument_name) {
+                        if ($parameter->isVariadic()) {
+                            self::emitSuspiciousNamedArgumentForVariadic($code_base, $context, $method, $argument);
+                        }
+                        $found = true;
+                        $i = $j;
+                        break;
+                    }
+                }
+                if (!isset($parameter)) {
+                    self::emitUndeclaredNamedArgument($code_base, $context, $method, $argument);
+                    continue;
+                }
+
+                if (!$found) {
+                    if (!$parameter->isVariadic()) {
+                        self::emitUndeclaredNamedArgument($code_base, $context, $method, $argument);
+                    } elseif ($method->isPHPInternal()) {
+                        self::emitSuspiciousNamedArgumentVariadicInternal($code_base, $context, $method, $argument);
+                    }
+                    continue;
+                }
+                if (!\is_array($positions_used)) {
+                    $positions_used = \array_slice($arg_nodes, 0, $original_i);
+                }
+            } else {
+                // Get the parameter associated with this argument
+                // FIXME: Use the real parameter name all the time for named arguments if it exists
+                $parameter = $method->getParameterForCaller($i);
+                $argument_expression = $argument;
+            }
+            if (\is_array($positions_used)) {
+                $reused_argument = $positions_used[$i] ?? null;
+                if ($reused_argument !== null && $parameter && !$parameter->isVariadic()) {
+                    if ($method->isPHPInternal()) {
+                        Issue::maybeEmit(
+                            $code_base,
+                            $context,
+                            Issue::DuplicateNamedArgumentInternal,
+                            $argument->lineno ?? $context->getLineNumberStart(),
+                            ASTReverter::toShortString($argument),
+                            ASTReverter::toShortString($reused_argument),
+                            $method->getRepresentationForIssue(true)
+                        );
+                    } else {
+                        Issue::maybeEmit(
+                            $code_base,
+                            $context,
+                            Issue::DuplicateNamedArgument,
+                            $argument->lineno ?? $context->getLineNumberStart(),
+                            ASTReverter::toShortString($argument),
+                            ASTReverter::toShortString($reused_argument),
+                            $method->getRepresentationForIssue(true),
+                            $method->getContext()->getFile(),
+                            $method->getContext()->getLineNumberStart()
+                        );
+                    }
+                } else {
+                    $positions_used[$i] = $argument;
+                }
+            }
 
             // This issue should be caught elsewhere
             if (!$parameter) {
@@ -446,13 +542,26 @@ final class ArgumentType
                 Issue::maybeEmitInstance($code_base, $context, $e->getIssueInstance());
                 continue;
             }
-            self::analyzeParameter($code_base, $context, $method, $argument_type, $argument->lineno ?? $context->getLineNumberStart(), $i, $argument);
+            $lineno = $argument->lineno ?? $context->getLineNumberStart();
+            self::analyzeParameter(
+                $code_base,
+                $context,
+                $method,
+                $argument_type,
+                $lineno,
+                $i,
+                $argument,
+                new ast\Node(ast\AST_ARG_LIST, 0, $arg_nodes, $lineno)
+            );
             if ($parameter->isPassByReference()) {
                 if ($argument instanceof Node) {
                     // @phan-suppress-next-line PhanUndeclaredProperty this is added for analyzers
                     $argument->is_reference = true;
                 }
             }
+        }
+        if (\is_array($positions_used)) {
+            self::checkAllNamedArgumentsPassed($code_base, $context, $context->getLineNumberStart(), $method, $positions_used);
         }
     }
 
@@ -492,23 +601,95 @@ final class ArgumentType
                 return;
             }
         }
+        $positions_used = null;
 
-        foreach ($node->children as $i => $argument) {
-            if (!\is_int($i)) {
+        foreach ($node->children as $original_i => $argument) {
+            if (!\is_int($original_i)) {
                 throw new AssertionError("Expected argument index to be an integer");
             }
+            $i = $original_i;
+            if ($argument instanceof Node && $argument->kind === ast\AST_NAMED_ARG) {
+                ['name' => $argument_name, 'expr' => $argument_expression] = $argument->children;
+                if ($argument_expression === null) {
+                    throw new AssertionError("Expected argument to have an expression");
+                }
+                $found = false;
+                // TODO: Could optimize for long lists by precomputing a map, probably not worth it
+                foreach ($method->getRealParameterList() as $j => $parameter) {
+                    if ($parameter->getName() === $argument_name) {
+                        if ($parameter->isVariadic()) {
+                            self::emitSuspiciousNamedArgumentForVariadic($code_base, $context, $method, $argument);
+                        }
+                        $found = true;
+                        $i = $j;
+                        break;
+                    }
+                }
 
-            // Get the parameter associated with this argument
-            $parameter = $method->getParameterForCaller($i);
+                if (!isset($parameter)) {
+                    self::emitUndeclaredNamedArgument($code_base, $context, $method, $argument);
+                    continue;
+                }
+                if (!$found) {
+                    if (!$parameter->isVariadic()) {
+                        self::emitUndeclaredNamedArgument($code_base, $context, $method, $argument);
+                    } elseif ($method->isPHPInternal()) {
+                        self::emitSuspiciousNamedArgumentVariadicInternal($code_base, $context, $method, $argument);
+                    }
+                    continue;
+                }
+                if (!\is_array($positions_used)) {
+                    $positions_used = \array_slice($node->children, 0, $original_i);
+                }
+            } else {
+                // Get the parameter associated with this argument
+                // FIXME: Use the real parameter name all the time for named arguments if it exists
+                $parameter = $method->getParameterForCaller($i);
+                $argument_expression = $argument;
+            }
+            if (\is_array($positions_used)) {
+                $reused_argument = $positions_used[$i] ?? null;
+                if ($reused_argument !== null && $parameter && !$parameter->isVariadic()) {
+                    if ($method->isPHPInternal()) {
+                        Issue::maybeEmit(
+                            $code_base,
+                            $context,
+                            Issue::DuplicateNamedArgumentInternal,
+                            $argument->lineno ?? $node->lineno,
+                            ASTReverter::toShortString($argument),
+                            ASTReverter::toShortString($reused_argument),
+                            $method->getRepresentationForIssue(true)
+                        );
+                    } else {
+                        Issue::maybeEmit(
+                            $code_base,
+                            $context,
+                            Issue::DuplicateNamedArgument,
+                            $argument->lineno ?? $node->lineno,
+                            ASTReverter::toShortString($argument),
+                            ASTReverter::toShortString($reused_argument),
+                            $method->getRepresentationForIssue(true),
+                            $method->getContext()->getFile(),
+                            $method->getContext()->getLineNumberStart()
+                        );
+                    }
+                } else {
+                    $positions_used[$i] = $argument;
+                }
+            }
+
 
             // This issue should be caught elsewhere
             if (!$parameter) {
                 $argument_type = UnionTypeVisitor::unionTypeFromNode(
                     $code_base,
                     $context,
-                    $argument,
+                    $argument_expression,
                     true
                 );
+                if ($argument_type->isVoidType()) {
+                    self::warnVoidTypeArgument($code_base, $context, $argument_expression, $node);
+                }
                 continue;
             }
 
@@ -517,8 +698,8 @@ final class ArgumentType
             // If this is a pass-by-reference parameter, make sure
             // we're passing an allowable argument
             if ($parameter->isPassByReference()) {
-                if ((!$argument instanceof Node) || !\in_array($argument_kind, self::REFERENCE_NODE_KINDS, true)) {
-                    $is_possible_reference = self::isExpressionReturningReference($code_base, $context, $argument);
+                if ((!$argument_expression instanceof Node) || !\in_array($argument_kind, self::REFERENCE_NODE_KINDS, true)) {
+                    $is_possible_reference = self::isExpressionReturningReference($code_base, $context, $argument_expression);
 
                     if (!$is_possible_reference) {
                         Issue::maybeEmit(
@@ -527,14 +708,14 @@ final class ArgumentType
                             Issue::TypeNonVarPassByRef,
                             $argument->lineno ?? $node->lineno ?? 0,
                             ($i + 1),
-                            $method->getRepresentationForIssue()
+                            $method->getRepresentationForIssue(true)
                         );
                     }
                 } else {
                     $variable_name = (new ContextNode(
                         $code_base,
                         $context,
-                        $argument
+                        $argument_expression
                     ))->getVariableName();
 
                     if (Type::isSelfTypeString($variable_name)
@@ -545,7 +726,7 @@ final class ArgumentType
                             $code_base,
                             $context,
                             Issue::ContextNotObject,
-                            $argument->lineno ?? $node->lineno ?? 0,
+                            $argument->lineno ?? $node->lineno,
                             "$variable_name"
                         );
                     }
@@ -557,21 +738,184 @@ final class ArgumentType
             $argument_type = UnionTypeVisitor::unionTypeFromNode(
                 $code_base,
                 $context,
-                $argument,
+                $argument_expression,
                 true
             );
+            if ($argument_type->isVoidType()) {
+                self::warnVoidTypeArgument($code_base, $context, $argument_expression, $node);
+            }
             // @phan-suppress-next-line PhanTypeMismatchArgumentNullable
-            self::analyzeParameter($code_base, $context, $method, $argument_type, $argument->lineno ?? $node->lineno, $i, $argument);
+            self::analyzeParameter($code_base, $context, $method, $argument_type, $argument->lineno ?? $node->lineno, $i, $argument_expression, $node);
             if ($parameter->isPassByReference()) {
-                if ($argument instanceof Node) {
+                if ($argument_expression instanceof Node) {
                     // @phan-suppress-next-line PhanUndeclaredProperty this is added for analyzers
-                    $argument->is_reference = true;
+                    $argument_expression->is_reference = true;
                 }
             }
-            if ($argument_kind === ast\AST_UNPACK && $argument instanceof Node) {
-                self::analyzeRemainingParametersForVariadic($code_base, $context, $method, $i + 1, $node, $argument, $argument_type);
+            if ($argument_kind === ast\AST_UNPACK && $argument_expression instanceof Node) {
+                self::analyzeRemainingParametersForVariadic($code_base, $context, $method, $i + 1, $node, $argument_expression, $argument_type);
             }
         }
+        if (\is_array($positions_used)) {
+            self::checkAllNamedArgumentsPassed($code_base, $context, $node->lineno, $method, $positions_used);
+        }
+    }
+
+    private static function emitSuspiciousNamedArgumentForVariadic(
+        CodeBase $code_base,
+        Context $context,
+        FunctionInterface $method,
+        Node $argument
+    ): void {
+        $argument_name = $argument->children['name'];
+        Issue::maybeEmit(
+            $code_base,
+            $context,
+            Issue::SuspiciousNamedArgumentForVariadic,
+            $argument->lineno,
+            $argument_name,
+            $method->getRepresentationForIssue(true),
+            $argument_name
+        );
+    }
+
+    private static function emitUndeclaredNamedArgument(
+        CodeBase $code_base,
+        Context $context,
+        FunctionInterface $method,
+        Node $argument
+    ): void {
+        $parameter_suggestions = [];
+        foreach ($method->getRealParameterList() as $parameter) {
+            if (!$parameter->isVariadic()) {
+                $name = $parameter->getName();
+                $parameter_suggestions[$name] = $name;
+            }
+        }
+        $argument_name = $argument->children['name'];
+        $suggested_arguments = IssueFixSuggester::getSuggestionsForStringSet($argument_name, $parameter_suggestions);
+        $suggestion = $suggested_arguments ? Suggestion::fromString('Did you mean ' . \implode(' ', $suggested_arguments)) : null;
+
+        if ($method->isPHPInternal()) {
+            Issue::maybeEmitWithParameters(
+                $code_base,
+                $context,
+                Issue::UndeclaredNamedArgumentInternal,
+                $argument->lineno,
+                [ASTReverter::toShortString($argument), $method->getRepresentationForIssue(true)],
+                $suggestion
+            );
+        } else {
+            Issue::maybeEmitWithParameters(
+                $code_base,
+                $context,
+                Issue::UndeclaredNamedArgument,
+                $argument->lineno,
+                [
+                    ASTReverter::toShortString($argument),
+                    $method->getRepresentationForIssue(true),
+                    $method->getContext()->getFile(),
+                    $method->getContext()->getLineNumberStart(),
+                ],
+                $suggestion
+            );
+        }
+    }
+
+    /**
+     * Warn about using named arguments with internal functions,
+     * ignoring known exceptions such as call_user_func, ReflectionMethod->invoke, etc.
+     * @param FunctionInterface $method an internal function
+     * @param Node $argument a node of kind ast\AST_NAMED_ARG
+     */
+    private static function emitSuspiciousNamedArgumentVariadicInternal(
+        CodeBase $code_base,
+        Context $context,
+        FunctionInterface $method,
+        Node $argument
+    ): void {
+        $fqsen = $method instanceof Method ? $method->getRealDefiningFQSEN() : $method->getFQSEN();
+        if (!\in_array($fqsen->__toString(), [
+            '\call_user_func',
+            '\ReflectionMethod::invoke',
+            '\ReflectionMethod::newInstance',
+            '\ReflectionFunction::invoke',
+            '\ReflectionFunction::newInstance',
+            '\ReflectionFunctionAbstract::invoke',
+            '\ReflectionFunctionAbstract::newInstance',
+            '\Closure::call',
+            '\Closure::__invoke',
+        ], true)) {
+            Issue::maybeEmitWithParameters(
+                $code_base,
+                $context,
+                Issue::SuspiciousNamedArgumentVariadicInternal,
+                $argument->lineno,
+                [
+                    ASTReverter::toShortString($argument),
+                    $method->getRepresentationForIssue(true),
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param array<int,mixed> $positions_used
+     */
+    private static function checkAllNamedArgumentsPassed(
+        CodeBase $code_base,
+        Context $context,
+        int $lineno,
+        FunctionInterface $method,
+        array $positions_used
+    ): void {
+        foreach ($method->getRealParameterList() as $i => $parameter) {
+            if ($parameter->isOptional() || $parameter->isVariadic()) {
+                continue;
+            }
+            if (isset($positions_used[$i])) {
+                continue;
+            }
+            if ($method->isPHPInternal()) {
+                Issue::maybeEmit(
+                    $code_base,
+                    $context,
+                    Issue::MissingNamedArgumentInternal,
+                    $lineno,
+                    $parameter,
+                    $method->getRepresentationForIssue(true)
+                );
+            } else {
+                Issue::maybeEmit(
+                    $code_base,
+                    $context,
+                    Issue::MissingNamedArgument,
+                    $lineno,
+                    $parameter,
+                    $method->getRepresentationForIssue(true),
+                    $method->getContext()->getFile(),
+                    $method->getContext()->getLineNumberStart()
+                );
+            }
+        }
+    }
+
+    /**
+     * @param Node|string|int|float|null $argument
+     */
+    private static function warnVoidTypeArgument(
+        CodeBase $code_base,
+        Context $context,
+        $argument,
+        Node $node
+    ): void {
+        Issue::maybeEmit(
+            $code_base,
+            $context,
+            Issue::TypeVoidArgument,
+            $argument->lineno ?? $node->lineno,
+            ASTReverter::toShortString($argument)
+        );
     }
 
     private static function analyzeRemainingParametersForVariadic(
@@ -613,14 +957,14 @@ final class ArgumentType
                             Issue::TypeNonVarPassByRef,
                             $argument->lineno ?? $node->lineno ?? 0,
                             ($i + 1),
-                            $method->getRepresentationForIssue()
+                            $method->getRepresentationForIssue(true)
                         );
                     }
                 }
                 // Omit ContextNotObject check, this was checked for the first matching parameter
             }
 
-            self::analyzeParameter($code_base, $context, $method, $argument_type, $argument->lineno, $i, $argument);
+            self::analyzeParameter($code_base, $context, $method, $argument_type, $argument->lineno, $i, $argument, $node);
             if ($parameter->isPassByReference()) {
                 // @phan-suppress-next-line PhanUndeclaredProperty this is added for analyzers
                 $argument->is_reference = true;
@@ -631,14 +975,17 @@ final class ArgumentType
     /**
      * Analyze passing the an argument of type $argument_type to the ith parameter of the (possibly variadic) method $method,
      * for a call made from the line $lineno.
+     *
+     * @param int $i the index of the parameter.
      * @param Node|string|int|float $argument_node
+     * @param ?Node $node the node of the call TODO: Default
      */
-    public static function analyzeParameter(CodeBase $code_base, Context $context, FunctionInterface $method, UnionType $argument_type, int $lineno, int $i, $argument_node): void
+    public static function analyzeParameter(CodeBase $code_base, Context $context, FunctionInterface $method, UnionType $argument_type, int $lineno, int $i, $argument_node, ?Node $node): void
     {
         // Expand it to include all parent types up the chain
         try {
-            $argument_type_expanded_resolved =
-                $argument_type->withStaticResolvedInContext($context)->asExpandedTypes($code_base);
+            $argument_type_resolved = $argument_type->withStaticResolvedInContext($context);
+            $argument_type_expanded_resolved = $argument_type_resolved->asExpandedTypes($code_base);
         } catch (RecursionDepthException $_) {
             return;
         }
@@ -656,21 +1003,36 @@ final class ArgumentType
             if (\is_null($candidate_alternate_parameter)) {
                 continue;
             }
+            if ($alternate_parameter && $node) {
+                // If another function was already checked which had the right number of alternate parameters, don't bother allowing checks with param
+                $arglist = $node->kind === ast\AST_ARG_LIST ? $node : ($node->children['args'] ?? null);
+                if ($arglist) {
+                    $argcount = \count($arglist->children);
+
+                    // Make sure we have enough arguments
+                    if ($argcount < $alternate_method->getNumberOfRequiredParameters() && !self::isUnpack($arglist->children)) {
+                        continue;
+                    }
+                }
+            }
 
             $alternate_parameter = $candidate_alternate_parameter;
             $alternate_parameter_type = $alternate_parameter->getNonVariadicUnionType()->withStaticResolvedInFunctionLike($alternate_method);
 
-            // See if the argument can be cast to the
-            // parameter
-            if ($argument_type_expanded_resolved->canCastToUnionType($alternate_parameter_type)) {
+            // See if the argument can be cast to the parameter.
+            // TODO: In order for intersection types to work (e.g. casting ArrayObject to ArrayAccess&Countable),
+            // the codebase must be passed into canCastToUnionType (instead of expanding types), because ArrayAccess|Countable is not a type that casts to ArrayAccess&Countable
+            //
+            // TODO: Stop expanding the argument type
+            if ($argument_type_resolved->canCastToUnionType($alternate_parameter_type, $code_base)) {
                 if ($alternate_parameter_type->hasRealTypeSet() && $argument_type->hasRealTypeSet()) {
                     $real_parameter_type = $alternate_parameter_type->getRealUnionType();
                     $real_argument_type = $argument_type->getRealUnionType();
-                    $real_argument_type_expanded_resolved = $real_argument_type->withStaticResolvedInContext($context)->asExpandedTypes($code_base);
-                    if (!$real_argument_type_expanded_resolved->canCastToDeclaredType($code_base, $context, $real_parameter_type)) {
-                        $real_argument_type_expanded_resolved_nonnull = $real_argument_type_expanded_resolved->nonNullableClone();
-                        if ($real_argument_type_expanded_resolved_nonnull->isEmpty() ||
-                            !$real_argument_type_expanded_resolved_nonnull->canCastToDeclaredType($code_base, $context, $real_parameter_type)) {
+                    $real_argument_type_resolved = $real_argument_type->withStaticResolvedInContext($context);
+                    if (!$real_argument_type_resolved->canCastToDeclaredType($code_base, $context, $real_parameter_type)) {
+                        $real_argument_type_resolved_nonnull = $real_argument_type_resolved->nonNullableClone();
+                        if ($real_argument_type_resolved_nonnull->isEmpty() ||
+                            !$real_argument_type_resolved_nonnull->canCastToDeclaredType($code_base, $context, $real_parameter_type)) {
                             // We know that the inferred real types don't match with the strict_types setting of the caller
                             // (e.g. null -> any non-null type)
                             // Try checking any other alternates, and emit PhanTypeMismatchArgumentReal if that fails.
@@ -684,6 +1046,9 @@ final class ArgumentType
                 if (Config::get_strict_param_checking() && $argument_type->typeCount() > 1) {
                     self::analyzeParameterStrict($code_base, $context, $method, $argument_node, $argument_type, $alternate_parameter, $alternate_parameter_type, $lineno, $i);
                 }
+                if ($alternate_parameter->shouldWarnIfProvided()) {
+                    self::maybeWarnProvidingUnusedParameter($code_base, $context, $lineno, $method, $alternate_parameter, $i);
+                }
                 return;
             }
         }
@@ -693,6 +1058,9 @@ final class ArgumentType
         }
         if (!isset($alternate_parameter_type)) {
             throw new AssertionError('Impossible - should be set if $alternate_parameter is set');
+        }
+        if ($alternate_parameter->shouldWarnIfProvided()) {
+            self::maybeWarnProvidingUnusedParameter($code_base, $context, $lineno, $method, $alternate_parameter, $i);
         }
 
         if ($alternate_parameter->isPassByReference() && $alternate_parameter->getReferenceType() === Parameter::REFERENCE_WRITE_ONLY) {
@@ -706,10 +1074,11 @@ final class ArgumentType
             // TODO: Warn about the type without the templates?
             return;
         }
+        // FIXME: This may be obsolete after changing canCastToDeclaredType
         if ($alternate_parameter_type->hasTemplateParameterTypes()) {
             // TODO: Make the check for templates recursive
             $argument_type_expanded_templates = $argument_type->asExpandedTypesPreservingTemplate($code_base);
-            if ($argument_type_expanded_templates->canCastToUnionTypeHandlingTemplates($alternate_parameter_type, $code_base)) {
+            if ($argument_type_expanded_templates->canCastToUnionType($alternate_parameter_type, $code_base)) {
                 // - can cast MyClass<\stdClass> to MyClass<mixed>
                 // - can cast Some<\stdClass> to Option<\stdClass>
                 // - cannot cast Some<\SomeOtherClass> to Option<\stdClass>
@@ -723,8 +1092,8 @@ final class ArgumentType
             // and the argument we are passing has a __toString method then it is ok
             if (!$context->isStrictTypes() && $alternate_parameter_type->hasNonNullStringType()) {
                 try {
-                    foreach ($argument_type_expanded_resolved->asClassList($code_base, $context) as $clazz) {
-                        if ($clazz->hasMethodWithName($code_base, "__toString")) {
+                    foreach ($argument_type_resolved->asClassList($code_base, $context) as $clazz) {
+                        if ($clazz->hasMethodWithName($code_base, "__toString", true)) {
                             return;
                         }
                     }
@@ -735,6 +1104,48 @@ final class ArgumentType
         }
         // Check suppressions and emit the issue
         self::warnInvalidArgumentType($code_base, $context, $method, $alternate_parameter, $alternate_parameter_type, $argument_node, $argument_type, $argument_type->asExpandedTypes($code_base), $argument_type_expanded_resolved, $lineno, $i);
+    }
+
+    private static function maybeWarnProvidingUnusedParameter(
+        CodeBase $code_base,
+        Context $context,
+        int $lineno,
+        FunctionInterface $method,
+        Parameter $parameter,
+        int $i
+    ): void {
+        if ($method->getNumberOfRequiredParameters() > $i) {
+            // handle required parameter after optional
+            return;
+        }
+        if ($method->isPHPInternal()) {
+            // not supported for stubs
+            return;
+        }
+        $fqsen = $method->getFQSEN();
+        if ($fqsen->getAlternateId() > 0) {
+            return;
+        }
+        if ($method instanceof Method) {
+            if ($method->isOverriddenByAnother() || $code_base->hasMethodWithFQSEN($fqsen->withAlternateId(1))) {
+                return;
+            }
+        }
+        $issue_type = $method instanceof Func && $method->isClosure() ? Issue::ProvidingUnusedParameterOfClosure : Issue::ProvidingUnusedParameter;
+        if ($method->hasSuppressIssue($issue_type)) {
+            // For convenience, allow suppressing it on the method definition as well.
+            return;
+        }
+        Issue::maybeEmit(
+            $code_base,
+            $context,
+            $issue_type,
+            $lineno,
+            $parameter->getName(),
+            $method->getRepresentationForIssue(true),
+            $method->getFileRef()->getFile(),
+            $method->getFileRef()->getLineNumberStart()
+        );
     }
 
     /**
@@ -753,6 +1164,7 @@ final class ArgumentType
         int $lineno,
         int $i
     ): void {
+        $context = (clone $context)->withLineNumberStart($lineno);
         /**
          * @return ?string
          */
@@ -762,8 +1174,9 @@ final class ArgumentType
                 // Record that the most severe issue type suppression was used and don't emit any issue.
                 return null;
             }
-            // @phan-suppress-next-line PhanAccessMethodInternal
-            if (!$argument_type_expanded_resolved->canCastToUnionTypeIfNonNull($alternate_parameter_type)) {
+            // @phan-suppress-next-next-line PhanAccessMethodInternal
+            if ($argument_type_expanded_resolved->isNull() ||
+                    !($argument_type_expanded_resolved->containsNullable() && $argument_type_expanded_resolved->canCastToUnionTypeIfNonNull($alternate_parameter_type, $code_base))) {
                 if ($argument_type->hasRealTypeSet() && $alternate_parameter_type->hasRealTypeSet()) {
                     $real_arg_type = $argument_type->getRealUnionType();
                     $real_parameter_type = $alternate_parameter_type->getRealUnionType();
@@ -773,6 +1186,7 @@ final class ArgumentType
                 }
                 return $issue_type;
             }
+            // Intended postcondition: The expanded argument type contains null but isn't exclusively null, or the nullability doesn't affect the issue.
             if (Issue::shouldSuppressIssue($code_base, $context, $issue_type, $lineno, [])) {
                 return null;
             }
@@ -786,7 +1200,6 @@ final class ArgumentType
             }
             if ($issue_type === Issue::TypeMismatchArgumentInternal) {
                 if ($argument_type->hasRealTypeSet() &&
-                    !$alternate_parameter_type->hasRealTypeSet() &&
                     !$argument_type->getRealUnionType()->canCastToDeclaredType($code_base, $context, $alternate_parameter_type)) {
                     // PHP 7.x doesn't have reflection types for many methods and global functions and won't throw,
                     // but will emit a warning and fail the call.
@@ -857,6 +1270,60 @@ final class ArgumentType
             );
             return;
         }
+        if ($context->hasSuppressIssue($code_base, Issue::TypeMismatchArgumentProbablyReal)) {
+            // Suppressing ProbablyReal also suppresses the less severe version.
+            return;
+        }
+        if ($issue_type === Issue::TypeMismatchArgument) {
+            if ($argument_type->hasRealTypeSet() &&
+                !$argument_type->getRealUnionType()->canCastToDeclaredType($code_base, $context, $alternate_parameter_type)) {
+                // The argument's real type is completely incompatible with the documented phpdoc type.
+                //
+                // Either the phpdoc type is wrong or the argument is likely wrong.
+                Issue::maybeEmit(
+                    $code_base,
+                    $context,
+                    Issue::TypeMismatchArgumentProbablyReal,
+                    $lineno,
+                    ($i + 1),
+                    $alternate_parameter->getName(),
+                    ASTReverter::toShortString($argument_node),
+                    $argument_type_expanded,
+                    PostOrderAnalysisVisitor::toDetailsForRealTypeMismatch($argument_type),
+                    $method->getRepresentationForIssue(),
+                    $alternate_parameter_type,
+                    PostOrderAnalysisVisitor::toDetailsForRealTypeMismatch($alternate_parameter_type),
+                    $method->getFileRef()->getFile(),
+                    $method->getFileRef()->getLineNumberStart()
+                );
+                return;
+            }
+            if ($context->hasSuppressIssue($code_base, Issue::TypeMismatchArgument)) {
+                // Suppressing ProbablyReal also suppresses the less severe version.
+                return;
+            }
+            if (PostOrderAnalysisVisitor::doesExpressionHaveSuperClassOfTargetType(
+                $code_base,
+                $argument_type,
+                $alternate_parameter_type
+            )) {
+                Issue::maybeEmit(
+                    $code_base,
+                    $context,
+                    Issue::TypeMismatchArgumentSuperType,
+                    $lineno,
+                    ($i + 1),
+                    $alternate_parameter->getName(),
+                    ASTReverter::toShortString($argument_node),
+                    $argument_type_expanded->withUnionType($argument_type_expanded_resolved),
+                    $method->getRepresentationForIssue(),
+                    (string)$alternate_parameter_type,
+                    $method->getFileRef()->getFile(),
+                    $method->getFileRef()->getLineNumberStart()
+                );
+                return;
+            }
+        }
         Issue::maybeEmit(
             $code_base,
             $context,
@@ -887,37 +1354,38 @@ final class ArgumentType
         }
 
         $mismatch_type_set = UnionType::empty();
-        $mismatch_expanded_types = null;
+        $mismatch_resolved_types = null;
 
         // For the strict
         foreach ($type_set as $type) {
             // Expand it to include all parent types up the chain
-            $individual_type_expanded = $type->withStaticResolvedInContext($context)->asExpandedTypes($code_base);
+            $type_resolved = $type->withStaticResolvedInContext($context)->asPHPDocUnionType();
 
             // See if the argument can be cast to the
             // parameter
-            if (!$individual_type_expanded->canCastToUnionType(
-                $parameter_type
+            if (!$type_resolved->canCastToUnionType(
+                $parameter_type,
+                $code_base
             )) {
                 if ($method->isPHPInternal()) {
                     // If we are not in strict mode and we accept a string parameter
                     // and the argument we are passing has a __toString method then it is ok
                     if (!$context->isStrictTypes() && $parameter_type->hasNonNullStringType()) {
-                        if ($individual_type_expanded->hasClassWithToStringMethod($code_base, $context)) {
+                        if ($type_resolved->hasClassWithToStringMethod($code_base, $context)) {
                             continue;  // don't warn about $type
                         }
                     }
                 }
                 $mismatch_type_set = $mismatch_type_set->withType($type);
-                if ($mismatch_expanded_types === null) {
+                if ($mismatch_resolved_types === null) {
                     // Warn about the first type
-                    $mismatch_expanded_types = $individual_type_expanded;
+                    $mismatch_resolved_types = $type_resolved;
                 }
             }
         }
 
 
-        if ($mismatch_expanded_types === null) {
+        if ($mismatch_resolved_types === null) {
             // No mismatches
             return;
         }
@@ -934,7 +1402,7 @@ final class ArgumentType
                 $argument_type,
                 $method->getRepresentationForIssue(),
                 (string)$parameter_type,
-                $mismatch_expanded_types
+                $mismatch_resolved_types->asExpandedTypes($code_base)
             );
             return;
         }
@@ -949,7 +1417,7 @@ final class ArgumentType
             $argument_type,
             $method->getRepresentationForIssue(),
             (string)$parameter_type,
-            $mismatch_expanded_types,
+            $mismatch_resolved_types->asExpandedTypes($code_base),
             $method->getFileRef()->getFile(),
             $method->getFileRef()->getLineNumberStart()
         );
@@ -999,7 +1467,7 @@ final class ArgumentType
                     return true;
                 }
             }
-        } elseif ($node_kind === ast\AST_STATIC_CALL || $node_kind === ast\AST_METHOD_CALL) {
+        } elseif (\in_array($node_kind, [ast\AST_STATIC_CALL, ast\AST_METHOD_CALL, ast\AST_NULLSAFE_METHOD_CALL], true)) {
             $method_name = $node->children['method'] ?? null;
             if (is_string($method_name)) {
                 $class_node = $node->children['class'] ?? $node->children['expr'];
@@ -1014,7 +1482,8 @@ final class ArgumentType
                     ) as $class) {
                         if (!$class->hasMethodWithName(
                             $code_base,
-                            $method_name
+                            $method_name,
+                            true
                         )) {
                             continue;
                         }

@@ -33,7 +33,7 @@ class StoreFactory
     public static function createStore($connection)
     {
         if (!\is_string($connection) && !\is_object($connection)) {
-            throw new \TypeError(sprintf('Argument 1 passed to %s() must be a string or a connection object, %s given.', __METHOD__, \gettype($connection)));
+            throw new \TypeError(sprintf('Argument 1 passed to "%s()" must be a string or a connection object, "%s" given.', __METHOD__, \gettype($connection)));
         }
 
         switch (true) {
@@ -56,45 +56,45 @@ class StoreFactory
                 return new ZookeeperStore($connection);
 
             case !\is_string($connection):
-                throw new InvalidArgumentException(sprintf('Unsupported Connection: %s.', \get_class($connection)));
+                throw new InvalidArgumentException(sprintf('Unsupported Connection: "%s".', \get_class($connection)));
             case 'flock' === $connection:
                 return new FlockStore();
 
-            case 0 === strpos($connection, 'flock://'):
+            case str_starts_with($connection, 'flock://'):
                 return new FlockStore(substr($connection, 8));
 
             case 'semaphore' === $connection:
                 return new SemaphoreStore();
 
-            case 0 === strpos($connection, 'redis://'):
-            case 0 === strpos($connection, 'rediss://'):
-            case 0 === strpos($connection, 'memcached://'):
+            case str_starts_with($connection, 'redis:'):
+            case str_starts_with($connection, 'rediss:'):
+            case str_starts_with($connection, 'memcached:'):
                 if (!class_exists(AbstractAdapter::class)) {
                     throw new InvalidArgumentException(sprintf('Unsupported DSN "%s". Try running "composer require symfony/cache".', $connection));
                 }
-                $storeClass = 0 === strpos($connection, 'memcached://') ? MemcachedStore::class : RedisStore::class;
+                $storeClass = str_starts_with($connection, 'memcached:') ? MemcachedStore::class : RedisStore::class;
                 $connection = AbstractAdapter::createConnection($connection, ['lazy' => true]);
 
                 return new $storeClass($connection);
 
-            case 0 === strpos($connection, 'mssql://'):
-            case 0 === strpos($connection, 'mysql:'):
-            case 0 === strpos($connection, 'mysql2://'):
-            case 0 === strpos($connection, 'oci:'):
-            case 0 === strpos($connection, 'oci8://'):
-            case 0 === strpos($connection, 'pdo_oci://'):
-            case 0 === strpos($connection, 'pgsql:'):
-            case 0 === strpos($connection, 'postgres://'):
-            case 0 === strpos($connection, 'postgresql://'):
-            case 0 === strpos($connection, 'sqlsrv:'):
-            case 0 === strpos($connection, 'sqlite:'):
-            case 0 === strpos($connection, 'sqlite3://'):
+            case str_starts_with($connection, 'mssql://'):
+            case str_starts_with($connection, 'mysql:'):
+            case str_starts_with($connection, 'mysql2://'):
+            case str_starts_with($connection, 'oci:'):
+            case str_starts_with($connection, 'oci8://'):
+            case str_starts_with($connection, 'pdo_oci://'):
+            case str_starts_with($connection, 'pgsql:'):
+            case str_starts_with($connection, 'postgres://'):
+            case str_starts_with($connection, 'postgresql://'):
+            case str_starts_with($connection, 'sqlsrv:'):
+            case str_starts_with($connection, 'sqlite:'):
+            case str_starts_with($connection, 'sqlite3://'):
                 return new PdoStore($connection);
 
-            case 0 === strpos($connection, 'zookeeper://'):
+            case str_starts_with($connection, 'zookeeper://'):
                 return new ZookeeperStore(ZookeeperStore::createConnection($connection));
         }
 
-        throw new InvalidArgumentException(sprintf('Unsupported Connection: %s.', $connection));
+        throw new InvalidArgumentException(sprintf('Unsupported Connection: "%s".', $connection));
     }
 }

@@ -98,7 +98,7 @@ final class TemplateType extends Type
     {
         // Return true because we don't know, it may or may not be an object.
         // Not sure if this will be called.
-        return true;
+        return false;
     }
 
     public function isObjectWithKnownFQSEN(): bool
@@ -133,7 +133,11 @@ final class TemplateType extends Type
     public function withTemplateParameterTypeMap(
         array $template_parameter_type_map
     ): UnionType {
-        return $template_parameter_type_map[$this->template_type_identifier] ?? $this->asPHPDocUnionType();
+        $type = $template_parameter_type_map[$this->template_type_identifier] ?? $this->asPHPDocUnionType();
+        if ($this->is_nullable) {
+            return $type->withIsNullable(true);
+        }
+        return $type;
     }
 
     /**
@@ -160,15 +164,23 @@ final class TemplateType extends Type
     }
 
     /**
+     * @unused-param $code_base
      * @param TemplateType $template_type the template type that this union type is being searched for.
      *
      * @return ?Closure(UnionType, Context):UnionType a closure to map types to the template type wherever it was in the original union type
      */
-    public function getTemplateTypeExtractorClosure(CodeBase $unused_code_base, TemplateType $template_type): ?Closure
+    public function getTemplateTypeExtractorClosure(CodeBase $code_base, TemplateType $template_type): ?Closure
     {
+        // For `@param T $param`, if passed a union type such as `int`, then `T` must be `int|false`
         if ($this === $template_type) {
             return static function (UnionType $type, Context $_): UnionType {
                 return $type;
+            };
+        }
+        // For `@param ?T $param`, if passed `?int|false`, then `T` must be `int|false`
+        if ($this->withIsNullable(false) === $template_type) {
+            return static function (UnionType $type, Context $_): UnionType {
+                return $type->withIsNullable(false);
             };
         }
         // Overridden in subclasses
@@ -183,16 +195,75 @@ final class TemplateType extends Type
         return false;
     }
 
-    public function canCastToDeclaredType(CodeBase $unused_code_base, Context $unused_context, Type $unused_other): bool
+    /**
+     * @unused-param $code_base
+     * @unused-param $context
+     * @unused-param $other
+     */
+    public function canCastToDeclaredType(CodeBase $code_base, Context $context, Type $other): bool
     {
         // Always possible until we support inferring `@template T as ConcreteType`
         return true;
     }
 
-    /** @param list<Type> $unused_target_type_set */
-    public function canCastToAnyTypeInSetWithoutConfig(array $unused_target_type_set): bool
+    /**
+     * @param list<Type> $target_type_set
+     * @suppress PhanUnusedPublicFinalMethodParameter
+     */
+    public function canCastToAnyTypeInSetWithoutConfig(array $target_type_set, CodeBase $code_base): bool
     {
         // Always possible until we support inferring `@template T as ConcreteType`
+        return true;
+    }
+
+    public function isPossiblyFalsey(): bool
+    {
+        return true;
+    }
+
+    public function isAlwaysTruthy(): bool
+    {
+        return false;
+    }
+
+    public function isPossiblyNumeric(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Returns true if this could include the type `true`
+     * (e.g. for `mixed`, `bool`, etc.)
+     */
+    public function isPossiblyTrue(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Returns true for types such as `mixed`, `bool`, `false`
+     */
+    public function isPossiblyFalse(): bool
+    {
+        return true;
+    }
+
+    public function isNullable(): bool
+    {
+        return true;
+    }
+
+    public function isNullableLabeled(): bool
+    {
+        return $this->is_nullable;
+    }
+
+    /**
+     * @unused-param $other
+     * @unused-param $code_base
+     */
+    public function weaklyOverlaps(Type $other, CodeBase $code_base): bool
+    {
         return true;
     }
 }

@@ -51,6 +51,19 @@ final class Lock implements LockInterface, LoggerAwareInterface
     }
 
     /**
+     * @return array
+     */
+    public function __sleep()
+    {
+        throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
+    }
+
+    public function __wakeup()
+    {
+        throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
+    }
+
+    /**
      * Automatically releases the underlying lock when the object is destructed.
      */
     public function __destruct()
@@ -67,6 +80,7 @@ final class Lock implements LockInterface, LoggerAwareInterface
      */
     public function acquire($blocking = false): bool
     {
+        $this->key->resetLifetime();
         try {
             if ($blocking) {
                 if (!$this->store instanceof StoreInterface && !$this->store instanceof BlockingStoreInterface) {

@@ -39,6 +39,32 @@ class MarkupDescription
     }
 
     /**
+     * Convert a string description to a newline-terminated doc comment
+     */
+    public static function convertStringToDocComment(string $description, string $indent = ''): string
+    {
+        $description = \trim($description);
+        if ($description === '') {
+            return '';
+        }
+        $description = \str_replace('*/', '*\/', \trim($description));
+        if (\strpos($description, "\n") !== false) {
+            $result = "$indent/**\n";
+            foreach (\explode("\n", $description) as $line) {
+                $line = \rtrim($line);
+                $result .= "$indent *";
+                if ($line !== '') {
+                    $result .= " $line";
+                }
+                $result .= "\n";
+            }
+            $result .= "$indent */\n";
+            return $result;
+        }
+        return "$indent/** $description */\n";
+    }
+
+    /**
      * @template T
      * @param array<string,T> $signatures
      * @return array<string,T>
@@ -96,7 +122,6 @@ class MarkupDescription
 
     /**
      * @return array<string,string> mapping class FQSENs to short summaries.
-     * @internal - The data format may change
      */
     public static function loadClassDescriptionMap(): array
     {
@@ -271,13 +296,13 @@ class MarkupDescription
         //
         // We leave in the second `*` of `/**` so that every single non-empty line
         // of a typical doc comment will begin with a `*`
-        $doc_comment = \preg_replace('@(^/\*)|(\*/$)@', '', $doc_comment);
+        $doc_comment = \preg_replace('@(^/\*)|(\*/$)@D', '', $doc_comment);
 
         $results = [];
         $lines = \explode("\n", $doc_comment);
         foreach ($lines as $i => $line) {
             $line = self::trimLine($line);
-            if (\preg_match('/^\s*@param(\s|$)/', $line) > 0) {
+            if (\preg_match('/^\s*@param(\s|$)/D', $line) > 0) {
                 // Extract all of the (at)param annotations.
                 $param_tag_summary = self::extractTagSummary($lines, $i);
                 if (\end($param_tag_summary) === '') {
@@ -324,7 +349,7 @@ class MarkupDescription
         //
         // We leave in the second `*` of `/**` so that every single non-empty line
         // of a typical doc comment will begin with a `*`
-        $doc_comment = \preg_replace('@(^/\*)|(\*/$)@', '', $doc_comment);
+        $doc_comment = \preg_replace('@(^/\*)|(\*/$)@D', '', $doc_comment);
 
         $lines = \explode("\n", $doc_comment);
         $lines = \array_map('trim', $lines);
@@ -351,7 +376,7 @@ class MarkupDescription
         //
         // We leave in the second `*` of `/**` so that every single non-empty line
         // of a typical doc comment will begin with a `*`
-        $doc_comment = \preg_replace('@(^/\*)|(\*/$)@', '', $doc_comment);
+        $doc_comment = \preg_replace('@(^/\*)|(\*/$)@D', '', $doc_comment);
 
         $results = [];
         $lines = \explode("\n", $doc_comment);
@@ -379,7 +404,7 @@ class MarkupDescription
                     } elseif (\in_array($comment_category, Comment::FUNCTION_LIKE, true)) {
                         // Treat `@return T description of return value` as a valid single-line comment of closures, functions, and methods.
                         // Variables don't currently have associated comments
-                        if (\preg_match('/^\s*@return(\s|$)/', $line) > 0) {
+                        if (\preg_match('/^\s*@return(\s|$)/D', $line) > 0) {
                             $new_lines = self::extractTagSummary($lines, $i);
                             if (isset($new_lines[0])) {
                                 // @phan-suppress-next-line PhanAccessClassConstantInternal
@@ -477,6 +502,7 @@ class MarkupDescription
             if ($line === '') {
                 continue;
             }
+            $min_whitespace = \min($min_whitespace, \strlen($line));
             $min_whitespace = \min($min_whitespace, \strspn($line, ' ', 0, $min_whitespace));
             if ($min_whitespace === 0) {
                 return $lines;

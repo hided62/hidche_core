@@ -17,24 +17,29 @@ use Phan\Language\UnionType;
  */
 class StringType extends ScalarType
 {
+    use NativeTypeTrait;
+
     /** @phan-override */
     public const NAME = 'string';
 
-    protected function canCastToNonNullableType(Type $type): bool
+    protected function canCastToNonNullableType(Type $type, CodeBase $code_base): bool
     {
         // CallableDeclarationType is not a native type, we check separately here
-        return parent::canCastToNonNullableType($type) || $type instanceof CallableDeclarationType;
+        return parent::canCastToNonNullableType($type, $code_base) || $type instanceof CallableDeclarationType;
     }
 
-    protected function canCastToNonNullableTypeWithoutConfig(Type $type): bool
+    protected function canCastToNonNullableTypeWithoutConfig(Type $type, CodeBase $code_base): bool
     {
         // CallableDeclarationType is not a native type, we check separately here
-        return parent::canCastToNonNullableTypeWithoutConfig($type) || $type instanceof CallableDeclarationType;
+        return parent::canCastToNonNullableTypeWithoutConfig($type, $code_base) || $type instanceof CallableDeclarationType;
     }
 
-    protected function isSubtypeOfNonNullableType(Type $type): bool
+    /**
+     * @unused-param $code_base
+     */
+    protected function isSubtypeOfNonNullableType(Type $type, CodeBase $code_base): bool
     {
-        return \get_class($type) === self::class || $type instanceof MixedType;
+        return \get_class($type) === self::class || $type instanceof ScalarRawType || $type instanceof MixedType;
     }
 
     /** @override */
@@ -49,15 +54,18 @@ class StringType extends ScalarType
         if ($other instanceof ScalarType) {
             return $other instanceof StringType || (!$context->isStrictTypes() && parent::canCastToDeclaredType($code_base, $context, $other));
         }
-        return $other instanceof CallableType || $other instanceof MixedType;
+        return $other instanceof CallableType ||
+            $other instanceof TemplateType ||
+            $other instanceof MixedType;
     }
 
     /**
      * Returns true if this contains a type that is definitely non-callable
      * e.g. returns true for false, array, int
      *      returns false for callable, string, array, object, iterable, T, etc.
+     * @unused-param $code_base
      */
-    public function isDefiniteNonCallableType(): bool
+    public function isDefiniteNonCallableType(CodeBase $code_base): bool
     {
         return false;
     }
@@ -102,7 +110,10 @@ class StringType extends ScalarType
         return false;
     }
 
-    public function asCallableType(): ?Type
+    /**
+     * @unused-param $code_base
+     */
+    public function asCallableType(CodeBase $code_base): ?Type
     {
         return CallableStringType::instance(false);
     }

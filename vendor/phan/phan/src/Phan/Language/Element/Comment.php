@@ -40,6 +40,8 @@ class Comment
     // TODO: Add another type for closure. (e.g. (at)phan-closure-scope)
     public const ON_METHOD     = 5;
     public const ON_FUNCTION   = 6;
+    /** @internal this may be refactored to stop using this constant */
+    public const ON_ANY        = -1;
 
     // List of types that are function-like (e.g. have params and function body)
     public const FUNCTION_LIKE = [
@@ -286,6 +288,7 @@ class Comment
                 $this->magic_method_map[$name] = $method;
             }
         }
+        // @phan-suppress-next-line PhanSideEffectFreeForeachBody applyOverride is annotated as @phan-pure due to the catch-all annotation, so phan treats this like it has no side effects.
         foreach ($phan_overrides as $key => $override_value) {
             $this->applyOverride($key, $override_value);
         }
@@ -442,6 +445,15 @@ class Comment
 
     /**
      * @return bool
+     * Set to true if the comment contains an 'abstract' directive.
+     */
+    public function isPHPDocAbstract(): bool
+    {
+        return ($this->comment_flags & Flags::IS_PHPDOC_ABSTRACT) !== 0;
+    }
+
+    /**
+     * @return bool
      * Set to true if the comment contains an 'internal'
      * directive.
      */
@@ -461,7 +473,13 @@ class Comment
         return ($this->comment_flags & Flags::IS_SIDE_EFFECT_FREE) === Flags::IS_SIDE_EFFECT_FREE;
     }
 
-    private const FLAGS_FOR_PROPERTY = Flags::IS_NS_INTERNAL | Flags::IS_DEPRECATED | Flags::IS_READ_ONLY | Flags::IS_WRITE_ONLY;
+    private const FLAGS_FOR_PROPERTY =
+        Flags::IS_NS_INTERNAL |
+        Flags::IS_DEPRECATED |
+        Flags::IS_READ_ONLY |
+        Flags::IS_WRITE_ONLY |
+        Flags::IS_PHPDOC_ABSTRACT |
+        Flags::IS_OVERRIDE_INTENDED;
 
     /**
      * Gets the subset of the bitmask that applies to properties.
@@ -491,7 +509,9 @@ class Comment
         Flags::IS_NS_INTERNAL |
         Flags::IS_DEPRECATED |
         Flags::HARDCODED_RETURN_TYPE |
-        Flags::IS_SIDE_EFFECT_FREE;
+        Flags::IS_SIDE_EFFECT_FREE |
+        Flags::IS_PHPDOC_ABSTRACT |
+        Flags::IS_OVERRIDE_INTENDED;
 
     /**
      * Gets the subset of the bitmask that applies to methods.
@@ -561,8 +581,6 @@ class Comment
      * @return Option<Type>
      * An optional Type defined by a (at)phan-closure-scope
      * directive specifying a single type.
-     *
-     * @suppress PhanPartialTypeMismatchReturn (Null)
      */
     public function getClosureScopeOption(): Option
     {
@@ -599,7 +617,6 @@ class Comment
     /**
      * @return Option<Type>
      * An optional type declaring what a class extends.
-     * @suppress PhanPartialTypeMismatchReturn (Null)
      */
     public function getInheritedTypeOption(): Option
     {

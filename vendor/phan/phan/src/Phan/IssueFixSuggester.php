@@ -9,6 +9,7 @@ use Phan\Language\Context;
 use Phan\Language\Element\ClassConstant;
 use Phan\Language\Element\Clazz;
 use Phan\Language\Element\Func;
+use Phan\Language\Element\MarkupDescription;
 use Phan\Language\Element\Method;
 use Phan\Language\Element\Property;
 use Phan\Language\Element\Variable;
@@ -17,10 +18,13 @@ use Phan\Language\FQSEN\FullyQualifiedClassConstantName;
 use Phan\Language\FQSEN\FullyQualifiedClassName;
 use Phan\Language\FQSEN\FullyQualifiedFunctionName;
 use Phan\Language\FQSEN\FullyQualifiedGlobalConstantName;
+use Phan\Language\UnionType;
 
 use function count;
+use function is_array;
 use function is_string;
 use function strlen;
+use function strpos;
 use function strtolower;
 use function uksort;
 
@@ -45,6 +49,9 @@ use function uksort;
  */
 class IssueFixSuggester
 {
+    /** @see https://www.php.net/levenshtein - levenshtein warns and returns -1 for longer strings */
+    private const MAX_SUGGESTION_NAME_LENGTH = 255;
+
     /**
      * @param Closure(Clazz):bool $class_closure
      * @return Closure(FullyQualifiedClassName):bool
@@ -113,7 +120,8 @@ class IssueFixSuggester
         $suggested_fqsens = \array_merge(
             $code_base->suggestSimilarGlobalFunctionInOtherNamespace($namespace, $name, $context),
             $code_base->suggestSimilarGlobalFunctionInSameNamespace($namespace, $name, $context, $suggest_in_global_namespace),
-            $code_base->suggestSimilarNewInAnyNamespace($namespace, $name, $context, $suggest_in_global_namespace)
+            $code_base->suggestSimilarNewInAnyNamespace($namespace, $name, $context, $suggest_in_global_namespace),
+            $code_base->suggestSimilarGlobalFunctionInNewerVersion($namespace, $name, $context, $suggest_in_global_namespace)
         );
         if (count($suggested_fqsens) === 0) {
             return null;
@@ -125,6 +133,9 @@ class IssueFixSuggester
         $generate_type_representation = static function ($fqsen): string {
             if ($fqsen instanceof FullyQualifiedClassName) {
                 return "new $fqsen()";
+            }
+            if (is_string($fqsen) && strpos($fqsen, 'added in PHP') !== false) {
+                return $fqsen;
             }
             return $fqsen . '()';
         };
@@ -164,6 +175,8 @@ class IssueFixSuggester
         if ($filter) {
             $suggested_fqsens = \array_filter($suggested_fqsens, $filter);
         }
+        $suggested_fqsens = \array_merge(self::suggestStubForClass($class_fqsen), $suggested_fqsens);
+
         if (count($suggested_fqsens) === 0) {
             return null;
         }
@@ -172,7 +185,7 @@ class IssueFixSuggester
          * @param FullyQualifiedClassName|string $fqsen
          */
         $generate_type_representation = static function ($fqsen) use ($code_base): string {
-            if (\is_string($fqsen)) {
+            if (is_string($fqsen)) {
                 return $fqsen;  // Not a class name, e.g. 'int', 'callable', etc.
             }
             $category = 'classlike';
@@ -191,6 +204,44 @@ class IssueFixSuggester
         $suggestion_text = $prefix . ' ' . \implode(' or ', \array_map($generate_type_representation, $suggested_fqsens));
 
         return Suggestion::fromString($suggestion_text);
+    }
+
+    /**
+     * @return array{0?:string} an optional suggestion to enable internal stubs to load that class
+     */
+    public static function suggestStubForClass(FullyQualifiedClassName $fqsen): array
+    {
+        $class_key = \strtolower(\ltrim($fqsen->__toString(), '\\'));
+        if (\array_key_exists($class_key, self::getKnownClasses())) {
+            // Generate the message 'Did you mean "to configure..."'
+            $message = "to configure a stub with https://github.com/phan/phan/wiki/How-To-Use-Stubs#internal-stubs or to enable the extension providing the class.";
+            $included_extension_subset = Config::getValue('included_extension_subset');
+            if (is_array($included_extension_subset) || Config::getValue('autoload_internal_extension_signatures')) {
+                $message .= " (are the config settings 'included_extension_subset' and/or 'autoload_internal_extension_signatures' properly set up?)";
+            }
+            return [$message];
+        }
+        return [];
+    }
+
+    /**
+     * @return array<string, string|true> fetches an incomplete list of classes Phan has known signatures/documentation for
+     */
+    private static function getKnownClasses(): array
+    {
+        static $known_classes = null;
+        if (!is_array($known_classes)) {
+            $known_classes = MarkupDescription::loadClassDescriptionMap();
+            foreach (UnionType::internalFunctionSignatureMap(Config::get_closest_target_php_version_id()) as $fqsen => $_) {
+                $i = strpos($fqsen, '::');
+                if ($i === false) {
+                    continue;
+                }
+                $fqsen = strtolower(\substr($fqsen, 0, $i));
+                $known_classes[$fqsen] = true;
+            }
+        }
+        return $known_classes;
     }
 
     /**
@@ -297,7 +348,7 @@ class IssueFixSuggester
                 $suggestions[] = $class->getFQSEN() . '::' . $wanted_property_name;
             }
         }
-        if ($class->hasMethodWithName($code_base, $wanted_property_name)) {
+        if ($class->hasMethodWithName($code_base, $wanted_property_name, true)) {
             $method = $class->getMethodByName($code_base, $wanted_property_name);
             $suggestions[] = $class->getFQSEN() . ($method->isStatic() ? '::' : '->') . $wanted_property_name . '()';
         }
@@ -510,8 +561,11 @@ class IssueFixSuggester
             }
             if ($property->isStatic()) {
                 return ['self::$' . $name];
-            } else {
-                return ['$this->' . $name];
+            } elseif ($context->isInFunctionLikeScope()) {
+                $current_function = $context->getFunctionLikeInScope($code_base);
+                if (!$current_function->isStatic()) {
+                    return ['$this->' . $name];
+                }
             }
         } catch (\Exception $_) {
             // ignore
@@ -596,8 +650,14 @@ class IssueFixSuggester
             if ($class_in_scope->hasPropertyWithName($code_base, $variable_name)) {
                 $property = $class_in_scope->getPropertyByName($code_base, $variable_name);
                 if (self::shouldSuggestProperty($context, $class_in_scope, $property)) {
-                    $suggestion_prefix = $property->isStatic() ? 'self::$' : '$this->';
-                    $suggestions[] = $suggestion_prefix . $variable_name;
+                    if ($property->isStatic()) {
+                        $suggestions[] = 'self::$' . $variable_name;
+                    } elseif ($context->isInFunctionLikeScope()) {
+                        $current_function = $context->getFunctionLikeInScope($code_base);
+                        if (!$current_function->isStatic()) {
+                            $suggestions[] = '$this->' . $variable_name;
+                        }
+                    }
                 }
             }
         }
@@ -606,6 +666,12 @@ class IssueFixSuggester
         $did_suggest_use_in_closure = false;
         while ($scope->isInFunctionLikeScope()) {
             $function = $context->withScope($scope)->getFunctionLikeInScope($code_base);
+            if ($variable_name === 'this') {
+                if ($function->isStatic()) {
+                    $suggestions[] = "(function instead of static function for {$function->getNameForIssue()} at line {$function->getContext()->getLineNumberStart()})";
+                }
+                break;
+            }
             if (!($function instanceof Func) || !$function->isClosure()) {
                 break;
             }
@@ -680,6 +746,9 @@ class IssueFixSuggester
         }
         $search_name = strtolower($target);
         $target_length = strlen($search_name);
+        if ($target_length > self::MAX_SUGGESTION_NAME_LENGTH) {
+            return [];
+        }
         $max_levenshtein_distance = (int)(1 + strlen($search_name) / 6);
         $best_matches = [];
         $min_found_distance = $max_levenshtein_distance;
@@ -691,7 +760,7 @@ class IssueFixSuggester
                 // (included with single-character edits)
                 $distance = $target_length !== strlen($name) ? 1 : 0;
             } elseif ($target_length >= 1) {
-                if (\abs(strlen($name) - $target_length) > $max_levenshtein_distance) {
+                if (strlen($name) > self::MAX_SUGGESTION_NAME_LENGTH || \abs(strlen($name) - $target_length) > $max_levenshtein_distance) {
                     continue;
                 }
                 $distance = \levenshtein(strtolower($name), $search_name);
