@@ -1707,7 +1707,7 @@ function deleteNation(General $lord, bool $applyDB):array
             $nationID,
             $lordID
         ), 
-        ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'aux'], 1
+        ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'], 1
     );
     $nationGeneralList[$lordID] = $lord;
     
@@ -1724,6 +1724,12 @@ function deleteNation(General $lord, bool $applyDB):array
 
     // 전 장수 재야로
     foreach($nationGeneralList as $general){
+        $general->setAuxVar('max_belong', 
+            max(
+                $general->getVar('belong'),
+                $general->getAuxVar('max_belong')??0
+            )
+        );
         $general->setVar('belong', 0);
         $general->setVar('troop', 0);
         $general->setVar('officer_level', 0);

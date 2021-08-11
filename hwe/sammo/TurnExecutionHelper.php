@@ -257,6 +257,8 @@ class TurnExecutionHelper
             $autorunMode = false;
             $ai = null;
 
+            $general->increaseInheritancePoint('lived_month', 1);
+
             $turnObj->preprocessCommand($env);
             $generalCommandObj = $general->getReservedTurn(0, $env);
 

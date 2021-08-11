@@ -266,6 +266,8 @@ foreach(Util::range(GameConst::$maxTurn) as $turnIdx){
 }
 $db->insert('general_turn', $turnRows);
 
+resetInheritanceUser($userID);
+
 $rank_data = [];
 foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
     $rank_data[] = [

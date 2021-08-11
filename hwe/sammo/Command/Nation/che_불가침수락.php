@@ -2,33 +2,31 @@
 
 namespace sammo\Command\Nation;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    General,
-    DummyGeneral,
-    ActionLogger,
-    GameConst,
-    LastTurn,
-    GameUnitConst,
-    Command,
-    MessageTarget,
-    DiplomaticMessage,
-    Message,
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\DummyGeneral;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\LastTurn;
+use \sammo\GameUnitConst;
+use \sammo\Command;
+use \sammo\MessageTarget;
+use \sammo\DiplomaticMessage;
+use \sammo\Message;
 
-use function\sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic,
-    CriticalScoreEx,
-    getAllNationStaticInfo,
-    getNationStaticInfo,
-    GetImageURL
-};
+use function \sammo\getDomesticExpLevelBonus;
+use function \sammo\CriticalRatioDomestic;
+use function \sammo\CriticalScoreEx;
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
+use function \sammo\GetImageUR;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Json;
+use sammo\KVStorage;
 
 class che_불가침수락 extends Command\NationCommand
 {
@@ -190,6 +188,13 @@ class che_불가침수락 extends Command\NationCommand
         $destNation = $this->destNation;
         $destNationID = $destNation['nation'];
         $destNationName = $destNation['name'];
+
+        $destNationStor = KVStorage::getStorage(DB::db(), $destNationID, 'nation_env');
+        $destRecvAssist = $destNationStor->getValue('recv_assist')??[];
+        $destRespAssist = $destNationStor->getValue('resp_assist')??[];
+
+        $destRespAssist["n{$nationID}"] = [$nationID, $destRecvAssist["n{$nationID}"][1]??0];
+        $destNationStor->setValue('resp_assist', $destRespAssist);
 
         $year = $this->arg['year'];
         $month = $this->arg['month'];

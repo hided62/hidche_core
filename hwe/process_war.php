@@ -261,6 +261,15 @@ function processWar_NG(
 
             $attacker->addTrain(1);
             $defender->addTrain(1);
+            
+            $attackerCrewTypeCoef = $attacker->getCrewType()->getAttackCoef($defender->getCrewType()) * $defender->getCrewType()->getDefenceCoef($attacker->getCrewType());
+            $defenderCrewTypeCoef = $defender->getCrewType()->getAttackCoef($attacker->getCrewType()) * $attacker->getCrewType()->getDefenceCoef($defender->getCrewType());
+            if($attackerCrewTypeCoef > $defenderCrewTypeCoef && $attacker instanceof WarUnitGeneral){
+                $attacker->getGeneral()->increaseInheritancePoint('snipe_combat', 1);
+            }
+            if($defenderCrewTypeCoef > $attackerCrewTypeCoef && $defender instanceof WarUnitGeneral){
+                $defender->getGeneral()->increaseInheritancePoint('snipe_combat', 1);
+            }
 
             $attackerName = $attacker->getName();
             $attackerCrewTypeName = $attacker->getCrewTypeName();
@@ -522,7 +531,7 @@ function ConquerCity(array $admin, General $general, array $city) {
 
         $lord = new General($db->queryFirstRow(
             'SELECT %l FROM general WHERE nation = %i AND officer_level = %i LIMIT 1',
-            Util::formatListOfBackticks(General::mergeQueryColumn(['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'aux'], 1)[0]),
+            Util::formatListOfBackticks(General::mergeQueryColumn(['npc', 'gold', 'rice', 'experience', 'explevel', 'belong', 'dedication', 'dedlevel', 'aux'], 1)[0]),
             $defenderNationID,
             12
         ), null, $city, $loseNation, $year, $month, false);

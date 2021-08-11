@@ -1,6 +1,8 @@
 <?php
 namespace sammo\Event\Condition;
 
+use sammo\Event\Condition;
+
 class Logic extends \sammo\Event\Condition{
     private $mode = 'and';
 
@@ -24,7 +26,9 @@ class Logic extends \sammo\Event\Condition{
         }
 
         $this->mode = $mode;
-        $this->conditions = $conditions;
+        $this->conditions = array_map(function($condition){
+            return Condition::build($condition);
+        }, $conditions);
     }
 
     public function eval($env=null){

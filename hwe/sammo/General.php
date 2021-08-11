@@ -50,6 +50,20 @@ class General implements iAction{
         'occupied'=>1,
     ];
 
+    const INHERITANCE_KEY = [
+        'previous'=>[true, 1, '기존 포인트'],
+        'lived_month'=>[true, 1, '생존'],
+        'max_belong'=>[false, 10, '최대 임관년 수'],
+        'max_domestic_critical'=>[true, 1, '최대 연속 내정 성공'],
+        'snipe_combat'=>[true, 10, '병종 상성 우위 횟수'],
+        'combat'=>[['rank', 'warnum'], 5, '전투 횟수'],
+        'sabotage'=>[['rank', 'firenum'], 20, '계략 성공 횟수'],
+        'unifier'=>[true, 1, '천통 기여'],
+        'dex'=>[false, 0.001, '숙련도'],
+        'tournament'=>[true, 1, '토너먼트'],
+        'betting'=>[false, 10, '베팅 당첨'],
+    ];
+
     const TURNTIME_FULL_MS = -1;
     const TURNTIME_FULL = 0;
     const TURNTIME_HMS = 1;
@@ -539,6 +553,8 @@ class General implements iAction{
 
         $generalName = $this->getName();
 
+        $this->mergeTotalInheritancePoint();
+
         // 군주였으면 유지 이음
         $officerLevel = $this->getVar('officer_level');
         if($officerLevel == 12) {
@@ -591,6 +607,12 @@ class General implements iAction{
         $logger = $this->getLogger();
 
         $generalName = $this->getName();
+
+        $ownerID = $this->getVar('owner');
+        if($ownerID){
+            $this->mergeTotalInheritancePoint();
+            resetInheritanceUser($ownerID);
+        }
 
         $this->multiplyVarWithLimit('leadership', 0.85, 10);
         $this->multiplyVarWithLimit('strength', 0.85, 10);
@@ -919,19 +941,19 @@ class General implements iAction{
     static public function mergeQueryColumn(?array $reqColumns=null, int $constructMode=2):array{
         $minimumColumn = ['no', 'name', 'city', 'nation', 'officer_level', 'officer_city'];
         $defaultEventColumn = [
-            'no', 'name', 'city', 'nation', 'officer_level', 'officer_city',
+            'no', 'name', 'owner', 'city', 'nation', 'officer_level', 'officer_city',
             'special', 'special2', 'personal',
             'horse', 'weapon', 'book', 'item', 'last_turn'
         ];
         $fullColumn = [
-            'no', 'name', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
+            'no', 'name', 'owner', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
             'leadership', 'leadership_exp', 'strength', 'strength_exp', 'intel', 'intel_exp', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'betray',
             'recent_war', 'last_turn', 'myset',
-            'specage', 'specage2', 'con', 'connect', 'owner', 'aux', 'lastrefresh',
+            'specage', 'specage2', 'con', 'connect', 'aux', 'lastrefresh',
         ];
 
         if($reqColumns === null){
@@ -1140,5 +1162,187 @@ class General implements iAction{
             }
         }
         return $result;
+    }
+
+    /**
+     * @return int|float
+     */
+    public function getInheritancePoint(string $key, &$aux=null, bool $forceCalc=false){
+        $inheritType = static::INHERITANCE_KEY[$key]??null;
+        if($inheritType === null){
+            throw new \OutOfRangeException("{$key}는 유산 타입이 아님");
+        }
+
+        $ownerID = $this->getVar('owner');
+        if(!$ownerID){
+            return 0;
+        }
+
+        if($this->getVar('npc') != 0){
+            return 0;
+        }
+
+        [$storeType, $multiplier, ] = $inheritType;
+
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        if($storeType === true || ($gameStor->isunited != 0 && !$forceCalc)){
+            $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
+            [$value, $aux] = $inheritStor->getValue($key);
+            return $value;
+        }
+
+        if(is_array($storeType)){
+            [$storSubType, $storSubKey] = $storeType;
+            if($storSubType === 'rank'){
+                return $this->getRankVar($storSubKey) * $multiplier;
+            }
+            if($storSubType === 'raw'){
+                return $this->getVar($storSubKey) * $multiplier;
+            }
+            if($storSubType === 'aux'){
+                return ($this->getAuxVar($storSubKey)??0) * $multiplier;
+            }
+            throw new \InvalidArgumentException("{$storSubType}은 참조 할 수 없는 유산 세부키임");
+        }
+
+        if($storeType !== false){
+            throw new \InvalidArgumentException("{$storeType}은 올바르지 않은 유산 키임");
+        }
+
+        $extractFn = function(){ return [0, null];};
+        switch($key){
+        case 'dex':
+            $extractFn = function() use ($multiplier){
+                $totalDex = 0;
+                foreach(array_keys(GameUnitConst::allType()) as $armType){
+                    $totalDex += $this->getVar("dex{$armType}");
+                }
+                return [$totalDex * $multiplier, null];
+            };
+            break;
+        case 'betting':
+            $extractFn = function() use ($multiplier){
+                $betWin = $this->getRankVar('betwin');
+                $betWinRate = $this->getRankVar('betwingold')/max(1, $this->getRankVar('betgold'));
+                
+                return [$betWin * $multiplier * pow($betWinRate, 2), null];
+            };
+            break;
+        case 'max_belong':
+            $extractFn = function() use ($multiplier){
+                $maxBelong = max($this->getVar('belong'), $this->getAuxVar('max_belong')??0);
+                return [$maxBelong * $multiplier, null];
+            };
+            break;
+        default:
+            throw new \InvalidArgumentException("{$key}는 유산 추출기를 보유하고 있지 않음");
+        }
+
+        [$value, $aux] = ($extractFn)();
+        return $value;
+    }
+
+    public function setInheritancePoint(string $key, $value, $aux=null){
+        if(!is_int($value) && !is_float($value)){
+            throw new \InvalidArgumentException("{$value}는 숫자가 아님");
+        }
+        $inheritType = static::INHERITANCE_KEY[$key]??null;
+        if($inheritType === null){
+            throw new \OutOfRangeException("{$key}는 유산 타입이 아님");
+        }
+
+        [$storeType, $multiplier, ] = $inheritType;
+        if($storeType !== true){
+            throw new \InvalidArgumentException("{$key}는 직접 저장형 유산 포인트가 아님");
+        }
+        if($multiplier != 1 && $value != 0){
+            throw new \InvalidArgumentException("{$key}는 1:1 유산 포인트가 아님");
+        }
+
+        $ownerID = $this->getVar('owner');
+        if(!$ownerID){
+            return;
+        }
+
+        if($this->getVar('npc') != 0){
+            return;
+        }
+
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        if($gameStor->isunited != 0){
+            return;
+        }
+        
+        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
+        $inheritStor->setValue($key, [$value, $aux]);
+    }
+
+    public function increaseInheritancePoint(string $key, $value, $aux=null){
+        if(!is_int($value) && !is_float($value)){
+            throw new \InvalidArgumentException("{$value}는 숫자가 아님");
+        }
+
+        $inheritType = static::INHERITANCE_KEY[$key]??null;
+        if($inheritType === null){
+            throw new \OutOfRangeException("{$key}는 유산 타입이 아님");
+        }
+
+        [$storeType, $multiplier, ] = $inheritType;
+        if($storeType !== true){
+            throw new \InvalidArgumentException("{$key}는 직접 저장형 유산 포인트가 아님");
+        }
+
+        $ownerID = $this->getVar('owner');
+        if(!$ownerID){
+            return;
+        }
+
+        if($this->getVar('npc') != 0){
+            return;
+        }
+
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        if($gameStor->isunited != 0){
+            return;
+        }
+
+        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
+        [$oldValue, $oldAux] = $inheritStor->getValue($key)??[0, null];
+
+        if($oldAux !== $aux){
+            $oldValue = 0;
+        }
+
+        $newValue = $oldValue + $value * $multiplier;
+        $inheritStor->setValue($key, [$newValue, $aux]);
+    }
+
+    public function mergeTotalInheritancePoint(){
+        $ownerID = $this->getVar('owner');
+        if(!$ownerID){
+            return;
+        }
+
+        if($this->getVar('npc') != 0){
+            return;
+        }
+
+        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
+        $inheritStor->cacheAll();
+        foreach(static::INHERITANCE_KEY as $key=>[$storType, ,]){
+            $aux = null;
+            $point = $this->getInheritancePoint($key, $aux, true);
+            if($storType === true){
+                continue;
+            }
+            $inheritStor->setValue($key, [$point, $aux]);
+        }
+
+        $oldInheritStor = KVStorage::getStorage(DB::db(), "inheritance_result");
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        $serverID = UniqueConst::$serverID;
+        $year = $gameStor->year;
+        $month = $gameStor->month;
+        $oldInheritStor->setValue("{$serverID}_{$ownerID}_{$this->getID()}_{$year}_{$month}", $inheritStor->getAll(true));
     }
 }

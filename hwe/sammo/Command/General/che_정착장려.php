@@ -15,7 +15,8 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    tryUniqueItemLottery
+    tryUniqueItemLottery,
+    updateMaxDomesticCritical
 };
 
 use \sammo\Constraint\Constraint;
@@ -150,6 +151,13 @@ class che_정착장려 extends Command\GeneralCommand{
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
+        if($pick == 'success'){
+            updateMaxDomesticCritical($general, $score);   
+        }
+        else{
+            $general->setAuxVar('max_domestic_critical', 0);
+        }
+
         $score *= 10;
 
         $scoreText = number_format($score, 0);
@@ -187,5 +195,5 @@ class che_정착장려 extends Command\GeneralCommand{
         return true;
     }
 
-    
+
 }

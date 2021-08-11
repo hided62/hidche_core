@@ -140,6 +140,7 @@ if(!$v->validate()){
         'reason'=>'[출병자]'.$v->errorStr()
     ]);
 }
+$rawAttacker['owner'] = 0;
 
 $defenderList = [];
 foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
@@ -152,6 +153,7 @@ foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
             'reason'=>"[수비자{$idx}]".$v->errorStr()
         ]);
     }
+    $rawDefenderGeneral['owner'] = 0;
     
     $defenderList[] = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), $rawDefenderCity, $rawAttackerNation, $year, $month, true);
 }

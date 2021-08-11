@@ -76,7 +76,10 @@ class Nation{
             $capital = 0;
         }
         
-        if(strpos($this->type, '_') === FALSE){
+        if($this->type === null){
+            $type = Util::choiceRandom(GameConst::$availableNationType);
+        }
+        else if(strpos($this->type, '_') === FALSE){
             $type = 'che_'.$this->type;
         }
         else{

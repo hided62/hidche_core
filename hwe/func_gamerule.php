@@ -623,10 +623,14 @@ function updateNationState()
                     $nation['nation'],
                     $targetKillTurn
                 );
-                $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong'], 2);
+                $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong', 'npc'], 2);
+                $chiefObj = null;
 
                 $uniqueLotteryWeightList = [];
                 foreach ($nationGenList as $nationGen) {
+                    if ($nationGen->getVar('officer_level') == 12) {
+                        $chiefObj = $nationGen;
+                    }
                     $trialCnt = count(GameConst::$allItems);
 
                     foreach ($nationGen->getItems() as $item) {
@@ -664,6 +668,10 @@ function updateNationState()
                     unset($uniqueLotteryWeightList[$winnerObj->getID()]);
                     giveRandomUniqueItem($winnerObj, '작위보상');
                     $winnerObj->applyDB($db);
+                }
+
+                if($chiefObj){
+                    $chiefObj->increaseInheritancePoint('unifier', 250 * $levelDiff);
                 }
             }
         }
@@ -982,6 +990,15 @@ function checkEmperior()
     $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
     $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
 
+    foreach(General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj){
+        if($genObj->getNationID() == $nationID){
+            if($genObj->getVar('officer_level') > 4){
+                $genObj->increaseInheritancePoint('unifier', 2000);
+            };
+        }
+        $genObj->mergeTotalInheritancePoint();
+    }
+
     $gameStor->isunited = 2;
     $gameStor->conlimit = $gameStor->conlimit * 100;
 
@@ -1131,4 +1148,26 @@ function checkEmperior()
 
     //연감 월결산
     LogHistory();
+}
+
+function resetInheritanceUser(int $userID){
+    $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
+    $totalPoint = 0;
+    foreach($inheritStor->getAll() as [$value,]){
+        $totalPoint += $value;
+    }
+    $totalPoint = Util::toInt($totalPoint);
+    $inheritStor->resetValues();
+    $inheritStor->setValue('previous', [$totalPoint, null]);
+}
+
+function updateMaxDomesticCritical(General $general, $score){
+    $maxDomesticCritical = $general->getAuxVar('max_domestic_critical')??0;
+    $maxDomesticCritical += $score / 2;
+    $general->setAuxVar('max_domestic_critical', $maxDomesticCritical);
+
+    $oldMaxDomesticCritical = $general->getInheritancePoint('max_domestic_critical');
+    if($maxDomesticCritical > $oldMaxDomesticCritical){
+        $general->setInheritancePoint('max_domestic_critical', $maxDomesticCritical);
+    }
 }

@@ -209,7 +209,10 @@ class che_장수대상임관 extends Command\GeneralCommand{
             $nationList[$nationID]['scoutmsg'] = $scoutMsg;
         }
 
+        $hiddenItems = [];
+
         foreach($nationList as &$nation){
+            $nation['hideen'] = false;
             if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
                 $nation['availableJoin'] = false;
             }
@@ -224,7 +227,9 @@ class che_장수대상임관 extends Command\GeneralCommand{
                 $nation['availableJoin'] = false;
             }
 
-            
+            if(Util::starts_with($nation['name'], 'ⓤ')){
+                $hiddenItems[$nation['nation']] = $nation['nation'];
+            }
         }
         unset($nation);
         ob_start(); 
@@ -235,6 +240,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
 임관할 국가를 목록에서 선택하세요.<br>   
 <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
 <?php foreach($generalList as $targetGeneral): ?>
+    <?php if(key_exists($targetGeneral['nation'], $hiddenItems)){ continue; } ?>
             <option value='<?=$targetGeneral['no']?>'><?=getColoredName($targetGeneral['name'],$targetGeneral['npc'])?>【<?=getNationStaticInfo($targetGeneral['nation'])['name']??'재야'?>】</option>
 <?php endforeach; ?>
 </select>

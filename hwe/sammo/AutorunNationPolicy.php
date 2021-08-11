@@ -28,6 +28,7 @@ class AutorunNationPolicy {
     static $NPC몰수 = 'NPC몰수';
 
     // 군주 행동
+    static $불가침제의 = '불가침제의';
     static $선전포고 = '선전포고';
     static $천도 = '천도';
 
@@ -35,6 +36,7 @@ class AutorunNationPolicy {
 
     //실제 행동
     static public $defaultPriority = [
+        '불가침제의',
         '선전포고',
         '천도',
 
@@ -106,6 +108,7 @@ class AutorunNationPolicy {
     public $canNPC포상 = true;
     public $canNPC몰수 = true;
 
+    public $can불가침제의 = true;
     public $can선전포고 = true;
     public $can천도 = true;
 

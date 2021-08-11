@@ -15,7 +15,8 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    tryUniqueItemLottery
+    tryUniqueItemLottery,
+    updateMaxDomesticCritical
 };
 
 use \sammo\Constraint\Constraint;
@@ -165,6 +166,13 @@ class che_상업투자 extends Command\GeneralCommand{
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
+        if($pick == 'success'){
+            updateMaxDomesticCritical($general, $score);   
+        }
+        else{
+            $general->setAuxVar('max_domestic_critical', 0);
+        }
+
         $scoreText = number_format($score, 0);
 
         $josaUl = JosaUtil::pick(static::$actionName, '을');
@@ -203,6 +211,4 @@ class che_상업투자 extends Command\GeneralCommand{
 
         return true;
     }
-
-    
 }

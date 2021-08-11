@@ -9,16 +9,17 @@ use \sammo\{
     LastTurn,
     GameUnitConst,
     Command,
+    Json,
+    KVStorage,
     StringUtil
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    getAllNationStaticInfo,
-    getNationStaticInfo
-};
+use function \sammo\getDomesticExpLevelBonus;
+use function \sammo\CriticalRatioDomestic;
+use function \sammo\CriticalScoreEx;
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
+
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -223,7 +224,10 @@ class che_물자원조 extends Command\NationCommand{
         $destNationLogger = new ActionLogger(0, $destChiefID, $year, $month);
         $destNationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaRoSrc}부터 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원 받음");
 
-
+        $destNationStor = KVStorage::getStorage(DB::db(), $destNationID, 'nation_env');
+        $destRecvAssist = $destNationStor->getValue('recv_assist')??[];
+        $destRecvAssist["n{$nationID}"] = [$nationID, ($destRecvAssist["n{$nationID}"][1]??0) + $goldAmount + $riceAmount];
+        $destNationStor->setValue('recv_assist', $destRecvAssist);
 
         $db->update('nation', [
             'gold'=>$db->sqleval('gold - %i', $goldAmount),

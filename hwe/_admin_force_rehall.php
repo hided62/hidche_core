@@ -24,3 +24,7 @@ foreach ($db->queryFirstColumn(
 ) as $generalNo) {
     CheckHall($generalNo);
 }
+
+foreach(General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj){
+    $genObj->mergeTotalInheritancePoint();
+}

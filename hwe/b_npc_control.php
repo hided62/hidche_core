@@ -91,6 +91,7 @@ $zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
         var availableGeneralActionPriorityItems = <?= Json::encode(AutorunGeneralPolicy::$default_priority) ?>;
 
         var btnHelpMessage = {
+            '불가침제의': '군주가 NPC이고, 타국에서 원조를 받았을 때,<br>세입(금/쌀) 대비 원조량에 따라 불가침제의를 합니다.',
             '선전포고': '군주가 NPC이고, 전쟁중이 아닐 때,<br>주변국중 하나를 골라 선포합니다.<br><br>선포 시점은 다음을 참고합니다.<br>- 인구율<br>- 도시내정률<br>- NPC전투장권장 금 충족률<br>- NPC전투장권장 쌀 충족률<br><br>국력이 낮은 국가를 조금 더 선호합니다.',
             '천도': '인구가 많은 곳을 찾아 천도를 시도합니다.<br>영토의 가운데를 선호합니다.<br><br>도시 인구가 충분하다면, 굳이 천도하지는 않습니다.',
             '유저장긴급포상': '금/쌀이 부족한 유저전투장에게 긴급하게 포상합니다.<br>국고가 권장량보다 적어지더라도 시도합니다.',

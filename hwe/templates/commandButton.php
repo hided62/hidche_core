@@ -16,7 +16,7 @@
     <a href='b_diplomacy.php'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>중원 정보</button></a>
     <a href='b_currentCity.php'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>현재 도시</button></a>
     <a href='b_battleCenter.php' target='_blank'><button type="button" class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>감 찰 부</button></a>
-    <button type="button" style="visibility:hidden;" class='commandButton'>빈칸</button>
+    <a href='b_inheritPoint.php'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>유산 관리</button></a>
     <a href='b_myPage.php'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>내 정보&amp;설정</button></a>
     <a href='b_auction.php' target='_blank'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>거 래 장</button></a>
     <a href='b_betting.php' target='_blank'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>베 팅 장</button></a>

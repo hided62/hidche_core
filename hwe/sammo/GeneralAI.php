@@ -1712,6 +1712,88 @@ class GeneralAI
         return $cmd;
     }
 
+    // 군주 행동
+    protected function do불가침제의(LastTurn $lastTurn): ?NationCommand
+    {
+        $general = $this->general;
+
+        if($general->getVar('officer_level') < 12){
+            return null;
+        }
+
+        $nation = $this->nation;
+        $nationID = $nation['nation'];
+
+        $nationStor = KVStorage::getStorage(DB::db(), $nationID, 'nation_env');
+        $recvAssist = $nationStor->getValue('recv_assist')??[];
+        $respAssist = $nationStor->getValue('resp_assist')??[];
+        $respAssistTry = $nationStor->getValue('resp_assist_try')??[];
+
+        $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
+
+        $candidateList = [];
+        foreach($recvAssist as [$candNationID, $amount]){
+            $amount -= $respAssist["n{$candNationID}"][1]??0;
+            if($amount <= 0){
+                continue;
+            }
+            if(key_exists($candNationID, $this->warTargetNation)){
+                continue;
+            }
+            if(($respAssistTry["n{$candNationID}"][1]??0) >= $yearMonth - 8){
+                continue;
+            }
+            $candidateList[$candNationID] = $amount;
+        }
+
+        if(!$candidateList){
+            return null;
+        }
+
+        $cityList = $this->supplyCities;
+
+        if (!$cityList) {
+            return null;
+        }
+
+        $goldIncome = getGoldIncome($nation['nation'], $nation['level'], 15, $nation['capital'], $nation['type'], $cityList);
+        $riceIncome = getRiceIncome($nation['nation'], $nation['level'], 15, $nation['capital'], $nation['type'], $cityList);
+        $wallIncome = getWallIncome($nation['nation'], $nation['level'], 15, $nation['capital'], $nation['type'], $cityList);
+        $income = $goldIncome + $riceIncome + $wallIncome;
+
+        arsort($candidateList);
+        $destNationID = null;
+        $diplomatMonth = 0;
+        foreach($candidateList as $candNationID => $amount){
+            if($amount * 4 < $income){
+                break;
+            }
+            $destNationID = $candNationID;
+            $diplomatMonth = 24 * $amount / $income;
+            break;
+        }
+
+        if($destNationID === null){
+            return null;
+        }
+
+        
+        [$targetYear, $targetMonth] = Util::parseYearMonth($yearMonth + $diplomatMonth);
+
+        $cmd = buildNationCommandClass('che_불가침제의', $this->general, $this->env, $lastTurn, [
+            'destNationID' => $destNationID,
+            'year' => $targetYear,
+            'month' => $targetMonth,
+        ]);
+        if(!$cmd->hasFullConditionMet()){
+            return null;
+        }
+        
+        $respAssistTry["n{$destNationID}"] = [$destNationID, $yearMonth];
+        $nationStor->setValue('resp_assist_try', $respAssistTry);
+        
+        return $cmd;
+    }
 
     // 군주 행동
     protected function do선전포고(LastTurn $lastTurn): ?NationCommand
@@ -3067,6 +3149,9 @@ class GeneralAI
         if($general->getVar('makelimit')){
             return null;
         }
+        if($general->getNPCType() > 2){
+            return null;
+        }
         if(!$this->generalPolicy->can건국){
             return null;
         }
@@ -3167,8 +3252,7 @@ class GeneralAI
                     return null;
                 }
                 
-                if (Util::randBool(pow(1 / $nationCnt / pow($notFullNationCnt, 3), 1 / 4))) {
-                    //국가가 1개일 경우에는 '임관하지 않음'
+                if (Util::randBool(pow(1 / ($nationCnt + 1) / pow($notFullNationCnt, 3), 1 / 4))) {
                     return null;
                 }
             }
