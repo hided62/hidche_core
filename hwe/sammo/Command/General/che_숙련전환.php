@@ -16,9 +16,7 @@ use \sammo\Command;
 use \sammo\ServConfig;
 
 use function \sammo\getDexCall;
-use function \sammo\getTechCall;
 use function \sammo\tryUniqueItemLottery;
-use function \sammo\getTechAbil;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

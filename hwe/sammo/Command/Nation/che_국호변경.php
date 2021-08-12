@@ -17,12 +17,6 @@ use \sammo\MessageTarget;
 use \sammo\Message;
 use \sammo\CityConst;
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
-use function \sammo\GetImageURL;
-use function \sammo\getNationStaticInfo;
-
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;

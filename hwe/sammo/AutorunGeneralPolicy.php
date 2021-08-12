@@ -39,7 +39,7 @@ class AutorunGeneralPolicy{
     
 
 
-    static public $default_priority = [
+    static public array $default_priority = [
         'NPC사망대비',
         '귀환',
         '금쌀구매',
@@ -88,6 +88,8 @@ class AutorunGeneralPolicy{
     public $can집합 = false;
     public $can건국 = true;
     public $can선양 = false;
+
+    public array $priority;
 
     function doNPCState(General $general){
         $npc = $general->getNPCType();

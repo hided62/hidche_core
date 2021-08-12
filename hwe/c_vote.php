@@ -15,7 +15,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $isVoteAdmin = in_array('vote', $session->acl[DB::prefix()]??[]);
-$isVoteAdmin |= $session->userGrade >= 5;
+$isVoteAdmin = $isVoteAdmin || $session->userGrade >= 5;
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');

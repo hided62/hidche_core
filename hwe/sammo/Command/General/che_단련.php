@@ -11,7 +11,6 @@ use \sammo\{
 };
 
 
-use function \sammo\getNationStaticInfo;
 use function \sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;

@@ -74,7 +74,7 @@ class RandomNameGeneral extends AbsGeneralPool{
         $builder = $this->getGeneralBuilder();
         $builder->setStat($leadership, $strength, $intel);
         $builder->setDex($dexVal[0], $dexVal[1], $dexVal[2], $dexVal[3], $avgGen['dex5']);
-        $builder->Util::choiceRandom(array_keys(\sammo\CityConst::all()));
+        $builder->setCityID(Util::choiceRandom(array_keys(\sammo\CityConst::all())));
 
         $builder->setExpDed($avgGen['exp'], $avgGen['ded']);
     }

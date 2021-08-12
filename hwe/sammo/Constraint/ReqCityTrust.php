@@ -10,6 +10,7 @@ class ReqCityTrust extends Constraint{
     protected $key;
     protected $maxKey;
     protected $keyNick;
+    protected $reqVal;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){

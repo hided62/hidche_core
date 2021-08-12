@@ -16,9 +16,6 @@ use \sammo\MessageTarget;
 use \sammo\DiplomaticMessage;
 use \sammo\Message;
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
 use function \sammo\getAllNationStaticInfo;
 use function \sammo\GetImageURL;
 use function \sammo\getNationStaticInfo;

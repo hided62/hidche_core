@@ -17,11 +17,6 @@ use \sammo\Message;
 use \sammo\CityConst;
 use \sammo\Json;
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
-use function \sammo\GetImageURL;
-use function \sammo\getNationStaticInfo;
 use function \sammo\GetNationColors;
 use function \sammo\newColor;
 

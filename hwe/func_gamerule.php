@@ -694,7 +694,7 @@ function updateNationState()
                 $lastAssemblerID += 1;
                 $npcObj = new Scenario\GeneralBuilder(
                     sprintf('부대장%4d', $lastAssemblerID),
-                    0,
+                    false,
                     null,
                     $nation['nation']
                 );
@@ -1052,7 +1052,7 @@ function checkEmperior()
         $generalLogger->flush();
     }
 
-    $gen = join(', ', array_column($rawGeneral, 'name'));
+    $gen = join(', ', array_column($rawGeneralList, 'name'));
 
     $stat = $db->queryFirstRow('SELECT max(nation_count) as nc, max(gen_count) as gc FROM statistic');
     $genCnt = $db->queryFirstField('SELECT count(*) FROM general');

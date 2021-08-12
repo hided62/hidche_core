@@ -15,9 +15,6 @@ use \sammo\Command;
 use \sammo\MessageTarget;
 use \sammo\Message;
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
 use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;

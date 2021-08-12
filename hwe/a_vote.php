@@ -12,7 +12,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 increaseRefresh("설문조사", 1);
 
 $isVoteAdmin = in_array('vote', $session->acl[DB::prefix()]??[]);
-$isVoteAdmin |= $session->userGrade >= 5;
+$isVoteAdmin = $isVoteAdmin || $session->userGrade >= 5;
 
 $me = $db->queryFirstRow('SELECT no,vote from general where owner=%i', $userID);
 

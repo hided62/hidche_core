@@ -13,7 +13,6 @@ use \sammo\LastTurn;
 use \sammo\Command;
 use \sammo\Json;
 
-use function \sammo\tryUniqueItemLottery;
 use function \sammo\searchDistance;
 use function \sammo\printCitiesBasedOnDistance;
 

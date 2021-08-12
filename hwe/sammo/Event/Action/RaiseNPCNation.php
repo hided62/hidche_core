@@ -15,7 +15,6 @@ use sammo\UniqueConst;
 use sammo\Util;
 
 use function sammo\GetNationColors;
-use function sammo\getNationStaticInfo;
 use function sammo\pickGeneralFromPool;
 use function sammo\refreshNationStaticInfo;
 

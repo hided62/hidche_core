@@ -157,6 +157,7 @@ foreach ($customViewColumns as $column => $reqPermission) {
     $resultColumns[] = $column;
 }
 
+$generalList = [];
 foreach ($rawGeneralList as $rawGeneral) {
     //General 생성?
 

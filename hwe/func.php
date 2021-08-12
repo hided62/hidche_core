@@ -1006,7 +1006,7 @@ function increaseRefresh($type = "", $cnt = 1)
     $isunited = $gameStor->isunited;
     $opentime = $gameStor->opentime;
 
-    if ($isunited != 2 && $generalID && $userGrade < 6 && $opentime <= TimeUtil::DatetimeNow()) {
+    if ($isunited != 2 && $generalID && $userGrade < 6 && $opentime <= TimeUtil::now()) {
         $db->update('general', [
             'lastrefresh' => $date,
             'con' => $db->sqleval('con + %i', $cnt),

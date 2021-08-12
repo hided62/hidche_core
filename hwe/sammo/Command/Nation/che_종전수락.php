@@ -18,12 +18,7 @@ use \sammo\{
     Message,
 };
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
-use function \sammo\getAllNationStaticInfo;
 use function \sammo\getNationStaticInfo;
-use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

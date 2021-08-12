@@ -18,6 +18,7 @@ abstract class BaseCommand{
     static protected $actionName = 'CommandName';
     static public $reqArg = false;
     static protected $isLazyCalcReqTurn = false;
+    public ?string $reason;
 
     public function getCommandDetailTitle():string{
         return $this->getName();
@@ -48,6 +49,7 @@ abstract class BaseCommand{
     protected $fullConditionConstraints = null;
     protected $minConditionConstraints = null;
     protected $permissionConstraints = null;
+    protected $reasonConstraint = null;
 
     protected $logger;
 

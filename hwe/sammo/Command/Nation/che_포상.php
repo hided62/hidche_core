@@ -13,10 +13,6 @@ use \sammo\LastTurn;
 use \sammo\GameUnitConst;
 use \sammo\Command;
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
-
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 

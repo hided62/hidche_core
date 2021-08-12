@@ -17,6 +17,7 @@ class ReqDestNationValue extends Constraint{
     protected $reqVal;
     protected $comp;
     protected $errMsg;
+    protected $isPercent;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){

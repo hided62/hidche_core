@@ -12,8 +12,6 @@ use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
 
-
-use function \sammo\tryUniqueItemLottery;
 use function \sammo\printCitiesBasedOnDistance;
 
 use \sammo\Constraint\Constraint;

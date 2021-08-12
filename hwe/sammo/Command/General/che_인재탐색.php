@@ -12,11 +12,7 @@ use \sammo\LastTurn;
 use \sammo\GameUnitConst;
 use \sammo\Command;
 
-use function \sammo\getDomesticExpLevelBonus;
-use function \sammo\CriticalRatioDomestic;
-use function \sammo\CriticalScoreEx;
 use function \sammo\tryUniqueItemLottery;
-use function \sammo\getAllNationStaticInfo;
 use function \sammo\pickGeneralFromPool;
 
 use \sammo\Constraint\Constraint;

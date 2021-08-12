@@ -154,27 +154,27 @@ abstract class Constraint{
             throw new \InvalidArgumentException('require arg');
         }
 
-        if(($valueType&static::REQ_STRING_ARG===static::REQ_STRING_ARG) && !is_string($this->arg)){
+        if((($valueType&static::REQ_STRING_ARG)===static::REQ_STRING_ARG) && !is_string($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require string arg');
         }
 
-        if(($valueType&static::REQ_BOOLEAN_ARG===static::REQ_BOOLEAN_ARG) && !is_bool($this->arg)){
+        if((($valueType&static::REQ_BOOLEAN_ARG)===static::REQ_BOOLEAN_ARG) && !is_bool($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require bool arg');
         }
 
-        if(($valueType&static::REQ_INT_ARG===static::REQ_INT_ARG) && !is_int($this->arg)){
+        if((($valueType&static::REQ_INT_ARG)===static::REQ_INT_ARG) && !is_int($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require int arg');
         }
 
-        if(($valueType&static::REQ_NUMERIC_ARG===static::REQ_NUMERIC_ARG) && !is_numeric($this->arg)){
+        if((($valueType&static::REQ_NUMERIC_ARG)===static::REQ_NUMERIC_ARG) && !is_numeric($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require numeric arg');
         }
 
-        if(($valueType&static::REQ_ARRAY_ARG===static::REQ_ARRAY_ARG) && !is_array($this->arg)){
+        if((($valueType&static::REQ_ARRAY_ARG)===static::REQ_ARRAY_ARG) && !is_array($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require array arg');
         }
