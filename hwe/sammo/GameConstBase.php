@@ -148,7 +148,7 @@ class GameConstBase
         'che_도적', 'che_명가', 'che_음양가', 'che_종횡가', 'che_불가', 'che_오두미도', 'che_태평도', 'che_도가',
         'che_묵가', 'che_덕가', 'che_병가', 'che_유가', 'che_법가'
     ];
-    /** @var array 기본 국가 성향 */
+    /** @var string 기본 국가 성향 */
     public static $neutralNationType = 'che_중립';
 
     /** @var string 기본 내정 특기 */

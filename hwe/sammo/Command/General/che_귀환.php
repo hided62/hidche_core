@@ -10,12 +10,6 @@ use \sammo\{
     Command
 };
 
-
-use function \sammo\{
-    getNationStaticInfo,
-    tryUniqueItemLottery
-};
-
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;

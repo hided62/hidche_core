@@ -2,29 +2,22 @@
 
 namespace sammo\Command\Nation;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    General,
-    DummyGeneral,
-    ActionLogger,
-    GameConst,
-    LastTurn,
-    GameUnitConst,
-    Command,
-    Message,
-    MessageTarget
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\DummyGeneral;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\LastTurn;
+use \sammo\GameUnitConst;
+use \sammo\Command;
+use \sammo\Message;
+use \sammo\MessageTarget;
 
-use function\sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic,
-    CriticalScoreEx,
-    getAllNationStaticInfo,
-    getNationStaticInfo,
-    GetImageURL
-};
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
+use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

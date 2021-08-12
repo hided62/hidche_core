@@ -38,7 +38,7 @@ class ReqGeneralCrewMargin extends Constraint{
         $reqCrewType = GameUnitConst::byID($this->arg);
 
         //XXX: 왜 General -> obj -> General 변환을 하고 있나?
-        $generalObj = new General($this->general, null, null, null, null, false);
+        $generalObj = new General($this->general, null, null, null, null, null, false);
 
         if($reqCrewType->id != $generalObj->getCrewTypeObj()->id){
             return true;

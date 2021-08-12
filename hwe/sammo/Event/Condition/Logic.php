@@ -98,7 +98,7 @@ class Logic extends \sammo\Event\Condition{
         foreach($this->conditions as $cond){
             $sub = self::_eval($cond, $env);
             $chain[] = $sub['chain'];
-            $value ^= $sub['value'];
+            $value = ($value != $sub['value']);
         }
 
         return [

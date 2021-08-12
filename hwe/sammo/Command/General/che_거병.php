@@ -14,9 +14,7 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-use function sammo\buildNationTypeClass;
 use function sammo\refreshNationStaticInfo;
-use function sammo\GetNationColors;
 use function sammo\getAllNationStaticInfo;
 
 

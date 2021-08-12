@@ -9,6 +9,7 @@ class AllowDiplomacyStatus extends Constraint{
 
     protected $nationID;
     protected $allowStatus = [];
+    protected $errMsg = null;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){

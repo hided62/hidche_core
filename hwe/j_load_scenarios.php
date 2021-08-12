@@ -9,7 +9,7 @@ $serverName = DB::prefix();
 $serverAcl = $session->acl[$serverName]??[];
 $allowReset = in_array('reset', $serverAcl);
 $allowFullReset = in_array('fullReset',$serverAcl);
-$allowReset |= $allowFullReset;
+$allowReset = $allowReset || $allowFullReset;
 
 if($session->userGrade < 5 && !$allowReset){
     Json::die([

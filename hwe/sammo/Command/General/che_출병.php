@@ -2,29 +2,22 @@
 
 namespace sammo\Command\General;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    General,
-    ActionLogger,
-    GameConst,
-    GameUnitConst,
-    LastTurn,
-    Command
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\GameUnitConst;
+use \sammo\LastTurn;
+use \sammo\Command;
 
-
-use function\sammo\{
-    tryUniqueItemLottery,
-    processWar
-};
+use function \sammo\tryUniqueItemLottery;
+use function \sammo\processWar;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-
-
 
 class che_출병 extends Command\GeneralCommand
 {

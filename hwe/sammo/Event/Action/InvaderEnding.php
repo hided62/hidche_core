@@ -1,8 +1,6 @@
 <?php
 namespace sammo\Event\Action;
 
-use function sammo\getNationStaticInfo;
-
 use sammo\ActionLogger;
 use sammo\CityConst;
 use sammo\DB;

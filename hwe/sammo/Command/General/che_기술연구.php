@@ -11,7 +11,6 @@ use \sammo\{
 
 use function sammo\{
     TechLimit,
-    getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
     tryUniqueItemLottery,

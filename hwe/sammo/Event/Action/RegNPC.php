@@ -25,7 +25,7 @@ class RegNPC extends \sammo\Event\Action{
 
         $this->npc=(new \sammo\Scenario\GeneralBuilder(
             $name, 
-            0,
+            false,
             $picturePath, 
             $nationID 
         ))

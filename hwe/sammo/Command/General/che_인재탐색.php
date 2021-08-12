@@ -2,26 +2,18 @@
 
 namespace sammo\Command\General;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    General,
-    ActionLogger,
-    GameConst,
-    LastTurn,
-    GameUnitConst,
-    Command
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\LastTurn;
+use \sammo\GameUnitConst;
+use \sammo\Command;
 
-use function\sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic,
-    CriticalScoreEx,
-    tryUniqueItemLottery,
-    getAllNationStaticInfo,
-    pickGeneralFromPool,
-};
+use function \sammo\tryUniqueItemLottery;
+use function \sammo\pickGeneralFromPool;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

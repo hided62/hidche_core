@@ -2,25 +2,16 @@
 
 namespace sammo\Command\Nation;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    General,
-    ActionLogger,
-    GameConst,
-    LastTurn,
-    GameUnitConst,
-    Command,
-    KVStorage
-};
-
-use function\sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic,
-    CriticalScoreEx,
-    tryUniqueItemLottery
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\LastTurn;
+use \sammo\GameUnitConst;
+use \sammo\Command;
+use \sammo\KVStorage;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

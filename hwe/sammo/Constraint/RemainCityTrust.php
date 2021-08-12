@@ -9,6 +9,7 @@ class RemainCityTrust extends Constraint{
 
     protected $key;
     protected $maxKey;
+    protected $maxVal;
     protected $keyNick;
 
     public function checkInputValues(bool $throwExeception=true):bool{

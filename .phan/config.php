@@ -7,7 +7,7 @@
  */
 return [
     // Supported values: `'5.6'`, `'7.0'`, `'7.1'`, `'7.2'`, `'7.3'`,
-    // `'7.4'`, `null`.
+    // `'7.4'`, `'8.0'`, `'8.1'`, `null`.
     // If this is set to `null`,
     // then Phan assumes the PHP version which is closest to the minor version
     // of the php executable used to execute Phan.
@@ -15,9 +15,9 @@ return [
     // Note that the **only** effect of choosing `'5.6'` is to infer
     // that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
-    "target_php_version" => '7.3',
-    'backward_compatibility_checks ' => false,
-    'minimum_severity'=>\Phan\Issue::SEVERITY_NORMAL,
+    "target_php_version" => '7.4',
+    'backward_compatibility_checks ' => true,
+    'minimum_severity'=>\Phan\Issue::SEVERITY_CRITICAL,
 
     'file_list' => [
         'f_config/config.php',
@@ -41,11 +41,13 @@ return [
         'hwe/b_dipcenter.php',
         'hwe/b_diplomacy.php',
         'hwe/b_genList.php',
+        'hwe/b_inheritPoint.php',
         'hwe/b_myBossInfo.php',
         'hwe/b_myCityInfo.php',
         'hwe/b_myGenInfo.php',
         'hwe/b_myKingdomInfo.php',
         'hwe/b_myPage.php',
+        'hwe/b_npc_control.php',
         'hwe/b_processing.php',
         'hwe/b_tournament.php',
         'hwe/b_troop.php',
@@ -86,14 +88,18 @@ return [
         'hwe/j_diplomacy_respond_letter.php',
         'hwe/j_diplomacy_rollback_letter.php',
         'hwe/j_diplomacy_send_letter.php',
+        'hwe/j_export_simulator_object.php',
+        'hwe/j_general_log_old.php',
         'hwe/j_general_set_permission.php',
         'hwe/j_general_turn.php',
         'hwe/j_getChiefTurn.php',
+        'hwe/j_get_basic_general_list.php',
         'hwe/j_get_city_list.php',
         'hwe/j_get_general_list.php',
         'hwe/j_get_nation_general_list.php',
         'hwe/j_get_reserved_command.php',
         'hwe/j_get_select_npc_token.php',
+        'hwe/j_get_select_pool.php',
         'hwe/j_image_upload.php',
         'hwe/j_install.php',
         'hwe/j_install_db.php',
@@ -107,15 +113,20 @@ return [
         'hwe/j_msg_get_recent.php',
         'hwe/j_msg_submit.php',
         'hwe/j_myBossInfo.php',
+        'hwe/j_raise_event.php',
         'hwe/j_select_npc.php',
+        'hwe/j_select_picked_general.php',
         'hwe/j_server_basic_info.php',
         'hwe/j_set_chief_command.php',
         'hwe/j_set_general_command.php',
+        'hwe/j_set_my_setting.php',
+        'hwe/j_set_npc_control.php',
         'hwe/j_simulate_battle.php',
         'hwe/j_troop.php',
         'hwe/j_vacation.php',
         'hwe/lib.php',
         'hwe/process_war.php',
+        'hwe/select_general_from_pool.php',
         'hwe/select_npc.php',
         'hwe/t_board.php',
         'hwe/t_diplomacy.php',

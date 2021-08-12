@@ -12,6 +12,7 @@ class ReqCityCapacity extends Constraint{
     protected $maxKey;
     protected $keyNick;
     protected $reqVal;
+    protected $isPercent;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){

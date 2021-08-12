@@ -12,11 +12,6 @@ use \sammo\{
     Command
 };
 
-
-use function \sammo\{
-    tryUniqueItemLottery,
-};
-
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\MustNotBeReachedException;

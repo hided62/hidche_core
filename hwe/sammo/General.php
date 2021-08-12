@@ -708,7 +708,7 @@ class General implements iAction{
 
         if($updateVals){
             $db->update('general', $updateVals, 'no=%i', $generalID);
-            $result |= $db->affectedRows() > 0;
+            $result = $result || $db->affectedRows() > 0;
             if(key_exists('nation', $updateVals)){
                 $db->update('rank_data', [
                     'nation_id'=>$updateVals['nation']

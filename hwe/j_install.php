@@ -19,7 +19,7 @@ $serverName = DB::prefix();
 $serverAcl = $session->acl[$serverName]??[];
 $allowReset = in_array('reset', $serverAcl);
 $allowFullReset = in_array('fullReset',$serverAcl);
-$allowReset |= $allowFullReset;
+$allowReset = $allowReset || $allowFullReset;
 
 $reserve_open = Util::getPost('reserve_open');
 if($reserve_open && $reserve_open < date('Y-m-d H:i')){

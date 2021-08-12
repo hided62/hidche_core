@@ -14,6 +14,7 @@ class ReqNationAuxValue extends Constraint
     const REQ_VALUES = Constraint::REQ_NATION | Constraint::REQ_ARRAY_ARG;
 
     protected $key;
+    protected $maxKey;
     protected $defaultValue;
     protected $reqVal;
     protected $comp;

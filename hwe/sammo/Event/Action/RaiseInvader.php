@@ -12,7 +12,6 @@ use sammo\Scenario\Nation;
 use sammo\UniqueConst;
 use sammo\Util;
 
-use function sammo\getNationStaticInfo;
 use function sammo\refreshNationStaticInfo;
 
 /**

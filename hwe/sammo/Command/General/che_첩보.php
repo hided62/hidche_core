@@ -2,25 +2,19 @@
 
 namespace sammo\Command\General;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    General,
-    ActionLogger,
-    GameConst,
-    GameUnitConst,
-    LastTurn,
-    Command,
-    Json
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\GameUnitConst;
+use \sammo\LastTurn;
+use \sammo\Command;
+use \sammo\Json;
 
-
-use function\sammo\{
-    tryUniqueItemLottery,
-    searchDistance,
-    printCitiesBasedOnDistance
-};
+use function \sammo\searchDistance;
+use function \sammo\printCitiesBasedOnDistance;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

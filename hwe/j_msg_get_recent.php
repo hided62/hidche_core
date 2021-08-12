@@ -32,7 +32,7 @@ $lastMsgGet[] = TimeUtil::now();
 $session->lastMsgGet = Json::encode($lastMsgGet);
 
 if($delayTime){
-    sleep(0.2);
+    usleep(200);
 }
 $session->setReadOnly();
 

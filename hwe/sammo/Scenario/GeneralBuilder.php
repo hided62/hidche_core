@@ -9,9 +9,6 @@ use \sammo\CityConst;
 use \sammo\GameConst;
 use \sammo\SpecialityHelper;
 use sammo\TimeUtil;
-
-use function sammo\buildGeneralSpecialClass;
-
 class GeneralBuilder{
 
     protected $generalID = null;

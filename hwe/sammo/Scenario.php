@@ -44,6 +44,8 @@ class Scenario{
 
     private $gameConf = null;
 
+    private $tmpEnv;
+
     public function generateGeneral($rawGeneral, $initFull, $npcType=2): GeneralBuilder{
         while(count($rawGeneral) < 14){
             $rawGeneral[] = null;

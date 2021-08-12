@@ -12,11 +12,7 @@ use \sammo\{
     Command
 };
 
-
-use function \sammo\{
-    tryUniqueItemLottery,
-    buildItemClass
-};
+use function \sammo\buildItemClass;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

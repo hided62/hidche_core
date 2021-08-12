@@ -18,6 +18,7 @@ abstract class BaseCommand{
     static protected $actionName = 'CommandName';
     static public $reqArg = false;
     static protected $isLazyCalcReqTurn = false;
+    public ?string $reason;
 
     public function getCommandDetailTitle():string{
         return $this->getName();
@@ -32,8 +33,8 @@ abstract class BaseCommand{
 
     /** @var \sammo\General */
     protected $destGeneralObj = null; 
-    protected $destCity = null;
-    protected $destNation = null;
+    protected ?array $destCity = null;
+    protected ?array $destNation = null;
 
     protected $cachedPermissionToReserve = false;
     protected $cachedMinConditionMet = false;
@@ -48,6 +49,7 @@ abstract class BaseCommand{
     protected $fullConditionConstraints = null;
     protected $minConditionConstraints = null;
     protected $permissionConstraints = null;
+    protected $reasonConstraint = null;
 
     protected $logger;
 
