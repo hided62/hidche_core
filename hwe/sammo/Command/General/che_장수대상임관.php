@@ -12,13 +12,10 @@ use \sammo\{
     KVStorage
 };
 
-
-use function \sammo\{
-    getColoredName,
-    tryUniqueItemLottery,
-    getInvitationList,
-    getNationStaticInfo,
-};
+use function \sammo\getColoredName;
+use function \sammo\tryUniqueItemLottery;
+use function \sammo\getInvitationList;
+use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

@@ -13,14 +13,8 @@ use \sammo\{
     ScoutMessage
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    tryUniqueItemLottery,
-    getAllNationStaticInfo,
-    getNationStaticInfo
-};
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

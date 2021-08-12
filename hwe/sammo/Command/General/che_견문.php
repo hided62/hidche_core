@@ -11,9 +11,7 @@ use \sammo\{
 };
 
 
-use function \sammo\{
-    tryUniqueItemLottery
-};
+use function \sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

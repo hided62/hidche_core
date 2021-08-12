@@ -2,7 +2,7 @@
 namespace kakao;
 
 if (class_exists('\\kakao\\KakaoKey') === false) {
-    /** @suppress PhanRedefineClass */
+    // @suppress PhanRedefineClass
     class KakaoKey
     {
         const REST_KEY = '';

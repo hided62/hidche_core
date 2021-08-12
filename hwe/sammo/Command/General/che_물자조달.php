@@ -11,12 +11,8 @@ use \sammo\{
     Command
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    tryUniqueItemLottery
-};
+use function \sammo\getDomesticExpLevelBonus;
+use function \sammo\CriticalScoreEx;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

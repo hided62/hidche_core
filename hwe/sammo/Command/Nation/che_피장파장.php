@@ -13,15 +13,9 @@ use \sammo\{
     Message, MessageTarget
 };
 
-use function \sammo\{
-    buildNationCommandClass,
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    getAllNationStaticInfo,
-    getNationStaticInfo,
-    GetImageURL
-};
+use function \sammo\buildNationCommandClass;
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

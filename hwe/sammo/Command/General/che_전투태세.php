@@ -11,10 +11,8 @@ use \sammo\{
     MustNotBeReachedException
 };
 
-
-use function \sammo\{
-    tryUniqueItemLottery, getTechCost
-};
+use function \sammo\tryUniqueItemLottery;
+use function \sammo\getTechCost;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

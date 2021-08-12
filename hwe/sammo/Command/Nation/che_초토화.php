@@ -15,14 +15,6 @@ use \sammo\{
     CityInitialDetail
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    GetImageURL,
-    getNationStaticInfo 
-};
-
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;

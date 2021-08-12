@@ -12,15 +12,9 @@ use \sammo\{
     ScoutMessage
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    tryUniqueItemLottery,
-    getAllNationStaticInfo,
-    getNationStaticInfo,
-    newColor
-};
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
+use function \sammo\newColor;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

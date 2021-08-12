@@ -14,14 +14,9 @@ use \sammo\{
     Message,
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    getAllNationStaticInfo,
-    getNationStaticInfo,
-    GetImageURL
-};
+use function \sammo\getAllNationStaticInfo;
+use function \sammo\getNationStaticInfo;
+use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

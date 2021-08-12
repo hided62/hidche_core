@@ -2,27 +2,22 @@
 
 namespace sammo\Command\General;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    Session,
-    KVStorage,
-    General,
-    ActionLogger,
-    GameConst,
-    GameUnitConst,
-    LastTurn,
-    Command,
-    ServConfig
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\Session;
+use \sammo\KVStorage;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\GameUnitConst;
+use \sammo\LastTurn;
+use \sammo\Command;
+use \sammo\ServConfig;
 
-
-use function\sammo\{
-    getTechCall,
-    tryUniqueItemLottery,
-    getTechAbil
-};
+use function \sammo\getTechCall;
+use function \sammo\tryUniqueItemLottery;
+use function \sammo\getTechAbil;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

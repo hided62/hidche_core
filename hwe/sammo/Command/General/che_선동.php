@@ -1,13 +1,14 @@
 <?php
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
-    ActionLogger,
-    GameConst, GameUnitConst,
-    Command
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\GameUnitConst;
+use \sammo\Command;
 
 class che_선동 extends che_화계{
     static protected $actionName = '선동';

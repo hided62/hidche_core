@@ -1,17 +1,19 @@
 <?php
+
 namespace sammo\Command\General;
 
-use \sammo\{
-    DB, Util, JosaUtil,
-    General, 
-    ActionLogger,
-    GameConst, GameUnitConst,
-    LastTurn,
-    Command
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\GameUnitConst;
+use \sammo\LastTurn;
+use \sammo\Command;
 
-
-class che_모병 extends che_징병{
+class che_모병 extends che_징병
+{
     static protected $actionName = '모병';
     static protected $costOffset = 2;
 
@@ -25,8 +27,8 @@ class che_모병 extends che_징병{
         static::$defaultAtmos = GameConst::$defaultAtmosHigh;
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         return "{$this->getName()}(통솔경험, 자금×2)";
     }
-
 }

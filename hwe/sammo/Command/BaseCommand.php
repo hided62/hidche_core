@@ -32,8 +32,8 @@ abstract class BaseCommand{
 
     /** @var \sammo\General */
     protected $destGeneralObj = null; 
-    protected $destCity = null;
-    protected $destNation = null;
+    protected ?array $destCity = null;
+    protected ?array $destNation = null;
 
     protected $cachedPermissionToReserve = false;
     protected $cachedMinConditionMet = false;

@@ -14,13 +14,7 @@ use \sammo\{
     CityConst
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    GetImageURL,
-    getNationStaticInfo 
-};
+use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;

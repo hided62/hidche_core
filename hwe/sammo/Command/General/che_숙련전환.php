@@ -2,28 +2,23 @@
 
 namespace sammo\Command\General;
 
-use\sammo\{
-    DB,
-    Util,
-    JosaUtil,
-    Session,
-    KVStorage,
-    General,
-    ActionLogger,
-    GameConst,
-    GameUnitConst,
-    LastTurn,
-    Command,
-    ServConfig
-};
+use \sammo\DB;
+use \sammo\Util;
+use \sammo\JosaUtil;
+use \sammo\Session;
+use \sammo\KVStorage;
+use \sammo\General;
+use \sammo\ActionLogger;
+use \sammo\GameConst;
+use \sammo\GameUnitConst;
+use \sammo\LastTurn;
+use \sammo\Command;
+use \sammo\ServConfig;
 
-
-use function\sammo\{
-    getDexCall,
-    getTechCall,
-    tryUniqueItemLottery,
-    getTechAbil
-};
+use function \sammo\getDexCall;
+use function \sammo\getTechCall;
+use function \sammo\tryUniqueItemLottery;
+use function \sammo\getTechAbil;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -107,7 +102,7 @@ class che_숙련전환 extends Command\GeneralCommand
         $this->srcArmTypeName = GameUnitConst::allType()[$this->srcArmType];
         $this->destArmType = $this->arg['destArmType'];
         $this->destArmTypeName = GameUnitConst::allType()[$this->destArmType];
-        
+
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->fullConditionConstraints = [

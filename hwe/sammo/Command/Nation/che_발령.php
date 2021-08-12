@@ -13,12 +13,7 @@ use \sammo\{
     TimeUtil
 };
 
-use function \sammo\{
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, 
-    CriticalScoreEx,
-    cutTurn
-};
+use function \sammo\cutTurn;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
