@@ -1,4 +1,6 @@
 const path = require('path');
+const { VueLoaderPlugin } = require('vue-loader');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = [
     {
@@ -17,7 +19,7 @@ module.exports = [
         devtool: 'source-map',
         module: {
             rules: [{
-                test: /\.(ts|tsx)$/,
+                test: /\.(ts|tsx)$/i,
                 exclude: /(node_modules)/,
                 use: {
                     loader: 'babel-loader',
@@ -28,8 +30,33 @@ module.exports = [
                         ]
                     }
                 }
+            }, {
+                test: /\.vue$/i,
+                exclude: /(node_modules)/,
+                use: [
+                    'vue-loader'
+                ]
+            }, {
+                test: /\.css$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                ],
+            }, {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "sass-loader",
+                ],
             }]
         },
+        plugins: [
+            new VueLoaderPlugin(),
+            new MiniCssExtractPlugin({
+                filename: '../css/[name].css'
+            })
+        ]
     },
     {
         name: 'gateway',
@@ -43,11 +70,11 @@ module.exports = [
             filename: '[name].js',
             path: path.resolve(__dirname, 'js'),
         },
-        mode: 'none',
+        mode: 'production',
         devtool: 'source-map',
         module: {
             rules: [{
-                test: /\.(ts|tsx)$/,
+                test: /\.(ts|tsx)$/i,
                 exclude: /(node_modules)/,
                 use: {
                     loader: 'babel-loader',
@@ -58,7 +85,33 @@ module.exports = [
                         ]
                     }
                 }
+            },
+            {
+                test: /\.vue$/i,
+                exclude: /(node_modules)/,
+                use: [
+                    { loader: 'vue-loader' }
+                ]
+            }, {
+                test: /\.css$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                ],
+            }, {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "sass-loader",
+                ],
             }]
         },
+        plugins: [
+            new VueLoaderPlugin(),
+            new MiniCssExtractPlugin({
+                filename: '../css/[name].css'
+            }),
+        ]
     },
 ]

@@ -1,3 +1,5 @@
+import "../scss/inheritPoint.scss";
+
 import { sum } from "lodash";
 import { unwrap } from "./util";
 declare global {
@@ -35,4 +37,4 @@ function formStart() {
     }
 }
 
-window.formStart = formStart;
+formStart();

@@ -103,6 +103,42 @@ class WebUtil
         return $decoded;
     }
 
+    public static function preloadCSS(string $path){
+        $upath = \phpUri::parse($path);
+        $path = $upath->join('');
+        if(!$upath->scheme && file_exists($upath->path)){
+            $mtime = filemtime($upath->path);
+            if($upath->query){
+                $tail = '&'.$mtime;
+            }
+            else{
+                $tail = '?'.$mtime;
+            }
+        }
+        else{
+            $tail = '';
+        }
+        return "<link href='{$path}{$tail}' rel='preload' as='style'>\n";
+    }
+
+    public static function preloadJS(string $path){
+        $upath = \phpUri::parse($path);
+        $path = $upath->join('');
+        if(!$upath->scheme && file_exists($upath->path)){
+            $mtime = filemtime($upath->path);
+            if($upath->query){
+                $tail = '&'.$mtime;
+            }
+            else{
+                $tail = '?'.$mtime;
+            }
+        }
+        else{
+            $tail = '';
+        }
+        return "<link href='{$path}{$tail}' rel='preload' as='script'>\n";
+    }
+
     public static function printJS(string $path){
         //async, defer 옵션 고려
         $upath = \phpUri::parse($path);

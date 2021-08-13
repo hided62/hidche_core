@@ -5,10 +5,15 @@
             {
                 "targets": {
                     "browsers": [
-                        "last 2 versions"
+                        [
+                            "last 2 versions",
+                            "ie >= 11"
+                        ]
                     ]
                 },
-                "modules":false
+                "useBuiltIns": "usage",
+                "corejs": 3,
+                "modules": false
             }
         ]
     ],
