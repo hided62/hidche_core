@@ -24,6 +24,8 @@
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
+    "@types/bootstrap": "^4.6.1",
+    "@types/jquery": "^3.5.6",
     "@types/lodash": "^4.14.172",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
