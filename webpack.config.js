@@ -10,7 +10,8 @@ module.exports = [
         },
         entry: {
             inheritPoint: './hwe/ts/inheritPoint.ts',
-            common: './hwe/ts/common_legacy.ts',
+            common: './hwe/ts/common_deprecated.ts',
+            troop: './hwe/ts/troop.ts',
         },
         output: {
             filename: '[name].js',
