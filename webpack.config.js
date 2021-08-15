@@ -19,6 +19,17 @@ module.exports = [
         },
         mode: 'production',
         devtool: 'source-map',
+        optimization: {
+            splitChunks: {
+                cacheGroups: {
+                    commons: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                    },
+                },
+            }
+        },
         module: {
             rules: [{
                 test: /\.(ts|tsx)$/i,
@@ -27,7 +38,12 @@ module.exports = [
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                            '@babel/preset-env',
+                            ['@babel/preset-env', {
+                                "targets": "> 0.2%, not ie>8, not op_mini all",
+                                "useBuiltIns": "usage",
+                                "corejs": 3,
+                                "modules": false
+                            }],
                             '@babel/preset-typescript'
                         ]
                     }
@@ -74,6 +90,17 @@ module.exports = [
         },
         mode: 'production',
         devtool: 'source-map',
+        optimization: {
+            splitChunks: {
+                cacheGroups: {
+                    commons: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                    },
+                },
+            }
+        },
         module: {
             rules: [{
                 test: /\.(ts|tsx)$/i,
@@ -82,7 +109,12 @@ module.exports = [
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                            '@babel/preset-env',
+                            ['@babel/preset-env', {
+                                "targets": "> 0.2%, not ie>8, not op_mini all",
+                                "useBuiltIns": "usage",
+                                "corejs": 3,
+                                "modules": false
+                            }],
                             '@babel/preset-typescript'
                         ]
                     }

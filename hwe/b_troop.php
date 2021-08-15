@@ -86,8 +86,9 @@ uasort($troops, function($lhs, $rhs){
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
 <?=WebUtil::preloadJS('js/troop.js')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

@@ -48,11 +48,10 @@ if ($permission < 1) {
 var permissionLevel = <?=$permission?>; //
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <!--<?=WebUtil::printJS('../e_lib/tui.editor/tui-editor-Editor-all.min.js')?>-->
-<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/diplomacy.js')?>
 
 </head>

@@ -1,7 +1,7 @@
 import { unwrap } from "./util";
 
-declare const jQuery: JQueryStatic;
-
+import jQuery from "jquery";
+import 'bootstrap';
 
 /** 
  * <>& 등을 html에서도 그대로 보이도록 escape주는 함수

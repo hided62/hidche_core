@@ -90,9 +90,8 @@ $neutralStateCharMap = [
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 중원 정보</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>

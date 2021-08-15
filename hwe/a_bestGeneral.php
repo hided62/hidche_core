@@ -29,9 +29,8 @@ $templates = new \League\Plates\Engine(__DIR__.'/templates');
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/hallOfFame.css')?>
-
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 </head>
 

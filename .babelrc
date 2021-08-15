@@ -3,14 +3,7 @@
         [
             "@babel/preset-env",
             {
-                "targets": {
-                    "browsers": [
-                        [
-                            "last 2 versions",
-                            "ie >= 11"
-                        ]
-                    ]
-                },
+                "targets": "> 0.2%, not ie>8, not op_mini all",
                 "useBuiltIns": "usage",
                 "corejs": 3,
                 "modules": false
@@ -18,7 +11,6 @@
         ]
     ],
     "plugins": [
-        "lodash",
-        "@babel/plugin-transform-runtime"
+        "lodash"
     ]
 }

@@ -33,10 +33,10 @@ $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nati
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 인사부</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('js/bossInfo.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>

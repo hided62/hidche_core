@@ -54,9 +54,7 @@ $boardName = $isSecretBoard?'기밀실':'회의실';
 var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<!--<?=WebUtil::printJS('../e_lib/tui.editor/tui-editor-Editor-all.min.js')?>-->
+<?=WebUtil::printJS('js/vendors.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/board.js')?>
 

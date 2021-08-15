@@ -51,8 +51,7 @@ foreach(array_keys(General::INHERITANCE_KEY) as $key){
     <?= WebUtil::printCSS('css/common.css') ?>
     <?= WebUtil::printCSS('css/inheritPoint.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('../e_lib/jquery-3.3.1.min.js') ?>
-    <?= WebUtil::printJS('../e_lib/bootstrap.bundle.min.js') ?>
+    <?= WebUtil::printJS('js/vendors.js') ?>
     <?= WebUtil::printJS('js/common.js') ?>
 <script>
     var items = <?=Json::encode($items)?>;

@@ -1,5 +1,6 @@
 import { errUnknown } from "./common_legacy";
 import { launchTroopPlugin } from "./ext.plugin_troop";
+import jQuery from "jquery";
 
 import "../scss/troop.scss";
 

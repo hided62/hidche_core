@@ -128,13 +128,13 @@ $zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
             '내정워프': '도시에서 더이상 내정을 수행할 수 없는 경우,<br>일정확률로 내정이 부족한 다른 도시로 이동합니다.',
         };
     </script>
-    <?= WebUtil::printJS('../e_lib/jquery-3.3.1.min.js') ?>
+    
+    <?=WebUtil::printJS('../d_shared/common_path.js')?>
+    <?=WebUtil::printJS('js/vendors.js')?>
+    <?=WebUtil::printJS('js/common.js')?>
+    <?= WebUtil::printJS('../e_lib/jquery_toast/toast.js') ?>
     <?= WebUtil::printJS('../e_lib/Sortable.min.js') ?>
     <?= WebUtil::printJS('../e_lib/jquery-sortable.js') ?>
-    <?= WebUtil::printJS('../e_lib/bootstrap.bundle.min.js') ?>
-    <?= WebUtil::printJS('../e_lib/jquery_toast/toast.js') ?>
-    <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('js/common.js') ?>
     <?= WebUtil::printJS('js/npc_control.js') ?>
 
     <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>

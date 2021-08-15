@@ -51,8 +51,8 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn')??1;
 <script>
 var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
 </script>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/myPage.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>

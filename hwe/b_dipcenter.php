@@ -58,13 +58,12 @@ var editable = <?=(($me['officer_level']>=5||$permission==4)?'true':'false')?>;
 var nationMsg = <?=Json::encode($nationStor->notice??'')?>;
 var scoutmsg = <?=Json::encode($nationStor->scout_msg??'')?>;
 </script>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/vendors.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/summernote-bs4.min.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/lang/summernote-ko-KR.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/plugin/image-sammo/summernote-image-flip.js')?>
-<?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/dipcenter.js')?>
 
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
