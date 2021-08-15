@@ -9,6 +9,7 @@ module.exports = [
             extensions: [".js", ".ts", ".tsx"]
         },
         entry: {
+            chiefCenter: './hwe/ts/chiefCenter.ts',
             inheritPoint: './hwe/ts/inheritPoint.ts',
             common: './hwe/ts/common_deprecated.ts',
             troop: './hwe/ts/troop.ts',
@@ -34,7 +35,7 @@ module.exports = [
             rules: [{
                 test: /\.(ts|tsx)$/i,
                 exclude: /(node_modules)/,
-                use: {
+                use: [{
                     loader: 'babel-loader',
                     options: {
                         presets: [
@@ -47,7 +48,7 @@ module.exports = [
                             '@babel/preset-typescript'
                         ]
                     }
-                }
+                }, 'ts-loader']
             }, {
                 test: /\.vue$/i,
                 exclude: /(node_modules)/,

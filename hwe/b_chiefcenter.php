@@ -19,7 +19,6 @@ $generalObj = General::createGeneralObjFromDB($session->generalID);
 <?=WebUtil::printJS('js/vendors.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
-<?=WebUtil::printJS('../e_lib/moment.min.js')?>
 <?=WebUtil::printJS('js/chiefCenter.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>

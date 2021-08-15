@@ -3,6 +3,11 @@ import { unwrap } from "./util";
 import jQuery from "jquery";
 import 'bootstrap';
 
+import axios from "axios";
+
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+//TODO: X-Requested-With 믿지 말자.
+
 /** 
  * <>& 등을 html에서도 그대로 보이도록 escape주는 함수
  * @see https://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
@@ -122,12 +127,12 @@ export function convertSet<K extends string | number>(arr: ArrayLike<K>): Record
 
 declare global {
     interface String {
-        format(...args: string[]): string;
+        format(...args: (string | number)[]): string;
     }
 }
-String.prototype.format = function (...args: string[]) {
+String.prototype.format = function (...args: (string | number)[]) {
     return this.replace(/{(\d+)}/g, function (match, number) {
-        return (typeof args[number] != 'undefined') ? args[number] : match;
+        return (typeof args[number] != 'undefined') ? args[number].toString() : match;
     });
 };
 

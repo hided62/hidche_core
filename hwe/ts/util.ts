@@ -1,5 +1,5 @@
 type ErrType<T> = { new(msg?: string): T }
-type Nullable<T> = T | null | undefined
+export type Nullable<T> = T | null | undefined
 
 export class RuntimeError extends Error {
     public name = 'RuntimeError';

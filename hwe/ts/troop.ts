@@ -6,7 +6,7 @@ import "../scss/troop.scss";
 
 jQuery(function($){
     //btnJoinTroop, btnLeaveTroop, btnKickTroop, btnCreateTroop, btnChangeTroopName
-    $('#btnLeaveTroop').click(function(e){
+    $('#btnLeaveTroop').click(function(){
         if(!confirm("정말 부대를 탈퇴하시겠습니까?")){
             return false;
         }
@@ -29,7 +29,7 @@ jQuery(function($){
         return false;
     });
 
-    $('#btnCreateTroop').click(function(e){
+    $('#btnCreateTroop').click(function(){
         $.post({
             url:'j_troop.php',
             dataType:'json',
@@ -50,7 +50,7 @@ jQuery(function($){
         return false;
     });
 
-    $('#btnChangeTroopName').click(function(e){
+    $('#btnChangeTroopName').click(function(){
         $.post({
             url:'j_troop.php',
             dataType:'json',
@@ -71,7 +71,7 @@ jQuery(function($){
         return false;
     });
 
-    $('#btnKickTroop').click(function(e){
+    $('#btnKickTroop').click(function(){
         $.post({
             url:'j_troop.php',
             dataType:'json',
@@ -92,7 +92,7 @@ jQuery(function($){
         return false;
     });
 
-    $('#btnJoinTroop').click(function(e){
+    $('#btnJoinTroop').click(function(){
         $.post({
             url:'j_troop.php',
             dataType:'json',

@@ -1,7 +1,7 @@
 import { activeFlip, escapeHtml, isInt, mb_strwidth, mb_strimwidth, convertDictById, convertSet, hexToRgb, isBrightColor, convColorValue, numberWithCommas, linkifyStrWithOpt, TemplateEngine, getIconPath, combineObject, combineArray, activeFlipItem, errUnknown, errUnknownToast, quickReject, nl2br, getNpcColor, initTooltip } from "./common_legacy";
 import jQuery from "jquery";
-
-
+window.jQuery = jQuery;
+window.$ = jQuery;
 
 jQuery(function ($) {
     initTooltip();
@@ -67,9 +67,6 @@ declare global {
         initTooltip: typeof initTooltip;
     }
 }
-
-window.$ = jQuery;
-window.jQuery = jQuery;
 
 window.escapeHtml = escapeHtml;
 window.isInt = isInt;
