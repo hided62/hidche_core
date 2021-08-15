@@ -10,8 +10,6 @@ declare global {
     }
 }
 
-export {}
-
 function formStart() {
 
     const dSum = unwrap(document.querySelector('#inherit_sum_value')) as HTMLInputElement ;
