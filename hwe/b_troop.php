@@ -85,15 +85,13 @@ uasort($troops, function($lhs, $rhs){
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
+<?=WebUtil::preloadJS('js/troop.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/troop.js')?>
-<?=WebUtil::printJS('js/ext.plugin_troop.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printCSS('css/troops.css')?>
+<?=WebUtil::printCSS('css/troop.css')?>
 <script>
 
 </script>
@@ -210,6 +208,7 @@ foreach ($troops as $troopNo=>$troop) {
     <tr><td><?=banner()?> </td></tr>
 </table>
 </div>
+<?=WebUtil::printJS('js/troop.js')?>
 </body>
 </html>
 
