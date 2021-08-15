@@ -7,7 +7,7 @@ $(function() {
         useCachedMap: true,
         selectCallback: function(city) {
             var currVal = $target.val();
-            $target.val(city.nationId).trigger("change");
+            $target.val(city.nationID).trigger("change");
             if ($target.val() === null) {
                 $target.val(currVal).trigger("change");
             }
