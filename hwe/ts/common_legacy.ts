@@ -206,10 +206,11 @@ export function linkifyStrWithOpt(text: string): string {
 export function TemplateEngine(html: string, options: Record<string | number, unknown> = {}): string {
     const re = /<%(.+?)%>/g;
     const reExp = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g;
+    const code = ['with(obj) { var r=[];\n'];
     let cursor = 0;
     const add = function (line: string, js?: boolean) {
-        js ? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
-            (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
+        js ? code.push(line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
+            code.push(line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
         return add;
     }
     options.e = escapeHtml;
@@ -224,10 +225,10 @@ export function TemplateEngine(html: string, options: Record<string | number, un
     }
     add(html.substr(cursor, html.length - cursor));
 
-    let code = 'with(obj) { var r=[];\n';
-    code = (code + 'return r.join(""); }').replace(/[\r\t\n]/g, ' ');
+    code.push('return r.join(""); }');
+    const compiledCode = code.join('').replace(/[\r\t\n]/g, ' ');
     try {
-        return new Function('obj', code).apply(options, [options]);
+        return new Function('obj', compiledCode).apply(options, [options]);
     } catch (err) {
         console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n");
         throw err;

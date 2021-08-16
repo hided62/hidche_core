@@ -85,7 +85,8 @@ module.exports = [
             extensions: [".js", ".ts", ".tsx"]
         },
         entry: {
-            'common': './ts/common_deprecated.ts'
+            'common': './ts/common_deprecated.ts',
+            'entrance': './ts/entrance.ts',
             //test: './ts/test.ts',
         },
         output: {

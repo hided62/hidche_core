@@ -19,7 +19,8 @@ foreach(ServConfig::getServerList() as $setting){
     $response['server'][] = $serverObj;
 }
 
-$response['result'] = 'SUCCESS';
+$response['result'] = true;
+$response['reason'] = 'success';
 Json::die($response);
 
 
