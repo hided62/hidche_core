@@ -13,7 +13,7 @@ module.exports = [
             inheritPoint: './hwe/ts/inheritPoint.ts',
             common: './hwe/ts/common_deprecated.ts',
             troop: './hwe/ts/troop.ts',
-            map: './hwe/ts/map.ts',
+            map: './hwe/ts/map.ts'
         },
         output: {
             filename: '[name].js',
@@ -84,6 +84,7 @@ module.exports = [
             extensions: [".js", ".ts", ".tsx"]
         },
         entry: {
+            'common': './ts/common_deprecated.ts'
             //test: './ts/test.ts',
         },
         output: {

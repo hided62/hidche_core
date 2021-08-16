@@ -54,13 +54,10 @@ if($runningServer){
     <script>
         var runningServer = <?=Json::encode($runningServer)?>;
     </script>
-    <?= WebUtil::printJS('e_lib/jquery-3.3.1.min.js') ?>
-    <?= WebUtil::printJS('e_lib/bootstrap.bundle.min.js') ?>
-    <?= WebUtil::printJS('e_lib/jquery.validate.min.js') ?>
-    <?= WebUtil::printJS('e_lib/sha512.min.js') ?>
-    <?= WebUtil::printJS('js/common.js') ?>
-    <?= WebUtil::printJS('js/login.js') ?>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
+    <?= WebUtil::printJS('js/vendors.js') ?>
+    <?= WebUtil::printJS('js/common.js') ?>
+
     <?= WebUtil::printCSS('d_shared/common.css') ?>
     <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('css/login.css') ?>
@@ -68,10 +65,15 @@ if($runningServer){
     <script>
         var serverNick = '<?=$runningServer['korName']?>';
     </script>
+    <?= WebUtil::printJS($runningServer['name'].'/js/vendors.js') /* FIXME: 의존성 문제 해결 필요 */?>
+    <?= WebUtil::printJS($runningServer['name'].'/js/common.js') ?>
     <?= WebUtil::printJS($runningServer['name'].'/d_shared/base_map.js') ?>
     <?= WebUtil::printJS($runningServer['name'].'/js/map.js') ?>
     <?= WebUtil::printCSS($runningServer['name'].'/css/map.css') ?>
 <?php endif; ?>
+    <?= WebUtil::printJS('e_lib/jquery.validate.min.js') ?>
+    <?= WebUtil::printJS('e_lib/sha512.min.js') ?>
+    <?= WebUtil::printJS('js/login.js') ?>
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,힏체섭,히데체,히데체섭,HiDCHe,체섭">
     <meta property="og:type" content="website">
