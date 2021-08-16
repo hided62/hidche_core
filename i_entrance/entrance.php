@@ -33,8 +33,6 @@ $acl = $session->acl;
         <?=WebUtil::printJS('../d_shared/common_path.js') ?>
         <?=WebUtil::printJS('../js/vendors.js') ?>
         <?=WebUtil::printJS('../js/common.js') ?>
-        <?=WebUtil::printJS('../e_lib/moment.min.js')?>
-        <?=WebUtil::printJS('../js/func.js')?>
         <?=WebUtil::printJS('../js/entrance.js')?>
 
 <?php if ($userGrade >= 5 || $acl): ?>
