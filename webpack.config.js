@@ -1,7 +1,7 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = [
     {
         name: 'ingame',
@@ -76,7 +76,8 @@ module.exports = [
             new VueLoaderPlugin(),
             new MiniCssExtractPlugin({
                 filename: '../css/[name].css'
-            })
+            }),
+            //new BundleAnalyzerPlugin()
         ]
     },
     {
@@ -151,6 +152,7 @@ module.exports = [
             new MiniCssExtractPlugin({
                 filename: '../css/[name].css'
             }),
+            //new BundleAnalyzerPlugin()
         ]
     },
 ]
