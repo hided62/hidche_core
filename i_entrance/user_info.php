@@ -18,10 +18,9 @@ require(__DIR__.'/../vendor/autoload.php');
         <?=WebUtil::printCSS('../css/user_info.css')?>
 
         <!-- 액션 -->
-        <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-        <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-        <?=WebUtil::printJS('../d_shared/common_path.js')?>
-        <?=WebUtil::printJS('../js/common.js')?>
+        <?=WebUtil::printJS('../d_shared/common_path.js') ?>
+        <?=WebUtil::printJS('../js/vendors.js') ?>
+        <?=WebUtil::printJS('../js/common.js') ?>
         <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
         <?=WebUtil::printJS('../e_lib/moment.min.js')?>
         <?=WebUtil::printJS('../js/func.js')?>

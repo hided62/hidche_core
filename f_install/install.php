@@ -11,11 +11,11 @@ require(__DIR__.'/../vendor/autoload.php');
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>설치</title>
-    <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-    <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+    <?=WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?=WebUtil::printJS('../js/vendors.js') ?>
+    <?=WebUtil::printJS('../js/common.js') ?>
     <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
     <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
-    <?=WebUtil::printJS('../js/common.js')?>
     <?=WebUtil::printJS('../js/install.js')?>
     <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('../css/install.css')?>
