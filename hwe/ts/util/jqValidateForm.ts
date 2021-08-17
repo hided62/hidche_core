@@ -3,10 +3,15 @@ import { isArray } from "lodash";
 import { mergeKVArray } from "./mergeKVArray";
 import $ from 'jquery';
 
+type Option = {
+    preParse?: ($target?: JQuery<HTMLElement>)=>void,
+    postParse?: (values:Record<string, string | string[]>, $target?: JQuery<HTMLElement>)=>Record<string, string | string[]>
+}
+
 export class JQValidateForm {
     public readonly validator: Schema;
     public readonly inputs: JQuery<HTMLElement>;
-    constructor(public readonly target: JQuery<HTMLElement>, public readonly rule: Rules) {
+    constructor(public readonly target: JQuery<HTMLElement>, public readonly rule: Rules, public readonly option?:Option) {
         this.validator = new Schema(rule);
         this.inputs = target.find('input');
     }
@@ -25,7 +30,13 @@ export class JQValidateForm {
     }
 
     public async validate(): Promise<undefined | Values> {
-        const rawValues = mergeKVArray(this.inputs.serializeArray());
+        if(this.option?.preParse !== undefined){
+            this.option.preParse(this.target);
+        }
+        let rawValues = mergeKVArray(this.inputs.serializeArray());
+        if(this.option?.postParse !== undefined){
+            rawValues = this.option.postParse(rawValues, this.target);
+        }
         const validateResult = await this.validator.validate(rawValues).catch(({ fields }) => {
             this.clearErrMsg();
             for(const key of Object.keys(fields)){

@@ -15,6 +15,7 @@ module.exports = [
             troop: './hwe/ts/troop.ts',
             map: './hwe/ts/map.ts',
             install_db: './hwe/ts/install_db',
+            install: './hwe/ts/install',
         },
         output: {
             filename: '[name].js',

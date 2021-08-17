@@ -30,9 +30,6 @@ if($session->userGrade < 5 && !$allowReset){
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
-
 <?=WebUtil::printJS('js/install.js')?>
 <?=WebUtil::printCSS('css/normalize.css')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
