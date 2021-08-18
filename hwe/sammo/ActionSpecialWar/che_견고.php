@@ -1,5 +1,7 @@
 <?php
+
 namespace sammo\ActionSpecialWar;
+
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityHelper;
@@ -9,7 +11,8 @@ use sammo\BaseWarUnitTrigger;
 use sammo\WarUnitTrigger\che_부상무효;
 use sammo\WarUnitTrigger\WarActivateSkills;
 
-class che_견고 extends \sammo\BaseSpecial{
+class che_견고 extends \sammo\BaseSpecial
+{
 
     protected $id = 62;
     protected $name = '견고';
@@ -21,20 +24,23 @@ class che_견고 extends \sammo\BaseSpecial{
         SpecialityHelper::STAT_STRENGTH
     ];
 
-    public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+    public function getBattleInitSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
+    {
         return new WarUnitTriggerCaller(
-            new che_부상무효($unit, BaseWarUnitTrigger::TYPE_NONE),
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '저격불가')
+            new che_부상무효($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE * 404),
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE * 404, false, '저격불가')
         );
     }
 
-    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
+    {
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '필살불가', '계략약화', '저격불가')
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE * 404, false, '필살불가', '계략약화', '저격불가')
         );
     }
 
-    public function getWarPowerMultiplier(WarUnit $unit):array{
+    public function getWarPowerMultiplier(WarUnit $unit): array
+    {
         return [1, 0.9];
     }
 }

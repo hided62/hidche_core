@@ -30,7 +30,7 @@ class event_전투특기_반계 extends \sammo\BaseItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '계략약화'),
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*401, false, '계략약화'),
             new che_반계시도($unit),
             new che_반계발동($unit)
         );
