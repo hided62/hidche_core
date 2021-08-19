@@ -5,7 +5,7 @@ import $ from 'jquery';
 
 type Option = {
     preParse?: ($target?: JQuery<HTMLElement>)=>void,
-    postParse?: (values:Record<string, string | string[]>, $target?: JQuery<HTMLElement>)=>Record<string, string | string[]>
+    postParse?: (values:Record<string, string | string[]>, $target?: JQuery<HTMLElement>)=>[Record<string, string | string[]>, Map<string, string>]
 }
 
 export class JQValidateForm {
@@ -13,7 +13,7 @@ export class JQValidateForm {
     public readonly inputs: JQuery<HTMLElement>;
     constructor(public readonly target: JQuery<HTMLElement>, public readonly rule: Rules, public readonly option?:Option) {
         this.validator = new Schema(rule);
-        this.inputs = target.find('input');
+        this.inputs = target.find(':input');
     }
 
     public clearErrMsg():void {
@@ -34,30 +34,57 @@ export class JQValidateForm {
             this.option.preParse(this.target);
         }
         let rawValues = mergeKVArray(this.inputs.serializeArray());
+        let optMap: Map<string, string>;
         if(this.option?.postParse !== undefined){
-            rawValues = this.option.postParse(rawValues, this.target);
+            [rawValues, optMap] = this.option.postParse(rawValues, this.target);
         }
+        else{
+            optMap = new Map();
+        }
+        console.log(rawValues);
+
         const validateResult = await this.validator.validate(rawValues).catch(({ fields }) => {
             this.clearErrMsg();
-            for(const key of Object.keys(fields)){
+            for(const rawKey of Object.keys(fields)){
                 let $item: JQuery<HTMLElement>;
-                const errMsg = fields[key][0].message;
-                if(isArray(rawValues[key])){
-                    $item = $(`#db_form input[name='${key}[]']`);
+                const key = rawKey.split('.')[0];
+                console.log(`ErrorType: ${key}:${rawValues[key]}`);
+                const errMsg = fields[rawKey][0].message;
+
+                if(optMap.has(key)){
+                    $item = this.target.find(optMap.get(key) as string);
+                }
+                else if(isArray(rawValues[key])){
+                    $item = this.target.find(`:input[name='${key}[]']`);
                 }
                 else{
-                    $item = $(`#db_form input[name='${key}']`);
+                    $item = this.target.find(`:input[name='${key}']`);
                 }
-                $item.addClass('is-invalid');
+
+                if($item.length == 0){
+                    continue;
+                }
 
                 const $error = $(`<span>${errMsg}</span>`);
 
                 $error.addClass( "invalid-feedback" );
 
-                if ( $item.prop( "type" ) === "checkbox" ) {
-                    $error.insertAfter( $item.parent( "label" ) );
+                if ("radio" == $item.prop( "type" )) {
+                    const $target = $item.parents( ".btn-group" );
+                    $error.insertAfter( $target );
+                    $target.addClass('is-invalid');
+                }
+                else if ("checkbox" == $item.prop( "type" )) {
+                    let $target = $item.parent( "label" );
+                    if($target.parent(".btn-group").length){
+                       $target = $target.parent('.btn-group');
+                    }
+                    $error.insertAfter( $target );
+                    $target.addClass('is-invalid');
                 } else {
                     $error.insertAfter( $item );
+                    $item.addClass('is-invalid');
+
                 }
             }
 
