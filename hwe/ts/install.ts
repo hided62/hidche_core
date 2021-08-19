@@ -4,9 +4,7 @@ import { setAxiosXMLHttpRequest } from "./util/setAxiosXMLHttpRequest";
 import axios from "axios";
 import { InvalidResponse } from "./defs";
 import { Rules } from "async-validator";
-import { isArray } from "lodash";
 import { JQValidateForm } from "./util/jqValidateForm";
-import { unwrap } from "./util";
 import { convertFormData } from "./util/convertFormData";
 
 type ResponseScenarioItem = {
@@ -121,95 +119,97 @@ function scenarioPreview() {
     if (scenario.npcEx_cnt == 0) {
         $npcEx.html('');
     } else {
-        $npcEx.html('+{0}명'.format(scenario.npcEx_cnt));
+        $npcEx.html(`+${scenario.npcEx_cnt}명`);
     }
 
     $nation.html('');
     $.each(scenario.nation, function (idx, nation) {
-        $nation.append('<span style="color:{0}">{1}</span> {2}명. {3}<br>'.format(
-            nation.color, nation.name, nation.generals, nation.cities.join(', ')
-        ));
+        $nation.append(`<span style="color:${nation.color}">${nation.name}</span> ${nation.generals}명. ${nation.cities.join(', ')}<br>`);
     });
 }
 
 const descriptor: Rules = {
     turnterm: {
         required: true,
+        type: "enum",
+        enum: [1, 2, 5, 10, 20, 30, 60, 120],
+        transform: parseInt,
     },
     sync: {
         required: true,
+        type: "enum",
+        enum: [1, 0],
+        transform: parseInt,
     },
     scenario: {
         required: true,
     },
     fiction: {
         required: true,
+        type: "integer",
+        transform: parseInt,
     },
     extend: {
         required: true,
+        type: "integer",
+        transform: parseInt,
     },
     npcmode: {
         required: true,
+        type: "integer",
+        transform: parseInt,
     },
     show_img_level: {
         required: true,
+        type: "integer",
+        transform: parseInt,
     },
     tournament_trig: {
         required: true,
+        type: "integer",
+        transform: parseInt,
     },
     join_mode: {
         required: true,
+        type: "enum",
+        enum: ["full", "onlyRandom"]
     },
     autorun_user: {
         type: 'array',
+        required: false,
         defaultField: {
             type: 'enum',
-            enum: ['develop', 'warp', 'recruit', 'recruit-high', 'train', 'battle']
+            enum: ['develop', 'warp', 'recruit', 'recruit_high', 'train', 'battle']
         },
     },
     autorun_user_minutes: {
-        type: 'number',
+        type: 'integer',
         required: true,
+        transform: parseInt,
         min: 0,
         validator: (rule, value, _callback, source) => {
-            if (!isArray(source.autorun_user)) {
-                return new Error('옵션이 올바른 타입이 아닙니다.');
+            if(value == 0 && !source.autorun_user?.length){
+                return true;
             }
-            if (source.autorun_user.length == 0 && parseInt(value) > 0) {
-                return new Error('유효 시간과 옵션은 동시에 설정해야합니다.');
+            if(value != 0 && source.autorun_user?.length){
+                return true;
             }
+            return new Error('유효 시간과 옵션은 동시에 설정해야합니다.');
         }
+    },
+    reserve_open: {
+        type: 'pattern',
+        pattern: new RegExp(/\d{4,4}-\d{2,2}-\d{2,2} \d{2,2}:\d{2,2}/)
+    },
+    pre_reserve_open: {
+        type: 'pattern',
+        pattern: new RegExp(/\d{4,4}-\d{2,2}-\d{2,2} \d{2,2}:\d{2,2}/)
     }
 };
 
 function formSetup() {
-
-    const autorunMap: Map<string, string> = new Map([
-        ['autorun_develop', 'develop'],
-        ['autorun_warp', 'warp'],
-        ['autorun_recruit', 'recruit'],
-        ['autorun_recruit_high', 'recruit_high'],
-        ['autorun_train', 'train'],
-        ['autorun_battle', 'battle'],
-        ['autorun_chief', 'chief'],
-    ]);
-    const validator = new JQValidateForm($('#game_form'), descriptor, {
-        postParse: (values) => {
-            const newValues: Record<string, string | string[]> & { autorun_user: string[] } = {
-                autorun_user: []
-            };
-            for (const [key, value] of Object.entries(values)) {
-                if (!autorunMap.has(key)) {
-                    newValues[key] = value;
-                    continue;
-                }
-
-                const convValue = unwrap(autorunMap.get(key));
-                newValues.autorun_user.push(convValue);
-            }
-            return newValues;
-        }
-    });
+    const validator = new JQValidateForm($('#game_form'), descriptor);
+    validator.installChangeHandler();
 
     $('#game_form').on('submit', async function (e) {
         e.preventDefault();
@@ -219,7 +219,7 @@ function formSetup() {
         }
 
         let result: InvalidResponse;
-        try{
+        try {
             const response = await axios({
                 url: 'j_install.php',
                 method: 'post',
@@ -228,12 +228,12 @@ function formSetup() {
             });
             result = response.data;
         }
-        catch(e){
+        catch (e) {
             alert(`알수 없는 에러: ${e}`);
             return;
         }
 
-        if(!result.result){
+        if (!result.result) {
             alert(result.reason);
             return;
         }
@@ -248,4 +248,7 @@ $(async function () {
     void loadScenarios();
     $('#scenario_sel').on('change', scenarioPreview);
     formSetup();
+
 })
+
+window.$ = $;

@@ -45,7 +45,7 @@ if($session->userGrade < 5 && !$allowReset){
             <h3 class="card-header">
                 설치(환경 설정)
                 <!--턴시간, 시간동기화, 시나리오, 상성, 확장장수, NPC유저, 이미지설정-->
-            </h3> 
+            </h3>
             <div class="card-body">
                 <form id="game_form" method="post" action="#">
                     <div class="form-group row">
@@ -80,7 +80,7 @@ if($session->userGrade < 5 && !$allowReset){
                         </div>
                     </div>
 
-                    
+
                     <div class="form-group row">
                         <label for="sync" class="col-sm-3 col-form-label">시간 동기화</label>
                         <div class="col-sm-9" style="display: inline-flex;">
@@ -91,7 +91,7 @@ if($session->userGrade < 5 && !$allowReset){
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="sync" value="0">N
                                 </label>
-                                
+
                             </div>
                             <small class="text-muted">
                                 시간 단위에 맞게 년/월이 설정됩니다. <br>예: 120분(오전1시=1월), 60분(오전/오후 1시=1월)
@@ -104,7 +104,7 @@ if($session->userGrade < 5 && !$allowReset){
                         <div class="col-sm-9">
                         <select class="form-control" name="scenario" size="1" id="scenario_sel">
                         </select>
-                        
+
                         </div>
                     </div>
 
@@ -168,30 +168,30 @@ if($session->userGrade < 5 && !$allowReset){
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">휴식 턴 시 장수 턴</label>
+                        <label class="col-sm-3 col-form-label" id="autorun_set_label">휴식 턴 시 장수 턴</label>
                         <div class="col-sm-9">
                             <div class="input-group">
                                 <div class="input-group-prepend btn-group btn-group-toggle" data-toggle="buttons">
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="develop" name="autorun_develop" id="autorun_develop">내정
+                                        <input type="checkbox" class="autorun_user_chk" data-key="develop" name="autorun_user[]" value="develop">내정
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="warp" name="autorun_warp" id="autorun_warp">순간이동
+                                        <input type="checkbox" class="autorun_user_chk" data-key="warp" name="autorun_user[]" value="warp">순간이동
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit" name="autorun_recruit" id="autorun_recruit">징병
+                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit" name="autorun_user[]" value="recruit">징병
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit_high" name="autorun_recruit_high" id="autorun_recruit_high">모병
+                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit_high" name="autorun_user[]" value="recruit_high">모병
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="train" name="autorun_train" id="autorun_train">훈사
+                                        <input type="checkbox" class="autorun_user_chk" data-key="train" name="autorun_user[]" value="train">훈사
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="battle" name="autorun_battle" id="autorun_battle">출병
+                                        <input type="checkbox" class="autorun_user_chk" data-key="battle" name="autorun_user[]" value="battle">출병
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="chief" name="autorun_chief" id="autorun_chief">기본 사령턴
+                                        <input type="checkbox" class="autorun_user_chk" data-key="chief" name="autorun_user[]" value="chief">기본 사령턴
                                     </label>
                                 </div>
                                 <div class="input-group-append">
@@ -366,7 +366,7 @@ if($session->userGrade < 5 && !$allowReset){
                 </tbody>
                 <tfoot>
                     <tr><td colspan="2">
-                        
+
                     </td></tr>
                 </tfoot>
             </table>

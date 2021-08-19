@@ -20,9 +20,9 @@ jQuery(async function ($) {
         },
         db_port: {
             type: 'integer',
-            validator: (rule, value: string) => {
-                const num = parseInt(value);
-                if (num <= 0 || num >= 65535) {
+            transform: parseInt,
+            validator: (rule, value: number) => {
+                if (value <= 0 || value >= 65535) {
                     return new Error('올바른 포트 범위가 아닙니다.');
                 }
                 return true;
@@ -43,7 +43,6 @@ jQuery(async function ($) {
     };
     const validator = new JQValidateForm($('#db_form'), descriptor);
     validator.installChangeHandler();
-    
     $('#db_form').on('submit', async function (e) {
         e.preventDefault();
 
@@ -67,7 +66,6 @@ jQuery(async function ($) {
             alert(e);
             return false;
         }
-        
         if(!data.result){
             alert(`에러: ${data.reason}`);
             return false;
