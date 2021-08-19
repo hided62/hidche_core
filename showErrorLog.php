@@ -58,10 +58,6 @@ $err_logs = $fdb->select('err_log', [
     <!-- 스타일 -->
     <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('d_shared/common.css') ?>
-
-    <?= WebUtil::printJS('e_lib/jquery-3.3.1.min.js') ?>
-    <?= WebUtil::printJS('d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('e_lib/bootstrap.bundle.min.js') ?>
 </head>
 
 <body>
