@@ -14,8 +14,9 @@ module.exports = [
             common: './hwe/ts/common_deprecated.ts',
             troop: './hwe/ts/troop.ts',
             map: './hwe/ts/map.ts',
-            install_db: './hwe/ts/install_db',
-            install: './hwe/ts/install',
+            install_db: './hwe/ts/install_db.ts',
+            install: './hwe/ts/install.ts',
+            battle_simulator: './hwe/ts/battle_simulator.ts',
         },
         output: {
             filename: '[name].js',

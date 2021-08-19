@@ -16,10 +16,12 @@
   "author": "Hide_D",
   "license": "MIT",
   "dependencies": {
+    "@types/downloadjs": "^1.4.2",
     "async-validator": "^4.0.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "core-js": "^3.16.1",
+    "downloadjs": "^1.4.7",
     "jquery": "^3.6.0",
     "js-sha512": "^0.8.0",
     "lodash": "^4.17.21",
