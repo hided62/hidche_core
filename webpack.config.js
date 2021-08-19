@@ -17,6 +17,7 @@ module.exports = [
             install_db: './hwe/ts/install_db.ts',
             install: './hwe/ts/install.ts',
             battle_simulator: './hwe/ts/battle_simulator.ts',
+            recent_map: './hwe/ts/recent_map.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

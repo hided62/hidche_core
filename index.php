@@ -38,10 +38,6 @@ foreach(ServConfig::getServerList() as $setting){
     break;
 }
 
-if($runningServer){
-    $subTemplates = new \League\Plates\Engine(__DIR__.'/'.$runningServer['name'].'/templates');
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -51,9 +47,6 @@ if($runningServer){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>삼국지 모의전투 HiDCHe</title>
-    <script>
-        var runningServer = <?=Json::encode($runningServer)?>;
-    </script>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
     <?= WebUtil::printJS('js/vendors.js') ?>
     <?= WebUtil::printJS('js/common.js') ?>
@@ -61,16 +54,6 @@ if($runningServer){
     <?= WebUtil::printCSS('d_shared/common.css') ?>
     <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('css/login.css') ?>
-<?php if($runningServer): ?>
-    <script>
-        var serverNick = '<?=$runningServer['korName']?>';
-    </script>
-    <?= WebUtil::printJS($runningServer['name'].'/js/vendors.js') /* FIXME: 의존성 문제 해결 필요 */?>
-    <?= WebUtil::printJS($runningServer['name'].'/js/common.js') ?>
-    <?= WebUtil::printJS($runningServer['name'].'/d_shared/base_map.js') ?>
-    <?= WebUtil::printJS($runningServer['name'].'/js/map.js') ?>
-    <?= WebUtil::printCSS($runningServer['name'].'/css/map.css') ?>
-<?php endif; ?>
     <?= WebUtil::printJS('e_lib/jquery.validate.min.js') ?>
     <?= WebUtil::printJS('e_lib/sha512.min.js') ?>
     <?= WebUtil::printJS('js/login.js') ?>
@@ -224,20 +207,9 @@ if($runningServer){
                 </div>
             </div>
 <?php if($runningServer): ?>
-            <div class="row justify-content-md-center" id="running_map">
-                <div class="col" style="max-width:700px;">
-                    <div class="card" style="width:700px;">
-                        <h3 class="card-header">
-                            <?=$runningServer['korName']?> 현황
-                        </h3>
-                        <div class='map-container' style='position:relative;'>
-                            <?=$subTemplates->render('map', [
-                                'mapTheme' => ''
-                            ])?>
-                        </div>
-                        <div class="card-body">
-                        </div>
-                    </div>
+            <div class="row justify-content-md-center" style='margin-top:20px;'>
+                <div class="col" style="max-width:750px;">
+                    <iframe id="running_map" src="<?=$runningServer['name']?>/recent_map.php"></iframe>
                 </div>
             </div>
 <?php endif; ?>

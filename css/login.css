@@ -127,6 +127,8 @@ input::-webkit-input-placeholder {
     border-radius: .2rem;
 }
 
-#running_map {
-    margin-top: 20px;
+#running_map{
+    overflow: hidden;
+    border: none;
+    width:700px;
 }

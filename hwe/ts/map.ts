@@ -1,5 +1,5 @@
 import axios from 'axios';
-import jQuery from 'jquery';
+import $ from 'jquery';
 import { extend, isNumber } from 'lodash';
 import { convColorValue, convertDictById, convertSet } from './common_legacy';
 import { InvalidResponse } from './defs';
@@ -110,7 +110,7 @@ function is_touch_device(): boolean {
 type loadMapOption = {
     isDetailMap?: boolean, //복잡 지도, 단순 지도
     clickableAll?: boolean, //어떤 경우든 클릭을 가능하게 함. 해당 동작의 동작 가능성 여부와는 별도.
-    selectCallback?: (city: MapCityParsed) => void, //callback을 지정시 clickable과 관계 없이 해당 함수를 실행. 
+    selectCallback?: (city: MapCityParsed) => void, //callback을 지정시 clickable과 관계 없이 해당 함수를 실행.
     hrefTemplate?: string, //도시가 클릭가능할 경우 지정할 href값. {0}은 도시 id로 변환됨
     useCachedMap?: boolean, //맵 캐시를 사용
 
@@ -124,14 +124,14 @@ type loadMapOption = {
     targetJson?: string,
     reqType?: 'get' | 'post',
     dynamicMapTheme?: boolean,
-    callback?: (a: unknown, rawObejct: unknown) => void,
+    callback?: (a: MapCityDrawable, rawObejct: MapRawResult) => void,
 
     //기타 보조 값
     startYear?: number,
 }
 
 export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world_map'): Promise<void> {
-    const $world_map = jQuery(drawTarget);
+    const $world_map = $(drawTarget);
 
     if ($world_map.length == 0) {
         return;
@@ -140,7 +140,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
     const defaultOption: loadMapOption = {
         isDetailMap: true, //복잡 지도, 단순 지도
         clickableAll: false, //어떤 경우든 클릭을 가능하게 함. 해당 동작의 동작 가능성 여부와는 별도.
-        selectCallback: undefined, //callback을 지정시 clickable과 관계 없이 해당 함수를 실행. 
+        selectCallback: undefined, //callback을 지정시 clickable과 관계 없이 해당 함수를 실행.
         hrefTemplate: '#', //도시가 클릭가능할 경우 지정할 href값. {0}은 도시 id로 변환됨
         useCachedMap: false, //맵 캐시를 사용
 
@@ -439,7 +439,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         if(myCity){
             $world_map.find(`.city_base_${myCity} .city_filler`).addClass('my_city');
         }
-        
+
 
         return obj;
     }
@@ -499,7 +499,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         if(myCity){
             $world_map.find(`.city_base_${myCity} .city_filler`).addClass('my_city');
         }
-        
+
 
         return obj;
     }
@@ -729,7 +729,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
     const response = await responseP;
 
-    const rawObject = response.data;
+    const rawObject: MapRawResult = response.data;
 
     const computedResult = await checkReturnObject(rawObject)
         .then(setMapBackground)
@@ -783,7 +783,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 }
 
 window.reloadWorldMap = reloadWorldMap;
-$(function () {
+$(function ($) {
     if (is_touch_device()) {
         $('.map_body .map_toggle_single_tap').show();
     }
