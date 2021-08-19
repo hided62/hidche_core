@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $("#main_form").validate({
         rules: {
             username: {
@@ -17,7 +17,7 @@ $(document).ready(function() {
             }
         },
         errorElement: "div",
-        errorPlacement: function(error, element) {
+        errorPlacement: function (error, element) {
             // Add the `help-block` class to the error element
             error.addClass("invalid-feedback");
 
@@ -27,15 +27,15 @@ $(document).ready(function() {
                 error.insertAfter(element);
             }
         },
-        highlight: function(element, errorClass, validClass) {
+        highlight: function (element, errorClass, validClass) {
             $(element).addClass("is-invalid").removeClass("is-valid");
         },
-        unhighlight: function(element, errorClass, validClass) {
+        unhighlight: function (element, errorClass, validClass) {
             $(element).addClass("is-valid").removeClass("is-invalid");
         }
     });
 
-    $("#main_form").submit(function() {
+    $("#main_form").submit(function () {
         var raw_password = $('#password').val();
         var salt = $('#global_salt').val();
         var hash_pw = sha512(salt + raw_password + salt);
@@ -47,7 +47,7 @@ $(document).ready(function() {
                 'username': $('#username').val(),
                 'password': hash_pw
             }
-        }).then(function(obj) {
+        }).then(function (obj) {
             if (obj.result) {
                 window.location.href = "./";
                 return;
@@ -58,7 +58,7 @@ $(document).ready(function() {
             }
 
             var $modal = $('#modalOTP').modal();
-            $modal.on('shown.bs.modal', function() {
+            $modal.on('shown.bs.modal', function () {
                 $('#otp_code').focus();
             });
 
@@ -67,14 +67,14 @@ $(document).ready(function() {
         return false;
     });
 
-    $('#otp_form').submit(function() {
+    $('#otp_form').submit(function () {
         $.post({
             url: 'oauth_kakao/j_check_OTP.php',
             dataType: 'json',
             data: {
                 'otp': $('#otp_code').val(),
             }
-        }).then(function(obj) {
+        }).then(function (obj) {
             if (obj.result) {
                 alert(obj.reason);
                 window.location.href = "./";
@@ -105,13 +105,9 @@ $(document).ready(function() {
         });
         $map.find('.map_body').data('scale', scale);
     }
-
-    reloadWorldMap({
-        targetJson: "{0}/j_map_recent.php".format(runningServer.name),
-        reqType: 'get',
-        dynamicMapTheme: true,
-        callback: function(data, rawObject) {
-            $('#running_map .card-body').html(rawObject.history);
-        }
-    });
 });
+
+window.fitIframe = function () {
+    var iframe = document.querySelector('#running_map');
+    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+}
