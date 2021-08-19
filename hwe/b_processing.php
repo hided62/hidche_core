@@ -80,7 +80,6 @@ $cssList = $commandObj->getCSSFiles();
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('js/map.js')?>
 <?=WebUtil::printJS('js/processing.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';

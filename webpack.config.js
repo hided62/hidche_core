@@ -17,6 +17,13 @@ module.exports = [
             install_db: './hwe/ts/install_db.ts',
             install: './hwe/ts/install.ts',
             battle_simulator: './hwe/ts/battle_simulator.ts',
+
+
+            //FORM 입력용, frontend 변경후 제거
+            defaultSelectCityByMap: './hwe/ts/defaultSelectCityByMap.ts',
+            defaultSelectNationByMap: './hwe/ts/defaultSelectNationByMap.ts',
+            colorSelect: './hwe/ts/colorSelect.ts',
+            recruitCrewForm: './hwe/ts/recruitCrewForm.ts'
         },
         output: {
             filename: '[name].js',
