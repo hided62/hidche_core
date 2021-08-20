@@ -55,7 +55,7 @@ class che_허보 extends Command\NationCommand
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        
+
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -183,12 +183,6 @@ class che_허보 extends Command\NationCommand
             ActionLogger::PLAIN
         );
         $destNationLogger->flush();
-
-
-        $db->update('city', [
-            'def' => $db->sqleval('def * 0.2'),
-            'wall' => $db->sqleval('wall * 0.2'),
-        ], 'city=%i', $destCityID);
 
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
