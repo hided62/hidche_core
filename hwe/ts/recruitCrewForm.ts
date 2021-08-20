@@ -1,11 +1,6 @@
 import $ from 'jquery';
 import { unwrap_any } from './util/unwrap_any';
 
-declare global {
-    interface Window {
-        submitAction: () => void;
-    }
-}
 
 declare const leadership: number;
 declare const fullLeadership: number;
@@ -38,7 +33,7 @@ $(function () {
         $formAmount.val(parseFloat(unwrap_any<string>($this.val())) * 100);
 
         if (e.which === 13) {
-            window.submitAction();
+            void window.submitAction();
         }
         return false;
     });
@@ -91,7 +86,7 @@ $(function () {
         $formCrewtype.val(crewtype);
         $formAmount.val(parseFloat(unwrap_any<string>($input.val())) * 100);
 
-        window.submitAction();
+        void window.submitAction();
     });
 
     $('.btn_fill').click();
