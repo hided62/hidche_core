@@ -3,7 +3,7 @@ import { unwrap_any } from "./util/unwrap_any";
 /*import $ from 'jquery';
 import 'select2';*///TODO: processing
 
-$(function() {
+export function loadPlugin(): void{
     const $target = $("#destNationID");
     void reloadWorldMap({
         isDetailMap: false,
@@ -22,4 +22,8 @@ $(function() {
             return false;
         }
     });
+}
+
+$(function() {
+    loadPlugin();
 });

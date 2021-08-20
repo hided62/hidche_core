@@ -3,7 +3,6 @@ import { unwrap_any } from './util/unwrap_any';
 
 declare global {
     interface Window {
-        calc: (id: number) => void;
         submitAction: () => void;
     }
 }
@@ -12,9 +11,9 @@ declare const leadership: number;
 declare const fullLeadership: number;
 declare const currentCrewType: number;
 declare const currentCrew: number;
-declare const currentGold: number;
+//declare const currentGold: number;
 declare const is모병 = false;
-window.calc = function (id) {
+function calc(id: number) {
     const $obj = $('#crewType{0}'.format(id));
     const crew = parseInt(unwrap_any<string>($obj.find('.form_double').val()));
     const baseCost = $obj.data('cost');
@@ -28,16 +27,13 @@ window.calc = function (id) {
 }
 
 $(function () {
-
-
-    const $postForm = $('#post_form');
     const $formAmount = $('#amount');
     const $formCrewtype = $('#crewType');
     $('.form_double').on('keyup change', function (e) {
         const $this = $(this);
         const $parent = $this.parents('.input_form');
         const crewtype = parseInt($parent.data('crewtype'));
-        window.calc(crewtype);
+        calc(crewtype);
         $formCrewtype.val(crewtype);
         $formAmount.val(parseFloat(unwrap_any<string>($this.val())) * 100);
 
@@ -47,7 +43,7 @@ $(function () {
         return false;
     });
 
-    $('.btn_half').click(function () {
+    $('.btn_half').on('click', function () {
         const $this = $(this);
         const $parent = $this.closest('.input_form');
         const crewtype = parseInt($parent.data('crewtype'));
@@ -59,7 +55,7 @@ $(function () {
         return false;
     });
 
-    $('.btn_fill').click(function () {
+    $('.btn_fill').on('click', function () {
         const $this = $(this);
         const $parent = $this.closest('.input_form');
         const crewtype = parseInt($parent.data('crewtype'));
@@ -74,7 +70,7 @@ $(function () {
         return false;
     });
 
-    $('.btn_full').click(function () {
+    $('.btn_full').on('click', function () {
         const $this = $(this);
         const $parent = $this.closest('.input_form');
         const crewtype = parseInt($parent.data('crewtype'));
@@ -86,7 +82,7 @@ $(function () {
         return false;
     });
 
-    $('.submit_btn').click(function () {
+    $('.submit_btn').on('click', function () {
         const $this = $(this);
         const $parent = $this.closest('tr').find('.input_form');
         const crewtype = parseInt($parent.data('crewtype'));

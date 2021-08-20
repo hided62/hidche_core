@@ -3,7 +3,8 @@ import { unwrap_any } from "./util/unwrap_any";
 /*import $ from 'jquery';
 import 'select2';*///TODO: processing
 
-$(function() {
+
+export function loadPlugin(): void {
     const $target = $("#destCityID");
     console.log('target', $target);
     void reloadWorldMap({
@@ -11,7 +12,7 @@ $(function() {
         clickableAll: true,
         neutralView: true,
         useCachedMap: true,
-        selectCallback: function(city) {
+        selectCallback: function (city) {
             const currVal = unwrap_any<string>($target.val());
             $target.val(city.id).trigger("change");
             if ($target.val() === null) {
@@ -20,4 +21,8 @@ $(function() {
             return false;
         }
     });
+}
+
+$(function () {
+    loadPlugin();
 });
