@@ -19,6 +19,7 @@ module.exports = [
             battle_simulator: './hwe/ts/battle_simulator.ts',
             recent_map: './hwe/ts/recent_map.ts',
             processing: './hwe/ts/processing.ts',
+            select_npc: './hwe/ts/select_npc.ts',
 
 
             //FORM 입력용, frontend 변경후 제거
