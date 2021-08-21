@@ -4,7 +4,7 @@ import { range } from 'lodash';
 import { DateTime } from 'luxon';
 import { errUnknown, getNpcColor } from './common_legacy';
 import { InvalidResponse } from './defs';
-import { unwrap } from './util';
+import { unwrap } from "./util/unwrap";
 import { convertFormData } from './util/convertFormData';
 import { unwrap_any } from "./util/unwrap_any";
 

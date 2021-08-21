@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { extend, isNumber } from 'lodash';
 import { convColorValue, convertDictById, convertSet } from './common_legacy';
 import { InvalidResponse } from './defs';
-import { unwrap } from './util';
+import { unwrap } from "./util/unwrap";
 import { convertFormData } from './util/convertFormData';
 
 declare const serverNick: string;

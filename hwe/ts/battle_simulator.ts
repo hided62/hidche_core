@@ -2,7 +2,7 @@ import $ from 'jquery';
 import 'bootstrap';
 import { DateTime } from 'luxon';
 import download from 'downloadjs';
-import { unwrap } from './util';
+import { unwrap } from "./util/unwrap";
 import { isInteger } from 'lodash';
 import { combineArray, errUnknown, getNpcColor, isBrightColor, numberWithCommas } from './common_legacy';
 import { unwrap_any } from './util/unwrap_any';

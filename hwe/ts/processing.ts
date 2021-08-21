@@ -7,7 +7,7 @@ import { convertFormData } from './util/convertFormData';
 import { InvalidResponse } from './defs';
 import { unwrap_any } from './util/unwrap_any';
 import { DataFormat, IdTextPair, OptionData } from 'select2';
-import { unwrap } from './util';
+import { unwrap } from "./util/unwrap";
 
 declare const isChiefTurn: boolean;
 declare global {

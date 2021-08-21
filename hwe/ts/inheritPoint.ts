@@ -1,9 +1,9 @@
 import "../scss/inheritPoint.scss";
 
 import { sum } from "lodash";
-import { unwrap } from "./util";
+import { unwrap } from "./util/unwrap";
 declare global {
-    interface Window { 
+    interface Window {
         formStart: ()=>void;
         items: {[name: string]:number};
         helpText: {[name: string]:string};

@@ -1,4 +1,4 @@
-import { unwrap } from "./util";
+import { unwrap } from "./util/unwrap";
 
 import jQuery from "jquery";
 import 'bootstrap';
@@ -8,7 +8,7 @@ import axios from "axios";
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //TODO: X-Requested-With 믿지 말자.
 
-/** 
+/**
  * <>& 등을 html에서도 그대로 보이도록 escape주는 함수
  * @see https://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
  */
@@ -121,7 +121,7 @@ export function convertSet<K extends string | number>(arr: ArrayLike<K>): Record
 }
 
 
-/** 
+/**
  * {0}, {1}, {2}형태로 포맷해주는 함수
  */
 
@@ -199,8 +199,8 @@ export function linkifyStrWithOpt(text: string): string {
 /**
  * 단순한 Template 함수.  <%변수명%>으로 template 가능
  * @see  https://github.com/krasimir/absurd/blob/master/lib/processors/html/helpers/TemplateEngine.js
- * @param {string} html 
- * @param {object} options 
+ * @param {string} html
+ * @param {object} options
  * @returns {string}
  */
 export function TemplateEngine(html: string, options: Record<string | number, unknown> = {}): string {
@@ -332,7 +332,7 @@ export function nl2br(text: string): string {
     return text.replace(/\n/g, "<br>");
 }
 /*
-function br2nl (text) {   
+function br2nl (text) {
     return text.replace(/<\s*\/?br\s*[\/]?>/gi, '\n');
 }
 */

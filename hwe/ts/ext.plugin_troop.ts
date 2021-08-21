@@ -1,5 +1,6 @@
 import axios from "axios";
-import { RuntimeError, unwrap } from "./util";
+import { unwrap } from "./util/unwrap";
+import { RuntimeError } from "./util/RuntimeError";
 
 declare global {
     interface Window {
@@ -46,7 +47,7 @@ export function launchTroopPlugin($: JQueryStatic): void {
         const rawData = response.data;
 
         try {
-            const $html = $(rawData); 
+            const $html = $(rawData);
 
             const tmpUsers: JQuery<HTMLElement> = (() => {
                 let tmpUsers = undefined;
