@@ -21,6 +21,7 @@ module.exports = [
             processing: './hwe/ts/processing.ts',
             select_npc: './hwe/ts/select_npc.ts',
             betting: './hwe/ts/betting.ts',
+            board: './hwe/ts/board.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

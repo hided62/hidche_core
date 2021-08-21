@@ -55,7 +55,6 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/board.js')?>
 
 </head>
@@ -99,7 +98,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 <tbody>
 <tr>
 <td><img class='authorIcon generalIcon' width='64' height='64'></td>
-<td class='text' colspan='2'></td> 
+<td class='text' colspan='2'></td>
 </tr>
 </tbody>
 <tbody class='commentList'>
