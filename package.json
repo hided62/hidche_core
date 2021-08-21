@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/downloadjs": "^1.4.2",
+    "@types/select2": "^4.0.54",
     "async-validator": "^4.0.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
@@ -26,6 +27,7 @@
     "js-sha512": "^0.8.0",
     "lodash": "^4.17.21",
     "luxon": "^2.0.2",
+    "select2": "^4.0",
     "vue": "^3.2.2"
   },
   "devDependencies": {
