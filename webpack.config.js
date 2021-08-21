@@ -92,7 +92,11 @@ module.exports = [
                 filename: '../css/[name].css'
             }),
             //new BundleAnalyzerPlugin()
-        ]
+        ],
+        cache: {
+            type: 'filesystem',
+            allowCollectingMemory: true,
+        },
     },
     {
         name: 'gateway',
@@ -167,6 +171,10 @@ module.exports = [
                 filename: '../css/[name].css'
             }),
             //new BundleAnalyzerPlugin()
-        ]
+        ],
+        cache: {
+            type: 'filesystem',
+            allowCollectingMemory: true,
+        },
     },
 ]
