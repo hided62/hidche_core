@@ -20,6 +20,7 @@ module.exports = [
             recent_map: './hwe/ts/recent_map.ts',
             processing: './hwe/ts/processing.ts',
             select_npc: './hwe/ts/select_npc.ts',
+            betting: './hwe/ts/betting.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

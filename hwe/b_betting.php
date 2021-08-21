@@ -65,7 +65,6 @@ if($str3){
 <title><?=UniqueConst::$serverName?>: 베팅장</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/betting.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
@@ -311,7 +310,7 @@ for ($i=0; $i < 16; $i++) {
     else{
         $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
     }
-    
+
 }
 ?>
     </tr>
@@ -446,8 +445,8 @@ foreach($tournamentType as $tournamentTypeText=>[$statTypeText,$statFunc,$rankCo
         $result = -($lhs->getRankVar($gameColumn) <=> $rhs->getRankVar($gameColumn));
         if($result !== 0) return $result;
         $result = -(
-            ($lhs->getRankVar($winColumn)+$lhs->getRankVar($drawColumn)+$lhs->getRankVar($loseColumn)) 
-            <=> 
+            ($lhs->getRankVar($winColumn)+$lhs->getRankVar($drawColumn)+$lhs->getRankVar($loseColumn))
+            <=>
             ($rhs->getRankVar($winColumn)+$rhs->getRankVar($drawColumn)+$rhs->getRankVar($loseColumn))
         );
         if($result !== 0) return $result;
