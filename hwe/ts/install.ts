@@ -179,7 +179,7 @@ const descriptor: Rules = {
         required: false,
         defaultField: {
             type: 'enum',
-            enum: ['develop', 'warp', 'recruit', 'recruit_high', 'train', 'battle']
+            enum: ['develop', 'warp', 'recruit', 'recruit_high', 'train', 'battle', 'chief']
         },
     },
     autorun_user_minutes: {
