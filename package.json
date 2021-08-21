@@ -18,10 +18,10 @@
   "dependencies": {
     "@types/downloadjs": "^1.4.2",
     "@types/select2": "^4.0.54",
-    "async-validator": "^4.0.1",
+    "async-validator": "^4.0.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
-    "core-js": "^3.16.1",
+    "core-js": "^3.16.2",
     "downloadjs": "^1.4.7",
     "jquery": "^3.6.0",
     "js-sha512": "^0.8.0",
@@ -39,8 +39,8 @@
     "@types/jquery": "^3.5.6",
     "@types/lodash": "^4.14.172",
     "@types/luxon": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
     "@vue/compiler-sfc": "^3.2.2",
     "babel-loader": "^8.2.2",
     "babel-plugin-lodash": "^3.3.4",
@@ -49,15 +49,15 @@
     "eslint": "^7.32.0",
     "mini-css-extract-plugin": "^2.2.0",
     "pre-commit": "^1.2.2",
-    "sass": "^1.37.5",
+    "sass": "^1.38.0",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
     "ts-loader": "^9.2.5",
     "typescript": "^4.3.5",
     "vue-loader": "^16.5.0",
-    "webpack": "^5.49.0",
+    "webpack": "^5.51.1",
     "webpack-bundle-analyzer": "^4.4.2",
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^4.8.0"
   },
   "pre-commit": [
     "lint"
