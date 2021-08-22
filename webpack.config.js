@@ -22,6 +22,7 @@ module.exports = [
             select_npc: './hwe/ts/select_npc.ts',
             betting: './hwe/ts/betting.ts',
             board: './hwe/ts/board.ts',
+            bossInfo: './hwe/ts/bossInfo.ts',
 
 
             //FORM 입력용, frontend 변경후 제거
