@@ -23,6 +23,7 @@ module.exports = [
             betting: './hwe/ts/betting.ts',
             board: './hwe/ts/board.ts',
             bossInfo: './hwe/ts/bossInfo.ts',
+            myPage: './hwe/ts/myPage.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { convertFormData } from './util/convertFormData';
 import { InvalidResponse } from './defs';
 import { unwrap_any } from './util/unwrap_any';
+import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 
 type GeneralSelectorItem = {
     id: string|number,
@@ -52,6 +53,8 @@ async function changePermission(isAmbassador: boolean, rawGeneralList: GeneralSe
 }
 
 $(function () {
+    setAxiosXMLHttpRequest();
+    
     $('#selectAmbassador').select2({
         theme: 'bootstrap4',
         placeholder: "",

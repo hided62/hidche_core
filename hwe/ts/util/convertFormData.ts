@@ -1,6 +1,6 @@
 import { isArray, isString, isNumber, isBoolean } from "lodash";
 
-export function convertFormData(values: Record<string, number[]|string[]|boolean[]|number|string|boolean>): FormData{
+export function convertFormData(values: Record<string, null|number[]|string[]|boolean[]|number|string|boolean>): FormData{
     const formData = new FormData();
 
     const simpleConv = (v: unknown):string=>{
@@ -12,6 +12,9 @@ export function convertFormData(values: Record<string, number[]|string[]|boolean
         }
         if(isBoolean(v)){
             return v?'true':'false';
+        }
+        if(v===null){
+            return '';
         }
         throw new TypeError('지원하지 않는 formData Type');
     }
