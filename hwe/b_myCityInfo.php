@@ -40,8 +40,8 @@ $sel = [$type => "selected"];
 <?=WebUtil::printCSS('../e_lib/jquery-ui.min.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-ui.min.js')?>
 <?=WebUtil::printJS('js/ext.expand_city.js')?>
 
@@ -129,10 +129,10 @@ foreach($cityList as $city){
     ];
 
     $cityOfficerList = $officerList[$cityID]??[];
-    foreach($cityOfficerList as $cityOfficer){   
+    foreach($cityOfficerList as $cityOfficer){
         $officerName[$cityOfficer['officer_level']] = getColoredName($cityOfficer['name'], $cityOfficer['npc']);
     }
-    
+
     if ($type == 10 && $city['region'] != $region) {
         echo "<br>";
         $region = $city['region'];
@@ -209,4 +209,3 @@ foreach($cityList as $city){
 </body>
 <div id="helper_genlist" style="display:none;"></div>
 </html>
-

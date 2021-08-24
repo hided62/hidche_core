@@ -199,7 +199,7 @@ class che_급습 extends Command\NationCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'dist_js/defaultSelectNationByMap.js'
         ];
     }
 

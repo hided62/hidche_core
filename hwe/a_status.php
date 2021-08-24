@@ -28,10 +28,10 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 세력도</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('js/map.js')?>
+<?=WebUtil::printJS('dist_js/map.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';
@@ -79,4 +79,3 @@ $(function(){
 </body>
 
 </html>
-

@@ -55,11 +55,11 @@ class che_불가침파기제의 extends Command\NationCommand{
         $this->setCity();
         $this->setNation();
 
-        
+
 
         $this->minConditionConstraints=[
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
         ];
@@ -71,7 +71,7 @@ class che_불가침파기제의 extends Command\NationCommand{
 
         $this->fullConditionConstraints=[
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestNation(),
@@ -86,7 +86,7 @@ class che_불가침파기제의 extends Command\NationCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -129,7 +129,7 @@ class che_불가침파기제의 extends Command\NationCommand{
 
         // 상대에게 발송
         $src = new MessageTarget(
-            $general->getID(), 
+            $general->getID(),
             $general->getName(),
             $nationID,
             $nationName,
@@ -173,7 +173,7 @@ class che_불가침파기제의 extends Command\NationCommand{
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'dist_js/defaultSelectNationByMap.js'
         ];
     }
 
@@ -204,7 +204,7 @@ class che_불가침파기제의 extends Command\NationCommand{
             $nationList[] = $destNation;
         }
 
-        ob_start(); 
+        ob_start();
 ?>
 <?=\sammo\getMapHtml()?><br>
 불가침중인 국가에 조약 파기를 제의합니다.<br>
@@ -213,12 +213,12 @@ class che_불가침파기제의 extends Command\NationCommand{
 <br>
 <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
 <?php foreach($nationList as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
+    <option
+        value='<?=$nation['nation']?>'
         style='color:<?=$nation['color']?>;<?=$nation['cssBgColor']?>'
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
-</select>에게 
+</select>에게
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">
 <?php
         return ob_get_clean();

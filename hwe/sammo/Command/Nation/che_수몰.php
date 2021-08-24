@@ -50,7 +50,7 @@ class che_수몰 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        
+
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -62,7 +62,7 @@ class che_수몰 extends Command\NationCommand{
     {
         $this->setDestCity($this->arg['destCityID']);
         $this->setDestNation($this->destCity['nation']);
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -80,18 +80,18 @@ class che_수몰 extends Command\NationCommand{
 
         return "{$name}/{$reqTurn}턴(재사용 대기 $postReqTurn)";
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 2;
     }
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*4)*10);    
+        $nextTerm = Util::round(sqrt($genCount*4)*10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
@@ -125,7 +125,7 @@ class che_수몰 extends Command\NationCommand{
 
         $destNationID = $destCity['nation'];
         $destNationName = getNationStaticInfo($destNationID)['name'];
-        
+
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
@@ -166,7 +166,7 @@ class che_수몰 extends Command\NationCommand{
             'def' => $db->sqleval('def * 0.2'),
             'wall' => $db->sqleval('wall * 0.2'),
         ], 'city=%i', $destCityID);
-        
+
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>수몰</>을 발동");
@@ -185,7 +185,7 @@ class che_수몰 extends Command\NationCommand{
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

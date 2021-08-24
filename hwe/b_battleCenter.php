@@ -87,10 +87,10 @@ else if($reqArgType===1){
     $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, %b FROM general WHERE nation = %i', $reqQueryType, $nationID);
 }
 else if($reqArgType===2){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, value as %b 
-        FROM general LEFT JOIN rank_data 
-        ON general.no = rank_data.general_id 
-        WHERE rank_data.type = %s AND general.nation = %i', 
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, value as %b
+        FROM general LEFT JOIN rank_data
+        ON general.no = rank_data.general_id
+        WHERE rank_data.type = %s AND general.nation = %i',
         $reqQueryType, $reqQueryType, $nationID
     );
 }
@@ -121,8 +121,8 @@ $showGeneral = General::createGeneralObjFromDB($gen);
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

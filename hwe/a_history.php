@@ -100,10 +100,10 @@ $nations = Json::decode($history['nations']);
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 연감</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS("js/map/theme_{$mapTheme}.js")?>
-<?=WebUtil::printJS('js/map.js')?>
+<?=WebUtil::printJS('dist_js/map.js')?>
 <?=WebUtil::printJS('js/history.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>

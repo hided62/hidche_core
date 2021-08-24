@@ -76,11 +76,11 @@ $cssList = $commandObj->getCSSFiles();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('js/processing.js')?>
+<?=WebUtil::printJS('dist_js/processing.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';

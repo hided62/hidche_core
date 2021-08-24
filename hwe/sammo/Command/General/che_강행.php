@@ -169,7 +169,7 @@ class che_강행 extends Command\GeneralCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

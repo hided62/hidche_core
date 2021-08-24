@@ -202,7 +202,7 @@ class che_이호경식 extends Command\NationCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'dist_js/defaultSelectNationByMap.js'
         ];
     }
 

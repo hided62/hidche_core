@@ -59,8 +59,8 @@ var nationMsg = <?=Json::encode($nationStor->notice??'')?>;
 var scoutmsg = <?=Json::encode($nationStor->scout_msg??'')?>;
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/summernote-bs4.min.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/lang/summernote-ko-KR.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/plugin/image-sammo/summernote-image-flip.js')?>
@@ -115,14 +115,14 @@ foreach($nationsList as $staticNation):
             0 => "<font color=red>교 전</font>",
             1 => "<font color=magenta>선포중</font>",
             2 => "통 상",
-            7 => "<font color=green>불가침</font>",    
+            7 => "<font color=green>불가침</font>",
         ][$diplomacyState['state']];
 
         if($diplomacyState['term']){
             $dipEndMonth = $admin['month'] + $diplomacyState['term'] - 1;
             $dipEndYear = $admin['year'] + intdiv($dipEndMonth, 12);
             $dipEndMonth = $dipEndMonth % 12 + 1;
-            
+
             $dipTermText = $diplomacyState['term'].'개월';
             $dipEndDateText = "{$dipEndYear}年 {$dipEndMonth}月";
         }
@@ -204,7 +204,7 @@ if ($budgetricediff > 0) {
             <div class='edit_form viewer'></div>
         </div>
         </div>
-        
+
     </div></td></tr>
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>

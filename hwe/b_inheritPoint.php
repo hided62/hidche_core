@@ -43,16 +43,16 @@ foreach(array_keys(General::INHERITANCE_KEY) as $key){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
-    <?= WebUtil::preloadCSS('css/inheritPoint.css') ?>
-    <?= WebUtil::preloadJS('js/inheritPoint.js') ?>
+    <?= WebUtil::preloadCSS('dist_css/inheritPoint.css') ?>
+    <?= WebUtil::preloadJS('dist_js/inheritPoint.js') ?>
     <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('../css/config.css') ?>
     <?= WebUtil::printCSS('css/common.css') ?>
-    <?= WebUtil::printCSS('css/inheritPoint.css') ?>
+    <?= WebUtil::printCSS('dist_css/inheritPoint.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('js/vendors.js') ?>
-    <?= WebUtil::printJS('js/common.js') ?>
+    <?= WebUtil::printJS('dist_js/vendors.js') ?>
+    <?= WebUtil::printJS('dist_js/common.js') ?>
 <script>
     var items = <?=Json::encode($items)?>;
     var helpText = <?=Json::encode($pointHelpText)?>;
@@ -127,8 +127,8 @@ foreach(array_keys(General::INHERITANCE_KEY) as $key){
         </div>
     </div>
     <div id="app"></div>
-    
-    <?= WebUtil::printJS('js/inheritPoint.js') ?>
+
+    <?= WebUtil::printJS('dist_js/inheritPoint.js') ?>
 </body>
 
 </html>

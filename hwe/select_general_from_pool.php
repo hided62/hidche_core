@@ -64,15 +64,15 @@ var validCustomOption = <?=Json::encode(GameConst::$generalPoolAllowOption)?>;
 </script>
 
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('js/join.js')?>
 <?=WebUtil::printJS('js/select_general_from_pool.js')?>
 
 </head>
 
 
-<?php 
+<?php
 if ($gencount>= $admin['maxgeneral']) {
 ?>
 

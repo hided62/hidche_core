@@ -26,8 +26,8 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 세력일람</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('js/ext.kingdoms.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
@@ -48,7 +48,7 @@ $nations[0] = getNationStaticInfo(0);
 
 foreach($db->query('SELECT npc,name,city,nation,officer_level,penalty,permission FROM general ORDER BY dedication DESC') as $general){
     $nationID = $general['nation'];
-    
+
     if(!key_exists('generals', $nations[$nationID])){
         $nations[$nationID]['generals'] = [];
     }
@@ -177,7 +177,7 @@ echo"
         <td colspan=5> 장수 일람 : ";
     foreach($nations[0]['generals'] as $general) {
         $generalText = getColoredName($general['name'], $general['npc']);
-        echo "{$generalText}, "; 
+        echo "{$generalText}, ";
     }
     echo"
         </td>

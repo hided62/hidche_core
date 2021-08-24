@@ -31,8 +31,8 @@ foreach($db->queryAllLists('SELECT nation, count(city) FROM city WHERE nation !=
 
 $realConflict = [];
 foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE conflict!=%s', '{}') as [
-    $cityID, 
-    $cityName, 
+    $cityID,
+    $cityName,
     $rawConflict
 ])
 {
@@ -62,7 +62,7 @@ foreach($db->queryAllLists('SELECT me, you, state FROM diplomacy') as [$me, $you
     if(!key_exists($me, $diplomacyList)){
         $diplomacyList[$me] = [];
     }
-    
+
     $diplomacyList[$me][$you] = $state;
 }
 
@@ -91,10 +91,10 @@ $neutralStateCharMap = [
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 중원 정보</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('js/map.js')?>
+<?=WebUtil::printJS('dist_js/map.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';
@@ -162,9 +162,9 @@ else{
             <table class='tb_layout bg0' style='width:100%;'>
             <?php foreach($conflict as $item): ?>
                 <tr>
-                    <td 
+                    <td
                         width=130
-                        align=right 
+                        align=right
                         style='color:<?=newColor($item['color'])?>;background-color:<?=$item['color']?>;'
                     ><?=$item['name']?>&nbsp;</td>
                     <td width=48 align=right><?=(float)$item['percent']?> %&nbsp;</td>
@@ -174,14 +174,14 @@ else{
                 </tr>
             <?php endforeach; ?>
             </table>
-    
+
         </td>
     </tr>
     <?php endforeach; ?>
     <tr><td colspan=2 height=5 id=bg1></td></tr>
 </table>
 
-<?php endif; ?> 
+<?php endif; ?>
 
 <br>
 <table align=center width=1000 class='tb_layout bg0'>

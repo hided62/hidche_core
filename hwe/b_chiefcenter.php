@@ -16,10 +16,10 @@ $generalObj = General::createGeneralObjFromDB($session->generalID);
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 사령부</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
-<?=WebUtil::printJS('js/chiefCenter.js')?>
+<?=WebUtil::printJS('dist_js/chiefCenter.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -107,4 +107,3 @@ var maxChiefTurn = <?=GameConst::$maxChiefTurn?>;
 </div>
 </body>
 </html>
-

@@ -50,13 +50,13 @@ else{
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/battle_simulator.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
 <script>
 var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
 var city = <?=Json::encode($city)?>;
 var nation = <?=Json::encode($nation)?>;
 </script>
-<?=WebUtil::printJS('js/battle_simulator.js')?>
+<?=WebUtil::printJS('dist_js/battle_simulator.js')?>
 </head>
 <body>
 <div id="container">

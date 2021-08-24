@@ -54,8 +54,8 @@ $boardName = $isSecretBoard?'기밀실':'회의실';
 var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/board.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/board.js')?>
 
 </head>
 <body>

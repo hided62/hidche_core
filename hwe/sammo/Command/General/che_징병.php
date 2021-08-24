@@ -234,7 +234,7 @@ class che_징병 extends Command\GeneralCommand
     public function getJSFiles(): array
     {
         return [
-            'js/recruitCrewForm.js'
+            'dist_js/recruitCrewForm.js'
         ];
     }
 

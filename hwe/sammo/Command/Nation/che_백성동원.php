@@ -48,7 +48,7 @@ class che_백성동원 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        
+
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -76,18 +76,18 @@ class che_백성동원 extends Command\NationCommand{
 
         return "{$name}/{$reqTurn}턴(재사용 대기 $postReqTurn)";
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*4)*10);    
+        $nextTerm = Util::round(sqrt($genCount*4)*10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
@@ -144,7 +144,7 @@ class che_백성동원 extends Command\NationCommand{
         ], 'city=%i', $destCityID);
 
         $josaYiNation = JosaUtil::pick($nationName, '이');
-        
+
 
         $logger->pushGeneralHistoryLog('<M>백성동원</>을 발동');
         $logger->pushNationalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 하였습니다.");
@@ -162,7 +162,7 @@ class che_백성동원 extends Command\NationCommand{
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

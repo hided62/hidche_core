@@ -18,9 +18,9 @@ include "func.php";
     <script>
         var serverNick = '<?= $runningServer['korName'] ?>';
     </script>
-    <?= WebUtil::printJS('js/vendors.js') ?>
+    <?= WebUtil::printJS('dist_js/vendors.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
-    <?= WebUtil::printJS('js/recent_map.js') ?>
+    <?= WebUtil::printJS('dist_js/recent_map.js') ?>
 
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>

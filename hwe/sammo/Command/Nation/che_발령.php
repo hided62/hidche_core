@@ -51,10 +51,10 @@ class che_발령 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation();
-        
+
         $this->minConditionConstraints=[
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
         ];
@@ -63,7 +63,7 @@ class che_발령 extends Command\NationCommand{
     protected function initWithArg()
     {
         $this->setDestCity($this->arg['destCityID']);
-        
+
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, 1);
         $this->setDestGeneral($destGeneral);
 
@@ -76,7 +76,7 @@ class che_발령 extends Command\NationCommand{
 
         $this->fullConditionConstraints=[
             ConstraintHelper::BeChief(),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestGeneral(),
@@ -95,11 +95,11 @@ class che_발령 extends Command\NationCommand{
         $destGeneralName = $this->destGeneralObj->getName();
         return "{$failReason} <Y>{$destGeneralName}</> {$commandName} 실패.";
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -134,7 +134,7 @@ class che_발령 extends Command\NationCommand{
 
         $destGeneral = $this->destGeneralObj;
         $destGeneralName = $destGeneral->getName();
-        
+
         $logger = $general->getLogger();
 
         $destGeneral->setVar('city', $destCityID);
@@ -156,11 +156,11 @@ class che_발령 extends Command\NationCommand{
 
         return true;
     }
-    
+
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

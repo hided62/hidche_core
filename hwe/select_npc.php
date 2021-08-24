@@ -41,7 +41,7 @@ foreach($scoutMsgs as $nationID=>$scoutMsg){
 <?=WebUtil::printCSS('css/select_npc.css')?>
 
 <script>
-var specialInfo = 
+var specialInfo =
 <?php
 $specialAll = [];
 foreach(SpecialityHelper::getSpecialDomesticList() as $specialID=>$specialObj){
@@ -58,7 +58,7 @@ $specialAll['-'] = '없음';
 echo Json::encode($specialAll);
 ?>
 ;
-var characterInfo = 
+var characterInfo =
 <?php
 $characterAll = [];
 foreach(getCharacterList(false) as $id=>[$name, $info]){
@@ -70,14 +70,14 @@ echo Json::encode($characterAll);
 </script>
 
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/select_npc.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
+<?=WebUtil::printJS('dist_js/select_npc.js')?>
 
 </head>
 
 
-<?php 
+<?php
 if ($gencount>= $maxgeneral) {
 ?>
 

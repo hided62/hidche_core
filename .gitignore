@@ -33,6 +33,9 @@ d_pic/*.png
 d_pic/*.webp
 d_pic/uploaded_image
 
+*/dist_js/*
+*/dist_css/*
+
 d_setting/*.php
 */d_setting/*.php
 */d_setting/templates/*.php

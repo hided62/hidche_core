@@ -55,7 +55,7 @@ class che_허보 extends Command\NationCommand
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        
+
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -208,7 +208,7 @@ class che_허보 extends Command\NationCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

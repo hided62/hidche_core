@@ -17,8 +17,8 @@ increaseRefresh("왕조일람", 1);
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 왕조일람</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -70,9 +70,9 @@ foreach($emperiors as $emperior){
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
             <font size=5><?=$emperior['phase']?></font>
-            
+
             <a href="a_emperior_detail.php?select=<?=$emperior['no']?>"><button type='button'>자세히</button></a>
-            
+
             <?php if($emperior['server_id']): ?>
             <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button type='button'>역사 보기</button></a>
             <?php endif ?>

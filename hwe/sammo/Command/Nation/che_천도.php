@@ -134,7 +134,7 @@ class che_천도 extends Command\NationCommand
         $general = $this->getGeneral();
         $nationID = $general->getNationID();
         $nationStor = \sammo\KVStorage::getStorage(DB::db(), $nationID, 'nation_env');
-        
+
         $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
 
         if ($lastTurn->getCommand() != $commandName || $lastTurn->getArg() !== $this->arg) {
@@ -232,7 +232,7 @@ class che_천도 extends Command\NationCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

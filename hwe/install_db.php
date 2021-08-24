@@ -22,8 +22,8 @@ if($session->userGrade == 5){
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/install_db.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/install_db.js')?>
 <?=WebUtil::printCSS('css/normalize.css')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('css/install.css')?>
@@ -37,7 +37,7 @@ if($session->userGrade == 5){
         <div class="card" id="db_form_card">
             <h3 class="card-header">
                 설치(DB 설정)
-            </h3> 
+            </h3>
             <div class="card-body">
                 <form id="db_form" method="post" action="#">
 <?php if(class_exists('\\sammo\\DB')): ?>
@@ -51,7 +51,7 @@ if($session->userGrade == 5){
                                 <label class="btn btn-secondary active">
                                     <input type="radio" name="full_reset" value="0" checked>N
                                 </label>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ if($session->userGrade == 5){
                             <input type="text" class="form-control" name="db_port" id="db_port"  placeholder="접속 포트" value="3306" />
                         </div>
                     </div>
-                    
+
                     <div class="form-group row">
                         <label for="db_id" class="col-sm-3 col-form-label">DB계정</label>
                         <div class="col-sm-9">
@@ -80,7 +80,7 @@ if($session->userGrade == 5){
                         </div>
                     </div>
 
-                    
+
                     <div class="form-group row">
                         <label for="db_pw" class="col-sm-3 col-form-label">DB비밀번호</label>
                         <div class="col-sm-9">

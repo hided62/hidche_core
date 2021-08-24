@@ -177,7 +177,7 @@ class che_이동 extends Command\GeneralCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 

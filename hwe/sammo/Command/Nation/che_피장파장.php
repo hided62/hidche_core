@@ -49,7 +49,7 @@ class che_피장파장 extends Command\NationCommand{
         if(!in_array($commandType, GameConst::$availableChiefCommand['전략'])){
             return false;
         }
-        
+
 
         $this->arg = [
             'destNationID'=>$destNationID,
@@ -75,7 +75,7 @@ class che_피장파장 extends Command\NationCommand{
     protected function initWithArg()
     {
         $this->setDestNation($this->arg['destNationID'], null);
-        
+
         if($this->getNationID() == 0){
             $this->fullConditionConstraints=[
                 ConstraintHelper::OccupiedCity()
@@ -84,7 +84,7 @@ class che_피장파장 extends Command\NationCommand{
         }
 
         $cmd = buildNationCommandClass($this->arg['commandType'], $this->generalObj, $this->env, new LastTurn());
-        
+
         $currYearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
         $nextAvailableTurn = $cmd->getNextAvailableTurn();
         if($currYearMonth < $nextAvailableTurn){
@@ -93,7 +93,7 @@ class che_피장파장 extends Command\NationCommand{
             ];
             return;
         }
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -115,7 +115,7 @@ class che_피장파장 extends Command\NationCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 1;
     }
@@ -126,7 +126,7 @@ class che_피장파장 extends Command\NationCommand{
 
     public function getTargetPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*2)*10);    
+        $nextTerm = Util::round(sqrt($genCount*2)*10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
@@ -179,7 +179,7 @@ class che_피장파장 extends Command\NationCommand{
 
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
         $general->addDedication(5 * ($this->getPreReqTurn() + 1));
-        
+
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destNationName}</b></>에 <G><b>{$cmd->getName()}</b></> 전략의 <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
         $nationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
@@ -221,7 +221,7 @@ class che_피장파장 extends Command\NationCommand{
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'dist_js/defaultSelectNationByMap.js'
         ];
     }
 
@@ -255,14 +255,14 @@ class che_피장파장 extends Command\NationCommand{
             $cmdName = $cmd->getName();
             $remainTurn = 0;
             $nextAvailableTurn = $cmd->getNextAvailableTurn();
-            
+
             if($nextAvailableTurn !== null && $currYearMonth < $nextAvailableTurn){
                 $remainTurn = $nextAvailableTurn - $currYearMonth;
             }
             $availableCommandTypeList[$commandType] = [$cmdName, $remainTurn];
         }
 
-        ob_start(); 
+        ob_start();
 ?>
 <?=\sammo\getMapHtml()?><br>
 선택된 국가에 피장파장을 발동합니다.<br>
@@ -273,22 +273,22 @@ class che_피장파장 extends Command\NationCommand{
 배경색은 현재 피장파장 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
 <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
 <?php foreach($nationList as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
+    <option
+        value='<?=$nation['nation']?>'
         style='color:<?=$nation['color']?>;<?=$nation['availableCommand']?'':'background-color:red;'?>'
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
-</select>에 
+</select>에
 <select class='formInput' name="commandType" id="commandType" size='1' style='color:white;background-color:black;'>
-<?php foreach($availableCommandTypeList as $commandType=>[$cmdName, $cmdRemainTurn]):  
-    /** @var \sammo\Command\NationCommand $cmdObj */ 
+<?php foreach($availableCommandTypeList as $commandType=>[$cmdName, $cmdRemainTurn]):
+    /** @var \sammo\Command\NationCommand $cmdObj */
 ?>
-    <option 
-        value='<?=$commandType?>' 
+    <option
+        value='<?=$commandType?>'
         style='color:white;<?=$cmdRemainTurn?'background-color:red;':''?>'
     ><?=$cmdName?><?=$cmdRemainTurn?"({$cmdRemainTurn}턴 뒤)":''?></option>
 <?php endforeach; ?>
-</select> 전략을 
+</select> 전략을
 <input type=button id="commonSubmit" value="<?=$this->getName()?>">
 <?php
         return ob_get_clean();

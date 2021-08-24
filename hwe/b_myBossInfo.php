@@ -34,10 +34,10 @@ $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nati
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 인사부</title>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/vendors.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
-<?=WebUtil::printJS('js/bossInfo.js')?>
+<?=WebUtil::printJS('dist_js/bossInfo.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
@@ -48,7 +48,7 @@ var chiefStatMin = <?=GameConst::$chiefStatMin?>;
 var myLevel = <?=$meLevel?>;
 </script>
 
-<?php 
+<?php
 
 $ambassadors = $db->query('SELECT no, name, officer_level, penalty, permission FROM general WHERE permission = \'ambassador\' AND nation = %i', $nationID);
 $auditors = $db->query('SELECT no, name, officer_level, penalty, permission FROM general WHERE permission = \'auditor\' AND nation = %i', $nationID);
@@ -112,8 +112,8 @@ $level = Util::convertArrayToDict(
 );
 
 
-$tigers = $db->query('SELECT value, name 
-    FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+$tigers = $db->query('SELECT value, name
+    FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no
     WHERE rank_data.nation_id = %i AND rank_data.type = "killnum" AND value > 0 ORDER BY value DESC LIMIT 5',
     $nationID
 );// 오호장군
@@ -122,9 +122,9 @@ $tigerstr = join(', ', array_map(function($arr){
     return "{$arr['name']}【{$number}】";
 }, $tigers));
 
-$eagles = $db->query('SELECT value, name 
-    FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
-    WHERE rank_data.nation_id = %i AND rank_data.type = "firenum" AND value > 0 ORDER BY value DESC LIMIT 7', 
+$eagles = $db->query('SELECT value, name
+    FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no
+    WHERE rank_data.nation_id = %i AND rank_data.type = "firenum" AND value > 0 ORDER BY value DESC LIMIT 7',
     $nationID
 );// 건안칠자
 $eaglestr = join(', ', array_map(function($arr){
@@ -240,7 +240,7 @@ if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], 11)) {
     if(key_exists(11, $level)){
         echo "{$level[11]['name']} 【".CityConst::byID($level[11]['city'])->name."】";
     }
-    
+
 }
 echo "
         </td>
@@ -255,7 +255,7 @@ for($i=10; $i >= $lv; $i--) {
         <td width=398>
     ";
 
-    
+
     if($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $i)) {
         echo "
             <select id='genlist_{$i}' size=1 style=color:white;background-color:black;>
@@ -503,7 +503,7 @@ foreach($db->query('SELECT city,name,level,region,officer_set from city where na
 <td width=78 align=right  style='color:<?=$textColor?>;background-color:<?=$nationColor?>;font-size:1.2em;'><?=$city['name']?>&nbsp;&nbsp;</td>
 
 <?php foreach(Util::range(4, 1, -1) as $officerLevel): ?>
-<?php     if(key_exists($officerLevel, $cityOfficerList)): 
+<?php     if(key_exists($officerLevel, $cityOfficerList)):
 $officer = $cityOfficerList[$officerLevel];
 ?>
 <td style="color:<?=isOfficerSet($city['officer_set'], $officerLevel)?'orange':'white'?>;"><?=$officer['name']?>(<?=$officer['belong']?>년) 【<?=CityConst::byID($officer['city'])->name?>】</td>

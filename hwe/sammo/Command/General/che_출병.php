@@ -60,7 +60,7 @@ class che_출병 extends Command\GeneralCommand
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
-        
+
     }
 
     protected function initWithArg()
@@ -199,7 +199,7 @@ class che_출병 extends Command\GeneralCommand
             else{
                 $logger->pushGeneralActionLog("가까운 경로에 적군 도시가 없습니다. <G><b>{$defenderCityName}</b></>{$josaRo} 이동합니다. <1>$date</>");
             }
-            
+
             $this->alternative = new che_이동($general, $this->env, ['destCityID' => $defenderCityID]);
             return false;
         }
@@ -239,7 +239,7 @@ class che_출병 extends Command\GeneralCommand
     public function getJSFiles(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'dist_js/defaultSelectCityByMap.js'
         ];
     }
 
