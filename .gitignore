@@ -52,3 +52,8 @@ test.php
 phpinfo.php
 vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/*
 *.sqlite3
+
+ingame/js/*
+ingame/css/*
+gateway/js/*
+gateway/css/*
