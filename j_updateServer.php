@@ -29,7 +29,15 @@ function getHash($target = 'HEAD')
 }
 
 function genJS($server){
-    exec(sprintf("./node_modules/.bin/webpack build --env target=%s", escapeshellarg($server)));
+    $command = sprintf("./node_modules/.bin/webpack build --env target=%s", escapeshellarg($server));
+
+    exec(($command), $output, $result_code);
+    if($result_code!=0){
+        Json::die([
+            'result' => false,
+            'reason'=>$output
+        ]);
+    }
 }
 
 $session = Session::requireLogin(null)->setReadOnly();
@@ -157,14 +165,14 @@ if ($server == $baseServerName) {
     }
 
 
+    $version = getVersion();
+    $gitHash = getHash();
     if (
         hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.dynamic.orig.php') ==
         hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.php')) {
             $result = true;
     }
     else{
-        $version = getVersion();
-        $hash = getHash();
         $result = Util::generateFileUsingSimpleTemplate(
             __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
             __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
@@ -211,6 +219,7 @@ if ($server == $baseServerName) {
         'server' => $server,
         'result' => true,
         'version' => $version,
+        'hash' => $gitHash,
         'imgResult' => $imgResult,
         'imgDetail' => $imgDetail,
     ]);
@@ -263,5 +272,7 @@ opcache_reset();
 Json::die([
     'server' => $server,
     'result' => true,
-    'version' => $version
+    'version' => $version,
+    'hash' => $gitHash,
+    'imgResult' => false,
 ]);
