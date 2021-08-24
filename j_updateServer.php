@@ -18,6 +18,16 @@ function getVersion($target = null)
     return trim($output);
 }
 
+function getHash($target = 'HEAD')
+{
+    $command = sprintf('git rev-parse %s', escapeshellarg($target));
+    exec($command, $output);
+    if (is_array($output)) {
+        $output = join('', $output);
+    }
+    return trim($output);
+}
+
 $session = Session::requireLogin(null)->setReadOnly();
 
 $request = $_POST + $_GET;
@@ -142,15 +152,25 @@ if ($server == $baseServerName) {
         ]);
     }
 
-    $version = getVersion();
-    $result = Util::generateFileUsingSimpleTemplate(
-        __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
-        __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
-        [
-            'verionGit' => $version
-        ],
-        true
-    );
+
+    if (
+        hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.dynamic.orig.php') ==
+        hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.php')) {
+            $result = true;
+    }
+    else{
+        $version = getVersion();
+        $hash = getHash();
+        $result = Util::generateFileUsingSimpleTemplate(
+            __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
+            __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
+            [
+                'verionGit' => $version,
+                'hash' => $hash
+            ],
+            true
+        );
+    }
 
     if (ServConfig::$imageRequestKey) {
         try {
@@ -218,11 +238,13 @@ $zip->close();
 @unlink($tmpFile);
 
 $version = getVersion($target);
+$gitHash = getHash($target);
 $result = Util::generateFileUsingSimpleTemplate(
     __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
     __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
     [
-        'verionGit' => $version
+        'verionGit' => $version,
+        'hash' => $gitHash
     ],
     true
 );
