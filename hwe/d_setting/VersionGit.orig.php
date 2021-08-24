@@ -2,8 +2,14 @@
 namespace sammo;
 
 class VersionGit{
-    public static $version = '_tK_verionGit_';
-    public static $hash = '_tK_hash_';
+    static function getVersion()
+    {
+        return '_tK_verionGit_';
+    }
+
+    static function getHash(){
+        return '_tK_hash_';
+    }
 
     private function __construct(){}
 }

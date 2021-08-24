@@ -4,8 +4,6 @@ namespace sammo;
 
 class VersionGitDynamic
 {
-    public static $version = '_tK_verionGit_';
-
     static function getVersion()
     {
         $command = 'git describe --long --tags';
@@ -26,18 +24,7 @@ class VersionGitDynamic
         return trim($output);
     }
 
-    static function __get($name){
-        if($name === 'version'){
-            return static::getVersion();
-        }
-        if($name === 'hash'){
-            return static::getHash();
-        }
-        trigger_error("Undefined property $name");
-    }
-
     private function __construct()
     {
     }
 }
-//{"version":"_tK_verionGit_"}

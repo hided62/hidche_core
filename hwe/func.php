@@ -21,10 +21,10 @@ require_once('func_command.php');
 
 /**
  * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 규모, 수도)를 반환해줌
- * 
+ *
  * @param int|null $nationID 국가 코드, -1인 경우 전체, null인 경우 수행하지 않음. 0인 경우에는 재야임
  * @param bool $forceRefresh 강제 갱신 여부
- * 
+ *
  * @return array|null nationID에 해당하는 국가가 있을 경우 array 반환. 그외의 경우 null
  */
 function getNationStaticInfo($nationID, $forceRefresh = false)
@@ -903,17 +903,16 @@ function nationMsg(General $general)
     $db = DB::db();
     $nationID = $general->getNationID();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-    
+
     return $nationStor->notice??'';
 }
 
 function banner()
 {
-
     return sprintf(
         '<font size=2>%s %s / %s</font>',
         GameConst::$title,
-        VersionGit::$version,
+        VersionGit::getVersion(),
         GameConst::$banner
     );
 }
@@ -1227,12 +1226,12 @@ function updateOnline()
     $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh > %s AND npc < 2', $before5Min);
     $onlineNum = count($onlineUser);
     $onlineNationUsers = Util::arrayGroupBy($onlineUser, 'nation');
-    
+
     uasort($onlineNationUsers, function(array $lhs, array $rhs){
         return -(count($lhs)<=>count($rhs));
     });
 
-    $onlineNation = []; 
+    $onlineNation = [];
 
     foreach($onlineNationUsers as $nationID=>$rawOnlineUser){
         $nationName = getNationStaticInfo($nationID)['name'];
@@ -1670,7 +1669,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         return false;
     }
     LogText("{$general->getName()}, {$general->getID()} 유니크 성공 {$trialCnt}", $prob);
-    
+
     return giveRandomUniqueItem($general, $acquireType);
 }
 
@@ -1691,7 +1690,7 @@ function deleteNation(General $lord, bool $applyDB):array
 
     $db = DB::db();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-    
+
     $nation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
     $nationName = $nation['name'];
 
@@ -1700,17 +1699,17 @@ function deleteNation(General $lord, bool $applyDB):array
     $josaUn = JosaUtil::pick($nationName, '은');
     $logger->pushGlobalHistoryLog("<R><b>【멸망】</b></><D><b>{$nationName}</b></>{$josaUn} <R>멸망</>했습니다.");
 
-    
+
     $nationGeneralList = General::createGeneralObjListFromDB(
         $db->queryFirstColumn(
             'SELECT `no` FROM general WHERE nation=%i AND no != %i',
             $nationID,
             $lordID
-        ), 
+        ),
         ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'], 1
     );
     $nationGeneralList[$lordID] = $lord;
-    
+
     $nation['generals'] = array_keys($nationGeneralList);
     $nation['aux'] = Json::decode($nation['aux']);
     $nation['msg'] = $nationStor->notice;
@@ -1724,7 +1723,7 @@ function deleteNation(General $lord, bool $applyDB):array
 
     // 전 장수 재야로
     foreach($nationGeneralList as $general){
-        $general->setAuxVar('max_belong', 
+        $general->setAuxVar('max_belong',
             max(
                 $general->getVar('belong'),
                 $general->getAuxVar('max_belong')??0
@@ -1888,7 +1887,7 @@ function searchDistance(int $from, int $maxDist = 99, bool $distForm = false)
  * @param $from 기준 도시 코드
  * @param $to 대상 도시 코드
  * @param array|null $linkNationList 경로에 해당하는 국가 리스트, null인 경우 제한 없음
- * @return null|int 거리. 
+ * @return null|int 거리.
  */
 function calcCityDistance(int $from, int $to, ?array $linkNationList): ?int
 {
@@ -1902,7 +1901,7 @@ function calcCityDistance(int $from, int $to, ?array $linkNationList): ?int
 
     if ($linkNationList !== null) {
         $db = DB::db();
-        //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까 
+        //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까
         $allowedCityList = [];
         foreach ($db->queryFirstColumn(
             'SELECT city FROM city WHERE nation IN %li',
@@ -1965,7 +1964,7 @@ function searchDistanceListToDest(int $from, int $to, array $linkNationList)
 
     $db = DB::db();
 
-    //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까 
+    //TODO: 도시-국가 캐싱이 있으면 쓸모 있지 않을까
     $allowedCityList = [];
     foreach ($db->queryAllLists(
         'SELECT city, nation FROM city WHERE nation IN %li',
