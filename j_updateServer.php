@@ -28,6 +28,10 @@ function getHash($target = 'HEAD')
     return trim($output);
 }
 
+function genJS($server){
+    exec(sprintf("./node_modules/.bin/webpack build --env target=%s", escapeshellarg($server)));
+}
+
 $session = Session::requireLogin(null)->setReadOnly();
 
 $request = $_POST + $_GET;
@@ -172,6 +176,8 @@ if ($server == $baseServerName) {
         );
     }
 
+    genJS($server);
+
     if (ServConfig::$imageRequestKey) {
         try {
             $imagePullPath = ServConfig::getImagePullURI();
@@ -248,6 +254,7 @@ $result = Util::generateFileUsingSimpleTemplate(
     ],
     true
 );
+genJS($server);
 
 $storage->$server = [$target, $version];
 //ServConfig::getServerList()[$server]->closeServer();

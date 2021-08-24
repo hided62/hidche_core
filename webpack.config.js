@@ -2,39 +2,45 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-module.exports = [
-    {
+const { resolve } = require('path');
+
+module.exports = (env) => {
+    const target = env.target??'hwe';
+    const ingame = {
         name: 'ingame',
         resolve: {
-            extensions: [".js", ".ts", ".tsx"]
+            extensions: [".js", ".ts", ".tsx"],
+            alias: {
+                '@': resolve(__dirname, `${target}/ts`)
+            }
         },
         entry: {
-            chiefCenter: './hwe/ts/chiefCenter.ts',
-            inheritPoint: './hwe/ts/inheritPoint.ts',
-            common: './hwe/ts/common_deprecated.ts',
-            troop: './hwe/ts/troop.ts',
-            map: './hwe/ts/map.ts',
-            install_db: './hwe/ts/install_db.ts',
-            install: './hwe/ts/install.ts',
-            battle_simulator: './hwe/ts/battle_simulator.ts',
-            recent_map: './hwe/ts/recent_map.ts',
-            processing: './hwe/ts/processing.ts',
-            select_npc: './hwe/ts/select_npc.ts',
-            betting: './hwe/ts/betting.ts',
-            board: './hwe/ts/board.ts',
-            bossInfo: './hwe/ts/bossInfo.ts',
-            myPage: './hwe/ts/myPage.ts',
+            chiefCenter: `${target}/ts/chiefCenter.ts`,
+            inheritPoint: `${target}/ts/inheritPoint.ts`,
+            common: `${target}/ts/common_deprecated.ts`,
+            troop: `${target}/ts/troop.ts`,
+            map: `${target}/ts/map.ts`,
+            install_db: `${target}/ts/install_db.ts`,
+            install: `${target}/ts/install.ts`,
+            battle_simulator: `${target}/ts/battle_simulator.ts`,
+            recent_map: `${target}/ts/recent_map.ts`,
+            processing: `${target}/ts/processing.ts`,
+            select_npc: `${target}/ts/select_npc.ts`,
+            betting: `${target}/ts/betting.ts`,
+            board: `${target}/ts/board.ts`,
+            bossInfo: `${target}/ts/bossInfo.ts`,
+            myPage: `${target}/ts/myPage.ts`,
 
 
             //FORM 입력용, frontend 변경후 제거
-            defaultSelectCityByMap: './hwe/ts/defaultSelectCityByMap.ts',
-            defaultSelectNationByMap: './hwe/ts/defaultSelectNationByMap.ts',
-            colorSelect: './hwe/ts/colorSelect.ts',
-            recruitCrewForm: './hwe/ts/recruitCrewForm.ts'
+            defaultSelectCityByMap: '@/defaultSelectCityByMap.ts',
+            defaultSelectNationByMap: '@/defaultSelectNationByMap.ts',
+            colorSelect: '@/colorSelect.ts',
+            recruitCrewForm: '@/recruitCrewForm.ts'
         },
         output: {
             filename: '[name].js',
-            path: path.resolve(__dirname, 'hwe/js'),
+            path: resolve(__dirname, `${target}/js`)
         },
         mode: 'production',
         devtool: 'source-map',
@@ -99,8 +105,8 @@ module.exports = [
             type: 'filesystem',
             allowCollectingMemory: true,
         },
-    },
-    {
+    };
+    const gateway = {
         name: 'gateway',
         resolve: {
             extensions: [".js", ".ts", ".tsx"]
@@ -178,5 +184,12 @@ module.exports = [
             type: 'filesystem',
             allowCollectingMemory: true,
         },
-    },
-]
+    };
+
+    if(target == 'hwe'){
+        return [ingame, gateway];
+    }
+    else{
+        return [ingame];
+    }
+}
