@@ -28,11 +28,8 @@ if($canJoin != 'Y'){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>회원가입</title>
-    <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-    <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-    <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
-    <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
-    <?=WebUtil::printJS('../js/join.js')?>
+    <?=WebUtil::printJS('../dist_js/vendors.js')?>
+    <?=WebUtil::printJS('../dist_js/join.js')?>
     <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('../css/login.css')?>
 </head>
@@ -44,12 +41,12 @@ if($canJoin != 'Y'){
         <div class="card">
             <h3 class="card-header">
                 회원가입
-            </h3> 
+            </h3>
             <div class="card-body">
-                
+
                 <form id="main_form" method="post" action="#">
-                        
-                    
+
+
 
                     <div class="form-group row">
                         <label for="username" class="col-sm-3 col-form-label">계정명</label>
@@ -58,7 +55,7 @@ if($canJoin != 'Y'){
                         </div>
                     </div>
 
-                    
+
                     <div class="form-group row">
                         <label for="password" class="col-sm-3 col-form-label">비밀번호</label>
                         <div class="col-sm-9">
@@ -85,7 +82,7 @@ if($canJoin != 'Y'){
                         <div class="col-sm-9">
                             <div class="card">
                                 <div class="card-body terms" id="terms1">
-                                    
+
                                 </div>
                             </div>
                             <div class="custom-control custom-checkbox">
@@ -103,7 +100,7 @@ if($canJoin != 'Y'){
                         <div class="col-sm-9">
                             <div class="card">
                                 <div class="card-body terms" id="terms2">
-                                    
+
                                 </div>
                             </div>
                             <div class="custom-control custom-checkbox">

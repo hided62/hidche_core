@@ -43,7 +43,11 @@ export class JQValidateForm {
         }
         console.log(rawValues);
 
-        const validateResult = await this.validator.validate(rawValues).catch(({ fields }) => {
+        const validateResult = await this.validator.validate(rawValues).catch(({fields }) => {
+            if(fields === undefined){
+                console.error('validator 에러, 조건 검사 구문을 확인하세요.');
+                return;
+            }
             this.clearErrMsg();
             for(const rawKey of Object.keys(fields)){
                 let $item: JQuery<HTMLElement>;

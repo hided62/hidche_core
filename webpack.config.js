@@ -116,6 +116,7 @@ module.exports = (env) => {
             'entrance': './ts/entrance.ts',
             'user_info': './ts/user_info.ts',
             'admin_member': './ts/admin_member.ts',
+            'join': './ts/join.ts',
         },
         output: {
             filename: '[name].js',
