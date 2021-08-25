@@ -8,38 +8,6 @@ import axios from "axios";
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //TODO: X-Requested-With 믿지 말자.
 
-/**
- * <>& 등을 html에서도 그대로 보이도록 escape주는 함수
- * @see https://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
- */
-export const escapeHtml = (() => {
-    const entityMap: { [v: string]: string } = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;',
-        '/': '&#x2F;',
-        '`': '&#x60;',
-        '=': '&#x3D;'
-    };
-
-    return function (string: string) {
-        return String(string).replace(/[&<>"'`=/]/g, function (s: string) {
-            return entityMap[s];
-        });
-    }
-})();
-
-/**
- * 변수가 정수인지 확인하는 함수
- * @param {*} n 정수인지 확인하기 위한 인자
- * @return {boolean} 정수인지 여부
- */
-export function isInt(n: unknown): n is number {
-    const v = n as number;
-    return +v === v && !(v % 1);
-}
 
 
 //https://gist.github.com/demouth/3217440
@@ -196,45 +164,6 @@ export function linkifyStrWithOpt(text: string): string {
     return window.linkifyStr(text, {});
 }
 
-/**
- * 단순한 Template 함수.  <%변수명%>으로 template 가능
- * @see  https://github.com/krasimir/absurd/blob/master/lib/processors/html/helpers/TemplateEngine.js
- * @param {string} html
- * @param {object} options
- * @returns {string}
- */
-export function TemplateEngine(html: string, options: Record<string | number, unknown> = {}): string {
-    const re = /<%(.+?)%>/g;
-    const reExp = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g;
-    const code = ['with(obj) { var r=[];\n'];
-    let cursor = 0;
-    const add = function (line: string, js?: boolean) {
-        js ? code.push(line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
-            code.push(line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
-        return add;
-    }
-    options.e = escapeHtml;
-    options.linkifyStr = linkifyStrWithOpt;
-    for (; ;) {
-        const match = re.exec(html);
-        if (!match) {
-            break;
-        }
-        add(html.slice(cursor, match.index))(match[1], true);
-        cursor = match.index + match[0].length;
-    }
-    add(html.substr(cursor, html.length - cursor));
-
-    code.push('return r.join(""); }');
-    const compiledCode = code.join('').replace(/[\r\t\n]/g, ' ');
-    try {
-        return new Function('obj', compiledCode).apply(options, [options]);
-    } catch (err) {
-        console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n");
-        throw err;
-    }
-}
-
 export function getIconPath(imgsvr: boolean | 1 | 0, picture: string): string {
     // ../d_shared/common_path.js 필요
     if (!imgsvr) {
@@ -326,9 +255,6 @@ export function quickReject<T>(errMsg: string): JQuery.Promise<T> {
     return deferred.promise();
 }
 
-export function nl2br(text: string): string {
-    return text.replace(/\n/g, "<br>");
-}
 /*
 function br2nl (text) {
     return text.replace(/<\s*\/?br\s*[\/]?>/gi, '\n');

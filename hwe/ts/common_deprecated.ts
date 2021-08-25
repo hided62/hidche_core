@@ -1,4 +1,7 @@
-import { activeFlip, escapeHtml, isInt, mb_strwidth, mb_strimwidth, convertDictById, convertSet, hexToRgb, isBrightColor, convColorValue, numberWithCommas, linkifyStrWithOpt, TemplateEngine, getIconPath, combineObject, combineArray, activeFlipItem, errUnknown, errUnknownToast, quickReject, nl2br, getNpcColor, initTooltip } from "./common_legacy";
+import { activeFlip, mb_strwidth, mb_strimwidth, convertDictById, convertSet, hexToRgb, isBrightColor, convColorValue, numberWithCommas, linkifyStrWithOpt, getIconPath, combineObject, combineArray, activeFlipItem, errUnknown, errUnknownToast, quickReject, getNpcColor, initTooltip } from "./common_legacy";
+import { TemplateEngine } from "./util/TemplateEngine";
+import { escapeHtml } from "./legacy/escapeHtml";
+import { nl2br } from "./util/nl2br";
 import jQuery from "jquery";
 window.jQuery = jQuery;
 window.$ = jQuery;
@@ -21,8 +24,6 @@ declare global {
         jQuery: typeof jQuery;
         /** @deprecated Module 사용할 것 */
         escapeHtml: typeof escapeHtml;
-        /** @deprecated Module 사용할 것 */
-        isInt: typeof isInt;
         /** @deprecated Module 사용할 것 */
         mb_strwidth: typeof mb_strwidth;
         /** @deprecated Module 사용할 것 */
@@ -69,7 +70,6 @@ declare global {
 }
 
 window.escapeHtml = escapeHtml;
-window.isInt = isInt;
 window.mb_strwidth = mb_strwidth;
 window.mb_strimwidth = mb_strimwidth;
 window.convertDictById = convertDictById;

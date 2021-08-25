@@ -1,6 +1,7 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { initTooltip, TemplateEngine } from '../hwe/ts/common_legacy';
+import { initTooltip } from '../hwe/ts/common_legacy';
+import { TemplateEngine } from "../hwe/ts/util/TemplateEngine";
 import { InvalidResponse } from '../hwe/ts/defs';
 import { getDateTimeNow } from '../hwe/ts/util/getDateTimeNow';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';

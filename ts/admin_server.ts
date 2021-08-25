@@ -4,7 +4,7 @@ import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
 import { InvalidResponse } from '../hwe/ts/defs';
 import { convertFormData } from '../hwe/ts/util/convertFormData';
-import { TemplateEngine } from '../hwe/ts/common_legacy';
+import { TemplateEngine } from "../hwe/ts/util/TemplateEngine";
 import { unwrap_any } from '../hwe/ts/util/unwrap_any';
 import { unwrap } from '../hwe/ts/util/unwrap';
 

@@ -2,7 +2,8 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { trim } from 'lodash';
-import { escapeHtml, nl2br } from './common_legacy';
+import { escapeHtml } from "./legacy/escapeHtml";
+import { nl2br } from "./util/nl2br";
 import { InvalidResponse } from './defs';
 import { convertFormData } from './util/convertFormData';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { errUnknown, getIconPath, TemplateEngine } from './common_legacy';
+import { errUnknown, getIconPath } from './common_legacy';
+import { TemplateEngine } from "./util/TemplateEngine";
 import { GeneralListResponse, InvalidResponse } from './defs';
 import { convertFormData } from './util/convertFormData';
 import { unwrap_any } from './util/unwrap_any';
