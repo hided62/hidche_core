@@ -115,6 +115,7 @@ module.exports = (env) => {
             'common': './ts/common_deprecated.ts',
             'entrance': './ts/entrance.ts',
             'user_info': './ts/user_info.ts',
+            'admin_member': './ts/admin_member.ts',
         },
         output: {
             filename: '[name].js',

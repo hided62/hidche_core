@@ -18,8 +18,7 @@ require(__DIR__.'/../vendor/autoload.php');
 
         <?=WebUtil::printJS('../d_shared/common_path.js') ?>
         <?=WebUtil::printJS('../dist_js/vendors.js') ?>
-        <?=WebUtil::printJS('../dist_js/common.js') ?>
-        <?=WebUtil::printJS('../js/admin_member.js')?>
+        <?=WebUtil::printJS('../dist_js/admin_member.js')?>
 </head>
 <body>
 <div class="container">
