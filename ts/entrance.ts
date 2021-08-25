@@ -1,9 +1,12 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { initTooltip, TemplateEngine } from '../hwe/ts/common_legacy';
-import { InvalidResponse } from './defs';
+import { InvalidResponse } from '../hwe/ts/defs';
 import { getDateTimeNow } from '../hwe/ts/util/getDateTimeNow';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
+import { loadPlugin as loadAdminPlugin } from './admin_server';
+
+declare const isAdmin: boolean;
 
 const serverListTemplate = "\
 <tr class='server_item bg0 server_name_<%name%>' data-server='<%name%>'>\
@@ -163,6 +166,9 @@ $(function ($) {
     setAxiosXMLHttpRequest();
     $("#btn_logout").on('click', Entrance_Logout);
     void Entrance_UpdateServer();
+    if(isAdmin){
+        void loadAdminPlugin();
+    }
 });
 
 async function Entrance_UpdateServer() {
@@ -240,19 +246,19 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
 
         if (game.isUnited == 3) {
             $serverHtml.find('.n_country').html('§이벤트 종료§');
-            $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
+            $serverHtml.find('.server_date').html(`${game.starttime} <br>~ ${game.turntime}`);
         } else if (game.isUnited == 1) {
             $serverHtml.find('.n_country').html('§이벤트 진행중§');
-            $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
+            $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         } else if (game.isUnited == 2) {
             $serverHtml.find('.n_country').html('§천하통일§');
-            $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
+            $serverHtml.find('.server_date').html(`${game.starttime} <br>~ ${game.turntime}`);
         } else if (game.opentime <= now) {
-            $serverHtml.find('.n_country').html('<{0}국 경쟁중>'.format(game.nationCnt));
-            $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
+            $serverHtml.find('.n_country').html(`<${game.nationCnt}국 경쟁중>`);
+            $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         } else {
             $serverHtml.find('.n_country').html('-가오픈 중-');
-            $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
+            $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         }
 
         if (game.opentime <= now) {

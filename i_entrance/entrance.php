@@ -28,18 +28,15 @@ $acl = $session->acl;
         <?=WebUtil::printCSS('../d_shared/common.css')?>
         <?=WebUtil::printCSS('../css/config.css')?>
         <?=WebUtil::printCSS('../css/entrance.css')?>
+        <?=WebUtil::printCSS('../css/admin_server.css')?>
 
         <!-- 액션 -->
+        <script>
+            var isAdmin = <?=($userGrade >= 5 || $acl)?'true':'false'?>;
+        </script>
         <?=WebUtil::printJS('../d_shared/common_path.js') ?>
-        <?=WebUtil::printJS('../js/vendors.js') ?>
-        <?=WebUtil::printJS('../js/common.js') ?>
-        <?=WebUtil::printJS('../js/entrance.js')?>
-
-<?php if ($userGrade >= 5 || $acl): ?>
-        <!-- 운영자 -->
-        <?=WebUtil::printCSS('../css/admin_server.css')?>
-        <?=WebUtil::printJS('../js/admin_server.js')?>
-<?php endif; ?>
+        <?=WebUtil::printJS('../dist_js/vendors.js') ?>
+        <?=WebUtil::printJS('../dist_js/entrance.js')?>
 
     </head>
     <body>

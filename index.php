@@ -48,8 +48,8 @@ foreach(ServConfig::getServerList() as $setting){
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>삼국지 모의전투 HiDCHe</title>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('js/vendors.js') ?>
-    <?= WebUtil::printJS('js/common.js') ?>
+    <?= WebUtil::printJS('dist_js/vendors.js') ?>
+    <?= WebUtil::printJS('dist_js/common.js') ?>
 
     <?= WebUtil::printCSS('d_shared/common.css') ?>
     <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>

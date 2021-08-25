@@ -35,6 +35,8 @@ d_pic/uploaded_image
 
 */dist_js/*
 */dist_css/*
+/dist_js/*
+/dist_css/*
 
 d_setting/*.php
 */d_setting/*.php

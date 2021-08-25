@@ -1,6 +1,6 @@
 import { unwrap } from "./util/unwrap";
 
-import jQuery from "jquery";
+import $ from "jquery";
 import 'bootstrap';
 
 import axios from "axios";
@@ -308,10 +308,8 @@ export function errUnknown(): void {
     alert('작업을 실패했습니다.');
 }
 
-
-
 export function errUnknownToast(): void {
-    jQuery.toast({
+    $.toast({
         title: '에러!',
         content: '작업을 실패했습니다.',
         type: 'danger',

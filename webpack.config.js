@@ -118,7 +118,7 @@ module.exports = (env) => {
         },
         output: {
             filename: '[name].js',
-            path: path.resolve(__dirname, 'js'),
+            path: path.resolve(__dirname, 'dist_js'),
         },
         mode: 'production',
         devtool: 'source-map',
@@ -176,7 +176,7 @@ module.exports = (env) => {
         plugins: [
             new VueLoaderPlugin(),
             new MiniCssExtractPlugin({
-                filename: '../css/[name].css'
+                filename: '../dist_css/[name].css'
             }),
             //new BundleAnalyzerPlugin()
         ],

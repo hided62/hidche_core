@@ -17,8 +17,8 @@ require(__DIR__.'/../vendor/autoload.php');
         <?=WebUtil::printCSS('../css/admin_member.css')?>
 
         <?=WebUtil::printJS('../d_shared/common_path.js') ?>
-        <?=WebUtil::printJS('../js/vendors.js') ?>
-        <?=WebUtil::printJS('../js/common.js') ?>
+        <?=WebUtil::printJS('../dist_js/vendors.js') ?>
+        <?=WebUtil::printJS('../dist_js/common.js') ?>
         <?=WebUtil::printJS('../js/admin_member.js')?>
 </head>
 <body>
@@ -27,7 +27,7 @@ require(__DIR__.'/../vendor/autoload.php');
         <div class="card-header">
             <a href="entrance.php"><button type="button" class="btn btn-primary" style="float:right;">돌아가기</button></a>
             <h3>회원 관리</h3>
-            
+
         </div>
         <div class="card-body">
             가입 허용&nbsp;
