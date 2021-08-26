@@ -4,7 +4,7 @@ module.exports = {
     parserOptions: {
       "project": "./tsconfig.json"
     },
-    ignorePatterns: ['*.test.ts', '.eslintrc.js', 'webpack.config.js', '*.js'],
+    ignorePatterns: ['*.test.ts', '.eslintrc.cjs', 'webpack.config.cjs', '*.js'],
     overrides: [{
       files: ['*.ts', '*.tsx'],
     }],
