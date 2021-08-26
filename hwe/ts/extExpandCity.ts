@@ -228,7 +228,7 @@ $(function () {
 
                             const enabled = cityInfo[typeName] && userInfo[typeName];
                             const cityVal = cityInfo.val;
-                            const $btn = $('<button type="button">' + typeName.substr(1, 1) + '</button>');
+                            const $btn = $('<button type="button">' + typeName.substr(0, 1) + '</button>');
                             $btn.addClass(`mode_${level}`);
                             $btn.addClass('for_duty');
 
