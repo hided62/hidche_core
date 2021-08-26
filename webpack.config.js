@@ -117,6 +117,7 @@ module.exports = (env) => {
             'user_info': './ts/user_info.ts',
             'admin_member': './ts/admin_member.ts',
             'join': './ts/join.ts',
+            'login': './ts/login.ts',
         },
         output: {
             filename: '[name].js',

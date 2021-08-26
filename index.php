@@ -21,19 +21,19 @@ if ($session->isLoggedIn()) {
 
 $runningServer = null;
 
-foreach(ServConfig::getServerList() as $setting){
-    if(!$setting->isExists()){
+foreach (ServConfig::getServerList() as $setting) {
+    if (!$setting->isExists()) {
         continue;
     }
-    if(!$setting->isRunning()){
+    if (!$setting->isRunning()) {
         continue;
     }
     $runningServer = [
-        'color'=>$setting->getColor(),
-        'korName'=>$setting->getKorName(),
-        'name'=>$setting->getShortName(),
-        'exists'=>$setting->isExists(),
-        'enable'=>$setting->isRunning()
+        'color' => $setting->getColor(),
+        'korName' => $setting->getKorName(),
+        'name' => $setting->getShortName(),
+        'exists' => $setting->isExists(),
+        'enable' => $setting->isRunning()
     ];
     break;
 }
@@ -47,105 +47,24 @@ foreach(ServConfig::getServerList() as $setting){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>삼국지 모의전투 HiDCHe</title>
+    <script>
+        var kakao_oauth_client_id = '<?= KakaoKey::REST_KEY ?>';
+        var kakao_oauth_redirect_uri = '<?= KakaoKey::REDIRECT_URI ?>';
+    </script>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
     <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common.js') ?>
+    <?= WebUtil::printJS('dist_js/login.js') ?>
 
     <?= WebUtil::printCSS('d_shared/common.css') ?>
     <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('css/login.css') ?>
-    <?= WebUtil::printJS('e_lib/jquery.validate.min.js') ?>
-    <?= WebUtil::printJS('e_lib/sha512.min.js') ?>
-    <?= WebUtil::printJS('js/login.js') ?>
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,힏체섭,히데체,히데체섭,HiDCHe,체섭">
     <meta property="og:type" content="website">
     <meta property="og:title" content="삼국지 모의전투 HiDCHe">
     <meta property="og:description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta property="og:url" content="https://sam.hided.net">
-    <script>
-        var oauthMode = null;
 
-        function getOAuthToken(mode, scope_list) {
-            if (mode === undefined) {
-                mode = 'login';
-            }
-            if (scope_list === undefined) {
-                scope_list = null;
-            }
-            oauthMode = mode;
-            var url = 'https://kauth.kakao.com/oauth/authorize?' +
-                'client_id=<?= KakaoKey::REST_KEY ?>&' +
-                'redirect_uri=<?= KakaoKey::REDIRECT_URI ?>&' +
-                'response_type=code';
-            if (Array.isArray(scope_list)) {
-                url += '&scope=' + scope_list.join(',');
-            } else if (typeof scope_list === 'string' || scope_list instanceof String) {
-                url += '&scope=' + scope_list;
-            }
-
-            window.open(url, "KakaoAccountLogin", "width=600,height=450,resizable=yes,scrollbars=yes");
-        }
-
-        function sendTempPasswordToKakaoTalk() {
-            $.post({
-                url: 'oauth_kakao/j_login_oauth.php',
-                dataType: 'json'
-            }).then(function(obj) {
-                var t = $.Deferred();
-                if (!obj.result) {
-                    t.reject();
-                }
-                return $.post({
-                    url: 'oauth_kakao/j_change_pw.php',
-                    dataType: 'json'
-                });
-            }).then(function(obj) {
-                if (!obj.result) {
-                    alert(obj.reason);
-                } else {
-                    alert('임시 비밀번호가 카카오톡으로 전송되었습니다.');
-                }
-            });
-        }
-
-        function doLoginUsingOAuth() {
-            $.post({
-                url: 'oauth_kakao/j_login_oauth.php',
-                dataType: 'json'
-            }).then(function(obj) {
-                if (obj.result) {
-                    window.location.href = "./";
-                    return;
-                }
-                if (!obj.reqOTP) {
-                    alert(obj.reason);
-                    return;
-                }
-                $('#modalOTP').modal().on('shown.bs.modal', function() {
-                    $('#otp_code').focus();
-                });
-
-            });
-        }
-
-        function postOAuthResult(result) {
-            if (result == 'join') {
-                window.location.href = 'oauth_kakao/join.php';
-            } else if (result == 'req_email') {
-                alert('이메일 정보 공유를 허가해 주셔야 합니다.');
-            } else if (result == 'login') {
-                console.log('로그인모드');
-                if (oauthMode == 'change_pw') {
-                    sendTempPasswordToKakaoTalk();
-                } else {
-                    doLoginUsingOAuth();
-                }
-            } else {
-                alert('예외 발생!');
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -160,64 +79,65 @@ foreach(ServConfig::getServerList() as $setting){
             </ul>
         </div>
     </nav>
-        <div class="container" style="margin-top:120px;">
-            <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
-            <div class="row justify-content-md-center">
-                <div class="col" style="max-width:450px;">
-                    <div class="card" id="login_card">
-                        <h3 class="card-header">
-                            로그인
-                        </h3>
-                        <div class="card-body">
+    <div class="container" style="margin-top:120px;">
+        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
+        <div class="row justify-content-md-center">
+            <div class="col" style="max-width:450px;">
+                <div class="card" id="login_card">
+                    <h3 class="card-header">
+                        로그인
+                    </h3>
+                    <div class="card-body">
 
-                            <form id="main_form" method="post" action="#">
-                                <div class="form-group row">
-                                    <label for="username" class="col-5 col-md-4 col-form-label">계정명</label>
-                                    <div class="col-7 col-md-8">
-                                        <input autocomplete="username" type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="계정명" />
-                                    </div>
+                        <form id="main_form" method="post" action="#">
+                            <div class="form-group row">
+                                <label for="username" class="col-5 col-md-4 col-form-label">계정명</label>
+                                <div class="col-7 col-md-8">
+                                    <input autocomplete="username" type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="계정명" />
                                 </div>
+                            </div>
 
 
-                                <div class="form-group row">
-                                    <label for="password" class="col-5 col-md-4 col-form-label">비밀번호</label>
-                                    <div class="col-7 col-md-8">
-                                        <input autocomplete="current-password" type="password" class="form-control" name="password" id="password" placeholder="비밀번호" />
-                                    </div>
+                            <div class="form-group row">
+                                <label for="password" class="col-5 col-md-4 col-form-label">비밀번호</label>
+                                <div class="col-7 col-md-8">
+                                    <input autocomplete="current-password" type="password" class="form-control" name="password" id="password" placeholder="비밀번호" />
                                 </div>
+                            </div>
 
-                                <input type="hidden" id="global_salt" name="global_salt" value="<?= RootDB::getGlobalSalt() ?>">
-                                <div class="form-group row">
-                                    <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login', ['account_email','talk_message']);" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
-                                    <div class="col-7 col-md-8">
-                                        <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
-                                            <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
-                                            <div class="btn-group" role="group">
-                                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                                                    <a class="dropdown-item" href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 초기화</a>
-                                                </div>
+                            <input type="hidden" id="global_salt" name="global_salt" value="<?= RootDB::getGlobalSalt() ?>">
+                            <div class="form-group row">
+                                <div class="col-5 col-md-4 " style="position:relative;"><button type="button" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
+                                <div class="col-7 col-md-8">
+                                    <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
+                                        <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">추가 기능</span></button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" id='oauth_change_pw' href="#">비밀번호 초기화</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-<?php if($runningServer): ?>
+        </div>
+        <?php if ($runningServer) : ?>
             <div class="row justify-content-md-center" style='margin-top:20px;'>
                 <div class="col" style="max-width:750px;">
-                    <iframe id="running_map" src="<?=$runningServer['name']?>/recent_map.php"></iframe>
+                    <iframe id="running_map" src="<?= $runningServer['name'] ?>/recent_map.php"></iframe>
                 </div>
             </div>
-<?php endif; ?>
+        <?php endif; ?>
+    </div>
+    <div id="bottom_box">
+        <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2020 • HideD
+            <br>크롬과 파이어폭스에 최적화되어있습니다.
         </div>
-        <div id="bottom_box">
-            <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2020 • HideD
-                <br>크롬과 파이어폭스에 최적화되어있습니다.</div>
-        </div>
+    </div>
 
     <div class="modal fade" id="modalOTP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
