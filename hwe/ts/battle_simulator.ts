@@ -1,14 +1,14 @@
 import $ from 'jquery';
 import Popper from 'popper.js';
-(window as unknown as {Popper:unknown}).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
+(window as unknown as { Popper: unknown }).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
-import { DateTime } from 'luxon';
 import download from 'downloadjs';
 import { unwrap } from "./util/unwrap";
 import { isInteger } from 'lodash';
 import { combineArray, errUnknown, getNpcColor, isBrightColor, numberWithCommas } from './common_legacy';
 import { unwrap_any } from './util/unwrap_any';
 import { BasicGeneralListResponse, InvalidResponse } from './defs';
+import { formatTime } from './util/formatTime';
 
 type CityAttackerInfo = {
     level: number,
@@ -73,7 +73,7 @@ type GeneralInfo = {
 
 type BattleInfo = {
     attackerGeneral: GeneralInfo,
-    attackerCity: CityAttackerInfo|CityBasicInfo,
+    attackerCity: CityAttackerInfo | CityBasicInfo,
     attackerNation: NationBasicInfo,
     defenderGenerals: GeneralInfo[],
     defenderCity: CityBasicInfo,
@@ -95,24 +95,24 @@ type ExportedBattleInfo = {
 type ExportedInfo = ExportedGeneralInfo | ExportedBattleInfo;
 
 type BattleResult = {
-        result:true,
-        datetime:string,
-        lastWarLog:{
-            generalBattleResultLog: string,
-            generalBattleDetailLog: string,
-        },
-        avgWar:number,
-        phase:number,
-        killed:number,
-        maxKilled:number,
-        minKilled:number,
-        dead:number,
-        maxDead:number,
-        minDead:number,
-        attackerRice:number,
-        defenderRice:number,
-        attackerSkills:Record<string, number>,
-        defendersSkills:Record<string, number>[],
+    result: true,
+    datetime: string,
+    lastWarLog: {
+        generalBattleResultLog: string,
+        generalBattleDetailLog: string,
+    },
+    avgWar: number,
+    phase: number,
+    killed: number,
+    maxKilled: number,
+    minKilled: number,
+    dead: number,
+    maxDead: number,
+    minDead: number,
+    attackerRice: number,
+    defenderRice: number,
+    attackerSkills: Record<string, number>,
+    defendersSkills: Record<string, number>[],
 }
 
 declare global {
@@ -254,7 +254,7 @@ $(function ($) {
 
         $('.btn-battle-save').on('click', function () {
             const battleData = exportAllData();
-            const dateText = DateTime.now().toFormat('yyyyMMdd_HHmmss');
+            const dateText = formatTime(new Date(), 'yyyyMMdd_HHmmss');
             const filename = `battle_${dateText}.json`;
             const saveData = JSON.stringify({
                 objType: 'battle',
@@ -973,7 +973,7 @@ $(function ($) {
 
                 generalList.sort(function (lhs, rhs) {
                     if (lhs.npc != rhs.npc) {
-                        return (lhs.npc??0) - (rhs.npc??0);
+                        return (lhs.npc ?? 0) - (rhs.npc ?? 0);
                     }
                     if (lhs.name < rhs.name) {
                         return -1;
@@ -987,7 +987,7 @@ $(function ($) {
                 $optGroup.css('background-color', color);
                 $optGroup.css('color', isBrightColor(color) ? 'black' : 'white');
 
-                for(const general of generalList){
+                for (const general of generalList) {
                     const $item = $(`<option value="${general.no}">${general.name}</option>`);
                     if (general.npc) {
                         $item.css('color', unwrap(getNpcColor(general.npc)));
@@ -1005,7 +1005,7 @@ $(function ($) {
                 data: {
                     req: 2,
                 }
-            }).then(function (data: BasicGeneralListResponse|InvalidResponse) {
+            }).then(function (data: BasicGeneralListResponse | InvalidResponse) {
                 if (!data.result) {
                     alert(data.reason);
                     $('#importModal').modal('hide');

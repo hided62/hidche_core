@@ -1,12 +1,14 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { range } from 'lodash';
-import { DateTime } from 'luxon';
+import { addMinutes } from 'date-fns';
 import { errUnknown, getNpcColor } from './common_legacy';
 import { InvalidResponse } from './defs';
 import { unwrap } from "./util/unwrap";
 import { convertFormData } from './util/convertFormData';
 import { unwrap_any } from "./util/unwrap_any";
+import { parseTime } from './util/parseTime';
+import { formatTime } from './util/formatTime';
 
 declare const maxChiefTurn: number;
 
@@ -132,16 +134,16 @@ async function reloadTable() {
 
         plateObj.officerLevelText.text(chiefInfo.officerLevelText);
 
-        let turnTimeObj: DateTime|undefined;
+        let turnTimeObj: Date|undefined;
 
         if (chiefInfo.turnTime) {
-            turnTimeObj = DateTime.fromSQL(chiefInfo.turnTime);
+            turnTimeObj = parseTime(chiefInfo.turnTime);
         }
 
         const turnList = plateObj.turn;
         $.each(chiefInfo.turn, function (turnIdx, turnText) {
             if (turnTimeObj) {
-                turnList[turnIdx].turnTime.text(turnTimeObj.toFormat('HH:mm'));
+                turnList[turnIdx].turnTime.text(formatTime(turnTimeObj, 'HH:mm'));
             }
             else {
                 turnList[turnIdx].turnTime.text('');
@@ -155,7 +157,7 @@ async function reloadTable() {
                 turnList[turnIdx].turnText.css('font-size', '{0}px'.format(newFontSize));
             }
             if (turnTimeObj) {
-                turnTimeObj = turnTimeObj.plus({'minutes': turnTerm});
+                turnTimeObj = addMinutes(turnTimeObj, turnTerm);
             }
 
         });

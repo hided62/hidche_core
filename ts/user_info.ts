@@ -1,15 +1,17 @@
 import { setAxiosXMLHttpRequest } from "../hwe/ts/util/setAxiosXMLHttpRequest";
 import $ from 'jquery';
 import Popper from 'popper.js';
-(window as unknown as {Popper:unknown}).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
+(window as unknown as { Popper: unknown }).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import axios from 'axios';
-import { DateTime } from "luxon";
-import { DATE_TIME_FORMAT, getDateTimeNow } from "../hwe/ts/util/getDateTimeNow";
+import { subDays } from 'date-fns';
+import { getDateTimeNow } from "../hwe/ts/util/getDateTimeNow";
 import { sha512 } from "js-sha512";
 import { convertFormData } from "../hwe/ts/util/convertFormData";
 import { InvalidResponse } from "../hwe/ts/defs";
 import { unwrap } from "../hwe/ts/util/unwrap";
+import { parseTime } from "../hwe/ts/util/parseTime";
+import { formatTime } from "../hwe/ts/util/formatTime";
 
 type ResultUserInfo = {
     result: true,
@@ -295,7 +297,7 @@ async function deleteMe() {
 
 async function extendAuth() {
     const validUntil = $('#slot_token_valid_until').html();
-    const availableAt = DateTime.fromFormat(validUntil, DATE_TIME_FORMAT).minus({ days: 5 }).toFormat(DATE_TIME_FORMAT);
+    const availableAt = formatTime(subDays(parseTime(validUntil), 5));
     const now = getDateTimeNow();
 
     if (now < availableAt) {
@@ -321,7 +323,7 @@ async function extendAuth() {
         return;
     }
 
-    if(!result.result){
+    if (!result.result) {
         alert(result.reason);
         return;
     }
