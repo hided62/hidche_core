@@ -3,9 +3,8 @@ import 'popper.js';
 import Popper from 'popper.js';
 (window as unknown as {Popper:unknown}).Popper = Popper;
 import 'bootstrap';
-import { JQValidateForm } from '../hwe/ts/util/jqValidateForm';
+import { JQValidateForm, NamedRules } from '../hwe/ts/util/jqValidateForm';
 import axios from 'axios';
-import { Rules } from 'async-validator';
 import { convertFormData } from '../hwe/ts/util/convertFormData';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '../hwe/ts/util/unwrap_any';
@@ -161,7 +160,11 @@ window.postOAuthResult = postOAuthResult;
 $(function ($) {
     setAxiosXMLHttpRequest();
 
-    const descriptor: Rules = {
+    type LoginFormType = {
+        username: string,
+        password: string,
+    };
+    const descriptor: NamedRules<LoginFormType> = {
         username: {
             required: true,
             type: 'string',

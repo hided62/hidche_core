@@ -5,8 +5,7 @@ import 'bootstrap';
 import { setAxiosXMLHttpRequest } from "./util/setAxiosXMLHttpRequest";
 import axios from "axios";
 import { InvalidResponse } from "./defs";
-import { Rules } from "async-validator";
-import { JQValidateForm } from "./util/jqValidateForm";
+import { JQValidateForm, NamedRules } from "./util/jqValidateForm";
 import { convertFormData } from "./util/convertFormData";
 
 type ResponseScenarioItem = {
@@ -130,7 +129,22 @@ function scenarioPreview() {
     });
 }
 
-const descriptor: Rules = {
+type InstallFormType = {
+    turnterm: number,
+    sync: 1|0,
+    scenario: number,
+    fiction: number,
+    extend: number,
+    npcmode: number,
+    show_img_level: number,
+    tournament_trig: number,
+    join_mode: number,
+    autorun_user: string[],
+    autorun_user_minutes: number,
+    reserve_open?: string,
+    pre_reserve_open?: string,
+}
+const descriptor: NamedRules<InstallFormType> = {
     turnterm: {
         required: true,
         type: "enum",

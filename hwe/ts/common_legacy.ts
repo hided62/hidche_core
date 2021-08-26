@@ -8,66 +8,6 @@ import 'bootstrap';
 import axios from "axios";
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-//TODO: X-Requested-With 믿지 말자.
-
-
-
-//https://gist.github.com/demouth/3217440
-/**
- * mb_strwidth
- * @see http://php.net/manual/function.mb-strwidth.php
- */
-export function mb_strwidth(str: string): number {
-    const l = str.length;
-    let length = 0;
-    for (let i = 0; i < l; i++) {
-        const c = str.charCodeAt(i);
-        if (0x0000 <= c && c <= 0x0019) {
-            length += 0;
-        } else if (0x0020 <= c && c <= 0x1FFF) {
-            length += 1;
-        } else if (0x2000 <= c && c <= 0xFF60) {
-            length += 2;
-        } else if (0xFF61 <= c && c <= 0xFF9F) {
-            length += 1;
-        } else if (0xFFA0 <= c) {
-            length += 2;
-        }
-    }
-    return length;
-}
-
-
-/**
- * mb_strimwidth
- * @param String
- * @param int
- * @param int
- * @param String
- * @return String
- * @see http://www.php.net/manual/function.mb-strimwidth.php
- */
-export function mb_strimwidth(str: string, start: number, width: number, trimmarker = ''): string {
-    const trimmakerWidth = mb_strwidth(trimmarker);
-    const l = str.length;
-    let trimmedLength = 0;
-    const trimmedStr: string[] = [];
-    for (let i = start; i < l; i++) {
-        const c = str.charAt(i);
-        const charWidth = mb_strwidth(c);
-        const next = str.charAt(i + 1);
-        const nextWidth = mb_strwidth(next);
-
-        trimmedLength += charWidth;
-        trimmedStr.push(c);
-        if (trimmedLength + trimmakerWidth + nextWidth > width) {
-            trimmedStr.push(trimmarker);
-            break;
-        }
-    }
-    return trimmedStr.join('');
-}
-
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
  */

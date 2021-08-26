@@ -1,8 +1,7 @@
 
 import axios from 'axios';
 import jQuery from 'jquery';
-import { Rules } from 'async-validator';
-import { JQValidateForm } from './util/jqValidateForm';
+import { JQValidateForm, NamedRules } from './util/jqValidateForm';
 import { convertFormData } from './util/convertFormData';
 import { InvalidResponse } from './defs';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
@@ -10,7 +9,15 @@ import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 jQuery(async function ($) {
     setAxiosXMLHttpRequest();
 
-    const descriptor: Rules = {
+    type FormValue = {
+        full_reset: string,
+        db_host: string,
+        db_port: number,
+        db_id: string,
+        db_pw: string,
+        db_name: string,
+    }
+    const descriptor: NamedRules<FormValue> = {
         full_reset: {
             required: true,
         },

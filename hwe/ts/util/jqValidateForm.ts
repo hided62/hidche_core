@@ -1,4 +1,4 @@
-import Schema, { Rules, Values } from "async-validator";
+import Schema, { Rule, Values } from "async-validator";
 import { isArray } from "lodash";
 import { mergeKVArray } from "./mergeKVArray";
 import $ from 'jquery';
@@ -8,10 +8,17 @@ type Option = {
     postParse?: (values:Record<string, string | string[]>, $target?: JQuery<HTMLElement>)=>[Record<string, string | string[]>, Map<string, string>]
 }
 
-export class JQValidateForm {
+type DefaultFormDataType = Record<string, null|number[]|string[]|boolean[]|number|string|boolean>;
+
+export type NamedRules<T extends Record<string, unknown>> = {
+    [v in keyof T]: Rule
+}
+
+export class JQValidateForm<TypedValue extends Values = DefaultFormDataType> {
+
     public readonly validator: Schema;
     public readonly inputs: JQuery<HTMLElement>;
-    constructor(public readonly target: JQuery<HTMLElement>, public readonly rule: Rules, public readonly option?:Option) {
+    constructor(public readonly target: JQuery<HTMLElement>, public readonly rule: NamedRules<TypedValue>, public readonly option?:Option) {
         this.validator = new Schema(rule);
         this.inputs = target.find(':input');
     }
@@ -29,7 +36,7 @@ export class JQValidateForm {
         return this;
     }
 
-    public async validate(): Promise<undefined | Values> {
+    public async validate(): Promise<undefined | TypedValue> {
         if(this.option?.preParse !== undefined){
             this.option.preParse(this.target);
         }
@@ -106,6 +113,6 @@ export class JQValidateForm {
         }
         this.clearErrMsg();
         this.inputs.addClass('is-valid');
-        return validateResult;
+        return validateResult as TypedValue;
     }
 }

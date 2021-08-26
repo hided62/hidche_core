@@ -1,13 +1,13 @@
 import $ from 'jquery';
 import axios from 'axios';
-import { Rules } from 'async-validator';
-import { JQValidateForm } from '../hwe/ts/util/jqValidateForm';
+import { JQValidateForm, NamedRules } from '../hwe/ts/util/jqValidateForm';
 import { convertFormData } from '../hwe/ts/util/convertFormData';
 import { InvalidResponse } from '../hwe/ts/defs';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '../hwe/ts/util//unwrap_any';
 import { sha512 } from 'js-sha512';
 import { isString } from 'lodash';
+import { mb_strwidth } from '../hwe/ts/util/mb_strwidth';
 
 $(async function () {
     setAxiosXMLHttpRequest();
@@ -15,7 +15,16 @@ $(async function () {
     const terms1P = axios('../terms.1.html');
     const terms2P = axios('../terms.2.html');
 
-    const descriptor: Rules = {
+    type JoinFormType = {
+        secret_agree: boolean,
+        secret_agree2: boolean,
+        third_use: boolean,
+        username: string,
+        password: string,
+        confirm_password: string,
+        nickname: string,
+    }
+    const descriptor: NamedRules<JoinFormType> = {
         username: {
             required: true,
             min: 4,
@@ -81,8 +90,10 @@ $(async function () {
         },
         nickname: {
             required: true,
-            max: 9,
             asyncValidator: async (rule, value: string) => {
+                if (!value || !isString(value) || mb_strwidth(value) > 18) {
+                    throw new Error(`글자 너비가 알파벳 ${18}자보다 길지 않아야합니다`);
+                }
                 const response = await axios({
                     url: 'j_check_dup.php',
                     method: 'post',
@@ -100,9 +111,6 @@ $(async function () {
             options: {
                 messages: {
                     required: "유저명을 입력해주세요",
-                    string: {
-                        max: (v, l) => `닉네임은 ${l}자를 넘을 수 없습니다`,
-                    }
                 }
             }
         },

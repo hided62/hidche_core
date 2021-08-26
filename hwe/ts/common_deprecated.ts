@@ -1,4 +1,5 @@
-import { activeFlip, mb_strwidth, isBrightColor, getIconPath, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
+import { activeFlip, isBrightColor, getIconPath, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
+import { mb_strwidth } from "./util/mb_strwidth";
 import { TemplateEngine } from "./util/TemplateEngine";
 import { escapeHtml } from "./legacy/escapeHtml";
 import { nl2br } from "./util/nl2br";
