@@ -13,10 +13,7 @@ require(__DIR__.'/../vendor/autoload.php');
     <title>설치</title>
     <?=WebUtil::printJS('../d_shared/common_path.js') ?>
     <?=WebUtil::printJS('../dist_js/vendors.js') ?>
-    <?=WebUtil::printJS('../dist_js/common.js') ?>
-    <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
-    <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
-    <?=WebUtil::printJS('../js/install.js')?>
+    <?=WebUtil::printJS('../dist_js/install.js')?>
     <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('../css/install.css')?>
 </head>
