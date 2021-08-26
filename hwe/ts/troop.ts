@@ -1,5 +1,5 @@
 import { errUnknown } from "./common_legacy";
-import { launchTroopPlugin } from "./ext.plugin_troop";
+import { launchTroopPlugin } from "./extPluginTroop";
 import jQuery from "jquery";
 
 import "../scss/troop.scss";
@@ -22,9 +22,9 @@ jQuery(function($){
                 alert(data.reason);
                 location.reload();
             }
-    
+
             location.reload();
-    
+
         }, errUnknown);
         return false;
     });
@@ -43,9 +43,9 @@ jQuery(function($){
                 alert(data.reason);
                 location.reload();
             }
-    
+
             location.reload();
-    
+
         }, errUnknown);
         return false;
     });
@@ -64,9 +64,9 @@ jQuery(function($){
                 alert(data.reason);
                 location.reload();
             }
-    
+
             location.reload();
-    
+
         }, errUnknown);
         return false;
     });
@@ -85,9 +85,9 @@ jQuery(function($){
                 alert(data.reason);
                 location.reload();
             }
-    
+
             location.reload();
-    
+
         }, errUnknown);
         return false;
     });
@@ -106,13 +106,13 @@ jQuery(function($){
                 alert(data.reason);
                 location.reload();
             }
-    
+
             location.reload();
-    
+
         }, errUnknown);
         return false;
     });
 
-    
+
     launchTroopPlugin($);
 });

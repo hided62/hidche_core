@@ -30,6 +30,7 @@ module.exports = (env) => {
             board: '@/board.ts',
             bossInfo: '@/bossInfo.ts',
             myPage: '@/myPage.ts',
+            extExpandCity: '@/extExpandCity.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

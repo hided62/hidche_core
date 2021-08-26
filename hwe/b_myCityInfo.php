@@ -37,13 +37,10 @@ $sel = [$type => "selected"];
 <title><?=UniqueConst::$serverName?>: 세력도시</title>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('../e_lib/jquery-ui.min.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
-<?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('../e_lib/jquery-ui.min.js')?>
-<?=WebUtil::printJS('js/ext.expand_city.js')?>
+<?=WebUtil::printJS('dist_js/extExpandCity.js')?>
 
 </head>
 
