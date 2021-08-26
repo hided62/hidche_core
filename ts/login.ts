@@ -285,7 +285,7 @@ $(function ($) {
         $map.find('.card').css('width', targetWidth);
         $map.find('.map-container').css({
             'transform-origin': 'top left',
-            'transform': 'scale({0}, {0})'.format(scale),
+            'transform': `scale(${scale}, ${scale})`,
             'height': 500 * scale,
         });
         $map.find('.map_body').data('scale', scale);

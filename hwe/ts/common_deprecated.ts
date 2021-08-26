@@ -48,6 +48,18 @@ declare global {
     }
 }
 
+
+/**
+ * {0}, {1}, {2}형태로 포맷해주는 함수
+ * NOTE: TypeScript declare 충돌로 인해 우회 정의
+ */
+ (String.prototype as unknown as {format:(...args:(string|number)[])=>string}).format = function(this:string, ...args){
+    return this.replace(/{(\d+)}/g, function (match, number) {
+        return (typeof args[number] != 'undefined') ? args[number].toString() : match;
+    });
+};
+
+
 window.escapeHtml = escapeHtml;
 window.mb_strwidth = mb_strwidth;
 window.isBrightColor = isBrightColor;

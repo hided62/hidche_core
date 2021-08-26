@@ -1,7 +1,7 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { extend, isNumber } from 'lodash';
-import { convColorValue, convertDictById, convertSet } from './common_legacy';
+import { convColorValue, convertDictById, convertSet, stringFormat } from './common_legacy';
 import { InvalidResponse } from './defs';
 import { unwrap } from "./util/unwrap";
 import { convertFormData } from './util/convertFormData';
@@ -245,19 +245,19 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
                 remainYear -= 1;
             }
             if (remainYear) {
-                startYearText.push('{0}년'.format(remainYear));
+                startYearText.push(`${remainYear}년`);
             }
             if (remainMonth) {
-                startYearText.push('{0}개월'.format(remainMonth));
+                startYearText.push(`${remainMonth}개월`);
             }
 
-            tooltipTexts.push('초반제한 기간 : {0} ({1}년)'.format(startYearText.join(' '), startYear + 3));
+            tooltipTexts.push(`초반제한 기간 : ${startYearText.join(' ')} (${startYear + 3}년)`);
         }
 
         const currentTechLimit = Math.floor(Math.max(0, year - startYear) / 5) + 1;
         const nextTechLimitYear = currentTechLimit * 5 + startYear;
 
-        tooltipTexts.push('기술등급 제한 : {0}등급 ({1}년 해제)'.format(currentTechLimit, nextTechLimitYear, currentTechLimit + 1));
+        tooltipTexts.push(`기술등급 제한 : ${currentTechLimit}등급 (${nextTechLimitYear}년 해제)`);
         $map_title_tooltip.html(tooltipTexts.join('<br>'));
 
         $world_map.removeClass('map_string map_summer map_fall map_winter');
@@ -271,7 +271,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             $world_map.addClass('map_winter');
         }
 
-        $map_title.html('{0}年 {1}月'.format(year, month));
+        $map_title.html(`${year}年 ${month}月`);
 
         return obj;
     }
@@ -402,7 +402,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             if (city.color !== undefined) {
                 const $bgObj = $('<div class="city_bg"></div>');
                 $cityObj.append($bgObj);
-                $bgObj.css({ 'background-image': 'url({0}/b{1}.png)'.format(window.pathConfig.gameImage, convColorValue(city.color)) });
+                $bgObj.css({ 'background-image': `url(${window.pathConfig.gameImage}/b${convColorValue(city.color)}.png)` });
             }
 
             const $linkObj = $('<a class="city_link"></a>');
@@ -490,7 +490,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
                 $imgObj.append($capitalObj);
             }
 
-            const $nameObj = $(`<span class="city_detail_name">${city.name}</span>`.format());
+            const $nameObj = $(`<span class="city_detail_name">${city.name}</span>`);
             $imgObj.append($nameObj);
 
             $map_body.append($cityObj);
@@ -647,7 +647,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             const $cityLink = $world_map.find(`.city_base_${city.id} .city_link`);
 
             if ('clickable' in city && city.clickable > 0) {
-                $cityLink.attr('href', hrefTemplate.format(city.id));
+                $cityLink.attr('href', stringFormat(hrefTemplate, city.id));
             }
 
             if (selectCallback) {

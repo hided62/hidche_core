@@ -93,10 +93,10 @@ $(function ($) {
 
         const html: string[] = [];
         for (const [key, item] of Object.entries(result.log)) {
-            if ($('#log_{0}_{1}'.format(logType, key)).length) {
+            if ($(`#log_${logType}_${key}`).length) {
                 return true;
             }
-            html.push("<div class='log_{0}' id='log_{0}_{1}' data-seq='{1}'>{2}</div>".format(logType, key, item));
+            html.push(`<div class='log_${logType}' id='log_${logType}_${key}' data-seq='${key}'>${item}</div>`);
         }
         $(`#${logType}Plate`).append(html.join(''));
     })

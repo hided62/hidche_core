@@ -57,12 +57,12 @@ function genChiefTableObj(): TableObj {
     };
 
     for (const chiefIdx of range(5, 13)) {
-        const $plate = $('#chief_{0}'.format(chiefIdx));
+        const $plate = $(`#chief_${chiefIdx}`);
         const $officerLevelText = $plate.find('.chiefLevelText');
         const $name = $plate.find('.chiefName');
         const turn: TurnDOMObj[] = [];
         for (const turnIdx of range(maxChiefTurn)) {
-            const $turn = $plate.find('.turn{0}'.format(turnIdx));
+            const $turn = $plate.find(`.turn${turnIdx}`);
             const $turnTime = $turn.find('.chiefTurnTime');
             const $turnPad = $turn.find('.chiefTurnPad');
             const $turnText = $turn.find('.chiefTurnText');
@@ -81,7 +81,7 @@ function genChiefTableObj(): TableObj {
 
 
 function clearChief(chiefIdx: number): void {
-    const $plate = $('#chief_{0}'.format(chiefIdx));
+    const $plate = $(`#chief_${chiefIdx}`);
     $plate.find('.chiefLevelText').html('-');
     $plate.find('.chiefTurnTime, .chiefTurnText, .chiefName').html('&nbsp;');
 }
@@ -121,7 +121,7 @@ async function reloadTable() {
 
         const plateObj = chiefTableObj[chiefIdx];
         if (chiefInfo.name) {
-            const $name = $('<span>{0}</span>'.format(chiefInfo.name));
+            const $name = $(`<span>${chiefInfo.name}</span>`);
             const nameColor = getNpcColor(chiefInfo.npcType);
             if (nameColor) {
                 $name.css('color', nameColor);
@@ -154,7 +154,7 @@ async function reloadTable() {
             const iWidth = unwrap(turnList[turnIdx].turnText.outerWidth());
             if (iWidth > oWidth * 0.95) {
                 const newFontSize = 13 * oWidth / iWidth * 0.9;
-                turnList[turnIdx].turnText.css('font-size', '{0}px'.format(newFontSize));
+                turnList[turnIdx].turnText.css('font-size', `${newFontSize}px`);
             }
             if (turnTimeObj) {
                 turnTimeObj = addMinutes(turnTimeObj, turnTerm);

@@ -9,7 +9,7 @@ declare const currentCrew: number;
 //declare const currentGold: number;
 declare const is모병 = false;
 function calc(id: number) {
-    const $obj = $('#crewType{0}'.format(id));
+    const $obj = $(`#crewType${id}`);
     const crew = parseInt(unwrap_any<string>($obj.find('.form_double').val()));
     const baseCost = $obj.data('cost');
     const $cost = $obj.find('.form_cost');

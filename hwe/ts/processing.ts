@@ -145,28 +145,25 @@ $(function ($) {
                     return item.text;
                 }
                 const element = (item as OptionData).element;
-                if(!element){
+                if (!element) {
                     throw 'invalid type';
                 }
                 const bgcolor = unwrap(element.dataset.color);
                 const fgcolor = unwrap(element.dataset.fontColor);
-                return $("<span><span style='background-color:{0};color:{1};'>　</span>&nbsp;{2}</span>".format(
-                    bgcolor, fgcolor, item.text
-                ));
+                // eslint-disable-next-line no-irregular-whitespace
+                return $(`<span><span style='background-color:${bgcolor};color:${fgcolor};'>　</span>&nbsp;${item.text}</span>`);
             },
             templateResult: function (item) {
                 if ((item as DataFormat).disabled) {
                     return item.text;
                 }
                 const element = (item as OptionData).element;
-                if(!element){
+                if (!element) {
                     throw 'invalid type';
                 }
                 const bgcolor = unwrap(element.dataset.color);
                 const fgcolor = unwrap(element.dataset.fontColor);
-                return $("<div style='padding: 0.75rem 0.375rem; background-color:{0};color:{1};'>{2}</div>".format(
-                    bgcolor, fgcolor, item.text
-                ));
+                return $(`<div style='padding: 0.75rem 0.375rem; background-color:${bgcolor};color:${fgcolor};'>${item.text}</div>`);
             },
             containerCssClass: 'simple-select2-align-center bg-secondary text-secondary',
             dropdownCssClass: 'no-padding simple-select2-align-center bg-secondary text-secondary',

@@ -2,7 +2,7 @@ import { unwrap } from "./util/unwrap";
 
 import $ from "jquery";
 import Popper from 'popper.js';
-(window as unknown as {Popper:unknown}).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
+(window as unknown as { Popper: unknown }).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 
 import axios from "axios";
@@ -30,22 +30,11 @@ export function convertSet<K extends string | number>(arr: ArrayLike<K>): Record
     return result;
 }
 
-
-/**
- * {0}, {1}, {2}형태로 포맷해주는 함수
- */
-
-declare global {
-    interface String {
-        format(...args: (string | number)[]): string;
-    }
-}
-String.prototype.format = function (...args: (string | number)[]) {
-    return this.replace(/{(\d+)}/g, function (match, number) {
+export function stringFormat(text: string, ...args: (string | number)[]): string {
+    return text.replace(/{(\d+)}/g, function (match, number) {
         return (typeof args[number] != 'undefined') ? args[number].toString() : match;
     });
-};
-
+}
 
 export function hexToRgb(hex: string): { r: number, g: number, b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -239,8 +228,7 @@ export function initTooltip($obj?: JQuery<HTMLElement>): void {
             if (!tooltipClassText) {
                 tooltipClassText = '';
             }
-            const template = '<div class="tooltip {0}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
-                .format(tooltipClassText);
+            const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>`;
 
             $objTooltip.tooltip({
                 title: function () {

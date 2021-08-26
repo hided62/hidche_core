@@ -157,7 +157,7 @@ function drawServerAdminList(serverList: ServerStateResponse) {
         console.log(server);
         let status: string;
         if (!server.valid) {
-            status = '에러, {0}'.format(server.reason);
+            status = `에러, ${server.reason}`;
         }
         else if (!server.run) {
             status = '폐쇄됨';
