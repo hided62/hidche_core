@@ -5,9 +5,11 @@ include('lib.php');
 include 'func.php';
 
 $result = [
-    "generalID"=>null,
-    "myNationID"=>null,
-    "isChief"=>false
+    "generalID"=>0,
+    "myNationID"=>0,
+    "isChief"=>false,
+    "officerLevel"=>0,
+    "permission"=>0,
 ];
 $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();

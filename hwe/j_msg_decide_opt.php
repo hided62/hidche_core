@@ -56,6 +56,6 @@ else{
 
 
 Json::die([
-    'result' => $result===DiplomaticMessage::ACCEPTED,
+    'result' => $result!==DiplomaticMessage::INVALID,
     'reason' => $reason
 ]);
