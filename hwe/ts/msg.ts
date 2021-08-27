@@ -118,7 +118,13 @@ async function responseMessage(msgID: number, responseAct: boolean):Promise<void
     const response = await axios({
         url: 'j_msg_decide_opt.php',
         method: 'post',
-        responseType: 'json'
+        responseType: 'json',
+        data: convertFormData({
+            data: JSON.stringify({
+                msgID:msgID,
+                response:responseAct
+            })
+        })
     });
 
     const result: InvalidResponse = response.data;
