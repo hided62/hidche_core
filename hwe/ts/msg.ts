@@ -152,7 +152,7 @@ async function deleteMessage(msgID: number): Promise<MsgResponse> {
 
 async function refreshMsg(): Promise<MsgResponse> {
     const value = await fetchRecentMsg();
-    return await redrawMsg(value, true);
+    return redrawMsg(value, true);
 }
 
 async function fetchRecentMsg(): Promise<MsgResponse> {
@@ -186,10 +186,10 @@ async function showOldMsg(msgType: MsgType): Promise<MsgResponse> {
         throw result.reason;
     }
 
-    return await redrawMsg(result, false);
+    return redrawMsg(result, false);
 }
 
-async function redrawMsg(msgResponse: MsgResponse, addFront: boolean): Promise<MsgResponse> {
+function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
     function checkErasable(obj: MsgResponse) {
 
         const now = getDateTimeNow();
@@ -202,19 +202,19 @@ async function redrawMsg(msgResponse: MsgResponse, addFront: boolean): Promise<M
         })
         return obj;
     }
-    async function checkClear(obj: MsgResponse): Promise<MsgResponse> {
+    function checkClear(obj: MsgResponse): MsgResponse {
         if (!obj.keepRecent) {
             $('.msg_plate').detach();
             lastSequence = undefined;
             console.log('refresh!');
             void fetchRecentMsg().then(async (data) => {
-                await redrawMsg(data, true);
+                redrawMsg(data, true);
             })
             throw true;
         }
         return obj;
     }
-    async function registerSequence(obj: MsgResponse): Promise<MsgResponse> {
+    function registerSequence(obj: MsgResponse): MsgResponse {
         lastSequence = Math.max(lastSequence ?? 0, obj.sequence);
         for (const msgType of ['public', 'private', 'national', 'diplomacy'] as MsgType[]) {
             const msgList = obj[msgType];
@@ -413,8 +413,8 @@ async function redrawMsg(msgResponse: MsgResponse, addFront: boolean): Promise<M
 
 
     msgResponse = checkErasable(msgResponse);
-    msgResponse = await checkClear(msgResponse);
-    msgResponse = await registerSequence(msgResponse);
+    msgResponse = checkClear(msgResponse);
+    msgResponse = registerSequence(msgResponse);
     printTemplate(msgResponse);
     return msgResponse;
 }
@@ -647,7 +647,7 @@ $(async function ($) {
     });
 
     const [messageList, ] = await Promise.all([messageListP, getTemplateP, basicInfoP, senderListP])
-    await redrawMsg(messageList, true);
+    redrawMsg(messageList, true);
     $('.load_old_message').click(function () {
         const $this = $(this);
         const msgType = $this.data('msg_type');
