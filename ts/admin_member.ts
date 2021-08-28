@@ -6,7 +6,7 @@ import { InvalidResponse } from '../hwe/ts/defs';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '../hwe/ts/util/unwrap_any';
 import { convertFormData } from '../hwe/ts/util/convertFormData';
-import { exportWindow } from './util/exportWindow';
+import { exportWindow } from '../hwe/ts/util/exportWindow';
 
 type UserEntry = {
     userID: string,
