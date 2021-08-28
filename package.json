@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "watch": "webpack watch",
+    "watch": "webpack watch --mode=development",
+    "watchProd": "webpack watch",
     "lint": "eslint hwe/ts ts"
   },
   "repository": {
@@ -18,6 +19,7 @@
   "type": "module",
   "dependencies": {
     "@types/downloadjs": "^1.4.2",
+    "@types/linkifyjs": "^2.1.4",
     "@types/select2": "^4.0.54",
     "async-validator": "^4.0.2",
     "axios": "^0.21.1",
@@ -27,7 +29,9 @@
     "downloadjs": "^1.4.7",
     "jquery": "^3.6.0",
     "js-sha512": "^0.8.0",
+    "linkifyjs": "^2.1",
     "lodash": "^4.17.21",
+    "query-string": "^7.0.1",
     "select2": "^4.0",
     "vue": "^3.2.2"
   },

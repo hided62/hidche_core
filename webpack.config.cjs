@@ -4,8 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { resolve } = require('path');
 
-module.exports = (env) => {
+module.exports = (env, argv) => {
     const target = env.target??'hwe';
+    const mode = argv.mode ?? 'production';
     const ingame = {
         name: 'ingame',
         resolve: {
@@ -14,6 +15,7 @@ module.exports = (env) => {
                 '@': resolve(__dirname, `${target}/ts`)
             }
         },
+        mode,
         entry: {
             chiefCenter: '@/chiefCenter.ts',
             inheritPoint: '@/inheritPoint.ts',
@@ -31,7 +33,7 @@ module.exports = (env) => {
             bossInfo: '@/bossInfo.ts',
             myPage: '@/myPage.ts',
             extExpandCity: '@/extExpandCity.ts',
-            msg: '@/msg.ts',
+            main: '@/main.ts',
 
 
             //FORM 입력용, frontend 변경후 제거
@@ -44,7 +46,6 @@ module.exports = (env) => {
             filename: '[name].js',
             path: resolve(__dirname, `${target}/dist_js`)
         },
-        mode: 'production',
         devtool: 'source-map',
         optimization: {
             splitChunks: {
@@ -113,6 +114,7 @@ module.exports = (env) => {
         resolve: {
             extensions: [".js", ".ts", ".tsx"]
         },
+        mode,
         entry: {
             'common': './ts/common_deprecated.ts',
             'entrance': './ts/entrance.ts',
@@ -126,7 +128,6 @@ module.exports = (env) => {
             filename: '[name].js',
             path: path.resolve(__dirname, 'dist_js'),
         },
-        mode: 'production',
         devtool: 'source-map',
         optimization: {
             splitChunks: {
