@@ -7,6 +7,7 @@ import axios from "axios";
 import { InvalidResponse } from "./defs";
 import { JQValidateForm, NamedRules } from "./util/jqValidateForm";
 import { convertFormData } from "./util/convertFormData";
+import { exportWindow } from "./util/exportWindow";
 
 type ResponseScenarioItem = {
     year?: number,
@@ -267,4 +268,4 @@ $(async function () {
 
 })
 
-window.$ = $;
+exportWindow($, '$');

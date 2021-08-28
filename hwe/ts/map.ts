@@ -5,6 +5,7 @@ import { convColorValue, convertDictById, convertSet, stringFormat } from './com
 import { InvalidResponse } from './defs';
 import { unwrap } from "./util/unwrap";
 import { convertFormData } from './util/convertFormData';
+import { exportWindow } from './util/exportWindow';
 
 declare const serverNick: string;
 declare const serverID: string;
@@ -16,7 +17,6 @@ type CityPositionMap = {
 declare global {
     interface Window {
         sam_toggleSingleTap?: boolean,
-        reloadWorldMap: (option: loadMapOption, drawTarget?: string) => Promise<void>;
         getCityPosition: () => CityPositionMap;
         formatCityInfo: (city: MapCityParsedRaw)=>MapCityParsedRegionLevelText
     }
@@ -782,7 +782,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
     }
 }
 
-window.reloadWorldMap = reloadWorldMap;
+exportWindow(reloadWorldMap, 'reloadWorldMap');
 $(function ($) {
     if (is_touch_device()) {
         $('.map_body .map_toggle_single_tap').show();

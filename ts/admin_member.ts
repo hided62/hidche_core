@@ -6,13 +6,7 @@ import { InvalidResponse } from '../hwe/ts/defs';
 import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '../hwe/ts/util/unwrap_any';
 import { convertFormData } from '../hwe/ts/util/convertFormData';
-
-declare global {
-    interface Window {
-        changeSystem: (action: string) => Promise<void>;
-        changeUserStatus: (action: string, userID: Element | number, param?: number) => Promise<void>;
-    }
-}
+import { exportWindow } from './util/exportWindow';
 
 type UserEntry = {
     userID: string,
@@ -277,9 +271,6 @@ async function refreshAll() {
 
 $(async function () {
     setAxiosXMLHttpRequest();
-    window.changeSystem = changeSystem;
-    window.changeUserStatus = changeUserStatus;
-
     await refreshAll();
 
     $('input[name=allow_join], input[name=allow_login]').on('change', async function () {
@@ -287,3 +278,6 @@ $(async function () {
         await changeSystem(unwrap_any<string>($this.attr('name')), unwrap_any<string>($this.val()));
     })
 });
+
+exportWindow(changeSystem, 'changeSystem');
+exportWindow(changeUserStatus, 'changeUserStatus');

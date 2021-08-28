@@ -4,8 +4,10 @@ import { TemplateEngine } from "./util/TemplateEngine";
 import { escapeHtml } from "./legacy/escapeHtml";
 import { nl2br } from "./util/nl2br";
 import jQuery from "jquery";
-window.jQuery = jQuery;
-window.$ = jQuery;
+import { exportWindow } from "./util/exportWindow";
+
+exportWindow(jQuery, '$');
+exportWindow(jQuery, 'jQuery');
 
 jQuery(function ($) {
     initTooltip();
@@ -19,55 +21,22 @@ jQuery(function ($) {
     }
 });
 
-declare global {
-    interface Window {
-        $: typeof jQuery;
-        jQuery: typeof jQuery;
-        /** @deprecated Module 사용할 것 */
-        escapeHtml: typeof escapeHtml;
-        /** @deprecated Module 사용할 것 */
-        mb_strwidth: typeof mb_strwidth;
-        /** @deprecated Module 사용할 것 */
-        isBrightColor: typeof isBrightColor;
-        /** @deprecated Module 사용할 것 */
-        TemplateEngine: typeof TemplateEngine;
-        /** @deprecated Module 사용할 것 */
-        getIconPath: typeof getIconPath;
-        /** @deprecated Module 사용할 것 */
-        activeFlip: typeof activeFlip;
-        /** @deprecated Module 사용할 것 */
-        errUnknown: typeof errUnknown;
-        /** @deprecated Module 사용할 것 */
-        errUnknownToast: typeof errUnknownToast;
-        /** @deprecated Module 사용할 것 */
-        quickReject: typeof quickReject;
-        /** @deprecated Module 사용할 것 */
-        nl2br: typeof nl2br;
-        /** @deprecated Module 사용할 것 */
-        initTooltip: typeof initTooltip;
-    }
-}
-
-
 /**
  * {0}, {1}, {2}형태로 포맷해주는 함수
- * NOTE: TypeScript declare 충돌로 인해 우회 정의
  */
- (String.prototype as unknown as {format:(...args:(string|number)[])=>string}).format = function(this:string, ...args){
+exportWindow(function(this:string, ...args:(string|number)[]){
     return this.replace(/{(\d+)}/g, function (match, number) {
         return (typeof args[number] != 'undefined') ? args[number].toString() : match;
     });
-};
-
-
-window.escapeHtml = escapeHtml;
-window.mb_strwidth = mb_strwidth;
-window.isBrightColor = isBrightColor;
-window.TemplateEngine = TemplateEngine;
-window.getIconPath = getIconPath;
-window.activeFlip = activeFlip;
-window.errUnknown = errUnknown;
-window.errUnknownToast = errUnknownToast;
-window.quickReject = quickReject;
-window.nl2br = nl2br;
-window.initTooltip = initTooltip;
+}, 'format', String.prototype);
+exportWindow(escapeHtml, 'escapeHtml');
+exportWindow(mb_strwidth, 'mb_strwidth');
+exportWindow(isBrightColor, 'isBrightColor');
+exportWindow(TemplateEngine, 'TemplateEngine');
+exportWindow(getIconPath, 'getIconPath');
+exportWindow(activeFlip, 'activeFlip');
+exportWindow(errUnknown, 'errUnknown');
+exportWindow(errUnknownToast, 'errUnknownToast');
+exportWindow(quickReject, 'quickReject');
+exportWindow(nl2br, 'nl2br');
+exportWindow(initTooltip, 'initTooltip');
