@@ -107,7 +107,7 @@ $serverCnt = $gameStor->server_cnt;
 <?=WebUtil::printJS('js/main.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('dist_js/map.js')?>
-<?=WebUtil::printJS('js/msg.js')?>
+<?=WebUtil::printJS('dist_js/msg.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';

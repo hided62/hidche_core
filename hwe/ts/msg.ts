@@ -14,6 +14,7 @@ import { TemplateEngine } from './util/TemplateEngine';
 import { isNotNull } from './util/isNotNull';
 import { unwrap_any } from './util/unwrap_any';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { exportWindow } from './util/exportWindow';
 let messageTemplate: string | undefined;
 let myGeneralID: number | undefined;
 //let isChief: boolean | undefined;
@@ -48,7 +49,7 @@ type MsgItem = {
     id: number,
     msgType: MsgType;
     src: MsgTarget;
-    dest: MsgTarget;
+    dest?: MsgTarget;
     text: string,
     option: Record<string, string | number>;
     time: string;
@@ -150,10 +151,11 @@ async function deleteMessage(msgID: number): Promise<MsgResponse> {
     return await refreshMsg();
 }
 
-async function refreshMsg(): Promise<MsgResponse> {
+export async function refreshMsg(): Promise<MsgResponse> {
     const value = await fetchRecentMsg();
     return redrawMsg(value, true);
 }
+exportWindow(refreshMsg, 'refreshMsg');
 
 async function fetchRecentMsg(): Promise<MsgResponse> {
     const response = await axios({
@@ -218,7 +220,7 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
         lastSequence = Math.max(lastSequence ?? 0, obj.sequence);
         for (const msgType of ['public', 'private', 'national', 'diplomacy'] as MsgType[]) {
             const msgList = obj[msgType];
-            if (!msgList) {
+            if (!msgList || msgList.length == 0) {
                 continue;
             }
             const lastMsg = unwrap(_.last(msgList));
@@ -248,7 +250,7 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
             //list의 맨 앞이 가장 최신 메시지임.
             const $msgs: JQuery<HTMLElement>[] = msgSource.map(function (msg) {
 
-                const contactTarget = (msg.src.id != myGeneralID) ? msg.src.id : msg.dest.id;
+                const contactTarget = (msg.src.id != myGeneralID || msg.msgType === 'public') ? msg.src.id : unwrap(msg.dest).id;
                 if (needRefreshLastContact && contactTarget != myGeneralID && contactTarget in generalList) {
                     needRefreshLastContact = false;
                     $('#last_contact').val(contactTarget).html(generalList[contactTarget].textName).show();
@@ -269,8 +271,8 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
                 }
 
                 const dest = {
-                    ...msg.dest,
-                    colorType: isBrightColor(msg.dest.color) ? 'bright' as const : 'dark' as const,
+                    ...(msg.dest??msg.src),
+                    colorType: isBrightColor((msg.dest??msg.src).color) ? 'bright' as const : 'dark' as const,
                 };
 
                 if (!dest.nation) {
@@ -612,7 +614,7 @@ function activateMessageForm() {
         })
         const result: InvalidResponse = response.data;
         if (!result.result) {
-            throw result.reason;
+            alert(result.reason);
         }
         await refreshMsg();
     });
