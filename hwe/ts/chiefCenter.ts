@@ -9,6 +9,7 @@ import { convertFormData } from './util/convertFormData';
 import { unwrap_any } from "./util/unwrap_any";
 import { parseTime } from './util/parseTime';
 import { formatTime } from './util/formatTime';
+import { stringifyUrl } from 'query-string';
 
 declare const maxChiefTurn: number;
 
@@ -31,11 +32,11 @@ type ChiefResponse = InvalidResponse | {
     result: true,
     date: string,
     nationTurnBrief: {
-        name:string|null,
-        turnTime:string|null,
-        officerLevelText:string,
-        npcType:number,
-        turn:string
+        name: string | null,
+        turnTime: string | null,
+        officerLevelText: string,
+        npcType: number,
+        turn: string
     }[],
     isChief: boolean,
     turnTerm: number
@@ -107,7 +108,7 @@ async function reloadTable() {
         return;
     }
     const turnTerm = data.turnTerm;
-    const tmpFilledChiefList:Record<number, boolean> = {};
+    const tmpFilledChiefList: Record<number, boolean> = {};
 
     if (data.isChief) {
         chiefTableObj.btns.css('visibility', 'visible');
@@ -134,7 +135,7 @@ async function reloadTable() {
 
         plateObj.officerLevelText.text(chiefInfo.officerLevelText);
 
-        let turnTimeObj: Date|undefined;
+        let turnTimeObj: Date | undefined;
 
         if (chiefInfo.turnTime) {
             turnTimeObj = parseTime(chiefInfo.turnTime);
@@ -176,11 +177,11 @@ async function reloadTable() {
 
 async function reserveTurn(turnList: number[], command: string) {
     console.log(turnList, command);
-    try{
+    try {
 
         const response = await axios({
             url: 'j_set_chief_command.php',
-            responseType:'json',
+            responseType: 'json',
             method: 'post',
             data: convertFormData({
                 turnList,
@@ -195,7 +196,7 @@ async function reserveTurn(turnList: number[], command: string) {
         }
         await reloadTable();
     }
-    catch(e){
+    catch (e) {
         console.error(e);
         errUnknown();
     }
@@ -223,7 +224,7 @@ async function pushTurn(turnCnt: number) {
     }
 }
 
-jQuery(function ($) {
+$(function ($) {
 
     chiefTableObj = genChiefTableObj();
     void reloadTable();
@@ -232,12 +233,14 @@ jQuery(function ($) {
         const turnList = unwrap_any<string[]>($('#chiefTurnSelector').val()).map(function (v) { return parseInt(v); });
         const $command = $('#chiefCommandList option:selected');
         if ($command.data('reqarg')) {
-            $.redirect(
-                "b_processing.php", {
-                command: unwrap($command.val()),
-                turnList: turnList.join('_'),
-                is_chief: true
-            }, "GET");
+            document.location.href = stringifyUrl({
+                url: 'b_processing.php',
+                query: {
+                    command: unwrap_any<string>($command.val()),
+                    turnList: turnList.join('_'),
+                    is_chief: true
+                }
+            });
         }
         else {
             void reserveTurn(turnList, unwrap_any<string>($command.val()));
