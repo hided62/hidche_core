@@ -1,6 +1,5 @@
 import { escapeHtml } from "../legacy/escapeHtml";
-import { linkifyStrWithOpt } from "../common_legacy";
-
+import linkifyStr from 'linkifyjs/string';
 /**
  * 단순한 Template 함수.  <%변수명%>으로 template 가능
  * @see  https://github.com/krasimir/absurd/blob/master/lib/processors/html/helpers/TemplateEngine.js
@@ -20,7 +19,7 @@ export function TemplateEngine(html: string, options: Record<string | number, un
         return add;
     };
     options.e = escapeHtml;
-    options.linkifyStr = linkifyStrWithOpt;
+    options.linkifyStr = linkifyStr;
     for (; ;) {
         const match = re.exec(html);
         if (!match) {
@@ -35,8 +34,8 @@ export function TemplateEngine(html: string, options: Record<string | number, un
     const compiledCode = code.join('').replace(/[\r\t\n]/g, ' ');
     try {
         return new Function('obj', compiledCode).apply(options, [options]);
-    } catch (err) {
-        console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n");
+    } catch (err: unknown) {
+        console.error(err, " in \n\nCode:\n", code, "\n");
         throw err;
     }
 }

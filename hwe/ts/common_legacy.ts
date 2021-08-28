@@ -91,10 +91,6 @@ declare global {
         linkifyStr: (v: string, k?: Record<string, string | number>) => string;
     }
 }
-export function linkifyStrWithOpt(text: string): string {
-    return window.linkifyStr(text, {});
-}
-
 export function getIconPath(imgsvr: boolean | 1 | 0, picture: string): string {
     // ../d_shared/common_path.js 필요
     if (!imgsvr) {

@@ -99,15 +99,8 @@ $serverCnt = $gameStor->server_cnt;
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
-<?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
-<?=WebUtil::printJS('../e_lib/moment.min.js')?>
-<?=WebUtil::printJS('../e_lib/linkify/linkify.min.js')?>
-<?=WebUtil::printJS('../e_lib/linkify/linkify-string.min.js')?>
-<?=WebUtil::printJS('js/main.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('dist_js/map.js')?>
-<?=WebUtil::printJS('dist_js/msg.js')?>
+<?=WebUtil::printJS('dist_js/main.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';
