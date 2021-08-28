@@ -54,25 +54,25 @@ if($emperior):
         </td>
     </tr>
     <tr>
-        <td id=bg1 width=98 align=center>국 가 수<br>(최종 / 최대)</td>
+        <td class='bg1' width=98 align=center>국 가 수<br>(최종 / 최대)</td>
         <td align=center width=398 colspan=2><?=$emperior['nation_count']?></td>
-        <td id=bg1 width=98 align=center>장 수 수<br>(최종 / 최대)</td>
+        <td class='bg1' width=98 align=center>장 수 수<br>(최종 / 최대)</td>
         <td align=center width=398 colspan=2><?=$emperior['gen_count']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>등 장 국 가</td>
+        <td class='bg1' align=center>등 장 국 가</td>
         <td colspan=5><?=$emperior['nation_name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>국가별 성향</td>
+        <td class='bg1' align=center>국가별 성향</td>
         <td colspan=5><?=$emperior['nation_hist']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>장 수 성 격</td>
+        <td class='bg1' align=center>장 수 성 격</td>
         <td colspan=5><?=$emperior['personal_hist']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>장 수 특 기</td>
+        <td class='bg1' align=center>장 수 특 기</td>
         <td colspan=5><?=$emperior['special_hist']?></td>
     </tr>
     <tr>
@@ -81,75 +81,75 @@ if($emperior):
         </td>
     </tr>
     <tr>
-        <td id=bg1 width=98 align=center>국 력</td>
+        <td class='bg1' width=98 align=center>국 력</td>
         <td align=center width=398 colspan=2><?=$emperior['power']?></td>
-        <td id=bg1 width=98 align=center>성 향</td>
+        <td class='bg1' width=98 align=center>성 향</td>
         <td align=center width=398 colspan=2><?=$emperior['type']?></td>
     </tr>
     <tr>
-        <td id=bg1 width=98 align=center>장 수</td>
+        <td class='bg1' width=98 align=center>장 수</td>
         <td align=center width=398 colspan=2><?=$emperior['gennum']?></td>
-        <td id=bg1 width=98 align=center>속 령</td>
+        <td class='bg1' width=98 align=center>속 령</td>
         <td align=center width=398 colspan=2><?=$emperior['citynum']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>총 인 구</td>
+        <td class='bg1' align=center>총 인 구</td>
         <td align=center colspan=2><?=$emperior['pop']?></td>
-        <td id=bg1 align=center>인 구 율</td>
+        <td class='bg1' align=center>인 구 율</td>
         <td align=center colspan=2><?=$emperior['poprate']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>국 고</td>
+        <td class='bg1' align=center>국 고</td>
         <td align=center colspan=2><?=$emperior['gold']?></td>
-        <td id=bg1 align=center>병 량</td>
+        <td class='bg1' align=center>병 량</td>
         <td align=center colspan=2><?=$emperior['rice']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>황 제</td>
+        <td class='bg1' align=center>황 제</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l12name']?></td>
-        <td id=bg1 align=center>승 상</td>
+        <td class='bg1' align=center>승 상</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l11name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>위 장 군</td>
+        <td class='bg1' align=center>위 장 군</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l10name']?></td>
-        <td id=bg1 align=center>사 공</td>
+        <td class='bg1' align=center>사 공</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l9name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>표 기 장 군</td>
+        <td class='bg1' align=center>표 기 장 군</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l8name']?></td>
-        <td id=bg1 align=center>태 위</td>
+        <td class='bg1' align=center>태 위</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l7name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>거 기 장 군</td>
+        <td class='bg1' align=center>거 기 장 군</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l6name']?></td>
-        <td id=bg1 align=center>사 도</td>
+        <td class='bg1' align=center>사 도</td>
         <td width=64>&nbsp;</td>
         <td width=332><?=$emperior['l5name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>오 호 장 군</td>
+        <td class='bg1' align=center>오 호 장 군</td>
         <td colspan=5><?=$emperior['tiger']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>건 안 칠 자</td>
+        <td class='bg1' align=center>건 안 칠 자</td>
         <td colspan=5><?=$emperior['eagle']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>장 수 들<br>(공헌도 순서)</td>
+        <td class='bg1' align=center>장 수 들<br>(공헌도 순서)</td>
         <td colspan=5><?=$emperior['gen']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>역 사 기 록</td>
+        <td class='bg1' align=center>역 사 기 록</td>
         <td colspan=5><?=formatHistoryToHTML(Json::decode($emperior['history']))?></td>
     </tr>
 </table>
@@ -175,7 +175,7 @@ if($showServers){
         $nation['levelName'] = getNationLevel($nation['level']);
         /** @var int[]|null $nationGenerals */
         $nationGenerals = $nation['generals'];
-        
+
         if($nationGenerals){
             $generals = $db->query('SELECT `general_no`, `name`, `last_yearmonth` FROM ng_old_generals WHERE server_id=%s AND general_no IN %li', $serverID, $nationGenerals);
 
@@ -200,7 +200,7 @@ if($showServers){
         if(key_exists('aux', $nation) && !is_array($nation['aux'])){
             $nation += Json::decode($nation['aux']);
         }
-        
+
         echo $templates->render('oldNation', $nation);
     }
 }

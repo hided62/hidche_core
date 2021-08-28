@@ -96,57 +96,57 @@ if ($budgetricediff > 0) {
         <td colspan=8 align=center style='color:<?=newColor($nation['color'])?>;background-color:<?=$nation['color']?>'>【<?=$nation['name']?>】</td>
     </tr>
     <tr>
-        <td width=98 align=center id=bg1>총주민</td>
+        <td width=98 align=center class='bg1'>총주민</td>
         <td width=198 align=center><?=number_format($currPop)?>/<?=number_format($maxPop)?></td>
-        <td width=98 align=center id=bg1>총병사</td>
+        <td width=98 align=center class='bg1'>총병사</td>
         <td width=198 align=center><?=number_format($currCrew)?>/<?=number_format($maxCrew)?></td>
-        <td width=98 align=center id=bg1>국 력</td>
+        <td width=98 align=center class='bg1'>국 력</td>
         <td width=298 align=center colspan=3><?=$nation['power']?></td>
     </tr>
     <tr>
-        <td align=center id=bg1>국 고</td>
+        <td align=center class='bg1'>국 고</td>
         <td align=center><?=number_format($nation['gold'])?></td>
-        <td align=center id=bg1>병 량</td>
+        <td align=center class='bg1'>병 량</td>
         <td align=center><?=number_format($nation['rice'])?></td>
-        <td align=center id=bg1>세 율</td>
+        <td align=center class='bg1'>세 율</td>
         <td align=center colspan=3><?=$nation['rate']?> %</td>
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1>세금/단기</td>
+        <td align=center class='bg1'>세금/단기</td>
         <td align=center>+<?=number_format($goldIncome)?> / +<?=number_format($warIncome)?></td>
-        <td align=center id=bg1>세곡/둔전</td>
+        <td align=center class='bg1'>세곡/둔전</td>
         <td align=center>+<?=number_format($riceIncome)?> / +<?=number_format($wallIncome)?></td>
-        <td align=center id=bg1>지급률</td>
+        <td align=center class='bg1'>지급률</td>
         <td align=center colspan=3><?=$nation['bill']?> %</td>
     </tr>
     <tr>
-        <td align=center id=bg1>수입/지출</td>
+        <td align=center class='bg1'>수입/지출</td>
         <td align=center>+<?=number_format($totalGoldIncome)?> / -<?=number_format($outcome)?></td>
-        <td align=center id=bg1>수입/지출</td>
+        <td align=center class='bg1'>수입/지출</td>
         <td align=center>+<?=number_format($totalRiceIncome)?> / -<?=number_format($outcome)?></td>
-        <td align=center id=bg1>속 령</td>
+        <td align=center class='bg1'>속 령</td>
         <td width=98 align=center><?=count($cityList)?></td>
-        <td width=98 align=center id=bg1>장 수</td>
+        <td width=98 align=center class='bg1'>장 수</td>
         <td width=98 align=center><?=$nation['gennum']?></td>
     </tr>
     <tr>
-        <td align=center id=bg1>국고 예산</td>
+        <td align=center class='bg1'>국고 예산</td>
         <td align=center><?=number_format($budgetgold)?> (<?=$budgetgolddiff?>)</td>
-        <td align=center id=bg1>병량 예산</td>
+        <td align=center class='bg1'>병량 예산</td>
         <td align=center><?=number_format($budgetrice)?> (<?=$budgetricediff?>)</td>
-        <td align=center id=bg1>기술력</td>
+        <td align=center class='bg1'>기술력</td>
         <td align=center><?=number_format(floor($nation['tech']))?></td>
-        <td align=center id=bg1>작 위</td>
+        <td align=center class='bg1'>작 위</td>
         <td align=center><?=getNationLevel($nation['level'])?></td>
     </tr>
     <tr>
-        <td align=center valign=top id=bg1> 속령일람 :</td>
+        <td align=center valign=top class='bg1'> 속령일람 :</td>
         <td colspan=7><?=join(', ', $cityNames)?></td>
     </tr>
     <tr>
-        <td align=center valign=top id=bg1>국가열전</td>
-        <td colspan=7 id=bg0><?=formatHistoryToHTML(getNationHistoryLogAll($nation['nation']))?></td>
+        <td align=center valign=top class='bg1'>국가열전</td>
+        <td colspan=7 class='bg0'><?=formatHistoryToHTML(getNationHistoryLogAll($nation['nation']))?></td>
     </tr>
 </table>
 <br>

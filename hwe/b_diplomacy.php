@@ -178,7 +178,7 @@ else{
         </td>
     </tr>
     <?php endforeach; ?>
-    <tr><td colspan=2 height=5 id=bg1></td></tr>
+    <tr><td colspan=2 height=5 class='bg1'></td></tr>
 </table>
 
 <?php endif; ?>

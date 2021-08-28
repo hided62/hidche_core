@@ -109,21 +109,21 @@ $generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special
 echo"
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=64  align=center id=bg1>얼 굴</td>
-        <td width=140 align=center id=bg1>이 름</td>
-        <td width=45 align=center id=bg1>연령</td>
-        <td width=45 align=center id=bg1>성격</td>
-        <td width=80 align=center id=bg1>특기</td>
-        <td width=45 align=center id=bg1>레 벨</td>
-        <td width=140 align=center id=bg1>국 가</td>
-        <td width=55 align=center id=bg1>명 성</td>
-        <td width=55 align=center id=bg1>계 급</td>
-        <td width=75 align=center id=bg1>관 직</td>
-        <td width=45 align=center id=bg1>통솔</td>
-        <td width=45 align=center id=bg1>무력</td>
-        <td width=45 align=center id=bg1>지력</td>
-        <td width=45 align=center id=bg1>삭턴</td>
-        <td width=70 align=center id=bg1>벌점</td>
+        <td width=64  align=center class='bg1'>얼 굴</td>
+        <td width=140 align=center class='bg1'>이 름</td>
+        <td width=45 align=center class='bg1'>연령</td>
+        <td width=45 align=center class='bg1'>성격</td>
+        <td width=80 align=center class='bg1'>특기</td>
+        <td width=45 align=center class='bg1'>레 벨</td>
+        <td width=140 align=center class='bg1'>국 가</td>
+        <td width=55 align=center class='bg1'>명 성</td>
+        <td width=55 align=center class='bg1'>계 급</td>
+        <td width=75 align=center class='bg1'>관 직</td>
+        <td width=45 align=center class='bg1'>통솔</td>
+        <td width=45 align=center class='bg1'>무력</td>
+        <td width=45 align=center class='bg1'>지력</td>
+        <td width=45 align=center class='bg1'>삭턴</td>
+        <td width=70 align=center class='bg1'>벌점</td>
     </tr>";
 foreach($generalList as $general){
     $nation = $nationname[$general['nation']];

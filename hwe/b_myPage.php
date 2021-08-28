@@ -123,8 +123,8 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><font color=skyblue size=3>개인 기록</font></td>
-        <td align=center id=bg1><font color=orange size=3>전투 기록</font></td>
+        <td align=center class='bg1'><font color=skyblue size=3>개인 기록</font></td>
+        <td align=center class='bg1'><font color=orange size=3>전투 기록</font></td>
     </tr>
     <tr>
         <td valign=top>
@@ -141,8 +141,8 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><font color=skyblue size=3>장수 열전</font></td>
-        <td align=center id=bg1><font color=orange size=3>전투 결과</font></td>
+        <td align=center class='bg1'><font color=skyblue size=3>장수 열전</font></td>
+        <td align=center class='bg1'><font color=orange size=3>전투 결과</font></td>
     </tr>
     <tr>
         <td valign=top>

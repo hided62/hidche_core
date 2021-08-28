@@ -146,10 +146,10 @@ for($i=12; $i >= $lv; $i-=2) {
     $imageTemp2 = GetImageURL($level[$i2]['imgsvr']??0);
     ?>
     <tr>
-        <td width=98 align=center id=bg1><font size=4><?=getOfficerLevelText($i1, $nation['level'])?></font></td>
+        <td width=98 align=center class='bg1'><font size=4><?=getOfficerLevelText($i1, $nation['level'])?></font></td>
         <td width=64 class='generalIcon' height=64 style='background:no-repeat center url("<?=$imageTemp1?>/<?=$level[$i1]['picture']??'default.jpg'?>");background-size:64px;'></td>
         <td width=332><font size=4><?=$level[$i1]['name']??'-'?>(<?=$level[$i1]['belong']??'-'?>년)</font></td>
-        <td width=98 align=center id=bg1><font size=4><?=getOfficerLevelText($i2, $nation['level'])?></font></td>
+        <td width=98 align=center class='bg1'><font size=4><?=getOfficerLevelText($i2, $nation['level'])?></font></td>
         <td width=64 class='generalIcon' height=64 style='background:no-repeat center url("<?=$imageTemp2?>/<?=$level[$i2]['picture']??'default.jpg'?>");background-size:64px;'></td>
         <td width=332><font size=4><?=$level[$i2]['name']??'-'?>(<?=$level[$i2]['belong']??'-'?>년)</font></td>
     </tr>
@@ -158,11 +158,11 @@ for($i=12; $i >= $lv; $i-=2) {
 
 ?>
 <tr>
-    <td width=98 align=center id=bg1>오호장군【승전】</td>
+    <td width=98 align=center class='bg1'>오호장군【승전】</td>
     <td colspan=5><?=$tigerstr?></td>
     </tr>
     <tr>
-        <td width=98 align=center id=bg1>건안칠자【계략】</td>
+        <td width=98 align=center class='bg1'>건안칠자【계략】</td>
         <td colspan=5><?=$eaglestr?></td>
     </tr>
 </table>
@@ -170,7 +170,7 @@ for($i=12; $i >= $lv; $i-=2) {
     <tr><td colspan=6 height=5></td></tr>
     <tr><td colspan=2 align=center bgcolor=red>추 방</td></tr>
     <tr>
-        <td width=498 align=right id=bg1>대상 장수</td>
+        <td width=498 align=right class='bg1'>대상 장수</td>
         <td width=498>
 <?php
 
@@ -212,9 +212,9 @@ echo "
     <tr><td colspan=4 height=5></td></tr>
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
-        <td width=98  align=right id=bg1>".getOfficerLevelText(12, $nation['level'])."</td>
+        <td width=98  align=right class='bg1'>".getOfficerLevelText(12, $nation['level'])."</td>
         <td width=398>{$level[12]['name']} 【".CityConst::byID($level[12]['city'])->name."】</td>
-        <td width=98  align=right id=bg1>{$officerLevelText}</td>
+        <td width=98  align=right class='bg1'>{$officerLevelText}</td>
         <td width=398>
 ";
 
@@ -251,7 +251,7 @@ for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
     $officerLevelText = getOfficerLevelText($i, $nation['level']);
     echo "
-        <td width=98 align=right id=bg1>{$officerLevelText}</td>
+        <td width=98 align=right class='bg1'>{$officerLevelText}</td>
         <td width=398>
     ";
 
@@ -295,13 +295,13 @@ if($meLevel == 12):
     <tr><td colspan='4' height='5'></td></tr>
 <tr><td colspan='4' align='center' bgcolor='purple'>외 교 권 자 임 명</td></tr>
     <tr>
-        <td width=98  align=right id=bg1>외교권자</td>
+        <td width=98  align=right class='bg1'>외교권자</td>
         <td width=398>
 <select id="selectAmbassador" multiple="multiple">
 </select>
     <button id='changeAmbassador' type='button'>임명</button>
         </td>
-        <td width=98  align=right id=bg1>조언자</td>
+        <td width=98  align=right class='bg1'>조언자</td>
         <td width=398>
 <select id="selectAuditor" multiple="multiple">
 </select>
@@ -320,7 +320,7 @@ if($meLevel >= 5) {
     echo "
     <tr><td colspan=5 align=center bgcolor=orange>도 시 관 직 임 명</td></tr>
     <tr>
-        <td colspan=3 align=right id=bg2>{$officerLevelText} 임명</td>
+        <td colspan=3 align=right class='bg2'>{$officerLevelText} 임명</td>
         <td colspan=2>
             <select id='citylist_4' size=1 style=color:white;background-color:black;>
     ";
@@ -367,7 +367,7 @@ if($meLevel >= 5) {
     </tr>";
     $officerLevelText = getOfficerLevelText(3, $nation['level']);
     echo "<tr>
-        <td colspan=3 align=right id=bg2>{$officerLevelText} 임명</td>
+        <td colspan=3 align=right class='bg2'>{$officerLevelText} 임명</td>
         <td colspan=2>
             <select id='citylist_3' size=1 style=color:white;background-color:black;>
     ";
@@ -413,7 +413,7 @@ if($meLevel >= 5) {
     </tr>";
     $officerLevelText = getOfficerLevelText(2, $nation['level']);
     echo "<tr>
-        <td colspan=3 align=right id=bg2>{$officerLevelText} 임명</td>
+        <td colspan=3 align=right class='bg2'>{$officerLevelText} 임명</td>
         <td colspan=2>
             <select id='citylist_2' size=1 style=color:white;background-color:black;>
     ";
@@ -462,10 +462,10 @@ if($meLevel >= 5) {
 }
 echo "
     <tr>
-        <td width=158 align=center id=bg1 colspan=2><font size=4>도 시</font></td>
-        <td width=278 align=center id=bg1><font size=4>태 수 (사관) 【현재도시】</font></td>
-        <td width=278 align=center id=bg1><font size=4>군 사 (사관) 【현재도시】</font></td>
-        <td width=278 align=center id=bg1><font size=4>종 사 (사관) 【현재도시】</font></td>
+        <td width=158 align=center class='bg1' colspan=2><font size=4>도 시</font></td>
+        <td width=278 align=center class='bg1'><font size=4>태 수 (사관) 【현재도시】</font></td>
+        <td width=278 align=center class='bg1'><font size=4>군 사 (사관) 【현재도시】</font></td>
+        <td width=278 align=center class='bg1'><font size=4>종 사 (사관) 【현재도시】</font></td>
     </tr>
 ";
 
@@ -495,8 +495,8 @@ foreach($db->query('SELECT city,name,level,region,officer_set from city where na
     $cityOfficerList = $officerList[$cityID]??[];
 ?>
 <?php if($region != $city['region']): ?>
-    <tr><td colspan=5 height=3 id=bg1></td></tr>
-    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 <?=CityConst::$regionMap[$city['region']]?> 】 </font></td></tr>
+    <tr><td colspan=5 height=3 class='bg1'></td></tr>
+    <tr><td colspan=5 class='bg1'><font size=4 color=skyblue> 【 <?=CityConst::$regionMap[$city['region']]?> 】 </font></td></tr>
 <?php endif; $region = $city['region']; ?>
 <tr>
 <td width=78 align=center style='color:<?=$textColor?>;background-color:<?=$nationColor?>;font-size:1.2em;'>【<?=$citylevel[$city['level']]?>】</td>

@@ -92,13 +92,13 @@ foreach ($nations as $nation) {
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 {$nation['name']} 】</td>
     </tr>
     <tr>
-        <td width=80 align=center id=bg1>성 향</td>
+        <td width=80 align=center class='bg1'>성 향</td>
         <td width=170 align=center><font color=yellow>".getNationType($nation['type'])."</font></td>
-        <td width=80 align=center id=bg1>작 위</td>
+        <td width=80 align=center class='bg1'>작 위</td>
         <td width=170 align=center>".getNationLevel($nation['level'])."</td>
-        <td width=80 align=center id=bg1>국 력</td>
+        <td width=80 align=center class='bg1'>국 력</td>
         <td width=170 align=center>{$nation['power']}</td>
-        <td width=80 align=center id=bg1>장수 / 속령</td>
+        <td width=80 align=center class='bg1'>장수 / 속령</td>
         <td width=170 align=center>{$nation['gennum']} / ".count($nation['cities']??[])."</td>
     ";
     for($chiefLevel = 12; $chiefLevel >= 5; $chiefLevel--){
@@ -113,9 +113,9 @@ foreach ($nations as $nation) {
     }
     echo "</tr>
     <tr>
-        <td align=center id=bg1>외교권자</td><td colspan=5>";
+        <td align=center class='bg1'>외교권자</td><td colspan=5>";
     echo join(', ', $ambassadors);
-    echo "</td><td align=center id=bg1>조언자</td><td align=center >";
+    echo "</td><td align=center class='bg1'>조언자</td><td align=center >";
     echo count($auditors).'명';
     echo "</td></tr>
     <tr>
@@ -160,9 +160,9 @@ echo "
     </tr>
     <tr>
         <td width=498 align=center>&nbsp;</td>
-        <td width=123 align=center id=bg1>장 수</td>
+        <td width=123 align=center class='bg1'>장 수</td>
         <td width=123 align=center>{$nations[0]['gennum']}</td>
-        <td width=123 align=center id=bg1>속 령</td>
+        <td width=123 align=center class='bg1'>속 령</td>
         <td width=123 align=center>".count($nations[0]['cities']??[])."</td>
     </tr>
     <tr>

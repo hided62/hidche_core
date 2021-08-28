@@ -148,41 +148,41 @@ foreach($cityList as $city){
         <td colspan=12 style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=2>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</font></td>
     </tr>
     <tr>
-        <td align=center width=46 id=bg1>주민</td>
+        <td align=center width=46 class='bg1'>주민</td>
         <td align=center width=140>{$city['pop']}/{$city['pop_max']}</td>
-        <td align=center width=46 id=bg1>농업</td>
+        <td align=center width=46 class='bg1'>농업</td>
         <td align=center width=140>{$city['agri']}/{$city['agri_max']}</td>
-        <td align=center width=46 id=bg1>상업</td>
+        <td align=center width=46 class='bg1'>상업</td>
         <td align=center width=140>{$city['comm']}/{$city['comm_max']}</td>
-        <td align=center width=46 id=bg1>치안</td>
+        <td align=center width=46 class='bg1'>치안</td>
         <td align=center width=140>{$city['secu']}/{$city['secu_max']}</td>
-        <td align=center width=46 id=bg1>수비</td>
+        <td align=center width=46 class='bg1'>수비</td>
         <td align=center width=140>{$city['def']}/{$city['def_max']}</td>
-        <td align=center width=46 id=bg1>성벽</td>
+        <td align=center width=46 class='bg1'>성벽</td>
         <td align=center width=140>{$city['wall']}/{$city['wall_max']}</td>
     </tr>
     <tr>
-        <td align=center id=bg1>민심</td>
+        <td align=center class='bg1'>민심</td>
         <td align=center>".round($city['trust'], 1)."</td>
-        <td align=center id=bg1>시세</td>
+        <td align=center class='bg1'>시세</td>
         <td align=center>{$city['trade']}%</td>
-        <td align=center id=bg1>인구</td>
+        <td align=center class='bg1'>인구</td>
         <td align=center>".round($city['pop']/$city['pop_max']*100, 2)." %</td>
-        <td align=center id=bg1>태수</td>
+        <td align=center class='bg1'>태수</td>
         <td align=center>";
     echo $officerName[4];
     echo "</td>
-        <td align=center id=bg1>군사</td>
+        <td align=center class='bg1'>군사</td>
         <td align=center>";
     echo $officerName[3];
     echo "</td>
-        <td align=center id=bg1>종사</td>
+        <td align=center class='bg1'>종사</td>
         <td align=center>";
     echo $officerName[2];
     echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1>장수</td>
+        <td align=center class='bg1'>장수</td>
         <td colspan=11>";
     $generalList = $db->query('SELECT npc, name FROM general WHERE city = %i AND nation = %i', $city['city'], $me['nation']);
     if (!$generalList) {

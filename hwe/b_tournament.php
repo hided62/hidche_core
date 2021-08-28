@@ -145,7 +145,7 @@ if($str3){
 ?>
     <tr><td colspan=8>운영자 메세지 : <font color=orange size=5><?=$admin['tnmt_msg']?></font></td></tr>
     <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
-    <tr><td colspan=8 align=center id=bg2><font color=magenta size=5>16강 승자전</font></td></tr>
+    <tr><td colspan=8 align=center class='bg2'><font color=magenta size=5>16강 승자전</font></td></tr>
     <tr><td height=10 colspan=8 align=center></td></tr>
 <?php
 
@@ -398,7 +398,7 @@ if ($admin['tournament'] >= 7 || $admin['tournament'] == 0) {
 }
 echo "
     <tr><td height=10 colspan=8 align=center></td></tr>
-    <tr><td colspan=8 align=center id=bg2><font color=orange size=5>조별 본선 순위</font></td></tr>
+    <tr><td colspan=8 align=center class='bg2'><font color=orange size=5>조별 본선 순위</font></td></tr>
     <tr>";
 
 $num = array("一", "二", "三", "四", "五", "六", "七", "八");
@@ -409,7 +409,7 @@ for ($i=0; $i < 8; $i++) {
         <td>
             <table align=center width=250 class='tb_layout bg0'>
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
-                <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
+                <tr class='bg1'><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
     $generalList = $db->query('SELECT npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq',$grp);
     foreach($generalList as $k=>$general) {
@@ -427,7 +427,7 @@ if ($admin['tournament'] == 4 || $admin['tournament'] == 5) {
     printFighting($admin['tournament'], $admin['phase']);
 }
 echo "
-    <tr><td colspan=8 align=center id=bg2><font color=yellow size=5>조별 예선 순위</font></td></tr>
+    <tr><td colspan=8 align=center class='bg2'><font color=yellow size=5>조별 예선 순위</font></td></tr>
     <tr>";
 
 for ($i=0; $i < 8; $i++) {
@@ -436,7 +436,7 @@ for ($i=0; $i < 8; $i++) {
         <td>
             <table align=center width=250 class='tb_layout bg0'>
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
-                <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
+                <tr class='bg1'><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
     $generalList = $db->query('SELECT npc,name,leadership,strength,intel,leadership+strength+intel as total,prmt,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp=%i order by gd desc, gl desc, seq',$grp);
     foreach($generalList as $k=>$general) {

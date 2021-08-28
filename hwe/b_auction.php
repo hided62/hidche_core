@@ -59,12 +59,12 @@ if ($msg2 == "") {
 <body>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td>거 래 장<br><?=closeButton()?></td></tr>
-    <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick="location.replace('b_auction.php')"></td></tr>
+    <tr><td align=center class='bg2'><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick="location.replace('b_auction.php')"></td></tr>
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_auction.php>
     <tr><td colspan=11 align=center bgcolor=orange><font size=5>팝 니 다</font></td></tr>
-    <tr align=center id=bg1>
+    <tr align=center class='bg1'>
         <td width=68>거래번호</td>
         <td width=48>선택</td>
         <td width=98>판매자</td>
@@ -118,18 +118,18 @@ foreach($db->query('SELECT * from auction where type=0 order by expire') as $auc
 }
 ?>
     <tr height=25>
-        <td align=center id=bg1>등록결과</td>
+        <td align=center class='bg1'>등록결과</td>
         <td colspan=10><?=ConvertLog($msg)?></td>
     </tr>
     <tr>
-        <td align=center id=bg1>입찰등록</td>
+        <td align=center class='bg1'>입찰등록</td>
         <td colspan=10>
             　지불할 금액: <input type=text style=color:white;background-color:black; size=6 maxlength=6 name=value>
             <input type=<?=$btn?> name=btn value='구매시도' onclick='return confirm("정말 입찰하시겠습니까?");'>
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1>거래등록</td>
+        <td align=center class='bg1'>거래등록</td>
         <td colspan=10>
             　종료: <input type=text style=color:white;background-color:black; size=2 maxlength=2 name=term value=12>턴 후
             　물품: 쌀
@@ -152,7 +152,7 @@ foreach($db->query('SELECT * from auction where type=0 order by expire') as $auc
 <table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_auction.php>
     <tr><td colspan=11 align=center bgcolor=skyblue><font size=5>삽 니 다</font></td></tr>
-    <tr align=center id=bg1>
+    <tr align=center class='bg1'>
         <td width=68>거래번호</td>
         <td width=48>선택</td>
         <td width=98>구매자</td>
@@ -205,18 +205,18 @@ foreach($db->query('SELECT * from auction where type=1 order by expire') as $auc
 }
 ?>
     <tr height=25>
-        <td align=center id=bg1>등록결과</td>
+        <td align=center class='bg1'>등록결과</td>
         <td colspan=10><?=ConvertLog($msg2)?></td>
     </tr>
     <tr>
-        <td align=center id=bg1>입찰등록</td>
+        <td align=center class='bg1'>입찰등록</td>
         <td colspan=10>
             　수령할 금액: <input type=text style=color:white;background-color:black; size=6 maxlength=6 name=value>
             <input type=<?=$btn?> name=btn value='판매시도' onclick='return confirm("정말 입찰하시겠습니까?");'>
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1>거래등록</td>
+        <td align=center class='bg1'>거래등록</td>
         <td colspan=10>
             　종료: <input type=text style=color:white;background-color:black; size=2 maxlength=2 name=term value=12>턴 후
             　물품: 쌀
@@ -237,11 +237,11 @@ foreach($db->query('SELECT * from auction where type=1 order by expire') as $auc
 </table>
 <br>
 <table align=center width=1000 class='tb_layout bg0'>
-    <tr><td align=center id=bg2><font size=5>최 근 기 록</font></td></tr>
+    <tr><td align=center class='bg2'><font size=5>최 근 기 록</font></td></tr>
     <tr><td>
     <?=getAuctionLogRecent(20)?>
     </td></tr>
-    <tr><td align=center id=bg2><font size=5>도 움 말</font></td></tr>
+    <tr><td align=center class='bg2'><font size=5>도 움 말</font></td></tr>
     <tr><td>
         <font color=white size=2>
 ㆍ판매거래는 거래자가 판매할 물품을 거래하면, 구입을 희망하는 사람이 현재가보다 높게 입찰하여 구입하는 방식입니다.<br>

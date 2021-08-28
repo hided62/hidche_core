@@ -93,18 +93,18 @@ else{
 ?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=102  align=center id=bg1>희생된 장수</td>
-        <td width=102  align=center id=bg1>악령 이름</td>
-        <td width=68  align=center id=bg1>레벨</td>
-        <td width=118 align=center id=bg1>국가</td>
-        <td width=68  align=center id=bg1>성격</td>
-        <td width=88  align=center id=bg1>특기</td>
-        <td width=68  align=center id=bg1>종능</td>
-        <td width=68  align=center id=bg1>통솔</td>
-        <td width=68  align=center id=bg1>무력</td>
-        <td width=68  align=center id=bg1>지력</td>
-        <td width=78  align=center id=bg1>명성</td>
-        <td width=78  align=center id=bg1>계급</td>
+        <td width=102  align=center class='bg1'>희생된 장수</td>
+        <td width=102  align=center class='bg1'>악령 이름</td>
+        <td width=68  align=center class='bg1'>레벨</td>
+        <td width=118 align=center class='bg1'>국가</td>
+        <td width=68  align=center class='bg1'>성격</td>
+        <td width=88  align=center class='bg1'>특기</td>
+        <td width=68  align=center class='bg1'>종능</td>
+        <td width=68  align=center class='bg1'>통솔</td>
+        <td width=68  align=center class='bg1'>무력</td>
+        <td width=68  align=center class='bg1'>지력</td>
+        <td width=78  align=center class='bg1'>명성</td>
+        <td width=78  align=center class='bg1'>계급</td>
     </tr>
 <?php foreach($generalList as $general): ?>
     <tr>

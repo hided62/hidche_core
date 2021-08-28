@@ -84,33 +84,33 @@ foreach($emperiors as $emperior){
         </td>
     </tr>
     <tr>
-        <td id=bg1 align=center width=80>국 력</td>
+        <td class='bg1' align=center width=80>국 력</td>
         <td align=center width=170><?=$emperior['power']?></td>
-        <td id=bg1 align=center width=80>장 수</td>
+        <td class='bg1' align=center width=80>장 수</td>
         <td align=center width=170><?=$emperior['gennum']?></td>
-        <td id=bg1 align=center width=80>속 령</td>
+        <td class='bg1' align=center width=80>속 령</td>
         <td align=center width=170><?=$emperior['citynum']?></td>
-        <td id=bg1 align=center width=80>성 향</td>
+        <td class='bg1' align=center width=80>성 향</td>
         <td align=center width=170><?=$emperior['type']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>황 제</td>
+        <td class='bg1' align=center>황 제</td>
         <td align=center><?=$emperior['l12name']?></td>
-        <td id=bg1 align=center>승 상</td>
+        <td class='bg1' align=center>승 상</td>
         <td align=center><?=$emperior['l11name']?></td>
-        <td id=bg1 align=center>표 기 장 군</td>
+        <td class='bg1' align=center>표 기 장 군</td>
         <td align=center><?=$emperior['l10name']?></td>
-        <td id=bg1 align=center>사 공</td>
+        <td class='bg1' align=center>사 공</td>
         <td align=center><?=$emperior['l9name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>거 기 장 군</td>
+        <td class='bg1' align=center>거 기 장 군</td>
         <td align=center><?=$emperior['l8name']?></td>
-        <td id=bg1 align=center>태 위</td>
+        <td class='bg1' align=center>태 위</td>
         <td align=center><?=$emperior['l7name']?></td>
-       <td id=bg1 align=center>위 장 군</td>
+       <td class='bg1' align=center>위 장 군</td>
         <td align=center><?=$emperior['l6name']?></td>
-        <td id=bg1 align=center>사 도</td>
+        <td class='bg1' align=center>사 도</td>
         <td align=center><?=$emperior['l5name']?></td>
     </tr>
 </table>

@@ -78,7 +78,7 @@ if($str3){
 <table align=center width=1120 class='tb_layout bg0'>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
     <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
-    <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$globalBetTotal?> / 내 투자 금액 : <?=$myBetTotal?>)</font></td></tr>
+    <tr><td height=50 colspan=16 align=center class='bg2'><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$globalBetTotal?> / 내 투자 금액 : <?=$myBetTotal?>)</font></td></tr>
 </table>
 <table align=center width=1120 class='mimic_flex bg0' style='border:solid 1px gray;font-size:10px;'>
     <tr align=center><td height=10 colspan=16></td></tr>
@@ -392,8 +392,8 @@ if ($admin['tournament'] == 6) {
     <tr align=center><td height=10 colspan=16></td></tr>
 </table>
 <table align=center width=1120 class='tb_layout bg0'>
-    <tr align=center><td height=50 colspan=4 id=bg2><font color=yellow size=6>토너먼트 랭킹</font></td></tr>
-    <tr align=center><td colspan=4 id=bg2><font color=skyblue size=3>순위 / 장수명 / 능력치 / 경기수 / 승리 / 무승부 / 패배 / 집계점수 / 우승횟수</font></td></tr>
+    <tr align=center><td height=50 colspan=4 class='bg2'><font color=yellow size=6>토너먼트 랭킹</font></td></tr>
+    <tr align=center><td colspan=4 class='bg2'><font color=skyblue size=3>순위 / 장수명 / 능력치 / 경기수 / 승리 / 무승부 / 패배 / 집계점수 / 우승횟수</font></td></tr>
     <tr align=center>
 <?php
 
@@ -429,7 +429,7 @@ foreach($tournamentType as $tournamentTypeText=>[$statTypeText,$statFunc,$rankCo
         <td>
             <table align=center width=280 class='tb_layout bg0'>
                 <tr><td colspan=9 align=center style=color:white;background-color:black;><font size=4><?=$tournamentTypeText?></font></td></tr>
-                <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center><?=$statTypeText?></td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>
+                <tr class='bg1'><td align=center>순</td><td align=center>장수</td><td align=center><?=$statTypeText?></td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>
 <?php
     $prizeColumn = "{$rankColumn}p";
     $gameColumn = "{$rankColumn}g";

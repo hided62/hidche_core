@@ -118,7 +118,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
     $imageTemp = GetImageURL($member['imgsvr']);
     echo "
         <tr class='custom_picture'>
-            <td align=right id=bg1>전콘 사용 여부</td>
+            <td align=right class='bg1'>전콘 사용 여부</td>
             <td width=64 height=64>
                 <img width='64' height='64' src='{$imageTemp}/{$member['picture']}' border='0'>
             </td>
@@ -130,7 +130,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
 }
 ?>
         <tr class='custom_personality'>
-            <td align=right id=bg1>성격</td>
+            <td align=right class='bg1'>성격</td>
             <td colspan=2 style='text-align:left;'>
                 <select id="selChar" name=character size=1 maxlength=15 style=color:white;background-color:black;>
                     <option selected value='Random'>????</option>
@@ -142,19 +142,19 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
             </td>
         </tr>
         <tr class='custom_stat'>
-            <td align=right id=bg1>통솔</td>
+            <td align=right class='bg1'>통솔</td>
             <td colspan=2><input type="number" name="leadership" id="leadership" value="50"></td>
         </tr>
         <tr class='custom_stat'>
-            <td align=right id=bg1>무력</td>
+            <td align=right class='bg1'>무력</td>
             <td colspan=2><input type="number" name="strength" id="strength" value="50"></td>
         </tr>
         <tr class='custom_stat'>
-            <td align=right id=bg1>지력</td>
+            <td align=right class='bg1'>지력</td>
             <td colspan=2><input type="number" name="intel" id="intel" value="50"></td>
         </tr>
         <tr class='custom_stat'>
-            <td align=right id=bg1>능력치 조정</td>
+            <td align=right class='bg1'>능력치 조정</td>
             <td colspan=2>
                 <input type=button value=랜덤형 onclick=abilityRand()>
                 <input type=button value=통솔무력형 onclick=abilityLeadpow()>

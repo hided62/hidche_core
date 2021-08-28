@@ -60,7 +60,7 @@ function captureKey(e) {
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 action=c_vote.php method=post>
-    <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5?>금과 추첨으로 유니크템 증정!)</font></td></tr>
+    <tr><td colspan=3 align=center class='bg2'><font size=5>설 문 조 사 (<?=$admin['develcost']*5?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
 
 if ($isVoteAdmin) {
@@ -76,7 +76,7 @@ if ($isVoteAdmin) {
 $vote_title = Tag2Code($vote_title);
 echo "
     <tr>
-        <td colspan=2 width=148 align=center id=bg1>제 목</td>
+        <td colspan=2 width=148 align=center class='bg1'>제 목</td>
         <td width=848 align=left>&nbsp;{$vote_title}</td>
     </tr>
 ";
@@ -151,7 +151,7 @@ echo "
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td colspan=4 align=center id=bg1>댓 글</td>
+        <td colspan=4 align=center class='bg1'>댓 글</td>
     </tr>
 ";
 for ($i=0; $i < $commentCount; $i++) {
@@ -180,7 +180,7 @@ if ($me['no'] > 0) {
 </table>
 <br>
 <table align=center width=1000 class='tb_layout bg0'>
-    <tr><td colspan=3 align=center id=bg2><font size=5>
+    <tr><td colspan=3 align=center class='bg2'><font size=5>
         전 체 통 계
 <?php
 if ($isVoteAdmin) {

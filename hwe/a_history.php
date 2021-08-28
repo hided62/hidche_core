@@ -138,7 +138,7 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
     </td></tr>
 </table>
 <table align=center width=1000 height=520 class='tb_layout bg0'>
-    <thead><tr><th colspan=5 align=center id=bg1>중 원 지 도</th></tr></thead>
+    <thead><tr><th colspan=5 align=center class='bg1'>중 원 지 도</th></tr></thead>
     <tbody>
     <tr height=520>
         <td width=698>
@@ -168,13 +168,13 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
             </table>
         </td>
     </tr>
-    <tr><th colspan=5 align=center id=bg1>중 원 정 세</th></tr>
+    <tr><th colspan=5 align=center class='bg1'>중 원 정 세</th></tr>
     <tr>
         <td colspan=5 valign=top>
             <?=formatHistoryToHTML(Json::decode($history['global_history']))?>
         </td>
     </tr>
-    <tr><th colspan=5 align=center id=bg1>장 수 동 향</th></tr>
+    <tr><th colspan=5 align=center class='bg1'>장 수 동 향</th></tr>
     <tr>
         <td colspan=5 valign=top>
             <?=formatHistoryToHTML(Json::decode($history['global_action']))?>
