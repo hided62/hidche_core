@@ -55,16 +55,19 @@ $nationStor->cacheValues(['notice', 'scout_msg']);
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <script>
 var editable = <?=(($me['officer_level']>=5||$permission==4)?'true':'false')?>;
-var nationMsg = <?=Json::encode($nationStor->notice??'')?>;
-var scoutmsg = <?=Json::encode($nationStor->scout_msg??'')?>;
+var storedData = <?=Json::encode([
+    "nationMsg"=>$nationStor->notice??'',
+    "scoutMsg"=>$nationStor->scout_msg??''
+])?>;
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
+<!--
 <?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/summernote-bs4.min.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/lang/summernote-ko-KR.js')?>
-<?=WebUtil::printJS('../e_lib/summernote/plugin/image-sammo/summernote-image-flip.js')?>
-<?=WebUtil::printJS('js/dipcenter.js')?>
+<?=WebUtil::printJS('../e_lib/summernote/plugin/image-sammo/summernote-image-flip.js')?>-->
+<?=WebUtil::printJS('dist_js/dipcenter.js')?>
 
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/summernote/summernote-bs4.css')?>
@@ -199,7 +202,7 @@ if ($budgetricediff > 0) {
             </div>
         </div>
         <div style='border-bottom:solid gray 0.5px;'>870px x 200px를 넘어서는 내용은 표시되지 않습니다.</div>
-        <input type='hidden' class='input_form' name='scoutmsg' data-global='scoutmsg'>
+        <input type='hidden' class='input_form' name='scoutMsg' data-global='scoutMsg'>
         <div style="width:870px;margin-left:auto;">
             <div class='edit_form viewer'></div>
         </div>

@@ -7,7 +7,7 @@ include "func.php";
 
 $btn = Util::getPost('btn');
 $msg = Util::getPost('msg');
-$scoutmsg = Util::getPost('scoutmsg');
+$scoutmsg = Util::getPost('scoutMsg');
 $rate = Util::getPost('rate', 'int');
 $bill = Util::getPost('bill', 'int');
 $secretlimit = Util::getPost('secretlimit', 'int');
@@ -75,4 +75,3 @@ if($btn == "국가방침 수정") {
 }
 
 header('location:b_dipcenter.php');
-

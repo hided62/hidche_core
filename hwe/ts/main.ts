@@ -6,7 +6,7 @@ import { parseTime } from './util/parseTime';
 import { addMilliseconds, addMinutes, differenceInMilliseconds } from 'date-fns';
 import { formatTime } from './util/formatTime';
 import { unwrap_any } from './util/unwrap_any';
-import { errUnknown } from './common_legacy';
+import { activateFlip, errUnknown } from './common_legacy';
 import { unwrap } from './util/unwrap';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 import './msg.ts';
@@ -194,4 +194,5 @@ $(function ($) {
 
     setInterval(myclock, 500);
     reloadCommandList();
+    activateFlip();
 });

@@ -34,6 +34,7 @@ module.exports = (env, argv) => {
             myPage: '@/myPage.ts',
             extExpandCity: '@/extExpandCity.ts',
             main: '@/main.ts',
+            dipcenter: '@/dipcenter.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

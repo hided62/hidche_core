@@ -1,4 +1,4 @@
-import { activeFlip, isBrightColor, getIconPath, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
+import { activateFlip, isBrightColor, getIconPath, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
 import { mb_strwidth } from "./util/mb_strwidth";
 import { TemplateEngine } from "./util/TemplateEngine";
 import { escapeHtml } from "./legacy/escapeHtml";
@@ -11,7 +11,7 @@ exportWindow(jQuery, 'jQuery');
 
 jQuery(function ($) {
     initTooltip();
-    activeFlip();
+    activateFlip();
 
     const customCSS = localStorage.getItem('sam_customCSS');
     if (customCSS) {
@@ -34,7 +34,7 @@ exportWindow(mb_strwidth, 'mb_strwidth');
 exportWindow(isBrightColor, 'isBrightColor');
 exportWindow(TemplateEngine, 'TemplateEngine');
 exportWindow(getIconPath, 'getIconPath');
-exportWindow(activeFlip, 'activeFlip');
+exportWindow(activateFlip, 'activateFlip');
 exportWindow(errUnknown, 'errUnknown');
 exportWindow(errUnknownToast, 'errUnknownToast');
 exportWindow(quickReject, 'quickReject');

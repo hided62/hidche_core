@@ -100,7 +100,7 @@ export function getIconPath(imgsvr: boolean | 1 | 0, picture: string): string {
     }
 }
 
-export function activeFlip($obj?: JQuery<HTMLElement>): void {
+export function activateFlip($obj?: JQuery<HTMLElement>): void {
     let $result: JQuery<HTMLElement>;
     if ($obj === undefined) {
         $result = $('img[data-flip]');
