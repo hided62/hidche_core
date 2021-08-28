@@ -1,12 +1,12 @@
 import $ from 'jquery';
 import Popper from 'popper.js';
-(window as unknown as { Popper: unknown }).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
+exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import { parseTime } from './util/parseTime';
 import { addMilliseconds, addMinutes, differenceInMilliseconds } from 'date-fns';
 import { formatTime } from './util/formatTime';
 import { unwrap_any } from './util/unwrap_any';
-import { activateFlip, errUnknown } from './common_legacy';
+import { activateFlip, errUnknown, initTooltip } from './common_legacy';
 import { unwrap } from './util/unwrap';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 import './msg.ts';
@@ -195,4 +195,5 @@ $(function ($) {
     setInterval(myclock, 500);
     reloadCommandList();
     activateFlip();
+    initTooltip();
 });

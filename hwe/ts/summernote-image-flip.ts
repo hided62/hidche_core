@@ -3,7 +3,6 @@ import $ from 'jquery';
 import 'summernote/dist/summernote-bs4.js';
 
 $(function ($) {
-    console.log($.summernote);
     $.extend(true, $.summernote.lang, {
         'en-US': {
             imageFlip: {
@@ -33,7 +32,7 @@ $(function ($) {
             const $note = context.layoutInfo.note;
             const $editor = context.layoutInfo.editor;
             const $editable = context.layoutInfo.editable;
-            const $toolbar = context.layoutInfo.toolbar;
+            //const $toolbar = context.layoutInfo.toolbar;
 
             if (typeof context.options.imageFlip === 'undefined') {
                 context.options.imageFlip = {};
@@ -47,7 +46,7 @@ $(function ($) {
                     contents: ui.icon(options.icons.pencil),
                     container: false,
                     tooltip: lang.imageFlip.edit,
-                    click: function (e: JQuery.Event) {
+                    click: function (/*e: JQuery.Event*/) {
                         context.invoke('imageFlip.show');
                     }
                 });

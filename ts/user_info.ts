@@ -1,7 +1,7 @@
 import { setAxiosXMLHttpRequest } from "../hwe/ts/util/setAxiosXMLHttpRequest";
 import $ from 'jquery';
 import Popper from 'popper.js';
-(window as unknown as { Popper: unknown }).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
+exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import axios from 'axios';
 import { subDays } from 'date-fns';
@@ -12,6 +12,7 @@ import { InvalidResponse } from "../hwe/ts/defs";
 import { unwrap } from "../hwe/ts/util/unwrap";
 import { parseTime } from "../hwe/ts/util/parseTime";
 import { formatTime } from "../hwe/ts/util/formatTime";
+import { exportWindow } from "../hwe/ts/util/exportWindow";
 
 type ResultUserInfo = {
     result: true,
