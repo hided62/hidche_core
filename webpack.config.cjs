@@ -38,6 +38,7 @@ module.exports = (env, argv) => {
             diplomacy: '@/diplomacy.ts',
             currentCity: '@/currentCity.ts',
             hallOfFame: '@/hallOfFame.ts',
+            history: '@/history.ts',
         },
         output: {
             filename: '[name].js',
