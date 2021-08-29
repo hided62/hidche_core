@@ -1,15 +1,23 @@
-//import $ from 'jquery';
-//import 'bootstrap';
+import $ from 'jquery';
+exportWindow($, '$');
+import { exportWindow } from './util/exportWindow';
 import axios from 'axios';
-//import 'select2';
+import Popper from 'popper.js';
+exportWindow(Popper, 'Popper');
+import 'bootstrap';
+import 'select2/dist/js/select2.full.js'
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 import { convertFormData } from './util/convertFormData';
 import { InvalidResponse } from './defs';
 import { unwrap_any } from './util/unwrap_any';
 import { DataFormat, IdTextPair, OptionData } from 'select2';
 import { unwrap } from "./util/unwrap";
+import { defaultSelectCityByMap } from './defaultSelectCityByMap';
+import { defaultSelectNationByMap } from './defaultSelectNationByMap';
 
 declare const isChiefTurn: boolean;
+declare const jsPlugins: string[];
+
 declare global {
     interface Window {
         submitAction: () => Promise<void>;
@@ -275,4 +283,16 @@ $(function ($) {
         }
     });
 
+    const pluginMap:Record<string, ()=>void> = {
+        'defaultSelectCityByMap': defaultSelectCityByMap,
+        'defaultSelectNationByMap': defaultSelectNationByMap,
+    };
+    for (const jsPlugin of jsPlugins) {
+        if (jsPlugin in pluginMap) {
+            pluginMap[jsPlugin]()
+        }
+        else{
+            console.error(`'${jsPlugin}' is not supported`);
+        }
+    }
 });

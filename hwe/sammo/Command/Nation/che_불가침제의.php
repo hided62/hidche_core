@@ -223,10 +223,10 @@ class che_불가침제의 extends Command\NationCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'dist_js/defaultSelectNationByMap.js'
+            'defaultSelectNationByMap'
         ];
     }
 

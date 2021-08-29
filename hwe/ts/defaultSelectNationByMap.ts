@@ -1,10 +1,9 @@
 import { reloadWorldMap } from "./map";
 import { unwrap_any } from "./util/unwrap_any";
-/*import $ from 'jquery';
-import 'select2';*///TODO: processing
 
-export function loadPlugin(): void{
+export function defaultSelectNationByMap(): void{
     const $target = $("#destNationID");
+    console.log('nation', $target);
     void reloadWorldMap({
         isDetailMap: false,
         clickableAll: true,
@@ -23,7 +22,3 @@ export function loadPlugin(): void{
         }
     });
 }
-
-$(function() {
-    loadPlugin();
-});

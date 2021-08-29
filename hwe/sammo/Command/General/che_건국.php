@@ -196,7 +196,7 @@ class che_건국 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
             'dist_js/colorSelect.js'

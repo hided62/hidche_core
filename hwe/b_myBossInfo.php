@@ -36,7 +36,6 @@ $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nati
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('dist_js/bossInfo.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>

@@ -1,12 +1,9 @@
 import { reloadWorldMap } from "./map";
 import { unwrap_any } from "./util/unwrap_any";
-/*import $ from 'jquery';
-import 'select2';*///TODO: processing
 
-
-export function loadPlugin(): void {
+export function defaultSelectCityByMap(): void {
     const $target = $("#destCityID");
-    console.log('target', $target);
+    console.log('city', $target);
     void reloadWorldMap({
         isDetailMap: false,
         clickableAll: true,
@@ -14,15 +11,12 @@ export function loadPlugin(): void {
         useCachedMap: true,
         selectCallback: function (city) {
             const currVal = unwrap_any<string>($target.val());
-            $target.val(city.id).trigger("change");
+            $target.val(city.id);
+            $target.trigger("change");
             if ($target.val() === null) {
-                $target.val(currVal).trigger("change");
+                $target.val(currVal).trigger("change").blur();
             }
             return false;
         }
     });
 }
-
-$(function () {
-    loadPlugin();
-});

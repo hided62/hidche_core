@@ -157,10 +157,10 @@ class che_발령 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'dist_js/defaultSelectCityByMap.js'
+            'defaultSelectCityByMap'
         ];
     }
 

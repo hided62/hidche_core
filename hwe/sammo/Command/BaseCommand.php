@@ -32,7 +32,7 @@ abstract class BaseCommand{
     protected $env = null;
 
     /** @var \sammo\General */
-    protected $destGeneralObj = null; 
+    protected $destGeneralObj = null;
     protected ?array $destCity = null;
     protected ?array $destNation = null;
 
@@ -70,7 +70,7 @@ abstract class BaseCommand{
         $this->env = $env;
         $this->arg = $arg;
 
-        
+
         $this->init();
         if ($this->argTest()) {
             $this->isArgValid = true;
@@ -92,7 +92,7 @@ abstract class BaseCommand{
         $this->reasonNotMinConditionMet = null;
         $this->reasonNoPermissionToReserve = null;
     }
-    
+
     protected function setCity(){
         $this->resetTestCache();
         $db = DB::db();
@@ -126,7 +126,7 @@ abstract class BaseCommand{
             $this->nation = $this->generalObj->getStaticNation();
             return;
         }
-        
+
         $defaultValues = [
             'nation'=>0,
             'name'=>'재야',
@@ -137,7 +137,7 @@ abstract class BaseCommand{
             'gold'=>0,
             'rice'=>2000,
             'tech'=>0,
-            'gennum'=>1  
+            'gennum'=>1
         ];
 
         if($this->nation && $this->nation['nation'] === $nationID){
@@ -211,7 +211,7 @@ abstract class BaseCommand{
             'gold'=>0,
             'rice'=>2000,
             'tech'=>0,
-            'gennum'=>1  
+            'gennum'=>1
         ];
 
         $db = DB::db();
@@ -229,7 +229,7 @@ abstract class BaseCommand{
         }
     }
     abstract protected function argTest():bool;
-    
+
     public function getArg():?array{
         return $this->arg;
     }
@@ -239,7 +239,7 @@ abstract class BaseCommand{
     }
 
     public function getNationID(){
-        return $this->generalObj->getNationID();        
+        return $this->generalObj->getNationID();
     }
 
     public function getOfficerLevel(){
@@ -264,7 +264,7 @@ abstract class BaseCommand{
         //null : can't calculate
         return 0;
     }
-    
+
     static public function getName():string {
         return static::$actionName;
     }
@@ -363,7 +363,7 @@ abstract class BaseCommand{
 
         $this->cachedMinConditionMet = true;
         return $this->reasonNotMinConditionMet;
-        
+
     }
 
     public function testFullConditionMet():?string{
@@ -401,7 +401,7 @@ abstract class BaseCommand{
 
         $this->cachedFullConditionMet = true;
         return $this->reasonNotFullConditionMet;
-        
+
     }
 
     public function getTermString():string{
@@ -475,7 +475,7 @@ abstract class BaseCommand{
 
     abstract public function run():bool;
 
-    public function getJSFiles():array {
+    public function getJSPlugins():array {
         return [];
     }
     public function getCSSFiles():array {
