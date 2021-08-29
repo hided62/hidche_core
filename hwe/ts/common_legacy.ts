@@ -199,7 +199,6 @@ export function initTooltip($obj?: JQuery<HTMLElement>): void {
     } else if (!$obj.hasClass('obj_tooltip')) {
         $obj = $obj.find('.obj_tooltip');
     }
-    console.log($obj);
 
     $obj.each(function () {
         const $target = $(this);

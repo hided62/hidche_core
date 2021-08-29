@@ -52,9 +52,7 @@ else{
 <?=WebUtil::printCSS('css/hallOfFame.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
-<?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
-<?=WebUtil::printJs('js/hallOfFame.js')?>
+<?=WebUtil::printJs('dist_js/hallOfFame.js')?>
 </head>
 
 <body>
