@@ -36,6 +36,7 @@ module.exports = (env, argv) => {
             main: '@/main.ts',
             dipcenter: '@/dipcenter.ts',
             diplomacy: '@/diplomacy.ts',
+            currentCity: '@/currentCity.ts',
 
 
             //FORM 입력용, frontend 변경후 제거

@@ -31,9 +31,7 @@ $templates = new \League\Plates\Engine('templates');
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
-<?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
-<?=WebUtil::printJS('js/currentCity.js')?>
+<?=WebUtil::printJS('dist_js/currentCity.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
