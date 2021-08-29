@@ -59,7 +59,7 @@ echo Json::encode((object)$charInfoText);
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('js/join.js')?>
+<?=WebUtil::printJS('dist_js/join.js')?>
 
 </head>
 <body>

@@ -66,7 +66,7 @@ var validCustomOption = <?=Json::encode(GameConst::$generalPoolAllowOption)?>;
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS('dist_js/common.js')?>
-<?=WebUtil::printJS('js/join.js')?>
+<?=WebUtil::printJS('dist_js/join.js')?>
 <?=WebUtil::printJS('js/select_general_from_pool.js')?>
 
 </head>
