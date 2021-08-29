@@ -1,6 +1,4 @@
-import $ from 'jquery';
-
-export function loadPlugin(): void{
+export function colorSelect(): void{
     function changeNationColorPlate(){
         const $this = $('#colorType');
         const $option = $this.find('option:selected');
@@ -14,7 +12,3 @@ export function loadPlugin(): void{
     });
     changeNationColorPlate();
 }
-
-$(function(){
-   loadPlugin();
-});

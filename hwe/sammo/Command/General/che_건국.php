@@ -199,7 +199,7 @@ class che_건국 extends Command\GeneralCommand
     public function getJSPlugins(): array
     {
         return [
-            'dist_js/colorSelect.js'
+            'colorSelect'
         ];
     }
 

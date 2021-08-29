@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { unwrap_any } from './util/unwrap_any';
 
 
@@ -21,7 +20,7 @@ function calc(id: number) {
     $cost.val(Math.round(cost));
 }
 
-$(function () {
+export function recruitCrewForm(): void {
     const $formAmount = $('#amount');
     const $formCrewtype = $('#crewType');
     $('.form_double').on('keyup change', function (e) {
@@ -101,4 +100,4 @@ $(function () {
         }
     });
     $('.show_default_false').hide();
-});
+}

@@ -14,6 +14,8 @@ import { DataFormat, IdTextPair, OptionData } from 'select2';
 import { unwrap } from "./util/unwrap";
 import { defaultSelectCityByMap } from './defaultSelectCityByMap';
 import { defaultSelectNationByMap } from './defaultSelectNationByMap';
+import { colorSelect } from './colorSelect';
+import { recruitCrewForm } from './recruitCrewForm';
 
 declare const isChiefTurn: boolean;
 declare const jsPlugins: string[];
@@ -286,6 +288,8 @@ $(function ($) {
     const pluginMap:Record<string, ()=>void> = {
         'defaultSelectCityByMap': defaultSelectCityByMap,
         'defaultSelectNationByMap': defaultSelectNationByMap,
+        'colorSelect': colorSelect,
+        'recruitCrewForm': recruitCrewForm,
     };
     for (const jsPlugin of jsPlugins) {
         if (jsPlugin in pluginMap) {

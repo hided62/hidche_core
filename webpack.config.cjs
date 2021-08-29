@@ -38,13 +38,6 @@ module.exports = (env, argv) => {
             diplomacy: '@/diplomacy.ts',
             currentCity: '@/currentCity.ts',
             hallOfFame: '@/hallOfFame.ts',
-
-
-            //FORM 입력용, frontend 변경후 제거
-            defaultSelectCityByMap: '@/defaultSelectCityByMap.ts',
-            defaultSelectNationByMap: '@/defaultSelectNationByMap.ts',
-            colorSelect: '@/colorSelect.ts',
-            recruitCrewForm: '@/recruitCrewForm.ts'
         },
         output: {
             filename: '[name].js',

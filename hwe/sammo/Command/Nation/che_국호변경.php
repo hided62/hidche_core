@@ -160,7 +160,7 @@ class che_국호변경 extends Command\NationCommand
     public function getJSPlugins(): array
     {
         return [
-            'dist_js/colorSelect.js'
+            'colorSelect'
         ];
     }
 
