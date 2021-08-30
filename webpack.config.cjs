@@ -40,6 +40,7 @@ module.exports = (env, argv) => {
             hallOfFame: '@/hallOfFame.ts',
             history: '@/history.ts',
             join: '@/join.ts',
+            select_general_from_pool: '@/select_general_from_pool.ts',
         },
         output: {
             filename: '[name].js',
