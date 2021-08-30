@@ -41,6 +41,7 @@ module.exports = (env, argv) => {
             history: '@/history.ts',
             join: '@/join.ts',
             select_general_from_pool: '@/select_general_from_pool.ts',
+            extKingdoms: '@/extKingdoms.ts',
         },
         output: {
             filename: '[name].js',
