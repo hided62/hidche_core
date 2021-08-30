@@ -15,7 +15,55 @@ import { isNotNull } from './util/isNotNull';
 import { unwrap_any } from './util/unwrap_any';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 import { exportWindow } from './util/exportWindow';
-let messageTemplate: string | undefined;
+
+const messageTemplate = `<div
+    class="msg_plate msg_plate_<%msgType%> msg_plate_<%nationType%>"
+    id="msg_<%id%>"
+    data-id="<%id%>"
+>
+    <div class="msg_icon">
+        <%if(src.icon){ %>
+            <img class='generalIcon' width='64' height='64' src="<%encodeURI(src.icon)%>">
+        <%} else {%>
+            <img class='generalIcon' width='64' height='64' src="<%encodeURI(defaultIcon)%>">
+        <%}%>
+    </div>
+    <div class="msg_body">
+        <div class="msg_header">
+            <%if(!this.option.action && src.id == myGeneralID && now <= last5min && invalidType == 'msg_valid' && !deletable){%>
+                <button type="button" data-erase_until="<%last5min%>" class="btn btn btn-outline-warning btn-sm btn-delete-msg" style='float:right'>❌</button>
+            <%}%>
+            <%if(msgType == 'private') {%>
+                <%if(src.name == generalName){%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;">나</span
+                ><span class="msg_from_to">▶</span
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.name)%>:<%dest.nation%></span>
+                <%}else{%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span
+                ><span class="msg_from_to">▶</span
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;">나</span>
+                <%}%>
+            <%} else if(msgType == 'national' && src.nation_id == dest.nation_id){%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%></span>
+            <%} else if(msgType == 'national' || msgType == 'diplomacy'){%>
+                <%if(src.nation_id == nationID){%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%></span
+                ><span class="msg_from_to">▶</span
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%dest.nation%></span>
+                <%}else{%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span
+                ><span class="msg_from_to"></span>
+                <%}%>
+            <%} else {%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span>
+            <%} %>
+            <span class="msg_time">&lt;<%e(time)%>&gt;</span>
+        </div>
+        <div class="msg_content <%invalidType%>"><%linkifyStr(text)%></div>
+        <%if(this.option && this.option.action) {%>
+        <div class="msg_prompt">
+            <button type="button" class="prompt_yes btn_prompt" <%allowButton?'':'disabled="disabled"'%>>수락</button> <button type="button" class="prompt_no btn_prompt" <%allowButton?'':'disabled="disabled"'%>>거절</button>
+        </div><%} %></div></div>`;
 let myGeneralID: number | undefined;
 //let isChief: boolean | undefined;
 let lastSequence: number | undefined;
@@ -115,21 +163,21 @@ type BasicInfoResponse = {
 
 let generalList: Record<number, BasicGeneralTarget> = {};
 
-async function responseMessage(msgID: number, responseAct: boolean):Promise<void> {
+async function responseMessage(msgID: number, responseAct: boolean): Promise<void> {
     const response = await axios({
         url: 'j_msg_decide_opt.php',
         method: 'post',
         responseType: 'json',
         data: convertFormData({
             data: JSON.stringify({
-                msgID:msgID,
-                response:responseAct
+                msgID: msgID,
+                response: responseAct
             })
         })
     });
 
     const result: InvalidResponse = response.data;
-    if(!result.result){
+    if (!result.result) {
         alert(result.reason);
     }
     location.reload();
@@ -271,8 +319,8 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
                 }
 
                 const dest = {
-                    ...(msg.dest??msg.src),
-                    colorType: isBrightColor((msg.dest??msg.src).color) ? 'bright' as const : 'dark' as const,
+                    ...(msg.dest ?? msg.src),
+                    colorType: isBrightColor((msg.dest ?? msg.src).color) ? 'bright' as const : 'dark' as const,
                 };
 
                 if (!dest.nation) {
@@ -623,32 +671,28 @@ function activateMessageForm() {
 $(async function ($) {
     setAxiosXMLHttpRequest();
 
-    //tmp_template.html은 추후 msg.js에 통합될 수 있음
-    const getTemplateP = axios('js/templates/message.html?12').then(obj=>{messageTemplate=obj.data});
-
     //basic_info.json은 세션값에 따라 동적으로 바뀌는 데이터임.
     const basicInfoP = axios({
         url: 'j_basic_info.php',
         method: 'post',
         responseType: 'json'
-    }).then((v)=>registerGlobal(v.data));
+    }).then((v) => registerGlobal(v.data));
 
     //sender_list.json 은 서버측에선 캐시 가능한 데이터임.
     const senderListP = axios({
         url: 'j_msg_contact_list.php',
         method: 'post',
-        responseType:'json'
-    }).then(v=>v.data);
+        responseType: 'json'
+    }).then(v => v.data);
 
     const messageListP = fetchRecentMsg();
 
+    await basicInfoP
+    const senderList = await senderListP;
+    refreshMailboxList(senderList);
+    activateMessageForm();
 
-    void Promise.all([basicInfoP, senderListP]).then(([, senderList])=>{
-        refreshMailboxList(senderList);
-        activateMessageForm();
-    });
-
-    const [messageList, ] = await Promise.all([messageListP, getTemplateP, basicInfoP, senderListP])
+    const messageList = await messageListP;
     redrawMsg(messageList, true);
     $('.load_old_message').click(function () {
         const $this = $(this);
