@@ -33,8 +33,10 @@ d_pic/*.png
 d_pic/*.webp
 d_pic/uploaded_image
 
+*/dist_misc/*
 */dist_js/*
 */dist_css/*
+/dist_misc/*
 /dist_js/*
 /dist_css/*
 
