@@ -1,12 +1,12 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { isNumber } from 'lodash';
-import { TemplateEngine } from '../hwe/ts/util/TemplateEngine';
-import { InvalidResponse } from '../hwe/ts/defs';
-import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
-import { unwrap_any } from '../hwe/ts/util/unwrap_any';
-import { convertFormData } from '../hwe/ts/util/convertFormData';
-import { exportWindow } from '../hwe/ts/util/exportWindow';
+import { TemplateEngine } from '../util/TemplateEngine';
+import { InvalidResponse } from '../defs';
+import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
+import { unwrap_any } from '../util/unwrap_any';
+import { convertFormData } from '../util/convertFormData';
+import { exportWindow } from '../util/exportWindow';
 
 type UserEntry = {
     userID: string,

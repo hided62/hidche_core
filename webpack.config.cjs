@@ -113,17 +113,20 @@ module.exports = (env, argv) => {
     const gateway = {
         name: 'gateway',
         resolve: {
-            extensions: [".js", ".ts", ".tsx"]
+            extensions: [".js", ".ts", ".tsx"],
+            alias: {
+                '@': resolve(__dirname, `${target}/ts/gateway`)
+            }
         },
         mode,
         entry: {
-            'common': './ts/common_deprecated.ts',
-            'entrance': './ts/entrance.ts',
-            'user_info': './ts/user_info.ts',
-            'admin_member': './ts/admin_member.ts',
-            'join': './ts/join.ts',
-            'login': './ts/login.ts',
-            'install': './ts/install.ts',
+            'common': '@/common_deprecated.ts',
+            'entrance': '@/entrance.ts',
+            'user_info': '@/user_info.ts',
+            'admin_member': '@/admin_member.ts',
+            'join': '@/join.ts',
+            'login': '@/login.ts',
+            'install': '@/install.ts',
         },
         output: {
             filename: '[name].js',

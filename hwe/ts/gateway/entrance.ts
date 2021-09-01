@@ -1,10 +1,10 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { initTooltip } from '../hwe/ts/common_legacy';
-import { TemplateEngine } from "../hwe/ts/util/TemplateEngine";
-import { InvalidResponse } from '../hwe/ts/defs';
-import { getDateTimeNow } from '../hwe/ts/util/getDateTimeNow';
-import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
+import { initTooltip } from '../common_legacy';
+import { TemplateEngine } from "../util/TemplateEngine";
+import { InvalidResponse } from '../defs';
+import { getDateTimeNow } from '../util/getDateTimeNow';
+import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
 import { loadPlugin as loadAdminPlugin } from './admin_server';
 
 declare const isAdmin: boolean;

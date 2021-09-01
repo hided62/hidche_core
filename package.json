@@ -9,7 +9,7 @@
     "buildDev": "webpack --mode=development",
     "watch": "webpack watch --mode=development",
     "watchProd": "webpack watch",
-    "lint": "eslint hwe/ts ts"
+    "lint": "eslint hwe/ts"
   },
   "repository": {
     "type": "git",

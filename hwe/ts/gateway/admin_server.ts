@@ -1,12 +1,12 @@
 
 import $ from 'jquery';
 import axios from 'axios';
-import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
-import { InvalidResponse } from '../hwe/ts/defs';
-import { convertFormData } from '../hwe/ts/util/convertFormData';
-import { TemplateEngine } from "../hwe/ts/util/TemplateEngine";
-import { unwrap_any } from '../hwe/ts/util/unwrap_any';
-import { unwrap } from '../hwe/ts/util/unwrap';
+import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
+import { InvalidResponse } from '../defs';
+import { convertFormData } from '../util/convertFormData';
+import { TemplateEngine } from "../util/TemplateEngine";
+import { unwrap_any } from '../util/unwrap_any';
+import { unwrap } from '../util/unwrap';
 
 type ServerUpdateResponse = {
     result: true,

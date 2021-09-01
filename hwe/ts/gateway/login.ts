@@ -3,14 +3,14 @@ import 'popper.js';
 import Popper from 'popper.js';
 (window as unknown as {Popper:unknown}).Popper = Popper;
 import 'bootstrap';
-import { JQValidateForm, NamedRules } from '../hwe/ts/util/jqValidateForm';
+import { JQValidateForm, NamedRules } from '../util/jqValidateForm';
 import axios from 'axios';
-import { convertFormData } from '../hwe/ts/util/convertFormData';
-import { setAxiosXMLHttpRequest } from '../hwe/ts/util/setAxiosXMLHttpRequest';
-import { unwrap_any } from '../hwe/ts/util/unwrap_any';
+import { convertFormData } from '../util/convertFormData';
+import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
+import { unwrap_any } from '../util/unwrap_any';
 import { sha512 } from 'js-sha512';
-import { unwrap } from '../hwe/ts/util/unwrap';
-import { InvalidResponse } from './defs';
+import { unwrap } from '../util/unwrap';
+import { InvalidResponse } from '../defs';
 
 
 type LoginResponse = {
