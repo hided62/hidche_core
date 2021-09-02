@@ -17,7 +17,7 @@ module.exports = (env, argv) => {
         },
         mode,
         entry: {
-            //v_test: resolve(__dirname, `${target}/ts/v_test.ts`)
+            v_inheritPoint: resolve(__dirname, `${target}/ts/v_inheritPoint.ts`)
         },
         output: {
             filename: '[name].js',
@@ -161,7 +161,7 @@ module.exports = (env, argv) => {
         mode,
         entry: {
             chiefCenter: '@/chiefCenter.ts',
-            inheritPoint: '@/inheritPoint.ts',
+            inheritPoint: '@/legacy/inheritPoint.ts',
             common: '@/common_deprecated.ts',
             troop: '@/troop.ts',
             map: '@/map.ts',

@@ -12,7 +12,6 @@ import { sha512 } from 'js-sha512';
 import { unwrap } from '../util/unwrap';
 import { InvalidResponse } from '../defs';
 
-
 type LoginResponse = {
     result: true,
 } | {
@@ -125,7 +124,7 @@ async function doLoginUsingOAuth() {
         return;
     }
 
-    const $modal = $('#modalOTP').modal();
+    const $modal = $('#modalOTP').modal() as unknown as JQuery;
     $modal.on('shown.bs.modal', function () {
         $('#otp_code').trigger('focus');
     });
@@ -222,7 +221,7 @@ $(function ($) {
             return;
         }
 
-        const $modal = $('#modalOTP').modal();
+        const $modal = $('#modalOTP').modal() as unknown as JQuery;
         $modal.on('shown.bs.modal', function () {
             $('#otp_code').trigger('focus');
         });
