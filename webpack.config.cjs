@@ -3,6 +3,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { resolve } = require('path');
+const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 
 module.exports = (env, argv) => {
     const target = env.target ?? 'hwe';
@@ -139,6 +140,7 @@ module.exports = (env, argv) => {
             ]
         },
         plugins: [
+            new CleanTerminalPlugin(),
             new VueLoaderPlugin(),
             new MiniCssExtractPlugin({
                 filename: '../dist_css/[name].css'
@@ -227,6 +229,7 @@ module.exports = (env, argv) => {
             }]
         },
         plugins: [
+            new CleanTerminalPlugin(),
             new MiniCssExtractPlugin({
                 filename: '../dist_css/[name].css'
             }),
@@ -307,7 +310,7 @@ module.exports = (env, argv) => {
     };
 
     if (target == 'hwe') {
-        return [ingame_vue, ingame, gateway];
+        return [gateway, ingame_vue, ingame];
     }
     else {
         return [ingame_vue, ingame];

@@ -1,4 +1,4 @@
-import "../scss/inheritPoint.scss";
+import "../../scss/inheritPoint.scss";
 
 import { sum } from "lodash";
 import { unwrap } from "../util/unwrap";

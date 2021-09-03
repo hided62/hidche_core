@@ -4,6 +4,7 @@
       <td style="text-align: left">
         {{title}}<br /><button
           type="button"
+          class="btn btn-primary"
           @click="back"
         >돌아가기</button><br />
       </td>

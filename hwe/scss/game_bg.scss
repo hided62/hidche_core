@@ -17,6 +17,10 @@ table.tb_layout {
     word-break: break-all;
 }
 
+html, body{
+    font-size: 13px;
+}
+
 .tb_layout td,
 .tb_layout th {
     border: solid 1px gray;

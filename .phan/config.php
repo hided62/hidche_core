@@ -41,7 +41,7 @@ return [
         'hwe/b_dipcenter.php',
         'hwe/b_diplomacy.php',
         'hwe/b_genList.php',
-        'hwe/b_inheritPoint.php',
+        'hwe/v_inheritPoint.php',
         'hwe/b_myBossInfo.php',
         'hwe/b_myCityInfo.php',
         'hwe/b_myGenInfo.php',
