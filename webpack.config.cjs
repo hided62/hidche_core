@@ -8,6 +8,7 @@ const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 module.exports = (env, argv) => {
     const target = env.target ?? 'hwe';
     const mode = argv.mode ?? 'production';
+    const tsDir = resolve(__dirname, `${target}/ts/`);
     const ingame_vue = {
         name: 'ingame_vue',
         resolve: {
@@ -18,7 +19,9 @@ module.exports = (env, argv) => {
         },
         mode,
         entry: {
-            v_inheritPoint: resolve(__dirname, `${target}/ts/v_inheritPoint.ts`)
+            v_inheritPoint: `${tsDir}/v_inheritPoint.ts`,
+            v_board: `${tsDir}/v_board.ts`
+
         },
         output: {
             filename: '[name].js',
@@ -31,7 +34,16 @@ module.exports = (env, argv) => {
                     commons: {
                         test: /[\\/]node_modules[\\/]/,
                         name: 'vendors_vue',
+                        priority: -10,
                         chunks: 'all',
+                        reuseExistingChunk: true,
+                    },
+                    default: {
+                        name: 'common_vue',
+                        minChunks: 2,
+                        priority: -20,
+                        chunks: 'all',
+                        reuseExistingChunk: true,
                     },
                 },
             }
@@ -156,37 +168,33 @@ module.exports = (env, argv) => {
         name: 'ingame',
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
-            alias: {
-                '@': resolve(__dirname, `${target}/ts`)
-            }
         },
         mode,
         entry: {
-            chiefCenter: '@/chiefCenter.ts',
-            inheritPoint: '@/legacy/inheritPoint.ts',
-            common: '@/common_deprecated.ts',
-            troop: '@/troop.ts',
-            map: '@/map.ts',
-            install_db: '@/install_db.ts',
-            install: '@/install.ts',
-            battle_simulator: '@/battle_simulator.ts',
-            recent_map: '@/recent_map.ts',
-            processing: '@/processing.ts',
-            select_npc: '@/select_npc.ts',
-            betting: '@/betting.ts',
-            board: '@/board.ts',
-            bossInfo: '@/bossInfo.ts',
-            myPage: '@/myPage.ts',
-            extExpandCity: '@/extExpandCity.ts',
-            main: '@/main.ts',
-            dipcenter: '@/dipcenter.ts',
-            diplomacy: '@/diplomacy.ts',
-            currentCity: '@/currentCity.ts',
-            hallOfFame: '@/hallOfFame.ts',
-            history: '@/history.ts',
-            join: '@/join.ts',
-            select_general_from_pool: '@/select_general_from_pool.ts',
-            extKingdoms: '@/extKingdoms.ts',
+            chiefCenter: `${tsDir}/chiefCenter.ts`,
+            common: `${tsDir}/common_deprecated.ts`,
+            troop: `${tsDir}/troop.ts`,
+            map: `${tsDir}/map.ts`,
+            install_db: `${tsDir}/install_db.ts`,
+            install: `${tsDir}/install.ts`,
+            battle_simulator: `${tsDir}/battle_simulator.ts`,
+            recent_map: `${tsDir}/recent_map.ts`,
+            processing: `${tsDir}/processing.ts`,
+            select_npc: `${tsDir}/select_npc.ts`,
+            betting: `${tsDir}/betting.ts`,
+            board: `${tsDir}/legacy/board.ts`,
+            bossInfo: `${tsDir}/bossInfo.ts`,
+            myPage: `${tsDir}/myPage.ts`,
+            extExpandCity: `${tsDir}/extExpandCity.ts`,
+            main: `${tsDir}/main.ts`,
+            dipcenter: `${tsDir}/dipcenter.ts`,
+            diplomacy: `${tsDir}/diplomacy.ts`,
+            currentCity: `${tsDir}/currentCity.ts`,
+            hallOfFame: `${tsDir}/hallOfFame.ts`,
+            history: `${tsDir}/history.ts`,
+            join: `${tsDir}/join.ts`,
+            select_general_from_pool: `${tsDir}/select_general_from_pool.ts`,
+            extKingdoms: `${tsDir}/extKingdoms.ts`,
         },
         output: {
             filename: '[name].js',
@@ -244,19 +252,16 @@ module.exports = (env, argv) => {
         name: 'gateway',
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
-            alias: {
-                '@': resolve(__dirname, `${target}/ts/gateway`)
-            }
         },
         mode,
         entry: {
-            'common': '@/common_deprecated.ts',
-            'entrance': '@/entrance.ts',
-            'user_info': '@/user_info.ts',
-            'admin_member': '@/admin_member.ts',
-            'join': '@/join.ts',
-            'login': '@/login.ts',
-            'install': '@/install.ts',
+            common: `${tsDir}/gateway/common_deprecated.ts`,
+            entrance: `${tsDir}/gateway/entrance.ts`,
+            user_info: `${tsDir}/gateway/user_info.ts`,
+            admin_member: `${tsDir}/gateway/admin_member.ts`,
+            join: `${tsDir}/gateway/join.ts`,
+            login: `${tsDir}/gateway/login.ts`,
+            install: `${tsDir}/gateway/install.ts`,
         },
         output: {
             filename: '[name].js',

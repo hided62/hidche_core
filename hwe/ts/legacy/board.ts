@@ -2,12 +2,12 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { trim } from 'lodash';
-import { escapeHtml } from "./legacy/escapeHtml";
-import { nl2br } from "./util/nl2br";
-import { InvalidResponse } from './defs';
-import { convertFormData } from './util/convertFormData';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
-import { unwrap_any } from './util/unwrap_any';
+import { escapeHtml } from "./escapeHtml";
+import { nl2br } from "../util/nl2br";
+import { InvalidResponse } from '../defs';
+import { convertFormData } from '../util/convertFormData';
+import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
+import { unwrap_any } from '../util/unwrap_any';
 
 declare const isSecretBoard: boolean;
 
@@ -212,13 +212,6 @@ async function loadArticles() {
         alert(`에러: ${e}`);
         return;
     }
-    return $.post({
-        url: 'j_board_get_articles.php',
-        dataType: 'json',
-        data: {
-            isSecret: isSecretBoard, //첫 버전이니까 전체 다 불러오자
-        }
-    });
 }
 
 function resizeTextarea($obj: JQuery<HTMLElement>) {
