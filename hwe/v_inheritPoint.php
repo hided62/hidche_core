@@ -28,11 +28,11 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
-    <?= WebUtil::preloadCSS('dist_css/v_inheritPoint.css') ?>
-    <?= WebUtil::preloadJS('dist_js/v_inheritPoint.js') ?>
+    <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/v_inheritPoint.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('dist_js/vendors_vue.js') ?>
+    <?= WebUtil::printJS('dist_js/v_inheritPoint.js', true) ?>
     <?= WebUtil::printStaticValues([
         'items' => $items
     ]) ?>
@@ -40,8 +40,6 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
 
 <body>
     <div id="app"></div>
-
-    <?= WebUtil::printJS('dist_js/v_inheritPoint.js') ?>
 </body>
 
 </html>

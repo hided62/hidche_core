@@ -105,7 +105,7 @@ class WebUtil
         return $decoded;
     }
 
-    public static function preloadCSS(string $path){
+    public static function preloadAsset(string $path, string $type){
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
         if(!$upath->scheme && file_exists($upath->path)){
@@ -120,29 +120,19 @@ class WebUtil
         else{
             $tail = '';
         }
-        return "<link href='{$path}{$tail}' rel='preload' as='style'>\n";
+        return "<link href='{$path}{$tail}' rel='preload' as='$type'>\n";
+    }
+
+    public static function preloadCSS(string $path){
+        return static::preloadAsset($path, 'style');
     }
 
     public static function preloadJS(string $path){
-        $upath = \phpUri::parse($path);
-        $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
-            $mtime = filemtime($upath->path);
-            if($upath->query){
-                $tail = '&'.$mtime;
-            }
-            else{
-                $tail = '?'.$mtime;
-            }
-        }
-        else{
-            $tail = '';
-        }
-        return "<link href='{$path}{$tail}' rel='preload' as='script'>\n";
+        return static::preloadAsset($path, 'script');
     }
 
-    public static function printJS(string $path){
-        //async, defer 옵션 고려
+    public static function printJS(string $path, bool $isDefer=false){
+        //async 옵션 고려?
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
         if(!$upath->scheme && file_exists($upath->path)){
@@ -157,7 +147,9 @@ class WebUtil
         else{
             $tail = '';
         }
-        return "<script src='{$path}{$tail}'></script>\n";
+
+        $typeText = $isDefer?'defer':'';
+        return "<script {$typeText} src='{$path}{$tail}'></script>\n";
     }
 
     public static function printCSS(string $path){
@@ -188,30 +180,9 @@ class WebUtil
             $lines[] = "var {$key} = ".Json::encode($value, Json::EMPTY_ARRAY_IS_DICT | ($pretty?Json::PRETTY:0));
         }
 
-        $lines[] = "</script>";
+        $lines[] = "</script>\n";
 
         return join("\n", $lines);
-    }
-
-    protected static $jsFilesList = [];
-    public static function pushJSFile(string $path){
-        static::$jsFilesList[] = $path;
-    }
-
-    protected static $cssFilesList = [];
-    public static function pushCSSFile(string $path){
-        static::$cssFilesList[] = $path;
-    }
-
-    public static function printResourceFiles(){
-        foreach(static::$jsFilesList as $path){
-            static::printJS($path);
-        }
-        foreach(static::$cssFilesList as $path){
-            static::printCSS($path);
-        }
-        static::$jsFilesList = [];
-        static::$cssFilesList = [];
     }
 
     public static function htmlPurify(?string $text): string{
