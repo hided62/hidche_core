@@ -186,7 +186,6 @@ module.exports = (env, argv) => {
             processing: `${tsDir}/processing.ts`,
             select_npc: `${tsDir}/select_npc.ts`,
             betting: `${tsDir}/betting.ts`,
-            board: `${tsDir}/legacy/board.ts`,
             bossInfo: `${tsDir}/bossInfo.ts`,
             myPage: `${tsDir}/myPage.ts`,
             extExpandCity: `${tsDir}/extExpandCity.ts`,
