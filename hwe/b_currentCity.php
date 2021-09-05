@@ -229,7 +229,7 @@ $generalTurnList = [];
 
 if($generals){
     foreach($db->queryAllLists(
-        'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+        'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC',
         array_column($generals, 'no')
         ) as [$generalID, $turnIdx, $brief]
     ){
@@ -268,7 +268,7 @@ foreach($generals as $general){
 
     $isNPC = $general['npc']>1;
     $wounded = $general['injury'];
-    
+
 
     $name = $general['name'];
     $nameText = formatName($name, $general['npc']);
@@ -325,7 +325,7 @@ foreach($generals as $general){
     else{
         $turnText = '';
     }
-    
+
     $generalsFormat[] = [
         'ourGeneral'=>$ourGeneral,
         'iconPath'=>GetImageURL($general['imgsvr']).'/'.$general['picture'],
@@ -377,7 +377,7 @@ $genTotal = 0;
 
 
 foreach($generalsFormat as $general){
-    if($general['nation'] == 0){
+    if(!$general['nation'] || !$myNation['nation']){
         continue;
     }
     if($general['nation'] != $myNation['nation']){
@@ -407,7 +407,7 @@ foreach($generalsFormat as $general){
     }
 
     $chkDef = false;
-    
+
     if($minTrain >= 80){
         $crew80 += $general['crew'];
         $gen80 += 1;
@@ -424,7 +424,7 @@ foreach($generalsFormat as $general){
         $chkDef = true;
     }
 
-    
+
 
 }
 
@@ -520,4 +520,3 @@ foreach($generalsFormat as $general){
 </table>
 </body>
 </html>
-
