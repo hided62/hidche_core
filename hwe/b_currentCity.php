@@ -16,7 +16,11 @@ $db = DB::db();
 increaseRefresh("현재도시", 1);
 
 $me = $db->queryFirstRow('SELECT no,nation,officer_level,city from general where owner=%i', $userID);
-$myNation = $db->queryFirstRow('SELECT nation,level,spy FROM nation WHERE nation=%i', $me['nation']);
+$myNation = $db->queryFirstRow('SELECT nation,level,spy FROM nation WHERE nation=%i', $me['nation'])??[
+    'nation'=>0,
+    'level'=>0,
+    'spy'=>''
+];
 
 $templates = new \League\Plates\Engine('templates');
 
