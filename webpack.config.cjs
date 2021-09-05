@@ -1,6 +1,7 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { resolve } = require('path');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
@@ -46,7 +47,10 @@ module.exports = (env, argv) => {
                         reuseExistingChunk: true,
                     },
                 },
-            }
+            },
+            minimizer: [
+                new CssMinimizerPlugin(),
+            ],
         },
         module: {
             rules: [
@@ -210,7 +214,10 @@ module.exports = (env, argv) => {
                         chunks: 'all',
                     },
                 },
-            }
+            },
+            minimizer: [
+                new CssMinimizerPlugin(),
+            ],
         },
         module: {
             rules: [{
@@ -277,7 +284,10 @@ module.exports = (env, argv) => {
                         chunks: 'all',
                     },
                 },
-            }
+            },
+            minimizer: [
+                new CssMinimizerPlugin(),
+            ],
         },
         module: {
             rules: [{
