@@ -46,7 +46,7 @@ class General implements iAction{
         'tsw'=>1, 'tsd'=>1, 'tsl'=>1, 'tsg'=>1, 'tsp'=>1,
         'tiw'=>1, 'tid'=>1, 'til'=>1, 'tig'=>1, 'tip'=>1,
         'betwin'=>1, 'betgold'=>1, 'betwingold'=>1,
-        'killcrew_person'=>1, 'deathcrew_person'=>1, 
+        'killcrew_person'=>1, 'deathcrew_person'=>1,
         'occupied'=>1,
     ];
 
@@ -102,7 +102,7 @@ class General implements iAction{
         if($nation === null){
             $nation = getNationStaticInfo($raw['nation']);
         }
-        
+
         $this->raw = $raw;
         $this->rawCity = $city;
 
@@ -131,7 +131,7 @@ class General implements iAction{
         $this->specialWarObj = buildGeneralSpecialWarClass($raw['special2']);
 
         $this->personalityObj = buildPersonalityClass($raw['personal']);
-        
+
         $this->itemObjs['horse'] = buildItemClass($raw['horse']);
         $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
         $this->itemObjs['book'] = buildItemClass($raw['book']);
@@ -140,9 +140,9 @@ class General implements iAction{
 
     function initLogger(int $year, int $month){
         $this->logger = new ActionLogger(
-            $this->getVar('no'), 
-            $this->getVar('nation'), 
-            $year, 
+            $this->getVar('no'),
+            $this->getVar('nation'),
+            $year,
             $month,
             false
         );
@@ -330,10 +330,10 @@ class General implements iAction{
     }
 
     /**
-     * @param General[] $generalList 
+     * @param General[] $generalList
      * @param int $turnIdxFrom [$turnIdxFrom, $turnIdxTo)
      * @param int $turnIdxTo [$turnIdxFrom, $turnIdxTo)
-     * @param array $env 
+     * @param array $env
      * @return GeneralCommand[]
      */
     public function getReservedTurnList(int $turnIdxFrom, int $turnIdxTo, array $env){
@@ -346,9 +346,9 @@ class General implements iAction{
         }
 
         $db = DB::db();
-        
+
         $generalID = $this->getID();
-        
+
         $result = [];
 
         $rawCmds = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id = %i AND %i <= turn_idx AND turn_idx < %i ORDER BY turn_idx ASC', $generalID, $turnIdxFrom, $turnIdxTo);
@@ -359,23 +359,23 @@ class General implements iAction{
             }
             return $result;
         }
-        
+
         foreach($rawCmds as $turnIdx=>$rawCmd){
             $result[$turnIdx] = buildGeneralCommandClass($rawCmd['action'], $this, $env, Json::decode($rawCmd['arg']??null));
         }
-        
+
         return $result;
     }
 
     /**
      * 장수의 스탯을 계산해옴
-     * 
+     *
      * @param string $statName 스탯값, leadership, strength, intel 가능
      * @param bool $withInjury 부상값 사용 여부
      * @param bool $withIActionObj 아이템, 특성, 성격 등 보정치 적용 여부
      * @param bool $withStatAdjust 능력치간 보정 사용 여부
      * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
-     * 
+     *
      * @return int|float 계산된 능력치
      */
 
@@ -416,7 +416,7 @@ class General implements iAction{
                     $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
                 }
             }
-        
+
             foreach($this->itemObjs as $actionObj){
                 if($actionObj !== null){
                     $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
@@ -429,7 +429,7 @@ class General implements iAction{
         if($useFloor){
             return Util::toInt($statValue);
         }
-        
+
         return $statValue;
     }
 
@@ -486,7 +486,7 @@ class General implements iAction{
         if($affectTrigger){
             $experience = $this->onCalcStat($this, 'experience', $experience);
         }
-        
+
         $this->increaseVar('experience', $experience);
         $nextExpLevel = getExpLevel($this->getVar('experience'));
         $comp = $nextExpLevel <=> $this->getVar('explevel');
@@ -503,14 +503,14 @@ class General implements iAction{
         else{
             $this->getLogger()->pushGeneralActionLog("<C>Lv {$nextExpLevel}</>{$josaRo} <R>레벨다운</>!", ActionLogger::PLAIN);
         }
-        
+
     }
 
     function addDedication(float $dedication, bool $affectTrigger=true){
         if($affectTrigger){
             $dedication = $this->onCalcStat($this, 'dedication', $dedication);
         }
-        
+
         $this->increaseVar('dedication', $dedication);
         $nextDedLevel = getDedLevel($this->getVar('dedication'));
         $comp = $nextDedLevel <=> $this->getVar('dedlevel');
@@ -530,7 +530,7 @@ class General implements iAction{
         else{
             $this->getLogger()->pushGeneralActionLog("<Y>{$dedLevelText}</>{$josaRoDed} <R>강등</>되어 봉록이 <C>{$billText}</>{$josaRoBill} <R>하락</>했습니다!", ActionLogger::PLAIN);
         }
-        
+
     }
 
     function updateVar(string $key, $value){
@@ -583,7 +583,7 @@ class General implements iAction{
                 $dyingMessageObj = new TextDecoration\DyingMessage($this);
                 $logger->pushGlobalActionLog($dyingMessageObj->getText());
             }
-            $logger->flush();    
+            $logger->flush();
         }
 
         $db->update('select_pool', [
@@ -611,7 +611,7 @@ class General implements iAction{
         $ownerID = $this->getVar('owner');
         if($ownerID){
             $this->mergeTotalInheritancePoint();
-            resetInheritanceUser($ownerID);
+            resetInheritanceUser($ownerID, true);
         }
 
         $this->multiplyVarWithLimit('leadership', 0.85, 10);
@@ -701,7 +701,7 @@ class General implements iAction{
             $this->setVar('last_turn', $this->getResultTurn()->toJson());
         }
         $updateVals = $this->getUpdatedValues();
-        
+
 
         $generalID = $this->getID();
         $result = false;
@@ -726,7 +726,7 @@ class General implements iAction{
             }
             $result = true;
         }
-        
+
         if($this->rankVarSet){
             foreach($this->rankVarSet as $rankKey => $rankVal){
                 $db->update('rank_data', [
@@ -736,7 +736,7 @@ class General implements iAction{
             }
             $result = true;
         }
-        
+
         $this->rankVarIncrease = [];
         $this->rankVarSet = [];
 
@@ -779,14 +779,14 @@ class General implements iAction{
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         $caller = new GeneralTriggerCaller();
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
-            
+
             if(!$iObj){
                 continue;
             }
@@ -798,11 +798,11 @@ class General implements iAction{
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -817,11 +817,11 @@ class General implements iAction{
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         //xxx: $general?
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -835,11 +835,11 @@ class General implements iAction{
 
     public function onCalcStrategic(string $turnType, string $varType, $value){
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -853,11 +853,11 @@ class General implements iAction{
 
     public function onCalcNationalIncome(string $type, $amount){
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -874,11 +874,11 @@ class General implements iAction{
         $att = 1;
         $def = 1;
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -894,11 +894,11 @@ class General implements iAction{
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         $caller = new WarUnitTriggerCaller();
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -921,11 +921,11 @@ class General implements iAction{
             new WarUnitTrigger\che_계략실패($unit)
         );
         foreach(array_merge([
-            $this->nationType, 
-            $this->officerLevelObj, 
-            $this->specialDomesticObj, 
-            $this->specialWarObj, 
-            $this->personalityObj, 
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
             $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
@@ -946,8 +946,8 @@ class General implements iAction{
             'horse', 'weapon', 'book', 'item', 'last_turn'
         ];
         $fullColumn = [
-            'no', 'name', 'owner', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity', 
-            'leadership', 'leadership_exp', 'strength', 'strength_exp', 'intel', 'intel_exp', 'weapon', 'book', 'horse', 'item', 
+            'no', 'name', 'owner', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity',
+            'leadership', 'leadership_exp', 'strength', 'strength_exp', 'intel', 'intel_exp', 'weapon', 'book', 'horse', 'item',
             'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
@@ -979,17 +979,17 @@ class General implements iAction{
     }
 
     /**
-     * @param ?int[] $generalIDList 
-     * @param null|string[] $column 
-     * @param int $constructMode 
+     * @param ?int[] $generalIDList
+     * @param null|string[] $column
+     * @param int $constructMode
      * @return \sammo\General[]
-     * @throws MustNotBeReachedException 
+     * @throws MustNotBeReachedException
      */
     static public function createGeneralObjListFromDB(?array $generalIDList, ?array $column=null, int $constructMode=2):array{
         if($generalIDList === []){
             return [];
         }
-        
+
         $db = DB::db();
         if($constructMode > 0){
             $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -999,7 +999,7 @@ class General implements iAction{
             $year = null;
             $month = null;
         }
-        
+
         [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
 
         if($generalIDList === null){
@@ -1015,7 +1015,7 @@ class General implements iAction{
                 'no'
             );
         }
-        
+
 
         $rawRanks = [];
         if($rankColumn){
@@ -1043,7 +1043,7 @@ class General implements iAction{
             }
             $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID]??null, null, null, $year, $month, $constructMode > 1);
         }
-        
+
         return $result;
     }
 
@@ -1057,7 +1057,7 @@ class General implements iAction{
             $year = null;
             $month = null;
         }
-        
+
         [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
 
         $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
@@ -1072,17 +1072,17 @@ class General implements iAction{
                 $rawRankValues[$rankType] = $rankValue;
             }
         }
-    
+
 
         $general = new static($rawGeneral, $rawRankValues, null, null, $year, $month, $constructMode > 1);
-        
+
         return $general;
     }
 
     /**
-     * @param General[] $generalList 
-     * @param int $turnIdx 
-     * @param array $env 
+     * @param General[] $generalList
+     * @param int $turnIdx
+     * @param array $env
      * @return GeneralCommand[]
      */
     static public function getReservedTurnByGeneralList(array $generalList, int $turnIdx, array $env){
@@ -1110,10 +1110,10 @@ class General implements iAction{
     }
 
     /**
-     * @param General[] $generalList 
+     * @param General[] $generalList
      * @param int $turnIdxFrom [$turnIdxFrom, $turnIdxTo)
      * @param int $turnIdxTo [$turnIdxFrom, $turnIdxTo)
-     * @param array $env 
+     * @param array $env
      * @return GeneralCommand[][]
      */
     static public function getReservedTurnListByGeneralList(array $generalList, int $turnIdxFrom, int $turnIdxTo, array $env){
@@ -1135,7 +1135,7 @@ class General implements iAction{
         }, $generalList);
 
         $db = DB::db();
-        
+
         $rawCmds = $db->queryFirstRow('SELECT * FROM general_turn WHERE general_id IN %i AND %i <= turn_idx AND turn_idx < %i ORDER BY general_id ASC, turn_idx ASC', $generalIDList, $turnIdxFrom, $turnIdxTo);
         $orderedRawCmds = [];
         foreach($rawCmds as $rawCmd){
@@ -1224,7 +1224,7 @@ class General implements iAction{
             $extractFn = function() use ($multiplier){
                 $betWin = $this->getRankVar('betwin');
                 $betWinRate = $this->getRankVar('betwingold')/max(1, $this->getRankVar('betgold'));
-                
+
                 return [$betWin * $multiplier * pow($betWinRate, 2), null];
             };
             break;
@@ -1272,7 +1272,7 @@ class General implements iAction{
         if($gameStor->isunited != 0){
             return;
         }
-        
+
         $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
         $inheritStor->setValue($key, [$value, $aux]);
     }
