@@ -21,7 +21,8 @@ module.exports = (env, argv) => {
         mode,
         entry: {
             v_inheritPoint: `${tsDir}/v_inheritPoint.ts`,
-            v_board: `${tsDir}/v_board.ts`
+            v_board: `${tsDir}/v_board.ts`,
+            v_NPCControl: `${tsDir}/v_NPCControl.ts`,
 
         },
         output: {

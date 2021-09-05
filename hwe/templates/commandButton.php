@@ -7,7 +7,7 @@
     <a href='b_myBossInfo.php'><button type="button" class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>인 사 부</button></a>
     <a href='b_dipcenter.php'><button type="button" class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>내 무 부</button></a>
     <a href='b_chiefcenter.php'><button type="button" class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>사 령 부</button></a>
-    <a href='b_npc_control.php'><button type="button" class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>NPC 정책</button></a>
+    <a href='v_NPCControl.php'><button type="button" class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>NPC 정책</button></a>
     <a href='b_genList.php' target='_blank'><button type="button" class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>암 행 부</button></a>
     <a href='b_tournament.php' target='_blank'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>토 너 먼 트</button></a>
     <a href='b_myKingdomInfo.php'><button type="button" class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>세력 정보</button></a>
