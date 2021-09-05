@@ -18,56 +18,61 @@
             type="text"
             maxlength="250"
             placeholder="제목"
+            v-model="newArticle.title"
           />
         </td>
       </tr>
       <tr>
         <th class="bg1">내용</th>
         <td class="boardArticle">
-          <textarea class="contentInput autosize" placeholder="내용"></textarea>
+          <textarea
+            class="contentInput autosize"
+            ref="newArticleTextForm"
+            placeholder="내용"
+            v-model="newArticle.text"
+            @input="autoResizeTextarea"
+          />
         </td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <td colspan="2">
-          <button type="button" id="submitArticle">등록</button>
+          <button type="button" id="submitArticle" @click="submitArticle">
+            등록
+          </button>
         </td>
       </tr>
     </tfoot>
   </table>
 
   <div id="board">
-    <!--<suspense>
-      <template #default>-->
-        <board-article
-          v-for="article in articles"
-          :key="article.no"
-          :article="article"
-        />
-      <!--</template>
-      <template #fallback>
-        <span>불러오는 중입니다...</span>
-      </template>
-    </suspense>-->
+    <template v-if="articles && articles.length">
+      <board-article
+        v-for="article in articles"
+        :key="article.no"
+        :article="article"
+        @submit-comment="reloadArticles"
+      />
+    </template>
+    <template v-else> 게시물이 없습니다. </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, toRef } from "vue";
 import "../scss/bootstrap5.scss";
 import "../scss/inheritPoint.scss";
 import "../scss/game_bg.scss";
+import "../../css/config.css";
+
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import TopBackBar from "./components/TopBackBar.vue";
 import BoardArticle from "./components/BoardArticle.vue";
-import _, { isArray } from "lodash";
-import { ref } from "vue";
-import axios from "axios";
 import { convertFormData } from "./util/convertFormData";
+import axios from "axios";
 import { InvalidResponse } from "./defs";
-import { delay } from "./util/delay";
-declare const isSecretBoard: boolean;
-
+import { autoResizeTextarea } from "./util/autoResizeTextarea";
+import { unwrap } from "./util/unwrap";
 export type BoardResponse = {
   result: true;
   articles: Record<number, BoardArticleItem>;
@@ -103,36 +108,101 @@ export default defineComponent({
     TopBackBar,
     BoardArticle,
   },
-  async setup() {
-    let boardResponse: BoardResponse;
-
-    try {
-      const response = await axios({
-        url: "j_board_get_articles.php",
-        responseType: "json",
-        method: "post",
-        data: convertFormData({
-          isSecret: isSecretBoard,
-        }),
-      });
-      const result: InvalidResponse | BoardResponse = response.data;
-      if (!result.result) {
-        throw result.reason;
+  props: {
+    isSecretBoard: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      title: this.isSecretBoard ? "기밀실" : "회의실",
+      newArticle: {
+        title: "",
+        text: "",
+      },
+    };
+  },
+  methods: {
+    autoResizeTextarea,
+    async submitArticle() {
+      const { title, text } = this.newArticle;
+      if (!title && !text) {
+        return;
       }
-      boardResponse = result;
-    } catch (e) {
-      console.error(e);
-      alert(`에러: ${e}`);
-      return;
-    }
 
-    //const articles = reactive();
-    console.log(boardResponse);
-    const articles:BoardResponse['articles'] = isArray(boardResponse.articles)?{}:boardResponse;
+      let result: InvalidResponse;
+
+      try {
+        const response = await axios({
+          url: "j_board_article_add.php",
+          method: "post",
+          responseType: "json",
+          data: convertFormData({
+            isSecret: this.isSecretBoard,
+            title,
+            text,
+          }),
+        });
+        result = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`실패했습니다. :${e}`);
+        return;
+      }
+
+      this.newArticle = { title: "", text: "" };
+      const newArticleTextForm = unwrap(this.newArticleTextForm);
+      newArticleTextForm.style.height = 'auto';
+
+      await this.reloadArticles();
+    },
+  },
+
+  setup(props) {
+    const newArticleTextForm = ref<HTMLInputElement>();
+    const articles = reactive<BoardArticleItem[]>([]);
+
+    const reloadArticles = async () => {
+      let boardResponse: BoardResponse;
+
+      try {
+        const response = await axios({
+          url: "j_board_get_articles.php",
+          responseType: "json",
+          method: "post",
+          data: convertFormData({
+            isSecret: props.isSecretBoard,
+          }),
+        });
+        const result: InvalidResponse | BoardResponse = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+        boardResponse = result;
+      } catch (e) {
+        console.error(e);
+        alert(`에러: ${e}`);
+        return;
+      }
+
+
+      articles.length = 0;
+      articles.push(...Object.values(boardResponse.articles));
+      articles.reverse();
+    };
+
+    onMounted(async () => {
+      await reloadArticles();
+    });
 
     return {
-      title: isSecretBoard ? "기밀실" : "회의실",
+      newArticleTextForm,
       articles,
+      reloadArticles,
     };
   },
 });

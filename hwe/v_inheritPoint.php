@@ -30,8 +30,8 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/v_inheritPoint.css') ?>
-    <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors_vue.js') ?>
+    <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
+    <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
     <?= WebUtil::printJS('dist_js/v_inheritPoint.js', true) ?>
     <?= WebUtil::printStaticValues([
         'items' => $items
