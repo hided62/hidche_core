@@ -48,6 +48,7 @@ $boardName = $isSecretBoard ? '기밀실' : '회의실';
     <?= WebUtil::printCSS('dist_css/v_board.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
+    <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
     <?= WebUtil::printJS('dist_js/v_board.js', true) ?>
     <?= WebUtil::printStaticValues([
         'isSecretBoard' => $isSecretBoard,

@@ -1,10 +1,9 @@
 <template>
-  <div class="row form-group">
-    <label :for="arg" class="col-sm-6 col-form-label">{{ title }}</label>
+  <div class="row form-group number-input-with-info">
+    <label class="col-sm-6 col-form-label">{{ title }}</label>
     <div class="col-sm-6">
       <input
         ref="input"
-        :id="arg"
         type="number"
         :step="step ?? undefined"
         v-model="rawValue"
@@ -39,10 +38,6 @@ export default defineComponent({
       required: false,
       default: true,
     },
-    arg: {
-      type: String,
-      required: true,
-    },
     title: {
       type: String,
       required: true,
@@ -50,6 +45,7 @@ export default defineComponent({
     min: {
       type: Number,
       required: false,
+      default: 0,
     },
     max: {
       type: Number,
@@ -64,7 +60,7 @@ export default defineComponent({
       default: 0,
     },
   },
-  emits: ["input"],
+  emits: ["update:modelValue"],
   data() {
     return {
       editmode: false,
@@ -72,13 +68,19 @@ export default defineComponent({
       printValue: this.modelValue.toLocaleString(),
     };
   },
+  watch:{
+    modelValue: function(newVal:number){
+      this.rawValue = newVal;
+      this.printValue = newVal.toLocaleString();
+    }
+  },
   methods: {
     updateValue() {
       if (this.int) {
         this.rawValue = Math.floor(this.rawValue);
       }
       this.printValue = this.rawValue.toLocaleString();
-      this.$emit("input", this.rawValue);
+      this.$emit("update:modelValue", this.rawValue);
     },
     onBlurNumber() {
       this.editmode = false;

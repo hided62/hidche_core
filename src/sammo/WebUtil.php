@@ -108,7 +108,11 @@ class WebUtil
     public static function preloadAsset(string $path, string $type){
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
+        if(!$upath->scheme){
+            if(!file_exists($upath->path)){
+                return "<!-- preload:{$type} '{$path}' -->\n";
+            }
+
             $mtime = filemtime($upath->path);
             if($upath->query){
                 $tail = '&'.$mtime;
@@ -135,7 +139,10 @@ class WebUtil
         //async 옵션 고려?
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
+        if(!$upath->scheme){
+            if(!file_exists($upath->path)){
+                return "<!-- JS '{$path}' -->\n";
+            }
             $mtime = filemtime($upath->path);
             if($upath->query){
                 $tail = '&'.$mtime;
@@ -155,7 +162,10 @@ class WebUtil
     public static function printCSS(string $path){
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
+        if(!$upath->scheme){
+            if(!file_exists($upath->path)){
+                return "<!-- CSS '{$path}' -->\n";
+            }
             $mtime = filemtime($upath->path);
             if($upath->query){
                 $tail = '&'.$mtime;

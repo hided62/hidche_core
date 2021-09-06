@@ -32,6 +32,7 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
     <?= WebUtil::printCSS('dist_css/v_inheritPoint.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
+    <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
     <?= WebUtil::printJS('dist_js/v_inheritPoint.js', true) ?>
     <?= WebUtil::printStaticValues([
         'items' => $items

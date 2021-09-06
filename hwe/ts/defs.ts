@@ -127,7 +127,6 @@ export type NationPolicy = {
     minimumResourceActionAmount: number,
     minNPCWarLeadership: number,
     minWarCrew: number,
-    allowNpcAttackCity: true,
     minNPCRecruitCityPopulation: number,
     safeRecruitCityPopulationRatio: number,
     properWarTrainAtmos: number,
