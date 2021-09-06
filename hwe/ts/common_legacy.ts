@@ -76,10 +76,6 @@ export function convColorValue(color: string): string {
 }
 
 
-export function numberWithCommas(x: number): string {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 //linkify가 불러와 있어야함
 declare global {
     interface Window {
