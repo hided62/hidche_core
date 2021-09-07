@@ -47,6 +47,7 @@
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
+    "@swc/core": "^1.2.84",
     "@types/bootstrap": "^5.1.2",
     "@types/jquery": "^3.5.6",
     "@types/lodash": "^4.14.172",

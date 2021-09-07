@@ -5,7 +5,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { resolve } = require('path');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
-
+const TerserPlugin = require('terser-webpack-plugin');
 module.exports = (env, argv) => {
     const target = env.target ?? 'hwe';
     const mode = argv.mode ?? 'production';
@@ -51,6 +51,16 @@ module.exports = (env, argv) => {
             },
             minimizer: [
                 new CssMinimizerPlugin(),
+                new TerserPlugin({
+                    terserOptions: {
+                        format: {
+                            comments: /@license/i,
+                        },
+                    },
+                    minify: TerserPlugin.swcMinify,
+                    parallel: true,
+                    extractComments: true,
+                }),
             ],
         },
         module: {
@@ -96,15 +106,9 @@ module.exports = (env, argv) => {
                     test: /\.(png|jpe?g|gif|webp)$/,
                     use: [
                         {
-                            loader: 'url-loader',
+                            loader: 'file-loader',
                             options: {
-                                limit: 4096,
-                                fallback: {
-                                    loader: 'file-loader',
-                                    options: {
-                                        name: '../dist_misc/[name].[contenthash:8].[ext]'
-                                    }
-                                }
+                                name: '../dist_misc/[name].[contenthash:8].[ext]'
                             }
                         }
                     ]
@@ -124,15 +128,9 @@ module.exports = (env, argv) => {
                     test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
                     use: [
                         {
-                            loader: 'url-loader',
+                            loader: 'file-loader',
                             options: {
-                                limit: 4096,
-                                fallback: {
-                                    loader: 'file-loader',
-                                    options: {
-                                        name: '../dist_misc/[name].[contenthash:8].[ext]'
-                                    }
-                                }
+                                name: '../dist_misc/[name].[contenthash:8].[ext]'
                             }
                         }
                     ]
@@ -141,15 +139,9 @@ module.exports = (env, argv) => {
                     test: /\.(woff2?|eot|ttf|otf)$/i,
                     use: [
                         {
-                            loader: 'url-loader',
+                            loader: 'file-loader',
                             options: {
-                                limit: 4096,
-                                fallback: {
-                                    loader: 'file-loader',
-                                    options: {
-                                        name: '../dist_misc/[name].[contenthash:8].[ext]'
-                                    }
-                                }
+                                name: '../dist_misc/[name].[contenthash:8].[ext]'
                             }
                         }
                     ]
@@ -217,6 +209,16 @@ module.exports = (env, argv) => {
             },
             minimizer: [
                 new CssMinimizerPlugin(),
+                new TerserPlugin({
+                    terserOptions: {
+                        format: {
+                            comments: /@license/i,
+                        },
+                    },
+                    minify: TerserPlugin.swcMinify,
+                    parallel: true,
+                    extractComments: true,
+                }),
             ],
         },
         module: {
@@ -287,6 +289,16 @@ module.exports = (env, argv) => {
             },
             minimizer: [
                 new CssMinimizerPlugin(),
+                new TerserPlugin({
+                    terserOptions: {
+                        format: {
+                            comments: /@license/i,
+                        },
+                    },
+                    minify: TerserPlugin.swcMinify,
+                    parallel: true,
+                    extractComments: true,
+                }),
             ],
         },
         module: {
