@@ -131,3 +131,16 @@ export type NationPolicy = {
     safeRecruitCityPopulationRatio: number,
     properWarTrainAtmos: number,
 }
+
+export declare type Colors = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark' | 'light';
+
+export type IDItem<T> = {
+    id: T;
+};
+
+export type ToastType = {
+    title?: string,
+    content?: string,
+    type?: Colors,
+    delay?: number,
+}

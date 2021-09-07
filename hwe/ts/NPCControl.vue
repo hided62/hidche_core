@@ -1,5 +1,6 @@
 <template>
-  <!-- backbutton -->
+  <my-toast v-model="toasts" />
+  <top-back-bar :title="title" />
   <div
     id="container"
     class="tb_layout bg0"
@@ -299,31 +300,70 @@
           <div class="row">
             <div class="col-sm-6">
               <div class="bg2 sub_bar">비활성</div>
-              <div
-                id="nationPriorityDisabled"
+              <draggable
+                :list="chiefActionUnused"
+                group="chiefAction"
                 class="list-group col"
-                data-type="list"
-              ></div>
+                itemKey="id"
+              >
+                <template #item="{ element }">
+                  <div class="list-group-item">
+                    <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
+                    }}<button
+                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      v-c-tooltip="actionHelpText[element.id]"
+                    >
+                      <!-- FIXME: v-c-tooltip 동작이 조금 묘하다. 버전 문제인가? -->
+                      <i class="bi bi-question-lg"></i>
+                    </button>
+                  </div>
+                </template>
+              </draggable>
             </div>
             <div class="col-sm-6">
               <div class="bg2 sub_bar">활성</div>
-              <div
-                id="nationPriority"
+              <draggable
+                :list="chiefActionPriority"
+                group="chiefAction"
                 class="list-group col"
-                data-type="list"
-              ></div>
+                itemKey="id"
+              >
+                <template #item="{ element }">
+                  <div class="list-group-item">
+                    <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
+                    }}<button
+                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      v-c-tooltip="actionHelpText[element.id]"
+                    >
+                      <i class="bi bi-question-lg"></i>
+                    </button>
+                  </div>
+                </template>
+              </draggable>
             </div>
           </div>
           <div class="control_bar" data-type="nationPriority">
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-dark reset_btn">
+              <button
+                type="button"
+                class="btn btn-dark reset_btn"
+                @click="resetNationPriority"
+              >
                 초기값으로
               </button>
-              <button type="button" class="btn btn-secondary revert_btn">
+              <button
+                type="button"
+                class="btn btn-secondary revert_btn"
+                @click="rollbackNationPriority"
+              >
                 이전값으로
               </button>
             </div>
-            <button type="button" class="btn btn-primary submit_btn">
+            <button
+              type="button"
+              class="btn btn-primary submit_btn"
+              @click="submitNationPriority"
+            >
               설정
             </button>
           </div>
@@ -348,31 +388,69 @@
           <div class="row">
             <div class="col-sm-6">
               <div class="bg2 sub_bar">비활성</div>
-              <div
-                id="generalPriorityDisabled"
+              <draggable
+                :list="generalActionUnused"
+                group="generalAction"
                 class="list-group col"
-                data-type="list"
-              ></div>
+                itemKey="id"
+              >
+                <template #item="{ element }">
+                  <div class="list-group-item">
+                    <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
+                    }}<button
+                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      v-c-tooltip="actionHelpText[element.id]"
+                    >
+                      <i class="bi bi-question-lg"></i>
+                    </button>
+                  </div>
+                </template>
+              </draggable>
             </div>
             <div class="col-sm-6">
               <div class="bg2 sub_bar">활성</div>
-              <div
-                id="generalPriority"
+              <draggable
+                :list="generalActionPriority"
+                group="generalAction"
                 class="list-group col"
-                data-type="list"
-              ></div>
+                itemKey="id"
+              >
+                <template #item="{ element }">
+                  <div class="list-group-item">
+                    <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
+                    }}<button
+                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      v-c-tooltip="actionHelpText[element.id]"
+                    >
+                      <i class="bi bi-question-lg"></i>
+                    </button>
+                  </div>
+                </template>
+              </draggable>
             </div>
           </div>
           <div class="control_bar" data-type="generalPriority">
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-dark reset_btn">
+              <button
+                type="button"
+                class="btn btn-dark reset_btn"
+                @click="resetGeneralPriority"
+              >
                 초기값으로
               </button>
-              <button type="button" class="btn btn-secondary revert_btn">
+              <button
+                type="button"
+                class="btn btn-secondary revert_btn"
+                @click="rollbackGeneralPriority"
+              >
                 이전값으로
               </button>
             </div>
-            <button type="button" class="btn btn-primary submit_btn">
+            <button
+              type="button"
+              class="btn btn-primary submit_btn"
+              @click="submitGeneralPriority"
+            >
               설정
             </button>
           </div>
@@ -382,36 +460,43 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
 import "../scss/bootstrap5.scss";
 import "../scss/game_bg.scss";
+
+import { defineComponent } from "vue";
 import {
+  IDItem,
   InvalidResponse,
   NationPolicy,
   NPCChiefActions,
   NPCGeneralActions,
+  ToastType,
 } from "./defs";
 import NumberInputWithInfo from "./components/NumberInputWithInfo.vue";
 import { cloneDeep, isEqual, last } from "lodash";
 import { unwrap } from "./util/unwrap";
 import { convertFormData } from "./util/convertFormData";
 import axios from "axios";
+import { NPCPriorityBtnHelpMessage } from "./helpTexts";
+import { CTooltip } from "@coreui/vue";
+import draggable from "vuedraggable";
+import MyToast from "./components/MyToast.vue";
+import TopBackBar from "./components/TopBackBar.vue";
+import { convertIDArray } from "./util/convertIDArray";
 
 declare const nationID: number;
 
 declare const defaultNationPolicy: NationPolicy;
 declare const currentNationPolicy: NationPolicy;
-declare const defaultNationPriority: NationPolicy;
 
 declare const zeroPolicy: NationPolicy;
-declare const autoPolicy: NationPolicy;
-
 declare const currentNationPriority: NPCChiefActions[];
 declare const availableNationPriorityItems: NPCChiefActions[];
-declare const defaultGeneralActionPriority: NPCChiefActions[];
+declare const defaultNationPriority: NPCChiefActions[];
 
 declare const currentGeneralActionPriority: NPCGeneralActions[];
 declare const availableGeneralActionPriorityItems: NPCGeneralActions[];
+declare const defaultGeneralActionPriority: NPCGeneralActions[];
 
 declare const defaultStatNPCMax: number;
 declare const defaultStatMax: number;
@@ -419,12 +504,25 @@ declare const defaultStatMax: number;
 export default defineComponent({
   name: "NPCControl",
   components: {
+    TopBackBar,
     NumberInputWithInfo,
+    draggable,
+    MyToast,
+  },
+  directives: {
+    "c-tooltip": CTooltip,
   },
   methods: {
     resetPolicy() {
+      if (!confirm("초기 설정으로 되돌릴까요?")) {
+        return;
+      }
       this.nationPolicy = cloneDeep(defaultNationPolicy);
-      //TODO: toast
+      this.toasts.push({
+        title: "초기화 완료",
+        content: "서버 초기값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
+        type: "info",
+      });
     },
     rollbackPolicy() {
       if (!confirm("이전 설정으로 되돌릴까요?")) {
@@ -439,7 +537,11 @@ export default defineComponent({
         lastPolicy = unwrap(last(this.nationPolicyStack));
       }
       this.nationPolicy = cloneDeep(lastPolicy);
-      //TODO: toast
+      this.toasts.push({
+        title: "되돌리기 완료",
+        content: "이전 설정으로 되돌렸습니다.",
+        type: "info",
+      });
     },
     async submitPolicy() {
       if (!confirm("저장할까요?")) {
@@ -462,12 +564,20 @@ export default defineComponent({
         }
       } catch (e) {
         console.error(e);
-        //TODO: toast
+        this.toasts.push({
+          title: "에러",
+          content: `설정하지 못했습니다: ${e}`,
+          type: "danger",
+        });
         return;
       }
 
-      //TODO: submit
-      //TODO: toast
+      this.toasts.push({
+        title: "적용 완료",
+        content: "NPC 정책이 반영되었습니다.",
+        type: "success",
+      });
+
       const lastPolicy = unwrap(last(this.nationPolicyStack));
       if (!isEqual(lastPolicy, this.nationPolicy)) {
         const { nationPolicy } = this;
@@ -485,9 +595,195 @@ export default defineComponent({
       }
       return this.nationPolicy[title];
     },
+    resetNationPriority() {
+      if (!confirm("초기 설정으로 되돌릴까요?")) {
+        return;
+      }
+      this.chiefActionUnused = [];
+      this.chiefActionPriority = defaultNationPriority.map((id) => {
+        return { id };
+      });
+      this.toasts.push({
+        title: "초기화 완료",
+        content: "서버 초기값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
+        type: "info",
+      });
+    },
+    rollbackNationPriority() {
+      if (!confirm("이전 설정으로 되돌릴까요?")) {
+        return;
+      }
+      let lastActions = unwrap(last(this.chiefActionStack));
+      while (this.chiefActionStack.length > 1) {
+        if (!isEqual(lastActions, this.chiefActionPriority)) {
+          break;
+        }
+        this.chiefActionStack.pop();
+        lastActions = unwrap(last(this.chiefActionStack));
+      }
+      const chiefActionKeys = new Set(availableNationPriorityItems);
+      for (const { id } of lastActions) {
+        if (chiefActionKeys.has(id)) {
+          chiefActionKeys.delete(id);
+        }
+      }
+      this.chiefActionPriority = cloneDeep(lastActions);
+      this.chiefActionUnused = convertIDArray(chiefActionKeys);
+
+      this.toasts.push({
+        title: "되돌리기 완료",
+        content: "이전 설정으로 되돌렸습니다.",
+        type: "info",
+      });
+    },
+    async submitNationPriority() {
+      if (!confirm("저장할까요?")) {
+        return;
+      }
+
+      try {
+        const response = await axios({
+          url: "j_set_npc_control.php",
+          responseType: "json",
+          method: "post",
+          data: convertFormData({
+            type: "nationPriority",
+            data: JSON.stringify(this.chiefActionPriority.map(({ id }) => id)),
+          }),
+        });
+        const result: InvalidResponse = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        this.toasts.push({
+          title: "에러",
+          content: `설정하지 못했습니다: ${e}`,
+          type: "danger",
+        });
+        return;
+      }
+
+      this.toasts.push({
+        title: "적용 완료",
+        content: "NPC 정책이 반영되었습니다.",
+        type: "success",
+      });
+
+      const lastActions = unwrap(last(this.chiefActionStack));
+      if (!isEqual(lastActions, this.chiefActionPriority)) {
+        const { chiefActionPriority } = this;
+        this.chiefActionStack.push(cloneDeep(chiefActionPriority));
+      }
+    },
+    resetGeneralPriority() {
+      if (!confirm("초기 설정으로 되돌릴까요?")) {
+        return;
+      }
+      this.generalActionUnused = [];
+      this.generalActionPriority = defaultGeneralActionPriority.map((id) => {
+        return { id };
+      });
+      this.toasts.push({
+        title: "초기화 완료",
+        content: "서버 초기값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
+        type: "info",
+      });
+    },
+    rollbackGeneralPriority() {
+      if (!confirm("이전 설정으로 되돌릴까요?")) {
+        return;
+      }
+      let lastActions = unwrap(last(this.generalActionStack));
+      while (this.generalActionStack.length > 1) {
+        if (!isEqual(lastActions, this.generalActionPriority)) {
+          break;
+        }
+        this.generalActionStack.pop();
+        lastActions = unwrap(last(this.generalActionStack));
+      }
+      const generalActionKeys = new Set(availableGeneralActionPriorityItems);
+      for (const { id } of lastActions) {
+        if (generalActionKeys.has(id)) {
+          generalActionKeys.delete(id);
+        }
+      }
+      this.generalActionPriority = cloneDeep(lastActions);
+      this.generalActionUnused = convertIDArray(generalActionKeys);
+
+      this.toasts.push({
+        title: "되돌리기 완료",
+        content: "이전 설정으로 되돌렸습니다.",
+        type: "info",
+      });
+    },
+    async submitGeneralPriority() {
+      if (!confirm("저장할까요?")) {
+        return;
+      }
+
+      try {
+        const response = await axios({
+          url: "j_set_npc_control.php",
+          responseType: "json",
+          method: "post",
+          data: convertFormData({
+            type: "generalPriority",
+            data: JSON.stringify(
+              this.generalActionPriority.map(({ id }) => id)
+            ),
+          }),
+        });
+        const result: InvalidResponse = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        this.toasts.push({
+          title: "에러",
+          content: `설정하지 못했습니다: ${e}`,
+          type: "danger",
+        });
+        return;
+      }
+
+      this.toasts.push({
+        title: "적용 완료",
+        content: "NPC 정책이 반영되었습니다.",
+        type: "success",
+      });
+
+      const lastActions = unwrap(last(this.generalActionStack));
+      if (!isEqual(lastActions, this.generalActionPriority)) {
+        const { generalActionPriority } = this;
+        this.generalActionStack.push(cloneDeep(generalActionPriority));
+      }
+    },
   },
   data() {
+    const chiefActionPriority: IDItem<NPCChiefActions>[] = [];
+    const chiefActionKeys = new Set(availableNationPriorityItems);
+    for (const id of currentNationPriority) {
+      chiefActionPriority.push({ id });
+      chiefActionKeys.delete(id);
+    }
+    const chiefActionUnused: IDItem<NPCChiefActions>[] =
+      convertIDArray(chiefActionKeys);
+
+    const generalActionPriority: IDItem<NPCGeneralActions>[] = [];
+    const generalActionKeys = new Set(availableGeneralActionPriorityItems);
+    for (const id of currentGeneralActionPriority) {
+      generalActionPriority.push({ id });
+      generalActionKeys.delete(id);
+    }
+    const generalActionUnused: IDItem<NPCGeneralActions>[] =
+      convertIDArray(generalActionKeys);
+
     return {
+      title: "NPC 정책",
+      toasts: <ToastType[]>[],
       reqNationGold: 110,
 
       nationID,
@@ -496,15 +792,24 @@ export default defineComponent({
       nationPolicy: cloneDeep(currentNationPolicy),
       nationPolicyStack: [currentNationPolicy],
       zeroPolicy,
-      autoPolicy,
 
-      chiefActionPriority: cloneDeep(currentNationPriority),
-      //chiefActionUnused: [],
-      generalActionPriority: cloneDeep(currentGeneralActionPriority),
-      //generalActionUnsed: [],
+      actionHelpText: NPCPriorityBtnHelpMessage,
 
-      displayOrder: [],
+      chiefActionUnused,
+      chiefActionPriority,
+      chiefActionStack: [cloneDeep(chiefActionPriority)],
+
+      generalActionUnused,
+      generalActionPriority,
+      generalActionStack: [cloneDeep(generalActionPriority)],
     };
   },
 });
 </script>
+
+<style>
+.tooltip > .tooltip-inner {
+  max-width: 350px;
+  text-align: left;
+}
+</style>

@@ -81,7 +81,6 @@ $zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
         'defaultNationPolicy' => $defaultNationPolicy,
         'currentNationPolicy' => $currentNationPolicy,
         'zeroPolicy' => $zeroPolicy,
-        'autoPolicy' => $autoPolicy,
 
         'defaultNationPriority' => $defaultNationPriority,
         'currentNationPriority' => $currentNationPriority,
@@ -94,6 +93,7 @@ $zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
         'defaultStatNPCMax' => GameConst::$defaultStatNPCMax,
         'defaultStatMax' => GameConst::$defaultStatMax,
     ]) ?>
+    <?= WebUtil::printCSS('dist_css/vendors_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/v_NPCControl.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
