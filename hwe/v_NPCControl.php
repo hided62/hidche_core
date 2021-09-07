@@ -66,6 +66,21 @@ if ($currentNationPolicy['reqHumanWarUrgentGold'] ?? 0) {
 $autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'], ['values' => $autoPolicyVariable], null, $nation, $gameStor->getAll(true));
 $zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'], null, null, $nation, $gameStor->getAll(true));
 
+$lastSetters = [
+    'policy' => [
+        'setter' => $rawNationPolicy['valueSetter'] ?? null,
+        'date' => $rawNationPolicy['valueSetTime'] ?? null,
+    ],
+    'nation' => [
+        'setter' => $rawNationPolicy['prioritySetter'] ?? null,
+        'date' => $rawNationPolicy['prioritySetTime'] ?? null,
+    ],
+    'general' => [
+        'setter' => $rawNationGeneralPolicy['prioritySetter'] ?? null,
+        'date' => $rawNationGeneralPolicy['prioritySetTime'] ?? null,
+    ]
+]
+
 
 ?>
 <!DOCTYPE html>
@@ -89,6 +104,8 @@ $zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['optio
         'defaultGeneralActionPriority' => $defaultGeneralActionPriority,
         'currentGeneralActionPriority' => $currentGeneralActionPriority,
         'availableGeneralActionPriorityItems' => AutorunGeneralPolicy::$default_priority,
+
+        'lastSetters' => $lastSetters,
 
         'defaultStatNPCMax' => GameConst::$defaultStatNPCMax,
         'defaultStatMax' => GameConst::$defaultStatMax,

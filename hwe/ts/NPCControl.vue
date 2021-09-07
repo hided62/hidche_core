@@ -7,11 +7,11 @@
     :style="{ width: '1000px', margin: 'auto', border: 'solid 1px #888888' }"
   >
     <div class="bg1 section_bar">국가 정책</div>
-    <div class="text-right px-3">
+    <div class="px-3" style="text-align:right;">
       <small class="form-text text-muted">
         최근 설정:
-        {{ nationPolicy.valueSetter ?? "-없음-" }}
-        ({{ nationPolicy.valueSetTime ?? "설정 기록 없음" }})
+        {{ lastSetters.policy.setter ?? "-없음-" }}
+        ({{ lastSetters.policy.date ?? "설정 기록 없음" }})
       </small>
     </div>
     <div class="form_list">
@@ -286,13 +286,13 @@
         <div class="float-right px-3">
           <small class="form-text text-muted">
             최근 설정:
-            {{ chiefActionPriority.prioritySetter ?? "-없음-" }}
-            ({{ chiefActionPriority.prioritySetTime ?? "설정 기록 없음" }})
+            {{ lastSetters.nation.setter ?? "-없음-" }}
+            ({{ lastSetters.nation.date ?? "설정 기록 없음" }})
           </small>
         </div>
         <div class="text-left px-2">
           <small class="text-muted"
-            >예턴이 없거나, 지정되어 있더라도 실패할경우<br />아래 순위에 따라
+            >예턴이 없거나, 지정되어 있더라도 실패하면<br />아래 순위에 따라
             사령턴을 시도합니다.</small
           >
         </div>
@@ -374,8 +374,8 @@
         <div class="float-right px-3">
           <small class="form-text text-muted">
             최근 설정:
-            {{ nationPolicy.prioritySetter ?? "-없음-" }}
-            ({{ nationPolicy.prioritySetTime ?? "설정 기록 없음" }})
+            {{ lastSetters.general.setter ?? "-없음-" }}
+            ({{ lastSetters.general.date ?? "설정 기록 없음" }})
           </small>
         </div>
         <div class="text-left px-2">
@@ -500,6 +500,17 @@ declare const defaultGeneralActionPriority: NPCGeneralActions[];
 
 declare const defaultStatNPCMax: number;
 declare const defaultStatMax: number;
+
+type SetterInfo = {
+  setter: string | null;
+  date: string | null;
+};
+
+declare const lastSetters: {
+  polcy: SetterInfo;
+  nation: SetterInfo;
+  general: SetterInfo;
+};
 
 export default defineComponent({
   name: "NPCControl",
@@ -784,7 +795,7 @@ export default defineComponent({
     return {
       title: "NPC 정책",
       toasts: <ToastType[]>[],
-      reqNationGold: 110,
+      lastSetters,
 
       nationID,
       defaultStatMax,
@@ -811,5 +822,39 @@ export default defineComponent({
 .tooltip > .tooltip-inner {
   max-width: 350px;
   text-align: left;
+}
+
+.control_bar {
+    margin-top: 8pt;
+    text-align: right;
+}
+
+.reset_btn {
+    width: 15ch;
+}
+
+.revert_btn{
+  width: 15ch;
+}
+
+.submit_btn {
+    margin-left: 1em;
+    width: 15ch;
+}
+
+.half_section_left {
+    padding-right: 0;
+    border-right: 0.5px solid #aaa;
+}
+
+.half_section_right {
+    padding-left: 0;
+}
+
+.section_bar {
+    text-align: center;
+    border: 0.5px solid #aaa;
+    padding-right: 0;
+    padding-left: 0;
 }
 </style>
