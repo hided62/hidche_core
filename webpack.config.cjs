@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
     const mode = argv.mode ?? 'production';
     const tsDir = resolve(__dirname, `${target}/ts/`);
     const ingame_vue = {
-        name: 'ingame_vue',
+        name: `ingame_${target}_vue`,
         resolve: {
             extensions: [".ts", ".tsx", ".vue", ".js"],
             alias: {
@@ -164,7 +164,7 @@ module.exports = (env, argv) => {
         },
     };
     const ingame = {
-        name: 'ingame',
+        name: `ingame_${target}`,
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
         },

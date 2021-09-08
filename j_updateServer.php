@@ -67,7 +67,7 @@ function tryNpmInstall()
             }
 
             //그것도 아니라면 업데이트하지 않겠다.
-            return;
+            return false;
         } while (0);
     }
 
@@ -83,12 +83,15 @@ function tryNpmInstall()
         'packageJsonHash'=>$packageJsonHash,
         'updateTimestamp'=>$timestamp,
     ]));
+    return true;
 }
 
 //묻고 따지지 않고 일단 npm install은 시도한다.
 //hwe 업데이트인 경우에만 한번 더 부른다.
 
-tryNpmInstall();
+if(tryNpmInstall()){
+    genJS(Util::array_last_key(ServConfig::getServerList()));
+}
 $session = Session::requireLogin(null)->setReadOnly();
 
 $request = $_POST + $_GET;
