@@ -5,18 +5,20 @@
 
 ## 요구사항
 
-* Apache2
-  * <code>mpm_event</code> 권장
-* PHP 7.3 이상 
-  * <code>php-fpm</code> 권장
+* Apache2 또는 nginx
+  * Apache2인 경우 `mpm_event` 권장
+* PHP 8.0 이상
+  * `php-fpm` 권장
   * php에서 curl, pdo-sqlite을 실행가능해야 합니다.
   * mysqli, mysqlnd
   * gd
   * mbstring
+* NodeJS 14 이상
+  * 내부의 git을 통해 upgrade 때 `webpack build` 용도로 필요합니다.
 * MariaDB 10.2.1 이상
   * 현재 MySQL은 지원하지 않습니다.
-* <code>git</code>
-* <code>curl</code>
+* `git`
+* `curl`
 
 Linux는 Ubuntu 18.04, 20.04, Windows는 Windows 10에서 XAMPP, WSL2를 사용한 환경에서 테스트되었습니다.
 
