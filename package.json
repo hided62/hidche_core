@@ -82,5 +82,10 @@
   },
   "pre-commit": [
     "lint"
+  ],
+  "browserslist": [
+    "> 0.4%",
+    "not ie <= 11",
+    "not op_mini all"
   ]
 }

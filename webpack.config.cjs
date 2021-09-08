@@ -60,6 +60,7 @@ module.exports = (env, argv) => {
                     extractComments: true,
                 }),
             ],
+            moduleIds: 'deterministic',
         },
         module: {
             rules: [
@@ -93,9 +94,6 @@ module.exports = (env, argv) => {
                     loader: 'vue-loader',
                     exclude: /(node_modules)/,
                     options: {
-                        /*transformAssetUrls: {
-                            png: [],
-                        },*/
                         hotReload: false,
                     }
                 },
@@ -222,6 +220,7 @@ module.exports = (env, argv) => {
                     extractComments: true,
                 }),
             ],
+            moduleIds: 'deterministic',
         },
         module: {
             rules: [{
@@ -232,7 +231,6 @@ module.exports = (env, argv) => {
                     options: {
                         presets: [
                             ['@babel/preset-env', {
-                                "targets": "> 0.2%, not ie>8, not op_mini all",
                                 "useBuiltIns": "usage",
                                 "corejs": 3,
                                 "modules": false
@@ -299,6 +297,7 @@ module.exports = (env, argv) => {
                     extractComments: true,
                 }),
             ],
+            moduleIds: 'deterministic',
         },
         module: {
             rules: [{
@@ -309,7 +308,6 @@ module.exports = (env, argv) => {
                     options: {
                         presets: [
                             ['@babel/preset-env', {
-                                "targets": "> 0.2%, not ie>8, not op_mini all",
                                 "useBuiltIns": "usage",
                                 "corejs": 3,
                                 "modules": false

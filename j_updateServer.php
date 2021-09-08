@@ -1,8 +1,9 @@
 <?php
-
 namespace sammo;
 
 require(__DIR__ . '/vendor/autoload.php');
+
+set_time_limit(600);
 
 function getVersion($target = null)
 {
@@ -28,18 +29,66 @@ function getHash($target = 'HEAD')
     return trim($output);
 }
 
-function genJS($server){
+function genJS($server)
+{
     $command = sprintf("./node_modules/.bin/webpack build --env target=%s", escapeshellarg($server));
 
     exec(($command), $output, $result_code);
-    if($result_code!=0){
+    if ($result_code != 0) {
         Json::die([
             'result' => false,
-            'reason'=>$output
+            'reason' => $output
         ]);
     }
 }
 
+function tryNpmInstall()
+{
+    $npmResultPath = './npm_recent.json.log';
+    $packageJsonPath = './package.json';
+    $packageJsonLockPath = './package-lock.json';
+
+    $packageJsonHash = hash_file('sha512', $packageJsonPath);
+    $timestamp = time();
+    if (file_exists($npmResultPath) && file_exists($packageJsonLockPath)) {
+        do {
+            $result = json_decode(file_get_contents($npmResultPath));
+            $oldJsonHash = $result->packageJsonHash;
+            $oldTimestamp = $result->updateTimestamp;
+
+            //1. package.json 파일이 다르면 업데이트.
+            if ($packageJsonHash != $oldJsonHash) {
+                break;
+            }
+
+            //2. package-lock.json 업데이트가 2주를 초과했다면 업데이트.
+            if($oldTimestamp + 60*60*24*14 < $timestamp){
+                break;
+            }
+
+            //그것도 아니라면 업데이트하지 않겠다.
+            return;
+        } while (0);
+    }
+
+    exec("npm install", $output, $result_code);
+    if ($result_code != 0) {
+        Json::die([
+            'result' => false,
+            'reason' => $output
+        ]);
+    }
+
+    file_put_contents($npmResultPath, json_encode([
+        'packageJsonHash'=>$packageJsonHash,
+        'updateTimestamp'=>$timestamp,
+    ]));
+}
+
+//묻고 따지지 않고 일단 npm install은 시도한다.
+//hwe 업데이트인 경우에만 한번 더 부른다.
+
+tryNpmInstall();
 $session = Session::requireLogin(null)->setReadOnly();
 
 $request = $_POST + $_GET;
@@ -169,10 +218,10 @@ if ($server == $baseServerName) {
     $gitHash = getHash();
     if (
         hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.dynamic.orig.php') ==
-        hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.php')) {
-            $result = true;
-    }
-    else{
+        hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.php')
+    ) {
+        $result = true;
+    } else {
         $result = Util::generateFileUsingSimpleTemplate(
             __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
             __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
@@ -184,6 +233,8 @@ if ($server == $baseServerName) {
         );
     }
 
+    //git 업데이트했는데, package.json이 바뀌면 곤란하니까
+    tryNpmInstall();
     genJS($server);
 
     if (ServConfig::$imageRequestKey) {
