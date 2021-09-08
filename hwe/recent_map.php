@@ -15,9 +15,10 @@ include "func.php";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>최근 지도</title>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <script>
-        var serverNick = '<?= $runningServer['korName'] ?>';
-    </script>
+    <?= WebUtil::printStaticValues([
+        'serverNick' => DB::prefix(),
+        'serverID' => UniqueConst::$serverID
+    ]) ?>
     <?= WebUtil::printJS('dist_js/vendors.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
     <?= WebUtil::printJS('dist_js/recent_map.js') ?>
@@ -46,7 +47,7 @@ include "func.php";
             <?= UniqueConst::$serverName ?> 현황
         </h3>
         <div class='map-container' style='position:relative;'>
-            <?= getMapHtml($mapTheme) ?>
+            <?= getMapHtml() ?>
         </div>
         <div class="card-body">
         </div>

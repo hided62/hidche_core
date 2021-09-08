@@ -171,7 +171,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
     const cityPosition = window.getCityPosition();
 
     const storedOldMapKey = `sam.${serverNick}.map`;
-    const storedStartYear = `am.${serverNick}.startYear`;
+    const storedStartYear = `sam.${serverNick}.startYear`;
     //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
 
     async function checkReturnObject(obj: MapRawResult): Promise<MapResult> {
