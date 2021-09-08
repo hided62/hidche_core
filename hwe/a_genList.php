@@ -46,10 +46,9 @@ if($gameStor->isunited){
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 
 </head>
 
@@ -110,21 +109,21 @@ $generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special
 echo"
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=64  align=center id=bg1>얼 굴</td>
-        <td width=140 align=center id=bg1>이 름</td>
-        <td width=45 align=center id=bg1>연령</td>
-        <td width=45 align=center id=bg1>성격</td>
-        <td width=80 align=center id=bg1>특기</td>
-        <td width=45 align=center id=bg1>레 벨</td>
-        <td width=140 align=center id=bg1>국 가</td>
-        <td width=55 align=center id=bg1>명 성</td>
-        <td width=55 align=center id=bg1>계 급</td>
-        <td width=75 align=center id=bg1>관 직</td>
-        <td width=45 align=center id=bg1>통솔</td>
-        <td width=45 align=center id=bg1>무력</td>
-        <td width=45 align=center id=bg1>지력</td>
-        <td width=45 align=center id=bg1>삭턴</td>
-        <td width=70 align=center id=bg1>벌점</td>
+        <td width=64  align=center class='bg1'>얼 굴</td>
+        <td width=140 align=center class='bg1'>이 름</td>
+        <td width=45 align=center class='bg1'>연령</td>
+        <td width=45 align=center class='bg1'>성격</td>
+        <td width=80 align=center class='bg1'>특기</td>
+        <td width=45 align=center class='bg1'>레 벨</td>
+        <td width=140 align=center class='bg1'>국 가</td>
+        <td width=55 align=center class='bg1'>명 성</td>
+        <td width=55 align=center class='bg1'>계 급</td>
+        <td width=75 align=center class='bg1'>관 직</td>
+        <td width=45 align=center class='bg1'>통솔</td>
+        <td width=45 align=center class='bg1'>무력</td>
+        <td width=45 align=center class='bg1'>지력</td>
+        <td width=45 align=center class='bg1'>삭턴</td>
+        <td width=70 align=center class='bg1'>벌점</td>
     </tr>";
 foreach($generalList as $general){
     $nation = $nationname[$general['nation']];
@@ -149,7 +148,7 @@ foreach($generalList as $general){
         $intel = "{$general['intel']}";
     }
 
-    
+
 
     if ($general['npc'] >= 2) {
         $name = "<font color=cyan>{$general['name']}</font>";
@@ -167,8 +166,8 @@ foreach($generalList as $general){
 
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "
-    <tr data-general-id='{$general['no']}' 
-        data-general-wounded='{$general['injury']}' 
+    <tr data-general-id='{$general['no']}'
+        data-general-wounded='{$general['injury']}'
         data-general-leadership='{$general['leadership']}'
         data-general-leadership-bonus='{$lbonus}'
         data-general-strength='{$general['strength']}'

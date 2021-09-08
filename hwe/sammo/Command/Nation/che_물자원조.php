@@ -102,7 +102,7 @@ class che_물자원조 extends Command\NationCommand{
         }
 
         $this->fullConditionConstraints=[
-            ConstraintHelper::ExistsDestNation(), 
+            ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
@@ -112,11 +112,11 @@ class che_물자원조 extends Command\NationCommand{
             ConstraintHelper::ReqDestNationValue('surlimit', '외교제한', '==', 0, '상대국이 외교제한중입니다.'),
         ];
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -165,33 +165,33 @@ class che_물자원조 extends Command\NationCommand{
 
         [$goldAmount, $riceAmount] = $this->arg['amountList'];
 
-        
+
         $goldAmount = Util::valueFit(
-            $goldAmount, 
-            0, 
+            $goldAmount,
+            0,
             $nation['gold'] - GameConst::$basegold
         );
 
         $riceAmount = Util::valueFit(
-            $riceAmount, 
-            0, 
+            $riceAmount,
+            0,
             $nation['rice'] - GameConst::$baserice
         );
-        
+
         $goldAmountText = number_format($goldAmount);
         $riceAmountText = number_format($riceAmount);
 
-        
+
         $logger = $general->getLogger();
 
         $year = $this->env['year'];
         $month = $this->env['month'];
 
-        
+
 
         $josaRo = JosaUtil::pick($destNationName, '로');
 
-        
+
 
         $broadcastMessage = "<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원했습니다.";
 
@@ -246,14 +246,14 @@ class che_물자원조 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'defaultSelectNationByMap'
         ];
     }
 
-    
+
     public function getForm(): string
     {
         $currentNationLevel = getNationStaticInfo($this->generalObj->getNationID())['level'];
@@ -268,8 +268,8 @@ class che_물자원조 extends Command\NationCommand{
 원조할 국가를 목록에서 선택하세요.<br>
 <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
 <?php foreach(getAllNationStaticInfo() as $nation): ?>
-    <option 
-        value='<?=$nation['nation']?>' 
+    <option
+        value='<?=$nation['nation']?>'
         style='color:<?=$nation['color']?>;'
     >【<?=$nation['name']?> 】</option>
 <?php endforeach; ?>
@@ -278,12 +278,12 @@ class che_물자원조 extends Command\NationCommand{
 <?php foreach(Util::range($currentNationLevel+1) as $nationLevel): ?>
     <option value='<?=$nationLevel*GameConst::$coefAidAmount?>'><?=$nationLevel*GameConst::$coefAidAmount?></option>
 <?php endforeach; ?>
-</select> 
+</select>
 병량 <select class='formInput amountList' name="amountList[]" size='1' style='color:white;background-color:black;'>
 <?php foreach(Util::range($currentNationLevel+1) as $nationLevel): ?>
     <option value='<?=$nationLevel*GameConst::$coefAidAmount?>'><?=$nationLevel*GameConst::$coefAidAmount?></option>
 <?php endforeach; ?>
-</select> 
+</select>
 <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
 <br>
 <?php

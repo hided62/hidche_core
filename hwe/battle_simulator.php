@@ -50,17 +50,13 @@ else{
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/battle_simulator.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/moment.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('../e_lib/download2.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
 <script>
 var defaultSpecialDomestic = '<?=GameConst::$defaultSpecialDomestic?>';
 var city = <?=Json::encode($city)?>;
 var nation = <?=Json::encode($nation)?>;
 </script>
-<?=WebUtil::printJS('js/battle_simulator.js')?>
+<?=WebUtil::printJS('dist_js/battle_simulator.js')?>
 </head>
 <body>
 <div id="container">
@@ -123,7 +119,7 @@ var nation = <?=Json::encode($nation)?>;
                     </div>
                     <select class="custom-select form_nation_type" style="width:25ch;">
                         <?php foreach(GameConst::$availableNationType as $typeID): ?>
-                            <?php $nationTypeClass = buildNationTypeClass($typeID) ?> 
+                            <?php $nationTypeClass = buildNationTypeClass($typeID) ?>
                             <option value="<?=$typeID?>"><?=$nationTypeClass->getName()?> (<?=$nationTypeClass::$pros?>, <?=$nationTypeClass::$cons?>)</option>
                         <?php endforeach; ?>
                     </select>
@@ -163,10 +159,10 @@ var nation = <?=Json::encode($nation)?>;
                             <input type="radio" name="is_attacker_capital" class="form_is_capital" value="0" autocomplete="off">N
                         </label>
                     </div>
-                    
+
                 </div>
                 <div class="input-group mb-1">
-                    
+
                 </div>
             </div>
         </div>
@@ -198,7 +194,7 @@ var nation = <?=Json::encode($nation)?>;
                     </div>
                     <select class="custom-select form_nation_type" style="width:25ch;">
                         <?php foreach(GameConst::$availableNationType as $typeID): ?>
-                            <?php $nationTypeObj = buildNationTypeClass($typeID) ?> 
+                            <?php $nationTypeObj = buildNationTypeClass($typeID) ?>
                             <option value="<?=$typeID?>"><?=$nationTypeObj->getName()?> (<?=$nationTypeObj::$pros?>, <?=$nationTypeObj::$cons?>)</option>
                         <?php endforeach; ?>
                     </select>
@@ -305,7 +301,7 @@ var nation = <?=Json::encode($nation)?>;
                         <span class="input-group-text">Level</span>
                     </div>
                     <input type="number" class="form-control form_exp_level" value="20" min="0" max="300" step="1">
-                    
+
                 </div>
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
@@ -484,7 +480,7 @@ var nation = <?=Json::encode($nation)?>;
             </div>
         </div>
 
-        
+
     </div><!-- <div class="col-sm"> -->
 </div>
 <div class="card mb-3">

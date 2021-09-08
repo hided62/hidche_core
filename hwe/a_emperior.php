@@ -16,9 +16,9 @@ increaseRefresh("왕조일람", 1);
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 왕조일람</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -70,9 +70,9 @@ foreach($emperiors as $emperior){
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
             <font size=5><?=$emperior['phase']?></font>
-            
+
             <a href="a_emperior_detail.php?select=<?=$emperior['no']?>"><button type='button'>자세히</button></a>
-            
+
             <?php if($emperior['server_id']): ?>
             <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button type='button'>역사 보기</button></a>
             <?php endif ?>
@@ -84,33 +84,33 @@ foreach($emperiors as $emperior){
         </td>
     </tr>
     <tr>
-        <td id=bg1 align=center width=80>국 력</td>
+        <td class='bg1' align=center width=80>국 력</td>
         <td align=center width=170><?=$emperior['power']?></td>
-        <td id=bg1 align=center width=80>장 수</td>
+        <td class='bg1' align=center width=80>장 수</td>
         <td align=center width=170><?=$emperior['gennum']?></td>
-        <td id=bg1 align=center width=80>속 령</td>
+        <td class='bg1' align=center width=80>속 령</td>
         <td align=center width=170><?=$emperior['citynum']?></td>
-        <td id=bg1 align=center width=80>성 향</td>
+        <td class='bg1' align=center width=80>성 향</td>
         <td align=center width=170><?=$emperior['type']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>황 제</td>
+        <td class='bg1' align=center>황 제</td>
         <td align=center><?=$emperior['l12name']?></td>
-        <td id=bg1 align=center>승 상</td>
+        <td class='bg1' align=center>승 상</td>
         <td align=center><?=$emperior['l11name']?></td>
-        <td id=bg1 align=center>표 기 장 군</td>
+        <td class='bg1' align=center>표 기 장 군</td>
         <td align=center><?=$emperior['l10name']?></td>
-        <td id=bg1 align=center>사 공</td>
+        <td class='bg1' align=center>사 공</td>
         <td align=center><?=$emperior['l9name']?></td>
     </tr>
     <tr>
-        <td id=bg1 align=center>거 기 장 군</td>
+        <td class='bg1' align=center>거 기 장 군</td>
         <td align=center><?=$emperior['l8name']?></td>
-        <td id=bg1 align=center>태 위</td>
+        <td class='bg1' align=center>태 위</td>
         <td align=center><?=$emperior['l7name']?></td>
-       <td id=bg1 align=center>위 장 군</td>
+       <td class='bg1' align=center>위 장 군</td>
         <td align=center><?=$emperior['l6name']?></td>
-        <td id=bg1 align=center>사 도</td>
+        <td class='bg1' align=center>사 도</td>
         <td align=center><?=$emperior['l5name']?></td>
     </tr>
 </table>

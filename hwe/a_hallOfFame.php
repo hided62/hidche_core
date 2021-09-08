@@ -50,12 +50,9 @@ else{
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/hallOfFame.css')?>
-
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJs('js/hallOfFame.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJs('dist_js/hallOfFame.js')?>
 </head>
 
 <body>
@@ -64,14 +61,14 @@ else{
     <tr><td>
 시나리오 검색 : <select id="by_scenario" name="by_scenario">
 <?php foreach($scenarioList as $iterSeasonIdx=>$subScenarioList): ?>
-    <option 
-        data-season="<?=$iterSeasonIdx?>" 
-        value="" 
+    <option
+        data-season="<?=$iterSeasonIdx?>"
+        value=""
         <?=($iterSeasonIdx == $seasonIdx && $scenarioIdx === null)?"selected='selected'":''?>
     >* 시즌 : <?=$iterSeasonIdx?> 종합 *</option>
     <?php foreach($subScenarioList as $info): ?>
         <option
-        data-season="<?=$iterSeasonIdx?>" 
+        data-season="<?=$iterSeasonIdx?>"
             value="<?=$info['scenario']?>"
             <?=($iterSeasonIdx == $seasonIdx && $info['scenario']===$scenarioIdx)?"selected='selected'":''?>
         ><?=$info['name']?>(<?=$info['cnt']?>회)</option>
@@ -136,7 +133,7 @@ foreach($types as $typeName=>[$typeDescribe, $typeValue]) {
                 $general['bgColor'] = $general['color'];
             }
         }
-        
+
         if(!key_exists('fgColor', $general)){
             $general['fgColor'] = newColor($general['bgColor']);
         }
@@ -175,4 +172,3 @@ foreach($types as $typeName=>[$typeDescribe, $typeValue]) {
 </table>
 </body>
 </html>
-

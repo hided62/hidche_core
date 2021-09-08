@@ -166,10 +166,10 @@ class che_강행 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'defaultSelectCityByMap'
         ];
     }
 

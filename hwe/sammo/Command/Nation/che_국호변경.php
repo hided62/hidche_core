@@ -81,7 +81,7 @@ class che_국호변경 extends Command\NationCommand
 
     public function getCost(): array
     {
-        
+
         return [0, 0];
     }
 
@@ -129,7 +129,7 @@ class che_국호변경 extends Command\NationCommand
             return false;
         }
 
-        
+
         $josaRo = JosaUtil::pick($newNationName, '로');
 
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
@@ -157,10 +157,10 @@ class che_국호변경 extends Command\NationCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/colorSelect.js'
+            'colorSelect'
         ];
     }
 

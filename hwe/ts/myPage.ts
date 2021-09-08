@@ -1,0 +1,199 @@
+import axios from 'axios';
+import $ from 'jquery';
+import { InvalidResponse } from './defs';
+import { convertFormData } from './util/convertFormData';
+import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { unwrap } from './util/unwrap';
+import { unwrap_any } from './util/unwrap_any';
+
+
+type LogResponse = {
+    result: true;
+    log: Record<number, string>;
+};
+
+$(function ($) {
+    setAxiosXMLHttpRequest();
+
+    const initCustomCSSForm = function () {
+        let lastTimeOut: NodeJS.Timeout | undefined = undefined;
+        const $obj = $('#custom_css');
+        const key = 'sam_customCSS';
+
+        let text = localStorage.getItem(key);
+        if (text) {
+            $obj.val(text);
+            console.log(text);
+        }
+
+        $obj.on('change keyup paste', function () {
+            const newText = $obj.val();
+            if (text == newText) {
+                return;
+            }
+            if (lastTimeOut) {
+                clearTimeout(unwrap(lastTimeOut));
+            }
+            $obj.css('background-color', '#222222');
+            lastTimeOut = setTimeout(function () {
+                text = unwrap_any<string>($obj.val());
+                localStorage.setItem(key, text);
+                $obj.css('background-color', 'black');
+            }, 500);
+        })
+            ;
+    };
+
+    $('.load_old_log').on('click', async function (e) {
+        e.preventDefault();
+
+        const $thisBtn = $(this);
+        const logType = $thisBtn.data('log_type');
+        const $last = $(`.log_${logType}:last`);
+        let reqTo: number | null = null;
+        if ($last.length) {
+            reqTo = $last.data('seq');
+        }
+
+        let result: InvalidResponse | LogResponse;
+
+        try {
+            const response = await axios({
+                url: 'j_general_log_old.php',
+                method: 'post',
+                responseType: 'json',
+                data: convertFormData({
+                    to: reqTo,
+                    type: logType
+                })
+            });
+            result = response.data;
+        }
+        catch (e) {
+            console.log(e);
+            alert(`실패했습니다: ${e}`);
+            return;
+        }
+
+        if (!result.result) {
+            alert(`로그를 받아오지 못했습니다. : ${result.reason}`);
+            location.reload();
+            return;
+        }
+
+        const keys: string[] = Object.keys(result.log);
+        if (keys.length > 1 && keys[0] < keys[1]) {
+            keys.reverse();
+        }
+
+        if (keys.length == 0) {
+            $thisBtn.hide();
+            return;
+        }
+
+        const html: string[] = [];
+        for (const [key, item] of Object.entries(result.log)) {
+            if ($(`#log_${logType}_${key}`).length) {
+                return true;
+            }
+            html.push(`<div class='log_${logType}' id='log_${logType}_${key}' data-seq='${key}'>${item}</div>`);
+        }
+        $(`#${logType}Plate`).append(html.join(''));
+    })
+
+    initCustomCSSForm();
+
+
+    $('#die_immediately').on('click', async function (e) {
+        e.preventDefault();
+
+        if (!confirm('정말로 삭제하시겠습니까?')) {
+            return false;
+        }
+
+        let result: InvalidResponse;
+
+        try {
+            const response = await axios({
+                url: 'j_die_immediately.php',
+                method: 'post',
+                responseType: 'json',
+            });
+            result = response.data;
+        }
+        catch (e) {
+            console.log(e);
+            alert(`실패했습니다: ${e}`);
+            location.reload();
+            return;
+        }
+
+        if (!result.result) {
+            alert(`실패했습니다: ${result.reason}`);
+            location.reload();
+            return;
+        }
+
+        location.replace('..');
+    });
+
+    $('#vacation').on('click', async function (e) {
+        e.preventDefault();
+        if (!confirm('휴가 기능을 신청할까요?')) {
+            return false;
+        }
+
+        let result: InvalidResponse;
+
+        try {
+            const response = await axios({
+                url: 'j_vacation.php',
+                method: 'post',
+                responseType: 'json',
+            });
+            result = response.data;
+        }
+        catch (e) {
+            console.log(e);
+            alert(`실패했습니다: ${e}`);
+            location.reload();
+            return;
+        }
+
+        if (!result.result) {
+            alert(`실패했습니다: ${result.reason}`);
+            location.reload();
+            return;
+        }
+
+        location.reload();
+    });
+
+    $('#set_my_setting').on('click', async function (e) {
+        let result: InvalidResponse;
+
+        try {
+            const response = await axios({
+                url: 'j_set_my_setting.php',
+                method: 'post',
+                responseType: 'json',
+                data: convertFormData({
+                    tnmt: unwrap_any<string>($('.tnmt:checked').val()),
+                    defence_train: parseInt(unwrap_any<string>($('#defence_train').val())),
+                    use_treatment: unwrap_any<string>($('#use_treatment').val()),
+                    use_auto_nation_turn: unwrap_any<string>($('#use_auto_nation_turn').val()),
+                })
+            });
+            result = response.data;
+        }
+        catch (e) {
+            console.log(e);
+            alert(`실패했습니다: ${e}`);
+            location.reload();
+            return;
+        }
+
+        location.reload();
+
+    });
+});

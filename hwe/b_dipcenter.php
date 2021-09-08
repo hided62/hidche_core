@@ -55,20 +55,16 @@ $nationStor->cacheValues(['notice', 'scout_msg']);
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <script>
 var editable = <?=(($me['officer_level']>=5||$permission==4)?'true':'false')?>;
-var nationMsg = <?=Json::encode($nationStor->notice??'')?>;
-var scoutmsg = <?=Json::encode($nationStor->scout_msg??'')?>;
+var storedData = <?=Json::encode([
+    "nationMsg"=>$nationStor->notice??'',
+    "scoutMsg"=>$nationStor->scout_msg??''
+])?>;
 </script>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('../e_lib/summernote/summernote-bs4.min.js')?>
-<?=WebUtil::printJS('../e_lib/summernote/lang/summernote-ko-KR.js')?>
-<?=WebUtil::printJS('../e_lib/summernote/plugin/image-sammo/summernote-image-flip.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/dipcenter.js')?>
-
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/dipcenter.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
-<?=WebUtil::printCSS('../e_lib/summernote/summernote-bs4.css')?>
+<?=WebUtil::printCSS('dist_css/vendors.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/dipcenter.css')?>
@@ -116,14 +112,14 @@ foreach($nationsList as $staticNation):
             0 => "<font color=red>교 전</font>",
             1 => "<font color=magenta>선포중</font>",
             2 => "통 상",
-            7 => "<font color=green>불가침</font>",    
+            7 => "<font color=green>불가침</font>",
         ][$diplomacyState['state']];
 
         if($diplomacyState['term']){
             $dipEndMonth = $admin['month'] + $diplomacyState['term'] - 1;
             $dipEndYear = $admin['year'] + intdiv($dipEndMonth, 12);
             $dipEndMonth = $dipEndMonth % 12 + 1;
-            
+
             $dipTermText = $diplomacyState['term'].'개월';
             $dipEndDateText = "{$dipEndYear}年 {$dipEndMonth}月";
         }
@@ -200,12 +196,12 @@ if ($budgetricediff > 0) {
             </div>
         </div>
         <div style='border-bottom:solid gray 0.5px;'>870px x 200px를 넘어서는 내용은 표시되지 않습니다.</div>
-        <input type='hidden' class='input_form' name='scoutmsg' data-global='scoutmsg'>
+        <input type='hidden' class='input_form' name='scoutMsg' data-global='scoutMsg'>
         <div style="width:870px;margin-left:auto;">
             <div class='edit_form viewer'></div>
         </div>
         </div>
-        
+
     </div></td></tr>
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>

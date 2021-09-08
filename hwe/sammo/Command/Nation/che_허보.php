@@ -199,10 +199,10 @@ class che_허보 extends Command\NationCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'defaultSelectCityByMap'
         ];
     }
 

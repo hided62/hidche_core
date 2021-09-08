@@ -1,7 +1,8 @@
 <?php
+
 namespace sammo;
 
-require(__DIR__.'/../vendor/autoload.php');
+require(__DIR__ . '/../vendor/autoload.php');
 
 WebUtil::requireAJAX();
 
@@ -23,93 +24,125 @@ $userGrade = $session->userGrade;
 $acl = $session->acl;
 $session->setReadOnly();
 
-if($userGrade < 5 && !$acl) {
+if ($userGrade < 5 && !$acl) {
     Json::die([
-        'result'=>'FAIL',
-        'msg'=>'운영자 권한이 없습니다.'
+        'result' => false,
+        'reason' => '운영자 권한이 없습니다.'
     ]);
 }
 
-function doServerModeSet($server, $action, &$response, $session){
-    
+function doServerModeSet($server, $action, Session $session): array
+{
+
     $serverList = ServConfig::getServerList();
     $settingObj = $serverList[$server];
-    $serverAcl = $session->acl[$server]??[];
+    $serverAcl = $session->acl[$server] ?? [];
     $userGrade = $session->userGrade;
 
     $serverDir = $settingObj->getShortName();
     $serverPath = $settingObj->getBasePath();
-    $realServerPath = realpath(dirname(__FILE__)).'/'.$serverPath;
+    $realServerPath = realpath(dirname(__FILE__)) . '/' . $serverPath;
 
-    if($action == 'close') { //폐쇄
+    if ($action == 'close') { //폐쇄
         $doClose = false;
-        if($userGrade >= 5){
+        if ($userGrade >= 5) {
             $doClose = true;
-        }
-        else if(in_array('openClose', $serverAcl)){
+        } else if (in_array('openClose', $serverAcl)) {
             $doClose = true;
         }
 
-        if(!$doClose && in_array('reset', $serverAcl) && file_exists($serverPath.'/d_setting/DB.php')){
-            require($serverPath.'/lib.php');
+        if (!$doClose && in_array('reset', $serverAcl) && file_exists($serverPath . '/d_setting/DB.php')) {
+            require($serverPath . '/lib.php');
             $localGameStorage = KVStorage::getStorage(DB::db(), 'game_env');
             //천통 이후, 오픈 직후는 닫을 수 있음
             $localGameStorage->cacheValues(['isunited', 'startyear', 'year']);
 
-            if($localGameStorage->isunited){
+            if ($localGameStorage->isunited) {
                 $doClose = true;
-            }
-            else if($localGameStorage->year < $localGameStorage->startyear + 2){
+            } else if ($localGameStorage->year < $localGameStorage->startyear + 2) {
                 $doClose = true;
+            } else{
+                return [
+                    'result' => false,
+                    'reason' => '서버 시작 직후, 또는 천하통일 이후에만 닫을 수 있습니다.'
+                ];
             }
-
         }
 
-        if(!$doClose){
-            if(in_array('reset', $serverAcl)){
-                $response['msg'] = '서버 시작 직후, 또는 천하통일 이후에만 닫을 수 있습니다.';
-            }
-            else{
-                $response['msg'] = '서버 닫기 권한이 부족합니다.';
-            }
-            return false;
+        if (!$doClose) {
+            return [
+                'result' => false,
+                'reason' => '서버 닫기 권한이 부족합니다.'
+            ];
         }
-        return $settingObj->closeServer();
-    } elseif($action == 'reset' && $userGrade >= 6) {//리셋
-        //FIXME: reset, reset_full 구현
-        if(file_exists($serverPath.'/d_setting/DB.php')){
-            @unlink($serverPath.'/d_setting/DB.php');
+        if (!$settingObj->closeServer()) {
+            return [
+                'result' => false,
+                'reason' => '닫기 실패'
+            ];
         }
-        
-        $response['installURL'] = $serverDir."/install.php";
-    } elseif($action == 'open' && ($userGrade >= 5 || in_array('openClose', $serverAcl))) {//오픈
-        return $settingObj->openServer();
-    } else{
-        $response['msg'] = '올바르지 않은 요청입니다';
-        return false;
+        return [
+            'result' => true,
+            'reason' => 'success'
+        ];
     }
-    return true;
+
+    if ($action == 'reset' && $userGrade >= 6) { //리셋
+        //FIXME: reset, reset_full 구현
+        if (file_exists($serverPath . '/d_setting/DB.php')) {
+            @unlink($serverPath . '/d_setting/DB.php');
+        }
+
+        return [
+            'result' => true,
+            'reason' => 'success',
+            'installURL' => $serverDir . "/install.php"
+        ];
+    }
+
+    if ($action == 'open') { //오픈
+
+        if($userGrade < 5 && !in_array('openClose', $serverAcl)){
+            return [
+                'result' => false,
+                'reason' => '서버 열기 권한이 부족합니다.'
+            ];
+        }
+
+        if (!$settingObj->openServer()) {
+            return [
+                'result' => false,
+                'reason' => '오픈 실패'
+            ];
+        }
+        return [
+            'result' => true,
+            'reason' => 'success'
+        ];
+    }
+
+    return [
+        'result' => false,
+        'reason' => '올바르지 않은 요청입니다'
+    ];
 }
 
-function doAdminPost($action, $notice, $server, $session){
-    $response = ['result' => 'FAIL'];
+function doAdminPost($action, $notice, $server, Session $session): array
+{
+    $response = ['result' => false];
 
-    $globalAcl = $session->acl['global']??[];
+    $globalAcl = $session->acl['global'] ?? [];
     $userGrade = $session->userGrade;
 
-    if($action == 'notice' && ($userGrade >= 5 || in_array('notice', $globalAcl))) {
-        RootDB::db()->update('system', ['NOTICE'=>$notice], true);
-        $response['result'] = 'SUCCESS';
-        return $response;
-    } 
-    
-    if(doServerModeSet($server, $action, $response, $session)){
-        $response['result'] = 'SUCCESS';
-        return $response;
+    if ($action == 'notice' && ($userGrade >= 5 || in_array('notice', $globalAcl))) {
+        RootDB::db()->update('system', ['NOTICE' => $notice], true);
+        return [
+            'result' => true,
+            'reason' => 'success',
+        ];
     }
 
-    return $response;
-
+    return doServerModeSet($server, $action, $session);
 }
 
 $response = doAdminPost($action, $notice, $server, $session);

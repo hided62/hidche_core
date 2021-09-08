@@ -1,0 +1,32 @@
+{
+    "ingame": {
+        "chiefCenter": "chiefCenter.ts",
+        "common": "common_deprecated.ts",
+        "troop": "troop.ts",
+        "map": "map.ts",
+        "install_db": "install_db.ts",
+        "install": "install.ts",
+        "battle_simulator": "battle_simulator.ts",
+        "recent_map": "recent_map.ts",
+        "processing": "processing.ts",
+        "select_npc": "select_npc.ts",
+        "betting": "betting.ts",
+        "bossInfo": "bossInfo.ts",
+        "myPage": "myPage.ts",
+        "extExpandCity": "extExpandCity.ts",
+        "main": "main.ts",
+        "dipcenter": "dipcenter.ts",
+        "diplomacy": "diplomacy.ts",
+        "currentCity": "currentCity.ts",
+        "hallOfFame": "hallOfFame.ts",
+        "history": "history.ts",
+        "join": "join.ts",
+        "select_general_from_pool": "select_general_from_pool.ts",
+        "extKingdoms": "extKingdoms.ts"
+    },
+    "ingame_vue": {
+        "v_inheritPoint": "v_inheritPoint.ts",
+        "v_board": "v_board.ts",
+        "v_NPCControl": "v_NPCControl.ts"
+    }
+}

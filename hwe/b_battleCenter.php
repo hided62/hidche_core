@@ -87,10 +87,10 @@ else if($reqArgType===1){
     $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, %b FROM general WHERE nation = %i', $reqQueryType, $nationID);
 }
 else if($reqArgType===2){
-    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, value as %b 
-        FROM general LEFT JOIN rank_data 
-        ON general.no = rank_data.general_id 
-        WHERE rank_data.type = %s AND general.nation = %i', 
+    $generalBasicList = $db->query('SELECT no, name, npc, turntime, officer_level, value as %b
+        FROM general LEFT JOIN rank_data
+        ON general.no = rank_data.general_id
+        WHERE rank_data.type = %s AND general.nation = %i',
         $reqQueryType, $reqQueryType, $nationID
     );
 }
@@ -120,9 +120,9 @@ $showGeneral = General::createGeneralObjFromDB($gen);
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -153,8 +153,8 @@ $showGeneral = General::createGeneralObjFromDB($gen);
 </table>
 <table width=1000 align=center class='tb_layout bg0'>
     <tr>
-        <td width=50% align=center id=bg1><font color=skyblue size=3>장 수 정 보</font></td>
-        <td width=50% align=center id=bg1><font color=orange size=3>장 수 열 전</font></td>
+        <td width=50% align=center class='bg1'><font color=skyblue size=3>장 수 정 보</font></td>
+        <td width=50% align=center class='bg1'><font color=orange size=3>장 수 열 전</font></td>
     </tr>
     <tr>
         <td valign=top>
@@ -165,8 +165,8 @@ $showGeneral = General::createGeneralObjFromDB($gen);
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><font color=orange size=3>전투 기록</font></td>
-        <td align=center id=bg1><font color=orange size=3>전투 결과</font></td>
+        <td align=center class='bg1'><font color=orange size=3>전투 기록</font></td>
+        <td align=center class='bg1'><font color=orange size=3>전투 결과</font></td>
     </tr>
     <tr>
         <td valign=top>
@@ -178,8 +178,8 @@ $showGeneral = General::createGeneralObjFromDB($gen);
     </tr>
 <?php if($showGeneral->getNPCType() > 1 || $permission >= 2): ?>
     <tr>
-        <td align=center id=bg1><font color=orange size=3>개인 기록</font></td>
-        <td align=center id=bg1><font color=orange size=3>&nbsp;</font></td>
+        <td align=center class='bg1'><font color=orange size=3>개인 기록</font></td>
+        <td align=center class='bg1'><font color=orange size=3>&nbsp;</font></td>
     </tr>
     <tr>
         <td valign=top>

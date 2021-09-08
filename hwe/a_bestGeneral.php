@@ -29,10 +29,9 @@ $templates = new \League\Plates\Engine(__DIR__.'/templates');
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/hallOfFame.css')?>
-
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 </head>
 
 <body>
@@ -74,7 +73,7 @@ $types = [
         }
         $v['nationName'] = '???';
         $v['pictureFullPath'] = GetImageURL(0)."/default.jpg";
-        $v['name'] = '???'; 
+        $v['name'] = '???';
         $v['ownerName'] = null;
         $v['bgColor'] = GameConst::$basecolor4;
         $v['fgColor'] = newColor($v['bgColor']);
@@ -123,9 +122,9 @@ $types = [
             $v['value'] = 0;
         }
         else{
-            $v['value'] = $v['ttw']/max(1, $totalCnt); 
+            $v['value'] = $v['ttw']/max(1, $totalCnt);
         }
-        return $v; 
+        return $v;
     }],
     ["통 솔 전 승 률", "percent", function($v){
         $totalCnt = $v['tlw']+$v['tld']+$v['tll'];
@@ -135,7 +134,7 @@ $types = [
         else{
             $v['value'] = $v['tlw']/max(1, $totalCnt);
         }
-        return $v; 
+        return $v;
     }],
     ["일 기 토 승 률", "percent", function($v){
         $totalCnt = $v['tsw']+$v['tsd']+$v['tsl'];
@@ -155,7 +154,7 @@ $types = [
         else{
             $v['value'] = $v['tiw']/max(1, $totalCnt);
         }
-        
+
         return $v;
     }],
     ["베 팅 투 자 액", "int", function($v){$v['value'] = $v['betgold']; return $v; }],
@@ -174,17 +173,17 @@ $types = [
 
 $generals = [];
 foreach($db->query(
-    "SELECT nation,no,name,owner_name as ownerName, owner, picture, imgsvr, 
+    "SELECT nation,no,name,owner_name as ownerName, owner, picture, imgsvr,
     experience, dedication,
-    dex1, dex2, dex3, dex4, dex5, 
-    horse, weapon, book, item 
+    dex1, dex2, dex3, dex4, dex5,
+    horse, weapon, book, item
     FROM general WHERE %l", $btn == "NPC 보기"?"npc>=2":"npc<2") as $general
 ){
     $generalID = $general['no'];
     $general['bgColor'] = $nationColor[$general['nation']]??GameConst::$basecolor4;
     $general['fgColor'] = newColor($general['bgColor']);
     $general['nationName'] = $nationName[$general['nation']];
-    
+
     if(key_exists('picture', $general)){
         $imageTemp = GetImageURL($general['imgsvr']);
         $general['pictureFullPath'] = "$imageTemp/{$general['picture']}";
@@ -265,7 +264,7 @@ foreach($generals as $general){
         else{
             $itemOwners[$itemClassName] = [$general];
         }
-        
+
     }
 }
 
@@ -280,7 +279,7 @@ foreach(GameConst::$allItems as $itemType=>$itemList){
             continue;
         }
         $itemClass = buildItemClass($itemClassName);
-        
+
         if($itemClass->isBuyable()){
             continue;
         }
@@ -288,7 +287,7 @@ foreach(GameConst::$allItems as $itemType=>$itemList){
         $info = $itemClass->getInfo();
         $name = $itemClass->getName();
 
-        
+
         if($info){
             $name = $templates->render('tooltip', [
                 'text'=>$name,
@@ -323,7 +322,7 @@ foreach(GameConst::$allItems as $itemType=>$itemList){
             $itemRanker[] = $card;
         }
     }
-    
+
     echo $templates->render('hallOfFrame', [
         'typeName'=>$itemNameType,
         'generals'=>$itemRanker
@@ -337,4 +336,3 @@ foreach(GameConst::$allItems as $itemType=>$itemList){
 </table>
 </body>
 </html>
-

@@ -44,7 +44,7 @@ if($troops){
     $generalTurnList = [];
 
     foreach($db->queryAllLists(
-        'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+        'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC',
         array_column($troopLeaders, 'no')
         ) as [$generalID, $turnIdx, $brief]
     ){
@@ -53,10 +53,10 @@ if($troops){
         }
         $generalTurnList[$generalID][$turnIdx] = $brief;
     }
-    
+
     foreach($troopLeaders as $troopLeader){
         $imageTemp = GetImageURL($troopLeader['imgsvr']);
-        
+
         $troopLeader['pictureFullPath'] = "$imageTemp/{$troopLeader['picture']}";
         $troopLeader['cityText'] = CityConst::byID($troopLeader['city'])->name;
 
@@ -85,15 +85,14 @@ uasort($troops, function($lhs, $rhs){
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/troop.js')?>
-<?=WebUtil::printJS('js/ext.plugin_troop.js')?>
+<?=WebUtil::preloadJS('dist_js/troop.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printCSS('css/troops.css')?>
+<?=WebUtil::printCSS('dist_css/troop.css')?>
 <script>
 
 </script>
@@ -195,7 +194,7 @@ foreach ($troops as $troopNo=>$troop) {
 <br>
 <table width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=80 id=bg1>부 대 명</td>
+        <td width=80 class='bg1'>부 대 명</td>
         <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=18 id='nameplate'></td>
     <?php if($me['troop'] == 0): ?>
         <td><input type=button id='btnCreateTroop' value='부 대 창 설'></td>
@@ -210,6 +209,6 @@ foreach ($troops as $troopNo=>$troop) {
     <tr><td><?=banner()?> </td></tr>
 </table>
 </div>
+<?=WebUtil::printJS('dist_js/troop.js')?>
 </body>
 </html>
-

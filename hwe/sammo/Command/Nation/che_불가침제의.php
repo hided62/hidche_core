@@ -74,7 +74,7 @@ class che_불가침제의 extends Command\NationCommand
     {
         $general = $this->generalObj;
 
-        
+
 
         $this->setCity();
         $this->setNation();
@@ -94,7 +94,7 @@ class che_불가침제의 extends Command\NationCommand
         $month = $this->arg['month'];
 
         $env = $this->env;
-        
+
         $relYear = $env['year'] - $env['startyear'];
         $currentMonth = $env['year'] * 12 + $env['month'] - 1;
         $reqMonth = $year * 12 + $month - 1;
@@ -223,10 +223,10 @@ class che_불가침제의 extends Command\NationCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'defaultSelectNationByMap'
         ];
     }
 

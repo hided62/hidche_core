@@ -32,7 +32,7 @@ class AutorunNationPolicy {
     static $선전포고 = '선전포고';
     static $천도 = '천도';
 
-    
+
 
     //실제 행동
     static public $defaultPriority = [
@@ -141,7 +141,6 @@ class AutorunNationPolicy {
     public $minNPCWarLeadership = 40;
     public $minWarCrew = 1500;
 
-    public $allowNpcAttackCity = true;
     public $minNPCRecruitCityPopulation = 50000;
     public $safeRecruitCityPopulationRatio = 0.5;
     public $properWarTrainAtmos = 90;
@@ -163,13 +162,12 @@ class AutorunNationPolicy {
         'reqNPCWarRice'=>0,
         'reqNPCDevelGold'=>0,
         'reqNPCDevelRice'=>500,
-    
+
         'minimumResourceActionAmount'=>1000,
-    
+
         'minNPCWarLeadership'=>40,
         'minWarCrew'=>1500,
-    
-        'allowNpcAttackCity'=>true,
+
         'minNPCRecruitCityPopulation'=>50000,
         'safeRecruitCityPopulationRatio'=>0.5,
         'properWarTrainAtmos'=>90,
@@ -194,7 +192,7 @@ class AutorunNationPolicy {
                 $this->priority = $serverPolicy['priority'];
             }
         }
-        
+
 
         if($nationPolicy){
             foreach($nationPolicy['values']??[] as $policy=>$value){
@@ -209,7 +207,7 @@ class AutorunNationPolicy {
                 $this->priority = $nationPolicy['priority'];
             }
         }
-        
+
 
         if(!$this->priority){
             $this->priority = $this::$defaultPriority;
@@ -259,26 +257,26 @@ class AutorunNationPolicy {
         if(!key_exists('chief', $aiOptions)){
             $this->can부대전방발령 = false;
             $this->can부대후방발령 = false;
-    
+
             $this->can부대유저장후방발령 = false;
             $this->can유저장후방발령 = false;
             $this->can유저장전방발령 = false;
             $this->can유저장구출발령 = false;
             $this->can유저장내정발령 = false;
-    
+
             $this->canNPC후방발령 = false;
             $this->canNPC전방발령 = false;
             $this->canNPC구출발령 = false;
             $this->canNPC내정발령 = false;
-    
+
             $this->can유저장긴급포상 = false;
             $this->can유저장포상 = false;
             //$this->can유저장몰수 = false;
-    
+
             $this->canNPC긴급포상 = false;
             $this->canNPC포상 = false;
             $this->canNPC몰수 = false;
-    
+
             $this->can선전포고 = false;
             $this->can천도 = false;
         }

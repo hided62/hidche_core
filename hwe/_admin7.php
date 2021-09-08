@@ -52,9 +52,9 @@ if ($reqArgType === 0) {
     $generalBasicList = $db->query('SELECT no, name, nation, npc, turntime, %b FROM general', $reqQueryType);
 } else if ($reqArgType === 2) {
     $generalBasicList = $db->query(
-        'SELECT no, name, nation, npc, turntime, value as %b 
-        FROM general LEFT JOIN rank_data 
-        ON general.no = rank_data.general_id 
+        'SELECT no, name, nation, npc, turntime, value as %b
+        FROM general LEFT JOIN rank_data
+        ON general.no = rank_data.general_id
         WHERE rank_data.type = %s',
         $reqQueryType,
         $reqQueryType
@@ -117,10 +117,10 @@ $generalObj = General::createGeneralObjFromDB($gen);
     </table>
     <table width=1000 align=center class='tb_layout bg0'>
         <tr>
-            <td width=50% align=center id=bg1>
+            <td width=50% align=center class='bg1'>
                 <font color=skyblue size=3>장 수 정 보</font>
             </td>
-            <td width=50% align=center id=bg1>
+            <td width=50% align=center class='bg1'>
                 <font color=orange size=3>-</font>
             </td>
         </tr>
@@ -133,10 +133,10 @@ $generalObj = General::createGeneralObjFromDB($gen);
             </td>
         </tr>
         <tr>
-            <td align=center id=bg1>
+            <td align=center class='bg1'>
                 <font color=skyblue size=3>개인 기록</font>
             </td>
-            <td align=center id=bg1>
+            <td align=center class='bg1'>
                 <font color=orange size=3>전투 기록</font>
             </td>
         </tr>
@@ -149,10 +149,10 @@ $generalObj = General::createGeneralObjFromDB($gen);
             </td>
         </tr>
         <tr>
-            <td align=center id=bg1>
+            <td align=center class='bg1'>
                 <font color=skyblue size=3>장수 열전</font>
             </td>
-            <td align=center id=bg1>
+            <td align=center class='bg1'>
                 <font color=orange size=3>전투 결과</font>
             </td>
         </tr>

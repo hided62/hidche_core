@@ -97,18 +97,10 @@ $serverCnt = $gameStor->server_cnt;
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('../e_lib/moment.min.js')?>
-<?=WebUtil::printJS('../e_lib/linkify/linkify.min.js')?>
-<?=WebUtil::printJS('../e_lib/linkify/linkify-string.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/main.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('js/map.js')?>
-<?=WebUtil::printJS('js/msg.js')?>
+<?=WebUtil::printJS('dist_js/main.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';
@@ -295,7 +287,7 @@ else if($session->userGrade == 4){
                 style='background-color:<?=GameConst::$basecolor2?>;color:white;width:70px;font-size:13px;margin-left:1ch;margin-right:2ch;'
             ><input type=button value='▼미루기' id='pushTurn'
                 style='background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px;'
-            ><input type=button value='▲당기기' id='pullTurn' 
+            ><input type=button value='▲당기기' id='pullTurn'
                 style='background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px;'
         ></td>
     </tr>
@@ -306,7 +298,7 @@ else if($session->userGrade == 4){
                 style='background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px;'
             ><input type=button value='갱 신' id='refreshPage'
                 style='background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px;'
-            ><input type=button value='로비로' onclick="location.replace('../')" 
+            ><input type=button value='로비로' onclick="location.replace('../')"
                 style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px;
             >
         </td>

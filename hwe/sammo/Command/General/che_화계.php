@@ -106,7 +106,7 @@ class che_화계 extends Command\GeneralCommand
         $general = $this->generalObj;
 
         $this->setCity();
-        
+
 
         [$reqGold, $reqRice] = $this->getCost();
 
@@ -118,7 +118,7 @@ class che_화계 extends Command\GeneralCommand
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
-        
+
     }
 
     protected function initWithArg()
@@ -332,10 +332,10 @@ class che_화계 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'defaultSelectCityByMap'
         ];
     }
 

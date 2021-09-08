@@ -82,7 +82,7 @@ class che_국기변경 extends Command\NationCommand
 
     public function getCost(): array
     {
-        
+
         return [0, 0];
     }
 
@@ -151,10 +151,10 @@ class che_국기변경 extends Command\NationCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/colorSelect.js'
+            'colorSelect'
         ];
     }
 

@@ -31,7 +31,7 @@ Allow from <?=$allow_ip?>
 <Files j_server_basic_info.php>
     Allow from all
 </Files>
-<Files ~ "\.(xml|css|jpe?g|png|gif|js|pdf)$">
+<Files ~ "\.(xml|css|jpe?g|png|gif|js|map|woff2|woff|ttf|pdf|txt)$">
     Allow from all
 </Files>
 <Files j_load_scenarios.php>

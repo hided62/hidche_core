@@ -28,20 +28,15 @@ $acl = $session->acl;
         <?=WebUtil::printCSS('../d_shared/common.css')?>
         <?=WebUtil::printCSS('../css/config.css')?>
         <?=WebUtil::printCSS('../css/entrance.css')?>
+        <?=WebUtil::printCSS('../css/admin_server.css')?>
 
         <!-- 액션 -->
-        <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-        <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-        <?=WebUtil::printJS('../e_lib/moment.min.js')?>
-        <?=WebUtil::printJS('../js/common.js')?>
-        <?=WebUtil::printJS('../js/func.js')?>
-        <?=WebUtil::printJS('../js/entrance.js')?>
-
-<?php if ($userGrade >= 5 || $acl): ?>
-        <!-- 운영자 -->
-        <?=WebUtil::printCSS('../css/admin_server.css')?>
-        <?=WebUtil::printJS('../js/admin_server.js')?>
-<?php endif; ?>
+        <script>
+            var isAdmin = <?=($userGrade >= 5 || $acl)?'true':'false'?>;
+        </script>
+        <?=WebUtil::printJS('../d_shared/common_path.js') ?>
+        <?=WebUtil::printJS('../dist_js/vendors.js') ?>
+        <?=WebUtil::printJS('../dist_js/entrance.js')?>
 
     </head>
     <body>

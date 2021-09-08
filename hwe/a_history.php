@@ -99,13 +99,10 @@ $nations = Json::decode($history['nations']);
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 연감</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS("js/map/theme_{$mapTheme}.js")?>
-<?=WebUtil::printJS('js/map.js')?>
-<?=WebUtil::printJS('js/history.js')?>
+<?=WebUtil::printJS('dist_js/history.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -139,7 +136,7 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
     </td></tr>
 </table>
 <table align=center width=1000 height=520 class='tb_layout bg0'>
-    <thead><tr><th colspan=5 align=center id=bg1>중 원 지 도</th></tr></thead>
+    <thead><tr><th colspan=5 align=center class='bg1'>중 원 지 도</th></tr></thead>
     <tbody>
     <tr height=520>
         <td width=698>
@@ -169,13 +166,13 @@ var nations = <?=$nations?$history['nations']:'{}'?>;
             </table>
         </td>
     </tr>
-    <tr><th colspan=5 align=center id=bg1>중 원 정 세</th></tr>
+    <tr><th colspan=5 align=center class='bg1'>중 원 정 세</th></tr>
     <tr>
         <td colspan=5 valign=top>
             <?=formatHistoryToHTML(Json::decode($history['global_history']))?>
         </td>
     </tr>
-    <tr><th colspan=5 align=center id=bg1>장 수 동 향</th></tr>
+    <tr><th colspan=5 align=center class='bg1'>장 수 동 향</th></tr>
     <tr>
         <td colspan=5 valign=top>
             <?=formatHistoryToHTML(Json::decode($history['global_action']))?>

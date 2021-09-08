@@ -47,9 +47,9 @@ if($gameStor->isunited){
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 
 </head>
 
@@ -104,21 +104,21 @@ $generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special
 echo"
 <table align=center class='tb_layout bg0'>
     <tr>
-        <td width=64 align=center id=bg1>얼 굴</td>
-        <td width=98 align=center id=bg1>이 름</td>
-        <td width=78 align=center id=bg1>관 직</td>
-        <td width=68 align=center id=bg1>계 급</td>
-        <td width=68 align=center id=bg1>명 성</td>
-        <td width=68 align=center id=bg1>봉 록</td>
-        <td width=48 align=center id=bg1>통솔</td>
-        <td width=48 align=center id=bg1>무력</td>
-        <td width=48 align=center id=bg1>지력</td>
-        <td width=68 align=center id=bg1>자 금</td>
-        <td width=68 align=center id=bg1>군 량</td>
-        <td width=48 align=center id=bg1>성 격</td>
-        <td width=78 align=center id=bg1>특 기</td>
-        <td width=48 align=center id=bg1>사 관</td>
-        <td width=70 align=center id=bg1>벌점</td>
+        <td width=64 align=center class='bg1'>얼 굴</td>
+        <td width=98 align=center class='bg1'>이 름</td>
+        <td width=78 align=center class='bg1'>관 직</td>
+        <td width=68 align=center class='bg1'>계 급</td>
+        <td width=68 align=center class='bg1'>명 성</td>
+        <td width=68 align=center class='bg1'>봉 록</td>
+        <td width=48 align=center class='bg1'>통솔</td>
+        <td width=48 align=center class='bg1'>무력</td>
+        <td width=48 align=center class='bg1'>지력</td>
+        <td width=68 align=center class='bg1'>자 금</td>
+        <td width=68 align=center class='bg1'>군 량</td>
+        <td width=48 align=center class='bg1'>성 격</td>
+        <td width=78 align=center class='bg1'>특 기</td>
+        <td width=48 align=center class='bg1'>사 관</td>
+        <td width=70 align=center class='bg1'>벌점</td>
     </tr>";
 foreach($generalList as $general){
 
@@ -183,4 +183,3 @@ foreach($generalList as $general){
 </body>
 
 </html>
-

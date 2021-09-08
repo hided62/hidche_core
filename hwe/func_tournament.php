@@ -173,7 +173,7 @@ function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, 
     if($prmt > 0) { $name = "<font color=orange>".$name."</font>"; }
     elseif($npc >= 2) { $name = "<font color=cyan>".$name."</font>"; }
     elseif($npc == 1) { $name = "<font color=skyblue>".$name."</font>"; }
-    echo "<tr align=center><td id=bg2>$k</td><td style='font-size:80%;'>$name</td><td>$abil</td><td>$tgame</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
+    echo "<tr align=center><td class='bg2'>$k</td><td style='font-size:80%;'>$name</td><td>$abil</td><td>$tgame</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
 }
 
 function printFighting($tournament, $phase) {
@@ -246,7 +246,7 @@ function startTournament($auto, $type) {
     }
 
     $admin = $gameStor->getValues(['year', 'month']);
-    
+
     $gameStor->tnmt_auto = $auto;
     $gameStor->tnmt_time = (new \DateTimeImmutable())->add(new \DateInterval("PT{$unit}M"))->format('Y-m-d H:i:s');
     $gameStor->tournament = 1;
@@ -297,7 +297,7 @@ function startTournament($auto, $type) {
     ][$type];
 
     $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월:{$openerText}<C>{$typeText}</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>{$genTypeText}</span>들을 모집하고 있습니다!";
-    
+
     pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 }
 
@@ -834,7 +834,7 @@ function setRefund() {
     $db->update('general', [
         'gold'=>$db->sqleval('gold + %i', $cost)
     ], 'no IN %li', $generalIDList);
-    
+
     //베팅금 환수
     $db->update(['general', [
         'gold'=>$db->sqleval('gold + (SELECT bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 FROM betting WHERE general_id = general.no)')
@@ -867,16 +867,16 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     if($type == 0) { $turn = 10; }
     else           { $turn = 100; }
 
-    
+
     if($tnmt_type == 1) { $tp = "leadership"; $tp2 = "tl"; }
     elseif($tnmt_type == 2) { $tp = "strength"; $tp2 = "ts"; }
     elseif($tnmt_type == 3) { $tp = "intel"; $tp2 = "ti"; }
-    else /*$tnmt_type == 0*/{ $tp = "total"; $tp2 = "tt"; } 
+    else /*$tnmt_type == 0*/{ $tp = "total"; $tp2 = "tt"; }
 
     $e1 = $energy1 = Util::round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
     $e2 = $energy2 = Util::round($gen2[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
 
-    
+
 
     foreach([$gen1, $gen2] as $gen){
         $horse = buildItemClass($gen['h']);
@@ -888,7 +888,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             $itemName = $horse->getName();
             $itemRawName = $horse->getRawName();
             switch(rand()%4) {
-            case 0: 
+            case 0:
             $josaYi = JosaUtil::pick($itemRawName, '이');
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 포효합니다!"; break;
             case 1:
@@ -1090,7 +1090,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             'lose'=>$db->sqleval('lose+1'),
             'gl'=>$db->sqleval('gl-%i', $gl)
         ], 'grp=%i AND grp_no=%i', $group, $g2);
-        
+
         if($general1['gl'] > $general2['gl'])      { $gl1 = 1; $gl2 = 0; }
         elseif($general1['gl'] == $general2['gl']) { $gl1 = 2; $gl2 = -1; }
         else                                   { $gl1 = 3; $gl2 = -2; }

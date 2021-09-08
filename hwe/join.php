@@ -56,11 +56,10 @@ echo Json::encode((object)$charInfoText);
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/join.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
+<?=WebUtil::printJS('dist_js/join.js')?>
 
 </head>
 <body>
@@ -95,10 +94,10 @@ echo getInvitationList($nationList);
 <form id='join_form' name=form1 method=post action=join_post.php>
     <table align=center width=1000 class='tb_layout bg0'>
         <tr>
-            <td colspan=3 align=center id=bg1>장수 생성</td>
+            <td colspan=3 align=center class='bg1'>장수 생성</td>
         </tr>
         <tr>
-            <td width=498 align=right id=bg1>장수명</td>
+            <td width=498 align=right class='bg1'>장수명</td>
             <td colspan=2>
                 <input id="generalName" type=text name=name maxlength=18 size=18 style="color:white;background-color:black;" value="<?=$member['name']?>">(전각 9글자, 반각 18글자 이내)
             </td>
@@ -108,7 +107,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
     $imageTemp = GetImageURL($member['imgsvr']);
     echo "
         <tr>
-            <td align=right id=bg1>전콘 사용 여부</td>
+            <td align=right class='bg1'>전콘 사용 여부</td>
             <td width=64 height=64>
                 <img width='64' height='64' src='{$imageTemp}/{$member['picture']}' border='0'>
             </td>
@@ -125,7 +124,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
             </td>
         </tr>
         <tr>
-            <td width=498 align=right id=bg1>성격</td>
+            <td width=498 align=right class='bg1'>성격</td>
             <td colspan=2>
                 <select id="selChar" name=character size=1 maxlength=15 style=color:white;background-color:black;>
                     <option selected value='Random'>????</option>
@@ -137,19 +136,19 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
             </td>
         </tr>
         <tr>
-            <td width=498 align=right id=bg1>통솔</td>
+            <td width=498 align=right class='bg1'>통솔</td>
             <td colspan=2><input type="number" name="leadership" id="leadership" value="50"></td>
         </tr>
         <tr>
-            <td width=498 align=right id=bg1>무력</td>
+            <td width=498 align=right class='bg1'>무력</td>
             <td colspan=2><input type="number" name="strength" id="strength" value="50"></td>
         </tr>
         <tr>
-            <td width=498 align=right id=bg1>지력</td>
+            <td width=498 align=right class='bg1'>지력</td>
             <td colspan=2><input type="number" name="intel" id="intel" value="50"></td>
         </tr>
         <tr>
-            <td width=498 align=right id=bg1>능력치 조정</td>
+            <td width=498 align=right class='bg1'>능력치 조정</td>
             <td colspan=2>
                 <input type=button value=랜덤형 onclick=abilityRand()>
                 <input type=button value=통솔무력형 onclick=abilityLeadpow()>

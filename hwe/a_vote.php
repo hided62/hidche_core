@@ -28,9 +28,9 @@ $vote = $admin['vote']?:['-'];
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -60,7 +60,7 @@ function captureKey(e) {
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 action=c_vote.php method=post>
-    <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5?>금과 추첨으로 유니크템 증정!)</font></td></tr>
+    <tr><td colspan=3 align=center class='bg2'><font size=5>설 문 조 사 (<?=$admin['develcost']*5?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
 
 if ($isVoteAdmin) {
@@ -76,7 +76,7 @@ if ($isVoteAdmin) {
 $vote_title = Tag2Code($vote_title);
 echo "
     <tr>
-        <td colspan=2 width=148 align=center id=bg1>제 목</td>
+        <td colspan=2 width=148 align=center class='bg1'>제 목</td>
         <td width=848 align=left>&nbsp;{$vote_title}</td>
     </tr>
 ";
@@ -151,7 +151,7 @@ echo "
 </table>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
-        <td colspan=4 align=center id=bg1>댓 글</td>
+        <td colspan=4 align=center class='bg1'>댓 글</td>
     </tr>
 ";
 for ($i=0; $i < $commentCount; $i++) {
@@ -180,7 +180,7 @@ if ($me['no'] > 0) {
 </table>
 <br>
 <table align=center width=1000 class='tb_layout bg0'>
-    <tr><td colspan=3 align=center id=bg2><font size=5>
+    <tr><td colspan=3 align=center class='bg2'><font size=5>
         전 체 통 계
 <?php
 if ($isVoteAdmin) {
@@ -238,8 +238,8 @@ if ($admin['voteopen'] >= 1 || $isVoteAdmin) {
         else{
             $totalPer += $per;
         }
-        
-        
+
+
 //        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
 ?>
         <?php if($per == 0): ?>
@@ -303,7 +303,7 @@ if ($admin['voteopen'] >= 2 || $isVoteAdmin) {
     foreach($db->query('SELECT nation,color,name,gennum from nation order by gennum desc') as $i=>$nation){
         $memCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc<2', $nation['nation']);
 
-        
+
 
         $voteCount = $nationVoteCount[$nation['nation']] ?? 0;
         if($memCount == 0){
@@ -312,7 +312,7 @@ if ($admin['voteopen'] >= 2 || $isVoteAdmin) {
         else{
             $percentage = round($voteCount / $memCount * 100, 1);
         }
-        
+
 
         echo "
     <tr>
@@ -336,7 +336,7 @@ if ($admin['voteopen'] >= 2 || $isVoteAdmin) {
             else{
                 $totalPer += $per;
             }
-            
+
 //            if($per < 5) { $vote['cnt'] = "&nbsp;"; }
 ?>
             <?php if($per == 0): ?>

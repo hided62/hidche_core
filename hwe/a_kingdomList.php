@@ -25,10 +25,9 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 세력일람</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/ext.kingdoms.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/extKingdoms.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -48,7 +47,7 @@ $nations[0] = getNationStaticInfo(0);
 
 foreach($db->query('SELECT npc,name,city,nation,officer_level,penalty,permission FROM general ORDER BY dedication DESC') as $general){
     $nationID = $general['nation'];
-    
+
     if(!key_exists('generals', $nations[$nationID])){
         $nations[$nationID]['generals'] = [];
     }
@@ -92,13 +91,13 @@ foreach ($nations as $nation) {
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 {$nation['name']} 】</td>
     </tr>
     <tr>
-        <td width=80 align=center id=bg1>성 향</td>
+        <td width=80 align=center class='bg1'>성 향</td>
         <td width=170 align=center><font color=yellow>".getNationType($nation['type'])."</font></td>
-        <td width=80 align=center id=bg1>작 위</td>
+        <td width=80 align=center class='bg1'>작 위</td>
         <td width=170 align=center>".getNationLevel($nation['level'])."</td>
-        <td width=80 align=center id=bg1>국 력</td>
+        <td width=80 align=center class='bg1'>국 력</td>
         <td width=170 align=center>{$nation['power']}</td>
-        <td width=80 align=center id=bg1>장수 / 속령</td>
+        <td width=80 align=center class='bg1'>장수 / 속령</td>
         <td width=170 align=center>{$nation['gennum']} / ".count($nation['cities']??[])."</td>
     ";
     for($chiefLevel = 12; $chiefLevel >= 5; $chiefLevel--){
@@ -113,9 +112,9 @@ foreach ($nations as $nation) {
     }
     echo "</tr>
     <tr>
-        <td align=center id=bg1>외교권자</td><td colspan=5>";
+        <td align=center class='bg1'>외교권자</td><td colspan=5>";
     echo join(', ', $ambassadors);
-    echo "</td><td align=center id=bg1>조언자</td><td align=center >";
+    echo "</td><td align=center class='bg1'>조언자</td><td align=center >";
     echo count($auditors).'명';
     echo "</td></tr>
     <tr>
@@ -160,9 +159,9 @@ echo "
     </tr>
     <tr>
         <td width=498 align=center>&nbsp;</td>
-        <td width=123 align=center id=bg1>장 수</td>
+        <td width=123 align=center class='bg1'>장 수</td>
         <td width=123 align=center>{$nations[0]['gennum']}</td>
-        <td width=123 align=center id=bg1>속 령</td>
+        <td width=123 align=center class='bg1'>속 령</td>
         <td width=123 align=center>".count($nations[0]['cities']??[])."</td>
     </tr>
     <tr>
@@ -177,7 +176,7 @@ echo"
         <td colspan=5> 장수 일람 : ";
     foreach($nations[0]['generals'] as $general) {
         $generalText = getColoredName($general['name'], $general['npc']);
-        echo "{$generalText}, "; 
+        echo "{$generalText}, ";
     }
     echo"
         </td>

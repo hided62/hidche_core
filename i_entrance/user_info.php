@@ -18,14 +18,9 @@ require(__DIR__.'/../vendor/autoload.php');
         <?=WebUtil::printCSS('../css/user_info.css')?>
 
         <!-- 액션 -->
-        <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-        <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-        <?=WebUtil::printJS('../d_shared/common_path.js')?>
-        <?=WebUtil::printJS('../js/common.js')?>
-        <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
-        <?=WebUtil::printJS('../e_lib/moment.min.js')?>
-        <?=WebUtil::printJS('../js/func.js')?>
-        <?=WebUtil::printJS('../js/user_info.js')?>
+        <?=WebUtil::printJS('../d_shared/common_path.js') ?>
+        <?=WebUtil::printJS('../dist_js/vendors.js') ?>
+        <?=WebUtil::printJS('../dist_js/user_info.js')?>
     </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -146,8 +141,8 @@ require(__DIR__.'/../vendor/autoload.php');
                     <input type="file" id="image_upload" name="image_upload" accept=".jpg,.jpeg,.png,.gif"><br>
                     <input class="with_skin" id="btn_image_submit" type="submit" value="아이콘 변경"> <button id="btn_remove_icon" class="with_skin">아이콘 제거</button>
                 </form>
-                    
-                    
+
+
             </td>
         </tr>
     </tbody>
@@ -175,7 +170,7 @@ require(__DIR__.'/../vendor/autoload.php');
         </button>
       </div>
       <div class="modal-body">
-        
+
         <form id="chooseServerForm">
 
         </form>

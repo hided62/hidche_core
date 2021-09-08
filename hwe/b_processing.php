@@ -64,7 +64,7 @@ if(!$commandObj->hasPermissionToReserve()){
     die_redirect();
 }
 
-$jsList = $commandObj->getJSFiles();
+$jsList = $commandObj->getJSPlugins();
 $cssList = $commandObj->getCSSFiles();
 ?>
 
@@ -75,26 +75,19 @@ $cssList = $commandObj->getCSSFiles();
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
-<?=WebUtil::printJS('js/map.js')?>
-<?=WebUtil::printJS('js/processing.js')?>
+<?=WebUtil::printJS('dist_js/processing.js')?>
 <script>
 window.serverNick = '<?=DB::prefix()?>';
 window.serverID = '<?=UniqueConst::$serverID?>';
 window.command = '<?=$commandType?>';
 window.turnList = [<?=join(', ',$turnList)?>];
 window.isChiefTurn = <?=$isChiefTurn?'true':'false'?>;
+var jsPlugins = <?=Json::encode($jsList)?>;
 </script>
-<?php
-foreach($jsList as $js){
-    print(WebUtil::printJS($js));
-}
-?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
@@ -103,6 +96,7 @@ foreach($jsList as $js){
 <?=WebUtil::printCSS('css/main.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
 <?=WebUtil::printCSS('css/processing.css')?>
+
 <?php
 foreach($cssList as $css){
     print(WebUtil::printCSS($css));

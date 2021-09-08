@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use phpDocumentor\Reflection\Types\Boolean;
+
 class WebUtil
 {
     private function __construct()
@@ -51,31 +53,31 @@ class WebUtil
         if (strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0) {
             throw new \Exception('Request method must be POST!');
         }
-        
+
         //Make sure that the content type of the POST request has been set to application/json
         $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
         if (strcasecmp($contentType, 'application/json') != 0) {
             throw new \Exception('Content type must be: application/json');
         }
-        
+
         //Receive the RAW post data.
         $content = trim(file_get_contents("php://input"));
-        
+
         //Attempt to decode the incoming RAW post data from JSON.
         $decoded = Json::decode($content);
-        
-        
+
+
         $jsonError = json_last_error();
-        
+
         //In some cases, this will happen.
         if (is_null($decoded) && $jsonError == JSON_ERROR_NONE) {
             throw new \Exception('Could not decode JSON!');
         }
-        
+
         //If an error exists.
         if ($jsonError != JSON_ERROR_NONE) {
             $error = 'Could not decode JSON! ';
-            
+
             //Use a switch statement to figure out the exact error.
             switch ($jsonError) {
                 case JSON_ERROR_DEPTH:
@@ -99,14 +101,18 @@ class WebUtil
             }
             throw new \Exception($error);
         }
-    
+
         return $decoded;
     }
 
-    public static function preloadCSS(string $path){
+    public static function preloadAsset(string $path, string $type){
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
+        if(!$upath->scheme){
+            if(!file_exists($upath->path)){
+                return "<!-- preload:{$type} '{$path}' -->\n";
+            }
+
             $mtime = filemtime($upath->path);
             if($upath->query){
                 $tail = '&'.$mtime;
@@ -118,32 +124,25 @@ class WebUtil
         else{
             $tail = '';
         }
-        return "<link href='{$path}{$tail}' rel='preload' as='style'>\n";
+        return "<link href='{$path}{$tail}' rel='preload' as='$type'>\n";
+    }
+
+    public static function preloadCSS(string $path){
+        return static::preloadAsset($path, 'style');
     }
 
     public static function preloadJS(string $path){
-        $upath = \phpUri::parse($path);
-        $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
-            $mtime = filemtime($upath->path);
-            if($upath->query){
-                $tail = '&'.$mtime;
-            }
-            else{
-                $tail = '?'.$mtime;
-            }
-        }
-        else{
-            $tail = '';
-        }
-        return "<link href='{$path}{$tail}' rel='preload' as='script'>\n";
+        return static::preloadAsset($path, 'script');
     }
 
-    public static function printJS(string $path){
-        //async, defer 옵션 고려
+    public static function printJS(string $path, bool $isDefer=false){
+        //async 옵션 고려?
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
+        if(!$upath->scheme){
+            if(!file_exists($upath->path)){
+                return "<!-- JS '{$path}' -->\n";
+            }
             $mtime = filemtime($upath->path);
             if($upath->query){
                 $tail = '&'.$mtime;
@@ -155,13 +154,18 @@ class WebUtil
         else{
             $tail = '';
         }
-        return "<script src='{$path}{$tail}'></script>\n";
+
+        $typeText = $isDefer?'defer':'';
+        return "<script {$typeText} src='{$path}{$tail}'></script>\n";
     }
 
     public static function printCSS(string $path){
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme && file_exists($upath->path)){
+        if(!$upath->scheme){
+            if(!file_exists($upath->path)){
+                return "<!-- CSS '{$path}' -->\n";
+            }
             $mtime = filemtime($upath->path);
             if($upath->query){
                 $tail = '&'.$mtime;
@@ -176,25 +180,19 @@ class WebUtil
         return "<link rel='stylesheet' type='text/css' href='{$path}{$tail}' />\n";
     }
 
-    protected static $jsFilesList = [];
-    public static function pushJSFile(string $path){
-        static::$jsFilesList[] = $path;
-    }
-
-    protected static $cssFilesList = [];
-    public static function pushCSSFile(string $path){
-        static::$cssFilesList[] = $path;
-    }
-
-    public static function printResourceFiles(){
-        foreach(static::$jsFilesList as $path){
-            static::printJS($path);
+    public static function printStaticValues(array $values, bool $pretty=true){
+        if(!count($values)){
+            return;
         }
-        foreach(static::$cssFilesList as $path){
-            static::printCSS($path);
+        $lines = ["<script>"];
+
+        foreach($values as $key => $value){
+            $lines[] = "var {$key} = ".Json::encode($value, Json::EMPTY_ARRAY_IS_DICT | ($pretty?Json::PRETTY:0));
         }
-        static::$jsFilesList = [];
-        static::$cssFilesList = [];
+
+        $lines[] = "</script>\n";
+
+        return join("\n", $lines);
     }
 
     public static function htmlPurify(?string $text): string{

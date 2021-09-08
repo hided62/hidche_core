@@ -51,7 +51,7 @@ class che_초토화 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['surlimit', 'gold', 'rice', 'capital']);
-        
+
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -63,7 +63,7 @@ class che_초토화 extends Command\NationCommand{
     protected function initWithArg()
     {
         $this->setDestCity($this->arg['destCityID']);
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::OccupiedDestCity(),
@@ -77,7 +77,7 @@ class che_초토화 extends Command\NationCommand{
             ], ),
         ];
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }
@@ -145,7 +145,7 @@ class che_초토화 extends Command\NationCommand{
         $josaUl = JosaUtil::pick($destCityName, '을');
 
         $logger = $general->getLogger();
-        
+
 
         $general->addExperience(-$general->getVar('experience') * 0.1, false);
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
@@ -183,7 +183,7 @@ class che_초토화 extends Command\NationCommand{
 
         \sammo\refreshNationStaticInfo();
         \sammo\SetNationFront($nationID);
-        
+
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 초토화했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>초토화</> 명령");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>초토화</> 명령");
@@ -195,10 +195,10 @@ class che_초토화 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectCityByMap.js'
+            'defaultSelectCityByMap'
         ];
     }
 

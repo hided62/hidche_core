@@ -17,7 +17,7 @@ class Message
     public $isInboxMail = false;
 
     protected $sendCnt = 0;
-    
+
     public $msgType;
     /** @var \sammo\MessageTarget */
     public $src;
@@ -28,7 +28,7 @@ class Message
     public $date;
     /** @var \DateTime */
     public $validUntil;
-    
+
     public $msgOption;
 
     public function __construct(
@@ -107,7 +107,7 @@ class Message
     public function toArray():array{
         if($this->msgType === Message::MSGTYPE_PUBLIC){
             $src = $this->src->toArray();
-            $dest = [];
+            $dest = null;
         }
         else if($this->msgType === Message::MSGTYPE_NATIONAL || $this->msgType === Message::MSGTYPE_DIPLOMACY){
             $src = $this->src->toArray();
@@ -235,7 +235,7 @@ class Message
      * @param int $mailbox 메일 사서함.
      * @param string $msgType 메일 타입. MSGTYPE 중 하나.
      * @param int $toSeq 가져오고자 하는 위치. $toSeq보다 '작은' seq만 가져온다.
-     * @param int $limit 가져오고자 하는 수. 
+     * @param int $limit 가져오고자 하는 수.
      * @return Message[]
      */
     public static function getMessagesFromMailBoxOld(int $mailbox, string $msgType, int $toSeq, int $limit = 20)
@@ -291,7 +291,7 @@ class Message
         }
 
         $msgOption = [
-            'hide'=>true,   
+            'hide'=>true,
             'silence'=>true,
             'overwrite'=>[$msgObj->id]
         ];
@@ -305,15 +305,15 @@ class Message
                     $msgOption['overwrite'][] = [$msgObj2->id];
                 }
             }
-            
+
         }
 
         $in1min = new \DateTime();
         $in1min->add(new \DateInterval('PT1M'));
         $newMsg = new Message(
-            $msgObj->msgType, 
-            $msgObj->src, 
-            $msgObj->dest, 
+            $msgObj->msgType,
+            $msgObj->src,
+            $msgObj->dest,
             "req_del_msg",
             new \DateTime(),
             $in1min,
@@ -381,7 +381,7 @@ class Message
             else{
                 return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
             }
-            
+
         }
         return [0, 0];
     }
@@ -443,7 +443,7 @@ class Message
                 $this->sendCnt = 2;
             }
         }
-        
+
         return $receiveID;
     }
 
@@ -463,8 +463,8 @@ class Message
             }
             $this->msg = '삭제된 메시지입니다.';
         }
-        
-        
+
+
         $db = DB::db();
         $db->update('message', [
             'message' => Json::encode([

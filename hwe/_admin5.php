@@ -99,7 +99,7 @@ $sel2[$type2] = "selected";
     </table>
 
     <table align=center width=1600 class="tb_layout bg0">
-        <tr id=bg1>
+        <tr class='bg1'>
             <td align=center>국명</td>
             <td align=center>접률</td>
             <td align=center>단접</td>
@@ -278,7 +278,7 @@ from city where nation=%i', $nation['nation']);
     </table>
 
     <table align=center width=1760 class="tb_layout bg0">
-        <tr id=bg1>
+        <tr class='bg1'>
             <td width=30 align=center>년</td>
             <td width=30 align=center>월</td>
             <td width=50 align=center>국가수</td>

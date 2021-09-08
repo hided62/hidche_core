@@ -56,9 +56,9 @@ $templates = new \League\Plates\Engine('templates');
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 </head>
 
 <body>
@@ -105,7 +105,7 @@ $generals = $db->query(
 $generalTurnList = [];
 
 foreach($db->queryAllLists(
-    'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+    'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC',
     array_column($generals, 'no')
     ) as [$generalID, $turnIdx, $brief]
 ){
@@ -157,7 +157,7 @@ foreach ($generals as &$general) {
     $general['modeText'] = formatDefenceTrain($general['defence_train']);
     $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name??'-';
 
-    
+
     if ($general['npc'] < 2) {
         $turntext = [];
         foreach($generalTurnList[$general['no']] as $turnRawIdx=>$turn){

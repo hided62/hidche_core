@@ -196,10 +196,10 @@ class che_급습 extends Command\NationCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/defaultSelectNationByMap.js'
+            'defaultSelectNationByMap'
         ];
     }
 

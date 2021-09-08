@@ -52,9 +52,9 @@ if ($admin['maxonline'] < $curonline) {
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -92,7 +92,7 @@ span.out_bar{
 <table align=center width=1016>
     <tr><td align=left>
         <table align=center class='tb_layout bg0'>
-            <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
+            <tr><td colspan=4 align=center class='bg2'><font size=5>접 속 량</font></td></tr>
 <?php
 $refresh[] = $admin['refresh'];
 foreach($refresh as $i=>$value){
@@ -101,8 +101,8 @@ foreach($refresh as $i=>$value){
     $dt = substr($date[$i], 11, 5); ?>
             <tr height=30>
                 <td width=100 align=center><?=$year[$i]?>년 <?=$month[$i]?>월</td>
-                <td width=60 align=center id=bg2><?=$dt?></td>
-                <td width=2 align=center id=bg1></td>
+                <td width=60 align=center class='bg2'><?=$dt?></td>
+                <td width=2 align=center class='bg1'></td>
                 <td width=320>
                     <?php if($w == 0): ?>
                         <span class="out_bar"><?=$value?></span>
@@ -111,15 +111,15 @@ foreach($refresh as $i=>$value){
                     <?php else:?>
                         <div class='big_bar' style='width:<?=$w?>%;background-color:<?=$color?>;'><span><?=$value?></span></div>
                     <?php endif;?>
-                    
+
                 </td>
             </tr>
 <?php
 }
 ?>
-            <tr><td colspan=4 height=5 align=center id=bg1></td></tr>
+            <tr><td colspan=4 height=5 align=center class='bg1'></td></tr>
             <tr>
-                <td colspan=4 height=30 align=center id=bg0>최고기록: <?=$admin['maxrefresh']?></td>
+                <td colspan=4 height=30 align=center class='bg0'>최고기록: <?=$admin['maxrefresh']?></td>
             </tr>
 
 
@@ -127,7 +127,7 @@ foreach($refresh as $i=>$value){
     </td>
     <td align=right>
         <table align=center class='tb_layout bg0'>
-            <tr><td colspan=4 align=center id=bg2><font size=5>접 속 자</font></td></tr>
+            <tr><td colspan=4 align=center class='bg2'><font size=5>접 속 자</font></td></tr>
 <?php
 $online[] = $curonline;
 foreach($online as $i=>$value){
@@ -136,8 +136,8 @@ foreach($online as $i=>$value){
     $dt = substr($date[$i], 11, 5); ?>
             <tr height=30>
                 <td width=100 align=center><?=$year[$i]?>년 <?=$month[$i]?>월</td>
-                <td width=60 align=center id=bg2><?=$dt?></td>
-                <td width=2 align=center id=bg1></td>
+                <td width=60 align=center class='bg2'><?=$dt?></td>
+                <td width=2 align=center class='bg1'></td>
                 <td width=320>
                     <?php if($w == 0): ?>
                         <span class="out_bar"><?=$value?></span>
@@ -146,22 +146,22 @@ foreach($online as $i=>$value){
                     <?php else:?>
                         <div class='big_bar' style='width:<?=$w?>%;background-color:<?=$color?>;'><span><?=$value?></span></div>
                     <?php endif;?>
-                    
+
                 </td>
             </tr>
 <?php
 }
 ?>
-            <tr><td colspan=4 height=5 align=center id=bg1></td></tr>
+            <tr><td colspan=4 height=5 align=center class='bg1'></td></tr>
             <tr>
-                <td colspan=4 height=30 align=center id=bg0>최고기록: <?=$admin['maxonline']?></td>
+                <td colspan=4 height=30 align=center class='bg0'>최고기록: <?=$admin['maxonline']?></td>
             </tr>
         </table>
     </td></tr>
 </table>
 <br>
 <table align=center class='tb_layout bg0'>
-    <tr><td colspan=3 align=center id=bg2><font size=5>주 의 대 상 자 (순간과도갱신)</font></td></tr>
+    <tr><td colspan=3 align=center class='bg2'><font size=5>주 의 대 상 자 (순간과도갱신)</font></td></tr>
 <?php
 $max_refresh = $db->queryFirstRow('SELECT sum(refresh) as refresh, sum(`connect`) as `connect` from general');
 $max_refresh['name'] = '접속자 총합';

@@ -51,10 +51,10 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn')??1;
 <script>
 var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
 </script>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/myPage.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('dist_js/vendors.js')?>
+<?=WebUtil::printJS('dist_js/common.js')?>
+<?=WebUtil::printJS('dist_js/myPage.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -123,8 +123,8 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><font color=skyblue size=3>개인 기록</font></td>
-        <td align=center id=bg1><font color=orange size=3>전투 기록</font></td>
+        <td align=center class='bg1'><font color=skyblue size=3>개인 기록</font></td>
+        <td align=center class='bg1'><font color=orange size=3>전투 기록</font></td>
     </tr>
     <tr>
         <td valign=top>
@@ -141,8 +141,8 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><font color=skyblue size=3>장수 열전</font></td>
-        <td align=center id=bg1><font color=orange size=3>전투 결과</font></td>
+        <td align=center class='bg1'><font color=skyblue size=3>장수 열전</font></td>
+        <td align=center class='bg1'><font color=orange size=3>전투 결과</font></td>
     </tr>
     <tr>
         <td valign=top>
@@ -162,4 +162,3 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
 </table>
 </body>
 </html>
-

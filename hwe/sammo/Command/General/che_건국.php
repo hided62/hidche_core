@@ -196,10 +196,10 @@ class che_건국 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSFiles(): array
+    public function getJSPlugins(): array
     {
         return [
-            'js/colorSelect.js'
+            'colorSelect'
         ];
     }
 
@@ -216,14 +216,14 @@ class che_건국 extends Command\GeneralCommand
         foreach(GetNationColors() as $color){
             $colorUsed[$color] = 0;
         }
-    
+
         foreach(getAllNationStaticInfo() as $nation){
             if($nation['level'] <= 0){
                 continue;
             }
             $colorUsed[$nation['color']]++;
         }
-    
+
         $colorUsedCnt = 0;
         foreach($colorUsed as $color=>$used){
             if($used){
@@ -231,7 +231,7 @@ class che_건국 extends Command\GeneralCommand
             }
             $colorUsedCnt += 1;
         }
-    
+
         //색깔이 다 쓰였으면 그냥 모두 허용
         if($colorUsedCnt === count($colorUsed)){
             foreach(array_keys($colorUsed) as $color){
