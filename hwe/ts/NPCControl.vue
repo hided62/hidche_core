@@ -4,232 +4,214 @@
   <div
     id="container"
     class="tb_layout bg0"
-    :style="{ width: '1000px', margin: 'auto', border: 'solid 1px #888888' }"
+    :style="{ maxWidth: '1000px', margin: 'auto', border: 'solid 1px #888888' }"
   >
     <div class="bg1 section_bar">국가 정책</div>
-    <div class="px-3" style="text-align:right;">
+    <div class="px-3" style="text-align: right">
       <small class="form-text text-muted">
         최근 설정:
         {{ lastSetters.policy.setter ?? "-없음-" }}
         ({{ lastSetters.policy.date ?? "설정 기록 없음" }})
       </small>
     </div>
-    <div class="form_list">
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqNationGold"
-            :step="100"
-            title="국가 권장 금"
-            >이보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상
-            제외)</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqNationRice"
-            :step="100"
-            title="국가 권장 쌀"
-            >이보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상
-            제외)</NumberInputWithInfo
-          >
-        </div>
+    <div class="form_list row row-cols-md-2 row-cols-1">
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqNationGold"
+          :step="100"
+          title="국가 권장 금"
+          >이보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상
+          제외)</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqHumanWarUrgentGold"
-            :step="100"
-            title="유저전투장 긴급포상 금"
-            >유저장긴급포상시 이보다 금이 적은 장수에게 포상합니다.<br />0이면
-            보병 6회 징병({{ (defaultStatMax * 100).toLocaleString() }} * 6)
-            가능한 금을 기준으로 하며, 그 수치는 현재
-            {{
-              zeroPolicy.reqHumanWarUrgentGold.toLocaleString()
-            }}입니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqHumanWarUrgentRice"
-            :step="100"
-            title="유저전투장 긴급포상 금"
-            >유저장긴급포상시 이보다 쌀이 적은 장수에게 포상합니다.<br />0이면
-            기본 병종으로 {{ (defaultStatMax * 100).toLocaleString() }} * 6명
-            사살 가능한 쌀을 기준으로 하며, 그 수치는 현재
-            {{
-              zeroPolicy.reqHumanWarUrgentRice.toLocaleString()
-            }}입니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqNationRice"
+          :step="100"
+          title="국가 권장 쌀"
+          >이보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상
+          제외)</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqHumanWarRecommandGold"
-            :step="100"
-            title="유저전투장 권장 금"
-            >유저전투장에게 주는 금입니다. 이보다 적으면 포상합니다. <br />
-            0이면 유저전투장 긴급포상 금의 2배를 기준으로 하며, 그 수치는 현재
-            {{
-              (calcPolicyValue("reqHumanWarUrgentGold") * 2).toLocaleString()
-            }}입니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqHumanWarRecommandRice"
-            :step="100"
-            title="유저전투장 권장 쌀"
-            >유저전투장에게 주는 쌀입니다. 이보다 적으면 포상합니다. <br />
-            0이면 유저전투장 긴급포상 쌀의 2배를 기준으로 하며, 그 수치는 현재
-            {{
-              (calcPolicyValue("reqHumanWarUrgentRice") * 2).toLocaleString()
-            }}입니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqHumanWarUrgentGold"
+          :step="100"
+          title="유저전투장 긴급포상 금"
+          >유저장긴급포상시 이보다 금이 적은 장수에게 포상합니다.<br />0이면
+          보병 6회 징병({{ (defaultStatMax * 100).toLocaleString() }} * 6)
+          가능한 금을 기준으로 하며, 그 수치는 현재
+          {{
+            zeroPolicy.reqHumanWarUrgentGold.toLocaleString()
+          }}입니다.</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqHumanDevelGold"
-            :step="100"
-            title="유저내정장 권장 금"
-            >유저내정장에게 주는 금입니다. 이보다 적으면
-            포상합니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqHumanDevelRice"
-            :step="100"
-            title="유저내정장 권장 쌀"
-            >유저내정장에게 주는 쌀입니다. 이보다 적으면
-            포상합니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqHumanWarUrgentRice"
+          :step="100"
+          title="유저전투장 긴급포상 금"
+          >유저장긴급포상시 이보다 쌀이 적은 장수에게 포상합니다.<br />0이면
+          기본 병종으로 {{ (defaultStatMax * 100).toLocaleString() }} * 6명 사살
+          가능한 쌀을 기준으로 하며, 그 수치는 현재
+          {{
+            zeroPolicy.reqHumanWarUrgentRice.toLocaleString()
+          }}입니다.</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqNPCWarGold"
-            :step="100"
-            title="NPC전투장 권장 금"
-            >NPC전투장에게 주는 금입니다. 이보다 적으면 포상합니다. <br />
-            0이면 기본 병종 4회({{ (defaultStatNPCMax * 100).toLocaleString() }}
-            * 4) 징병비를 기준으로 하며, 그 수치는 현재
-            {{
-              zeroPolicy.reqNPCWarGold.toLocaleString()
-            }}입니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqNPCWarRice"
-            :step="100"
-            title="NPC전투장 권장 쌀"
-            >NPC전투장에게 주는 쌀입니다. 이보다 적으면 포상합니다. <br />
-            0이면 기본 병종으로
-            {{ (defaultStatNPCMax * 100).toLocaleString() }} * 4명 사살 가능한
-            쌀을 기준으로 하며, 그 수치는 현재
-            {{
-              zeroPolicy.reqNPCWarRice.toLocaleString()
-            }}입니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqHumanWarRecommandGold"
+          :step="100"
+          title="유저전투장 권장 금"
+          >유저전투장에게 주는 금입니다. 이보다 적으면 포상합니다. <br />
+          0이면 유저전투장 긴급포상 금의 2배를 기준으로 하며, 그 수치는 현재
+          {{
+            (calcPolicyValue("reqHumanWarUrgentGold") * 2).toLocaleString()
+          }}입니다.</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqNPCDevelGold"
-            :step="100"
-            title="NPC내정장 권장 금"
-            >NPC내정장에게 주는 금입니다. 이보다 5배 더 많다면 헌납합니다.<br />0이면
-            30턴 내정 가능한 금을 기준으로 하며, 그 수치는 현재
-            {{ zeroPolicy.reqNPCDevelGold }}입니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.reqNPCDevelRice"
-            :step="100"
-            title="NPC내정장 권장 쌀"
-            >NPC내정장에게 주는 쌀입니다. 이보다 5배 더 많다면
-            헌납합니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqHumanWarRecommandRice"
+          :step="100"
+          title="유저전투장 권장 쌀"
+          >유저전투장에게 주는 쌀입니다. 이보다 적으면 포상합니다. <br />
+          0이면 유저전투장 긴급포상 쌀의 2배를 기준으로 하며, 그 수치는 현재
+          {{
+            (calcPolicyValue("reqHumanWarUrgentRice") * 2).toLocaleString()
+          }}입니다.</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.minimumResourceActionAmount"
-            :step="100"
-            title="포상/몰수/헌납/삼/팜 최소 단위"
-            >연산결과가 이 단위보다 적다면 수행하지
-            않습니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.minWarCrew"
-            :step="50"
-            title="최소 전투 가능 병력 수"
-            >이보다 적을 때에는 징병을 시도합니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqHumanDevelGold"
+          :step="100"
+          title="유저내정장 권장 금"
+          >유저내정장에게 주는 금입니다. 이보다 적으면
+          포상합니다.</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.minNPCRecruitCityPopulation"
-            :step="100"
-            title="NPC 최소 징병 가능 인구 수"
-            >도시의 인구가 이보다 낮으면 NPC는 도시에서 징병하지 않고 후방
-            워프합니다.<br />NPC의 최대 병력수보다 낮게 설정하면 제자리에서
-            정착장려를 합니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            :modelValue="nationPolicy.safeRecruitCityPopulationRatio * 100"
-            @update:modelValue="
-              nationPolicy.safeRecruitCityPopulationRatio = $event / 100
-            "
-            :step="0.5"
-            :int="false"
-            :min="0"
-            :max="100"
-            title="제자리 징병 허용 인구율(%)"
-            >전쟁 시 후방 발령, 후방 워프의 기준 인구입니다. 이보다 많다면
-            '충분하다'고 판단합니다.<br />NPC의 최대 병력수보다 낮게 설정하면
-            제자리에서 정착장려를 합니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqHumanDevelRice"
+          :step="100"
+          title="유저내정장 권장 쌀"
+          >유저내정장에게 주는 쌀입니다. 이보다 적으면
+          포상합니다.</NumberInputWithInfo
+        >
       </div>
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.minNPCWarLeadership"
-            :step="5"
-            title="NPC 전투 참여 통솔 기준"
-            >이 수치보다 같거나 높으면 NPC전투장으로
-            분류됩니다.</NumberInputWithInfo
-          >
-        </div>
-        <div class="col-sm-6">
-          <NumberInputWithInfo
-            v-model="nationPolicy.properWarTrainAtmos"
-            :step="5"
-            :min="20"
-            :max="100"
-            title="훈련/사기진작 목표치"
-            >훈련/사기진작 기준치입니다. 이보다 같거나 높으면
-            출병합니다.</NumberInputWithInfo
-          >
-        </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqNPCWarGold"
+          :step="100"
+          title="NPC전투장 권장 금"
+          >NPC전투장에게 주는 금입니다. 이보다 적으면 포상합니다. <br />
+          0이면 기본 병종 4회({{ (defaultStatNPCMax * 100).toLocaleString() }}
+          * 4) 징병비를 기준으로 하며, 그 수치는 현재
+          {{
+            zeroPolicy.reqNPCWarGold.toLocaleString()
+          }}입니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqNPCWarRice"
+          :step="100"
+          title="NPC전투장 권장 쌀"
+          >NPC전투장에게 주는 쌀입니다. 이보다 적으면 포상합니다. <br />
+          0이면 기본 병종으로
+          {{ (defaultStatNPCMax * 100).toLocaleString() }} * 4명 사살 가능한
+          쌀을 기준으로 하며, 그 수치는 현재
+          {{
+            zeroPolicy.reqNPCWarRice.toLocaleString()
+          }}입니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqNPCDevelGold"
+          :step="100"
+          title="NPC내정장 권장 금"
+          >NPC내정장에게 주는 금입니다. 이보다 5배 더 많다면 헌납합니다.<br />0이면
+          30턴 내정 가능한 금을 기준으로 하며, 그 수치는 현재
+          {{ zeroPolicy.reqNPCDevelGold }}입니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.reqNPCDevelRice"
+          :step="100"
+          title="NPC내정장 권장 쌀"
+          >NPC내정장에게 주는 쌀입니다. 이보다 5배 더 많다면
+          헌납합니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.minimumResourceActionAmount"
+          :step="100"
+          title="포상/몰수/헌납/삼/팜 최소 단위"
+          >연산결과가 이 단위보다 적다면 수행하지 않습니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.minWarCrew"
+          :step="50"
+          title="최소 전투 가능 병력 수"
+          >이보다 적을 때에는 징병을 시도합니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.minNPCRecruitCityPopulation"
+          :step="100"
+          title="NPC 최소 징병 가능 인구 수"
+          >도시의 인구가 이보다 낮으면 NPC는 도시에서 징병하지 않고 후방
+          워프합니다.<br />NPC의 최대 병력수보다 낮게 설정하면 제자리에서
+          정착장려를 합니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          :modelValue="nationPolicy.safeRecruitCityPopulationRatio * 100"
+          @update:modelValue="
+            nationPolicy.safeRecruitCityPopulationRatio = $event / 100
+          "
+          :step="0.5"
+          :int="false"
+          :min="0"
+          :max="100"
+          title="제자리 징병 허용 인구율(%)"
+          >전쟁 시 후방 발령, 후방 워프의 기준 인구입니다. 이보다 많다면
+          '충분하다'고 판단합니다.<br />NPC의 최대 병력수보다 낮게 설정하면
+          제자리에서 정착장려를 합니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.minNPCWarLeadership"
+          :step="5"
+          title="NPC 전투 참여 통솔 기준"
+          >이 수치보다 같거나 높으면 NPC전투장으로
+          분류됩니다.</NumberInputWithInfo
+        >
+      </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.properWarTrainAtmos"
+          :step="5"
+          :min="20"
+          :max="100"
+          title="훈련/사기진작 목표치"
+          >훈련/사기진작 기준치입니다. 이보다 같거나 높으면
+          출병합니다.</NumberInputWithInfo
+        >
       </div>
       <!--allowNpcAttackCity는 현재 게임 내 비활성-->
-
+    </div>
+    <div style="padding: 0 8pt">
       <div class="alert alert-secondary">
         전투 부대는 작업중입니다(json양식:
         {부대번호:[시작도시번호(아국),도착도시번호(적군)],...})<br />
@@ -280,8 +262,8 @@
         설정
       </button>
     </div>
-    <div class="row">
-      <div class="col-sm-6 half_section_left">
+    <div class="row row-cols-md-2 row-cols-1 g-0">
+      <div class="col half_section_left">
         <div class="bg1 section_bar">NPC 사령턴 우선순위</div>
         <div class="float-right px-3">
           <small class="form-text text-muted">
@@ -296,16 +278,21 @@
             사령턴을 시도합니다.</small
           >
         </div>
-        <div class="form_list">
-          <div class="row">
-            <div class="col-sm-6">
+        <div>
+          <div class="row g-0">
+            <div class="col">
               <div class="bg2 sub_bar">비활성</div>
               <draggable
                 :list="chiefActionUnused"
                 group="chiefAction"
-                class="list-group col"
+                class="list-group col priority-list"
                 itemKey="id"
               >
+                <template #header>
+                  <div class="list-group-item list-group-item-dark">
+                    &lt;비활성화 항목들&gt;
+                  </div>
+                </template>
                 <template #item="{ element }">
                   <div class="list-group-item">
                     <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
@@ -320,12 +307,12 @@
                 </template>
               </draggable>
             </div>
-            <div class="col-sm-6">
+            <div class="col">
               <div class="bg2 sub_bar">활성</div>
               <draggable
                 :list="chiefActionPriority"
                 group="chiefAction"
-                class="list-group col"
+                class="list-group col priority-list"
                 itemKey="id"
               >
                 <template #item="{ element }">
@@ -369,7 +356,7 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6 half_section_right">
+      <div class="col half_section_right">
         <div class="bg1 section_bar">NPC 일반턴 우선순위</div>
         <div class="float-right px-3">
           <small class="form-text text-muted">
@@ -384,16 +371,21 @@
             물자조달이나 인재탐색을 합니다.</small
           >
         </div>
-        <div class="form_list">
-          <div class="row">
-            <div class="col-sm-6">
+        <div>
+          <div class="row g-0">
+            <div class="col">
               <div class="bg2 sub_bar">비활성</div>
               <draggable
                 :list="generalActionUnused"
                 group="generalAction"
-                class="list-group col"
+                class="list-group col priority-list"
                 itemKey="id"
               >
+                <template #header>
+                  <div class="list-group-item list-group-item-dark">
+                    &lt;비활성화 항목들&gt;
+                  </div>
+                </template>
                 <template #item="{ element }">
                   <div class="list-group-item">
                     <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
@@ -407,12 +399,12 @@
                 </template>
               </draggable>
             </div>
-            <div class="col-sm-6">
+            <div class="col">
               <div class="bg2 sub_bar">활성</div>
               <draggable
                 :list="generalActionPriority"
                 group="generalAction"
-                class="list-group col"
+                class="list-group col priority-list"
                 itemKey="id"
               >
                 <template #item="{ element }">
@@ -824,37 +816,51 @@ export default defineComponent({
   text-align: left;
 }
 
+.form_list {
+  margin: 8px;
+}
+
+.sub_bar {
+  text-align: center;
+  border: 0.5px solid #aaa;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.priority-list {
+  margin: 0 10px;
+}
+
 .control_bar {
-    margin-top: 8pt;
-    text-align: right;
+  padding: 0 8pt 8pt 8pt;
+  text-align: right;
+}
+
+.control_bar .btn {
+  margin-top: 8pt;
 }
 
 .reset_btn {
-    width: 15ch;
+  width: 15ch;
 }
 
-.revert_btn{
+.revert_btn {
   width: 15ch;
 }
 
 .submit_btn {
-    margin-left: 1em;
-    width: 15ch;
+  margin-left: 1em;
+  width: 15ch;
 }
 
 .half_section_left {
-    padding-right: 0;
-    border-right: 0.5px solid #aaa;
-}
-
-.half_section_right {
-    padding-left: 0;
+  border-right: 0.5px solid #aaa;
 }
 
 .section_bar {
-    text-align: center;
-    border: 0.5px solid #aaa;
-    padding-right: 0;
-    padding-left: 0;
+  text-align: center;
+  border: 0.5px solid #aaa;
+  padding-right: 0;
+  padding-left: 0;
 }
 </style>

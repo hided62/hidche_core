@@ -1,7 +1,7 @@
 <template>
   <div class="row form-group number-input-with-info">
-    <label class="col-sm-6 col-form-label">{{ title }}</label>
-    <div class="col-sm-6">
+    <label class="col-6 col-form-label">{{ title }}</label>
+    <div class="col-6">
       <input
         ref="input"
         type="number"
