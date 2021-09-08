@@ -16,22 +16,22 @@ class GeneralBuilder{
 
     protected $owner = 0;
     protected $ownerName = null;
-    protected $affinity=null; 
+    protected $affinity=null;
     protected $nameCustomPrefix=null;
-    protected $name; 
+    protected $name;
     protected $imgsvr = 0;
-    protected $picturePath; 
-    protected $nationID; 
-    protected $cityID; 
-    protected $leadership=null; 
-    protected $strength=null; 
-    protected $intel=null; 
+    protected $picturePath;
+    protected $nationID;
+    protected $cityID;
+    protected $leadership=null;
+    protected $strength=null;
+    protected $intel=null;
     protected $officerLevel;
-    protected $birth=null; 
-    protected $death=null; 
+    protected $birth=null;
+    protected $death=null;
     protected $ego=null;
-    protected $specialDomestic=null; 
-    protected $specialWar=null; 
+    protected $specialDomestic=null;
+    protected $specialWar=null;
     protected $npc = 2;
     protected $text;
     static $prefixList = [
@@ -42,7 +42,7 @@ class GeneralBuilder{
         4 => 'ⓖ', //의병장(전략)
         5 => '㉥', //부대장
         6 => 'ⓤ', //unselectable npc, 빙의 불가 npc
-        
+
         9 => 'ⓞ', //오랑캐?
     ];
 
@@ -66,12 +66,12 @@ class GeneralBuilder{
     protected $aux = [];
 
     public function __construct(
-        string $name, 
+        string $name,
         bool $isDynamicImageSvr,
-        $picturePath, 
+        $picturePath,
         int $nationID
     ){
-        
+
         $this->name = $name;
         $this->imgsvr = $isDynamicImageSvr;
         $this->picturePath = $picturePath;
@@ -144,7 +144,7 @@ class GeneralBuilder{
         $this->specialDomestic = $specialDomestic;
         $this->specialWar = $specialWar;
         return $this;
-        
+
     }
 
     public function setOfficerLevel(int $level):self{
@@ -380,7 +380,7 @@ class GeneralBuilder{
         if($this->specialWar === null){
             $this->specialWar = GameConst::$defaultSpecialWar;
         }
-        
+
         if($this->killturn === null && $this->owner){
             $this->killturn = 5;
         }
@@ -408,7 +408,7 @@ class GeneralBuilder{
             $this->death = $this->birth+Util::randRangeInt(60, 80);
         }
 
-        
+
         if($this->specAge===null){
             $age = $env['year']-$this->birth;
             $relYear = Util::valueFit($env['year'] - $env['startyear'], 0);
@@ -459,7 +459,7 @@ class GeneralBuilder{
             }
         }
 
-        if($this->dex1 === null){
+        if(!$this->dex1 && in_array('dex_t', $avgGen)){
             $dexTotal = $avgGen['dex_t'];
             if ($pickType == '무') {
                 $dexVal = Util::choiceRandom([
@@ -532,7 +532,7 @@ class GeneralBuilder{
     public function build($env){
         //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
 
-        
+
 
         if(!key_exists('stored_icons', $env)){
             try{
@@ -542,7 +542,7 @@ class GeneralBuilder{
             catch(\Exception $e){
                 $storedIcons = [];
             }
-    
+
             $env['stored_icons'] = $storedIcons;
         }
 
@@ -559,7 +559,7 @@ class GeneralBuilder{
         else{
             $name = $this->nameCustomPrefix.$this->name;
         }
-        
+
         $this->realName = $name;
 
         if($this->death <= $year){
@@ -635,7 +635,6 @@ class GeneralBuilder{
             '@phan-var array<string,string|int> $cityObj';
             $this->cityID = $cityObj['id'];
         }
-        
 
         $experience = $this->experience?:$age * 100;
         $dedication = $this->dedication?:$age * 100;

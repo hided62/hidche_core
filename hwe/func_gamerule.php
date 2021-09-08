@@ -654,7 +654,7 @@ function updateNationState()
                     }
 
                     $score *= $trialCnt;
-                    
+
                     $uniqueLotteryWeightList[$nationGen->getID()] = [$nationGen, $score];
                 }
 
@@ -745,7 +745,7 @@ function checkStatistic()
     ];
 
     $avgGeneral = $db->queryFirstRow(
-        'SELECT avg(gold) as avggold, avg(rice) as avgrice, avg(dex1+dex2+dex3+dex4) as avgdex, 
+        'SELECT avg(gold) as avggold, avg(rice) as avgrice, avg(dex1+dex2+dex3+dex4) as avgdex,
         max(dex1+dex2+dex3+dex4) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded
         FROM general'
     );
@@ -1022,8 +1022,8 @@ function checkEmperior()
     $nation['generals'] = $nationGenerals;
 
     $tigers = $db->query(
-        'SELECT value, name 
-        FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+        'SELECT value, name
+        FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no
         WHERE rank_data.nation_id = %i AND rank_data.type = "killnum" AND value > 0 ORDER BY value DESC LIMIT 5',
         $nationID
     ); // 오호장군
@@ -1034,8 +1034,8 @@ function checkEmperior()
     }, $tigers));
 
     $eagles = $db->query(
-        'SELECT value, name 
-        FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no 
+        'SELECT value, name
+        FROM rank_data LEFT JOIN general ON rank_data.general_id = general.no
         WHERE rank_data.nation_id = %i AND rank_data.type = "firenum" AND value > 0 ORDER BY value DESC LIMIT 7',
         $nationID
     ); // 건안칠자
@@ -1150,10 +1150,17 @@ function checkEmperior()
     LogHistory();
 }
 
-function resetInheritanceUser(int $userID){
+function resetInheritanceUser(int $userID, bool $isRebirth=false){
+    $rebirthDegraded = [
+        'dex'=>0.5,
+    ];
+
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
     $totalPoint = 0;
-    foreach($inheritStor->getAll() as [$value,]){
+    foreach($inheritStor->getAll() as $key=>[$value,]){
+        if(key_exists($key, $rebirthDegraded)){
+            $value *= $rebirthDegraded[$key];
+        }
         $totalPoint += $value;
     }
     $totalPoint = Util::toInt($totalPoint);

@@ -20,9 +20,9 @@
 * `git`
 * `curl`
 
-Linux는 Ubuntu 18.04, 20.04, Windows는 Windows 10에서 XAMPP, WSL2를 사용한 환경에서 테스트되었습니다.
+Linux는 Ubuntu 18.04, 20.04, Windows는 WSL2를 사용한 환경에서 테스트되었습니다.
 
-Docker를 이용한 설치는 테스트버전만 제공됩니다.
+Docker를 이용한 설치도 제공하고 있습니다.
 
 ## Docker를 이용한 설치
 

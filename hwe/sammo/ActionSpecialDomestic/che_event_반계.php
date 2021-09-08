@@ -1,5 +1,7 @@
 <?php
+
 namespace sammo\ActionSpecialDomestic;
+
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityHelper;
@@ -10,7 +12,8 @@ use \sammo\WarUnitTrigger\WarActivateSkills;
 use \sammo\WarUnitTrigger\che_반계시도;
 use \sammo\WarUnitTrigger\che_반계발동;
 
-class che_event_반계 extends \sammo\BaseSpecial{
+class che_event_반계 extends \sammo\BaseSpecial
+{
 
     protected $id = 45;
     protected $name = '반계';
@@ -22,16 +25,18 @@ class che_event_반계 extends \sammo\BaseSpecial{
         SpecialityHelper::STAT_INTEL,
     ];
 
-    public function onCalcStat(General $general, string $statName, $value, $aux=null){
-        if($statName === 'warMagicSuccessDamage' && $aux === '반목'){
+    public function onCalcStat(General $general, string $statName, $value, $aux = null)
+    {
+        if ($statName === 'warMagicSuccessDamage' && $aux === '반목') {
             return $value + 0.9;
         }
         return $value;
     }
 
-    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
+    {
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '계략약화'),
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE * 403, false, '계략약화'),
             new che_반계시도($unit),
             new che_반계발동($unit)
         );

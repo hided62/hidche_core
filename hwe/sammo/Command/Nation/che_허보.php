@@ -184,12 +184,6 @@ class che_허보 extends Command\NationCommand
         );
         $destNationLogger->flush();
 
-
-        $db->update('city', [
-            'def' => $db->sqleval('def * 0.2'),
-            'wall' => $db->sqleval('wall * 0.2'),
-        ], 'city=%i', $destCityID);
-
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>허보</>를 발동");
