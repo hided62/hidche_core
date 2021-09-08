@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
     const ingame_vue = {
         name: 'ingame_vue',
         resolve: {
-            extensions: [".js", ".ts", ".jsx", ".tsx", ".vue"],
+            extensions: [".ts", ".tsx", ".vue", ".js"],
             alias: {
                 vue: "@vue/runtime-dom"
             }
@@ -57,8 +57,6 @@ module.exports = (env, argv) => {
                             comments: /@license/i,
                         },
                     },
-                    minify: TerserPlugin.swcMinify,
-                    parallel: true,
                     extractComments: true,
                 }),
             ],
@@ -68,7 +66,7 @@ module.exports = (env, argv) => {
                 //FROM `vue inspect` and some tweaks
                 {
                     test: /\.(ts|tsx)$/,
-                    exclude: /(node_modules)/,
+                    //exclude: /(node_modules)/,
                     use: [
                         'babel-loader',
                         {
@@ -81,6 +79,13 @@ module.exports = (env, argv) => {
                                 happyPackMode: false
                             }
                         }
+                    ]
+                },
+                {
+                    test: /\.js$/,
+                    exclude: /(node_modules)/,
+                    use: [
+                        'babel-loader',
                     ]
                 },
                 {
@@ -158,7 +163,6 @@ module.exports = (env, argv) => {
         ],
         cache: {
             type: 'filesystem',
-            allowCollectingMemory: true,
         },
     };
     const ingame = {
@@ -215,8 +219,6 @@ module.exports = (env, argv) => {
                             comments: /@license/i,
                         },
                     },
-                    minify: TerserPlugin.swcMinify,
-                    parallel: true,
                     extractComments: true,
                 }),
             ],
@@ -254,7 +256,6 @@ module.exports = (env, argv) => {
         ],
         cache: {
             type: 'filesystem',
-            allowCollectingMemory: true,
         },
     };
     const gateway = {
@@ -295,8 +296,6 @@ module.exports = (env, argv) => {
                             comments: /@license/i,
                         },
                     },
-                    minify: TerserPlugin.swcMinify,
-                    parallel: true,
                     extractComments: true,
                 }),
             ],
@@ -332,7 +331,6 @@ module.exports = (env, argv) => {
         ],
         cache: {
             type: 'filesystem',
-            allowCollectingMemory: true,
         },
     };
 

@@ -470,7 +470,7 @@ import { unwrap } from "./util/unwrap";
 import { convertFormData } from "./util/convertFormData";
 import axios from "axios";
 import { NPCPriorityBtnHelpMessage } from "./helpTexts";
-import { CTooltip } from "@coreui/vue";
+import { CTooltip } from "@coreui/vue/src/directives/CTooltip";
 import draggable from "vuedraggable";
 import MyToast from "./components/MyToast.vue";
 import TopBackBar from "./components/TopBackBar.vue";
