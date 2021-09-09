@@ -35,6 +35,8 @@ class General implements iAction{
     protected $personalityObj = null;
     /** @var iAction[] */
     protected $itemObjs = [];
+    /** @var iAction */
+    protected $inheritBuffObj = null;
 
     protected $lastTurn = null;
     protected $resultTurn = null;
@@ -136,6 +138,11 @@ class General implements iAction{
         $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
         $this->itemObjs['book'] = buildItemClass($raw['book']);
         $this->itemObjs['item'] = buildItemClass($raw['item']);
+
+        $rawInheritBuff = $this->getAuxVar('inheritBuff');
+        if($rawInheritBuff !== null){
+            $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
+        }
     }
 
     function initLogger(int $year, int $month){
@@ -410,7 +417,8 @@ class General implements iAction{
                 $this->officerLevelObj,
                 $this->specialDomesticObj,
                 $this->specialWarObj,
-                $this->personalityObj
+                $this->personalityObj,
+                $this->inheritBuffObj,
             ] as $actionObj){
                 if($actionObj !== null){
                     $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
@@ -785,6 +793,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
 
             if(!$iObj){
@@ -804,6 +813,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -823,6 +833,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -841,6 +852,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -859,6 +871,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -880,6 +893,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -900,6 +914,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -927,6 +942,7 @@ class General implements iAction{
             $this->specialWarObj,
             $this->personalityObj,
             $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
