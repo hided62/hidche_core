@@ -9,7 +9,7 @@ import { unwrap_any } from './util/unwrap_any';
 
 type LogResponse = {
     result: true;
-    log: Record<number, string>;
+    log: Record<string, string>;
 };
 
 $(function ($) {
@@ -92,10 +92,11 @@ $(function ($) {
         }
 
         const html: string[] = [];
-        for (const [key, item] of Object.entries(result.log)) {
+        for (const key of Object.values(keys)) {
             if ($(`#log_${logType}_${key}`).length) {
                 return true;
             }
+            const item = result.log[key];
             html.push(`<div class='log_${logType}' id='log_${logType}_${key}' data-seq='${key}'>${item}</div>`);
         }
         $(`#${logType}Plate`).append(html.join(''));
