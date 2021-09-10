@@ -84,8 +84,10 @@
     "lint"
   ],
   "browserslist": [
+    "last 3 versions",
     "> 0.4%",
-    "not ie <= 11",
-    "not op_mini all"
+    "not dead",
+    "not op_mini all",
+    "not ie <= 11"
   ]
 }
