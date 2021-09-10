@@ -34,9 +34,9 @@ $acl = $session->acl;
         <script>
             var isAdmin = <?=($userGrade >= 5 || $acl)?'true':'false'?>;
         </script>
-        <?=WebUtil::printJS('../d_shared/common_path.js') ?>
-        <?=WebUtil::printJS('../dist_js/vendors.js') ?>
-        <?=WebUtil::printJS('../dist_js/entrance.js')?>
+        <?=WebUtil::printJS('../d_shared/common_path.js', true) ?>
+        <?=WebUtil::printJS('../dist_js/vendors.js', true) ?>
+        <?=WebUtil::printJS('../dist_js/entrance.js', true)?>
 
     </head>
     <body>

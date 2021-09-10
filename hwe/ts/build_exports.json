@@ -1,7 +1,6 @@
 {
     "ingame": {
         "chiefCenter": "chiefCenter.ts",
-        "common": "common_deprecated.ts",
         "troop": "troop.ts",
         "map": "map.ts",
         "install_db": "install_db.ts",
@@ -22,7 +21,8 @@
         "history": "history.ts",
         "join": "join.ts",
         "select_general_from_pool": "select_general_from_pool.ts",
-        "extKingdoms": "extKingdoms.ts"
+        "extKingdoms": "extKingdoms.ts",
+        "common": "common_deprecated.ts"
     },
     "ingame_vue": {
         "v_inheritPoint": "v_inheritPoint.ts",

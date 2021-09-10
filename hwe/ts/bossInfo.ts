@@ -1,10 +1,10 @@
+import { exportWindow } from './util/exportWindow';
 import $ from 'jquery';
 import axios from 'axios';
 import { convertFormData } from './util/convertFormData';
 import { InvalidResponse } from './defs';
 import { unwrap_any } from './util/unwrap_any';
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
-import { exportWindow } from './util/exportWindow';
 import Popper from 'popper.js';
 exportWindow(Popper, 'Popper');
 import 'bootstrap';

@@ -247,7 +247,6 @@ module.exports = (env, argv) => {
         },
         mode,
         entry: {
-            common: `${tsDir}/gateway/common_deprecated.ts`,
             entrance: `${tsDir}/gateway/entrance.ts`,
             user_info: `${tsDir}/gateway/user_info.ts`,
             admin_member: `${tsDir}/gateway/admin_member.ts`,

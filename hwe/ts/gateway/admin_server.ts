@@ -1,5 +1,4 @@
-
-import $ from 'jquery';
+import { exportWindow } from '../util/exportWindow';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
 import { InvalidResponse } from '../defs';
@@ -65,10 +64,6 @@ const serverAdminTemplate = '\
 
 declare global {
     interface Window {
-        modifyServerStatus: (caller: HTMLElement, action: string) => void;
-        Entrance_AdminClosedLogin: (caller: HTMLElement) => void;
-        Entrance_AdminOpen119: (caller: HTMLElement) => void;
-        serverUpdate: (caller: HTMLElement) => void;
         adminGrade: number;
         aclList: Record<string, string[]>;
     }
@@ -218,11 +213,6 @@ export async function loadPlugin(): Promise<void> {
 
     Entrance_AdminInit();
 
-    window.modifyServerStatus = modifyServerStatus;
-    window.Entrance_AdminClosedLogin = Entrance_AdminClosedLogin;
-    window.Entrance_AdminOpen119 = Entrance_AdminOpen119;
-    window.serverUpdate = serverUpdate;
-
     const response = await axios({
         url: 'j_server_get_admin_status.php',
         method: 'post',
@@ -330,3 +320,8 @@ function Entrance_AdminOpen119(caller: HTMLElement) {
     const serverDir = $caller.parents('tr').data('server_name');
     location.href = `../${serverDir}/_119.php`;
 }
+
+exportWindow(modifyServerStatus, 'modifyServerStatus');
+exportWindow(Entrance_AdminClosedLogin, 'Entrance_AdminClosedLogin');
+exportWindow(Entrance_AdminOpen119, 'Entrance_AdminOpen119');
+exportWindow(serverUpdate, 'serverUpdate');
