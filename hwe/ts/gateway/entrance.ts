@@ -242,6 +242,14 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
             continue;
         }
 
+        if(response.reserved){
+            $serverHtml.find('.server_down').detach();
+            $serverHtml.append(
+                TemplateEngine(serverReservedTemplate, response.reserved)
+            );
+            initTooltip($serverHtml);
+        }
+
         if(!response.game){
             continue;
         }
