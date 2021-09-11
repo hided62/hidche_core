@@ -18,9 +18,11 @@ class che_서적_07_논어 extends \sammo\BaseStatItem{
         $this->info .= "<br>[전투] 상대의 계략 성공 확률 -10%p";
     }
 
-    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM+BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*207, false, '계략약화')
-        );
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
+    {
+        $debuff = [
+            'warMagicSuccessProb' => 0.1,
+        ][$statName] ?? 0;
+        return $value - $debuff;
     }
 }

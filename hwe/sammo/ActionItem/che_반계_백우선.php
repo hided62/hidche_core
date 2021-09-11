@@ -19,9 +19,16 @@ class che_반계_백우선 extends \sammo\BaseItem{
     protected $cost = 200;
     protected $consumable = false;
 
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
+    {
+        $debuff = [
+            'warMagicSuccessProb' => 0.1,
+        ][$statName] ?? 0;
+        return $value - $debuff;
+    }
+
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM +BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*301, false, '계략약화'),
             new che_반계시도($unit, BaseWarUnitTrigger::TYPE_ITEM +BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*301),
             new che_반계발동($unit)
         );

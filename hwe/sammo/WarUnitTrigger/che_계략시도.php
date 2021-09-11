@@ -55,9 +55,6 @@ class che_계략시도 extends BaseWarUnitTrigger{
         $magicSuccessProb = 0.7;
         $magicSuccessProb = $general->onCalcStat($general, 'warMagicSuccessProb', $magicSuccessProb);
         $magicSuccessProb = $oppose->getGeneral()->onCalcOpposeStat($general, 'warMagicSuccessProb', $magicSuccessProb);
-        if($self->hasActivatedSkill('계략약화')){
-            $magicSuccessProb -= 0.1; //NOTE: 앞으로 이건 oppose의 onCalcStat에 들어가야하지 않을까?
-        }
 
         if($oppose instanceof WarUnitCity){
             $magic = Util::choiceRandom(array_keys(static::$tableToCity));

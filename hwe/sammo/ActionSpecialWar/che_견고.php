@@ -24,6 +24,14 @@ class che_견고 extends \sammo\BaseSpecial
         SpecialityHelper::STAT_STRENGTH
     ];
 
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
+    {
+        $debuff = [
+            'warMagicSuccessProb' => 0.1,
+        ][$statName] ?? 0;
+        return $value - $debuff;
+    }
+
     public function getBattleInitSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
         return new WarUnitTriggerCaller(
@@ -35,7 +43,7 @@ class che_견고 extends \sammo\BaseSpecial
     public function getBattlePhaseSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE * 404, false, '필살불가', '계략약화', '저격불가')
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE * 404, false, '필살불가', '저격불가')
         );
     }
 

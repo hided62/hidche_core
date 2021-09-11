@@ -28,9 +28,16 @@ class event_전투특기_반계 extends \sammo\BaseItem{
         return $value;
     }
 
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
+    {
+        $debuff = [
+            'warMagicSuccessProb' => 0.1,
+        ][$statName] ?? 0;
+        return $value - $debuff;
+    }
+
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*401, false, '계략약화'),
             new che_반계시도($unit),
             new che_반계발동($unit)
         );
