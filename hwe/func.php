@@ -1835,6 +1835,13 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $prob /= sqrt(2);
     $moreProb = pow(2, 1/4);
 
+    if($general->getAuxVar('inheritRandomUnique')){
+        //포인트로 랜덤 유니크 획득
+        $prob = 1;
+        LogText("{$general->getName()}, {$general->getID()} 유산 포인트 유니크", $prob);
+        $general->setAuxVar('inheritRandomUnique', null);
+    }
+
     foreach (Util::range($trialCnt) as $_idx) {
         if (Util::randBool($prob)) {
             $result = true;
