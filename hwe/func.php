@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use DateTime;
 use sammo\Event\Action;
 
 require_once 'process_war.php';
@@ -189,7 +190,7 @@ function myNationInfo(General $generalObj)
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 
     $nationID = $generalObj->getNationID();
-    $nation = $db->queryFirstRow('SELECT * FROM nation WHERE nation = %i', $nationID)??getNationStaticInfo(0);
+    $nation = $db->queryFirstRow('SELECT * FROM nation WHERE nation = %i', $nationID) ?? getNationStaticInfo(0);
     $city = $db->queryFirstRow(
         'SELECT COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop_max) as maxpop from city where nation=%i',
         $nationID
@@ -198,16 +199,16 @@ function myNationInfo(General $generalObj)
 
     $topChiefs = Util::convertArrayToDict($db->query('SELECT officer_level, no, name, npc FROM general WHERE nation = %i AND officer_level >= 11', $nationID), 'officer_level');
 
-    $level12Name = key_exists(12, $topChiefs)?getColoredName($topChiefs[12]['name'], $topChiefs[12]['npc']):'-';
-    $level11Name = key_exists(11, $topChiefs)?getColoredName($topChiefs[11]['name'], $topChiefs[11]['npc']):'-';
+    $level12Name = key_exists(12, $topChiefs) ? getColoredName($topChiefs[12]['name'], $topChiefs[12]['npc']) : '-';
+    $level11Name = key_exists(11, $topChiefs) ? getColoredName($topChiefs[11]['name'], $topChiefs[11]['npc']) : '-';
 
     $impossibleStrategicCommandLists = [];
     $strategicCommandLists = GameConst::$availableChiefCommand['전략'];
     $yearMonth = Util::joinYearMonth($admin['year'], $admin['month']);
-    foreach($strategicCommandLists as $command){
+    foreach ($strategicCommandLists as $command) {
         $cmd = buildNationCommandClass($command, $generalObj, $admin, new LastTurn());
         $nextAvailableTurn = $cmd->getNextAvailableTurn();
-        if($nextAvailableTurn > $yearMonth){
+        if ($nextAvailableTurn > $yearMonth) {
             $impossibleStrategicCommandLists[] = [$cmd->getName(), $nextAvailableTurn - $yearMonth];
         }
     }
@@ -239,28 +240,28 @@ function myNationInfo(General $generalObj)
     <tr>
         <td class='bg1 center'><b>총주민</b></td>
         <td class='center'>";
-    echo $nationID===0 ? "해당 없음" : "{$city['totpop']}/{$city['maxpop']}";
+    echo $nationID === 0 ? "해당 없음" : "{$city['totpop']}/{$city['maxpop']}";
     echo "</td>
         <td class='bg1 center'><b>총병사</b></td>
         <td class='center'>";
-    echo $nationID===0 ? "해당 없음" : "{$general['totcrew']}/{$general['maxcrew']}";
+    echo $nationID === 0 ? "해당 없음" : "{$general['totcrew']}/{$general['maxcrew']}";
     echo "</td>
         </td>
     </tr>
     <tr>
         <td class='bg1 center'><b>국 고</b></td>
         <td class='center'>";
-    echo $nationID===0 ? "해당 없음" : "{$nation['gold']}";
+    echo $nationID === 0 ? "해당 없음" : "{$nation['gold']}";
     echo "</td>
         <td class='bg1 center'><b>병 량</b></td>
         <td class='center'>";
-    echo $nationID===0 ? "해당 없음" : "{$nation['rice']}";
+    echo $nationID === 0 ? "해당 없음" : "{$nation['rice']}";
     echo "</td>
     </tr>
     <tr>
         <td class='bg1 center'><b>지급률</b></td>
         <td class='center'>";
-    if ($nationID===0) {
+    if ($nationID === 0) {
         echo "해당 없음";
     } else {
         echo $nation['bill'] == 0 ? "0 %" : "{$nation['bill']} %";
@@ -269,7 +270,7 @@ function myNationInfo(General $generalObj)
         </td>
         <td class='bg1 center'><b>세 율</b></td>
         <td class='center'>";
-    if ($nationID===0) {
+    if ($nationID === 0) {
         echo "해당 없음";
     } else {
         echo $nation['rate'] == 0 ? "0 %" : "{$nation['rate']} %";
@@ -285,7 +286,7 @@ function myNationInfo(General $generalObj)
 
     $nation['tech'] = "$techCall / {$nation['tech']}";
 
-    if ($nationID===0) {
+    if ($nationID === 0) {
         $nation['strategic_cmd_limit'] = "<font color=white>해당 없음</font>";
         $nation['surlimit'] = "<font color=white>해당 없음</font>";
         $nation['scout'] = "<font color=white>해당 없음</font>";
@@ -294,20 +295,20 @@ function myNationInfo(General $generalObj)
     } else {
         if ($nation['strategic_cmd_limit'] != 0) {
             $nation['strategic_cmd_limit'] = "<font color=red>{$nation['strategic_cmd_limit']}턴</font>";
-        } else if($impossibleStrategicCommandLists) {
+        } else if ($impossibleStrategicCommandLists) {
             $nation['strategic_cmd_limit'] = "<font color=yellow>가 능</font>";
-        } else{
+        } else {
             $nation['strategic_cmd_limit'] = "<font color=limegreen>가 능</font>";
         }
 
-        if($impossibleStrategicCommandLists){
+        if ($impossibleStrategicCommandLists) {
             $text = [];
-            foreach($impossibleStrategicCommandLists as [$cmdName, $remainTurn]){
+            foreach ($impossibleStrategicCommandLists as [$cmdName, $remainTurn]) {
                 $text[] = "{$cmdName}: {$remainTurn}턴 뒤";
             }
             $nation['strategic_cmd_limit'] = $templates->render('tooltip', [
-                'text'=>'<span style="text-decoration:underline dashed;">'.$nation['strategic_cmd_limit'].'</span>',
-                'info'=>'<span class="text-left d-inline-block">'.join('<br>', $text).'</span>',
+                'text' => '<span style="text-decoration:underline dashed;">' . $nation['strategic_cmd_limit'] . '</span>',
+                'info' => '<span class="text-left d-inline-block">' . join('<br>', $text) . '</span>',
             ]);
         }
 
@@ -336,11 +337,11 @@ function myNationInfo(General $generalObj)
     <tr>
         <td style='text-align:center;' class='bg1'><b>속 령</b></td>
         <td style='text-align:center;'>";
-    echo $nationID===0 ? "-" : "{$city['cnt']}";
+    echo $nationID === 0 ? "-" : "{$city['cnt']}";
     echo "</td>
         <td style='text-align:center;' class='bg1'><b>장 수</b></td>
         <td style='text-align:center;'>";
-    echo $nationID===0 ? "-" : "{$general['cnt']}";
+    echo $nationID === 0 ? "-" : "{$general['cnt']}";
     echo "</td>
     </tr>
     <tr>
@@ -348,7 +349,7 @@ function myNationInfo(General $generalObj)
         <td style='text-align:center;'>{$nation['power']}</td>
         <td style='text-align:center;' class='bg1'><b>기술력</b></td>
         <td style='text-align:center;'>";
-    echo $nationID===0 ? "-" : "{$nation['tech']}";
+    echo $nationID === 0 ? "-" : "{$nation['tech']}";
     echo "</td>
     </tr>
     <tr>
@@ -904,7 +905,7 @@ function nationMsg(General $general)
     $nationID = $general->getNationID();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
-    return $nationStor->notice??'';
+    return $nationStor->notice ?? '';
 }
 
 function banner()
@@ -1227,13 +1228,13 @@ function updateOnline()
     $onlineNum = count($onlineUser);
     $onlineNationUsers = Util::arrayGroupBy($onlineUser, 'nation');
 
-    uasort($onlineNationUsers, function(array $lhs, array $rhs){
-        return -(count($lhs)<=>count($rhs));
+    uasort($onlineNationUsers, function (array $lhs, array $rhs) {
+        return - (count($lhs) <=> count($rhs));
     });
 
     $onlineNation = [];
 
-    foreach($onlineNationUsers as $nationID=>$rawOnlineUser){
+    foreach ($onlineNationUsers as $nationID => $rawOnlineUser) {
         $nationName = getNationStaticInfo($nationID)['name'];
         $onlineNation[] = "【{$nationName}】";
         $userList = join(', ', Util::squeezeFromArray($rawOnlineUser, 'name'));
@@ -1265,7 +1266,7 @@ function addAge()
             $generalID = $general['no'];
             $special = SpecialityHelper::pickSpecialDomestic(
                 $general,
-                (Json::decode($general['aux'])['prev_types_special'])??[]
+                (Json::decode($general['aux'])['prev_types_special']) ?? []
             );
             $specialClass = buildGeneralSpecialDomesticClass($special);
             $specialText = $specialClass->getName();
@@ -1284,7 +1285,7 @@ function addAge()
             $generalID = $general['no'];
             $special2 = SpecialityHelper::pickSpecialWar(
                 $general,
-                (Json::decode($general['aux'])['prev_types_special2'])??[]
+                (Json::decode($general['aux'])['prev_types_special2']) ?? []
             );
             $specialClass = buildGeneralSpecialWarClass($special2);
             $specialText = $specialClass->getName();
@@ -1537,15 +1538,15 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     $occupiedUnique = [];
 
     $invalidItemType = [];
-    foreach(array_keys(GameConst::$allItems) as $itemType){
-        $ownItem = $general->getItems()[$itemType]??null;
-        if($ownItem !== null && !$ownItem->isBuyable()){
+    foreach (array_keys(GameConst::$allItems) as $itemType) {
+        $ownItem = $general->getItems()[$itemType] ?? null;
+        if ($ownItem !== null && !$ownItem->isBuyable()) {
             $invalidItemType[$itemType] = true;
         }
     }
 
     foreach (array_keys(GameConst::$allItems) as $itemType) {
-        if(key_exists($itemType, $invalidItemType)){
+        if (key_exists($itemType, $invalidItemType)) {
             continue;
         }
         foreach ($db->queryAllLists('SELECT %b, count(*) as cnt FROM general GROUP BY %b', $itemType, $itemType) as [$itemCode, $cnt]) {
@@ -1561,11 +1562,11 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     }
 
     foreach (GameConst::$allItems as $itemType => $itemCategories) {
-        if(key_exists($itemType, $invalidItemType)){
+        if (key_exists($itemType, $invalidItemType)) {
             continue;
         }
         foreach ($itemCategories as $itemCode => $cnt) {
-            if($cnt == 0){
+            if ($cnt == 0) {
                 continue;
             }
             if (!key_exists($itemCode, $occupiedUnique)) {
@@ -1607,6 +1608,177 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     return true;
 }
 
+function rollbackInheritUniqueTrial(General $general, string $itemKey, string $reason)
+{
+    $ownerID = $general->getVar('owner');
+
+    $db = DB::db();
+
+    $itemTrials = $general->getAuxVar('inheritUniqueTrial');
+    unset($itemTrials[$itemKey]);
+    $general->setAuxVar('inheritUniqueTrial', $itemTrials);
+
+    $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");
+    $ownTrial = $trialStor->getValue("u{$ownerID}");
+
+    if ($ownTrial) {
+        //두 값이 general, KVStorage 둘다 있고, 이중에선 KVStorage 값을 기준으로 하자 따르자
+        [,, $amount] = $ownTrial;
+        $trialStor->deleteValue("u{$ownerID}");
+        $general->increaseInheritancePoint('previous', $amount);
+    }
+
+    $itemObj = buildItemClass($itemKey);
+    $itemName = $itemObj->getName();
+    //메시지
+
+    $staticNation = $general->getStaticNation();
+
+    $unlimited = new \DateTime('9999-12-31');
+    $src = new MessageTarget(0, '', 0, 'System', '#000000');
+    $dest = new MessageTarget($general->getID(), $general->getName(), $general->getNationID(), $staticNation['name'], $staticNation['color'], $general->getVar('icon'));
+    $josaUl = JosaUtil::pick($itemName, '을');
+    $msg = new Message(
+        Message::MSGTYPE_PRIVATE,
+        $src,
+        $dest,
+        "{$itemName}{$josaUl} 얻지 못했습니다. {$reason}",
+        new DateTime(),
+        $unlimited,
+        []
+    );
+
+    $msg->send(true);
+}
+
+function tryInheritUniqueItem(General $general, string $acquireType = '아이템'): bool
+{
+    $ownerID = $general->getVar('owner');
+    if (!$ownerID) {
+        return false;
+    }
+
+    $itemTrials = $general->getAuxVar('inheritUniqueTrial') ?? [];
+    arsort($itemTrials);
+
+    $db = DB::db();
+
+    $acquireTarget = null;
+    $acquireType = null;
+
+    foreach ($itemTrials as $itemKey => $amount) {
+        $availableItemTypes = [];
+        $reasons = [];
+        foreach (GameConst::$allItems as $itemType => $itemList) {
+            //아직은 그런 경우는 없지만 동일 유니크를 여러 부위에 장착할 수 있을지도 모름
+            if (!key_exists($itemKey, $itemList)) {
+                continue;
+            }
+
+            $ownItem = $general->getItem($itemType);
+            if ($ownItem->getRawClassName() == $itemKey) {
+                $reasons[] = '이미 그 유니크를 가지고 있습니다.';
+                continue;
+            }
+            /*
+            if (!$ownItem->isBuyable()) {
+                $reasons[] = '이미 다른 유니크를 가지고 있습니다.';
+                continue;
+            }
+            */
+
+            $availableCnt = $itemList[$itemKey];
+            $occupiedCnt = $db->queryFirstField('SELECT count(*) FROM general WHERE %b = %s', $itemType, $itemKey);
+            if ($occupiedCnt >= $availableCnt) {
+                $reasons[] = '그 유니크는 모두 점유되었습니다.';
+                continue;
+            }
+            $availableItemTypes[] = $itemType;
+        }
+
+        if (!$availableItemTypes) {
+            rollbackInheritUniqueTrial($general, $itemKey, join(' ', $reasons));
+            continue;
+        }
+        $reasons = [];
+
+        $itemType = Util::choiceRandom($availableItemTypes);
+
+        $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}"); //혹시 itemKey의 크기가 37이 넘을 수 있을까?
+        $anyTrials = $trialStor->getAll();
+        if (!$anyTrials) {
+            //순서가 꼬였던 모양, 실제 값은 storage를 우선시하자
+            rollbackInheritUniqueTrial($general, $itemKey, '절차상의 오류입니다.');
+            continue;
+        }
+        usort($anyTrials, function ($lhsTrial, $rhsTrial) {
+            [,, $lhsAmount] = $lhsTrial;
+            [,, $rhsAmount] = $rhsTrial;
+            return $rhsAmount <=> $lhsAmount; //큰 값이 앞에 오도록
+        });
+
+        //공동 1등인데 본인이 있을 수도 있다.
+        [,, $topAmount] = $anyTrials;
+        if ($amount < $topAmount) {
+            $compAmount = $topAmount / $amount;
+            if ($compAmount > 2.0) {
+                $compText = '엄청난 차이로 ';
+            } else if ($compAmount > 1.2) {
+                $compText = '큰 차이로 ';
+            } else if ($compAmount > 1.05) {
+                $compText = '';
+            } else {
+                $compText = '아슬아슬한 차이로 ';
+            }
+            rollbackInheritUniqueTrial($general, $itemKey, "{$compText}상위 입찰한 장수가 있습니다.");
+            continue;
+        }
+
+        //내가 1위다
+        if (!$acquireTarget) {
+            //이미 다른 아이템을 얻기로 되어있다.
+            continue;
+        }
+        $acquireTarget = $itemKey;
+        $acquireType = $itemType;
+    }
+    unset($itemKey);
+    unset($itemType);
+
+    if (!$acquireTarget) {
+        return false;
+    }
+
+    $trialStor = KVStorage::getStorage($db, "ut_{$acquireTarget}");
+    $trialStor->deleteValue("u{$ownerID}");
+
+    //rollbackInheritUniqueTrial 과정 때문에 새로 받아와야함
+    $itemTrials = $general->getAuxVar('inheritUniqueTrial');
+    unset($itemTrials[$acquireTarget]);
+    $general->setAuxVar('inheritUniqueTrial', $itemTrials);
+
+    $nationName = $general->getStaticNation()['name'];
+    $generalName = $general->getName();
+    $josaYi = JosaUtil::pick($generalName, '이');
+    $itemObj = buildItemClass($acquireTarget);
+    $itemName = $itemObj->getName();
+    $itemRawName = $itemObj->getRawName();
+    $josaUl = JosaUtil::pick($itemRawName, '을');
+
+
+    $general->setVar($acquireType, $acquireTarget);
+
+
+    $logger = $general->getLogger();
+
+    $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 습득했습니다!");
+    $logger->pushGeneralHistoryLog("<C>{$itemName}</>{$josaUl} 습득");
+    $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
+    $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
+
+    return true;
+}
+
 function tryUniqueItemLottery(General $general, string $acquireType = '아이템'): bool
 {
     $db = DB::db();
@@ -1616,8 +1788,12 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         return false;
     }
 
-    if ($general->getNPCType() > 6) {
-        return false;
+    $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
+    if (count($inheritUnique)) {
+        $trialResult = tryInheritUniqueItem($general, $acquireType);
+        if ($trialResult) {
+            return true;
+        }
     }
 
     $itemTypeCnt = count(GameConst::$allItems);
@@ -1629,7 +1805,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         }
     }
 
-    if($trialCnt <= 0){
+    if ($trialCnt <= 0) {
         LogText("{$general->getName()}, {$general->getID()} 모든 아이템", $trialCnt);
         return false;
     }
@@ -1653,18 +1829,18 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         $prob = 1 / ($genCount * $itemTypeCnt / 10 / 4); // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
     }
 
-    $prob = Util::valueFit($prob, null, 1 / 4);//최대치 감소
+    $prob = Util::valueFit($prob, null, 1 / 4); //최대치 감소
     $result = false;
 
 
 
-    foreach(Util::range($trialCnt) as $_idx){
+    foreach (Util::range($trialCnt) as $_idx) {
         if (Util::randBool($prob)) {
             $result = true;
             break;
         }
     }
-    if(!$result){
+    if (!$result) {
         LogText("{$general->getName()}, {$general->getID()} 유니크 실패 {$trialCnt}", $prob);
         return false;
     }
@@ -1681,7 +1857,7 @@ function getAdmin()
 }
 
 /** @return General[] */
-function deleteNation(General $lord, bool $applyDB):array
+function deleteNation(General $lord, bool $applyDB): array
 {
     $lordID = $lord->getID();
     $nationID = $lord->getNationID();
@@ -1706,7 +1882,8 @@ function deleteNation(General $lord, bool $applyDB):array
             $nationID,
             $lordID
         ),
-        ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'], 1
+        ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'],
+        1
     );
     $nationGeneralList[$lordID] = $lord;
 
@@ -1722,11 +1899,12 @@ function deleteNation(General $lord, bool $applyDB):array
     $destroyHistoryLog = "<D><b>{$nationName}</b></>{$josaYi} <R>멸망</>";
 
     // 전 장수 재야로
-    foreach($nationGeneralList as $general){
-        $general->setAuxVar('max_belong',
+    foreach ($nationGeneralList as $general) {
+        $general->setAuxVar(
+            'max_belong',
             max(
                 $general->getVar('belong'),
-                $general->getAuxVar('max_belong')??0
+                $general->getAuxVar('max_belong') ?? 0
             )
         );
         $general->setVar('belong', 0);
@@ -1739,7 +1917,7 @@ function deleteNation(General $lord, bool $applyDB):array
         $logger->pushGeneralActionLog($destroyLog, ActionLogger::PLAIN);
         $logger->pushGeneralHistoryLog($destroyHistoryLog);
 
-        if($applyDB){
+        if ($applyDB) {
             $general->applyDB($db);
         }
     }
