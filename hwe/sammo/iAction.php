@@ -10,6 +10,7 @@ interface iAction{
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float;
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null);
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux=null);
     public function onCalcStrategic(string $turnType, string $varType, $value);
     public function onCalcNationalIncome(string $type, $amount);
 

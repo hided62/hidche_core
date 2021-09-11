@@ -1,10 +1,13 @@
 <?php
+
 namespace sammo;
 
-class WarUnitGeneral extends WarUnit{
+class WarUnitGeneral extends WarUnit
+{
     protected $raw;
-    
-    function __construct(General $general, array $rawNation, bool $isAttacker){
+
+    function __construct(General $general, array $rawNation, bool $isAttacker)
+    {
         $this->general = $general;
         $this->raw = $general->getRaw();
         $this->rawNation = $rawNation; //read-only
@@ -15,43 +18,43 @@ class WarUnitGeneral extends WarUnit{
 
         $cityLevel = $this->getCityVar('level');
 
-        if($isAttacker){
+        if ($isAttacker) {
             //공격자 보정
-            if($cityLevel == 2){
+            if ($cityLevel == 2) {
                 $this->atmosBonus += 5;
             }
-            if($rawNation['capital'] == $this->getCityVar('city')){
+            if ($rawNation['capital'] == $this->getCityVar('city')) {
                 $this->atmosBonus += 5;
             }
-        }
-        else{
+        } else {
             //수비자 보정
-            if($cityLevel == 1){
+            if ($cityLevel == 1) {
                 $this->trainBonus += 5;
-            }
-            else if($cityLevel == 3){
+            } else if ($cityLevel == 3) {
                 $this->trainBonus += 5;
             }
         }
     }
 
-    function getName():string{
+    function getName(): string
+    {
         return $this->general->getName();
     }
 
-    function getCityVar(string $key){
+    function getCityVar(string $key)
+    {
         return $this->general->getRawCity()[$key];
     }
-    
-    function setOppose(?WarUnit $oppose){
+
+    function setOppose(?WarUnit $oppose)
+    {
         parent::setOppose($oppose);
         $general = $this->general;
         $this->general->increaseRankVar('warnum', 1);
 
-        if($this->isAttacker){
+        if ($this->isAttacker) {
             $semiTurn = $general->getTurnTime();
-        }
-        else if($oppose !== null){
+        } else if ($oppose !== null) {
             $semiTurn = $oppose->getGeneral()->getTurnTime();
         }
         $phase = $this->getRealPhase();
@@ -60,75 +63,94 @@ class WarUnitGeneral extends WarUnit{
         $general->setVar('recent_war', $semiTurn);
     }
 
-    function getMaxPhase():int{
+    function getMaxPhase(): int
+    {
         $phase = $this->getCrewType()->speed;
-        $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase, ['isAttacker'=>$this->isAttacker]);
+        $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase, ['isAttacker' => $this->isAttacker]);
+        $phase = $this->oppose->general->onCalcOpposeStat($this->general, 'initWarPhase', $phase, ['isAttacker' => $this->isAttacker]);
         return $phase + $this->bonusPhase;
     }
 
-    function addTrain(int $train){
+    function addTrain(int $train)
+    {
         $this->general->increaseVarWithLimit('train', $train, 0, GameConst::$maxTrainByWar);
     }
 
-    function addAtmos(int $atmos){
+    function addAtmos(int $atmos)
+    {
         $this->general->increaseVarWithLimit('atmos', $atmos, 0, GameConst::$maxAtmosByWar);
     }
 
-    function getDex(GameUnitDetail $crewType){
-        $rawDex = $this->general->getDex($crewType);
-        return $this->general->onCalcStat($this->general, 'dex'.$crewType->armType, $rawDex, [
-            'isAttacker'=>$this->isAttacker,
-            'opposeType'=>$this->oppose->getCrewType()
+    function getDex(GameUnitDetail $crewType)
+    {
+        $dex = $this->general->getDex($crewType);
+        $dex = $this->general->onCalcStat($this->general, 'dex' . $crewType->armType, $dex, [
+            'isAttacker' => $this->isAttacker,
+            'opposeType' => $this->oppose->getCrewType()
         ]);
+        $dex = $this->oppose->general->onCalcOpposeStat($this->general, 'dex' . $crewType->armType, $dex, [
+            'isAttacker' => $this->isAttacker,
+            'opposeType' => $this->oppose->getCrewType()
+        ]);
+        return $dex;
     }
 
-    function getComputedTrain(){
+    function getComputedTrain()
+    {
         $train = $this->general->getVar('train');
-        $train = $this->general->onCalcStat($this->general, 'bonusTrain', $train, ['isAttacker'=>$this->isAttacker]);
+        $train = $this->general->onCalcStat($this->general, 'bonusTrain', $train, ['isAttacker' => $this->isAttacker]);
+        $train = $this->oppose->general->onCalcOpposeStat($this->general, 'bonusTrain', $train, ['isAttacker' => $this->isAttacker]);
         $train += $this->trainBonus;
-        
+
         return $train;
     }
 
-    function getComputedAtmos(){
+    function getComputedAtmos()
+    {
         $atmos = $this->general->getVar('atmos');
-        $atmos = $this->general->onCalcStat($this->general, 'bonusAtmos', $atmos, ['isAttacker'=>$this->isAttacker]);
+        $atmos = $this->general->onCalcStat($this->general, 'bonusAtmos', $atmos, ['isAttacker' => $this->isAttacker]);
+        $atmos = $this->oppose->general->onCalcOpposeStat($this->general, 'bonusAtmos', $atmos, ['isAttacker' => $this->isAttacker]);
         $atmos += $this->atmosBonus;
-        
+
         return $atmos;
     }
 
-    function getComputedCriticalRatio():float{
+    function getComputedCriticalRatio(): float
+    {
         $general = $this->general;
         $criticalRatio = $this->getCrewType()->getCriticalRatio($general);
 
         /** @var float $criticalRatio */
-        $criticalRatio = $general->onCalcStat($general, 'warCriticalRatio', $criticalRatio, ['isAttacker'=>$this->isAttacker]);
+        $criticalRatio = $general->onCalcStat($general, 'warCriticalRatio', $criticalRatio, ['isAttacker' => $this->isAttacker]);
+        $criticalRatio = $this->oppose->general->onCalcOpposeStat($general, 'warCriticalRatio', $criticalRatio, ['isAttacker' => $this->isAttacker]);
         return $criticalRatio;
     }
 
-    function getComputedAvoidRatio():float{
+    function getComputedAvoidRatio(): float
+    {
         $general = $this->general;
 
         $avoidRatio = $this->getCrewType()->avoid / 100;
         $avoidRatio *= $this->getComputedTrain() / 100;
 
         /** @var float $avoidRatio */
-        $avoidRatio = $general->onCalcStat($general, 'warAvoidRatio', $avoidRatio, ['isAttacker'=>$this->isAttacker]);
+        $avoidRatio = $general->onCalcStat($general, 'warAvoidRatio', $avoidRatio, ['isAttacker' => $this->isAttacker]);
+        $avoidRatio = $this->oppose->general->onCalcOpposeStat($general, 'warAvoidRatio', $avoidRatio, ['isAttacker' => $this->isAttacker]);
 
-        if($this->getOppose()->getCrewType()->armType == GameUnitConst::T_FOOTMAN){
+        if ($this->getOppose()->getCrewType()->armType == GameUnitConst::T_FOOTMAN) {
             $avoidRatio *= 0.75;
         }
 
         return $avoidRatio;
     }
 
-    function addWin(){
+    function addWin()
+    {
         $general = $this->general;
         $general->increaseRankVar('killnum', 1);
 
         $oppose = $this->getOppose();
-        if($oppose instanceof WarUnitCity){
+        if ($oppose instanceof WarUnitCity) {
             $general->increaseRankVar('occupied', 1);
         }
 
@@ -137,74 +159,74 @@ class WarUnitGeneral extends WarUnit{
         $this->addStatExp(1);
     }
 
-    function addStatExp(int $value = 1){
+    function addStatExp(int $value = 1)
+    {
         $general = $this->general;
-        if($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
+        if ($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
             $general->increaseVar('intel_exp', $value);
-        } elseif($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
+        } elseif ($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
             $general->increaseVar('leadership_exp', $value);
         } else {
             $general->increaseVar('strength_exp', $value);
         }
     }
 
-    function addLevelExp(float $value){
+    function addLevelExp(float $value)
+    {
         $general = $this->general;
-        if(!$this->isAttacker){
+        if (!$this->isAttacker) {
             $value *= 0.8;
         }
         $general->addExperience($value);
     }
 
-    function addDedication(float $value){
+    function addDedication(float $value)
+    {
         $general = $this->general;
         $general->addDedication($value);
     }
 
-    function addLose(){
+    function addLose()
+    {
         $general = $this->general;
         $general->increaseRankVar('deathnum', 1);
         $this->addStatExp(1);
     }
 
-    function computeWarPower(){
-        [$warPower,$opposeWarPowerMultiply] = parent::computeWarPower();
+    function computeWarPower()
+    {
+        [$warPower, $opposeWarPowerMultiply] = parent::computeWarPower();
 
         $general = $this->general;
         $cityID = $general->getCityID();
         $officerLevel = $general->getVar('officer_level');
         $officerCity = $general->getVar('officer_city');
 
-        if($this->isAttacker){
-            if($officerLevel == 12){
+        if ($this->isAttacker) {
+            if ($officerLevel == 12) {
                 $warPower *= 1.10;
-            }
-            else if($officerLevel == 11 | $officerLevel == 10 || $officerLevel == 8 || $officerLevel == 6){
+            } else if ($officerLevel == 11 | $officerLevel == 10 || $officerLevel == 8 || $officerLevel == 6) {
                 $warPower *= 1.05;
             }
-        }
-        else{
-            if($officerLevel == 12){
+        } else {
+            if ($officerLevel == 12) {
                 $opposeWarPowerMultiply *= 0.90;
-            }
-            else if($officerLevel == 11 || $officerLevel == 9 || $officerLevel == 7 || $officerLevel == 5){
+            } else if ($officerLevel == 11 || $officerLevel == 9 || $officerLevel == 7 || $officerLevel == 5) {
                 $opposeWarPowerMultiply *= 0.95;
-            }
-            else if(2 <= $officerLevel && $officerLevel <= 4 && $officerCity  == $cityID){
+            } else if (2 <= $officerLevel && $officerLevel <= 4 && $officerCity  == $cityID) {
                 $opposeWarPowerMultiply *= 0.95;
             }
         }
 
         $expLevel = $general->getVar('explevel');
 
-        if($this->getOppose() instanceof WarUnitCity){
+        if ($this->getOppose() instanceof WarUnitCity) {
             $warPower *= 1 + $expLevel / 600;
-        }
-        else{
+        } else {
             $warPower /= max(0.01, 1 - $expLevel / 300);
             $opposeWarPowerMultiply *= max(0.01, 1 - $expLevel / 300);
         }
-        
+
 
         [$specialMyWarPowerMultiply, $specialOpposeWarPowerMultiply] = $this->general->getWarPowerMultiplier($this);
         $warPower *= $specialMyWarPowerMultiply;
@@ -212,18 +234,21 @@ class WarUnitGeneral extends WarUnit{
 
         $this->warPower = $warPower;
         $this->oppose->setWarPowerMultiply($opposeWarPowerMultiply);
-        return [$warPower,$opposeWarPowerMultiply];
+        return [$warPower, $opposeWarPowerMultiply];
     }
 
-    function getHP():int{
+    function getHP(): int
+    {
         return $this->general->getVar('crew');
     }
 
-    function addDex(GameUnitDetail $crewType, float $exp){
+    function addDex(GameUnitDetail $crewType, float $exp)
+    {
         $this->general->addDex($crewType, $exp, false);
     }
 
-    function decreaseHP(int $damage):int{
+    function decreaseHP(int $damage): int
+    {
         $general = $this->general;
         $damage = min($damage, $general->getVar('crew'));
 
@@ -232,7 +257,7 @@ class WarUnitGeneral extends WarUnit{
         $general->increaseVar('crew', -$damage);
 
         $addDex = $damage;
-        if(!$this->isAttacker){
+        if (!$this->isAttacker) {
             $addDex *= 0.9;
         }
         $this->addDex($this->oppose->getCrewType(), $addDex);
@@ -240,12 +265,13 @@ class WarUnitGeneral extends WarUnit{
         return $general->getVar('crew');
     }
 
-    function increaseKilled(int $damage):int{
+    function increaseKilled(int $damage): int
+    {
         $general = $this->general;
         $this->addLevelExp($damage / 50);
 
         $rice = $damage / 100;
-        if(!$this->isAttacker){
+        if (!$this->isAttacker) {
             $rice *= 0.8;
         }
 
@@ -253,9 +279,9 @@ class WarUnitGeneral extends WarUnit{
         $rice *= getTechCost($this->getNationVar('tech'));
 
         $general->increaseVarWithLimit('rice', -$rice, 0);
-        
+
         $addDex = $damage;
-        if(!$this->isAttacker){
+        if (!$this->isAttacker) {
             $addDex *= 0.9;
         }
         $this->addDex($this->getCrewType(), $addDex);
@@ -265,15 +291,16 @@ class WarUnitGeneral extends WarUnit{
         return $this->killed;
     }
 
-    function tryWound():bool{
+    function tryWound(): bool
+    {
         $general = $this->general;
-        if($this->hasActivatedSkillOnLog('부상무효')){
+        if ($this->hasActivatedSkillOnLog('부상무효')) {
             return false;
         }
-        if($this->hasActivatedSkillOnLog('퇴각부상무효')){
+        if ($this->hasActivatedSkillOnLog('퇴각부상무효')) {
             return false;
         }
-        if(!Util::randBool(0.05)){
+        if (!Util::randBool(0.05)) {
             return false;
         }
 
@@ -285,25 +312,28 @@ class WarUnitGeneral extends WarUnit{
         return true;
     }
 
-    function continueWar(&$noRice):bool{
+    function continueWar(&$noRice): bool
+    {
         $general = $this->general;
-        if($this->getHP() <= 0){
+        if ($this->getHP() <= 0) {
             $noRice = false;
             return false;
         }
-        if($general->getVar('rice') <= $this->getHP() / 100){
+        if ($general->getVar('rice') <= $this->getHP() / 100) {
             $noRice = true;
             return false;
         }
         return true;
     }
 
-    function checkStatChange():bool{
+    function checkStatChange(): bool
+    {
         return $this->general->checkStatChange();
     }
 
-    function finishBattle(){    
-        if($this->isFinished){
+    function finishBattle()
+    {
+        if ($this->isFinished) {
             return;
         }
         $this->clearActivatedSkill();
@@ -313,11 +343,11 @@ class WarUnitGeneral extends WarUnit{
         $general->increaseRankVar('killcrew', $this->killed);
         $general->increaseRankVar('deathcrew', $this->dead);
 
-        if($this->getOppose() instanceof WarUnitGeneral){
+        if ($this->getOppose() instanceof WarUnitGeneral) {
             $general->increaseRankVar('killcrew_person', $this->killed);
             $general->increaseRankVar('deathcrew_person', $this->dead);
         }
-        
+
         $general->updateVar('rice', Util::round($general->getVar('rice')));
         $general->updateVar('experience', Util::round($general->getVar('experience')));
         $general->updateVar('dedication', Util::round($general->getVar('dedication')));
@@ -325,10 +355,10 @@ class WarUnitGeneral extends WarUnit{
         $this->checkStatChange();
     }
 
-    function applyDB(\MeekroDB $db):bool{
+    function applyDB(\MeekroDB $db): bool
+    {
         $affected = $this->getGeneral()->applyDB($db);
         $this->getLogger()->flush();
         return $affected;
     }
-
 }

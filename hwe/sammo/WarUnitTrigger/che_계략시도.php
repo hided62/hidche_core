@@ -33,11 +33,13 @@ class che_계략시도 extends BaseWarUnitTrigger{
         if($self->hasActivatedSkill('계략불가')){
             return true;
         }
-        
+
         $magicTrialProb = $general->getIntel(true, true, true, false) / 100;
         $magicTrialProb *= $crewType->magicCoef;
 
         $magicTrialProb = $general->onCalcStat($general, 'warMagicTrialProb', $magicTrialProb);
+        $magicTrialProb = $oppose->getGeneral()->onCalcOpposeStat($general, 'warMagicTrialProb', $magicTrialProb);
+
         if($magicTrialProb <= 0){
             return true;
         }
@@ -45,13 +47,14 @@ class che_계략시도 extends BaseWarUnitTrigger{
         if($self->getPhase() == 0){
             $magicTrialProb *= 3;
         }
-        
+
         if(!Util::randBool($magicTrialProb)){
             return true;
         }
 
         $magicSuccessProb = 0.7;
         $magicSuccessProb = $general->onCalcStat($general, 'warMagicSuccessProb', $magicSuccessProb);
+        $magicSuccessProb = $oppose->getGeneral()->onCalcOpposeStat($general, 'warMagicSuccessProb', $magicSuccessProb);
         if($self->hasActivatedSkill('계략약화')){
             $magicSuccessProb -= 0.1; //NOTE: 앞으로 이건 oppose의 onCalcStat에 들어가야하지 않을까?
         }
@@ -66,6 +69,8 @@ class che_계략시도 extends BaseWarUnitTrigger{
         }
 
         $successDamage = $general->onCalcStat($general, 'warMagicSuccessDamage', $successDamage, $magic);
+        $successDamage = $oppose->getGeneral()->onCalcOpposeStat($general, 'warMagicSuccessDamage', $successDamage, $magic);
+
 
         $self->activateSkill('계략시도', $magic);
         if(Util::randBool($magicSuccessProb)){
@@ -76,7 +81,7 @@ class che_계략시도 extends BaseWarUnitTrigger{
             $self->activateSkill('계략실패');
             $selfEnv['magic'] = [$magic, $failDamage];
         }
-        
+
         return true;
     }
 }

@@ -844,6 +844,26 @@ class General implements iAction{
         return $value;
     }
 
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux=null){
+        //xxx: $general?
+        foreach(array_merge([
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
+            $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            /** @var iAction $iObj */
+            $value = $iObj->onCalcOpposeStat($this, $statName, $value, $aux);
+        }
+        return $value;
+    }
+
     public function onCalcStrategic(string $turnType, string $varType, $value){
         foreach(array_merge([
             $this->nationType,

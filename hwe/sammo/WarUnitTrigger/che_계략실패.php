@@ -27,11 +27,12 @@ class che_계략실패 extends BaseWarUnitTrigger{
         [$magic, $damage] = $selfEnv['magic'];
 
         $damage = $general->onCalcStat($general, 'warMagicFailDamage', $damage, $magic);
+        $damage = $oppose->getGeneral()->onCalcOpposeStat($general, 'warMagicFailDamage', $damage, $magic);
         $josaUl = \sammo\JosaUtil::pick($magic, '을');
 
         $general->getLogger()->pushGeneralBattleDetailLog("<D>{$magic}</>{$josaUl} <R>실패</>했다!", ActionLogger::PLAIN);
         $oppose->getLogger()->pushGeneralBattleDetailLog("<D>{$magic}</>{$josaUl} 간파했다!", ActionLogger::PLAIN);
-        
+
         $self->multiplyWarPowerMultiply(1/$damage);
         $oppose->multiplyWarPowerMultiply($damage);
 

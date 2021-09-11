@@ -25,6 +25,10 @@ trait DefaultAction{
         return $value;
     }
 
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux=null){
+        return $value;
+    }
+
     public function onCalcStrategic(string $turnType, string $varType, $value){
         return $value;
     }
