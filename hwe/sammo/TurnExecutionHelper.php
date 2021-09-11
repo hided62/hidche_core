@@ -1,7 +1,9 @@
 <?php
+
 namespace sammo;
 
 use \Symfony\Component\Lock;
+
 class TurnExecutionHelper
 {
     /** @var General*/
@@ -17,16 +19,19 @@ class TurnExecutionHelper
         $this->applyDB();
     }
 
-    public function applyDB(){
+    public function applyDB()
+    {
         $db = DB::db();
         $this->generalObj->applyDB($db);
     }
 
-    public function getGeneral():General{
+    public function getGeneral(): General
+    {
         return $this->generalObj;
     }
 
-    public function preprocessCommand(array $env){
+    public function preprocessCommand(array $env)
+    {
         $general = $this->getGeneral();
         $caller = $general->getPreTurnExecuteTriggerList($general);
         $caller->merge(new GeneralTriggerCaller(
@@ -37,37 +42,37 @@ class TurnExecutionHelper
         $caller->fire($env);
     }
 
-    public function processBlocked():bool{
+    public function processBlocked(): bool
+    {
         $general = $this->getGeneral();
 
         $blocked = $general->getVar('block');
-        if($blocked < 2){
+        if ($blocked < 2) {
             return false;
         }
 
         $date = $general->getTurnTime($general::TURNTIME_HM);
         $logger = $general->getLogger();
-        if($blocked == 2){
+        if ($blocked == 2) {
             $general->increaseVarWithLimit('killturn', -1, 0);
             $logger->pushGeneralActionLog("현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>");
-        }
-        else if($blocked == 3){
+        } else if ($blocked == 3) {
             $general->increaseVarWithLimit('killturn', -1, 0);
             $logger->pushGeneralActionLog("현재 악성유저로 분류되어 <R>블럭</> 대상자입니다. <1>$date</>");
-        }
-        else{
+        } else {
             //Hmm?
             return false;
         }
-        
+
         return true;
     }
 
-    public function processNationCommand(Command\NationCommand $commandObj):LastTurn{
+    public function processNationCommand(Command\NationCommand $commandObj): LastTurn
+    {
         $general = $this->getGeneral();
 
-        while(true){
-            if(!$commandObj->hasFullConditionMet()){
+        while (true) {
+            if (!$commandObj->hasFullConditionMet()) {
                 $date = $general->getTurnTime($general::TURNTIME_HM);
                 $failString = $commandObj->getFailString();
                 $text = "{$failString} <1>{$date}</>";
@@ -75,7 +80,7 @@ class TurnExecutionHelper
                 break;
             }
 
-            if(!$commandObj->addTermStack()){
+            if (!$commandObj->addTermStack()) {
                 $date = $general->getTurnTime($general::TURNTIME_HM);
                 $termString = $commandObj->getTermString();
                 $text = "{$termString} <1>{$date}</>";
@@ -84,14 +89,14 @@ class TurnExecutionHelper
             }
 
             $result = $commandObj->run();
-            if($result){
+            if ($result) {
                 $commandObj->setNextAvailable();
                 break;
             }
-            
-            
+
+
             $alt = $commandObj->getAlternativeCommand();
-            if($alt === null){
+            if ($alt === null) {
                 break;
             }
             $commandObj = $alt;
@@ -101,7 +106,8 @@ class TurnExecutionHelper
         return $commandObj->getResultTurn();
     }
 
-    public function processCommand(Command\GeneralCommand $commandObj, bool $autorunMode){
+    public function processCommand(Command\GeneralCommand $commandObj, bool $autorunMode)
+    {
 
         $general = $this->getGeneral();
 
@@ -109,16 +115,16 @@ class TurnExecutionHelper
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $commandClassName = $commandObj->getName();
 
-        while(true){
-            if(!$commandObj->hasFullConditionMet()){
+        while (true) {
+            if (!$commandObj->hasFullConditionMet()) {
                 $date = $general->getTurnTime($general::TURNTIME_HM);
                 $failString = $commandObj->getFailString();
                 $text = "{$failString} <1>{$date}</>";
                 $general->getLogger()->pushGeneralActionLog($text);
                 break;
             }
-            
-            if(!$commandObj->addTermStack()){
+
+            if (!$commandObj->addTermStack()) {
                 $date = $general->getTurnTime($general::TURNTIME_HM);
                 $termString = $commandObj->getTermString();
                 $text = "{$termString} <1>{$date}</>";
@@ -127,43 +133,40 @@ class TurnExecutionHelper
             }
 
             $result = $commandObj->run();
-            if($result){
+            if ($result) {
                 $commandObj->setNextAvailable();
                 break;
             }
             $alt = $commandObj->getAlternativeCommand();
-            if($alt === null){
+            if ($alt === null) {
                 break;
             }
             $commandObj = $alt;
             $commandClassName = $alt->getName();
         }
-        
+
 
         $general->clearActivatedSkill();
 
         $killTurn = $gameStor->killturn;
 
-        if($general->getNPCType() >= 2){
+        if ($general->getNPCType() >= 2) {
             $general->increaseVarWithLimit('killturn', -1);
-        }
-        else if($general->getVar('killturn') > $killTurn){
+        } else if ($general->getVar('killturn') > $killTurn) {
             $general->increaseVarWithLimit('killturn', -1);
-        }
-        else if($autorunMode){
+        } else if ($autorunMode) {
             $general->increaseVarWithLimit('killturn', -1);
-        }
-        else if($commandClassName == '휴식'){
+        } else if ($commandClassName == '휴식') {
             $general->increaseVarWithLimit('killturn', -1);
-        }
-        else{
+        } else {
             $general->setVar('killturn', $killTurn);
         }
 
         return $commandObj->getResultTurn();
     }
 
-    function updateTurnTime(){
+    function updateTurnTime()
+    {
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
@@ -175,13 +178,13 @@ class TurnExecutionHelper
         $generalName = $general->getName();
 
         // 삭턴장수 삭제처리
-        if($general->getVar('killturn') <= 0){
+        if ($general->getVar('killturn') <= 0) {
             // npc유저 삭턴시 npc로 전환
-            if($general->getNPCType() == 1 && $general->getVar('deadyear') > $gameStor->year){
+            if ($general->getNPCType() == 1 && $general->getVar('deadyear') > $gameStor->year) {
 
                 $ownerName = $general->getVar('owner_name');
                 $josaYi = JosaUtil::pick($ownerName, '이');
-                
+
                 $logger->pushGlobalActionLog("{$ownerName}</>{$josaYi} <Y>{$generalName}</>의 육체에서 <S>유체이탈</>합니다!");
 
                 $general->setVar('killturn', ($general->getVar('deadyear') - $gameStor->year) * 12);
@@ -189,8 +192,7 @@ class TurnExecutionHelper
                 $general->setVar('owner', 0);
                 $general->setVar('defence_train', 80);
                 $general->setVar('owner_name', null);
-            }
-            else{
+            } else {
                 $general->applyDB($db);
                 storeOldGeneral($generalID, $gameStor->year, $gameStor->month);
                 $general->kill($db);
@@ -199,8 +201,8 @@ class TurnExecutionHelper
         }
 
         //은퇴
-        if($general->getVar('age') >= GameConst::$retirementYear && $general->getNPCType() == 0) {
-            if($gameStor->isunited == 0) {
+        if ($general->getVar('age') >= GameConst::$retirementYear && $general->getNPCType() == 0) {
+            if ($gameStor->isunited == 0) {
                 $general->applyDB($db);
                 CheckHall($generalID);
             }
@@ -210,11 +212,11 @@ class TurnExecutionHelper
 
         $turntime = addTurn($general->getTurnTime(), $gameStor->turnterm);
         $general->setVar('turntime', $turntime);
-
     }
 
 
-    static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
+    static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month)
+    {
         $db = DB::db();
         $generalsTodo = $db->query(
             'SELECT no,name,turntime,killturn,block,npc,deadyear FROM general WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
@@ -226,9 +228,9 @@ class TurnExecutionHelper
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $autorun_user = $gameStor->autorun_user;
 
-        foreach($generalsTodo as $rawGeneral){
+        foreach ($generalsTodo as $rawGeneral) {
             $currActionTime = new \DateTimeImmutable();
-            if($currActionTime > $limitActionTime){
+            if ($currActionTime > $limitActionTime) {
                 return [true, $currentTurn];
             }
 
@@ -238,7 +240,7 @@ class TurnExecutionHelper
             $env = $gameStor->getAll(true);
 
             $hasNationTurn = false;
-            if($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5){
+            if ($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5) {
                 $nationStor = KVStorage::getStorage($db, $general->getNationID(), 'nation_env');
                 $lastNationTurnKey = "turn_last_{$general->getVar('officer_level')}";
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
@@ -246,10 +248,10 @@ class TurnExecutionHelper
                     'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND officer_level = %i AND turn_idx =0',
                     $general->getVar('nation'),
                     $general->getVar('officer_level')
-                )??[];
+                ) ?? [];
                 $hasNationTurn = true;
-                $nationCommand = $rawNationTurn['action']??null;
-                $nationArg = Json::decode($rawNationTurn['arg']??null);
+                $nationCommand = $rawNationTurn['action'] ?? null;
+                $nationArg = Json::decode($rawNationTurn['arg'] ?? null);
                 $lastNationTurn = LastTurn::fromRaw($nationStor->getValue($lastNationTurnKey));
                 $nationCommandObj = buildNationCommandClass($nationCommand, $general, $env, $lastNationTurn, $nationArg);
             }
@@ -260,16 +262,15 @@ class TurnExecutionHelper
             $general->increaseInheritancePoint('lived_month', 1);
 
             $turnObj->preprocessCommand($env);
-            $generalCommandObj = $general->getReservedTurn(0, $env);
 
-            if($general->getNPCType() >= 2 || ($autorun_user['limit_minutes']??false)){
+            if ($general->getNPCType() >= 2 || ($autorun_user['limit_minutes'] ?? false)) {
                 $ai = new GeneralAI($turnObj->getGeneral());
             }
-            
-            if(!$turnObj->processBlocked()){
-                
-                if($hasNationTurn){
-                    if($ai && ($general->getAuxVar('use_auto_nation_turn')??1)){
+
+            if (!$turnObj->processBlocked()) {
+
+                if ($hasNationTurn) {
+                    if ($ai && ($general->getAuxVar('use_auto_nation_turn') ?? 1)) {
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
                         $cityName = CityConst::byID($general->getCityID())->name;
                         LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
@@ -278,18 +279,21 @@ class TurnExecutionHelper
                         $nationCommandObj
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toRaw());
+                    $general->setRawCity(null);
                 }
 
-                if($ai){
+                $generalCommandObj = $general->getReservedTurn(0, $env);
+
+                if ($ai) {
                     $newGeneralCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
-                    if($generalCommandObj !== $newGeneralCommandObj){
+                    if ($generalCommandObj !== $newGeneralCommandObj) {
                         $autorunMode = true;
                         $generalCommandObj = $newGeneralCommandObj;
                     }
                     $cityName = CityConst::byID($general->getCityID())->name;
                     LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
                 }
-                
+
                 $turnObj->processCommand($generalCommandObj, $autorunMode);
             }
             pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));
@@ -300,26 +304,25 @@ class TurnExecutionHelper
 
             $turnObj->updateTurnTime();
             $turnObj->applyDB();
-
-            
         }
 
         return [false, $currentTurn];
     }
 
-    static public function executeAllCommand(){
+    static public function executeAllCommand()
+    {
         //if(!timeover()) { return; }
 
         $db = DB::db();
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        if(TimeUtil::now(true) < $gameStor->turntime){
+        if (TimeUtil::now(true) < $gameStor->turntime) {
             //턴 시각 이전이면 아무것도 하지 않음
             return true;
         }
 
-        if(!tryLock()){
+        if (!tryLock()) {
             return;
         }
 
@@ -342,13 +345,12 @@ class TurnExecutionHelper
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
 
         $maxActionTime = Util::toInt(ini_get('max_execution_time'));
-        if($maxActionTime == 0){
+        if ($maxActionTime == 0) {
             $maxActionTime = 60;
-        }
-        else {
+        } else {
             $maxActionTime = max($maxActionTime * 2 / 3, $maxActionTime - 10);
         }
-        
+
         $limitActionTime = (new \DateTimeImmutable())->add(TimeUtil::secondsToDateInterval($maxActionTime));
 
         // 현재 턴 이전 월턴까지 모두처리.
@@ -356,23 +358,26 @@ class TurnExecutionHelper
         while ($nextTurn <= $date) {
 
             [$executionOver, $currentTurn] = static::executeGeneralCommandUntil(
-                $nextTurn, $limitActionTime, $gameStor->year, $gameStor->month
+                $nextTurn,
+                $limitActionTime,
+                $gameStor->year,
+                $gameStor->month
             );
 
             // 트래픽 업데이트
             updateTraffic();
 
-            if($executionOver){
-                if($currentTurn !== null){
+            if ($executionOver) {
+                if ($currentTurn !== null) {
                     $gameStor->turntime = $currentTurn;
                 }
                 unlock();
                 return;
             }
-            
+
 
             // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
-            if(!preUpdateMonthly()){
+            if (!preUpdateMonthly()) {
                 $gameStor->resetCache(true);
                 unlock();
                 throw new \RuntimeException('preUpdateMonthly() 처리 에러');
@@ -383,7 +388,7 @@ class TurnExecutionHelper
             $logger = new ActionLogger(0, 0, $gameStor->year, $gameStor->month, false);
 
             // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
-            if($gameStor->month == 1) {
+            if ($gameStor->month == 1) {
                 processSpring();
                 processGoldIncome();
                 updateYearly();
@@ -394,16 +399,16 @@ class TurnExecutionHelper
                 // 새해 알림
                 $logger->pushGlobalActionLog("<C>{$gameStor->year}</>년이 되었습니다.");
                 $logger->flush(); //TODO: globalAction류는 전역에서 관리하는것이 좋을 듯.
-            } elseif($gameStor->month == 4) {
+            } elseif ($gameStor->month == 4) {
                 updateQuaterly();
                 disaster();
-            } elseif($gameStor->month == 7) {
+            } elseif ($gameStor->month == 7) {
                 processFall();
                 processRiceIncome();
                 updateQuaterly();
                 disaster();
                 tradeRate();
-            } elseif($gameStor->month == 10) {
+            } elseif ($gameStor->month == 10) {
                 updateQuaterly();
                 disaster();
             }
@@ -411,7 +416,7 @@ class TurnExecutionHelper
             // 이벤트 핸들러 동작
             $e_env = null;
             foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
-                if($e_env === null){
+                if ($e_env === null) {
                     $e_env = $gameStor->getAll(false);
                 }
                 $eventID = $rawEvent['id'];
@@ -423,7 +428,7 @@ class TurnExecutionHelper
                 $event->tryRunEvent($e_env);
             }
 
-            if($e_env !== null){
+            if ($e_env !== null) {
                 $gameStor->resetCache(true);
             }
 
@@ -440,13 +445,16 @@ class TurnExecutionHelper
         // 현재시간의 월턴시간 이후 분단위 장수 처리
 
         [$executionOver, $currentTurn] = static::executeGeneralCommandUntil(
-            $date, $limitActionTime, $gameStor->year, $gameStor->month
+            $date,
+            $limitActionTime,
+            $gameStor->year,
+            $gameStor->month
         );
 
-        if($currentTurn !== null){
+        if ($currentTurn !== null) {
             $gameStor->turntime = $currentTurn;
         }
-        
+
         //토너먼트 처리
         processTournament();
         //거래 처리
