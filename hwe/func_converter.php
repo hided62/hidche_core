@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace sammo;
 
@@ -6,7 +6,7 @@ use sammo\Command\BaseCommand;
 
 /**
  * Value Converter
- * 
+ *
  * Side effect 없이 값의 변환만을 수행하는 함수들의 모음.
  * (단, autoload, 정적 변수 초기화는 허용)
  */
@@ -175,7 +175,7 @@ function buildNationTypeClass(?string $type):BaseNation{
         return $cache[$type];
     }
     $class = getNationTypeClass($type);
-    
+
     $obj = new $class();
     $cache[$type]= $obj;
     return $obj;
@@ -241,7 +241,7 @@ function buildItemClass(?string $type):BaseItem{
         return $cache[$type];
     }
     $class = getItemClass($type);
-    
+
     $obj = new $class();
     $cache[$type]= $obj;
     return $obj;
@@ -276,7 +276,7 @@ function buildGeneralSpecialDomesticClass(?string $type):BaseSpecial{
         return $cache[$type];
     }
     $class = getGeneralSpecialDomesticClass($type);
-    
+
     $obj = new $class();
     $cache[$type]= $obj;
     return $obj;
@@ -311,7 +311,7 @@ function buildGeneralSpecialWarClass(?string $type):BaseSpecial{
         return $cache[$type];
     }
     $class = getGeneralSpecialWarClass($type);
-    
+
     $obj = new $class();
     $cache[$type]= $obj;
     return $obj;
@@ -357,6 +357,31 @@ function buildNationCommandClass(?string $type, General $generalObj, array $env,
     return new $class($generalObj, $env, $lastTurn, $arg);
 }
 
+function getAPIExecutorClass($path){
+
+    static $basePath = __NAMESPACE__.'\\API\\';
+    if(is_string($path)){
+    }
+    else if(is_array($path)){
+        $path = join('\\', $path);
+    }
+    else{
+        throw new \InvalidArgumentException("{$path}는 올바른 API 지시자가 아님");
+    }
+
+    $classPath = ($basePath.$path);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+    throw new \InvalidArgumentException("{$path}는 올바른 API 경로가 아님");
+}
+
+function buildAPIExecutorClass(string $type, array $args):\sammo\BaseAPI{
+    $class = getAPIExecutorClass($type);
+    return new $class($args);
+}
+
 function getWarUnitTriggerClass(string $type){
     static $basePath = __NAMESPACE__.'\\WarUnitTrigger\\';
     $classPath = ($basePath.$type);
@@ -391,8 +416,8 @@ function getGeneralPoolClass(string $type){
 
 /**
  * @param \MeekroDB $db
- * @param int $owner 
- * @param int $pickCnt 
+ * @param int $owner
+ * @param int $pickCnt
  * @param null|string $prefix
  * @return AbsGeneralPool[]
  */
@@ -538,8 +563,8 @@ function getExpLevel($experience) {
 
 function getDedLevel($dedication) {
     $level = Util::valueFit(
-        ceil(sqrt($dedication) / 10), 
-        0, 
+        ceil(sqrt($dedication) / 10),
+        0,
         GameConst::$maxDedLevel
     );
 
@@ -572,7 +597,7 @@ function getCost(int $armtype) : int {
 function getTechLevel($tech):int{
     return Util::valueFit(
         floor($tech / 1000),
-        0, 
+        0,
         GameConst::$maxTechLevel
     );
 }
@@ -583,7 +608,7 @@ function TechLimit($startYear, $year, $tech) : bool {
 
     $relMaxTech = Util::valueFit(
         floor($relYear / 5) + 1,
-        1, 
+        1,
         GameConst::$maxTechLevel
     );
 

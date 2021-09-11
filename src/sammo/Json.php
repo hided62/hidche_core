@@ -54,6 +54,7 @@ class Json
         die(Json::encode($value, $flag));
     }
 
+    /** @return never */
     public static function dieWithReason(string $reason){
         static::die([
             'result'=>false,
