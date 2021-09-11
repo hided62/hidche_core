@@ -34,7 +34,7 @@ class Json
     }
 
     public static function decodeObj($value){
-        //NOTE: 구 코드가 모두 '배열'을 가정하기 때문에 decode는 연관배열로 반환하였으나, 
+        //NOTE: 구 코드가 모두 '배열'을 가정하기 때문에 decode는 연관배열로 반환하였으나,
         //호환을 위해서는object로 반환하는 것이 더 나을것
         return json_decode($value);
     }
@@ -45,12 +45,19 @@ class Json
         if ($flag & static::NO_CACHE) {
             WebUtil::setHeaderNoCache();
         }
-        
+
         header('Content-Type: application/json');
-    
+
         if($flag & static::PASS_THROUGH){
             die($value);
         }
         die(Json::encode($value, $flag));
+    }
+
+    public static function dieWithReason(string $reason){
+        static::die([
+            'result'=>false,
+            'reason'=>$reason
+        ]);
     }
 }
