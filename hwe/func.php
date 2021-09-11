@@ -1832,13 +1832,15 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $prob = Util::valueFit($prob, null, 1 / 4); //최대치 감소
     $result = false;
 
-
+    $prob /= sqrt(2);
+    $moreProb = pow(2, 1/4);
 
     foreach (Util::range($trialCnt) as $_idx) {
         if (Util::randBool($prob)) {
             $result = true;
             break;
         }
+        $prob *= $moreProb;
     }
     if (!$result) {
         LogText("{$general->getName()}, {$general->getID()} 유니크 실패 {$trialCnt}", $prob);
