@@ -2158,7 +2158,7 @@ function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null)
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000; //6자리 소수
 
-    return $baseDateTime->add(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s');
+    return $baseDateTime->add(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s.u');
 }
 
 function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
@@ -2173,5 +2173,5 @@ function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000; //6자리 소수
 
-    return $baseDateTime->sub(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s');
+    return $baseDateTime->sub(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s.u');
 }

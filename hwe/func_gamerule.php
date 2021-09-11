@@ -1150,14 +1150,23 @@ function checkEmperior()
     LogHistory();
 }
 
-function resetInheritanceUser(int $userID, bool $isRebirth=false){
+function resetInheritanceUser(int $userID, bool $isRebirth=false):float{
     $rebirthDegraded = [
         'dex'=>0.5,
     ];
 
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
     $totalPoint = 0;
-    foreach($inheritStor->getAll() as $key=>[$value,]){
+    $allPoints = $inheritStor->getAll();
+    if(count($allPoints) == 0){
+        //비었으므로 리셋 안함
+        return 0;
+    }
+    if(count($allPoints) == 1 && key_exists('previous', $allPoints)){
+        //이미 리셋되었으므로 리셋 안함
+        return $allPoints['previous'];
+    }
+    foreach($allPoints as $key=>[$value,]){
         if($isRebirth && key_exists($key, $rebirthDegraded)){
             $value *= $rebirthDegraded[$key];
         }
@@ -1166,6 +1175,7 @@ function resetInheritanceUser(int $userID, bool $isRebirth=false){
     $totalPoint = Util::toInt($totalPoint);
     $inheritStor->resetValues();
     $inheritStor->setValue('previous', [$totalPoint, null]);
+    return $totalPoint;
 }
 
 function updateMaxDomesticCritical(General $general, $score){

@@ -1,15 +1,16 @@
 <?php
+
 namespace sammo;
 
 class GameConstBase
 {
-     /** @var string 게임명 */
-     public static $title = "삼국지 모의전투 PHP HiDCHe";
-     /** @var string 코드 아래에 붙는 설명 코드 */
-     public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com) / <a href='https://sam.hided.net/wiki/hidche/credit' target='_blank' style='color:white;text-decoration: underline;'>Credit</a>";
-     /** @var string 사용중인 지도명 */
-     public static $mapName = 'che';
-     /** @var string 사용중인 유닛셋 */
+    /** @var string 게임명 */
+    public static $title = "삼국지 모의전투 PHP HiDCHe";
+    /** @var string 코드 아래에 붙는 설명 코드 */
+    public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com) / <a href='https://sam.hided.net/wiki/hidche/credit' target='_blank' style='color:white;text-decoration: underline;'>Credit</a>";
+    /** @var string 사용중인 지도명 */
+    public static $mapName = 'che';
+    /** @var string 사용중인 유닛셋 */
     public static $unitSet = 'che';
     /** @var int 내정시 최하 민심 설정*/
     public static $develrate = 50;
@@ -137,7 +138,7 @@ class GameConstBase
     public static $maxChiefTurn = 12;
 
     public static $statGradeLevel = 5;
-      
+
     /** @var int 초반 제한 기간 */
     public static $openingPartYear = 3;
     /** @var int 거병,임관 제한 기간 */
@@ -166,83 +167,88 @@ class GameConstBase
     public static $defaultSpecialWar = 'None';
     /** @var array 선택 가능한 장수 전투 특기 */
     public static $availableSpecialWar = [
-        'che_귀병', 'che_신산', 'che_환술', 'che_집중', 'che_신중', 'che_반계', 
+        'che_귀병', 'che_신산', 'che_환술', 'che_집중', 'che_신중', 'che_반계',
         'che_보병', 'che_궁병', 'che_기병', 'che_공성',
-        'che_돌격', 'che_무쌍', 'che_견고', 'che_위압', 
+        'che_돌격', 'che_무쌍', 'che_견고', 'che_위압',
         'che_저격', 'che_필살', 'che_징병', 'che_의술', 'che_격노', 'che_척사',
     ];
     /** @var array 선택할 수 없으나 게임 내에 유효한 장수 전투 특기 */
     public static $optionalSpecialWar = [
         'None',
     ];
-    
+
 
     /** @var string 기본 성향(공용) */
     public static $neutralPersonality = 'None';
     /** @var array 선택 가능한 성향 */
     public static $availablePersonality = [
         'che_안전', 'che_유지', 'che_재간', 'che_출세', 'che_할거', 'che_정복',
-        'che_패권', 'che_의협', 'che_대의', 'che_왕좌'    
+        'che_패권', 'che_의협', 'che_대의', 'che_왕좌'
     ];
     /** @var array 존재하는 모든 성향 */
     public static $optionalPersonality = [
         'che_은둔', 'None'
     ];
 
+    public static $inheritBornSpecialPoint = 12000;
+    public static $inheritBornTurntimePoint = 3000;
+    public static $inheritBornCityPoint = 1000;
+    public static $inheritBornMaxBonusStat = 1000;
+
     public static $allItems = [
         'horse' => [
-            'che_명마_01_노기'=>0, 'che_명마_02_조랑'=>0, 'che_명마_03_노새'=>0,
-            'che_명마_04_나귀'=>0, 'che_명마_05_갈색마'=>0, 'che_명마_06_흑색마'=>0, 
-    
-            'che_명마_07_백마'=>2, 'che_명마_07_기주마'=>2, 
-            'che_명마_08_양주마'=>2, 'che_명마_09_과하마'=>2,
-            'che_명마_10_대완마'=>2, 'che_명마_11_서량마'=>2, 
-            'che_명마_12_사륜거'=>2, 'che_명마_13_절영'=>1, 'che_명마_13_적로'=>1,
-            'che_명마_14_적란마'=>1, 'che_명마_14_조황비전'=>1, 'che_명마_15_한혈마'=>1, 'che_명마_15_적토마'=>1,
+            'che_명마_01_노기' => 0, 'che_명마_02_조랑' => 0, 'che_명마_03_노새' => 0,
+            'che_명마_04_나귀' => 0, 'che_명마_05_갈색마' => 0, 'che_명마_06_흑색마' => 0,
+
+            'che_명마_07_백마' => 2, 'che_명마_07_기주마' => 2,
+            'che_명마_08_양주마' => 2, 'che_명마_09_과하마' => 2,
+            'che_명마_10_대완마' => 2, 'che_명마_11_서량마' => 2,
+            'che_명마_12_사륜거' => 2, 'che_명마_13_절영' => 1, 'che_명마_13_적로' => 1,
+            'che_명마_14_적란마' => 1, 'che_명마_14_조황비전' => 1, 'che_명마_15_한혈마' => 1, 'che_명마_15_적토마' => 1,
         ],
         'weapon' => [
-            'che_무기_01_단도'=>0, 'che_무기_02_단궁'=>0, 'che_무기_03_단극'=>0,
-            'che_무기_04_목검'=>0, 'che_무기_05_죽창'=>0, 'che_무기_06_소부'=>0,
-            
-            'che_무기_07_동추'=>1, 'che_무기_07_철편'=>1, 'che_무기_07_철쇄'=>1, 'che_무기_07_맥궁'=>1,
-            'che_무기_08_유성추'=>1, 'che_무기_08_철질여골'=>1, 'che_무기_09_쌍철극'=>1, 'che_무기_09_동호비궁'=>1, 'che_무기_10_삼첨도'=>1, 'che_무기_10_대부'=>1, 'che_무기_11_고정도'=>1, 'che_무기_11_이광궁'=>1, 'che_무기_12_철척사모'=>1, 'che_무기_12_칠성검'=>1, 'che_무기_13_사모'=>1, 'che_무기_13_양유기궁'=>1,
-            'che_무기_14_언월도'=>1, 'che_무기_14_방천화극'=>1, 'che_무기_15_청홍검'=>1, 'che_무기_15_의천검'=>1
+            'che_무기_01_단도' => 0, 'che_무기_02_단궁' => 0, 'che_무기_03_단극' => 0,
+            'che_무기_04_목검' => 0, 'che_무기_05_죽창' => 0, 'che_무기_06_소부' => 0,
+
+            'che_무기_07_동추' => 1, 'che_무기_07_철편' => 1, 'che_무기_07_철쇄' => 1, 'che_무기_07_맥궁' => 1,
+            'che_무기_08_유성추' => 1, 'che_무기_08_철질여골' => 1, 'che_무기_09_쌍철극' => 1, 'che_무기_09_동호비궁' => 1, 'che_무기_10_삼첨도' => 1, 'che_무기_10_대부' => 1, 'che_무기_11_고정도' => 1, 'che_무기_11_이광궁' => 1, 'che_무기_12_철척사모' => 1, 'che_무기_12_칠성검' => 1, 'che_무기_13_사모' => 1, 'che_무기_13_양유기궁' => 1,
+            'che_무기_14_언월도' => 1, 'che_무기_14_방천화극' => 1, 'che_무기_15_청홍검' => 1, 'che_무기_15_의천검' => 1
         ],
         'book' => [
-            'che_서적_01_효경전'=>0, 'che_서적_02_회남자'=>0, 'che_서적_03_변도론'=>0,
-            'che_서적_04_건상역주'=>0, 'che_서적_05_여씨춘추'=>0, 'che_서적_06_사민월령'=>0, 
+            'che_서적_01_효경전' => 0, 'che_서적_02_회남자' => 0, 'che_서적_03_변도론' => 0,
+            'che_서적_04_건상역주' => 0, 'che_서적_05_여씨춘추' => 0, 'che_서적_06_사민월령' => 0,
 
-            'che_서적_07_위료자'=>1, 'che_서적_07_사마법'=>1, 'che_서적_07_한서'=>1, 'che_서적_07_논어'=>1,
-            'che_서적_08_전론'=>1, 'che_서적_08_사기'=>1, 'che_서적_09_장자'=>1, 'che_서적_09_역경'=>1,
-            'che_서적_10_시경'=>1, 'che_서적_10_구국론'=>1, 'che_서적_11_상군서'=>1, 'che_서적_11_춘추전'=>1, 
-            'che_서적_12_산해경'=>1, 'che_서적_12_맹덕신서'=>1, 'che_서적_13_관자'=>1, 'che_서적_13_병법24편'=>1, 
-            'che_서적_14_한비자'=>1, 'che_서적_14_오자병법'=>1, 'che_서적_15_노자'=>1, 'che_서적_15_손자병법'=>1,
+            'che_서적_07_위료자' => 1, 'che_서적_07_사마법' => 1, 'che_서적_07_한서' => 1, 'che_서적_07_논어' => 1,
+            'che_서적_08_전론' => 1, 'che_서적_08_사기' => 1, 'che_서적_09_장자' => 1, 'che_서적_09_역경' => 1,
+            'che_서적_10_시경' => 1, 'che_서적_10_구국론' => 1, 'che_서적_11_상군서' => 1, 'che_서적_11_춘추전' => 1,
+            'che_서적_12_산해경' => 1, 'che_서적_12_맹덕신서' => 1, 'che_서적_13_관자' => 1, 'che_서적_13_병법24편' => 1,
+            'che_서적_14_한비자' => 1, 'che_서적_14_오자병법' => 1, 'che_서적_15_노자' => 1, 'che_서적_15_손자병법' => 1,
         ],
         'item' => [
-            'che_치료_환약'=>0, 'che_저격_수극'=>0, 'che_사기_탁주'=>0,
-            'che_훈련_청주'=>0, 'che_계략_이추'=>0, 'che_계략_향낭'=>0,
+            'che_치료_환약' => 0, 'che_저격_수극' => 0, 'che_사기_탁주' => 0,
+            'che_훈련_청주' => 0, 'che_계략_이추' => 0, 'che_계략_향낭' => 0,
 
-            'che_의술_청낭서'=>1, 'che_의술_태평청령'=>1, 'che_의술_상한잡병론'=>1,
-            'che_부적_태현청생부'=>1,
-            'che_저격_매화수전'=>1, 'che_저격_비도'=>1,
-            'che_계략_육도'=>1, 'che_계략_삼략'=>1,
-            'che_반계_백우선'=>1,
-            'che_행동_서촉지형도'=>1,
+            'che_의술_청낭서' => 1, 'che_의술_태평청령' => 1, 'che_의술_상한잡병론' => 1,
+            'che_부적_태현청생부' => 1,
+            'che_저격_매화수전' => 1, 'che_저격_비도' => 1,
+            'che_계략_육도' => 1, 'che_계략_삼략' => 1,
+            'che_반계_백우선' => 1,
+            'che_행동_서촉지형도' => 1,
 
 
-            'che_훈련_과실주'=>1, 'che_훈련_이강주'=>1, 'che_사기_두강주'=>1, 'che_사기_보령압주'=>1,
-            'che_훈련_철벽서'=>1, 'che_훈련_단결도'=>1, 'che_사기_춘화첩'=>1, 'che_사기_초선화'=>1,
-            'che_회피_태평요술'=>1, 'che_회피_둔갑천서'=>1,
+            'che_훈련_과실주' => 1, 'che_훈련_이강주' => 1, 'che_사기_두강주' => 1, 'che_사기_보령압주' => 1,
+            'che_훈련_철벽서' => 1, 'che_훈련_단결도' => 1, 'che_사기_춘화첩' => 1, 'che_사기_초선화' => 1,
+            'che_회피_태평요술' => 1, 'che_회피_둔갑천서' => 1,
         ]
     ];
 
     /** @var array 선택 가능한 커맨드 */
     public static $availableGeneralCommand = [
-        ''=>[
+        '' => [
             '휴식',
             'che_요양'
         ],
-        '내정'=>[
+        '내정' => [
             'che_농지개간',
             'che_상업투자',
             'che_기술연구',
@@ -253,7 +259,7 @@ class GameConstBase
             'che_주민선정',
             'che_물자조달',
         ],
-        '군사'=>[
+        '군사' => [
             'che_소집해제',
             'che_첩보',
             'che_징병',
@@ -262,7 +268,7 @@ class GameConstBase
             'che_사기진작',
             'che_출병',
         ],
-        '인사'=>[
+        '인사' => [
             'che_이동',
             'che_강행',
             'che_인재탐색',
@@ -273,13 +279,13 @@ class GameConstBase
             'che_랜덤임관',
             'che_장수대상임관',
         ],
-        '계략'=>[
+        '계략' => [
             'che_화계',
             'che_파괴',
             'che_탈취',
             'che_선동',
         ],
-        '개인'=>[
+        '개인' => [
             'che_내정특기초기화',
             'che_전투특기초기화',
             'che_단련',
@@ -301,28 +307,28 @@ class GameConstBase
 
     /** @var array 선택 가능한 커맨드 */
     public static $availableChiefCommand = [
-        '휴식'=>[
+        '휴식' => [
             '휴식',
         ],
-        '인사'=>[
+        '인사' => [
             'che_발령',
             'che_포상',
             'che_몰수',
         ],
-        '외교'=>[
+        '외교' => [
             'che_물자원조',
             'che_불가침제의',
             'che_선전포고',
             'che_종전제의',
             'che_불가침파기제의',
         ],
-        '특수'=>[
+        '특수' => [
             'che_초토화',
             'che_천도',
             'che_증축',
             'che_감축',
         ],
-        '전략'=>[
+        '전략' => [
             'che_필사즉생',
             'che_백성동원',
             'che_수몰',
@@ -331,7 +337,7 @@ class GameConstBase
             'che_이호경식',
             'che_급습',
         ],
-        '기타'=>[
+        '기타' => [
             'che_피장파장',
             'che_국기변경',
             'che_국호변경',

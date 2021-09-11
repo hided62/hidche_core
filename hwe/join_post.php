@@ -1,39 +1,50 @@
 <?php
+
 namespace sammo;
 
 include "lib.php";
 include "func.php";
 
+function dieMsg(string $msg)
+{
+    $jmsg = Json::encode($msg);
+    echo "<html><head><style>html,body{background:black;}</style><script>alert({$jmsg});history.go(-1);</script></head><body></body></html>";
+    exit(1);
+}
+
 $v = new Validator($_POST);
 $v
-->rule('required', [
-    'name',
-    'leadership',
-    'strength',
-    'intel'
-])
-->rule('integer', [
-    'leadership',
-    'strength',
-    'intel',
-])
-->rule('stringWidthBetween', 'name', 1, 18)
-->rule('min', [
-    'leadership',
-    'strength',
-    'intel'
-], GameConst::$defaultStatMin)
-->rule('max', [
-    'leadership',
-    'strength',
-    'intel'
-], GameConst::$defaultStatMax)
-->rule('in', 'character', array_merge(GameConst::$availablePersonality, ['Random']));
+    ->rule('required', [
+        'name',
+        'leadership',
+        'strength',
+        'intel'
+    ])
+    ->rule('integer', [
+        'leadership',
+        'strength',
+        'intel',
+    ])
+    ->rule('stringWidthBetween', 'name', 1, 18)
+    ->rule('min', [
+        'leadership',
+        'strength',
+        'intel'
+    ], GameConst::$defaultStatMin)
+    ->rule('max', [
+        'leadership',
+        'strength',
+        'intel'
+    ], GameConst::$defaultStatMax)
+    ->rule('in', 'character', array_merge(GameConst::$availablePersonality, ['Random']))
+    ->rule('in', 'inheritSpecial', GameConst::$availableSpecialWar)
+    ->rule('integer', 'inheritTurntime')
+    ->rule('min', 'inheritTurntime', 0)
+    ->rule('in', 'inheritCity', array_keys(CityConst::all()))
+    ->rule('integerArray', 'inheritBonusStat');
 
 if (!$v->validate()) {
-    MessageBox($v->errorStr());
-    echo "<script>history.go(-1);</script>";
-    exit(1);
+    dieMsg($v->errorStr());
 }
 
 $session = Session::requireLogin()->setReadOnly();
@@ -52,6 +63,11 @@ $leadership = Util::getPost('leadership', 'int', 50);
 $strength = Util::getPost('strength', 'int', 50);
 $intel = Util::getPost('intel', 'int', 50);
 
+$inheritSpecial = Util::getPost('inheritSpecial');
+$inheritTurntime = Util::getPost('inheritTurntime', 'int');
+$inheritCity = Util::getPost('inheritCity', 'int');
+$inheritBonusStat = Util::getPost('inheritBonusStat', 'array_int');
+
 $join = Util::getPost('join'); //쓸모 없음
 
 $rootDB = RootDB::db();
@@ -59,14 +75,12 @@ $rootDB = RootDB::db();
 $member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name`, imgsvr FROM member WHERE no=%i', $userID);
 
 if (!$member) {
-    MessageBox("잘못된 접근입니다!!!");
-    echo "<script>history.go(-1);</script>";
-    exit(1);
+    dieMsg("잘못된 접근입니다!!!");
 }
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$gameStor->cacheValues(['year','month','maxgeneral','scenario','show_img_level','turnterm','turntime','genius','npcmode']);
+$gameStor->cacheValues(['year', 'month', 'maxgeneral', 'scenario', 'show_img_level', 'turnterm', 'turntime', 'genius', 'npcmode']);
 ########## 동일 정보 존재여부 확인. ##########
 
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
@@ -74,76 +88,110 @@ $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', 
 $oldName = $db->queryFirstField('SELECT `no` FROM general WHERE `name`=%s', $name);
 
 if ($oldGeneral) {
-    echo("<script>
-      window.alert('이미 등록하셨습니다!')
-      history.go(-1)
-      </script>");
-    exit;
+    dieMsg("이미 등록하셨습니다!");
 }
 if ($oldName) {
-    echo("<script>
-      window.alert('이미 있는 장수입니다. 다른 이름으로 등록해 주세요!')
-      history.go(-1)
-      </script>");
-    exit;
+    dieMsg("이미 있는 장수입니다. 다른 이름으로 등록해 주세요!");
 }
 if ($gameStor->maxgeneral <= $gencount) {
-    echo("<script>
-      window.alert('더이상 등록할 수 없습니다!')
-      history.go(-1)
-      </script>");
-    exit;
+    dieMsg("더이상 등록할 수 없습니다!");
 }
 if ($name == '') {
-    echo("<script>
-      window.alert('이름이 짧습니다. 다시 가입해주세요!')
-      history.go(-1)
-      </script>");
-    exit;
+    dieMsg("이름이 짧습니다. 다시 가입해주세요!");
 }
 if (mb_strwidth($name) > 18) {
-    echo("<script>
-      window.alert('이름이 유효하지 않습니다. 다시 가입해주세요!')
-      history.go(-1)
-      </script>");
-    exit;
+    dieMsg("이름이 유효하지 않습니다. 다시 가입해주세요!");
 }
 if ($leadership + $strength + $intel > GameConst::$defaultStatTotal) {
-    echo("<script>
-      window.alert('능력치가 ".GameConst::$defaultStatTotal."을 넘어섰습니다. 다시 가입해주세요!')
-      history.go(-1)
-      </script>");
-    exit;
+    dieMsg("능력치가 " . GameConst::$defaultStatTotal . "을 넘어섰습니다. 다시 가입해주세요!");
 }
 
-$genius = Util::randBool(0.01);
-// 현재 1%
+if ($inheritBonusStat) {
+    if (count($inheritBonusStat) != 3) {
+        dieMsg("보너스 능력치가 잘못 지정되었습니다. 다시 가입해주세요!");
+    }
+    $sum = array_sum($inheritBonusStat);
+    if ($sum < 3 || $sum > 5) {
+        dieMsg("보너스 능력치 합이 잘못 지정되었습니다. 다시 가입해주세요!");
+    }
+    foreach ($inheritBonusStat as $stat) {
+        if ($stat < 0) {
+            dieMsg("보너스 능력치가 음수입니다. 다시 가입해주세요!");
+        }
+    }
+}
+
+$admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year']);
+
+$inheritTotalPoint = resetInheritanceUser($userID);
+$inheritRequiredPoint = 0;
+
+if ($inheritCity !== null) {
+    $inheritRequiredPoint += GameConst::$inheritBornCityPoint;
+}
+if ($inheritBonusStat !== null) {
+    $inheritRequiredPoint += GameConst::$inheritBornMaxBonusStat;
+}
+if ($inheritSpecial !== null) {
+    $inheritRequiredPoint += GameConst::$inheritBornSpecialPoint;
+}
+if ($inheritTurntime !== null) {
+    $inheritRequiredPoint += GameConst::$inheritBornTurntimePoint;
+}
+
+if ($inheritTotalPoint < $inheritRequiredPoint) {
+    dieMsg("유산 포인트가 부족합니다. 다시 가입해주세요!");
+}
+
+if ($inheritSpecial !== null && $gameStor->genius == 0) {
+    dieMsg("이미 천재가 모두 나타났습니다. 다시 가입해주세요!");
+}
+
+if ($inheritCity !== null && !key_exists($inheritCity, CityConst::all())) {
+    dieMsg("도시가 잘못 지정되었습니다. 다시 가입해주세요!");
+}
+
+if ($inheritSpecial) {
+    $genius = true;
+} else {
+    // 현재 1%
+    $genius = Util::randBool(0.01);
+}
+
 if ($genius && $gameStor->genius > 0) {
-    $gameStor->genius = $gameStor->genius-1;
+    $gameStor->genius = $gameStor->genius - 1;
 } else {
     $genius = false;
 }
 
-// 공백지에서만 태어나게
-$city = $db->queryFirstField("select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1");
-if (!$city) {
-    $city = $db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1");
+if ($inheritCity !== null) {
+    $city = $inheritCity;
+} else {
+    // 공백지에서만 태어나게
+    $city = $db->queryFirstField("select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1");
+    if (!$city) {
+        $city = $db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1");
+    }
 }
 
-$pleadership = 0;
-$pstrength = 0;
-$pintel = 0;
-foreach(Util::range(Util::randRangeInt(3, 5)) as $statIdx){
-    switch (Util::choiceRandomUsingWeight([$leadership, $strength, $intel])) {
-    case 0:
-        $pleadership++;
-        break;
-    case 1:
-        $pstrength++;
-        break;
-    case 2:
-        $pintel++;
-        break;
+if ($inheritBonusStat) {
+    [$pleadership, $pstrength, $pintel] = $inheritBonusStat;
+} else {
+    $pleadership = 0;
+    $pstrength = 0;
+    $pintel = 0;
+    foreach (Util::range(Util::randRangeInt(3, 5)) as $statIdx) {
+        switch (Util::choiceRandomUsingWeight([$leadership, $strength, $intel])) {
+            case 0:
+                $pleadership++;
+                break;
+            case 1:
+                $pstrength++;
+                break;
+            case 2:
+                $pintel++;
+                break;
+        }
     }
 }
 
@@ -151,29 +199,32 @@ $leadership = $leadership + $pleadership;
 $strength = $strength + $pstrength;
 $intel = $intel + $pintel;
 
-$admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year']);
 $relYear = Util::valueFit($admin['year'] - $admin['startyear'], 0);
 
 $age = 20 + ($pleadership + $pstrength + $pintel) * 2 - (mt_rand(0, 1));
 // 아직 남았고 천재등록상태이면 특기 부여
 if ($genius) {
     $specage2 = $age;
-    $special2 = SpecialityHelper::pickSpecialWar([
-        'leadership'=>$leadership,
-        'strength'=>$strength,
-        'intel'=>$intel,
-        'dex1'=>0,
-        'dex2'=>0,
-        'dex3'=>0,
-        'dex4'=>0,
-        'dex5'=>0
-    ]);
+    if ($inheritSpecial) {
+        $special2 = $inheritSpecial;
+    } else {
+        $special2 = SpecialityHelper::pickSpecialWar([
+            'leadership' => $leadership,
+            'strength' => $strength,
+            'intel' => $intel,
+            'dex1' => 0,
+            'dex2' => 0,
+            'dex3' => 0,
+            'dex4' => 0,
+            'dex5' => 0
+        ]);
+    }
 } else {
-    $specage2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/6 - $relYear / 2), 3) + $age;
+    $specage2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age) / 6 - $relYear / 2), 3) + $age;
     $special2 = GameConst::$defaultSpecialWar;
 }
 //내특
-$specage = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/12 - $relYear / 2), 3) + $age;
+$specage = Util::valueFit(Util::round((GameConst::$retirementYear - $age) / 12 - $relYear / 2), 3) + $age;
 $special = GameConst::$defaultSpecialDomestic;
 
 if ($admin['scenario'] >= 1000) {
@@ -181,22 +232,29 @@ if ($admin['scenario'] >= 1000) {
     $specage = $age + 3;
 }
 
-if($relYear < 3){
+if ($relYear < 3) {
     $experience = 0;
-}
-else{
+} else {
     $expGenCount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation != 0 AND npc < 4');
     $targetGenOrder = Util::round($expGenCount * 0.2);
     $experience = $db->queryFirstField(
-        'SELECT experience FROM general WHERE nation != 0 AND npc < 4 ORDER BY experience ASC LIMIT %i, 1', 
+        'SELECT experience FROM general WHERE nation != 0 AND npc < 4 ORDER BY experience ASC LIMIT %i, 1',
         $targetGenOrder - 1
     );
     $experience *= 0.8;
 }
 
-$turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
+if ($inheritTurntime === null) {
+    $inheritTurntime = $inheritTurntime % ($gameStor->turnterm * 60);
+    $inheritTurntime += Util::randRangeInt(0, 999999) / 1000000;
+    $turntime = cutTurn($admin['turntime'], $admin['turnterm']);
+    $turntime = TimeUtil::nowAddSeconds($inheritTurntime, true);
+} else {
+    $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
+}
 
-$now = date('Y-m-d H:i:s');
+
+$now = TimeUtil::now(true);
 if ($now >= $turntime) {
     $turntime = addTurn($turntime, $admin['turnterm']);
 }
@@ -211,11 +269,11 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
 }
 
 //성격 랜덤시
-if (!in_array($character, GameConst::$availablePersonality)){
+if (!in_array($character, GameConst::$availablePersonality)) {
     $character = Util::choiceRandom(GameConst::$availablePersonality);
 }
 //상성 랜덤
-$affinity = rand()%150 + 1;
+$affinity = rand() % 150 + 1;
 
 ########## 회원정보 테이블에 입력값을 등록한다. ##########
 $db->insert('general', [
@@ -243,7 +301,7 @@ $db->insert('general', [
     'killturn' => 6,
     'lastconnect' => $now,
     'lastrefresh' => $now,
-    'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
+    'crewtype' => GameUnitConst::DEFAULT_CREWTYPE,
     'makelimit' => 0,
     'age' => $age,
     'startage' => $age,
@@ -255,36 +313,34 @@ $db->insert('general', [
 ]);
 $generalID = $db->insertId();
 $turnRows = [];
-foreach(Util::range(GameConst::$maxTurn) as $turnIdx){
+foreach (Util::range(GameConst::$maxTurn) as $turnIdx) {
     $turnRows[] = [
-        'general_id'=>$generalID,
-        'turn_idx'=>$turnIdx,
-        'action'=>'휴식',
-        'arg'=>null,
-        'brief'=>'휴식'
+        'general_id' => $generalID,
+        'turn_idx' => $turnIdx,
+        'action' => '휴식',
+        'arg' => null,
+        'brief' => '휴식'
     ];
 }
 $db->insert('general_turn', $turnRows);
 
-resetInheritanceUser($userID);
-
 $rank_data = [];
-foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
+foreach (array_keys(General::RANK_COLUMN) as $rankColumn) {
     $rank_data[] = [
-        'general_id'=>$generalID,
-        'nation_id'=>0,
-        'type'=>$rankColumn,
-        'value'=>0
+        'general_id' => $generalID,
+        'nation_id' => 0,
+        'type' => $rankColumn,
+        'value' => 0
     ];
 }
 $db->insert('rank_data', $rank_data);
 $db->insert('betting', [
-    'general_id'=>$generalID,
+    'general_id' => $generalID,
 ]);
 $cityname = CityConst::byID($city)->name;
 
 $me = [
-    'no'=>$generalID
+    'no' => $generalID
 ];
 
 $log = [];
@@ -295,7 +351,7 @@ $logger = new ActionLogger($generalID, 0, $gameStor->year, $gameStor->month);
 $josaRa = JosaUtil::pick($name, '라');
 $speicalText = getGeneralSpecialWarName($special2);
 if ($genius) {
-    
+
     $logger->pushGlobalActionLog("<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 기재가 천하에 이름을 알립니다.");
     $logger->pushGlobalActionLog("<C>{$speicalText}</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.");
     $logger->pushGlobalHistoryLog("<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다.");
@@ -318,24 +374,37 @@ if ($genius) {
 
 $logger->flush();
 
-pushAdminLog(["가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADDR")]);
+pushAdminLog(["가입 : {$userID} // {$name} // {$generalID}" . getenv("REMOTE_ADDR")]);
 
 $rootDB->insert('member_log', [
     'member_no' => $userID,
-    'date'=>TimeUtil::now(),
-    'action_type'=>'make_general',
-    'action'=>Json::encode([
-        'server'=>DB::prefix(),
-        'type'=>'general',
-        'generalID'=>$generalID,
-        'generalName'=>$name
+    'date' => TimeUtil::now(),
+    'action_type' => 'make_general',
+    'action' => Json::encode([
+        'server' => DB::prefix(),
+        'type' => 'general',
+        'generalID' => $generalID,
+        'generalName' => $name
     ])
 ]);
 
 ?>
-<script>
-window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$name?> \n위키와 팁/강좌 게시판을 꼭 읽어보세요!');
-</script>
-<script>location.replace('./');</script>
+<html>
 
+<head>
+    <style>
+        html,
+        body {
+            background: black;
+        }
+    </style>
+    <script>
+        window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?= $name ?> \n위키와 팁/강좌 게시판을 꼭 읽어보세요!');
+        location.replace('./');
+    </script>
+</head>
 
+<body>
+</body>
+
+</html>
