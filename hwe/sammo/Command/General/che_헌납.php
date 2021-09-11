@@ -15,6 +15,7 @@ use \sammo\Command;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
+use function sammo\tryUniqueItemLottery;
 
 class che_헌납 extends Command\GeneralCommand
 {
@@ -144,6 +145,8 @@ class che_헌납 extends Command\GeneralCommand
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+
+        tryUniqueItemLottery($general);
         $general->applyDB($db);
 
         return true;

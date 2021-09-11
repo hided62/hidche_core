@@ -13,6 +13,7 @@ use \sammo\LastTurn;
 use \sammo\Command;
 
 use function \sammo\printCitiesBasedOnDistance;
+use function sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -161,6 +162,8 @@ class che_강행 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;

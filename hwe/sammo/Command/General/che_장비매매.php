@@ -5,7 +5,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -13,6 +13,7 @@ use \sammo\{
 };
 
 use function \sammo\buildItemClass;
+use function sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -97,14 +98,14 @@ class che_장비매매 extends Command\GeneralCommand{
         if(!$this->isArgValid){
             return [0, 0];
         }
-        
+
         $itemCode = $this->arg['itemCode'];
         $itemObj = buildItemClass($itemCode);
 
         $reqGold = $itemObj->getCost();
         return [$reqGold, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -176,6 +177,7 @@ class che_장비매매 extends Command\GeneralCommand{
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
         $general->applyDB($db);
 
         return true;
@@ -208,7 +210,7 @@ $('#customSubmit').click(function(){
 현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
 현재 도시 치안 : <?=$citySecu?> &nbsp;&nbsp;&nbsp;현재 자금 : <?=$gold?><br>
 장비 : <select class='formInput' name="itemCode" id="itemCode" onchange='updateItemType();' size='1' style='color:white;background-color:black;'>
-<?php foreach(GameConst::$allItems as $itemType=>$itemCategories): 
+<?php foreach(GameConst::$allItems as $itemType=>$itemCategories):
     //매각
     $typeName = static::$itemMap[$itemType];
 ?>

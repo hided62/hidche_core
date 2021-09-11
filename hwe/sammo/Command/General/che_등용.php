@@ -15,6 +15,7 @@ use \sammo\{
 use function \sammo\getAllNationStaticInfo;
 use function \sammo\getNationStaticInfo;
 use function \sammo\newColor;
+use function sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -64,7 +65,7 @@ class che_등용 extends Command\GeneralCommand{
 
         $this->minConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
         ];
@@ -80,7 +81,7 @@ class che_등용 extends Command\GeneralCommand{
 
         $this->fullConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestGeneral(),
@@ -110,7 +111,7 @@ class che_등용 extends Command\GeneralCommand{
         ) * 10;
         return [$reqGold, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -141,7 +142,7 @@ class che_등용 extends Command\GeneralCommand{
 
         $destGeneralName = $this->destGeneralObj->getName();
         $destGeneralID = $this->destGeneralObj->getID();
-        
+
 
         $msg = ScoutMessage::buildScoutMessage($general->getID(), $destGeneralID, $reason, new \DateTime($general->getTurnTime()));
         if($msg){
@@ -164,6 +165,8 @@ class che_등용 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;

@@ -5,7 +5,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -15,6 +15,8 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\MustNotBeReachedException;
+
+use function sammo\tryUniqueItemLottery;
 
 class che_군량매매 extends Command\GeneralCommand{
     static protected $actionName = '군량매매';
@@ -57,7 +59,7 @@ class che_군량매매 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         $this->setCity();
-        $this->setNation();    
+        $this->setNation();
 
         $this->minConditionConstraints=[
             ConstraintHelper::ReqCityTrader($general->getNPCType()),
@@ -69,7 +71,7 @@ class che_군량매매 extends Command\GeneralCommand{
     protected function initWithArg()
     {
         $general = $this->generalObj;
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::ReqCityTrader($general->getNPCType()),
             ConstraintHelper::OccupiedCity(true),
@@ -87,7 +89,7 @@ class che_군량매매 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -120,7 +122,7 @@ class che_군량매매 extends Command\GeneralCommand{
         else{
             $tradeRate /= 100;
         }
-        
+
         if($buyRice){
             $buyKey = 'rice';
             $sellKey = 'gold';
@@ -153,7 +155,7 @@ class che_군량매매 extends Command\GeneralCommand{
         else{
             $logger->pushGeneralActionLog("군량 <C>{$sellAmountText}</>을 팔아 자금 <C>{$buyAmountText}</>을 얻었습니다. <1>$date</>");
         }
-        
+
         $general->increaseVar($buyKey, $buyAmount);
         $general->increaseVarWithLimit($sellKey, -$sellAmount, 0);
 
@@ -163,7 +165,7 @@ class che_군량매매 extends Command\GeneralCommand{
 
         $exp = 30;
         $ded = 50;
-        
+
         $incStat = Util::choiceRandomUsingWeight([
             'leadership_exp'=>$general->getLeadership(false, false, false, false),
             'strength_exp'=>$general->getStrength(false, false, false, false),
@@ -176,6 +178,8 @@ class che_군량매매 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;
@@ -199,5 +203,5 @@ class che_군량매매 extends Command\GeneralCommand{
         return ob_get_clean();
     }
 
-    
+
 }

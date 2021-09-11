@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -14,10 +14,11 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use \sammo\TextDecoration\SightseeingMessage;
 
+use function sammo\tryUniqueItemLottery;
 
 class che_견문 extends Command\GeneralCommand{
     static protected $actionName = '견문';
-    
+
     protected function argTest():bool{
         $this->arg = null;
         return true;
@@ -41,7 +42,7 @@ class che_견문 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -111,10 +112,12 @@ class che_견문 extends Command\GeneralCommand{
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -16,13 +16,12 @@ use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use function sammo\refreshNationStaticInfo;
 use function sammo\getAllNationStaticInfo;
-
-
+use function sammo\tryUniqueItemLottery;
 
 class che_거병 extends Command\GeneralCommand{
     static protected $actionName = '거병';
 
-    protected function argTest():bool{        
+    protected function argTest():bool{
         $this->arg = [];
 
         return true;
@@ -38,7 +37,7 @@ class che_거병 extends Command\GeneralCommand{
         $this->setNation();
 
         $relYear = $env['year'] - $env['startyear'];
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::BeOpeningPart($relYear+1),
@@ -49,7 +48,7 @@ class che_거병 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -93,15 +92,15 @@ class che_거병 extends Command\GeneralCommand{
 
         DB::db()->insert('nation', [
             'name'=>$nationName,
-            'color'=>'#330000', 
-            'gold'=>0, 
-            'rice'=>GameConst::$baserice, 
-            'rate'=>20, 
-            'bill'=>100, 
-            'strategic_cmd_limit'=>12, 
-            'surlimit'=>72, 
+            'color'=>'#330000',
+            'gold'=>0,
+            'rice'=>GameConst::$baserice,
+            'rate'=>20,
+            'bill'=>100,
+            'strategic_cmd_limit'=>12,
+            'surlimit'=>72,
             'secretlimit'=>$secretlimit,
-            'type'=>GameConst::$neutralNationType, 
+            'type'=>GameConst::$neutralNationType,
             'gennum'=>1
         ]);
         $nationID = DB::db()->insertId();
@@ -114,7 +113,7 @@ class che_거병 extends Command\GeneralCommand{
             if($nationID == $destNationID){
                 continue;
             }
-            
+
             $diplomacyInit[] = [
                 'me'=>$destNationID,
                 'you'=>$nationID,
@@ -132,9 +131,9 @@ class che_거병 extends Command\GeneralCommand{
         if($diplomacyInit){
             $db->insert('diplomacy', $diplomacyInit);
         }
-        
 
-        
+
+
         $turnRows = [];
         foreach([12, 11] as $chiefLevel){
             foreach(Util::range(GameConst::$maxChiefTurn) as $turnIdx){
@@ -147,7 +146,7 @@ class che_거병 extends Command\GeneralCommand{
                     'brief'=>'휴식',
                 ];
             }
-            
+
         }
         $db->insert('nation_turn', $turnRows);
 
@@ -172,10 +171,12 @@ class che_거병 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

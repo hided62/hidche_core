@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -14,7 +14,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 
-
+use function sammo\tryUniqueItemLottery;
 
 class che_귀환 extends Command\GeneralCommand{
     static protected $actionName = '귀환';
@@ -33,7 +33,7 @@ class che_귀환 extends Command\GeneralCommand{
         $this->setNation();
 
         [$reqGold, $reqRice] = $this->getCost();
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
@@ -49,7 +49,7 @@ class che_귀환 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -87,7 +87,7 @@ class che_귀환 extends Command\GeneralCommand{
 
         $exp = 70;
         $ded = 100;
-        
+
         $general->setVar('city', $destCityID);
 
         $general->addExperience($exp);
@@ -95,10 +95,12 @@ class che_귀환 extends Command\GeneralCommand{
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

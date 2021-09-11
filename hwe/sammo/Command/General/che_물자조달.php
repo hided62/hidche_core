@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -13,6 +13,7 @@ use \sammo\{
 
 use function \sammo\getDomesticExpLevelBonus;
 use function \sammo\CriticalScoreEx;
+use function sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -33,9 +34,9 @@ class che_물자조달 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
-        
+
         $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity()
@@ -50,7 +51,7 @@ class che_물자조달 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -84,11 +85,11 @@ class che_물자조달 extends Command\GeneralCommand{
             'normal'=>0.6
         ]);
         $score *= CriticalScoreEx($pick);
-        
+
 
         $score = Util::round($score);
         $scoreText = number_format($score, 0);
-        
+
         $logger = $general->getLogger();
 
         if($pick == 'fail'){
@@ -120,10 +121,12 @@ class che_물자조달 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
+
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }
