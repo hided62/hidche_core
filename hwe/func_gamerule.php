@@ -1158,7 +1158,7 @@ function resetInheritanceUser(int $userID, bool $isRebirth=false){
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
     $totalPoint = 0;
     foreach($inheritStor->getAll() as $key=>[$value,]){
-        if(key_exists($key, $rebirthDegraded)){
+        if($isRebirth && key_exists($key, $rebirthDegraded)){
             $value *= $rebirthDegraded[$key];
         }
         $totalPoint += $value;
