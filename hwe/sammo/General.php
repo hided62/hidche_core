@@ -139,9 +139,11 @@ class General implements iAction{
         $this->itemObjs['book'] = buildItemClass($raw['book']);
         $this->itemObjs['item'] = buildItemClass($raw['item']);
 
-        $rawInheritBuff = $this->getAuxVar('inheritBuff');
-        if($rawInheritBuff !== null){
-            $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
+        if(key_exists('aux', $this->raw)){
+            $rawInheritBuff = $this->getAuxVar('inheritBuff');
+            if($rawInheritBuff !== null){
+                $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
+            }
         }
     }
 

@@ -623,7 +623,7 @@ function updateNationState()
                     $nation['nation'],
                     $targetKillTurn
                 );
-                $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong', 'npc'], 2);
+                $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong', 'npc', 'aux'], 2);
                 $chiefObj = null;
 
                 $uniqueLotteryWeightList = [];
