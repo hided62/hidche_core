@@ -10,8 +10,10 @@ abstract class BaseAPI
     const REQ_READ_ONLY = 4;
 
     protected array $args;
-    public function __construct(array $args)
+    protected string $rootPath;
+    public function __construct(string $rootPath, array $args)
     {
+        $this->rootPath = $rootPath;
         $this->args = $args;
     }
     abstract public function getRequiredSessionMode(): int;

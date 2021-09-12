@@ -377,9 +377,9 @@ function getAPIExecutorClass($path){
     throw new \InvalidArgumentException("{$path}는 올바른 API 경로가 아님");
 }
 
-function buildAPIExecutorClass(string $type, array $args):\sammo\BaseAPI{
+function buildAPIExecutorClass(string $type, string $rootPath, array $args):\sammo\BaseAPI{
     $class = getAPIExecutorClass($type);
-    return new $class($args);
+    return new $class($rootPath, $args);
 }
 
 function getWarUnitTriggerClass(string $type){
