@@ -1,5 +1,7 @@
 import { exportWindow } from "./util/exportWindow";
-import { activateFlip, isBrightColor, getIconPath, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
+import { activateFlip, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
+import { isBrightColor } from "./util/isBrightColor";
+import { getIconPath } from "./util/getIconPath";
 import { mb_strwidth } from "./util/mb_strwidth";
 import { TemplateEngine } from "./util/TemplateEngine";
 import { escapeHtml } from "./legacy/escapeHtml";

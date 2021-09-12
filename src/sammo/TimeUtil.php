@@ -88,50 +88,35 @@ class TimeUtil
     public static function now(bool $withFraction = false): string
     {
         $obj = new \DateTime();
-        if (!$withFraction) {
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
+        return static::format($obj, $withFraction);
     }
 
     public static function nowAddDays($day, bool $withFraction = false): string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($day * 3600 * 24));
-        if (!$withFraction) {
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
+        return static::format($obj, $withFraction);
     }
 
     public static function nowAddHours($hour, bool $withFraction = false): string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($hour * 3600));
-        if (!$withFraction) {
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
+        return static::format($obj, $withFraction);
     }
 
     public static function nowAddMinutes($minute, bool $withFraction = false): string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($minute * 60));
-        if (!$withFraction) {
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
+        return static::format($obj, $withFraction);
     }
 
     public static function nowAddSeconds($second, bool $withFraction = false): string
     {
         $obj = new \DateTime();
         $obj->add(static::secondsToDateInterval($second));
-        if (!$withFraction) {
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
+        return static::format($obj, $withFraction);
     }
 
     public static function secondsToDateTime(float $fullSeconds, bool $isDateTimeImmutable = false, bool $isUTC = false): \DateTimeInterface
@@ -186,6 +171,13 @@ class TimeUtil
         $seconds = $minutes * 60 + $interval->s + $interval->f;
 
         return $seconds;
+    }
+
+    public static function format(\DateTimeInterface $dateTime, bool $withFraction): string{
+        if (!$withFraction) {
+            return $dateTime->format('Y-m-d H:i:s');
+        }
+        return $dateTime->format('Y-m-d H:i:s.u');
     }
 
     /**

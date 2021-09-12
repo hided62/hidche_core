@@ -144,6 +144,11 @@ class GameConstBase
     /** @var int 거병,임관 제한 기간 */
     public static $joinActionLimit = 12;
 
+    /** @var int 장수 생성시 능력치 최소 보너스 */
+    public static $bornMinStatBonus = 3;
+    /** @var int 장수 생성시 능력치 최대 보너스 */
+    public static $bornMaxStatBonus = 5;
+
     /** @var array 선택 가능한 국가 성향 */
     public static $availableNationType = [
         'che_도적', 'che_명가', 'che_음양가', 'che_종횡가', 'che_불가', 'che_오두미도', 'che_태평도', 'che_도가',

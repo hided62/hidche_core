@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { unwrap_any } from './util/unwrap_any';
 import axios from 'axios';
-import { isBrightColor } from './common_legacy';
+import { isBrightColor } from "./util/isBrightColor";
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
 import { isString } from 'lodash';
 import { convertFormData } from './util/convertFormData';

@@ -1158,13 +1158,13 @@ function resetInheritanceUser(int $userID, bool $isRebirth=false):float{
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
     $totalPoint = 0;
     $allPoints = $inheritStor->getAll();
-    if(count($allPoints) == 0){
+    if(!$allPoints || count($allPoints) == 0){
         //비었으므로 리셋 안함
         return 0;
     }
     if(count($allPoints) == 1 && key_exists('previous', $allPoints)){
         //이미 리셋되었으므로 리셋 안함
-        return $allPoints['previous'];
+        return $allPoints['previous'][0];
     }
     foreach($allPoints as $key=>[$value,]){
         if($isRebirth && key_exists($key, $rebirthDegraded)){

@@ -80,7 +80,7 @@ class Join extends \sammo\BaseAPI
 
     public function launch(?Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
     {
-        if($session === null){
+        if ($session === null) {
             throw "invalid session";
         }
 
@@ -98,10 +98,10 @@ class Join extends \sammo\BaseAPI
         $strength = $this->args['strength'];
         $intel = $this->args['intel'];
 
-        $inheritSpecial = $this->args['inheritSpecial']??null;
-        $inheritTurntime =$this->args['inheritTurntime']??null;
-        $inheritCity = $this->args['inheritCity']??null;
-        $inheritBonusStat = $this->args['inheritBonusStat']??null;
+        $inheritSpecial = $this->args['inheritSpecial'] ?? null;
+        $inheritTurntime = $this->args['inheritTurntime'] ?? null;
+        $inheritCity = $this->args['inheritCity'] ?? null;
+        $inheritBonusStat = $this->args['inheritBonusStat'] ?? null;
 
         $rootDB = RootDB::db();
         //회원 테이블에서 정보확인
@@ -277,11 +277,11 @@ class Join extends \sammo\BaseAPI
             $experience *= 0.8;
         }
 
-        if ($inheritTurntime === null) {
+        if ($inheritTurntime !== null) {
             $inheritTurntime = $inheritTurntime % ($gameStor->turnterm * 60);
             $inheritTurntime += Util::randRangeInt(0, 999999) / 1000000;
-            $turntime = cutTurn($admin['turntime'], $admin['turnterm']);
-            $turntime = TimeUtil::nowAddSeconds($inheritTurntime, true);
+            $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
+            $turntime = TimeUtil::format($turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime)), true);
         } else {
             $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
         }

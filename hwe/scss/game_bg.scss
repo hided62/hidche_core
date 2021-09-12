@@ -10,6 +10,7 @@ html {
     color: white;
 }
 
+//TODO: 삭제!!
 table.tb_layout {
     border-collapse: collapse;
     padding: 0px;
@@ -17,7 +18,8 @@ table.tb_layout {
     word-break: break-all;
 }
 
-html, body{
+html,
+body {
     font-size: 13px;
 }
 
@@ -30,10 +32,23 @@ html, body{
 }
 
 
-.float-left{
-    float:left;
+.float-left {
+    float: left;
 }
 
-.float-right{
-    float:right;
+.float-right {
+    float: right;
+}
+
+
+.a-right {
+    text-align: right;
+}
+
+.a-left {
+    text-align: left;
+}
+
+.a-center {
+    text-align: center;
 }

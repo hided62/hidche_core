@@ -61,7 +61,7 @@ const serverLoginBtn = "<a href='<%serverPath%>/' class='item'\
 ></a>";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const serverCreateBtn = "<a href='<%serverPath%>/join.php' class='item'\
+const serverCreateBtn = "<a href='<%serverPath%>/v_join.php' class='item'\
 ><button type='button' class='fill_box with_skin'>장수생성</button\
 ></a>";
 
@@ -79,7 +79,7 @@ const serverCreateTemplate = "\
 <td colspan='2' class='not_registered'>- 미 등 록 -</div>\
 <td class='ignore_border vertical_flex BtnPlate'>\
 <%if(canCreate) {%>\
-<a href='<%serverPath%>/join.php' class='item'><button type='button' class='fill_box with_skin'>장수생성</button></a>\
+<a href='<%serverPath%>/v_join.php' class='item'><button type='button' class='fill_box with_skin'>장수생성</button></a>\
 <%}%>\
 <%if(canSelectNPC) {%>\
 <a href='<%serverPath%>/select_npc.php' class='item'><button type='button' class='fill_box with_skin'>장수빙의</button></a>\

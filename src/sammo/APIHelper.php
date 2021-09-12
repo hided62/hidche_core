@@ -12,9 +12,14 @@ class APIHelper
     public static function launch(string $rootPath)
     {
         try {
-            $input = json_decode(file_get_contents('php://input'));
+            $rawInput = file_get_contents('php://input');
+            $input = Json::decode($rawInput);
         } catch (\Exception $e) {
             Json::dieWithReason($e->getMessage());
+        }
+
+        if(!$input){
+            Json::dieWithReason("input이 비어있습니다. {$rawInput}");
         }
 
         if (!key_exists('path', $input)) {

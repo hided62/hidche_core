@@ -111,7 +111,7 @@ if ($inheritBonusStat) {
         dieMsg("보너스 능력치가 잘못 지정되었습니다. 다시 가입해주세요!");
     }
     $sum = array_sum($inheritBonusStat);
-    if ($sum < 3 || $sum > 5) {
+    if ($sum < GameConst::$bornMinStatBonus || GameConst::$bornMaxStatBonus > 5) {
         dieMsg("보너스 능력치 합이 잘못 지정되었습니다. 다시 가입해주세요!");
     }
     foreach ($inheritBonusStat as $stat) {
@@ -180,7 +180,7 @@ if ($inheritBonusStat) {
     $pleadership = 0;
     $pstrength = 0;
     $pintel = 0;
-    foreach (Util::range(Util::randRangeInt(3, 5)) as $statIdx) {
+    foreach (Util::range(Util::randRangeInt(GameConst::$bornMinStatBonus, GameConst::$bornMaxStatBonus)) as $statIdx) {
         switch (Util::choiceRandomUsingWeight([$leadership, $strength, $intel])) {
             case 0:
                 $pleadership++;

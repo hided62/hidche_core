@@ -1,4 +1,3 @@
-import { unwrap } from "./util/unwrap";
 import $ from "jquery";
 import axios from "axios";
 
@@ -29,24 +28,6 @@ export function stringFormat(text: string, ...args: (string | number)[]): string
     return text.replace(/{(\d+)}/g, function (match, number) {
         return (typeof args[number] != 'undefined') ? args[number].toString() : match;
     });
-}
-
-export function hexToRgb(hex: string): { r: number, g: number, b: number } | null {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-export function isBrightColor(color: string): boolean {
-    const cv = unwrap(hexToRgb(color));
-    if ((cv.r * 0.299 + cv.g * 0.587 + cv.b * 0.114) > 140) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 /**
@@ -82,15 +63,6 @@ declare global {
         linkifyStr: (v: string, k?: Record<string, string | number>) => string;
     }
 }
-export function getIconPath(imgsvr: boolean | 1 | 0, picture: string): string {
-    // ../d_shared/common_path.js 필요
-    if (!imgsvr) {
-        return window.pathConfig.sharedIcon + '/' + picture;
-    } else {
-        return window.pathConfig.root + '/d_pic/' + picture;
-    }
-}
-
 export function activateFlip($obj?: JQuery<HTMLElement>): void {
     let $result: JQuery<HTMLElement>;
     if ($obj === undefined) {

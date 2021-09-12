@@ -4,7 +4,7 @@ import { InvalidResponse } from './defs';
 import { getDateTimeNow } from './util/getDateTimeNow';
 import axios from 'axios';
 import { convertFormData } from './util/convertFormData';
-import { isBrightColor } from './common_legacy';
+import { isBrightColor } from "./util/isBrightColor";
 import { unwrap } from './util/unwrap';
 import _ from 'lodash';
 import { addMinutes } from 'date-fns';

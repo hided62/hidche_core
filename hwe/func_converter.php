@@ -369,7 +369,7 @@ function getAPIExecutorClass($path){
         throw new \InvalidArgumentException("{$path}는 올바른 API 지시자가 아님");
     }
 
-    $classPath = ($basePath.$path);
+    $classPath = str_replace('/', '\\', $basePath.$path);
 
     if(class_exists($classPath)){
         return $classPath;
@@ -377,7 +377,7 @@ function getAPIExecutorClass($path){
     throw new \InvalidArgumentException("{$path}는 올바른 API 경로가 아님");
 }
 
-function buildAPIExecutorClass(string $type, string $rootPath, array $args):\sammo\BaseAPI{
+function buildAPIExecutorClass($type, string $rootPath, array $args):\sammo\BaseAPI{
     $class = getAPIExecutorClass($type);
     return new $class($rootPath, $args);
 }

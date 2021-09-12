@@ -1,4 +1,5 @@
 <?php
+
 namespace sammo;
 
 use phpDocumentor\Reflection\Types\Boolean;
@@ -14,7 +15,7 @@ class WebUtil
         return str_replace('.', '\\.', $ip);
     }
 
-    public static function resolveRelativePath(string $path, string $basepath) : string
+    public static function resolveRelativePath(string $path, string $basepath): string
     {
         return \phpUri::parse($basepath)->join($path);
     }
@@ -30,15 +31,17 @@ class WebUtil
         }
     }
 
-    public static function isAJAX(){
-        return strtolower($_SERVER['HTTP_X_REQUESTED_WITH']??null) === 'xmlhttprequest';
+    public static function isAJAX()
+    {
+        return strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'xmlhttprequest';
     }
 
-    public static function requireAJAX():void{
-        if(!static::isAJAX()){
+    public static function requireAJAX(): void
+    {
+        if (!static::isAJAX()) {
             Json::die([
-                'result'=>false,
-                'reason'=>'no ajax'
+                'result' => false,
+                'reason' => 'no ajax'
             ]);
         }
     }
@@ -81,23 +84,23 @@ class WebUtil
             //Use a switch statement to figure out the exact error.
             switch ($jsonError) {
                 case JSON_ERROR_DEPTH:
-                    $error .= 'Maximum depth exceeded! : '.$content;
-                break;
+                    $error .= 'Maximum depth exceeded! : ' . $content;
+                    break;
                 case JSON_ERROR_STATE_MISMATCH:
-                    $error .= 'Underflow or the modes mismatch! : '.$content;
-                break;
+                    $error .= 'Underflow or the modes mismatch! : ' . $content;
+                    break;
                 case JSON_ERROR_CTRL_CHAR:
-                    $error .= 'Unexpected control character found : '.$content;
-                break;
+                    $error .= 'Unexpected control character found : ' . $content;
+                    break;
                 case JSON_ERROR_SYNTAX:
-                    $error .= 'Malformed JSON : '.$content;
-                break;
+                    $error .= 'Malformed JSON : ' . $content;
+                    break;
                 case JSON_ERROR_UTF8:
-                     $error .= 'Malformed UTF-8 characters found! : '.$content;
-                break;
+                    $error .= 'Malformed UTF-8 characters found! : ' . $content;
+                    break;
                 default:
-                    $error .= 'Unknown error! : '.$content;
-                break;
+                    $error .= 'Unknown error! : ' . $content;
+                    break;
             }
             throw new \Exception($error);
         }
@@ -105,89 +108,89 @@ class WebUtil
         return $decoded;
     }
 
-    public static function preloadAsset(string $path, string $type){
+    public static function preloadAsset(string $path, string $type)
+    {
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme){
-            if(!file_exists($upath->path)){
+        if (!$upath->scheme) {
+            if (!file_exists($upath->path)) {
                 return "<!-- preload:{$type} '{$path}' -->\n";
             }
 
             $mtime = filemtime($upath->path);
-            if($upath->query){
-                $tail = '&'.$mtime;
+            if ($upath->query) {
+                $tail = '&' . $mtime;
+            } else {
+                $tail = '?' . $mtime;
             }
-            else{
-                $tail = '?'.$mtime;
-            }
-        }
-        else{
+        } else {
             $tail = '';
         }
         return "<link href='{$path}{$tail}' rel='preload' as='$type'>\n";
     }
 
-    public static function preloadCSS(string $path){
+    public static function preloadCSS(string $path)
+    {
         return static::preloadAsset($path, 'style');
     }
 
-    public static function preloadJS(string $path){
+    public static function preloadJS(string $path)
+    {
         return static::preloadAsset($path, 'script');
     }
 
-    public static function printJS(string $path, bool $isDefer=false){
+    public static function printJS(string $path, bool $isDefer = false)
+    {
         //async 옵션 고려?
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme){
-            if(!file_exists($upath->path)){
+        if (!$upath->scheme) {
+            if (!file_exists($upath->path)) {
                 return "<!-- JS '{$path}' -->\n";
             }
             $mtime = filemtime($upath->path);
-            if($upath->query){
-                $tail = '&'.$mtime;
+            if ($upath->query) {
+                $tail = '&' . $mtime;
+            } else {
+                $tail = '?' . $mtime;
             }
-            else{
-                $tail = '?'.$mtime;
-            }
-        }
-        else{
+        } else {
             $tail = '';
         }
 
-        $typeText = $isDefer?'defer':'';
+        $typeText = $isDefer ? 'defer' : '';
         return "<script {$typeText} src='{$path}{$tail}'></script>\n";
     }
 
-    public static function printCSS(string $path){
+    public static function printCSS(string $path)
+    {
         $upath = \phpUri::parse($path);
         $path = $upath->join('');
-        if(!$upath->scheme){
-            if(!file_exists($upath->path)){
+        if (!$upath->scheme) {
+            if (!file_exists($upath->path)) {
                 return "<!-- CSS '{$path}' -->\n";
             }
             $mtime = filemtime($upath->path);
-            if($upath->query){
-                $tail = '&'.$mtime;
+            if ($upath->query) {
+                $tail = '&' . $mtime;
+            } else {
+                $tail = '?' . $mtime;
             }
-            else{
-                $tail = '?'.$mtime;
-            }
-        }
-        else{
+        } else {
             $tail = '';
         }
         return "<link rel='stylesheet' type='text/css' href='{$path}{$tail}' />\n";
     }
 
-    public static function printStaticValues(array $values, bool $pretty=true){
-        if(!count($values)){
+    public static function printStaticValues(array $values, bool $pretty = true)
+    {
+        if (!count($values)) {
             return;
         }
         $lines = ["<script>"];
 
-        foreach($values as $key => $value){
-            $lines[] = "var {$key} = ".Json::encode($value, Json::EMPTY_ARRAY_IS_DICT | ($pretty?Json::PRETTY:0));
+        foreach ($values as $key => $value) {
+            $lines[] = "var {$key} = " . Json::encode($value, Json::EMPTY_ARRAY_IS_DICT | ($pretty ? Json::PRETTY : 0));
         }
 
         $lines[] = "</script>\n";
@@ -195,13 +198,14 @@ class WebUtil
         return join("\n", $lines);
     }
 
-    public static function htmlPurify(?string $text): string{
-        if(!$text){
+    public static function htmlPurify(?string $text): string
+    {
+        if (!$text) {
             return '';
         }
 
         $config = \HTMLPurifier_HTML5Config::createDefault();
-        $config->set('Filter.Custom', array (new \HTMLPurifier_Filter_YouTube()));
+        $config->set('Filter.Custom', array(new \HTMLPurifier_Filter_YouTube()));
         $config->set('HTML.SafeIframe', true);
         $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/)%'); //allow YouTube and Vimeo
         $def = $config->getHTMLDefinition();
@@ -210,19 +214,32 @@ class WebUtil
         return $purifier->purify($text);
     }
 
-    public static function drawMenu(string $path): string{
-        if(!file_exists($path)){
+    public static function errorBackMsg(string $msg, ?string $target=null): string
+    {
+        $jmsg = Json::encode($msg);
+        if(!$target){
+            $moveNext = 'history.go(-1);';
+        }
+        else{
+            $moveNext = "location.replace('{$target}');";
+        }
+
+        return "<html><head><style>html,body{background:black;}</style><script>alert({$jmsg});$moveNext</script></head><body></body></html>";
+    }
+
+    public static function drawMenu(string $path): string
+    {
+        if (!file_exists($path)) {
             return '';
         }
         $json = Json::decode(file_get_contents($path));
 
         $result = [];
-        foreach($json as $menuItem){
+        foreach ($json as $menuItem) {
             if (count($menuItem) == 2) {
                 [$url, $title] = $menuItem;
                 $targetAttr = '';
-            }
-            else{
+            } else {
                 [$url, $title, $target] = $menuItem;
                 $target = htmlspecialchars($target);
                 $targetAttr = "target='$target' ";

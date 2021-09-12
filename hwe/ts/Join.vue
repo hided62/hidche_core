@@ -1,0 +1,348 @@
+<template>
+  <top-back-bar title="장수 생성" />
+
+  <div id="container" class="bg0">
+    <div class="row bg1">
+      <div class="col col-md-11 col-9 center align-self-center">
+        임관 권유 메시지
+      </div>
+      <div class="col col-md-1 col-3">
+        <label
+          ><input type="checkbox" v-model="displayTable" />{{
+            displayTable ? "숨기기" : "보이기"
+          }}</label
+        >
+      </div>
+    </div>
+    <CTable responsive v-if="displayTable">
+      <CTableBody>
+        <CTableRow
+          class="nation-row"
+          v-for="nation in nationList"
+          :key="nation.nation"
+        >
+          <CTableHeaderCell
+            scope="row"
+            class="a-center p-0"
+            :style="{
+              backgroundColor: nation.color,
+              color: isBrightColor(nation.color) ? 'black' : 'white',
+            }"
+            ><div class="nation-name">
+              {{ nation.name }}
+            </div>
+          </CTableHeaderCell>
+          <CTableDataCell class="p-0">
+            <div
+              class="nation-info"
+              v-html="nation.scoutmsg ?? '-'"
+            ></div></CTableDataCell></CTableRow
+      ></CTableBody>
+    </CTable>
+    <!-- 국가 설명 -->
+    <div class="row bg1"><div class="col center">장수 생성</div></div>
+    <div class="forms">
+      <div class="row">
+        <div class="col col-md-4 col-3 a-right align-self-center">장수명</div>
+        <div class="col col-md-3 col-9 align-self-center">
+          <input v-model="args.name" class="form-control" />
+        </div>
+        <div class="col col-md-1 col-3 a-right align-self-center">
+          전콘 사용
+        </div>
+        <div class="col col-md-4 col-9 align-self-center">
+          <img style="height: 64px; width: 64px" :src="iconPath" /><label
+            ><input type="checkbox" v-model="args.pic" /> 사용</label
+          >
+        </div>
+        <div class="col col-md-4 col-3 align-self-center a-right">성격</div>
+
+        <div class="col col-md-8 col-9 align-self-center">
+          <div class="row">
+            <div class="col col-md-3 col-4 align-self-center">
+              <select
+                class="form-select form-inline"
+                style="max-width: 20ch"
+                v-model="args.character"
+              >
+                <option
+                  v-for="(personalityObj, key) in availablePersonality"
+                  :key="key"
+                  :value="key"
+                >
+                  {{ personalityObj.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col col-md-9 col-8 align-self-center">
+              <small class="text-muted">{{
+                availablePersonality[args.character].info
+              }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--<div class="row">
+      <div class="col">
+        계정관리에서 자신만을 표현할 수 있는 아이콘을 업로드 해보세요!
+      </div>
+    </div>-->
+      <div class="row" style="margin-top: 1em">
+        <div class="col col-md-4 col-3 a-right align-self-center">
+          능력치<br /><small class="text-muted">통/무/지</small>
+        </div>
+        <div class="col col-md-2 col-3 align-self-center">
+          <input type="number" class="form-control" v-model="args.leadership" />
+        </div>
+        <div class="col col-md-2 col-3 align-self-center">
+          <input type="number" class="form-control" v-model="args.strength" />
+        </div>
+        <div class="col col-md-2 col-3 align-self-center">
+          <input type="number" class="form-control" v-model="args.intel" />
+        </div>
+      </div>
+      <div class="row" style="margin-top: 1em">
+        <div class="col col-md-4 col-3 a-right align-self-center">
+          능력치 조절
+        </div>
+        <div class="col col-md-8 col-9">
+          <CButton color="secondary" class="stat-btn" @click="randStatRandom"
+            >랜덤형</CButton
+          >
+          <CButton color="secondary" class="stat-btn" @click="randStatLeadPow"
+            >통솔무력형</CButton
+          >
+          <CButton color="secondary" class="stat-btn" @click="randStatLeadInt"
+            >통솔지력형</CButton
+          >
+          <CButton color="secondary" class="stat-btn" @click="randStatPowInt"
+            >무력지력형</CButton
+          >
+        </div>
+      </div>
+    </div>
+    <div class="row" style="border-top: solid 1px #aaa; margin-top: 0.5em">
+      <div class="col a-center" style="color: orange">
+        모든 능력치는 ( {{ stats.min }} &lt;= 능력치 &lt;= {{ stats.max }} )
+        사이로 잡으셔야 합니다.<br />
+        그 외의 능력치는 가입되지 않습니다.
+      </div>
+    </div>
+    <div class="row">
+      <div class="col a-center">
+        능력치의 총합은 {{ stats.total }} 입니다. 가입후 {{ stats.bonusMin }} ~
+        {{ stats.bonusMax }} 의 능력치 보너스를 받게 됩니다.<br />
+        임의의 도시에서 재야로 시작하며 건국과 임관은 게임 내에서 실행합니다.
+      </div>
+    </div>
+    <div class="row" style="border-top: solid 1px #aaa">
+      <div class="col a-center" style="margin: 0.5em">
+        <CButton color="primary" @click="submitForm">장수 생성</CButton
+        >&nbsp;<CButton color="secondary" @click="resetArgs">다시 입력</CButton>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import "../scss/bootstrap5.scss";
+import "../scss/game_bg.scss";
+
+import { defineComponent, unref } from "vue";
+import TopBackBar from "./components/TopBackBar.vue";
+import {
+  CButton,
+  CTable,
+  CTableBody,
+  CTableRow,
+  CTableHeaderCell,
+  CTableDataCell,
+} from "@coreui/vue/src";
+import { getIconPath } from "./util/getIconPath";
+import { isBrightColor } from "./util/isBrightColor";
+import {
+  abilityLeadint,
+  abilityLeadpow,
+  abilityPowint,
+  abilityRand,
+} from "./util/generalStats";
+import { clone, shuffle } from "lodash";
+import axios from "axios";
+import { InvalidResponse } from "./defs";
+
+declare const nationList: {
+  nation: number;
+  name: string;
+  color: string;
+  scout: number;
+  scoutmsg?: string;
+}[];
+declare const availablePersonality: {
+  [key: string]: {
+    name: string;
+    info: string;
+  };
+};
+
+declare const member: {
+  name: string;
+  grade: number;
+  picture: string;
+  imgsvr: 0 | 1;
+};
+
+declare const stats: {
+  min: number;
+  max: number;
+  total: number;
+  bonusMin: number;
+  bonusMax: number;
+};
+
+declare const serverID: string;
+
+declare module "@vue/runtime-core" {
+  interface ComponentCustomProperties {
+    member: typeof member;
+  }
+}
+
+type APIArgs = {
+  name: string;
+  leadership: number;
+  strength: number;
+  intel: number;
+  pic: boolean;
+  character: string;
+  inheritSpecial?: string;
+  inheritTurntime?: number;
+  inheritCity?: number;
+  inheritBonusStat?: [number, number, number];
+};
+
+export default defineComponent({
+  name: "Join",
+  components: {
+    TopBackBar,
+    CButton,
+    CTable,
+    CTableBody,
+    CTableRow,
+    CTableHeaderCell,
+    CTableDataCell,
+  },
+  data() {
+    const displayTable = JSON.parse(
+      localStorage.getItem(`conf.${serverID}.join.displayTable`) ?? "true"
+    );
+    const nationListShuffled = shuffle(nationList);
+    const args: APIArgs = {
+      name: member.name,
+      leadership: stats.total - 2 * Math.floor(stats.total / 3),
+      strength: Math.floor(stats.total / 3),
+      intel: Math.floor(stats.total / 3),
+      pic: true,
+      character: "Random",
+    };
+    return {
+      displayTable: displayTable,
+      availablePersonality,
+      member: member,
+      stats,
+      args,
+      nationList: nationListShuffled,
+      isBrightColor,
+    };
+  },
+  watch: {
+    displayTable(newValue: boolean) {
+      localStorage.setItem(
+        `conf.${serverID}.join.displayTable`,
+        JSON.stringify(newValue)
+      );
+    },
+  },
+  computed: {
+    iconPath() {
+      if (this.args.pic) {
+        return getIconPath(this.member.imgsvr, this.member.picture);
+      }
+      return getIconPath(0, "default.jpg");
+    },
+  },
+  methods: {
+    randStatRandom() {
+      [this.args.leadership, this.args.strength, this.args.intel] =
+        abilityRand();
+    },
+    randStatLeadPow() {
+      [this.args.leadership, this.args.strength, this.args.intel] =
+        abilityLeadpow();
+    },
+    randStatLeadInt() {
+      [this.args.leadership, this.args.strength, this.args.intel] =
+        abilityLeadint();
+    },
+    randStatPowInt() {
+      [this.args.leadership, this.args.strength, this.args.intel] =
+        abilityPowint();
+    },
+    resetArgs() {
+      this.args.name = member.name;
+      this.args.pic = true;
+      this.args.character = "Random";
+      this.args.leadership = stats.total - 2 * Math.floor(stats.total / 3);
+      this.args.strength = Math.floor(stats.total / 3);
+      this.args.intel = Math.floor(stats.total / 3);
+    },
+    async submitForm() {
+      const args = clone(this.args);
+      console.log(args);
+      const response = await axios({
+        url: "api.php",
+        method: 'post',
+        responseType: 'json',
+        data: {
+          path: ["General", "Join"],
+          args,
+        },
+      });
+      console.log(response);
+      const result:InvalidResponse = response.data;
+      console.log(result);
+    },
+  },
+});
+</script>
+<style scoped>
+#container {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  border: solid 1px #888888;
+  overflow: hidden;
+}
+
+.forms {
+  padding: 0 6px;
+}
+
+.stat-btn {
+  width: 8em;
+  margin-right: 1px;
+  margin-bottom: 1px;
+}
+
+.nation-row {
+  max-height: 200px;
+}
+
+.nation-name {
+  width: 128px;
+}
+
+.nation-info {
+  max-height: 200px;
+  overflow-y: hidden;
+  width: 870px;
+}
+</style>
