@@ -27,8 +27,7 @@ class APIHelper
 
         try {
             $obj = buildAPIExecutorClass($input['path'], $rootPath, $input['args'] ?? []);
-            $api =
-                $validateResult = $obj->validateArgs();
+            $validateResult = $obj->validateArgs();
             if ($validateResult !== null) {
                 Json::dieWithReason($validateResult);
             }
