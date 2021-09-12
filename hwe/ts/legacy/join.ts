@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { exportWindow } from './util/exportWindow';
-import { mb_strwidth } from './util/mb_strwidth';
-import { unwrap_any } from './util/unwrap_any';
+import { exportWindow } from '../util/exportWindow';
+import { mb_strwidth } from '../util/mb_strwidth';
+import { unwrap_any } from '../util/unwrap_any';
 
 declare const defaultStatTotal: number;
 declare const defaultStatMax: number;
