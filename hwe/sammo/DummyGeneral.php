@@ -34,6 +34,14 @@ class DummyGeneral extends General{
         return new WarUnitTriggerCaller();
     }
 
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        return $value;
+    }
+
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux=null){
+        return $value;
+    }
+
     function applyDB($db):bool{
         if($this->logger){
             $this->initLogger(1, 1);

@@ -67,7 +67,7 @@ class WarUnitGeneral extends WarUnit
     {
         $phase = $this->getCrewType()->speed;
         $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase, ['isAttacker' => $this->isAttacker]);
-        $phase = $this->oppose->general->onCalcOpposeStat($this->general, 'initWarPhase', $phase, ['isAttacker' => $this->isAttacker]);
+        //maxPhase는 상대가 결정되기 전에 계산되므로 oppose를 호출할 수 없음
         return $phase + $this->bonusPhase;
     }
 
