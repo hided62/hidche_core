@@ -1789,7 +1789,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     }
 
     $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
-    if (count($inheritUnique)) {
+    if ($inheritUnique && count($inheritUnique)) {
         $trialResult = tryInheritUniqueItem($general, $acquireType);
         if ($trialResult) {
             return true;
