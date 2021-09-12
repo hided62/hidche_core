@@ -295,20 +295,31 @@ export default defineComponent({
       this.args.intel = Math.floor(stats.total / 3);
     },
     async submitForm() {
+        //검증은 언제 되어야 하는가?
       const args = clone(this.args);
-      console.log(args);
-      const response = await axios({
-        url: "api.php",
-        method: 'post',
-        responseType: 'json',
-        data: {
-          path: ["General", "Join"],
-          args,
-        },
-      });
-      console.log(response);
-      const result:InvalidResponse = response.data;
-      console.log(result);
+      let result: InvalidResponse;
+      try {
+        const response = await axios({
+          url: "api.php",
+          method: "post",
+          responseType: "json",
+          data: {
+            path: ["General", "Join"],
+            args,
+          },
+        });
+        result = response.data;
+        if(!result.result){
+            throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`실패했습니다: ${e}`);
+        return;
+      }
+
+      alert('정상적으로 생성되었습니다. \n위키와 팁/강좌 게시판을 꼭 읽어보세요!');
+      location.href = './';
     },
   },
 });
