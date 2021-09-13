@@ -17,6 +17,7 @@
       <input
         type="text"
         class="form-control"
+        :readonly="readonly"
         :value="printValue"
         @focus="onFocusText"
         :style="{ display: !editmode ? undefined : 'none' }"
@@ -33,6 +34,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "NumberInputWithInfo",
   props: {
+    readonly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     int: {
       type: Boolean,
       required: false,
@@ -76,6 +82,9 @@ export default defineComponent({
   },
   methods: {
     updateValue() {
+      if(this.readonly){
+        return;
+      }
       if (this.int) {
         this.rawValue = Math.floor(this.rawValue);
       }
@@ -87,6 +96,9 @@ export default defineComponent({
       this.printValue = this.rawValue.toLocaleString();
     },
     onFocusText() {
+      if(this.readonly){
+        return;
+      }
       this.editmode = true;
       setTimeout(() => {
         (this.$refs.input as HTMLInputElement).focus();

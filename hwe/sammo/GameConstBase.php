@@ -198,7 +198,7 @@ class GameConstBase
     public static $inheritBornSpecialPoint = 12000;
     public static $inheritBornTurntimePoint = 3000;
     public static $inheritBornCityPoint = 1000;
-    public static $inheritBornMaxBonusStat = 1000;
+    public static $inheritBornStatPoint = 1000;
 
     public static $allItems = [
         'horse' => [

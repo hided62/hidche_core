@@ -23,7 +23,7 @@ if (!$member) {
 $db = DB::db();
 
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$admin = $gameStor->getValues(['block_general_create', 'show_img_level', 'maxgeneral']);
+$admin = $gameStor->getValues(['block_general_create', 'show_img_level', 'maxgeneral', 'turnterm']);
 if ($admin['block_general_create']) {
     die(WebUtil::errorBackMsg("잘못된 접근입니다!!!"));
 }
@@ -38,6 +38,7 @@ if ($gencount >= $admin['maxgeneral']) {
     die(WebUtil::errorBackMsg("더 이상 등록할 수 없습니다."));
 }
 
+$inheritTotalPoint = resetInheritanceUser($userID);
 
 $nationList = $db->query('SELECT nation,`name`,color,scout FROM nation');
 $nationList = Util::convertArrayToDict($nationList, 'nation');
@@ -55,6 +56,20 @@ foreach (GameConst::$availablePersonality as $personalityID) {
         'name' => $personalityObj->getName(),
         'info' => $personalityObj->getInfo(),
     ];
+}
+
+$availableInheritSpecial = [];
+foreach (GameConst::$availableSpecialWar as $specialID){
+    $specialObj = buildGeneralSpecialWarClass($specialID);
+    $availableInheritSpecial[$specialID] = [
+        'name' => $specialObj->getName(),
+        'info' => $specialObj->getInfo(),
+    ];
+}
+
+$availableInheritCity = [];
+foreach(CityConst::all() as $city){
+    $availableInheritCity[] = [$city->id, CityConst::$regionMap[$city->region], $city->name];
 }
 
 ?>
@@ -93,7 +108,17 @@ foreach (GameConst::$availablePersonality as $personalityID) {
             'total' => GameConst::$defaultStatTotal,
             'bonusMin' => GameConst::$bornMinStatBonus,
             'bonusMax' => GameConst::$bornMaxStatBonus,
-        ]
+        ],
+        'inheritTotalPoint'=>$inheritTotalPoint,
+        'inheritPoints'=>[
+            'special'=>GameConst::$inheritBornSpecialPoint,
+            'turnTime'=>GameConst::$inheritBornTurntimePoint,
+            'city'=>GameConst::$inheritBornCityPoint,
+            'stat'=>GameConst::$inheritBornStatPoint
+        ],
+        'availableInheritSpecial' => $availableInheritSpecial,
+        'availableInheritCity'=> $availableInheritCity,
+        'turnterm'=>$gameStor->turnterm,
     ]) ?>
 </head>
 

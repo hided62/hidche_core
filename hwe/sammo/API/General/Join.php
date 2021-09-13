@@ -143,14 +143,16 @@ class Join extends \sammo\BaseAPI
             if (count($inheritBonusStat) != 3) {
                 return "보너스 능력치가 잘못 지정되었습니다. 다시 가입해주세요!";
             }
-            $sum = array_sum($inheritBonusStat);
-            if ($sum < 3 || $sum > 5) {
-                return "보너스 능력치 합이 잘못 지정되었습니다. 다시 가입해주세요!";
-            }
             foreach ($inheritBonusStat as $stat) {
                 if ($stat < 0) {
                     return "보너스 능력치가 음수입니다. 다시 가입해주세요!";
                 }
+            }
+            $sum = array_sum($inheritBonusStat);
+            if ($sum == 0) {
+                $inheritBonusStat = null;
+            } else if ($sum < 3 || $sum > 5) {
+                return "보너스 능력치 합이 잘못 지정되었습니다. 다시 가입해주세요!";
             }
         }
 
@@ -163,7 +165,7 @@ class Join extends \sammo\BaseAPI
             $inheritRequiredPoint += GameConst::$inheritBornCityPoint;
         }
         if ($inheritBonusStat !== null) {
-            $inheritRequiredPoint += GameConst::$inheritBornMaxBonusStat;
+            $inheritRequiredPoint += GameConst::$inheritBornStatPoint;
         }
         if ($inheritSpecial !== null) {
             $inheritRequiredPoint += GameConst::$inheritBornSpecialPoint;
@@ -278,6 +280,7 @@ class Join extends \sammo\BaseAPI
         }
 
         if ($inheritTurntime !== null) {
+            //FIXME: 오동작함
             $inheritTurntime = $inheritTurntime % ($gameStor->turnterm * 60);
             $inheritTurntime += Util::randRangeInt(0, 999999) / 1000000;
             $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
@@ -371,6 +374,16 @@ class Join extends \sammo\BaseAPI
             'general_id' => $generalID,
         ]);
         $cityname = CityConst::byID($city)->name;
+
+        if ($inheritRequiredPoint > 0) {
+            $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
+            $inheritStor->setValue('previous', [$inheritTotalPoint - $inheritRequiredPoint, [
+                'inheritBonusStat'=>$inheritBonusStat,
+                'inheritCity'=>$inheritCity,
+                'inheritSpecial'=>$inheritSpecial,
+                'inheritTurntime'=>$inheritTurntime,
+            ]]);
+        }
 
         $me = [
             'no' => $generalID
