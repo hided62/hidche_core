@@ -21,7 +21,7 @@ class Validator extends \Valitron\Validator
      * $rule에 함수를 넣는 대신 상속한 클래스에 추가하는 방식을 사용할 것.
      *
      * @suppress PhanUndeclaredFunctionInCallable
-     * 
+     *
      * @param  string                    $rule
      * @param  array|string              $fields
      * @return $this
@@ -31,7 +31,7 @@ class Validator extends \Valitron\Validator
         $params = func_get_args();
         return parent::rule(...$params);
 
-        
+
     }
 
     /**
@@ -97,5 +97,12 @@ class Validator extends \Valitron\Validator
         }
         $width = mb_strwidth($value);
         return $params[0] <= $width && $width <= $params[1];
+    }
+
+    protected function validateKeyExists($field, $value, $params){
+        if(!is_string($value) && !is_numeric($value)){
+            return false;
+        }
+        return key_exists($value, $params[0]);
     }
 }

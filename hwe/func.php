@@ -1711,6 +1711,8 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
             rollbackInheritUniqueTrial($general, $itemKey, '절차상의 오류입니다.');
             continue;
         }
+
+        //XXX: 정렬할 필요 없지 않나?
         usort($anyTrials, function ($lhsTrial, $rhsTrial) {
             [,, $lhsAmount] = $lhsTrial;
             [,, $rhsAmount] = $rhsTrial;
@@ -1718,7 +1720,7 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
         });
 
         //공동 1등인데 본인이 있을 수도 있다.
-        [,, $topAmount] = $anyTrials;
+        [,, $topAmount] = $anyTrials[0];
         if ($amount < $topAmount) {
             $compAmount = $topAmount / $amount;
             if ($compAmount > 2.0) {

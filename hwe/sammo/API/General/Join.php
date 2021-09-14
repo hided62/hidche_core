@@ -78,12 +78,8 @@ class Join extends \sammo\BaseAPI
         return static::REQ_LOGIN | static::REQ_READ_ONLY;
     }
 
-    public function launch(?Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
     {
-        if ($session === null) {
-            throw "invalid session";
-        }
-
         $userID = $session->userID;
 
         $name       = $this->args['name'];

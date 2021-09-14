@@ -20,7 +20,7 @@ abstract class BaseAPI
     abstract function validateArgs(): ?string;
 
     /** @return null|string|array */
-    abstract function launch(?Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag);
+    abstract function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag);
 
     public function tryCache():?string{
         return null;
