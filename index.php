@@ -80,8 +80,8 @@ foreach (ServConfig::getServerList() as $setting) {
         </div>
     </nav>
     <div class="container" style="margin-top:120px;">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
-        <div class="row justify-content-md-center">
+        <h1 class="row justify-content-center">삼국지 모의전투 HiDCHe</h1>
+        <div class="row justify-content-center">
             <div class="col" style="max-width:450px;">
                 <div class="card" id="login_card">
                     <h3 class="card-header">
@@ -126,13 +126,14 @@ foreach (ServConfig::getServerList() as $setting) {
             </div>
         </div>
         <?php if ($runningServer) : ?>
-            <div class="row justify-content-md-center" style='margin-top:20px;'>
-                <div class="col" style="max-width:750px;">
+            <div class="d-flex justify-content-center" id="map-subframe-p" style='margin-top:20px;'>
+                <div id="map-subframe">
                     <iframe id="running_map" src="<?= $runningServer['name'] ?>/recent_map.php"></iframe>
                 </div>
             </div>
         <?php endif; ?>
     </div>
+
     <div id="bottom_box">
         <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2020 • HideD
             <br>크롬과 파이어폭스에 최적화되어있습니다.

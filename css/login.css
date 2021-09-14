@@ -127,8 +127,75 @@ input::-webkit-input-placeholder {
     border-radius: .2rem;
 }
 
-#running_map{
-    overflow: hidden;
+#running_map {
     border: none;
-    width:700px;
+    width: 700px;
+}
+
+
+#map-subframe {
+    display: none;
+    width: 700px;
+}
+
+@media only screen and (min-width : 360px) {
+    #map-subframe {
+        display: block;
+        transform: scale(calc(330 / 700));
+        transform-origin: 350px 0px;
+        margin-bottom: -400px;
+    }
+}
+
+
+@media only screen and (min-width : 440px) {
+    #map-subframe {
+        transform: scale(calc(410 / 700));
+        margin-bottom: -300px;
+    }
+}
+
+@media only screen and (min-width : 480px) {
+    #map-subframe {
+        transform: scale(calc(450 / 700));
+        margin-bottom: -250px;
+    }
+}
+
+
+@media only screen and (min-width : 520px) {
+    #map-subframe {
+        transform: scale(calc(490 / 700));
+        margin-bottom: -200px;
+    }
+}
+
+@media only screen and (min-width : 576px) {
+    #map-subframe {
+        transform: scale(calc(546 / 700));
+        margin-bottom: -150px;
+    }
+}
+
+@media only screen and (min-width : 640px) {
+    #map-subframe {
+        transform: scale(calc(600/700));
+        margin-bottom: -100px;
+    }
+}
+
+
+@media only screen and (min-width : 700px) {
+    #map-subframe {
+        transform: scale(calc(670 / 700));
+        margin-bottom: -20px;
+    }
+}
+
+
+@media only screen and (min-width : 730px) {
+    #map-subframe {
+        transform: none;
+        margin-bottom: 0;
+    }
 }
