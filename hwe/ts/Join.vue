@@ -106,17 +106,17 @@
           능력치 조절
         </div>
         <div class="col col-md-8 col-9">
-          <CButton color="secondary" class="stat-btn" @click="randStatRandom"
-            >랜덤형</CButton
+          <b-button variant="secondary" class="stat-btn" @click="randStatRandom"
+            >랜덤형</b-button
           >
-          <CButton color="secondary" class="stat-btn" @click="randStatLeadPow"
-            >통솔무력형</CButton
+          <b-button variant="secondary" class="stat-btn" @click="randStatLeadPow"
+            >통솔무력형</b-button
           >
-          <CButton color="secondary" class="stat-btn" @click="randStatLeadInt"
-            >통솔지력형</CButton
+          <b-button variant="secondary" class="stat-btn" @click="randStatLeadInt"
+            >통솔지력형</b-button
           >
-          <CButton color="secondary" class="stat-btn" @click="randStatPowInt"
-            >무력지력형</CButton
+          <b-button variant="secondary" class="stat-btn" @click="randStatPowInt"
+            >무력지력형</b-button
           >
         </div>
       </div>
@@ -260,8 +260,8 @@
 
     <div class="row" style="border-top: solid 1px #aaa">
       <div class="col a-center" style="margin: 0.5em">
-        <CButton color="primary" @click="submitForm">장수 생성</CButton
-        >&nbsp;<CButton color="secondary" @click="resetArgs">다시 입력</CButton>
+        <b-button color="primary" @click="submitForm">장수 생성</b-button
+        >&nbsp;<b-button color="secondary" @click="resetArgs">다시 입력</b-button>
       </div>
     </div>
   </div>
@@ -273,7 +273,6 @@ import "../scss/game_bg.scss";
 import { defineComponent } from "vue";
 import TopBackBar from "./components/TopBackBar.vue";
 import {
-  CButton,
   CTable,
   CTableBody,
   CTableRow,
@@ -366,7 +365,6 @@ export default defineComponent({
   name: "Join",
   components: {
     TopBackBar,
-    CButton,
     CTable,
     CTableBody,
     CTableRow,

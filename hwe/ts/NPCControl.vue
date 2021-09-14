@@ -298,9 +298,8 @@
                     <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
                     }}<button
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      v-c-tooltip="actionHelpText[element.id]"
+                      v-b-tooltip.hover :title="actionHelpText[element.id]"
                     >
-                      <!-- FIXME: v-c-tooltip 동작이 조금 묘하다. 버전 문제인가? -->
                       <i class="bi bi-question-lg"></i>
                     </button>
                   </div>
@@ -320,7 +319,7 @@
                     <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
                     }}<button
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      v-c-tooltip="actionHelpText[element.id]"
+                      v-b-tooltip.hover :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg"></i>
                     </button>
@@ -391,7 +390,7 @@
                     <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
                     }}<button
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      v-c-tooltip="actionHelpText[element.id]"
+                      v-b-tooltip.hover :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg"></i>
                     </button>
@@ -412,7 +411,7 @@
                     <i class="bi bi-list"></i>&nbsp;&nbsp;{{ element.id
                     }}<button
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      v-c-tooltip="actionHelpText[element.id]"
+                      v-b-tooltip.hover :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg"></i>
                     </button>
@@ -470,7 +469,6 @@ import { unwrap } from "./util/unwrap";
 import { convertFormData } from "./util/convertFormData";
 import axios from "axios";
 import { NPCPriorityBtnHelpMessage } from "./helpTexts";
-import { CTooltip } from "@coreui/vue/src/directives/CTooltip";
 import draggable from "vuedraggable";
 import MyToast from "./components/MyToast.vue";
 import TopBackBar from "./components/TopBackBar.vue";
@@ -511,9 +509,6 @@ export default defineComponent({
     NumberInputWithInfo,
     draggable,
     MyToast,
-  },
-  directives: {
-    "c-tooltip": CTooltip,
   },
   methods: {
     resetPolicy() {
