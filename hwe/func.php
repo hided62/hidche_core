@@ -1283,16 +1283,26 @@ function addAge()
 
         foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5,aux from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general) {
             $generalID = $general['no'];
-            $special2 = SpecialityHelper::pickSpecialWar(
-                $general,
-                (Json::decode($general['aux'])['prev_types_special2']) ?? []
-            );
+            $generalAux = Json::decode($general['aux']);
+
+            $updateVars = [];
+            if(key_exists('inheritSpecificSpecialWar', $generalAux)){
+                $special2 = $generalAux['inheritSpecificSpecialWar'];
+                unset($generalAux['inheritSpecificSpecialWar']);
+                $updateVars['aux'] = Json::encode($generalAux);
+            }
+            else{
+                $special2 = SpecialityHelper::pickSpecialWar(
+                    $general,
+                    ($generalAux['prev_types_special2']) ?? []
+                );
+            }
+
             $specialClass = buildGeneralSpecialWarClass($special2);
             $specialText = $specialClass->getName();
 
-            $db->update('general', [
-                'special2' => $special2
-            ], 'no=%i', $general['no']);
+            $updateVars['special2'] = $special2;
+            $db->update('general', $updateVars, 'no=%i', $general['no']);
 
             $logger = new ActionLogger($generalID, $general['nation'], $year, $month);
 

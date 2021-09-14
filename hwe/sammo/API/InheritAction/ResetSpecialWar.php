@@ -35,7 +35,7 @@ class ResetSpecialWar extends \sammo\BaseAPI
 
 
         $currentSpecialWar = $general->getVar('special2');
-        if($currentSpecialWar === null || $currentSpecialWar == 'None'){
+        if ($currentSpecialWar === null || $currentSpecialWar == 'None') {
             return '이미 전투 특기가 공란입니다.';
         }
 
@@ -54,6 +54,11 @@ class ResetSpecialWar extends \sammo\BaseAPI
         if ($previousPoint < $reqPoint) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
+
+        $oldTypeKey = 'prev_types_special2';
+        $oldSpecialList = $general->getAuxVar($oldTypeKey) ?? [];
+        $oldSpecialList[] = $currentSpecialWar;
+        $general->setAuxVar($oldTypeKey, $oldSpecialList);
 
         $general->setAuxVar('inheritResetSpecialWar', $nextLevel);
         $general->setVar('special2', 'None');
