@@ -86,9 +86,9 @@
           </div>
         </div>
       </div>
-      <div class="row px-4" style="margin-top: 2em">
-        <div class="col col-md-4 col-sm-6 p-2">
-          <div class="row">
+      <div class="row py-2" style="margin-top: 2em">
+        <div class="col col-md-4 col-sm-6">
+          <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
             <b-button
               class="col-6"
@@ -105,8 +105,8 @@
             >
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6 p-2">
-          <div class="row">
+        <div class="col col-md-4 col-sm-6">
+          <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 유니크 획득</div>
             <b-button
               class="col-6"
@@ -123,8 +123,8 @@
             >
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6 p-2">
-          <div class="row">
+        <div class="col col-md-4 col-sm-6">
+          <div class="row px-4">
             <div class="a-right col-6 align-self-center">
               즉시 전투 특기 초기화
             </div>
