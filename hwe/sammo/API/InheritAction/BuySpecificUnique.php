@@ -14,9 +14,9 @@ class BuySpecificUnique extends \sammo\BaseAPI
 {
     public function validateArgs(): ?string
     {
-        foreach(GameConst::$allItems as $items){
-            foreach($items as $itemKey=>$amount){
-                if($amount == 0){
+        foreach (GameConst::$allItems as $items) {
+            foreach ($items as $itemKey => $amount) {
+                if ($amount == 0) {
                     continue;
                 }
                 $availableItems[$itemKey] = $amount;
@@ -29,7 +29,7 @@ class BuySpecificUnique extends \sammo\BaseAPI
             'amount',
         ])
             ->rule('integer', 'amount')
-            ->rule('min', GameConst::$inheritItemUniqueMinPoint)
+            ->rule('min', 'amount', GameConst::$inheritItemUniqueMinPoint)
             ->rule('keyExists', 'item', $availableItems);
 
         if (!$v->validate()) {
@@ -53,20 +53,20 @@ class BuySpecificUnique extends \sammo\BaseAPI
         $generalID = $session->generalID;
 
         $general = General::createGeneralObjFromDB($generalID);
-        if($userID != $general->getVar('owner')){
+        if ($userID != $general->getVar('owner')) {
             return '로그인 상태가 이상합니다. 다시 로그인해 주세요.';
         }
 
         $itemTrials = $general->getAuxVar('inheritUniqueTrial') ?? [];
-        if(key_exists($itemKey, $itemTrials)){
+        if (key_exists($itemKey, $itemTrials)) {
             return '이미 입찰한 아이템입니다. 다음 턴에 시도해 주세요.';
         }
 
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
         $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");
-        $previousPoint = $inheritStor->getValue('previous')??0;
-        if($previousPoint < $amount){
+        $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
+        if ($previousPoint < $amount) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
 

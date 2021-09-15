@@ -5,16 +5,19 @@
     class="tb_layout bg0"
     style="max-width: 1000px; margin: auto; border: solid 1px #888888"
   >
-    <div id="inheritance_list">
+    <div id="inheritance_list" class="row">
       <template v-for="(text, key) in inheritanceViewText" :key="key">
-        <div :id="`inherit_${key}`" class="inherit_item inherit_template_item">
+        <div
+          :id="`inherit_${key}`"
+          class="col col-sm-4 col-12 inherit_item inherit_template_item"
+        >
           <div class="row">
             <label
               :id="`inherit_${key}_head`"
-              class="inherit_head col-sm-6 col-form-label"
+              class="inherit_head col col-md-6 col-sm-12 col-6 col-form-label"
               >{{ text.title }}</label
             >
-            <div class="col-sm-6">
+            <div class="col col-md-6 col-sm-12 col-6">
               <input
                 type="text"
                 class="form-control inherit_value"
@@ -38,56 +41,94 @@
       <div class="row">
         <div class="col"><div class="bg1 a-center">유산 포인트 상점</div></div>
       </div>
+
       <div class="row">
-        <div
-          class="col col-md-4 col-6"
-          v-for="(info, buffKey) in inheritBuffHelpText"
-          :key="buffKey"
-        >
-          <div class="row">
-            <label
-              class="col col-sm-6 col-form-label"
-              :for="`buff-${buffKey}`"
-              >{{ info.title }}</label
-            >
-            <div class="col col-sm-6">
-              <b-form-input
-                :id="`buff-${buffKey}`"
-                type="number"
-                v-model="inheritBuff[buffKey]"
-                :min="prevInheritBuff[buffKey] ?? 0"
-                :max="maxInheritBuff"
-              ></b-form-input>
+        <div class="col offset-md-4 col-md-4 col-sm-6 col-12 py-2">
+          <div class="row px-4">
+            <div class="a-right col-6 align-self-center">
+              다음 전투 특기 선택
+            </div>
+            <div class="col-6">
+              <select class="form-select col-6" v-model="nextSpecialWar">
+                <option
+                  v-for="(info, key) in availableSpecialWar"
+                  :key="key"
+                  :value="key"
+                >
+                  {{ info.title }}
+                </option>
+              </select>
             </div>
           </div>
-          <div style="text-align: right">
+          <div class="a-right">
             <small class="form-text text-muted"
-              >{{ info.info }}<br /><span style="color: white"
-                >필요 포인트:
-                {{
-                  inheritActionCost.buff[inheritBuff[buffKey]] -
-                  inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
-                }}</span
+              ><span
+                style="color: white"
+                v-html="availableSpecialWar[nextSpecialWar].info"
+              /><br />다음에 얻을 전투 특기를 정합니다.<br /><span
+                style="color: white"
+                >필요 포인트: {{ inheritActionCost.nextSpecial }}</span
               ></small
             >
           </div>
-          <div class="row px-4" style="margin-bottom: 1em">
+          <div class="row px-4">
             <b-button
-              variant="secondary"
-              @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
-              class="col col-md-6 col-4 offset-md-0 offset-4"
-              >리셋</b-button
-            ><b-button
+              class="col-6 offset-6"
               variant="primary"
-              class="col col-md-6 col-4"
-              @click="buyInheritBuff(buffKey)"
+              @click="setNextSpecialWar"
+              >구입</b-button
+            >
+          </div>
+        </div>
+        <div class="col col-md-4 col-sm-6 col-12 py-2">
+          <div class="row px-4">
+            <div class="a-right col-6 align-self-center">유니크 입찰</div>
+            <div class="col-6">
+              <select class="form-select col-6" v-model="specificUnique">
+                <option
+                  v-for="(info, key) in availableUnique"
+                  :key="key"
+                  :value="key"
+                >
+                  {{ info.title }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row px-4">
+            <div class="col">
+              <NumberInputWithInfo
+                title="입찰 포인트"
+                :min="inheritActionCost.minSpecificUnique"
+                :max="this.items.previous"
+                v-model="specificUniqueAmount"
+              />
+            </div>
+          </div>
+          <div class="a-right">
+            <small class="form-text text-muted"
+              >얻고자 하는 유니크 아이템을 포인트를 걸어 입찰합니다. 최고
+              포인트인 경우 다음 턴에 유니크를 얻습니다.<br /><span
+                style="color: white"
+                v-html="availableUnique[specificUnique].info"
+            /></small>
+          </div>
+
+          <div class="row px-4">
+            <b-button
+              class="col-6 offset-6"
+              variant="primary"
+              @click="buySpecificUnique"
               >구입</b-button
             >
           </div>
         </div>
       </div>
-      <div class="row py-2" style="margin-top: 2em">
-        <div class="col col-md-4 col-sm-6">
+      <div style="width: 100%; padding: 0 10px">
+        <hr :style="{ opacity: 0.5 }" />
+      </div>
+      <div class="row py-sm-2">
+        <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
             <b-button
@@ -105,7 +146,7 @@
             >
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6">
+        <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 유니크 획득</div>
             <b-button
@@ -123,7 +164,7 @@
             >
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6">
+        <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">
               즉시 전투 특기 초기화
@@ -144,25 +185,68 @@
           </div>
         </div>
       </div>
-      <!-- ResetTurnTime -->
-      <!-- BuyRandomUnique -->
-      <!-- ResetSpecialWar -->
-      <!-- SetNextSpecialWar, type -->
-      <!-- BuySpecificUnique, item, amount -->
+    </div>
+    <div style="width: 100%; padding: 0 10px">
+      <hr :style="{ opacity: 0.5 }" />
+    </div>
+    <div class="row">
+      <div
+        class="col col-md-4 col-sm-6 col-12"
+        v-for="(info, buffKey) in inheritBuffHelpText"
+        :key="buffKey"
+      >
+        <div class="row">
+          <label class="col col-sm-6 col-form-label" :for="`buff-${buffKey}`">{{
+            info.title
+          }}</label>
+          <div class="col col-sm-6">
+            <b-form-input
+              :id="`buff-${buffKey}`"
+              type="number"
+              v-model="inheritBuff[buffKey]"
+              :min="prevInheritBuff[buffKey] ?? 0"
+              :max="maxInheritBuff"
+            ></b-form-input>
+          </div>
+        </div>
+        <div style="text-align: right">
+          <small class="form-text text-muted"
+            >{{ info.info }}<br /><span style="color: white"
+              >필요 포인트:
+              {{
+                inheritActionCost.buff[inheritBuff[buffKey]] -
+                inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
+              }}</span
+            ></small
+          >
+        </div>
+        <div class="row px-4" style="margin-bottom: 1em">
+          <b-button
+            variant="secondary"
+            @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
+            class="col col-md-6 col-4 offset-md-0 offset-4"
+            >리셋</b-button
+          ><b-button
+            variant="primary"
+            class="col col-md-6 col-4"
+            @click="buyInheritBuff(buffKey)"
+            >구입</b-button
+          >
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 import "../scss/bootstrap5.scss";
-import "../scss/inheritPoint.scss";
 import "../scss/game_bg.scss";
 import TopBackBar from "./components/TopBackBar.vue";
-import { sum } from "lodash";
 import _ from "lodash";
 import { InvalidResponse } from "./defs";
 import axios from "axios";
+import NumberInputWithInfo from "./components/NumberInputWithInfo.vue";
 
 type InheritanceType =
   | "previous"
@@ -300,10 +384,28 @@ declare const inheritActionCost: {
   resetTurnTime: number;
   resetSpecialWar: number;
   randomUnique: number;
+  nextSpecial: number;
+  minSpecificUnique: number;
 };
 
 declare const resetTurnTimeLevel: number;
 declare const resetSpecialWarLevel: number;
+
+declare const availableSpecialWar: Record<
+  string,
+  {
+    title: string;
+    info: string;
+  }
+>;
+
+declare const availableUnique: Record<
+  string,
+  {
+    title: string;
+    info: string;
+  }
+>;
 
 export default defineComponent({
   name: "InheritPoint",
@@ -335,6 +437,11 @@ export default defineComponent({
       inheritActionCost,
       resetTurnTimeLevel,
       resetSpecialWarLevel,
+      nextSpecialWar: Object.keys(availableSpecialWar)[0],
+      specificUnique: Object.keys(availableUnique)[0],
+      availableSpecialWar,
+      availableUnique,
+      specificUniqueAmount: inheritActionCost.minSpecificUnique,
     };
   },
   methods: {
@@ -447,13 +554,121 @@ export default defineComponent({
       //TODO: 페이지 새로고침 필요없이 하도록
       location.reload();
     },
+    async setNextSpecialWar() {
+      const specialWarName =
+        this.availableSpecialWar[this.nextSpecialWar].title ?? undefined;
+      if (specialWarName === undefined) {
+        alert(`잘못된 타입: ${this.nextSpecialWar}`);
+        return;
+      }
+
+      const cost = inheritActionCost.nextSpecial;
+      if (this.items.previous < cost) {
+        alert("유산 포인트가 부족합니다.");
+        return;
+      }
+      //TODO: JosaUtil
+      if (
+        !confirm(
+          `${cost} 포인트로 다음 전특을 ${specialWarName}(으)로 고정하겠습니까?`
+        )
+      ) {
+        return;
+      }
+
+      let result: InvalidResponse;
+      try {
+        const response = await axios({
+          url: "api.php",
+          method: "post",
+          responseType: "json",
+          data: {
+            path: `InheritAction/SetNextSpecialWar`,
+            args: {
+              type: this.nextSpecialWar,
+            },
+          },
+        });
+        result = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`실패했습니다: ${e}`);
+        return;
+      }
+
+      alert("성공했습니다.");
+      //TODO: 페이지 새로고침 필요없이 하도록
+      location.reload();
+    },
+    async buySpecificUnique() {
+      const uniqueName =
+        this.availableUnique[this.specificUnique].title ?? undefined;
+      if (uniqueName === undefined) {
+        alert(`잘못된 타입: ${this.specificUnique}`);
+        return;
+      }
+
+      const amount = this.specificUniqueAmount;
+      if (this.items.previous < amount) {
+        alert("유산 포인트가 부족합니다.");
+        return;
+      }
+      //TODO: JosaUtil
+      if (
+        !confirm(
+          `${amount} 포인트로 ${uniqueName}(을)를 입찰하겠습니까?`
+        )
+      ) {
+        return;
+      }
+
+      let result: InvalidResponse;
+      try {
+        const response = await axios({
+          url: "api.php",
+          method: "post",
+          responseType: "json",
+          data: {
+            path: `InheritAction/BuySpecificUnique`,
+            args: {
+              item: this.specificUnique,
+              amount,
+            },
+          },
+        });
+        result = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`실패했습니다: ${e}`);
+        return;
+      }
+
+      alert("성공했습니다.");
+      //TODO: 페이지 새로고침 필요없이 하도록
+      location.reload();
+    },
   },
   components: {
     TopBackBar,
+    NumberInputWithInfo,
   },
 });
 </script>
 
 
 <style>
+.col-form-label {
+  text-align: right;
+  padding-right: 2ch;
+}
+
+.inherit_value {
+  text-align: right;
+}
 </style>

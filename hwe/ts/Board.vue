@@ -61,7 +61,6 @@
 
 <script lang="ts">
 import "../scss/bootstrap5.scss";
-import "../scss/inheritPoint.scss";
 import "../scss/game_bg.scss";
 import "../../css/config.css";
 

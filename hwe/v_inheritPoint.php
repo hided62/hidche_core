@@ -15,10 +15,6 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $me = General::createGeneralObjFromDB($generalID);
 
 
-$items = [];
-foreach (array_keys(General::INHERITANCE_KEY) as $key) {
-    $items[$key] = $me->getInheritancePoint($key) ?? 0;
-}
 
 $currentInheritBuff = [];
 foreach ($me->getAuxVar('inheritBuff') as $buff => $buffLevel) {
@@ -37,9 +33,37 @@ function calcResetAttrPoint($level)
     return GameConst::$inheritResetAttrPointBase[$level];
 }
 
+$avilableSpecialWar = [];
+foreach (GameConst::$availableSpecialWar as $specialWarKey) {
+    $specialWarObj = buildGeneralSpecialWarClass($specialWarKey);
+    $avilableSpecialWar[$specialWarKey] = [
+        'title' => $specialWarObj->getName(),
+        'info' => $specialWarObj->getInfo(),
+    ];
+}
 
-$resetTurnTimeLevel = $me->getAuxVar('inheritResetTurnTime')??0;
-$resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar')??0;
+$availableUnique = [];
+foreach (GameConst::$allItems as $subItems){
+    foreach($subItems as $itemKey=>$amount){
+        if($amount == 0){
+            continue;
+        }
+        $itemObj = buildItemClass($itemKey);
+        $availableUnique[$itemKey] = [
+            'title' => $itemObj->getName(),
+            'info'=>$itemObj->getInfo(),
+        ];
+    }
+}
+
+
+$items = [];
+foreach (array_keys(General::INHERITANCE_KEY) as $key) {
+    $items[$key] = $me->getInheritancePoint($key) ?? 0;
+}
+
+$resetTurnTimeLevel = $me->getAuxVar('inheritResetTurnTime') ?? 0;
+$resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar') ?? 0;
 ?>
 <!DOCTYPE html>
 <html>
@@ -48,7 +72,7 @@ $resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar')??0;
     <title><?= UniqueConst::$serverName ?>: 유산 관리</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1024" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/v_inheritPoint.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
@@ -66,7 +90,11 @@ $resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar')??0;
             'resetTurnTime' => calcResetAttrPoint($resetTurnTimeLevel),
             'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel),
             'randomUnique' => GameConst::$inheritItemRandomPoint,
+            'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
+            'minSpecificUnique'=>GameConst::$inheritItemUniqueMinPoint,
         ],
+        'availableSpecialWar' => $avilableSpecialWar,
+        'availableUnique' => $availableUnique,
     ]) ?>
 </head>
 
