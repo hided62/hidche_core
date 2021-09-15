@@ -54,7 +54,7 @@ class SetNextSpecialWar extends \sammo\BaseAPI
             return '이미 그 특기를 예약하였습니다.';
         }
 
-        if($inheritSpecificSpecialWar !== null){
+        if ($inheritSpecificSpecialWar !== null) {
             return '이미 예약한 특기가 있습니다.';
         }
 
@@ -62,13 +62,13 @@ class SetNextSpecialWar extends \sammo\BaseAPI
 
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
-        $previousPoint = $inheritStor->getValue('previous') ?? 0;
+        $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
         if ($previousPoint < $reqAmount) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
 
         $general->setAuxVar('inheritSpecificSpecialWar', $type);
-        $inheritStor->setValue('previous', $previousPoint - $reqAmount);
+        $inheritStor->setValue('previous', [$previousPoint - $reqAmount, ['SetNextSpecialWar', $type]]);
         $general->applyDB($db);
         return null;
     }

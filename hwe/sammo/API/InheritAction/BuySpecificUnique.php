@@ -72,7 +72,7 @@ class BuySpecificUnique extends \sammo\BaseAPI
 
         $itemTrials[$itemKey] = $amount;
         $general->setAuxVar('inheritUniqueTrial', $itemTrials);
-        $inheritStor->setValue('previous', $previousPoint - $amount);
+        $inheritStor->setValue('previous', [$previousPoint - $amount, ['BuySpecificUnique', $itemKey, $amount]]);
         $trialStor->setValue("u{$userID}", [$userID, $generalID, $amount]);
         $general->applyDB($db);
         return null;

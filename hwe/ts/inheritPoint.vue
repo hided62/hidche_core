@@ -62,14 +62,16 @@
           </div>
           <div style="text-align: right">
             <small class="form-text text-muted"
-              >{{ info.info }}<br /><span style="color:white">필요 포인트:
-              {{
-                inheritBuffCost[inheritBuff[buffKey]] -
-                inheritBuffCost[prevInheritBuff[buffKey] ?? 0]
-              }}</span></small
+              >{{ info.info }}<br /><span style="color: white"
+                >필요 포인트:
+                {{
+                  inheritActionCost.buff[inheritBuff[buffKey]] -
+                  inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
+                }}</span
+              ></small
             >
           </div>
-          <div class="row px-4" style="margin-bottom:1em;">
+          <div class="row px-4" style="margin-bottom: 1em">
             <b-button
               variant="secondary"
               @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
@@ -84,7 +86,69 @@
           </div>
         </div>
       </div>
-      <div class="row"></div>
+      <div class="row px-4" style="margin-top: 2em">
+        <div class="col col-md-4 col-sm-6 p-2">
+          <div class="row">
+            <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
+            <b-button
+              class="col-6"
+              variant="primary"
+              @click="buySimple('ResetTurnTime')"
+              >구입</b-button
+            >
+          </div>
+          <div class="a-right">
+            <small class="form-text text-muted"
+              >다음 턴이 랜덤으로 바뀝니다.<br /><span style="color: white"
+                >필요 포인트: {{ inheritActionCost.resetTurnTime }}</span
+              ></small
+            >
+          </div>
+        </div>
+        <div class="col col-md-4 col-sm-6 p-2">
+          <div class="row">
+            <div class="a-right col-6 align-self-center">랜덤 유니크 획득</div>
+            <b-button
+              class="col-6"
+              variant="primary"
+              @click="buySimple('BuyRandomUnique')"
+              >구입</b-button
+            >
+          </div>
+          <div class="a-right">
+            <small class="form-text text-muted"
+              >다음 턴에 랜덤 유니크를 얻습니다.<br /><span style="color: white"
+                >필요 포인트: {{ inheritActionCost.randomUnique }}</span
+              ></small
+            >
+          </div>
+        </div>
+        <div class="col col-md-4 col-sm-6 p-2">
+          <div class="row">
+            <div class="a-right col-6 align-self-center">
+              즉시 전투 특기 초기화
+            </div>
+            <b-button
+              class="col-6"
+              variant="primary"
+              @click="buySimple('ResetSpecialWar')"
+              >구입</b-button
+            >
+          </div>
+          <div class="a-right">
+            <small class="form-text text-muted"
+              >즉시 전투 특기를 초기화합니다.<br /><span style="color: white"
+                >필요 포인트: {{ inheritActionCost.resetSpecialWar }}</span
+              ></small
+            >
+          </div>
+        </div>
+      </div>
+      <!-- ResetTurnTime -->
+      <!-- BuyRandomUnique -->
+      <!-- ResetSpecialWar -->
+      <!-- SetNextSpecialWar, type -->
+      <!-- BuySpecificUnique, item, amount -->
     </div>
   </div>
 </template>
@@ -231,7 +295,15 @@ const inheritBuffHelpText: Record<
 };
 
 declare const maxInheritBuff: number;
-declare const inheritBuffCost: number[];
+declare const inheritActionCost: {
+  buff: number[];
+  resetTurnTime: number;
+  resetSpecialWar: number;
+  randomUnique: number;
+};
+
+declare const resetTurnTimeLevel: number;
+declare const resetSpecialWarLevel: number;
 
 export default defineComponent({
   name: "InheritPoint",
@@ -260,7 +332,9 @@ export default defineComponent({
       inheritBuff,
       prevInheritBuff: currentInheritBuff,
       maxInheritBuff,
-      inheritBuffCost,
+      inheritActionCost,
+      resetTurnTimeLevel,
+      resetSpecialWarLevel,
     };
   },
   methods: {
@@ -275,7 +349,8 @@ export default defineComponent({
         return;
       }
       const cost =
-        this.inheritBuffCost[level] - this.inheritBuffCost[prevLevel];
+        this.inheritActionCost.buff[level] -
+        this.inheritActionCost.buff[prevLevel];
       if (this.items.previous < cost) {
         alert("유산 포인트가 부족합니다.");
         return;
@@ -298,11 +373,11 @@ export default defineComponent({
           method: "post",
           responseType: "json",
           data: {
-            path: 'InheritAction/BuyHiddenBuff',
+            path: "InheritAction/BuyHiddenBuff",
             args: {
               type: buffKey,
               level,
-            }
+            },
           },
         });
         result = response.data;
@@ -315,7 +390,60 @@ export default defineComponent({
         return;
       }
 
-      alert('성공했습니다.');
+      alert("성공했습니다.");
+      //TODO: 페이지 새로고침 필요없이 하도록
+      location.reload();
+    },
+    async buySimple(
+      type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpecialWar"
+    ) {
+      const costMap: Record<typeof type, number> = {
+        ResetTurnTime: inheritActionCost.resetTurnTime,
+        ResetSpecialWar: inheritActionCost.resetSpecialWar,
+        BuyRandomUnique: inheritActionCost.randomUnique,
+      };
+
+      const cost = costMap[type];
+      if (cost === undefined) {
+        alert(`올바르지 않은 타입:${type}`);
+        return;
+      }
+
+      const messageMap: Record<typeof type, string> = {
+        ResetTurnTime: `${cost} 포인트로 턴을 초기화 하시겠습니까?`,
+        ResetSpecialWar: `${cost} 포인트로 전투 특기를 초기화 하시겠습니까?`,
+        BuyRandomUnique: `${cost} 포인트로 랜덤 유니크를 구입하시겠습니까?`,
+      };
+      if (this.items.previous < cost) {
+        alert("유산 포인트가 부족합니다.");
+        return;
+      }
+      if (!confirm(messageMap[type])) {
+        return;
+      }
+
+      let result: InvalidResponse;
+      try {
+        const response = await axios({
+          url: "api.php",
+          method: "post",
+          responseType: "json",
+          data: {
+            path: `InheritAction/${type}`,
+            args: {},
+          },
+        });
+        result = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`실패했습니다: ${e}`);
+        return;
+      }
+
+      alert("성공했습니다.");
       //TODO: 페이지 새로고침 필요없이 하도록
       location.reload();
     },

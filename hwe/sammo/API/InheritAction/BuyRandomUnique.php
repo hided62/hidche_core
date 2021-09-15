@@ -45,7 +45,7 @@ class BuyRandomUnique extends \sammo\BaseAPI
         }
 
         $general->setAuxVar('inheritRandomUnique', TimeUtil::now());
-        $inheritStor->setValue('previous', $previousPoint - GameConst::$inheritItemRandomPoint);
+        $inheritStor->setValue('previous', [$previousPoint - GameConst::$inheritItemRandomPoint, 'BuyRandomUnique']);
         $general->applyDB($db);
         return null;
     }

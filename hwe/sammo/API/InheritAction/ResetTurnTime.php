@@ -46,7 +46,7 @@ class ResetTurnTime extends \sammo\BaseAPI
 
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
-        $previousPoint = $inheritStor->getValue('previous') ?? 0;
+        $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
         if ($previousPoint < $reqPoint) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
@@ -60,13 +60,13 @@ class ResetTurnTime extends \sammo\BaseAPI
         $afterTurn = Util::randRange($turnTerm * -60 / 2, $turnTerm * 60 / 2);
 
         $turnTime = $turnTime->add(TimeUtil::secondsToDateInterval($afterTurn));
-        if($turnTime <= $serverTurnTimeObj){
+        if ($turnTime <= $serverTurnTimeObj) {
             $turnTime = $turnTime->add(TimeUtil::secondsToDateInterval($turnTerm * 60));
         }
 
         $general->setVar('turntime', TimeUtil::format($turnTime, true));
         $general->setAuxVar('inheritResetTurnTime', $nextLevel);
-        $inheritStor->setValue('previous', $previousPoint - $reqPoint);
+        $inheritStor->setValue('previous', [$previousPoint - $reqPoint, 'ResetTurnTime']);
         $general->applyDB($db);
         return null;
     }

@@ -21,12 +21,25 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
 }
 
 $currentInheritBuff = [];
-foreach ($me->getAuxVar('inheritBuff') as $buff=>$buffLevel){
-    if(!key_exists($buff,TriggerInheritBuff::BUFF_KEY_TEXT)){
+foreach ($me->getAuxVar('inheritBuff') as $buff => $buffLevel) {
+    if (!key_exists($buff, TriggerInheritBuff::BUFF_KEY_TEXT)) {
         continue;
     }
     $currentInheritBuff[$buff] = $buffLevel;
 }
+
+function calcResetAttrPoint($level)
+{
+    while (count(GameConst::$inheritResetAttrPointBase) <= $level) {
+        $baseLen = count(GameConst::$inheritResetAttrPointBase);
+        GameConst::$inheritResetAttrPointBase[] = GameConst::$inheritResetAttrPointBase[$baseLen - 1] + GameConst::$inheritResetAttrPointBase[$baseLen - 2];
+    }
+    return GameConst::$inheritResetAttrPointBase[$level];
+}
+
+
+$resetTurnTimeLevel = $me->getAuxVar('inheritResetTurnTime')??0;
+$resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar')??0;
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,7 +59,14 @@ foreach ($me->getAuxVar('inheritBuff') as $buff=>$buffLevel){
         'items' => $items,
         'currentInheritBuff' => $currentInheritBuff,
         'maxInheritBuff' => TriggerInheritBuff::MAX_STEP,
-        'inheritBuffCost' => GameConst::$inheritBuffPoints,
+        'resetTurnTimeLevel' => $resetTurnTimeLevel,
+        'resetSpecialWarLevel' => $resetSpecialWarLevel,
+        'inheritActionCost' => [
+            'buff' => GameConst::$inheritBuffPoints,
+            'resetTurnTime' => calcResetAttrPoint($resetTurnTimeLevel),
+            'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel),
+            'randomUnique' => GameConst::$inheritItemRandomPoint,
+        ],
     ]) ?>
 </head>
 
