@@ -11,6 +11,7 @@ class APIHelper
 
     public static function launch(string $rootPath)
     {
+        //TODO: path를 php://input에서 받는게 아니라 api.php?~~~~~ 로 받아오는것이 etag 캐시 측면에서 훨씬 나을 듯!
         try {
             $rawInput = file_get_contents('php://input');
             $input = Json::decode($rawInput);

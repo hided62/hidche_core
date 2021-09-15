@@ -65,15 +65,15 @@ class BuyHiddenBuff extends \sammo\BaseAPI
 
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
-        $previousPoint = $inheritStor->getValue('previous') ?? 0;
+        $previousPoint = ($inheritStor->getValue('previous') ?? [0,0])[0];
         if ($previousPoint < $reqAmount) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
 
         $inheritBuffList[$type] = $level;
         $general->setAuxVar('inheritBuff', $inheritBuffList);
-        $inheritStor->setValue('previous', $previousPoint - $reqAmount);
-        $general->flushUpdateValues();
+        $inheritStor->setValue('previous', [$previousPoint - $reqAmount, [$type, $level]]);
+        $general->applyDB($db);
         return null;
     }
 }

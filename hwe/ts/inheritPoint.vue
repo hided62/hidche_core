@@ -3,7 +3,7 @@
   <div
     id="container"
     class="tb_layout bg0"
-    style="width: 1000px; margin: auto; border: solid 1px #888888"
+    style="max-width: 1000px; margin: auto; border: solid 1px #888888"
   >
     <div id="inheritance_list">
       <template v-for="(text, key) in inheritanceViewText" :key="key">
@@ -34,6 +34,58 @@
         </div>
       </template>
     </div>
+    <div id="inheritance_store">
+      <div class="row">
+        <div class="col"><div class="bg1 a-center">유산 포인트 상점</div></div>
+      </div>
+      <div class="row">
+        <div
+          class="col col-md-4 col-6"
+          v-for="(info, buffKey) in inheritBuffHelpText"
+          :key="buffKey"
+        >
+          <div class="row">
+            <label
+              class="col col-sm-6 col-form-label"
+              :for="`buff-${buffKey}`"
+              >{{ info.title }}</label
+            >
+            <div class="col col-sm-6">
+              <b-form-input
+                :id="`buff-${buffKey}`"
+                type="number"
+                v-model="inheritBuff[buffKey]"
+                :min="prevInheritBuff[buffKey] ?? 0"
+                :max="maxInheritBuff"
+              ></b-form-input>
+            </div>
+          </div>
+          <div style="text-align: right">
+            <small class="form-text text-muted"
+              >{{ info.info }}<br /><span style="color:white">필요 포인트:
+              {{
+                inheritBuffCost[inheritBuff[buffKey]] -
+                inheritBuffCost[prevInheritBuff[buffKey] ?? 0]
+              }}</span></small
+            >
+          </div>
+          <div class="row px-4" style="margin-bottom:1em;">
+            <b-button
+              variant="secondary"
+              @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
+              class="col col-md-6 col-4 offset-md-0 offset-4"
+              >리셋</b-button
+            ><b-button
+              variant="primary"
+              class="col col-md-6 col-4"
+              @click="buyInheritBuff(buffKey)"
+              >구입</b-button
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row"></div>
+    </div>
   </div>
 </template>
 
@@ -45,6 +97,8 @@ import "../scss/game_bg.scss";
 import TopBackBar from "./components/TopBackBar.vue";
 import { sum } from "lodash";
 import _ from "lodash";
+import { InvalidResponse } from "./defs";
+import axios from "axios";
 
 type InheritanceType =
   | "previous"
@@ -121,9 +175,73 @@ const inheritanceViewText: Record<
   },
 };
 
+type inheritBuffType =
+  | "warAvoidRatio"
+  | "warCriticalRatio"
+  | "warMagicTrialProb"
+  | "domesticSuccessProb"
+  | "domesticFailProb"
+  | "warAvoidRatioOppose"
+  | "warCriticalRatioOppose"
+  | "warMagicTrialProbOppose";
+
+declare const currentInheritBuff: {
+  [v in inheritBuffType]: number | undefined;
+};
+
+const inheritBuffHelpText: Record<
+  inheritBuffType,
+  {
+    title: string;
+    info: string;
+  }
+> = {
+  warAvoidRatio: {
+    title: "회피 확률 증가",
+    info: "전투 시 회피 확률이 1%p ~ 5%p 증가합니다.",
+  },
+  warCriticalRatio: {
+    title: "필살 확률 증가",
+    info: "전투 시 필살 확률이 1%p ~ 5%p 증가합니다.",
+  },
+  warMagicTrialProb: {
+    title: "계략 시도 확률 증가",
+    info: "전투 시 계략을 시도할 확률이 1%p ~ 5%p 증가합니다. 무장도 계략을 시도합니다.",
+  },
+  warAvoidRatioOppose: {
+    title: "상대 회피 확률 감소",
+    info: "전투 시 상대의 회피 확률이 1%p ~ 5%p 감소합니다.",
+  },
+  warCriticalRatioOppose: {
+    title: "상대 필살 확률 감소",
+    info: "전투 시 상대의 필살 확률이 1%p ~ 5%p 감소합니다.",
+  },
+  warMagicTrialProbOppose: {
+    title: "상대 계략 시도 확률 감소",
+    info: "전투 시 상대의 계략 시도 확률이 1%p ~ 5%p 감소합니다.",
+  },
+  domesticSuccessProb: {
+    title: "내정 성공 확률 증가",
+    info: "민심, 인구, 농업, 상업, 치안, 수비, 성벽, 기술 내정의 성공 확률이 1%p ~ 5%p 증가합니다.",
+  },
+  domesticFailProb: {
+    title: "내정 실패 확률 감소",
+    info: "민심, 인구, 농업, 상업, 치안, 수비, 성벽, 기술 내정의 실패 확률이 1%p ~ 5%p 감소합니다.",
+  },
+};
+
+declare const maxInheritBuff: number;
+declare const inheritBuffCost: number[];
+
 export default defineComponent({
   name: "InheritPoint",
   data() {
+    const inheritBuff = {} as Record<inheritBuffType, number>;
+    for (const buffKey of Object.keys(
+      inheritBuffHelpText
+    ) as inheritBuffType[]) {
+      inheritBuff[buffKey] = currentInheritBuff[buffKey] ?? 0;
+    }
     return {
       title: "유산 관리",
       inheritanceViewText,
@@ -138,7 +256,69 @@ export default defineComponent({
         };
         return result;
       })(),
+      inheritBuffHelpText,
+      inheritBuff,
+      prevInheritBuff: currentInheritBuff,
+      maxInheritBuff,
+      inheritBuffCost,
     };
+  },
+  methods: {
+    async buyInheritBuff(buffKey: inheritBuffType) {
+      const level = this.inheritBuff[buffKey];
+      const prevLevel = this.prevInheritBuff[buffKey] ?? 0;
+      if (level == prevLevel) {
+        return;
+      }
+      if (level < prevLevel) {
+        alert("낮출 수 없습니다.");
+        return;
+      }
+      const cost =
+        this.inheritBuffCost[level] - this.inheritBuffCost[prevLevel];
+      if (this.items.previous < cost) {
+        alert("유산 포인트가 부족합니다.");
+        return;
+      }
+
+      const name = inheritBuffHelpText[buffKey].title;
+
+      if (
+        !confirm(
+          `${name}를 ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`
+        )
+      ) {
+        return;
+      }
+
+      let result: InvalidResponse;
+      try {
+        const response = await axios({
+          url: "api.php",
+          method: "post",
+          responseType: "json",
+          data: {
+            path: 'InheritAction/BuyHiddenBuff',
+            args: {
+              type: buffKey,
+              level,
+            }
+          },
+        });
+        result = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`실패했습니다: ${e}`);
+        return;
+      }
+
+      alert('성공했습니다.');
+      //TODO: 페이지 새로고침 필요없이 하도록
+      location.reload();
+    },
   },
   components: {
     TopBackBar,

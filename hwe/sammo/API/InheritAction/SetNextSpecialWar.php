@@ -69,7 +69,7 @@ class SetNextSpecialWar extends \sammo\BaseAPI
 
         $general->setAuxVar('inheritSpecificSpecialWar', $type);
         $inheritStor->setValue('previous', $previousPoint - $reqAmount);
-        $general->flushUpdateValues();
+        $general->applyDB($db);
         return null;
     }
 }

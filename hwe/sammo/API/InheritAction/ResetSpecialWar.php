@@ -63,7 +63,7 @@ class ResetSpecialWar extends \sammo\BaseAPI
         $general->setAuxVar('inheritResetSpecialWar', $nextLevel);
         $general->setVar('special2', 'None');
         $inheritStor->setValue('previous', $previousPoint - $reqPoint);
-        $general->flushUpdateValues();
+        $general->applyDB($db);
         return null;
     }
 }

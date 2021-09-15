@@ -19,6 +19,14 @@ $items = [];
 foreach (array_keys(General::INHERITANCE_KEY) as $key) {
     $items[$key] = $me->getInheritancePoint($key) ?? 0;
 }
+
+$currentInheritBuff = [];
+foreach ($me->getAuxVar('inheritBuff') as $buff=>$buffLevel){
+    if(!key_exists($buff,TriggerInheritBuff::BUFF_KEY_TEXT)){
+        continue;
+    }
+    $currentInheritBuff[$buff] = $buffLevel;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -35,7 +43,10 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
     <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
     <?= WebUtil::printJS('dist_js/v_inheritPoint.js', true) ?>
     <?= WebUtil::printStaticValues([
-        'items' => $items
+        'items' => $items,
+        'currentInheritBuff' => $currentInheritBuff,
+        'maxInheritBuff' => TriggerInheritBuff::MAX_STEP,
+        'inheritBuffCost' => GameConst::$inheritBuffPoints,
     ]) ?>
 </head>
 
