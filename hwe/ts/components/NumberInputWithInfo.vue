@@ -1,6 +1,6 @@
 <template>
   <div class="row form-group number-input-with-info">
-    <label class="col-6 col-form-label">{{ title }}</label>
+    <label v-if="!right" class="col-6 col-form-label">{{ title }}</label>
     <div class="col-6">
       <input
         ref="input"
@@ -23,6 +23,7 @@
         :style="{ display: !editmode ? undefined : 'none' }"
       />
     </div>
+    <label v-if="right" class="col-6 col-form-label">{{ title }}</label>
   </div>
   <div style="text-align: right">
     <small class="form-text text-muted"><slot></slot></small>
@@ -65,6 +66,11 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    right: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
   emits: ["update:modelValue"],
   data() {

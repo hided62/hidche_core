@@ -109,10 +109,16 @@
           <b-button variant="secondary" class="stat-btn" @click="randStatRandom"
             >랜덤형</b-button
           >
-          <b-button variant="secondary" class="stat-btn" @click="randStatLeadPow"
+          <b-button
+            variant="secondary"
+            class="stat-btn"
+            @click="randStatLeadPow"
             >통솔무력형</b-button
           >
-          <b-button variant="secondary" class="stat-btn" @click="randStatLeadInt"
+          <b-button
+            variant="secondary"
+            class="stat-btn"
+            @click="randStatLeadInt"
             >통솔지력형</b-button
           >
           <b-button variant="secondary" class="stat-btn" @click="randStatPowInt"
@@ -165,97 +171,114 @@
           />
         </div>
       </div>
+      <hr />
       <div class="row">
-        <div class="col">
-          <NumberInputWithInfo
-            title="통솔"
-            v-model="args.inheritBonusStat[0]"
-          />
+        <div class="col col-md-6 col-sm-6 col-12 p-2 align-self-center">
+          <div class="row">
+            <div class="col col-6 a-right align-self-center">천재로 생성</div>
+            <div class="col col-6 align-self-center">
+              <select
+                class="form-select form-inline"
+                style="max-width: 20ch"
+                v-model="args.inheritSpecial"
+              >
+                <option :value="undefined">사용안함</option>
+                <option
+                  v-for="(inheritSpecial, key) in availableInheritSpecial"
+                  :key="key"
+                  :value="key"
+                >
+                  {{ inheritSpecial.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col align-self-center">
+            <small
+              class="text-muted"
+              v-html="
+                (availableInheritSpecial[args.inheritSpecial] ?? { info: '' })
+                  .info
+              "
+            />
+          </div>
         </div>
-        <div class="col">
-          <NumberInputWithInfo
-            title="무력"
-            v-model="args.inheritBonusStat[1]"
-          />
+
+        <div class="col col-md-6 col-sm-6 col-12 p-2 align-self-center">
+          <div class="row">
+            <div class="col col-6 a-right align-self-center">도시</div>
+            <div class="col col-6 align-self-center">
+              <select
+                class="form-select form-inline"
+                style="max-width: 20ch"
+                v-model="args.inheritCity"
+              >
+                <option :value="undefined">사용안함</option>
+                <option
+                  v-for="city in availableInheritCity"
+                  :key="city[0]"
+                  :value="city[0]"
+                >
+                  {{ `[${city[1]}] ${city[2]}` }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div class="col">
-          <NumberInputWithInfo
-            title="지력"
-            v-model="args.inheritBonusStat[2]"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">천재로 생성</div>
-        <div class="col align-self-center">
-          <select
-            class="form-select form-inline"
-            style="max-width: 20ch"
-            v-model="args.inheritSpecial"
-          >
-            <option :value="undefined">사용안함</option>
-            <option
-              v-for="(inheritSpecial, key) in availableInheritSpecial"
-              :key="key"
-              :value="key"
+
+        <div class="col col-md-6 col-sm-6 col-12 p-2 align-self-center">
+          <div class="a-center">
+            <label
+              ><input type="checkbox" v-model="inheritTurnTimeSet" />턴 시간
+              고정</label
             >
-              {{ inheritSpecial.name }}
-            </option>
-          </select>
+          </div>
+          <div class="row turn_time_pad">
+            <div class="col col-md-4 offset-md-3 col-4 offset-3">
+              <NumberInputWithInfo
+                :readonly="!inheritTurnTimeSet"
+                :min="0"
+                :max="1 - turnterm"
+                v-model="inheritTurnTimeMinute"
+                :right="true"
+                title="분"
+              />
+            </div>
+            <div class="col col-md-4 col-4">
+              <NumberInputWithInfo
+                :readonly="!inheritTurnTimeSet"
+                :min="0"
+                :max="60"
+                v-model="inheritTurnTimeSecond"
+                :right="true"
+                title="초"
+              />
+            </div>
+          </div>
         </div>
-        <div class="col align-self-center">
-          <small
-            class="text-muted"
-            v-html="
-              (availableInheritSpecial[args.inheritSpecial] ?? { info: '' })
-                .info
-            "
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">도시</div>
-        <div class="col">
-          <select
-            class="form-select form-inline"
-            style="max-width: 20ch"
-            v-model="args.inheritCity"
-          >
-            <option :value="undefined">사용안함</option>
-            <option
-              v-for="city in availableInheritCity"
-              :key="city[0]"
-              :value="city[0]"
-            >
-              {{ `[${city[1]}] ${city[2]}` }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label
-            ><input type="checkbox" v-model="inheritTurnTimeSet" />턴 시간
-            수정</label
-          >
-        </div>
-        <div class="col">
-          <NumberInputWithInfo
-            :readonly="!inheritTurnTimeSet"
-            :min="0"
-            :max="1 - turnterm"
-            v-model="inheritTurnTimeMinute"
-            title="분"
-          />
-        </div>
-        <div class="col">
-          <NumberInputWithInfo
-            :readonly="!inheritTurnTimeSet"
-            :min="0"
-            :max="60"
-            v-model="inheritTurnTimeSecond"
-            title="초"
-          />
+
+        <div class="col col-md-6 col-12 p-2">
+          <div class="a-center">추가 능력치 고정</div>
+          <div class="row">
+            <div class="col">
+              <NumberInputWithInfo
+                title="통솔"
+                v-model="args.inheritBonusStat[0]"
+              />
+            </div>
+            <div class="col">
+              <NumberInputWithInfo
+                title="무력"
+                v-model="args.inheritBonusStat[1]"
+              />
+            </div>
+            <div class="col">
+              <NumberInputWithInfo
+                title="지력"
+                v-model="args.inheritBonusStat[2]"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -263,7 +286,9 @@
     <div class="row" style="border-top: solid 1px #aaa">
       <div class="col a-center" style="margin: 0.5em">
         <b-button color="primary" @click="submitForm">장수 생성</b-button
-        >&nbsp;<b-button color="secondary" @click="resetArgs">다시 입력</b-button>
+        >&nbsp;<b-button color="secondary" @click="resetArgs"
+          >다시 입력</b-button
+        >
       </div>
     </div>
   </div>
@@ -538,7 +563,7 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
+<style>
 #container {
   width: 100%;
   max-width: 1000px;
@@ -569,5 +594,13 @@ export default defineComponent({
   max-height: 200px;
   overflow-y: hidden;
   width: 870px;
+}
+
+.col-form-label {
+  text-align: right;
+}
+
+.turn_time_pad .col-form-label{
+  text-align: left;
 }
 </style>
