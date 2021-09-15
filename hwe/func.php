@@ -1620,13 +1620,16 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
 
 function rollbackInheritUniqueTrial(General $general, string $itemKey, string $reason)
 {
+
     $ownerID = $general->getVar('owner');
 
     $db = DB::db();
 
     $itemTrials = $general->getAuxVar('inheritUniqueTrial');
+    LogText("선택유니크 롤백:{$ownerID}", [$itemKey, $itemTrials]);
     unset($itemTrials[$itemKey]);
     $general->setAuxVar('inheritUniqueTrial', $itemTrials);
+
 
     $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");
     $ownTrial = $trialStor->getValue("u{$ownerID}");
@@ -1636,6 +1639,7 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
         [,, $amount] = $ownTrial;
         $trialStor->deleteValue("u{$ownerID}");
         $general->increaseInheritancePoint('previous', $amount);
+        LogText("선택유니크 롤백포인트:{$ownerID}", $amount);
     }
 
     $itemObj = buildItemClass($itemKey);
@@ -1646,7 +1650,7 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
 
     $unlimited = new \DateTime('9999-12-31');
     $src = new MessageTarget(0, '', 0, 'System', '#000000');
-    $dest = new MessageTarget($general->getID(), $general->getName(), $general->getNationID(), $staticNation['name'], $staticNation['color'], $general->getVar('icon'));
+    $dest = new MessageTarget($general->getID(), $general->getName(), $general->getNationID(), $staticNation['name'], $staticNation['color'], GetImageURL($general->getVar('imgsvr'), $general->getVar('picture')));
     $josaUl = JosaUtil::pick($itemName, '을');
     $msg = new Message(
         Message::MSGTYPE_PRIVATE,
@@ -1659,22 +1663,25 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
     );
 
     $msg->send(true);
+    $general->applyDB($db);
 }
 
 function tryInheritUniqueItem(General $general, string $acquireType = '아이템'): bool
 {
     $ownerID = $general->getVar('owner');
     if (!$ownerID) {
+        LogText("선택유니크 실패???: {$ownerID}", $general->getName());
         return false;
     }
 
     $itemTrials = $general->getAuxVar('inheritUniqueTrial') ?? [];
     arsort($itemTrials);
+    LogText("선택유니크항목: {$ownerID}", $itemTrials);
 
     $db = DB::db();
 
-    $acquireTarget = null;
-    $acquireType = null;
+    $ownTarget = null;
+    $ownType = null;
 
     foreach ($itemTrials as $itemKey => $amount) {
         $availableItemTypes = [];
@@ -1729,6 +1736,8 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
             return $rhsAmount <=> $lhsAmount; //큰 값이 앞에 오도록
         });
 
+        LogText("선택유니크상태 {$ownerID} {$itemKey}", $anyTrials);
+
         //공동 1등인데 본인이 있을 수도 있다.
         [,, $topAmount] = $anyTrials[0];
         if ($amount < $topAmount) {
@@ -1747,38 +1756,40 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
         }
 
         //내가 1위다
-        if (!$acquireTarget) {
+        if ($ownTarget !== null) {
             //이미 다른 아이템을 얻기로 되어있다.
             continue;
         }
-        $acquireTarget = $itemKey;
-        $acquireType = $itemType;
+        $ownTarget = $itemKey;
+        $ownType = $itemType;
     }
     unset($itemKey);
     unset($itemType);
 
-    if (!$acquireTarget) {
+    if ($ownTarget === null) {
         return false;
     }
 
-    $trialStor = KVStorage::getStorage($db, "ut_{$acquireTarget}");
+    LogText("선택유니크획득{$ownerID}", $ownTarget);
+
+    $trialStor = KVStorage::getStorage($db, "ut_{$ownTarget}");
     $trialStor->deleteValue("u{$ownerID}");
 
     //rollbackInheritUniqueTrial 과정 때문에 새로 받아와야함
     $itemTrials = $general->getAuxVar('inheritUniqueTrial');
-    unset($itemTrials[$acquireTarget]);
+    unset($itemTrials[$ownTarget]);
     $general->setAuxVar('inheritUniqueTrial', $itemTrials);
 
     $nationName = $general->getStaticNation()['name'];
     $generalName = $general->getName();
     $josaYi = JosaUtil::pick($generalName, '이');
-    $itemObj = buildItemClass($acquireTarget);
+    $itemObj = buildItemClass($ownTarget);
     $itemName = $itemObj->getName();
     $itemRawName = $itemObj->getRawName();
     $josaUl = JosaUtil::pick($itemRawName, '을');
 
 
-    $general->setVar($acquireType, $acquireTarget);
+    $general->setVar($ownType, $ownTarget);
 
 
     $logger = $general->getLogger();
@@ -1787,6 +1798,8 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
     $logger->pushGeneralHistoryLog("<C>{$itemName}</>{$josaUl} 습득");
     $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
     $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
+
+    $general->applyDB($db);
 
     return true;
 }
@@ -1802,6 +1815,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
 
     $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
     if ($inheritUnique && count($inheritUnique)) {
+        LogText("유니크 준비?? {$general->getID()}", $inheritUnique);
         $trialResult = tryInheritUniqueItem($general, $acquireType);
         if ($trialResult) {
             return true;

@@ -66,7 +66,7 @@ class ResetTurnTime extends \sammo\BaseAPI
 
         $general->setVar('turntime', TimeUtil::format($turnTime, true));
         $general->setAuxVar('inheritResetTurnTime', $nextLevel);
-        $inheritStor->setValue('previous', [$previousPoint - $reqPoint, 'ResetTurnTime']);
+        $inheritStor->setValue('previous', [$previousPoint - $reqPoint, null]);
         $general->applyDB($db);
         return null;
     }

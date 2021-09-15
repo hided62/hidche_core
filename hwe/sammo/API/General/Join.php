@@ -373,12 +373,7 @@ class Join extends \sammo\BaseAPI
 
         if ($inheritRequiredPoint > 0) {
             $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
-            $inheritStor->setValue('previous', [$inheritTotalPoint - $inheritRequiredPoint, [
-                'inheritBonusStat'=>$inheritBonusStat,
-                'inheritCity'=>$inheritCity,
-                'inheritSpecial'=>$inheritSpecial,
-                'inheritTurntime'=>$inheritTurntime,
-            ]]);
+            $inheritStor->setValue('previous', [$inheritTotalPoint - $inheritRequiredPoint, null]);
         }
 
         $me = [

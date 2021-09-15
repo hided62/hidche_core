@@ -17,7 +17,7 @@ $me = General::createGeneralObjFromDB($generalID);
 
 
 $currentInheritBuff = [];
-foreach ($me->getAuxVar('inheritBuff') as $buff => $buffLevel) {
+foreach ($me->getAuxVar('inheritBuff')??[] as $buff => $buffLevel) {
     if (!key_exists($buff, TriggerInheritBuff::BUFF_KEY_TEXT)) {
         continue;
     }

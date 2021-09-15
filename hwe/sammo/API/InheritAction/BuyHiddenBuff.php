@@ -72,7 +72,7 @@ class BuyHiddenBuff extends \sammo\BaseAPI
 
         $inheritBuffList[$type] = $level;
         $general->setAuxVar('inheritBuff', $inheritBuffList);
-        $inheritStor->setValue('previous', [$previousPoint - $reqAmount, [$type, $level]]);
+        $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);
         $general->applyDB($db);
         return null;
     }
