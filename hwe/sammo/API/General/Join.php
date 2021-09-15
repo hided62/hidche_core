@@ -277,10 +277,11 @@ class Join extends \sammo\BaseAPI
 
         if ($inheritTurntime !== null) {
             //FIXME: 오동작함
-            $inheritTurntime = $inheritTurntime % ($gameStor->turnterm * 60);
+            $inheritTurntime = $inheritTurntime % ($admin['turnterm'] * 60);
             $inheritTurntime += Util::randRangeInt(0, 999999) / 1000000;
             $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
-            $turntime = TimeUtil::format($turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime)), true);
+            $turntime = $turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime));
+            $turntime = TimeUtil::format($turntime, true);
         } else {
             $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
         }

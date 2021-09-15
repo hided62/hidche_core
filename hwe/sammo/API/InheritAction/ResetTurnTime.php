@@ -54,13 +54,13 @@ class ResetTurnTime extends \sammo\BaseAPI
         $gameStor = new KVStorage($db, 'game_env');
         [$turnTerm, $serverTurnTime] = $gameStor->getValuesAsArray(['turnterm', 'turntime']);
 
+        $currTurnTime = new DateTimeImmutable($general->getTurnTime());
         $serverTurnTimeObj = new DateTimeImmutable($serverTurnTime);
-        $turnTime = new DateTimeImmutable($general->getTurnTime());
 
         $afterTurn = Util::randRange($turnTerm * -60 / 2, $turnTerm * 60 / 2);
 
-        $turnTime = $turnTime->add(TimeUtil::secondsToDateInterval($afterTurn));
-        if ($turnTime <= $serverTurnTimeObj) {
+        $turnTime = $currTurnTime->add(TimeUtil::secondsToDateInterval($afterTurn));
+        if ($turnTime <= $serverTurnTimeObj && $serverTurnTimeObj <= $currTurnTime) {
             $turnTime = $turnTime->add(TimeUtil::secondsToDateInterval($turnTerm * 60));
         }
 

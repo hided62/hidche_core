@@ -140,9 +140,17 @@ class TimeUtil
 
     public static function secondsToDateInterval(float $fullSeconds): \DateInterval
     {
-        $d0 = new \DateTime("@0");
+        $inverted = $fullSeconds < 0?1:0;
 
-        return $d0->diff(static::secondsToDateTime($fullSeconds, true));
+        $fullSeconds = abs($fullSeconds);
+        $seconds = floor($fullSeconds);
+        $fraction = $fullSeconds - $seconds;
+
+        $interval = new \DateInterval("PT{$seconds}S");
+
+        $interval->f = $fraction;
+        $interval->invert = $inverted;
+        return $interval;
     }
 
     public static function DateTimeToSeconds(\DateTimeInterface $dateTime, bool $isUTC = false): float

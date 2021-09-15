@@ -244,6 +244,7 @@
             :readonly="!inheritTurnTimeSet"
             :min="0"
             :max="1 - turnterm"
+            v-model="inheritTurnTimeMinute"
             title="분"
           />
         </div>
@@ -252,6 +253,7 @@
             :readonly="!inheritTurnTimeSet"
             :min="0"
             :max="60"
+            v-model="inheritTurnTimeSecond"
             title="초"
           />
         </div>
@@ -432,18 +434,21 @@ export default defineComponent({
     inheritTurnTimeMinute(newValue: number) {
       if (!this.inheritTurnTimeSet) {
         this.args.inheritTurntime = 0;
+        return;
       }
       this.args.inheritTurntime = newValue * 60 + this.inheritTurnTimeSecond;
     },
     inheritTurnTimeSecond(newValue: number) {
       if (!this.inheritTurnTimeSet) {
         this.args.inheritTurntime = 0;
+        return;
       }
       this.args.inheritTurntime = this.inheritTurnTimeMinute * 60 + newValue;
     },
     inheritTurnTimeSet(newValue: boolean) {
       if (!newValue) {
         this.args.inheritTurntime = 0;
+        return;
       }
       this.args.inheritTurntime =
         this.inheritTurnTimeMinute * 60 + this.inheritTurnTimeSecond;
