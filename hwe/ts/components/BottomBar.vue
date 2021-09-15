@@ -1,5 +1,5 @@
 <template>
-  <table style="width: 1000px; margin: auto" class="tb_layout bg0">
+  <table style="width: 1000px; margin: auto" class="bg0">
     <tr>
       <td style="text-align: left">
         {{title}}<br /><button

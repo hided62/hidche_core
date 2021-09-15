@@ -2,8 +2,8 @@
   <top-back-bar :title="title" />
   <div
     id="container"
-    class="tb_layout bg0"
-    style="max-width: 1000px; margin: auto; border: solid 1px #888888"
+    class="bg0 px-2"
+    style="max-width: 1000px; margin: auto; border: solid 1px #888888; overflow:hidden;"
   >
     <div id="inheritance_list" class="row">
       <template v-for="(text, key) in inheritanceViewText" :key="key">
@@ -14,10 +14,10 @@
           <div class="row">
             <label
               :id="`inherit_${key}_head`"
-              class="inherit_head col col-md-6 col-sm-12 col-6 col-form-label"
+              class="inherit_head col col-md-6 col-sm-7 col-6 col-form-label"
               >{{ text.title }}</label
             >
-            <div class="col col-md-6 col-sm-12 col-6">
+            <div class="col col-md-6 col-sm-5 col-6">
               <input
                 type="text"
                 class="form-control inherit_value"

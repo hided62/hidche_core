@@ -1,5 +1,5 @@
 <template>
-  <div class="tb_layout bg0 back_bar">
+  <div class="bg0 back_bar">
     <button type="button" class="btn btn-primary back_btn" @click="back">
       돌아가기
     </button>
