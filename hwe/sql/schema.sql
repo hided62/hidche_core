@@ -438,7 +438,7 @@ CREATE TABLE `tournament` (
 	`prmt` INT(1) NULL DEFAULT 0,
 	PRIMARY KEY (`seq`),
 	INDEX `grp` (`grp`, `grp_no`)
-) 
+)
 COLLATE='utf8mb4_general_ci'
 ENGINE=Aria;
 
@@ -650,5 +650,25 @@ CREATE TABLE `rank_data` (
 	INDEX `by_nation` (`nation_id`, `type`, `value`)
 )
 COLLATE='utf8mb4_general_ci'
+ENGINE=Aria
+;
+
+CREATE TABLE IF NOT EXISTS `user_record` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`user_id` INT(11) NOT NULL,
+	`server_id` CHAR(20) NOT NULL,
+	`log_type` VARCHAR(20) NOT NULL,
+	`year` INT(4) NOT NULL,
+	`month` INT(2) NOT NULL,
+	`date` DATETIME NULL DEFAULT NULL,
+	`text` TEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `date1` (`user_id`, `server_id`, `log_type`, `year`, `month`, `id`),
+	INDEX `date2` (`user_id`, `server_id`, `log_type`, `date`, `id`),
+	INDEX `date3` (`server_id`, `date`),
+	INDEX `date4` (`server_id`, `year`, `month`, `date`),
+	INDEX `plain` (`user_id`, `log_type`, `id`)
+)
+DEFAULT CHARSET=utf8mb4
 ENGINE=Aria
 ;
