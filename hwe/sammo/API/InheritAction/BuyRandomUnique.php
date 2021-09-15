@@ -39,7 +39,7 @@ class BuyRandomUnique extends \sammo\BaseAPI
 
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
-        $previousPoint = $inheritStor->getValue('previous')??0;
+        $previousPoint = ($inheritStor->getValue('previous')??[0, 0])[0];
         if($previousPoint < GameConst::$inheritItemRandomPoint){
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }

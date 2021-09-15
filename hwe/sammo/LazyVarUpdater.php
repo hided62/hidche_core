@@ -10,7 +10,7 @@ trait LazyVarUpdater{
     function getRaw(bool $extractAux=false):array{
         if($extractAux){
             $this->getAuxVar('');
-            
+
         }
         return $this->raw;
     }
@@ -58,7 +58,7 @@ trait LazyVarUpdater{
         }
 
         if($var === null){
-            unset($this->auxVar[$key]);
+            unset($this->raw['auxVar'][$key]);
             $this->auxUpdated = true;
             return;
         }
