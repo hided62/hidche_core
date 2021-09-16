@@ -1636,16 +1636,20 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
     $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");
     $ownTrial = $trialStor->getValue("u{$ownerID}");
 
+    $itemObj = buildItemClass($itemKey);
+    $itemName = $itemObj->getName();
+
     if ($ownTrial) {
         //두 값이 general, KVStorage 둘다 있고, 이중에선 KVStorage 값을 기준으로 하자 따르자
         [,, $amount] = $ownTrial;
         $trialStor->deleteValue("u{$ownerID}");
         $general->increaseInheritancePoint('previous', $amount);
         LogText("선택유니크 롤백포인트:{$ownerID}", $amount);
+
+        $userLogger = new UserLogger($ownerID);
+        $userLogger->push("{$itemName} 입찰에 사용한 {$amount} 포인트 반환", "inheritPoint");
     }
 
-    $itemObj = buildItemClass($itemKey);
-    $itemName = $itemObj->getName();
     //메시지
 
     $staticNation = $general->getStaticNation();
@@ -1664,8 +1668,8 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
         []
     );
 
-    $msg->send(true);
     $general->applyDB($db);
+    $msg->send(true);
 }
 
 function tryRollbackInheritUniqueItem(General $general): void

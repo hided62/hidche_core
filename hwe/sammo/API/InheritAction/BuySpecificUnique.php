@@ -8,7 +8,10 @@ use sammo\DB;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
+use sammo\UserLogger;
 use sammo\Validator;
+
+use function sammo\buildItemClass;
 
 class BuySpecificUnique extends \sammo\BaseAPI
 {
@@ -69,6 +72,11 @@ class BuySpecificUnique extends \sammo\BaseAPI
         if ($previousPoint < $amount) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
+
+        $itemObj = buildItemClass($itemKey);
+        $userLogger = new UserLogger($userID);
+        $userLogger->push("{$amount} 포인트로 유니크 {$itemObj->getName()} 구입 시도", "inheritPoint");
+        $userLogger->flush();
 
         $itemTrials[$itemKey] = $amount;
         $general->setAuxVar('inheritUniqueTrial', $itemTrials);

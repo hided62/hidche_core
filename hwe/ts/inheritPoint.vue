@@ -3,7 +3,12 @@
   <div
     id="container"
     class="bg0 px-2"
-    style="max-width: 1000px; margin: auto; border: solid 1px #888888; overflow:hidden;"
+    style="
+      max-width: 1000px;
+      margin: auto;
+      border: solid 1px #888888;
+      overflow: hidden;
+    "
   >
     <div id="inheritance_list" class="row">
       <template v-for="(text, key) in inheritanceViewText" :key="key">
@@ -235,6 +240,20 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <div class="bg1 a-center">유산 포인트 변경 내역(최근 30건)</div>
+      </div>
+    </div>
+    <div class="row" v-for="(log, idx) in lastInheritPointLogs" :key="idx">
+      <div class="col a-right" style="max-width:20ch">
+        <small class="text-muted">[{{log.date}}]</small>
+      </div>
+      <div class="col a-left">
+        {{log.text}}
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -262,6 +281,14 @@ type InheritanceType =
   | "betting";
 
 type InheritanceViewType = InheritanceType | "sum" | "new";
+
+declare const lastInheritPointLogs: {
+  server_id: string,
+  year: number,
+  month: number,
+  date: string,
+  text: string,
+}[];
 
 declare const items: Record<InheritanceType, number>;
 
@@ -442,6 +469,7 @@ export default defineComponent({
       availableSpecialWar,
       availableUnique,
       specificUniqueAmount: inheritActionCost.minSpecificUnique,
+      lastInheritPointLogs,
     };
   },
   methods: {
@@ -617,11 +645,7 @@ export default defineComponent({
         return;
       }
       //TODO: JosaUtil
-      if (
-        !confirm(
-          `${amount} 포인트로 ${uniqueName}(을)를 입찰하겠습니까?`
-        )
-      ) {
+      if (!confirm(`${amount} 포인트로 ${uniqueName}(을)를 입찰하겠습니까?`)) {
         return;
       }
 

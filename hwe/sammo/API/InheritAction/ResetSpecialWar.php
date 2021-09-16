@@ -8,6 +8,7 @@ use sammo\DB;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
+use sammo\UserLogger;
 use sammo\Validator;
 
 class ResetSpecialWar extends \sammo\BaseAPI
@@ -54,6 +55,10 @@ class ResetSpecialWar extends \sammo\BaseAPI
         if ($previousPoint < $reqPoint) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
+
+        $userLogger = new UserLogger($userID);
+        $userLogger->push("{$reqPoint} 포인트로 전투 특기 초기화", "inheritPoint");
+        $userLogger->flush();
 
         $oldTypeKey = 'prev_types_special2';
         $oldSpecialList = $general->getAuxVar($oldTypeKey) ?? [];

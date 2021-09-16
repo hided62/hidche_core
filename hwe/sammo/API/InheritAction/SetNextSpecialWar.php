@@ -8,7 +8,10 @@ use sammo\DB;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
+use sammo\UserLogger;
 use sammo\Validator;
+
+use function sammo\buildGeneralSpecialWarClass;
 
 class SetNextSpecialWar extends \sammo\BaseAPI
 {
@@ -66,6 +69,11 @@ class SetNextSpecialWar extends \sammo\BaseAPI
         if ($previousPoint < $reqAmount) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
+
+        $userLogger = new UserLogger($userID);
+        $specialWarObj = buildGeneralSpecialWarClass($type);
+        $userLogger->push("{$reqAmount} 포인트로 다음 전투 특기로 {$specialWarObj->getName()} 지정", "inheritPoint");
+        $userLogger->flush();
 
         $general->setAuxVar('inheritSpecificSpecialWar', $type);
         $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);

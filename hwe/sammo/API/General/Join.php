@@ -16,6 +16,7 @@ use sammo\Session;
 use sammo\SpecialityHelper;
 use sammo\StringUtil;
 use sammo\TimeUtil;
+use sammo\UserLogger;
 use sammo\Util;
 use sammo\Validator;
 use sammo\WebUtil;
@@ -152,10 +153,12 @@ class Join extends \sammo\BaseAPI
             }
         }
 
-        $admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year']);
+        $admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year', 'month']);
 
         $inheritTotalPoint = resetInheritanceUser($userID);
         $inheritRequiredPoint = 0;
+
+        $userLogger = new UserLogger($userID, $admin['year'], $admin['month'], false);
 
         if ($inheritCity !== null) {
             $inheritRequiredPoint += GameConst::$inheritBornCityPoint;
@@ -183,6 +186,8 @@ class Join extends \sammo\BaseAPI
         }
 
         if ($inheritSpecial) {
+            $speicalText = getGeneralSpecialWarName($inheritSpecial);
+            $userLogger->push("{$speicalText} 전투 특기를 가진 천재 생성", "inheritPoint");
             $genius = true;
         } else {
             // 현재 1%
@@ -196,6 +201,8 @@ class Join extends \sammo\BaseAPI
         }
 
         if ($inheritCity !== null) {
+            $cityname = CityConst::byID($inheritCity)->name;
+            $userLogger->push("{$cityname}에 장수 생성", "inheritPoint");
             $city = $inheritCity;
         } else {
             // 공백지에서만 태어나게
@@ -207,6 +214,7 @@ class Join extends \sammo\BaseAPI
 
         if ($inheritBonusStat) {
             [$pleadership, $pstrength, $pintel] = $inheritBonusStat;
+            $userLogger->push("{$pleadership}, {$pstrength}, {$pintel} 보너스 능력치로 생성", "inheritPoint");
         } else {
             $pleadership = 0;
             $pstrength = 0;
@@ -276,8 +284,10 @@ class Join extends \sammo\BaseAPI
         }
 
         if ($inheritTurntime !== null) {
-            //FIXME: 오동작함
             $inheritTurntime = $inheritTurntime % ($admin['turnterm'] * 60);
+
+            $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime%60), "inheritPoint");
+
             $inheritTurntime += Util::randRangeInt(0, 999999) / 1000000;
             $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
             $turntime = $turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime));
@@ -372,9 +382,12 @@ class Join extends \sammo\BaseAPI
         ]);
         $cityname = CityConst::byID($city)->name;
 
+
         if ($inheritRequiredPoint > 0) {
+            $userLogger->push("장수 생성으로 포인트 {$inheritRequiredPoint} 소모", "inheritPoint");
             $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
             $inheritStor->setValue('previous', [$inheritTotalPoint - $inheritRequiredPoint, null]);
+            $userLogger->flush();
         }
 
         $me = [

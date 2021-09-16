@@ -9,6 +9,7 @@ use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
 use sammo\TimeUtil;
+use sammo\UserLogger;
 
 class BuyRandomUnique extends \sammo\BaseAPI
 {
@@ -40,12 +41,17 @@ class BuyRandomUnique extends \sammo\BaseAPI
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
         $previousPoint = ($inheritStor->getValue('previous')??[0, 0])[0];
-        if($previousPoint < GameConst::$inheritItemRandomPoint){
+        $reqAmount = GameConst::$inheritItemRandomPoint;
+        if($previousPoint < $reqAmount){
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
 
+        $userLogger = new UserLogger($userID);
+        $userLogger->push("{$reqAmount} 포인트로 랜덤 유니크 구입", "inheritPoint");
+        $userLogger->flush();
+
         $general->setAuxVar('inheritRandomUnique', TimeUtil::now());
-        $inheritStor->setValue('previous', [$previousPoint - GameConst::$inheritItemRandomPoint, null]);
+        $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);
         $general->applyDB($db);
         return null;
     }

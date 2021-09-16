@@ -10,6 +10,7 @@ use sammo\General;
 use sammo\KVStorage;
 use sammo\TimeUtil;
 use sammo\TriggerInheritBuff;
+use sammo\UserLogger;
 use sammo\Validator;
 
 class BuyHiddenBuff extends \sammo\BaseAPI
@@ -50,6 +51,7 @@ class BuyHiddenBuff extends \sammo\BaseAPI
         if ($userID != $general->getVar('owner')) {
             return '로그인 상태가 이상합니다. 다시 로그인해 주세요.';
         }
+        $userLogger = new UserLogger($userID);
 
         $inheritBuffList = $general->getAuxVar('inheritBuff') ?? [];
         $prevLevel = $inheritBuffList[$type] ?? 0;
@@ -69,6 +71,11 @@ class BuyHiddenBuff extends \sammo\BaseAPI
         if ($previousPoint < $reqAmount) {
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
+
+        $buffTypeText = TriggerInheritBuff::BUFF_KEY_TEXT[$type];
+        $moreText = $prevLevel > 0 ? "추가":"";
+        $userLogger->push("{$reqAmount} 포인트로 {$buffTypeText} {$level} 단계 {$moreText}구입", "inheritPoint");
+        $userLogger->flush();
 
         $inheritBuffList[$type] = $level;
         $general->setAuxVar('inheritBuff', $inheritBuffList);

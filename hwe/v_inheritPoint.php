@@ -17,7 +17,7 @@ $me = General::createGeneralObjFromDB($generalID);
 
 
 $currentInheritBuff = [];
-foreach ($me->getAuxVar('inheritBuff')??[] as $buff => $buffLevel) {
+foreach ($me->getAuxVar('inheritBuff') ?? [] as $buff => $buffLevel) {
     if (!key_exists($buff, TriggerInheritBuff::BUFF_KEY_TEXT)) {
         continue;
     }
@@ -43,15 +43,15 @@ foreach (GameConst::$availableSpecialWar as $specialWarKey) {
 }
 
 $availableUnique = [];
-foreach (GameConst::$allItems as $subItems){
-    foreach($subItems as $itemKey=>$amount){
-        if($amount == 0){
+foreach (GameConst::$allItems as $subItems) {
+    foreach ($subItems as $itemKey => $amount) {
+        if ($amount == 0) {
             continue;
         }
         $itemObj = buildItemClass($itemKey);
         $availableUnique[$itemKey] = [
             'title' => $itemObj->getName(),
-            'info'=>$itemObj->getInfo(),
+            'info' => $itemObj->getInfo(),
         ];
     }
 }
@@ -64,6 +64,8 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
 
 $resetTurnTimeLevel = $me->getAuxVar('inheritResetTurnTime') ?? 0;
 $resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar') ?? 0;
+
+$lastInheritPointLogs = $db->query('SELECT server_id, year, month, date, text FROM user_record WHERE log_type = %s AND user_id = %i ORDER BY id desc LIMIT 30', "inheritPoint", $userID);
 ?>
 <!DOCTYPE html>
 <html>
@@ -91,10 +93,11 @@ $resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar') ?? 0;
             'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel),
             'randomUnique' => GameConst::$inheritItemRandomPoint,
             'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
-            'minSpecificUnique'=>GameConst::$inheritItemUniqueMinPoint,
+            'minSpecificUnique' => GameConst::$inheritItemUniqueMinPoint,
         ],
         'availableSpecialWar' => $avilableSpecialWar,
         'availableUnique' => $availableUnique,
+        'lastInheritPointLogs' => $lastInheritPointLogs,
     ]) ?>
 </head>
 

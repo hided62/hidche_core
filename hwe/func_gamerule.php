@@ -1166,13 +1166,23 @@ function resetInheritanceUser(int $userID, bool $isRebirth=false):float{
         //이미 리셋되었으므로 리셋 안함
         return $allPoints['previous'][0];
     }
+
+    $userLogger = new UserLogger($userID);
+
+    $previousPoint = ($allPoints['previous']??[0,0])[0];
+
     foreach($allPoints as $key=>[$value,]){
         if($isRebirth && key_exists($key, $rebirthDegraded)){
             $value *= $rebirthDegraded[$key];
         }
+        $keyText = General::INHERITANCE_KEY[$key][2];
+        $userLogger->push("{$keyText} 포인트 {$value} 증가", "inheritPoint");
         $totalPoint += $value;
     }
     $totalPoint = Util::toInt($totalPoint);
+    $userLogger->push("포인트 {$previousPoint} => {$totalPoint}", "inheritPoint");
+    $userLogger->flush();
+
     $inheritStor->resetValues();
     $inheritStor->setValue('previous', [$totalPoint, null]);
     return $totalPoint;
