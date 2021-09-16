@@ -1627,6 +1627,9 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
     $itemTrials = $general->getAuxVar('inheritUniqueTrial');
     LogText("선택유니크 롤백:{$ownerID}", [$itemKey, $itemTrials]);
     unset($itemTrials[$itemKey]);
+    if(count($itemTrials) == 0){
+        $itemTrials = null;
+    }
     $general->setAuxVar('inheritUniqueTrial', $itemTrials);
 
 
