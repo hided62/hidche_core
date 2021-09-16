@@ -24,7 +24,7 @@ $admin = $gameStor->getValues(['develcost', 'cost', 'vote_title', 'vote', 'votec
 
 $generalID = Session::getGeneralID();
 
-$general = General::createGeneralObjFromDB($generalID, ['vote','horse','weapon','book','item','npc'], 2);
+$general = General::createGeneralObjFromDB($generalID, ['vote','horse','weapon','book','item','npc', 'aux'], 2);
 
 if($btn == "투표" && $general->getVar('vote') == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;
