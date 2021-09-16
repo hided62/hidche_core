@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -14,7 +14,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 
-
+use function sammo\tryRollbackInheritUniqueItem;
 
 class che_하야 extends Command\GeneralCommand{
     static protected $actionName = '하야';
@@ -32,7 +32,7 @@ class che_하야 extends Command\GeneralCommand{
         $this->setNation();
 
         $relYear = $env['year'] - $env['startyear'];
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotOpeningPart($relYear),
@@ -43,7 +43,7 @@ class che_하야 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -67,7 +67,7 @@ class che_하야 extends Command\GeneralCommand{
 
         $nationID = $this->nation['nation'];
         $nationName = $this->nation['name'];
-        
+
         $logger = $general->getLogger();
 
         $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 하야했습니다. <1>$date</>");
@@ -101,13 +101,14 @@ class che_하야 extends Command\GeneralCommand{
         $general->setVar('officer_city', 0);
         $general->setVar('belong', 0);
         $general->setVar('makelimit', 12);
-        
+
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

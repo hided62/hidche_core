@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -13,7 +13,7 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-
+use function sammo\tryRollbackInheritUniqueItem;
 
 class che_요양 extends Command\GeneralCommand{
     static protected $actionName = '요양';
@@ -28,7 +28,7 @@ class che_요양 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         $this->setNation();
-        
+
         $this->fullConditionConstraints=[
         ];
 
@@ -37,7 +37,7 @@ class che_요양 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -56,7 +56,7 @@ class che_요양 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        
+
         $crew = $general->getVar('crew');
 
         $logger = $general->getLogger();
@@ -71,10 +71,11 @@ class che_요양 extends Command\GeneralCommand{
         $general->addDedication($ded);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

@@ -14,6 +14,8 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
+use function sammo\tryRollbackInheritUniqueItem;
+
 class che_모반시도 extends Command\GeneralCommand{
     static protected $actionName = '모반시도';
 
@@ -29,7 +31,7 @@ class che_모반시도 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::BeChief(),
@@ -43,7 +45,7 @@ class che_모반시도 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -72,7 +74,7 @@ class che_모반시도 extends Command\GeneralCommand{
         $lordName = $lordGeneral->getName();
 
         $nationName = $this->nation['name'];
-        
+
         $logger = $general->getLogger();
         $lordLogger = $lordGeneral->getLogger();
 
@@ -82,7 +84,7 @@ class che_모반시도 extends Command\GeneralCommand{
         $lordGeneral->setVar('officer_city', 0);
         $lordGeneral->multiplyVar('experience', 0.7);
 
-        
+
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalHistoryLog("<Y><b>【모반】</b></><Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>의 군주 자리를 찬탈했습니다.");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <Y>{$lordName}</>에게서 군주자리를 찬탈");
@@ -95,11 +97,12 @@ class che_모반시도 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
         $lordGeneral->applyDB($db);
 
         return true;
     }
 
-    
+
 }

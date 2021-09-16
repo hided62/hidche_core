@@ -20,6 +20,7 @@ use function\sammo\tryUniqueItemLottery;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
+use function sammo\tryRollbackInheritUniqueItem;
 
 class che_선양 extends Command\GeneralCommand
 {
@@ -136,6 +137,7 @@ class che_선양 extends Command\GeneralCommand
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

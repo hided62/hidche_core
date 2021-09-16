@@ -4,7 +4,7 @@ namespace sammo\Command\General;
 use \sammo\{
     DB, Util, JosaUtil,
     General,
-    CityConst, 
+    CityConst,
     ActionLogger,
     LastTurn,
     Command
@@ -13,6 +13,7 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
+use function sammo\tryRollbackInheritUniqueItem;
 
 class che_NPC능동 extends Command\GeneralCommand{
     static protected $actionName = 'NPC능동';
@@ -46,7 +47,7 @@ class che_NPC능동 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
         $this->setNation();
-        
+
 
         $this->permissionConstraints=[
             ConstraintHelper::MustBeNPC()
@@ -65,7 +66,7 @@ class che_NPC능동 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -97,11 +98,11 @@ class che_NPC능동 extends Command\GeneralCommand{
 
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         }
-
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

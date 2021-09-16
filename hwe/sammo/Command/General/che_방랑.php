@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -15,7 +15,7 @@ use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use function sammo\DeleteConflict;
 use function sammo\refreshNationStaticInfo;
-
+use function sammo\tryRollbackInheritUniqueItem;
 
 class che_방랑 extends Command\GeneralCommand{
     static protected $actionName = '방랑';
@@ -34,7 +34,7 @@ class che_방랑 extends Command\GeneralCommand{
         $this->setNation();
 
         $relYear = $env['year'] - $env['startyear'];
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::BeLord(),
             ConstraintHelper::NotWanderingNation(),
@@ -48,7 +48,7 @@ class che_방랑 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -85,7 +85,7 @@ class che_방랑 extends Command\GeneralCommand{
         $logger->pushGlobalHistoryLog("<R><b>【방랑】</b></><D><b>{$generalName}</b></>{$josaUn} <R>방랑</>의 길을 떠납니다.");
         $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 버리고 방랑");
 
-        
+
         //분쟁기록 모두 지움
         DeleteConflict($nationID);
         // 국명, 색깔 바꿈 국가 레벨 0, 성향리셋, 기술0
@@ -123,6 +123,7 @@ class che_방랑 extends Command\GeneralCommand{
         refreshNationStaticInfo();
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
 
         return true;

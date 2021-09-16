@@ -7,9 +7,11 @@ use \sammo\JosaUtil;
 use \sammo\LastTurn;
 use \sammo\DB;
 
+use function sammo\tryRollbackInheritUniqueItem;
+
 class 휴식 extends Command\GeneralCommand{
     static protected $actionName = '휴식';
-    
+
     protected function argTest():bool{
         return true;
     }
@@ -39,7 +41,7 @@ class 휴식 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn());
-
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB(DB::db());
         return true;
     }

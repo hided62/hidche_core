@@ -14,6 +14,7 @@ use \sammo\Command;
 
 use function \sammo\searchDistance;
 use function \sammo\printCitiesBasedOnDistance;
+use function sammo\tryRollbackInheritUniqueItem;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -294,6 +295,7 @@ class che_화계 extends Command\GeneralCommand
 
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
+            tryRollbackInheritUniqueItem($general);
             $general->applyDB($db);
             return false;
         }
@@ -327,6 +329,7 @@ class che_화계 extends Command\GeneralCommand
         $general->increaseRankVar('firenum', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
 
         return true;

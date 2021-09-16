@@ -1286,12 +1286,11 @@ function addAge()
             $generalAux = Json::decode($general['aux']);
 
             $updateVars = [];
-            if(key_exists('inheritSpecificSpecialWar', $generalAux)){
+            if (key_exists('inheritSpecificSpecialWar', $generalAux)) {
                 $special2 = $generalAux['inheritSpecificSpecialWar'];
                 unset($generalAux['inheritSpecificSpecialWar']);
                 $updateVars['aux'] = Json::encode($generalAux);
-            }
-            else{
+            } else {
                 $special2 = SpecialityHelper::pickSpecialWar(
                     $general,
                     ($generalAux['prev_types_special2']) ?? []
@@ -1666,7 +1665,12 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
     $general->applyDB($db);
 }
 
-function tryInheritUniqueItem(General $general, string $acquireType = '아이템'): bool
+function tryRollbackInheritUniqueItem(General $general): void
+{
+    tryInheritUniqueItem($general, 'Rollback', true);
+}
+
+function tryInheritUniqueItem(General $general, string $acquireType = '아이템', bool $justRollback = false): bool
 {
     $ownerID = $general->getVar('owner');
     if (!$ownerID) {
@@ -1769,6 +1773,9 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
     if ($ownTarget === null) {
         return false;
     }
+    if ($justRollback) {
+        return false;
+    }
 
     LogText("선택유니크획득{$ownerID}", $ownTarget);
 
@@ -1859,9 +1866,9 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $result = false;
 
     $prob /= sqrt(2);
-    $moreProb = pow(2, 1/4);
+    $moreProb = pow(2, 1 / 4);
 
-    if($general->getAuxVar('inheritRandomUnique')){
+    if ($general->getAuxVar('inheritRandomUnique')) {
         //포인트로 랜덤 유니크 획득
         $prob = 1;
         LogText("{$general->getName()}, {$general->getID()} 유산 포인트 유니크", $prob);

@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -16,13 +16,12 @@ use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use function sammo\refreshNationStaticInfo;
 use function sammo\deleteNation;
-
-
+use function sammo\tryRollbackInheritUniqueItem;
 
 class che_해산 extends Command\GeneralCommand{
     static protected $actionName = '해산';
 
-    protected function argTest():bool{        
+    protected function argTest():bool{
         $this->arg = [];
 
         return true;
@@ -45,7 +44,7 @@ class che_해산 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -96,11 +95,11 @@ class che_해산 extends Command\GeneralCommand{
             $oldGeneral->setVar('makelimit', 12);
             $oldGeneral->applyDB($db);
         }
-
+        tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }
