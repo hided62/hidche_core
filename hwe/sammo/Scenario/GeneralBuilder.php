@@ -681,7 +681,7 @@ class GeneralBuilder{
             'turntime'=>$turntime,
             'killturn'=>$killturn,
             'age'=>$age,
-            'belong'=>1,
+            'belong'=>0,
             'personal'=>$this->ego,
             'special'=>$this->specialDomestic,
             'specage'=>$this->specAge,
