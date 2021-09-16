@@ -36,7 +36,7 @@ class che_랜덤임관 extends Command\GeneralCommand
         /*if($this->arg === null){
             return true;
         }
-        
+
         $destNationIDList = $this->arg['destNationIDList']??null;
         //null은 에러, []는 정상
 
@@ -56,8 +56,8 @@ class che_랜덤임관 extends Command\GeneralCommand
         }
         $this->arg = [
             'destNationIDList' => $destNationIDList
-        ];    
-        
+        ];
+
         return true;*/
     }
 
@@ -234,7 +234,7 @@ class che_랜덤임관 extends Command\GeneralCommand
         if (!$destNation) {
             //임관 가능한 국가가 없다!
             $logger->pushGeneralActionLog("임관 가능한 국가가 없습니다. <1>$date</>");
-            $this->alternative = new che_요양($general, $this->env, null);
+            $this->alternative = new che_인재탐색($general, $this->env, null);
             return false;
         }
 
