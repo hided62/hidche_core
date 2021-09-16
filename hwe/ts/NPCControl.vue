@@ -50,7 +50,7 @@
         <NumberInputWithInfo
           v-model="nationPolicy.reqHumanWarUrgentRice"
           :step="100"
-          title="유저전투장 긴급포상 금"
+          title="유저전투장 긴급포상 쌀"
           >유저장긴급포상시 이보다 쌀이 적은 장수에게 포상합니다.<br />0이면
           기본 병종으로 {{ (defaultStatMax * 100).toLocaleString() }} * 6명 사살
           가능한 쌀을 기준으로 하며, 그 수치는 현재
