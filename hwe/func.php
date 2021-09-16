@@ -1256,8 +1256,11 @@ function addAge()
     //나이와 호봉 증가
     $db->update('general', [
         'age' => $db->sqleval('age+1'),
-        'belong' => $db->sqleval('belong+1')
     ], true);
+
+    $db->update('general', [
+        'belong' => $db->sqleval('belong+1')
+    ], 'nation != 0');
 
     [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
