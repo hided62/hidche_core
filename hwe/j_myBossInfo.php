@@ -47,7 +47,7 @@ else{
         'name', 'leadership', 'strength', 'intel', 'gold','rice',
         'troop','officer_level','npc','picture','imgsvr',
         'permission','penalty','belong', 'crewtype',
-        'experience', 'dedication', 'betray', 'dedlevel', 'explevel', 'makelimit',
+        'experience', 'dedication', 'betray', 'dedlevel', 'explevel', 'makelimit', 'aux',
     ], 1);
 
     if($general instanceof DummyGeneral){
@@ -104,7 +104,7 @@ function do수뇌임명(General $general, int $targetOfficerLevel):?string{
         if($general->getVar('strength') < GameConst::$chiefStatMin){
             return '무력이 부족합니다.';
         }
-        
+
     }
     else{
         if($general->getVar('intel') < GameConst::$chiefStatMin){
@@ -175,7 +175,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
     $generalName = $general->getVar('name');
     $nationID = $general->getNationID();
 
-    
+
 
     //추방할사람이 외교권자이면 불가
     $permission = checkSecretPermission($general->getRaw());
@@ -252,7 +252,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
         ]);
 
         $src = new MessageTarget(
-            $generalID, 
+            $generalID,
             $generalName,
             $nationID,
             $nation['name'],
@@ -260,7 +260,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
             GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
         );
         $msg = new Message(
-            Message::MSGTYPE_PUBLIC, 
+            Message::MSGTYPE_PUBLIC,
             $src,
             $src,
             $str,

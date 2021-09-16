@@ -981,7 +981,7 @@ class General implements iAction{
         $defaultEventColumn = [
             'no', 'name', 'owner', 'city', 'nation', 'officer_level', 'officer_city',
             'special', 'special2', 'personal',
-            'horse', 'weapon', 'book', 'item', 'last_turn'
+            'horse', 'weapon', 'book', 'item', 'last_turn', 'aux',
         ];
         $fullColumn = [
             'no', 'name', 'owner', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity',
