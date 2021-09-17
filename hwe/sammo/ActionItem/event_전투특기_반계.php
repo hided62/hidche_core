@@ -38,7 +38,7 @@ class event_전투특기_반계 extends \sammo\BaseItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_반계시도($unit),
+            new che_반계시도($unit, BaseWarUnitTrigger::TYPE_ITEM),
             new che_반계발동($unit)
         );
     }
