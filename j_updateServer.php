@@ -230,7 +230,7 @@ if ($server == $baseServerName) {
             __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
             [
                 'verionGit' => $version,
-                'hash' => $hash
+                'hash' => $gitHash
             ],
             true
         );
