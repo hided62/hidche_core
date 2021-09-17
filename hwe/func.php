@@ -1594,7 +1594,17 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     }
 
     if (!$availableUnique) {
+        if ($general->getAuxVar('inheritRandomUnique')) {
+            $general->setAuxVar('inheritRandomUnique', null);
+            $general->increaseInheritancePoint('previous', GameConst::$inheritItemRandomPoint);
+            $userLogger = new UserLogger($general->getVar('owner'));
+            $userLogger->push(sprintf("얻을 유니크가 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
+        }
         return false;
+    }
+
+    if ($general->getAuxVar('inheritRandomUnique')) {
+        $general->setAuxVar('inheritRandomUnique', null);
     }
 
     [$itemType, $itemCode] = Util::choiceRandomUsingWeightPair($availableUnique);
@@ -1850,6 +1860,12 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
 
     if ($trialCnt <= 0) {
         LogText("{$general->getName()}, {$general->getID()} 모든 아이템", $trialCnt);
+        if ($general->getAuxVar('inheritRandomUnique')) {
+            $general->setAuxVar('inheritRandomUnique', null);
+            $general->increaseInheritancePoint('previous', GameConst::$inheritItemRandomPoint);
+            $userLogger = new UserLogger($general->getVar('owner'));
+            $userLogger->push(sprintf("유니크를 얻을 공간이 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
+        }
         return false;
     }
 
@@ -1881,8 +1897,6 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     if ($general->getAuxVar('inheritRandomUnique')) {
         //포인트로 랜덤 유니크 획득
         $prob = 1;
-        LogText("{$general->getName()}, {$general->getID()} 유산 포인트 유니크", $prob);
-        $general->setAuxVar('inheritRandomUnique', null);
     }
 
     foreach (Util::range($trialCnt) as $_idx) {
