@@ -149,7 +149,7 @@
       <div class="col col-md-1 col-3">
         <label
           ><input type="checkbox" v-model="displayInherit" />{{
-            displayTable ? "숨기기" : "보이기"
+            displayInherit ? "숨기기" : "보이기"
           }}</label
         >
       </div>
@@ -458,21 +458,21 @@ export default defineComponent({
     },
     inheritTurnTimeMinute(newValue: number) {
       if (!this.inheritTurnTimeSet) {
-        this.args.inheritTurntime = 0;
+        this.args.inheritTurntime = undefined;
         return;
       }
       this.args.inheritTurntime = newValue * 60 + this.inheritTurnTimeSecond;
     },
     inheritTurnTimeSecond(newValue: number) {
       if (!this.inheritTurnTimeSet) {
-        this.args.inheritTurntime = 0;
+        this.args.inheritTurntime = undefined;
         return;
       }
       this.args.inheritTurntime = this.inheritTurnTimeMinute * 60 + newValue;
     },
     inheritTurnTimeSet(newValue: boolean) {
       if (!newValue) {
-        this.args.inheritTurntime = 0;
+        this.args.inheritTurntime = undefined;
         return;
       }
       this.args.inheritTurntime =
