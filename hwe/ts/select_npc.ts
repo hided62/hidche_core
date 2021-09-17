@@ -203,7 +203,7 @@ function printGenerals(value: NPCToken) {
     const time = Date.now() + value.pickMoreSeconds * 1000;
     $('#btn_pick_more').data('available', time).prop('disabled', true);
 
-    const pick = $.map(value.pick, function (value, key) {
+    const pick = $.map(value.pick, function (value) {
         return value;
     });
 

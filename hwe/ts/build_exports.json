@@ -19,7 +19,6 @@
         "currentCity": "currentCity.ts",
         "hallOfFame": "hallOfFame.ts",
         "history": "history.ts",
-        "join": "legacy/join.ts",
         "select_general_from_pool": "select_general_from_pool.ts",
         "extKingdoms": "extKingdoms.ts",
         "common": "common_deprecated.ts"

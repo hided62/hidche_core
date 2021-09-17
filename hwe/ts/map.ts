@@ -516,7 +516,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         //터치스크린 탭
 
         if (!option.neutralView && is_touch_device()) {
-            $objs.on('touchstart', function (e) {
+            $objs.on('touchstart', function () {
                 if (window.sam_toggleSingleTap) {
                     return true;
                 }

@@ -893,7 +893,7 @@ $(function ($) {
             }
             showBattleResult(result);
 
-        }, function (result) {
+        }, function () {
             alert('전투 개시 실패!');
         });
     }
@@ -933,7 +933,7 @@ $(function ($) {
             }
             reorderDefender(result.order);
 
-        }, function (result) {
+        }, function () {
             alert('재정렬 실패!');
         });
     }
@@ -968,7 +968,7 @@ $(function ($) {
 
     });
 
-    $('#importModal').on('show.bs.modal', function (e) {
+    $('#importModal').on('show.bs.modal', function () {
         if (!initGeneralList) {
             const $list = $('#modalSelector');
 

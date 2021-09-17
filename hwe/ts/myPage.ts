@@ -171,6 +171,7 @@ $(function ($) {
     });
 
     $('#set_my_setting').on('click', async function (e) {
+        e.preventDefault();
         let result: InvalidResponse;
 
         try {
@@ -186,6 +187,9 @@ $(function ($) {
                 })
             });
             result = response.data;
+            if(!result.result){
+                throw result.reason;
+            }
         }
         catch (e) {
             console.log(e);

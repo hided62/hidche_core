@@ -1,5 +1,4 @@
-import { template } from "lodash";
-import { NationPolicy, NPCChiefActions, NPCGeneralActions } from "./defs";
+import { NPCChiefActions, NPCGeneralActions } from "./defs";
 
 export const NPCPriorityBtnHelpMessage: {
   [v in NPCChiefActions | NPCGeneralActions]: string;
