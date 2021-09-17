@@ -1,17 +1,17 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { resolve } = require('path');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 module.exports = (env, argv) => {
     const target = env.target ?? 'hwe';
     const mode = argv.mode ?? 'production';
     const tsDir = resolve(__dirname, `${target}/ts/`);
     const build_exports = require(`${tsDir}/build_exports.json`);
 
+    //TODO: esbuild에 browserslist 사용 가능하면 적용
 
     //서버마다 ts 파일 구성이 다를 가능성이 높기 때문에 어떤 파일이 필요한지는 ts/build_exports.json을 확인한다.
     const entryIngameVue = {};
@@ -58,14 +58,8 @@ module.exports = (env, argv) => {
                 },
             },
             minimizer: [
-                new CssMinimizerPlugin(),
-                new TerserPlugin({
-                    terserOptions: {
-                        format: {
-                            comments: /@license/i,
-                        },
-                    },
-                    extractComments: true,
+                new ESBuildMinifyPlugin({
+                    css: true
                 }),
             ],
             moduleIds: 'deterministic',
@@ -74,18 +68,27 @@ module.exports = (env, argv) => {
             rules: [
                 //FROM `vue inspect` and some tweaks
                 {
-                    test: /\.(ts|tsx)$/,
+                    test: /\.ts$/,
                     //exclude: /(node_modules)/,
                     use: [
-                        'babel-loader',
                         {
-                            loader: 'ts-loader',
+                            loader: 'esbuild-loader',
                             options: {
-                                transpileOnly: true,
-                                appendTsSuffixTo: [
-                                    '\\.vue$'
-                                ],
-                                happyPackMode: false
+                                loader: 'ts',
+                                target: 'es2019',
+                            }
+                        }
+                    ]
+                },
+                {
+                    test: /\.tsx$/,
+                    //exclude: /(node_modules)/,
+                    use: [
+                        {
+                            loader: 'esbuild-loader',
+                            options: {
+                                loader: 'tsx',
+                                target: 'es2019',
                             }
                         }
                     ]
@@ -94,7 +97,13 @@ module.exports = (env, argv) => {
                     test: /\.js$/,
                     exclude: /(node_modules)/,
                     use: [
-                        'babel-loader',
+                        {
+                            loader: 'esbuild-loader',
+                            options: {
+                                loader: 'js',
+                                target: 'es2019',
+                            }
+                        }
                     ]
                 },
                 {
@@ -194,35 +203,51 @@ module.exports = (env, argv) => {
                 },
             },
             minimizer: [
-                new CssMinimizerPlugin(),
-                new TerserPlugin({
-                    terserOptions: {
-                        format: {
-                            comments: /@license/i,
-                        },
-                    },
-                    extractComments: true,
+                new ESBuildMinifyPlugin({
+                    css: true
                 }),
             ],
             moduleIds: 'deterministic',
         },
         module: {
             rules: [{
-                test: /\.(ts|tsx)$/i,
+                test: /\.ts$/,
                 exclude: /(node_modules)/,
-                use: [{
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['@babel/preset-env', {
-                                "useBuiltIns": "usage",
-                                "corejs": 3,
-                                "modules": false
-                            }],
-                            '@babel/preset-typescript'
-                        ]
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'ts',
+                            target: 'es2019',
+                        }
                     }
-                }, 'ts-loader']
+                ]
+            },
+            {
+                test: /\.tsx$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'tsx',
+                            target: 'es2019',
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'js',
+                            target: 'es2019',
+                        }
+                    }
+                ]
             },
             {
                 test: /.(s?[ac]ss)$/,
@@ -270,35 +295,51 @@ module.exports = (env, argv) => {
                 },
             },
             minimizer: [
-                new CssMinimizerPlugin(),
-                new TerserPlugin({
-                    terserOptions: {
-                        format: {
-                            comments: /@license/i,
-                        },
-                    },
-                    extractComments: true,
+                new ESBuildMinifyPlugin({
+                    css: true
                 }),
             ],
             moduleIds: 'deterministic',
         },
         module: {
             rules: [{
-                test: /\.(ts|tsx)$/i,
+                test: /\.ts$/,
                 exclude: /(node_modules)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['@babel/preset-env', {
-                                "useBuiltIns": "usage",
-                                "corejs": 3,
-                                "modules": false
-                            }],
-                            '@babel/preset-typescript'
-                        ]
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'ts',
+                            target: 'es2019',
+                        }
                     }
-                }
+                ]
+            },
+            {
+                test: /\.tsx$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'tsx',
+                            target: 'es2019',
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'js',
+                            target: 'es2019',
+                        }
+                    }
+                ]
             }, {
                 test: /.(s?[ac]ss)$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
