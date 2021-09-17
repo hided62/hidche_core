@@ -1831,7 +1831,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     }
 
     $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
-    if ($inheritUnique && count($inheritUnique)) {
+    if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique)) {
         LogText("유니크 준비?? {$general->getID()}", $inheritUnique);
         $trialResult = tryInheritUniqueItem($general, $acquireType);
         if ($trialResult) {
