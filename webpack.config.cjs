@@ -116,7 +116,13 @@ module.exports = (env, argv) => {
                 },
                 {
                     test: /\.vue\.(s?[ac]ss)$/,
-                    use: ['vue-style-loader', 'css-loader', 'sass-loader']
+                    use: ['vue-style-loader', 'css-loader', {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'css',
+                            minify: true
+                        }
+                    }, 'sass-loader']
                 },
                 {
                     test: /(?<!\.vue)\.(s?[ac]ss)$/,
