@@ -305,7 +305,7 @@ import {
   CTableRow,
   CTableHeaderCell,
   CTableDataCell,
-} from "@coreui/vue/src";
+} from "@coreui/vue/src/components/table";
 import { getIconPath } from "./util/getIconPath";
 import { isBrightColor } from "./util/isBrightColor";
 import {
