@@ -14,6 +14,7 @@ class che_반계시도 extends BaseWarUnitTrigger{
 
     public function __construct(WarUnit $unit, int $raiseType = 0, float $prob = 0.4){
         $this->object = $unit;
+        $this->raiseType = $raiseType;
         $this->prob = $prob;
     }
 
