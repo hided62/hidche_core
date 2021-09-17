@@ -62,8 +62,8 @@ foreach (array_keys(General::INHERITANCE_KEY) as $key) {
     $items[$key] = $me->getInheritancePoint($key) ?? 0;
 }
 
-$resetTurnTimeLevel = $me->getAuxVar('inheritResetTurnTime') ?? 0;
-$resetSpecialWarLevel = $me->getAuxVar('inheritResetSpecialWar') ?? 0;
+$resetTurnTimeLevel = ($me->getAuxVar('inheritResetTurnTime') ?? -1) + 1;
+$resetSpecialWarLevel = ($me->getAuxVar('inheritResetSpecialWar') ?? -1) + 1;
 
 $lastInheritPointLogs = $db->query('SELECT server_id, year, month, date, text FROM user_record WHERE log_type = %s AND user_id = %i ORDER BY id desc LIMIT 30', "inheritPoint", $userID);
 ?>
@@ -89,8 +89,8 @@ $lastInheritPointLogs = $db->query('SELECT server_id, year, month, date, text FR
         'resetSpecialWarLevel' => $resetSpecialWarLevel,
         'inheritActionCost' => [
             'buff' => GameConst::$inheritBuffPoints,
-            'resetTurnTime' => calcResetAttrPoint($resetTurnTimeLevel + 1),
-            'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel + 1),
+            'resetTurnTime' => calcResetAttrPoint($resetTurnTimeLevel),
+            'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel),
             'randomUnique' => GameConst::$inheritItemRandomPoint,
             'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
             'minSpecificUnique' => GameConst::$inheritItemUniqueMinPoint,
