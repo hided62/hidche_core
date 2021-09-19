@@ -39,7 +39,7 @@ $db = DB::db();
 $me = General::createGeneralObjFromDB($generalID);
 
 
-if($defence_train != $me->getVar('defence_train')){
+if($defence_train !== $me->getVar('defence_train')){
     if($defence_train == 999){
         $me->increaseVar('myset', -1);
         $me->setVar('defence_train', $defence_train);
@@ -53,14 +53,8 @@ if($defence_train != $me->getVar('defence_train')){
 }
 
 $me->setAuxVar('use_treatment', Util::valueFit($use_treatment, 10, 100));
-
-if($use_auto_nation_turn != $me->getAuxVar('use_auto_nation_turn')){
-    $me->setAuxVar('use_auto_nation_turn', $use_auto_nation_turn);
-}
-
-if($me->getVar('tnmt') != $tnmt){
-    $me->setVar('tnmt', $tnmt);
-}
+$me->setAuxVar('use_auto_nation_turn', $use_auto_nation_turn);
+$me->setVar('tnmt', $tnmt);
 
 if($me->getNPCType() == 1 && $detachNPC){
     $turnterm = $gameStor->turnterm;
