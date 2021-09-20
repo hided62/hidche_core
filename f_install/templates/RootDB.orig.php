@@ -2,6 +2,11 @@
 
 namespace sammo;
 
+//https://hub.packtpub.com/eloquent-without-laravel/
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Container\Container;
+
 class RootDB
 {
     private static $uDB = null;
@@ -12,11 +17,36 @@ class RootDB
     private static $dbName = '_tK_dbName_';
     private static $port = _tK_port_;
     private static $encoding = 'utf8mb4';
+    private static $collation = 'utf8mb4_general_ci';
+
 
     private static $globalSalt = '_tK_globalSalt_';
 
     private function __construct()
     {
+    }
+
+    public static function illuminate(): Capsule
+    {
+        if(self::$uIlluminate !== null){
+            return self::$uIlluminate;
+        }
+        $capsule = new Capsule;
+
+        $capsule->addConnection([
+            'driver'   => 'mysql',
+            'host'     => self::$host,
+            'database' => self::$dbName,
+            'username' => self::$user,
+            'password' => self::$password,
+            'charset'   => self::$encoding,
+            'collation' => self::$collation,
+        ], 'root');
+
+        $capsule->setEventDispatcher(new Dispatcher(new Container));
+        $capsule->bootEloquent();
+        self::$uIlluminate = $capsule;
+        return $capsule;
     }
 
     /**

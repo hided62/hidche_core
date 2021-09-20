@@ -28,7 +28,9 @@
         "catfan/medoo": "^1.5",
         "phan/phan": "*",
         "erusev/parsedown-extra": "^0.8.1",
-        "nette/caching": "^3.0"
+        "nette/caching": "^3.0",
+        "illuminate/database": "^8.61",
+        "illuminate/events": "^8.61"
     },
     "autoload": {
         "psr-4": {

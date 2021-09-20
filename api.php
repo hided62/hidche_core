@@ -2,7 +2,11 @@
 
 namespace sammo;
 
-include "lib.php";
-include "func.php";
+require(__DIR__ . '/vendor/autoload.php');
+
+
+if (!class_exists('\\sammo\\RootDB')) {
+    Json::dieWithReason('No DB');
+}
 
 APIHelper::launch(dirname(__FILE__));
