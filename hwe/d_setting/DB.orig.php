@@ -41,7 +41,6 @@ class DB
             'password' => self::$password,
             'charset'   => self::$encoding,
             'collation' => self::$collation,
-            'prefix'   => static::$prefix,
         ]);
 
         $capsule->setEventDispatcher(new Dispatcher(new Container));
