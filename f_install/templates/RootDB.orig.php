@@ -10,6 +10,7 @@ use Illuminate\Container\Container;
 class RootDB
 {
     private static $uDB = null;
+    private static ?Capsule $uIlluminate = null;
 
     private static $host = '_tK_host_';
     private static $user = '_tK_user_';
