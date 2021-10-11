@@ -352,7 +352,7 @@ final class ArrayReturnTypeOverridePlugin extends PluginV3 implements
         ) use (
             $nullable_array_type_set,
             $real_nullable_array
-): UnionType {
+        ): UnionType {
             // TODO: Handle non-empty-array in these methods and convert to non-empty-array.
             if (\count($args) < 2) {
                 return $real_nullable_array;
@@ -445,7 +445,7 @@ final class ArrayReturnTypeOverridePlugin extends PluginV3 implements
                     $possible_return_types = $new_element_types;
                 }
             }
-            if (!$possible_return_types || $possible_return_types->isEmpty()) {
+            if ($possible_return_types->isEmpty()) {
                 // This will always be a real array in php 8.0+
                 return $array_map_function->getUnionType();
             }
@@ -550,7 +550,7 @@ final class ArrayReturnTypeOverridePlugin extends PluginV3 implements
                 RedundantCondition::emitInstance(
                     $args[0],
                     $code_base,
-                    (clone($context))->withLineNumberStart($args[0]->lineno ?? $context->getLineNumberStart()),
+                    (clone $context)->withLineNumberStart($args[0]->lineno ?? $context->getLineNumberStart()),
                     Issue::RedundantArrayValuesCall,
                     [
                         $union_type->asRealUnionType(),

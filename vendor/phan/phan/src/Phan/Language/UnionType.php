@@ -3807,7 +3807,10 @@ class UnionType implements Serializable, Stringable
 
     /**
      * @return bool
-     * True if this is exclusively generic types
+     * True if this is non-empty and exclusively generic array types such as array<int,\stdClass> or array{x:int}
+     *
+     * @see UnionType::isArray to check for all possible arrays
+     * @suppress PhanUnreferencedPublicMethod
      */
     public function isGenericArray(): bool
     {
@@ -3817,6 +3820,36 @@ class UnionType implements Serializable, Stringable
 
         return $this->allTypesMatchCallback(static function (Type $type): bool {
             return $type instanceof GenericArrayInterface;
+        });
+    }
+
+    /**
+     * @return bool
+     * True if this is non-empty and exclusively array types
+     */
+    public function isArray(): bool
+    {
+        if ($this->isEmpty()) {
+            return false;
+        }
+
+        return $this->allTypesMatchCallback(static function (Type $type): bool {
+            return $type instanceof ArrayType;
+        });
+    }
+
+    /**
+     * @return bool
+     * True if this is non-empty and exclusively object types
+     */
+    public function isObject(): bool
+    {
+        if ($this->isEmpty()) {
+            return false;
+        }
+
+        return $this->allTypesMatchCallback(static function (Type $type): bool {
+            return $type->isObject();
         });
     }
 
@@ -4633,23 +4666,12 @@ class UnionType implements Serializable, Stringable
      */
     public static function internalFunctionSignatureMap(int $target_php_version): array
     {
-        static $php73_map = [];
+        static $php80_map = [];
 
-        if (!$php73_map) {
-            $php73_map = self::computeLatestFunctionSignatureMap();
+        if (!$php80_map) {
+            $php80_map = self::computeLatestFunctionSignatureMap();
         }
-        if ($target_php_version >= 70400) {
-            static $php74_map = [];
-            if (!$php74_map) {
-                $php74_map = self::computePHP74FunctionSignatureMap($php73_map);
-            }
-            if ($target_php_version < 80000) {
-                return $php74_map;
-            }
-            static $php80_map = [];
-            if (!$php80_map) {
-                $php80_map = self::computePHP80FunctionSignatureMap($php74_map);
-            }
+        if ($target_php_version >= 80000) {
             if ($target_php_version < 80100) {
                 return $php80_map;
             }
@@ -4658,6 +4680,17 @@ class UnionType implements Serializable, Stringable
                 $php81_map = self::computePHP81FunctionSignatureMap($php80_map);
             }
             return $php81_map;
+        }
+        static $php74_map = [];
+        if (!$php74_map) {
+            $php74_map = self::computePHP74FunctionSignatureMap($php80_map);
+        }
+        if ($target_php_version >= 70400) {
+            return $php74_map;
+        }
+        static $php73_map = [];
+        if (!$php73_map) {
+            $php73_map = self::computePHP73FunctionSignatureMap($php74_map);
         }
         if ($target_php_version >= 70300) {
             return $php73_map;
@@ -4746,23 +4779,23 @@ class UnionType implements Serializable, Stringable
     }
 
     /**
-     * @param array<string,associative-array<int|string,string>> $php74_map
+     * @param array<string,associative-array<int|string,string>> $php80_map
      * @return array<string,associative-array<int|string,string>>
      */
-    private static function computePHP80FunctionSignatureMap(array $php74_map): array
+    private static function computePHP74FunctionSignatureMap(array $php80_map): array
     {
         $delta_raw = require(__DIR__ . '/Internal/FunctionSignatureMap_php80_delta.php');
-        return self::applyDeltaToGetNewerSignatures($php74_map, $delta_raw);
+        return self::applyDeltaToGetOlderSignatures($php80_map, $delta_raw);
     }
 
     /**
-     * @param array<string,associative-array<int|string,string>> $php73_map
+     * @param array<string,associative-array<int|string,string>> $php74_map
      * @return array<string,associative-array<int|string,string>>
      */
-    private static function computePHP74FunctionSignatureMap(array $php73_map): array
+    private static function computePHP73FunctionSignatureMap(array $php74_map): array
     {
         $delta_raw = require(__DIR__ . '/Internal/FunctionSignatureMap_php74_delta.php');
-        return self::applyDeltaToGetNewerSignatures($php73_map, $delta_raw);
+        return self::applyDeltaToGetOlderSignatures($php74_map, $delta_raw);
     }
 
     /**
@@ -4807,7 +4840,7 @@ class UnionType implements Serializable, Stringable
 
     /**
      * @param array<string,associative-array<int|string,string>> $older_map
-     * @param array{new:array<string,associative-array<int|string,string>>,old:array<string,associative-array<int|string,string>>} $delta
+     * @param array{added:array<string,associative-array<int|string,string>>,removed:array<string,associative-array<int|string,string>>,changed:array<string,array{old:associative-array<int|string,string>,new:associative-array<int|string,string>}>} $delta
      * @return array<string,associative-array<int|string,string>>
      *
      * @see applyDeltaToGetOlderSignatures - This is doing the exact same thing in reverse.
@@ -4815,24 +4848,37 @@ class UnionType implements Serializable, Stringable
      */
     private static function applyDeltaToGetNewerSignatures(array $older_map, array $delta): array
     {
-        return self::applyDeltaToGetOlderSignatures($older_map, [
-            'old' => $delta['new'],
-            'new' => $delta['old'],
-        ]);
+        foreach ($delta['removed'] as $key => $unused_signature) {
+            // Would also unset alternates, but that step isn't necessary yet.
+            unset($older_map[\strtolower($key)]);
+        }
+        foreach ($delta['added'] as $key => $signature) {
+            // Would also unset alternates, but that step isn't necessary yet.
+            $older_map[\strtolower($key)] = $signature;
+        }
+        foreach ($delta['changed'] as $key => ['new' => $signature]) {
+            // Would also unset alternates, but that step isn't necessary yet.
+            $older_map[\strtolower($key)] = $signature;
+        }
+        return $older_map;
     }
 
     /**
      * @param array<string,associative-array<int|string,string>> $newer_map
-     * @param array{new:array<string,associative-array<int|string,string>>,old:array<string,associative-array<int|string,string>>} $delta
+     * @param array{added:array<string,associative-array<int|string,string>>,removed:array<string,associative-array<int|string,string>>,changed:array<string,array{old:associative-array<int|string,string>,new:associative-array<int|string,string>}>} $delta
      * @return array<string,associative-array<int|string,string>>
      */
     private static function applyDeltaToGetOlderSignatures(array $newer_map, array $delta): array
     {
-        foreach ($delta['new'] as $key => $unused_signature) {
+        foreach ($delta['added'] as $key => $unused_signature) {
             // Would also unset alternates, but that step isn't necessary yet.
             unset($newer_map[\strtolower($key)]);
         }
-        foreach ($delta['old'] as $key => $signature) {
+        foreach ($delta['removed'] as $key => $signature) {
+            // Would also unset alternates, but that step isn't necessary yet.
+            $newer_map[\strtolower($key)] = $signature;
+        }
+        foreach ($delta['changed'] as $key => ['old' => $signature]) {
             // Would also unset alternates, but that step isn't necessary yet.
             $newer_map[\strtolower($key)] = $signature;
         }
@@ -4935,6 +4981,7 @@ class UnionType implements Serializable, Stringable
     /**
      * @param UnionType[] $union_types
      * @return UnionType union of these UnionTypes
+     * @suppress PhanPartialTypeMismatchArgument false positive seen when no real types are known. count() would throw in php 8.0+ for non-countables.
      */
     public static function merge(array $union_types, bool $normalize_array_shapes = true): UnionType
     {
@@ -5907,7 +5954,6 @@ class UnionType implements Serializable, Stringable
             return null;
         }
         $type = \reset($type_set);
-        // @phan-suppress-next-line PhanPossiblyFalseTypeArgumentInternal TODO: Infer non-empty-array from count
         switch (\get_class($type)) {
             case LiteralIntType::class:
                 return $type->isNullable() ? null : $type->getValue();

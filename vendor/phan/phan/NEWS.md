@@ -1,5 +1,65 @@
 Phan NEWS
 
+Sep 14 2021, Phan 5.2.1
+-----------------------
+
+New Features:
+- Improve analysis of conditions detecting the empty/non-empty array. (#4523)
+  E.g. support `if ($x === []) {...} else {...}`, `if (count($x) > 0) {...} else {...}`, etc.
+- Raise severity of `PhanTypeNonVarPassByRef` to critical. It throws an Error in php 8.0+. (#3830)
+- Infer from conditions such as `in_array($var, $array, true)` that $array is a non-empty array and that $var is of a type found in the elements of $array. (#2511)
+
+Plugins:
+- Emit a proper warning when `InvokePHPNativeSyntaxCheckPlugin` is passed a path to a php binary that is missing or invalid (or if the syntax check crashed). (#4116)
+  Previously, Phan would crash with an error such as `fwrite(): write of 8196 bytes failed with errno=32 Broken pipe`
+- Fix false positive `PhanPluginMoreSpecificActualReturnType` for phpdoc array shape return type and returned generic array. (#4531)
+
+Bug fixes:
+- Fix type inference logic that was looking for array specializations rather than array or any array subtype (#4512)
+- Fix false positive `PhanUnreferencedClosure`/`PhanUnreferencedFunction` seen when a closure/function name was passed to a function such as `uasort` that already had a plugin analyzing calls of the closure. (#4090, #4519)
+- Fix false positive/negative `PhanTypeMissingReturn*` instances. (#4537)
+
+  The check was wrong and should have been checking for a statement list that throws/exits.
+  Return statements can be omitted if a function unconditionally exits.
+
+  Also, check for the real `never` return type when emitting issues
+- Fix false positive `PhanPossiblyUndefinedGlobalVariable*` instance when `global $var` is used within a conditional. (#4539)
+- Fix false positive `PhanPluginRedundantAssignmentInLoop` instance when a variable is modified in a catch statement with a break/continue. (#4542)
+- Fix some incorrect line numbers in some plugin issues.
+- Fix crash seen when parsing intersection types containing union types such as `non-empty-array&array<'a'|'b'>` (#4544)
+
+Maintenance:
+- Fix old return type signature for `get_headers` (#3273)
+- Print instructions on how to upgrade php-ast to 1.0.11+ if an outdated version is installed. (#4532)
+
+Aug 26 2021, Phan 5.2.0
+-----------------------
+
+Plugins:
+- Add `AddNeverReturnTypePlugin`` which will suggest adding a phpdoc return type of `@return never`. (#4468)
+
+Bug fixes:
+- When using the polyfill parser, properly parse nullable class property declarations as nullable. (#4492)
+- Don't emit PhanIncompatibleRealPropertyType for private base property. (#4426)
+- Fix false positive where a method overriding an existing method could be treated as having overrides. (#4502)
+- Consistently support `numeric-string` in all phpdoc
+- Fix false positive `PhanTypeMismatchPropertyDefaultReal` warning for literal integer and `float` typed property. (#4507)
+- Fix false positive warnings such as `PhanImpossibleTypeComparison` about string subtypes not casting to other string subtypes (#4514)
+
+Maintenance:
+- Change internal representation of FunctionSignatureMap delta files.
+- Add a new exit status bit flag to `BlockExitStatusChecker` to indicate that a function will exit or infinitely loop (`STATUS_NORETURN`) (#4468)
+- Internally represent the base function map using php 8.0 signatures instead of php 7.3 - applying deltas backwards has the same result (#4478)
+
+Aug 07 2021, Phan 5.1.0
+-----------------------
+
+New Features (Analysis):
+- Support running Phan 5 with AST version 80 instead of 85 but warn about php-ast being outdated.
+
+Documentation:
+- Update documentation of `--target-php-version` and `--minimum-target-php-version`
+
 Aug 01 2021, Phan 5.0.0
 -----------------------
 

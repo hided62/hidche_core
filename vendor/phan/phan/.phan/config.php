@@ -393,12 +393,15 @@ return [
         'tool/phan_repl_helpers.php',
         'internal/dump_fallback_ast.php',
         'internal/dump_html_styles.php',
+        'internal/emit_signature_map_for_php_version.php',
         'internal/extract_arg_info.php',
+        'internal/flatten_signature_map.php',
         'internal/internalsignatures.php',
         'internal/line_deleter.php',
         'internal/package.php',
         'internal/reflection_completeness_check.php',
         'internal/sanitycheck.php',
+        'internal/sort_signature_map.php',
         'vendor/phpdocumentor/type-resolver/src/Types/ContextFactory.php',
         'vendor/phpdocumentor/reflection-docblock/src/DocBlockFactory.php',
         'vendor/phpdocumentor/reflection-docblock/src/DocBlock.php',
@@ -651,6 +654,8 @@ return [
         'RemoveDebugStatementPlugin',
         'UnsafeCodePlugin',
         'DeprecateAliasPlugin',
+        // Suggest '@return never'
+        '.phan/plugins/AddNeverReturnTypePlugin.php',
         // Still have false positives to suppress
         // '.phan/plugins/StaticVariableMisusePlugin.php',
 

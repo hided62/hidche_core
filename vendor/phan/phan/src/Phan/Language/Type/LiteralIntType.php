@@ -32,6 +32,7 @@ final class LiteralIntType extends IntType implements LiteralTypeInterface
      * @unused-param $is_nullable
      * @internal - do not call
      * @deprecated
+     * @return never
      */
     public static function instance(bool $is_nullable)
     {
@@ -152,7 +153,7 @@ final class LiteralIntType extends IntType implements LiteralTypeInterface
                     break;
                 case 'float':
                     if ($type instanceof LiteralFloatType) {
-                        return $type->getValue() == $this->getValue();
+                        return $type->getValue() == $this->value;
                     }
                     return true;
                 case 'true':
@@ -225,7 +226,7 @@ final class LiteralIntType extends IntType implements LiteralTypeInterface
             return false;
         }
 
-        return parent::canCastToNonNullableType($type, $code_base);
+        return parent::isSubtypeOfNonNullableType($type, $code_base);
     }
 
     /**

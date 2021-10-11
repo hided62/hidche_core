@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '40a20a55d3aa08f0ab58a50b0572b17dce33de80',
+    'reference' => 'cf3f40b5787b2a1aed9255775143108ef5b1f278',
     'name' => 'sammo-hid/sammo',
   ),
   'versions' => 
@@ -315,12 +315,12 @@ private static $installed = array (
     ),
     'phan/phan' => 
     array (
-      'pretty_version' => '5.0.0',
-      'version' => '5.0.0.0',
+      'pretty_version' => '5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f36b6b9a2f4143a25f35ce94d712ceb0527e9d90',
+      'reference' => 'd724bbb8fc3ba89179868bb5220ecdf6a9c1636b',
     ),
     'php-extended/php-system' => 
     array (
@@ -450,7 +450,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '40a20a55d3aa08f0ab58a50b0572b17dce33de80',
+      'reference' => 'cf3f40b5787b2a1aed9255775143108ef5b1f278',
     ),
     'scssphp/scssphp' => 
     array (

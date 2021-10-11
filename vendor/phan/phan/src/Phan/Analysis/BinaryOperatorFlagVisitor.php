@@ -89,10 +89,11 @@ final class BinaryOperatorFlagVisitor extends FlagVisitorImplementation
     /**
      * @throws AssertionError
      * @suppress PhanUnreferencedPrivateMethod this is referenced by __invoke
+     * @return never
      */
     private function handleMissing(Node $node): void
     {
-        throw new AssertionError("All flags must match. Found kind=" . Debug::nodeName($node) . ', flags=' . Element::flagDescription($node) . ' raw flags=' . $node->flags . ' at ' . $this->context->withLineNumberStart((int)$node->lineno));
+        throw new AssertionError("All flags must match. Found kind=" . Debug::nodeName($node) . ', flags=' . Element::flagDescription($node) . ' raw flags=' . $node->flags . ' at ' . (clone $this->context)->withLineNumberStart((int)$node->lineno));
     }
 
     /**
@@ -751,7 +752,7 @@ final class BinaryOperatorFlagVisitor extends FlagVisitorImplementation
 
         // If both left and right union types are arrays, then this is array
         // concatenation. (`$left + $right`)
-        if ($left->isGenericArray() && $right->isGenericArray()) {
+        if ($left->isArray() && $right->isArray()) {
             self::checkInvalidArrayShapeCombination($code_base, $context, $node, $left, $right);
             if ($left->isEqualTo($right)) {
                 return $left;

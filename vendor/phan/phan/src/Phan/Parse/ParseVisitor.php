@@ -329,7 +329,7 @@ class ParseVisitor extends ScopeVisitor
         }
 
         $method = Method::fromNode(
-            clone($context),
+            clone $context,
             $code_base,
             $node,
             $method_fqsen,
@@ -359,10 +359,15 @@ class ParseVisitor extends ScopeVisitor
                     $this->addPromotedConstructorPropertyFromParam($class, $method, $parameter, $node->children['params']->children[$i]);
                 }
             }
-        } elseif ('__tostring' === $method_name_lower
-            && !$this->context->isStrictTypes()
-        ) {
-            $class->addAdditionalType(StringType::instance(false));
+        } elseif ('__tostring' === $method_name_lower) {
+            if (!$this->context->isStrictTypes()) {
+                $class->addAdditionalType(StringType::instance(false));
+            }
+            // In PHP 8 and later having a __toString method automatically adds the Stringable interface, #4476
+            if (Config::get_closest_minimum_target_php_version_id() >= 80000) {
+                // @phan-suppress-next-line PhanThrowTypeAbsentForCall should not happen, built in type
+                $class->addAdditionalType(Type::fromFullyQualifiedString('\Stringable'));
+            }
         }
 
 
@@ -383,7 +388,7 @@ class ParseVisitor extends ScopeVisitor
         Node $parameter_node
     ): void {
         $lineno = $parameter_node->lineno;
-        $context = (clone($this->context))->withLineNumberStart($lineno);
+        $context = (clone $this->context)->withLineNumberStart($lineno);
         if ($parameter_node->flags & ast\flags\PARAM_VARIADIC) {
             $this->emitIssue(
                 Issue::InvalidNode,
@@ -509,7 +514,7 @@ class ParseVisitor extends ScopeVisitor
                     . 'Got '
                     . \print_r($property_name, true)
                     . ' at '
-                    . (clone($this->context))->withLineNumberStart($child_node->lineno)
+                    . (clone $this->context)->withLineNumberStart($child_node->lineno)
                 );
             }
             $this->addProperty(
@@ -544,7 +549,7 @@ class ParseVisitor extends ScopeVisitor
         // type and try to figure it out later
         $future_union_type_node = null;
 
-        $context_for_property = (clone($this->context))->withLineNumberStart($lineno);
+        $context_for_property = (clone $this->context)->withLineNumberStart($lineno);
         $real_type_set = $real_union_type->getTypeSet();
 
         if ($default_node === null) {
@@ -578,7 +583,7 @@ class ParseVisitor extends ScopeVisitor
                     $union_type = UnionType::empty();
                 }
             } else {
-                if (!$union_type->isStrictSubtypeOf($this->code_base, $real_union_type)) {
+                if (!$union_type->canCastToUnionType($real_union_type, $this->code_base)) {
                     $this->emitIssue(
                         Issue::TypeMismatchPropertyDefaultReal,
                         $context_for_property->getLineNumberStart(),

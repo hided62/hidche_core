@@ -19,6 +19,7 @@ use Phan\Language\Scope\ClassScope;
 use Phan\Language\Scope\FunctionLikeScope;
 use Phan\Language\Scope\GlobalScope;
 use Phan\Language\UnionType;
+use Phan\Library\Set;
 use Phan\Memoize;
 
 /**
@@ -26,6 +27,7 @@ use Phan\Memoize;
  *
  * @phan-file-suppress PhanPartialTypeMismatchArgument
  * @method FullyQualifiedMethodName getDefiningFQSEN() @phan-suppress-current-line PhanParamSignaturePHPDocMismatchReturnType
+ * @property FullyQualifiedMethodName $fqsen
  */
 class Method extends ClassElement implements FunctionInterface
 {
@@ -48,6 +50,11 @@ class Method extends ClassElement implements FunctionInterface
      *              This may become out of date in language server mode.
      */
     private $defining_method_for_type_fetching;
+
+    /**
+     * @var Set<FullyQualifiedMethodName> FQSENs of methods potentially overriding this one.
+     */
+    private $method_overrides;
 
     /**
      * @param Context $context
@@ -110,6 +117,8 @@ class Method extends ClassElement implements FunctionInterface
             $this->setParameterList($parameter_list);
         }
         $this->checkForTemplateTypes();
+
+        $this->method_overrides = new Set();
     }
 
     public function __clone()
@@ -167,18 +176,51 @@ class Method extends ClassElement implements FunctionInterface
     }
 
     /**
+     * Returns a (possibly incomplete) list of methods overriding this one.
+     * @param CodeBase $code_base
+     * @return list<Method>
+     * @suppress PhanUnreferencedPublicMethod May be called by plugins (#4502)
+     */
+    public function getPossibleOverrides(CodeBase $code_base): array
+    {
+        $ret = [];
+        foreach ($this->method_overrides as $fqsen) {
+            // Consistency checks, mostly for language server mode.
+            /** @var FullyQualifiedMethodName $fqsen */
+            if (!$code_base->hasMethodWithFQSEN($fqsen)) {
+                continue;
+            }
+            $method = $code_base->getMethodByFQSEN($fqsen);
+            if ($method->getDefiningFQSEN() !== $fqsen) {
+                continue;
+            }
+            $subclassExpanded = $method->getClassFQSEN()->asType()->asExpandedTypes($code_base);
+            $thisClassType = $this->getClassFQSEN()->asType();
+            if ($subclassExpanded->hasType($thisClassType)) {
+                $ret[] = $method;
+            }
+        }
+        return $ret;
+    }
+
+    /**
      * Sets whether this method is overridden by another method
      *
      * @param bool $is_overridden_by_another
      * True if this method is overridden by another method
+     * @param FullyQualifiedMethodName|null $fqsen
+     * FQSEN of the overriding method, if available and $is_overridden_by_another is true.
      */
-    public function setIsOverriddenByAnother(bool $is_overridden_by_another): void
+    public function setIsOverriddenByAnother(bool $is_overridden_by_another, FullyQualifiedMethodName $fqsen = null): void
     {
         $this->setPhanFlags(Flags::bitVectorWithState(
             $this->getPhanFlags(),
             Flags::IS_OVERRIDDEN_BY_ANOTHER,
             $is_overridden_by_another
         ));
+        if ($is_overridden_by_another && $fqsen) {
+            $this->method_overrides->attach($fqsen);
+        }
     }
 
     /**
@@ -675,7 +717,7 @@ class Method extends ClassElement implements FunctionInterface
 
         // If the type contains 'static', add this method's class
         // to the return type.
-        $scope = new ClassScope(new GlobalScope(), $this->getFQSEN()->getFullyQualifiedClassName(), 0);
+        $scope = new ClassScope(new GlobalScope(), $this->fqsen->getFullyQualifiedClassName(), 0);
         $new_union_type = $union_type->withStaticResolvedInContext((clone $this->getContext())->withScope($scope));
         if ($new_union_type !== $union_type) {
             $union_type = $union_type->withUnionType($new_union_type);
@@ -704,7 +746,7 @@ class Method extends ClassElement implements FunctionInterface
     {
         // Workaround so that methods of generic classes will have the resolved template types
         yield $this;
-        $fqsen = $this->getFQSEN();
+        $fqsen = $this->fqsen;
         $alternate_id = $fqsen->getAlternateId() + 1;
 
         $fqsen = $fqsen->withAlternateId($alternate_id);

@@ -1886,16 +1886,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "5.0.0",
+            "version": "5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "f36b6b9a2f4143a25f35ce94d712ceb0527e9d90"
+                "reference": "d724bbb8fc3ba89179868bb5220ecdf6a9c1636b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/f36b6b9a2f4143a25f35ce94d712ceb0527e9d90",
-                "reference": "f36b6b9a2f4143a25f35ce94d712ceb0527e9d90",
+                "url": "https://api.github.com/repos/phan/phan/zipball/d724bbb8fc3ba89179868bb5220ecdf6a9c1636b",
+                "reference": "d724bbb8fc3ba89179868bb5220ecdf6a9c1636b",
                 "shasum": ""
             },
             "require": {
@@ -1912,7 +1912,7 @@
                 "symfony/console": "^3.2|^4.0|^5.0",
                 "symfony/polyfill-mbstring": "^1.11.0",
                 "symfony/polyfill-php80": "^1.20.0",
-                "tysonandre/var_representation_polyfill": "^0.0.2"
+                "tysonandre/var_representation_polyfill": "^0.0.2|^0.1.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5.0"
@@ -1959,9 +1959,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phan/phan/issues",
-                "source": "https://github.com/phan/phan/tree/5.0.0"
+                "source": "https://github.com/phan/phan/tree/5.2.1"
             },
-            "time": "2021-08-01T18:17:28+00:00"
+            "time": "2021-09-15T00:08:40+00:00"
         },
         {
             "name": "php-extended/php-system",
