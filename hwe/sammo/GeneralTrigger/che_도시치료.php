@@ -15,7 +15,7 @@ class che_도시치료 extends BaseGeneralTrigger{
         /** @var \sammo\General $general */
         $general = $this->object;
         $logger = $general->getLogger();
-        
+
         if($general->getVar('injury') > 0){
             $general->updateVar('injury', 0);
             $general->activateSkill('pre.부상경감', 'pre.치료');
@@ -25,8 +25,8 @@ class che_도시치료 extends BaseGeneralTrigger{
         $db = DB::db();
 
         $patients = $db->queryAllLists(
-            'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i', 
-            $general->getCityID(), 
+            'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i',
+            $general->getCityID(),
             $general->getID()
         );
 
@@ -56,7 +56,7 @@ class che_도시치료 extends BaseGeneralTrigger{
             return $env;
         }
 
-        
+
         if(count($cureList) == 1){
             $josaUl = JosaUtil::pick($curedPatientName, "을");
             $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수 <Y>{$curedPatientName}</>{$josaUl} 치료합니다!", ActionLogger::PLAIN);

@@ -218,7 +218,7 @@ class che_물자원조 extends Command\NationCommand{
         }
 
         $josaRoSrc = JosaUtil::pick($nationName, '로');
-        $destNationLogger = new ActionLogger(0, $destChiefID, $year, $month);
+        $destNationLogger = new ActionLogger(0, $destNationID, $year, $month);
         $destNationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaRoSrc}부터 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원 받음");
 
         $destNationStor = KVStorage::getStorage(DB::db(), $destNationID, 'nation_env');

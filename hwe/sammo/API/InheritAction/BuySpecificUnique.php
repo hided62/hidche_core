@@ -17,6 +17,7 @@ class BuySpecificUnique extends \sammo\BaseAPI
 {
     public function validateArgs(): ?string
     {
+        $availableItems = [];
         foreach (GameConst::$allItems as $items) {
             foreach ($items as $itemKey => $amount) {
                 if ($amount == 0) {

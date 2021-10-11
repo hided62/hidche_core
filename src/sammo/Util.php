@@ -156,7 +156,7 @@ class Util extends \utilphp\util
             else{
                 $text = str_replace("_tK_{$key}_", $value, $text);
             }
-            
+
         }
         file_put_contents($destFilePath, $text);
 
@@ -182,7 +182,7 @@ class Util extends \utilphp\util
         else{
             $head[] = "class $newClassName extends $srcClassName";
         }
-        
+
         $head[] = '{';
         $head[] = '';
         $head = join("\n", $head);
@@ -203,7 +203,7 @@ class Util extends \utilphp\util
         }
         $result = file_put_contents($destFilePath, $head.join("\n", $body).$tail, LOCK_EX);
         assert($result);
-        
+
         return true;
     }
 
@@ -281,12 +281,12 @@ class Util extends \utilphp\util
     public static function convertArrayToDict($arr, $keyName)
     {
         $result = [];
-    
+
         foreach ($arr as $obj) {
             $key = $obj[$keyName];
             $result[$key] = $obj;
         }
-    
+
         return $result;
     }
 
@@ -309,7 +309,7 @@ class Util extends \utilphp\util
     public static function convertDictToArray($dict, bool $withKey=true)
     {
         $result = [];
-    
+
         foreach($dict as $key=>$value){
             if($withKey){
                 $result[] = [$key, $value];
@@ -318,7 +318,7 @@ class Util extends \utilphp\util
                 $result[] = $value;
             }
         }
-        
+
         return $result;
     }
 
@@ -327,7 +327,7 @@ class Util extends \utilphp\util
         foreach($dict as $dictKey=>$value){
             $result[$dictKey] = $value[$key];
         }
-        
+
         return $result;
     }
 
@@ -354,7 +354,7 @@ class Util extends \utilphp\util
             }
             $idx = $key + 1;
         }
-    
+
         return false;
     }
 
@@ -368,20 +368,20 @@ class Util extends \utilphp\util
         if ($dict === null) {
             return null;
         }
-    
+
         if (is_array($dict) && empty($dict)) {
             return null;
         }
-    
+
         if ($depth <= 0) {
             return $dict;
         }
-    
+
         foreach ($dict as $key=>$value) {
             if ($value === null) {
                 unset($dict[$key]);
                 continue;
-            } 
+            }
             if (!Util::isDict($value)) {
                 continue;
             }
@@ -393,7 +393,7 @@ class Util extends \utilphp\util
                 $dict[$key] = $newValue;
             }
         }
-    
+
         return $dict;
     }
 
@@ -465,7 +465,7 @@ class Util extends \utilphp\util
 
         return (float)$matches[1] / 100;
     }
-    
+
 
     /**
      * $min과 $max 사이의 값으로 교정
@@ -552,7 +552,7 @@ class Util extends \utilphp\util
 
     /**
      * 2중 배열에서 특정 키의 합
-     * 
+     *
      * @param array $array 배열. 1차원 배열 또는 2차원 배열
      * @param int|string|null $key 2차원 배열에서 참조할 키.
      * @return int|float 합계
@@ -570,14 +570,14 @@ class Util extends \utilphp\util
 
     /**
      * 특정 키를 가진 값으로 묶음
-     * 
+     *
      * @param array $array 배열. 1차원 배열 또는 2차원 배열
      * @param int|string|null $key 2차원 배열에서 참조할 키.
      * @return array
      */
     public static function arrayGroupBy(array $array, $key, bool $preserveRowKey=false) {
         $result = array();
-    
+
         if($preserveRowKey){
             foreach($array as $rowKey=>$val) {
                 if(key_exists($key, $val)){
@@ -596,7 +596,7 @@ class Util extends \utilphp\util
                 }
             }
         }
-        
+
         return $result;
     }
 
@@ -618,7 +618,7 @@ class Util extends \utilphp\util
      *
      * @param array $items 선택하고자 하는 배열
      *
-     * @return int|float|string|object 선택된 value값.
+     * @return int|float|string|array|object 선택된 value값.
      */
     public static function choiceRandom(array $items)
     {
@@ -700,7 +700,7 @@ class Util extends \utilphp\util
         else{
             throw new \InvalidArgumentException('$lhs is not Traversable');
         }
-        
+
         if($rhs instanceof \Traversable){
             $rhsIter = new \IteratorIterator($rhs);
         }
@@ -778,11 +778,11 @@ class Util extends \utilphp\util
 
     /**
      * Python 3의 range와 동일
-     * @param int $from 
-     * @param null|int $to 
-     * @param null|int $step 
+     * @param int $from
+     * @param null|int $to
+     * @param null|int $step
      * @return \Traversable
-     * @throws \InvalidArgumentException 
+     * @throws \InvalidArgumentException
      */
     public static function range(int $from, ?int $to=null, ?int $step=null):\Traversable{
         if($to === null){
@@ -809,5 +809,5 @@ class Util extends \utilphp\util
             }
         }
     }
-    
+
 };

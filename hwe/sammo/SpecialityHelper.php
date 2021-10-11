@@ -86,7 +86,7 @@ class SpecialityHelper{
         if($leadership > GameConst::$chiefStatMin){
             $myCond |= self::STAT_LEADERSHIP;
         }
-        
+
         if($strength >= $intel * 0.95 && $strength > GameConst::$chiefStatMin){
             $myCond |= self::STAT_STRENGTH;
         }
@@ -101,7 +101,7 @@ class SpecialityHelper{
             }
             if($strength < GameConst::$chiefStatMin){
                 $myCond |= self::STAT_NOT_STRENGTH;
-            }   
+            }
             if($intel < GameConst::$chiefStatMin){
                 $myCond |= self::STAT_NOT_INTEL;
             }
@@ -118,7 +118,7 @@ class SpecialityHelper{
                 $myCond |= self::STAT_INTEL;
             }
         }
-        
+
         return $myCond;
     }
 
@@ -179,7 +179,7 @@ class SpecialityHelper{
             $specialObj = buildGeneralSpecialWarClass(GameConst::$defaultSpecialWar);
             $result[GameConst::$defaultSpecialWar] = $specialObj;
         }
-        
+
         foreach(GameConst::$availableSpecialWar as $specialID){
             $specialObj = buildGeneralSpecialWarClass($specialID);
             $result[$specialID] = $specialObj;
@@ -220,7 +220,7 @@ class SpecialityHelper{
             if(in_array($specialID, $prevSpecials)){
                 continue;
             }
-            
+
 
             if($weightType === static::WEIGHT_PERCENT){
                 $pAbs[$specialID] = $weight;
@@ -229,7 +229,7 @@ class SpecialityHelper{
                 $pRel[$specialID] = $weight;
             }
         }
-        
+
         if($pAbs){
             if($pRel){
                 $pAbs[0] = max(0, 100 - array_sum($pAbs));
@@ -280,7 +280,7 @@ class SpecialityHelper{
             if(in_array($specialID, $prevSpecials)){
                 continue;
             }
-            
+
 
             if($cond & self::REQ_DEXTERITY){
                 $reqDex[$specialID] = $weight;
@@ -296,7 +296,7 @@ class SpecialityHelper{
         if($reqDex){
             return Util::choiceRandomUsingWeight($reqDex);
         }
-        
+
         if($pAbs){
             if($pRel){
                 $pAbs[0] = max(0, 100 - array_sum($pAbs));

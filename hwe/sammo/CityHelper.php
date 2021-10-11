@@ -3,9 +3,9 @@ namespace sammo;
 
 class CityHelper{
     //Just Helper
-    private static $list = null;
-    private static $listInv = null;
-    private static $listByNation  = null;
+    private static ?array $list = null;
+    private static ?array $listInv = null;
+    private static ?array $listByNation  = null;
 
     private function __construct(){
 
@@ -25,7 +25,7 @@ class CityHelper{
         '@phan-var array<int,mixed>|null $list';
         '@phan-var array<string,mixed>|null $listInv';
         '@phan-var array<int,mixed>|null $listByNation';
-        
+
         foreach (DB::db()->query('SELECT `city` as `id`, `name`, `level`, `nation` from city') as $city) {
             $id = $city['id'];
             $name = $city['name'];
@@ -83,5 +83,5 @@ class CityHelper{
         return $city;
     }
 
-    
+
 }

@@ -71,7 +71,7 @@ class APIHelper
                 [$lastModified, $etag] = $cacheResult;
 
                 if ($lastModified !== null) {
-                    header("Last-Modified: " . gmdate("D, d M Y H:i:s", TimeUtil::DateTimeToSeconds($lastModified, true)) . " GMT");
+                    header("Last-Modified: " . gmdate("D, d M Y H:i:s", Util::toInt(TimeUtil::DateTimeToSeconds($lastModified, true))) . " GMT");
                 }
                 if ($etag !== null) {
                     header("Etag: $etag");
@@ -97,7 +97,7 @@ class APIHelper
         } catch (\Exception $e) {
             Json::dieWithReason($e->getMessage());
         } catch (mixed $e) {
-            Json::dieWithReason($e);
+            Json::dieWithReason(strval($e));
         }
     }
 }

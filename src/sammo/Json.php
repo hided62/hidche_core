@@ -39,6 +39,7 @@ class Json
         return json_decode($value);
     }
 
+    /** @return never */
     public static function die($value, $flag = self::NO_CACHE)
     {
         //NOTE: REST 형식에 맞게, ok(), fail()로 쪼개는게 낫지 않을까 생각해봄.

@@ -62,10 +62,10 @@ class ResetTurnTime extends \sammo\BaseAPI
 
         $userLogger = new UserLogger($userID);
         if($afterTurn >= 0){
-            $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾼 결과 %02d:%02d 뒤로 밀림", intdiv($afterTurn, 60), $afterTurn%60), "inheritPoint");
+            $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾼 결과 %02d:%02d 뒤로 밀림", intdiv(Util::toInt($afterTurn), 60), $afterTurn%60), "inheritPoint");
         }
         else{
-            $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾼 결과 %02d:%02d 앞으로 당김", intdiv(-$afterTurn, 60), (-$afterTurn)%60), "inheritPoint");
+            $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾼 결과 %02d:%02d 앞으로 당김", intdiv(Util::toInt(-$afterTurn), 60), (-$afterTurn)%60), "inheritPoint");
         }
         $userLogger->flush();
 

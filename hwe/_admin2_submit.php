@@ -342,6 +342,7 @@ switch ($btn) {
         }
         break;
     case "랜덤턴":
+        $turnterm = $gameStor->turnterm;
         foreach ($genlist as $generalID) {
             $turntime = getRandTurn($turnterm);
             $db->update('general', [

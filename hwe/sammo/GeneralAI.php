@@ -93,8 +93,7 @@ class GeneralAI
             $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
             $general->setRawCity($city);
             $this->city = $city;
-        }
-        else{
+        } else {
             $this->city = $general->getRawCity();
         }
 
@@ -115,13 +114,13 @@ class GeneralAI
             'name' => '재야',
         ];
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
-        $nationStor->cacheValues(['npc_nation_policy','npc_general_policy','prev_income_gold','prev_income_rice']);
+        $nationStor->cacheValues(['npc_nation_policy', 'npc_general_policy', 'prev_income_gold', 'prev_income_rice']);
 
         $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
         $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
 
-        $prevIncomeGold = $nationStor->prev_income_gold??1000;
-        $prevIncomeRice = $nationStor->prev_income_rice??1000;
+        $prevIncomeGold = $nationStor->prev_income_gold ?? 1000;
+        $prevIncomeRice = $nationStor->prev_income_rice ?? 1000;
         $this->maxResourceActionAmount = Util::round(max(
             $this->nationPolicy->minimumResourceActionAmount,
             $prevIncomeGold / 10,
@@ -130,11 +129,11 @@ class GeneralAI
             $this->nation['rice'] / 5,
             ($this->env['year'] - $this->env['startyear'] - 3) * 1000
         ), -2);
-        if($this->maxResourceActionAmount > GameConst::$maxResourceActionAmount){
+        if ($this->maxResourceActionAmount > GameConst::$maxResourceActionAmount) {
             $this->maxResourceActionAmount = GameConst::$maxResourceActionAmount;
         }
 
-        $this->nation['aux'] = Json::decode($this->nation['aux']??'{}');
+        $this->nation['aux'] = Json::decode($this->nation['aux'] ?? '{}');
 
         $this->leadership = $general->getLeadership();
         $this->strength = $general->getStrength();
@@ -184,7 +183,6 @@ class GeneralAI
             $genType |= self::t통솔장;
         }
         return $genType;
-
     }
 
     protected function calcDiplomacyState()
@@ -216,16 +214,15 @@ class GeneralAI
             if ($warState == 0) {
                 $onWar += 1;
                 $warTargetNation[$warNationID] = 2;
-            } else if($warState == 1 && $warTerm < 5){
+            } else if ($warState == 1 && $warTerm < 5) {
                 $onWarReady += 1;
                 $warTargetNation[$warNationID] = 1;
-            }
-            else{
+            } else {
                 $onWarYet += 1;
             }
         }
 
-        if(!$onWar && !$onWarReady && !$onWarYet){
+        if (!$onWar && !$onWarReady && !$onWarYet) {
             $warTargetNation[0] = 1;
         }
 
@@ -251,8 +248,9 @@ class GeneralAI
         }
     }
 
-    protected function calcWarRoute(){
-        if($this->warRoute !== null){
+    protected function calcWarRoute()
+    {
+        if ($this->warRoute !== null) {
             return;
         }
         $target = $this->warTargetNation;
@@ -263,10 +261,10 @@ class GeneralAI
 
     protected function do부대전방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
         $this->calcWarRoute();
@@ -275,26 +273,26 @@ class GeneralAI
         $chiefTurn = cutTurn($this->general->getTurnTime(), $this->env['turnterm']);
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
 
-        foreach($this->troopLeaders as $troopLeader){
+        foreach ($this->troopLeaders as $troopLeader) {
             $leaderID = $troopLeader->getID();
-            if(!key_exists($leaderID, $this->nationPolicy->CombatForce)){
+            if (!key_exists($leaderID, $this->nationPolicy->CombatForce)) {
                 continue;
             }
 
             $currentCityID = $troopLeader->getCityID();
 
-            if(key_exists($currentCityID, $this->frontCities)){
+            if (key_exists($currentCityID, $this->frontCities)) {
                 continue;
             }
 
             $last발령 = $troopLeader->getAuxVar('last발령');
-            if($last발령){
+            if ($last발령) {
                 $leaderTurn = cutTurn($troopLeader->getTurnTime(), $this->env['turnterm']);
                 $compYearMonth = $yearMonth;
-                if($chiefTurn < $leaderTurn){
+                if ($chiefTurn < $leaderTurn) {
                     $compYearMonth += 1;
                 }
-                if($compYearMonth === $yearMonth){
+                if ($compYearMonth === $yearMonth) {
                     //한턴마다 한번씩만 발령하자.
                     continue;
                 }
@@ -302,19 +300,19 @@ class GeneralAI
 
             [$fromCityID, $toCityID] = $this->nationPolicy->CombatForce[$leaderID];
 
-            if(!key_exists($fromCityID, $this->warRoute) && !key_exists($toCityID, $this->warRoute)){
+            if (!key_exists($fromCityID, $this->warRoute) && !key_exists($toCityID, $this->warRoute)) {
                 //공격 루트 상실, 전방 아무데나
                 $troopCandidate[] = [$leaderID, Util::choiceRandom($this->frontCities)['city']];
                 continue;
             }
 
-            if(!key_exists($toCityID, $this->warRoute[$fromCityID])){
+            if (!key_exists($toCityID, $this->warRoute[$fromCityID])) {
                 //공격 루트 상실, 전방 아무데나
                 $troopCandidate[] = [$leaderID, Util::choiceRandom($this->frontCities)['city']];
                 continue;
             }
 
-            if(key_exists($fromCityID, $this->supplyCities) && key_exists($toCityID, $this->supplyCities)){
+            if (key_exists($fromCityID, $this->supplyCities) && key_exists($toCityID, $this->supplyCities)) {
                 //점령 완료, 전방 아무데나
                 $troopCandidate[] = [$leaderID, Util::choiceRandom($this->frontCities)['city']];
                 continue;
@@ -322,44 +320,44 @@ class GeneralAI
 
 
             //출발지가 아국땅이 아닌경우  수도->출발지
-            if(!key_exists($fromCityID, $this->supplyCities)){
+            if (!key_exists($fromCityID, $this->supplyCities)) {
                 $toCityID = $fromCityID;
                 $fromCityID = $this->nation['capital'];
             }
 
             $targetCityID = $fromCityID;
             //접경에 도달할때까지 전진
-            while(!key_exists($targetCityID, $this->frontCities)){
+            while (!key_exists($targetCityID, $this->frontCities)) {
                 $distance = $this->warRoute[$targetCityID][$toCityID];
                 $nextCityCandidate = [];
-                foreach(array_keys(CityConst::byID($targetCityID)->path) as $nearCityID){
-                    if(!key_exists($nearCityID, $this->warRoute) || !key_exists($toCityID, $this->warRoute[$nearCityID])){
+                foreach (array_keys(CityConst::byID($targetCityID)->path) as $nearCityID) {
+                    if (!key_exists($nearCityID, $this->warRoute) || !key_exists($toCityID, $this->warRoute[$nearCityID])) {
                         continue;
                     }
-                    if($this->warRoute[$nearCityID][$toCityID] + 1 > $distance){
+                    if ($this->warRoute[$nearCityID][$toCityID] + 1 > $distance) {
                         continue;
                     }
                     $nextCityCandidate[] = $nearCityID;
                 }
-                if(!$nextCityCandidate){
+                if (!$nextCityCandidate) {
                     throw new MustNotBeReachedException('경로 계산 버그');
                 }
-                if(count($nextCityCandidate) == 1){
+                if (count($nextCityCandidate) == 1) {
                     $targetCityID = $nextCityCandidate[0];
                     continue;
                 }
                 $targetCityID = Util::choiceRandom($nextCityCandidate);
             }
 
-            $troopCandidate[] = ['destGenaralID'=>$leaderID, 'destCityID'=>$targetCityID];
+            $troopCandidate[] = ['destGenaralID' => $leaderID, 'destCityID' => $targetCityID];
         }
 
-        if(!$troopCandidate){
+        if (!$troopCandidate) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($troopCandidate));
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -368,10 +366,10 @@ class GeneralAI
 
     protected function do부대후방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
 
@@ -379,31 +377,31 @@ class GeneralAI
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
 
         $troopCandidate = [];
-        foreach($this->troopLeaders as $troopLeader){
+        foreach ($this->troopLeaders as $troopLeader) {
             $leaderID = $troopLeader->getID();
-            if(!in_array($leaderID, $this->nationPolicy->SupportForce)){
+            if (!in_array($leaderID, $this->nationPolicy->SupportForce)) {
                 continue;
             }
             $currentCityID = $troopLeader->getCityID();
-            if(!key_exists($currentCityID, $this->supplyCities)){
-               $troopCandidate[$leaderID] = $troopLeader;
-               continue;
+            if (!key_exists($currentCityID, $this->supplyCities)) {
+                $troopCandidate[$leaderID] = $troopLeader;
+                continue;
             }
 
             //충분히 징병 가능한 도시의 부대는 제자리 유지
             $city = $this->supplyCities[$currentCityID];
-            if($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
 
             $last발령 = $troopLeader->getAuxVar('last발령');
-            if($last발령){
+            if ($last발령) {
                 $leaderTurn = cutTurn($troopLeader->getTurnTime(), $this->env['turnterm']);
                 $compYearMonth = $yearMonth;
-                if($chiefTurn < $leaderTurn){
+                if ($chiefTurn < $leaderTurn) {
                     $compYearMonth += 1;
                 }
-                if($compYearMonth === $yearMonth){
+                if ($compYearMonth === $yearMonth) {
                     //한턴마다 한번씩만 발령하자.
                     continue;
                 }
@@ -413,42 +411,42 @@ class GeneralAI
             $troopCandidate[$leaderID] = $troopLeader;
         }
 
-        if(!$troopCandidate){
+        if (!$troopCandidate) {
             return null;
         }
 
-        if(count($this->supplyCities) == 1){
+        if (count($this->supplyCities) == 1) {
             return null;
         }
 
         $cityCandidates = [];
 
-        foreach($this->backupCities as $city){
-            if($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio){
+        foreach ($this->backupCities as $city) {
+            if ($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
             $cityCandidates[] = $city;
         }
 
-        if(!$cityCandidates){
-            foreach($this->supplyCities as $city){
-                if($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio){
+        if (!$cityCandidates) {
+            foreach ($this->supplyCities as $city) {
+                if ($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                     continue;
                 }
                 $cityCandidates[] = $city;
             }
         }
 
-        if(!$cityCandidates){
+        if (!$cityCandidates) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($troopCandidate)->getID(),
-            'destCityID'=>Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID' => Util::choiceRandom($troopCandidate)->getID(),
+            'destCityID' => Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -457,51 +455,51 @@ class GeneralAI
 
     protected function do부대구출발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
 
         $troopCandidate = [];
-        foreach($this->troopLeaders as $troopLeader){
+        foreach ($this->troopLeaders as $troopLeader) {
             $leaderID = $troopLeader->getID();
-            if(in_array($leaderID, $this->nationPolicy->SupportForce)){
+            if (in_array($leaderID, $this->nationPolicy->SupportForce)) {
                 continue;
             }
-            if(key_exists($leaderID, $this->nationPolicy->CombatForce)){
+            if (key_exists($leaderID, $this->nationPolicy->CombatForce)) {
                 continue;
             }
 
             $currentCityID = $troopLeader->getCityID();
-            if(key_exists($currentCityID, $this->supplyCities)){
-               continue;
+            if (key_exists($currentCityID, $this->supplyCities)) {
+                continue;
             }
 
             $troopCandidate[$leaderID] = $troopLeader;
         }
 
-        if(!$troopCandidate){
+        if (!$troopCandidate) {
             return null;
         }
 
         $cityCandidates = [];
 
-        foreach($this->frontCities as $city){
+        foreach ($this->frontCities as $city) {
             $cityCandidates[] = $city;
         }
 
-        if(!$cityCandidates){
+        if (!$cityCandidates) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($troopCandidate)->getID(),
-            'destCityID'=>Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID' => Util::choiceRandom($troopCandidate)->getID(),
+            'destCityID' => Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -511,107 +509,106 @@ class GeneralAI
 
     protected function do부대유저장후방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
-        if($this->dipState !== self::d전쟁){
+        if ($this->dipState !== self::d전쟁) {
             return null;
         }
 
         $generalCadidates = [];
 
-        foreach($this->userWarGenerals as $userGeneral){
+        foreach ($this->userWarGenerals as $userGeneral) {
             $generalID = $userGeneral->getID();
-            if($generalID == $this->general->getID()){
+            if ($generalID == $this->general->getID()) {
                 continue;
             }
-            if(!key_exists($userGeneral->getCityID(), $this->frontCities)){
+            if (!key_exists($userGeneral->getCityID(), $this->frontCities)) {
                 continue;
             }
-            if(!key_exists($userGeneral->getCityID(), $this->nationCities)){
+            if (!key_exists($userGeneral->getCityID(), $this->nationCities)) {
                 continue;
             }
             $city = $this->nationCities[$userGeneral->getCityID()];
             $troopLeaderID = $userGeneral->getVar('troop');
-            if(!$troopLeaderID || !key_exists($troopLeaderID, $this->troopLeaders)){
+            if (!$troopLeaderID || !key_exists($troopLeaderID, $this->troopLeaders)) {
                 continue;
             }
-            if($troopLeaderID === $userGeneral->getID()){
+            if ($troopLeaderID === $userGeneral->getID()) {
                 continue;
             }
             $troopLeader = $this->nationGenerals[$troopLeaderID];
-            if($troopLeader->getCityID() !== $userGeneral->getCityID()){
+            if ($troopLeader->getCityID() !== $userGeneral->getCityID()) {
                 continue;
             }
-            if(!key_exists($troopLeader->getCityID(), $this->supplyCities)){
+            if (!key_exists($troopLeader->getCityID(), $this->supplyCities)) {
                 continue;
             }
-            if($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
-            if($userGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew){
+            if ($userGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew) {
                 continue;
             }
 
             $generalTurnTime = $userGeneral->getTurnTime();
             $troopTurnTime =  $troopLeader->getTurnTime();
 
-            if($generalTurnTime < $troopTurnTime){//NOTE: 어차피 수뇌 턴이 제일 빠르다
+            if ($generalTurnTime < $troopTurnTime) { //NOTE: 어차피 수뇌 턴이 제일 빠르다
                 $generalCadidates[$generalID] = $userGeneral;
             }
         }
 
-        if(!$generalCadidates){
+        if (!$generalCadidates) {
             return null;
         }
 
         $turnList = General::getReservedTurnByGeneralList($generalCadidates, 0, $this->env);
-        $generalCadidates = array_filter($generalCadidates, function(General $general)use($turnList){
+        $generalCadidates = array_filter($generalCadidates, function (General $general) use ($turnList) {
             $generalID = $general->getID();
-            if($turnList[$generalID] instanceof Command\General\che_징병){
+            if ($turnList[$generalID] instanceof Command\General\che_징병) {
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         });
 
-        if(!$generalCadidates){
+        if (!$generalCadidates) {
             return null;
         }
 
-        if(count($this->supplyCities) == 1){
+        if (count($this->supplyCities) == 1) {
             return null;
         }
 
         $cityCandidates = [];
 
-        foreach($this->backupCities as $city){
-            if($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio){
+        foreach ($this->backupCities as $city) {
+            if ($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
             $cityCandidates[] = $city;
         }
 
-        if(!$cityCandidates){
-            foreach($this->supplyCities as $city){
-                if($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio){
+        if (!$cityCandidates) {
+            foreach ($this->supplyCities as $city) {
+                if ($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                     continue;
                 }
                 $cityCandidates[] = $city;
             }
         }
 
-        if(!$cityCandidates){
+        if (!$cityCandidates) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($generalCadidates)->getID(),
-            'destCityID'=>Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID' => Util::choiceRandom($generalCadidates)->getID(),
+            'destCityID' => Util::choiceRandom($cityCandidates)['city']
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -619,86 +616,86 @@ class GeneralAI
     }
     protected function do유저장후방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if($this->dipState !== self::d전쟁){
+        if ($this->dipState !== self::d전쟁) {
             return null;
         }
 
         $generalCadidates = [];
 
-        foreach($this->userWarGenerals as $userGeneral){
+        foreach ($this->userWarGenerals as $userGeneral) {
             $generalID = $userGeneral->getID();
-            if($generalID == $this->general->getID()){
+            if ($generalID == $this->general->getID()) {
                 continue;
             }
-            if(!key_exists($userGeneral->getCityID(), $this->supplyCities)){
+            if (!key_exists($userGeneral->getCityID(), $this->supplyCities)) {
                 continue;
             }
             $city = $this->supplyCities[$userGeneral->getCityID()];
-            if($userGeneral->getVar('troop') !== 0){
+            if ($userGeneral->getVar('troop') !== 0) {
                 continue;
             }
-            if($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
-            if($userGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew){
+            if ($userGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew) {
                 continue;
             }
             $generalCadidates[$generalID] = $userGeneral;
         }
 
-        if(!$generalCadidates){
+        if (!$generalCadidates) {
             return null;
         }
 
-        if(count($this->supplyCities) == 1){
+        if (count($this->supplyCities) == 1) {
             return null;
         }
 
         /** @var General */
         $pickedGeneral = Util::choiceRandom($generalCadidates);
         $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if(!$this->generalPolicy->can한계징병){
+        if (!$this->generalPolicy->can한계징병) {
             $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
         }
 
         $recruitableCityList = [];
 
-        foreach($this->backupCities as $candidateCity){
-            $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+        foreach ($this->backupCities as $candidateCity) {
+            $pop_ratio = $candidateCity['pop'] / $candidateCity['pop_max'];
             $cityID = $candidateCity['city'];
-            if($candidateCity['city'] == $this->city['city']){
+            if ($candidateCity['city'] == $this->city['city']) {
                 continue;
             }
-            if($candidateCity['pop'] < $minRecruitPop){
+            if ($candidateCity['pop'] < $minRecruitPop) {
                 continue;
             }
 
-            if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 $pop_ratio /= 4;
             }
 
             $recruitableCityList[$cityID] = $pop_ratio;
         }
 
-        if(!$recruitableCityList){
-            foreach($this->supplyCities as $candidateCity){
-                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+        if (!$recruitableCityList) {
+            foreach ($this->supplyCities as $candidateCity) {
+                $pop_ratio = $candidateCity['pop'] / $candidateCity['pop_max'];
                 $cityID = $candidateCity['city'];
-                if($candidateCity['city'] == $this->city['city']){
+                if ($candidateCity['city'] == $this->city['city']) {
                     continue;
                 }
-                if($candidateCity['pop'] <= $minRecruitPop){
+                if ($candidateCity['pop'] <= $minRecruitPop) {
                     continue;
                 }
 
-                if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                if ($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                     $pop_ratio /= 2;
                 }
 
-                if(key_exists($cityID, $this->frontCities)){
+                if (key_exists($cityID, $this->frontCities)) {
                     $pop_ratio / 2;
                 }
 
@@ -706,16 +703,16 @@ class GeneralAI
             }
         }
 
-        if(!$recruitableCityList){
+        if (!$recruitableCityList) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>$pickedGeneral->getID(),
-            'destCityID'=>Util::choiceRandomUsingWeight($recruitableCityList)
+            'destGeneralID' => $pickedGeneral->getID(),
+            'destCityID' => Util::choiceRandomUsingWeight($recruitableCityList)
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -724,7 +721,7 @@ class GeneralAI
 
     protected function do유저장구출발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
 
@@ -734,23 +731,23 @@ class GeneralAI
             if ($lostGeneral->getNPCType() >= 2) {
                 continue;
             }
-            if(
+            if (
                 $lostGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew &&
                 $lostGeneral->getVar('train') >= $lostGeneral->getVar('defence_train') &&
                 $lostGeneral->getVar('atmos') >= $lostGeneral->getVar('defence_train')
-            ){
+            ) {
                 //수비도 가능한데, 일부러 가 있는 것으로 보임
                 continue;
             }
 
             $troopID = $lostGeneral->getVar('troop');
-            if($troopID && key_exists($troopID, $this->troopLeaders)){
+            if ($troopID && key_exists($troopID, $this->troopLeaders)) {
                 $troopLeader = $this->troopLeaders[$troopID];
 
-                if(
+                if (
                     key_exists($troopLeader->getCityID(), $this->supplyCities) &&
                     $this->troopLeaders[$troopID]->getTurnTime() < $lostGeneral->getTurnTime()
-                ){
+                ) {
                     //이미 탈출 가능한 부대를 탔다
                     continue;
                 }
@@ -767,14 +764,14 @@ class GeneralAI
                 'destCityID' => $selCity['city']
             ];
         }
-        if(!$args){
+        if (!$args) {
             return null;
         }
 
         $arg = Util::choiceRandom($args);
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, $arg);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             LogText('구출실패', [$arg, $cmd->getFailString()]);
             return null;
         }
@@ -783,10 +780,10 @@ class GeneralAI
 
     protected function do유저장전방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
@@ -794,47 +791,47 @@ class GeneralAI
         }
 
         $generalCandidates = [];
-        foreach($this->userWarGenerals as $userGeneral){
+        foreach ($this->userWarGenerals as $userGeneral) {
             $generalID = $userGeneral->getID();
             $cityID = $userGeneral->getCityID();
-            if(!key_exists($cityID, $this->nationCities)){
+            if (!key_exists($cityID, $this->nationCities)) {
                 continue;
             }
-            if(key_exists($cityID, $this->frontCities)){
+            if (key_exists($cityID, $this->frontCities)) {
                 continue;
             }
-            if($userGeneral->getVar('crew') < $this->nationPolicy->minWarCrew){
+            if ($userGeneral->getVar('crew') < $this->nationPolicy->minWarCrew) {
                 continue;
             }
-            if($userGeneral->getVar('troop')){
+            if ($userGeneral->getVar('troop')) {
                 continue;
             }
 
             $train = $userGeneral->getVar('train');
             $atmos = $userGeneral->getVar('atmos');
 
-            if(max($train, $atmos) < $this->nationPolicy->properWarTrainAtmos){
+            if (max($train, $atmos) < $this->nationPolicy->properWarTrainAtmos) {
                 continue;
             }
 
             $generalCandidates[$generalID] = $userGeneral;
         }
 
-        if(!$generalCandidates){
+        if (!$generalCandidates) {
             return null;
         }
 
         $cityCandidates = [];
-        foreach($this->frontCities as $frontCity){
+        foreach ($this->frontCities as $frontCity) {
             $cityCandidates[$frontCity['city']] = $frontCity['important'];
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($generalCandidates)->getID(),
-            'destCityID'=>Util::choiceRandomUsingWeight($cityCandidates)
+            'destGeneralID' => Util::choiceRandom($generalCandidates)->getID(),
+            'destCityID' => Util::choiceRandomUsingWeight($cityCandidates)
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -843,52 +840,52 @@ class GeneralAI
 
     protected function do유저장내정발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(count($this->supplyCities) === 1){
+        if (count($this->supplyCities) === 1) {
             return null;
         }
 
         $avgDev = array_sum(array_column($this->supplyCities, 'dev')) / count($this->supplyCities);
-        if($avgDev >= 0.99){
+        if ($avgDev >= 0.99) {
             return null;
         }
 
         $userGenerals = $this->userCivilGenerals;
-        if(in_array($this->dipState, [self::d평화, self::d선포])){
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
             $userGenerals += $this->userWarGenerals;
         }
 
         $generalCandidates = [];
-        foreach($userGenerals as $general){
+        foreach ($userGenerals as $general) {
             /** @var General $general */
-            if($general->getVar('troop')){
+            if ($general->getVar('troop')) {
                 continue;
             }
             $cityID = $general->getCityID();
-            if(!key_exists($cityID, $this->supplyCities)){
+            if (!key_exists($cityID, $this->supplyCities)) {
                 continue;
             }
 
             $city = $this->supplyCities[$cityID];
 
-            if($city['dev'] < 0.95){
+            if ($city['dev'] < 0.95) {
                 continue;
             }
             $generalCandidates[] = $general;
         }
 
-        if(!$generalCandidates){
+        if (!$generalCandidates) {
             return null;
         }
 
         $cityCandidiates = [];
-        foreach($this->supplyCities as $city){
+        foreach ($this->supplyCities as $city) {
             $dev = min($city['dev'], 0.999);
             $score = 1 - $dev;
             $score **= 2;
-            $score /= sqrt(count($city['generals']??[]) + 1);
+            $score /= sqrt(count($city['generals'] ?? []) + 1);
             $cityCandidiates[$city['city']] = $score;
         }
 
@@ -897,16 +894,16 @@ class GeneralAI
         $srcCity = $this->supplyCities[$destGeneral->getCityID()];
         $destCity = $this->supplyCities[Util::choiceRandomUsingWeight($cityCandidiates)];
 
-        if($srcCity['dev'] <= $destCity['dev']){
+        if ($srcCity['dev'] <= $destCity['dev']) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>$destGeneral->getID(),
-            'destCityID'=>$destCity['city']
+            'destGeneralID' => $destGeneral->getID(),
+            'destCityID' => $destCity['city']
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -915,93 +912,93 @@ class GeneralAI
 
     protected function doNPC후방발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
-        if($this->dipState !== self::d전쟁){
+        if ($this->dipState !== self::d전쟁) {
             return null;
         }
 
         $generalCadidates = [];
 
-        foreach($this->npcWarGenerals as $npcGeneral){
+        foreach ($this->npcWarGenerals as $npcGeneral) {
             $generalID = $npcGeneral->getID();
-            if($generalID == $this->general->getID()){
+            if ($generalID == $this->general->getID()) {
                 continue;
             }
-            if(!key_exists($npcGeneral->getCityID(), $this->supplyCities)){
+            if (!key_exists($npcGeneral->getCityID(), $this->supplyCities)) {
                 continue;
             }
             $city = $this->supplyCities[$npcGeneral->getCityID()];
-            if($npcGeneral->getVar('troop') !== 0){
+            if ($npcGeneral->getVar('troop') !== 0) {
                 continue;
             }
-            if($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
-            if($npcGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew){
+            if ($npcGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew) {
                 continue;
             }
             $generalCadidates[$generalID] = $npcGeneral;
         }
 
-        if(!$generalCadidates){
+        if (!$generalCadidates) {
             return null;
         }
 
-        if(count($this->supplyCities) == 1){
+        if (count($this->supplyCities) == 1) {
             return null;
         }
 
         /** @var General */
         $pickedGeneral = Util::choiceRandom($generalCadidates);
         $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if(!$this->generalPolicy->can한계징병){
+        if (!$this->generalPolicy->can한계징병) {
             $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
         }
 
         $recruitableCityList = [];
 
-        foreach($this->backupCities as $candidateCity){
-            $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+        foreach ($this->backupCities as $candidateCity) {
+            $pop_ratio = $candidateCity['pop'] / $candidateCity['pop_max'];
             $cityID = $candidateCity['city'];
-            if($candidateCity['city'] == $this->city['city']){
+            if ($candidateCity['city'] == $this->city['city']) {
                 continue;
             }
-            if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+            if ($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation) {
                 continue;
             }
-            if($candidateCity['pop'] < $minRecruitPop){
+            if ($candidateCity['pop'] < $minRecruitPop) {
                 continue;
             }
-            if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
 
             $recruitableCityList[$cityID] = $pop_ratio;
         }
 
-        if(!$recruitableCityList){
-            foreach($this->supplyCities as $candidateCity){
-                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+        if (!$recruitableCityList) {
+            foreach ($this->supplyCities as $candidateCity) {
+                $pop_ratio = $candidateCity['pop'] / $candidateCity['pop_max'];
                 $cityID = $candidateCity['city'];
-                if($candidateCity['city'] == $this->city['city']){
+                if ($candidateCity['city'] == $this->city['city']) {
                     continue;
                 }
-                if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+                if ($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation) {
                     continue;
                 }
-                if($candidateCity['pop'] <= $minRecruitPop){
+                if ($candidateCity['pop'] <= $minRecruitPop) {
                     continue;
                 }
-                if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                if ($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                     continue;
                 }
 
-                if(key_exists($cityID, $this->frontCities)){
+                if (key_exists($cityID, $this->frontCities)) {
                     $pop_ratio / 2;
                 }
 
@@ -1009,16 +1006,16 @@ class GeneralAI
             }
         }
 
-        if(!$recruitableCityList){
+        if (!$recruitableCityList) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>$pickedGeneral->getID(),
-            'destCityID'=>Util::choiceRandomUsingWeight($recruitableCityList)
+            'destGeneralID' => $pickedGeneral->getID(),
+            'destCityID' => Util::choiceRandomUsingWeight($recruitableCityList)
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1028,7 +1025,7 @@ class GeneralAI
 
     protected function doNPC구출발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
         //고립 도시 장수 발령
@@ -1044,11 +1041,11 @@ class GeneralAI
                 'destCityID' => $selCity['city']
             ];
         }
-        if(!$args){
+        if (!$args) {
             return null;
         }
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($args));
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
         return $cmd;
@@ -1059,10 +1056,10 @@ class GeneralAI
         $me = $this->general;
         $cityName = CityConst::byID($me->getCityID())->name;
 
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             return null;
         }
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
@@ -1070,47 +1067,47 @@ class GeneralAI
         }
 
         $generalCandidates = [];
-        foreach($this->npcWarGenerals as $npcGeneral){
+        foreach ($this->npcWarGenerals as $npcGeneral) {
             $generalID = $npcGeneral->getID();
             $cityID = $npcGeneral->getCityID();
-            if(key_exists($cityID, $this->frontCities)){
+            if (key_exists($cityID, $this->frontCities)) {
                 continue;
             }
-            if(!key_exists($cityID, $this->nationCities)){
+            if (!key_exists($cityID, $this->nationCities)) {
                 continue;
             }
-            if($npcGeneral->getVar('crew') < $this->nationPolicy->minWarCrew){
+            if ($npcGeneral->getVar('crew') < $this->nationPolicy->minWarCrew) {
                 continue;
             }
-            if($npcGeneral->getVar('troop')){
+            if ($npcGeneral->getVar('troop')) {
                 continue;
             }
 
             $train = $npcGeneral->getVar('train');
             $atmos = $npcGeneral->getVar('atmos');
 
-            if(max($train, $atmos) < $this->nationPolicy->properWarTrainAtmos){
+            if (max($train, $atmos) < $this->nationPolicy->properWarTrainAtmos) {
                 continue;
             }
 
             $generalCandidates[$generalID] = $npcGeneral;
         }
 
-        if(!$generalCandidates){
+        if (!$generalCandidates) {
             return null;
         }
 
         $cityCandidates = [];
-        foreach($this->frontCities as $frontCity){
+        foreach ($this->frontCities as $frontCity) {
             $cityCandidates[$frontCity['city']] = $frontCity['important'];
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>Util::choiceRandom($generalCandidates)->getID(),
-            'destCityID'=>Util::choiceRandomUsingWeight($cityCandidates)
+            'destGeneralID' => Util::choiceRandom($generalCandidates)->getID(),
+            'destCityID' => Util::choiceRandomUsingWeight($cityCandidates)
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1119,48 +1116,48 @@ class GeneralAI
 
     protected function doNPC내정발령(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
-        if(count($this->supplyCities) === 1){
+        if (count($this->supplyCities) === 1) {
             return null;
         }
 
         $avgDev = array_sum(array_column($this->supplyCities, 'dev')) / count($this->supplyCities);
-        if($avgDev >= 0.99){
+        if ($avgDev >= 0.99) {
             return null;
         }
 
         $npcGenerals = $this->npcCivilGenerals;
-        if(in_array($this->dipState, [self::d평화, self::d선포])){
+        if (in_array($this->dipState, [self::d평화, self::d선포])) {
             $npcGenerals += $this->npcWarGenerals;
         }
 
         $generalCandidates = [];
-        foreach($npcGenerals as $general){
+        foreach ($npcGenerals as $general) {
             /** @var General $general */
             $cityID = $general->getCityID();
-            if(!key_exists($cityID, $this->supplyCities)){
+            if (!key_exists($cityID, $this->supplyCities)) {
                 continue;
             }
             $city = $this->supplyCities[$cityID];
 
-            if($city['dev'] < 0.95){
+            if ($city['dev'] < 0.95) {
                 continue;
             }
             $generalCandidates[] = $general;
         }
 
-        if(!$generalCandidates){
+        if (!$generalCandidates) {
             return null;
         }
 
         $cityCandidiates = [];
-        foreach($this->supplyCities as $city){
+        foreach ($this->supplyCities as $city) {
             $dev = min($city['dev'], 0.999);
             $score = 1 - $dev;
             $score **= 2;
-            $score /= sqrt(count($city['generals']??[]) + 1);
+            $score /= sqrt(count($city['generals'] ?? []) + 1);
             $cityCandidiates[$city['city']] = $score;
         }
 
@@ -1169,16 +1166,16 @@ class GeneralAI
         $srcCity = $this->supplyCities[$destGeneral->getCityID()];
         $destCity = $this->supplyCities[Util::choiceRandomUsingWeight($cityCandidiates)];
 
-        if($srcCity['dev'] <= $destCity['dev']){
+        if ($srcCity['dev'] <= $destCity['dev']) {
             return null;
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID'=>$destGeneral->getID(),
-            'destCityID'=>$destCity['city']
+            'destGeneralID' => $destGeneral->getID(),
+            'destCityID' => $destCity['city']
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1188,7 +1185,7 @@ class GeneralAI
 
     protected function do유저장긴급포상(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->userWarGenerals){
+        if (!$this->userWarGenerals) {
             return null;
         }
 
@@ -1208,21 +1205,21 @@ class GeneralAI
 
         $userWarGenerals = $this->userWarGenerals;
 
-        foreach($remainResource as $resName=>[$resVal,$reqHumanMinRes]){
+        foreach ($remainResource as $resName => [$resVal, $reqHumanMinRes]) {
             usort($userWarGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
 
-            foreach($userWarGenerals as $idx=>$targetUserGeneral){
-                if($targetUserGeneral->getVar($resName) >= $reqHumanMinRes){
+            foreach ($userWarGenerals as $idx => $targetUserGeneral) {
+                if ($targetUserGeneral->getVar($resName) >= $reqHumanMinRes) {
                     break;
                 }
-                if($targetUserGeneral->getVar('killturn') <= 5){
+                if ($targetUserGeneral->getVar('killturn') <= 5) {
                     continue;
                 }
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 100 * 3 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], Util::toInt($targetUserGeneral->getLeadership(false))) * 100 * 3 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 3) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
@@ -1234,7 +1231,7 @@ class GeneralAI
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
                 $payAmount = Util::valueFit($payAmount, null, $enoughMoney - $targetUserGeneral->getVar($resName));
-                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                if ($payAmount < $this->nationPolicy->minimumResourceActionAmount) {
                     continue;
                 }
 
@@ -1244,25 +1241,29 @@ class GeneralAI
 
                 $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
 
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetUserGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => $payAmount
                     ],
-                    count($userWarGenerals)-$idx
+                    count($userWarGenerals) - $idx
                 ];
             }
         }
 
-        if(!$candidateArgs){
+        if (!$candidateArgs) {
             return null;
         }
 
         $cmd = buildNationCommandClass(
-            'che_포상', $this->general, $this->env, $lastTurn,
+            'che_포상',
+            $this->general,
+            $this->env,
+            $lastTurn,
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1272,7 +1273,7 @@ class GeneralAI
     protected function do유저장포상(LastTurn $lastTurn): ?NationCommand
     {
 
-        if(!$this->userGenerals){
+        if (!$this->userGenerals) {
             return null;
         }
 
@@ -1297,38 +1298,36 @@ class GeneralAI
         $userGenerals = $this->userGenerals;
 
 
-        foreach($remainResource as $resName=>[$reqNationRes, $resVal,$reqHumanMinWarRes,$reqHumanMinDevelRes]){
-            if($resVal < $reqNationRes){
+        foreach ($remainResource as $resName => [$reqNationRes, $resVal, $reqHumanMinWarRes, $reqHumanMinDevelRes]) {
+            if ($resVal < $reqNationRes) {
                 continue;
             }
             usort($userGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
 
-            foreach($userGenerals as $idx=>$targetUserGeneral){
-                if($targetUserGeneral->getVar($resName) >= $reqHumanMinWarRes){
+            foreach ($userGenerals as $idx => $targetUserGeneral) {
+                if ($targetUserGeneral->getVar($resName) >= $reqHumanMinWarRes) {
                     break;
                 }
-                if($targetUserGeneral->getVar('killturn') <= 5){
+                if ($targetUserGeneral->getVar('killturn') <= 5) {
                     continue;
                 }
 
-                if(key_exists($targetUserGeneral->getID(), $this->userWarGenerals)){
+                if (key_exists($targetUserGeneral->getID(), $this->userWarGenerals)) {
                     $isWarGeneral = true;
-                }
-                else{
+                } else {
                     $isWarGeneral = false;
                 }
 
-                if($isWarGeneral){
+                if ($isWarGeneral) {
                     $reqHumanMinRes = $reqHumanMinWarRes;
-                }
-                else{
+                } else {
                     $reqHumanMinRes = $reqHumanMinDevelRes;
                 }
 
                 $crewtype = $targetUserGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetUserGeneral->getLeadership(false)) * 100 * 6 * 1.1;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], Util::toInt($targetUserGeneral->getLeadership(false))) * 100 * 6 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 3) {
                     $reqMoney = max($reqMoney, $reqHumanMinRes);
                 }
@@ -1341,7 +1340,7 @@ class GeneralAI
                 $payAmount = sqrt(($enoughMoney - $targetUserGeneral->getVar($resName)) * $resVal);
                 $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes, $enoughMoney - $targetUserGeneral->getVar($resName));
 
-                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                if ($payAmount < $this->nationPolicy->minimumResourceActionAmount) {
                     continue;
                 }
 
@@ -1351,25 +1350,29 @@ class GeneralAI
 
                 $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
 
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetUserGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => $payAmount
                     ],
-                    count($userGenerals)-$idx
+                    count($userGenerals) - $idx
                 ];
             }
         }
 
-        if(!$candidateArgs){
+        if (!$candidateArgs) {
             return null;
         }
 
         $cmd = buildNationCommandClass(
-            'che_포상', $this->general, $this->env, $lastTurn,
+            'che_포상',
+            $this->general,
+            $this->env,
+            $lastTurn,
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1378,7 +1381,7 @@ class GeneralAI
 
     protected function doNPC긴급포상(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->npcWarGenerals){
+        if (!$this->npcWarGenerals) {
             return null;
         }
 
@@ -1388,36 +1391,36 @@ class GeneralAI
             'gold' => [
                 $this->nationPolicy->reqNationGold,
                 $nation['gold'],
-                $this->nationPolicy->reqNPCWarGold/2
+                $this->nationPolicy->reqNPCWarGold / 2
             ],
             'rice' => [
                 $this->nationPolicy->reqNationRice,
                 $nation['rice'],
-                $this->nationPolicy->reqNPCWarRice/2
+                $this->nationPolicy->reqNPCWarRice / 2
             ]
         ];
 
 
         $npcWarGenerals = $this->npcWarGenerals;
 
-        foreach($remainResource as $resName=>[$reqNationRes, $resVal,$reqNPCMinWarRes]){
-            if($resVal < $reqNationRes){
+        foreach ($remainResource as $resName => [$reqNationRes, $resVal, $reqNPCMinWarRes]) {
+            if ($resVal < $reqNationRes) {
                 continue;
             }
             usort($npcWarGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
 
-            foreach($npcWarGenerals as $idx=>$targetNPCGeneral){
-                if($targetNPCGeneral->getVar($resName) >= $reqNPCMinWarRes){
+            foreach ($npcWarGenerals as $idx => $targetNPCGeneral) {
+                if ($targetNPCGeneral->getVar($resName) >= $reqNPCMinWarRes) {
                     break;
                 }
-                if($targetNPCGeneral->getVar('killturn') <= 5){
+                if ($targetNPCGeneral->getVar('killturn') <= 5) {
                     continue;
                 }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], $targetNPCGeneral->getLeadership(false)) * 100 * 1.5;
+                $reqMoney = $crewtype->costWithTech($this->nation['tech'], Util::toInt($targetNPCGeneral->getLeadership(false))) * 100 * 1.5;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqNPCMinWarRes);
                 }
@@ -1428,9 +1431,9 @@ class GeneralAI
                 }
                 //국고와 '충분한 금액'의 기하평균
                 $payAmount = sqrt(($enoughMoney - $targetNPCGeneral->getVar($resName)) * $resVal);
-                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes*0.9, $enoughMoney - $targetNPCGeneral->getVar($resName));
+                $payAmount = Util::valueFit($payAmount, $resVal - $reqNationRes * 0.9, $enoughMoney - $targetNPCGeneral->getVar($resName));
 
-                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                if ($payAmount < $this->nationPolicy->minimumResourceActionAmount) {
                     continue;
                 }
 
@@ -1440,25 +1443,29 @@ class GeneralAI
 
                 $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
 
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => $payAmount
                     ],
-                    count($npcWarGenerals)-$idx
+                    count($npcWarGenerals) - $idx
                 ];
             }
         }
 
-        if(!$candidateArgs){
+        if (!$candidateArgs) {
             return null;
         }
 
         $cmd = buildNationCommandClass(
-            'che_포상', $this->general, $this->env, $lastTurn,
+            'che_포상',
+            $this->general,
+            $this->env,
+            $lastTurn,
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1467,7 +1474,7 @@ class GeneralAI
 
     protected function doNPC포상(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->npcWarGenerals && !$this->npcCivilGenerals){
+        if (!$this->npcWarGenerals && !$this->npcCivilGenerals) {
             return null;
         }
 
@@ -1492,24 +1499,24 @@ class GeneralAI
         $npcWarGenerals = $this->npcWarGenerals;
         $npcCivilGenerals = $this->npcCivilGenerals;
 
-        foreach($remainResource as $resName=>[$reqNationRes, $resVal,$reqNPCMinWarRes,$reqNPCMinDevelRes]){
-            if($resVal < $reqNationRes){
+        foreach ($remainResource as $resName => [$reqNationRes, $resVal, $reqNPCMinWarRes, $reqNPCMinDevelRes]) {
+            if ($resVal < $reqNationRes) {
                 continue;
             }
             usort($npcWarGenerals, function ($lhs, $rhs) use ($resName) {
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
 
-            foreach($npcWarGenerals as $idx=>$targetNPCGeneral){
-                if($targetNPCGeneral->getVar($resName) >= $reqNPCMinWarRes){
+            foreach ($npcWarGenerals as $idx => $targetNPCGeneral) {
+                if ($targetNPCGeneral->getVar($resName) >= $reqNPCMinWarRes) {
                     break;
                 }
-                if($targetNPCGeneral->getVar('killturn') <= 5){
+                if ($targetNPCGeneral->getVar('killturn') <= 5) {
                     continue;
                 }
 
                 $crewtype = $targetNPCGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($nation['tech'], $targetNPCGeneral->getLeadership(false)) * 100 * 3 * 1.1;
+                $reqMoney = $crewtype->costWithTech($nation['tech'], Util::toInt($targetNPCGeneral->getLeadership(false))) * 100 * 3 * 1.1;
                 if ($this->env['year'] > $this->env['startyear'] + 5) {
                     $reqMoney = max($reqMoney, $reqNPCMinWarRes);
                 }
@@ -1526,12 +1533,13 @@ class GeneralAI
                     continue;
                 }
 
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => Util::valueFit($payAmount, 100, $this->maxResourceActionAmount)
                     ],
-                    max(count($npcWarGenerals), count($npcCivilGenerals))-$idx
+                    max(count($npcWarGenerals), count($npcCivilGenerals)) - $idx
                 ];
             }
 
@@ -1539,24 +1547,25 @@ class GeneralAI
                 return $lhs->getVar($resName) <=> $rhs->getVar($resName);
             });
 
-            foreach($npcCivilGenerals as $idx=>$targetNPCGeneral){
-                if($targetNPCGeneral->getVar($resName) >= $reqNPCMinDevelRes){
+            foreach ($npcCivilGenerals as $idx => $targetNPCGeneral) {
+                if ($targetNPCGeneral->getVar($resName) >= $reqNPCMinDevelRes) {
                     break;
                 }
-                if($targetNPCGeneral->getVar('killturn') <= 5){
+                if ($targetNPCGeneral->getVar('killturn') <= 5) {
                     continue;
                 }
 
                 $enoughMoney = $reqNPCMinDevelRes * 1.5;
 
                 $payAmount = $enoughMoney - $targetNPCGeneral->getVar($resName);
-                if($payAmount < $this->nationPolicy->minimumResourceActionAmount){
+                if ($payAmount < $this->nationPolicy->minimumResourceActionAmount) {
                     continue;
                 }
 
                 $payAmount = Util::valueFit($payAmount, 100, $this->maxResourceActionAmount);
 
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => $payAmount
@@ -1564,18 +1573,20 @@ class GeneralAI
                     max(count($npcWarGenerals), count($npcCivilGenerals)) - $idx
                 ];
             }
-
         }
 
-        if(!$candidateArgs){
+        if (!$candidateArgs) {
             return null;
         }
 
         $cmd = buildNationCommandClass(
-            'che_포상', $this->general, $this->env, $lastTurn,
+            'che_포상',
+            $this->general,
+            $this->env,
+            $lastTurn,
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1584,7 +1595,7 @@ class GeneralAI
 
     protected function doNPC몰수(LastTurn $lastTurn): ?NationCommand
     {
-        if(!$this->npcWarGenerals && !$this->npcCivilGenerals){
+        if (!$this->npcWarGenerals && !$this->npcCivilGenerals) {
             return null;
         }
 
@@ -1609,24 +1620,25 @@ class GeneralAI
         $npcWarGenerals = $this->npcWarGenerals;
         $npcCivilGenerals = $this->npcCivilGenerals;
 
-        foreach($remainResource as $resName=>[$resVal,$reqNationResVal,$reqNPCMinWarRes,$reqNPCMinDevelRes]){
+        foreach ($remainResource as $resName => [$resVal, $reqNationResVal, $reqNPCMinWarRes, $reqNPCMinDevelRes]) {
 
             usort($npcCivilGenerals, function ($lhs, $rhs) use ($resName) {
-                return -($lhs->getVar($resName) <=> $rhs->getVar($resName));
+                return - ($lhs->getVar($resName) <=> $rhs->getVar($resName));
             });
 
-            foreach($npcCivilGenerals as $idx=>$targetNPCGeneral){
-                if($targetNPCGeneral->getVar($resName) <= $reqNPCMinDevelRes * 1.5){
+            foreach ($npcCivilGenerals as $idx => $targetNPCGeneral) {
+                if ($targetNPCGeneral->getVar($resName) <= $reqNPCMinDevelRes * 1.5) {
                     break;
                 }
 
                 $takeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinDevelRes * 1.2;
                 $takeAmount = Util::valueFit($takeAmount, 100, $this->maxResourceActionAmount);
-                if($takeAmount < $this->nationPolicy->minimumResourceActionAmount){
+                if ($takeAmount < $this->nationPolicy->minimumResourceActionAmount) {
                     break;
                 }
 
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => $takeAmount
@@ -1638,55 +1650,52 @@ class GeneralAI
 
             //전투 NPC는 국고가 충분하지 않아보일때
             $reqResValDelta = $reqNationResVal * 1.5 - $resVal;
-            if($reqResValDelta < 0){
+            if ($reqResValDelta < 0) {
                 continue;
             }
 
-            if($resVal >= $reqNationResVal){
+            if ($resVal >= $reqNationResVal) {
                 $willTakeSmallAmount = true;
-            }
-            else{
+            } else {
                 $willTakeSmallAmount = false;
             }
 
 
             usort($npcWarGenerals, function ($lhs, $rhs) use ($resName) {
-                return -($lhs->getVar($resName) <=> $rhs->getVar($resName));
+                return - ($lhs->getVar($resName) <=> $rhs->getVar($resName));
             });
 
 
 
-            foreach($npcWarGenerals as $idx=>$targetNPCGeneral){
-                if($willTakeSmallAmount){
-                    if($targetNPCGeneral->getVar($resName) <= $reqNPCMinWarRes * 2){
+            foreach ($npcWarGenerals as $idx => $targetNPCGeneral) {
+                if ($willTakeSmallAmount) {
+                    if ($targetNPCGeneral->getVar($resName) <= $reqNPCMinWarRes * 2) {
                         break;
                     }
-
-                }
-                else if($targetNPCGeneral->getVar($resName) <= $reqNPCMinWarRes){
+                } else if ($targetNPCGeneral->getVar($resName) <= $reqNPCMinWarRes) {
                     break;
                 }
 
-                if(!$willTakeSmallAmount){
+                if (!$willTakeSmallAmount) {
                     $takeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinWarRes;
                     $takeAmount = Util::valueFit(sqrt($takeAmount * $reqResValDelta), 0, $takeAmount);
-                }
-                else{
+                } else {
                     $maxTakeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinWarRes;
                     $minTakeAmount = $targetNPCGeneral->getVar($resName) - $reqNPCMinWarRes * 2;
                     $takeAmount = Util::valueFit(sqrt($minTakeAmount * $reqResValDelta), 0, $maxTakeAmount);
                 }
 
-                if($takeAmount < 100){
+                if ($takeAmount < 100) {
                     break;
                 }
 
-                if($takeAmount < $this->nationPolicy->minimumResourceActionAmount){
+                if ($takeAmount < $this->nationPolicy->minimumResourceActionAmount) {
                     break;
                 }
 
                 $takeAmount = Util::valueFit($takeAmount, 100, $this->maxResourceActionAmount);
-                $candidateArgs[] = [[
+                $candidateArgs[] = [
+                    [
                         'destGeneralID' => $targetNPCGeneral->getID(),
                         'isGold' => $resName == 'gold',
                         'amount' => $takeAmount
@@ -1694,18 +1703,20 @@ class GeneralAI
                     $takeAmount
                 ];
             }
-
         }
 
-        if(!$candidateArgs){
+        if (!$candidateArgs) {
             return null;
         }
 
         $cmd = buildNationCommandClass(
-            'che_몰수', $this->general, $this->env, $lastTurn,
+            'che_몰수',
+            $this->general,
+            $this->env,
+            $lastTurn,
             Util::choiceRandomUsingWeightPair($candidateArgs)
         );
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1717,7 +1728,7 @@ class GeneralAI
     {
         $general = $this->general;
 
-        if($general->getVar('officer_level') < 12){
+        if ($general->getVar('officer_level') < 12) {
             return null;
         }
 
@@ -1725,28 +1736,28 @@ class GeneralAI
         $nationID = $nation['nation'];
 
         $nationStor = KVStorage::getStorage(DB::db(), $nationID, 'nation_env');
-        $recvAssist = $nationStor->getValue('recv_assist')??[];
-        $respAssist = $nationStor->getValue('resp_assist')??[];
-        $respAssistTry = $nationStor->getValue('resp_assist_try')??[];
+        $recvAssist = $nationStor->getValue('recv_assist') ?? [];
+        $respAssist = $nationStor->getValue('resp_assist') ?? [];
+        $respAssistTry = $nationStor->getValue('resp_assist_try') ?? [];
 
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
 
         $candidateList = [];
-        foreach($recvAssist as [$candNationID, $amount]){
-            $amount -= $respAssist["n{$candNationID}"][1]??0;
-            if($amount <= 0){
+        foreach ($recvAssist as [$candNationID, $amount]) {
+            $amount -= $respAssist["n{$candNationID}"][1] ?? 0;
+            if ($amount <= 0) {
                 continue;
             }
-            if(key_exists($candNationID, $this->warTargetNation)){
+            if (key_exists($candNationID, $this->warTargetNation)) {
                 continue;
             }
-            if(($respAssistTry["n{$candNationID}"][1]??0) >= $yearMonth - 8){
+            if (($respAssistTry["n{$candNationID}"][1] ?? 0) >= $yearMonth - 8) {
                 continue;
             }
             $candidateList[$candNationID] = $amount;
         }
 
-        if(!$candidateList){
+        if (!$candidateList) {
             return null;
         }
 
@@ -1764,8 +1775,8 @@ class GeneralAI
         arsort($candidateList);
         $destNationID = null;
         $diplomatMonth = 0;
-        foreach($candidateList as $candNationID => $amount){
-            if($amount * 4 < $income){
+        foreach ($candidateList as $candNationID => $amount) {
+            if ($amount * 4 < $income) {
                 break;
             }
             $destNationID = $candNationID;
@@ -1773,7 +1784,7 @@ class GeneralAI
             break;
         }
 
-        if($destNationID === null){
+        if ($destNationID === null) {
             return null;
         }
 
@@ -1785,7 +1796,7 @@ class GeneralAI
             'year' => $targetYear,
             'month' => $targetMonth,
         ]);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1800,23 +1811,23 @@ class GeneralAI
     {
         $general = $this->general;
 
-        if($general->getVar('officer_level') < 12){
+        if ($general->getVar('officer_level') < 12) {
             return null;
         }
 
-        if($this->dipState !== self::d평화){
+        if ($this->dipState !== self::d평화) {
             return null;
         }
 
-        if($this->attackable){
+        if ($this->attackable) {
             return null;
         }
 
-        if(!$this->nation['capital']){
+        if (!$this->nation['capital']) {
             return null;
         }
 
-        if($this->frontCities){
+        if ($this->frontCities) {
             return null;
         }
 
@@ -1824,29 +1835,29 @@ class GeneralAI
         $nationID = $nation['nation'];
 
         $currentTech = $nation['tech'];
-        if(!TechLimit($this->env['startyear'], $this->env['year'], $currentTech + 1000)){
+        if (!TechLimit($this->env['startyear'], $this->env['year'], $currentTech + 1000)) {
             return null;
         }
 
         $avgGold = 0;
         $avgRice = 0;
         $genCnt = 0;
-        foreach($this->npcWarGenerals as $general){
+        foreach ($this->npcWarGenerals as $general) {
             $avgGold += $general->getVar('gold');
             $avgRice += $general->getVar('rice');
             $genCnt += 1;
         }
-        foreach($this->npcCivilGenerals as $general){
+        foreach ($this->npcCivilGenerals as $general) {
             $avgGold += $general->getVar('gold');
             $avgRice += $general->getVar('rice');
             $genCnt += 1;
         }
-        foreach($this->userWarGenerals as $general){
+        foreach ($this->userWarGenerals as $general) {
             $avgGold += $general->getVar('gold') / 2;
             $avgRice += $general->getVar('rice') / 2;
             $genCnt += 1;
         }
-        foreach($this->userCivilGenerals as $general){
+        foreach ($this->userCivilGenerals as $general) {
             $avgGold += $general->getVar('gold') / 2;
             $avgRice += $general->getVar('rice') / 2;
             $genCnt += 1;
@@ -1854,7 +1865,7 @@ class GeneralAI
         $avgGold += $nation['gold'];
         $avgRice += $nation['rice'];
 
-        if($genCnt == 0){
+        if ($genCnt == 0) {
             //장수가 없는데 무슨 선포야.
             return null;
         }
@@ -1869,9 +1880,9 @@ class GeneralAI
         $trialProp += ($devRate['pop'] + $devRate['all']) / 2;
 
         $trialProp /= 4;
-        $trialProp = $trialProp**6;
+        $trialProp = $trialProp ** 6;
 
-        if(!Util::randBool($trialProp)){
+        if (!Util::randBool($trialProp)) {
             return null;
         }
 
@@ -1884,8 +1895,8 @@ class GeneralAI
 
         $nations = [];
         $warNations = [];
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['level'] == 0){
+        foreach (getAllNationStaticInfo() as $destNation) {
+            if ($destNation['level'] == 0) {
                 continue;
             }
             $destNationID = $destNation['nation'];
@@ -1894,22 +1905,20 @@ class GeneralAI
                 continue;
             }
 
-            if(!key_exists($destNationID, $lowTargetNations)){
+            if (!key_exists($destNationID, $lowTargetNations)) {
                 $nations[$destNationID] = 1 / sqrt($destNationPower + 1);
-            }
-            else{
+            } else {
                 $warNations[$destNationID] = 1 / sqrt($destNationPower + 1);
             }
-
         }
         if (!$nations) {
-            if(!$warNations){
+            if (!$warNations) {
                 return null;
             }
-            if(!$lowTargetNations){
+            if (!$lowTargetNations) {
                 return null;
             }
-            if(Util::randBool(1/count($lowTargetNations))){
+            if (Util::randBool(1 / count($lowTargetNations))) {
                 return null;
             }
             $nations = $warNations;
@@ -1918,7 +1927,7 @@ class GeneralAI
         $cmd = buildNationCommandClass('che_선전포고', $this->general, $this->env, $lastTurn, [
             'destNationID' => Util::choiceRandomUsingWeight($nations)
         ]);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -1935,23 +1944,23 @@ class GeneralAI
         $turnTerm = $this->env['turnterm'];
 
         //천도를 한턴 넣었다면 계속 넣는다.
-        if($lastTurn->getCommand() === '천도' && $lastTurn->getArg()['destCityID'] != $this->nation['capital']){
+        if ($lastTurn->getCommand() === '천도' && $lastTurn->getArg()['destCityID'] != $this->nation['capital']) {
             $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
-            if($cmd->hasFullConditionMet()){
+            if ($cmd->hasFullConditionMet()) {
                 $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
                 return $cmd;
             }
         }
 
         $lastTrial = $nationStor->last천도Trial;
-        if($lastTrial){
+        if ($lastTrial) {
             [$lastTrialLevel, $lastTrialTurnTime] = $lastTrial;
             $timeDiffSeconds = TimeUtil::DateIntervalToSeconds(
                 date_create_immutable($lastTrialTurnTime)->diff(
                     date_create_immutable($general->getTurnTime())
                 )
             );
-            if($timeDiffSeconds < $turnTerm * 30 && $lastTrialLevel !== $general->getVar('officer_level')){ //0.5Turn
+            if ($timeDiffSeconds < $turnTerm * 30 && $lastTrialLevel !== $general->getVar('officer_level')) { //0.5Turn
                 return null;
             }
         }
@@ -1967,32 +1976,32 @@ class GeneralAI
 
         $nationCityIDList = [];
         $this->categorizeNationCities();
-        foreach($this->nationCities as $city){
+        foreach ($this->nationCities as $city) {
             $nationCityIDList[$city['city']] = true;
         }
 
         //애초에 도시랄 것이 없음
-        if(count($nationCityIDList) <= 1){
+        if (count($nationCityIDList) <= 1) {
             return null;
         }
 
         $queue = new \SplQueue();
         $capital = $this->nation['capital'];
         $cityList = [
-            $capital=>0
+            $capital => 0
         ];
 
         $queue->enqueue($capital);
 
         //수도와 연결된 도시 탐색
-        while(!$queue->isEmpty()){
+        while (!$queue->isEmpty()) {
             $cityID = $queue->dequeue();
 
-            foreach(array_keys(CityConst::byID($cityID)->path) as $nextCityID){
-                if(!key_exists($nextCityID, $nationCityIDList)){
+            foreach (array_keys(CityConst::byID($cityID)->path) as $nextCityID) {
+                if (!key_exists($nextCityID, $nationCityIDList)) {
                     continue;
                 }
-                if(key_exists($nextCityID, $cityList)){
+                if (key_exists($nextCityID, $cityList)) {
                     continue;
                 }
                 $cityList[$nextCityID] = 0;
@@ -2003,7 +2012,7 @@ class GeneralAI
         $cityList = array_keys($cityList);
 
         //수도와 연결된 도시가 없음
-        if(count($cityList) == 1){
+        if (count($cityList) == 1) {
             return null;
         }
 
@@ -2011,12 +2020,12 @@ class GeneralAI
 
 
         $maxDistance = 0;
-        foreach($distanceList as $cityID=>$subDistanceList){
+        foreach ($distanceList as $cityID => $subDistanceList) {
             $maxDistance = max($maxDistance, array_sum($subDistanceList));
         }
 
         $cityScoreList = [];
-        foreach($cityList as $cityID){
+        foreach ($cityList as $cityID) {
             $city = $this->nationCities[$cityID];
 
             $cityScoreList[$cityID] =  $city['pop'] * $maxDistance / array_sum($distanceList[$cityID]) * sqrt($city['dev']);
@@ -2025,11 +2034,11 @@ class GeneralAI
         arsort($cityScoreList);
 
         $enoughLimit = ceil(count($cityScoreList) * 0.25);
-        foreach(array_keys($cityScoreList) as $idx=>$cityID){
-            if($idx > $enoughLimit){
+        foreach (array_keys($cityScoreList) as $idx => $cityID) {
+            if ($idx > $enoughLimit) {
                 break;
             }
-            if($cityID === $capital){
+            if ($cityID === $capital) {
                 return null;
             }
         }
@@ -2037,13 +2046,13 @@ class GeneralAI
         $finalCityID = Util::array_first_key($cityScoreList);
         $dist = $distanceList[$capital][$finalCityID];
         $targetCityID = $finalCityID;
-        if($dist > 1){
+        if ($dist > 1) {
             $candidates = [];
-            foreach(array_keys(CityConst::byID($capital)->path) as $stopID){
-                if(!key_exists($stopID, $distanceList)){
+            foreach (array_keys(CityConst::byID($capital)->path) as $stopID) {
+                if (!key_exists($stopID, $distanceList)) {
                     continue;
                 }
-                if($distanceList[$stopID][$finalCityID] + 1 === $dist){
+                if ($distanceList[$stopID][$finalCityID] + 1 === $dist) {
                     $candidates[] = $stopID;
                 }
             }
@@ -2051,10 +2060,10 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, [
-            'destCityID'=>$targetCityID
+            'destCityID' => $targetCityID
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -2082,59 +2091,57 @@ class GeneralAI
 
         $cmdList = [];
 
-        if($nation['rice'] < GameConst::$baserice){
+        if ($nation['rice'] < GameConst::$baserice) {
             return null;
         }
 
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.98) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
-                if($cmd->hasFullConditionMet()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']/2-0.2, 0.001) * 2];
+                if ($cmd->hasFullConditionMet()) {
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust'] / 2 - 0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
                 $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['pop'], 0.001)];
                 }
-            }
-            else if ($develRate['pop'] < 0.99) {
+            } else if ($develRate['pop'] < 0.99) {
                 $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['pop'] / 4, 0.001)];
                 }
             }
         }
 
-        if($genType & self::t무장){
-            if($develRate['def'] < 1){
+        if ($genType & self::t무장) {
+            if ($develRate['def'] < 1) {
                 $cmd = buildGeneralCommandClass('che_수비강화', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['def'], 0.001)];
                 }
             }
-            if($develRate['wall'] < 1){
+            if ($develRate['wall'] < 1) {
                 $cmd = buildGeneralCommandClass('che_성벽보수', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['wall'], 0.001)];
                 }
             }
-            if($develRate['secu'] < 0.9){
+            if ($develRate['secu'] < 0.9) {
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['secu'] / 0.8, 0.001, 1)];
                 }
-            }
-            else if($develRate['secu'] < 1){
+            } else if ($develRate['secu'] < 1) {
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / 2 / Util::valueFit($develRate['secu'], 0.001)];
                 }
             }
         }
 
-        if($genType & self::t지장){
+        if ($genType & self::t지장) {
             if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
                 $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
                 if ($cmd->hasFullConditionMet()) {
@@ -2150,18 +2157,18 @@ class GeneralAI
             if ($develRate['agri'] < 1) {
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
                 if ($cmd->hasFullConditionMet()) {
-                    $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / Util::valueFit($develRate['agri'], 0.001, 1)];
+                    $cmdList[] = [$cmd, ($isSpringSummer ? 1.2 : 0.8) * $intel / Util::valueFit($develRate['agri'], 0.001, 1)];
                 }
             }
             if ($develRate['comm'] < 1) {
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
                 if ($cmd->hasFullConditionMet()) {
-                    $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / Util::valueFit($develRate['comm'], 0.001, 1)];
+                    $cmdList[] = [$cmd, ($isSpringSummer ? 0.8 : 1.2) * $intel / Util::valueFit($develRate['comm'], 0.001, 1)];
                 }
             }
         }
 
-        if(!$cmdList){
+        if (!$cmdList) {
             return null;
         }
 
@@ -2170,7 +2177,7 @@ class GeneralAI
 
     protected function do긴급내정(): ?GeneralCommand
     {
-        if($this->dipState === self::d평화){
+        if ($this->dipState === self::d평화) {
             return null;
         }
 
@@ -2184,16 +2191,16 @@ class GeneralAI
 
         $city = $this->city;
 
-        if($city['trust'] < 70 && Util::randBool($leadership / GameConst::$chiefStatMin)){
+        if ($city['trust'] < 70 && Util::randBool($leadership / GameConst::$chiefStatMin)) {
             $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
-            if($cmd->hasFullConditionMet()){
+            if ($cmd->hasFullConditionMet()) {
                 return $cmd;
             }
         }
 
-        if($city['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation && Util::randBool($leadership / GameConst::$chiefStatMin / 2)){
+        if ($city['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation && Util::randBool($leadership / GameConst::$chiefStatMin / 2)) {
             $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-            if($cmd->hasFullConditionMet()){
+            if ($cmd->hasFullConditionMet()) {
                 return $cmd;
             }
         }
@@ -2204,7 +2211,7 @@ class GeneralAI
     protected function do전쟁내정(): ?GeneralCommand
     {
 
-        if($this->dipState === self::d평화){
+        if ($this->dipState === self::d평화) {
             return null;
         }
 
@@ -2219,7 +2226,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if($nation['rice'] < GameConst::$baserice){
+        if ($nation['rice'] < GameConst::$baserice) {
             return null;
         }
 
@@ -2227,52 +2234,51 @@ class GeneralAI
         $isSpringSummer = $this->env['month'] <= 6;
         $cmdList = [];
 
-        if(Util::randBool(0.3)){
+        if (Util::randBool(0.3)) {
             return null;
         }
 
         if ($genType & self::t통솔장) {
             if ($develRate['trust'] < 0.98) {
                 $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
-                if($cmd->hasFullConditionMet()){
-                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust']/2-0.2, 0.001) * 2];
+                if ($cmd->hasFullConditionMet()) {
+                    $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['trust'] / 2 - 0.2, 0.001) * 2];
                 }
             }
             if ($develRate['pop'] < 0.8) {
                 $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     if (in_array($city['front'], [1, 3])) {
                         $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['pop'], 0.001)];
-                    }
-                    else{
+                    } else {
                         $cmdList[] = [$cmd, $leadership / Util::valueFit($develRate['pop'], 0.001) / 2];
                     }
                 }
             }
         }
 
-        if($genType & self::t무장){
-            if($develRate['def'] < 0.5){
+        if ($genType & self::t무장) {
+            if ($develRate['def'] < 0.5) {
                 $cmd = buildGeneralCommandClass('che_수비강화', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['def'], 0.001) / 2];
                 }
             }
-            if($develRate['wall'] < 0.5){
+            if ($develRate['wall'] < 0.5) {
                 $cmd = buildGeneralCommandClass('che_성벽보수', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['wall'], 0.001) / 2];
                 }
             }
-            if($develRate['secu'] < 0.5){
+            if ($develRate['secu'] < 0.5) {
                 $cmd = buildGeneralCommandClass('che_치안강화', $general, $env);
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     $cmdList[] = [$cmd, $strength / Util::valueFit($develRate['secu'] / 0.8, 0.001, 1) / 4];
                 }
             }
         }
 
-        if($genType & self::t지장){
+        if ($genType & self::t지장) {
             if (!TechLimit($env['startyear'], $env['year'], $nation['tech'])) {
                 $cmd = buildGeneralCommandClass('che_기술연구', $general, $env);
                 if ($cmd->hasFullConditionMet()) {
@@ -2289,10 +2295,9 @@ class GeneralAI
                 $cmd = buildGeneralCommandClass('che_농지개간', $general, $env);
                 if ($cmd->hasFullConditionMet()) {
                     if (in_array($city['front'], [1, 3])) {
-                        $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / 4 / Util::valueFit($develRate['agri'], 0.001, 1)];
-                    }
-                    else{
-                        $cmdList[] = [$cmd, ($isSpringSummer?1.2:0.8) * $intel / 2 / Util::valueFit($develRate['agri'], 0.001, 1)];
+                        $cmdList[] = [$cmd, ($isSpringSummer ? 1.2 : 0.8) * $intel / 4 / Util::valueFit($develRate['agri'], 0.001, 1)];
+                    } else {
+                        $cmdList[] = [$cmd, ($isSpringSummer ? 1.2 : 0.8) * $intel / 2 / Util::valueFit($develRate['agri'], 0.001, 1)];
                     }
                 }
             }
@@ -2300,16 +2305,15 @@ class GeneralAI
                 $cmd = buildGeneralCommandClass('che_상업투자', $general, $env);
                 if ($cmd->hasFullConditionMet()) {
                     if (in_array($city['front'], [1, 3])) {
-                        $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / 4 / Util::valueFit($develRate['comm'], 0.001, 1)];
-                    }
-                    else{
-                        $cmdList[] = [$cmd, ($isSpringSummer?0.8:1.2) * $intel / 2 / Util::valueFit($develRate['comm'], 0.001, 1)];
+                        $cmdList[] = [$cmd, ($isSpringSummer ? 0.8 : 1.2) * $intel / 4 / Util::valueFit($develRate['comm'], 0.001, 1)];
+                    } else {
+                        $cmdList[] = [$cmd, ($isSpringSummer ? 0.8 : 1.2) * $intel / 2 / Util::valueFit($develRate['comm'], 0.001, 1)];
                     }
                 }
             }
         }
 
-        if(!$cmdList){
+        if (!$cmdList) {
             return null;
         }
 
@@ -2322,13 +2326,13 @@ class GeneralAI
     {
         $general = $this->general;
 
-        if($this->city['trade'] === null && !$this->generalPolicy->can상인무시){
+        if ($this->city['trade'] === null && !$this->generalPolicy->can상인무시) {
             return null;
         }
 
         $kill = $general->getRankVar('killcrew') + 50000;
         $death = $general->getRankVar('deathcrew') + 50000;
-        $deathRate = $death/$kill;
+        $deathRate = $death / $kill;
 
         $absGold = $general->getVar('gold');
         $absRice = $general->getVar('rice');
@@ -2336,49 +2340,42 @@ class GeneralAI
         $relGold = $absGold;
         $relRice = $absRice * $deathRate;
 
-        if($absGold + $absRice < $this->baseDevelCost * 2){
+        if ($absGold + $absRice < $this->baseDevelCost * 2) {
             return null;
         }
 
         $crewType = $general->getCrewTypeObj();
-        if($this->generalPolicy->can모병){
+        if ($this->generalPolicy->can모병) {
             $costCmd = buildGeneralCommandClass('che_모병', $general, $this->env, [
-                'crewType'=>$crewType->id,
-                'amount'=>$this->fullLeadership*100
+                'crewType' => $crewType->id,
+                'amount' => $this->fullLeadership * 100
             ]);
-        }
-        else{
+        } else {
             $costCmd = buildGeneralCommandClass('che_징병', $general, $this->env, [
-                'crewType'=>$crewType->id,
-                'amount'=>$this->fullLeadership*100
+                'crewType' => $crewType->id,
+                'amount' => $this->fullLeadership * 100
             ]);
         }
 
         $goldCost = $costCmd->getCost()[0];
         $riceCost = $crewType->riceWithTech(
             $this->nation['tech'],
-            $this->fullLeadership*100
+            Util::toInt($this->fullLeadership * 100)
         );
 
-        if(($relGold + $relRice) * 1.5 <= $goldCost + $riceCost){
+        if (($relGold + $relRice) * 1.5 <= $goldCost + $riceCost) {
             return null;
         }
 
         $tryBuying = false;
-        if ($this->generalPolicy->can상인무시){
-            if($relRice * 1.5 < $relGold && $relRice < $riceCost * 2)
-            {
+        if ($this->generalPolicy->can상인무시) {
+            if ($relRice * 1.5 < $relGold && $relRice < $riceCost * 2) {
+                $tryBuying = true;
+            } else if ($relRice * 2 < $relGold) {
                 $tryBuying = true;
             }
-            else if($relRice * 2 < $relGold)
-            {
-                $tryBuying = true;
-            }
-
-        }
-        else{
-            if($relRice * 2 < $relGold && $relRice < $riceCost * 3)
-            {
+        } else {
+            if ($relRice * 2 < $relGold && $relRice < $riceCost * 3) {
                 $tryBuying = true;
             }
         }
@@ -2386,48 +2383,48 @@ class GeneralAI
         if ($tryBuying) {
             //1:1
             $amount = Util::valueFit(Util::toInt(($relGold - $relRice) / (1 + $deathRate)), 100, GameConst::$maxResourceActionAmount);
-            if($amount >= $this->nationPolicy->minimumResourceActionAmount){
-                $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
+            if ($amount >= $this->nationPolicy->minimumResourceActionAmount) {
+                $cmd = buildGeneralCommandClass(
+                    'che_군량매매',
+                    $general,
+                    $this->env,
                     [
                         'buyRice' => true,
                         'amount' => $amount
                     ]
                 );
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     return $cmd;
                 }
             }
         }
 
         $trySelling = false;
-        if ($this->generalPolicy->can상인무시){
-            if($relGold * 1.5 < $relRice && $relGold < $goldCost * 2)
-            {
+        if ($this->generalPolicy->can상인무시) {
+            if ($relGold * 1.5 < $relRice && $relGold < $goldCost * 2) {
+                $trySelling = true;
+            } else if ($relGold * 2 < $relRice) {
                 $trySelling = true;
             }
-            else if($relGold * 2 < $relRice)
-            {
-                $trySelling = true;
-            }
-
-        }
-        else{
-            if($relGold * 2 < $relRice && $relGold < $goldCost * 3)
-            {
+        } else {
+            if ($relGold * 2 < $relRice && $relGold < $goldCost * 3) {
                 $trySelling = true;
             }
         }
 
         if ($trySelling) {
             $amount = Util::valueFit(Util::toInt(($relRice - $relGold) / (1 + $deathRate)), 100, GameConst::$maxResourceActionAmount);
-            if($amount >= $this->nationPolicy->minimumResourceActionAmount){
-                $cmd = buildGeneralCommandClass('che_군량매매', $general, $this->env,
+            if ($amount >= $this->nationPolicy->minimumResourceActionAmount) {
+                $cmd = buildGeneralCommandClass(
+                    'che_군량매매',
+                    $general,
+                    $this->env,
                     [
                         'buyRice' => false,
                         'amount' => $amount
                     ]
                 );
-                if($cmd->hasFullConditionMet()){
+                if ($cmd->hasFullConditionMet()) {
                     return $cmd;
                 }
             }
@@ -2444,7 +2441,7 @@ class GeneralAI
             return null;
         }
 
-        if(!($this->genType & self::t통솔장)){
+        if (!($this->genType & self::t통솔장)) {
             return null;
         }
 
@@ -2455,22 +2452,22 @@ class GeneralAI
         $nation = $this->nation;
         $env = $this->env;
 
-        if($general->getVar('crew') >= $this->nationPolicy->minWarCrew){
+        if ($general->getVar('crew') >= $this->nationPolicy->minWarCrew) {
             return null;
         }
 
-        if(!$this->generalPolicy->can한계징병){
+        if (!$this->generalPolicy->can한계징병) {
             $remainPop = $city['pop'] - $this->nationPolicy->minNPCRecruitCityPopulation - $this->fullLeadership * 100;
-            if($remainPop <= 0){
+            if ($remainPop <= 0) {
                 return null;
             }
 
             $maxPop = $city['pop_max'] - $this->nationPolicy->minNPCRecruitCityPopulation;
-            if(($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) &&
-            (Util::randF($remainPop/$maxPop))){
+            if (($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) &&
+                (Util::randF($remainPop / $maxPop))
+            ) {
                 return null;
             }
-
         }
 
         $nationID = $general->getNationID();
@@ -2481,17 +2478,16 @@ class GeneralAI
 
         $db = DB::db();
 
-        $armType =$general->getAuxVar('armType');
-        if($armType){
-            if(!($genType & self::t지장) && $armType == GameUnitConst::T_WIZARD){
+        $armType = $general->getAuxVar('armType');
+        if ($armType) {
+            if (!($genType & self::t지장) && $armType == GameUnitConst::T_WIZARD) {
                 $armType = null;
-            }
-            else if(!($genType & self::t무장) && in_array($armType, [GameUnitConst::T_FOOTMAN, GameUnitConst::T_ARCHER, GameUnitConst::T_CAVALRY])){
+            } else if (!($genType & self::t무장) && in_array($armType, [GameUnitConst::T_FOOTMAN, GameUnitConst::T_ARCHER, GameUnitConst::T_CAVALRY])) {
                 $armType = null;
             }
         }
 
-        if(!$armType){
+        if (!$armType) {
             $dex = [
                 GameUnitConst::T_FOOTMAN => sqrt($general->getVar('dex1') + 500),
                 GameUnitConst::T_ARCHER => sqrt($general->getVar('dex2') + 500),
@@ -2501,12 +2497,12 @@ class GeneralAI
             ];
 
             $availableArmType = [];
-            if($this->fullStrength > $this->fullIntel * 0.9){
+            if ($this->fullStrength > $this->fullIntel * 0.9) {
                 $availableArmType[GameUnitConst::T_FOOTMAN] = $dex[GameUnitConst::T_FOOTMAN] * $this->fullStrength;
                 $availableArmType[GameUnitConst::T_ARCHER] = $dex[GameUnitConst::T_ARCHER] * $this->fullStrength;
                 $availableArmType[GameUnitConst::T_CAVALRY] = $dex[GameUnitConst::T_CAVALRY] * $this->fullStrength;
             }
-            if($this->fullIntel > $this->fullStrength * 0.9){
+            if ($this->fullIntel > $this->fullStrength * 0.9) {
                 $availableArmType[GameUnitConst::T_WIZARD] = $dex[GameUnitConst::T_WIZARD] * $this->fullIntel * 3;
             }
 
@@ -2535,16 +2531,15 @@ class GeneralAI
         if ($types) {
             $type = Util::choiceRandomUsingWeight($types);
         } else {
-            throw new MustNotBeReachedException('에러:'.var_dump([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
+            throw new MustNotBeReachedException('에러:' . print_r([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
         }
 
-        if($this->generalPolicy->can고급병종){
+        if ($this->generalPolicy->can고급병종) {
             $currCrewType = $general->getCrewTypeObj();
-            if ($currCrewType->isValid($cities, $regions, $relYear, $tech)){
-                if($currCrewType->reqTech >= 2000) {
+            if ($currCrewType->isValid($cities, $regions, $relYear, $tech)) {
+                if ($currCrewType->reqTech >= 2000) {
                     $type = $currCrewType->id;
-                }
-                else if($currCrewType->armType != $armType && $currCrewType->reqTech >= 1000){
+                } else if ($currCrewType->armType != $armType && $currCrewType->reqTech >= 1000) {
                     //굳이 뽑은 이유가 있겠지
                     $type = $currCrewType->id;
                 }
@@ -2557,7 +2552,7 @@ class GeneralAI
         $rice = $general->getVar('rice');
         $rice -= $this->fullLeadership * 4 + 500;
 
-        if($gold <= 0 || $rice <= 0){
+        if ($gold <= 0 || $rice <= 0) {
             return null;
         }
 
@@ -2566,8 +2561,8 @@ class GeneralAI
 
         $riceCost = $crewType->riceWithTech(
             $this->nation['tech'],
-            $this->fullLeadership*100 *
-                $general->getRankVar('killcrew')/max($general->getRankVar('deathcrew'),1)*1.2
+            Util::toInt($this->fullLeadership * 100 *
+                $general->getRankVar('killcrew') / max($general->getRankVar('deathcrew'), 1) * 1.2)
         );
 
         $cmd = buildGeneralCommandClass('che_징병', $general, $env, [
@@ -2577,28 +2572,27 @@ class GeneralAI
 
         $cost = $cmd->getCost()[0];
 
-        if($this->generalPolicy->can모병 && $gold >= $cost * 6){
+        if ($this->generalPolicy->can모병 && $gold >= $cost * 6) {
             $cmd = buildGeneralCommandClass('che_모병', $general, $env, [
                 'crewType' => $type,
                 'amount' => $crew
             ]);
-        }
-        else if($gold < $cost && $gold * 2 >= $cost){
+        } else if ($gold < $cost && $gold * 2 >= $cost) {
             $crew *= 0.5;
             $riceCost *= 0.5;
-            $crew = Util::round($crew-49, -2);
+            $crew = Util::round($crew - 49, -2);
             $cmd = buildGeneralCommandClass('che_징병', $general, $env, [
                 'crewType' => $type,
                 'amount' => $crew
             ]);
         }
 
-        if(!$this->generalPolicy->can한계징병 && $rice * 1.1 <= $riceCost){
+        if (!$this->generalPolicy->can한계징병 && $rice * 1.1 <= $riceCost) {
             //이 쌀도 없어?
             return null;
         }
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
         return $cmd;
@@ -2615,21 +2609,21 @@ class GeneralAI
         $train = $general->getVar('train');
         $atmos = $general->getVar('atmos');
 
-        if($train < $this->nationPolicy->properWarTrainAtmos){
+        if ($train < $this->nationPolicy->properWarTrainAtmos) {
             $cmd = buildGeneralCommandClass('che_훈련', $general, $this->env);
-            if($cmd->hasFullConditionMet()){
+            if ($cmd->hasFullConditionMet()) {
                 $cmdList[] = [$cmd, GameConst::$maxTrainByCommand / Util::valueFit($train, 1)];
             }
         }
 
-        if($atmos < $this->nationPolicy->properWarTrainAtmos){
+        if ($atmos < $this->nationPolicy->properWarTrainAtmos) {
             $cmd = buildGeneralCommandClass('che_사기진작', $general, $this->env);
-            if($cmd->hasFullConditionMet()){
+            if ($cmd->hasFullConditionMet()) {
                 $cmdList[] = [$cmd, GameConst::$maxAtmosByCommand / Util::valueFit($atmos, 1)];
             }
         }
 
-        if(!$cmdList){
+        if (!$cmdList) {
             return null;
         }
         return Util::choiceRandomUsingWeightPair($cmdList);
@@ -2637,20 +2631,20 @@ class GeneralAI
 
     public function do소집해제(): ?GeneralCommand
     {
-        if ($this->attackable){
+        if ($this->attackable) {
             return null;
         }
         if ($this->dipState !== self::d평화) {
             return null;
         }
-        if ($this->general->getVar('crew') == 0){
+        if ($this->general->getVar('crew') == 0) {
             return null;
         }
         if (Util::randBool(0.75)) {
             return null;
         }
         $cmd = buildGeneralCommandClass('che_소집해제', $this->general, $this->env);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
         return $cmd;
@@ -2663,7 +2657,7 @@ class GeneralAI
             return null;
         }
 
-        if($this->dipState !== self::d전쟁){
+        if ($this->dipState !== self::d전쟁) {
             return null;
         }
 
@@ -2671,7 +2665,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if($nation['rice'] < GameConst::$baserice){
+        if ($nation['rice'] < GameConst::$baserice) {
             return null;
         }
 
@@ -2680,17 +2674,17 @@ class GeneralAI
 
         $db = DB::db();
 
-        if($general->getVar('train') < $this->nationPolicy->properWarTrainAtmos){
+        if ($general->getVar('train') < $this->nationPolicy->properWarTrainAtmos) {
             return null;
         }
-        if($general->getVar('atmos') < $this->nationPolicy->properWarTrainAtmos){
+        if ($general->getVar('atmos') < $this->nationPolicy->properWarTrainAtmos) {
             return null;
         }
-        if($general->getVar('crew') < $this->nationPolicy->minWarCrew){
+        if ($general->getVar('crew') < $this->nationPolicy->minWarCrew) {
             return null;
         }
 
-        if($city['front'] === 0){
+        if ($city['front'] === 0) {
             return null;
         }
 
@@ -2705,7 +2699,7 @@ class GeneralAI
             }
             $attackableNations[] = $targetNationID;
         }
-        if(!$attackableNations){
+        if (!$attackableNations) {
             $attackableNations[] = 0;
         }
         $nearCities = array_keys(CityConst::byID($cityID)->path);
@@ -2721,7 +2715,7 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)]);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -2747,72 +2741,70 @@ class GeneralAI
 
         $args = [];
 
-        foreach($resourceMap as [$resKey, $reqNation, $reqNPCWar, $reqNPCDevel]){
+        foreach ($resourceMap as [$resKey, $reqNation, $reqNPCWar, $reqNPCDevel]) {
             $genRes = $general->getVar($resKey);
 
-            if($this->genType & self::t통솔장){
+            if ($this->genType & self::t통솔장) {
                 $reqRes = $reqNPCWar;
-            }
-            else{
+            } else {
                 $reqRes = $reqNPCDevel;
-                if($genRes >= $reqNPCWar && $reqNPCWar > $reqNPCDevel + 1000){
+                if ($genRes >= $reqNPCWar && $reqNPCWar > $reqNPCDevel + 1000) {
                     $amount = $genRes - $reqNPCDevel;
                     $args[] = [[
-                        'isGold'=>$resKey==='gold',
-                        'amount'=>$amount
+                        'isGold' => $resKey === 'gold',
+                        'amount' => $amount
                     ], $amount];
                     continue;
                 }
 
-                if($genRes >= $reqNPCDevel * 5 && $genRes >= 5000){
+                if ($genRes >= $reqNPCDevel * 5 && $genRes >= 5000) {
                     $amount = $genRes - $reqNPCDevel;
                     $args[] = [[
-                        'isGold'=>$resKey==='gold',
-                        'amount'=>$amount
+                        'isGold' => $resKey === 'gold',
+                        'amount' => $amount
                     ], $amount];
                     continue;
                 }
             }
 
-            if($this->nation[$resKey] >= $reqNation){
+            if ($this->nation[$resKey] >= $reqNation) {
                 continue;
             }
-            if($resKey === 'rice' && $this->nation[$resKey] <= GameConst::$minNationalRice / 2 && $genRes >= GameConst::$minNationalRice / 2){
-                if($genRes < GameConst::$minNationalRice){
+            if ($resKey === 'rice' && $this->nation[$resKey] <= GameConst::$minNationalRice / 2 && $genRes >= GameConst::$minNationalRice / 2) {
+                if ($genRes < GameConst::$minNationalRice) {
                     $args[] = [[
-                        'isGold'=>'rice',
-                        'amount'=>$genRes
+                        'isGold' => 'rice',
+                        'amount' => $genRes
                     ], $genRes];
-                }
-                else{
+                } else {
                     $args[] = [[
-                        'isGold'=>'rice',
-                        'amount'=>$genRes/2
-                    ], $genRes/2];
+                        'isGold' => 'rice',
+                        'amount' => $genRes / 2
+                    ], $genRes / 2];
                 }
             }
-            if($genRes < $reqRes * 1.5){
+            if ($genRes < $reqRes * 1.5) {
                 continue;
             }
-            if($reqRes > 0 && !Util::randBool(($genRes / $reqRes)-0.5)){
+            if ($reqRes > 0 && !Util::randBool(($genRes / $reqRes) - 0.5)) {
                 continue;
             }
             $amount = $genRes - $reqRes;
-            if($amount < $this->nationPolicy->minimumResourceActionAmount){
+            if ($amount < $this->nationPolicy->minimumResourceActionAmount) {
                 continue;
             }
             $args[] = [[
-                'isGold'=>$resKey==='gold',
-                'amount'=>$amount
+                'isGold' => $resKey === 'gold',
+                'amount' => $amount
             ], $amount];
         }
 
-        if(!$args){
+        if (!$args) {
             return null;
         }
 
         $cmd = buildGeneralCommandClass('che_헌납', $general, $this->env, Util::choiceRandomUsingWeightPair($args));
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
         return $cmd;
@@ -2822,7 +2814,7 @@ class GeneralAI
     protected function do후방워프(): ?GeneralCommand
     {
         $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if(!$this->generalPolicy->can한계징병){
+        if (!$this->generalPolicy->can한계징병) {
             $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
         }
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
@@ -2830,31 +2822,30 @@ class GeneralAI
             return null;
         }
 
-        if(!$this->generalPolicy->can징병){
+        if (!$this->generalPolicy->can징병) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 징병 금지", '');
             return null;
         }
 
-        if(!($this->genType & self::t통솔장)){
+        if (!($this->genType & self::t통솔장)) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 통솔장", [$this->genType, $this->general->getLeadership(false)]);
             return null;
         }
 
-        if($this->general->getVar('crew') >= $this->nationPolicy->minWarCrew){
+        if ($this->general->getVar('crew') >= $this->nationPolicy->minWarCrew) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 병력 충분", [$this->general->getVar('crew'), $this->nationPolicy->minWarCrew]);
             return null;
         }
 
         $city = $this->city;
-        if($this->generalPolicy->can한계징병){
-            if($city['pop'] >= $minRecruitPop){
+        if ($this->generalPolicy->can한계징병) {
+            if ($city['pop'] >= $minRecruitPop) {
                 return null;
             }
-        }
-        else{
-            if($city['pop']/$city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio){
-                if($city['pop'] >= $this->nationPolicy->minNPCRecruitCityPopulation && $city['pop'] >= $minRecruitPop){
-                    LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 인구 충분", [$city['pop']/$city['pop_max'], $this->nationPolicy->safeRecruitCityPopulationRatio]);
+        } else {
+            if ($city['pop'] / $city['pop_max'] >= $this->nationPolicy->safeRecruitCityPopulationRatio) {
+                if ($city['pop'] >= $this->nationPolicy->minNPCRecruitCityPopulation && $city['pop'] >= $minRecruitPop) {
+                    LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 인구 충분", [$city['pop'] / $city['pop_max'], $this->nationPolicy->safeRecruitCityPopulationRatio]);
                     return null;
                 }
             }
@@ -2864,50 +2855,49 @@ class GeneralAI
 
         $recruitableCityList = [];
 
-        foreach($this->backupCities as $candidateCity){
-            $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+        foreach ($this->backupCities as $candidateCity) {
+            $pop_ratio = $candidateCity['pop'] / $candidateCity['pop_max'];
             $cityID = $candidateCity['city'];
-            if($candidateCity['city'] == $this->city['city']){
+            if ($candidateCity['city'] == $this->city['city']) {
                 continue;
             }
-            if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+            if ($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                 continue;
             }
-            if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+            if ($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation) {
                 continue;
             }
-            if($candidateCity['pop'] < $minRecruitPop){
+            if ($candidateCity['pop'] < $minRecruitPop) {
                 continue;
             }
             $recruitableCityList[$cityID] = $pop_ratio;
         }
 
-        if(!$recruitableCityList){
-            foreach($this->supplyCities as $candidateCity){
-                $pop_ratio = $candidateCity['pop']/$candidateCity['pop_max'];
+        if (!$recruitableCityList) {
+            foreach ($this->supplyCities as $candidateCity) {
+                $pop_ratio = $candidateCity['pop'] / $candidateCity['pop_max'];
                 $cityID = $candidateCity['city'];
-                if($candidateCity['city'] == $this->city['city']){
+                if ($candidateCity['city'] == $this->city['city']) {
                     continue;
                 }
-                if($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation){
+                if ($candidateCity['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation) {
                     continue;
                 }
-                if($candidateCity['pop'] <= $minRecruitPop){
+                if ($candidateCity['pop'] <= $minRecruitPop) {
                     continue;
                 }
-                if($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio){
+                if ($pop_ratio < $this->nationPolicy->safeRecruitCityPopulationRatio) {
                     continue;
                 }
-                if(key_exists($cityID, $this->frontCities)){
+                if (key_exists($cityID, $this->frontCities)) {
                     $recruitableCityList[$cityID] = $pop_ratio / 2;
-                }
-                else{
+                } else {
                     $recruitableCityList[$cityID] = $pop_ratio;
                 }
             }
         }
 
-        if(!$recruitableCityList){
+        if (!$recruitableCityList) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 배후 도시", [count($this->backupCities), count($this->supplyCities)]);
             return null;
         }
@@ -2919,7 +2909,7 @@ class GeneralAI
         ]);
 
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             LogText("{$this->general->getName()}, {$this->general->getID()} 후방워프 불가: 조건 불충족", $cmd->getArg());
             return null;
         }
@@ -2929,26 +2919,26 @@ class GeneralAI
 
     protected function do전방워프(): ?GeneralCommand
     {
-        if(!$this->attackable){
+        if (!$this->attackable) {
             return null;
         }
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
             return null;
         }
 
-        if(!($this->genType & self::t통솔장)){
+        if (!($this->genType & self::t통솔장)) {
             return null;
         }
 
-        if($this->general->getVar('crew') < $this->nationPolicy->minWarCrew){
+        if ($this->general->getVar('crew') < $this->nationPolicy->minWarCrew) {
             return null;
         }
 
-        if($this->city['front']){
+        if ($this->city['front']) {
             return null;
         }
 
-        if($this->nation['rice'] < GameConst::$baserice){
+        if ($this->nation['rice'] < GameConst::$baserice) {
             return null;
         }
 
@@ -2957,11 +2947,11 @@ class GeneralAI
 
         $candidateCities = [];
 
-        if(!$this->frontCities){
+        if (!$this->frontCities) {
             throw new \sammo\MustNotBeReachedException('attackable인데 frontCities가 없음');
         }
 
-        foreach($this->frontCities as $frontCity){
+        foreach ($this->frontCities as $frontCity) {
             $candidateCities[$frontCity['city']] = $frontCity['important'];
         }
 
@@ -2971,7 +2961,7 @@ class GeneralAI
         ]);
 
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -2980,15 +2970,15 @@ class GeneralAI
 
     protected function do내정워프(): ?GeneralCommand
     {
-        if($this->nation['rice'] < GameConst::$baserice){
+        if ($this->nation['rice'] < GameConst::$baserice) {
             return null;
         }
-        if(($this->genType & self::t통솔장)&&in_array($this->dipState, [self::d징병, self::d직전, self::d전쟁])){
+        if (($this->genType & self::t통솔장) && in_array($this->dipState, [self::d징병, self::d직전, self::d전쟁])) {
             return null;
         }
 
         $city = $this->city;
-        if(Util::randBool(0.6)){
+        if (Util::randBool(0.6)) {
             return null;
         }
 
@@ -2996,33 +2986,33 @@ class GeneralAI
         $availableTypeCnt = 0;
 
         $warpProp = 1;
-        foreach($develRate as $develKey => [$develVal, $develType]){
-            if(!($this->genType & $develType)){
+        foreach ($develRate as $develKey => [$develVal, $develType]) {
+            if (!($this->genType & $develType)) {
                 continue;
             }
             $warpProp *= $develVal;
             $availableTypeCnt += 1;
         }
 
-        if($availableTypeCnt === 0){
+        if ($availableTypeCnt === 0) {
             //무능장은 인탐을 하세요.
             return null;
         }
 
-        if(!Util::randBool($warpProp)){
+        if (!Util::randBool($warpProp)) {
             return null;
         }
 
         $this->categorizeNationCities();
         $candidateCities = [];
-        foreach($this->supplyCities as $candidate){
-            if($city['city'] === $candidate['city']){
+        foreach ($this->supplyCities as $candidate) {
+            if ($city['city'] === $candidate['city']) {
                 continue;
             }
             $realDevelRate = 0.0001; //하단의 나눗셈
 
-            foreach($this->calcCityDevelRate($candidate) as $develKey => [$develVal, $develType]){
-                if(!($this->genType & $develType)){
+            foreach ($this->calcCityDevelRate($candidate) as $develKey => [$develVal, $develType]) {
+                if (!($this->genType & $develType)) {
                     continue;
                 }
                 $realDevelRate += $develVal;
@@ -3031,14 +3021,14 @@ class GeneralAI
 
             $realDevelRate /= $availableTypeCnt;
 
-            if($realDevelRate >= 0.95){
+            if ($realDevelRate >= 0.95) {
                 continue;
             }
 
-            $candidateCities[$candidate['city']] = 1 / ($realDevelRate * \sqrt(count($candidate['generals']??[]) + 1));
+            $candidateCities[$candidate['city']] = 1 / ($realDevelRate * \sqrt(count($candidate['generals'] ?? []) + 1));
         }
 
-        if(!$candidateCities){
+        if (!$candidateCities) {
             return null;
         }
 
@@ -3046,7 +3036,7 @@ class GeneralAI
             'optionText' => '순간이동',
             'destCityID' => Util::choiceRandomUsingWeight($candidateCities),
         ]);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3058,12 +3048,12 @@ class GeneralAI
     {
         $general = $this->general;
         $city = $this->city;
-        if($city['nation'] == $general->getNationID() && $city['supply']){
+        if ($city['nation'] == $general->getNationID() && $city['supply']) {
             return null;
         }
 
         $cmd = buildGeneralCommandClass('che_귀환', $this->general, $this->env);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3074,7 +3064,7 @@ class GeneralAI
     {
         $general = $this->general;
 
-        if($general->getNPCType() == 5){
+        if ($general->getNPCType() == 5) {
             $newKillTurn = ($general->getVar('killturn') + Util::randRangeInt(2, 4)) % 5;
             $newKillTurn += 70;
             $general->setVar('killturn', $newKillTurn);
@@ -3133,9 +3123,9 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_이동', $general, $this->env, [
-            'destCityID'=>Util::choiceRandomUsingWeight($targetCity)
+            'destCityID' => Util::choiceRandomUsingWeight($targetCity)
         ]);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3146,13 +3136,13 @@ class GeneralAI
     {
         $general = $this->general;
         // 초반이면서 능력이 좋은놈 위주로 거병
-        if($general->getVar('makelimit')){
+        if ($general->getVar('makelimit')) {
             return null;
         }
-        if($general->getNPCType() > 2){
+        if ($general->getNPCType() > 2) {
             return null;
         }
-        if(!$this->generalPolicy->can건국){
+        if (!$this->generalPolicy->can건국) {
             return null;
         }
 
@@ -3160,18 +3150,18 @@ class GeneralAI
         $ratio = ($this->fullLeadership + $this->fullStrength + $this->fullIntel) / 3;
 
 
-        if($prop >= $ratio){
+        if ($prop >= $ratio) {
             return null;
         }
 
         //XXX: 건국기한 2년
         $more = Util::valueFit(3 - $this->env['year'] + $this->env['init_year'], 1, 3);
-        if(!Util::randBool(0.005*$more)){
+        if (!Util::randBool(0.005 * $more)) {
             return null;
         }
 
         $cmd = buildGeneralCommandClass('che_거병', $general, $this->env, null);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3181,7 +3171,7 @@ class GeneralAI
     protected function do해산(): ?GeneralCommand
     {
         $cmd = buildGeneralCommandClass('che_해산', $this->general, $this->env, null);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3197,7 +3187,7 @@ class GeneralAI
             'nationType' => $nationType,
             'colorType' => $nationColor
         ]);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3211,7 +3201,7 @@ class GeneralAI
             'destGeneralID' => $db->queryFirstField('SELECT `no` FROM general WHERE nation = %i AND npc != 5 ORDER BY RAND() LIMIT 1', $this->general->getNationID())
         ]);
 
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return null;
         }
 
@@ -3235,7 +3225,7 @@ class GeneralAI
 
             if ($rulerNation) {
                 $cmd = buildGeneralCommandClass('che_임관', $general, $env, ['destNationID' => $rulerNation]);
-                if(!$cmd->hasFullConditionMet()){
+                if (!$cmd->hasFullConditionMet()) {
                     return null;
                 }
 
@@ -3243,7 +3233,7 @@ class GeneralAI
             }
         }
 
-        if(Util::randBool(0.3)){
+        if (Util::randBool(0.3)) {
             if ($env['startyear'] + 3 > $env['year']) {
                 //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
                 $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
@@ -3263,18 +3253,18 @@ class GeneralAI
 
             //랜임 커맨드 입력.
             $cmd = buildGeneralCommandClass('che_랜덤임관', $general, $env);
-            if(!$cmd->hasFullConditionMet()){
+            if (!$cmd->hasFullConditionMet()) {
                 return null;
             }
 
             return $cmd;
         }
 
-        if(Util::randBool(0.2)){
+        if (Util::randBool(0.2)) {
             $paths = array_keys(CityConst::byID($city['city'])->path);
 
             $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => Util::choiceRandom($paths)]);
-            if(!$cmd->hasFullConditionMet()){
+            if (!$cmd->hasFullConditionMet()) {
                 return null;
             }
 
@@ -3287,13 +3277,13 @@ class GeneralAI
     {
         $general = $this->getGeneralObj();
 
-        if($general->getVar('killturn') > 5){
+        if ($general->getVar('killturn') > 5) {
             return null;
         }
 
-        if($general->getNationID() == 0){
+        if ($general->getNationID() == 0) {
             $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
-            if(!$cmd->hasFullConditionMet() || Util::randBool()){
+            if (!$cmd->hasFullConditionMet() || Util::randBool()) {
                 $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
             }
             return $cmd;
@@ -3319,35 +3309,36 @@ class GeneralAI
     protected function do중립(): GeneralCommand
     {
         $general = $this->general;
-        if($general->getNationID() == 0){
+        if ($general->getNationID() == 0) {
             $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
-            if(!$cmd->hasFullConditionMet() || Util::randBool(0.8)){
+            if (!$cmd->hasFullConditionMet() || Util::randBool(0.8)) {
                 $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
             }
             return $cmd;
         }
 
 
-        $candidate = ['che_물자조달','che_인재탐색'];
+        $candidate = ['che_물자조달', 'che_인재탐색'];
         $nation = $this->nation;
-        if($nation['gold'] < $this->nationPolicy->reqNationGold){
+        if ($nation['gold'] < $this->nationPolicy->reqNationGold) {
             $candidate = ['che_물자조달'];
         }
-        if($nation['rice'] < $this->nationPolicy->reqNationRice){
+        if ($nation['rice'] < $this->nationPolicy->reqNationRice) {
             $candidate = ['che_물자조달'];
         }
 
 
         $cmd = buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
-        if(!$cmd->hasFullConditionMet()){
+        if (!$cmd->hasFullConditionMet()) {
             return buildGeneralCommandClass('che_물자조달', $this->general, $this->env);
         }
         return $cmd;
     }
 
-    protected function categorizeNationCities():void{
+    protected function categorizeNationCities(): void
+    {
 
-        if($this->nationCities !== null){
+        if ($this->nationCities !== null) {
             return;
         }
 
@@ -3372,13 +3363,12 @@ class GeneralAI
 
             $nationCity['important'] = 1;
 
-            if($nationCity['supply']){
+            if ($nationCity['supply']) {
                 $supplyCities[$cityID] = $nationCity;
             }
-            if($nationCity['front']){
+            if ($nationCity['front']) {
                 $frontCities[$cityID] = $nationCity;
-            }
-            else{
+            } else {
                 $backupCities[$cityID] = $nationCity;
             }
 
@@ -3392,8 +3382,9 @@ class GeneralAI
     }
 
 
-    protected function categorizeNationGeneral():void{
-        if($this->userGenerals !== null){
+    protected function categorizeNationGeneral(): void
+    {
+        if ($this->userGenerals !== null) {
             return;
         }
         $userGenerals = [];
@@ -3417,9 +3408,9 @@ class GeneralAI
         $nationGenerals = General::createGeneralObjListFromDB($generalIDList, null, 2);
 
         $lastWar = \PHP_INT_MAX;
-        foreach($nationGenerals as $nationGeneral){
+        foreach ($nationGenerals as $nationGeneral) {
             $recentWar = $nationGeneral->calcRecentWarTurn($this->env['turnterm']);
-            if($recentWar >= $nationGeneral->getVar('belong') * 12){
+            if ($recentWar >= $nationGeneral->getVar('belong') * 12) {
                 //임관전 전투는 제외
                 continue;
             }
@@ -3427,17 +3418,16 @@ class GeneralAI
             $lastWar = min($lastWar, $recentWar);
         }
 
-        foreach($nationGenerals as $nationGeneral){
+        foreach ($nationGenerals as $nationGeneral) {
             $generalID = $nationGeneral->getID();
             $cityID = $nationGeneral->getCityID();
             $npcType = $nationGeneral->getNPCType();
             $officerLevel = $nationGeneral->getVar('officer_level');
             $officerCity = $nationGeneral->getVar('officer_city');
 
-            if($officerLevel > 4){
+            if ($officerLevel > 4) {
                 $chiefGenerals[$officerLevel] = $nationGeneral;
-            }
-            else if($officerLevel > 2){
+            } else if ($officerLevel > 2) {
                 $nationCities[$officerCity]['important'] += 1;
             }
 
@@ -3450,32 +3440,27 @@ class GeneralAI
                 $lostGenerals[$generalID] = $nationGeneral;
             }
 
-            if($npcType == 5){
+            if ($npcType == 5) {
                 //부대장임
                 $troopLeaders[$generalID] = $nationGeneral;
-            }
-            else if($nationGeneral->getVar('troop') === $generalID && $nationGeneral->getReservedTurn(0, $this->env)->getName() === 'che_집합'){
+            } else if ($nationGeneral->getVar('troop') === $generalID && $nationGeneral->getReservedTurn(0, $this->env)->getName() === 'che_집합') {
                 //비 NPC부대장임
                 $troopLeaders[$generalID] = $nationGeneral;
-            }
-            else if($nationGeneral->getVar('killturn') < 5){
+            } else if ($nationGeneral->getVar('killturn') < 5) {
                 //삭턴이 몇 안남은 장수는 '내정장 npc'로 처리
                 $npcCivilGenerals[$generalID] = $nationGeneral;
-            }
-            else if($npcType < 2) {
+            } else if ($npcType < 2) {
                 $userGenerals[$generalID] = $nationGeneral;
-                if($nationGeneral->calcRecentWarTurn($this->env['turnterm']) <= $lastWar + 12){
+                if ($nationGeneral->calcRecentWarTurn($this->env['turnterm']) <= $lastWar + 12) {
                     $userWarGenerals[$generalID] = $nationGeneral;
-                }
-                else if(
+                } else if (
                     $this->dipState !== self::d평화 &&
                     $nationGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew
-                ){
+                ) {
                     $userWarGenerals[$generalID] = $nationGeneral;
                     //TODO: 훈련,사기 나중에 되돌릴 것
                     //TODO: 징,모병턴 기준으로 계산하는 코드를 추가할 것
-                }
-                else{
+                } else {
                     $userCivilGenerals[$generalID] = $nationGeneral;
                 }
             } else if ($nationGeneral->getLeadership(false) >= $this->nationPolicy->minNPCWarLeadership) {
@@ -3497,7 +3482,8 @@ class GeneralAI
     }
 
 
-    public function chooseNationTurn(NationCommand $reservedCommand): NationCommand{
+    public function chooseNationTurn(NationCommand $reservedCommand): NationCommand
+    {
         //TODO: NationTurn과 InstantNationTurn 구분 필요
         $lastTurn = $reservedCommand->getLastTurn();
         $general = $this->general;
@@ -3507,11 +3493,11 @@ class GeneralAI
         $this->categorizeNationCities();
 
         $month = $this->env['month'];
-        if($npcType >= 2){
-            if(!($general->getAuxVar('use_auto_nation_turn')??1)){
+        if ($npcType >= 2) {
+            if (!($general->getAuxVar('use_auto_nation_turn') ?? 1)) {
                 $general->setAuxVar('use_auto_nation_turn', 1);
             }
-            if($general->getVar('officer_level') == 12){
+            if ($general->getVar('officer_level') == 12) {
                 if (in_array($month, [3, 6, 9, 12])) {
                     $this->choosePromotion();
                 }
@@ -3523,14 +3509,13 @@ class GeneralAI
                     $this->chooseTexRate();
                     $this->chooseRiceBillRate();
                 }
-            }
-            else if(in_array($month, [3, 6, 9, 12])){
+            } else if (in_array($month, [3, 6, 9, 12])) {
                 $this->chooseNonLordPromotion();
             }
         }
 
-        if(!($reservedCommand instanceof Command\Nation\휴식)){
-            if($reservedCommand->hasFullConditionMet()){
+        if (!($reservedCommand instanceof Command\Nation\휴식)) {
+            if ($reservedCommand->hasFullConditionMet()) {
                 $reservedCommand->reason = 'reserved';
                 return $reservedCommand;
             }
@@ -3540,22 +3525,22 @@ class GeneralAI
             $general->getLogger()->pushGeneralActionLog($text);
         }
 
-        foreach($this->nationPolicy->priority as $actionName){
+        foreach ($this->nationPolicy->priority as $actionName) {
 
-            if(!property_exists($this->nationPolicy, 'can'.$actionName)){
-                trigger_error ("can{$actionName}이 없음", E_USER_NOTICE );
+            if (!property_exists($this->nationPolicy, 'can' . $actionName)) {
+                trigger_error("can{$actionName}이 없음", E_USER_NOTICE);
                 continue;
             }
-            if(!$this->nationPolicy->{'can'.$actionName}){
+            if (!$this->nationPolicy->{'can' . $actionName}) {
                 continue;
             }
-            if($npcType < 2 && !($this->nationPolicy::$availableInstantTurn[$actionName]??false)){
+            if ($npcType < 2 && !($this->nationPolicy::$availableInstantTurn[$actionName] ?? false)) {
                 continue;
             }
             /** @var ?NationCommand */
-            $result = $this->{'do'.$actionName}($lastTurn);
-            if($result !== null){
-                $result->reason = 'do'.$actionName;
+            $result = $this->{'do' . $actionName}($lastTurn);
+            if ($result !== null) {
+                $result->reason = 'do' . $actionName;
                 return $result;
             }
         }
@@ -3564,28 +3549,30 @@ class GeneralAI
         return $cmd;
     }
 
-    public function chooseInstantNationTurn(NationCommand $reservedCommand): ?NationCommand{
-        if($reservedCommand->hasFullConditionMet()){
+    public function chooseInstantNationTurn(NationCommand $reservedCommand): ?NationCommand
+    {
+        if ($reservedCommand->hasFullConditionMet()) {
             return $reservedCommand;
         }
 
-        foreach($this->nationPolicy->priority as $actionName){
+        foreach ($this->nationPolicy->priority as $actionName) {
             /** @var ?NationCommand */
-            if(!key_exists($actionName, $this->nationPolicy::$availableInstantTurn)){
+            if (!key_exists($actionName, $this->nationPolicy::$availableInstantTurn)) {
                 continue;
             }
-            if(!$this->nationPolicy->{'can'.$actionName}){
+            if (!$this->nationPolicy->{'can' . $actionName}) {
                 continue;
             }
-            $result = $this->{'do'.$actionName}($reservedCommand);
-            if($result !== null){
+            $result = $this->{'do' . $actionName}($reservedCommand);
+            if ($result !== null) {
                 return $result;
             }
         }
         return buildNationCommandClass(null, $this->general, $this->env, $this->general->getLastTurn());
     }
 
-    public function chooseGeneralTurn(GeneralCommand $reservedCommand): GeneralCommand{
+    public function chooseGeneralTurn(GeneralCommand $reservedCommand): GeneralCommand
+    {
         $general = $this->general;
         $npcType = $general->getNPCType();
         $nationID = $general->getNationID();
@@ -3614,105 +3601,105 @@ class GeneralAI
         }
 
 
-        if($npcType >= 2 && $general->getVar('defence_train') != 80){
+        if ($npcType >= 2 && $general->getVar('defence_train') != 80) {
             $general->setVar('defence_train', 80);
         }
 
-        if($general->getVar('officer_level') === 12 && $this->generalPolicy->can선양){
+        if ($general->getVar('officer_level') === 12 && $this->generalPolicy->can선양) {
             $result = $this->do선양();
-            if($result !== null){
-                $result->reason='do선양';
+            if ($result !== null) {
+                $result->reason = 'do선양';
                 return $result;
             }
         }
 
-        if($npcType == 5){
-            if($general->getNationID()==0){
+        if ($npcType == 5) {
+            if ($general->getNationID() == 0) {
                 $general->setVar('killturn', 1);
-                $reservedCommand->reason='사망';
+                $reservedCommand->reason = '사망';
                 return $reservedCommand;
             }
             $result = $this->do집합();
-            if(!$result){
+            if (!$result) {
                 throw new MustNotBeReachedException();
             }
-            $result->reason='do집합';
+            $result->reason = 'do집합';
             return $result;
         }
 
-        if(!($reservedCommand instanceof Command\General\휴식)){
-            $reservedCommand->reason='do예약턴';
+        if (!($reservedCommand instanceof Command\General\휴식)) {
+            $reservedCommand->reason = 'do예약턴';
             return $reservedCommand;
         }
 
         if ($general->getVar('injury') > 10) {
             $result = buildGeneralCommandClass('che_요양', $general, $this->env);
-            $result->reason='do요양';
+            $result->reason = 'do요양';
             return $result;
         }
 
-        if(($npcType == 2 || $npcType == 3) && $nationID == 0){
+        if (($npcType == 2 || $npcType == 3) && $nationID == 0) {
             $result = $this->do거병();
-            if($result !== null){
-                $result->reason='do거병';
+            if ($result !== null) {
+                $result->reason = 'do거병';
                 return $result;
             }
         }
 
-        if($nationID === 0 && $this->generalPolicy->can국가선택){
+        if ($nationID === 0 && $this->generalPolicy->can국가선택) {
             $result = $this->do국가선택();
-            if($result !== null){
-                $result->reason='do국가선택';
+            if ($result !== null) {
+                $result->reason = 'do국가선택';
                 return $result;
             }
             $result = $this->do중립();
-            $result->reason='do중립';
+            $result->reason = 'do중립';
             return $result;
         }
 
-        if($npcType < 2 && $nationID === 0 && !$this->generalPolicy->can국가선택){
+        if ($npcType < 2 && $nationID === 0 && !$this->generalPolicy->can국가선택) {
             $reservedCommand->reason = '재야유저';
             return $reservedCommand;
         }
 
-        if($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']){
+        if ($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']) {
             //방랑군 건국
             $result = $this->do건국();
-            if($result !== null){
-                $result->reason='do건국';
+            if ($result !== null) {
+                $result->reason = 'do건국';
                 return $result;
             }
             $result = $this->do방랑군이동();
-            if($result !== null){
-                $result->reason='do방랑군이동';
+            if ($result !== null) {
+                $result->reason = 'do방랑군이동';
                 return $result;
             }
 
             $result = $this->do해산();
-            if($result !== null){
-                $result->reason='do해산';
+            if ($result !== null) {
+                $result->reason = 'do해산';
                 return $result;
             }
         }
 
-        foreach($this->generalPolicy->priority as $actionName){
-            if(!property_exists($this->generalPolicy, 'can'.$actionName)){
-                trigger_error ("can{$actionName}이 없음", E_USER_NOTICE );
+        foreach ($this->generalPolicy->priority as $actionName) {
+            if (!property_exists($this->generalPolicy, 'can' . $actionName)) {
+                trigger_error("can{$actionName}이 없음", E_USER_NOTICE);
                 continue;
             }
-            if(!($this->generalPolicy->{'can'.$actionName})){
+            if (!($this->generalPolicy->{'can' . $actionName})) {
                 continue;
             }
             /** @var ?GeneralCommand */
-            $result = $this->{'do'.$actionName}();
-            if($result !== null){
-                $result->reason='do'.$actionName;
+            $result = $this->{'do' . $actionName}();
+            if ($result !== null) {
+                $result->reason = 'do' . $actionName;
                 return $result;
             }
         }
 
         $result = $this->do중립();
-        $result->reason='do중립';
+        $result->reason = 'do중립';
         return $result;
     }
 
@@ -3723,23 +3710,23 @@ class GeneralAI
         }
 
         $devRate = [
-            'all'=>0,
+            'all' => 0,
         ];
 
 
-        foreach($this->supplyCities as $city){
-            foreach($this->calcCityDevelRate($city) as $develKey => [$devScore, $devType]){
-                if($develKey == 'trust'){
+        foreach ($this->supplyCities as $city) {
+            foreach ($this->calcCityDevelRate($city) as $develKey => [$devScore, $devType]) {
+                if ($develKey == 'trust') {
                     continue;
                 }
-                if(!key_exists($develKey, $devRate)){
+                if (!key_exists($develKey, $devRate)) {
                     $devRate[$develKey] = 0;
                 }
                 $devRate[$develKey] += $devScore;
                 $devRate['all'] += $devScore;
             }
         }
-        foreach(array_keys($devRate) as $key){
+        foreach (array_keys($devRate) as $key) {
             $devRate[$key] /= count($this->supplyCities);
         }
         $devRate['all'] /= count($devRate) - 1;
@@ -3747,61 +3734,57 @@ class GeneralAI
         return $this->devRate;
     }
 
-    protected function chooseNonLordPromotion(){
+    protected function chooseNonLordPromotion()
+    {
         //빈자리는 아무나 채움
         $db = DB::db();
 
         $setChiefLevel = 0;
         $minChiefLevel = getNationChiefLevel($this->nation['level']);
         $chiefSet = $this->nation['chief_set'];
-        foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
-            if(isOfficerSet($chiefSet, $chiefLevel)){
+        foreach (Util::range($minChiefLevel, 12) as $chiefLevel) {
+            if (isOfficerSet($chiefSet, $chiefLevel)) {
                 continue;
             }
-            if(key_exists($chiefLevel, $this->chiefGenerals)){
+            if (key_exists($chiefLevel, $this->chiefGenerals)) {
                 continue;
             }
-            if($this->general->getVar('officer_level') == $chiefLevel){
+            if ($this->general->getVar('officer_level') == $chiefLevel) {
                 continue;
             }
 
 
             $picked = false;
-            foreach(Util::range(5) as $idx){
+            foreach (Util::range(5) as $idx) {
 
                 /** @var General */
-                if($this->npcWarGenerals){
+                if ($this->npcWarGenerals) {
                     $randGeneral = Util::choiceRandom($this->npcWarGenerals);
-                }
-                else if($this->npcCivilGenerals){
+                } else if ($this->npcCivilGenerals) {
                     $randGeneral = Util::choiceRandom($this->npcCivilGenerals);
-                }
-                else if($this->userWarGenerals){
+                } else if ($this->userWarGenerals) {
                     $randGeneral = Util::choiceRandom($this->userWarGenerals);
-                }
-                else if($this->userCivilGenerals){
+                } else if ($this->userCivilGenerals) {
                     $randGeneral = Util::choiceRandom($this->userCivilGenerals);
-                }
-                else{
+                } else {
                     break;
                 }
 
-                if($randGeneral->getVar('officer_level') != 1){
+                if ($randGeneral->getVar('officer_level') != 1) {
                     continue;
                 }
 
-                if($chiefLevel == 11){
+                if ($chiefLevel == 11) {
                     $picked = true;
                     break;
                 }
 
-                if($chiefLevel % 2 == 0){
-                    if($randGeneral->getStrength(false, false, false, false) < GameConst::$chiefStatMin){
+                if ($chiefLevel % 2 == 0) {
+                    if ($randGeneral->getStrength(false, false, false, false) < GameConst::$chiefStatMin) {
                         continue;
                     }
-                }
-                else{
-                    if($randGeneral->getIntel(false, false, false, false) < GameConst::$chiefStatMin){
+                } else {
+                    if ($randGeneral->getIntel(false, false, false, false) < GameConst::$chiefStatMin) {
                         continue;
                     }
                 }
@@ -3809,7 +3792,7 @@ class GeneralAI
                 break;
             }
 
-            if(!$picked || !$randGeneral){
+            if (!$picked || !$randGeneral) {
                 continue;
             }
 
@@ -3822,14 +3805,15 @@ class GeneralAI
             $this->chiefGenerals[$chiefLevel] = $randGeneral;
         }
 
-        if($setChiefLevel){
+        if ($setChiefLevel) {
             $db->update('nation', [
                 'chief_set' => $db->sqleval('chief_set | %i', $setChiefLevel)
             ], 'nation=%i', $this->nation['nation']);
         }
     }
 
-    protected function calcCityDevelRate(array $city){
+    protected function calcCityDevelRate(array $city)
+    {
         return [
             'trust' => [$city['trust'] / 100, self::t통솔장],
             'pop' => [$city['pop'] / $city['pop_max'], self::t통솔장],
@@ -3841,7 +3825,8 @@ class GeneralAI
         ];
     }
 
-    protected function choosePromotion(){
+    protected function choosePromotion()
+    {
         $db = DB::db();
 
         $nation = $this->nation;
@@ -3853,13 +3838,13 @@ class GeneralAI
         $minUserKillturn = $this->env['killturn'] - Util::toInt(240 / $this->env['turnterm']);
         $minNPCKillturn = 36;
 
-        foreach(Util::range($minChiefLevel, 12) as $chiefLevel){
-            if(!key_exists($chiefLevel, $this->chiefGenerals)){
+        foreach (Util::range($minChiefLevel, 12) as $chiefLevel) {
+            if (!key_exists($chiefLevel, $this->chiefGenerals)) {
                 continue;
             }
             $chief = $this->chiefGenerals[$chiefLevel];
-            if($chief->getNPCType() < 2 && $chief->getVar('killturn') >= $minUserKillturn){
-                $userChiefCnt+=1;
+            if ($chief->getNPCType() < 2 && $chief->getVar('killturn') >= $minUserKillturn) {
+                $userChiefCnt += 1;
                 $chief->setVar('permission', 'ambassador');
             }
         }
@@ -3872,19 +3857,19 @@ class GeneralAI
         /** @var General[] */
         $nextChiefs = [];
 
-        if($userChiefCnt == 0 && $this->userGenerals && !isOfficerSet($nation['chief_set'], 11)){
+        if ($userChiefCnt == 0 && $this->userGenerals && !isOfficerSet($nation['chief_set'], 11)) {
             $userGenerals = $this->userGenerals;
-            uasort($userGenerals, function(General $lhs, General $rhs){
-                return -($lhs->getVar('leadership')<=>$rhs->getVar('leadership'));
+            uasort($userGenerals, function (General $lhs, General $rhs) {
+                return - ($lhs->getVar('leadership') <=> $rhs->getVar('leadership'));
             });
-            foreach($userGenerals as $general){
-                if($general->getVar('killturn') < $minUserKillturn){
+            foreach ($userGenerals as $general) {
+                if ($general->getVar('killturn') < $minUserKillturn) {
                     continue;
                 }
-                if($general->getVar('belong') < $minBelong){
+                if ($general->getVar('belong') < $minBelong) {
                     continue;
                 }
-                if($general->getVar('officer_level') !== 1){
+                if ($general->getVar('officer_level') !== 1) {
                     continue;
                 }
                 $nextChiefs[11] = $general;
@@ -3899,67 +3884,64 @@ class GeneralAI
         }
 
         $generals = $this->nationGenerals;
-        uasort($generals, function(General $lhs, General $rhs){
+        uasort($generals, function (General $lhs, General $rhs) {
             $lhsStat = $lhs->getLeadership(false, false, false, false) * 2
                 + $lhs->getStrength(false, false, false, false)
                 + $lhs->getIntel(false, false, false, false);
             $rhsStat = $rhs->getLeadership(false, false, false, false) * 2
                 + $rhs->getStrength(false, false, false, false)
                 + $rhs->getIntel(false, false, false, false);
-            return -($lhsStat <=> $rhsStat);
+            return - ($lhsStat <=> $rhsStat);
         });
 
 
 
-        foreach(Util::range(11, $minChiefLevel-1, -1) as $chiefLevel) {
-            if(isOfficerSet($nation['chief_set'], $chiefLevel)){
+        foreach (Util::range(11, $minChiefLevel - 1, -1) as $chiefLevel) {
+            if (isOfficerSet($nation['chief_set'], $chiefLevel)) {
                 continue;
             }
-            if($this->general->getVar('officer_level') === $chiefLevel){
+            if ($this->general->getVar('officer_level') === $chiefLevel) {
                 continue;
             }
 
-            if(key_exists($chiefLevel, $this->chiefGenerals)){
+            if (key_exists($chiefLevel, $this->chiefGenerals)) {
                 $oldChief = $this->chiefGenerals[$chiefLevel];
-                if($oldChief->getNPCType() < 2 && $oldChief->getVar('killturn') >= $minChiefLevel){
+                if ($oldChief->getNPCType() < 2 && $oldChief->getVar('killturn') >= $minChiefLevel) {
                     continue;
                 }
             }
 
-            if(!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)){
+            if (!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)) {
                 $newChiefProb = 1;
-            }
-            else{
+            } else {
                 $newChiefProb = Util::randF(0.1);
             }
 
-            if($newChiefProb < 1 && !Util::randF($newChiefProb)){
+            if ($newChiefProb < 1 && !Util::randF($newChiefProb)) {
                 continue;
             }
 
 
             $newChief = null;
-            foreach($generals as $general){
-                if($general->getVar('officer_level') !== 1){
+            foreach ($generals as $general) {
+                if ($general->getVar('officer_level') !== 1) {
                     continue;
                 }
-                if($general->getNPCType() < 2 && $general->getVar('killturn') < $minUserKillturn){
+                if ($general->getNPCType() < 2 && $general->getVar('killturn') < $minUserKillturn) {
                     continue;
                 }
-                if($general->getNPCType() >= 2 && $general->getVar('killturn') < $minNPCKillturn){
-                    continue;
-                }
-
-                if($chiefLevel == 11){
-                }
-                else if($chiefLevel % 2 == 0 && $general->getStrength(false, false, false, false) < GameConst::$chiefStatMin){
-                    continue;
-                }
-                else if($chiefLevel % 2 == 1 && $general->getIntel(false, false, false, false) < GameConst::$chiefStatMin){
+                if ($general->getNPCType() >= 2 && $general->getVar('killturn') < $minNPCKillturn) {
                     continue;
                 }
 
-                if($general->getNPCType() < 2 && $userChiefCnt >= 3){
+                if ($chiefLevel == 11) {
+                } else if ($chiefLevel % 2 == 0 && $general->getStrength(false, false, false, false) < GameConst::$chiefStatMin) {
+                    continue;
+                } else if ($chiefLevel % 2 == 1 && $general->getIntel(false, false, false, false) < GameConst::$chiefStatMin) {
+                    continue;
+                }
+
+                if ($general->getNPCType() < 2 && $userChiefCnt >= 3) {
                     continue;
                 }
 
@@ -3967,11 +3949,11 @@ class GeneralAI
                 break;
             }
 
-            if(!$newChief){
+            if (!$newChief) {
                 continue;
             }
 
-            if($newChief->getNPCType() < 2){
+            if ($newChief->getNPCType() < 2) {
                 $userChiefCnt += 1;
                 $newChief->setVar('permission', 'ambassador');
             }
@@ -3983,9 +3965,9 @@ class GeneralAI
             $updatedChiefSet |= doOfficerSet(0, $chiefLevel);
         }
 
-        foreach($nextChiefs as $chiefLevel=>$chief){
-            $oldChief = $this->chiefGenerals[$chiefLevel]??null;
-            if($oldChief){
+        foreach ($nextChiefs as $chiefLevel => $chief) {
+            $oldChief = $this->chiefGenerals[$chiefLevel] ?? null;
+            if ($oldChief) {
                 $oldChief->setVar('officer_level', 1);
                 $oldChief->setVar('officer_city', 0);
                 $oldChief->applyDB($db);
@@ -3993,9 +3975,9 @@ class GeneralAI
             $chief->applyDB($db);
             $this->chiefGenerals[$chiefLevel] = $chief;
         }
-        if($updatedChiefSet){
+        if ($updatedChiefSet) {
             $db->update('nation', [
-                'chief_set'=>$db->sqleval('chief_set | %i', $updatedChiefSet)
+                'chief_set' => $db->sqleval('chief_set | %i', $updatedChiefSet)
             ], 'nation=%i', $nationID);
         }
     }
@@ -4010,7 +3992,7 @@ class GeneralAI
 
         $rate = 15;
         //도시
-        if($this->supplyCities){
+        if ($this->supplyCities) {
             $devRate = $this->calcNationDevelopedRate();
 
             $avg = ($devRate['pop'] + $devRate['all']) / 2;
@@ -4043,9 +4025,9 @@ class GeneralAI
             return 20;
         }
 
-        $dedicationList = array_map(function(General $general){
+        $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
-        }, array_filter($this->nationGenerals, function(General $rawGeneral){
+        }, array_filter($this->nationGenerals, function (General $rawGeneral) {
             return $rawGeneral->getVar('officer_level') != 5;
         }));
 
@@ -4056,10 +4038,10 @@ class GeneralAI
         $outcome = getOutcome(100, $dedicationList);
 
         $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
-        if($nation['gold'] + $income - $outcome > $this->nationPolicy->reqNationGold * 2){
+        if ($nation['gold'] + $income - $outcome > $this->nationPolicy->reqNationGold * 2) {
             $moreBill = ($nation['gold'] + $income - $this->nationPolicy->reqNationGold * 2) / $outcome * 80;
-            if($moreBill > $bill){
-                $bill = intval(($moreBill + $bill)/2);
+            if ($moreBill > $bill) {
+                $bill = intval(($moreBill + $bill) / 2);
             }
         }
 
@@ -4086,9 +4068,9 @@ class GeneralAI
             return 20;
         }
 
-        $dedicationList = array_map(function(General $general){
+        $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
-        }, array_filter($this->nationGenerals, function(General $rawGeneral){
+        }, array_filter($this->nationGenerals, function (General $rawGeneral) {
             return $rawGeneral->getVar('officer_level') != 5;
         }));
 
@@ -4099,10 +4081,10 @@ class GeneralAI
         $outcome = getOutcome(100, $dedicationList);
 
         $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
-        if($nation['rice'] + $income - $outcome > $this->nationPolicy->reqNationRice * 2){
+        if ($nation['rice'] + $income - $outcome > $this->nationPolicy->reqNationRice * 2) {
             $moreBill = ($nation['rice'] + $income - $this->nationPolicy->reqNationRice * 2) / $outcome * 80;
-            if($moreBill > $bill){
-                $bill = intval(($moreBill + $bill)/2);
+            if ($moreBill > $bill) {
+                $bill = intval(($moreBill + $bill) / 2);
             }
         }
 
