@@ -33,6 +33,9 @@ class che_피장파장 extends Command\NationCommand{
         if(!key_exists('destNationID', $this->arg)){
             return false;
         }
+        if(!key_exists('commandType', $this->arg)){
+            return false;
+        }
         $destNationID = $this->arg['destNationID'];
         $commandType = $this->arg['commandType'];
 

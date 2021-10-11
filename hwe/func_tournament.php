@@ -1132,7 +1132,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $gen1resKey = 'd';
         $gen2resKey = 'd';
         break;
-    default: new MustNotBeReachedException();
+    default: throw new MustNotBeReachedException();
     }
 
     $db->update('rank_data', [
