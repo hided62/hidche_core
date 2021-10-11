@@ -42,6 +42,22 @@ class DummyGeneral extends General{
         return $value;
     }
 
+    public function getInheritancePoint(string $key, &$aux = null, bool $forceCalc = false){
+        return 0;
+    }
+
+    public function setInheritancePoint(string $key, $value, $aux = null){
+        return;
+    }
+
+    public function increaseInheritancePoint(string $key, $value, $aux = null){
+        return;
+    }
+
+    public function mergeTotalInheritancePoint(){
+        return;
+    }
+
     function applyDB($db):bool{
         if($this->logger){
             $this->initLogger(1, 1);
