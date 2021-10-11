@@ -56,6 +56,9 @@ class WarUnitGeneral extends WarUnit
             $semiTurn = $general->getTurnTime();
         } else if ($oppose !== null) {
             $semiTurn = $oppose->getGeneral()->getTurnTime();
+        } else {
+            LogText("WarUnitGeneral::setOppose", "defender인데 oppose가 null {$general->getID()}, {$general->getTurnTime()}");
+            $semiTurn = $general->getTurnTime();
         }
         $phase = $this->getRealPhase();
         $semiTurn = substr($semiTurn, 0, strlen($semiTurn) - 2);
@@ -205,7 +208,7 @@ class WarUnitGeneral extends WarUnit
         if ($this->isAttacker) {
             if ($officerLevel == 12) {
                 $warPower *= 1.10;
-            } else if ($officerLevel == 11 | $officerLevel == 10 || $officerLevel == 8 || $officerLevel == 6) {
+            } else if ($officerLevel == 11 || $officerLevel == 10 || $officerLevel == 8 || $officerLevel == 6) {
                 $warPower *= 1.05;
             }
         } else {
