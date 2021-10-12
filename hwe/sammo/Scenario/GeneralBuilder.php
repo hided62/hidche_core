@@ -459,7 +459,7 @@ class GeneralBuilder{
             }
         }
 
-        if(!$this->dex1 && in_array('dex_t', $avgGen)){
+        if(!$this->dex1 && key_exists('dex_t', $avgGen)){
             $dexTotal = $avgGen['dex_t'];
             if ($pickType == '무') {
                 $dexVal = Util::choiceRandom([
