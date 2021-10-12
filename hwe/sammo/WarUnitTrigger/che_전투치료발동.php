@@ -22,7 +22,7 @@ class che_전투치료발동 extends BaseWarUnitTrigger{
         }
         $selfEnv['치료발동'] = true;
 
-        $oppose->getLogger()->pushGeneralBattleDetailLog("상대가 <C>치료</>했다!", ActionLogger::PLAIN);
+        $oppose->getLogger()->pushGeneralBattleDetailLog("상대가 <R>치료</>했다!", ActionLogger::PLAIN);
         $self->getLogger()->pushGeneralBattleDetailLog("<C>치료</>했다!", ActionLogger::PLAIN);
 
         $oppose->multiplyWarPowerMultiply(0.5);
