@@ -192,6 +192,19 @@ $(function ($) {
         return false;
     })
 
+    $('.open-window').on('click', function(e){
+        e.preventDefault();
+        let target = $(e.target as HTMLAnchorElement);
+        while(target.attr('href') === undefined){
+            target = target.parent('a');
+            if(target.length == 0){
+                return;
+            }
+        }
+        const href = target.attr('href');
+        window.open(href);
+    });
+
     setInterval(myclock, 500);
     reloadCommandList();
     activateFlip();
