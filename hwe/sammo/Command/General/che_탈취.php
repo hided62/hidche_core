@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     Command
@@ -31,18 +31,20 @@ class che_탈취 extends che_화계{
         $commandName = $this->getName();
         $db = DB::db();
 
-        // 탈취 최대 800 * 8 * sqrt(1 + (year - startyear) / 5) / 2
-        $yearCoef = sqrt(1 + ($this->env['year'] - $this->env['startyear']) / 5) / 2;
-        $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef;
-        $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef;
+        // 탈취 최대 800 * 8 * sqrt(1 + (year - startyear) / 4) / 2
+        $yearCoef = sqrt(1 + ($this->env['year'] - $this->env['startyear']) / 4) / 2;
+        $commRatio = $destCity['comm'] / $destCity['comm_max'];
+        $agriRatio = $destCity['agri'] / $destCity['agri_max'];
+        $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef * (0.25 + $commRatio / 4);
+        $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef * (0.25 + $agriRatio / 4);
 
         if($destCity['supply']){
             [$destNationGold, $destNationRice] = $db->queryFirstList('SELECT gold,rice FROM nation WHERE nation=%i', $destNationID);
-    
+
             $destNationGold -= $gold;
             $destNationRice -= $rice;
-    
-            if($destNationGold < GameConst::$minNationalGold) { 
+
+            if($destNationGold < GameConst::$minNationalGold) {
                 $gold += $destNationGold - GameConst::$minNationalGold;
                 $destNationGold = GameConst::$minNationalGold;
             }
@@ -50,7 +52,7 @@ class che_탈취 extends che_화계{
                 $rice += $destNationRice - GameConst::$minNationalRice;
                 $destNationRice = GameConst::$minNationalRice;
             }
-    
+
             $db->update('nation', [
                 'gold'=>$destNationGold,
                 'rice'=>$destNationRice
@@ -96,5 +98,5 @@ class che_탈취 extends che_화계{
 
         $logger->pushGeneralActionLog("금<C>{$goldText}</> 쌀<C>{$riceText}</>을 획득했습니다.", ActionLogger::PLAIN);
     }
-    
+
 }
