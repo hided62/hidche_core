@@ -17,7 +17,7 @@
     "iconPath": "쿠키런킹덤",
     "fiction": 1,
     "nation":[
-        
+
     ],
     "map":{
         "mapName":"miniche",
@@ -100,7 +100,7 @@
     "events":[
         [
             ["or", ["Date", "==", null, 12], ["Date", "==", null, 6]],
-            ["CreateManyNPC", 30],
+            ["CreateManyNPC", 10, 10],
             ["DeleteEvent"]
         ],
         [
@@ -109,5 +109,5 @@
             ["DeleteEvent"]
         ]
     ]
-    
+
 }

@@ -9,9 +9,11 @@ use function sammo\pickGeneralFromPool;
 //기존 event_3.php
 class CreateManyNPC extends \sammo\Event\Action{
     protected $npcCount;
+    protected $fillCnt;
     protected $avgGen;
-    public function __construct($npcCount = 10){
+    public function __construct($npcCount = 10, $fillCnt = 0){
         $this->npcCount = $npcCount;
+        $this->fillCnt = $fillCnt;
     }
 
     protected function generateNPC($env, int $cnt){
@@ -41,13 +43,23 @@ class CreateManyNPC extends \sammo\Event\Action{
         }
         return $result;
     }
-    
+
 
     public function run(array $env){
         if($this->npcCount <= 0){
-            return [__CLASS__, []];   
+            return [__CLASS__, []];
         }
-        $result = $this->generateNPC($env, $this->npcCount);
+
+
+        $moreGenCnt = 0;
+        if($this->fillCnt){
+            $db = DB::db();
+            $nations = $db->queryFirstColumn('SELECT nation FROM general WHERE npc < 2 AND officer_level = 12');
+            $regGens = $db->queryFirstField('SELECT count(*) FROM general WHERE nation IN %li AND npc < 4', $nations);
+            $moreGenCnt = count($nations) * $this->fillCnt - $regGens;
+        }
+
+        $result = $this->generateNPC($env, $this->npcCount + $moreGenCnt);
 
         $logger = new \sammo\ActionLogger(0, 0, $env['year'], $env['month']);
         $genCnt = count($result);
@@ -62,6 +74,6 @@ class CreateManyNPC extends \sammo\Event\Action{
         $logger->pushGlobalHistoryLog("장수 <C>{$genCnt}</>명이 <S>등장</>했습니다.", \sammo\ActionLogger::NOTICE_YEAR_MONTH);
         $logger->flush();
 
-        return [__CLASS__, $result];   
+        return [__CLASS__, $result];
     }
 }

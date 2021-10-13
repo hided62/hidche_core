@@ -16,7 +16,7 @@
     "events":[
         [
             ["or", ["Date", "==", null, 12], ["Date", "==", null, 6]],
-            ["CreateManyNPC", 30],
+            ["CreateManyNPC", 10, 10],
             ["DeleteEvent"]
         ],
         [

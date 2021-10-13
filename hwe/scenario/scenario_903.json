@@ -12,7 +12,7 @@
     "events": [
         [
             ["Date", "==", null, 12],
-            ["CreateManyNPC", 100],
+            ["CreateManyNPC", 100, 0],
             ["DeleteEvent"]
         ],
         [
