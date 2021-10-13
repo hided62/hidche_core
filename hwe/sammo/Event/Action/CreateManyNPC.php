@@ -46,7 +46,7 @@ class CreateManyNPC extends \sammo\Event\Action{
 
 
     public function run(array $env){
-        if($this->npcCount <= 0){
+        if($this->npcCount <= 0 && $this->fillCnt <= 0){
             return [__CLASS__, []];
         }
 
