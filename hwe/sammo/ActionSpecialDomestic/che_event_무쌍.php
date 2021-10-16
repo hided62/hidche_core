@@ -19,18 +19,22 @@ class che_event_무쌍 extends \sammo\BaseSpecial{
     ];
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
-        if($statName === 'warCriticalRatio' && $aux['isAttacker']??false){
+        if($statName === 'warCriticalRatio' && ($aux['isAttacker']??false)){
             return $value += 0.1;
         }
         return $value;
     }
 
     public function getWarPowerMultiplier(WarUnit $unit):array{
-        $attackMultiplier = 1.1;
+        $generalWarSpecial = $unit->getGeneral()->getSpecialWar();
+        if($generalWarSpecial !== null && $generalWarSpecial->getName() == '무쌍'){
+            return [1, 1];
+        }
+        $attackMultiplier = 1;
         $defenceMultiplier = 1;
         $killnum = $unit->getGeneral()->getRankVar('killnum');
-        $attackMultiplier += Util::valueFit($killnum * 0.01 * 0.2, null, 0.4);
-        $defenceMultiplier -= Util::valueFit($killnum * 0.01 * 0.05, null, 0.3);
+        $attackMultiplier += log(max(1, $killnum / 5), 2) / 20;
+        $defenceMultiplier -= log(max(1, $killnum / 5), 2) / 50;
         return [$attackMultiplier, $defenceMultiplier];
     }
 }

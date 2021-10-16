@@ -10,7 +10,7 @@ class che_무쌍 extends \sammo\BaseSpecial{
 
     protected $id = 61;
     protected $name = '무쌍';
-    protected $info = '[전투] 대미지 +10%, 피해 -5%, 공격 시 필살 확률 +10%p, <br>승리 수만큼 대미지 0.20%씩 추가 상승(최대50%)<br>승리 수만큼 피해 0.05%씩 감소(최대20%)';
+    protected $info = '[전투] 공격 시 필살 확률 +10%p, <br>승리 수의 로그 비례로 대미지 상승(10회 ⇒ +5%, 40회 ⇒ +15%)<br>승리 수의 로그 비례로 피해 감소(10회 ⇒ -2%, 40회 ⇒ -6%)';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
@@ -19,18 +19,18 @@ class che_무쌍 extends \sammo\BaseSpecial{
     ];
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
-        if($statName === 'warCriticalRatio' && $aux['isAttacker']??false){
+        if($statName === 'warCriticalRatio' && ($aux['isAttacker']??false)){
             return $value += 0.1;
         }
         return $value;
     }
 
     public function getWarPowerMultiplier(WarUnit $unit):array{
-        $attackMultiplier = 1.1;
-        $defenceMultiplier = 0.95;
+        $attackMultiplier = 1;
+        $defenceMultiplier = 1;
         $killnum = $unit->getGeneral()->getRankVar('killnum');
-        $attackMultiplier += Util::valueFit($killnum * 0.01 * 0.2, null, 0.5);
-        $defenceMultiplier -= Util::valueFit($killnum * 0.01 * 0.05, null, 0.2);
+        $attackMultiplier += log(max(1, $killnum / 5), 2) / 20;
+        $defenceMultiplier -= log(max(1, $killnum / 5), 2) / 50;
         return [$attackMultiplier, $defenceMultiplier];
     }
 }
