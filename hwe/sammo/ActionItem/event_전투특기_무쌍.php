@@ -11,7 +11,7 @@ class event_전투특기_무쌍 extends \sammo\BaseItem{
     protected $id = 61;
     protected $rawName = '비급';
     protected $name = '비급(무쌍)';
-    protected $info = '[전투] 대미지 +10%, 피해 -5%, 공격 시 필살 확률 +10%p, <br>승리 수만큼 대미지 0.20%씩 추가 상승(최대50%)<br>승리 수만큼 피해 0.05%씩 감소(최대20%)';
+    protected $info = '[전투] 대미지 +5%, 피해 -2%, 공격 시 필살 확률 +10%p, <br>승리 수의 로그 비례로 대미지 상승(10회 ⇒ +5%, 40회 ⇒ +15%)<br>승리 수의 로그 비례로 피해 감소(10회 ⇒ -2%, 40회 ⇒ -6%)';
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
@@ -29,8 +29,8 @@ class event_전투특기_무쌍 extends \sammo\BaseItem{
         if($generalWarSpecial !== null && $generalWarSpecial->getName() == '무쌍'){
             return [1, 1];
         }
-        $attackMultiplier = 1;
-        $defenceMultiplier = 1;
+        $attackMultiplier = 1.05;
+        $defenceMultiplier = 0.98;
         $killnum = $unit->getGeneral()->getRankVar('killnum');
         $attackMultiplier += log(max(1, $killnum / 5), 2) / 20;
         $defenceMultiplier -= log(max(1, $killnum / 5), 2) / 50;
