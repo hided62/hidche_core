@@ -624,12 +624,12 @@ function updateNationState()
                     $targetKillTurn
                 );
                 $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong', 'npc', 'aux'], 2);
-                $chiefObj = null;
+                $chiefID = null;
 
                 $uniqueLotteryWeightList = [];
                 foreach ($nationGenList as $nationGen) {
                     if ($nationGen->getVar('officer_level') == 12) {
-                        $chiefObj = $nationGen;
+                        $chiefID = $nationGen->getID();
                     }
                     $trialCnt = count(GameConst::$allItems);
 
@@ -670,8 +670,10 @@ function updateNationState()
                     $winnerObj->applyDB($db);
                 }
 
-                if($chiefObj){
+                if($chiefID){
+                    $chiefObj = General::createGeneralObjFromDB($chiefID, ['belong', 'npc', 'aux'], 2);
                     $chiefObj->increaseInheritancePoint('unifier', 250 * $levelDiff);
+                    $chiefObj->applyDB($db);
                 }
             }
         }
