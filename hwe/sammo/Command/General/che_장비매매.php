@@ -89,7 +89,7 @@ class che_장비매매 extends Command\GeneralCommand{
         else if($itemCode == $general->getVar($itemType)){
             $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('이미 가지고 있습니다.');
         }
-        else if($itemType != 'item' && !buildItemClass($general->getVar($itemType))->isBuyable()){
+        else if(!buildItemClass($general->getVar($itemType))->isBuyable()){
             $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('이미 진귀한 것을 가지고 있습니다.');
         }
     }
