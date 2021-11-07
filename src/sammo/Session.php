@@ -10,8 +10,9 @@ namespace sammo;
  * @property string $ip        IP
  * @property bool   $reqOTP    인증 코드 필요
  * @property array  $acl       권한
+ * @property int|null $tokenID  토큰ID
  * @property string $tokenValidUntil 로그인 토큰 길이
- * 
+ *
  * @property int    $generalID   장수 번호 (게임 로그인 필요)
  * @property string $generalName 장수 이름 (게임 로그인 필요)
  */
@@ -35,7 +36,7 @@ class Session
     const GAME_KEY_GENERAL_ID = '_g_no';
     const GAME_KEY_GENERAL_NAME = '_g_name';
     const GAME_KEY_EXPECTED_DEADTIME = '_g_deadtime';
-    
+
 
     private $writeClosed = false;
     private $sessionID = null;
@@ -170,7 +171,7 @@ class Session
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, array $acl): Session
+    public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, ?int $tokenID, array $acl): Session
     {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
@@ -180,6 +181,7 @@ class Session
         $this->set('acl', $acl);
         $this->set('reqOTP', $reqOTP);
         $this->set('tokenValidUntil', $tokenValidUntil);
+        $this->set('tokenID', $tokenID);
         return $this;
     }
 
@@ -197,7 +199,11 @@ class Session
         if (class_exists('\\sammo\\UniqueConst')) {
             $this->logoutGame();
         }
-        
+
+        if($this->tokenID??null){
+            RootDB::db()->delete('login_token', 'id = %i', $this->tokenID);
+        }
+
         $this->set('userID', null);
         $this->set('userName', null);
         $this->set('userGrade', null);
@@ -261,7 +267,7 @@ class Session
             }
             return $this;
         }
-        
+
         $turnterm = $gameStor->turnterm;
         $isUnited = $gameStor->isunited != 0;
 
@@ -319,7 +325,7 @@ class Session
         } else {
             $obj = self::getInstance();
         }
-        
+
         return $obj->userGrade;
     }
 
@@ -335,12 +341,12 @@ class Session
         } else {
             $obj = self::getInstance();
         }
-        
+
         return $obj->userID;
     }
 
     /**
-     * 
+     *
      */
     public static function getGeneralID(bool $requireLogin = false, string $exitPath = '..')
     {
@@ -349,7 +355,7 @@ class Session
         } else {
             $obj = self::getInstance();
         }
-        
+
         return $obj->generalID??0;
     }
 
@@ -367,7 +373,7 @@ class Session
                 return false;
             }
         }
-        
+
         if ($this->userID) {
             return true;
         } else {

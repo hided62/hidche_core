@@ -357,31 +357,6 @@ function buildNationCommandClass(?string $type, General $generalObj, array $env,
     return new $class($generalObj, $env, $lastTurn, $arg);
 }
 
-function getAPIExecutorClass($path){
-
-    static $basePath = __NAMESPACE__.'\\API\\';
-    if(is_string($path)){
-    }
-    else if(is_array($path)){
-        $path = join('\\', $path);
-    }
-    else{
-        throw new \InvalidArgumentException("{$path}는 올바른 API 지시자가 아님");
-    }
-
-    $classPath = str_replace('/', '\\', $basePath.$path);
-
-    if(class_exists($classPath)){
-        return $classPath;
-    }
-    throw new \InvalidArgumentException("{$path}는 올바른 API 경로가 아님");
-}
-
-function buildAPIExecutorClass($type, string $rootPath, array $args):\sammo\BaseAPI{
-    $class = getAPIExecutorClass($type);
-    return new $class($rootPath, $args);
-}
-
 function getWarUnitTriggerClass(string $type){
     static $basePath = __NAMESPACE__.'\\WarUnitTrigger\\';
     $classPath = ($basePath.$type);

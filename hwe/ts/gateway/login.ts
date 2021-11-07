@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import 'popper.js';
 import Popper from 'popper.js';
-(window as unknown as {Popper:unknown}).Popper = Popper;
+(window as unknown as { Popper: unknown }).Popper = Popper;
 import 'bootstrap';
 import { JQValidateForm, NamedRules } from '../util/jqValidateForm';
 import axios from 'axios';
@@ -11,9 +11,12 @@ import { unwrap_any } from '../util/unwrap_any';
 import { sha512 } from 'js-sha512';
 import { unwrap } from '../util/unwrap';
 import { InvalidResponse } from '../defs';
+import internal from 'stream';
+import { delay } from '../util/delay';
 
 type LoginResponse = {
     result: true,
+    nextToken: [number, string] | undefined,
 } | {
     result: false,
     reqOTP: boolean,
@@ -29,6 +32,19 @@ type OTPResponse = {
     reason: string,
 }
 
+type AutoLoginNonceResponse = {
+    result: true,
+    loginNonce: string,
+} | InvalidResponse;
+
+type AutoLoginResponse = {
+    result: true,
+    nextToken: [number, string] | undefined,
+} | {
+    result: false,
+    silent: boolean,
+    reason: string,
+}
 declare global {
     interface Window {
         getOAuthToken: (mode: string, scope_list: string[]) => void;
@@ -40,6 +56,92 @@ declare const kakao_oauth_client_id: string;
 declare const kakao_oauth_redirect_uri: string;
 
 let oauthMode: string | null = null;
+
+const TOKEN_VERSION = 1;
+const LOGIN_TOKEN_KEY = 'sammo_login_token';
+function regNextToken(tokenInfo: [number, string]) {
+    localStorage.setItem(LOGIN_TOKEN_KEY, JSON.stringify([TOKEN_VERSION, tokenInfo, Date.now()]));
+}
+
+function getToken(): [number, string] | undefined {
+    const trialToken = localStorage.getItem(LOGIN_TOKEN_KEY);
+    if (!trialToken) {
+        return;
+    }
+    const tokenItems = JSON.parse(trialToken);
+    if (tokenItems[0] != TOKEN_VERSION) {
+        console.log(tokenItems);
+        resetToken();
+        return;
+    }
+    const [, token,] = tokenItems;
+    return token;
+}
+
+function resetToken(){
+    localStorage.removeItem(LOGIN_TOKEN_KEY);
+}
+
+async function tryAutoLogin() {
+    try {
+        const tokenInfo = getToken();
+        if (!tokenInfo) {
+            return;
+        }
+
+        const [tokenID, token] = tokenInfo;
+
+        const result = await axios.post<AutoLoginNonceResponse>('api.php', {
+            path: ["Login", "ReqNonce"]
+        });
+
+        if(!result){
+            //api 에러.
+            return;
+        }
+
+        if(!result.data.result){
+            resetToken();
+            return;
+        }
+
+        const nonce = result.data.loginNonce;
+
+        const hashedToken = sha512(token + nonce);
+        const _loginResult = await axios.post<AutoLoginResponse>('api.php', {
+            path: ["Login", "LoginByToken"],
+            args: {
+                'hashedToken':hashedToken,
+                'token_id':tokenID,
+            }
+        });
+
+        if(!_loginResult){
+            return;
+        }
+
+        const loginResult = _loginResult.data;
+        if(!loginResult.result){
+            if(!loginResult.silent){
+                alert(loginResult.reason);
+            }
+            console.error(loginResult.reason);
+            return;
+        }
+
+        if(loginResult.nextToken){
+            regNextToken(loginResult.nextToken);
+        }
+        window.location.href = "./";
+
+    }
+    catch(e){
+        console.error(e);
+        return;
+    }
+
+
+}
 
 function getOAuthToken(mode: string, scope_list?: string[] | string) {
     if (mode === undefined) {
@@ -115,6 +217,9 @@ async function doLoginUsingOAuth() {
     }
 
     if (result.result) {
+        if (result.nextToken) {
+            regNextToken(result.nextToken);
+        }
         window.location.href = "./";
         return;
     }
@@ -156,8 +261,15 @@ function postOAuthResult(mode: string) {
 window.postOAuthResult = postOAuthResult;
 
 
-$(function ($) {
+$(async function ($) {
     setAxiosXMLHttpRequest();
+
+    //로그인 먼저 해볼 것
+    if(getToken()){
+        void tryAutoLogin();
+        await delay(100);
+    }
+
 
     type LoginFormType = {
         username: string,
@@ -194,13 +306,16 @@ $(function ($) {
 
         try {
             const response = await axios({
-                url: 'j_login.php',
+                url: 'api.php',
                 responseType: 'json',
                 method: 'post',
-                data: convertFormData({
-                    username: values.username,
-                    password: hash_pw,
-                })
+                data: {
+                    path: ["Login", "LoginByID"],
+                    args: {
+                        username: values.username,
+                        password: hash_pw,
+                    }
+                }
             });
             result = response.data;
         }
@@ -212,6 +327,9 @@ $(function ($) {
 
 
         if (result.result) {
+            if (result.nextToken) {
+                regNextToken(result.nextToken);
+            }
             window.location.href = "./";
             return;
         }
@@ -268,11 +386,10 @@ $(function ($) {
         getOAuthToken('change_pw', 'talk_message');
     });
 
-    $('#btn_kakao_login').on('click', function(e){
+    $('#btn_kakao_login').on('click', function (e) {
         e.preventDefault();
-        getOAuthToken('login', ['account_email','talk_message']);
+        getOAuthToken('login', ['account_email', 'talk_message']);
     })
-
 
     //TODO: 모바일에서 크기 비례 지도 다시 띄우기?
     /*

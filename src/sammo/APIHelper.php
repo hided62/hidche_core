@@ -40,7 +40,7 @@ class APIHelper
 
             $sessionMode = $obj->getRequiredSessionMode();
             if ($sessionMode === BaseAPI::NO_SESSION) {
-                $session = null;
+                $session = Session::getInstance();//XXX: NoSession이면 진짜 NoSession이어야..?
             } else {
                 if ($sessionMode & BaseAPI::REQ_GAME_LOGIN) {
                     $session = Session::requireGameLogin();
@@ -94,7 +94,7 @@ class APIHelper
                 ], $cacheResult === null ? Json::NO_CACHE : 0);
             }
             Json::die($result, $cacheResult === null ? Json::NO_CACHE : 0);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Json::dieWithReason($e->getMessage());
         } catch (mixed $e) {
             Json::dieWithReason(strval($e));

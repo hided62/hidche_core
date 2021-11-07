@@ -58,7 +58,7 @@ CREATE TABLE `member_log` (
 	INDEX `action` (`member_no`, `action_type`, `date`),
 	INDEX `member` (`member_no`, `date`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###################
 # KV storage
@@ -72,4 +72,19 @@ CREATE TABLE if not exists `storage` (
 	UNIQUE INDEX `key` (`namespace`, `key`)
 )
 COLLATE='utf8mb4_general_ci'
-ENGINE=MyISAM
+ENGINE=Aria;
+
+CREATE TABLE `login_token` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`user_id` INT(11) NOT NULL,
+	`base_token` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`reg_ip` VARCHAR(40) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`reg_date` DATETIME NOT NULL,
+	`expire_date` DATETIME NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `by_token` (`base_token`),
+	INDEX `by_date` (`user_id`, `expire_date`)
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria
+;
