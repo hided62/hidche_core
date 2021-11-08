@@ -157,7 +157,13 @@ class WarUnitGeneral extends WarUnit
             $general->increaseRankVar('occupied', 1);
         }
 
-        $general->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
+        if($this->isAttacker()){
+            $general->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
+        }
+        else{
+            $general->multiplyVarWithLimit('atmos', 1.05, null, GameConst::$maxAtmosByWar);
+        }
+
 
         $this->addStatExp(1);
     }
