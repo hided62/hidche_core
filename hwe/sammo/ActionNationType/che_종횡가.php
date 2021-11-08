@@ -21,7 +21,7 @@ class che_종횡가 extends \sammo\BaseNation{
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
-        
+
         return $value;
     }
 
@@ -29,13 +29,13 @@ class che_종횡가 extends \sammo\BaseNation{
         if($type == 'gold'){
             return $amount * 0.9;
         }
-        
+
         return $amount;
     }
 
     public function onCalcStrategic(string $turnType, string $varType, $value){
         if($varType == 'delay'){
-            return Util::round($value / 2);
+            return Util::round($value * 3 / 4);
         }
         if($varType == 'globalDelay'){
             return Util::round($value / 2);
