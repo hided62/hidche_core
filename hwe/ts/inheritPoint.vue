@@ -272,7 +272,7 @@ type InheritanceType =
   | "lived_month"
   | "max_belong"
   | "max_domestic_critical"
-  | "snipe_combat"
+//  | "snipe_combat"
   | "combat"
   | "sabotage"
   | "unifier"
@@ -320,10 +320,10 @@ const inheritanceViewText: Record<
     title: "최대 연속 내정 성공",
     info: "성공한 내정 중 최대 연속값입니다.",
   },
-  snipe_combat: {
+/*  snipe_combat: {
     title: "병종 상성 우위 횟수",
     info: "유리한 상성을 가지고 전투했습니다.",
-  },
+  },*/
   combat: {
     title: "전투 횟수",
     info: "전투 횟수입니다.",

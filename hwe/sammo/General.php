@@ -58,7 +58,7 @@ class General implements iAction
         'lived_month' => [true, 1, '생존'],
         'max_belong' => [false, 10, '최대 임관년 수'],
         'max_domestic_critical' => [true, 1, '최대 연속 내정 성공'],
-        'snipe_combat' => [true, 10, '병종 상성 우위 횟수'],
+        //'snipe_combat' => [true, 10, '병종 상성 우위 횟수'],
         'combat' => [['rank', 'warnum'], 5, '전투 횟수'],
         'sabotage' => [['rank', 'firenum'], 20, '계략 성공 횟수'],
         'unifier' => [true, 1, '천통 기여'],
