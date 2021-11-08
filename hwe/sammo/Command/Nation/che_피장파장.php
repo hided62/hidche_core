@@ -132,7 +132,7 @@ class che_피장파장 extends Command\NationCommand{
         $nextTerm = Util::round(sqrt($genCount*2)*10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
-        $nextTerm = Util::valueFit($nextTerm, 72);
+        $nextTerm = Util::valueFit($nextTerm, Util::round(static::$delayCnt * 1.2));
         return $nextTerm;
     }
 
