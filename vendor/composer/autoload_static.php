@@ -76,7 +76,6 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Lock\\' => 23,
             'Symfony\\Component\\Console\\' => 26,
-            'ScssPhp\\ScssPhp\\' => 16,
             'Sabre\\Event\\' => 12,
         ),
         'P' => 
@@ -217,10 +216,6 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
-        ),
-        'ScssPhp\\ScssPhp\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
         ),
         'Sabre\\Event\\' => 
         array (
@@ -472,6 +467,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'Nette\\Utils\\Reflection' => __DIR__ . '/..' . '/nette/utils/src/Utils/Reflection.php',
         'Nette\\Utils\\RegexpException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\Strings' => __DIR__ . '/..' . '/nette/utils/src/Utils/Strings.php',
+        'Nette\\Utils\\Type' => __DIR__ . '/..' . '/nette/utils/src/Utils/Type.php',
         'Nette\\Utils\\UnknownImageFileException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\Validators' => __DIR__ . '/..' . '/nette/utils/src/Utils/Validators.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',

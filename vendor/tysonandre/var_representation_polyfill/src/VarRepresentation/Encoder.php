@@ -23,6 +23,8 @@ class Encoder
     protected $raw;
     /** @var int the current offset */
     protected $i = 1;
+    /** @var bool whether the flags for the most recent call are VAR_REPRESENTATION_UNESCAPED */
+    protected $unescaped = false;
 
     protected function __construct(string $raw)
     {
@@ -68,6 +70,7 @@ class Encoder
      */
     protected function encode(int $flags): string
     {
+        $this->unescaped = ($flags & \VAR_REPRESENTATION_UNESCAPED) !== 0;
         $result = $this->encodeValue();
         if ($this->i !== \count($this->tokens) + 1) {
             throw new RuntimeException("Failed to read token #$this->i of $this->raw: " . \var_export($this->tokens[$this->i] ?? null, true));
@@ -145,6 +148,10 @@ class Encoder
                         }
                         $values[] = $this->encodeArray();
                         break;
+                    case \T_OBJECT_CAST:
+                        $values[] = $token[1];
+                        $values[] = ' ';
+                        break;
                     case \T_STRING:
                         switch ($token[1]) {
                             case 'NULL';
@@ -204,11 +211,16 @@ class Encoder
             }
             $unescaped_str .= self::unescapeStringRepresentation($token[1]);
         }
-        if (!\preg_match('/[\\x00-\\x1f\\x7f-\xff]/', $unescaped_str)) {
+        if (!\preg_match('/[\\x00-\\x1f\\x7f]/', $unescaped_str)) {
             // This does not have '"\0"', so it is already a single quoted string
             return new Group([$prefix]);
         }
-        return new Group([self::encodeRawStringDoubleQuoted($unescaped_str)]);
+        if ($this->unescaped) {
+            $repr = self::encodeRawStringUnescapedSingleQuoted($unescaped_str);
+        } else {
+            $repr = self::encodeRawStringDoubleQuoted($unescaped_str);
+        }
+        return new Group([$repr]);
     }
 
     /**
@@ -218,7 +230,7 @@ class Encoder
      */
     public static function encodeRawString(string $raw): string
     {
-        if (!\preg_match('/[\\x00-\\x1f\\x7f-\xff]/', $raw)) {
+        if (!\preg_match('/[\\x00-\\x1f\\x7f]/', $raw)) {
             // This does not have '"\0"', so var_export will return a single quoted string
             return \var_export($raw, true);
         }
@@ -232,7 +244,7 @@ class Encoder
     public static function encodeRawStringDoubleQuoted(string $raw): string
     {
         return '"' . \preg_replace_callback(
-            '/[\\x00-\\x1f\\x7f-\xff\\\\"$]/',
+            '/[\\x00-\\x1f\\x7f\\\\"$]/',
             /** @param array{0:string} $match */
             static function (array $match): string {
                 $char = $match[0];
@@ -240,6 +252,16 @@ class Encoder
             },
             $raw
         ) . '"';
+    }
+
+    /**
+     * Returns the representation of $raw in an unescaped single quoted string
+     * (only escaping \\ and \', not escaping other control characters)
+     * @api
+     */
+    public static function encodeRawStringUnescapedSingleQuoted(string $raw): string
+    {
+        return "'" . \preg_replace('/[\'\\\\]/', '\\\0', $raw) . "'";
     }
 
     /**

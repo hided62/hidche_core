@@ -27,7 +27,6 @@ return array(
     'Symfony\\Component\\String\\' => array($vendorDir . '/symfony/string'),
     'Symfony\\Component\\Lock\\' => array($vendorDir . '/symfony/lock'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
-    'ScssPhp\\ScssPhp\\' => array($vendorDir . '/scssphp/scssphp/src'),
     'Sabre\\Event\\' => array($vendorDir . '/sabre/event/lib'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
