@@ -212,7 +212,7 @@ class KakaoUtil
         $session->refresh_token = $refreshToken;
         $session->refresh_token_expires = $refreshTokenValidUntil;
 
-        if (!createOTPbyUserNO($userInfo['no'])) {
+        if (!static::createOTPbyUserNO($userInfo['no'])) {
             return [false, '인증 코드를 보내는데 실패했습니다.'];
         }
 
