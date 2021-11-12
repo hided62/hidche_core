@@ -195,6 +195,13 @@ class GameConstBase
         'che_은둔', 'None'
     ];
 
+    public static $maxUniqueItemLimit = [
+        [-1, 1],
+        [3, 2],
+        [10, 3],
+        [20, 4]
+    ];
+
     public static $inheritBornSpecialPoint = 12000;
     public static $inheritBornTurntimePoint = 3000;
     public static $inheritBornCityPoint = 1000;

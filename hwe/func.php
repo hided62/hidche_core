@@ -1840,21 +1840,26 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         return false;
     }
 
-    $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
-    if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique)) {
-        LogText("유니크 준비?? {$general->getID()}", $inheritUnique);
-        $trialResult = tryInheritUniqueItem($general, $acquireType);
-        if ($trialResult) {
-            return true;
+    $itemTypeCnt = count(GameConst::$allItems);
+
+    [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+    $relYear = $year - $startYear;
+    $maxTrialCountByYear = 1;
+    foreach(GameConst::$maxUniqueItemLimit as $tmpVals){
+        [$targetYear, $targetTrialCnt] = $tmpVals;
+        if($relYear < $targetYear){
+            break;
         }
+        $maxTrialCountByYear = $targetTrialCnt;
     }
 
-    $itemTypeCnt = count(GameConst::$allItems);
-    $trialCnt = $itemTypeCnt;
+    $trialCnt = Util::valueFit($itemTypeCnt, null, $maxTrialCountByYear);
+    $maxCnt = $itemTypeCnt;
 
     foreach ($general->getItems() as $item) {
         if (!$item->isBuyable()) {
             $trialCnt -= 1;
+            $maxCnt -= 1;
         }
     }
 
@@ -1866,10 +1871,17 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("유니크를 얻을 공간이 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }
+        tryRollbackInheritUniqueItem($general);
         return false;
     }
 
-
+    $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
+    if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique)) {
+        $trialResult = tryInheritUniqueItem($general, $acquireType);
+        if ($trialResult) {
+            return true;
+        }
+    }
 
     $scenario = $gameStor->scenario;
     $genCount = $db->queryFirstField('SELECT count(*) FROM general WHERE npc<2');
@@ -1899,7 +1911,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         $prob = 1;
     }
 
-    foreach (Util::range($trialCnt) as $_idx) {
+    foreach (Util::range($maxCnt) as $_idx) {
         if (Util::randBool($prob)) {
             $result = true;
             break;
@@ -1907,10 +1919,10 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         $prob *= $moreProb;
     }
     if (!$result) {
-        LogText("{$general->getName()}, {$general->getID()} 유니크 실패 {$trialCnt}", $prob);
+        LogText("{$general->getName()}, {$general->getID()} 유니크 실패 {$maxCnt}", $prob);
         return false;
     }
-    LogText("{$general->getName()}, {$general->getID()} 유니크 성공 {$trialCnt}", $prob);
+    LogText("{$general->getName()}, {$general->getID()} 유니크 성공 {$maxCnt}", $prob);
 
     return giveRandomUniqueItem($general, $acquireType);
 }
