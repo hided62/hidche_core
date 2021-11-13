@@ -85,7 +85,7 @@ $(function ($) {
                     const brief = turnInfo.brief != '휴식'? turnInfo.brief :'자율 행동';
                     const autorunTooltip = `<span class="obj_tooltip" data-toggle="tooltip" data-placement="top"
     ><span style='color:#aaffff;'>${brief}</span
-    ><span class="tooltiptext">자율 행동 수행기간: ${autorunLimitYear}년 ${autorunLimitMonth}까지</span
+    ><span class="tooltiptext">자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지</span
 ></span>`;
                     $turn_text.html(autorunTooltip);
                     initTooltip($turn_text);
