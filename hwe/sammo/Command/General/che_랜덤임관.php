@@ -214,7 +214,7 @@ class che_랜덤임관 extends Command\GeneralCommand
                     $calcCnt *= 100;
                 }
 
-                $generalsCnt[] = [$nation, (1 / $calcCnt)**2];
+                $generalsCnt[] = [$nation, (1 / $calcCnt)**3];
             }
 
             if ($generalsCnt) {
