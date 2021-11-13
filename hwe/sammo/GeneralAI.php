@@ -116,8 +116,8 @@ class GeneralAI
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
         $nationStor->cacheValues(['npc_nation_policy', 'npc_general_policy', 'prev_income_gold', 'prev_income_rice']);
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'], $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options']??null, $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??null, $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
 
         $prevIncomeGold = $nationStor->prev_income_gold ?? 1000;
         $prevIncomeRice = $nationStor->prev_income_rice ?? 1000;
@@ -3082,7 +3082,7 @@ class GeneralAI
 
         $general = $this->general;
         $lordCities = $db->queryFirstColumn('SELECT city.city as city FROM general LEFT JOIN city ON general.city = city.city WHERE general.officer_level = 12 AND city.nation = 0');
-        $nationCities = $db->queryFirstColumn('SELECT city a FROM city WHERE nation != 0');
+        $nationCities = $db->queryFirstColumn('SELECT city FROM city WHERE nation != 0');
 
         $occupiedCities = [];
         foreach ($lordCities as $tCityId) {
@@ -3092,38 +3092,62 @@ class GeneralAI
             $occupiedCities[$tCityId] = 1;
         }
 
+        $movingTargetCityID = $general->getAuxVar('movingTargetCityID');
         $currCityID = $general->getCityID();
 
-        $targetCity = [];
+        if($movingTargetCityID === $currCityID){
+            $movingTargetCityID = null;
+        }
+        else if(key_exists($movingTargetCityID, $occupiedCities)){
+            $movingTargetCityID = null;
+        }
 
-        //NOTE: 최단 거리가 현재 도시에서 '어떻게 가야' 가장 짧은지 알 수가 없으므로, 한칸 간 다음 계산하기로
-        //출발지가 정해져 있으므로, searchAllDistanceByCityList는 비효율적.
-        foreach (array_keys(CityConst::byID($currCityID)->path) as $nearCityID) {
-            if (CityConst::byID($nearCityID)->level < 4) {
-                $targetCity[$nearCityID] = 0.5;
-            } else if (!key_exists($nearCityID, $occupiedCities)) {
-                $targetCity[$nearCityID] = 2;
-            } else {
-                $targetCity[$nearCityID] = 0;
-            }
-
-            $distanceFrom = searchDistance($nearCityID, 4, true);
-            foreach ($distanceFrom as $distance => $distCities) {
-                foreach ($distCities as $distCity) {
-                    if (key_exists($distCity, $occupiedCities)) {
-                        continue;
-                    }
-                    if (CityConst::byID($distCity)->level < 4) {
-                        continue;
-                    }
-
-                    $targetCity[$nearCityID] += 1 / (2 ** $distance);
+        if($movingTargetCityID === null){
+            //어느 도시로 갈 것인가?
+            $candidateCities = [];
+            foreach(searchDistance($currCityID, 4) as $testCityID => $dist){
+                if(key_exists($testCityID, $occupiedCities)){
+                    continue;
                 }
+                $cityLevel = CityConst::byID($testCityID)->level;
+                if ($cityLevel < 5 || 6 < $cityLevel) {
+                    continue;
+                }
+                $candidateCities[] = [$testCityID, 1 / pow(2, $dist)];
             }
+
+            if(!$candidateCities){
+                return null;
+            }
+            $movingTargetCityID = Util::choiceRandomUsingWeightPair($candidateCities);
+            $general->setAuxVar('movingTargetCityID', $movingTargetCityID);
+        }
+
+        if($movingTargetCityID == $currCityID){
+            return buildGeneralCommandClass('che_인재탐색', $general, $this->env);
+        }
+
+        $distMap = searchDistance($movingTargetCityID, 99);
+
+        $targetDistance = $distMap[$currCityID];
+        $candidateCities = [];
+
+        foreach (array_keys(CityConst::byID($currCityID)->path) as $nearCityID) {
+            $cityLevel = CityConst::byID($nearCityID)->level;
+            if(5 <= $cityLevel && $cityLevel <= 6 && !key_exists($nearCityID, $occupiedCities)){
+                //바로 옆 도시로 이동하면 건국 가능하다면? 가보자
+                $candidateCities[] = [$nearCityID, 10];
+            }
+            if($distMap[$nearCityID] + 1 == $targetDistance){
+                $candidateCities[] = [$nearCityID, 1];
+            }
+        }
+        if(!$candidateCities){
+            return null;
         }
 
         $cmd = buildGeneralCommandClass('che_이동', $general, $this->env, [
-            'destCityID' => Util::choiceRandomUsingWeight($targetCity)
+            'destCityID' => Util::choiceRandomUsingWeightPair($candidateCities)
         ]);
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -3146,6 +3170,43 @@ class GeneralAI
             return null;
         }
 
+        $currentCityLevel = CityConst::byID($general->getCityID())->level;
+        if (($currentCityLevel < 5 || 6 < $currentCityLevel) && Util::randBool(0.5)){
+            return null;
+        }
+
+        $db = DB::db();
+
+        $lordCities = $db->queryFirstColumn('SELECT city.city as city FROM general LEFT JOIN city ON general.city = city.city WHERE general.officer_level = 12 AND city.nation = 0');
+        $nationCities = $db->queryFirstColumn('SELECT city FROM city WHERE nation != 0');
+
+        $occupiedCities = [];
+        foreach ($lordCities as $tCityId) {
+            $occupiedCities[$tCityId] = 2;
+        }
+        foreach ($nationCities as $tCityId) {
+            $occupiedCities[$tCityId] = 1;
+        }
+
+        $availableNearCity = false;
+        foreach(searchDistance($general->getCityID(), 3) as $targetCityID => $dist){
+            if(key_exists($targetCityID, $occupiedCities)){
+                continue;
+            }
+            $cityLevel = CityConst::byID($targetCityID)->level;
+            if($cityLevel < 5 || 6 < $cityLevel){
+                continue;
+            }
+            if($dist == 3 && Util::randBool()){
+                continue;
+            }
+            $availableNearCity = true;
+            break;
+        }
+        if(!$availableNearCity){
+            return null;
+        }
+
         $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
         $ratio = ($this->fullLeadership + $this->fullStrength + $this->fullIntel) / 3;
 
@@ -3156,7 +3217,7 @@ class GeneralAI
 
         //XXX: 건국기한 2년
         $more = Util::valueFit(3 - $this->env['year'] + $this->env['init_year'], 1, 3);
-        if (!Util::randBool(0.005 * $more)) {
+        if (!Util::randBool(0.0075 * $more)) {
             return null;
         }
 
@@ -3175,6 +3236,8 @@ class GeneralAI
             return null;
         }
 
+        $this->general->setAuxVar('movingTargetCityID', null);
+
         return $cmd;
     }
 
@@ -3190,6 +3253,8 @@ class GeneralAI
         if (!$cmd->hasFullConditionMet()) {
             return null;
         }
+
+        $this->general->setAuxVar('movingTargetCityID', null);
 
         return $cmd;
     }
