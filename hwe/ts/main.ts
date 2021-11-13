@@ -82,9 +82,10 @@ $(function ($) {
                 const $turn_text = $turn_pad.find('.turn_text');
                 $turn_text.text(turnInfo.brief).css('font-size', '13px');
                 if(nowYearMonth <= autorunLimitYearMonth){
+                    const brief = turnInfo.brief != '휴식'? turnInfo.brief :'자율 행동';
                     const autorunTooltip = `<span class="obj_tooltip" data-toggle="tooltip" data-placement="top"
-    ><span style='color:#aaffff;'>${turnInfo.brief}</span
-    ><span class="tooltiptext">자율턴 수행기간: ${autorunLimitYear}년 ${autorunLimitMonth}까지</span
+    ><span style='color:#aaffff;'>${brief}</span
+    ><span class="tooltiptext">자율 행동 수행기간: ${autorunLimitYear}년 ${autorunLimitMonth}까지</span
 ></span>`;
                     $turn_text.html(autorunTooltip);
                     initTooltip($turn_text);
