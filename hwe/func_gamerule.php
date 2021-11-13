@@ -167,14 +167,15 @@ function checkSupply()
     }
 }
 
-function updateGeneralNumber(){
+function updateGeneralNumber()
+{
     $db = DB::db();
-    foreach($db->queryAllLists('SELECT nation, count(*) FROM general WHERE npc != 5 GROUP BY nation') as [$nationID, $gennum]){
-        if($nationID === 0){
+    foreach ($db->queryAllLists('SELECT nation, count(*) FROM general WHERE npc != 5 GROUP BY nation') as [$nationID, $gennum]) {
+        if ($nationID === 0) {
             continue;
         }
         $db->update('nation', [
-            'gennum'=>$gennum
+            'gennum' => $gennum
         ], 'nation=%i', $nationID);
     }
     refreshNationStaticInfo();
@@ -386,7 +387,7 @@ function postUpdateMonthly()
         $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
         $genNum[$nationID] = $nation['gennum'];
 
-        $powerValues = $maxPowerValues[$nationID]??[];
+        $powerValues = $maxPowerValues[$nationID] ?? [];
 
         //약간의 랜덤치 부여 (95% ~ 105%)
 
@@ -405,7 +406,7 @@ function postUpdateMonthly()
     }
 
     // 전쟁기한 세팅
-    foreach($db->query('SELECT me, you, dead, term FROM diplomacy WHERE state = 0') as $dip) {
+    foreach ($db->query('SELECT me, you, dead, term FROM diplomacy WHERE state = 0') as $dip) {
         $genCount = $genNum[$dip['me']];
         // 25% 참여율일때 두당 10턴에 4000명 소모한다고 계산
         // 4000 / 10 * 0.25 = 100
@@ -420,7 +421,7 @@ function postUpdateMonthly()
     }
 
     //개전국 로그
-    foreach($db->query('SELECT me, you FROM diplomacy WHERE state = 1 AND term <= 1 AND me < you') as $dip){
+    foreach ($db->query('SELECT me, you FROM diplomacy WHERE state = 1 AND term <= 1 AND me < you') as $dip) {
         $nation1 = getNationStaticInfo($dip['me']);
         $name1 = $nation1['name'];
         $nation2 = getNationStaticInfo($dip['you']);
@@ -432,14 +433,13 @@ function postUpdateMonthly()
     }
     //휴전국 로그
     $stopWarList = [];
-    foreach($db->queryAllLists('SELECT me,you FROM diplomacy WHERE state=0 AND term <= 1 ORDER BY me desc, you desc') as [$me, $you]){
-        if($me < $you){
+    foreach ($db->queryAllLists('SELECT me,you FROM diplomacy WHERE state=0 AND term <= 1 ORDER BY me desc, you desc') as [$me, $you]) {
+        if ($me < $you) {
             $key = "{$me}_{$you}";
-        }
-        else{
+        } else {
             $key = "{$you}_{$me}";
         }
-        if(!key_exists($key, $stopWarList)){
+        if (!key_exists($key, $stopWarList)) {
             $stopWarList[$key] = true;
             continue;
         }
@@ -455,8 +455,8 @@ function postUpdateMonthly()
 
         $globalLogger->pushGlobalHistoryLog("<R><b>【휴전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <S>휴전</>합니다.");
         $db->update('diplomacy', [
-            'state'=>2,
-            'term'=>0,
+            'state' => 2,
+            'term' => 0,
         ], '(me=%i AND you=%i) OR (you=%i AND me=%i)', $me, $you, $me, $you);
     }
 
@@ -464,17 +464,17 @@ function postUpdateMonthly()
 
     //사상자 초기화, 외교 기한-1
     $db->update('diplomacy', [
-        'dead'=>$db->sqleval('if(state!=0, 0, dead)'),
-        'term'=>$db->sqleval('greatest(0, term-1)'),
+        'dead' => $db->sqleval('if(state!=0, 0, dead)'),
+        'term' => $db->sqleval('greatest(0, term-1)'),
     ], true);
     //불가침 끝나면 통상으로
     $db->update('diplomacy', [
-        'state'=>2,
+        'state' => 2,
     ], 'state = 7 AND term = 0');
     //선포 끝나면 교전으로
     $db->update('diplomacy', [
-        'state'=>0,
-        'term'=>6,
+        'state' => 0,
+        'term' => 6,
     ], 'state = 1 AND term = 0');
 
     //초반이후 방랑군 자동 해체
@@ -567,8 +567,8 @@ function updateNationState()
 
             $updateVals = [
                 'level' => $nationlevel,
-                'gold'=>$db->sqleval('gold + %i', $nationlevel*1000),
-                'rice'=>$db->sqleval('rice + %i', $nationlevel*1000),
+                'gold' => $db->sqleval('gold + %i', $nationlevel * 1000),
+                'rice' => $db->sqleval('rice + %i', $nationlevel * 1000),
             ];
 
             switch ($nationlevel) {
@@ -627,11 +627,22 @@ function updateNationState()
                 $chiefID = null;
 
                 $uniqueLotteryWeightList = [];
+
+                [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+                $relYear = $year - $startYear;
+                $maxTrialCountByYear = 1;
+                foreach (GameConst::$maxUniqueItemLimit as $tmpVals) {
+                    [$targetYear, $targetTrialCnt] = $tmpVals;
+                    if ($relYear < $targetYear) {
+                        break;
+                    }
+                    $maxTrialCountByYear = $targetTrialCnt;
+                }
                 foreach ($nationGenList as $nationGen) {
                     if ($nationGen->getVar('officer_level') == 12) {
                         $chiefID = $nationGen->getID();
                     }
-                    $trialCnt = count(GameConst::$allItems);
+                    $trialCnt = min($maxTrialCountByYear, count(GameConst::$allItems));
 
                     foreach ($nationGen->getItems() as $item) {
                         if (!$item->isBuyable()) {
@@ -670,7 +681,7 @@ function updateNationState()
                     $winnerObj->applyDB($db);
                 }
 
-                if($chiefID){
+                if ($chiefID) {
                     $chiefObj = General::createGeneralObjFromDB($chiefID, ['belong', 'npc', 'aux'], 2);
                     $chiefObj->increaseInheritancePoint('unifier', 250 * $levelDiff);
                     $chiefObj->applyDB($db);
@@ -701,9 +712,9 @@ function updateNationState()
                     $nation['nation']
                 );
                 $npcObj->setAffinity(999)->setStat(10, 10, 10)
-                ->setSpecialSingle('척사')->setEgo('che_은둔')
-                ->setKillturn(70)->setGoldRice(0, 0)
-                ->setNPCType(5)->fillRemainSpecAsZero($admin);
+                    ->setSpecialSingle('척사')->setEgo('che_은둔')
+                    ->setKillturn(70)->setGoldRice(0, 0)
+                    ->setNPCType(5)->fillRemainSpecAsZero($admin);
                 $npcObj->build($admin);
                 $npcID = $npcObj->getGeneralID();
 
@@ -992,9 +1003,9 @@ function checkEmperior()
     $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
     $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
 
-    foreach(General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj){
-        if($genObj->getNationID() == $nationID){
-            if($genObj->getVar('officer_level') > 4){
+    foreach (General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj) {
+        if ($genObj->getNationID() == $nationID) {
+            if ($genObj->getVar('officer_level') > 4) {
                 $genObj->increaseInheritancePoint('unifier', 2000);
             };
         }
@@ -1010,7 +1021,7 @@ function checkEmperior()
 
     [$totalPop, $totalMaxPop] = $db->queryFirstList('SELECT SUM(pop), SUM(pop_max) FROM city');
     $pop = "{$totalPop} / {$totalMaxPop}";
-    $poprate = round($totalPop / $totalMaxPop * 100, 2). " %";
+    $poprate = round($totalPop / $totalMaxPop * 100, 2) . " %";
 
     $chiefs = Util::convertArrayToDict(
         $db->query(
@@ -1152,29 +1163,30 @@ function checkEmperior()
     LogHistory();
 }
 
-function resetInheritanceUser(int $userID, bool $isRebirth=false):float{
+function resetInheritanceUser(int $userID, bool $isRebirth = false): float
+{
     $rebirthDegraded = [
-        'dex'=>0.5,
+        'dex' => 0.5,
     ];
 
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
     $totalPoint = 0;
     $allPoints = $inheritStor->getAll();
-    if(!$allPoints || count($allPoints) == 0){
+    if (!$allPoints || count($allPoints) == 0) {
         //비었으므로 리셋 안함
         return 0;
     }
-    if(count($allPoints) == 1 && key_exists('previous', $allPoints)){
+    if (count($allPoints) == 1 && key_exists('previous', $allPoints)) {
         //이미 리셋되었으므로 리셋 안함
         return $allPoints['previous'][0];
     }
 
     $userLogger = new UserLogger($userID);
 
-    $previousPoint = ($allPoints['previous']??[0,0])[0];
+    $previousPoint = ($allPoints['previous'] ?? [0, 0])[0];
 
-    foreach($allPoints as $key=>[$value,]){
-        if($isRebirth && key_exists($key, $rebirthDegraded)){
+    foreach ($allPoints as $key => [$value,]) {
+        if ($isRebirth && key_exists($key, $rebirthDegraded)) {
             $value *= $rebirthDegraded[$key];
         }
         $keyText = General::INHERITANCE_KEY[$key][2];
@@ -1190,13 +1202,14 @@ function resetInheritanceUser(int $userID, bool $isRebirth=false):float{
     return $totalPoint;
 }
 
-function updateMaxDomesticCritical(General $general, $score){
-    $maxDomesticCritical = $general->getAuxVar('max_domestic_critical')??0;
+function updateMaxDomesticCritical(General $general, $score)
+{
+    $maxDomesticCritical = $general->getAuxVar('max_domestic_critical') ?? 0;
     $maxDomesticCritical += $score / 2;
     $general->setAuxVar('max_domestic_critical', $maxDomesticCritical);
 
     $oldMaxDomesticCritical = $general->getInheritancePoint('max_domestic_critical');
-    if($maxDomesticCritical > $oldMaxDomesticCritical){
+    if ($maxDomesticCritical > $oldMaxDomesticCritical) {
         $general->setInheritancePoint('max_domestic_critical', $maxDomesticCritical);
     }
 }
