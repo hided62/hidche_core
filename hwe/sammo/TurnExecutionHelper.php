@@ -238,6 +238,7 @@ class TurnExecutionHelper
             $turnObj = new static($general);
 
             $env = $gameStor->getAll(true);
+            [$startYear, $year, $month, $turnterm] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'turnterm']);
 
             $hasNationTurn = false;
             if ($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5) {
@@ -263,13 +264,22 @@ class TurnExecutionHelper
 
             $turnObj->preprocessCommand($env);
 
-            if ($general->getNPCType() >= 2 || ($autorun_user['limit_minutes'] ?? false)) {
+            if ($general->getNPCType() >= 2){
                 $ai = new GeneralAI($turnObj->getGeneral());
+            } else {
+                $limitYearMonth = $general->getAuxVar('autorun_limit')??Util::joinYearMonth($startYear-2, $month);
+                if(Util::joinYearMonth($year, $month) < $limitYearMonth){
+                    $ai = new GeneralAI($turnObj->getGeneral());
+                }
             }
+            $hasReservedTurn = false;
 
             if (!$turnObj->processBlocked()) {
 
                 if ($hasNationTurn) {
+                    if (!($nationCommandObj instanceof Command\Nation\휴식)) {
+                        $hasReservedTurn = true;
+                    }
                     if ($ai && ($general->getAuxVar('use_auto_nation_turn') ?? 1)) {
                         $nationCommandObj = $ai->chooseNationTurn($nationCommandObj);
                         $cityName = CityConst::byID($general->getCityID())->name;
@@ -283,6 +293,9 @@ class TurnExecutionHelper
                 }
 
                 $generalCommandObj = $general->getReservedTurn(0, $env);
+                if (!($generalCommandObj instanceof Command\General\휴식)) {
+                    $hasReservedTurn = true;
+                }
 
                 if ($ai) {
                     $newGeneralCommandObj = $ai->chooseGeneralTurn($generalCommandObj); // npc AI 처리
@@ -301,6 +314,13 @@ class TurnExecutionHelper
 
             $currentTurn = $general->getTurnTime();
             $general->increaseVarWithLimit('myset', 3, null, 9);
+
+            if($autorun_user['limit_minutes'] && $general->getNPCType() < 2 && $hasReservedTurn){
+                $autorun_limit = Util::joinYearMonth($year, $month);
+                $autorun_limit += intdiv($autorun_user['limit_minutes'], $turnterm);
+
+                $general->setAuxVar('autorun_limit', $autorun_limit);
+            }
 
             $turnObj->updateTurnTime();
             $turnObj->applyDB();
