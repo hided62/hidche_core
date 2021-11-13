@@ -21,9 +21,11 @@ foreach($rawTurn as [$turn_idx, $action, $arg, $brief]){
     ];
 }
 
+
 [$turnTerm, $year, $month, $lastExecute] = $gameStor->getValuesAsArray(['turnterm', 'year', 'month', 'turntime']);
 
-$turnTime = $db->queryFirstField('SELECT turntime FROM general WHERE no=%i', $generalID);
+[$turnTime, $rawGeneralAux] = $db->queryFirstList('SELECT turntime, aux FROM general WHERE no=%i', $generalID);
+$generalAux = Json::decode($rawGeneralAux??'{}');
 
 if(cutTurn($turnTime, $turnTerm) > cutTurn($lastExecute, $turnTerm)){
     //이미 이번달에 실행된 턴이다.
@@ -42,5 +44,6 @@ Json::die([
     'year'=>$year,
     'month'=>$month,
     'date'=>TimeUtil::now(true),
-    'turn'=>$commandList
+    'turn'=>$commandList,
+    'autorun_limit'=> $generalAux['autorun_limit']??null,
 ]);

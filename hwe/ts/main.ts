@@ -13,6 +13,8 @@ import './msg.ts';
 import './map.ts';
 import { exportWindow } from './util/exportWindow';
 import {stringifyUrl} from 'query-string';
+import { joinYearMonth } from './util/joinYearMonth';
+import { parseYearMonth } from './util/parseYearMonth';
 exportWindow($, '$');
 
 type TurnArg = {
@@ -33,6 +35,7 @@ type ReservedTurnResponse = {
     month: number,
     date: string,
     turn: TurnItem[],
+    autorun_limit: number|null,
 }
 
 $(function ($) {
@@ -65,10 +68,12 @@ $(function ($) {
             const turnTime = parseTime(data.turnTime);
             let nextTurnTime = new Date(turnTime);
 
-            let year = data.year;
-            let month = data.month;
+            let nowYearMonth = joinYearMonth(data.year, data.month);
+            const autorunLimitYearMonth = data.autorun_limit ?? nowYearMonth - 1;
+            const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(autorunLimitYearMonth);
 
             for (const [turnIdx, turnInfo] of Object.entries(data.turn)) {
+                const [year, month] = parseYearMonth(nowYearMonth);
                 const $tr = $(`#command_${turnIdx}`);
 
                 $tr.find('.time_pad').text(formatTime(nextTurnTime, 'HH:mm'));
@@ -76,6 +81,15 @@ $(function ($) {
                 const $turn_pad = $tr.find('.turn_pad');
                 const $turn_text = $turn_pad.find('.turn_text');
                 $turn_text.text(turnInfo.brief).css('font-size', '13px');
+                if(nowYearMonth <= autorunLimitYearMonth){
+                    const autorunTooltip = `<span class="obj_tooltip" data-toggle="tooltip" data-placement="top"
+    ><span style='color:#aaffff;'>${turnInfo.brief}</span
+    ><span class="tooltiptext">자율턴 수행기간: ${autorunLimitYear}년 ${autorunLimitMonth}까지</span
+></span>`;
+                    $turn_text.html(autorunTooltip);
+                    initTooltip($turn_text);
+                }
+
 
                 const oWidth = unwrap($turn_pad.innerWidth());
                 const iWidth = unwrap($turn_text.outerWidth());
@@ -85,11 +99,7 @@ $(function ($) {
                 }
 
                 nextTurnTime = addMinutes(nextTurnTime, data.turnTerm);
-                month += 1;
-                if (month >= 13) {
-                    year += 1;
-                    month -= 12;
-                }
+                nowYearMonth += 1;
             }
             console.log(data);
 
