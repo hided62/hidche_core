@@ -181,51 +181,44 @@ class che_랜덤임관 extends Command\GeneralCommand
 
             $generalsCnt = [];
             if ($notIn) {
+
                 $rawGeneralsCnt = $db->query(
-                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE (npc < 4 OR npc = 6) AND nation.gennum < %i AND nation.scout=0 AND nation.nation NOT IN %li GROUP BY general.nation, general.npc',
+                    "SELECT g.`nation`, n.`gennum`, n.name, SUM((ra.value + 100)/(rb.value + 100)*(CASE WHEN g.`npc` < 2 THEN 2 ELSE 1 END)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)) AS warpower, SUM(g.intel + g.strength + g.leadership / 2)/5 AS develpower
+                FROM general AS g
+                LEFT JOIN `rank_data` AS ra ON g.`no` = ra.general_id AND ra.`type` = 'killcrew'
+                LEFT JOIN `rank_data` AS rb ON g.`no` = rb.general_id AND rb.`type` = 'deathcrew'
+                LEFT JOIN `nation` AS n ON g.`nation` = n.`nation`
+                WHERE g.`npc` IN (0, 1, 2, 3, 6) AND g.nation != 0 AND n.scout=0 AND n.gennum < %i  AND n.nation NOT IN %li
+                GROUP BY g.`nation`",
                     $genLimit,
                     $notIn
                 );
             } else {
                 $rawGeneralsCnt = $db->query(
-                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE (npc < 4 OR npc = 6)  AND nation.gennum < %i AND nation.scout=0 GROUP BY general.nation, general.npc',
+                    "SELECT g.`nation`, n.`gennum`, n.name, SUM((ra.value + 100)/(rb.value + 100)*(CASE WHEN g.`npc` < 2 THEN 2 ELSE 1 END)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)) AS warpower, SUM(g.intel + g.strength + g.leadership / 2)/5 AS develpower
+                FROM general AS g
+                LEFT JOIN `rank_data` AS ra ON g.`no` = ra.general_id AND ra.`type` = 'killcrew'
+                LEFT JOIN `rank_data` AS rb ON g.`no` = rb.general_id AND rb.`type` = 'deathcrew'
+                LEFT JOIN `nation` AS n ON g.`nation` = n.`nation`
+                WHERE g.`npc` IN (0, 1, 2, 3, 6) AND g.nation != 0 AND n.scout=0 AND n.gennum < %i
+                GROUP BY g.`nation`",
                     $genLimit
                 );
             }
 
 
             foreach ($rawGeneralsCnt as $nation) {
-                $nationID = $nation['nation'];
-                if (!\key_exists($nationID, $generalsCnt)) {
-                    $generalsCnt[$nationID] = [
-                        'nation' => $nationID,
-                        'gennum' => $nation['gennum'],
-                        'name' => $nation['name'],
-                        'cnt' => 0,
-                    ];
-                    $generalsCnt[$nationID]['cnt'] = 0;
-                }
-
-                if ($nation['npc'] <= 2) {
-                    $calcCnt = $nation['cnt'];
-                } else {
-                    $calcCnt = $nation['cnt'] / 2;
-                }
+                $calcCnt = $nation['warpower'] + $nation['develpower'];
 
                 if ($general->getNPCType() < 2 && Util::starts_with($nation['name'], 'ⓤ')) {
                     $calcCnt *= 100;
                 }
 
-                $generalsCnt[$nationID]['cnt'] += $calcCnt;
+                $generalsCnt[] = [$nation, (1 / $calcCnt)**2];
             }
 
-            $randVals = [];
-            foreach ($generalsCnt as $testNation) {
-                $randVals[] = [$testNation, 1 / $testNation['cnt']];
-            }
-
-            if ($randVals) {
-                $destNation = Util::choiceRandomUsingWeightPair($randVals);
+            if ($generalsCnt) {
+                $destNation = Util::choiceRandomUsingWeightPair($generalsCnt);
             }
         }
 
