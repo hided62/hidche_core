@@ -267,7 +267,7 @@ class TurnExecutionHelper
             if ($general->getNPCType() >= 2){
                 $ai = new GeneralAI($turnObj->getGeneral());
             } else {
-                $limitYearMonth = $general->getAuxVar('autorun_limit')??Util::joinYearMonth($startYear-2, $month);
+                $limitYearMonth = $general->getAuxVar('autorun_limit')??Util::joinYearMonth($year-2, $month);
                 if(Util::joinYearMonth($year, $month) < $limitYearMonth){
                     $ai = new GeneralAI($turnObj->getGeneral());
                 }
@@ -315,7 +315,7 @@ class TurnExecutionHelper
             $currentTurn = $general->getTurnTime();
             $general->increaseVarWithLimit('myset', 3, null, 9);
 
-            if($autorun_user['limit_minutes'] && $general->getNPCType() < 2 && $hasReservedTurn){
+            if(($autorun_user['limit_minutes']??false) && $general->getNPCType() < 2 && $hasReservedTurn){
                 $autorun_limit = Util::joinYearMonth($year, $month);
                 $autorun_limit += intdiv($autorun_user['limit_minutes'], $turnterm);
 
