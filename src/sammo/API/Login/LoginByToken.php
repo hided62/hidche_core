@@ -139,7 +139,7 @@ class LoginByToken extends LoginByID
             'login_token',
             'id = %i', $token_id
         );
-        $nextToken = $this->addToken($token_id);
+        $nextToken = $this->addToken($userInfo['no']);
         return [
             'result' => true,
             'silent' => true,
