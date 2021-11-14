@@ -77,12 +77,6 @@ function pushProcessLog($log) {
     pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_processlog.txt", $log);
 }
 
-
-function pushStepLog($log) {
-    $date = date('Y_m_d');
-    pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_steplog.txt", $log);
-}
-
 function pushLockLog($log) {
     $date = date('Y_m_d');
     pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_{$date}_locklog.txt", $log);
@@ -105,15 +99,15 @@ function formatHistoryToHTML(array $history, ?string $type=null):string{
     $result = [];
     if($type){
         foreach($history as $seq=>$item){
-            $result[] = "<div class='log_{$type}' id='log_{$type}_{$seq}' data-seq='{$seq}'>".ConvertLog($item).'</div>';        
+            $result[] = "<div class='log_{$type}' id='log_{$type}_{$seq}' data-seq='{$seq}'>".ConvertLog($item).'</div>';
         }
     }
     else{
         foreach($history as $seq=>$item){
-            $result[] = '<div>'.ConvertLog($item).'</div>';        
+            $result[] = '<div>'.ConvertLog($item).'</div>';
         }
     }
-    
+
     return join('', $result);
 }
 
@@ -242,7 +236,7 @@ function pushGeneralHistoryLog(int $generalID, ?array $history, $year=null, $mon
         return;
     }
     $db = DB::db();
-    
+
     if($year === null || $month === null){
         $gameStor = KVStorage::getStorage($db, 'game_env');
         list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
@@ -278,7 +272,7 @@ function pushNationHistoryLog(int $nationID, ?array $history, ?int $year=null, ?
         return;
     }
     $db = DB::db();
-    
+
     if($year === null || $month === null){
         $gameStor = KVStorage::getStorage($db, 'game_env');
         list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
@@ -304,7 +298,7 @@ function pushGlobalHistoryLog(?array $history, $year=null, $month=null) {
         return;
     }
     $db = DB::db();
-    
+
     if($year === null || $month === null){
         $gameStor = KVStorage::getStorage($db, 'game_env');
         list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
@@ -325,8 +319,8 @@ function getGlobalHistoryLogWithDate(int $year, int $month):array {
     $db = DB::db();
 
     $texts = $db->queryFirstColumn(
-        'SELECT `text` from world_history where nation_id = 0 AND year = %i and month = %i order by id desc', 
-        $year, 
+        'SELECT `text` from world_history where nation_id = 0 AND year = %i and month = %i order by id desc',
+        $year,
         $month
     );
 
@@ -342,7 +336,7 @@ function pushGlobalActionLog(?array $history, ?int $year=null, ?int $month=null)
         return;
     }
     $db = DB::db();
-    
+
     if($year === null || $month === null){
         $gameStor = KVStorage::getStorage($db, 'game_env');
         list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
@@ -366,8 +360,8 @@ function getGlobalActionLogWithDate(int $year, int $month):array {
     $db = DB::db();
 
     $texts = $db->queryFirstColumn(
-        'SELECT `text` from general_record where general_id = 0 AND log_type = "history" AND year = %i and month = %i order by id desc', 
-        $year, 
+        'SELECT `text` from general_record where general_id = 0 AND log_type = "history" AND year = %i and month = %i order by id desc',
+        $year,
         $month
     );
 
@@ -378,8 +372,6 @@ function getGlobalActionLogWithDate(int $year, int $month):array {
 }
 
 function LogHistory($isFirst=0) {
-    if(STEP_LOG) pushStepLog(TimeUtil::now().', LogHistory Start');
-
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $obj = $gameStor->getValues(['startyear', 'year', 'month']);
@@ -401,16 +393,16 @@ function LogHistory($isFirst=0) {
         if($map['month'] == 0){
             $map['month'] = 12;
             $map['year'] -= 1;
-        }       
+        }
     }
 
     $year = $map['year'];
     $month = $map['month'];
 
-    
+
     $globalHistory = getGlobalHistoryLogWithDate($year, $month);
     $globalAction = getGlobalActionLogWithDate($year, $month);
-    
+
     $nations = getAllNationStaticInfo();
     $nations[0] = getNationStaticInfo(0);
 
@@ -426,8 +418,6 @@ function LogHistory($isFirst=0) {
         return -($lhs['power']<=>$rhs['power']);
     });
 
-    if(STEP_LOG) pushStepLog(TimeUtil::now().', contents collected');
-    
     $db->insert('ng_history', [
         'server_id' => UniqueConst::$serverID,
         'year' => $year,
@@ -438,6 +428,5 @@ function LogHistory($isFirst=0) {
         'nations' => Json::encode($nations),
     ]);
 
-    if(STEP_LOG) pushStepLog(TimeUtil::now().', LogHistory Finish');
     return true;
 }

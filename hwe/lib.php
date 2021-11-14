@@ -20,10 +20,6 @@ $loader->addClassMap((function () {
 //디버그용 매크로
 ini_set("session.cache_expire", 10080);      // minutes
 
-// 각종 변수
-define('STEP_LOG', true);
-define('PROCESS_LOG', true);
-
 ob_start();
 
 // 에러 메세지 출력
@@ -69,6 +65,6 @@ function prepareDir(string $dirPath, bool $forceCreate=true):bool{
         }
         return mkdir($dirPath);
     }
-    
+
     return mkdir($dirPath, 0777, true);
 }
