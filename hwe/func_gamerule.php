@@ -371,7 +371,11 @@ function postUpdateMonthly()
                 sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop_max+agri_max+comm_max+secu_max+wall_max+def_max)/100
             ) from city where nation=A.nation and supply=1
         ))
-        +(select sum(leadership+strength+intel) from general where nation=A.nation)
+        +(select SUM((ra.value + 1000)/(rb.value + 1000)*(CASE WHEN g.`npc` < 2 THEN 2 ELSE 1 END)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)*2 + (SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/2)
+                FROM general AS g
+                LEFT JOIN `rank_data` AS ra ON g.`no` = ra.general_id AND ra.`type` = \'killcrew_person\'
+                LEFT JOIN `rank_data` AS rb ON g.`no` = rb.general_id AND rb.`type` = \'deathcrew_person\'
+                WHERE g.nation = A.nation)
         +(select round(sum(dex1+dex2+dex3+dex4+dex5)/1000) from general where nation=A.nation)
         +(select round(sum(experience+dedication)/100) from general where nation=A.nation)
         +(select round(avg(connect)) from general where nation=A.nation)
