@@ -114,7 +114,7 @@ class ResetHelper{
                     break;
                 }
             }
-            
+
         }
 
         if($mysqli_obj->multi_query(file_get_contents($servRoot.'/sql/schema.sql'))){
@@ -128,7 +128,7 @@ class ResetHelper{
             }
         }
 
-        opcache_reset();
+        //opcache_reset();
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->resetValues();
@@ -180,7 +180,7 @@ class ResetHelper{
 
         $serverID = $clearResult['serverID'];
         $seasonIdx = $clearResult['seasonIdx'];
-        
+
         $scenarioObj = new Scenario($scenario, true);
         $scenarioObj->buildConf();
         $scenarioObj->initFull();
@@ -316,7 +316,7 @@ class ResetHelper{
             }
             $db->insert('general_turn', $turnRows);
 
-          
+
             $rank_data = [];
             foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
                 $rank_data[] = [
@@ -345,7 +345,7 @@ class ResetHelper{
             'scenario'=>$scenario,
             'scenario_name'=>$scenarioObj->getTitle(),
             'env'=>Json::encode($env)
-        ]);  
+        ]);
 
         $scenarioObj->build($env);
 

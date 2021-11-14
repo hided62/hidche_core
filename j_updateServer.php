@@ -267,7 +267,7 @@ if ($server == $baseServerName) {
 
 
     $storage->$server = [$target, $version];
-    opcache_reset();
+    //opcache_reset();
 
     Json::die([
         'server' => $server,
@@ -321,7 +321,7 @@ genJS($server);
 
 $storage->$server = [$target, $version];
 //ServConfig::getServerList()[$server]->closeServer();
-opcache_reset();
+//opcache_reset();
 
 Json::die([
     'server' => $server,
