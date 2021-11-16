@@ -63,8 +63,8 @@ if ($currentNationPolicy['reqHumanWarUrgentRice'] ?? 0) {
 if ($currentNationPolicy['reqHumanWarUrgentGold'] ?? 0) {
     $autoPolicyVariable['reqHumanWarUrgentGold'] = $currentNationPolicy['reqHumanWarUrgentGold'];
 }
-$autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'], ['values' => $autoPolicyVariable], null, $nation, $gameStor->getAll(true));
-$zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'], null, null, $nation, $gameStor->getAll(true));
+$autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options']??[], ['values' => $autoPolicyVariable], null, $nation, $gameStor->getAll(true));
+$zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options']??[], null, null, $nation, $gameStor->getAll(true));
 
 $lastSetters = [
     'policy' => [

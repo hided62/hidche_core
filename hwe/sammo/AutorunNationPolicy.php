@@ -137,6 +137,7 @@ class AutorunNationPolicy {
     public $reqNPCDevelRice = 500;
 
     public $minimumResourceActionAmount = 1000;
+    public $maximumResourceActionAmount = 10000;
 
     public $minNPCWarLeadership = 40;
     public $minWarCrew = 1500;
@@ -164,6 +165,7 @@ class AutorunNationPolicy {
         'reqNPCDevelRice'=>500,
 
         'minimumResourceActionAmount'=>1000,
+        'maximumResourceActionAmount'=>10000,
 
         'minNPCWarLeadership'=>40,
         'minWarCrew'=>1500,

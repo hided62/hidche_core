@@ -125,6 +125,7 @@ export type NationPolicy = {
     reqNPCDevelGold: number,
     reqNPCDevelRice: number,
     minimumResourceActionAmount: number,
+    maximumResourceActionAmount: number,
     minNPCWarLeadership: number,
     minWarCrew: number,
     minNPCRecruitCityPopulation: number,

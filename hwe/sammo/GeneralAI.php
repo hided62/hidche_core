@@ -121,14 +121,14 @@ class GeneralAI
 
         $prevIncomeGold = $nationStor->prev_income_gold ?? 1000;
         $prevIncomeRice = $nationStor->prev_income_rice ?? 1000;
-        $this->maxResourceActionAmount = Util::round(max(
+        $this->maxResourceActionAmount = Util::valueFit(Util::round(max(
             $this->nationPolicy->minimumResourceActionAmount,
             $prevIncomeGold / 10,
             $prevIncomeRice / 10,
             $this->nation['gold'] / 5,
             $this->nation['rice'] / 5,
             ($this->env['year'] - $this->env['startyear'] - 3) * 1000
-        ), -2);
+        ), -2), null, $this->nationPolicy->maximumResourceActionAmount);
         if ($this->maxResourceActionAmount > GameConst::$maxResourceActionAmount) {
             $this->maxResourceActionAmount = GameConst::$maxResourceActionAmount;
         }

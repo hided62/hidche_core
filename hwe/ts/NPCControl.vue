@@ -155,6 +155,14 @@
           >연산결과가 이 단위보다 적다면 수행하지 않습니다.</NumberInputWithInfo
         >
       </div>
+        <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.maximumResourceActionAmount"
+          :step="100"
+          title="포상/몰수/헌납/삼/팜 최대 단위"
+          >연산결과가 이 단위보다 크다면, 이 값에 맞춥니다.</NumberInputWithInfo
+        >
+      </div>
       <div class="col">
         <NumberInputWithInfo
           v-model="nationPolicy.minWarCrew"
