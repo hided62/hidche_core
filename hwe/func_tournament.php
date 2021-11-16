@@ -8,8 +8,7 @@ function processTournament() {
 
     $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time']);
     $now = new \DateTime();
-    $admin['now'] = $now->format('Y-m-d H:i:s');
-    $admin['offset'] = $now->getTimestamp() - (new \DateTime($admin['tnmt_time']))->getTimestamp();
+    $offset = $now->getTimestamp() - (new \DateTime($admin['tnmt_time']))->getTimestamp();
 
     //수동일땐 무시
     if($admin['tnmt_auto'] == 0) { return; }
@@ -18,99 +17,102 @@ function processTournament() {
     $tnmt  = $admin['tournament'];
     $phase = $admin['phase'];
 
+    if($offset < 0){
+        return;
+    }
+
     //현시간이 스탬프 지나친경우
-    if($admin['offset'] >= 0)  {
-        switch($admin['tnmt_auto']) {
-        case 1: $unit = 720; break;
-        case 2: $unit = 420; break;
-        case 3: $unit = 180; break;
-        case 4: $unit =  60; break;
-        case 5: $unit =  30; break;
-        case 6: $unit =  15; break;
-        case 7: $unit =   5; break;
-        default: throw new MustNotBeReachedException();
+    switch($admin['tnmt_auto']) {
+    case 1: $unit = 720; break;
+    case 2: $unit = 420; break;
+    case 3: $unit = 180; break;
+    case 4: $unit =  60; break;
+    case 5: $unit =  30; break;
+    case 6: $unit =  15; break;
+    case 7: $unit =   5; break;
+    default: throw new MustNotBeReachedException();
+    }
+
+    //업데이트 횟수
+    $iter = intdiv($offset, $unit) + 1;
+
+    for($i=0; $i < $iter; $i++) {
+        switch($tnmt) {
+        case 1: //신청 마감
+            fillLowGenAll();
+            $tnmt = 2;  $phase = 0;
+            break;
+        case 2: //예선중
+            qualify($type, $tnmt, $phase);        $phase++;
+            if($phase >= 56) { $tnmt = 3; $phase = 0; }
+            break;
+        case 3: //추첨중
+            selectionAll($type, $tnmt, $phase);   $phase+=8;
+            if($phase >= 32) { $tnmt = 4; $phase = 0; }
+            break;
+        case 4: //본선중
+            finallySingle($type, $tnmt, $phase);        $phase++;
+            if($phase >= 6) { $tnmt = 5; $phase = 0; }
+            break;
+        case 5: //배정중
+            final16set();
+            $tnmt = 6; $phase = 0;
+            startBetting();
+            break;
+        case 6: //베팅중
+            $tnmt = 7; $phase = 0;
+            break;
+        case 7: //16강중
+            finalFight($type, $tnmt, $phase, 16); $phase++;
+            if($phase >= 8) { $tnmt = 8; $phase = 0; }
+            break;
+        case 8: //8강중
+            finalFight($type, $tnmt, $phase, 8);  $phase++;
+            if($phase >= 4) { $tnmt = 9; $phase = 0; }
+            break;
+        case 9: //4강중
+            finalFight($type, $tnmt, $phase, 4);  $phase++;
+            if($phase >= 2) { $tnmt = 10; $phase = 0; }
+            break;
+        case 10: //결승중
+            finalFight($type, $tnmt, $phase, 2);
+            $tnmt = 0; $phase = 0;
+            setGift($type, $tnmt, $phase);
+            $i = $iter;
+            break;
         }
 
-        //업데이트 횟수
-        $iter = intdiv($admin['offset'], $unit) + 1;
+        //베팅은 무조건 60페이즈후 진행(최대 1시간)
+        if($tnmt == 6) {
+            $betTerm = $unit * 60;
+            if($betTerm > 3600) { $betTerm = 3600; }
+            //처리 초 더한 날짜
+            $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
+            $gameStor->tournament = $tnmt;
+            $gameStor->phase = $phase;
+            $gameStor->tnmt_time = $dt;
+            return;
+        }
 
-        for($i=0; $i < $iter; $i++) {
-            switch($tnmt) {
-            case 1: //신청 마감
-                fillLowGenAll();
-                $tnmt = 2;  $phase = 0;
-                break;
-            case 2: //예선중
-                qualify($type, $tnmt, $phase);        $phase++;
-                if($phase >= 56) { $tnmt = 3; $phase = 0; }
-                break;
-            case 3: //추첨중
-                selectionAll($type, $tnmt, $phase);   $phase+=8;
-                if($phase >= 32) { $tnmt = 4; $phase = 0; }
-                break;
-            case 4: //본선중
-                finallySingle($type, $tnmt, $phase);        $phase++;
-                if($phase >= 6) { $tnmt = 5; $phase = 0; }
-                break;
-            case 5: //배정중
-                final16set();
-                $tnmt = 6; $phase = 0;
-                break;
-            case 6: //베팅중
-                $tnmt = 7; $phase = 0;
-                break;
-            case 7: //16강중
-                finalFight($type, $tnmt, $phase, 16); $phase++;
-                if($phase >= 8) { $tnmt = 8; $phase = 0; }
-                break;
-            case 8: //8강중
-                finalFight($type, $tnmt, $phase, 8);  $phase++;
-                if($phase >= 4) { $tnmt = 9; $phase = 0; }
-                break;
-            case 9: //4강중
-                finalFight($type, $tnmt, $phase, 4);  $phase++;
-                if($phase >= 2) { $tnmt = 10; $phase = 0; }
-                break;
-            case 10: //결승중
-                finalFight($type, $tnmt, $phase, 2);
-                $tnmt = 0; $phase = 0;
-                setGift($type, $tnmt, $phase);
-                $i = $iter;
-                break;
-            }
-
-            //베팅은 무조건 60페이즈후 진행(최대 1시간)
-            if($tnmt == 6) {
-                $betTerm = $unit * 60;
-                if($betTerm > 3600) { $betTerm = 3600; }
-                //처리 초 더한 날짜
-                $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
+        if($admin['tnmt_auto'] == 1) {
+            //처리 초 더한 날짜
+            $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i);
+            $hr = substr($dt, 11, 2);
+            //지정시간대 넘어가면 중단 20~24시
+            if($hr < 20) {
+                $dt = substr($dt, 0, 11)."20:00:00";
                 $gameStor->tournament = $tnmt;
                 $gameStor->phase = $phase;
                 $gameStor->tnmt_time = $dt;
                 return;
             }
-
-            if($admin['tnmt_auto'] == 1) {
-                //처리 초 더한 날짜
-                $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i);
-                $hr = substr($dt, 11, 2);
-                //지정시간대 넘어가면 중단 20~24시
-                if($hr < 20) {
-                    $dt = substr($dt, 0, 11)."20:00:00";
-                    $gameStor->tournament = $tnmt;
-                    $gameStor->phase = $phase;
-                    $gameStor->tnmt_time = $dt;
-                    return;
-                }
-            }
         }
-
-        $second = $unit * $iter;
-        $gameStor->tournament = $tnmt;
-        $gameStor->phase = $phase;
-        $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
     }
+
+    $second = $unit * $iter;
+    $gameStor->tournament = $tnmt;
+    $gameStor->phase = $phase;
+    $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
 }
 
 function getTournamentTerm() {
@@ -296,9 +298,49 @@ function startTournament($auto, $type) {
         ['설전','책사'],
     ][$type];
 
-    $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월:{$openerText}<C>{$typeText}</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>{$genTypeText}</span>들을 모집하고 있습니다!";
+    $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월:<B><b>【대회】</b></>{$openerText}<C>{$typeText}</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>{$genTypeText}</span>들을 모집하고 있습니다!";
 
     pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
+}
+
+function startBetting(){
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+    pushGlobalHistoryLog([
+        "<S>◆</>{$year}년 {$month}월:<B><b>【대회】</b></>우승자를 예상하는 <C>내기</>가 진행중입니다! 호사가의 참여를 기다립니다!"
+    ], $year, $month);
+
+    $betGold = 10;
+
+    $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE npc >= 2 AND gold >= (500 + %i)', $betGold);
+    $npcBet = [];
+    $betSum = [
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+
+    foreach($npcList as $npcID){
+        $target = Util::randRangeInt(0, 15);
+        $betSum[$target] += $betGold;
+        $npcBet[] = [$npcID, $target];
+    }
+
+    $db->update('general', [
+        'gold'=>$db->sqleval('gold - %i', $betGold),
+    ], 'no IN %li', $npcList);
+    foreach($npcBet as [$npcID, $betTarget]){
+        $targetKey = "bet{$betTarget}";
+        $db->update('betting', [
+            "bet{$betTarget}"=>$db->sqleval('%b + %i', $targetKey, $betGold),
+        ], 'general_id = %i', $npcID);
+    }
+    foreach($betSum as $betTarget=>$betSumGold){
+        $targetKey = "bet{$betTarget}";
+        $db->update('betting', [
+            "bet{$betTarget}"=>$db->sqleval('%b + %i', $targetKey, $betSumGold),
+        ], 'general_id = 0');
+    }
 }
 
 function fillLowGenAll() {
@@ -785,8 +827,8 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $josaYiWinner = JosaUtil::pick($winner['name'], '이');
     $josaYiRunnerUp = JosaUtil::pick($runnerUp['name'], '이');
 
-    $winnerLogger->pushGlobalHistoryLog("<C>{$tp}</> 대회에서 <Y>{$winner['name']}</>{$josaYiWinner} <C>우승</>, <Y>{$runnerUp['name']}</>{$josaYiRunnerUp} <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!", ActionLogger::EVENT_YEAR_MONTH);
-    $winnerLogger->pushGlobalHistoryLog("<C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$winnerRewardText}</>, <S>준우승자</>에겐 <C>{$runnerUpRewardText}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!", ActionLogger::EVENT_YEAR_MONTH);
+    $winnerLogger->pushGlobalHistoryLog("<B><b>【대회】</b></><C>{$tp}</> 대회에서 <Y>{$winner['name']}</>{$josaYiWinner} <C>우승</>, <Y>{$runnerUp['name']}</>{$josaYiRunnerUp} <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!", ActionLogger::EVENT_YEAR_MONTH);
+    $winnerLogger->pushGlobalHistoryLog("<B><b>【대회】</b></><C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$winnerRewardText}</>, <S>준우승자</>에겐 <C>{$runnerUpRewardText}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!", ActionLogger::EVENT_YEAR_MONTH);
 
     $generalObjList = General::createGeneralObjListFromDB(array_keys($resultHelper));
 
