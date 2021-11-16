@@ -51,9 +51,9 @@ class che_증축 extends Command\NationCommand{
             ];
             return;
         }
-        
+
         $this->setDestCity($this->nation['capital']);
-        
+
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->fullConditionConstraints=[
@@ -76,10 +76,10 @@ class che_증축 extends Command\NationCommand{
 
         return "{$name}/{$reqTurn}턴(금 {$reqGold}, 쌀 {$reqRice})";
     }
-    
+
     public function getCost():array{
         $amount = $this->env['develcost'] * GameConst::$expandCityCostCoef + GameConst::$expandCityDefaultCost;
-        
+
         return [$amount, $amount];
     }
 
@@ -155,13 +155,14 @@ class che_증축 extends Command\NationCommand{
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
-        
+
 
         $logger = $general->getLogger();
-        
+
 
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
         $general->addDedication(5 * ($this->getPreReqTurn() + 1));
+        $general->increaseInheritancePoint('active_action', 1);
 
         $josaUl = JosaUtil::pick($destCityName, '을');
         $josaYi = JosaUtil::pick($generalName, '이');
@@ -183,7 +184,7 @@ class che_증축 extends Command\NationCommand{
             'gold' => $db->sqleval('gold - %i', $reqGold),
             'rice' => $db->sqleval('rice - %i', $reqRice),
         ], 'nation=%i', $nationID);
-        
+
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 증축했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>증축</>");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>");

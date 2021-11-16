@@ -211,6 +211,7 @@ class che_첩보 extends Command\GeneralCommand
         $ded = Util::randRangeInt(1, 70);
 
         [$reqGold, $reqRice] = $this->getCost();
+        $general->increaseInheritancePoint('active_action', 0.5);//NOTE: 첩보만 예외!
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->addExperience($exp);

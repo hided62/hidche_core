@@ -160,7 +160,7 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $exp = 100 * (sqrt(1 / $foundProp) + 1);
         $ded = 150 * (sqrt(1 / $foundProp) + 1);
-        
+
         $scoutType = "발견";
 
         $age = Util::randRangeInt(20, 25);
@@ -172,7 +172,7 @@ class che_인재탐색 extends Command\GeneralCommand
             avg(dex1+dex2+dex3+dex4) as dex_t, avg(age) as age, avg(dex5) as dex5
             from general where npc < 4'
         );
-        
+
         $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];
 
         $pickedNPC = pickGeneralFromPool($db, 0, 1)[0];
@@ -210,6 +210,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $exp = 200;
         $ded = 300;
 
+        $general->increaseInheritancePoint('active_action', Util::valueFit(sqrt(1 / $foundProp), 1));
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->addExperience($exp);

@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -73,7 +73,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::AllowJoinAction()
         ];
-        
+
     }
 
     public function getCommandDetailTitle():string{
@@ -105,7 +105,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -155,7 +155,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
         $general->setVar('officer_level', 1);
         $general->setVar('officer_city', 0);
         $general->setVar('belong', 1);
-        
+
         if($this->destGeneralObj !== null){
             $general->setVar('city', $this->destGeneralObj->getCityID());
         }
@@ -176,6 +176,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
             $general->setAuxVar('joinedNations', $joinedNations);
         }
 
+        $general->increaseInheritancePoint('active_action', 1);
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
@@ -229,12 +230,12 @@ class che_장수대상임관 extends Command\GeneralCommand{
             }
         }
         unset($nation);
-        ob_start(); 
+        ob_start();
 ?>
 장수를 따라 임관합니다.<br>
 이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
 바로 군주의 위치로 이동합니다.<br>
-임관할 국가를 목록에서 선택하세요.<br>   
+임관할 국가를 목록에서 선택하세요.<br>
 <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
 <?php foreach($generalList as $targetGeneral): ?>
     <?php if(key_exists($targetGeneral['nation'], $hiddenItems)){ continue; } ?>

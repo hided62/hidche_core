@@ -100,7 +100,7 @@ class che_등용수락 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -135,7 +135,7 @@ class che_등용수락 extends Command\GeneralCommand{
         }
 
         $isTroopLeader = ($generalID == $general->getVar('troop'));
-        
+
         $destGeneral->addExperience(100);
         $destGeneral->addDedication(100);
 
@@ -188,13 +188,13 @@ class che_등용수락 extends Command\GeneralCommand{
         $destLogger->pushGeneralHistoryLog("<Y>{$generalName}</> 등용에 성공");
 
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>{$josaRo} <S>망명</>하였습니다.");
-        
+
         if($nationID != 0){
             $db->update('nation', $setOriginalNationValues, 'nation=%i', $nationID);
         }
         $db->update('nation', $setScoutNationValues, 'nation=%i', $destNationID);
 
-
+        $general->increaseInheritancePoint('active_action', 1);
         $general->setVar('permission', 'normal');
         $general->setVar('belong', 1);
         $general->setVar('officer_level', 1);

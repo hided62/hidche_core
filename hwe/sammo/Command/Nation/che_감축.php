@@ -46,7 +46,7 @@ class che_감축 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['gold', 'rice', 'capset', 'capital']);
-        
+
         if(!$this->nation['capital']){
             $this->fullConditionConstraints=[
                 ConstraintHelper::AlwaysFail('방랑상태에서는 불가능합니다.')
@@ -55,7 +55,7 @@ class che_감축 extends Command\NationCommand{
         }
 
         $this->setDestCity($this->nation['capital']);
-        
+
         [$reqGold, $reqRice] = $this->getCost();
 
         $origCityLevel = CityConst::byID($this->nation['capital'])->level;
@@ -78,10 +78,10 @@ class che_감축 extends Command\NationCommand{
 
         return "{$name}/{$reqTurn}턴(금 {$reqGold}, 쌀 {$reqRice} 회수)";
     }
-    
+
     public function getCost():array{
         $amount = $this->env['develcost'] * GameConst::$expandCityCostCoef + GameConst::$expandCityDefaultCost / 2;
-        
+
         return [$amount, $amount];
     }
 
@@ -157,10 +157,10 @@ class che_감축 extends Command\NationCommand{
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
-        
+
 
         $logger = $general->getLogger();
-        
+
 
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
         $general->addDedication(5 * ($this->getPreReqTurn() + 1));
@@ -192,13 +192,14 @@ class che_감축 extends Command\NationCommand{
             'gold' => $db->sqleval('gold + %i', $reqGold),
             'rice' => $db->sqleval('rice + %i', $reqRice),
         ], 'nation=%i', $nationID);
-        
+
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 감축했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>감축</>");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
         $logger->pushGlobalHistoryLog("<M><b>【감축】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
 
+        $general->increaseInheritancePoint('active_action', 1);
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
 

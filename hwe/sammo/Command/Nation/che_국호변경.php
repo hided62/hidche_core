@@ -152,6 +152,7 @@ class che_국호변경 extends Command\NationCommand
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경합니다.");
         $logger->pushGlobalHistoryLog("<S><b>【국호변경】</b></><D><b>{$nationName}</b></>{$josaYiNation} 국호를 <D><b>{$newNationName}</b></>{$josaRo} 변경합니다.");
 
+        $general->increaseInheritancePoint('active_action', 1);
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
         return true;

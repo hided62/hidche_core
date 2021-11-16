@@ -188,6 +188,7 @@ class che_건국 extends Command\GeneralCommand
 
         refreshNationStaticInfo();
 
+        $general->increaseInheritancePoint('active_action', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general, '건국');

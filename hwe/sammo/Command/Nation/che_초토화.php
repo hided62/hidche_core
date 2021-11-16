@@ -184,6 +184,7 @@ class che_초토화 extends Command\NationCommand{
         \sammo\refreshNationStaticInfo();
         \sammo\SetNationFront($nationID);
 
+        $general->increaseInheritancePoint('active_action', 1);
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaUl} 초토화했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaUl} <M>초토화</> 명령");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>초토화</> 명령");

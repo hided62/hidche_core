@@ -101,6 +101,7 @@ class che_하야 extends Command\GeneralCommand{
         $general->setVar('officer_city', 0);
         $general->setVar('belong', 0);
         $general->setVar('makelimit', 12);
+        $general->increaseInheritancePoint('active_action', 1);
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

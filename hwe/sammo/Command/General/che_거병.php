@@ -162,6 +162,7 @@ class che_거병 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 100;
 
+        $general->increaseInheritancePoint('active_action', 1);
         $general->addExperience($exp);
         $general->addDedication($ded);
         $general->setVar('belong', 1);

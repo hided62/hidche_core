@@ -121,7 +121,7 @@ class che_방랑 extends Command\GeneralCommand{
         ], 'me=%i OR you=%i', $nationID, $nationID);
 
         refreshNationStaticInfo();
-
+        $general->increaseInheritancePoint('active_action', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);

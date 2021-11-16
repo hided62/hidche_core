@@ -223,9 +223,13 @@ class che_출병 extends Command\GeneralCommand
         $this->destCity['term'] = 3;
 
         $general->addDex($general->getCrewTypeObj(), $general->getVar('crew') / 100);
-
+        if($general->getVar('crew') > 500 && $general->getVar('train') * $general->getVar('atmos') > 70 * 70){
+            //500명 이상, 모훈출, 모사출
+            $general->increaseInheritancePoint('active_action', 1);
+        }
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+
         $general->applyDB($db);
 
         processWar($general, $this->nation, $this->destCity);

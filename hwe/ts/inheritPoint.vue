@@ -272,6 +272,7 @@ type InheritanceType =
   | "lived_month"
   | "max_belong"
   | "max_domestic_critical"
+  | "active_action"
 //  | "snipe_combat"
   | "combat"
   | "sabotage"
@@ -319,6 +320,10 @@ const inheritanceViewText: Record<
   max_domestic_critical: {
     title: "최대 연속 내정 성공",
     info: "성공한 내정 중 최대 연속값입니다.",
+  },
+  active_action: {
+    title: "능동 행동 수",
+    info: "장수 동향에 본인의 이름이 직접 나타난 수입니다.<br>일부 사령턴은 제외됩니다."
   },
 /*  snipe_combat: {
     title: "병종 상성 우위 횟수",
