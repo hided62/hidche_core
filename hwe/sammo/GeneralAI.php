@@ -2091,7 +2091,7 @@ class GeneralAI
 
         $cmdList = [];
 
-        if ($nation['rice'] < GameConst::$baserice) {
+        if (($nation['rice'] < GameConst::$baserice) && Util::randBool(0.3)) {
             return null;
         }
 
@@ -2226,7 +2226,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if ($nation['rice'] < GameConst::$baserice) {
+        if (($nation['rice'] < GameConst::$baserice) && Util::randBool(0.3)) {
             return null;
         }
 
@@ -2665,7 +2665,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if ($nation['rice'] < GameConst::$baserice) {
+        if (($nation['rice'] < GameConst::$baserice) && Util::randBool(0.7)) {
             return null;
         }
 
@@ -2938,10 +2938,6 @@ class GeneralAI
             return null;
         }
 
-        if ($this->nation['rice'] < GameConst::$baserice) {
-            return null;
-        }
-
         $this->categorizeNationCities();
         $this->categorizeNationGeneral();
 
@@ -2970,9 +2966,6 @@ class GeneralAI
 
     protected function do내정워프(): ?GeneralCommand
     {
-        if ($this->nation['rice'] < GameConst::$baserice) {
-            return null;
-        }
         if (($this->genType & self::t통솔장) && in_array($this->dipState, [self::d징병, self::d직전, self::d전쟁])) {
             return null;
         }
