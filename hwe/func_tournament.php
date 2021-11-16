@@ -306,12 +306,12 @@ function startTournament($auto, $type) {
 function startBetting(){
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+    [$year, $month, $startyear] = $gameStor->getValuesAsArray(['year', 'month', 'startyear']);
     pushGlobalHistoryLog([
         "<S>◆</>{$year}년 {$month}월:<B><b>【대회】</b></>우승자를 예상하는 <C>내기</>가 진행중입니다! 호사가의 참여를 기다립니다!"
     ], $year, $month);
 
-    $betGold = 10;
+    $betGold = Util::valueFit(floor((3+$year-$startyear)*0.334)*10, 10);
 
     $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE npc >= 2 AND gold >= (500 + %i)', $betGold);
     $npcBet = [];
