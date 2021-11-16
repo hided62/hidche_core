@@ -202,14 +202,14 @@ class GameConstBase
         [20, 4]
     ];
 
-    public static $inheritBornSpecialPoint = 12000;
+    public static $inheritBornSpecialPoint = 6000;
     public static $inheritBornTurntimePoint = 3000;
     public static $inheritBornCityPoint = 1000;
     public static $inheritBornStatPoint = 1000;
     public static $inheritItemUniqueMinPoint = 5000;
     public static $inheritItemRandomPoint = 3000;
-    public static $inheritBuffPoints = [0, 250, 750, 1500, 2500, 3750];
-    public static $inheritSpecificSpecialPoint = 5000;
+    public static $inheritBuffPoints = [0, 200, 600, 1200, 2000, 3000];
+    public static $inheritSpecificSpecialPoint = 4000;
     public static $inheritResetAttrPointBase = [1000, 1000, 2000, 3000];//필요하면 늘려서 쓰기
 
     public static $allItems = [
