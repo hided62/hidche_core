@@ -1348,17 +1348,29 @@ function triggerTournament()
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['tournament', 'tnmt_trig']);
+    [$tournament, $tnmt_trig, $tnmt_pattern] = $gameStor->getValuesAsArray(['tournament', 'tnmt_trig', 'tnmt_pattern']);
 
     //현재 토너먼트 없고, 자동개시 걸려있을때, 40%확률
-    if ($admin['tournament'] == 0 && $admin['tnmt_trig'] > 0 && rand() % 100 < 40) {
-        $type = rand() % 5; //  0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
-        //전력전 40%, 통, 일, 설 각 20%
-        if ($type > 3) {
-            $type = 0;
-        }
-        startTournament($admin['tnmt_trig'], $type);
+    if($tournament != 0){
+        return;
     }
+    if($tnmt_trig == 0){
+        return;
+    }
+    if(!Util::randBool(0.4)){
+        return;
+    }
+
+    if(!$tnmt_pattern){
+        // 0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
+        //전력전 40%, 통, 일, 설 각 20%
+        $tnmt_pattern = [0, 0, 1, 2, 3];
+        shuffle($tnmt_pattern);
+    }
+
+    $tnmt_type = array_pop($tnmt_pattern);
+    $gameStor->setValue('tnmt_pattern', $tnmt_pattern);
+    startTournament($tnmt_trig, $tnmt_type);
 }
 
 function CheckHall($no)
