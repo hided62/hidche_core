@@ -43,7 +43,7 @@ if ($me['officer_level'] >= 5) {
     $read = "readonly";
 }
 
-$nationStor->cacheValues(['notice', 'scout_msg']);
+$nationStor->cacheValues(['notice', 'scout_msg', 'available_war_setting_cnt']);
 
 ?>
 <!DOCTYPE html>
@@ -251,8 +251,8 @@ if ($budgetricediff > 0) {
                 <tr>
                     <td align=right class=bg1>기밀 권한 (1 ~ 99년)&nbsp;&nbsp;&nbsp;</td>
                     <td align=center><input type=text <?=$read?> name=secretlimit style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['secretlimit']?>>년 <input type=<?=$btn?> name=btn value=기밀권한></td>
-                    <td align=right class=bg1>임관&amp;전쟁 변경 가능</td>
-                    <td align=center>무제한</td>
+                    <td align=right class=bg1>전쟁 허용/금지 변경 가능</td>
+                    <td align=center><?=$nationStor->getValue('available_war_setting_cnt')?>회(월 +<?=GameConst::$incAvailableWarSettingCnt?>회, 최대<?=GameConst::$maxAvailableWarSettingCnt?>회)</td>
                 </tr>
                 <tr>
                     <td colspan=4 align=center>

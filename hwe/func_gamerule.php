@@ -481,6 +481,21 @@ function postUpdateMonthly()
         'term' => 6,
     ], 'state = 1 AND term = 0');
 
+    $availableWarSettingCnt = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'available_war_setting_cnt');
+    foreach ($nations as $nation) {
+        $nationID = $nation['nation'];
+        if(!key_exists($nationID, $availableWarSettingCnt)){
+            $availableWarSettingCnt[$nationID] = 0;
+        }
+    }
+    foreach($availableWarSettingCnt as $nationID=>$cnt){
+        if($cnt >= GameConst::$maxAvailableWarSettingCnt){
+            continue;
+        }
+        $cnt = Util::valueFit($cnt + GameConst::$incAvailableWarSettingCnt, 0, GameConst::$maxAvailableWarSettingCnt);
+        (KVStorage::getStorage($db, $nationID, 'nation_env'))->setValue('available_war_setting_cnt', $cnt);
+    }
+
     //초반이후 방랑군 자동 해체
     if ($admin['year'] >= $admin['startyear'] + 2) {
         checkWander();

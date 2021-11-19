@@ -42,7 +42,7 @@ class KVStorage{
     public function __get($key) {
         return $this->getValue($key);
     }
-    
+
     public function __set($key, $value) {
         $this->setValue($key, $value);
     }
@@ -93,13 +93,13 @@ class KVStorage{
             return $this;
         }
         $keys = array_map('mb_strtolower', $keys);
-        
+
         foreach($keys as $key){
             if(key_exists($key, $this->cacheData)){
                 unset($this->cacheData[$key]);
             }
         }
-        
+
         return $this;
     }
 
@@ -141,7 +141,7 @@ class KVStorage{
                 $this->cacheData[$key] = null;
             }
         }
-        
+
         return $this;
     }
 
@@ -180,7 +180,7 @@ class KVStorage{
 
         $result = [];
         $notExists = [];
-        
+
         //TODO: DB Select에서 as를 쓸 수 있으면 좋을 듯.
         foreach($keys as $key){
             if(!key_exists($key, $this->cacheData)){
@@ -208,9 +208,9 @@ class KVStorage{
     }
 
     /**
-     * @param string|int $key 
-     * @param bool $onlyCache 
-     * @return mixed|null 
+     * @param string|int $key
+     * @param bool $onlyCache
+     * @return mixed|null
      */
     public function getValue($key, bool $onlyCache=false){
         if(is_string($key)){
@@ -228,11 +228,11 @@ class KVStorage{
     }
 
     /**
-     * 
-     * @param string|int $key 
-     * @param mixed $value 
-     * @return KVStorage 
-     * @throws MeekroDBException 
+     *
+     * @param string|int $key
+     * @param mixed $value
+     * @return KVStorage
+     * @throws MeekroDBException
      */
     public function setValue($key, $value):self{
         if(is_string($key)){
@@ -249,11 +249,11 @@ class KVStorage{
     }
 
     /**
-     * 
-     * @param string|int $key 
-     * @param mixed $value 
-     * @return KVStorage 
-     * @throws MeekroDBException 
+     *
+     * @param string|int $key
+     * @param mixed $value
+     * @return KVStorage
+     * @throws MeekroDBException
      */
     public function deleteValue($key):self{
         if(is_string($key)){
@@ -284,9 +284,9 @@ class KVStorage{
         }
         $result = [];
         foreach($this->db->queryAllLists(
-            'SELECT `key`, `value` FROM %b WHERE `namespace`=%s AND `key` IN %ls', 
+            'SELECT `key`, `value` FROM %b WHERE `namespace`=%s AND `key` IN %ls',
             $this->tableName,
-            $this->storNamespace, 
+            $this->storNamespace,
             $keys
         ) as list($key, $value))
         {
