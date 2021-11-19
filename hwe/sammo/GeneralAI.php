@@ -2674,13 +2674,13 @@ class GeneralAI
 
         $db = DB::db();
 
-        if ($general->getVar('train') < $this->nationPolicy->properWarTrainAtmos) {
+        if ($general->getVar('train') < min(100, $this->nationPolicy->properWarTrainAtmos)) {
             return null;
         }
-        if ($general->getVar('atmos') < $this->nationPolicy->properWarTrainAtmos) {
+        if ($general->getVar('atmos') < min(100, $this->nationPolicy->properWarTrainAtmos)) {
             return null;
         }
-        if ($general->getVar('crew') < $this->nationPolicy->minWarCrew) {
+        if ($general->getVar('crew') < min(($this->fullLeadership - 2) * 100, $this->nationPolicy->minWarCrew)) {
             return null;
         }
 
