@@ -167,13 +167,31 @@ function applyGeneralPriority($priority, $nationID, $generalName): ?string
     $generalPolicyRoot = $nationStor->npc_general_policy;
 
     $defaultPriority = AutorunGeneralPolicy::$default_priority;
-    $mustHaveActions = ['출병' => 1];
+    $actionOrder = [
+        ['출병', '일반내정']
+    ];
+    $mustHaveActions = ['출병' => 1, '일반내정' => 1];
+
+    $orderMap = [];
     foreach ($priority as $item) {
         if (key_exists($item, $mustHaveActions)) {
             $mustHaveActions[$item] = 0;
         }
         if (!in_array($item, $defaultPriority)) {
             return "{$item}은 올바른 명령이 아닙니다.";
+        }
+        $orderMap[$item] = count($orderMap);
+    }
+
+    foreach($actionOrder as [$preItem, $postItem]){
+        if(!key_exists($preItem, $orderMap)){
+            continue;
+        }
+        if(!key_exists($postItem, $orderMap)){
+            continue;
+        }
+        if($orderMap[$preItem] > $orderMap[$postItem]){
+            return "{$preItem} 명령은 {$postItem} 명령보다 먼저여야 합니다.";
         }
     }
 
