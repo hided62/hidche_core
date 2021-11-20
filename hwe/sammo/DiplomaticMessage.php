@@ -7,7 +7,7 @@ class DiplomaticMessage extends Message{
     const DECLINED = -1;
     const INVALID = 0;
 
-    
+
     const TYPE_NO_AGGRESSION = 'noAggression'; //불가침
     const TYPE_CANCEL_NA = 'cancelNA'; //불가침 파기
     const TYPE_STOP_WAR = 'stopWar'; //종전
@@ -74,7 +74,7 @@ class DiplomaticMessage extends Message{
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
         $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
-        
+
         $commandObj = buildNationCommandClass('che_불가침수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
             'destGeneralID'=>$this->src->generalID,
@@ -85,7 +85,7 @@ class DiplomaticMessage extends Message{
         $this->diplomacyDetail = $commandObj->getBrief();
 
         if(!$commandObj->hasFullConditionMet()){
-            return [self::DECLINED, $commandObj->getFailString()];
+            return [self::INVALID, $commandObj->getFailString()];
         }
 
         $commandObj->run();
@@ -98,7 +98,7 @@ class DiplomaticMessage extends Message{
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
         $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
-        
+
         $commandObj = buildNationCommandClass('che_불가침파기수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
             'destGeneralID'=>$this->src->generalID,
@@ -107,7 +107,7 @@ class DiplomaticMessage extends Message{
         $this->diplomacyDetail = $commandObj->getBrief();
 
         if(!$commandObj->hasFullConditionMet()){
-            return [self::DECLINED, $commandObj->getFailString()];
+            return [self::INVALID, $commandObj->getFailString()];
         }
 
         $commandObj->run();
@@ -120,7 +120,7 @@ class DiplomaticMessage extends Message{
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
         $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
-        
+
         $commandObj = buildNationCommandClass('che_종전수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
             'destGeneralID'=>$this->src->generalID,
@@ -129,7 +129,7 @@ class DiplomaticMessage extends Message{
         $this->diplomacyDetail = $commandObj->getBrief();
 
         if(!$commandObj->hasFullConditionMet()){
-            return [self::DECLINED, $commandObj->getFailString()];
+            return [self::INVALID, $commandObj->getFailString()];
         }
 
         $commandObj->run();
@@ -148,16 +148,16 @@ class DiplomaticMessage extends Message{
             throw new \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
         }
 
-        
+
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-        
+
 
         $general = $db->queryFirstRow(
-            'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong FROM general WHERE `no`=%i AND nation=%i', 
-            $receiverID, 
+            'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong FROM general WHERE `no`=%i AND nation=%i',
+            $receiverID,
             $this->dest->nationID
         );
 
@@ -165,7 +165,7 @@ class DiplomaticMessage extends Message{
             $this->dest->generalID = $receiverID;
             $this->dest->generalName = $general['name'];
         }
-        
+
 
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
         if($result !== self::ACCEPTED){
@@ -186,10 +186,10 @@ class DiplomaticMessage extends Message{
             case self::TYPE_STOP_WAR:
                 list($result, $reason) = $this->stopWar();
                 break;
-            default: 
+            default:
                 throw new \RuntimeException('diplomaticType이 올바르지 않음');
         }
-        
+
         if($result !== self::ACCEPTED){
             (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog($reason, ActionLogger::PLAIN);
             if($result === self::DECLINED){
@@ -197,8 +197,8 @@ class DiplomaticMessage extends Message{
             }
             return $result;
         }
-        
-        
+
+
 
 
         $this->dest->generalID = $receiverID;
@@ -208,9 +208,9 @@ class DiplomaticMessage extends Message{
 
         $josaYi = JosaUtil::pick($this->src->nationName, '이');
         $newMsg = new Message(
-            self::MSGTYPE_NATIONAL, 
-            $this->dest, 
-            $this->src, 
+            self::MSGTYPE_NATIONAL,
+            $this->dest,
+            $this->src,
             "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}",
             new \DateTime(),
             new \DateTime('9999-12-31'),
@@ -224,9 +224,9 @@ class DiplomaticMessage extends Message{
         $newMsg->send();
 
         $newMsg = new Message(
-            self::MSGTYPE_DIPLOMACY, 
-            $this->dest, 
-            $this->src, 
+            self::MSGTYPE_DIPLOMACY,
+            $this->dest,
+            $this->src,
             "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}",
             new \DateTime(),
             new \DateTime('9999-12-31'),
@@ -260,8 +260,8 @@ class DiplomaticMessage extends Message{
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 
         $general = $db->queryFirstRow(
-            'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong  FROM general WHERE `no`=%i AND nation=%i', 
-            $receiverID, 
+            'SELECT `name`, nation, `officer_level`, `permission`, `penalty`,belong  FROM general WHERE `no`=%i AND nation=%i',
+            $receiverID,
             $this->dest->nationID
         );
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
@@ -274,7 +274,7 @@ class DiplomaticMessage extends Message{
         $josaYi = JosaUtil::pick($this->dest->nationName, '이');
         (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("<D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다.", ActionLogger::PLAIN);
         (new ActionLogger($this->src->generalID, 0, $year, $month))->pushGeneralActionLog("<Y>{$this->dest->nationName}</>{$josaYi} {$this->diplomacyName} 제안을 거절했습니다.", ActionLogger::PLAIN);
-        $this->_declineMessage();  
+        $this->_declineMessage();
         return self::DECLINED;
     }
 
