@@ -17,8 +17,8 @@ class VersionGitDynamic
         $command = 'git branch --contains HEAD';
         exec($command, $output);
         if (is_array($output)) {
-            if (count($output)) {
-                $output = Util::array_last($output);
+            if (count($output) > 1) {
+                $output = $output[1];
                 $output = trim($output, " \t\n\r\0\x0b*");
                 $output = explode('/', $output);
                 $versionTokens[] = Util::array_last($output);

@@ -9,6 +9,9 @@ set_time_limit(600);
 function getVersion($target = null)
 {
     $versionTokens = [];
+    if ($target) {
+        $target = trim($target);
+    }
 
     if ($target) {
         $command = sprintf('git describe %s --long --tags', escapeshellarg($target));
@@ -21,14 +24,14 @@ function getVersion($target = null)
     }
 
     if ($target) {
-        $command = sprintf('git branch --contains %s', escapeshellarg($target));
+        $command = sprintf('git branch -a --contains %s', escapeshellarg($target));
     } else {
-        $command = 'git branch --contains HEAD';
+        $command = 'git branch -a --contains HEAD';
     }
     exec($command, $output);
     if (is_array($output)) {
-        if (count($output)) {
-            $output = Util::array_last($output);
+        if (count($output) > 1) {
+            $output = $output[1];
             $output = trim($output, " \t\n\r\0\x0b*");
             $output = explode('/', $output);
             $versionTokens[] = Util::array_last($output);
