@@ -56,7 +56,6 @@ const serverAdminTemplate = '\
     <td><button type="button" class="serv_act_open with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
     <td><a class="just_link" href="../<%name%>/install.php"><button type="button" class="serv_act_reset with_skin valid_if_set with_border obj_fill">리셋</button></a></td>\
     <td><a class="just_link" href="../<%name%>/install_db.php"><button type="button" class="serv_act_hard_reset with_skin valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
-    <td><button type="button" class="serv_act_login_close with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
     <td><button type="button" class="serv_act_119 with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
     <td><button type="button" class="serv_act_update with_skin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
 </tr>\
@@ -309,12 +308,6 @@ async function modifyServerStatus(caller: HTMLElement, action: string) {
     }
 }
 
-function Entrance_AdminClosedLogin(caller: HTMLElement) {
-    const $caller = $(caller);
-    const serverDir = $caller.parents('tr').data('server_name');
-    location.href = serverDir + "/npc_login.php";
-}
-
 function Entrance_AdminOpen119(caller: HTMLElement) {
     const $caller = $(caller);
     const serverDir = $caller.parents('tr').data('server_name');
@@ -322,6 +315,5 @@ function Entrance_AdminOpen119(caller: HTMLElement) {
 }
 
 exportWindow(modifyServerStatus, 'modifyServerStatus');
-exportWindow(Entrance_AdminClosedLogin, 'Entrance_AdminClosedLogin');
 exportWindow(Entrance_AdminOpen119, 'Entrance_AdminOpen119');
 exportWindow(serverUpdate, 'serverUpdate');
