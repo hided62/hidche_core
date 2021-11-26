@@ -17,6 +17,8 @@ import { joinYearMonth } from './util/joinYearMonth';
 import { parseYearMonth } from './util/parseYearMonth';
 exportWindow($, '$');
 
+import '../scss/main.scss';
+
 type TurnArg = {
     //TODO: 채울것
 }

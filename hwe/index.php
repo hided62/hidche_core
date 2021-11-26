@@ -100,7 +100,7 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
     <title><?= $serverName ?>: 메인</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1024" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('dist_js/vendors.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
@@ -122,9 +122,8 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
     <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('css/common.css') ?>
-    <?= WebUtil::printCSS('css/main.css') ?>
+    <?= WebUtil::printCSS('dist_css/main.css') ?>
     <?= WebUtil::printCSS('css/map.css') ?>
-    <?= WebUtil::printCSS('css/msg.css') ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
 
@@ -133,8 +132,8 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
 <body class="img_back">
 
     <div id="container">
-        <div><?= allButton($gameStor->npcmode == 1) ?></div>
-        <div class="tb_layout bg0" style="width:1000px;">
+        <div class="row toolbars"><?= allButton($gameStor->npcmode == 1) ?></div>
+        <div class="tb_layout bg0 row">
             <div style="height:50px" id="server_title">
                 <font size=4>삼국지 모의전투 HiDCHe <?= $serverName . $serverCnt ?>기 (<font color=cyan><?= $scenario ?></font>)</font>
             </div>
@@ -234,9 +233,9 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
                     </div>
                 </div>
             <?php endif; ?>
-            <div class="grid">
-                <div class="map_zone col" style="width:700px;height:520px;"><?= getMapHtml($mapTheme) ?></div>
-                <div class="col" id="reservedCommandList" style="width:300px;">
+            <div id="map_view" >
+                <div id="mapZone" class="view-item"><?= getMapHtml($mapTheme) ?></div>
+                <div class="view-item" id="reservedCommandList">
                     <table width="300" class="tb_layout b2">
                         <thead>
                             <tr height="24">
@@ -276,20 +275,20 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
                         <input type=button value='실 행' id="reserveTurn" style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:110px;font-size:13px;'><input type=button value='갱 신' id='refreshPage' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:110px;font-size:13px;'><input type=button value='로비로' onclick="location.replace('../')" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;font-size:13px;>
                     </div>
                 </div>
-                <div class="col" style="border:none;text-align:center;"><?= cityInfo($generalObj) ?></div>
+                <div id="cityInfo" class="view-item" style="border:none;text-align:center;"><?= cityInfo($generalObj) ?></div>
             </div>
             <div class="row">
-                <div class="col-6"><?php myNationInfo($generalObj); ?></div>
-                <div class="col-6"><?php generalInfo($generalObj); ?></div>
+                <div class="col-lg-6"><?php myNationInfo($generalObj); ?></div>
+                <div class="col-lg-6"><?php generalInfo($generalObj); ?></div>
             </div>
 
             <div class="row"><?= commandButton() ?></div>
             <div class="row">
-                <div class="col-6">
+                <div class="col-lg-6">
                     <div><b>장수 동향</b></div>
                     <div id="general_public_record" style="text-align:left;"><?= formatHistoryToHTML(getGlobalActionLogRecent(15)) ?></div>
                 </div>
-                <div class="col-6">
+                <div class="col-lg-6">
                     <div><b>개인 기록</b></div>
                     <div id="general_log" style="text-align:left;"><?= formatHistoryToHTML(getGeneralActionLogRecent($me['no'], 15)) ?></div>
                 </div>
@@ -310,15 +309,15 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
                     <button id="msg_submit">서신전달&amp;갱신</button><br>
                     내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
             </div>
-            <div><?= allButton($gameStor->npcmode == 1) ?></div>
+            <div class="row toolbars"><?= allButton($gameStor->npcmode == 1) ?></div>
             <div id="message_board" class="row">
-                <div class="col-6 board_side bg0">
+                <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0" id='public_talk_position'>전체 메시지(최고99자)</div>
                     <section class="public_message">
                         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="public">이전 메시지 불러오기</button>
                     </section>
                 </div>
-                <div class="col-6 board_side bg0">
+                <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0">국가 메시지(최고99자)</div>
                     <section class="national_message">
                         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="national">이전 메시지 불러오기</button>
@@ -328,14 +327,14 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
 
 
 
-                <div class="col-6 board_side bg0">
+                <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0" id='secret_talk_position'>개인 메시지(최고99자)</div>
                     <section class="private_message">
                         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="private">이전 메시지 불러오기</button>
                     </section>
                 </div>
 
-                <div class="col-6 board_side bg0">
+                <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0">외교 메시지(최고99자)</div>
                     <section class="diplomacy_message">
                         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="diplomacy">이전 메시지 불러오기</button>
@@ -343,7 +342,7 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
                 </div>
             </div>
         </div>
-        <div><?= allButton($gameStor->npcmode == 1) ?><?= banner() ?></div>
+        <div class="row toolbars"><?= allButton($gameStor->npcmode == 1) ?><?= banner() ?></div>
     </div>
     <?php
     if ($con == 1) {

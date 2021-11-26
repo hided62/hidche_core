@@ -1,0 +1,387 @@
+@charset "UTF-8";
+
+@import "./bootstrap5.scss";
+
+body {
+    color: white;
+    background-color: black;
+    border-width: 1px;
+    border-color: gray;
+    background-position: center;
+    background-repeat: repeat-y;
+    overflow-x: hidden;
+}
+
+@include media-breakpoint-up(lg) {
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    #container {
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+
+
+#map_view {
+    display: grid;
+}
+
+
+@include media-breakpoint-up(lg) {
+    #map_view {
+        grid-template-columns: 700px 300px;
+        grid-template-rows: 520px auto;
+    }
+
+    #mapZone {
+        height: 520px;
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 1;
+        grid-row-end: 2;
+    }
+
+    #cityInfo {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 2;
+        grid-row-end: 3;
+    }
+
+    #reservedCommandList {
+        width: 300px;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+    }
+
+    .buttonPlate {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        padding: 0;
+    }
+
+    .toolbars>.buttonPlate {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .buttonPlate>a {
+        display: block;
+        text-decoration: none;
+    }
+
+    .commandButton {
+        width: 100%;
+        height: 30px;
+        font-weight: bold;
+        font-size: 13px;
+        margin: 0;
+        display: block;
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .buttonPlate {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 0;
+    }
+
+    .toolbars>.buttonPlate {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .buttonPlate>a {
+        display: block;
+        text-decoration: none;
+    }
+
+    .commandButton {
+        width: 100%;
+        height: 30px;
+        font-weight: bold;
+        font-size: 13px;
+        margin: 0;
+        display: block;
+    }
+}
+
+.toolbarButton {
+    float: left;
+    background-color: #225500;
+    color: white;
+    width: 100%;
+    height: 30px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
+    display: block;
+}
+
+
+
+.commandButton:disabled::before {
+    content: '【'
+}
+
+.commandButton:disabled::after {
+    content: '】'
+}
+
+.commandButton:disabled {
+    background-color: transparent !important;
+    color: gray !important;
+    border-color: transparent !important;
+}
+
+.toolbarButton2 {
+    float: left;
+    background-color: #225500;
+    color: magenta;
+    width: 100%;
+    height: 30px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
+    display: block;
+}
+
+.nation_info td {
+    height: 18px;
+}
+
+#generalTurnSelector {
+    width: 50px;
+    color: white;
+    background-color: black;
+    font-size: 13px;
+}
+
+#sidebar {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#sidebar button {
+    /*width:100px;*/
+}
+
+.turn_pad {
+    white-space: nowrap;
+    font-weight: lighter;
+    max-width: 162px;
+    width: 162px;
+
+}
+
+.turn_pad .turn_text {
+    display: inline-block;
+}
+
+/*임시용 */
+
+#container{
+    /*width:1000px;*/
+    margin:auto;
+    font-size:13px;
+}
+/*임시용 끝*/
+
+#message_board{
+    position:relative;
+}
+/*
+#message_board section{
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+*/
+.msg_plate{
+    width:100%;
+    outline-style:solid;
+    outline-width:1px;
+    outline-color: gray;
+    min-height:64px;
+    font-size:12px;
+    word-break:break-all;
+    color:white;
+}
+
+.msg_plate_private{
+    background-color:#5d1e1a;
+}
+
+.msg_plate_private.msg_plate_dest{
+    background-color:#5d461a;
+}
+
+.msg_plate_public{
+    background-color:#141c65;
+
+}
+
+.msg_plate_national, .msg_plate_diplomacy{
+    background-color:#00582c;
+}
+
+.msg_plate_national.msg_plate_dest, .msg_plate_diplomacy.msg_plate_dest {
+    background-color:#704615;
+}
+
+.msg_plate_national.msg_plate_src, .msg_plate_diplomacy.msg_plate_src {
+    background-color:#70153b;
+}
+
+.public_message{
+    min-height:300px;
+}
+
+.diplomacy_message{
+    min-height:300px;
+}
+
+.national_message{
+    min-height:300px;
+}
+
+.private_message{
+    min-height:300px;
+}
+
+.msg_icon{
+    float:left;
+    width:64px;
+    height:64px;
+    border-right:solid 1px gray;
+}
+
+.msg_time{
+    font-size:0.75em;
+    font-weight:normal;
+}
+
+.msg_header{
+    font-weight: bold;
+    margin-bottom:3px;
+    color:white;
+    position: relative;
+}
+
+.message_input_form{
+    position:relative;
+}
+
+#msg_input{
+    color:white;
+    background-color:black;
+    font-size:12px;
+    margin:0 2px;
+    height:20px;
+    border:solid 1px gray;
+}
+
+#msg_submit{
+    position:absolute;
+    right:0;
+    margin-right:2px;
+}
+
+#mailbox_list{
+    float:left;
+    color:white;
+    background-color:black;
+    font-size:12px;
+    width:160px;
+    height:20px;
+}
+
+.board_header{
+    color:white;
+    outline-style:solid;
+    outline-width:1px;
+    outline-color: gray;
+}
+/*
+.board_side{
+    position:absolute;
+    height:1370px;
+    width:50%;
+    overflow-y: hidden;
+    outline-style:solid;
+    outline-width:1px;
+    outline-color: gray;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.board_side > div{
+    height: 1.2em;
+}
+*/
+.msg_invalid{
+    color:rgba(255,255,255,0.5);
+}
+
+.msg_body{
+    padding-left:64px;
+}
+
+.msg_target{
+    margin:2px 2px 0 2px;
+    padding:2px 3px;
+    display:inline-block;
+    box-shadow: 2px 2px black;
+    border-radius: 3px;
+}
+
+.btn-delete-msg{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin:2px 2px 0 2px;
+    font-size:8px;
+}
+
+/*
+.public_message .msg_target{
+    box-shadow: 2px 2px darkslategrey;
+}
+*/
+
+.msg_target.msg_bright{
+    color:black;
+}
+
+.msg_target.msg_dark{
+    color:white;
+}
+
+.msg_from_to{
+    display:inline-block;
+}
+
+.msg_content{
+    margin-left:10px;
+    margin-right:5px;
+    overflow:hidden;
+}
+
+.msg_prompt{
+    text-align:right;
+    margin-top:5px;
+    margin-right:5px;
+}
+
+#mailbox_list option{
+    color:white;
+    background-color:black;
+}

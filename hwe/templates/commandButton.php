@@ -1,5 +1,4 @@
 <div class='buttonPlate bg2'>
-    <div>
     <a href='v_board.php'><button type="button" class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>회 의 실</button></a>
     <a href='v_board.php?isSecret=true'><button type="button" class='commandButton' <?=$permission>=2?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>기 밀 실</button></a>
     <a href='b_troop.php'><button type="button" class='commandButton' <?=($meLevel>=1&&$nationLevel>=1)?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>부대 편성</button></a>
@@ -20,6 +19,4 @@
     <a href='b_myPage.php'><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>내 정보&amp;설정</button></a>
     <a href='b_auction.php' target='_blank' class="open-window"><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>거 래 장</button></a>
     <a href='b_betting.php' target='_blank' class="open-window"><button type="button" class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>베 팅 장</button></a>
-
-    </div>
 </div>
