@@ -7,6 +7,8 @@ set_time_limit(600);
 
 function getVersion($target = null)
 {
+    $versionTokens = [];
+
     if ($target) {
         $command = sprintf('git describe %s --long --tags', escapeshellarg($target));
     } else {
@@ -14,9 +16,26 @@ function getVersion($target = null)
     }
     exec($command, $output);
     if (is_array($output)) {
-        $output = join('', $output);
+        $versionTokens[] = trim(join('', $output));
     }
-    return trim($output);
+
+    if ($target) {
+        $command = sprintf('git branch --contains %s', escapeshellarg($target));
+    } else {
+        $command = 'git branch --contains HEAD';
+    }
+    exec($command, $output);
+    if (is_array($output)) {
+        if(count($output)){
+            $output = $output[1];
+            $versionTokens[] = trim($output, " \t\n\r\0\x0b*");
+        }
+        else{
+            $versionTokens[] = 'unknown';
+        }
+    }
+
+    return join('-', $versionTokens);
 }
 
 function getHash($target = 'HEAD')
