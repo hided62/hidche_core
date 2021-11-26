@@ -116,8 +116,8 @@ class GeneralAI
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
         $nationStor->cacheValues(['npc_nation_policy', 'npc_general_policy', 'prev_income_gold', 'prev_income_rice']);
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options']??null, $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options']??null, $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
 
         $prevIncomeGold = $nationStor->prev_income_gold ?? 1000;
         $prevIncomeRice = $nationStor->prev_income_rice ?? 1000;
@@ -1321,17 +1321,15 @@ class GeneralAI
                 }
 
                 if ($isWarGeneral) {
-                    $reqHumanMinRes = $reqHumanMinWarRes;
+                    $crewtype = $targetUserGeneral->getCrewTypeObj();
+                    $reqMoney = $crewtype->costWithTech($this->nation['tech'], Util::toInt($targetUserGeneral->getLeadership(false))) * 100 * 6 * 1.1;
+                    if ($this->env['year'] > $this->env['startyear'] + 3) {
+                        $reqMoney = max($reqMoney, $reqHumanMinWarRes);
+                    }
+                    $enoughMoney = $reqMoney * 1.2;
                 } else {
-                    $reqHumanMinRes = $reqHumanMinDevelRes;
+                    $enoughMoney = $reqHumanMinDevelRes * 1.2;
                 }
-
-                $crewtype = $targetUserGeneral->getCrewTypeObj();
-                $reqMoney = $crewtype->costWithTech($this->nation['tech'], Util::toInt($targetUserGeneral->getLeadership(false))) * 100 * 6 * 1.1;
-                if ($this->env['year'] > $this->env['startyear'] + 3) {
-                    $reqMoney = max($reqMoney, $reqHumanMinRes);
-                }
-                $enoughMoney = $reqMoney * 1.2;
 
                 if ($targetUserGeneral->getVar($resName) >= $reqMoney) {
                     continue;
@@ -3088,18 +3086,17 @@ class GeneralAI
         $movingTargetCityID = $general->getAuxVar('movingTargetCityID');
         $currCityID = $general->getCityID();
 
-        if($movingTargetCityID === $currCityID){
+        if ($movingTargetCityID === $currCityID) {
             $movingTargetCityID = null;
-        }
-        else if(key_exists($movingTargetCityID, $occupiedCities)){
+        } else if (key_exists($movingTargetCityID, $occupiedCities)) {
             $movingTargetCityID = null;
         }
 
-        if($movingTargetCityID === null){
+        if ($movingTargetCityID === null) {
             //어느 도시로 갈 것인가?
             $candidateCities = [];
-            foreach(searchDistance($currCityID, 4) as $testCityID => $dist){
-                if(key_exists($testCityID, $occupiedCities)){
+            foreach (searchDistance($currCityID, 4) as $testCityID => $dist) {
+                if (key_exists($testCityID, $occupiedCities)) {
                     continue;
                 }
                 $cityLevel = CityConst::byID($testCityID)->level;
@@ -3109,14 +3106,14 @@ class GeneralAI
                 $candidateCities[] = [$testCityID, 1 / pow(2, $dist)];
             }
 
-            if(!$candidateCities){
+            if (!$candidateCities) {
                 return null;
             }
             $movingTargetCityID = Util::choiceRandomUsingWeightPair($candidateCities);
             $general->setAuxVar('movingTargetCityID', $movingTargetCityID);
         }
 
-        if($movingTargetCityID == $currCityID){
+        if ($movingTargetCityID == $currCityID) {
             return buildGeneralCommandClass('che_인재탐색', $general, $this->env);
         }
 
@@ -3127,15 +3124,15 @@ class GeneralAI
 
         foreach (array_keys(CityConst::byID($currCityID)->path) as $nearCityID) {
             $cityLevel = CityConst::byID($nearCityID)->level;
-            if(5 <= $cityLevel && $cityLevel <= 6 && !key_exists($nearCityID, $occupiedCities)){
+            if (5 <= $cityLevel && $cityLevel <= 6 && !key_exists($nearCityID, $occupiedCities)) {
                 //바로 옆 도시로 이동하면 건국 가능하다면? 가보자
                 $candidateCities[] = [$nearCityID, 10];
             }
-            if($distMap[$nearCityID] + 1 == $targetDistance){
+            if ($distMap[$nearCityID] + 1 == $targetDistance) {
                 $candidateCities[] = [$nearCityID, 1];
             }
         }
-        if(!$candidateCities){
+        if (!$candidateCities) {
             return null;
         }
 
@@ -3164,7 +3161,7 @@ class GeneralAI
         }
 
         $currentCityLevel = CityConst::byID($general->getCityID())->level;
-        if (($currentCityLevel < 5 || 6 < $currentCityLevel) && Util::randBool(0.5)){
+        if (($currentCityLevel < 5 || 6 < $currentCityLevel) && Util::randBool(0.5)) {
             return null;
         }
 
@@ -3182,21 +3179,21 @@ class GeneralAI
         }
 
         $availableNearCity = false;
-        foreach(searchDistance($general->getCityID(), 3) as $targetCityID => $dist){
-            if(key_exists($targetCityID, $occupiedCities)){
+        foreach (searchDistance($general->getCityID(), 3) as $targetCityID => $dist) {
+            if (key_exists($targetCityID, $occupiedCities)) {
                 continue;
             }
             $cityLevel = CityConst::byID($targetCityID)->level;
-            if($cityLevel < 5 || 6 < $cityLevel){
+            if ($cityLevel < 5 || 6 < $cityLevel) {
                 continue;
             }
-            if($dist == 3 && Util::randBool()){
+            if ($dist == 3 && Util::randBool()) {
                 continue;
             }
             $availableNearCity = true;
             break;
         }
-        if(!$availableNearCity){
+        if (!$availableNearCity) {
             return null;
         }
 
