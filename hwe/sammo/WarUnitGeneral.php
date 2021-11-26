@@ -267,7 +267,7 @@ class WarUnitGeneral extends WarUnit
 
         $addDex = $damage;
         if (!$this->isAttacker) {
-            $addDex *= 0.9;
+            $addDex = 0;
         }
         $this->addDex($this->oppose->getCrewType(), $addDex);
 
@@ -291,7 +291,7 @@ class WarUnitGeneral extends WarUnit
 
         $addDex = $damage;
         if (!$this->isAttacker) {
-            $addDex *= 0.9;
+            $addDex *= 0.8;
         }
         $this->addDex($this->getCrewType(), $addDex);
 
