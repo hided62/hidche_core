@@ -13,12 +13,12 @@
     height:1370px;
     position:relative;
 }
-
+/*
 #message_board section{
     overflow-y:auto;
     overflow-x:hidden;
 }
-
+*/
 .msg_plate{
     width:100%;
     outline-style:solid;
@@ -125,7 +125,7 @@
     outline-width:1px;
     outline-color: gray;
 }
-
+/*
 .board_side{
     position:absolute;
     height:1370px;
@@ -141,7 +141,7 @@
 .board_side > div{
     height: 1.2em;
 }
-
+*/
 .msg_invalid{
     color:rgba(255,255,255,0.5);
 }
