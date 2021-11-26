@@ -1,4 +1,5 @@
 <?php
+
 namespace sammo;
 
 require(__DIR__ . '/vendor/autoload.php');
@@ -26,11 +27,12 @@ function getVersion($target = null)
     }
     exec($command, $output);
     if (is_array($output)) {
-        if(count($output)){
+        if (count($output)) {
             $output = $output[1];
-            $versionTokens[] = trim($output, " \t\n\r\0\x0b*");
-        }
-        else{
+            $output = trim($output, " \t\n\r\0\x0b*");
+            $output = explode('/', $output);
+            $versionTokens[] = Util::array_last($output);
+        } else {
             $versionTokens[] = 'unknown';
         }
     }
@@ -81,7 +83,7 @@ function tryNpmInstall()
             }
 
             //2. package-lock.json 업데이트가 2주를 초과했다면 업데이트.
-            if($oldTimestamp + 60*60*24*14 < $timestamp){
+            if ($oldTimestamp + 60 * 60 * 24 * 14 < $timestamp) {
                 break;
             }
 
@@ -99,8 +101,8 @@ function tryNpmInstall()
     }
 
     file_put_contents($npmResultPath, json_encode([
-        'packageJsonHash'=>$packageJsonHash,
-        'updateTimestamp'=>$timestamp,
+        'packageJsonHash' => $packageJsonHash,
+        'updateTimestamp' => $timestamp,
     ]));
     return true;
 }
@@ -108,7 +110,7 @@ function tryNpmInstall()
 //묻고 따지지 않고 일단 npm install은 시도한다.
 //hwe 업데이트인 경우에만 한번 더 부른다.
 
-if(tryNpmInstall()){
+if (tryNpmInstall()) {
     genJS(Util::array_last_key(ServConfig::getServerList()));
 }
 $session = Session::requireLogin(null)->setReadOnly();

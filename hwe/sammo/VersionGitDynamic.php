@@ -19,7 +19,9 @@ class VersionGitDynamic
         if (is_array($output)) {
             if (count($output)) {
                 $output = $output[1];
-                $versionTokens[] = trim($output, " \t\n\r\0\x0b*");
+                $output = trim($output, " \t\n\r\0\x0b*");
+                $output = explode('/', $output);
+                $versionTokens[] = Util::array_last($output);
             } else {
                 $versionTokens[] = 'unknown';
             }
