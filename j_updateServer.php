@@ -28,7 +28,7 @@ function getVersion($target = null)
     exec($command, $output);
     if (is_array($output)) {
         if (count($output)) {
-            $output = $output[1];
+            $output = Util::array_last($output);
             $output = trim($output, " \t\n\r\0\x0b*");
             $output = explode('/', $output);
             $versionTokens[] = Util::array_last($output);
