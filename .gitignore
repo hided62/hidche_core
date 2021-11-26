@@ -27,6 +27,7 @@ hwe/.htaccess
 
 d_shared
 
+/d_pic
 d_pic/*.jpg
 d_pic/*.gif
 d_pic/*.png
