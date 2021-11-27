@@ -479,6 +479,7 @@ function getCommandTable(General $general){
                 'compansation'=>$commandObj->getCompensationStyle(),
                 'possible'=>$commandObj->hasMinConditionMet(),
                 'title'=>$commandObj->getCommandDetailTitle(),
+                'reqArg'=>$commandObj::$reqArg,
             ];
         }
 

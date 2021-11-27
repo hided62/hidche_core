@@ -63,7 +63,7 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
     if($turnCnt >= GameConst::$maxTurn){
         return;
     }
-    
+
     $db = DB::db();
 
     $db->update('general_turn', [
@@ -96,7 +96,7 @@ function repeatGeneralCommand(int $generalId, int $turnCnt){
     foreach($turnList as $turnItem){
         $turnIdx = $turnItem['turn_idx'];
         $turnTarget = iterator_to_array(Util::range($turnIdx+$turnCnt, GameConst::$maxTurn, $turnCnt));
-        
+
         $db->update('general_turn', [
             'action'=>$turnItem['action'],
             'arg'=>$turnItem['arg'],
@@ -116,7 +116,7 @@ function pushNationCommand(int $nationID, int $officerLevel, int $turnCnt=1){
         return;
     }
     if($turnCnt < 0){
-        pullNationCommand($nationID, $officerLevel, -$turnCnt);   
+        pullNationCommand($nationID, $officerLevel, -$turnCnt);
         return;
     }
     if($turnCnt >= GameConst::$maxChiefTurn){
@@ -153,7 +153,7 @@ function pullNationCommand(int $nationID, int $officerLevel, int $turnCnt=1){
     if($turnCnt >= GameConst::$maxChiefTurn){
         return;
     }
-    
+
     $db = DB::db();
 
     $db->update('nation_turn', [
@@ -269,7 +269,7 @@ function checkCommandArg(?array $arg):?string{
 }
 
 function setGeneralCommand(int $generalID, array $rawTurnList, string $command, ?array $arg = null):array{
-    
+
     $turnList = [];
     foreach($rawTurnList as $turnIdx){
         if(!is_int($turnIdx) || $turnIdx < -3 || $turnIdx >= GameConst::$maxTurn){
