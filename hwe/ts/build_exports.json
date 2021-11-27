@@ -13,7 +13,6 @@
         "bossInfo": "bossInfo.ts",
         "myPage": "myPage.ts",
         "extExpandCity": "extExpandCity.ts",
-        "main": "main.ts",
         "dipcenter": "dipcenter.ts",
         "diplomacy": "diplomacy.ts",
         "currentCity": "currentCity.ts",
@@ -21,12 +20,14 @@
         "history": "history.ts",
         "select_general_from_pool": "select_general_from_pool.ts",
         "extKingdoms": "extKingdoms.ts",
-        "common": "common_deprecated.ts"
+        "common": "common_deprecated.ts",
+        "main": "main.ts"
     },
     "ingame_vue": {
         "v_inheritPoint": "v_inheritPoint.ts",
         "v_board": "v_board.ts",
         "v_NPCControl": "v_NPCControl.ts",
-        "v_join": "v_join.ts"
+        "v_join": "v_join.ts",
+        "v_main": "v_main.ts"
     }
 }

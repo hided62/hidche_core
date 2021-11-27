@@ -461,6 +461,36 @@ function commandGroup($typename, $type = 0)
     }
 }
 
+function getCommandTable(General $general){
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $gameStor->turnOnCache();
+    $env = $gameStor->getAll();
+
+    $result = [];
+    foreach (GameConst::$availableGeneralCommand as $commandCategory => $commandList) {
+        $subList = [];
+        foreach ($commandList as $commandClassName) {
+            $commandObj = buildGeneralCommandClass($commandClassName, $general, $env);
+            if (!$commandObj->canDisplay()) {
+                continue;
+            }
+            $subList[Util::getClassNameFromObj($commandObj)] = [
+                'compansation'=>$commandObj->getCompensationStyle(),
+                'possible'=>$commandObj->hasMinConditionMet(),
+                'title'=>$commandObj->getCommandDetailTitle(),
+            ];
+        }
+
+        $result[] = [
+            'category'=>$commandCategory,
+            'values'=>$subList
+        ];
+    }
+
+    return $result;
+}
+
 function printCommandTable(General $generalObj)
 {
     $db = DB::db();

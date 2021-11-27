@@ -15,6 +15,9 @@ import { exportWindow } from './util/exportWindow';
 import {stringifyUrl} from 'query-string';
 import { joinYearMonth } from './util/joinYearMonth';
 import { parseYearMonth } from './util/parseYearMonth';
+
+
+
 exportWindow($, '$');
 
 import '../scss/main.scss';
@@ -40,9 +43,8 @@ type ReservedTurnResponse = {
     autorun_limit: number|null,
 }
 
-$(function ($) {
-    setAxiosXMLHttpRequest();
 
+$(function ($) {
     $('#refreshPage').click(function () {
         document.location.reload();
         return false;
@@ -218,8 +220,8 @@ $(function ($) {
         window.open(href);
     });
 
-    setInterval(myclock, 500);
-    reloadCommandList();
+    //setInterval(myclock, 500);
+    //reloadCommandList();
     activateFlip();
     initTooltip();
 });

@@ -9,19 +9,22 @@ body {
     border-color: gray;
     background-position: center;
     background-repeat: repeat-y;
-    overflow-x: hidden;
 }
 
-@include media-breakpoint-up(lg) {
+@include media-breakpoint-up(md) {
     #container {
         width: 1000px;
         margin: 0 auto;
     }
 }
 
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(md) {
+    body{
+        overflow-x: hidden;
+    }
+
     #container {
-        width: 100%;
+        width: 500px;
         margin: 0 auto;
     }
 }
@@ -33,10 +36,10 @@ body {
 }
 
 
-@include media-breakpoint-up(lg) {
+@include media-breakpoint-up(md) {
     #map_view {
         grid-template-columns: 700px 300px;
-        grid-template-rows: 520px auto;
+        grid-template-rows: 520px 130px auto;
     }
 
     #mapZone {
@@ -54,13 +57,23 @@ body {
         grid-row-end: 3;
     }
 
+
+    #routeButtons{
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 3;
+        grid-row-end: 4;
+        text-align: center;
+    }
+
     #reservedCommandList {
         width: 300px;
         grid-column-start: 2;
         grid-column-end: 3;
         grid-row-start: 1;
-        grid-row-end: 3;
+        grid-row-end: 4;
     }
+
 
     .buttonPlate {
         display: grid;
@@ -87,7 +100,7 @@ body {
     }
 }
 
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(md) {
     .buttonPlate {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -110,6 +123,37 @@ body {
         font-size: 13px;
         margin: 0;
         display: block;
+    }
+
+
+    #mapZone {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 1;
+        grid-row-end: 2;
+    }
+
+
+    #reservedCommandList {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 2;
+        grid-row-end: 3;
+    }
+
+    #routeButtons{
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 3;
+        grid-row-end: 4;
+    }
+
+
+    #cityInfo {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 4;
+        grid-row-end: 5;
     }
 }
 
@@ -169,10 +213,6 @@ body {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-}
-
-#sidebar button {
-    /*width:100px;*/
 }
 
 .turn_pad {

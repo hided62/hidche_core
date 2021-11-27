@@ -104,6 +104,8 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('dist_js/vendors.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
+    <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
+    <?= WebUtil::printJS('dist_js/v_main.js', true) ?>
     <?= WebUtil::printJS('dist_js/main.js') ?>
     <script>
         window.serverNick = '<?= DB::prefix() ?>';
@@ -119,11 +121,18 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
             }, 5000);
         });
     </script>
-    <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('css/common.css') ?>
+    <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/main.css') ?>
     <?= WebUtil::printCSS('css/map.css') ?>
+    <?= WebUtil::printStaticValues([
+        'maxTurn'=>GameConst::$maxTurn,
+        'maxPushTurn'=>12,
+        'commandList'=>getCommandTable($generalObj),
+        'serverNow'=>TimeUtil::now(false),
+        'baseColor2'=>GameConst::$basecolor2,
+    ])?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
 
@@ -233,49 +242,11 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
                     </div>
                 </div>
             <?php endif; ?>
-            <div id="map_view" >
+            <div id="map_view">
                 <div id="mapZone" class="view-item"><?= getMapHtml($mapTheme) ?></div>
-                <div class="view-item" id="reservedCommandList">
-                    <table width="300" class="tb_layout b2">
-                        <thead>
-                            <tr height="24">
-                                <td colspan="4" class="center bg0"><strong>- 명령 목록 - </strong><input value="<?= TimeUtil::now(false) ?>" type="text" id="clock" size="19" style="background-color:black;color:white;border-style:none;"></td>
-                            </tr>
-                        </thead>
-                        <tbody class="center" style="font-weight:bold">
-                            <?php for ($turnIdx = 0; $turnIdx < GameConst::$maxTurn; $turnIdx++) : ?>
-                                <tr height='28' id="command_<?= $turnIdx ?>">
-                                    <td width="24" class='idx_pad center bg0'><?= $turnIdx + 1 ?></td>
-                                    <td height='24' class='month_pad center bg1' style='min-width:70px;white-space:nowrap;overflow:hidden;'></td>
-                                    <td width='42' class='time_pad center' style='background-color:black;white-space:nowrap;overflow:hidden;'></td>
-                                    <td width='165' class='turn_pad center bg2'><span class='turn_text'></span></td>
-                                </tr>
-                            <?php endfor; ?>
-                        </tbody>
-                    </table>
-                    <div><?= turnTable() ?></div>
-                    <div>
-                        <span style="color:cyan"><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　반복&amp;수정<b>→</b></span>
-                        <select id='repeatAmount' name=sel size=1 style=color:white;background-color:black;font-size:13px;>
-                            <option value=1>1턴</option>
-                            <option value=2>2턴</option>
-                            <option value=3>3턴</option>
-                            <option value=4>4턴</option>
-                            <option value=5>5턴</option>
-                            <option value=6>6턴</option>
-                            <option value=7>7턴</option>
-                            <option value=8>8턴</option>
-                            <option value=9>9턴</option>
-                            <option value=10>10턴</option>
-                            <option value=11>11턴</option>
-                            <option value=12>12턴</option>
-                        </select><input type=button value='반복' id='repeatTurn' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:70px;font-size:13px;margin-left:1ch;margin-right:2ch;'><input type=button value='▼미루기' id='pushTurn' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:80px;font-size:13px;'><input type=button value='▲당기기' id='pullTurn' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:80px;font-size:13px;'>
-                    </div>
-                    <div><?php printCommandTable($generalObj) ?>
-                        <input type=button value='실 행' id="reserveTurn" style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:110px;font-size:13px;'><input type=button value='갱 신' id='refreshPage' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:110px;font-size:13px;'><input type=button value='로비로' onclick="location.replace('../')" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;font-size:13px;>
-                    </div>
-                </div>
+                <div class="view-item" id="reservedCommandList"></div>
                 <div id="cityInfo" class="view-item" style="border:none;text-align:center;"><?= cityInfo($generalObj) ?></div>
+                <div id="routeButtons" class="view-item"><input type=button value='갱 신' id='refreshPage' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:110px;font-size:13px;'><input type=button value='로비로' onclick="location.replace('../')" style="background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;font-size:13px;"></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><?php myNationInfo($generalObj); ?></div>
