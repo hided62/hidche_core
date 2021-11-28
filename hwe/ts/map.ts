@@ -537,7 +537,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
             });
 
-            $objs.on('touchend', function (e) {
+            $objs.on('touchend', function () {
                 if (window.sam_toggleSingleTap) {
                     return true;
                 }
