@@ -1,82 +1,45 @@
 <template>
-  <table width="300" class="tb_layout b2">
-    <thead>
-      <tr height="24">
-        <td colspan="4" class="center bg0">
-          <strong>- 명령 목록 - </strong
-          ><input
-            :value="serverNow"
-            type="text"
-            id="clock"
-            size="19"
-            style="background-color: black; color: white; border-style: none"
-          />
-        </td>
-      </tr>
-      <tr>
-        <td colspan="4">
-          <div class="row gx-1">
-            <div class="col d-grid">
-              <b-dropdown
-                right
-                split
-                text="당기기"
-                @click="pullGeneralCommandSingle"
-              >
-                <b-dropdown-item
-                  v-for="turnIdx in maxPushTurn"
-                  :key="turnIdx"
-                  @click="pushGeneralCommand(-turnIdx)"
-                  >{{ turnIdx }}턴
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-            <div class="col d-grid">
-              <b-dropdown right split @click="selectAll" text="전체선택">
-                <b-dropdown-item @click="selectAll(true)"
-                  >모든턴</b-dropdown-item
-                >
-                <b-dropdown-item @click="selectStep(0, 2)"
-                  >홀수턴</b-dropdown-item
-                >
-                <b-dropdown-item @click="selectStep(1, 2)"
-                  >짝수턴</b-dropdown-item
-                >
-                <b-dropdown-divider></b-dropdown-divider>
+  <div class="commandPad">
+    <div class="col alert alert-dark m-0 p-1 center">
+      <h4 class="m-0">명령 목록</h4>
+    </div>
 
-                <b-dropdown-text
-                  v-for="spanIdx in [3, 4, 5, 6, 7]"
-                  :key="spanIdx"
-                >
-                  {{ spanIdx }}턴 간격<br />
-                  <b-button-group>
-                    <b-button
-                      class="ignoreMe"
-                      v-for="beginIdx in spanIdx"
-                      :key="beginIdx"
-                      @click="selectStep(beginIdx - 1, spanIdx)"
-                      >{{ beginIdx }}</b-button
-                    >
-                  </b-button-group>
-                </b-dropdown-text>
-              </b-dropdown>
-            </div>
-            <div class="col d-grid">
-              <b-dropdown right text="반복">
-                <b-dropdown-item
-                  v-for="turnIdx in maxPushTurn"
-                  :key="turnIdx"
-                  @click="repeatGeneralCommand(turnIdx)"
-                  >{{ turnIdx }}턴
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </thead>
-    <tbody class="center" style="font-weight: bold">
-      <tr
+    <div class="row gx-1">
+      <div class="col d-grid">
+        <b-dropdown right split text="당기기" @click="pullGeneralCommandSingle">
+          <b-dropdown-item
+            v-for="turnIdx in maxPushTurn"
+            :key="turnIdx"
+            @click="pushGeneralCommand(-turnIdx)"
+            >{{ turnIdx }}턴
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div
+        class="col alert alert-primary m-0 p-0"
+        style="
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        {{ serverNow }}
+      </div>
+      <div class="col d-grid">
+        <b-dropdown right text="반복">
+          <b-dropdown-item
+            v-for="turnIdx in maxPushTurn"
+            :key="turnIdx"
+            @click="repeatGeneralCommand(turnIdx)"
+            >{{ turnIdx }}턴
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
+    </div>
+
+    <div class="commandTable">
+      <template
         v-for="(turnObj, turnIdx) in reservedCommandList.slice(
           0,
           Math.min(maxTurn, viewMaxTurn)
@@ -86,23 +49,18 @@
         :id="`command_${turnIdx}`"
         :class="pressed[turnIdx] ? 'pressed' : ''"
       >
-        <td
-          width="32"
-          class="idx_pad center bg0 d-grid"
-          @click="clickTurn(turnIdx)"
-        >
+        <div class="idx_pad center d-grid" @click="clickTurn(turnIdx)">
           <b-button
             size="sm"
             :variant="pressed[turnIdx] ? 'info' : 'primary'"
             >{{ turnIdx + 1 }}</b-button
           >
-        </td>
-        <td
+        </div>
+        <div
           @click="clickTurn(turnIdx)"
           height="24"
-          class="month_pad center bg1"
+          class="month_pad center"
           :style="{
-            'min-width': '70px',
             'white-space': 'nowrap',
             'font-size': `${Math.min(
               14,
@@ -113,16 +71,15 @@
         >
           {{ turnObj.year ? `${turnObj.year}年` : "" }}
           {{ turnObj.month ? `${turnObj.month}月` : "" }}
-        </td>
-        <td
+        </div>
+        <div
           @click="clickTurn(turnIdx)"
-          width="38"
           class="time_pad center"
           style="background-color: black; white-space: nowrap; overflow: hidden"
         >
           {{ turnObj.time }}
-        </td>
-        <td width="160" class="turn_pad center bg2">
+        </div>
+        <div class="turn_pad center">
           <span
             class="turn_text"
             :style="turnObj.style"
@@ -130,57 +87,67 @@
             :title="turnObj.tooltip"
             v-html="turnObj.brief"
           ></span>
-        </td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="4">
-          <div class="row gx-1">
-            <div class="col-4 d-grid">
-              <b-dropdown
-                right
-                split
-                text="미루기"
-                @click="pushGeneralCommandSingle"
-              >
-                <b-dropdown-item
-                  v-for="turnIdx in maxPushTurn"
-                  :key="turnIdx"
-                  @click="pushGeneralCommand(turnIdx)"
-                  >{{ turnIdx }}턴
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-            <div class="col-8 d-grid">
-              <b-button @click="toggleViewMaxTurn">{{
-                flippedMaxTurn == viewMaxTurn ? "펼치기" : "접기"
-              }}</b-button>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
-  <div class="row gx-0">
-    <div class="col-10 d-grid">
-      <b-form-select v-model="selectedCommand"
-        ><b-form-select-option-group
-          v-for="cgroup in commandList"
-          :key="cgroup['category']"
-          :label="cgroup['category']"
-          ><b-form-select-option
-            v-for="(citem, ckey) in cgroup['values']"
-            :value="ckey"
-            :key="ckey"
-            >{{ citem.title
-            }}{{ citem.possible ? "" : "(불가)" }}</b-form-select-option
-          >
-        </b-form-select-option-group></b-form-select
-      >
+        </div>
+      </template>
     </div>
-    <div class="col-2 d-grid">
-      <b-button @click="reserveCommand()">실행</b-button>
+    <div class="row gx-1">
+      <div class="col d-grid">
+        <b-dropdown right split text="미루기" @click="pushGeneralCommandSingle">
+          <b-dropdown-item
+            v-for="turnIdx in maxPushTurn"
+            :key="turnIdx"
+            @click="pushGeneralCommand(turnIdx)"
+            >{{ turnIdx }}턴
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div class="col d-grid">
+        <b-dropdown right split @click="selectAll" text="전체선택">
+          <b-dropdown-item @click="selectAll(true)">모든턴</b-dropdown-item>
+          <b-dropdown-item @click="selectStep(0, 2)">홀수턴</b-dropdown-item>
+          <b-dropdown-item @click="selectStep(1, 2)">짝수턴</b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+
+          <b-dropdown-text v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
+            {{ spanIdx }}턴 간격<br />
+            <b-button-group>
+              <b-button
+                class="ignoreMe"
+                v-for="beginIdx in spanIdx"
+                :key="beginIdx"
+                @click="selectStep(beginIdx - 1, spanIdx)"
+                >{{ beginIdx }}</b-button
+              >
+            </b-button-group>
+          </b-dropdown-text>
+        </b-dropdown>
+      </div>
+      <div class="col d-grid">
+        <b-button @click="toggleViewMaxTurn">{{
+          flippedMaxTurn == viewMaxTurn ? "펼치기" : "접기"
+        }}</b-button>
+      </div>
+    </div>
+    <div class="row gx-0">
+      <div class="col-10 d-grid">
+        <b-form-select v-model="selectedCommand"
+          ><b-form-select-option-group
+            v-for="cgroup in commandList"
+            :key="cgroup['category']"
+            :label="cgroup['category']"
+            ><b-form-select-option
+              v-for="(citem, ckey) in cgroup['values']"
+              :value="ckey"
+              :key="ckey"
+              >{{ citem.title
+              }}{{ citem.possible ? "" : "(불가)" }}</b-form-select-option
+            >
+          </b-form-select-option-group></b-form-select
+        >
+      </div>
+      <div class="col-2 d-grid">
+        <b-button @click="reserveCommand()" variant="primary">실행</b-button>
+      </div>
     </div>
   </div>
 </template>
@@ -274,8 +241,8 @@ export default defineComponent({
 
   methods: {
     updateNow() {
-      const clientNow = addMilliseconds(new Date(), this.timeDiff);
-      this.serverNow = formatTime(clientNow, false);
+      const serverNow = addMilliseconds(new Date(), this.timeDiff);
+      this.serverNow = formatTime(serverNow, "HH:mm:ss");
       setTimeout(() => {
         this.updateNow();
       }, 250);
@@ -468,7 +435,7 @@ export default defineComponent({
       viewMaxTurn: 18,
       maxPushTurn,
       commandList,
-      serverNow,
+      serverNow: formatTime(serverNowObj, "HH:mm:ss"),
       timeDiff,
       pressed,
       selectedCommand,
@@ -481,3 +448,60 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss">
+@import "../scss/variables.scss";
+@import "../scss/bootswatch_custom_variables.scss";
+@import "../../node_modules/bootstrap5/scss/bootstrap-utilities.scss";
+
+.commandPad {
+  background-color: $gray-900;
+}
+
+.commandTable {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(30px, 1fr) minmax(70px, 2.5fr) minmax(40px, 1fr) 5fr;
+  //30, 70, 37.65, 160
+}
+
+@include media-breakpoint-up(md) {
+  .commandPad {
+    margin-left: 10px;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .dropdown-item {
+    padding: 8px;
+  }
+
+  .commandPad {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .month_pad,
+  .time_pad,
+  .turn_pad {
+    padding: 6px;
+  }
+}
+
+.month_pad,
+.time_pad,
+.turn_pad {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.turn_pad {
+  white-space: nowrap;
+  font-weight: lighter;
+  background-color: rgba($blue, 0.5);
+}
+
+.turn_pad .turn_text {
+  display: inline-block;
+}
+</style>

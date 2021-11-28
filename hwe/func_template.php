@@ -5,7 +5,7 @@ namespace sammo;
 
 /**
  * 템플릿 생성과 관련된 함수들을 모아두는 파일
- * 
+ *
  * NOTE: 아직 converter와 명확한 구분이 되어있지 않음.
  * TODO: legacy template들을 전부 template 폴더로 모아둘 필요 있음
  * TODO: side effect를 제거
@@ -13,7 +13,7 @@ namespace sammo;
 
  /**
   * 관리자 권한이 필요함을 출력.
-  * @return void 
+  * @return void
   */
 function requireAdminPermissionHTML()
 {
@@ -39,28 +39,6 @@ function requireAdminPermissionHTML()
     </html>
 <?php
     return ob_get_clean();
-}
-
-function turnTable()
-{
-
-    $turnList = [];
-    $turnList[] = "<option selected value='0'>1턴</option>";
-    foreach (Util::range(1, GameConst::$maxTurn) as $turnIdx) {
-        $turnText = $turnIdx + 1;
-        $turnList[] = "<option value='{$turnIdx}'>{$turnText}턴</option>";
-    }
-
-    $turnText = join("\n", $turnList);
-
-    return "
-<select id='generalTurnSelector' name=turn[] size=11 multiple>
-    <option value='-3'>전체</option>
-    <option value='-1'>홀턴</option>
-    <option value='-2'>짝턴</option>
-    {$turnText}
-</select>
-";
 }
 
 function chiefTurnTable()

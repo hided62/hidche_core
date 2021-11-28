@@ -101,6 +101,12 @@ body {
         grid-column-end: 3;
         grid-row-start: 1;
         grid-row-end: 4;
+        position:relative;
+    }
+
+    .commandPad{
+        position:absolute;
+        z-index: 99;
     }
 
 
@@ -282,30 +288,11 @@ body {
     height: 18px;
 }
 
-#generalTurnSelector {
-    width: 50px;
-    color: white;
-    background-color: black;
-    font-size: 13px;
-}
-
 #sidebar {
     position: fixed;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-}
-
-.turn_pad {
-    white-space: nowrap;
-    font-weight: lighter;
-    max-width: 162px;
-    width: 162px;
-
-}
-
-.turn_pad .turn_text {
-    display: inline-block;
 }
 
 /*임시용 */
