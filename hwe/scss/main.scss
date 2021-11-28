@@ -131,6 +131,23 @@ body {
         grid-column-end: 2;
         grid-row-start: 1;
         grid-row-end: 2;
+
+
+        .world_map{
+            width:500px;
+            height: calc((500px + 20px) * 500 / 700);
+        }
+
+        .map_title{
+            transform-origin: 0px 0px;
+            transform: scale(calc(500 / 700));
+            margin-bottom: -20px * 200 / 700;
+        }
+
+        .map_body{
+            transform-origin: 0px 0px;
+            transform: scale(calc(500 / 700));
+        }
     }
 
 

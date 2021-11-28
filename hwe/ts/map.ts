@@ -552,16 +552,10 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
                     $tooltip_nation.html('').hide();
                 }
 
-                let left = position.left;
-                let top = position.top;
+                const left = position.left;
+                const top = position.top;
 
-                const scale = $map_body.data('scale');
-                if (scale) {
-                    left /= scale;
-                    top /= scale;
-                }
-
-                $tooltip.css({ 'top': top + 25, 'left': left + 35 }).show();
+                $tooltip.css({ 'top': top + 45, 'left': left + 35 }).show();
 
                 const touchMode = $this.data('touchMode') as number;
                 if (touchMode <= 1) {
@@ -590,16 +584,10 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             }
 
             const rect = this.getBoundingClientRect();
-            let left = (e.clientX - rect.left - this.clientLeft + this.scrollLeft);
-            let top = (e.clientY - rect.top - this.clientTop + this.scrollTop);
+            const left = (e.clientX - rect.left - this.clientLeft + this.scrollLeft);
+            const top = (e.clientY - rect.top - this.clientTop + this.scrollTop);
 
-            const scale = $map_body.data('scale');
-            if (scale) {
-                left /= scale;
-                top /= scale;
-            }
-
-            $tooltip.css({ 'top': top + 10, 'left': left + 10 });
+            $tooltip.css({ 'top': top + 30, 'left': left + 10 });
         });
 
         $objs.on('mouseenter', function () {

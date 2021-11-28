@@ -5,6 +5,7 @@
     background:black;
     font-size:13px;
     color:white;
+    position: relative;
 }
 
 .map_title{
@@ -33,6 +34,7 @@
     width:700px;
     height:500px;
     position:relative;
+    overflow: hidden;
 }
 
 .map_body .map_bglayer1{
@@ -99,7 +101,7 @@
     z-index: 6;
     line-height:15px;
     height:15px;
-    
+
 }
 .world_map .nation_name{
     background-color: rgb(30, 164, 255);
