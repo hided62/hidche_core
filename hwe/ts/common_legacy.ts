@@ -1,7 +1,6 @@
 import $ from "jquery";
 import axios from "axios";
 
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
  */

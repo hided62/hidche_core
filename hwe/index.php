@@ -122,7 +122,7 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
         });
     </script>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('css/common.css') ?>
+    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/main.css') ?>
     <?= WebUtil::printCSS('css/map.css') ?>
