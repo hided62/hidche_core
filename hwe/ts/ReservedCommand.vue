@@ -490,6 +490,11 @@ export default defineComponent({
   }
 }
 
+.month_pad:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .month_pad,
 .time_pad,
 .turn_pad {
