@@ -18,7 +18,7 @@ declare global {
     interface Window {
         sam_toggleSingleTap?: boolean,
         getCityPosition: () => CityPositionMap;
-        formatCityInfo: (city: MapCityParsedRaw)=>MapCityParsedRegionLevelText
+        formatCityInfo: (city: MapCityParsedRaw) => MapCityParsedRegionLevelText
     }
 }
 
@@ -323,7 +323,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             };
         }
 
-        function mergeNationInfo(city: MapCityParsedName):MapCityParsedNation{
+        function mergeNationInfo(city: MapCityParsedName): MapCityParsedNation {
             //nationID 값으로 isCapital, color, nation을 통합
 
             const nationID = city.nationID;
@@ -343,7 +343,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             };
         }
 
-        function mergeClickable(city:MapCityParsedNation): MapCityParsedClickable {
+        function mergeClickable(city: MapCityParsedNation): MapCityParsedClickable {
             //clickable = (defaultCity << 4 ) | (remainSpy << 3) | (ourCity << 2) | (shownByGeneral << 1) | clickableAll
             const id = city.id;
             const nationID = city.nationID;
@@ -436,7 +436,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
         });
 
-        if(myCity){
+        if (myCity) {
             $world_map.find(`.city_base_${myCity} .city_filler`).addClass('my_city');
         }
 
@@ -444,7 +444,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         return obj;
     }
 
-    function drawBasicWorldMap(obj:MapCityDrawable) {
+    function drawBasicWorldMap(obj: MapCityDrawable) {
 
         const $map_body = $(`${drawTarget} .map_body`);
 
@@ -496,7 +496,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             $map_body.append($cityObj);
         });
 
-        if(myCity){
+        if (myCity) {
             $world_map.find(`.city_base_${myCity} .city_filler`).addClass('my_city');
         }
 
@@ -504,7 +504,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         return obj;
     }
 
-    function setMouseWork(obj:MapCityDrawable) {
+    function setMouseWork(obj: MapCityDrawable) {
         const $tooltip = $(drawTarget + ' .city_tooltip');
         const $tooltip_city = $tooltip.find('.city_name');
         const $tooltip_nation = $tooltip.find('.nation_name');
@@ -537,7 +537,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
             });
 
-            $objs.on('touchend', function () {
+            $objs.on('touchend', function (e) {
                 if (window.sam_toggleSingleTap) {
                     return true;
                 }
@@ -555,7 +555,14 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
                 const left = position.left;
                 const top = position.top;
 
-                $tooltip.css({ 'top': top + 45, 'left': left + 35 }).show();
+                const tooltipWidth = unwrap($tooltip.width());
+
+                if (left + tooltipWidth + 35 > window.innerWidth) {
+                    $tooltip.css({ 'top': top + 45, 'left': left - tooltipWidth - 10 }).show();
+                }
+                else {
+                    $tooltip.css({ 'top': top + 45, 'left': left + 35 }).show();
+                }
 
                 const touchMode = $this.data('touchMode') as number;
                 if (touchMode <= 1) {
@@ -587,7 +594,16 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             const left = (e.clientX - rect.left - this.clientLeft + this.scrollLeft);
             const top = (e.clientY - rect.top - this.clientTop + this.scrollTop);
 
-            $tooltip.css({ 'top': top + 30, 'left': left + 10 });
+            const tooltipWidth = unwrap($tooltip.width());
+
+            if (e.clientX + rect.left + tooltipWidth + 10 > window.innerWidth) {
+                $tooltip.css({ 'top': top + 30, 'left': left - tooltipWidth - 10 });
+            }
+            else {
+                $tooltip.css({ 'top': top + 30, 'left': left + 10 });
+            }
+
+
         });
 
         $objs.on('mouseenter', function () {
@@ -615,7 +631,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
         $objs.on('click', function () {
             //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
-            const touchMode = $(this).data('touchMode') as number|undefined;
+            const touchMode = $(this).data('touchMode') as number | undefined;
             if (touchMode === undefined) {
                 return;
             }
@@ -629,7 +645,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         return obj;
     }
 
-    function setCityClickable(obj:MapCityDrawable) {
+    function setCityClickable(obj: MapCityDrawable) {
 
         obj.cityList.forEach(function (city) {
             const $cityLink = $world_map.find(`.city_base_${city.id} .city_link`);
@@ -734,7 +750,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
     if ($world_map.hasClass('draw_required')) {
         if (useCachedMap) {
             //일단 불러옴
-            await (async ()=>{
+            await (async () => {
                 const rawStoredMap = localStorage.getItem(storedOldMapKey);
                 if (!rawStoredMap) {
                     return;
@@ -745,14 +761,14 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
                 }
 
                 await setMapBackground(storedMap)
-                .then(convertCityObjs)
-                .then(isDetailMap?drawDetailWorldMap:drawBasicWorldMap)
-                .then(setMouseWork)
-                .then(setCityClickable)
-                .then(saveCityInfo);
+                    .then(convertCityObjs)
+                    .then(isDetailMap ? drawDetailWorldMap : drawBasicWorldMap)
+                    .then(setMouseWork)
+                    .then(setCityClickable)
+                    .then(saveCityInfo);
             })();
         } else if (option.year && option.month) {
-            const rawStartYear = localStorage.getItem(storedStartYear) as string|undefined;
+            const rawStartYear = localStorage.getItem(storedStartYear) as string | undefined;
             let startYear: number;
             if (rawStartYear) {
                 startYear = JSON.parse(rawStartYear);

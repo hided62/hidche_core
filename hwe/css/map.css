@@ -494,3 +494,8 @@
 .map_basic .city_base .city_state.city_state_good{
     background-color:blue;
 }
+
+.btn.btn-minimum{
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
