@@ -49,7 +49,7 @@
         :id="`command_${turnIdx}`"
         :class="pressed[turnIdx] ? 'pressed' : ''"
       >
-        <div class="idx_pad center d-grid" @click="clickTurn(turnIdx)">
+        <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
             size="sm"
             :variant="pressed[turnIdx] ? 'info' : 'primary'"
@@ -57,7 +57,7 @@
           >
         </div>
         <div
-          @click="clickTurn(turnIdx)"
+          @click="selectTurn(turnIdx)"
           height="24"
           class="month_pad center"
           :style="{
@@ -73,7 +73,6 @@
           {{ turnObj.month ? `${turnObj.month}月` : "" }}
         </div>
         <div
-          @click="clickTurn(turnIdx)"
           class="time_pad center"
           style="background-color: black; white-space: nowrap; overflow: hidden"
         >
@@ -247,8 +246,12 @@ export default defineComponent({
         this.updateNow();
       }, 250);
     },
-    clickTurn(turnIdx: number) {
+    toggleTurn(turnIdx: number) {
       this.pressed[turnIdx] = !this.pressed[turnIdx];
+    },
+    selectTurn(turnIdx: number) {
+      this.pressed.fill(false);
+      this.pressed[turnIdx] = true;
     },
     selectAll(e: Event | true) {
       //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
