@@ -1,4 +1,4 @@
-<div class="buttonPlate bg1">
+<div class="buttonPlate">
     <a href="a_status.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">세력도</button></a>
     <a href="a_kingdomList.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">세력일람</button></a>
     <a href="a_genList.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">장수일람</button></a>
