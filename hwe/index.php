@@ -147,7 +147,7 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
         <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
         <div class="tb_layout row gx-0">
             <div id="server_title" class="row py-1">
-                <h3>삼국지 모의전투 HiDCHe <?= $serverName . $serverCnt ?>기 (<font color=cyan><?= $scenario ?></font>)</h3>
+                <h3>삼국지 모의전투 HiDCHe <?= $serverName . $serverCnt ?>기 <span class="avoid-wrap">(<font color=cyan><?= $scenario ?></font>)</span></h3>
             </div>
 
             <?php if ($valid == 1) : ?>
