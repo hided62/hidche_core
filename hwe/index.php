@@ -92,6 +92,9 @@ $serverName = UniqueConst::$serverName;
 $serverCnt = $gameStor->server_cnt;
 
 $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
+
+$myNationStatic = getNationStaticInfo($generalObj->getNationID());
+$nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
 ?>
 <!DOCTYPE html>
 <html>
@@ -127,18 +130,18 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
     <?= WebUtil::printCSS('dist_css/main.css') ?>
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printStaticValues([
-        'maxTurn'=>GameConst::$maxTurn,
-        'maxPushTurn'=>12,
-        'commandList'=>getCommandTable($generalObj),
-        'serverNow'=>TimeUtil::now(false),
-        'baseColor2'=>GameConst::$basecolor2,
-    ])?>
+        'maxTurn' => GameConst::$maxTurn,
+        'maxPushTurn' => 12,
+        'commandList' => getCommandTable($generalObj),
+        'serverNow' => TimeUtil::now(false),
+        'baseColor2' => GameConst::$basecolor2,
+    ]) ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
 
 </head>
 
-<body class="img_back">
+<body class="img_back sam-color-<?= $nationColorType ?>">
 
     <div id="container">
         <div class="row toolbars"><?= allButton($gameStor->npcmode == 1) ?></div>
@@ -246,7 +249,7 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
                 <div id="mapZone" class="view-item"><?= getMapHtml($mapTheme) ?></div>
                 <div class="view-item" id="reservedCommandList"></div>
                 <div id="cityInfo" class="view-item" style="border:none;text-align:center;"><?= cityInfo($generalObj) ?></div>
-                <div id="routeButtons" class="view-item"><input type=button value='갱 신' id='refreshPage' style='background-color:<?= GameConst::$basecolor2 ?>;color:white;width:110px;font-size:13px;'><input type=button value='로비로' onclick="location.replace('../')" style="background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;font-size:13px;"></div>
+                <div id="routeButtons" class="view-item row justify-content-center"><button type='button' class='btn btn-sammo-base2 col-2' id='refreshPage'>갱 신</button><button type='button' class='btn btn-sammo-base2 col-3' onclick="location.replace('../')" >로비로</button></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><?php myNationInfo($generalObj); ?></div>

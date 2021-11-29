@@ -1,0 +1,67 @@
+
+
+@function frontColor($color) {
+    @return color-contrast($color);
+}
+
+@each $colorType, $color in $nationColors {
+    .sam-nation-color-#{$colorType} {
+        .sam-nation-own-bgcolor{
+            background-color: $color;
+            color: frontColor($color);
+        }
+
+        .btn-sammo-nation{
+            @include button-variant($color, $color);
+
+            &:hover,
+            &:active,
+            &:focus {
+              background-color: $color;
+            }
+
+            &,
+            &:not(.disabled):hover,
+            &:not(.disabled):active,
+            &:focus {
+              border-color: shade-color($color, 10%);
+            }
+        }
+    }
+
+    .btn-sammo-nation-#{$colorType}{
+        @include button-variant($color, $color);
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $color;
+        }
+
+        &,
+        &:not(.disabled):hover,
+        &:not(.disabled):active,
+        &:focus {
+          border-color: shade-color($color, 10%);
+        }
+    }
+}
+
+@each $colorType, $color in $sammoColors {
+    .btn-sammo-#{$colorType}{
+        @include button-variant($color, $color);
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $color;
+        }
+
+        &,
+        &:not(.disabled):hover,
+        &:not(.disabled):active,
+        &:focus {
+          border-color: shade-color($color, 10%);
+        }
+    }
+}
