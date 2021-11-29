@@ -288,13 +288,13 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                 <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0" id='public_talk_position'>전체 메시지(최고99자)</div>
                     <section class="public_message">
-                        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="public">이전 메시지 불러오기</button>
+                        <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="public">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
                 <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0">국가 메시지(최고99자)</div>
                     <section class="national_message">
-                        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="national">이전 메시지 불러오기</button>
+                    <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="national">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
 
@@ -304,14 +304,14 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                 <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0" id='secret_talk_position'>개인 메시지(최고99자)</div>
                     <section class="private_message">
-                        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="private">이전 메시지 불러오기</button>
+                    <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="private">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
 
                 <div class="col-lg-6 board_side bg0">
                     <div class="board_header bg0">외교 메시지(최고99자)</div>
                     <section class="diplomacy_message">
-                        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="diplomacy">이전 메시지 불러오기</button>
+                    <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="diplomacy">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
             </div>
