@@ -1,12 +1,13 @@
-//TODO:혹시나 몰라서, 나중에 실제로 수정
-$bg1color: #141c65aa;
-$bg2color: #225500aa;
+$base1color: #141c65;
+$base2color: #00582c;
+$base3color: #704615;
+$base4color: #70153b;
 
 $sammoColors: (
-    'base1': #000044,
-    'base2': #225500,
-    'base3': #660000,
-    'base4': #330000,
+    'base1': $base1color,
+    'base2': $base2color,
+    'base3': $base3color,
+    'base4': $base4color,
 );
 
 $nationColors: (

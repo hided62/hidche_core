@@ -506,7 +506,7 @@ export default defineComponent({
 .turn_pad {
   white-space: nowrap;
   font-weight: lighter;
-  background-color: rgba($blue, 0.5);
+  background-color: rgba($base1color, 0.5);
 }
 
 .turn_pad .turn_text {
