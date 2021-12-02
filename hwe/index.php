@@ -142,7 +142,6 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
 </head>
 
 <body class="img_back sam-color-<?= $nationColorType ?>">
-
     <div id="container" class="bg0">
         <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
         <div class="tb_layout row gx-0">
@@ -216,7 +215,7 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                 <div class="col">운영자 메세지 : <span style='color:yellow;'><?= $gameStor->msg ?></span></div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col" id="nation-msg-position">
                     <div>【 국가방침 】</div>
                     <div><?= nationMsg($generalObj) ?></div>
                 </div>
@@ -252,21 +251,21 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                 <div id="routeButtons" class="view-item row justify-content-center"><button type='button' class='btn btn-sammo-base2 col-2' id='refreshPage'>갱 신</button><button type='button' class='btn btn-sammo-base2 col-3' onclick="location.replace('../')">로비로</button></div>
             </div>
             <div class="row gx-0">
-                <div class="col-md-6"><?php myNationInfo($generalObj); ?></div>
-                <div class="col-md-6"><?php generalInfo($generalObj); ?></div>
+                <div class="col-md-6" id="nation-position"><?php myNationInfo($generalObj); ?></div>
+                <div class="col-md-6" id="general-position"><?php generalInfo($generalObj); ?></div>
             </div>
 
             <div class="row gx-0"><?= commandButton() ?></div>
             <div class="row gx-0">
-                <div class="col-md-6">
+                <div class="col-md-6" id="general_public_record-position">
                     <div><b>장수 동향</b></div>
                     <div id="general_public_record" style="text-align:left;"><?= formatHistoryToHTML(getGlobalActionLogRecent(15)) ?></div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" id="general_log-position">
                     <div><b>개인 기록</b></div>
                     <div id="general_log" style="text-align:left;"><?= formatHistoryToHTML(getGeneralActionLogRecent($me['no'], 15)) ?></div>
                 </div>
-                <div class="col-12">
+                <div class="col-12" id="world_history-position">
                     <div><b>중원 정세</b></div>
                     <div id="world_history" colspan=2 style="text-align:left;"><?= formatHistoryToHTML(getGlobalHistoryLogRecent(15)) ?></div>
                 </div>
@@ -285,33 +284,33 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
             </div>
             <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
             <div id="message_board" class="row gx-0">
-                <div class="col-md-6 board_side bg0">
-                    <div class="board_header bg0" id='public_talk_position'>전체 메시지(최고99자)</div>
+                <div class="col-md-6 board_side bg0" id='public_talk_position'>
+                    <div class="board_header bg0">전체 메시지(최고99자)</div>
                     <section class="public_message">
                         <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="public">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
-                <div class="col-md-6 board_side bg0">
+                <div class="col-md-6 board_side bg0" id='national_talk_position'>
                     <div class="board_header bg0">국가 메시지(최고99자)</div>
                     <section class="national_message">
-                    <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="national">이전 메시지 불러오기</button></div>
+                        <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="national">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
 
 
 
 
-                <div class="col-md-6 board_side bg0">
-                    <div class="board_header bg0" id='secret_talk_position'>개인 메시지(최고99자)</div>
+                <div class="col-md-6 board_side bg0" id='private_talk_position'>
+                    <div class="board_header bg0">개인 메시지(최고99자)</div>
                     <section class="private_message">
-                    <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="private">이전 메시지 불러오기</button></div>
+                        <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="private">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
 
-                <div class="col-md-6 board_side bg0">
+                <div class="col-md-6 board_side bg0" id='diplomacy_talk_position'>
                     <div class="board_header bg0">외교 메시지(최고99자)</div>
                     <section class="diplomacy_message">
-                    <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="diplomacy">이전 메시지 불러오기</button></div>
+                        <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="diplomacy">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
             </div>
@@ -330,6 +329,27 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
         MessageBox("설문조사에 참여하시면 금{$develcost}과 유니크템을 드립니다! (우측 상단 설문조사 메뉴)");
     }
     ?>
+    <div id="float-tabs">
+        <div class="btn-group-vertical">
+            <a href="#nation-msg-position" class="btn btn-sammo-nation">방침</a>
+            <a href="#mapZone" class="btn btn-sammo-nation">지도</a>
+            <a href="#reservedCommandList" class="btn btn-sammo-nation">명령</a>
+            <a href="#cityInfo" class="btn btn-sammo-nation">도시</a>
+            <a href="#nation-position" class="btn btn-sammo-nation">국가</a>
+            <a href="#general-position" class="btn btn-sammo-nation">장수</a>
+        </div>
+        <div class="btn-group-vertical">
+            <a href="#general_public_record-position" class="btn btn-secondary">동향</a>
+            <a href="#general_log-position" class="btn btn-secondary">개인</a>
+            <a href="#world_history-position" class="btn btn-secondary">정세</a>
+        </div>
+        <div class="btn-group-vertical">
+            <a href="#public_talk_position" class="btn btn-light active">전체</a>
+            <a href="#national_talk_position" class="btn btn-light">국가</a>
+            <a href="#private_talk_position" class="btn btn-light">개인</a>
+            <a href="#diplomacy_talk_position" class="btn btn-light">외교</a>
+        </div>
+    </div>
 </body>
 
 </html>
