@@ -26,7 +26,7 @@ if(count($lastMsgGet) >= 10){
     }
     catch(\Exception $e){
         $lastMsgGet = [];
-    } 
+    }
 }
 $lastMsgGet[] = TimeUtil::now();
 $session->lastMsgGet = Json::encode($lastMsgGet);
@@ -66,7 +66,7 @@ $result['private'] = array_map(function(Message $msg) use (&$nextSequence, &$min
         $lastType = 'private';
     }
     return $msg->toArray();
-}, Message::getMessagesFromMailBox($generalID, Message::MSGTYPE_PRIVATE, 20, $reqSequence));
+}, Message::getMessagesFromMailBox($generalID, Message::MSGTYPE_PRIVATE, 15, $reqSequence));
 
 $result['public'] = array_map(function(Message $msg)use (&$nextSequence, &$minSequence, &$lastType){
     if($msg->id > $nextSequence){
@@ -77,7 +77,7 @@ $result['public'] = array_map(function(Message $msg)use (&$nextSequence, &$minSe
         $lastType = 'public';
     }
     return $msg->toArray();
-}, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 20, $reqSequence));
+}, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 15, $reqSequence));
 
 $result['national'] = array_map(function(Message $msg)use (&$nextSequence, &$minSequence, &$lastType){
     if($msg->id > $nextSequence){
@@ -88,7 +88,7 @@ $result['national'] = array_map(function(Message $msg)use (&$nextSequence, &$min
         $lastType = 'national';
     }
     return $msg->toArray();
-}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 20, $reqSequence));
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 15, $reqSequence));
 
 $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence, &$minSequence, &$lastType, $permission){
     if($msg->id > $nextSequence){
@@ -104,7 +104,7 @@ $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence, &$min
         $values['option']['invalid'] = true;
     }
     return $values;
-}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 20, $reqSequence));
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 15, $reqSequence));
 
 if($lastType !== null){
     array_pop($result[$lastType]);

@@ -40,7 +40,7 @@ if(count($lastMsgGet) >= 10){
     }
     catch(\Exception $e){
         $lastMsgGet = [];
-    } 
+    }
 }
 $lastMsgGet[] = $now;
 $session->lastMsgGet = Json::encode($lastMsgGet);
@@ -83,7 +83,7 @@ if($reqType == 'private'){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld($generalID, Message::MSGTYPE_PRIVATE, $reqTo, 20));
+    }, Message::getMessagesFromMailBoxOld($generalID, Message::MSGTYPE_PRIVATE, $reqTo, 15));
 }
 else if($reqType == 'public'){
     $result['public'] = array_map(function(Message $msg)use (&$nextSequence){
@@ -91,7 +91,7 @@ else if($reqType == 'public'){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, $reqTo, 20));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, $reqTo, 15));
 }
 else if($reqType == 'national'){
     $result['national'] = array_map(function(Message $msg)use (&$nextSequence){
@@ -99,7 +99,7 @@ else if($reqType == 'national'){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, $reqTo, 20));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, $reqTo, 15));
 }
 else{
     $result['diplomacy'] = array_map(function(Message $msg)use (&$nextSequence, $permission){
@@ -112,7 +112,7 @@ else{
             $values['option']['invalid'] = true;
         }
         return $values;
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, $reqTo, 20));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, $reqTo, 15));
 }
 
 Json::die($result);
