@@ -258,15 +258,15 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
             <div class="row gx-0"><?= commandButton() ?></div>
             <div class="row gx-0">
                 <div class="col-md-6" id="general_public_record-position">
-                    <div><b>장수 동향</b></div>
+                    <div class="bg1 center s-border-tb"><b>장수 동향</b></div>
                     <div id="general_public_record" style="text-align:left;"><?= formatHistoryToHTML(getGlobalActionLogRecent(15)) ?></div>
                 </div>
                 <div class="col-md-6" id="general_log-position">
-                    <div><b>개인 기록</b></div>
+                    <div class="bg1 center s-border-tb"><b>개인 기록</b></div>
                     <div id="general_log" style="text-align:left;"><?= formatHistoryToHTML(getGeneralActionLogRecent($me['no'], 15)) ?></div>
                 </div>
                 <div class="col-12" id="world_history-position">
-                    <div><b>중원 정세</b></div>
+                    <div class="bg1 center s-border-tb"><b>중원 정세</b></div>
                     <div id="world_history" colspan=2 style="text-align:left;"><?= formatHistoryToHTML(getGlobalHistoryLogRecent(15)) ?></div>
                 </div>
             </div>
