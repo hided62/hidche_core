@@ -2,42 +2,7 @@
 namespace sammo;
 
 include "lib.php";
-
-$templates = new \League\Plates\Engine(__DIR__.'/templates');
-
-function getAutorunInfo($autorunOption){
-    global $templates;
-    $auto_info = [];
-    foreach($autorunOption['options'] as $auto_option => $value){
-        assert($value);
-        switch($auto_option){
-            case 'develop': $auto_info['내정'] = '내정'; break;
-            case 'warp': $auto_info['순간이동'] = '순간이동'; break;
-            case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
-            case 'recruit_high': $auto_info['징병'] = '모병'; break;
-            case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
-            case 'battle': $auto_info['출병'] = '출병'; break;
-            case 'chief': $auto_info['사령턴'] = '사령턴'; break;
-        }
-    }
-    $limit = Util::toInt($autorunOption['limit_minutes']);
-    if($limit >= 43200){
-        $auto_info['제한'] = '항상 유효';
-    }
-    else if($limit % 60 == 0){
-        $auto_info['제한'] = ($limit/60).'시간 유효';
-    }
-    else{
-        $auto_info['제한'] = ($limit).'분 유효';
-    }
-    $auto_info = join(', ', array_values($auto_info));
-    return $templates->render('tooltip', [
-        'text'=>'자율행동',
-        'info'=>$auto_info,
-        'style'=>'text-decoration:underline',
-        'copyable_info'=>true
-    ]);
-}
+include "func_template.php";
 
 $session = Session::requireLogin([
     'game'=>null,

@@ -11,9 +11,11 @@ import { exportWindow } from './util/exportWindow';
 exportWindow($, '$');
 
 import '../scss/main.scss';
+import { unwrap } from './util/unwrap';
+import { number } from 'vue-types';
 
 $(function ($) {
-    $('#refreshPage').click(function () {
+    $('.refreshPage').click(function () {
         document.location.reload();
         return false;
     });
@@ -44,6 +46,10 @@ $(function ($) {
         button: HTMLAnchorElement,
     }[] = [];
 
+    let nationMsgBox!: HTMLElement;
+    let nationMsg!: HTMLElement;
+    let nationMsgHeight : number|undefined = undefined;
+
     function init() {
         const buttons = document.querySelectorAll<HTMLAnchorElement>('#float-tabs a.btn');
         if (!buttons) {
@@ -62,6 +68,9 @@ $(function ($) {
             }
             objects.push({ target, button });
         }
+
+        nationMsgBox = unwrap(document.getElementById('nation-msg-box'));
+        nationMsg = unwrap(document.getElementById('nation-msg'));
     }
     function onScroll() {
         if (!finInit && !init()) return;
@@ -92,6 +101,19 @@ $(function ($) {
             }
 
             button.classList.add('active');
+        }
+
+        if(nationMsgBox.offsetWidth < nationMsg.offsetWidth){
+            if(nationMsgHeight === undefined){
+                nationMsgHeight = nationMsgBox.offsetHeight;
+                nationMsgBox.style.height = `${nationMsgHeight / 2}px`;
+            }
+        }
+        else{
+            if(nationMsgBox.style.height){
+                nationMsgHeight = undefined;
+                nationMsgBox.style.height = '';
+            }
         }
     }
     function ready(fn: () => unknown) {

@@ -65,24 +65,20 @@ if ($nationID) {
     $nationStor->cacheAll();
 }
 
-$valid = 0;
 if ($gameStor->extended_general == 0) {
     $extend = "표준";
 } else {
     $extend = "확장";
-    $valid = 1;
 }
 if ($gameStor->fiction == 0) {
     $fiction = "사실";
 } else {
     $fiction = "가상";
-    $valid = 1;
 }
 if ($gameStor->npcmode == 0) {
     $npcmode = "불가능";
 } else if ($gameStor->npcmode == 1) {
     $npcmode = "가능";
-    $valid = 1;
 } else {
     $npcmode = "선택 생성";
 }
@@ -95,6 +91,22 @@ $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
 
 $myNationStatic = getNationStaticInfo($generalObj->getNationID());
 $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
+
+$autorunUser = ($gameStor->autorun_user) ?? [];
+$otherTextInfo = [];
+
+if ($gameStor->join_mode == 'onlyRandom') {
+    $otherTextInfo[] = '랜덤 임관 전용';
+}
+if ($autorunUser['limit_minutes'] ?? false) {
+    $otherTextInfo[] = getAutorunInfo($autorunUser);
+}
+
+if (!$otherTextInfo) {
+    $otherTextInfo = '표준';
+} else {
+    $otherTextInfo = join(', ', $otherTextInfo);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -145,83 +157,80 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
     <div id="container" class="bg0">
         <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
         <div class="tb_layout row gx-0">
-            <div id="server_title" class="row py-1">
+            <div id="server_title" class="row py-2 center">
                 <h3>삼국지 모의전투 HiDCHe <?= $serverName . $serverCnt ?>기 <span class="avoid-wrap">(<font color=cyan><?= $scenario ?></font>)</span></h3>
             </div>
 
-            <?php if ($valid == 1) : ?>
-                <div class="row">
-                    <div class="col">
-                        <font color=<?= $color ?>><?= $scenario ?></font>
-                    </div>
-                    <div class="col">
-                        <font color=<?= $color ?>>NPC수 : <?= $extend ?></font>
-                    </div>
-                    <div class="col">
-                        <font color=<?= $color ?>>NPC상성 : <?= $fiction ?></font>
-                    </div>
-                    <div class="col">
-                        <font color=<?= $color ?>>NPC선택 : <?= $npcmode ?></font>
-                    </div>
+            <div class="row center gx-0">
+                <div class="s-border-t col py-2 col-8 col-md-4" style="color:<?= $color ?>;">
+                    <?= $scenario ?>
                 </div>
-            <?php endif; ?>
+                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                    NPC수 : <?= $extend ?>
+                </div>
+                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                    NPC상성 : <?= $fiction ?>
+                </div>
+                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                    NPC선택 : <?= $npcmode ?>
+                </div>
+                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                    기타 설정: <?= $otherTextInfo ?>
+                </div>
 
-            <div class="row py-1">
-                <div class="col"><?= info(2) ?></div>
-                <div class="col">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
-                <div class="col">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
-                <div class="col2"></div>
-            </div>
-            <div class="row py-1">
-                <div class="col"><?= !$plock ? ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
-                <div class="col"><?php if ($gameStor->tournament == 0) : ?>
-                        <font color=magenta>현재 토너먼트 경기 없음</font>
+                <div class="s-border-t col py-2 col-8 col-md-4"><?= info(2) ?></div>
+                <div class="s-border-t col py-2 col-4 col-md-2">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
+                <div class="s-border-t col py-2 col-4 col-md-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
+                <div class="s-border-t col py-2 col-8 col-md-4"><?= info(3) ?></div>
+                <div class="s-border-t py-2 col col-6 col-md-3">
+                    <div style="display:inline-block;"><?= !$plock ? ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
+                </div>
+                <div class="s-border-t py-2 col col-6 col-md-3"><?php if ($gameStor->tournament == 0) : ?>
+                        <span style='color:magenta'>현재 토너먼트 경기 없음</span>
                     <?php else : ?>
-                        <marquee scrollamount=2>↑<font color=cyan><?=
+                        ↑<span style='color:cyan'><?=
                                                                     ([
                                                                         '전력전', '통솔전', '일기토', '설전',
-                                                                    ])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?>↑</font>
+                                                                    ])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?></span>↑
 
-                        </marquee>
+
                     <?php endif; ?>
                 </div>
-                <div class="col">
+                <div class="s-border-t py-2 col col-6 col-md-3">
                     <?php if ($auctionCount > 0) : ?>
-                        <marquee scrollamount=2>
-                            <font color=cyan><?= $auctionCount ?>건</font> 거래 진행중
-                        </marquee>
+                        <span style='color:cyan'><?= $auctionCount ?>건</span> 거래 진행중
                     <?php else : ?>
-                        <font color=magenta>진행중 거래 없음</font>
+                        <span style='color:magenta'>진행중 거래 없음</span>
                     <?php endif; ?>
                 </div>
-                <div class="col">
+                <div class="s-border-t py-2 col col-6 col-md-3">
                     <?php
                     $vote = $gameStor->vote ?: [''];
                     $vote_title = Tag2Code($gameStor->vote_title ?? '-');
                     ?>
                     <?php if ($vote[0] == "") : ?>
-                        <font color=magenta>진행중 설문 없음</font>
+                        <span style='color:magenta'>진행중 설문 없음</span>
                     <?php else : ?>
-                        <marquee scrollamount=3>
-                            <font color=cyan>설문 진행중</font> : $vote_title
+                        <marquee scrollamount=3 style='line-height:1.5em;padding:0;margin:0;'>
+                            <span style='color:cyan'>설문 진행중</span> : $vote_title
                         </marquee>
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">접속중인 국가: <?= $gameStor->online_nation ?></div>
+            <div class="row gx-0">
+                <div class="col s-border-t px-2 py-2">접속중인 국가: <?= $gameStor->online_nation ?></div>
             </div>
-            <div class="row">
-                <div class="col">운영자 메세지 : <span style='color:yellow;'><?= $gameStor->msg ?></span></div>
+            <div class="row gx-0">
+                <div class="col s-border-t px-2 py-2">운영자 메세지 : <span style='color:yellow;'><?= $gameStor->msg ?></span></div>
             </div>
-            <div class="row">
-                <div class="col" id="nation-msg-position">
-                    <div>【 국가방침 】</div>
-                    <div><?= nationMsg($generalObj) ?></div>
+            <div class="row gx-0">
+                <div class="col s-border-t py-2" id="nation-msg-position">
+                    <div class="px-2">【 국가방침 】</div>
+                    <div id='nation-msg-box'><div id='nation-msg'><?= nationMsg($generalObj) ?></div></div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
+            <div class="row gx-0">
+                <div class="col s-border-t px-2 py-2">
                     【 접속자 】<?= onlinegen($generalObj) ?>
                 </div>
             </div>
@@ -248,7 +257,7 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                 <div id="mapZone" class="view-item"><?= getMapHtml($mapTheme) ?></div>
                 <div class="view-item" id="reservedCommandList"></div>
                 <div id="cityInfo" class="view-item" style="border:none;text-align:center;"><?= cityInfo($generalObj) ?></div>
-                <div id="routeButtons" class="view-item row justify-content-center"><button type='button' class='btn btn-sammo-base2 col-2' id='refreshPage'>갱 신</button><button type='button' class='btn btn-sammo-base2 col-3' onclick="location.replace('../')">로비로</button></div>
+                <div id="routeButtons" class="view-item row justify-content-center"><button type='button' class='btn btn-sammo-base2 col-2 refreshPage'>갱 신</button><button type='button' class='btn btn-sammo-base2 col-3' onclick="location.replace('../')">로비로</button></div>
             </div>
             <div class="row gx-0">
                 <div class="col-md-6" id="nation-position"><?php myNationInfo($generalObj); ?></div>
@@ -270,19 +279,17 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                     <div id="world_history" colspan=2 style="text-align:left;"><?= formatHistoryToHTML(getGlobalHistoryLogRecent(15)) ?></div>
                 </div>
             </div>
-            <div class="message_input_form bg0 gx-0">
-                <select id="mailbox_list" size="1">
-
-                    <select name="genlist" size="1" style="color:white;background-color:black;font-size:13px">
-
-
-
-                    </select>
-                    <input type="textarea" id="msg_input" maxlength="99">
-                    <button id="msg_submit">서신전달&amp;갱신</button><br>
-                    내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
-            </div>
             <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
+            <div class="message_input_form bg0 gx-0 row">
+                <div id="mailbox_list-col" class="col-6 col-md-2 d-grid">
+                    <select id="mailbox_list" size="1" class="form-control bg-dark text-white">
+                    </select>
+                </div>
+                <div id="msg_input-col" class="col-12 col-md-8 d-grid">
+                    <input type="text" id="msg_input" maxlength="99" class="form-control">
+                </div>
+                <div id="msg_submit-col" class="col-6 col-md-2 d-grid"><button id="msg_submit" class="btn btn-primary">서신전달&amp;갱신</button></div>
+            </div>
             <div id="message_board" class="row gx-0">
                 <div class="col-md-6 board_side bg0" id='public_talk_position'>
                     <div class="board_header bg0">전체 메시지(최고99자)</div>
@@ -348,6 +355,10 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
             <a href="#national_talk_position" class="btn btn-light">국가</a>
             <a href="#private_talk_position" class="btn btn-light">개인</a>
             <a href="#diplomacy_talk_position" class="btn btn-light">외교</a>
+        </div>
+        <div class="btn-group-vertical">
+            <button type='button' class='btn btn-sammo-base2 refreshPage'>갱 신</button>
+            <button type='button' class='btn btn-sammo-base2' onclick="location.replace('../')">로비로</button>
         </div>
     </div>
 </body>

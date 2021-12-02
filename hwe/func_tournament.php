@@ -156,17 +156,17 @@ function getTournamentTime() {
 
 function getTournament(int $tnmt) {
     return [
-        "<font color=magenta>경기 없음</font>",
-        "<font color=orange>참가 모집중</font>",
-        "<font color=orange>예선 진행중</font>",
-        "<font color=orange>본선 추첨중</font>",
-        "<font color=orange>본선 진행중</font>",
-        "<font color=orange>16강 배정중</font>",
-        "<font color=orange>베팅 진행중</font>",
-        "<font color=orange>16강 진행중</font>",
-        "<font color=orange>8강 진행중</font>",
-        "<font color=orange>4강 진행중</font>",
-        "<font color=orange>결승 진행중</font>",
+        "<span style='color:magenta;'>경기 없음</span>",
+        "<span style='color:orange;'>참가 모집중</span>",
+        "<span style='color:orange;'>예선 진행중</span>",
+        "<span style='color:orange;'>본선 추첨중</span>",
+        "<span style='color:orange;'>본선 진행중</span>",
+        "<span style='color:orange;'>16강 배정중</span>",
+        "<span style='color:orange;'>베팅 진행중</span>",
+        "<span style='color:orange;'>16강 진행중</span>",
+        "<span style='color:orange;'>8강 진행중</span>",
+        "<span style='color:orange;'>4강 진행중</span>",
+        "<span style='color:orange;'>결승 진행중</span>",
     ][$tnmt]??"TOURNAMENT_TYPE_ERR_{$tnmt}";
 }
 
