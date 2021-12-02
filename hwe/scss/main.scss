@@ -1,3 +1,4 @@
+@import "./break_500px.scss";
 @import "./bootstrap5.scss";
 
 body {
@@ -28,7 +29,7 @@ body {
 }
 
 .avoid-wrap {
-    display:inline-block;
+    display: inline-block;
 }
 
 
@@ -304,6 +305,31 @@ body {
 
 }
 
+@include media-breakpoint-up(md) {
+    #message_board section {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 650px;
+    }
+
+
+    .public_message,
+    .diplomacy_message,
+    .national_message,
+    .private_message {
+        min-height: 300px;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .public_message,
+    .diplomacy_message,
+    .national_message,
+    .private_message {
+        min-height: 150px;
+    }
+}
+
 .msg_plate_national,
 .msg_plate_diplomacy {
     background-color: #00582c;
@@ -317,22 +343,6 @@ body {
 .msg_plate_national.msg_plate_src,
 .msg_plate_diplomacy.msg_plate_src {
     background-color: #70153b;
-}
-
-.public_message {
-    min-height: 300px;
-}
-
-.diplomacy_message {
-    min-height: 300px;
-}
-
-.national_message {
-    min-height: 300px;
-}
-
-.private_message {
-    min-height: 300px;
 }
 
 .msg_icon {

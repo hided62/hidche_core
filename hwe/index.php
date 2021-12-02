@@ -252,17 +252,17 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
                 <div id="routeButtons" class="view-item row justify-content-center"><button type='button' class='btn btn-sammo-base2 col-2' id='refreshPage'>갱 신</button><button type='button' class='btn btn-sammo-base2 col-3' onclick="location.replace('../')">로비로</button></div>
             </div>
             <div class="row gx-0">
-                <div class="col-lg-6"><?php myNationInfo($generalObj); ?></div>
-                <div class="col-lg-6"><?php generalInfo($generalObj); ?></div>
+                <div class="col-md-6"><?php myNationInfo($generalObj); ?></div>
+                <div class="col-md-6"><?php generalInfo($generalObj); ?></div>
             </div>
 
             <div class="row gx-0"><?= commandButton() ?></div>
             <div class="row gx-0">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div><b>장수 동향</b></div>
                     <div id="general_public_record" style="text-align:left;"><?= formatHistoryToHTML(getGlobalActionLogRecent(15)) ?></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div><b>개인 기록</b></div>
                     <div id="general_log" style="text-align:left;"><?= formatHistoryToHTML(getGeneralActionLogRecent($me['no'], 15)) ?></div>
                 </div>
@@ -285,13 +285,13 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
             </div>
             <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
             <div id="message_board" class="row gx-0">
-                <div class="col-lg-6 board_side bg0">
+                <div class="col-md-6 board_side bg0">
                     <div class="board_header bg0" id='public_talk_position'>전체 메시지(최고99자)</div>
                     <section class="public_message">
                         <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="public">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
-                <div class="col-lg-6 board_side bg0">
+                <div class="col-md-6 board_side bg0">
                     <div class="board_header bg0">국가 메시지(최고99자)</div>
                     <section class="national_message">
                     <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="national">이전 메시지 불러오기</button></div>
@@ -301,14 +301,14 @@ $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
 
 
 
-                <div class="col-lg-6 board_side bg0">
+                <div class="col-md-6 board_side bg0">
                     <div class="board_header bg0" id='secret_talk_position'>개인 메시지(최고99자)</div>
                     <section class="private_message">
                     <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="private">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
 
-                <div class="col-lg-6 board_side bg0">
+                <div class="col-md-6 board_side bg0">
                     <div class="board_header bg0">외교 메시지(최고99자)</div>
                     <section class="diplomacy_message">
                     <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="diplomacy">이전 메시지 불러오기</button></div>

@@ -452,6 +452,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
+@import "../scss/break_500px.scss";
 @import "../scss/variables.scss";
 @import "../scss/bootswatch_custom_variables.scss";
 @import "../../node_modules/bootstrap5/scss/bootstrap-utilities.scss";
