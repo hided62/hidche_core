@@ -78,7 +78,7 @@ body {
 @include media-breakpoint-up(md) {
     #map_view {
         grid-template-columns: 700px 300px;
-        grid-template-rows: 520px 130px auto;
+        grid-template-rows: 520px 130px;
     }
 
     #mapZone {
@@ -93,16 +93,18 @@ body {
     }
 
 
-    #routeButtons {
-        grid-column: 1 / 3;
-        grid-row: 3 / 4;
-    }
-
-    #reservedCommandList {
+    #reservedCommandZone {
         width: 300px;
         grid-column: 2 / 3;
         grid-row: 1 / 3;
         position: relative;
+    }
+
+    #actionMiniPlate{
+        position: absolute;
+        right: 0;
+        bottom: 1em;
+        width: 290px;
     }
 
     .commandPad {
@@ -170,6 +172,7 @@ body {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         padding: 0;
+        gap: 1px;
     }
 
     .toolbars>.buttonPlate {
@@ -217,16 +220,14 @@ body {
     }
 
 
-    #reservedCommandList {
+    #reservedCommandZone {
         grid-column: 1 / 2;
         grid-row: 2 / 3;
     }
 
-    #routeButtons {
-        grid-column: 1 / 2;
-        grid-row: 3 / 4;
+    #actionMiniPlate{
+        margin-bottom: 0.5em;
     }
-
 
     #cityInfo {
         grid-column: 1 / 2;
