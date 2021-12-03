@@ -267,14 +267,19 @@ if (!$otherTextInfo) {
                     </div>
                 </div>
                 <div id="cityInfo" class="view-item" style="border:none;text-align:center;"><?= cityInfo($generalObj) ?></div>
+                <div id="nation-position"><?php myNationInfo($generalObj); ?></div>
+                <div id="general-position"><?php generalInfo($generalObj); ?></div>
+                <div id="generalCommandButton" class="row gx-0"><?= commandButton() ?></div>
             </div>
         </div>
-        <div class="row gx-0">
-            <div class="col-md-6" id="nation-position"><?php myNationInfo($generalObj); ?></div>
-            <div class="col-md-6" id="general-position"><?php generalInfo($generalObj); ?></div>
+        <div id="actionMiniPlateSub" class="gx-0 row">
+            <div class="col">
+                <div class="gx-1 row">
+                    <div class="col-8 d-grid"><button type='button' class='btn btn-sammo-base2 refreshPage'>갱 신</button></div>
+                    <div class="col-4 d-grid"><button type='button' class='btn btn-sammo-base2' onclick="location.replace('../')">로비로</button></div>
+                </div>
+            </div>
         </div>
-
-        <div class="row gx-0"><?= commandButton() ?></div>
         <div class="row gx-0">
             <div class="col-md-6" id="general_public_record-position">
                 <div class="bg1 center s-border-tb"><b>장수 동향</b></div>
@@ -349,13 +354,13 @@ if (!$otherTextInfo) {
     <div id="float-tabs">
         <div class="btn-group-vertical">
             <a href="#nation-msg-position" class="btn btn-sammo-nation">방침</a>
-            <a href="#mapZone" class="btn btn-sammo-nation">지도</a>
-            <a href="#reservedCommandList" class="btn btn-sammo-nation">명령</a>
             <a href="#cityInfo" class="btn btn-sammo-nation">도시</a>
             <a href="#nation-position" class="btn btn-sammo-nation">국가</a>
             <a href="#general-position" class="btn btn-sammo-nation">장수</a>
+            <a href="#reservedCommandList" class="btn btn-sammo-nation">명령</a>
         </div>
         <div class="btn-group-vertical">
+            <a href="#mapZone" class="btn btn-secondary">지도</a>
             <a href="#general_public_record-position" class="btn btn-secondary">동향</a>
             <a href="#general_log-position" class="btn btn-secondary">개인</a>
             <a href="#world_history-position" class="btn btn-secondary">정세</a>
