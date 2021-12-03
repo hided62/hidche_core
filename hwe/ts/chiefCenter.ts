@@ -10,6 +10,9 @@ import { unwrap_any } from "./util/unwrap_any";
 import { parseTime } from './util/parseTime';
 import { formatTime } from './util/formatTime';
 import { stringifyUrl } from 'query-string';
+import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+
+setAxiosXMLHttpRequest();
 
 declare const maxChiefTurn: number;
 
