@@ -218,8 +218,22 @@ body {
     }
 
     #reservedCommandZone {
-        grid-row: 5 / 6;
+        grid-row: 1 / 2;
     }
+
+
+    #generalCommandButton {
+        grid-row: 2 / 3;
+    }
+
+    #nation-position{
+        grid-row: 3 / 4;
+    }
+
+    #general-position{
+        grid-row: 4 / 5;
+    }
+
 
 
     #mapZone {

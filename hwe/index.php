@@ -355,10 +355,10 @@ if (!$otherTextInfo) {
     <div id="float-tabs">
         <div class="btn-group-vertical">
             <a href="#nation-msg-position" class="btn btn-sammo-nation">방침</a>
-            <a href="#cityInfo" class="btn btn-sammo-nation">도시</a>
+            <a href="#reservedCommandList" class="btn btn-sammo-nation">명령</a>
             <a href="#nation-position" class="btn btn-sammo-nation">국가</a>
             <a href="#general-position" class="btn btn-sammo-nation">장수</a>
-            <a href="#reservedCommandList" class="btn btn-sammo-nation">명령</a>
+            <a href="#cityInfo" class="btn btn-sammo-nation">도시</a>
         </div>
         <div class="btn-group-vertical">
             <a href="#mapZone" class="btn btn-secondary">지도</a>
