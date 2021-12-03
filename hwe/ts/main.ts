@@ -37,6 +37,13 @@ $(function ($) {
     initTooltip();
 });
 
+function ready(fn: () => unknown) {
+    if (document.readyState != 'loading') {
+        fn();
+    } else {
+        document.addEventListener('DOMContentLoaded', fn);
+    }
+}
 
 (() => {
 
@@ -49,6 +56,10 @@ $(function ($) {
     let nationMsgBox!: HTMLElement;
     let nationMsg!: HTMLElement;
     let nationMsgHeight : number|undefined = undefined;
+
+    let commandSelector!: HTMLElement;
+    let deviceWidth = -1;
+    let viewportMeta! : HTMLMetaElement;
 
     function init() {
         const buttons = document.querySelectorAll<HTMLAnchorElement>('#float-tabs a.btn');
@@ -71,6 +82,35 @@ $(function ($) {
 
         nationMsgBox = unwrap(document.getElementById('nation-msg-box'));
         nationMsg = unwrap(document.getElementById('nation-msg'));
+
+        commandSelector = unwrap(document.getElementById('reservedCommandList'));
+        viewportMeta = unwrap(document.querySelector<HTMLMetaElement>("meta[name=viewport]"));
+    }
+
+    function adjustViewportWidth() {
+        if(deviceWidth == window.screen.availWidth){
+            return;
+        }
+        deviceWidth = window.screen.availWidth;
+        const innerHeight = window.innerHeight;
+        const selectorHeight = commandSelector.offsetHeight*1.1;
+
+        if(deviceWidth < 500){
+            viewportMeta.content = 'width=500, initial-scale=1';
+            console.log(`2`);
+            return;
+        }
+
+        if(innerHeight < selectorHeight){
+            const maybeNextWidth = deviceWidth / innerHeight * selectorHeight;
+            if(maybeNextWidth >= 750){
+                viewportMeta.content = 'width=1000, initial-scale=1';
+            }
+            else{
+                viewportMeta.content = `height=${Math.ceil(selectorHeight)}, initial-scale=1`;
+            }
+            return;
+        }
     }
     function onScroll() {
         if (!finInit && !init()) return;
@@ -115,18 +155,14 @@ $(function ($) {
                 nationMsgBox.style.height = '';
             }
         }
-    }
-    function ready(fn: () => unknown) {
-        if (document.readyState != 'loading') {
-            fn();
-        } else {
-            document.addEventListener('DOMContentLoaded', fn);
-        }
+
+        adjustViewportWidth();
     }
 
     ready(() => {
         init();
         onScroll();
         window.addEventListener('scroll', onScroll, true);
+        window.addEventListener('orientationchange', onScroll, true);
     });
 })();
