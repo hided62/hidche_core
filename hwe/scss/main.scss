@@ -69,6 +69,12 @@ body {
     }
 }
 
+.vote-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 @include media-breakpoint-up(md) {
     #map_view {
         grid-template-columns: 700px 300px;
@@ -101,7 +107,7 @@ body {
 
     .commandPad {
         position: absolute;
-        z-index: 99;
+        z-index: 7;
     }
 
 
@@ -153,7 +159,7 @@ body {
     }
 }
 
-#nation-msg-box{
+#nation-msg-box {
     position: relative;
     overflow: hidden;
 }
@@ -433,13 +439,15 @@ body {
 
 
 @include media-breakpoint-down(md) {
-    #mailbox_list-col{
+    #mailbox_list-col {
         order: 1;
     }
+
     #msg_submit-col {
         order: 2;
     }
-    #msg_input-col{
+
+    #msg_input-col {
         order: 3;
     }
 }

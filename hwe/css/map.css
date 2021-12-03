@@ -90,7 +90,7 @@
 
 .world_map .city_tooltip{
     position: absolute;
-    z-index:6;
+    z-index:16;
     display:none;
     min-width:120px;
     border: 0.02em gray solid;

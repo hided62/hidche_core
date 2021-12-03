@@ -182,10 +182,7 @@ if (!$otherTextInfo) {
                 <div class="s-border-t col py-2 col-4 col-md-2">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
                 <div class="s-border-t col py-2 col-4 col-md-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
                 <div class="s-border-t col py-2 col-8 col-md-4"><?= info(3) ?></div>
-                <div class="s-border-t py-2 col col-6 col-md-3">
-                    <div style="display:inline-block;"><?= !$plock ? ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
-                </div>
-                <div class="s-border-t py-2 col col-6 col-md-3"><?php if ($gameStor->tournament == 0) : ?>
+                <div class="s-border-t py-2 col col-6 col-md-4"><?php if ($gameStor->tournament == 0) : ?>
                         <span style='color:magenta'>현재 토너먼트 경기 없음</span>
                     <?php else : ?>
                         ↑<span style='color:cyan'><?=
@@ -196,14 +193,17 @@ if (!$otherTextInfo) {
 
                     <?php endif; ?>
                 </div>
-                <div class="s-border-t py-2 col col-6 col-md-3">
+                <div class="s-border-t py-2 col col-6 col-md-2">
+                    <div style="display:inline-block;"><?= !$plock ? ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
+                </div>
+                <div class="s-border-t py-2 col col-6 col-md-2">
                     <?php if ($auctionCount > 0) : ?>
                         <span style='color:cyan'><?= $auctionCount ?>건</span> 거래 진행중
                     <?php else : ?>
                         <span style='color:magenta'>진행중 거래 없음</span>
                     <?php endif; ?>
                 </div>
-                <div class="s-border-t py-2 col col-6 col-md-3">
+                <div class="s-border-t py-2 col col-6 col-md-4 vote-cell">
                     <?php
                     $vote = $gameStor->vote ?: [''];
                     $vote_title = Tag2Code($gameStor->vote_title ?? '-');
@@ -211,9 +211,7 @@ if (!$otherTextInfo) {
                     <?php if ($vote[0] == "") : ?>
                         <span style='color:magenta'>진행중 설문 없음</span>
                     <?php else : ?>
-                        <marquee scrollamount=3 style='line-height:1.5em;padding:0;margin:0;'>
-                            <span style='color:cyan'>설문 진행중</span> : $vote_title
-                        </marquee>
+                        <span style='color:cyan'>설문 진행중</span> : <span><?= $vote_title ?></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -226,7 +224,9 @@ if (!$otherTextInfo) {
             <div class="row gx-0">
                 <div class="col s-border-t py-2" id="nation-msg-position">
                     <div class="px-2">【 국가방침 】</div>
-                    <div id='nation-msg-box'><div id='nation-msg'><?= nationMsg($generalObj) ?></div></div>
+                    <div id='nation-msg-box'>
+                        <div id='nation-msg'><?= nationMsg($generalObj) ?></div>
+                    </div>
                 </div>
             </div>
             <div class="row gx-0">
