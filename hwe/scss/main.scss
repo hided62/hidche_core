@@ -116,15 +116,15 @@ body {
         z-index: 7;
     }
 
-    #nation-position{
+    #nation-position {
         grid-column: 1 / 2;
     }
 
-    #general-position{
+    #general-position {
         grid-column: 2 / 4;
     }
 
-    #generalCommandButton{
+    #generalCommandButton {
         grid-column: 1 / 4;
     }
 
@@ -217,7 +217,7 @@ body {
         grid-template-columns: 1fr;
     }
 
-    #reservedCommandZone{
+    #reservedCommandZone {
         grid-row: 5 / 6;
     }
 
@@ -359,6 +359,27 @@ body {
 
 @include media-breakpoint-down(md) {
 
+    #message_board .message_input_form {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0px;
+        z-index: 5;
+    }
+
+    #public_talk_position,
+    #national_talk_position,
+    #private_talk_position,
+    #diplomacy_talk_position {
+        position: relative;
+
+        .board_header {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 64.5px;
+            z-index: 4;
+        }
+    }
+
     .public_message,
     .diplomacy_message,
     .national_message,
@@ -398,10 +419,6 @@ body {
     font-weight: bold;
     margin-bottom: 3px;
     color: white;
-    position: relative;
-}
-
-.message_input_form {
     position: relative;
 }
 

@@ -295,17 +295,18 @@ if (!$otherTextInfo) {
             </div>
         </div>
         <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?></div>
-        <div class="message_input_form bg0 gx-0 row">
-            <div id="mailbox_list-col" class="col-6 col-md-2 d-grid">
-                <select id="mailbox_list" size="1" class="form-control bg-dark text-white">
-                </select>
-            </div>
-            <div id="msg_input-col" class="col-12 col-md-8 d-grid">
-                <input type="text" id="msg_input" maxlength="99" class="form-control">
-            </div>
-            <div id="msg_submit-col" class="col-6 col-md-2 d-grid"><button id="msg_submit" class="btn btn-primary">서신전달&amp;갱신</button></div>
-        </div>
+
         <div id="message_board" class="row gx-0">
+            <div class="message_input_form bg0 gx-0 row">
+                <div id="mailbox_list-col" class="col-6 col-md-2 d-grid">
+                    <select id="mailbox_list" size="1" class="form-control bg-dark text-white">
+                    </select>
+                </div>
+                <div id="msg_input-col" class="col-12 col-md-8 d-grid">
+                    <input type="text" id="msg_input" maxlength="99" class="form-control">
+                </div>
+                <div id="msg_submit-col" class="col-6 col-md-2 d-grid"><button id="msg_submit" class="btn btn-primary">서신전달&amp;갱신</button></div>
+            </div>
             <div class="col-md-6 board_side bg0" id='public_talk_position'>
                 <div class="board_header bg0">전체 메시지(최고99자)</div>
                 <section class="public_message">
