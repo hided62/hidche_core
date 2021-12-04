@@ -5,6 +5,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const { resolve } = require('path');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
+const webpack = require('webpack');
 module.exports = (env, argv) => {
     const target = env.target ?? 'hwe';
     const mode = argv.mode ?? 'production';
@@ -267,105 +268,110 @@ module.exports = (env, argv) => {
             }),
             //new BundleAnalyzerPlugin()
         ],
-        cache: {
-            type: 'filesystem',
+    cache: {
+        type: 'filesystem',
         },
-    };
-    const gateway = {
-        name: 'gateway',
-        resolve: {
-            extensions: [".js", ".ts", ".tsx"],
-        },
-        mode,
-        entry: {
-            entrance: `${tsDir}/gateway/entrance.ts`,
-            user_info: `${tsDir}/gateway/user_info.ts`,
-            admin_member: `${tsDir}/gateway/admin_member.ts`,
-            join: `${tsDir}/gateway/join.ts`,
-            login: `${tsDir}/gateway/login.ts`,
-            install: `${tsDir}/gateway/install.ts`,
-        },
-        output: {
-            filename: '[name].js',
-            path: path.resolve(__dirname, 'dist_js'),
-        },
-        devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors',
-                        chunks: 'all',
-                    },
+        externals: {
+            // require("jquery") is external and available
+            //  on the global var jQuery
+            "jQuery": "jquery"
+        }
+};
+const gateway = {
+    name: 'gateway',
+    resolve: {
+        extensions: [".js", ".ts", ".tsx"],
+    },
+    mode,
+    entry: {
+        entrance: `${tsDir}/gateway/entrance.ts`,
+        user_info: `${tsDir}/gateway/user_info.ts`,
+        admin_member: `${tsDir}/gateway/admin_member.ts`,
+        join: `${tsDir}/gateway/join.ts`,
+        login: `${tsDir}/gateway/login.ts`,
+        install: `${tsDir}/gateway/install.ts`,
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist_js'),
+    },
+    devtool: 'source-map',
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
                 },
             },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
         },
-        module: {
-            rules: [{
-                test: /\.ts$/,
-                exclude: /(node_modules)/,
-                use: [
-                    {
-                        loader: 'esbuild-loader',
-                        options: {
-                            loader: 'ts',
-                            target: 'es2019',
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.tsx$/,
-                exclude: /(node_modules)/,
-                use: [
-                    {
-                        loader: 'esbuild-loader',
-                        options: {
-                            loader: 'tsx',
-                            target: 'es2019',
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.js$/,
-                exclude: /(node_modules)/,
-                use: [
-                    {
-                        loader: 'esbuild-loader',
-                        options: {
-                            loader: 'js',
-                            target: 'es2019',
-                        }
-                    }
-                ]
-            }, {
-                test: /.(s?[ac]ss)$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-            }]
-        },
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: '../dist_css/[name].css'
+        minimizer: [
+            new ESBuildMinifyPlugin({
+                css: true
             }),
-            //new BundleAnalyzerPlugin()
         ],
-        cache: {
-            type: 'filesystem',
+        moduleIds: 'deterministic',
+    },
+    module: {
+        rules: [{
+            test: /\.ts$/,
+            exclude: /(node_modules)/,
+            use: [
+                {
+                    loader: 'esbuild-loader',
+                    options: {
+                        loader: 'ts',
+                        target: 'es2019',
+                    }
+                }
+            ]
         },
-    };
+        {
+            test: /\.tsx$/,
+            exclude: /(node_modules)/,
+            use: [
+                {
+                    loader: 'esbuild-loader',
+                    options: {
+                        loader: 'tsx',
+                        target: 'es2019',
+                    }
+                }
+            ]
+        },
+        {
+            test: /\.js$/,
+            exclude: /(node_modules)/,
+            use: [
+                {
+                    loader: 'esbuild-loader',
+                    options: {
+                        loader: 'js',
+                        target: 'es2019',
+                    }
+                }
+            ]
+        }, {
+            test: /.(s?[ac]ss)$/,
+            use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        }]
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '../dist_css/[name].css'
+        }),
+        //new BundleAnalyzerPlugin()
+    ],
+    cache: {
+        type: 'filesystem',
+    },
+};
 
-    if (target == 'hwe') {
-        return [gateway, ingame_vue, ingame];
-    }
-    else {
-        return [ingame_vue, ingame];
-    }
+if (target == 'hwe') {
+    return [gateway, ingame_vue, ingame];
+}
+else {
+    return [ingame_vue, ingame];
+}
 }
