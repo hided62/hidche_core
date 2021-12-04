@@ -6,13 +6,24 @@
 
     <div class="row gx-1">
       <div class="col d-grid">
-        <b-dropdown right split text="당기기" @click="pullGeneralCommandSingle">
-          <b-dropdown-item
-            v-for="turnIdx in maxPushTurn"
-            :key="turnIdx"
-            @click="pushGeneralCommand(-turnIdx)"
-            >{{ turnIdx }}턴
-          </b-dropdown-item>
+        <b-dropdown right split @click="selectAll" text="전체선택">
+          <b-dropdown-item @click="selectAll(true)">모든턴</b-dropdown-item>
+          <b-dropdown-item @click="selectStep(0, 2)">홀수턴</b-dropdown-item>
+          <b-dropdown-item @click="selectStep(1, 2)">짝수턴</b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+
+          <b-dropdown-text v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
+            {{ spanIdx }}턴 간격<br />
+            <b-button-group>
+              <b-button
+                class="ignoreMe"
+                v-for="beginIdx in spanIdx"
+                :key="beginIdx"
+                @click="selectStep(beginIdx - 1, spanIdx)"
+                >{{ beginIdx }}</b-button
+              >
+            </b-button-group>
+          </b-dropdown-text>
         </b-dropdown>
       </div>
       <div
@@ -91,6 +102,16 @@
     </div>
     <div class="row gx-1">
       <div class="col d-grid">
+        <b-dropdown right split text="당기기" @click="pullGeneralCommandSingle">
+          <b-dropdown-item
+            v-for="turnIdx in maxPushTurn"
+            :key="turnIdx"
+            @click="pushGeneralCommand(-turnIdx)"
+            >{{ turnIdx }}턴
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div class="col d-grid">
         <b-dropdown right split text="미루기" @click="pushGeneralCommandSingle">
           <b-dropdown-item
             v-for="turnIdx in maxPushTurn"
@@ -98,27 +119,6 @@
             @click="pushGeneralCommand(turnIdx)"
             >{{ turnIdx }}턴
           </b-dropdown-item>
-        </b-dropdown>
-      </div>
-      <div class="col d-grid">
-        <b-dropdown right split @click="selectAll" text="전체선택">
-          <b-dropdown-item @click="selectAll(true)">모든턴</b-dropdown-item>
-          <b-dropdown-item @click="selectStep(0, 2)">홀수턴</b-dropdown-item>
-          <b-dropdown-item @click="selectStep(1, 2)">짝수턴</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-
-          <b-dropdown-text v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
-            {{ spanIdx }}턴 간격<br />
-            <b-button-group>
-              <b-button
-                class="ignoreMe"
-                v-for="beginIdx in spanIdx"
-                :key="beginIdx"
-                @click="selectStep(beginIdx - 1, spanIdx)"
-                >{{ beginIdx }}</b-button
-              >
-            </b-button-group>
-          </b-dropdown-text>
         </b-dropdown>
       </div>
       <div class="col d-grid">
