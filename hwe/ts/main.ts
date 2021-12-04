@@ -12,7 +12,8 @@ exportWindow($, '$');
 
 import '../scss/main.scss';
 import { unwrap } from './util/unwrap';
-import { number } from 'vue-types';
+import { auto500px } from './util/auto500px';
+import { htmlReady } from './util/htmlReady';
 
 $(function ($) {
     $('.refreshPage').click(function () {
@@ -37,14 +38,6 @@ $(function ($) {
     initTooltip();
 });
 
-function ready(fn: () => unknown) {
-    if (document.readyState != 'loading') {
-        fn();
-    } else {
-        document.addEventListener('DOMContentLoaded', fn);
-    }
-}
-
 (() => {
 
     let finInit = false;
@@ -55,11 +48,7 @@ function ready(fn: () => unknown) {
 
     let nationMsgBox!: HTMLElement;
     let nationMsg!: HTMLElement;
-    let nationMsgHeight : number|undefined = undefined;
-
-    let commandSelector!: HTMLElement;
-    let deviceWidth = -1;
-    let viewportMeta! : HTMLMetaElement;
+    let nationMsgHeight: number | undefined = undefined;
 
     function init() {
         const buttons = document.querySelectorAll<HTMLAnchorElement>('#float-tabs a.btn');
@@ -82,36 +71,8 @@ function ready(fn: () => unknown) {
 
         nationMsgBox = unwrap(document.getElementById('nation-msg-box'));
         nationMsg = unwrap(document.getElementById('nation-msg'));
-
-        commandSelector = unwrap(document.getElementById('reservedCommandList'));
-        viewportMeta = unwrap(document.querySelector<HTMLMetaElement>("meta[name=viewport]"));
     }
 
-    function adjustViewportWidth() {
-        if(deviceWidth == window.screen.availWidth){
-            return;
-        }
-        deviceWidth = window.screen.availWidth;
-        const innerHeight = window.innerHeight;
-        const selectorHeight = commandSelector.offsetHeight*1.1;
-
-        if(deviceWidth < 500){
-            viewportMeta.content = 'width=500, initial-scale=1';
-            console.log(`2`);
-            return;
-        }
-
-        if(innerHeight < selectorHeight){
-            const maybeNextWidth = deviceWidth / innerHeight * selectorHeight;
-            if(maybeNextWidth >= 750){
-                viewportMeta.content = 'width=1000, initial-scale=1';
-            }
-            else{
-                viewportMeta.content = `height=${Math.ceil(selectorHeight)}, initial-scale=1`;
-            }
-            return;
-        }
-    }
     function onScroll() {
         if (!finInit && !init()) return;
 
@@ -143,26 +104,26 @@ function ready(fn: () => unknown) {
             button.classList.add('active');
         }
 
-        if(nationMsgBox.offsetWidth < nationMsg.offsetWidth){
-            if(nationMsgHeight === undefined){
+        if (nationMsgBox.offsetWidth < nationMsg.offsetWidth) {
+            if (nationMsgHeight === undefined) {
                 nationMsgHeight = nationMsgBox.offsetHeight;
                 nationMsgBox.style.height = `${nationMsgHeight / 2}px`;
             }
         }
-        else{
-            if(nationMsgBox.style.height){
+        else {
+            if (nationMsgBox.style.height) {
                 nationMsgHeight = undefined;
                 nationMsgBox.style.height = '';
             }
         }
-
-        adjustViewportWidth();
     }
 
-    ready(() => {
+    htmlReady(() => {
         init();
         onScroll();
         window.addEventListener('scroll', onScroll, true);
         window.addEventListener('orientationchange', onScroll, true);
     });
 })();
+
+auto500px();
