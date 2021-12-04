@@ -39,6 +39,7 @@
     "summernote": "^0.8.18",
     "vue": "^3.2.2",
     "vue-multiselect": "^3.0.0-alpha.2",
+    "vue-select": "^4.0.0-beta.1",
     "vue-types": "^4.1.0",
     "vuedraggable": "^4.1.0"
   },
