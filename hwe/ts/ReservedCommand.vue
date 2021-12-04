@@ -128,7 +128,7 @@
       </div>
     </div>
     <div class="row gx-0">
-      <div class="col-10 d-grid">
+      <div class="col-9 d-grid">
         <b-form-select v-model="selectedCommand"
           ><b-form-select-option-group
             v-for="cgroup in commandList"
@@ -144,7 +144,7 @@
           </b-form-select-option-group></b-form-select
         >
       </div>
-      <div class="col-2 d-grid">
+      <div class="col-3 d-grid">
         <b-button @click="reserveCommand()" variant="primary">실행</b-button>
       </div>
     </div>
