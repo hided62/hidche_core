@@ -183,7 +183,7 @@ class che_랜덤임관 extends Command\GeneralCommand
             if ($notIn) {
 
                 $rawGeneralsCnt = $db->query(
-                    "SELECT g.`nation`, n.`gennum`, n.name, SUM((ra.value + 1000)/(rb.value + 1000)*(CASE WHEN g.`npc` < 2 THEN 1.5 ELSE 1 END)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)) AS warpower, SUM(SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/5 AS develpower
+                    "SELECT g.`nation`, n.`gennum`, n.name, SUM((ra.value + 1000)/(rb.value + 1000)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)) AS warpower, SUM(SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/5 AS develpower
                 FROM general AS g
                 LEFT JOIN `rank_data` AS ra ON g.`no` = ra.general_id AND ra.`type` = 'killcrew_person'
                 LEFT JOIN `rank_data` AS rb ON g.`no` = rb.general_id AND rb.`type` = 'deathcrew_person'
@@ -195,7 +195,7 @@ class che_랜덤임관 extends Command\GeneralCommand
                 );
             } else {
                 $rawGeneralsCnt = $db->query(
-                    "SELECT g.`nation`, n.`gennum`, n.name, SUM((ra.value + 100)/(rb.value + 100)*(CASE WHEN g.`npc` < 2 THEN 1.5 ELSE 1 END)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)) AS warpower, SUM(SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/5 AS develpower
+                    "SELECT g.`nation`, n.`gennum`, n.name, SUM((ra.value + 100)/(rb.value + 100)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)) AS warpower, SUM(SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/5 AS develpower
                 FROM general AS g
                 LEFT JOIN `rank_data` AS ra ON g.`no` = ra.general_id AND ra.`type` = 'killcrew_person'
                 LEFT JOIN `rank_data` AS rb ON g.`no` = rb.general_id AND rb.`type` = 'deathcrew_person'
