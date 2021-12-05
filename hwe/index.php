@@ -337,8 +337,7 @@ if (!$otherTextInfo) {
                 </section>
             </div>
         </div>
-    </div>
-    <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?><?= banner() ?></div>
+        <div class="row toolbars gx-0"><?= allButton($gameStor->npcmode == 1) ?><?= banner() ?></div>
     </div>
     <?php
     if ($con == 1) {
