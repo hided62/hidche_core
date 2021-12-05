@@ -75,7 +75,7 @@
             'white-space': 'nowrap',
             'font-size': `${Math.min(
               14,
-              (70 / (`${turnObj.year ?? 1}`.length + 8)) * 1.8
+              (75 / (`${turnObj.year ?? 1}`.length + 8)) * 1.8
             )}px`,
             overflow: 'hidden',
           }"
@@ -128,21 +128,56 @@
       </div>
     </div>
     <div class="row gx-0">
-      <div class="col-9 d-grid">
-        <b-form-select v-model="selectedCommand"
-          ><b-form-select-option-group
-            v-for="cgroup in commandList"
-            :key="cgroup['category']"
-            :label="cgroup['category']"
-            ><b-form-select-option
-              v-for="(citem, ckey) in cgroup['values']"
-              :value="ckey"
-              :key="ckey"
-              >{{ citem.title
-              }}{{ citem.possible ? "" : "(불가)" }}</b-form-select-option
-            >
-          </b-form-select-option-group></b-form-select
+      <div class="col-9">
+        <v-multiselect
+          v-model="selectedCommand"
+          :allow-empty="false"
+          :options="commandList"
+          :group-select="false"
+          group-values="values"
+          group-label="category"
+          label="searchText"
+          track-by="value"
+          open-direction="top"
+          :show-labels="false"
+          selectLabel="선택(엔터)"
+          selectGroupLabel=""
+          selectedLabel="선택됨"
+          deselectLabel="해제(엔터)"
+          deselectGroupLabel=""
+          placeholder="턴 선택"
+          :maxHeight="400"
         >
+          <template v-slot:noResult>검색 결과가 없습니다.</template>
+          <template v-slot:option="props"
+            ><!--FIXME: 카테고리-->
+            <template v-if="props.option.title">
+              <span
+                class="compensatePositive"
+                v-if="props.option.compensation > 0"
+                >▲</span
+              >
+              <span
+                class="compensateNegative"
+                v-else-if="props.option.compensation < 0"
+                >▼</span
+              >
+              <span class="compensateNeutral" v-else></span>
+              <span :class="[
+              props.option.possible?'':'commandImpossible',
+              ]">
+                {{ props.option.title }}
+              </span>
+
+            </template>
+            <template v-else-if="props.option.category">
+              {{ props.option.category }}
+            </template>
+          </template>
+          <template v-slot:singleLabel="props">
+            {{ props.option.simpleName }}
+          </template>
+        </v-multiselect>
       </div>
       <div class="col-3 d-grid">
         <b-button @click="reserveCommand()" variant="primary">실행</b-button>
@@ -159,22 +194,27 @@ import { stringifyUrl } from "query-string";
 import { defineComponent } from "vue";
 import { formatTime } from "./util/formatTime";
 import { joinYearMonth } from "./util/joinYearMonth";
+import { mb_strwidth } from "./util/mb_strwidth";
 import { parseTime } from "./util/parseTime";
 import { parseYearMonth } from "./util/parseYearMonth";
 import { sammoAPI } from "./util/sammoAPI";
-import { unwrap_any } from "./util/unwrap_any";
+import { filter초성 } from "./util/filter초성";
+
 type commandItem = {
+  value: string;
   title: string;
   compensation: number;
+  simpleName: string;
   possible: boolean;
   reqArg: boolean;
+  searchText?: string;
 };
 
 declare const maxTurn: number;
 declare const maxPushTurn: number;
 declare const commandList: {
   category: string;
-  values: Record<string, commandItem>;
+  values: commandItem[];
 }[];
 declare const serverNow: string;
 
@@ -208,13 +248,11 @@ for (const commandCategories of commandList) {
   if (!commandCategories.values) {
     continue;
   }
-  for (const [commandName, commandObj] of Object.entries(
-    commandCategories.values
-  )) {
+  for (const commandObj of commandCategories.values) {
     if (!commandObj.reqArg) {
       continue;
     }
-    listReqArgCommand.add(commandName);
+    listReqArgCommand.add(commandObj.value);
   }
 }
 
@@ -244,7 +282,7 @@ export default defineComponent({
       this.serverNow = formatTime(serverNow, "HH:mm:ss");
       setTimeout(() => {
         this.updateNow();
-      }, 250);
+      }, 1000 - serverNow.getMilliseconds());
     },
     toggleTurn(turnIdx: number) {
       this.pressed[turnIdx] = !this.pressed[turnIdx];
@@ -345,14 +383,22 @@ export default defineComponent({
 
       for (const obj of result.turn) {
         const [year, month] = parseYearMonth(yearMonth);
-        let tooltip: string | undefined = undefined;
+        let tooltip: string[] = [];
         let style: Record<string, unknown> = {};
+
+        const brief = obj.brief;
+
         if (yearMonth <= autorunLimitYearMonth) {
           if (obj.brief == "휴식") {
             obj.brief = "휴식<small>(자율 행동)</small>";
           }
           style.color = "#aaffff";
-          tooltip = `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`;
+
+          tooltip.push(`자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`);
+        }
+
+        if(mb_strwidth(brief) > 22){
+          tooltip.push(brief);
         }
 
         reservedCommandList.push({
@@ -360,7 +406,7 @@ export default defineComponent({
           year,
           month,
           time: formatTime(nextTurnTime, "HH:mm"),
-          tooltip,
+          tooltip: tooltip.length==0?undefined:tooltip.join("\n"),
           style,
         });
 
@@ -383,11 +429,13 @@ export default defineComponent({
         turnList.push(turnIdx);
       }
 
-      if (listReqArgCommand.has(this.selectedCommand)) {
+      const commandName = this.selectedCommand.value;
+
+      if (listReqArgCommand.has(commandName)) {
         document.location.href = stringifyUrl({
           url: "b_processing.php",
           query: {
-            command: unwrap_any<string>(this.selectedCommand),
+            command: commandName,
             turnList: turnList.join("_"),
           },
         });
@@ -397,7 +445,7 @@ export default defineComponent({
       try {
         await sammoAPI("Command/ReserveCommand", {
           turnList,
-          action: this.selectedCommand,
+          action: commandName,
         });
       } catch (e) {
         console.error(e);
@@ -414,12 +462,21 @@ export default defineComponent({
 
     setTimeout(() => {
       this.updateNow();
-    }, 250);
+    }, 1000 - serverNowObj.getMilliseconds());
 
     const pressed = Array.from<boolean>({ length: maxTurn }).fill(false);
     pressed[0] = true;
 
-    const selectedCommand = "휴식";
+    const selectedCommand = commandList[0].values[0];
+    for(const subCategory of commandList){
+      for(const command of subCategory.values){
+        if(command.searchText){
+          continue;
+        }
+        const filteredText = filter초성(command.simpleName).replace(/\s+/g, '');
+        command.searchText = `${command.simpleName} ${filteredText}`
+      }
+    }
 
     const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
       length: maxTurn,
@@ -464,13 +521,29 @@ export default defineComponent({
 .commandTable {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(30px, 1fr) minmax(70px, 2.5fr) minmax(40px, 1fr) 5fr;
+  grid-template-columns: minmax(30px, 1fr) minmax(75px, 2.5fr) minmax(40px, 1fr) 5fr;
   //30, 70, 37.65, 160
 }
 
 @include media-breakpoint-up(md) {
   .commandPad {
     margin-left: 10px;
+
+    .turn_pad {
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .multiselect__content-wrapper {
+      width: 133.3%;
+    }
+
+    .multiselect__single {
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 }
 
@@ -491,7 +564,7 @@ export default defineComponent({
   }
 }
 
-.month_pad:hover{
+.month_pad:hover {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -512,5 +585,8 @@ export default defineComponent({
 
 .turn_pad .turn_text {
   display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

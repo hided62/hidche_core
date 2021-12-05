@@ -247,26 +247,26 @@ div.bar_out div.bar_in {
     padding: 0;
 }
 
-.commandBasic {
-    background-color: black;
-    color: white;
-}
-
 .compensatePositive {
-    color: skyblue;
+    color: $cyan;
+    display: inline-block;
+    width: 1rem;
 }
 
 .compensateNegative {
-    color: orange;
+    color: $red;
+    display: inline-block;
+    width: 1rem;
 }
 
-.compensateNeutral {
-    color: white;
+.compensateNeutral{
+    display: inline-block;
+    width: 1rem;
 }
 
-.commandBasic.commandImpossible {
-    background-color: red;
-    color: white;
+.commandImpossible {
+    color: $red;
+    text-decoration: line-through $red;
 }
 
 .select2-selection--single.simple-select2-align-center .select2-selection__rendered {

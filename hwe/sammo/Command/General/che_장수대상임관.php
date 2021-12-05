@@ -24,7 +24,7 @@ use sammo\CityConst;
 
 
 class che_장수대상임관 extends Command\GeneralCommand{
-    static protected $actionName = '따라 임관';
+    static protected $actionName = '장수를 따라 임관';
     static public $reqArg = true;
 
     protected function argTest():bool{

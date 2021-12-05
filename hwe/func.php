@@ -475,10 +475,12 @@ function getCommandTable(General $general){
             if (!$commandObj->canDisplay()) {
                 continue;
             }
-            $subList[Util::getClassNameFromObj($commandObj)] = [
-                'compansation'=>$commandObj->getCompensationStyle(),
+            $subList[] = [
+                'value'=>Util::getClassNameFromObj($commandObj),
+                'compensation'=>$commandObj->getCompensationStyle(),
                 'possible'=>$commandObj->hasMinConditionMet(),
                 'title'=>$commandObj->getCommandDetailTitle(),
+                'simpleName'=>$commandObj->getName(),
                 'reqArg'=>$commandObj::$reqArg,
             ];
         }

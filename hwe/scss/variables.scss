@@ -3,15 +3,13 @@ $base2color: #00582c;
 $base3color: #704615;
 $base4color: #70153b;
 
-$sammoColors: (
-    'base1': $base1color,
+$sammoColors: ('base1': $base1color,
     'base2': $base2color,
     'base3': $base3color,
     'base4': $base4color,
 );
 
-$nationColors: (
-    "000000": #000000,
+$nationColors: ("000000": #000000,
     "FF0000": #FF0000,
     "800000": #800000,
     "A0522D": #A0522D,

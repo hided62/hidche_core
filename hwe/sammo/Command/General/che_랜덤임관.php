@@ -25,7 +25,7 @@ use sammo\MustNotBeReachedException;
 
 class che_랜덤임관 extends Command\GeneralCommand
 {
-    static protected $actionName = '랜덤임관';
+    static protected $actionName = '무작위 국가로 임관';
 
     protected function argTest(): bool
     {
