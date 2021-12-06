@@ -62,7 +62,7 @@ function colorBlockedName($general){
                     <?php
 
                     echo "
-            <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:13px'>";
+            <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:14px'>";
 
                     foreach ($db->query('SELECT no,name,npc,block,con from general where ip!=\'\' order by npc,ip') as $general) {
                         $style = "style=;";

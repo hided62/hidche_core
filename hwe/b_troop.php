@@ -167,7 +167,7 @@ foreach ($troops as $troopNo=>$troop) {
         <td rowspan=2 width=62><?=$genlistText?></td>
         <td rowspan=2>
         <?php if ($me['no'] == $troopLeader['no']): ?>
-            <select id='genNo' name=gen size=3 style=color:white;background-color:black;font-size:13px;width:128px;>";
+            <select id='genNo' name=gen size=3 style=color:white;background-color:black;font-size:14px;width:128px;>";
                 <?php foreach ($troop['users'] as $troopUser): ?>
                     <?php if ($troopUser['no'] == $me['no']) {
         continue;

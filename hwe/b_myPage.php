@@ -100,23 +100,23 @@ var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
                 <option value=999 <?=$me->getVar('defence_train')==999?"selected":""; ?>><?=formatDefenceTrain(999)?>[훈련, 사기 -3]</option>
                 </select>
                 】<br><br>
-                <input type=<?=$submit?> id='set_my_setting' name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
+                <input type=<?=$submit?> id='set_my_setting' name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:14px; value=설정저장><br>
                 ∞<span style='color:orange'>설정저장은 이달중 <?=$myset?>회 남았습니다.</span><br><br>
             <?php if(!($gameStor->autorun_user['limit_minutes']??false)): ?>
             휴 가 신 청<br>
-            <button type="button" id='vacation' style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button><br><br>
+            <button type="button" id='vacation' style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:14px;>휴가 신청</button><br><br>
             <?php endif; ?>
             <!--빙의 해제용 삭턴 조절<br>
-            <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>-->
+            <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:14px;>빙의 해체 요청</button></a>-->
 
 <?php if($showDieImmediatelyBtn): ?>
             가오픈 기간 내 장수 삭제 (<?=substr($targetTime, 0, 19)?> 부터)<br>
-            <a href="c_die_immediately.php" id='die_immediately'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>장수 삭제</button></a><br><br>
+            <a href="c_die_immediately.php" id='die_immediately'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:14px;>장수 삭제</button></a><br><br>
 <?php endif; ?>
 
 <?php if($gameStor->npcmode==2 && $me->getNPCType()==0): ?>
             다른 장수 선택 (<?=substr($me->getAuxVar('next_change')??TimeUtil::now(), 0, 19)?> 부터)<br>
-            <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>다른 장수 선택</button></a><br><br>
+            <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:14px;>다른 장수 선택</button></a><br><br>
 <?php endif; ?>
 
             개인용 CSS<br>

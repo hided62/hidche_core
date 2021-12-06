@@ -51,7 +51,7 @@ $db = DB::db();
                     <?php
 
                     echo "
-            <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:13px'>";
+            <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:14px'>";
                     $generalList = $db->query('SELECT `no`, `name`, npc, `block` FROM general ORDER BY npc, binary(`name`)');
 
                     foreach ($generalList as $general) {
@@ -74,7 +74,7 @@ $db = DB::db();
         </td>
         <td width=100 align=center>아이템 지급</td>
         <td width=504>
-            <select name=weapon size=1 style='color:white;background-color:black;font-size:13px'>";
+            <select name=weapon size=1 style='color:white;background-color:black;font-size:14px'>";
                     foreach (GameConst::$allItems as $itemCategories) {
                         foreach ($itemCategories as $item => $cnt) {
                             if ($cnt == 0) {

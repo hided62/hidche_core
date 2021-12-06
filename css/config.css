@@ -14,7 +14,7 @@ table {
     border-right-color: black;
     border-bottom-color: black;
     padding: 0px;
-    font-size: 13px;
+    font-size: 14px;
     word-break: break-all;
     text-align: center;
 }
@@ -29,7 +29,7 @@ td {
     border-right-color: black;
     border-bottom-color: black;
     padding: 0px;
-    font-size: 13px;
+    font-size: 14px;
     word-break: break-all;
     text-align: center;
 }
@@ -68,7 +68,7 @@ a.just_link {
     border-right-color: black;
     border-bottom-color: black;
     padding: 0px;
-    font-size: 13px;
+    font-size: 14px;
     word-break: break-all;
     text-align: center;
 }
@@ -83,7 +83,7 @@ button.with_skin {
     padding: 0 4px;
     background-color: black;
     color: white;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 button.with_skin:disabled {
@@ -93,7 +93,7 @@ button.with_skin:disabled {
 input.with_skin {
     background-color: black;
     color: white;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input.with_skin:disabled {
@@ -105,7 +105,7 @@ input.with_skin:disabled {
 }
 
 .font1 {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .font2 {

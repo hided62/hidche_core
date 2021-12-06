@@ -218,9 +218,9 @@ function myNationInfo(General $generalObj)
         <td colspan=4 ";
 
     if (!$nationID) {
-        echo "style='color:white;background-color:000000;font-weight:bold;font-size:13px;text-align:center;'>【재 야】";
+        echo "style='color:white;background-color:000000;font-weight:bold;font-size:14px;text-align:center;'>【재 야】";
     } else {
-        echo "style='color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:13px;text-align:center'>국가【 {$nation['name']} 】";
+        echo "style='color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:14px;text-align:center'>국가【 {$nation['name']} 】";
     }
 
     echo "
@@ -552,7 +552,7 @@ function chiefCommandTable(General $generalObj)
     $env = $gameStor->getAll();
 
 ?>
-    <select id='chiefCommandList' name='commandtype' size=1 style='height:20px;color:white;background-color:black;font-size:13px;display:inline-block;'>";
+    <select id='chiefCommandList' name='commandtype' size=1 style='height:20px;color:white;background-color:black;font-size:14px;display:inline-block;'>";
         <?php
 
         //보정(Pros,Cons) 여부.
@@ -719,7 +719,7 @@ function generalInfo(General $generalObj)
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
         <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imagePath}\");background-size:64px;'>&nbsp;</td>
-        <td colspan=9 height=16 style=text-align:center;color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$generalObj->getName()} 【 {$officerLevelText} | {$call} | {$color}{$injury}</span> 】 " . $generalObj->getTurnTime($generalObj::TURNTIME_HMS) . "</td>
+        <td colspan=9 height=16 style=text-align:center;color:" . newColor($nation['color']) . ";background-color:{$nation['color']};font-weight:bold;font-size:14px;>{$generalObj->getName()} 【 {$officerLevelText} | {$call} | {$color}{$injury}</span> 】 " . $generalObj->getTurnTime($generalObj::TURNTIME_HMS) . "</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>

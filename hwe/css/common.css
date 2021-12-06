@@ -11,7 +11,7 @@ body {
 }
 
 input {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .center {
@@ -34,7 +34,7 @@ table.mimic_flex {
 table.tb_layout {
     border-collapse: collapse;
     padding: 0px;
-    font-size: 13px;
+    font-size: 14px;
     word-break: break-all;
 }
 
