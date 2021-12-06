@@ -274,7 +274,7 @@ if (!$otherTextInfo) {
         <div id="actionMiniPlateSub" class="gx-0 row">
             <div class="col">
                 <div class="gx-1 row">
-                    <div class="col-3 d-grid"><a href="#reservedCommandList" class="btn btn-dark">명령으로</a></div>
+                    <div class="col-3 d-grid"><button type='button' class="btn btn-dark" onclick="scrollHardTo('reservedCommandList')" >명령으로</button></div>
                     <div class="col-5 d-grid"><button type='button' class='btn btn-sammo-base2 refreshPage'>갱 신</button></div>
                     <div class="col-4 d-grid"><button type='button' class='btn btn-sammo-base2' onclick="location.replace('../')">로비로</button></div>
                 </div>
@@ -353,23 +353,23 @@ if (!$otherTextInfo) {
     ?>
     <div id="float-tabs">
         <div class="btn-group-vertical">
-            <a href="#nation-msg-position" class="btn btn-sammo-nation">방침</a>
-            <a href="#reservedCommandList" class="btn btn-sammo-nation">명령</a>
-            <a href="#nation-position" class="btn btn-sammo-nation">국가</a>
-            <a href="#general-position" class="btn btn-sammo-nation">장수</a>
-            <a href="#cityInfo" class="btn btn-sammo-nation">도시</a>
+            <button type="button" onclick="scrollHardTo('nation-msg-position')" class="btn btn-sammo-nation">방침</button>
+            <button type="button" onclick="scrollHardTo('reservedCommandList')" class="btn btn-sammo-nation">명령</button>
+            <button type="button" onclick="scrollHardTo('nation-position')" class="btn btn-sammo-nation">국가</button>
+            <button type="button" onclick="scrollHardTo('general-position')" class="btn btn-sammo-nation">장수</button>
+            <button type="button" onclick="scrollHardTo('cityInfo')" class="btn btn-sammo-nation">도시</button>
         </div>
         <div class="btn-group-vertical">
-            <a href="#mapZone" class="btn btn-secondary">지도</a>
-            <a href="#general_public_record-position" class="btn btn-secondary">동향</a>
-            <a href="#general_log-position" class="btn btn-secondary">개인</a>
-            <a href="#world_history-position" class="btn btn-secondary">정세</a>
+            <button type="button" onclick="scrollHardTo('mapZone')" class="btn btn-secondary">지도</button>
+            <button type="button" onclick="scrollHardTo('general_public_record-position')" class="btn btn-secondary">동향</button>
+            <button type="button" onclick="scrollHardTo('general_log-position')" class="btn btn-secondary">개인</button>
+            <button type="button" onclick="scrollHardTo('world_history-position')" class="btn btn-secondary">정세</button>
         </div>
         <div class="btn-group-vertical">
-            <a href="#public_talk_position" class="btn btn-light active">전체</a>
-            <a href="#national_talk_position" class="btn btn-light">국가</a>
-            <a href="#private_talk_position" class="btn btn-light">개인</a>
-            <a href="#diplomacy_talk_position" class="btn btn-light">외교</a>
+            <button type="button" onclick="scrollHardTo('public_talk_position')" class="btn btn-light active">전체</button>
+            <button type="button" onclick="scrollHardTo('national_talk_position')" class="btn btn-light">국가</button>
+            <button type="button" onclick="scrollHardTo('private_talk_position')" class="btn btn-light">개인</button>
+            <button type="button" onclick="scrollHardTo('diplomacy_talk_position')" class="btn btn-light">외교</button>
         </div>
         <div class="btn-group-vertical">
             <button type='button' class='btn btn-sammo-base2 refreshPage'>갱 신</button>

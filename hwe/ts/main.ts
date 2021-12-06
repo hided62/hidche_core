@@ -7,7 +7,9 @@ import './msg.ts';
 import './map.ts';
 import { exportWindow } from './util/exportWindow';
 
+import { scrollHardTo } from './util/scrollHardTo';
 
+exportWindow(scrollHardTo, 'scrollHardTo');
 exportWindow($, '$');
 
 import '../scss/main.scss';
