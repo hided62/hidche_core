@@ -62,7 +62,7 @@ $(function ($) {
                         ['custom', ['imageFlip']],
                     ],
                 },
-                fontNames: ['맑은 고딕', 'Nanum Gothic', 'Nanum Myeongjo', 'Nanum Pen Script', '굴림', '굴림체', '바탕', '바탕체', '궁서', '궁서체'],
+                fontNames: ['Pretendard', '맑은 고딕', 'Nanum Gothic', 'Nanum Myeongjo', 'Nanum Pen Script', '굴림', '굴림체', '바탕', '바탕체', '궁서', '궁서체'],
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '20', '24', '28', '32', '36', '40', '46', '52', '60'],
                 callbacks: {
                     onImageUpload: function (files) {

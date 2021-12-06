@@ -43,6 +43,7 @@ if ($permission < 1) {
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('../css/config.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <?=WebUtil::printCSS('css/diplomacy.css')?>
 <script>
 var permissionLevel = <?=$permission?>; //

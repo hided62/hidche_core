@@ -13,6 +13,7 @@ function printLimitMsg($turntime) {
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 <body>
 <font size=4><b>
@@ -30,7 +31,7 @@ function bar($per, $h=7) {
     else        { $bd = 1; $h = 12; $h2 =  8; }
 
     $per = round($per, 1);
-    
+
     $str = "<div class='bar_out' style='height:{$h}px;'>
     <div class='bar_in' style='background:url(".ServConfig::$gameImagePath."/pr{$h2}.gif)'></div>
     <div style='width:{$per}%;background:url(".ServConfig::$gameImagePath."/pb{$h2}.gif)'></div>
@@ -58,7 +59,7 @@ function optionsForCities(callable $infoCall=null) {
         $infoList[] = "<option value='{$city->id}'>{$city->name} ({$info})</option>";
     }
 
-    return join('', array_merge($infoList, $noInfoList));    
+    return join('', array_merge($infoList, $noInfoList));
 }
 
 function Submit($url, $msg="", $msg2="") {
@@ -146,4 +147,3 @@ function info($type=0) {
         return "등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
     }
 }
-

@@ -138,6 +138,7 @@ if (!$otherTextInfo) {
     </script>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('dist_css/common.css') ?>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
     <?= WebUtil::printCSS('dist_css/main.css') ?>
     <?= WebUtil::printCSS('css/map.css') ?>
@@ -149,8 +150,6 @@ if (!$otherTextInfo) {
         'baseColor2' => GameConst::$basecolor2,
     ]) ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
-
 </head>
 
 <body class="img_back sam-color-<?= $nationColorType ?>">

@@ -68,8 +68,8 @@ var storedData = <?=Json::encode([
 <?=WebUtil::printCSS('dist_css/vendors.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <?=WebUtil::printCSS('css/dipcenter.css')?>
-<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
 </head>
 
 <body>

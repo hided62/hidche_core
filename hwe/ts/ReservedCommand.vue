@@ -579,7 +579,6 @@ export default defineComponent({
 
 .turn_pad {
   white-space: nowrap;
-  font-weight: lighter;
   background-color: rgba($base1color, 0.5);
 }
 

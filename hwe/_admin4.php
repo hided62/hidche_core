@@ -41,6 +41,7 @@ function colorBlockedName($general){
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('css/common.css') ?>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 
 <body>
@@ -106,7 +107,7 @@ function colorBlockedName($general){
                 <td align=center width=180>최근로그인</td>
                 <td align=center width=129>IP</td>
                 <td align=center width=100>ID</td>
-            </tr>    
+            </tr>
 <?php foreach($ipGroupList as $ipGroupC=>$users): ?>
     <tr>
         <td><?=join('<br>',array_map('\sammo\colorBlockedName', $users))?></td>

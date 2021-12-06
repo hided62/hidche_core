@@ -16,6 +16,7 @@ require(__DIR__.'/../vendor/autoload.php');
     <?=WebUtil::printJS('../dist_js/install.js')?>
     <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('../css/install.css')?>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 <body>
     <div class="container">
