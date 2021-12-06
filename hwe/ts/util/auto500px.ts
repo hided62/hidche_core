@@ -16,7 +16,7 @@ export function auto500px(targetHeight = 700): void {
         const htmlTag = unwrap(document.querySelector("head"));
         _viewPortMeta = document.createElement("meta");
         _viewPortMeta.name = 'viewport';
-        _viewPortMeta.content = 'width=device-width, initial-scale=0.72, maximum-scale=5.0, minimum-scale=0.72';
+        _viewPortMeta.content = 'width=500, initial-scale=1';
         htmlTag.appendChild(_viewPortMeta);
         viewportMeta = _viewPortMeta;
     }
@@ -30,7 +30,7 @@ export function auto500px(targetHeight = 700): void {
         const selectorHeight = targetHeight;
 
         if (deviceWidth < 500) {
-            viewportMeta.content = 'width=device-width, initial-scale=0.72, maximum-scale=5.0, minimum-scale=0.72';
+            viewportMeta.content = 'width=500, initial-scale=1';
             return;
         }
 
