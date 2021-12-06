@@ -6,7 +6,7 @@
 
     <div class="row gx-1">
       <div class="col d-grid">
-        <b-dropdown right split @click="selectAll" text="전체선택">
+        <b-dropdown left text="턴 선택">
           <b-dropdown-item @click="selectAll(true)">모든턴</b-dropdown-item>
           <b-dropdown-item @click="selectStep(0, 2)">홀수턴</b-dropdown-item>
           <b-dropdown-item @click="selectStep(1, 2)">짝수턴</b-dropdown-item>

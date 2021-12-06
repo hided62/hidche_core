@@ -153,11 +153,11 @@ async function reloadTable() {
                 turnList[turnIdx].turnTime.text('');
             }
 
-            turnList[turnIdx].turnText.html(turnText).css('font-size', '13px');
+            turnList[turnIdx].turnText.html(turnText).css('font-size', '14px');
             const oWidth = unwrap(turnList[turnIdx].turnPad.innerWidth());
             const iWidth = unwrap(turnList[turnIdx].turnText.outerWidth());
             if (iWidth > oWidth * 0.95) {
-                const newFontSize = 13 * oWidth / iWidth * 0.9;
+                const newFontSize = 14 * oWidth / iWidth * 0.9;
                 turnList[turnIdx].turnText.css('font-size', `${newFontSize}px`);
             }
             if (turnTimeObj) {
