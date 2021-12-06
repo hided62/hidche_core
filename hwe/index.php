@@ -274,7 +274,8 @@ if (!$otherTextInfo) {
         <div id="actionMiniPlateSub" class="gx-0 row">
             <div class="col">
                 <div class="gx-1 row">
-                    <div class="col-8 d-grid"><button type='button' class='btn btn-sammo-base2 refreshPage'>갱 신</button></div>
+                    <div class="col-3 d-grid"><a href="#reservedCommandList" class="btn btn-dark">명령으로</a></div>
+                    <div class="col-5 d-grid"><button type='button' class='btn btn-sammo-base2 refreshPage'>갱 신</button></div>
                     <div class="col-4 d-grid"><button type='button' class='btn btn-sammo-base2' onclick="location.replace('../')">로비로</button></div>
                 </div>
             </div>
