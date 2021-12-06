@@ -115,7 +115,7 @@ if (!$otherTextInfo) {
     <title><?= $serverName ?>: 메인</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=500" />
+    <meta name="viewport" content="width=500, initial-scale=1" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('dist_js/vendors.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>

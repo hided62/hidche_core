@@ -26,6 +26,12 @@ body {
         width: 500px;
         margin: 0 auto;
     }
+
+    input[type='text'],
+    input[type='number'],
+    textarea {
+        font-size: 16px;
+    }
 }
 
 .avoid-wrap {
@@ -226,11 +232,11 @@ body {
         grid-row: 2 / 3;
     }
 
-    #nation-position{
+    #nation-position {
         grid-row: 3 / 4;
     }
 
-    #general-position{
+    #general-position {
         grid-row: 4 / 5;
     }
 
