@@ -36,13 +36,19 @@ export function auto500px(targetHeight = 700): void {
 
         if (innerHeight < selectorHeight) {
             const maybeNextWidth = deviceWidth / innerHeight * selectorHeight;
-            if (maybeNextWidth >= 750) {
+            if (maybeNextWidth >= 700) {
                 viewportMeta.content = 'width=1000, initial-scale=1';
             }
             else {
                 viewportMeta.content = `height=${Math.ceil(selectorHeight)}, initial-scale=1`;
             }
             return;
+        }
+        else if(deviceWidth >= 700){
+            viewportMeta.content = 'width=1000, initial-scale=1';
+        }
+        else{
+            viewportMeta.content = 'width=device-width, initial-scale=1';
         }
     }
 
