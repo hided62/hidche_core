@@ -12,7 +12,6 @@ exportWindow($, '$');
 
 import '../scss/main.scss';
 import { unwrap } from './util/unwrap';
-import { auto500px } from './util/auto500px';
 import { htmlReady } from './util/htmlReady';
 
 $(function ($) {
@@ -125,5 +124,3 @@ $(function ($) {
         window.addEventListener('orientationchange', onScroll, true);
     });
 })();
-
-auto500px();
