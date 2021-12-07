@@ -429,6 +429,11 @@ export default defineComponent({
         turnList.push(turnIdx);
       }
 
+      if(turnList.length == 0){
+        alert('변경을 원하는 턴을 선택해주세요.');
+        return;
+      }
+
       const commandName = this.selectedCommand.value;
 
       if (listReqArgCommand.has(commandName)) {
