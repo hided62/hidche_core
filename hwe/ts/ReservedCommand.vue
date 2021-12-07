@@ -430,8 +430,7 @@ export default defineComponent({
       }
 
       if(turnList.length == 0){
-        alert('변경을 원하는 턴을 선택해주세요.');
-        return;
+        turnList.push(0);
       }
 
       const commandName = this.selectedCommand.value;
