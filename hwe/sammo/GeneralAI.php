@@ -1331,7 +1331,7 @@ class GeneralAI
                     $enoughMoney = $reqHumanMinDevelRes * 1.2;
                 }
 
-                if ($targetUserGeneral->getVar($resName) >= $reqMoney) {
+                if ($targetUserGeneral->getVar($resName) >= $enoughMoney) {
                     continue;
                 }
                 //국고와 '충분한 금액'의 기하평균
