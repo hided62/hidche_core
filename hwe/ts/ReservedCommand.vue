@@ -447,6 +447,7 @@ export default defineComponent({
           turnList,
           action: commandName,
         });
+        this.pressed.fill(false);
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -465,7 +466,7 @@ export default defineComponent({
     }, 1000 - serverNowObj.getMilliseconds());
 
     const pressed = Array.from<boolean>({ length: maxTurn }).fill(false);
-    pressed[0] = true;
+    //pressed[0] = true;
 
     const selectedCommand = commandList[0].values[0];
     for(const subCategory of commandList){
