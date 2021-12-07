@@ -63,7 +63,7 @@
         <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
             size="sm"
-            :variant="pressed[turnIdx] ? 'info' : 'primary'"
+            :variant="pressed[turnIdx] ? 'info' : ((turnIdx==0&&pressed.filter(t=>t).length==0)?'success':'primary')"
             >{{ turnIdx + 1 }}</b-button
           >
         </div>
@@ -560,6 +560,10 @@ export default defineComponent({
   .commandPad {
     margin-top: 10px;
     margin-bottom: 10px;
+
+    .btn{
+      transition: none !important;
+    }
   }
 
   .month_pad,
