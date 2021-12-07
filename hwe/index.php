@@ -311,25 +311,25 @@ if (!$otherTextInfo) {
                         </div>
                         <div id="msg_submit-col" class="col-6 col-md-2 d-grid"><button id="msg_submit" class="btn btn-primary">서신전달&amp;갱신</button></div>
                     </div>
-                    <a id="public_talk_position"></a><div class="col-md-6 board_side bg0">
+                    <div class="col-md-6 board_side bg0"><a id="public_talk_position"></a>
                         <div class="board_header bg0">전체 메시지(최고99자)</div>
                         <section class="public_message">
                             <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="public">이전 메시지 불러오기</button></div>
                         </section>
                     </div>
-                    <a id="national_talk_position"></a><div class="col-md-6 board_side bg0">
+                    <div class="col-md-6 board_side bg0"><a id="national_talk_position"></a>
                         <div class="board_header bg0">국가 메시지(최고99자)</div>
                         <section class="national_message">
                             <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="national">이전 메시지 불러오기</button></div>
                         </section>
                     </div>
-                    <a id="private_talk_position"></a><div class="col-md-6 board_side bg0">
+                    <div class="col-md-6 board_side bg0"><a id="private_talk_position"></a>
                         <div class="board_header bg0">개인 메시지(최고99자)</div>
                         <section class="private_message">
                             <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="private">이전 메시지 불러오기</button></div>
                         </section>
                     </div>
-                    <a id="diplomacy_talk_position"></a><div class="col-md-6 board_side bg0">
+                    <div class="col-md-6 board_side bg0"><a id="diplomacy_talk_position"></a>
                         <div class="board_header bg0">외교 메시지(최고99자)</div>
                         <section class="diplomacy_message">
                             <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="diplomacy">이전 메시지 불러오기</button></div>
