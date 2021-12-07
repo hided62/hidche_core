@@ -1,18 +1,16 @@
-<div class="buttonPlate">
-    <a href="a_status.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">세력도</button></a>
-    <a href="a_kingdomList.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">세력일람</button></a>
-    <a href="a_genList.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">장수일람</button></a>
-    <a href="a_bestGeneral.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">명장일람</button></a>
-    <a href="a_history.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">연감</button></a>
-    <a href="a_hallOfFame.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">명예의전당</button></a>
-    <a href="a_emperior.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">왕조일람</button></a>
-    <a href="a_traffic.php" target="_blank" class="open-window"><button type="button" class="toolbarButton">접속량정보</button></a>
-    <a href="/bbs/board" target="_blank"><button type="button" class="toolbarButton2">삼모게시판</button></a>
-    <a href="/bbs/tip" target="_blank"><button type="button" class="toolbarButton">팁/강좌</button></a>
-    <a href="/bbs/news" target="_blank"><button type="button" class="toolbarButton">삼국 일보</button></a>
-    <a href="/bbs/history2" target="_blank"><button type="button" class="toolbarButton">개인 열전</button></a>
-    <a href="/bbs/history3" target="_blank"><button type="button" class="toolbarButton">국가 열전</button></a>
-    <a href="/bbs/patch" target="_blank"><button type="button" class="toolbarButton">패치 내역</button></a>
-    <a href="battle_simulator.php" target="_blank"><button type="button" class="toolbarButton">전투 시뮬레이터</button></a>
-    <a href="<?= $site ?>" target="_blank" class="open-window"><button type="button" class="toolbarButton"><?= $call ?></button></a>
-</div>
+<?=$btnBegin??''?><a href="a_status.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">세력도</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_kingdomList.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">세력일람</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_genList.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">장수일람</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_bestGeneral.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">명장일람</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_history.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">연감</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_hallOfFame.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">명예의전당</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_emperior.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">왕조일람</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="a_traffic.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">접속량정보</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="/bbs/board" target="_blank" class="toolbarButton2 <?=$btnClass??""?>">삼모게시판</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="/bbs/tip" target="_blank" class="toolbarButton <?=$btnClass??""?>">팁/강좌</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="/bbs/news" target="_blank" class="toolbarButton <?=$btnClass??""?>">삼국 일보</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="/bbs/history2" target="_blank" class="toolbarButton <?=$btnClass??""?>">개인 열전</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="/bbs/history3" target="_blank" class="toolbarButton <?=$btnClass??""?>">국가 열전</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="/bbs/patch" target="_blank" class="toolbarButton <?=$btnClass??""?>">패치 내역</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="battle_simulator.php" target="_blank" class="toolbarButton <?=$btnClass??""?>">전투 시뮬레이터</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="<?= $site ?>" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>"><?= $call ?></a><?=$btnEnd??''?>

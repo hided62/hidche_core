@@ -119,7 +119,7 @@ function displaySpecialDomesticInfo(?string $type): string
     ]);
 }
 
-function allButton(bool $seizeNPCMode)
+function allButton(bool $seizeNPCMode, array $opts=[])
 {
     if ($seizeNPCMode) {
         $site = "a_npcList.php";
@@ -136,14 +136,14 @@ function allButton(bool $seizeNPCMode)
     }
 
 
-    return $templates->render('allButton', [
+    return $templates->render('allButton', array_merge([
         'call' => $call,
         'site' => $site
-    ]);
+    ], $opts));
 }
 
 
-function commandButton()
+function commandButton(array $opts=[])
 {
     $session = Session::getInstance();
     $userID = Session::getUserID();
@@ -173,14 +173,14 @@ function commandButton()
         $showSecret = false;
     }
 
-    return $templates->render('commandButton', [
+    return $templates->render('commandButton', array_merge([
         'bgColor' => $bgColor,
         'fgColor' => $fgColor,
         'meLevel' => $me['officer_level'],
         'nationLevel' => $nation['level'],
         'showSecret' => $showSecret,
         'permission' => $permission,
-    ]);
+    ], $opts));
 }
 
 function formatWounded(int $value, int $wound): string

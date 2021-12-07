@@ -25,12 +25,41 @@ body {
     #container {
         width: 500px;
         margin: 0 auto;
+        margin-bottom: 100px;
     }
 
     input[type='text'],
     input[type='number'],
     textarea {
         font-size: 16px;
+    }
+
+    #navbar500 {
+        .nav-item ul.dropdown-menu {
+            max-height: calc(100vh - 50px);
+            overflow-y: auto;
+        }
+
+        .nav-item > .btn {
+            margin-bottom: -6px;
+            text-align: center;
+            width: 125px;
+            font-size: 16px;
+        }
+
+        box-shadow: 0 -1px 0 $dark;
+    }
+
+    #navbarGlobalItems {
+        columns: 2;
+    }
+
+    #navbarNationItems {
+        columns: 2;
+    }
+
+    #navbarQuickItems {
+        columns: 3;
     }
 }
 
@@ -151,14 +180,6 @@ body {
         text-decoration: none;
     }
 
-    .commandButton {
-        width: 100%;
-        font-weight: bold;
-        font-size: 14px;
-        display: block;
-    }
-
-
     .mainCityInfo {
         grid-template-columns: 1fr 1fr 1fr 1fr;
 
@@ -206,12 +227,6 @@ body {
         text-decoration: none;
     }
 
-    .commandButton {
-        width: 100%;
-        font-weight: bold;
-        font-size: 14px;
-        display: block;
-    }
 
     #nation-msg {
         transform-origin: 0px 0px;
@@ -283,26 +298,36 @@ body {
     }
 }
 
-.toolbarButton {
-    @extend .btn;
-    @extend .btn-sammo-base2;
-    width: 100%;
-    font-weight: bold;
-    font-size: 14px;
-}
+.buttonPlate {
+    .toolbarButton {
+        @extend .btn;
+        @extend .btn-sammo-base2;
+        width: 100%;
+        font-weight: bold;
+        font-size: 14px;
+    }
 
-.toolbarButton2 {
-    @extend .btn;
-    @extend .btn-sammo-base2;
-    color: magenta;
-    width: 100%;
-    font-weight: bold;
-    font-size: 14px;
 
-    &:hover,
-    &:focus,
-    &:active {
+    .toolbarButton2 {
+        @extend .btn;
+        @extend .btn-sammo-base2;
         color: magenta;
+        width: 100%;
+        font-weight: bold;
+        font-size: 14px;
+
+        &:hover,
+        &:focus,
+        &:active {
+            color: magenta;
+        }
+    }
+
+    .commandButton {
+        width: 100%;
+        font-weight: bold;
+        font-size: 14px;
+        display: block;
     }
 }
 
@@ -389,13 +414,20 @@ body {
     #public_talk_position,
     #national_talk_position,
     #private_talk_position,
-    #diplomacy_talk_position {
+    #diplomacy_talk_position{
+        display: block;
+        position: relative;
+        top: -72px;
+        visibility: hidden;
+    }
+
+    #message_board .board_side {
         position: relative;
 
-        .board_header {
+        > .board_header {
             position: -webkit-sticky;
             position: sticky;
-            top: 64.5px;
+            top: 72px;
             z-index: 4;
         }
     }
