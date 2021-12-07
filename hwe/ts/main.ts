@@ -43,68 +43,27 @@ $(function ($) {
 (() => {
 
     let finInit = false;
-    const objects: {
-        target: HTMLElement,
-        button: HTMLAnchorElement,
-    }[] = [];
 
     let nationMsgBox!: HTMLElement;
     let nationMsg!: HTMLElement;
     let nationMsgHeight: number | undefined = undefined;
 
     function init() {
-        const buttons = document.querySelectorAll<HTMLAnchorElement>('#float-tabs a.btn');
-        if (!buttons) {
+        if(finInit){
+            return false;
+        }
+        const _nationMsgBox = document.getElementById('nation-msg-box');
+        if (!_nationMsgBox) {
             return false;
         }
         finInit = true;
 
-        for (const button of buttons) {
-            const targetQuery = button.href.split('#');
-            if (!targetQuery || targetQuery.length < 2) {
-                continue;
-            }
-            const target = document.getElementById(targetQuery[1]);
-            if (!target) {
-                continue;
-            }
-            objects.push({ target, button });
-        }
-
-        nationMsgBox = unwrap(document.getElementById('nation-msg-box'));
+        nationMsgBox = _nationMsgBox;
         nationMsg = unwrap(document.getElementById('nation-msg'));
     }
 
     function onScroll() {
         if (!finInit && !init()) return;
-
-        for (const { button } of objects) {
-            button.classList.remove('active');
-        }
-
-        const screenHeight = window.innerHeight
-        for (const { target, button } of objects) {
-            const { top, bottom, height } = target.getBoundingClientRect();
-
-            if (top >= 0 && bottom <= screenHeight) {
-                //valid
-            }
-            else if (top <= 0 && bottom >= screenHeight) {
-                //valid
-            }
-            else if (top < 0) {
-                if (bottom / height < 0.8) {
-                    continue;
-                }
-            }
-            else if (bottom > screenHeight) {
-                if ((screenHeight - top) / height < 0.8) {
-                    continue;
-                }
-            }
-
-            button.classList.add('active');
-        }
 
         if (nationMsgBox.offsetWidth < nationMsg.offsetWidth) {
             if (nationMsgHeight === undefined) {
