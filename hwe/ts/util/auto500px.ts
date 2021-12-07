@@ -16,7 +16,7 @@ export function auto500px(targetHeight = 700): void {
         const htmlTag = unwrap(document.querySelector("head"));
         _viewPortMeta = document.createElement("meta");
         _viewPortMeta.name = 'viewport';
-        _viewPortMeta.content = 'width=500, initial-scale=1';
+        _viewPortMeta.content = 'width=500';
         htmlTag.appendChild(_viewPortMeta);
         viewportMeta = _viewPortMeta;
     }
@@ -30,22 +30,22 @@ export function auto500px(targetHeight = 700): void {
         const selectorHeight = targetHeight;
 
         if (deviceWidth < 500) {
-            viewportMeta.content = 'width=500, initial-scale=1';
+            viewportMeta.content = 'width=500';
             return;
         }
 
         if (innerHeight < selectorHeight) {
             const maybeNextWidth = deviceWidth / innerHeight * selectorHeight;
             if (maybeNextWidth >= 700) {
-                viewportMeta.content = 'width=1000, initial-scale=1';
+                viewportMeta.content = 'width=1000';
             }
             else {
-                viewportMeta.content = `height=${Math.ceil(selectorHeight)}, initial-scale=1`;
+                viewportMeta.content = `height=${Math.ceil(selectorHeight)}`;
             }
             return;
         }
         else if(deviceWidth >= 700){
-            viewportMeta.content = 'width=1000, initial-scale=1';
+            viewportMeta.content = 'width=1000';
         }
         else{
             viewportMeta.content = 'width=device-width, initial-scale=1';
