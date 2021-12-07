@@ -376,7 +376,7 @@ if (!$otherTextInfo) {
                                 <div class="dropdown-toggle text-white btn btn-dark" id="navbarQuick" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     빠른 이동
                                 </div>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="navbarQuickItems">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="navbarQuickItems">
                                     <li><a class="dropdown-item disabled">국가 정보</a></button></li>
                                     <hr class="dropdown-divider">
                                     </hr>

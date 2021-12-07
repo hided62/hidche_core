@@ -38,9 +38,13 @@ body {
         .nav-item ul.dropdown-menu {
             max-height: calc(100vh - 50px);
             overflow-y: auto;
+
+            li {
+                font-size: 16px;
+            }
         }
 
-        .nav-item > .btn {
+        .nav-item>.btn {
             margin-bottom: -6px;
             text-align: center;
             width: 125px;
@@ -49,7 +53,7 @@ body {
 
         box-shadow: 0 -1px 0 $dark;
 
-        .toolbarButton2{
+        .toolbarButton2 {
             text-decoration: underline;
         }
     }
@@ -418,7 +422,7 @@ body {
     #public_talk_position,
     #national_talk_position,
     #private_talk_position,
-    #diplomacy_talk_position{
+    #diplomacy_talk_position {
         display: block;
         position: relative;
         top: -72px;
@@ -428,7 +432,7 @@ body {
     #message_board .board_side {
         position: relative;
 
-        > .board_header {
+        >.board_header {
             position: -webkit-sticky;
             position: sticky;
             top: 72px;
