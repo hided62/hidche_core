@@ -90,18 +90,18 @@ if($action == 'scrub_icon'){
 
     $cnt = 0;
 
-    foreach(glob(AppConf::getUserIconPathFS().'/*.{jpg,png,gif}', GLOB_BRACE) as $filepath){
+    foreach(glob(AppConf::getUserIconPathFS().'/*.{webp,jpg,png,gif}', GLOB_BRACE) as $filepath){
         $filename = basename($filepath);
-        
+
         if (array_key_exists($filename, $usedIcon)) {
             continue;
         }
-    
+
         $mtime = filemtime($filepath);
         if($mtime > $deleteUntil){
             continue;
         }
-    
+
         @unlink($filepath);
         $cnt++;
     }
@@ -115,8 +115,8 @@ if($action == 'scrub_icon'){
 if($action == 'scrub_old_user'){
     $deleteUntil = TimeUtil::nowAddMinutes(-60*24*30*6);
     $targetUser = [];
-    $members = $db->query('SELECT member.no, max(member_log.date) as loginDate from member 
-    left join member_log on member.`NO` = member_log.member_no and 
+    $members = $db->query('SELECT member.no, max(member_log.date) as loginDate from member
+    left join member_log on member.`NO` = member_log.member_no and
     (member_log.action_type="login" or member_log.action_type="reg") group by member.no');
     foreach($members as $member){
         if($member['loginDate'] === null){
@@ -186,7 +186,7 @@ if($action == 'delete'){
 }
 
 if($action == 'reset_pw'){
-    
+
     $newPassword = Util::randomStr(6);
     $tmpPassword = Util::hashPassword(RootDB::getGlobalSalt(), $newPassword);
     $newSalt = bin2hex(random_bytes(8));

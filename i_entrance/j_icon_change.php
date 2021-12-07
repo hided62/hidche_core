@@ -48,7 +48,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
     $response['result'] = false;
 } elseif(!$newExt) {
     //확장자 검사
-    $response['reason'] = 'jpg, gif, png 파일이 아닙니다!';
+    $response['reason'] = 'webp, jpg, gif, png 파일이 아닙니다!';
     $response['result'] = false;
 } elseif($image['size'] > 30720) {
     //파일크기 검사
@@ -70,7 +70,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
     //이미지 저장
 
     while(true){
-        $newPicName = dechex(rand(0x000000f,0xfffffff)).$newExt; 
+        $newPicName = dechex(rand(0x000000f,0xfffffff)).$newExt;
         $dest = AppConf::getUserIconPathFS().'/'.$newPicName;
         if(file_exists($dest)){
             continue;

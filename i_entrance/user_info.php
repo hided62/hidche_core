@@ -138,7 +138,7 @@ require(__DIR__.'/../vendor/autoload.php');
                 <form name="change_icon_form" id="change_icon_form" method="post" enctype="multipart/form-data">
                     <input class="with_skin" type="text" readonly="readonly" id="image_upload_filename">
                     <button id="image_upload_fake_btn" class="with_skin">찾아보기</button>
-                    <input type="file" id="image_upload" name="image_upload" accept=".jpg,.jpeg,.png,.gif"><br>
+                    <input type="file" id="image_upload" name="image_upload" accept=".webp,.jpg,.jpeg,.png,.gif"><br>
                     <input class="with_skin" id="btn_image_submit" type="submit" value="아이콘 변경"> <button id="btn_remove_icon" class="with_skin">아이콘 제거</button>
                 </form>
 
