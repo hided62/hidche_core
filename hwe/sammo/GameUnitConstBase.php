@@ -98,6 +98,15 @@ class GameUnitConstBase{
             ['등갑을 두른 보병입니다.'],
             null, ['che_방어력증가5p']
         ],
+        [
+            1106, self::T_FOOTMAN, '백이병',
+            175, 175, 7, 5, 0,  13, 11,
+            3000, ['성도'], null,     0,
+            [self::T_ARCHER=>1.1, self::T_CAVALRY=>0.9, self::T_SIEGE=>1.1],
+            [self::T_ARCHER=>0.9, self::T_CAVALRY=>1.1, self::T_SIEGE=>0.9],
+            ['정예 보병입니다. 불리한 싸움도 버텨냅니다.'],
+            null, ['che_방어력증가5p']
+        ],
 
         [
             1200, self::T_ARCHER, '궁병',
