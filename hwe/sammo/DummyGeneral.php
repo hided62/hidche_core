@@ -54,7 +54,7 @@ class DummyGeneral extends General{
         return;
     }
 
-    public function mergeTotalInheritancePoint(){
+    public function mergeTotalInheritancePoint(bool $isEnd=false){
         return;
     }
 

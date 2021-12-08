@@ -1028,7 +1028,9 @@ function checkEmperior()
                 $genObj->increaseInheritancePoint('unifier', 2000);
             };
         }
-        $genObj->mergeTotalInheritancePoint();
+        $genObj->mergeTotalInheritancePoint(true);
+        applyInheritanceUser($genObj->getID());
+        $genObj->clearInheritancePoint();
     }
 
     $gameStor->isunited = 2;
@@ -1182,8 +1184,10 @@ function checkEmperior()
     LogHistory();
 }
 
-function resetInheritanceUser(int $userID, bool $isRebirth = false): float
+function applyInheritanceUser(int $userID, bool $isRebirth = false): float
 {
+    //FIXME: 은퇴, 사망, 천통 시점에 바로 반영한다면 여기가 아니라 general class로 이동하는 것이 옳음
+    //또한 굳이 merge, apply, clean 3단계를 거쳐야 할 이유도 없음
     $rebirthDegraded = [
         'dex' => 0.5,
     ];

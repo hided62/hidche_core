@@ -652,6 +652,8 @@ class General implements iAction
             }
 
             $this->mergeTotalInheritancePoint();
+            applyInheritanceUser($this->getID());
+            $this->clearInheritancePoint();
         }
 
 
@@ -711,7 +713,8 @@ class General implements iAction
         $ownerID = $this->getVar('owner');
         if ($ownerID) {
             $this->mergeTotalInheritancePoint();
-            resetInheritanceUser($ownerID, true);
+            applyInheritanceUser($ownerID, true);
+            $this->clearInheritancePoint();
         }
 
         $this->multiplyVarWithLimit('leadership', 0.85, 10);
@@ -1320,7 +1323,7 @@ class General implements iAction
             return 0;
         }
 
-        if ($this->getVar('npc') != 0) {
+        if ($this->getVar('npc') >= 2) {
             return 0;
         }
 
@@ -1443,7 +1446,7 @@ class General implements iAction
             return;
         }
 
-        if ($this->getVar('npc') != 0) {
+        if ($this->getVar('npc') >= 2) {
             return;
         }
 
@@ -1463,15 +1466,56 @@ class General implements iAction
         $inheritStor->setValue($key, [$newValue, $aux]);
     }
 
-    public function mergeTotalInheritancePoint()
+    public function clearInheritancePoint(){
+        $ownerID = $this->getVar('owner');
+        if(!$ownerID){
+            return;
+        }
+
+        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
+        $allPoints = $inheritStor->getAll();
+        if (!$allPoints || count($allPoints) == 0) {
+            //비었으므로 리셋 안함
+            return;
+        }
+        if (count($allPoints) == 1 && key_exists('previous', $allPoints)) {
+            //이미 리셋되었으므로 리셋 안함
+            return;
+        }
+
+        $previousPointInfo = $allPoints['previous'];
+        $inheritStor->resetValues();
+        $inheritStor->setValue('previous', $previousPointInfo);
+    }
+
+    public function mergeTotalInheritancePoint(bool $isEnd=false)
     {
         $ownerID = $this->getVar('owner');
         if (!$ownerID) {
             return;
         }
 
-        if ($this->getVar('npc') != 0) {
+        if ($this->getVar('npc') > 1){
             return;
+        }
+
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        $gameStor->cacheValues(['year', 'startyear', 'month']);
+
+        if ($this->getVar('npc') == 1) {
+            if(!$isEnd){
+                return;
+            }
+
+            $pickYearMonth = $this->getAuxVar('pickYearMonth');
+            if($pickYearMonth === null){
+                return;
+            }
+            [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+
+            if(($year - $pickYearMonth) * 2 <= ($year - $startYear)){
+                return;
+            }
         }
 
         $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
@@ -1486,7 +1530,6 @@ class General implements iAction
         }
 
         $oldInheritStor = KVStorage::getStorage(DB::db(), "inheritance_result");
-        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
         $serverID = UniqueConst::$serverID;
         $year = $gameStor->year;
         $month = $gameStor->month;

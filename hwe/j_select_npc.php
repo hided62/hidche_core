@@ -73,6 +73,8 @@ if ($gencount >= $maxgeneral) {
     ]);
 }
 
+$genAux = Json::decode($db->queryFirstField('SELECT aux FROM general WHERE no = %i', $pick)??'{}');
+$genAux['pickYearMonth'] = Util::joinYearMonth($year, $month);
 //등록 시작
 $db->update('general', [
     'owner_name'=>$userNick,
@@ -81,6 +83,7 @@ $db->update('general', [
     'defence_train'=>80,
     'permission'=>'normal',
     'owner'=>$userID,
+    'aux'=>Json::encode($genAux)
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);
 
 if(!$db->affectedRows()){

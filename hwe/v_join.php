@@ -38,7 +38,7 @@ if ($gencount >= $admin['maxgeneral']) {
     die(WebUtil::errorBackMsg("더 이상 등록할 수 없습니다."));
 }
 
-$inheritTotalPoint = resetInheritanceUser($userID);
+$inheritTotalPoint = applyInheritanceUser($userID);
 
 $nationList = $db->query('SELECT nation,`name`,color,scout FROM nation');
 $nationList = Util::convertArrayToDict($nationList, 'nation');
