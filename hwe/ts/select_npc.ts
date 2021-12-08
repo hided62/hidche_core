@@ -5,6 +5,9 @@ import { TemplateEngine } from "./util/TemplateEngine";
 import { GeneralListResponse, InvalidResponse } from './defs';
 import { convertFormData } from './util/convertFormData';
 import { unwrap_any } from './util/unwrap_any';
+import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+
+setAxiosXMLHttpRequest();
 
 declare const specialInfo: Record<string, string>;
 declare const characterInfo: Record<string, string>;
