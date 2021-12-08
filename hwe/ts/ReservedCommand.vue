@@ -58,15 +58,15 @@
         :key="turnIdx"
         height="28"
         :id="`command_${turnIdx}`"
-        :class="pressed[turnIdx] ? 'pressed' : ''"
+        :class="turnList.has(turnIdx) ? 'pressed' : ''"
       >
         <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
             size="sm"
             :variant="
-              pressed[turnIdx]
+              turnList.has(turnIdx)
                 ? 'info'
-                : turnIdx == 0 && pressed.filter((t) => t).length == 0
+                : turnList.size == 0 && prevTurnList.has(turnIdx)
                 ? 'success'
                 : 'primary'
             "
@@ -138,7 +138,7 @@
         <b-button
           :pressed="searchMode"
           @click="searchCommand()"
-          :variant="searchMode?'info':'primary'"
+          :variant="searchMode ? 'info' : 'primary'"
           v-b-tooltip.hover
           title="검색 기능을 활성화합니다."
           ><i class="bi bi-search"></i
@@ -301,11 +301,15 @@ export default defineComponent({
       }, 1000 - serverNow.getMilliseconds());
     },
     toggleTurn(turnIdx: number) {
-      this.pressed[turnIdx] = !this.pressed[turnIdx];
+      if (this.turnList.has(turnIdx)) {
+        this.turnList.delete(turnIdx);
+      } else {
+        this.turnList.add(turnIdx);
+      }
     },
     selectTurn(turnIdx: number) {
-      this.pressed.fill(false);
-      this.pressed[turnIdx] = true;
+      this.turnList.clear();
+      this.turnList.add(turnIdx);
     },
     selectAll(e: Event | true) {
       //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
@@ -313,25 +317,19 @@ export default defineComponent({
         return;
       }
 
-      let pressedCnt = 0;
-      for (const pressed of this.pressed) {
-        if (pressed) {
-          pressedCnt += 1;
-        }
-      }
-
-      if (pressedCnt * 3 > this.maxTurn) {
-        this.pressed.fill(false);
+      if (this.turnList.size * 3 > this.maxTurn) {
+        this.turnList.clear();
       } else {
-        this.pressed.fill(true);
+        for (let i = 0; i < this.maxTurn; i++) {
+          this.turnList.add(i);
+        }
       }
     },
     selectStep(begin: number, step: number) {
+      this.turnList.clear();
       for (const idx of range(0, maxTurn)) {
         if ((idx - begin) % step == 0) {
-          this.pressed[idx] = true;
-        } else {
-          this.pressed[idx] = false;
+          this.turnList.add(idx);
         }
       }
     },
@@ -439,12 +437,11 @@ export default defineComponent({
       this.timeDiff = timeDiff;
     },
     async reserveCommand() {
-      const turnList: number[] = [];
-      for (const [turnIdx, pressed] of this.pressed.entries()) {
-        if (!pressed) {
-          continue;
-        }
-        turnList.push(turnIdx);
+      let turnList: number[];
+      if (this.turnList.size == 0) {
+        turnList = Array.from(this.prevTurnList.values());
+      } else {
+        turnList = Array.from(this.turnList.values());
       }
 
       if (turnList.length == 0) {
@@ -469,7 +466,14 @@ export default defineComponent({
           turnList,
           action: commandName,
         });
-        this.pressed.fill(false);
+
+        if (this.turnList.size > 0) {
+          this.prevTurnList.clear();
+          for (const v of this.turnList) {
+            this.prevTurnList.add(v);
+          }
+          this.turnList.clear();
+        }
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -491,9 +495,6 @@ export default defineComponent({
     setTimeout(() => {
       this.updateNow();
     }, 1000 - serverNowObj.getMilliseconds());
-
-    const pressed = Array.from<boolean>({ length: maxTurn }).fill(false);
-    //pressed[0] = true;
 
     const selectedCommand = commandList[0].values[0];
     for (const subCategory of commandList) {
@@ -521,6 +522,9 @@ export default defineComponent({
       time: "",
     });
 
+    const prevTurnList = new Set([0]);
+    const turnList = new Set<number>();
+
     return {
       maxTurn,
       flippedMaxTurn: 16,
@@ -529,7 +533,8 @@ export default defineComponent({
       commandList,
       serverNow: formatTime(serverNowObj, "HH:mm:ss"),
       timeDiff,
-      pressed,
+      prevTurnList,
+      turnList,
       selectedCommand,
       reservedCommandList: emptyTurn,
       autorun_limit: null as null | number,
