@@ -190,6 +190,7 @@ class ResetHelper{
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $db->insert('plock', [
+            'type'=>'GAME',
             'plock'=>1,
             'locktime'=>TimeUtil::now(true)
         ]);
