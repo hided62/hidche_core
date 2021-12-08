@@ -26,6 +26,7 @@ class KVStorage{
         $this->db = $db;
         $this->storNamespace = $storNamespace;
         $this->tableName = $tableName;
+        $this->turnOnCache();
     }
 
     public static function getValuesFromInterNamespace(\MeekroDB $db, string $tableName, $key):array{
@@ -54,6 +55,13 @@ class KVStorage{
     public function turnOnCache(): self{
         if($this->cacheData === null){
             $this->cacheData = [];
+        }
+        return $this;
+    }
+
+    public function turnOffCache(): self{
+        if($this->cacheData !== null){
+            $this->cacheData = null;
         }
         return $this;
     }
