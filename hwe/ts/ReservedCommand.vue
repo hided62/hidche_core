@@ -63,7 +63,13 @@
         <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
             size="sm"
-            :variant="pressed[turnIdx] ? 'info' : ((turnIdx==0&&pressed.filter(t=>t).length==0)?'success':'primary')"
+            :variant="
+              pressed[turnIdx]
+                ? 'info'
+                : turnIdx == 0 && pressed.filter((t) => t).length == 0
+                ? 'success'
+                : 'primary'
+            "
             >{{ turnIdx + 1 }}</b-button
           >
         </div>
@@ -128,7 +134,17 @@
       </div>
     </div>
     <div class="row gx-0">
-      <div class="col-9">
+      <div class="col-2 d-grid">
+        <b-button
+          :pressed="searchMode"
+          @click="searchCommand()"
+          :variant="searchMode?'info':'primary'"
+          v-b-tooltip.hover
+          title="검색 기능을 활성화합니다."
+          ><i class="bi bi-search"></i
+        ></b-button>
+      </div>
+      <div class="col-7">
         <v-multiselect
           v-model="selectedCommand"
           :allow-empty="false"
@@ -147,6 +163,7 @@
           deselectGroupLabel=""
           placeholder="턴 선택"
           :maxHeight="400"
+          :searchable="searchMode"
         >
           <template v-slot:noResult>검색 결과가 없습니다.</template>
           <template v-slot:option="props"
@@ -163,12 +180,9 @@
                 >▼</span
               >
               <span class="compensateNeutral" v-else></span>
-              <span :class="[
-              props.option.possible?'':'commandImpossible',
-              ]">
+              <span :class="[props.option.possible ? '' : 'commandImpossible']">
                 {{ props.option.title }}
               </span>
-
             </template>
             <template v-else-if="props.option.category">
               {{ props.option.category }}
@@ -217,7 +231,7 @@ declare const commandList: {
   values: commandItem[];
 }[];
 declare const serverNow: string;
-
+declare const serverID: string;
 type TurnObj = {
   action: string;
   brief: string;
@@ -272,6 +286,8 @@ function isDropdownChildren(e?: Event): boolean {
   }
   return false;
 }
+
+const searchModeKey = `sammo_${serverID}_searchMode`;
 
 export default defineComponent({
   name: "ReservedCommand",
@@ -394,10 +410,12 @@ export default defineComponent({
           }
           style.color = "#aaffff";
 
-          tooltip.push(`자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`);
+          tooltip.push(
+            `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`
+          );
         }
 
-        if(mb_strwidth(brief) > 22){
+        if (mb_strwidth(brief) > 22) {
           tooltip.push(brief);
         }
 
@@ -406,7 +424,7 @@ export default defineComponent({
           year,
           month,
           time: formatTime(nextTurnTime, "HH:mm"),
-          tooltip: tooltip.length==0?undefined:tooltip.join("\n"),
+          tooltip: tooltip.length == 0 ? undefined : tooltip.join("\n"),
           style,
         });
 
@@ -429,7 +447,7 @@ export default defineComponent({
         turnList.push(turnIdx);
       }
 
-      if(turnList.length == 0){
+      if (turnList.length == 0) {
         turnList.push(0);
       }
 
@@ -459,6 +477,11 @@ export default defineComponent({
       }
       await this.reloadCommandList();
     },
+    searchCommand() {
+      const searchMode = !this.searchMode;
+      this.searchMode = searchMode;
+      localStorage.setItem(searchModeKey, searchMode ? "1" : "0");
+    },
   },
   data() {
     const serverNowObj = parseTime(serverNow);
@@ -473,15 +496,19 @@ export default defineComponent({
     //pressed[0] = true;
 
     const selectedCommand = commandList[0].values[0];
-    for(const subCategory of commandList){
-      for(const command of subCategory.values){
-        if(command.searchText){
+    for (const subCategory of commandList) {
+      for (const command of subCategory.values) {
+        if (command.searchText) {
           continue;
         }
-        const [filteredTextH, filteredTextA] = filter초성withAlphabet(command.simpleName.replace(/\s+/g, ''));
-        command.searchText = `${command.simpleName} ${filteredTextH} ${filteredTextA}`
+        const [filteredTextH, filteredTextA] = filter초성withAlphabet(
+          command.simpleName.replace(/\s+/g, "")
+        );
+        command.searchText = `${command.simpleName} ${filteredTextH} ${filteredTextA}`;
       }
     }
+
+    const searchMode = (localStorage.getItem(searchModeKey) ?? "1") != "0";
 
     const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
       length: maxTurn,
@@ -506,6 +533,7 @@ export default defineComponent({
       selectedCommand,
       reservedCommandList: emptyTurn,
       autorun_limit: null as null | number,
+      searchMode,
     };
   },
   mounted() {
@@ -535,12 +563,12 @@ export default defineComponent({
     margin-left: 10px;
 
     .turn_pad {
-
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .multiselect__content-wrapper {
-      width: 133.3%;
+      margin-left: calc(-100% / 7 * 2);
+      width: calc(100% / 7 * 12);
     }
 
     .multiselect__single {
@@ -561,7 +589,7 @@ export default defineComponent({
     margin-top: 10px;
     margin-bottom: 10px;
 
-    .btn{
+    .btn {
       transition: none !important;
     }
   }
