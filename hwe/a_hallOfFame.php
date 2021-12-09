@@ -46,9 +46,8 @@ else{
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1136" />
 <title><?=UniqueConst::$serverName?>: 명예의 전당</title>
-<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('dist_css/common.css')?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <?=WebUtil::printCSS('css/hallOfFame.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>

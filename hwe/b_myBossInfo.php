@@ -37,11 +37,10 @@ $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nati
 <?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS('dist_js/common.js')?>
 <?=WebUtil::printJS('dist_js/bossInfo.js')?>
-<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('dist_css/common.css')?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <script type="text/javascript">
 var chiefStatMin = <?=GameConst::$chiefStatMin?>;

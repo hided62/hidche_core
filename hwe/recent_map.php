@@ -25,7 +25,7 @@ include "func.php";
 
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
-    <?= WebUtil::printCSS('css/common.css') ?>
+    <?= WebUtil::printCSS('dist_css/common.css') ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
     <style>

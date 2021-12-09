@@ -25,7 +25,7 @@ if($session->userGrade == 5){
 <?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS('dist_js/install_db.js')?>
 <?=WebUtil::printCSS('css/normalize.css')?>
-<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('dist_css/common.css')?>
 <?=WebUtil::printCSS('css/install.css')?>
 </head>
 <body>

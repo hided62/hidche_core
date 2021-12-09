@@ -103,9 +103,8 @@ $nations = Json::decode($history['nations']);
 <?=WebUtil::printJS('dist_js/vendors.js')?>
 <?=WebUtil::printJS("js/map/theme_{$mapTheme}.js")?>
 <?=WebUtil::printJS('dist_js/history.js')?>
-<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('dist_css/common.css')?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <?=WebUtil::printCSS('css/map.css')?>
 <?=WebUtil::printCSS('css/history.css')?>

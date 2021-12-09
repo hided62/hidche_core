@@ -88,11 +88,10 @@ window.turnList = [<?=join(', ',$turnList)?>];
 window.isChiefTurn = <?=$isChiefTurn?'true':'false'?>;
 var jsPlugins = <?=Json::encode($jsList)?>;
 </script>
-<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
 <?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('dist_css/common.css')?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <?=WebUtil::printCSS('css/main.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
