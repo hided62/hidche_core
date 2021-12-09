@@ -1,5 +1,4 @@
 import $ from "jquery";
-import axios from "axios";
 import { Tooltip } from "bootstrap";
 
 /**

@@ -56,9 +56,6 @@
           Math.min(maxTurn, viewMaxTurn)
         )"
         :key="turnIdx"
-        height="28"
-        :id="`command_${turnIdx}`"
-        :class="turnList.has(turnIdx) ? 'pressed' : ''"
       >
         <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
