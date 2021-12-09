@@ -9,9 +9,6 @@ import { InvalidResponse, NationStaticItem } from './defs';
 import { escapeHtml } from './legacy/escapeHtml';
 import { nl2br } from './util/nl2br';
 import { unwrap } from './util/unwrap';
-import { exportWindow } from './util/exportWindow';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');
 import 'bootstrap';
 import 'select2/dist/js/select2.full.js'
 import { LoadingData } from 'select2';

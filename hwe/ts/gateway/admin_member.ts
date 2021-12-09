@@ -1,7 +1,5 @@
 import axios from 'axios';
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import { isNumber } from 'lodash';
 import { TemplateEngine } from '../util/TemplateEngine';
 import { InvalidResponse } from '../defs';

@@ -550,7 +550,7 @@ export default defineComponent({
 @import "../scss/break_500px.scss";
 @import "../scss/variables.scss";
 @import "../scss/bootswatch_custom_variables.scss";
-@import "../../node_modules/bootstrap5/scss/bootstrap-utilities.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap-utilities.scss";
 
 .commandPad {
   background-color: $gray-900;

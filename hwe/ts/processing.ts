@@ -2,8 +2,6 @@ import $ from 'jquery';
 exportWindow($, '$');
 import { exportWindow } from './util/exportWindow';
 import axios from 'axios';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');
 import 'bootstrap';
 import 'select2/dist/js/select2.full.js'
 import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';

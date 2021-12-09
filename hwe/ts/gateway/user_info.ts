@@ -1,7 +1,5 @@
 import { setAxiosXMLHttpRequest } from "../util/setAxiosXMLHttpRequest";
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import axios from 'axios';
 import { subDays } from 'date-fns';
@@ -12,7 +10,6 @@ import { InvalidResponse } from "../defs";
 import { unwrap } from "../util/unwrap";
 import { parseTime } from "../util/parseTime";
 import { formatTime } from "../util/formatTime";
-import { exportWindow } from "../util/exportWindow";
 
 type ResultUserInfo = {
     result: true,

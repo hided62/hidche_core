@@ -8,7 +8,8 @@ import { convertFormData } from './util/convertFormData';
 import { unwrap_any } from './util/unwrap_any';
 import { unwrap } from './util/unwrap';
 import { TemplateEngine } from './util/TemplateEngine';
-
+import { Tooltip } from 'bootstrap';
+import { trim } from 'lodash';
 type CardItem = {
     uniqueName: string,
 
@@ -233,11 +234,14 @@ function printGenerals(value: GeneralPoolResponse) {
 
         $('.card_holder').append($card);
         $card.find('.select_btn').on('click', pickGeneral);
-        $card.find('.obj_tooltip').tooltip({
-            title: function () {
-                return $.trim($(this).find('.tooltiptext').html());
-            },
-            html: true
+
+        $card.find('.obj_tooltip').each(function(){
+            new Tooltip(this, {
+                title: function () {
+                    return trim(this.querySelector('.tooltiptext')?.innerHTML);
+                },
+                html: true
+            })
         });
     }
 

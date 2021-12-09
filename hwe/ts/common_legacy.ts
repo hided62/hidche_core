@@ -1,5 +1,6 @@
 import $ from "jquery";
 import axios from "axios";
+import { Tooltip } from "bootstrap";
 
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
@@ -185,15 +186,16 @@ export function initTooltip($obj?: JQuery<HTMLElement>): void {
             if (!tooltipClassText) {
                 tooltipClassText = '';
             }
-            const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>`;
+            const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>`;
 
-            $objTooltip.tooltip({
-                title: function () {
+            const oTooltip = new Tooltip(this, {
+                title: function(){
                     return $.trim($(this).find('.tooltiptext').html());
                 },
                 template: template,
                 html: true
-            }).tooltip('show');
+            });
+            oTooltip.show();
 
             $objTooltip.data('setObjTooltip', true);
         });

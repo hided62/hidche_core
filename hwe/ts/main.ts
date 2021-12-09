@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import { activateFlip, initTooltip } from './common_legacy';
 import './msg.ts';

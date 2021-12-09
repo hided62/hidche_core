@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import Popper from 'popper.js';
-(window as unknown as {Popper:unknown}).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import { reloadWorldMap } from './map';
 

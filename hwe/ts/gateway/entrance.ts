@@ -1,8 +1,6 @@
 import { exportWindow } from '../util/exportWindow';
 import $ from 'jquery';
 exportWindow($, '$');
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import axios from 'axios';
 import 'bootstrap';
 import { initTooltip } from '../common_legacy';
