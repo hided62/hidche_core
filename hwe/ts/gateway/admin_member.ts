@@ -7,6 +7,7 @@ import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '../util/unwrap_any';
 import { convertFormData } from '../util/convertFormData';
 import { exportWindow } from '../util/exportWindow';
+import './common';
 
 type UserEntry = {
     userID: string,

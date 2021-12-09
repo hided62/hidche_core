@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import 'bootstrap';
 import { JQValidateForm, NamedRules } from '../util/jqValidateForm';
 import axios from 'axios';
 import { convertFormData } from '../util/convertFormData';
@@ -9,6 +8,8 @@ import { sha512 } from 'js-sha512';
 import { unwrap } from '../util/unwrap';
 import { InvalidResponse } from '../defs';
 import { delay } from '../util/delay';
+import './common';
+
 
 type LoginResponse = {
     result: true,

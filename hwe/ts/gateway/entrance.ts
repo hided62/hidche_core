@@ -2,13 +2,13 @@ import { exportWindow } from '../util/exportWindow';
 import $ from 'jquery';
 exportWindow($, '$');
 import axios from 'axios';
-import 'bootstrap';
 import { initTooltip } from '../common_legacy';
 import { TemplateEngine } from "../util/TemplateEngine";
 import { InvalidResponse } from '../defs';
 import { getDateTimeNow } from '../util/getDateTimeNow';
 import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
 import { loadPlugin as loadAdminPlugin } from './admin_server';
+import './common';
 
 
 declare const isAdmin: boolean;

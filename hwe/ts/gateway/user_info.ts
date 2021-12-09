@@ -1,6 +1,5 @@
 import { setAxiosXMLHttpRequest } from "../util/setAxiosXMLHttpRequest";
 import $ from 'jquery';
-import 'bootstrap';
 import axios from 'axios';
 import { subDays } from 'date-fns';
 import { getDateTimeNow } from "../util/getDateTimeNow";
@@ -10,6 +9,7 @@ import { InvalidResponse } from "../defs";
 import { unwrap } from "../util/unwrap";
 import { parseTime } from "../util/parseTime";
 import { formatTime } from "../util/formatTime";
+import './common';
 
 type ResultUserInfo = {
     result: true,

@@ -56,7 +56,7 @@ foreach (ServConfig::getServerList() as $setting) {
     <?= WebUtil::printJS('dist_js/login.js') ?>
 
     <?= WebUtil::printCSS('d_shared/common.css') ?>
-    <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
+    <?= WebUtil::printCSS('dist_css/login.css') ?>
     <?= WebUtil::printCSS('css/login.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">

@@ -8,6 +8,8 @@ import { unwrap_any } from '../util/unwrap_any';
 import { sha512 } from 'js-sha512';
 import { isString } from 'lodash';
 import { mb_strwidth } from '../util/mb_strwidth';
+import './common';
+
 
 $(async function () {
     setAxiosXMLHttpRequest();
