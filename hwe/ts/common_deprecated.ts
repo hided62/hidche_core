@@ -1,5 +1,5 @@
 import { exportWindow } from "@util/exportWindow";
-import { activateFlip, errUnknown, errUnknownToast, quickReject, initTooltip } from "@/common_legacy";
+import { activateFlip, errUnknown, initTooltip } from "@/common_legacy";
 import { isBrightColor } from "@util/isBrightColor";
 import { getIconPath } from "@util/getIconPath";
 import { mb_strwidth } from "@util/mb_strwidth";
@@ -41,7 +41,5 @@ exportWindow(TemplateEngine, 'TemplateEngine');
 exportWindow(getIconPath, 'getIconPath');
 exportWindow(activateFlip, 'activateFlip');
 exportWindow(errUnknown, 'errUnknown');
-exportWindow(errUnknownToast, 'errUnknownToast');
-exportWindow(quickReject, 'quickReject');
 exportWindow(nl2br, 'nl2br');
 exportWindow(initTooltip, 'initTooltip');

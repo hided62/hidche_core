@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Tooltip } from "bootstrap";
+import {  Tooltip } from "bootstrap";
 import { trim } from "lodash";
 
 /**
@@ -125,24 +125,6 @@ export function activeFlipItem($img: JQuery<HTMLElement>): void {
 
 export function errUnknown(): void {
     alert('작업을 실패했습니다.');
-}
-
-export function errUnknownToast(): void {
-    $.toast({
-        title: '에러!',
-        content: '작업을 실패했습니다.',
-        type: 'danger',
-        delay: 5000
-    });
-}
-
-export function quickReject<T>(errMsg: string): JQuery.Promise<T> {
-    if (errMsg === undefined) {
-        errMsg = '작업을 실패했습니다.';
-    }
-    const deferred = $.Deferred();
-    void deferred.reject(errMsg);
-    return deferred.promise();
 }
 
 /*

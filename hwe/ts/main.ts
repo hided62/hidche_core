@@ -15,7 +15,7 @@ import { unwrap } from '@util/unwrap';
 import { auto500px } from '@util/auto500px';
 import { htmlReady } from '@util/htmlReady';
 
-$(function ($) {
+htmlReady(() => {
     $('.refreshPage').click(function () {
         document.location.reload();
         return false;
@@ -36,6 +36,13 @@ $(function ($) {
 
     activateFlip();
     initTooltip();
+
+    const customCSS = localStorage.getItem('sam_customCSS');
+    if (customCSS) {
+        const $style = $('<style type="text/css"></style>');
+        $style.text(customCSS);
+        $style.appendTo($('head'));
+    }
 });
 
 (() => {
@@ -47,7 +54,7 @@ $(function ($) {
     let nationMsgHeight: number | undefined = undefined;
 
     function init() {
-        if(finInit){
+        if (finInit) {
             return false;
         }
         const _nationMsgBox = document.getElementById('nation-msg-box');
