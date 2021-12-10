@@ -9,6 +9,7 @@ import { numberWithCommas } from "@util/numberWithCommas";
 import { unwrap_any } from '@util/unwrap_any';
 import { BasicGeneralListResponse, InvalidResponse } from '@/defs';
 import { formatTime } from '@util/formatTime';
+import { Modal } from 'bootstrap';
 
 type CityAttackerInfo = {
     level: number,
@@ -222,7 +223,7 @@ $(function ($) {
 
             const $modal = $('#importModal');
             $modal.data('target', $card);
-            $modal.modal('show');
+            new Modal($modal[0]).show();
         });
 
         $('.btn-general-save').on('click', function () {
@@ -959,7 +960,7 @@ $(function ($) {
             const $card = $modal.data('target');
             importGeneralInfo($card, data.general);
 
-            $modal.modal('hide');
+            new Modal($modal[0]).hide();
         }, errUnknown);
 
 
@@ -1008,7 +1009,7 @@ $(function ($) {
             }).then(function (data: BasicGeneralListResponse | InvalidResponse) {
                 if (!data.result) {
                     alert(data.reason);
-                    $('#importModal').modal('hide');
+                    new Modal(unwrap(document.querySelector('#importModal'))).hide();
                     return false;
                 }
 

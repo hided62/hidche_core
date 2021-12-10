@@ -54,7 +54,7 @@ declare global {
 declare const kakao_oauth_client_id: string;
 declare const kakao_oauth_redirect_uri: string;
 
-let modalOTP: Modal|undefined = undefined;
+let modalOTP: Modal | undefined = undefined;
 
 let oauthMode: string | null = null;
 
@@ -79,7 +79,7 @@ function getToken(): [number, string] | undefined {
     return token;
 }
 
-function resetToken(){
+function resetToken() {
     localStorage.removeItem(LOGIN_TOKEN_KEY);
 }
 
@@ -96,12 +96,12 @@ async function tryAutoLogin() {
             path: ["Login", "ReqNonce"]
         });
 
-        if(!result){
+        if (!result) {
             //api 에러.
             return;
         }
 
-        if(!result.data.result){
+        if (!result.data.result) {
             resetToken();
             return;
         }
@@ -112,31 +112,31 @@ async function tryAutoLogin() {
         const _loginResult = await axios.post<AutoLoginResponse>('api.php', {
             path: ["Login", "LoginByToken"],
             args: {
-                'hashedToken':hashedToken,
-                'token_id':tokenID,
+                'hashedToken': hashedToken,
+                'token_id': tokenID,
             }
         });
 
-        if(!_loginResult){
+        if (!_loginResult) {
             return;
         }
 
         const loginResult = _loginResult.data;
-        if(!loginResult.result){
-            if(!loginResult.silent){
+        if (!loginResult.result) {
+            if (!loginResult.silent) {
                 alert(loginResult.reason);
             }
             console.error(loginResult.reason);
             return;
         }
 
-        if(loginResult.nextToken){
+        if (loginResult.nextToken) {
             regNextToken(loginResult.nextToken);
         }
         window.location.href = "./";
 
     }
-    catch(e){
+    catch (e) {
         console.error(e);
         return;
     }
@@ -231,10 +231,12 @@ async function doLoginUsingOAuth() {
     }
 
     const modalEl = unwrap(document.querySelector('#modalOTP'))
-    modalOTP = new Modal(modalEl);
-    modalEl.addEventListener('shown.bs.modal', function(){
-        $('#otp_code').trigger('focus');
-    });
+    if (!modalOTP) {
+        modalOTP = new Modal(modalEl);
+        modalEl.addEventListener('shown.bs.modal', function () {
+            unwrap(document.querySelector<HTMLElement>('#otp_code')).focus();
+        });
+    }
     modalOTP.show();
 }
 
@@ -268,7 +270,7 @@ $(async function ($) {
     setAxiosXMLHttpRequest();
 
     //로그인 먼저 해볼 것
-    if(getToken()){
+    if (getToken()) {
         void tryAutoLogin();
         await delay(100);
     }
@@ -342,10 +344,14 @@ $(async function ($) {
             return;
         }
 
-        const $modal = $('#modalOTP').modal() as unknown as JQuery;
-        $modal.on('shown.bs.modal', function () {
-            $('#otp_code').trigger('focus');
-        });
+        const modalEl = unwrap(document.querySelector('#modalOTP'))
+        if (!modalOTP) {
+            modalOTP = new Modal(modalEl);
+            modalEl.addEventListener('shown.bs.modal', function () {
+                unwrap(document.querySelector<HTMLElement>('#otp_code')).focus();
+            });
+        }
+        modalOTP.show();
     });
 
     $('#otp_form').on('submit', async function (e) {
@@ -379,7 +385,7 @@ $(async function ($) {
         alert(result.reason);
 
         if (result.reset) {
-            if(modalOTP){
+            if (modalOTP) {
                 modalOTP.hide();
             }
             return;

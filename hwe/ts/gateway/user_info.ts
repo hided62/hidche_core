@@ -10,6 +10,7 @@ import { unwrap } from '@util/unwrap';
 import { parseTime } from '@util/parseTime';
 import { formatTime } from '@util/formatTime';
 import '@/gateway/common';
+import { Modal } from 'bootstrap';
 
 type ResultUserInfo = {
     result: true,
@@ -128,14 +129,14 @@ function showAdjustServerModal(serverList: [string, string][]) {
         $form.append($item);
     }
 
-    const $modal = $('#chooseServer');
-    $modal.modal({
+    const modalEl = unwrap(document.querySelector('#chooseServer'));
+     new Modal(modalEl, {
         backdrop: 'static'
     });
-    $modal.on('hidden.bs.modal', function () {
+    modalEl.addEventListener('hidden.bs.modal', function () {
         location.reload();
         return;
-    });
+    })
 
     $("#modal-apply").off("click").on("click", async function () {
         const events: Promise<unknown>[] = [];
