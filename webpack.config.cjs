@@ -274,28 +274,6 @@ module.exports = (env, argv) => {
             {
                 test: /.(s?[ac]ss)$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-            },
-            {
-                test: /\.(png|jpe?g|gif|webp)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '../dist_misc/[name].[contenthash:8].[ext]'
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.(svg)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '../dist_misc/[name].[contenthash:8].[ext]'
-                        }
-                    }
-                ]
             },]
         },
         plugins: [
@@ -404,28 +382,7 @@ module.exports = (env, argv) => {
             }, {
                 test: /.(s?[ac]ss)$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-            }, {
-                test: /\.(png|jpe?g|gif|webp)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '../dist_misc/[name].[contenthash:8].[ext]'
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.(svg)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '../dist_misc/[name].[contenthash:8].[ext]'
-                        }
-                    }
-                ]
-            },]
+            }]
         },
         plugins: [
             new MiniCssExtractPlugin({
