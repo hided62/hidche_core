@@ -524,8 +524,8 @@ export default defineComponent({
 
     return {
       maxTurn,
-      flippedMaxTurn: 16,
-      viewMaxTurn: 16,
+      flippedMaxTurn: 15,
+      viewMaxTurn: 15,
       maxPushTurn,
       commandList,
       serverNow: formatTime(serverNowObj, "HH:mm:ss"),
