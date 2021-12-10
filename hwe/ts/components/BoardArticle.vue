@@ -51,7 +51,7 @@
 </template>
 <script lang="ts">
 import { BoardArticleItem } from "@/Board.vue";
-import BoardComment from "@/BoardComment.vue";
+import BoardComment from "@/components/BoardComment.vue";
 import { defineComponent, PropType } from "vue";
 import axios from "axios";
 import { convertFormData } from "@util/convertFormData";

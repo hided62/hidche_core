@@ -10,6 +10,7 @@ import { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
 import '@/gateway/common';
 
+import '@scss/gateway/login.scss';
 
 type LoginResponse = {
     result: true,

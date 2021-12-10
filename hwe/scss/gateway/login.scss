@@ -108,11 +108,11 @@ input::-webkit-input-placeholder {
     background-repeat: no-repeat;
     background-position: bottom center;
     margin-top: 5px;
-    background-image: url('../oauth_kakao/kakao_login_join.png');
+    background-image: url('/oauth_kakao/kakao_login_join.png');
 }
 
 #btn_kakao_login:hover {
-    background-image: url('../oauth_kakao/kakao_login_join_ov.png');
+    background-image: url('/oauth_kakao/kakao_login_join_ov.png');
 }
 
 #bottom_box .container {
