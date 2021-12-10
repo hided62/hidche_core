@@ -259,13 +259,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import "../scss/common/bootstrap5.scss";
-import "../scss/game_bg.scss";
-import TopBackBar from "./components/TopBackBar.vue";
+import "@scss/common/bootstrap5.scss";
+import "@scss/game_bg.scss";
+import TopBackBar from "@/components/TopBackBar.vue";
 import _ from "lodash";
-import { InvalidResponse } from "./defs";
+import { InvalidResponse } from "@/defs";
 import axios from "axios";
-import NumberInputWithInfo from "./components/NumberInputWithInfo.vue";
+import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 
 type InheritanceType =
   | "previous"

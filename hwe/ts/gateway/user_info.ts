@@ -1,15 +1,15 @@
-import { setAxiosXMLHttpRequest } from "../util/setAxiosXMLHttpRequest";
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import $ from 'jquery';
 import axios from 'axios';
 import { subDays } from 'date-fns';
-import { getDateTimeNow } from "../util/getDateTimeNow";
+import { getDateTimeNow } from '@util/getDateTimeNow';
 import { sha512 } from "js-sha512";
-import { convertFormData } from "../util/convertFormData";
-import { InvalidResponse } from "../defs";
-import { unwrap } from "../util/unwrap";
-import { parseTime } from "../util/parseTime";
-import { formatTime } from "../util/formatTime";
-import './common';
+import { convertFormData } from '@util/convertFormData';
+import { InvalidResponse } from '@/defs';
+import { unwrap } from '@util/unwrap';
+import { parseTime } from '@util/parseTime';
+import { formatTime } from '@util/formatTime';
+import '@/gateway/common';
 
 type ResultUserInfo = {
     result: true,

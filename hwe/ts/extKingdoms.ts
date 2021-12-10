@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { unwrap } from './util/unwrap';
+import { unwrap } from '@util/unwrap';
 import axios from 'axios';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
 type KingdomGeneral = {
     html: JQuery<HTMLElement>,

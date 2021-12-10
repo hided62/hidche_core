@@ -29,7 +29,10 @@ module.exports = (env, argv) => {
         resolve: {
             extensions: [".ts", ".tsx", ".vue", ".js"],
             alias: {
-                vue: "@vue/runtime-dom"
+                vue: "@vue/runtime-dom",
+                '@': tsDir,
+                '@scss': path.resolve(tsDir, '../scss'),
+                '@util': path.resolve(tsDir, 'util'),
             }
         },
         mode,
@@ -191,6 +194,11 @@ module.exports = (env, argv) => {
         name: `ingame_${target}`,
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
+            alias: {
+                '@': tsDir,
+                '@scss': path.resolve(tsDir, '../scss'),
+                '@util': path.resolve(tsDir, 'util'),
+            },
         },
         mode,
         entry: entryIngame,
@@ -275,117 +283,122 @@ module.exports = (env, argv) => {
             }),
             //new BundleAnalyzerPlugin()
         ],
-    cache: {
-        type: 'filesystem',
+        cache: {
+            type: 'filesystem',
         },
         externals: {
             // require("jquery") is external and available
             //  on the global var jQuery
             "jQuery": "jquery"
         }
-};
-const gateway = {
-    name: 'gateway',
-    resolve: {
-        extensions: [".js", ".ts", ".tsx"],
-    },
-    mode,
-    entry: {
-        entrance: `${tsDir}/gateway/entrance.ts`,
-        user_info: `${tsDir}/gateway/user_info.ts`,
-        admin_member: `${tsDir}/gateway/admin_member.ts`,
-        join: `${tsDir}/gateway/join.ts`,
-        login: `${tsDir}/gateway/login.ts`,
-        install: `${tsDir}/gateway/install.ts`,
-    },
-    output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist_js'),
-    },
-    devtool: 'source-map',
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all',
-                },
-                default: {
-                    name: 'common_ts',
-                    minChunks: 2,
-                    priority: -20,
-                    chunks: 'all',
-                    reuseExistingChunk: true,
-                },
+    };
+    const gateway = {
+        name: 'gateway',
+        resolve: {
+            extensions: [".js", ".ts", ".tsx"],
+            alias: {
+                '@': tsDir,
+                '@scss': path.resolve(tsDir, '../scss'),
+                '@util': path.resolve(tsDir, 'util'),
             },
         },
-        minimizer: [
-            new ESBuildMinifyPlugin({
-                css: true
+        mode,
+        entry: {
+            entrance: `${tsDir}/gateway/entrance.ts`,
+            user_info: `${tsDir}/gateway/user_info.ts`,
+            admin_member: `${tsDir}/gateway/admin_member.ts`,
+            join: `${tsDir}/gateway/join.ts`,
+            login: `${tsDir}/gateway/login.ts`,
+            install: `${tsDir}/gateway/install.ts`,
+        },
+        output: {
+            filename: '[name].js',
+            path: path.resolve(__dirname, 'dist_js'),
+        },
+        devtool: 'source-map',
+        optimization: {
+            splitChunks: {
+                cacheGroups: {
+                    commons: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                    },
+                    default: {
+                        name: 'common_ts',
+                        minChunks: 2,
+                        priority: -20,
+                        chunks: 'all',
+                        reuseExistingChunk: true,
+                    },
+                },
+            },
+            minimizer: [
+                new ESBuildMinifyPlugin({
+                    css: true
+                }),
+            ],
+            moduleIds: 'deterministic',
+        },
+        module: {
+            rules: [{
+                test: /\.ts$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'ts',
+                            target: 'es2019',
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.tsx$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'tsx',
+                            target: 'es2019',
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'esbuild-loader',
+                        options: {
+                            loader: 'js',
+                            target: 'es2019',
+                        }
+                    }
+                ]
+            }, {
+                test: /.(s?[ac]ss)$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+            }]
+        },
+        plugins: [
+            new MiniCssExtractPlugin({
+                filename: '../dist_css/[name].css'
             }),
+            //new BundleAnalyzerPlugin()
         ],
-        moduleIds: 'deterministic',
-    },
-    module: {
-        rules: [{
-            test: /\.ts$/,
-            exclude: /(node_modules)/,
-            use: [
-                {
-                    loader: 'esbuild-loader',
-                    options: {
-                        loader: 'ts',
-                        target: 'es2019',
-                    }
-                }
-            ]
+        cache: {
+            type: 'filesystem',
         },
-        {
-            test: /\.tsx$/,
-            exclude: /(node_modules)/,
-            use: [
-                {
-                    loader: 'esbuild-loader',
-                    options: {
-                        loader: 'tsx',
-                        target: 'es2019',
-                    }
-                }
-            ]
-        },
-        {
-            test: /\.js$/,
-            exclude: /(node_modules)/,
-            use: [
-                {
-                    loader: 'esbuild-loader',
-                    options: {
-                        loader: 'js',
-                        target: 'es2019',
-                    }
-                }
-            ]
-        }, {
-            test: /.(s?[ac]ss)$/,
-            use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-        }]
-    },
-    plugins: [
-        new MiniCssExtractPlugin({
-            filename: '../dist_css/[name].css'
-        }),
-        //new BundleAnalyzerPlugin()
-    ],
-    cache: {
-        type: 'filesystem',
-    },
-};
+    };
 
-if (target == 'hwe') {
-    return [gateway, ingame_vue, ingame];
-}
-else {
-    return [ingame_vue, ingame];
-}
+    if (target == 'hwe') {
+        return [gateway, ingame_vue, ingame];
+    }
+    else {
+        return [ingame_vue, ingame];
+    }
 }

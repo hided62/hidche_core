@@ -1,13 +1,13 @@
 import $ from 'jquery';
 import axios from 'axios';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
-import { InvalidResponse } from './defs';
-import { initTooltip } from './common_legacy';
-import { getIconPath } from "./util/getIconPath";
-import { convertFormData } from './util/convertFormData';
-import { unwrap_any } from './util/unwrap_any';
-import { unwrap } from './util/unwrap';
-import { TemplateEngine } from './util/TemplateEngine';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { InvalidResponse } from '@/defs';
+import { initTooltip } from '@/common_legacy';
+import { getIconPath } from "@util/getIconPath";
+import { convertFormData } from '@util/convertFormData';
+import { unwrap_any } from '@util/unwrap_any';
+import { unwrap } from '@util/unwrap';
+import { TemplateEngine } from '@util/TemplateEngine';
 import { Tooltip } from 'bootstrap';
 import { trim } from 'lodash';
 type CardItem = {

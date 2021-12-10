@@ -19,7 +19,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ToastType } from "../defs";
+import { ToastType } from "@/defs";
 import { CToaster, CToast, CToastHeader, CToastBody } from "@coreui/vue/src/components/toast";
 
 export default defineComponent({

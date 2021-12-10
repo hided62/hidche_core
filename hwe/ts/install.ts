@@ -1,11 +1,11 @@
 import $ from "jquery";
 import 'bootstrap';
-import { setAxiosXMLHttpRequest } from "./util/setAxiosXMLHttpRequest";
+import { setAxiosXMLHttpRequest } from "@util/setAxiosXMLHttpRequest";
 import axios from "axios";
-import { InvalidResponse } from "./defs";
-import { JQValidateForm, NamedRules } from "./util/jqValidateForm";
-import { convertFormData } from "./util/convertFormData";
-import { exportWindow } from "./util/exportWindow";
+import { InvalidResponse } from "@/defs";
+import { JQValidateForm, NamedRules } from "@util/jqValidateForm";
+import { convertFormData } from "@util/convertFormData";
+import { exportWindow } from "@util/exportWindow";
 
 type ResponseScenarioItem = {
     year?: number,

@@ -1,20 +1,20 @@
 
 import $ from 'jquery';
-import { InvalidResponse } from './defs';
-import { getDateTimeNow } from './util/getDateTimeNow';
+import { InvalidResponse } from '@/defs';
+import { getDateTimeNow } from '@util/getDateTimeNow';
 import axios from 'axios';
-import { convertFormData } from './util/convertFormData';
-import { isBrightColor } from "./util/isBrightColor";
-import { unwrap } from './util/unwrap';
+import { convertFormData } from '@util/convertFormData';
+import { isBrightColor } from "@util/isBrightColor";
+import { unwrap } from '@util/unwrap';
 import _ from 'lodash';
 import { addMinutes } from 'date-fns';
-import { parseTime } from './util/parseTime';
-import { formatTime } from './util/formatTime';
-import { TemplateEngine } from './util/TemplateEngine';
-import { isNotNull } from './util/isNotNull';
-import { unwrap_any } from './util/unwrap_any';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
-import { exportWindow } from './util/exportWindow';
+import { parseTime } from '@util/parseTime';
+import { formatTime } from '@util/formatTime';
+import { TemplateEngine } from '@util/TemplateEngine';
+import { isNotNull } from '@util/isNotNull';
+import { unwrap_any } from '@util/unwrap_any';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { exportWindow } from '@util/exportWindow';
 
 const messageTemplate = `<div
     class="msg_plate msg_plate_<%msgType%> msg_plate_<%nationType%>"

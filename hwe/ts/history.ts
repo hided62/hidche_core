@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import './map';
+import '@/map';
 
 declare const startYear:number;
 declare const startMonth:number;

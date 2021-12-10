@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import 'bootstrap';
-import { reloadWorldMap } from './map';
+import { reloadWorldMap } from '@/map';
 
 declare global{
     interface Window{

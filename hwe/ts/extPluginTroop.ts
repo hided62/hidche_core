@@ -1,6 +1,6 @@
 import axios from "axios";
-import { unwrap } from "./util/unwrap";
-import { RuntimeError } from "./util/RuntimeError";
+import { unwrap } from "@util/unwrap";
+import { RuntimeError } from "@util/RuntimeError";
 
 declare global {
     interface Window {

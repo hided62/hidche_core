@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import axios from 'axios';
-import { convertFormData } from './util/convertFormData';
-import { InvalidResponse } from './defs';
-import { unwrap_any } from './util/unwrap_any';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { convertFormData } from '@util/convertFormData';
+import { InvalidResponse } from '@/defs';
+import { unwrap_any } from '@util/unwrap_any';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import 'bootstrap';
 import 'select2/dist/js/select2.full.js'
 

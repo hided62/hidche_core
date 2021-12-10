@@ -1,15 +1,15 @@
 
 import $ from 'jquery';
 import axios from 'axios';
-import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
-import { InvalidResponse } from '../defs';
-import { JQValidateForm, NamedRules } from '../util/jqValidateForm';
-import { convertFormData } from '../util/convertFormData';
-import { unwrap_any } from '../util/unwrap_any';
-import { mb_strwidth } from '../util/mb_strwidth';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { InvalidResponse } from '@/defs';
+import { JQValidateForm, NamedRules } from '@util/jqValidateForm';
+import { convertFormData } from '@util/convertFormData';
+import { unwrap_any } from '@util/unwrap_any';
+import { mb_strwidth } from '@util/mb_strwidth';
 import { isString } from 'lodash';
 import { sha512 } from 'js-sha512';
-import './common';
+import '@/gateway/common';
 
 async function changeInstallMode() {
     let result: {

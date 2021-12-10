@@ -1,4 +1,4 @@
-import { NPCChiefActions, NPCGeneralActions } from "./defs";
+import { NPCChiefActions, NPCGeneralActions } from "@/defs";
 
 export const NPCPriorityBtnHelpMessage: {
   [v in NPCChiefActions | NPCGeneralActions]: string;

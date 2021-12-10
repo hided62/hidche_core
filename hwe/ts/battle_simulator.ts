@@ -1,14 +1,14 @@
 import $ from 'jquery';
 import 'bootstrap';
 import download from 'downloadjs';
-import { unwrap } from "./util/unwrap";
+import { unwrap } from "@util/unwrap";
 import { isInteger } from 'lodash';
-import { combineArray, errUnknown, getNpcColor } from './common_legacy';
-import { isBrightColor } from "./util/isBrightColor";
-import { numberWithCommas } from "./util/numberWithCommas";
-import { unwrap_any } from './util/unwrap_any';
-import { BasicGeneralListResponse, InvalidResponse } from './defs';
-import { formatTime } from './util/formatTime';
+import { combineArray, errUnknown, getNpcColor } from '@/common_legacy';
+import { isBrightColor } from "@util/isBrightColor";
+import { numberWithCommas } from "@util/numberWithCommas";
+import { unwrap_any } from '@util/unwrap_any';
+import { BasicGeneralListResponse, InvalidResponse } from '@/defs';
+import { formatTime } from '@util/formatTime';
 
 type CityAttackerInfo = {
     level: number,

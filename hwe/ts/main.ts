@@ -1,19 +1,19 @@
 import $ from 'jquery';
 import 'bootstrap';
-import { activateFlip, initTooltip } from './common_legacy';
-import './msg.ts';
-import './map.ts';
-import { exportWindow } from './util/exportWindow';
+import { activateFlip, initTooltip } from '@/common_legacy';
+import '@/msg.ts';
+import '@/map.ts';
+import { exportWindow } from '@util/exportWindow';
 
-import { scrollHardTo } from './util/scrollHardTo';
+import { scrollHardTo } from '@util/scrollHardTo';
 
 exportWindow(scrollHardTo, 'scrollHardTo');
 exportWindow($, '$');
 
-import '../scss/main.scss';
-import { unwrap } from './util/unwrap';
-import { auto500px } from './util/auto500px';
-import { htmlReady } from './util/htmlReady';
+import '@scss/main.scss';
+import { unwrap } from '@util/unwrap';
+import { auto500px } from '@util/auto500px';
+import { htmlReady } from '@util/htmlReady';
 
 $(function ($) {
     $('.refreshPage').click(function () {

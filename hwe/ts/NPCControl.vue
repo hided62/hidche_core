@@ -459,8 +459,8 @@
   </div>
 </template>
 <script lang="ts">
-import "../scss/common/bootstrap5.scss";
-import "../scss/game_bg.scss";
+import "@scss/common/bootstrap5.scss";
+import "@scss/game_bg.scss";
 
 import { defineComponent } from "vue";
 import {
@@ -470,17 +470,17 @@ import {
   NPCChiefActions,
   NPCGeneralActions,
   ToastType,
-} from "./defs";
-import NumberInputWithInfo from "./components/NumberInputWithInfo.vue";
+} from "@/defs";
+import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { cloneDeep, isEqual, last } from "lodash";
-import { unwrap } from "./util/unwrap";
-import { convertFormData } from "./util/convertFormData";
+import { unwrap } from "@util/unwrap";
+import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
-import { NPCPriorityBtnHelpMessage } from "./helpTexts";
+import { NPCPriorityBtnHelpMessage } from "@/helpTexts";
 import draggable from "vuedraggable";
-import MyToast from "./components/MyToast.vue";
-import TopBackBar from "./components/TopBackBar.vue";
-import { convertIDArray } from "./util/convertIDArray";
+import MyToast from "@/components/MyToast.vue";
+import TopBackBar from "@/components/TopBackBar.vue";
+import { convertIDArray } from "@util/convertIDArray";
 
 declare const nationID: number;
 

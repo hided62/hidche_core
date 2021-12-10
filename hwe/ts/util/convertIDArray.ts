@@ -1,4 +1,4 @@
-import { IDItem } from "../defs";
+import { IDItem } from '@/defs';
 
 export function convertIDArray<T>(array: Iterable<T>): IDItem<T>[] {
     const result: IDItem<T>[] = [];

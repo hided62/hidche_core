@@ -294,11 +294,11 @@
   </div>
 </template>
 <script lang="ts">
-import "../scss/common/bootstrap5.scss";
-import "../scss/game_bg.scss";
+import "@scss/common/bootstrap5.scss";
+import "@scss/game_bg.scss";
 
 import { defineComponent } from "vue";
-import TopBackBar from "./components/TopBackBar.vue";
+import TopBackBar from "@/components/TopBackBar.vue";
 import {
   CTable,
   CTableBody,
@@ -306,18 +306,18 @@ import {
   CTableHeaderCell,
   CTableDataCell,
 } from "@coreui/vue/src/components/table";
-import { getIconPath } from "./util/getIconPath";
-import { isBrightColor } from "./util/isBrightColor";
+import { getIconPath } from "@util/getIconPath";
+import { isBrightColor } from "@util/isBrightColor";
 import {
   abilityLeadint,
   abilityLeadpow,
   abilityPowint,
   abilityRand,
-} from "./util/generalStats";
+} from "@util/generalStats";
 import { clone, shuffle, sum } from "lodash";
 import axios from "axios";
-import { InvalidResponse } from "./defs";
-import NumberInputWithInfo from "./components/NumberInputWithInfo.vue";
+import { InvalidResponse } from "@/defs";
+import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 
 declare const nationList: {
   nation: number;

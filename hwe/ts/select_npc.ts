@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { errUnknown } from './common_legacy';
-import { getIconPath } from "./util/getIconPath";
-import { TemplateEngine } from "./util/TemplateEngine";
-import { GeneralListResponse, InvalidResponse } from './defs';
-import { convertFormData } from './util/convertFormData';
-import { unwrap_any } from './util/unwrap_any';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { errUnknown } from '@/common_legacy';
+import { getIconPath } from "@util/getIconPath";
+import { TemplateEngine } from "@util/TemplateEngine";
+import { GeneralListResponse, InvalidResponse } from '@/defs';
+import { convertFormData } from '@util/convertFormData';
+import { unwrap_any } from '@util/unwrap_any';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { Tooltip } from 'bootstrap';
 import { trim } from 'lodash';
 

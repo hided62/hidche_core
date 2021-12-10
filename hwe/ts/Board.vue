@@ -60,18 +60,18 @@
 </template>
 
 <script lang="ts">
-import "../scss/common/bootstrap5.scss";
-import "../scss/game_bg.scss";
+import "@scss/common/bootstrap5.scss";
+import "@scss/game_bg.scss";
 import "../../css/config.css";
 
 import { defineComponent, onMounted, reactive, ref } from "vue";
-import TopBackBar from "./components/TopBackBar.vue";
-import BoardArticle from "./components/BoardArticle.vue";
-import { convertFormData } from "./util/convertFormData";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BoardArticle from "@/components/BoardArticle.vue";
+import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
-import { InvalidResponse } from "./defs";
-import { autoResizeTextarea } from "./util/autoResizeTextarea";
-import { unwrap } from "./util/unwrap";
+import { InvalidResponse } from "@/defs";
+import { autoResizeTextarea } from "@util/autoResizeTextarea";
+import { unwrap } from "@util/unwrap";
 export type BoardResponse = {
   result: true;
   articles: Record<number, BoardArticleItem>;

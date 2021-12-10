@@ -30,6 +30,7 @@
     "core-js": "^3.19.3",
     "date-fns": "^2.27.0",
     "downloadjs": "^1.4.7",
+    "eslint-import-resolver-alias": "^1.1.2",
     "jquery": "^3.6.0",
     "js-sha512": "^0.8.0",
     "linkifyjs": "^3.0",

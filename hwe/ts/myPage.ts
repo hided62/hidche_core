@@ -1,10 +1,10 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { InvalidResponse } from './defs';
-import { convertFormData } from './util/convertFormData';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
-import { unwrap } from './util/unwrap';
-import { unwrap_any } from './util/unwrap_any';
+import { InvalidResponse } from '@/defs';
+import { convertFormData } from '@util/convertFormData';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { unwrap } from '@util/unwrap';
+import { unwrap_any } from '@util/unwrap_any';
 
 
 type LogResponse = {

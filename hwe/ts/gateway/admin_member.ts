@@ -1,13 +1,13 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { isNumber } from 'lodash';
-import { TemplateEngine } from '../util/TemplateEngine';
-import { InvalidResponse } from '../defs';
-import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
-import { unwrap_any } from '../util/unwrap_any';
-import { convertFormData } from '../util/convertFormData';
-import { exportWindow } from '../util/exportWindow';
-import './common';
+import { TemplateEngine } from '@util/TemplateEngine';
+import { InvalidResponse } from '@/defs';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { unwrap_any } from '@util/unwrap_any';
+import { convertFormData } from '@util/convertFormData';
+import { exportWindow } from '@util/exportWindow';
+import '@/gateway/common';
 
 type UserEntry = {
     userID: string,

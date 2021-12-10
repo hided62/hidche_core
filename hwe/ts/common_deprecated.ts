@@ -1,15 +1,15 @@
-import { exportWindow } from "./util/exportWindow";
-import { activateFlip, errUnknown, errUnknownToast, quickReject, initTooltip } from "./common_legacy";
-import { isBrightColor } from "./util/isBrightColor";
-import { getIconPath } from "./util/getIconPath";
-import { mb_strwidth } from "./util/mb_strwidth";
-import { TemplateEngine } from "./util/TemplateEngine";
-import { escapeHtml } from "./legacy/escapeHtml";
-import { nl2br } from "./util/nl2br";
+import { exportWindow } from "@util/exportWindow";
+import { activateFlip, errUnknown, errUnknownToast, quickReject, initTooltip } from "@/common_legacy";
+import { isBrightColor } from "@util/isBrightColor";
+import { getIconPath } from "@util/getIconPath";
+import { mb_strwidth } from "@util/mb_strwidth";
+import { TemplateEngine } from "@util/TemplateEngine";
+import { escapeHtml } from "@/legacy/escapeHtml";
+import { nl2br } from "@util/nl2br";
 import jQuery from "jquery";
 import 'bootstrap';
 
-import "../scss/common_legacy.scss";
+import "@scss/common_legacy.scss";
 
 exportWindow(jQuery, '$');
 exportWindow(jQuery, 'jQuery');

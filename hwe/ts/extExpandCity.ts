@@ -1,6 +1,6 @@
 
 import $ from 'jquery';
-import { unwrap_any } from './util/unwrap_any';
+import { unwrap_any } from '@util/unwrap_any';
 
 type UserItem = {
     val: string,

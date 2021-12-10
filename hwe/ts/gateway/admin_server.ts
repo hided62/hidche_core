@@ -1,12 +1,12 @@
-import { exportWindow } from '../util/exportWindow';
+import { exportWindow } from '@util/exportWindow';
 import axios from 'axios';
-import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
-import { InvalidResponse } from '../defs';
-import { convertFormData } from '../util/convertFormData';
-import { TemplateEngine } from "../util/TemplateEngine";
-import { unwrap_any } from '../util/unwrap_any';
-import { unwrap } from '../util/unwrap';
-import './common';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { InvalidResponse } from '@/defs';
+import { convertFormData } from '@util/convertFormData';
+import { TemplateEngine } from "@util/TemplateEngine";
+import { unwrap_any } from '@util/unwrap_any';
+import { unwrap } from '@util/unwrap';
+import '@/gateway/common';
 
 type ServerUpdateResponse = {
     result: true,
