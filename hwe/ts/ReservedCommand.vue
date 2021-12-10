@@ -544,9 +544,9 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
-@import "../scss/break_500px.scss";
-@import "../scss/variables.scss";
-@import "../scss/bootswatch_custom_variables.scss";
+@import "../scss/common/break_500px.scss";
+@import "../scss/common/variables.scss";
+@import "../scss/common/bootswatch_custom_variables.scss";
 @import "../../node_modules/bootstrap/scss/bootstrap-utilities.scss";
 
 .commandPad {

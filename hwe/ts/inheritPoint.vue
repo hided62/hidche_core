@@ -259,7 +259,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import "../scss/bootstrap5.scss";
+import "../scss/common/bootstrap5.scss";
 import "../scss/game_bg.scss";
 import TopBackBar from "./components/TopBackBar.vue";
 import _ from "lodash";

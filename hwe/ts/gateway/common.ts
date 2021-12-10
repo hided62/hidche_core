@@ -1,3 +1,3 @@
 
 import 'bootstrap';
-import "../../scss/bootstrap5.scss";
+import "../../scss/common/bootstrap5.scss";

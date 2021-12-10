@@ -207,6 +207,13 @@ module.exports = (env, argv) => {
                         name: 'vendors',
                         chunks: 'all',
                     },
+                    default: {
+                        name: 'common_ts',
+                        minChunks: 2,
+                        priority: -20,
+                        chunks: 'all',
+                        reuseExistingChunk: true,
+                    },
                 },
             },
             minimizer: [
@@ -303,6 +310,13 @@ const gateway = {
                     test: /[\\/]node_modules[\\/]/,
                     name: 'vendors',
                     chunks: 'all',
+                },
+                default: {
+                    name: 'common_ts',
+                    minChunks: 2,
+                    priority: -20,
+                    chunks: 'all',
+                    reuseExistingChunk: true,
                 },
             },
         },

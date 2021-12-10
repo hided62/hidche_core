@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import "../scss/bootstrap5.scss";
+import "../scss/common/bootstrap5.scss";
 import "../scss/game_bg.scss";
 import "../../css/config.css";
 
