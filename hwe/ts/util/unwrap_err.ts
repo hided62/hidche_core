@@ -1,4 +1,4 @@
-import { Nullable } from "./Nullable";
+import { Nullable } from "@util/Nullable";
 
 type ErrType<T> = { new(msg?: string): T }
 

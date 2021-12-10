@@ -1,8 +1,8 @@
-import { errUnknown } from "./common_legacy";
-import { launchTroopPlugin } from "./extPluginTroop";
+import { errUnknown } from "@/common_legacy";
+import { launchTroopPlugin } from "@/extPluginTroop";
 import jQuery from "jquery";
 
-import "../scss/troop.scss";
+import "@scss/troop.scss";
 
 jQuery(function($){
     //btnJoinTroop, btnLeaveTroop, btnKickTroop, btnCreateTroop, btnChangeTroopName

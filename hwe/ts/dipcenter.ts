@@ -1,14 +1,11 @@
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import 'summernote/dist/summernote-bs4';
 import 'summernote/dist/summernote-bs4.css';
-import './summernote-image-flip';
-import './summernote-ko-KR';
-import { activateFlip } from './common_legacy';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
-import { exportWindow } from './util/exportWindow';
+import '@/summernote-image-flip';
+import '@/summernote-ko-KR';
+import { activateFlip } from '@/common_legacy';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
 declare const editable: boolean;
 

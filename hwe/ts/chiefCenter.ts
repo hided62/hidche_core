@@ -2,15 +2,15 @@ import axios from 'axios';
 import $ from 'jquery';
 import { range } from 'lodash';
 import { addMinutes } from 'date-fns';
-import { errUnknown, getNpcColor } from './common_legacy';
-import { InvalidResponse } from './defs';
-import { unwrap } from "./util/unwrap";
-import { convertFormData } from './util/convertFormData';
-import { unwrap_any } from "./util/unwrap_any";
-import { parseTime } from './util/parseTime';
-import { formatTime } from './util/formatTime';
+import { errUnknown, getNpcColor } from '@/common_legacy';
+import { InvalidResponse } from '@/defs';
+import { unwrap } from "@util/unwrap";
+import { convertFormData } from '@util/convertFormData';
+import { unwrap_any } from "@util/unwrap_any";
+import { parseTime } from '@util/parseTime';
+import { formatTime } from '@util/formatTime';
 import { stringifyUrl } from 'query-string';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
 setAxiosXMLHttpRequest();
 

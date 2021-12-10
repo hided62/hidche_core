@@ -56,9 +56,6 @@
           Math.min(maxTurn, viewMaxTurn)
         )"
         :key="turnIdx"
-        height="28"
-        :id="`command_${turnIdx}`"
-        :class="turnList.has(turnIdx) ? 'pressed' : ''"
       >
         <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
@@ -206,13 +203,13 @@ import addMinutes from "date-fns/esm/addMinutes";
 import { range } from "lodash";
 import { stringifyUrl } from "query-string";
 import { defineComponent } from "vue";
-import { formatTime } from "./util/formatTime";
-import { joinYearMonth } from "./util/joinYearMonth";
-import { mb_strwidth } from "./util/mb_strwidth";
-import { parseTime } from "./util/parseTime";
-import { parseYearMonth } from "./util/parseYearMonth";
-import { sammoAPI } from "./util/sammoAPI";
-import { filter초성withAlphabet } from "./util/filter초성withAlphabet";
+import { formatTime } from "@util/formatTime";
+import { joinYearMonth } from "@util/joinYearMonth";
+import { mb_strwidth } from "@util/mb_strwidth";
+import { parseTime } from "@util/parseTime";
+import { parseYearMonth } from "@util/parseYearMonth";
+import { sammoAPI } from "@util/sammoAPI";
+import { filter초성withAlphabet } from "@util/filter초성withAlphabet";
 
 type commandItem = {
   value: string;
@@ -547,10 +544,10 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
-@import "../scss/break_500px.scss";
-@import "../scss/variables.scss";
-@import "../scss/bootswatch_custom_variables.scss";
-@import "../../node_modules/bootstrap5/scss/bootstrap-utilities.scss";
+@import "@scss/common/break_500px.scss";
+@import "@scss/common/variables.scss";
+@import "@scss/common/bootswatch_custom_variables.scss";
+@import "bootstrap/scss/bootstrap-utilities.scss";
 
 .commandPad {
   background-color: $gray-900;

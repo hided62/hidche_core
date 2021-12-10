@@ -1,11 +1,11 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { extend, isNumber } from 'lodash';
-import { convColorValue, convertDictById, stringFormat } from './common_legacy';
-import { InvalidResponse } from './defs';
-import { unwrap } from "./util/unwrap";
-import { convertFormData } from './util/convertFormData';
-import { exportWindow } from './util/exportWindow';
+import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
+import { InvalidResponse } from '@/defs';
+import { unwrap } from "@util/unwrap";
+import { convertFormData } from '@util/convertFormData';
+import { exportWindow } from '@util/exportWindow';
 
 declare const serverNick: string;
 declare const serverID: string;

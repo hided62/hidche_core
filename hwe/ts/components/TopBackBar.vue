@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import "../../scss/game_bg.scss";
+import "@scss/game_bg.scss";
 
 export default defineComponent({
   name: "TopBackBar",

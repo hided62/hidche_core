@@ -1,21 +1,19 @@
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
-import { activateFlip, initTooltip } from './common_legacy';
-import './msg.ts';
-import './map.ts';
-import { exportWindow } from './util/exportWindow';
+import { activateFlip, initTooltip } from '@/common_legacy';
+import '@/msg.ts';
+import '@/map.ts';
+import { exportWindow } from '@util/exportWindow';
 
-import { scrollHardTo } from './util/scrollHardTo';
+import { scrollHardTo } from '@util/scrollHardTo';
 
 exportWindow(scrollHardTo, 'scrollHardTo');
 exportWindow($, '$');
 
-import '../scss/main.scss';
-import { unwrap } from './util/unwrap';
-import { auto500px } from './util/auto500px';
-import { htmlReady } from './util/htmlReady';
+import '@scss/main.scss';
+import { unwrap } from '@util/unwrap';
+import { auto500px } from '@util/auto500px';
+import { htmlReady } from '@util/htmlReady';
 
 $(function ($) {
     $('.refreshPage').click(function () {

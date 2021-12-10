@@ -1,13 +1,11 @@
 import $ from "jquery";
-import Popper from 'popper.js';
-(window as unknown as {Popper:unknown}).Popper = Popper;//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
-import { setAxiosXMLHttpRequest } from "./util/setAxiosXMLHttpRequest";
+import { setAxiosXMLHttpRequest } from "@util/setAxiosXMLHttpRequest";
 import axios from "axios";
-import { InvalidResponse } from "./defs";
-import { JQValidateForm, NamedRules } from "./util/jqValidateForm";
-import { convertFormData } from "./util/convertFormData";
-import { exportWindow } from "./util/exportWindow";
+import { InvalidResponse } from "@/defs";
+import { JQValidateForm, NamedRules } from "@util/jqValidateForm";
+import { convertFormData } from "@util/convertFormData";
+import { exportWindow } from "@util/exportWindow";
 
 type ResponseScenarioItem = {
     year?: number,

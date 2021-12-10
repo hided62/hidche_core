@@ -1,18 +1,16 @@
-import { setAxiosXMLHttpRequest } from "../util/setAxiosXMLHttpRequest";
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
-import 'bootstrap';
 import axios from 'axios';
 import { subDays } from 'date-fns';
-import { getDateTimeNow } from "../util/getDateTimeNow";
+import { getDateTimeNow } from '@util/getDateTimeNow';
 import { sha512 } from "js-sha512";
-import { convertFormData } from "../util/convertFormData";
-import { InvalidResponse } from "../defs";
-import { unwrap } from "../util/unwrap";
-import { parseTime } from "../util/parseTime";
-import { formatTime } from "../util/formatTime";
-import { exportWindow } from "../util/exportWindow";
+import { convertFormData } from '@util/convertFormData';
+import { InvalidResponse } from '@/defs';
+import { unwrap } from '@util/unwrap';
+import { parseTime } from '@util/parseTime';
+import { formatTime } from '@util/formatTime';
+import '@/gateway/common';
+import { Modal } from 'bootstrap';
 
 type ResultUserInfo = {
     result: true,
@@ -131,14 +129,16 @@ function showAdjustServerModal(serverList: [string, string][]) {
         $form.append($item);
     }
 
-    const $modal = $('#chooseServer');
-    $modal.modal({
+    const modalEl = unwrap(document.querySelector('#chooseServer'));
+    const modal = new Modal(modalEl, {
         backdrop: 'static'
     });
-    $modal.on('hidden.bs.modal', function () {
+
+    modalEl.addEventListener('hidden.bs.modal', function () {
         location.reload();
         return;
     });
+    modal.show();
 
     $("#modal-apply").off("click").on("click", async function () {
         const events: Promise<unknown>[] = [];

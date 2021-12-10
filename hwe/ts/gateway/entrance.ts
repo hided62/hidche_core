@@ -1,16 +1,14 @@
-import { exportWindow } from '../util/exportWindow';
+import { exportWindow } from '@util/exportWindow';
 import $ from 'jquery';
 exportWindow($, '$');
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import axios from 'axios';
-import 'bootstrap';
-import { initTooltip } from '../common_legacy';
-import { TemplateEngine } from "../util/TemplateEngine";
-import { InvalidResponse } from '../defs';
-import { getDateTimeNow } from '../util/getDateTimeNow';
-import { setAxiosXMLHttpRequest } from '../util/setAxiosXMLHttpRequest';
-import { loadPlugin as loadAdminPlugin } from './admin_server';
+import { initTooltip } from '@/common_legacy';
+import { TemplateEngine } from '@util/TemplateEngine';
+import { InvalidResponse } from '@/defs';
+import { getDateTimeNow } from '@util/getDateTimeNow';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { loadPlugin as loadAdminPlugin } from '@/gateway/admin_server';
+import '@/gateway/common';
 
 
 declare const isAdmin: boolean;

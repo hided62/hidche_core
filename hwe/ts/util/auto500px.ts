@@ -1,5 +1,5 @@
-import { htmlReady } from "./htmlReady";
-import { unwrap } from "./unwrap";
+import { htmlReady } from "@util/htmlReady";
+import { unwrap } from "@util/unwrap";
 
 export function auto500px(targetHeight = 700): void {
     let deviceWidth = -1;

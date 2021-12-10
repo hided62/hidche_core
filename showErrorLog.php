@@ -56,8 +56,9 @@ $err_logs = $fdb->select('err_log', [
     <title>에러 로그</title>
 
     <!-- 스타일 -->
-    <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('d_shared/common.css') ?>
+    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
+    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 

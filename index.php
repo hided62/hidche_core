@@ -53,11 +53,13 @@ foreach (ServConfig::getServerList() as $setting) {
     </script>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
     <?= WebUtil::printJS('dist_js/vendors.js') ?>
+    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
     <?= WebUtil::printJS('dist_js/login.js') ?>
 
     <?= WebUtil::printCSS('d_shared/common.css') ?>
-    <?= WebUtil::printCSS('e_lib/bootstrap.min.css') ?>
-    <?= WebUtil::printCSS('css/login.css') ?>
+    <?= WebUtil::printCSS('dist_css/vendor.css') ?>
+    <?= WebUtil::printCSS('dist_css/common_ts.css') ?>
+    <?= WebUtil::printCSS('dist_css/login.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,힏체섭,히데체,히데체섭,HiDCHe,체섭">
@@ -112,12 +114,12 @@ foreach (ServConfig::getServerList() as $setting) {
                                 <div class="col-7 col-md-8">
                                     <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
                                         <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">추가 기능</span></button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" id='oauth_change_pw' href="#">비밀번호 초기화</a>
-                                            </div>
-                                        </div>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">추가 기능</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a class="dropdown-item" id='oauth_change_pw' href="#">비밀번호 초기화</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -158,8 +160,8 @@ foreach (ServConfig::getServerList() as $setting) {
                             (별도의 알림[소리, 진동, 숫자]이 발생하지 않습니다.)
                         </div>
                         <div class="input-group mt-4" role="group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">인증 코드</span>
+                            <div class="input-group-text">
+                                인증 코드
                             </div>
                             <input type="number" class="form-control" name='otp' id="otp_code" placeholder="인증 코드">
                         </div>

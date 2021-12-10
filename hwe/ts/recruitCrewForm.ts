@@ -1,4 +1,4 @@
-import { unwrap_any } from './util/unwrap_any';
+import { unwrap_any } from '@util/unwrap_any';
 
 
 declare const leadership: number;

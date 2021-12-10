@@ -1,5 +1,5 @@
-import { Nullable } from "./Nullable";
-import { NotNullExpected } from "./NotNullExpected";
+import { Nullable } from "@util/Nullable";
+import { NotNullExpected } from "@util/NotNullExpected";
 
 
 export function unwrap_any<T>(result: Nullable<unknown>): T {

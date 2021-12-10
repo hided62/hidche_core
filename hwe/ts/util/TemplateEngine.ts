@@ -1,4 +1,4 @@
-import { escapeHtml } from "../legacy/escapeHtml";
+import { escapeHtml } from '@/legacy/escapeHtml';
 import linkifyStr from 'linkifyjs/string';
 /**
  * 단순한 Template 함수.  <%변수명%>으로 template 가능

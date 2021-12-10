@@ -50,12 +50,12 @@
   </table>
 </template>
 <script lang="ts">
-import { BoardArticleItem } from "../Board.vue";
-import BoardComment from "./BoardComment.vue";
+import { BoardArticleItem } from "@/Board.vue";
+import BoardComment from "@/components/BoardComment.vue";
 import { defineComponent, PropType } from "vue";
 import axios from "axios";
-import { convertFormData } from "../util/convertFormData";
-import { InvalidResponse } from "../defs";
+import { convertFormData } from "@util/convertFormData";
+import { InvalidResponse } from "@/defs";
 export default defineComponent({
   name: "BoardArticle",
   components: {

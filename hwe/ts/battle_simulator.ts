@@ -1,17 +1,15 @@
-import { exportWindow } from './util/exportWindow';
 import $ from 'jquery';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');//XXX: 왜 popper를 이렇게 불러야 하는가?
 import 'bootstrap';
 import download from 'downloadjs';
-import { unwrap } from "./util/unwrap";
+import { unwrap } from "@util/unwrap";
 import { isInteger } from 'lodash';
-import { combineArray, errUnknown, getNpcColor } from './common_legacy';
-import { isBrightColor } from "./util/isBrightColor";
-import { numberWithCommas } from "./util/numberWithCommas";
-import { unwrap_any } from './util/unwrap_any';
-import { BasicGeneralListResponse, InvalidResponse } from './defs';
-import { formatTime } from './util/formatTime';
+import { combineArray, errUnknown, getNpcColor } from '@/common_legacy';
+import { isBrightColor } from "@util/isBrightColor";
+import { numberWithCommas } from "@util/numberWithCommas";
+import { unwrap_any } from '@util/unwrap_any';
+import { BasicGeneralListResponse, InvalidResponse } from '@/defs';
+import { formatTime } from '@util/formatTime';
+import { Modal } from 'bootstrap';
 
 type CityAttackerInfo = {
     level: number,
@@ -126,6 +124,8 @@ declare global {
     }
 }
 
+let modalImport: Modal|undefined = undefined;
+
 $(function ($) {
 
 
@@ -225,7 +225,10 @@ $(function ($) {
 
             const $modal = $('#importModal');
             $modal.data('target', $card);
-            $modal.modal('show');
+            if(!modalImport){
+                modalImport = new Modal($modal[0]);
+            }
+            modalImport.show();
         });
 
         $('.btn-general-save').on('click', function () {
@@ -962,13 +965,15 @@ $(function ($) {
             const $card = $modal.data('target');
             importGeneralInfo($card, data.general);
 
-            $modal.modal('hide');
+            if(modalImport){
+                modalImport.hide();
+            }
         }, errUnknown);
 
 
     });
 
-    $('#importModal').on('show.bs.modal', function () {
+    unwrap(document.querySelector('#importModal')).addEventListener('show.bs.modal', function () {
         if (!initGeneralList) {
             const $list = $('#modalSelector');
 
@@ -1011,7 +1016,9 @@ $(function ($) {
             }).then(function (data: BasicGeneralListResponse | InvalidResponse) {
                 if (!data.result) {
                     alert(data.reason);
-                    $('#importModal').modal('hide');
+                    if(modalImport){
+                        modalImport.hide();
+                    }
                     return false;
                 }
 

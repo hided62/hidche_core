@@ -1,17 +1,14 @@
 import $ from 'jquery';
-import { unwrap_any } from './util/unwrap_any';
+import { unwrap_any } from '@util/unwrap_any';
 import axios from 'axios';
-import { isBrightColor } from "./util/isBrightColor";
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { isBrightColor } from "@util/isBrightColor";
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { isString } from 'lodash';
-import { convertFormData } from './util/convertFormData';
-import { InvalidResponse, NationStaticItem } from './defs';
-import { escapeHtml } from './legacy/escapeHtml';
-import { nl2br } from './util/nl2br';
-import { unwrap } from './util/unwrap';
-import { exportWindow } from './util/exportWindow';
-import Popper from 'popper.js';
-exportWindow(Popper, 'Popper');
+import { convertFormData } from '@util/convertFormData';
+import { InvalidResponse, NationStaticItem } from '@/defs';
+import { escapeHtml } from '@/legacy/escapeHtml';
+import { nl2br } from '@util/nl2br';
+import { unwrap } from '@util/unwrap';
 import 'bootstrap';
 import 'select2/dist/js/select2.full.js'
 import { LoadingData } from 'select2';

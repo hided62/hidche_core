@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import Board from './Board.vue';
+import Board from '@/Board.vue';
 import BootstrapVue3 from 'bootstrap-vue-3'
-import "../scss/bootstrap5.scss";
+import "@scss/common/bootstrap5.scss";
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
 declare const isSecretBoard: boolean;
 

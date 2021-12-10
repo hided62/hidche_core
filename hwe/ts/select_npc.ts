@@ -1,11 +1,13 @@
 import axios from 'axios';
-import { errUnknown } from './common_legacy';
-import { getIconPath } from "./util/getIconPath";
-import { TemplateEngine } from "./util/TemplateEngine";
-import { GeneralListResponse, InvalidResponse } from './defs';
-import { convertFormData } from './util/convertFormData';
-import { unwrap_any } from './util/unwrap_any';
-import { setAxiosXMLHttpRequest } from './util/setAxiosXMLHttpRequest';
+import { errUnknown } from '@/common_legacy';
+import { getIconPath } from "@util/getIconPath";
+import { TemplateEngine } from "@util/TemplateEngine";
+import { GeneralListResponse, InvalidResponse } from '@/defs';
+import { convertFormData } from '@util/convertFormData';
+import { unwrap_any } from '@util/unwrap_any';
+import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { Tooltip } from 'bootstrap';
+import { trim } from 'lodash';
 
 setAxiosXMLHttpRequest();
 
@@ -250,11 +252,13 @@ function printGenerals(value: NPCToken) {
 
         $('.card_holder').append($card);
         $card.find('.select_btn').on('click', pickGeneral);
-        $card.find('.obj_tooltip').tooltip({
-            title: function () {
-                return $.trim($(this).find('.tooltiptext').html());
-            },
-            html: true
+        $card.find('.obj_tooltip').each(function(){
+            new Tooltip(this, {
+                title: function () {
+                    return trim(this.querySelector('.tooltiptext')?.innerHTML);
+                },
+                html: true
+            });
         });
     });
 
@@ -388,11 +392,13 @@ function _printGeneralList(clear?:boolean) {
         $('#row_print_more').hide();
     }
 
-    $generalTable.find('.obj_tooltip').tooltip({
-        title: function () {
-            return $.trim($(this).find('.tooltiptext').html());
-        },
-        html: true
+    $generalTable.find('.obj_tooltip').each(function(){
+        new Tooltip(this, {
+            title: function () {
+                return trim(this.querySelector('.tooltiptext')?.innerHTML);
+            },
+            html: true
+        })
     });
     $('#tb_general_list').show();
 }

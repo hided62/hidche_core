@@ -1,5 +1,5 @@
-import { reloadWorldMap } from "./map";
-import { unwrap_any } from "./util/unwrap_any";
+import { reloadWorldMap } from "@/map";
+import { unwrap_any } from "@util/unwrap_any";
 
 export function defaultSelectCityByMap(): void {
     const $target = $("#destCityID");

@@ -23,5 +23,17 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'error',
     "vue/no-multiple-template-root": "off",
     "vue/no-v-for-template-key": "off",
-  }
+    "vue/multi-word-component-names": "off",//TODO: 삭제
+  },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@', './hwe/ts'],
+          ['@util', './hwe/ts/util'],
+          ['@scss', './hwe/scss'],
+        ]
+      }
+    }
+  },
 }

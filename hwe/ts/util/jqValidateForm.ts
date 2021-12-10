@@ -1,6 +1,6 @@
 import Schema, { Rule, Values } from "async-validator";
 import { isArray } from "lodash";
-import { mergeKVArray } from "./mergeKVArray";
+import { mergeKVArray } from "@util/mergeKVArray";
 import $ from 'jquery';
 
 type Option = {

@@ -1,4 +1,4 @@
-import { mb_strwidth } from "./mb_strwidth";
+import { mb_strwidth } from "@util/mb_strwidth";
 
 /**
  * mb_strimwidth

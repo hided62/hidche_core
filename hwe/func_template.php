@@ -28,7 +28,7 @@ function requireAdminPermissionHTML()
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=1024" />
         <?= WebUtil::printCSS('../d_shared/common.css') ?>
-        <?= WebUtil::printCSS('css/common.css') ?>
+        <?= WebUtil::printCSS('dist_css/common.css') ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     </head>
 

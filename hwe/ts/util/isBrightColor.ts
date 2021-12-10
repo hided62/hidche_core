@@ -1,5 +1,5 @@
-import { unwrap } from "./unwrap";
-import { hexToRgb } from "./hexToRgb";
+import { unwrap } from "@util/unwrap";
+import { hexToRgb } from "@util/hexToRgb";
 
 export function isBrightColor(color: string): boolean {
     const cv = unwrap(hexToRgb(color));
