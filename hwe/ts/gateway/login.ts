@@ -8,7 +8,7 @@ import { sha512 } from 'js-sha512';
 import { unwrap } from '@util/unwrap';
 import { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
-import 'bootstrap';
+import { Modal } from 'bootstrap';
 import '@/gateway/common';
 
 import '@scss/gateway/login.scss';
@@ -53,6 +53,8 @@ declare global {
 
 declare const kakao_oauth_client_id: string;
 declare const kakao_oauth_redirect_uri: string;
+
+let modalOTP: Modal|undefined = undefined;
 
 let oauthMode: string | null = null;
 
@@ -228,10 +230,12 @@ async function doLoginUsingOAuth() {
         return;
     }
 
-    const $modal = $('#modalOTP').modal() as unknown as JQuery;
-    $modal.on('shown.bs.modal', function () {
+    const modalEl = unwrap(document.querySelector('#modalOTP'))
+    modalOTP = new Modal(modalEl);
+    modalEl.addEventListener('shown.bs.modal', function(){
         $('#otp_code').trigger('focus');
     });
+    modalOTP.show();
 }
 
 function postOAuthResult(mode: string) {
@@ -375,7 +379,9 @@ $(async function ($) {
         alert(result.reason);
 
         if (result.reset) {
-            $('#modalOTP').modal('hide')
+            if(modalOTP){
+                modalOTP.hide();
+            }
             return;
         }
     });
