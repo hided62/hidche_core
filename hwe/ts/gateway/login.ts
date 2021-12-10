@@ -8,6 +8,7 @@ import { sha512 } from 'js-sha512';
 import { unwrap } from '@util/unwrap';
 import { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
+import 'bootstrap';
 import '@/gateway/common';
 
 import '@scss/gateway/login.scss';

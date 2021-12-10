@@ -113,12 +113,12 @@ foreach (ServConfig::getServerList() as $setting) {
                                 <div class="col-7 col-md-8">
                                     <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
                                         <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">추가 기능</span></button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" id='oauth_change_pw' href="#">비밀번호 초기화</a>
-                                            </div>
-                                        </div>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">추가 기능</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a class="dropdown-item" id='oauth_change_pw' href="#">비밀번호 초기화</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

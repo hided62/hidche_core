@@ -13,6 +13,7 @@ require(__DIR__.'/../vendor/autoload.php');
     <title>설치</title>
     <?=WebUtil::printJS('../d_shared/common_path.js') ?>
     <?=WebUtil::printJS('../dist_js/vendors.js') ?>
+    <?=WebUtil::printJS('dist_js/common_ts.js') ?>
     <?=WebUtil::printJS('../dist_js/install.js')?>
     <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('../css/install.css')?>

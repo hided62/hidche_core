@@ -52,7 +52,10 @@ input::-webkit-input-placeholder {
 }
 
 .login_btn_group {
-    margin-top: 5px;
+    margin-top: 4px;
+    >.btn{
+        padding: 0.3rem 1rem;
+    }
 }
 
 .login-register {
