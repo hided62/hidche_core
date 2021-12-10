@@ -20,9 +20,6 @@ class event_전투특기_위압 extends \sammo\BaseItem{
     protected $reqSecu = 3000;
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        if($unit->getPhase() != 0){
-            return null;
-        }
         return new WarUnitTriggerCaller(
             new che_위압시도($unit),
             new che_위압발동($unit)
