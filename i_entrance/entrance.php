@@ -38,7 +38,7 @@ $acl = $session->acl;
     </script>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printJS('../dist_js/vendors.js', true) ?>
-    <?= WebUtil::printJS('../dist_js/common_ts.js') ?>
+    <?= WebUtil::printJS('../dist_js/common_ts.js', true) ?>
     <?= WebUtil::printJS('../dist_js/entrance.js', true) ?>
 
 </head>
@@ -47,7 +47,7 @@ $acl = $session->acl;
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="../">삼국지 모의전투 HiDCHe</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">

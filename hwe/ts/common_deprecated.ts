@@ -7,7 +7,6 @@ import { TemplateEngine } from "@util/TemplateEngine";
 import { escapeHtml } from "@/legacy/escapeHtml";
 import { nl2br } from "@util/nl2br";
 import jQuery from "jquery";
-import 'bootstrap';
 
 import "@scss/common_legacy.scss";
 

@@ -48,7 +48,7 @@ if ($session->userGrade == 5) {
                                 <div class="form-group row">
                                     <label for="full_reset" class="col-sm-3 col-form-label">이전 DB 초기화</label>
                                     <div class="col-sm-9" style="display: inline-flex;">
-                                        <div id="full_reset" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <div id="full_reset" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                             <label class="btn btn-secondary">
                                                 <input type="radio" name="full_reset" value="1">Y
                                             </label>

@@ -1,5 +1,5 @@
 import $ from "jquery";
-import {  Tooltip } from "bootstrap";
+import { Tooltip } from "bootstrap";
 import { trim } from "lodash";
 
 /**
@@ -170,7 +170,7 @@ export function initTooltip($obj?: JQuery<HTMLElement>): void {
             }
             const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>`;
 
-            const oTooltip = new Tooltip(this, {
+            const oTooltip = Tooltip.getOrCreateInstance(this, {
                 title: function(){
                     return trim(this.querySelector('.tooltiptext')?.innerHTML);
                 },

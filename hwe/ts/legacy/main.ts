@@ -1,18 +1,10 @@
 import $ from 'jquery';
-import 'bootstrap';
 import { activateFlip, initTooltip } from '@/common_legacy';
 import '@/msg.ts';
 import '@/map.ts';
-import { exportWindow } from '@util/exportWindow';
-
-import { scrollHardTo } from '@util/scrollHardTo';
-
-exportWindow(scrollHardTo, 'scrollHardTo');
-exportWindow($, '$');
 
 import '@scss/main.scss';
 import { unwrap } from '@util/unwrap';
-import { auto500px } from '@util/auto500px';
 import { htmlReady } from '@util/htmlReady';
 
 htmlReady(() => {
@@ -39,9 +31,9 @@ htmlReady(() => {
 
     const customCSS = localStorage.getItem('sam_customCSS');
     if (customCSS) {
-        const $style = $('<style type="text/css"></style>');
-        $style.text(customCSS);
-        $style.appendTo($('head'));
+        const styleEl = document.createElement('style');
+        styleEl.innerHTML = customCSS;
+        document.head.appendChild(styleEl);
     }
 });
 
@@ -91,5 +83,3 @@ htmlReady(() => {
         window.addEventListener('orientationchange', onScroll, true);
     });
 })();
-
-auto500px();

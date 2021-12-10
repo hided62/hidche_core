@@ -20,8 +20,7 @@
         "history": "history.ts",
         "select_general_from_pool": "select_general_from_pool.ts",
         "extKingdoms": "extKingdoms.ts",
-        "common": "common_deprecated.ts",
-        "main": "main.ts"
+        "common": "common_deprecated.ts"
     },
     "ingame_vue": {
         "v_inheritPoint": "v_inheritPoint.ts",

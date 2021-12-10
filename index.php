@@ -73,7 +73,7 @@ foreach (ServConfig::getServerList() as $setting) {
 <body>
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <a class="navbar-brand" href=".">삼국지 모의전투 HiDCHe</a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -149,7 +149,7 @@ foreach (ServConfig::getServerList() as $setting) {
                 <form id="otp_form" method="post" action="#">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">인증 코드 필요</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -167,7 +167,7 @@ foreach (ServConfig::getServerList() as $setting) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                         <button type="submit" class="btn btn-primary">제출</button>
                     </div>
                 </form>

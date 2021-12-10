@@ -10,12 +10,11 @@ import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { loadPlugin as loadAdminPlugin } from '@/gateway/admin_server';
 import '@/gateway/common';
 
-
 declare const isAdmin: boolean;
 
 const serverListTemplate = "\
 <tr class='server_item bg0 server_name_<%name%>' data-server='<%name%>'>\
-    <td class='server_name obj_tooltip' data-toggle='tooltip' data-placement='bottom'>\
+    <td class='server_name obj_tooltip' data-bs-toggle='tooltip' data-placement='bottom'>\
         <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span><br>\
         <span class='n_country'></span>\
         <span class='tooltiptext server_date'></span>\

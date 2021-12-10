@@ -54,7 +54,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="turnterm" class="col-sm-3 col-form-label">턴 시간(분)</label>
                                 <div class="col-sm-9">
-                                    <div id="turnterm" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="turnterm" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" class="btn-check" name="turnterm" id="turnterm_120" value="120"><label for="turnterm_120" class="btn btn-secondary">120</label>
                                         <input type="radio" class="btn-check" name="turnterm" id="turnterm_60" value="60" checked><label for="turnterm_60" class="btn btn-secondary">60</label>
                                         <input type="radio" class="btn-check" name="turnterm" id="turnterm_30" value="30"><label for="turnterm_30" class="btn btn-secondary">30</label>
@@ -71,7 +71,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="sync" class="col-sm-3 col-form-label">시간 동기화</label>
                                 <div class="col-sm-9" style="display: inline-flex;">
-                                    <div id="sync" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="sync" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input class="btn-check" id="sync_1" type="radio" name="sync" value="1" checked><label class="btn btn-secondary" for="sync_1">Y</label>
                                         <input class="btn-check" id="sync_0" type="radio" name="sync" value="0"><label class="btn btn-secondary" for="sync_0">N</label>
 
@@ -94,7 +94,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="fiction" class="col-sm-3 col-form-label">NPC 상성</label>
                                 <div class="col-sm-9">
-                                    <div id="fiction" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="fiction" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" id="fiction_0" class="btn-check" name="fiction" value="0" checked><label for="fiction_0" class="btn btn-secondary"> 연의 </label>
                                         <input type="radio" id="fiction_1" class="btn-check" name="fiction" value="1"><label for="fiction_1" class="btn btn-secondary"> 가상 </label>
                                     </div>
@@ -104,7 +104,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="extend" class="col-sm-3 col-form-label">확장 NPC</label>
                                 <div class="col-sm-9">
-                                    <div id="extend" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="extend" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" id="extend_1" class="btn-check" name="extend" value="1" checked><label for="extend_1" class="btn btn-secondary">포함</label>
                                         <input type="radio" id="extend_0" class="btn-check" name="extend" value="0"><label for="extend_0" class="btn btn-secondary">미포함</label>
                                     </div>
@@ -114,7 +114,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="block_general_create" class="col-sm-3 col-form-label">장수 임의 생성</label>
                                 <div class="col-sm-9">
-                                    <div id="block_general_create" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="block_general_create" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" class="btn-check" id="block_general_create_0" name="block_general_create" value="0" checked><label for="block_general_create_0" class="btn btn-secondary">가능</label>
                                         <input type="radio" class="btn-check" id="block_general_create_1" name="block_general_create" value="1"><label for="block_general_create_1" class="btn btn-secondary">불가</label>
                                     </div>
@@ -124,7 +124,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="npcmode" class="col-sm-3 col-form-label">NPC 빙의</label>
                                 <div class="col-sm-9">
-                                    <div id="npcmode" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="npcmode" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" id="npcmode_1" class="btn-check" name="npcmode" value="1"><label for="npcmode_1" class="btn btn-secondary"> 가능 </label>
                                         <input type="radio" id="npcmode_0" class="btn-check" name="npcmode" value="0" checked><label for="npcmode_0" class="btn btn-secondary"> 불가 </label>
                                         <input type="radio" id="npcmode_2" class="btn-check" name="npcmode" value="2"><label for="npcmode_2" class="btn btn-secondary"> 선택 생성 가능 </label>
@@ -136,7 +136,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                                 <label class="col-sm-3 col-form-label" id="autorun_set_label">휴식 턴 시 장수 턴</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
-                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                             <input type="checkbox" id="autorun_develop" class="autorun_user_chk btn-check" data-key="develop" name="autorun_user[]" value="develop"><label class="btn btn-secondary" for="autorun_develop">내정</label>
                                             <input type="checkbox" id="autorun_warp" class="autorun_user_chk btn-check" data-key="warp" name="autorun_user[]" value="warp"><label class="btn btn-secondary" for="autorun_warp">순간이동</label>
                                             <input type="checkbox" id="autorun_recruit" class="autorun_user_chk btn-check" data-key="recruit" name="autorun_user[]" value="recruit"><label class="btn btn-secondary" for="autorun_recruit">징병</label>
@@ -177,7 +177,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="join_mode" class="col-sm-3 col-form-label">임관 모드</label>
                                 <div class="col-sm-9">
-                                    <div id="join_mode" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="join_mode" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input class="btn-check" id="join_mode_full" type="radio" name="join_mode" value="full" checked><label class="btn btn-secondary" for="join_mode_full">일반</label>
                                         <input class="btn-check" id="join_mode_onlyRandom" type="radio" name="join_mode" value="onlyRandom"><label class="btn btn-secondary" for="join_mode_onlyRandom">랜덤 임관</label>
                                     </div>
@@ -187,7 +187,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="show_img_level" class="col-sm-3 col-form-label">이미지 표기</label>
                                 <div class="col-sm-9">
-                                    <div id="show_img_level" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <div id="show_img_level" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" id="show_img_level_0" class="btn-check" name="show_img_level" value="0"><label for="show_img_level_0" class="btn btn-secondary">안함</label>
                                         <input type="radio" id="show_img_level_1" class="btn-check" name="show_img_level" value="1"><label for="show_img_level_1" class="btn btn-secondary">전콘</label>
                                         <input type="radio" id="show_img_level_2" class="btn-check" name="show_img_level" value="2"><label for="show_img_level_2" class="btn btn-secondary">전콘, 병종</label>
@@ -199,7 +199,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                             <div class="form-group row">
                                 <label for="tournament_trig" class="col-sm-3 col-form-label"><span class="text-nowrap">토너먼트 자동 시작</span> <span class="text-nowrap">경기 단위</span></label>
                                 <div class="col-sm-9" id="tournament_trig">
-                                    <div id="tournament_trig" class="btn-group-toggle btn-group flex-wrap" data-toggle="buttons">
+                                    <div id="tournament_trig" class="btn-group-toggle btn-group flex-wrap" data-bs-toggle="buttons">
                                         <input type="radio" class="btn-check" id="tournament_trig_0" name="tournament_trig" value="0"><label for="tournament_trig_0" class="btn btn-secondary w-25">안함</label>
                                         <input type="radio" class="btn-check" id="tournament_trig_1" name="tournament_trig" value="1"><label for="tournament_trig_1" class="btn btn-secondary w-25">12분(총 5일)</label>
                                         <input type="radio" class="btn-check" id="tournament_trig_2" name="tournament_trig" value="2"><label for="tournament_trig_2" class="btn btn-secondary w-25">7분(총 10시간)</label>

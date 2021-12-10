@@ -30,7 +30,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="../">삼국지 모의전투 HiDCHe</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -172,7 +172,7 @@ require(__DIR__ . '/../vendor/autoload.php');
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">완료되었습니다.<br>새 아이콘을 적용할 서버를 선택하세요.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -183,7 +183,7 @@ require(__DIR__ . '/../vendor/autoload.php');
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                     <button type="button" class="btn btn-primary" id="modal-apply">서버 적용</button>
                 </div>
             </div>

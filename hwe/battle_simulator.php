@@ -138,7 +138,7 @@ if ($nationID) {
                             </select>
                             <div class="input-group-text">수도
                             </div>
-                            <div class="input-group-text btn-group btn-group-toggle" data-toggle="buttons">
+                            <div class="input-group-text btn-group btn-group-toggle" data-bs-toggle="buttons">
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="is_attacker_capital" class="form_is_capital" value="1" autocomplete="off">Y
                                 </label>
@@ -207,7 +207,7 @@ if ($nationID) {
                             </select>
                             <div class="input-group-text">수도
                             </div>
-                            <div class="input-group-text btn-group btn-group-toggle" data-toggle="buttons">
+                            <div class="input-group-text btn-group btn-group-toggle" data-bs-toggle="buttons">
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="is_defender_capital" class="form_is_capital" value="1" autocomplete="off">Y
                                 </label>
@@ -509,7 +509,7 @@ if ($nationID) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">장수 목록</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -519,7 +519,7 @@ if ($nationID) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id='importFromDB'>가져오기</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 </div>
             </div>
         </div>

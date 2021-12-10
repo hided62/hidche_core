@@ -35,7 +35,7 @@ require(__DIR__ . '/../vendor/autoload.php');
             </div>
             <div class="card-body">
                 가입 허용&nbsp;
-                <div id="radios_allow_join" class="btn-group btn-group-toggle" data-toggle="buttons">
+                <div id="radios_allow_join" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                     <label class="btn btn-secondary">
                         <input type="radio" name="allow_join" value="1" id="allow_join_y" autocomplete="off">Y
                     </label>
@@ -45,7 +45,7 @@ require(__DIR__ . '/../vendor/autoload.php');
                 </div>
 
                 로그인 허용&nbsp;
-                <div id="radios_allow_login" class="btn-group btn-group-toggle" data-toggle="buttons">
+                <div id="radios_allow_login" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                     <label class="btn btn-secondary">
                         <input type="radio" name="allow_login" value="1" id="allow_login_y" autocomplete="off">Y
                     </label>
