@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { Tooltip } from "bootstrap";
+import { trim } from "lodash";
 
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
@@ -189,7 +190,7 @@ export function initTooltip($obj?: JQuery<HTMLElement>): void {
 
             const oTooltip = new Tooltip(this, {
                 title: function(){
-                    return $.trim($(this).find('.tooltiptext').html());
+                    return trim(this.querySelector('.tooltiptext')?.innerHTML);
                 },
                 template: template,
                 html: true

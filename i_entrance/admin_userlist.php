@@ -14,8 +14,9 @@ require(__DIR__ . '/../vendor/autoload.php');
     <title>유저 관리</title>
 
     <!-- 스타일 -->
-    <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
+    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
+    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
     <?= WebUtil::printCSS('../css/admin_member.css') ?>
 
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>

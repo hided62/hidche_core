@@ -25,8 +25,9 @@ $acl = $session->acl;
     <title>서버목록</title>
 
     <!-- 스타일 -->
-    <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
+    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
+    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
     <?= WebUtil::printCSS('../css/config.css') ?>
     <?= WebUtil::printCSS('../css/entrance.css') ?>
     <?= WebUtil::printCSS('../css/admin_server.css') ?>

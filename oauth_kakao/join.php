@@ -33,7 +33,8 @@ if ($canJoin != 'Y') {
     <?= WebUtil::printJS('../dist_js/vendors.js') ?>
     <?= WebUtil::printJS('../dist_js/common_ts.js') ?>
     <?= WebUtil::printJS('../dist_js/join.js') ?>
-    <?= WebUtil::printCSS('../e_lib/bootstrap.min.css') ?>
+    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
+    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
     <?= WebUtil::printCSS('../css/login.css') ?>
 </head>
 

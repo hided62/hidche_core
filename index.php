@@ -57,6 +57,7 @@ foreach (ServConfig::getServerList() as $setting) {
     <?= WebUtil::printJS('dist_js/login.js') ?>
 
     <?= WebUtil::printCSS('d_shared/common.css') ?>
+    <?= WebUtil::printCSS('dist_css/vendor.css') ?>
     <?= WebUtil::printCSS('dist_css/common_ts.css') ?>
     <?= WebUtil::printCSS('dist_css/login.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
@@ -159,8 +160,8 @@ foreach (ServConfig::getServerList() as $setting) {
                             (별도의 알림[소리, 진동, 숫자]이 발생하지 않습니다.)
                         </div>
                         <div class="input-group mt-4" role="group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">인증 코드</span>
+                            <div class="input-group-text">
+                                인증 코드
                             </div>
                             <input type="number" class="form-control" name='otp' id="otp_code" placeholder="인증 코드">
                         </div>

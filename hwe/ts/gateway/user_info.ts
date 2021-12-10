@@ -130,13 +130,15 @@ function showAdjustServerModal(serverList: [string, string][]) {
     }
 
     const modalEl = unwrap(document.querySelector('#chooseServer'));
-     new Modal(modalEl, {
+    const modal = new Modal(modalEl, {
         backdrop: 'static'
     });
+
     modalEl.addEventListener('hidden.bs.modal', function () {
         location.reload();
         return;
-    })
+    });
+    modal.show();
 
     $("#modal-apply").off("click").on("click", async function () {
         const events: Promise<unknown>[] = [];

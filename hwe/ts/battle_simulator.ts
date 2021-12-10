@@ -124,6 +124,8 @@ declare global {
     }
 }
 
+let modalImport: Modal|undefined = undefined;
+
 $(function ($) {
 
 
@@ -223,7 +225,10 @@ $(function ($) {
 
             const $modal = $('#importModal');
             $modal.data('target', $card);
-            new Modal($modal[0]).show();
+            if(!modalImport){
+                modalImport = new Modal($modal[0]);
+            }
+            modalImport.show();
         });
 
         $('.btn-general-save').on('click', function () {
@@ -960,7 +965,9 @@ $(function ($) {
             const $card = $modal.data('target');
             importGeneralInfo($card, data.general);
 
-            new Modal($modal[0]).hide();
+            if(modalImport){
+                modalImport.hide();
+            }
         }, errUnknown);
 
 
@@ -1009,7 +1016,9 @@ $(function ($) {
             }).then(function (data: BasicGeneralListResponse | InvalidResponse) {
                 if (!data.result) {
                     alert(data.reason);
-                    new Modal(unwrap(document.querySelector('#importModal'))).hide();
+                    if(modalImport){
+                        modalImport.hide();
+                    }
                     return false;
                 }
 
