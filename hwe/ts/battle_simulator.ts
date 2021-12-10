@@ -966,7 +966,7 @@ $(function ($) {
 
     });
 
-    $('#importModal').on('show.bs.modal', function () {
+    unwrap(document.querySelector('#importModal')).addEventListener('show.bs.modal', function () {
         if (!initGeneralList) {
             const $list = $('#modalSelector');
 
