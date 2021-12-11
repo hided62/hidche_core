@@ -442,7 +442,7 @@ if ($str3) {
 
                 for ($i = 0; $i < 16; $i++) {
                     echo "
-        <td><input type=button class='submitBtn' data-bs-target='{$i}' value=베팅! style=width:100%;color:white;background-color:black;></td>";
+        <td><input type=button class='submitBtn' data-target='{$i}' value=베팅! style=width:100%;color:white;background-color:black;></td>";
                 }
 
                 echo "</tr>";
