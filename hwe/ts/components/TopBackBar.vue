@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
 import "@scss/game_bg.scss";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   name: "TopBackBar",

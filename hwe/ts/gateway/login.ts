@@ -1,3 +1,5 @@
+import '@scss/gateway/login.scss';
+
 import $ from 'jquery';
 import { JQValidateForm, NamedRules } from '@util/jqValidateForm';
 import axios from 'axios';
@@ -10,8 +12,6 @@ import { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
 import { Modal } from 'bootstrap';
 import '@/gateway/common';
-
-import '@scss/gateway/login.scss';
 
 type LoginResponse = {
     result: true,
