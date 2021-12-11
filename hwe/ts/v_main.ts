@@ -1,8 +1,6 @@
-
 import $ from 'jquery';
 
 exportWindow(scrollHardTo, 'scrollHardTo');
-exportWindow($, '$');
 
 import { exportWindow } from '@util/exportWindow';
 import { scrollHardTo } from '@util/scrollHardTo';
@@ -14,6 +12,8 @@ import Multiselect from 'vue-multiselect';
 
 import "@/legacy/main";
 import { auto500px } from './util/auto500px';
+
+import '@scss/main.scss';
 
 setAxiosXMLHttpRequest();
 

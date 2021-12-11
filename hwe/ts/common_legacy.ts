@@ -1,6 +1,3 @@
-import $ from "jquery";
-import { Tooltip } from "bootstrap";
-import { trim } from "lodash";
 
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
@@ -63,20 +60,6 @@ declare global {
         linkifyStr: (v: string, k?: Record<string, string | number>) => string;
     }
 }
-export function activateFlip($obj?: JQuery<HTMLElement>): void {
-    let $result: JQuery<HTMLElement>;
-    if ($obj === undefined) {
-        $result = $('img[data-flip]');
-    } else {
-        $result = $obj.find('img[data-flip]');
-    }
-
-    $result.each(function () {
-        activeFlipItem($(this));
-    });
-
-}
-
 export function combineObject<K extends string, V>(item: V[], columnList: K[]): Record<K, V> {
     const newItem: Record<string, V> = {};
     for (const columnIdx in columnList) {
@@ -94,33 +77,6 @@ export function combineArray<K extends string, V>(array: V[][], columnList: K[])
     }
     return result;
 }
-
-export function activeFlipItem($img: JQuery<HTMLElement>): void {
-    const imageList = [];
-    imageList.push($img.attr('src'));
-    $.each($img.data('flip').split(','), function (idx, value) {
-        value = $.trim(value);
-        if (!value) {
-            return true;
-        }
-        imageList.push(value);
-    });
-    if (imageList.length <= 1) {
-        return;
-    }
-    $img.data('computed_flip_array', imageList);
-    $img.data('computed_flip_idx', 0);
-
-    $img.click(function () {
-        const arr = $img.data('computed_flip_array');
-        let idx = $img.data('computed_flip_idx');
-        idx = (idx + 1) % (arr.length);
-        $img.attr('src', arr[idx]);
-        $img.data('computed_flip_idx', idx);
-    });
-    $img.css('cursor', 'pointer');
-}
-
 
 
 export function errUnknown(): void {
@@ -141,45 +97,4 @@ export function getNpcColor(npcType: number): 'cyan' | 'skyblue' | null {
         return 'skyblue';
     }
     return null;
-}
-
-export function initTooltip($obj?: JQuery<HTMLElement>): void {
-    if ($obj === undefined) {
-        $obj = $('.obj_tooltip');
-    } else if (!$obj.hasClass('obj_tooltip')) {
-        $obj = $obj.find('.obj_tooltip');
-    }
-
-    $obj.each(function () {
-        const $target = $(this);
-
-        if ($target.data('installHandler')) {
-            return;
-        }
-        $target.data('installHandler', true);
-
-        $target.mouseover(function () {
-            const $objTooltip = $(this);
-            if ($objTooltip.data('setObjTooltip')) {
-                return;
-            }
-
-            let tooltipClassText = $objTooltip.data('tooltip-class');
-            if (!tooltipClassText) {
-                tooltipClassText = '';
-            }
-            const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>`;
-
-            const oTooltip = Tooltip.getOrCreateInstance(this, {
-                title: function(){
-                    return trim(this.querySelector('.tooltiptext')?.innerHTML);
-                },
-                template: template,
-                html: true
-            });
-            oTooltip.show();
-
-            $objTooltip.data('setObjTooltip', true);
-        });
-    });
 }

@@ -1,5 +1,5 @@
 <div class="world_map map_theme_<?= $mapTheme ?> draw_required">
-    <div class="map_title obj_tooltip" data-bs-toggle="tooltip" data-placement="top" data-tooltip-class="map_title_tooltiptext">
+    <div class="map_title obj_tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-tooltip-class="map_title_tooltiptext">
         <span class="map_title_text ">
         </span>
         <span class="tooltiptext"></span>

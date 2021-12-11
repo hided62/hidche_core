@@ -1,29 +1,43 @@
-import $ from 'jquery';
-import { activateFlip, initTooltip } from '@/common_legacy';
+import jQuery from 'jquery';
+import { activateFlip } from "@/legacy/activateFlip";
+import { unwrap } from '@util/unwrap';
+import { htmlReady } from '@util/htmlReady';
+import { initTooltip } from './initTooltip';
+import { exportWindow } from '@/util/exportWindow';
+
 import '@/msg.ts';
 import '@/map.ts';
 
-import '@scss/main.scss';
-import { unwrap } from '@util/unwrap';
-import { htmlReady } from '@util/htmlReady';
+exportWindow(jQuery, '$');
+
 
 htmlReady(() => {
-    $('.refreshPage').click(function () {
+    document.querySelector('.refreshPage')?.addEventListener('click', function () {
         document.location.reload();
         return false;
     });
 
-    $('.open-window').on('click', function (e) {
+    document.querySelector('.open-window')?.addEventListener('click', function (e) {
         e.preventDefault();
-        let target = $(e.target as HTMLAnchorElement);
-        while (target.attr('href') === undefined) {
-            target = target.parent('a');
-            if (target.length == 0) {
+        let target: HTMLElement | null = e.target as HTMLElement;
+        while (target !== null) {
+            target = target.parentElement;
+            if (target === null) {
                 return;
             }
+            if (target.tagName != 'a') {
+                continue;
+            }
+            if ((target as HTMLAnchorElement).href !== undefined) {
+                break;
+            }
         }
-        const href = target.attr('href');
-        window.open(href);
+
+        if (!target) {
+            return;
+        }
+
+        window.open((target as HTMLAnchorElement).href);
     });
 
     activateFlip();

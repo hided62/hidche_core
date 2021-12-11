@@ -4,7 +4,7 @@ import 'summernote/dist/summernote-bs4';
 import 'summernote/dist/summernote-bs4.css';
 import '@/summernote-image-flip';
 import '@/summernote-ko-KR';
-import { activateFlip } from '@/common_legacy';
+import { activateFlip } from "@/legacy/activateFlip";
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
 declare const editable: boolean;

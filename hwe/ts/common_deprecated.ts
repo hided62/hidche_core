@@ -1,5 +1,7 @@
 import { exportWindow } from "@util/exportWindow";
-import { activateFlip, errUnknown, initTooltip } from "@/common_legacy";
+import { errUnknown } from "@/common_legacy";
+import { initTooltip } from "@/legacy/initTooltip";
+import { activateFlip } from "@/legacy/activateFlip";
 import { isBrightColor } from "@util/isBrightColor";
 import { getIconPath } from "@util/getIconPath";
 import { mb_strwidth } from "@util/mb_strwidth";

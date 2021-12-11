@@ -2,7 +2,7 @@ import $ from 'jquery';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { InvalidResponse } from '@/defs';
-import { initTooltip } from '@/common_legacy';
+import { initTooltip } from "@/legacy/initTooltip";
 import { getIconPath } from "@util/getIconPath";
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
@@ -64,7 +64,7 @@ const templateGeneralCard = '<div class="general_card">\
 </div>';
 
 const templateSpecial =
-    '<span class="obj_tooltip" data-bs-toggle="tooltip" data-placement="top"><%text%>\
+    '<span class="obj_tooltip" data-bs-toggle="tooltip" data-bs-placement="top"><%text%>\
     <span class="tooltiptext">\
         <%info%>\
     </span>\

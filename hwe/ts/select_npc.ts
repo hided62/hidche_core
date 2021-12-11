@@ -104,7 +104,7 @@ const templateGeneralCard =
 </div>';
 
 const templateSpecial =
-    '<span class="obj_tooltip" data-bs-toggle="tooltip" data-placement="top"><%text%>\
+    '<span class="obj_tooltip" data-bs-toggle="tooltip" data-bs-placement="top"><%text%>\
     <span class="tooltiptext">\
         <%info%>\
     </span>\
