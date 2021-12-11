@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 exportWindow(scrollHardTo, 'scrollHardTo');
 
 import { exportWindow } from '@util/exportWindow';
