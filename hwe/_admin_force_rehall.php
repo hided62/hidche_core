@@ -27,6 +27,6 @@ foreach ($db->queryFirstColumn(
 
 foreach(General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj){
     $genObj->mergeTotalInheritancePoint(true);
-    applyInheritanceUser($genObj->getID());
+    applyInheritanceUser($genObj->getVar('owner'));
     $genObj->clearInheritancePoint();
 }

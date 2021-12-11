@@ -652,7 +652,7 @@ class General implements iAction
             }
 
             $this->mergeTotalInheritancePoint();
-            applyInheritanceUser($this->getID());
+            applyInheritanceUser($this->getVar('owner'));
             $this->clearInheritancePoint();
         }
 

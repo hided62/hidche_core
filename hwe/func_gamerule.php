@@ -1029,7 +1029,7 @@ function checkEmperior()
             };
         }
         $genObj->mergeTotalInheritancePoint(true);
-        applyInheritanceUser($genObj->getID());
+        applyInheritanceUser($genObj->getVar('owner'));
         $genObj->clearInheritancePoint();
     }
 
