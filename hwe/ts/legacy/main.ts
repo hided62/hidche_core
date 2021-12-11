@@ -21,18 +21,13 @@ htmlReady(() => {
     for(const openWindowBtn of document.querySelectorAll('.open-window')){
         openWindowBtn.addEventListener('click', function (e) {
             e.preventDefault();
+            console.log(e);
             let target: HTMLElement | null = e.target as HTMLElement;
             while (target !== null) {
-                target = target.parentElement;
-                if (target === null) {
-                    return;
-                }
-                if (target.tagName != 'a') {
-                    continue;
-                }
-                if ((target as HTMLAnchorElement).href !== undefined) {
+                if(target.tagName != 'a' && (target as HTMLAnchorElement).href){
                     break;
                 }
+                target = target.parentElement;
             }
 
             if (!target) {
