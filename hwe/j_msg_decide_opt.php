@@ -47,7 +47,7 @@ if($msg === null){
     ]);
 }
 $reason = 'success';
-$gameStor = KVStorage::getStorage($db, 'game_env');
+$gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 $gameStor->cacheAll();
 if($msgResponse){
     $result = $msg->agreeMessage($general['no'], $reason);
