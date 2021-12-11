@@ -118,6 +118,9 @@ if (!$otherTextInfo) {
     <meta name="viewport" content="width=500" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
+    <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
+    <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
+    <?= WebUtil::printJS('dist_js/v_main.js', true) ?>
 
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('dist_css/common.css') ?>
@@ -397,21 +400,6 @@ if (!$otherTextInfo) {
             </div>
         </div>
     </nav>
-    <?= WebUtil::printJS('dist_js/vendors_vue.js') ?>
-    <?= WebUtil::printJS('dist_js/common_vue.js') ?>
-    <?= WebUtil::printJS('dist_js/v_main.js') ?>
-    <script>
-        (function() {
-            reloadWorldMap({
-                hrefTemplate: 'b_currentCity.php?citylist={0}',
-                useCachedMap: true
-            });
-
-            setInterval(function() {
-                refreshMsg();
-            }, 5000);
-        })();
-    </script>
 </body>
 
 </html>

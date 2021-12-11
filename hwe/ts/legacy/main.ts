@@ -4,9 +4,8 @@ import { unwrap } from '@util/unwrap';
 import { htmlReady } from '@util/htmlReady';
 import { initTooltip } from './initTooltip';
 import { exportWindow } from '@/util/exportWindow';
-
-import '@/msg.ts';
-import '@/map.ts';
+import { reloadWorldMap } from '@/map';
+import { refreshMsg } from '@/msg';
 
 exportWindow(jQuery, '$');
 
@@ -42,6 +41,15 @@ htmlReady(() => {
 
     activateFlip();
     initTooltip();
+
+    void reloadWorldMap({
+        hrefTemplate: 'b_currentCity.php?citylist={0}',
+        useCachedMap: true
+    });
+
+    setInterval(function() {
+        void refreshMsg();
+    }, 5000);
 
     const customCSS = localStorage.getItem('sam_customCSS');
     if (customCSS) {
