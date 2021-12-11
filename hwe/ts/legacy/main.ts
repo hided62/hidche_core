@@ -11,33 +11,37 @@ exportWindow(jQuery, '$');
 
 
 htmlReady(() => {
-    document.querySelector('.refreshPage')?.addEventListener('click', function () {
-        document.location.reload();
-        return false;
-    });
+    for(const refreshBtn of document.querySelectorAll('.refreshPage')){
+        refreshBtn.addEventListener('click', function () {
+            document.location.reload();
+            return false;
+        })
+    }
 
-    document.querySelector('.open-window')?.addEventListener('click', function (e) {
-        e.preventDefault();
-        let target: HTMLElement | null = e.target as HTMLElement;
-        while (target !== null) {
-            target = target.parentElement;
-            if (target === null) {
+    for(const openWindowBtn of document.querySelectorAll('.open-window')){
+        openWindowBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            let target: HTMLElement | null = e.target as HTMLElement;
+            while (target !== null) {
+                target = target.parentElement;
+                if (target === null) {
+                    return;
+                }
+                if (target.tagName != 'a') {
+                    continue;
+                }
+                if ((target as HTMLAnchorElement).href !== undefined) {
+                    break;
+                }
+            }
+
+            if (!target) {
                 return;
             }
-            if (target.tagName != 'a') {
-                continue;
-            }
-            if ((target as HTMLAnchorElement).href !== undefined) {
-                break;
-            }
-        }
 
-        if (!target) {
-            return;
-        }
-
-        window.open((target as HTMLAnchorElement).href);
-    });
+            window.open((target as HTMLAnchorElement).href);
+        });
+    }
 
     activateFlip();
     initTooltip();
