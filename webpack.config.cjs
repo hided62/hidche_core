@@ -116,7 +116,7 @@ module.exports = (env, argv) => {
                             loader: 'esbuild-loader',
                             options: {
                                 loader: 'ts',
-                                target: 'es2019',
+                                target: 'es2021',
                             }
                         }
                     ]
@@ -129,7 +129,7 @@ module.exports = (env, argv) => {
                             loader: 'esbuild-loader',
                             options: {
                                 loader: 'tsx',
-                                target: 'es2019',
+                                target: 'es2021',
                             }
                         }
                     ]
@@ -142,7 +142,7 @@ module.exports = (env, argv) => {
                             loader: 'esbuild-loader',
                             options: {
                                 loader: 'js',
-                                target: 'es2019',
+                                target: 'es2021',
                             }
                         }
                     ]
@@ -223,7 +223,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'ts',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -236,7 +236,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'tsx',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -249,7 +249,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'js',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -268,11 +268,6 @@ module.exports = (env, argv) => {
         cache: {
             type: 'filesystem',
         },
-        externals: {
-            // require("jquery") is external and available
-            //  on the global var jQuery
-            "jQuery": "jquery"
-        }
     };
     const gateway = {
         name: `gateway`,
@@ -308,7 +303,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'ts',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -321,7 +316,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'tsx',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -334,7 +329,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'js',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
