@@ -5,3 +5,23 @@ $font-family-sans-serif: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', 'M
 html, body {
     font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic';
 }
+
+.f_tnum{
+    //고정폭 숫자
+    font-feature-settings: 'tnum';
+}
+
+.f_ccmp{
+    //합성 문자
+    font-feature-settings: 'ccmp';
+}
+
+.f_frac{
+    //분수 및 첨자
+    font-feature-settings: 'frac';
+}
+
+.f_ss05{
+    //한글에 맞춘 줄임표(비표준)
+    font-feature-settings: 'ss05';
+}

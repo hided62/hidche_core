@@ -1,13 +1,13 @@
 <template>
   <div class="row form-group number-input-with-info">
-    <label v-if="!right" class="col-6 col-form-label">{{ title }}</label>
+    <label v-if="!right" class="col-6 col-form-label ">{{ title }}</label>
     <div class="col-6">
       <input
         ref="input"
         type="number"
         :step="step ?? undefined"
         v-model="rawValue"
-        class="form-control"
+        class="form-control f_tnum"
         :min="min ?? undefined"
         :max="max ?? undefined"
         @blur="onBlurNumber"
@@ -16,7 +16,7 @@
       />
       <input
         type="text"
-        class="form-control"
+        class="form-control f_tnum"
         :readonly="readonly"
         :value="printValue"
         @focus="onFocusText"

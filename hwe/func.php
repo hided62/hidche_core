@@ -881,7 +881,7 @@ function generalInfo2(General $generalObj)
         <td style='text-align:center;'>{$generalObj->getRankVar('deathcrew')}</td>
     </tr>
 </table>
-<table width=498 class='tb_layout bg2'>
+<table width=498 class='tb_layout bg2 f_tnum'>
     <tr><td style='text-align:center;' colspan=4 class='bg1'><b>숙 련 도</b></td></tr>
     <tr height=16>
         <td width=64 style='text-align:center;' class='bg1'><b>보병</b></td>

@@ -25,7 +25,7 @@
             <div class="col col-md-6 col-sm-5 col-6">
               <input
                 type="text"
-                class="form-control inherit_value"
+                class="form-control inherit_value f_tnum"
                 readonly
                 :id="`inherit_${key}_value`"
                 :value="Math.floor(items[key]).toLocaleString()"
@@ -101,7 +101,7 @@
             </div>
           </div>
           <div class="row px-4">
-            <div class="col">
+            <div class="col f_tnum">
               <NumberInputWithInfo
                 title="입찰 포인트"
                 :min="inheritActionCost.minSpecificUnique"
@@ -204,7 +204,7 @@
           <label class="col col-sm-6 col-form-label" :for="`buff-${buffKey}`">{{
             info.title
           }}</label>
-          <div class="col col-sm-6">
+          <div class="col col-sm-6 f_tnum">
             <b-form-input
               :id="`buff-${buffKey}`"
               type="number"
@@ -215,7 +215,7 @@
           </div>
         </div>
         <div style="text-align: right">
-          <small class="form-text text-muted"
+          <small class="form-text text-muted f_tnum"
             >{{ info.info }}<br /><span style="color: white"
               >필요 포인트:
               {{
@@ -247,7 +247,7 @@
     </div>
     <div class="row" v-for="(log, idx) in lastInheritPointLogs" :key="idx">
       <div class="col a-right" style="max-width:20ch">
-        <small class="text-muted">[{{log.date}}]</small>
+        <small class="text-muted tnum">[{{log.date}}]</small>
       </div>
       <div class="col a-left">
         {{log.text}}
@@ -699,5 +699,9 @@ export default defineComponent({
 
 .inherit_value {
   text-align: right;
+}
+
+.tnum{
+  font-feature-settings: 'tnum';
 }
 </style>

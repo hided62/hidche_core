@@ -511,7 +511,7 @@ if ($str3) {
 
             foreach ($tournamentType as $tournamentTypeText => [$statTypeText, $statFunc, $rankColumn]) : ?>
                 <td>
-                    <table align=center width=280 class='tb_layout bg0'>
+                    <table align=center width=280 class='tb_layout bg0 f_tnum'>
                         <tr>
                             <td colspan=9 align=center style=color:white;background-color:black;>
                                 <font size=4><?= $tournamentTypeText ?></font>
