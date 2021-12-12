@@ -30,13 +30,19 @@ module.exports = (env, argv) => {
 
     const genBuildHook = function (oTarget) {
         const checkFilePath = resolve(outputPath, `build_${oTarget}.txt`);
-        return function (percentage, msg) {
+        let emitDone = false;
+        let writeDone = false;
+        return function (percentage, msg, ...args) {
+            if(msg == 'emitting'){
+                emitDone = true;
+            }
             if (percentage == 0) {
                 if (fs.existsSync(checkFilePath)) {
                     fs.unlinkSync(checkFilePath);
                 }
-            } else if (percentage == 1) {
+            } else if (percentage == 1 && emitDone && !writeDone) {
                 fs.writeFileSync(checkFilePath, new Date().toISOString(), 'utf-8');
+                writeDone = true;
             }
         };
     };
@@ -177,7 +183,11 @@ module.exports = (env, argv) => {
             new CleanTerminalPlugin(),
             new VueLoaderPlugin(),
             new MiniCssExtractPlugin(),
-            new webpack.ProgressPlugin(genBuildHook('vue')),
+            new webpack.ProgressPlugin({
+                percentBy: 'modules',
+                dependencies: false,
+                handler: genBuildHook('vue')
+            }),
             //new BundleAnalyzerPlugin()
         ],
         cache: {
@@ -388,7 +398,8 @@ module.exports = (env, argv) => {
     };
 
     if(env.WEBPACK_WATCH || !versionValue){
-        return [gateway, ingame_vue, ingame];
+        return [ingame_vue];
+        //return [gateway, ingame_vue, ingame];
     }
 
     const buildConfList = [];
