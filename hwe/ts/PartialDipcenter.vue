@@ -49,7 +49,7 @@
 import "@scss/dipcenter.scss";
 import "@scss/common_legacy.scss";
 import TipTap from "./components/TipTap.vue";
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent } from "vue";
 import { sammoAPI } from "./util/sammoAPI";
 import { isString } from "lodash";
 declare const editable: boolean;

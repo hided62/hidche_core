@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import 'bootstrap';
 import PartialDipcenter from '@/PartialDipcenter.vue';
 import BootstrapVue3 from 'bootstrap-vue-3';
 import { htmlReady } from './util/htmlReady';
