@@ -511,7 +511,7 @@ declare const lastSetters: {
 };
 
 export default defineComponent({
-  name: "NPCControl",
+  name: "PageNPCControl",
   components: {
     TopBackBar,
     NumberInputWithInfo,

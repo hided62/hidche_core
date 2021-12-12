@@ -7,7 +7,7 @@
   </tr>
 </template>
 <script lang="ts">
-import { BoardCommentItem } from "@/Board.vue";
+import { BoardCommentItem } from "@/PageBoard.vue";
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({

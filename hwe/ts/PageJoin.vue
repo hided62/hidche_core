@@ -389,7 +389,7 @@ type APIArgs = {
 };
 
 export default defineComponent({
-  name: "Join",
+  name: "PageJoin",
   components: {
     TopBackBar,
     CTable,

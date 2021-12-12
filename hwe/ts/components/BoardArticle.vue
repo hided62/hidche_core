@@ -50,7 +50,7 @@
   </table>
 </template>
 <script lang="ts">
-import { BoardArticleItem } from "@/Board.vue";
+import { BoardArticleItem } from "@/PageBoard.vue";
 import BoardComment from "@/components/BoardComment.vue";
 import { defineComponent, PropType } from "vue";
 import axios from "axios";
