@@ -85,18 +85,10 @@ uasort($troops, function ($lhs, $rhs) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 부대편성</title>
-    <?= WebUtil::preloadJS('dist_js/troop.js') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/common.js') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('dist_css/troop.css') ?>
-    <script>
-
-    </script>
+    <?= WebUtil::printDist('ts', ['common', 'troop'], true) ?>
 </head>
 
 <body>
@@ -233,7 +225,6 @@ uasort($troops, function ($lhs, $rhs) {
             </tr>
         </table>
     </div>
-    <?= WebUtil::printJS('dist_js/troop.js') ?>
 </body>
 
 </html>

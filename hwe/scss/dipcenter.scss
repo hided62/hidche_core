@@ -1,4 +1,6 @@
-@charset "UTF-8";
+@import '@scss/common/bootstrap5.scss';
+@import 'summernote/dist/summernote-bs5.css';
+
 
 #scoutMsgForm .viewer{
     max-height:200px;

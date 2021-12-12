@@ -19,14 +19,12 @@ include "func.php";
         'serverNick' => DB::prefix(),
         'serverID' => UniqueConst::$serverID
     ]) ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
 
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
+    <?= WebUtil::printDist('ts', ['common', 'recent_map'], true) ?>
     <style>
         html {
             width: 700px;
@@ -52,7 +50,6 @@ include "func.php";
         <div class="card-body">
         </div>
     </div>
-    <?= WebUtil::printJS('dist_js/recent_map.js') ?>
 </body>
 
 </html>

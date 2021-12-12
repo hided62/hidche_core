@@ -1,11 +1,14 @@
+import '@scss/dipcenter.scss'
 import $ from 'jquery';
+exportWindow($, 'jquery');
 import 'bootstrap';
-import 'summernote/dist/summernote-bs4';
-import 'summernote/dist/summernote-bs4.css';
+import 'summernote/dist/summernote-bs5';
 import '@/summernote-image-flip';
 import '@/summernote-ko-KR';
 import { activateFlip } from "@/legacy/activateFlip";
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { exportWindow } from './util/exportWindow';
+
 
 declare const editable: boolean;
 

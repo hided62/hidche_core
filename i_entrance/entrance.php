@@ -26,21 +26,16 @@ $acl = $session->acl;
 
     <!-- 스타일 -->
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
-    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
-    <?= WebUtil::printCSS('../css/config.css') ?>
-    <?= WebUtil::printCSS('../css/entrance.css') ?>
-    <?= WebUtil::printCSS('../css/admin_server.css') ?>
 
     <!-- 액션 -->
     <script>
         var isAdmin = <?= ($userGrade >= 5 || $acl) ? 'true' : 'false' ?>;
     </script>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
-    <?= WebUtil::printJS('../dist_js/vendors.js', true) ?>
-    <?= WebUtil::printJS('../dist_js/common_ts.js', true) ?>
-    <?= WebUtil::printJS('../dist_js/entrance.js', true) ?>
-
+    <?= WebUtil::printDist('gateway', 'entrance', true) ?>
+    <?= WebUtil::printCSS('../css/config.css') ?>
+    <?= WebUtil::printCSS('../css/entrance.css') ?>
+    <?= WebUtil::printCSS('../css/admin_server.css') ?>
 </head>
 
 <body>

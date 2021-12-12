@@ -76,11 +76,7 @@ $cssList = $commandObj->getCSSFiles();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/common.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
-    <?= WebUtil::printJS('dist_js/processing.js') ?>
     <script>
         window.serverNick = '<?= DB::prefix() ?>';
         window.serverID = '<?= UniqueConst::$serverID ?>';
@@ -92,17 +88,16 @@ $cssList = $commandObj->getCSSFiles();
     <?= WebUtil::printCSS('../e_lib/select2/select2.min.css') ?>
     <?= WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/main.css') ?>
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printCSS('css/processing.css') ?>
-
     <?php
     foreach ($cssList as $css) {
         print(WebUtil::printCSS($css));
     }
     ?>
+    <?= WebUtil::printDist('ts', ['common', 'processing']) ?>
 </head>
 
 <body class="img_back">

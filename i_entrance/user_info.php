@@ -15,16 +15,13 @@ require(__DIR__ . '/../vendor/autoload.php');
 
     <!-- 스타일 -->
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
-    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
     <?= WebUtil::printCSS('../css/config.css') ?>
     <?= WebUtil::printCSS('../css/user_info.css') ?>
 
     <!-- 액션 -->
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('../dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('../dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('../dist_js/user_info.js') ?>
+    <?= WebUtil::printDist('gateway', 'user_info', true) ?>
+
 </head>
 
 <body>

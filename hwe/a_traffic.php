@@ -54,12 +54,7 @@ if ($admin['maxonline'] < $curonline) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
-    <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/common.js') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <style>
         .big_bar {
@@ -87,6 +82,8 @@ if ($admin['maxonline'] < $curonline) {
             margin-left: 1ch;
         }
     </style>
+    <?= WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?= WebUtil::printDist('ts', ['common']) ?>
 </head>
 
 <body>

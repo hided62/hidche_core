@@ -110,13 +110,8 @@ $lastSetters = [
         'defaultStatNPCMax' => GameConst::$defaultStatNPCMax,
         'defaultStatMax' => GameConst::$defaultStatMax,
     ]) ?>
-    <?= WebUtil::printCSS('dist_css/vendors_vue.css') ?>
-    <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
-    <?= WebUtil::printCSS('dist_css/v_NPCControl.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
-    <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
-    <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
-    <?= WebUtil::printJS('dist_js/v_NPCControl.js', true) ?>
+    <?= WebUtil::printDist('vue', ['v_NPCControl'], true) ?>
 </head>
 
 <body>

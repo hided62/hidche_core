@@ -275,7 +275,7 @@ module.exports = (env, argv) => {
         }
     };
     const gateway = {
-        name: `gateway_${versionTarget}`,
+        name: `gateway`,
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
             alias: {
@@ -295,7 +295,7 @@ module.exports = (env, argv) => {
         },
         output: {
             filename: '[name].js',
-            path: resolve(outputPath, 'gateway')
+            path: resolve(__dirname, 'dist_js', 'gateway')
         },
         devtool: 'source-map',
         optimization,

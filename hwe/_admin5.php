@@ -39,7 +39,7 @@ $sel2[$type2] = "selected";
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
+    <?= WebUtil::printDist('ts', 'common', true) ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 
@@ -212,7 +212,7 @@ GROUP BY B.nation
                 $query .= " order by avg(B.dex5) desc";
                 break;
         }
-        foreach($db->query($query) as $nation){
+        foreach ($db->query($query) as $nation) {
             $gen = $db->queryFirstRow('SELECT COUNT(*) as cnt,
             ROUND(AVG(gold)) as avgg,
             ROUND(AVG(rice)) as avgr,
@@ -221,7 +221,7 @@ GROUP BY B.nation
                                     ROUND(AVG(intel), 1) as avgi,
                                     ROUND(AVG(explevel), 1) as avge,
             SUM(crew) as crew
-from general where nation=%i',$nation['nation']);
+from general where nation=%i', $nation['nation']);
 
             $city = $db->queryFirstRow('SELECT COUNT(*) as cnt,
             SUM(pop) as pop,    SUM(pop_max) as pop_max,
@@ -312,7 +312,7 @@ from city where nation=%i', $nation['nation']);
             ?>
         </tr>
         <?php
-        foreach($db->query('SELECT * from statistic where month=1 or no=1') as $stat){
+        foreach ($db->query('SELECT * from statistic where month=1 or no=1') as $stat) {
             echo "
     <tr>
         <td align=center>{$stat['year']}</td>

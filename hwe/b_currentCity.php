@@ -35,13 +35,9 @@ $templates = new \League\Plates\Engine('templates');
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/currentCity.js') ?>
     <?= WebUtil::printCSS('../e_lib/select2/select2.min.css') ?>
     <?= WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <style>
         #general_list tr td {
@@ -57,6 +53,7 @@ $templates = new \League\Plates\Engine('templates');
             font-size: x-small;
         }
     </style>
+    <?= WebUtil::printDist('ts', ['common', 'currentCity']) ?>
 </head>
 
 <body>

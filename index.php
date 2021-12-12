@@ -52,14 +52,8 @@ foreach (ServConfig::getServerList() as $setting) {
         var kakao_oauth_redirect_uri = '<?= KakaoKey::REDIRECT_URI ?>';
     </script>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/login.js') ?>
-
     <?= WebUtil::printCSS('d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/vendor.css') ?>
-    <?= WebUtil::printCSS('dist_css/common_ts.css') ?>
-    <?= WebUtil::printCSS('dist_css/login.css') ?>
+    <?= WebUtil::printDist('gateway', 'login') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,힏체섭,히데체,히데체섭,HiDCHe,체섭">

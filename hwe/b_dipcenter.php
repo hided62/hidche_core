@@ -62,15 +62,9 @@ $nationStor->cacheValues(['notice', 'scout_msg', 'available_war_setting_cnt']);
                             ]) ?>;
     </script>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/dipcenter.js') ?>
-    <?= WebUtil::printCSS('../e_lib/summernote/summernote-bs4.css') ?>
-    <?= WebUtil::printCSS('dist_css/vendors.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('css/dipcenter.css') ?>
+    <?= WebUtil::printDist('ts', ['common', 'dipcenter']) ?>
 </head>
 
 <body>

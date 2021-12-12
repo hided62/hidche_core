@@ -30,12 +30,8 @@ if ($canJoin != 'Y') {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>회원가입</title>
-    <?= WebUtil::printJS('../dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('../dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('../dist_js/join.js') ?>
-    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
-    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
     <?= WebUtil::printCSS('../css/login.css') ?>
+    <?= WebUtil::printDist('gateway', ['join']) ?>
 </head>
 
 <body>

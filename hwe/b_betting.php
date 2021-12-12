@@ -87,12 +87,9 @@ if ($str3) {
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 베팅장</title>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/betting.js') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <?= WebUtil::printDist('ts', ['common', 'betting']) ?>
 </head>
 
 <body>

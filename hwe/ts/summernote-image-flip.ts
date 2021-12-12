@@ -1,6 +1,6 @@
 /* Forked from https://github.com/asiffermann/summernote-image-title */
 import $ from 'jquery';
-import 'summernote/dist/summernote-bs4.js';
+import 'summernote/dist/summernote-bs5.js';
 
 $(function ($) {
     $.extend(true, $.summernote.lang, {
