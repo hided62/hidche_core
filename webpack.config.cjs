@@ -33,7 +33,7 @@ module.exports = (env, argv) => {
         let emitDone = false;
         let writeDone = false;
         return function (percentage, msg, ...args) {
-            if(msg == 'emitting'){
+            if (msg == 'emitting') {
                 emitDone = true;
             }
             if (percentage == 0) {
@@ -59,6 +59,33 @@ module.exports = (env, argv) => {
         entryIngame[entry] = `${tsDir}/${filePath}`;
     }
 
+    const optimization = {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    priority: -10,
+                    chunks: 'all',
+                    reuseExistingChunk: true,
+                },
+                default: {
+                    name: 'common_ts',
+                    minChunks: 2,
+                    priority: -20,
+                    chunks: 'all',
+                    reuseExistingChunk: true,
+                },
+            },
+        },
+        minimizer: [
+            new ESBuildMinifyPlugin({
+                css: true
+            }),
+        ],
+        moduleIds: 'deterministic',
+    };
+
     const ingame_vue = {
         name: `ingame_${versionTarget}_vue`,
         resolve: {
@@ -77,32 +104,7 @@ module.exports = (env, argv) => {
             path: resolve(outputPath, 'vue')
         },
         devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors_vue',
-                        priority: -10,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                    default: {
-                        name: 'common_vue',
-                        minChunks: 2,
-                        priority: -20,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                },
-            },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
-        },
+        optimization,
         module: {
             rules: [
                 //FROM `vue inspect` and some tweaks
@@ -211,30 +213,7 @@ module.exports = (env, argv) => {
             path: resolve(outputPath, 'ts')
         },
         devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors',
-                        chunks: 'all',
-                    },
-                    default: {
-                        name: 'common_ts',
-                        minChunks: 2,
-                        priority: -20,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                },
-            },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
-        },
+        optimization,
         module: {
             rules: [{
                 test: /\.ts$/,
@@ -319,30 +298,7 @@ module.exports = (env, argv) => {
             path: resolve(outputPath, 'gateway')
         },
         devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors',
-                        chunks: 'all',
-                    },
-                    default: {
-                        name: 'common_ts',
-                        minChunks: 2,
-                        priority: -20,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                },
-            },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
-        },
+        optimization,
         module: {
             rules: [{
                 test: /\.ts$/,
@@ -397,9 +353,8 @@ module.exports = (env, argv) => {
         },
     };
 
-    if(env.WEBPACK_WATCH || !versionValue){
-        return [ingame_vue];
-        //return [gateway, ingame_vue, ingame];
+    if (env.WEBPACK_WATCH || !versionValue) {
+        return [gateway, ingame_vue, ingame];
     }
 
     const buildConfList = [];

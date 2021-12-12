@@ -1,4 +1,5 @@
 import '@scss/main.scss';
+import "@scss/common_legacy.scss";
 
 exportWindow(scrollHardTo, 'scrollHardTo');
 

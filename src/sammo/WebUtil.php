@@ -139,6 +139,43 @@ class WebUtil
         return static::preloadAsset($path, 'script');
     }
 
+    public static function printDist(string $type, string|array $entryName, bool $isDefer = false){
+        if(is_string($entryName)){
+            $entryName = [$entryName];
+        }
+        if(is_subclass_of('\\sammo\\VersionGit', '\\sammo\\VersionGitDynamic')){
+            $version = DB::prefix().'_dynamic';
+        }
+        else{
+            $version = VersionGit::getVersion();
+        }
+
+        $basePath = dirname(__DIR__, 2)."/dist_js/{$version}/{$type}";
+        $serverBasePath = \phpUri::parse(ServConfig::$serverWebPath)->path;
+        $serverBasePath .= "/dist_js/{$version}/{$type}";
+
+        $outputs = ["\n"];
+
+        foreach(["vendors", "common_ts", ...$entryName] as $moduleName){
+            foreach(['js', 'css'] as $ext){
+                $checkPath = $basePath."/{$moduleName}.{$ext}";
+                if (!file_exists($checkPath)) {
+                    $outputs[] = "<!-- '{$version}/{$type}/{$moduleName}.{$ext}' -->\n";
+                    continue;
+                }
+                $mtime = filemtime($checkPath);
+                if($ext == 'css'){
+                    $outputs[] = "<link  href='{$serverBasePath}/{$moduleName}.{$ext}?{$mtime}' rel='stylesheet' type='text/css' />\n";
+                }
+                else if($ext == 'js'){
+                    $typeText = $isDefer ? 'defer' : '';
+                    $outputs[] = "<script src='{$serverBasePath}/{$moduleName}.{$ext}?{$mtime}' {$typeText}></script>\n";
+                }
+            }
+        }
+        return join("", $outputs);
+    }
+
     public static function printJS(string $path, bool $isDefer = false)
     {
         //async 옵션 고려?
