@@ -95,7 +95,7 @@ module.exports = (env, argv) => {
                 '@': tsDir,
                 '@scss': path.resolve(tsDir, '../scss'),
                 '@util': path.resolve(tsDir, 'util'),
-            }
+            },
         },
         mode,
         entry: entryIngameVue,

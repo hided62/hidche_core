@@ -1,0 +1,46 @@
+.custom-image-original {
+    max-width: 100%;
+    display: block;
+}
+
+.custom-image-large {
+    width: 100%;
+    display: block;
+}
+
+.custom-image-medium {
+    width: 50%;
+    display: block;
+}
+
+.custom-image-small {
+    margin: auto;
+    width: 25%;
+}
+
+.custom-image-align-float-left{
+    float: left;
+}
+
+.custom-image-align-float-right{
+    float: right;
+}
+
+.custom-image-align-center{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+
+}
+.custom-image-align-left{
+    margin-left: 0;
+    margin-right: auto;
+    display: block;
+
+}
+
+.custom-image-align-right{
+    margin-left: auto;
+    margin-right: 0;
+    display: block;
+}
