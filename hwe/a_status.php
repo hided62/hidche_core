@@ -32,12 +32,13 @@ if ($con >= 2) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 세력도</title>
+    <?= WebUtil::printCSS('../d_shared/common.css') ?>
+    <?= WebUtil::printCSS('css/normalize.css') ?>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/common.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
-    <?= WebUtil::printJS('dist_js/map.js') ?>
+    <?= WebUtil::printDist('ts', ['common', 'map']) ?>
     <script>
         window.serverNick = '<?= DB::prefix() ?>';
         window.serverID = '<?= UniqueConst::$serverID ?>';
@@ -51,12 +52,6 @@ if ($con >= 2) {
 
         });
     </script>
-    <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('css/normalize.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('css/map.css') ?>
-
 </head>
 
 <body>

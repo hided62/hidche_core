@@ -1,21 +1,21 @@
-import $ from 'jquery';
-import 'bootstrap';
-import 'summernote/dist/summernote-bs4';
-import 'summernote/dist/summernote-bs4.css';
-import '@/summernote-image-flip';
-import '@/summernote-ko-KR';
-import { activateFlip } from "@/legacy/activateFlip";
+import { createApp } from 'vue'
+import PartialDipcenter from '@/PartialDipcenter.vue';
+import BootstrapVue3 from 'bootstrap-vue-3';
+import { htmlReady } from './util/htmlReady';
+//import { activateFlip } from './legacy/activateFlip';
+//import { activateFlip } from "@/legacy/activateFlip";
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+//import { htmlReady } from './util/htmlReady';
 
-declare const editable: boolean;
+createApp(PartialDipcenter).use(BootstrapVue3).mount('#editorForm');
+setAxiosXMLHttpRequest();
 
-declare const storedData: {
-    nationMsg: string,
-    scoutMsg: string,
-}
 
-$(function ($) {
-    setAxiosXMLHttpRequest();
+htmlReady(function(){
+    //activateFlip();
+})
+
+    /*
     function guiEditorInit($obj: JQuery<HTMLElement>, editable: boolean) {
         const $submitBtn = $obj.find('.submit');
         const $noticeInput = $obj.find('.input_form');
@@ -145,5 +145,4 @@ $(function ($) {
     guiEditorInit($('#noticeForm'), editable);
     guiEditorInit($('#scoutMsgForm'), editable);
     activateFlip();
-
-})
+    */

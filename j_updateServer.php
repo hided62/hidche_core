@@ -140,7 +140,7 @@ if (!$v->validate()) {
 $target = Util::getPost('target');
 
 $server = basename($request['server']);
-
+$settingBasePath = __DIR__ . "/{$server}/d_setting/";
 $allowFullUpdate = in_array('fullUpdate', $session->acl[$server] ?? []);
 $allowFullUpdate |= $session->userGrade >= 6;
 
@@ -244,20 +244,28 @@ if ($server == $baseServerName) {
     $version = getVersion();
     $gitHash = getHash();
     if (
-        hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.dynamic.orig.php') ==
-        hash_file("sha256", __DIR__ . '/' . $server . '/d_setting/VersionGit.php')
+        hash_file("sha256", $settingBasePath . 'VersionGit.dynamic.orig.php') ==
+        hash_file("sha256", $settingBasePath . 'VersionGit.php')
     ) {
+
+        if (file_exists($settingBasePath . 'VersionGit.json')) {
+            unlink($settingBasePath . 'VersionGit.json');
+        }
         $result = true;
     } else {
         $result = Util::generateFileUsingSimpleTemplate(
-            __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
-            __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
+            $settingBasePath . 'VersionGit.orig.php',
+            $settingBasePath . 'VersionGit.php',
             [
                 'verionGit' => $version,
                 'hash' => $gitHash
             ],
             true
         );
+        file_put_contents($settingBasePath . 'VersionGit.json', Json::encode([
+            'versionGit' => $version,
+            'hash' => $gitHash,
+        ]));
     }
 
     //git 업데이트했는데, package.json이 바뀌면 곤란하니까
@@ -333,14 +341,18 @@ $zip->close();
 $version = getVersion($target);
 $gitHash = getHash($target);
 $result = Util::generateFileUsingSimpleTemplate(
-    __DIR__ . '/' . $server . '/d_setting/VersionGit.orig.php',
-    __DIR__ . '/' . $server . '/d_setting/VersionGit.php',
+    $settingBasePath . 'VersionGit.orig.php',
+    $settingBasePath . 'VersionGit.php',
     [
         'verionGit' => $version,
         'hash' => $gitHash
     ],
     true
 );
+file_put_contents($settingBasePath . 'VersionGit.json', Json::encode([
+    'versionGit' => $version,
+    'hash' => $gitHash,
+]));
 genJS($server);
 
 $storage->$server = [$target, $version];

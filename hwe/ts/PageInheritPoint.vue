@@ -246,13 +246,12 @@
       </div>
     </div>
     <div class="row" v-for="(log, idx) in lastInheritPointLogs" :key="idx">
-      <div class="col a-right" style="max-width:20ch">
-        <small class="text-muted tnum">[{{log.date}}]</small>
+      <div class="col a-right" style="max-width: 20ch">
+        <small class="text-muted tnum">[{{ log.date }}]</small>
       </div>
       <div class="col a-left">
-        {{log.text}}
+        {{ log.text }}
       </div>
-
     </div>
   </div>
 </template>
@@ -273,7 +272,7 @@ type InheritanceType =
   | "max_belong"
   | "max_domestic_critical"
   | "active_action"
-//  | "snipe_combat"
+  //  | "snipe_combat"
   | "combat"
   | "sabotage"
   | "unifier"
@@ -284,11 +283,11 @@ type InheritanceType =
 type InheritanceViewType = InheritanceType | "sum" | "new";
 
 declare const lastInheritPointLogs: {
-  server_id: string,
-  year: number,
-  month: number,
-  date: string,
-  text: string,
+  server_id: string;
+  year: number;
+  month: number;
+  date: string;
+  text: string;
 }[];
 
 declare const items: Record<InheritanceType, number>;
@@ -323,9 +322,9 @@ const inheritanceViewText: Record<
   },
   active_action: {
     title: "능동 행동 수",
-    info: "장수 동향에 본인의 이름이 직접 나타난 수입니다.<br>일부 사령턴은 제외됩니다."
+    info: "장수 동향에 본인의 이름이 직접 나타난 수입니다.<br>일부 사령턴은 제외됩니다.",
   },
-/*  snipe_combat: {
+  /*  snipe_combat: {
     title: "병종 상성 우위 횟수",
     info: "유리한 상성을 가지고 전투했습니다.",
   },*/
@@ -440,7 +439,7 @@ declare const availableUnique: Record<
 >;
 
 export default defineComponent({
-  name: "InheritPoint",
+  name: "PageInheritPoint",
   data() {
     const inheritBuff = {} as Record<inheritBuffType, number>;
     for (const buffKey of Object.keys(
@@ -701,7 +700,7 @@ export default defineComponent({
   text-align: right;
 }
 
-.tnum{
-  font-feature-settings: 'tnum';
+.tnum {
+  font-feature-settings: "tnum";
 }
 </style>

@@ -81,12 +81,9 @@ foreach(CityConst::all() as $city){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
-    <?= WebUtil::printCSS('dist_css/v_join.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
-    <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
-    <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
-    <?= WebUtil::printJS('dist_js/v_join.js', true) ?>
+    <?= WebUtil::printDist('vue', 'v_join', true) ?>
+
     <?= WebUtil::printStaticValues([
         'serverID' => UniqueConst::$serverID,
         'nationList' => array_values($nationList),

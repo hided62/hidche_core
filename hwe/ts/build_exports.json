@@ -13,7 +13,6 @@
         "bossInfo": "bossInfo.ts",
         "myPage": "myPage.ts",
         "extExpandCity": "extExpandCity.ts",
-        "dipcenter": "dipcenter.ts",
         "diplomacy": "diplomacy.ts",
         "currentCity": "currentCity.ts",
         "hallOfFame": "hallOfFame.ts",
@@ -27,6 +26,8 @@
         "v_board": "v_board.ts",
         "v_NPCControl": "v_NPCControl.ts",
         "v_join": "v_join.ts",
-        "v_main": "v_main.ts"
+        "v_main": "v_main.ts",
+        "v_dipcenter": "v_dipcenter.ts"
+
     }
 }

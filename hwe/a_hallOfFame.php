@@ -47,13 +47,10 @@ if ($scenarioIdx && key_exists($scenarioIdx, $scenarioList[$seasonIdx] ?? [])) {
     <meta name="viewport" content="width=1136" />
     <title><?= UniqueConst::$serverName ?>: 명예의 전당</title>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/hallOfFame.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJs('dist_js/hallOfFame.js') ?>
+    <?= WebUtil::printDist('ts', ['common', 'hallOfFame']) ?>
 </head>
 
 <body>

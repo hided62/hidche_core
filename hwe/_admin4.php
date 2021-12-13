@@ -23,8 +23,9 @@ $ipGroupList = Util::arrayGroupBy(
     'ip_c'
 );
 
-function colorBlockedName($general){
-    if(!$general['blocked']){
+function colorBlockedName($general)
+{
+    if (!$general['blocked']) {
         return $general['name'];
     }
     return "<span style='color:magenta;'>{$general['name']}</span>";
@@ -40,7 +41,7 @@ function colorBlockedName($general){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
+    <?= WebUtil::printDist('ts', 'common', true) ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 
@@ -108,14 +109,14 @@ function colorBlockedName($general){
                 <td align=center width=129>IP</td>
                 <td align=center width=100>ID</td>
             </tr>
-<?php foreach($ipGroupList as $ipGroupC=>$users): ?>
-    <tr>
-        <td><?=join('<br>',array_map('\sammo\colorBlockedName', $users))?></td>
-        <td><?=join('<br>',array_column($users, 'lastconnect'))?></td>
-        <td><?=join('<br>',array_column($users, 'ip'))?></td>
-        <td><?=join('<br>',array_column($users, 'owner'))?></td>
-    </tr>
-<?php endforeach; ?>
+            <?php foreach ($ipGroupList as $ipGroupC => $users) : ?>
+                <tr>
+                    <td><?= join('<br>', array_map('\sammo\colorBlockedName', $users)) ?></td>
+                    <td><?= join('<br>', array_column($users, 'lastconnect')) ?></td>
+                    <td><?= join('<br>', array_column($users, 'ip')) ?></td>
+                    <td><?= join('<br>', array_column($users, 'owner')) ?></td>
+                </tr>
+            <?php endforeach; ?>
         </table>
         <?php
         //NOTE: password의 md5 해시가 같은지 확인하는 방식으로는 앞으로 잡아낼 수 없다. 폐기

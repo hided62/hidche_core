@@ -54,23 +54,15 @@ $nationStor->cacheValues(['notice', 'scout_msg', 'available_war_setting_cnt']);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 내무부</title>
-    <script>
-        var editable = <?= (($me['officer_level'] >= 5 || $permission == 4) ? 'true' : 'false') ?>;
-        var storedData = <?= Json::encode([
-                                "nationMsg" => $nationStor->notice ?? '',
-                                "scoutMsg" => $nationStor->scout_msg ?? ''
-                            ]) ?>;
-    </script>
+    <?= WebUtil::printStaticValues([
+        'editable' => ($me['officer_level'] >= 5 || $permission == 4),
+        'nationMsg' => $nationStor->notice ?? '',
+        'scoutMsg' => $nationStor->scout_msg ?? '',
+    ]) ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/dipcenter.js') ?>
-    <?= WebUtil::printCSS('../e_lib/summernote/summernote-bs4.css') ?>
-    <?= WebUtil::printCSS('dist_css/vendors.css') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('css/dipcenter.css') ?>
+    <?= WebUtil::printDist('vue', 'v_dipcenter', true) ?>
 </head>
 
 <body>
@@ -176,51 +168,12 @@ $nationStor->cacheValues(['notice', 'scout_msg', 'available_war_setting_cnt']);
     }
 
     ?>
-    <table width=1000 class='tb_layout bg0' style='margin:auto;'>
-        <form name=form1 method=post action=c_dipcenter.php>
-            <tr>
-                <td colspan=2 height=10></td>
-            </tr>
-            <tr>
-                <td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메시지</td>
-            </tr>
-            <tr>
-                <td colspan='2'>
-                    <div id='noticeForm'>
-                        <div class='bg1' style="display: flex; justify-content: space-around">
-                            <div style='flex: 1 1 auto;'>
-                                국가 방침
-                            </div>
-                            <div>
-                                <input type='submit' class='submit' name=btn value='국가방침 수정'><input type='button' class='cancel_edit' value='취소'>
-                            </div>
-                        </div>
-                        <input type='hidden' class='input_form' name='msg' data-global='nationMsg'>
-                        <div class='edit_form viewer'></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan='2'>
-                    <div id='scoutMsgForm'>
-                        <div class='bg1' style="display: flex; justify-content: space-around">
-                            <div style='flex: 1 1 auto;'>
-                                임관 권유
-                            </div>
-                            <div>
-                                <input type='submit' class='submit' name=btn value='임관 권유문 수정'><input type='button' class='cancel_edit' value='취소'>
-                            </div>
-                        </div>
-                        <div style='border-bottom:solid gray 0.5px;'>870px x 200px를 넘어서는 내용은 표시되지 않습니다.</div>
-                        <input type='hidden' class='input_form' name='scoutMsg' data-global='scoutMsg'>
-                        <div style="width:870px;margin-left:auto;">
-                            <div class='edit_form viewer'></div>
-                        </div>
-                    </div>
+    <div class='tb_layout bg0' style='margin:auto;width: 1000px;' id="editorForm">
 
-                    </div>
-                </td>
-            </tr>
+    </div>
+    <table class="tb_layout bg0" style="margin:auto;">
+        <form name=form1 method=post action=c_dipcenter.php>
+
             <tr>
                 <td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td>
             </tr>

@@ -6,11 +6,46 @@ const { resolve } = require('path');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const webpack = require('webpack');
+const fs = require('fs');
 module.exports = (env, argv) => {
     const target = env.target ?? 'hwe';
     const mode = argv.mode ?? 'production';
     const tsDir = resolve(__dirname, `${target}/ts/`);
     const build_exports = require(`${tsDir}/build_exports.json`);
+
+    const versionGitPath = resolve(__dirname, target, 'd_setting', 'VersionGit.json');
+
+    const versionValue = (() => {
+        if (!fs.existsSync(versionGitPath)) {
+            return undefined;
+        }
+        const versionInfo = JSON.parse(fs.readFileSync(versionGitPath, 'utf-8'));
+        return versionInfo.versionGit;
+    })()
+    const versionTarget = versionValue ?? `${target}_dynamic`;
+    const outputPath = resolve(__dirname, 'dist_js', versionTarget);
+    fs.mkdirSync(outputPath, {
+        recursive: true
+    });
+
+    const genBuildHook = function (oTarget) {
+        const checkFilePath = resolve(outputPath, `build_${oTarget}.txt`);
+        let emitDone = false;
+        let writeDone = false;
+        return function (percentage, msg, ...args) {
+            if (msg == 'emitting') {
+                emitDone = true;
+            }
+            if (percentage == 0) {
+                if (fs.existsSync(checkFilePath)) {
+                    fs.unlinkSync(checkFilePath);
+                }
+            } else if (percentage == 1 && emitDone && !writeDone) {
+                fs.writeFileSync(checkFilePath, new Date().toISOString(), 'utf-8');
+                writeDone = true;
+            }
+        };
+    };
 
     //TODO: esbuild에 browserslist 사용 가능하면 적용
 
@@ -24,8 +59,35 @@ module.exports = (env, argv) => {
         entryIngame[entry] = `${tsDir}/${filePath}`;
     }
 
+    const optimization = {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    priority: -10,
+                    chunks: 'all',
+                    reuseExistingChunk: true,
+                },
+                default: {
+                    name: 'common_ts',
+                    minChunks: 2,
+                    priority: -20,
+                    chunks: 'all',
+                    reuseExistingChunk: true,
+                },
+            },
+        },
+        minimizer: [
+            new ESBuildMinifyPlugin({
+                css: true
+            }),
+        ],
+        moduleIds: 'deterministic',
+    };
+
     const ingame_vue = {
-        name: `ingame_${target}_vue`,
+        name: `ingame_${versionTarget}_vue`,
         resolve: {
             extensions: [".ts", ".tsx", ".vue", ".js"],
             alias: {
@@ -33,41 +95,16 @@ module.exports = (env, argv) => {
                 '@': tsDir,
                 '@scss': path.resolve(tsDir, '../scss'),
                 '@util': path.resolve(tsDir, 'util'),
-            }
+            },
         },
         mode,
         entry: entryIngameVue,
         output: {
             filename: '[name].js',
-            path: resolve(__dirname, `${target}/dist_js`)
+            path: resolve(outputPath, 'vue')
         },
         devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors_vue',
-                        priority: -10,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                    default: {
-                        name: 'common_vue',
-                        minChunks: 2,
-                        priority: -20,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                },
-            },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
-        },
+        optimization,
         module: {
             rules: [
                 //FROM `vue inspect` and some tweaks
@@ -79,7 +116,7 @@ module.exports = (env, argv) => {
                             loader: 'esbuild-loader',
                             options: {
                                 loader: 'ts',
-                                target: 'es2019',
+                                target: 'es2021',
                             }
                         }
                     ]
@@ -92,7 +129,7 @@ module.exports = (env, argv) => {
                             loader: 'esbuild-loader',
                             options: {
                                 loader: 'tsx',
-                                target: 'es2019',
+                                target: 'es2021',
                             }
                         }
                     ]
@@ -105,7 +142,7 @@ module.exports = (env, argv) => {
                             loader: 'esbuild-loader',
                             options: {
                                 loader: 'js',
-                                target: 'es2019',
+                                target: 'es2021',
                             }
                         }
                     ]
@@ -128,55 +165,30 @@ module.exports = (env, argv) => {
                 },
                 {
                     test: /\.(png|jpe?g|gif|webp)$/,
-                    use: [
-                        {
-                            loader: 'file-loader',
-                            options: {
-                                name: '../dist_misc/[name].[contenthash:8].[ext]'
-                            }
-                        }
-                    ]
+                    use: ['file-loader']
                 },
                 {
                     test: /\.(svg)$/,
-                    use: [
-                        {
-                            loader: 'file-loader',
-                            options: {
-                                name: '../dist_misc/[name].[contenthash:8].[ext]'
-                            }
-                        }
-                    ]
+                    use: ['file-loader']
                 },
                 {
                     test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
-                    use: [
-                        {
-                            loader: 'file-loader',
-                            options: {
-                                name: '../dist_misc/[name].[contenthash:8].[ext]'
-                            }
-                        }
-                    ]
+                    use: ['file-loader']
                 },
                 {
                     test: /\.(woff2?|eot|ttf|otf)$/i,
-                    use: [
-                        {
-                            loader: 'file-loader',
-                            options: {
-                                name: '../dist_misc/[name].[contenthash:8].[ext]'
-                            }
-                        }
-                    ]
+                    use: ['file-loader']
                 },
             ]
         },
         plugins: [
             new CleanTerminalPlugin(),
             new VueLoaderPlugin(),
-            new MiniCssExtractPlugin({
-                filename: '../dist_css/[name].css'
+            new MiniCssExtractPlugin(),
+            new webpack.ProgressPlugin({
+                percentBy: 'modules',
+                dependencies: false,
+                handler: genBuildHook('vue')
             }),
             //new BundleAnalyzerPlugin()
         ],
@@ -185,7 +197,7 @@ module.exports = (env, argv) => {
         },
     };
     const ingame = {
-        name: `ingame_${target}`,
+        name: `ingame_${versionTarget}`,
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
             alias: {
@@ -198,33 +210,10 @@ module.exports = (env, argv) => {
         entry: entryIngame,
         output: {
             filename: '[name].js',
-            path: resolve(__dirname, `${target}/dist_js`)
+            path: resolve(outputPath, 'ts')
         },
         devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors',
-                        chunks: 'all',
-                    },
-                    default: {
-                        name: 'common_ts',
-                        minChunks: 2,
-                        priority: -20,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                },
-            },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
-        },
+        optimization,
         module: {
             rules: [{
                 test: /\.ts$/,
@@ -234,7 +223,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'ts',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -247,7 +236,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'tsx',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -260,7 +249,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'js',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -272,22 +261,16 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new CleanTerminalPlugin(),
-            new MiniCssExtractPlugin({
-                filename: '../dist_css/[name].css'
-            }),
+            new MiniCssExtractPlugin(),
+            new webpack.ProgressPlugin(genBuildHook('ts')),
             //new BundleAnalyzerPlugin()
         ],
         cache: {
             type: 'filesystem',
         },
-        externals: {
-            // require("jquery") is external and available
-            //  on the global var jQuery
-            "jQuery": "jquery"
-        }
     };
     const gateway = {
-        name: 'gateway',
+        name: `gateway`,
         resolve: {
             extensions: [".js", ".ts", ".tsx"],
             alias: {
@@ -307,33 +290,10 @@ module.exports = (env, argv) => {
         },
         output: {
             filename: '[name].js',
-            path: path.resolve(__dirname, 'dist_js'),
+            path: resolve(__dirname, 'dist_js', 'gateway')
         },
         devtool: 'source-map',
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors',
-                        chunks: 'all',
-                    },
-                    default: {
-                        name: 'common_ts',
-                        minChunks: 2,
-                        priority: -20,
-                        chunks: 'all',
-                        reuseExistingChunk: true,
-                    },
-                },
-            },
-            minimizer: [
-                new ESBuildMinifyPlugin({
-                    css: true
-                }),
-            ],
-            moduleIds: 'deterministic',
-        },
+        optimization,
         module: {
             rules: [{
                 test: /\.ts$/,
@@ -343,7 +303,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'ts',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -356,7 +316,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'tsx',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -369,7 +329,7 @@ module.exports = (env, argv) => {
                         loader: 'esbuild-loader',
                         options: {
                             loader: 'js',
-                            target: 'es2019',
+                            target: 'es2021',
                         }
                     }
                 ]
@@ -379,9 +339,8 @@ module.exports = (env, argv) => {
             }]
         },
         plugins: [
-            new MiniCssExtractPlugin({
-                filename: '../dist_css/[name].css'
-            }),
+            new MiniCssExtractPlugin(),
+            new webpack.ProgressPlugin(genBuildHook('gateway')),
             //new BundleAnalyzerPlugin()
         ],
         cache: {
@@ -389,10 +348,22 @@ module.exports = (env, argv) => {
         },
     };
 
-    if (target == 'hwe') {
+    if (env.WEBPACK_WATCH || !versionValue) {
         return [gateway, ingame_vue, ingame];
     }
-    else {
-        return [ingame_vue, ingame];
+
+    const buildConfList = [];
+    if (target == 'hwe' && !fs.existsSync(resolve(outputPath, `build_gateway.txt`))) {
+        buildConfList.push(gateway);
     }
+
+    if (!fs.existsSync(resolve(outputPath, `build_vue.txt`))) {
+        buildConfList.push(ingame_vue);
+    }
+
+    if (!fs.existsSync(resolve(outputPath, `build_ts.txt`))) {
+        buildConfList.push(ingame);
+    }
+
+    return buildConfList;
 }

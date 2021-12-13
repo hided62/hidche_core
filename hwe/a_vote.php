@@ -30,12 +30,7 @@ $vote = $admin['vote'] ?: ['-'];
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
-    <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/common.js') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <style>
         .little_bar {
@@ -46,6 +41,8 @@ $vote = $admin['vote'] ?: ['-'];
             text-align: center;
         }
     </style>
+    <?= WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?= WebUtil::printDist('ts', ['common']) ?>
     <script type="text/javascript">
         function captureKey(e) {
             if (e.keyCode == 13 && e.srcElement.type == 'text') {

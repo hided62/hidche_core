@@ -46,18 +46,15 @@ if ($nationID) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1100" />
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/battle_simulator.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
     <script>
         var defaultSpecialDomestic = '<?= GameConst::$defaultSpecialDomestic ?>';
         var city = <?= Json::encode($city) ?>;
         var nation = <?= Json::encode($nation) ?>;
     </script>
-    <?= WebUtil::printJS('dist_js/battle_simulator.js') ?>
+    <?= WebUtil::printDist('ts', ['common', 'battle_simulator']) ?>
 </head>
 
 <body>

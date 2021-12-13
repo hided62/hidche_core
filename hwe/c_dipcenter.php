@@ -7,8 +7,8 @@ include "func.php";
 // $btn, $msg, $scoutmsg, $rate, $bill, $secretlimit
 
 $btn = Util::getPost('btn');
-$msg = Util::getPost('msg');
-$scoutmsg = Util::getPost('scoutMsg');
+//$msg = Util::getPost('msg');
+//$scoutmsg = Util::getPost('scoutMsg');
 $rate = Util::getPost('rate', 'int');
 $bill = Util::getPost('bill', 'int');
 $secretlimit = Util::getPost('secretlimit', 'int');
@@ -34,14 +34,14 @@ if ($permission < 0) {
 $nationID = $me['nation'];
 $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
-if ($btn == "국가방침 수정") {
+/*if ($btn == "국가방침 수정") {
     $msg = mb_substr($msg, 0, 16384);
     //$msg = StringUtil::
     $nationStor->notice = WebUtil::htmlPurify($msg);
 } elseif ($btn == "임관 권유문 수정") {
     $scoutmsg = mb_substr($scoutmsg, 0, 1000);
     $nationStor->scout_msg = WebUtil::htmlPurify($scoutmsg);
-} elseif ($btn == "세율") {
+} else*/if ($btn == "세율") {
     $rate = Util::valueFit($rate, 5, 30);
     $db->update('nation', [
         'rate' => $rate,

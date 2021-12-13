@@ -102,7 +102,7 @@ export type BoardCommentItem = {
 };
 
 export default defineComponent({
-  name: "Board",
+  name: "PageBoard",
   components: {
     TopBackBar,
     BoardArticle,

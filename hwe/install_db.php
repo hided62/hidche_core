@@ -24,12 +24,9 @@ if ($session->userGrade == 5) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('dist_js/install_db.js') ?>
     <?= WebUtil::printCSS('css/normalize.css') ?>
-    <?= WebUtil::printCSS('dist_css/common.css') ?>
     <?= WebUtil::printCSS('css/install.css') ?>
+    <?= WebUtil::printDist('ts', ['common', 'install_db']) ?>
 </head>
 
 <body>

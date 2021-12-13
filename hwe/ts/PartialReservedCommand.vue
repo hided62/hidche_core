@@ -287,7 +287,7 @@ function isDropdownChildren(e?: Event): boolean {
 const searchModeKey = `sammo_${serverID}_searchMode`;
 
 export default defineComponent({
-  name: "ReservedCommand",
+  name: "PartialReservedCommand",
 
   methods: {
     updateNow() {

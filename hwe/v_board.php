@@ -44,15 +44,11 @@ $boardName = $isSecretBoard ? '기밀실' : '회의실';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
-    <?= WebUtil::printCSS('dist_css/common_vue.css') ?>
-    <?= WebUtil::printCSS('dist_css/v_board.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
-    <?= WebUtil::printJS('dist_js/vendors_vue.js', true) ?>
-    <?= WebUtil::printJS('dist_js/common_vue.js', true) ?>
-    <?= WebUtil::printJS('dist_js/v_board.js', true) ?>
     <?= WebUtil::printStaticValues([
         'isSecretBoard' => $isSecretBoard,
     ]) ?>
+    <?= WebUtil::printDist('vue', 'v_board', true) ?>
 </head>
 <body>
     <div id="app"></div>

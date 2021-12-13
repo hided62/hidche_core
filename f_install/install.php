@@ -13,13 +13,17 @@ require(__DIR__ . '/../vendor/autoload.php');
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>설치</title>
+    <?php /* NOTE: 설치 이전에는 ServConfig가 준비되어있지 않으므로 예외로 수동 지정 */ ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS('../dist_js/vendors.js') ?>
-    <?= WebUtil::printJS('dist_js/common_ts.js') ?>
-    <?= WebUtil::printJS('../dist_js/install.js') ?>
-    <?= WebUtil::printCSS('../dist_css/vendor.css') ?>
-    <?= WebUtil::printCSS('../dist_css/common_ts.css') ?>
+    <?= WebUtil::printJS('../dist_js/gateway/vendors.js') ?>
+    <?= WebUtil::printCSS('../dist_js/gateway/vendor.css') ?>
+    <?= WebUtil::printJS('../dist_js/gateway/common_ts.js') ?>
+    <?= WebUtil::printCSS('../dist_js/gateway/common_ts.css') ?>
+    <?= WebUtil::printJS('../dist_js/gateway/install.js') ?>
+    <?= WebUtil::printCSS('../dist_js/gateway/install.css') ?>
+
     <?= WebUtil::printCSS('../css/install.css') ?>
+
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 </head>
 

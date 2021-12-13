@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import Board from '@/Board.vue';
+import PageBoard from '@/PageBoard.vue';
 import BootstrapVue3 from 'bootstrap-vue-3'
 import "@scss/common/bootstrap5.scss";
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
@@ -9,6 +9,6 @@ declare const isSecretBoard: boolean;
 
 
 setAxiosXMLHttpRequest();
-createApp(Board, {
+createApp(PageBoard, {
     isSecretBoard
 }).use(BootstrapVue3).mount('#app')
