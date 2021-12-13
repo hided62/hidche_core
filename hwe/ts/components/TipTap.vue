@@ -75,8 +75,32 @@
     </b-button-group>
 
     <b-button-group class="mx-1">
-      <!-- 마지막으로 사용한 색 -->
-      <!-- 배경색, 글자색 -->
+      <b-button
+        @click="editor.chain().focus().unsetColor().unsetBackgroundColor().run()"
+        v-b-tooltip.hover
+        title="색상 취소"
+        ><i class="bi bi-droplet"></i
+      ></b-button>
+      <input
+        type="color"
+        class="form-control form-control-color"
+        :value="
+          colorConvert(editor.getAttributes('textStyle').color, '#ffffff')
+        "
+        @input="editor.chain().focus().setColor($event.target.value).run()"
+        v-b-tooltip.hover
+        title="글자색"
+      />
+      <input
+        type="color"
+        class="form-control form-control-color"
+        :value="
+          colorConvert(editor.getAttributes('textStyle').backgroundColor, '#000000')
+        "
+        @input="editor.chain().focus().setBackgroundColor($event.target.value).run()"
+        v-b-tooltip.hover
+        title="배경색"
+      />
     </b-button-group>
 
     <b-button-group class="mx-1">
@@ -85,6 +109,12 @@
       <!-- 영상링크 -->
       <!-- 표 -->
       <!-- 구분선 삽입 -->
+      <b-button
+        @click="editor.chain().focus().setHorizontalRule().run()"
+        v-b-tooltip.hover
+        title="구분선"
+        ><i class="bi bi-hr"></i
+      ></b-button>
     </b-button-group>
 
     <b-button-group class="mx-1">
@@ -115,6 +145,9 @@
     </b-button-group>
 
     <b-button-group class="mx-1">
+    </b-button-group>
+
+    <b-button-group class="mx-1">
       <!-- 줄간격 (1.0, 1.2, 1.4, 1.5, 1.6, 1.8, 2.0, 3.0) -->
     </b-button-group>
 
@@ -134,6 +167,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextStyle from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
+import Color from "@tiptap/extension-color";
+import { BackgroundColor } from "@/tiptap-ext/BackgroundColor";
 import {
   BButtonGroup,
   BButtonToolbar,
@@ -152,6 +187,26 @@ const compoment = defineComponent({
     BDropdown,
     BDropdownItem,
     BDropdownDivider,
+  },
+  methods: {
+    colorConvert(val: string | undefined, defaultVal: string) {
+      if (!val) {
+        return defaultVal;
+      }
+      if (val.startsWith("rgb")) {
+        const rgb = val.split("(")[1].split(")")[0].split(",");
+        const vals: string[] = [];
+        for (const subColor of rgb) {
+          const hexSubColor = parseInt(subColor).toString(16);
+          if (hexSubColor.length == 1) {
+            vals.push("0");
+          }
+          vals.push(hexSubColor);
+        }
+        return `#${vals.join("")}`;
+      }
+      return val;
+    },
   },
 
   props: {
@@ -210,6 +265,12 @@ const compoment = defineComponent({
         TextStyle,
         TextAlign.configure({
           types: ["heading", "paragraph"],
+        }),
+        Color.configure({
+          types: ["textStyle"],
+        }),
+        BackgroundColor.configure({
+          types: ["textStyle"],
         }),
       ],
       editable: this.editable,

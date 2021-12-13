@@ -19,6 +19,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@tiptap/extension-color": "^2.0.0-beta.9",
     "@tiptap/extension-image": "^2.0.0-beta.24",
     "@tiptap/extension-link": "^2.0.0-beta.33",
     "@tiptap/extension-text-align": "^2.0.0-beta.29",
