@@ -58,6 +58,7 @@ module.exports = (env, argv) => {
     for (const [entry, filePath] of Object.entries(build_exports.ingame) ?? []) {
         entryIngame[entry] = `${tsDir}/${filePath}`;
     }
+    const cacheDirectory = path.resolve(__dirname, 'node_modules/.cache/webpack')
 
     const optimization = {
         splitChunks: {
@@ -194,6 +195,8 @@ module.exports = (env, argv) => {
         ],
         cache: {
             type: 'filesystem',
+            cacheDirectory,
+            cacheLocation: path.resolve(cacheDirectory, `ingame_vue_${mode}`)
         },
     };
     const ingame = {
@@ -267,6 +270,8 @@ module.exports = (env, argv) => {
         ],
         cache: {
             type: 'filesystem',
+            cacheDirectory,
+            cacheLocation: path.resolve(cacheDirectory, `ingame_ts_${mode}`)
         },
     };
     const gateway = {
@@ -345,6 +350,8 @@ module.exports = (env, argv) => {
         ],
         cache: {
             type: 'filesystem',
+            cacheDirectory,
+            cacheLocation: path.resolve(cacheDirectory, `gateway_ts_${mode}`)
         },
     };
 
