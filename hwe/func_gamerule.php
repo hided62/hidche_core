@@ -1022,7 +1022,7 @@ function checkEmperior()
     $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
     $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
 
-    foreach (General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj) {
+    foreach (General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2')) as $genObj) {
         if ($genObj->getNationID() == $nationID) {
             if ($genObj->getVar('officer_level') > 4) {
                 $genObj->increaseInheritancePoint('unifier', 2000);

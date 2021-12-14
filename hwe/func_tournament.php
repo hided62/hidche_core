@@ -858,8 +858,10 @@ function setGift($tnmt_type, $tnmt, $phase) {
     foreach(General::createGeneralObjListFromDB(Util::squeezeFromArray($gambleResult, 'general_id'), ['gold'], 1) as $gambler){
         $reward = Util::round($gambleResult[$gambler->getID()]['bet'] * $rewardRate);
         $gambler->increaseVar('gold', $reward);
-        $gambler->increaseRankVar('betwingold', $reward);
-        $gambler->increaseRankVar('betwin', 1);
+        if(($gambler->getNPCType() == 0) || ($gambler->getNPCType()==1 && $gambler->getRankVar('betgold') > 0)){
+            $gambler->increaseRankVar('betwingold', $reward);
+            $gambler->increaseRankVar('betwin', 1);
+        }
         $rewardText = number_format($reward);
         $gambler->getLogger()->pushGeneralActionLog("<C>{$tp}</> 대회의 베팅 당첨으로 <C>{$rewardText}</>의 <S>금</> 획득!", ActionLogger::EVENT_PLAIN);
         $gambler->applyDB($db);
