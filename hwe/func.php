@@ -1887,7 +1887,8 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
 
     $itemTypeCnt = count(GameConst::$allItems);
 
-    [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+
+    [$startYear, $year, $month, $initYear, $initMonth] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'init_year', 'init_month']);
     $relYear = $year - $startYear;
     $maxTrialCountByYear = 1;
     foreach(GameConst::$maxUniqueItemLimit as $tmpVals){
@@ -1901,6 +1902,9 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $trialCnt = Util::valueFit($itemTypeCnt, null, $maxTrialCountByYear);
     $maxCnt = $itemTypeCnt;
 
+    $relMonthByInit = Util::joinYearMonth($year, $month) - Util::joinYearMonth($initYear, $initMonth);
+    $availableBuyUnique = $relMonthByInit >= 4;
+
     foreach ($general->getItems() as $item) {
         if (!$item->isBuyable()) {
             $trialCnt -= 1;
@@ -1910,7 +1914,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
 
     if ($trialCnt <= 0) {
         LogText("{$general->getName()}, {$general->getID()} 모든 아이템", $trialCnt);
-        if ($general->getAuxVar('inheritRandomUnique')) {
+        if ($general->getAuxVar('inheritRandomUnique') && $availableBuyUnique) {
             $general->setAuxVar('inheritRandomUnique', null);
             $general->increaseInheritancePoint('previous', GameConst::$inheritItemRandomPoint);
             $userLogger = new UserLogger($general->getVar('owner'));
@@ -1921,7 +1925,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     }
 
     $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
-    if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique)) {
+    if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique) && $availableBuyUnique) {
         $trialResult = tryInheritUniqueItem($general, $acquireType);
         if ($trialResult) {
             return true;
@@ -1951,7 +1955,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $prob /= sqrt(2);
     $moreProb = pow(2, 1 / 4);
 
-    if ($general->getAuxVar('inheritRandomUnique')) {
+    if ($general->getAuxVar('inheritRandomUnique') && $availableBuyUnique) {
         //포인트로 랜덤 유니크 획득
         $prob = 1;
     }
