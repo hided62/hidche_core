@@ -205,6 +205,7 @@ class GameConstBase
     public static $maxAvailableWarSettingCnt = 10;
     public static $incAvailableWarSettingCnt = 2;
 
+    public static $minMonthToAllowInheritItem = 4;
     public static $inheritBornSpecialPoint = 6000;
     public static $inheritBornTurntimePoint = 3000;
     public static $inheritBornCityPoint = 1000;

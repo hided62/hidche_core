@@ -461,7 +461,8 @@ function commandGroup($typename, $type = 0)
     }
 }
 
-function getCommandTable(General $general){
+function getCommandTable(General $general)
+{
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->turnOnCache();
@@ -476,18 +477,18 @@ function getCommandTable(General $general){
                 continue;
             }
             $subList[] = [
-                'value'=>Util::getClassNameFromObj($commandObj),
-                'compensation'=>$commandObj->getCompensationStyle(),
-                'possible'=>$commandObj->hasMinConditionMet(),
-                'title'=>$commandObj->getCommandDetailTitle(),
-                'simpleName'=>$commandObj->getName(),
-                'reqArg'=>$commandObj::$reqArg,
+                'value' => Util::getClassNameFromObj($commandObj),
+                'compensation' => $commandObj->getCompensationStyle(),
+                'possible' => $commandObj->hasMinConditionMet(),
+                'title' => $commandObj->getCommandDetailTitle(),
+                'simpleName' => $commandObj->getName(),
+                'reqArg' => $commandObj::$reqArg,
             ];
         }
 
         $result[] = [
-            'category'=>$commandCategory,
-            'values'=>$subList
+            'category' => $commandCategory,
+            'values' => $subList
         ];
     }
 
@@ -1384,17 +1385,17 @@ function triggerTournament()
     [$tournament, $tnmt_trig, $tnmt_pattern] = $gameStor->getValuesAsArray(['tournament', 'tnmt_trig', 'tnmt_pattern']);
 
     //현재 토너먼트 없고, 자동개시 걸려있을때, 40%확률
-    if($tournament != 0){
+    if ($tournament != 0) {
         return;
     }
-    if($tnmt_trig == 0){
+    if ($tnmt_trig == 0) {
         return;
     }
-    if(!Util::randBool(0.4)){
+    if (!Util::randBool(0.4)) {
         return;
     }
 
-    if(!$tnmt_pattern){
+    if (!$tnmt_pattern) {
         // 0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
         //전력전 40%, 통, 일, 설 각 20%
         $tnmt_pattern = [0, 0, 1, 2, 3];
@@ -1648,8 +1649,18 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         return false;
     }
 
+
+
     if ($general->getAuxVar('inheritRandomUnique')) {
-        $general->setAuxVar('inheritRandomUnique', null);
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        [$year, $month, $initYear, $initMonth] = $gameStor->getValuesAsArray(['year', 'month', 'init_year', 'init_month']);
+
+        $relMonthByInit = Util::joinYearMonth($year, $month) - Util::joinYearMonth($initYear, $initMonth);
+        $availableBuyUnique = $relMonthByInit >= GameConst::$minMonthToAllowInheritItem;
+
+        if($availableBuyUnique){
+            $general->setAuxVar('inheritRandomUnique', null);
+        }
     }
 
     [$itemType, $itemCode] = Util::choiceRandomUsingWeightPair($availableUnique);
@@ -1685,7 +1696,7 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
     $itemTrials = $general->getAuxVar('inheritUniqueTrial');
     LogText("선택유니크 롤백:{$ownerID}", [$itemKey, $itemTrials]);
     unset($itemTrials[$itemKey]);
-    if(count($itemTrials) == 0){
+    if (count($itemTrials) == 0) {
         $itemTrials = null;
     }
     $general->setAuxVar('inheritUniqueTrial', $itemTrials);
@@ -1891,9 +1902,9 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     [$startYear, $year, $month, $initYear, $initMonth] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'init_year', 'init_month']);
     $relYear = $year - $startYear;
     $maxTrialCountByYear = 1;
-    foreach(GameConst::$maxUniqueItemLimit as $tmpVals){
+    foreach (GameConst::$maxUniqueItemLimit as $tmpVals) {
         [$targetYear, $targetTrialCnt] = $tmpVals;
-        if($relYear < $targetYear){
+        if ($relYear < $targetYear) {
             break;
         }
         $maxTrialCountByYear = $targetTrialCnt;
@@ -1903,7 +1914,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $maxCnt = $itemTypeCnt;
 
     $relMonthByInit = Util::joinYearMonth($year, $month) - Util::joinYearMonth($initYear, $initMonth);
-    $availableBuyUnique = $relMonthByInit >= 4;
+    $availableBuyUnique = $relMonthByInit >= GameConst::$minMonthToAllowInheritItem;
 
     foreach ($general->getItems() as $item) {
         if (!$item->isBuyable()) {
@@ -1914,7 +1925,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
 
     if ($trialCnt <= 0) {
         LogText("{$general->getName()}, {$general->getID()} 모든 아이템", $trialCnt);
-        if ($general->getAuxVar('inheritRandomUnique') && $availableBuyUnique) {
+        if ($general->getAuxVar('inheritRandomUnique')) {
             $general->setAuxVar('inheritRandomUnique', null);
             $general->increaseInheritancePoint('previous', GameConst::$inheritItemRandomPoint);
             $userLogger = new UserLogger($general->getVar('owner'));
