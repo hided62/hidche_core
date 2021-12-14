@@ -191,7 +191,9 @@ class GeneralAI
         $nationID = $this->general->getNationID();
         $env = $this->env;
 
-        if (Util::joinYearMonth($env['year'], $env['month']) <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
+        $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
+
+        if ($yearMonth <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
             $this->dipState = self::d평화;
             $this->attackable = false;
             return;
@@ -229,6 +231,8 @@ class GeneralAI
         $this->warTargetNation = $warTargetNation;
 
 
+
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
         $minWarTerm = $db->queryFirstField('SELECT min(term) FROM diplomacy WHERE me = %i AND state=1', $nationID);
         if ($minWarTerm === null) {
             $this->dipState = self::d평화;
@@ -238,13 +242,21 @@ class GeneralAI
             $this->dipState = self::d징병;
         } else {
             $this->dipState = self::d직전;
+            $nationStor->last_attackable = $yearMonth;
         }
 
-        if ($this->attackable) {
-            //전쟁으로 인한 attackable인가?
-            if ($onWar || (!$onWarReady && !$onWarYet)) {
+        if ($onWar || (!$onWarReady && !$onWarYet)) {
+            //확실한 전쟁 상태
+            if ($this->attackable) {
+                //그리고 출병 가능한 도시도 있음
+                $this->dipState = self::d전쟁;
+                $nationStor->last_attackable = $yearMonth;
+            }
+            else if($nationStor->last_attackable >= $yearMonth - 5){
+                //그러나 접경이 없음. 대신, 접경이 사라진지 아직 5개월 이내.
                 $this->dipState = self::d전쟁;
             }
+            //5개월도 넘었다면 다른 국가를 찾아보자.
         }
     }
 
