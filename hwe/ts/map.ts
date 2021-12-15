@@ -671,14 +671,16 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
     const $hideCityNameBtn = $world_map.find('.map_toggle_cityname');
     if (localStorage.getItem('sam.hideMapCityName') == 'yes') {
+        console.log('tryHide!');
         $world_map.addClass('hide_cityname');
         $hideCityNameBtn.addClass('active').attr('aria-pressed', 'true');
     }
 
-    $hideCityNameBtn.click(function () {
+    $hideCityNameBtn.on('click', function () {
         //이전 상태 확인
-        const state = !$hideCityNameBtn.hasClass('active');
+        const state = localStorage.getItem('sam.hideMapCityName') == 'no';
         if (state) {
+            console.log('tryHide!');
             $world_map.addClass('hide_cityname');
             localStorage.setItem('sam.hideMapCityName', 'yes');
         } else {
@@ -697,9 +699,9 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
     const $map_body = $(drawTarget + ' .map_body');
 
-    $toggleSingleTapBtn.click(function () {
+    $toggleSingleTapBtn.on('click', function () {
         //이전 상태 확인
-        const state = !$toggleSingleTapBtn.hasClass('active');
+        const state = localStorage.getItem('sam.toggleSingleTap') == 'no';
         if (state) {
             $map_body.removeData('touchMode');
             localStorage.setItem('sam.toggleSingleTap', 'yes');
