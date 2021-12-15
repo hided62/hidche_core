@@ -27,6 +27,8 @@ export function auto500px(targetHeight = 700): void {
         const screenMode = (localStorage.getItem(keyScreenMode) as ScreenModeType)??'auto';
         if(screenMode != oldMode){
             oldMode = screenMode;
+            deviceWidth = window.screen.availWidth;
+
             if(screenMode == '500px'){
                 viewportMeta.content = 'width=500';
                 return;
