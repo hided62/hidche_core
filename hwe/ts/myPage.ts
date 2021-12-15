@@ -1,10 +1,11 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { InvalidResponse } from '@/defs';
+import { InvalidResponse, keyScreenMode } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap } from '@util/unwrap';
 import { unwrap_any } from '@util/unwrap_any';
+
 
 
 type LogResponse = {
@@ -103,6 +104,13 @@ $(function ($) {
     })
 
     initCustomCSSForm();
+
+
+    const $screenModeRadios = $('input:radio[name=screenMode]');
+    $screenModeRadios.prop('checked', false).filter(`[value="${localStorage.getItem(keyScreenMode)??'auto'}"]`).prop('checked', true);
+    $screenModeRadios.on('click', function(e){
+        localStorage.setItem(keyScreenMode, (e.target as HTMLInputElement).value);
+    });
 
 
     $('#die_immediately').on('click', async function (e) {

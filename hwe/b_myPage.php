@@ -119,6 +119,23 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                     <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>다른 장수 선택</button></a><br><br>
                 <?php endif; ?>
 
+                <div class="row">
+                    <div class="col-4 text-end">500px/1000px 모드<br>(모바일 전용, 즉시 설정)</div>
+                    <div class="col-8">
+                        <div class="btn-group" role="group" aria-label="500px/1000px 모드 설정">
+                            <input type="radio" class="btn-check" name="screenMode" value="auto" id="screenMode_auto" autocomplete="off">
+                            <label class="btn btn-primary" for="screenMode_auto">자동</label>
+
+                            <input type="radio" class="btn-check" name="screenMode" value="500px" id="screenMode_500px" autocomplete="off">
+                            <label class="btn btn-primary" for="screenMode_500px">500px</label>
+
+                            <input type="radio" class="btn-check" name="screenMode" value="1000px" id="screenMode_1000px" autocomplete="off">
+                            <label class="btn btn-primary" for="screenMode_1000px">1000px</label>
+                        </div>
+                    </div>
+                </div>
+                <br>
+
                 개인용 CSS<br>
                 <textarea id='custom_css' style='color:white;background-color:black;width:420px;height:150px;'></textarea>
             </td>

@@ -1,5 +1,6 @@
 import { htmlReady } from "@util/htmlReady";
 import { unwrap } from "@util/unwrap";
+import { keyScreenMode, ScreenModeType } from "@/defs";
 
 export function auto500px(targetHeight = 700): void {
     let deviceWidth = -1;
@@ -28,6 +29,17 @@ export function auto500px(targetHeight = 700): void {
         deviceWidth = window.screen.availWidth;
         const innerHeight = window.innerHeight;
         const selectorHeight = targetHeight;
+
+        const screenMode = (localStorage.getItem(keyScreenMode) as ScreenModeType)??'auto';
+        if(screenMode == '500px'){
+            viewportMeta.content = 'width=500';
+            return;
+        }
+
+        if(screenMode == '1000px'){
+            viewportMeta.content = 'width=1000';
+            return;
+        }
 
         if (deviceWidth < 500) {
             viewportMeta.content = 'width=500';

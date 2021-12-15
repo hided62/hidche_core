@@ -145,3 +145,6 @@ export type ToastType = {
     type?: Colors,
     delay?: number,
 }
+
+export const keyScreenMode = 'sam.screenMode';
+export type ScreenModeType = 'auto'|'500px'|'1000px';
