@@ -13,7 +13,7 @@ class che_event_견고 extends \sammo\BaseSpecial{
 
     protected $id = 62;
     protected $name = '견고';
-    protected $info = '[전투] 상대 필살, 저격 불가, 상대 계략 시도시 성공 확률 -10%p, 부상 없음, 아군 피해 -10%';
+    protected $info = '[전투] 상대 필살 확률 -20%p, 상대 계략 시도시 성공 확률 -10%p, 부상 없음, 아군 피해 -10%';
 
     static $selectWeightType = SpecialityHelper::WEIGHT_NORM;
     static $selectWeight = 1;
@@ -25,6 +25,7 @@ class che_event_견고 extends \sammo\BaseSpecial{
     {
         $debuff = [
             'warMagicSuccessProb' => 0.1,
+            'warCriticalRatio' => 0.20,
         ][$statName] ?? 0;
         return $value - $debuff;
     }
@@ -32,13 +33,12 @@ class che_event_견고 extends \sammo\BaseSpecial{
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
             new che_부상무효($unit, BaseWarUnitTrigger::TYPE_ITEM),
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*402, false, '저격불가')
         );
     }
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_ITEM + BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*402, false, '필살불가', '저격불가')
+            new che_부상무효($unit, BaseWarUnitTrigger::TYPE_ITEM),
         );
     }
 

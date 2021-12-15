@@ -12,7 +12,6 @@ class che_부상무효 extends BaseWarUnitTrigger{
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         assert($self instanceof WarUnitGeneral, 'General만 발동 가능');
-        $oppose->activateSkill('저격불가');
         $self->activateSkill('부상무효');
 
         return true;

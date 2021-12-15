@@ -19,7 +19,7 @@ class che_무기_13_양유기궁 extends \sammo\BaseStatItem{
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
-            new che_저격시도($unit, che_저격시도::TYPE_ITEM + che_저격시도::TYPE_DEDUP_TYPE_BASE * 113, 0.1, 20, 40),
+            new che_저격시도($unit, che_저격시도::TYPE_ITEM + che_저격시도::TYPE_DEDUP_TYPE_BASE * 113, 0.1, 20, 40, 10),
             new che_저격발동($unit, che_저격발동::TYPE_ITEM)
         );
     }

@@ -15,7 +15,7 @@ class che_저격_비도 extends \sammo\BaseItem{
     protected $id = 70;
     protected $rawName = '비도';
     protected $name = '비도(저격)';
-    protected $info = '[전투] 새로운 상대와 전투 시 50% 확률로 저격 발동, 성공 시 사기+10';
+    protected $info = '[전투] 새로운 상대와 전투 시 50% 확률로 저격 발동, 성공 시 사기+20';
     protected $cost = 200;
     protected $consumable = false;
 
