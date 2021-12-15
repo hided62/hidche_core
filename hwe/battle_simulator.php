@@ -135,13 +135,12 @@ if ($nationID) {
                             </select>
                             <div class="input-group-text">수도
                             </div>
-                            <div class="input-group-text btn-group btn-group-toggle" data-bs-toggle="buttons">
-                                <label class="btn btn-secondary">
-                                    <input type="radio" name="is_attacker_capital" class="form_is_capital" value="1" autocomplete="off">Y
-                                </label>
-                                <label class="btn btn-secondary active">
-                                    <input type="radio" name="is_attacker_capital" class="form_is_capital" value="0" autocomplete="off">N
-                                </label>
+                            <div class="btn-group" role="group" aria-label="수도">
+                                <input type="radio" class="btn-check" name="is_attacker_capital" value="1" id="is_attacker_capital_1" autocomplete="off">
+                                <label class="btn btn-secondary" for="is_attacker_capital_1">Y</label>
+
+                                <input type="radio" class="btn-check" name="is_attacker_capital" value="0" id="is_attacker_capital_0" autocomplete="off" checked>
+                                <label class="btn btn-secondary" for="is_attacker_capital_0">N</label>
                             </div>
 
                         </div>
@@ -204,13 +203,12 @@ if ($nationID) {
                             </select>
                             <div class="input-group-text">수도
                             </div>
-                            <div class="input-group-text btn-group btn-group-toggle" data-bs-toggle="buttons">
-                                <label class="btn btn-secondary">
-                                    <input type="radio" name="is_defender_capital" class="form_is_capital" value="1" autocomplete="off">Y
-                                </label>
-                                <label class="btn btn-secondary active">
-                                    <input type="radio" name="is_defender_capital" class="form_is_capital" value="0" autocomplete="off">N
-                                </label>
+                            <div class="btn-group" role="group" aria-label="수도">
+                                <input type="radio" class="btn-check" name="is_defender_capital" value="1" id="is_defender_capital_1" autocomplete="off">
+                                <label class="btn btn-secondary" for="is_defender_capital_1">Y</label>
+
+                                <input type="radio" class="btn-check" name="is_defender_capital" value="0" id="is_defender_capital_0" autocomplete="off" checked>
+                                <label class="btn btn-secondary" for="is_defender_capital_0">N</label>
                             </div>
                         </div>
                         <div class="input-group mb-1">

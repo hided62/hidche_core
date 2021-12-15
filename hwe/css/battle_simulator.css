@@ -6,12 +6,12 @@
 }
 
 .defender_add_form .general_detail{
-    display:none;
+    display:none !important;
 }
 
 
 .form_sample{
-    display:none;
+    display:none !important;
 }
 
 input[type=number]{
