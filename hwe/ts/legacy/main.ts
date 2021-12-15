@@ -6,6 +6,7 @@ import { initTooltip } from './initTooltip';
 import { exportWindow } from '@/util/exportWindow';
 import { reloadWorldMap } from '@/map';
 import { refreshMsg } from '@/msg';
+import { insertCustomCSS } from '@/util/customCSS';
 
 exportWindow(jQuery, '$');
 
@@ -50,12 +51,7 @@ htmlReady(() => {
         void refreshMsg();
     }, 5000);
 
-    const customCSS = localStorage.getItem('sam_customCSS');
-    if (customCSS) {
-        const styleEl = document.createElement('style');
-        styleEl.innerHTML = customCSS;
-        document.head.appendChild(styleEl);
-    }
+    insertCustomCSS();
 });
 
 (() => {

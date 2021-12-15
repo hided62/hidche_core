@@ -11,21 +11,17 @@ import { nl2br } from "@util/nl2br";
 import jQuery from "jquery";
 
 import "@scss/common_legacy.scss";
+import { insertCustomCSS } from "./util/customCSS";
+import { htmlReady } from "./util/htmlReady";
 
 exportWindow(jQuery, '$');
 exportWindow(jQuery, 'jQuery');
 
-jQuery(function ($) {
+htmlReady(function(){
     initTooltip();
     activateFlip();
-
-    const customCSS = localStorage.getItem('sam_customCSS');
-    if (customCSS) {
-        const $style = $('<style type="text/css"></style>');
-        $style.text(customCSS);
-        $style.appendTo($('head'));
-    }
-});
+    insertCustomCSS();
+})
 
 /**
  * {0}, {1}, {2}형태로 포맷해주는 함수
