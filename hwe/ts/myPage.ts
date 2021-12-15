@@ -8,6 +8,8 @@ import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap } from '@util/unwrap';
 import { unwrap_any } from '@util/unwrap_any';
 import { auto500px } from './util/auto500px';
+import { initTooltip } from "./legacy/initTooltip";
+import { insertCustomCSS } from "./util/customCSS";
 
 
 type LogResponse = {
@@ -213,6 +215,9 @@ $(function ($) {
         location.reload();
 
     });
+
+    initTooltip();
+    insertCustomCSS();
 });
 
 auto500px();
