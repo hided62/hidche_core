@@ -103,23 +103,17 @@ function GetNationColors()
 
 function backButton()
 {
-    return "
-<input type=button value='돌아가기' onclick=location.replace('./')><br>
-";
+    return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('./')>돌아가기</button><br>";
 }
 
 function CoreBackButton()
 {
-    return "
-<input type=button value='돌아가기' onclick=location.replace('b_chiefcenter.php')><br>
-";
+    return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('b_chiefcenter.php')>돌아가기</button><br>";
 }
 
 function closeButton()
 {
-    return "
-<input type=button value='창 닫기' onclick=window.close()><br>
-";
+    return "<button type='button' class='btn btn-primary back_btn' onclick=window.close()>창 닫기</button><br>";
 }
 
 
