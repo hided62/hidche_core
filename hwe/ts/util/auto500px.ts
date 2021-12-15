@@ -48,6 +48,11 @@ export function auto500px(targetHeight = 700): void {
             return;
         }
 
+        if(oldMode != 'auto'){
+            oldMode = 'auto';
+            adjustViewportWidth();
+            return;
+        }
         deviceWidth = window.screen.availWidth;
         const innerHeight = window.innerHeight;
         const selectorHeight = targetHeight;
