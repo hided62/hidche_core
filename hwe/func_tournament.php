@@ -853,7 +853,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $rewardRate = round($globalBetTotal / max($globalBet[$winnerSlot], 1), 2);
 
     $betKey = "bet{$winnerSlot}";
-    $gambleResult = Util::convertArrayToDict($db->query('SELECT general_id, %b as bet FROM betting WHERE %b > 0', $betKey, $betKey), 'general_id');
+    $gambleResult = Util::convertArrayToDict($db->query('SELECT general_id, %b as bet FROM betting WHERE %b > 0 AND general_id > 0', $betKey, $betKey), 'general_id');
 
     foreach(General::createGeneralObjListFromDB(Util::squeezeFromArray($gambleResult, 'general_id'), ['gold', 'npc'], 1) as $gambler){
         $reward = Util::round($gambleResult[$gambler->getID()]['bet'] * $rewardRate);
