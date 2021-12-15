@@ -6,6 +6,7 @@ class DummyGeneral extends General{
         $raw = [
             'no'=>0,
             'name'=>'Dummy',
+            'npc'=>3,
             'city'=>0,
             'nation'=>0,
             'officer_level'=>0,
