@@ -36,15 +36,15 @@ if($btn == '참가') {
 
     if($db->queryFirstField('SELECT `no` FROM tournament WHERE `no`=%i', $me['no'])){
         header('location:b_tournament.php');
-        exit(1); 
+        exit(1);
     }
 
     $general = $db->queryFirstRow('SELECT no,name,npc,leadership,strength,intel,explevel,gold,horse,weapon,book FROM general WHERE `no`=%i', $me['no']);
 
     //{$admin['develcost']}원 참가비
-    if($general['gold'] < $admin['develcost']) { 
+    if($general['gold'] < $admin['develcost']) {
         header('location:b_tournament.php');
-        exit(1); 
+        exit(1);
     }
     $general['gold'] -= $admin['develcost'];
 
@@ -66,7 +66,7 @@ if($btn == '참가') {
     }
 
     $fullGrpCnt = 8 - count($freeSlot);
-    
+
     if($freeSlot) {
         $grp = Util::choiceRandom(array_keys($freeSlot));
         $grpMemberCount = $db->queryFirstField('SELECT count(*) FROM tournament WHERE grp=%i', $grp);
@@ -96,12 +96,12 @@ if($btn == '참가') {
         $gameStor->phase = 0;
     }
     header('location:b_tournament.php');
-    die(); 
+    die();
 }
 
-if($session->userGrade < 5) { 
+if($session->userGrade < 5) {
     header('location:b_tournament.php');
-    exit(); 
+    exit();
 }
 
 if($btn == "자동개최설정") {
@@ -157,10 +157,10 @@ if($btn == "자동개최설정") {
 
 } elseif($btn == "랜덤전부투입") {
     $grpIn = [];
-    
+
     foreach($db->queryAllLists('SELECT grp, count(*) FROM tournament WHERE 0 <= grp AND grp < 8 GROUP BY grp') as [$grpIdx, $cnt]){
         $grpIn[$grpIdx] = $cnt;
-        
+
     }
     $code = [];
     foreach(Util::range(8) as $grpIdx){
@@ -201,38 +201,38 @@ if($btn == "자동개최설정") {
 
     $gameStor->tournament = 2;
     $gameStor->phase = 0;
-} elseif($btn == "무명전부투입") { 
-    fillLowGenAll();
-} elseif($btn == "예선") { 
+} elseif($btn == "무명전부투입") {
+    fillLowGenAll($admin['tnmt_type']);
+} elseif($btn == "예선") {
     qualify($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "예선전부") { 
+} elseif($btn == "예선전부") {
     qualifyAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "추첨") { 
+} elseif($btn == "추첨") {
     selection($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "추첨전부") { 
+} elseif($btn == "추첨전부") {
     selectionAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "본선") { 
+} elseif($btn == "본선") {
     finallySingle($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "본선전부") { 
+} elseif($btn == "본선전부") {
     finallyAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "배정") { 
+} elseif($btn == "배정") {
     final16set();
 } elseif($btn == "베팅마감") {
     $dt = date("Y-m-d H:i:s", time() + 60);
     $gameStor->tournament=7;
     $gameStor->phase=0;
     $gameStor->tnmt_time = $dt;
-} elseif($btn == "16강") { 
+} elseif($btn == "16강") {
     finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 16);
-} elseif($btn == "8강") { 
+} elseif($btn == "8강") {
     finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 8);
-} elseif($btn == "4강") { 
+} elseif($btn == "4강") {
     finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 4);
-} elseif($btn == "결승") { 
+} elseif($btn == "결승") {
     finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 2);
-} elseif($btn == "포상") { 
+} elseif($btn == "포상") {
     setGift($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "회수") { 
+} elseif($btn == "회수") {
     setRefund();
 } elseif($btn == "메시지") {
     $gameStor->tnmt_msg = $msg;

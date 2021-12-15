@@ -58,7 +58,7 @@ function processTournament()
     for ($i = 0; $i < $iter; $i++) {
         switch ($tnmt) {
             case 1: //신청 마감
-                fillLowGenAll();
+                fillLowGenAll($type);
                 $tnmt = 2;
                 $phase = 0;
                 break;
@@ -452,7 +452,7 @@ function startBetting()
     }
 }
 
-function fillLowGenAll()
+function fillLowGenAll($tnmt_type)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -466,17 +466,7 @@ function fillLowGenAll()
         'leadership' => 10,
         'strength' => 10,
         'intel' => 10,
-        'explevel' => 10
-    ];
-
-    $dummyGeneral = [
-        'no' => 0,
-        'npc' => 2,
-        'name' => '무명장수',
-        'leadership' => 10,
-        'strength' => 10,
-        'intel' => 10,
-        'lvl' => 0,
+        'lvl' => 10,
         'h' => 'None',
         'w' => 'None',
         'b' => 'None'
@@ -500,16 +490,43 @@ function fillLowGenAll()
 
     $toBeFilledCnt = 8 * 8 - $currentJoinerCnt;
 
+    $scoringCandFunction = match ($tnmt_type) {
+        0 => function ($gen) {
+            return $gen['leadership'] + $gen['strength'] + $gen['intel'];
+        }, //전력전
+        1 => function ($gen) {
+            return $gen['leadership'];
+        }, //통솔전
+        2 => function ($gen) {
+            return $gen['strength'];
+        }, //통솔전
+        3 => function ($gen) {
+            return $gen['intel'];
+        }, //통솔전
+        default => throw new \ValueError('invalid tnmt_type' . $tnmt_type)
+    };
+
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
-    $freeJoiners = $db->query(
-        'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weapon,book from general where tnmt=1 and tournament=0 order by rand() limit %d',
-        $toBeFilledCnt
-    );
+    $freeJoinerCandidate = [];
+
+    foreach($db->query(
+        'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weapon,book from general where tnmt=1 and tournament=0',
+    ) as $gen){
+        $score = $scoringCandFunction($gen);
+        $freeJoinerCandidate[$gen['no']] = [$gen, $score**2];
+    }
+
 
     $joinersValues = [];
     $joinersIdx = [];
 
-    foreach ($freeJoiners as $general) {
+    foreach(Util::range($toBeFilledCnt) as $_){
+        if(!$freeJoinerCandidate){
+            break;
+        }
+        $general = Util::choiceRandomUsingWeightPair($freeJoinerCandidate);
+        unset($freeJoinerCandidate[$general['no']]);
+
         $grpIdx = array_keys($grpCount, min($grpCount))[0];
         $grpCnt = $grpCount[$grpIdx];
         $joinersValues[] = [
