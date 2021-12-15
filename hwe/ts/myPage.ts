@@ -1,11 +1,13 @@
+import "@scss/myPage.scss";
+
 import axios from 'axios';
 import $ from 'jquery';
-import { InvalidResponse, keyScreenMode } from '@/defs';
+import { InvalidResponse, keyScreenMode, ScreenModeType } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap } from '@util/unwrap';
 import { unwrap_any } from '@util/unwrap_any';
-
+import { auto500px } from './util/auto500px';
 
 
 type LogResponse = {
@@ -109,7 +111,9 @@ $(function ($) {
     const $screenModeRadios = $('input:radio[name=screenMode]');
     $screenModeRadios.prop('checked', false).filter(`[value="${localStorage.getItem(keyScreenMode)??'auto'}"]`).prop('checked', true);
     $screenModeRadios.on('click', function(e){
-        localStorage.setItem(keyScreenMode, (e.target as HTMLInputElement).value);
+        const mode = (e.target as HTMLInputElement).value as ScreenModeType;
+        localStorage.setItem(keyScreenMode, mode);
+        document.dispatchEvent(new CustomEvent('tryChangeScreenMode'));
     });
 
 
@@ -210,3 +214,5 @@ $(function ($) {
 
     });
 });
+
+auto500px();

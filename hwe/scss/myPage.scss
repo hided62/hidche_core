@@ -1,0 +1,33 @@
+
+@import "./common/break_500px.scss";
+@import "./common/bootstrap5.scss";
+@import "./common_legacy.scss";
+
+@include media-breakpoint-up(md) {
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+
+        > .row > .col, .layout-block{
+            border-left: solid 1px gray;
+            border-right: solid 1px gray;
+            border-top: solid 1px gray;
+        }
+
+
+    }
+}
+
+
+
+@include media-breakpoint-down(md) {
+    body {
+        overflow-x: hidden;
+    }
+
+    #container {
+        width: 500px;
+        margin: 0 auto;
+        margin-bottom: 100px;
+    }
+}
