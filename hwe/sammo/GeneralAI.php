@@ -224,7 +224,7 @@ class GeneralAI
             }
         }
 
-        if (!$onWar && !$onWarReady && !$onWarYet) {
+        if (!$onWar && !$onWarReady) {
             $warTargetNation[0] = 1;
         }
 
@@ -245,18 +245,17 @@ class GeneralAI
             $nationStor->last_attackable = $yearMonth;
         }
 
-        if ($onWar || (!$onWarReady && !$onWarYet)) {
-            //확실한 전쟁 상태
+        if (key_exists(0, $warTargetNation) && $this->attackable) {
+            $this->dipState = self::d전쟁;
+            $nationStor->last_attackable = $yearMonth;
+        } else if ($onWar) {
             if ($this->attackable) {
-                //그리고 출병 가능한 도시도 있음
                 $this->dipState = self::d전쟁;
                 $nationStor->last_attackable = $yearMonth;
-            }
-            else if($nationStor->last_attackable >= $yearMonth - 5){
+            } else if ($nationStor->last_attackable >= $yearMonth - 5) {
                 //그러나 접경이 없음. 대신, 접경이 사라진지 아직 5개월 이내.
                 $this->dipState = self::d전쟁;
             }
-            //5개월도 넘었다면 다른 국가를 찾아보자.
         }
     }
 
@@ -265,7 +264,7 @@ class GeneralAI
         if ($this->warRoute !== null) {
             return;
         }
-        $target = $this->warTargetNation;
+        $target = array_keys($this->warTargetNation??[]);
         $target[] = $this->nation['nation'];
 
         $this->warRoute = searchAllDistanceByNationList($target, false);
