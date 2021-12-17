@@ -44,6 +44,7 @@
   </div>
 </template>
 <script lang="ts">
+import "@/../css/map.css";
 import { reloadWorldMap, loadMapOption, MapCityParsed } from "@/map";
 import { defineComponent, onMounted, PropType, ref } from "vue";
 import { v4 as uuidv4 } from "uuid";

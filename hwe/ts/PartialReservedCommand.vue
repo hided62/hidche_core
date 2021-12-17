@@ -449,7 +449,7 @@ export default defineComponent({
 
       if (listReqArgCommand.has(commandName)) {
         document.location.href = stringifyUrl({
-          url: "b_processing.php",
+          url: "v_processing.php",
           query: {
             command: commandName,
             turnList: turnList.join("_"),

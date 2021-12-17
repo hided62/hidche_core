@@ -12,6 +12,7 @@ use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
 
+use function sammo\getMapTheme;
 use function \sammo\printCitiesBasedOnDistance;
 use function sammo\tryUniqueItemLottery;
 
@@ -177,17 +178,12 @@ class che_이동 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectCityByMap'
-        ];
-    }
-
     public function exportJSVars(): array
     {
         return [
-            'cities' => \sammo\JSOptionsForCities()
+            'cities' => \sammo\JSOptionsForCities(),
+            'mapTheme' => getMapTheme(),
+            'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 1),
         ];
     }
 

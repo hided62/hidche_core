@@ -1,12 +1,13 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { extend, isNumber, merge } from 'lodash';
+import { isNumber, merge } from 'lodash';
 import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
 import { InvalidResponse } from '@/defs';
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
 import { htmlReady } from './util/htmlReady';
+import { initTooltip } from './legacy/initTooltip';
 
 declare const serverNick: string;
 declare const serverID: string;
@@ -506,6 +507,9 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
     }
 
     function setMouseWork(obj: MapCityDrawable) {
+
+        initTooltip($(drawTarget));
+
         const $tooltip = $(drawTarget + ' .city_tooltip');
         const $tooltip_city = $tooltip.find('.city_name');
         const $tooltip_nation = $tooltip.find('.nation_name');

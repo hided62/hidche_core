@@ -63,8 +63,6 @@ if (!$commandObj->hasPermissionToReserve()) {
     die_redirect();
 }
 
-$jsList = $commandObj->getJSPlugins();
-$cssList = $commandObj->getCSSFiles();
 ?>
 
 <!DOCTYPE html>
@@ -74,7 +72,7 @@ $cssList = $commandObj->getCSSFiles();
     <title><?= $commandObj->getName() ?></title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1024" />
+    <meta name="viewport" content="width=500" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
     <?= WebUtil::printStaticValues([
@@ -87,9 +85,6 @@ $cssList = $commandObj->getCSSFiles();
         'entryInfo' => [$isChiefTurn?'Nation':'General', $commandType]
     ])?>
     <?= WebUtil::printStaticValues($commandObj->exportJSVars(), false) ?>
-    <script>
-
-    </script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?php
     foreach ($cssList as $css) {

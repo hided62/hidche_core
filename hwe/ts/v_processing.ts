@@ -72,9 +72,6 @@ async function submitCommand<T>(isChiefTurn: boolean, turnList: number[], comman
 
 declare const entryInfo: ['General', keyof typeof GeneralActions] | ['Nation', keyof typeof NationActions];
 
-console.log('entry', entryInfo);
-
-auto500px();
 const app: App<Element> | undefined = (function () {
     //NOTE: route를 쓴다?
     const groupName = entryInfo[0];
@@ -96,7 +93,7 @@ const app: App<Element> | undefined = (function () {
     console.error('알수')
     return undefined;
 }());
-console.log(app);
+
 if (app === undefined) {
     console.error(`모듈이 지정되지 않음`, entryInfo);
 }
@@ -110,3 +107,6 @@ else {
 
     app.use(BootstrapVue3).component('v-multiselect', Multiselect).mount('#container');
 }
+
+
+auto500px();

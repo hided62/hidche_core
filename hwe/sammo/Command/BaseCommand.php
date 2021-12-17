@@ -475,17 +475,8 @@ abstract class BaseCommand{
 
     abstract public function run():bool;
 
-    public function getJSPlugins():array {
-        return [];
-    }
     public function exportJSVars():array {
         return [];
-    }
-    public function getCSSFiles():array {
-        return [];
-    }
-    public function getForm():string{
-        throw new \sammo\MustNotBeReachedException();
     }
 
     public function getLastTurn():LastTurn{

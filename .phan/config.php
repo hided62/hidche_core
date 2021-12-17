@@ -60,7 +60,7 @@ return [
         'hwe/b_myGenInfo.php',
         'hwe/b_myKingdomInfo.php',
         'hwe/b_myPage.php',
-        'hwe/b_processing.php',
+        'hwe/v_processing.php',
         'hwe/b_tournament.php',
         'hwe/b_troop.php',
         'hwe/c_auction.php',
