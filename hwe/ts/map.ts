@@ -660,7 +660,8 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             }
 
             if (selectCallback) {
-                $cityLink.on('click', function () {
+                $cityLink.on('click', function (e) {
+                    e.preventDefault();
                     return selectCallback(city);
                 });
             }

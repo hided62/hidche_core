@@ -240,27 +240,11 @@ class che_출병 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'defaultSelectCityByMap'
+            'cities' => \sammo\JSOptionsForCities(),
+            'mapTheme' => \sammo\getMapTheme(),
         ];
-    }
-
-    public function getForm(): string
-    {
-        $srcCityName = \sammo\CityConst::byID($this->generalObj->getCityID())->name;
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        선택된 도시를 향해 침공을 합니다.<br>
-        침공 경로에 적군의 도시가 있다면 전투를 벌입니다.<br>
-        목록을 선택하거나 도시를 클릭하세요.<br>
-        <?= $srcCityName ?> =><select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-            <?= \sammo\optionsForCities() ?><br>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-<?php
-        return ob_get_clean();
     }
 }
