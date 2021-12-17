@@ -1,0 +1,37 @@
+@import "./common/break_500px.scss";
+@import "./common/bootstrap5.scss";
+@import "./editor_component.scss";
+@import "./common_legacy.scss";
+
+#amount {
+    width: 100px;
+}
+
+#colorType {
+    width: 150px;
+}
+
+.no-padding .select2-results__option {
+    padding: 0;
+}
+
+
+@include media-breakpoint-up(md) {
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+    }
+}
+
+
+@include media-breakpoint-down(md) {
+    body {
+        overflow-x: hidden;
+    }
+
+    #container {
+        width: 500px;
+        margin: 0 auto;
+        margin-bottom: 100px;
+    }
+}

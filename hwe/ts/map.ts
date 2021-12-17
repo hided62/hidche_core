@@ -1,11 +1,12 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { extend, isNumber } from 'lodash';
+import { extend, isNumber, merge } from 'lodash';
 import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
 import { InvalidResponse } from '@/defs';
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
+import { htmlReady } from './util/htmlReady';
 
 declare const serverNick: string;
 declare const serverID: string;
@@ -57,7 +58,7 @@ type MapCityParsedRegionLevelText = MapCityParsedClickable & {
     text: string,
 }
 
-type MapCityParsed = MapCityParsedRegionLevelText;
+export type MapCityParsed = MapCityParsedRegionLevelText;
 
 type MapCityDrawable = {
     cityList: MapCityParsed[],
@@ -107,7 +108,7 @@ function is_touch_device(): boolean {
     return mq(query);
 }
 
-type loadMapOption = {
+export type loadMapOption = {
     isDetailMap?: boolean, //복잡 지도, 단순 지도
     clickableAll?: boolean, //어떤 경우든 클릭을 가능하게 함. 해당 동작의 동작 가능성 여부와는 별도.
     selectCallback?: (city: MapCityParsed) => void, //callback을 지정시 clickable과 관계 없이 해당 함수를 실행.
@@ -160,7 +161,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         startYear: undefined,
     };
 
-    option = extend({}, defaultOption, option);
+    option = merge({}, defaultOption, option);
 
     const useCachedMap = option.useCachedMap;
     const isDetailMap = option.isDetailMap;
@@ -671,7 +672,6 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
     const $hideCityNameBtn = $world_map.find('.map_toggle_cityname');
     if (localStorage.getItem('sam.hideMapCityName') == 'yes') {
-        console.log('tryHide!');
         $world_map.addClass('hide_cityname');
         $hideCityNameBtn.addClass('active').attr('aria-pressed', 'true');
     }
@@ -680,7 +680,6 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
         //이전 상태 확인
         const state = localStorage.getItem('sam.hideMapCityName') == 'no';
         if (state) {
-            console.log('tryHide!');
             $world_map.addClass('hide_cityname');
             localStorage.setItem('sam.hideMapCityName', 'yes');
         } else {
@@ -789,8 +788,12 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 }
 
 exportWindow(reloadWorldMap, 'reloadWorldMap');
-$(function ($) {
-    if (is_touch_device()) {
-        $('.map_body .map_toggle_single_tap').show();
+htmlReady(function(){
+    if( is_touch_device()){
+        const target = document.querySelector('.map_body .map_toggle_single_tap') as HTMLElement | null;
+        if(!target){
+            return;
+        }
+        target.style.display = 'block';
     }
-})
+});

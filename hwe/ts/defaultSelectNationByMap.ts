@@ -1,5 +1,6 @@
 import { reloadWorldMap } from "@/map";
-import { unwrap_any } from "@util/unwrap_any";
+
+declare let vueReactive_destNationID: number|undefined;
 
 export function defaultSelectNationByMap(): void{
     const $target = $("#destNationID");
@@ -9,15 +10,12 @@ export function defaultSelectNationByMap(): void{
         clickableAll: true,
         neutralView: true,
         useCachedMap: true,
-        selectCallback: (city)=>{
-            const currVal = unwrap_any<string>($target.val());
-            if(!city.nationID){
+        selectCallback: function (city) {
+            if(typeof vueReactive_destNationID === 'undefined'){
+                console.error('아직 초기화 되지 않음');
                 return false;
             }
-            $target.val(city.nationID).trigger("change");
-            if ($target.val() === null) {
-                $target.val(currVal).trigger("change");
-            }
+            vueReactive_destNationID = city.nationID;
             return false;
         }
     });

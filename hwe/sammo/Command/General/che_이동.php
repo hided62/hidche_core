@@ -184,6 +184,13 @@ class che_이동 extends Command\GeneralCommand
         ];
     }
 
+    public function exportJSVars(): array
+    {
+        return [
+            'cities' => \sammo\JSOptionsForCities()
+        ];
+    }
+
     public function getForm(): string
     {
         $currentCityID = $this->generalObj->getCityID();

@@ -1,0 +1,1 @@
+export { default as che_강행 } from "./che_강행.vue";

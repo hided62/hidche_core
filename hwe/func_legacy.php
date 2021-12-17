@@ -52,6 +52,18 @@ function bar($per, $h = 7)
     return $str;
 }
 
+function JSOptionsForCities(callable $infoCall = null){
+    $result = [];
+    foreach (CityConst::all() as $city) {
+        $item = [$city->id, $city->name];
+
+        if($infoCall){
+            $item[2] = $infoCall($city);
+        }
+        $result[] = $item;
+    }
+    return $result;
+}
 
 function optionsForCities(callable $infoCall = null)
 {
@@ -114,6 +126,15 @@ function CoreBackButton()
 function closeButton()
 {
     return "<button type='button' class='btn btn-primary back_btn' onclick=window.close()>창 닫기</button><br>";
+}
+
+function JSCitiesBasedOnDistance(int $cityNo, int $maxDistance = 1): array{
+    $distanceList = searchDistance($cityNo, $maxDistance, true);
+    $result = [];
+    for ($dist = 1; $dist <= $maxDistance; $dist++) {
+        $result[$dist] = Util::array_get($distanceList[$dist], []);
+    }
+    return $result;
 }
 
 

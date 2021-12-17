@@ -1,21 +1,19 @@
 import { reloadWorldMap } from "@/map";
-import { unwrap_any } from "@util/unwrap_any";
+
+declare let vueReactive_destCityID: number|undefined;
 
 export function defaultSelectCityByMap(): void {
-    const $target = $("#destCityID");
-    console.log('city', $target);
     void reloadWorldMap({
         isDetailMap: false,
         clickableAll: true,
         neutralView: true,
         useCachedMap: true,
         selectCallback: function (city) {
-            const currVal = unwrap_any<string>($target.val());
-            $target.val(city.id);
-            $target.trigger("change");
-            if ($target.val() === null) {
-                $target.val(currVal).trigger("change").blur();
+            if(vueReactive_destCityID === undefined){
+                console.error('아직 초기화 되지 않음');
+                return false;
             }
+            vueReactive_destCityID = city.id;
             return false;
         }
     });

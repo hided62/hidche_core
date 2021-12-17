@@ -478,6 +478,9 @@ abstract class BaseCommand{
     public function getJSPlugins():array {
         return [];
     }
+    public function exportJSVars():array {
+        return [];
+    }
     public function getCSSFiles():array {
         return [];
     }

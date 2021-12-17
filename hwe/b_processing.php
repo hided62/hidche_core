@@ -77,55 +77,30 @@ $cssList = $commandObj->getCSSFiles();
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
+    <?= WebUtil::printStaticValues([
+        'serverNick' => DB::prefix(),
+        'serverID' => UniqueConst::$serverID,
+        'commandName' => $commandObj->getName(),
+        'turnList' => $turnList,
+        'currentCity' => $general->getCityID(),
+        'currentNation' => $general->getNationID(),
+        'entryInfo' => [$isChiefTurn?'Nation':'General', $commandType]
+    ])?>
+    <?= WebUtil::printStaticValues($commandObj->exportJSVars(), false) ?>
     <script>
-        window.serverNick = '<?= DB::prefix() ?>';
-        window.serverID = '<?= UniqueConst::$serverID ?>';
-        window.command = '<?= $commandType ?>';
-        window.turnList = [<?= join(', ', $turnList) ?>];
-        window.isChiefTurn = <?= $isChiefTurn ? 'true' : 'false' ?>;
-        var jsPlugins = <?= Json::encode($jsList) ?>;
+
     </script>
-    <?= WebUtil::printCSS('../e_lib/select2/select2.min.css') ?>
-    <?= WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css') ?>
-    <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('css/main.css') ?>
-    <?= WebUtil::printCSS('css/map.css') ?>
-    <?= WebUtil::printCSS('css/processing.css') ?>
     <?php
     foreach ($cssList as $css) {
         print(WebUtil::printCSS($css));
     }
     ?>
-    <?= WebUtil::printDist('ts', ['common', 'processing']) ?>
+    <?= WebUtil::printDist('vue', ['v_processing'], true) ?>
 </head>
 
 <body class="img_back">
-    <table class="tb_layout bg0" style="width:1000px;margin:auto;">
-        <tr>
-            <td class="bg1" style='text-align:center;'><?= $commandObj->getName() ?></td>
-        </tr>
-        <tr>
-            <td>
-                <input type=button value='돌아가기' onclick="history.back();"><br>
-            </td>
-        </tr>
-    </table>
-
-    <div class="tb_layout bg0" style="width:1000px;margin:auto;padding-bottom:2em;border:solid 1px gray;">
-        <?= $commandObj->getForm() ?>
-    </div>
-
-    <table class="tb_layout bg0" style="width:1000px;margin:auto;">
-        <tr>
-            <td>
-                <input type=button value='돌아가기' onclick="history.back();"><br>
-                <?= banner() ?>
-            </td>
-        </tr>
-    </table>
-
-
+    <div id="container"></div>
 </body>
 
 </html>
