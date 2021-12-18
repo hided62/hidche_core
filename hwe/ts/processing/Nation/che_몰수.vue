@@ -1,0 +1,125 @@
+<template>
+  <TopBackBar :title="commandName" type="chief" />
+  <div class="bg0">
+    <div>
+      장수의 자금이나 군량을 몰수합니다.<br />
+      몰수한것은 국가재산으로 귀속됩니다.<br />
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-5">
+        <GeneralSelect
+          :cities="citiesMap"
+          :generals="generalList"
+          :troops="troops"
+          v-model="selectedGeneralID"
+          :textHelper="textHelpGeneral"
+        />
+      </div>
+      <AmountSelect
+        :amountGuide="amountGuide"
+        v-model="amount"
+        :maxAmount="maxAmount"
+        :minAmount="minAmount"
+      />
+      <div class="col-12 col-md-2 d-grid">
+        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+      </div>
+    </div>
+  </div>
+  <BottomBar :title="commandName" />
+</template>
+
+<script lang="ts">
+import GeneralSelect from "@/processing/GeneralSelect.vue";
+import AmountSelect from "@/processing/AmountSelect.vue";
+import { defineComponent, ref } from "vue";
+import { unwrap } from "@/util/unwrap";
+import { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+import {
+  convertGeneralList,
+  procGeneralItem,
+  procGeneralKeyList,
+  procGeneralRawItemList,
+  procTroopList,
+} from "../processingRes";
+import { getNpcColor } from "@/common_legacy";
+declare const commandName: string;
+
+declare const procRes: {
+  distanceList: Record<number, number[]>;
+  cities: [number, string][];
+  generals: procGeneralRawItemList;
+  generalsKey: procGeneralKeyList;
+  minAmount: number;
+  maxAmount: number;
+  amountGuide: number[];
+};
+
+export default defineComponent({
+  components: {
+    GeneralSelect,
+    AmountSelect,
+    TopBackBar,
+    BottomBar,
+  },
+  setup() {
+    const citiesMap = new Map<
+      number,
+      {
+        name: string;
+        info?: string;
+      }
+    >();
+    for (const [id, name] of procRes.cities) {
+      citiesMap.set(id, { name });
+    }
+
+    const generalList = convertGeneralList(
+      procRes.generalsKey,
+      procRes.generals
+    );
+    const amount = ref(1000);
+    const isGold = ref(true);
+
+    const selectedGeneralID = ref(generalList[0].no);
+
+    function textHelpGeneral(gen: procGeneralItem): string {
+      const nameColor = getNpcColor(gen.npc);
+      const name = nameColor
+        ? `<span style="color:${nameColor}">${gen.name}</span>`
+        : gen.name;
+      return `${name} (금${gen.gold.toLocaleString()}/쌀${gen.rice.toLocaleString()}) (${
+        gen.leadership
+      }/${gen.leadership}/${gen.intel})`;
+    }
+
+    async function submit(e: Event) {
+      const event = new CustomEvent<Args>("customSubmit", {
+        detail: {
+          amount: amount.value,
+          isGold: isGold.value,
+          destGeneralID: selectedGeneralID.value,
+        },
+      });
+      unwrap(e.target).dispatchEvent(event);
+    }
+
+    return {
+      amount,
+      isGold,
+      selectedGeneralID,
+      citiesMap: ref(citiesMap),
+      distanceList: procRes.distanceList,
+      minAmount: ref(procRes.minAmount),
+      maxAmount: ref(procRes.maxAmount),
+      amountGuide: procRes.amountGuide,
+      generalList,
+      commandName,
+      textHelpGeneral,
+      submit,
+    };
+  },
+});
+</script>

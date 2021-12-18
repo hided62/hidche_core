@@ -16,18 +16,19 @@
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
     <div class="row">
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-6">
         <GeneralSelect
           :cities="citiesMap"
           :generals="generalList"
           :troops="troops"
+          :textHelper="textHelpGeneral"
           v-model="selectedGeneralID"
         />
       </div>
       <div class="col-12 col-md-4">
         <CitySelect :cities="citiesMap" v-model="selectedCityID" />
       </div>
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
       </div>
     </div>
@@ -48,10 +49,12 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
+  procGeneralItem,
   procGeneralKeyList,
   procGeneralRawItemList,
   procTroopList,
 } from "../processingRes";
+import { convertDictById, getNpcColor } from "@/common_legacy";
 declare const mapTheme: string;
 declare const currentCity: number;
 declare const commandName: string;
@@ -101,6 +104,13 @@ export default defineComponent({
 
     const selectedGeneralID = ref(generalList[0].no);
 
+    function textHelpGeneral(gen: procGeneralItem): string{
+      const troops = (!gen.troopID)?'':`,${procRes.troops[gen.troopID].name}`;
+      const nameColor = getNpcColor(gen.npc);
+      const name = nameColor?`<span style="color:${nameColor}">${gen.name}</span>`:gen.name;
+      return `${name} [${citiesMap.get(gen.cityID)?.name}${troops}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${gen.crew.toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
+    }
+
     async function submit(e: Event) {
       const event = new CustomEvent<Args>("customSubmit", {
         detail: {
@@ -109,6 +119,9 @@ export default defineComponent({
         },
       });
       unwrap(e.target).dispatchEvent(event);
+
+      //        title: `${gen.name}[${this.cities.get(gen.cityID)?.name}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${gen.crew.toLocaleString()}/훈${gen.train}/사${gen.atmos}`,
+
     }
 
     return {
@@ -122,6 +135,7 @@ export default defineComponent({
       generalList,
       commandName,
       selectedCity,
+      textHelpGeneral,
       submit,
     };
   },

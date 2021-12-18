@@ -32,6 +32,7 @@
   </v-multiselect>
 </template>
 <script lang="ts">
+import { automata초성All } from "@/util/automata초성";
 import { filter초성withAlphabet } from "@/util/filter초성withAlphabet";
 import { defineComponent, PropType } from "vue";
 
@@ -71,12 +72,13 @@ export default defineComponent({
     let selectedCity;
     for (const [value, { name, info }] of this.cities.entries()) {
       const [filteredTextH, filteredTextA] = filter초성withAlphabet(name);
+      const [filteredTextHL1, filteredTextHL2] = automata초성All(filteredTextH);
       const obj: SelectedCity = {
         value,
         title: name,
         info: info,
         simpleName: name,
-        searchText: `${name} ${filteredTextH} ${filteredTextA}`,
+        searchText: `${name} ${filteredTextH} ${filteredTextA} ${filteredTextHL1} ${filteredTextHL2}`,
       };
       if (value == this.modelValue) {
         selectedCity = obj;

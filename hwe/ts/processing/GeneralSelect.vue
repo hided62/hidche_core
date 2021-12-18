@@ -1,6 +1,7 @@
 <template>
   <v-multiselect
     v-model="selectedGeneral"
+    class="selectedGeneral"
     :allow-empty="false"
     :options="forFind"
     :group-select="false"
@@ -17,7 +18,7 @@
     :searchable="searchMode"
   >
     <template v-slot:option="props">
-      {{ props.option.title }}
+      <div v-html="props.option.title"></div>
     </template>
     <template v-slot:singleLabel="props">
       {{ props.option.simpleName }}
@@ -25,15 +26,21 @@
   </v-multiselect>
 </template>
 <script lang="ts">
+import { getNpcColor } from "@/common_legacy";
+import { automata초성All } from "@/util/automata초성";
 import { filter초성withAlphabet } from "@/util/filter초성withAlphabet";
 import { defineComponent, PropType } from "vue";
-import { procGeneralList, procTroopList } from './processingRes';
+import {
+  procGeneralItem,
+  procGeneralList,
+} from "./processingRes";
 
 type SelectedGeneral = {
   value: number;
   searchText: string;
   title: string;
   simpleName: string;
+  obj: procGeneralItem;
 };
 
 export default defineComponent({
@@ -46,13 +53,11 @@ export default defineComponent({
       type: Array as PropType<procGeneralList>,
       required: true,
     },
-    cities: {
-      type: Map as PropType<Map<number, { name: string; info?: string }>>,
-      required: true,
+    textHelper: {
+      type: Function as PropType<(item: procGeneralItem) => string>,
+      required: false,
+      default: undefined,
     },
-    troops: {
-      type: Object as PropType<procTroopList>,
-    }
   },
   emits: ["update:modelValue"],
   watch: {
@@ -60,9 +65,9 @@ export default defineComponent({
       const target = this.targets.get(val);
       this.selectedGeneral = target;
     },
-    selectedGeneral(val: SelectedGeneral){
-        this.$emit('update:modelValue', val.value);
-    }
+    selectedGeneral(val: SelectedGeneral) {
+      this.$emit("update:modelValue", val.value);
+    },
   },
   data() {
     const forFind = [];
@@ -71,12 +76,22 @@ export default defineComponent({
     let selectedGeneral;
 
     for (const gen of this.generals) {
+
+      const nameColor = getNpcColor(gen.npc);
+      const name = nameColor?`<span style="color:${nameColor}">${gen.name}</span>`:gen.name;
+
       const [filteredTextH, filteredTextA] = filter초성withAlphabet(gen.name);
+      const [filteredTextHL1, filteredTextHL2] = automata초성All(filteredTextH);
       const obj: SelectedGeneral = {
         value: gen.no,
-        title: `${gen.name}[${this.cities.get(gen.cityID)?.name}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${gen.crew.toLocaleString()}/훈${gen.train}/사${gen.atmos}`,
+        title: this.textHelper
+          ? this.textHelper(gen)
+          : `${name} (${gen.leadership}/${gen.leadership}/${
+              gen.intel
+            })`,
         simpleName: gen.name,
-        searchText: `${gen.name} ${filteredTextH} ${filteredTextA}`
+        searchText: `${gen.name} ${filteredTextH} ${filteredTextA} ${filteredTextHL1} ${filteredTextHL2}`,
+        obj: gen,
       };
       if (gen.no == this.modelValue) {
         selectedGeneral = obj;
@@ -93,3 +108,25 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+@import "@scss/common/variables.scss";
+@import "@scss/common/bootswatch_custom_variables.scss";
+@import "bootstrap/scss/bootstrap-utilities.scss";
+
+.selectedGeneral {
+  $vue-multiselect-bg: $gray-700;
+  $vue-multiselect-color: $gray-100;
+  $form-select-color: $gray-100;
+  $text-muted: $gray-400;
+  $dark: $gray-100;
+  $light: $gray-700;
+  $vue-multiselect-option-selected-bg: $gray-600;
+  @import "@scss/common/vue-multiselect.scss";
+  color: $vue-multiselect-color;
+
+  input {
+    color: $vue-multiselect-color;
+  }
+}
+</style>

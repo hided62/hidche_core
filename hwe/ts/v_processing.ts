@@ -1,16 +1,11 @@
 import '@scss/processing.scss';
 
-import $ from 'jquery';
-exportWindow($, '$');
 import { exportWindow } from '@util/exportWindow';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { convertFormData } from '@util/convertFormData';
 import { InvalidResponse } from '@/defs';
 import { unwrap } from "@util/unwrap";
-import { defaultSelectCityByMap } from '@/defaultSelectCityByMap';
-import { defaultSelectNationByMap } from '@/defaultSelectNationByMap';
-import { colorSelect } from '@/colorSelect';
 import { recruitCrewForm } from '@/recruitCrewForm';
 import BootstrapVue3 from 'bootstrap-vue-3'
 import Multiselect from 'vue-multiselect';

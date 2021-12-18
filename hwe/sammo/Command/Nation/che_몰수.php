@@ -214,6 +214,25 @@ class che_몰수 extends Command\NationCommand
         return true;
     }
 
+    public function exportJSVars(): array
+    {
+        $db = DB::db();
+        $nationID = $this->getNationID();
+        $troops = Util::convertArrayToDict($db->query('SELECT * FROM troop WHERE nation=%i', $nationID), 'troop_leader');
+        $destRawGenerals = $db->queryAllLists('SELECT no,name,officer_level,npc,gold,rice,leadership,strength,intel,city,crew,train,atmos,troop FROM general WHERE nation = %i ORDER BY npc,binary(name)', $nationID);
+        return [
+            'procRes' => [
+                'troops' => $troops,
+                'generals' => $destRawGenerals,
+                'generalsKey' => ['no', 'name', 'officerLevel', 'npc', 'gold', 'rice', 'leadership', 'strength', 'intel', 'cityID', 'crew', 'train', 'atmos', 'troopID'],
+                'cities' => \sammo\JSOptionsForCities(),
+                'minAmount' => 100,
+                'maxAmount' => GameConst::$maxResourceActionAmount,
+                'amountGuide' => GameConst::$resourceActionAmountGuide,
+            ]
+        ];
+    }
+
     public function getForm(): string
     {
         //TODO: 암행부처럼 보여야...
