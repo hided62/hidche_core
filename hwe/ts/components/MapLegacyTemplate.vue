@@ -55,32 +55,36 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    isDetailMap: { type: Boolean, default: undefined },
-    clickableAll: { type: Boolean, default: undefined },
+    isDetailMap: { type: Boolean, default: undefined, required: false },
+    clickableAll: { type: Boolean, default: undefined, required: false },
     selectCallback: {
       type: Function as PropType<loadMapOption["selectCallback"]>,
       required: false,
     },
-    hrefTemplate: { type: String, default: undefined },
-    useCachedMap: { type: Boolean, default: undefined },
+    hrefTemplate: { type: String, default: undefined, required: false },
+    useCachedMap: { type: Boolean, default: undefined, required: false },
 
-    year: { type: Number, default: undefined },
-    month: { type: Number, default: undefined },
-    aux: Object as PropType<loadMapOption["aux"]>,
-    neutralView: { type: Boolean, default: undefined },
-    showMe: { type: Boolean, default: undefined },
+    year: { type: Number, default: undefined, required: false },
+    month: { type: Number, default: undefined, required: false },
+    aux: {
+      type: Object as PropType<loadMapOption["aux"]>,
+      default: undefined,
+      required: false,
+    },
+    neutralView: { type: Boolean, default: undefined, required: false },
+    showMe: { type: Boolean, default: undefined, required: false },
 
-    targetJson: { type: String, default: undefined },
+    targetJson: { type: String, default: undefined, required: false },
     reqType: {
       type: String as PropType<loadMapOption["reqType"]>,
       default: undefined,
     },
-    dynamicMapTheme: { type: Boolean, default: undefined },
+    dynamicMapTheme: { type: Boolean, default: undefined, required: false },
     callback: {
       type: Function as PropType<loadMapOption["callback"]>,
       default: undefined,
     },
-    startYear: { type: Number, default: undefined },
+    startYear: { type: Number, default: undefined, required: false },
 
     modelValue: {
       type: Object as PropType<MapCityParsed>,
@@ -119,7 +123,6 @@ export default defineComponent({
         startYear: props.startYear,
       };
 
-      console.log(option);
       await reloadWorldMap(option, `#${uuid}`);
     });
 
