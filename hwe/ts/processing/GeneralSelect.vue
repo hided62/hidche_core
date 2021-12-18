@@ -1,8 +1,8 @@
 <template>
   <v-multiselect
-    v-model="selectedCity"
+    v-model="selectedGeneral"
     :allow-empty="false"
-    :options="citiesForFind"
+    :options="forFind"
     :group-select="false"
     label="searchText"
     track-by="value"
@@ -12,13 +12,12 @@
     selectedLabel="선택됨"
     deselectLabel="해제(엔터)"
     deselectGroupLabel=""
-    placeholder="도시 선택"
+    placeholder="장수 선택"
     :maxHeight="400"
     :searchable="searchMode"
   >
     <template v-slot:option="props">
       {{ props.option.title }}
-      <span v-if="props.option.info">({{ props.option.info }})</span>
     </template>
     <template v-slot:singleLabel="props">
       {{ props.option.simpleName }}
@@ -28,13 +27,13 @@
 <script lang="ts">
 import { filter초성withAlphabet } from "@/util/filter초성withAlphabet";
 import { defineComponent, PropType } from "vue";
+import { procGeneralList, procTroopList } from './processingRes';
 
-type SelectedCity = {
+type SelectedGeneral = {
   value: number;
   searchText: string;
   title: string;
   simpleName: string;
-  info?: string;
 };
 
 export default defineComponent({
@@ -43,44 +42,52 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    generals: {
+      type: Array as PropType<procGeneralList>,
+      required: true,
+    },
     cities: {
       type: Map as PropType<Map<number, { name: string; info?: string }>>,
       required: true,
     },
+    troops: {
+      type: Object as PropType<procTroopList>,
+    }
   },
   emits: ["update:modelValue"],
   watch: {
     modelValue(val: number) {
       const target = this.targets.get(val);
-      this.selectedCity = target;
+      this.selectedGeneral = target;
     },
-    selectedCity(val: SelectedCity){
+    selectedGeneral(val: SelectedGeneral){
         this.$emit('update:modelValue', val.value);
     }
   },
   data() {
-    const citiesForFind = [];
-    const targets = new Map<number, SelectedCity>();
-    let selectedCity;
-    for (const [value, { name, info }] of this.cities.entries()) {
-      const [filteredTextH, filteredTextA] = filter초성withAlphabet(name);
-      const obj: SelectedCity = {
-        value,
-        title: name,
-        info: info,
-        simpleName: name,
-        searchText: `${name} ${filteredTextH} ${filteredTextA}`
+    const forFind = [];
+    const targets = new Map<number, SelectedGeneral>();
+
+    let selectedGeneral;
+
+    for (const gen of this.generals) {
+      const [filteredTextH, filteredTextA] = filter초성withAlphabet(gen.name);
+      const obj: SelectedGeneral = {
+        value: gen.no,
+        title: `${gen.name}[${this.cities.get(gen.cityID)?.name}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${gen.crew.toLocaleString()}/훈${gen.train}/사${gen.atmos}`,
+        simpleName: gen.name,
+        searchText: `${gen.name} ${filteredTextH} ${filteredTextA}`
       };
-      if (value == this.modelValue) {
-        selectedCity = obj;
+      if (gen.no == this.modelValue) {
+        selectedGeneral = obj;
       }
-      citiesForFind.push(obj);
-      targets.set(value, obj);
+      forFind.push(obj);
+      targets.set(gen.no, obj);
     }
     return {
-      selectedCity,
+      selectedGeneral,
       searchMode: true,
-      citiesForFind,
+      forFind,
       targets,
     };
   },

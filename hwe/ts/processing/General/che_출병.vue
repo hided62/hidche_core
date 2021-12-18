@@ -17,7 +17,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <CitySelect :cities="citiesMap" :modelValue="selectedCityID" />
+        <CitySelect :cities="citiesMap" v-model="selectedCityID" />
       </div>
       <div class="col">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -38,9 +38,11 @@ import { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 declare const mapTheme: string;
-declare const cities: [number, string][];
 declare const currentCity: number;
 declare const commandName: string;
+declare const procRes: {
+  cities: [number, string][],
+}
 export default defineComponent({
   components: {
     MapLegacyTemplate,
@@ -61,10 +63,9 @@ export default defineComponent({
         info?: string;
       }
     >();
-    for (const [id, name] of cities) {
+    for (const [id, name] of procRes.cities) {
       citiesMap.set(id, { name });
     }
-    console.log(citiesMap);
 
     const selectedCityID = ref(currentCity);
 

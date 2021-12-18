@@ -79,13 +79,15 @@ const app: App<Element> | undefined = (function () {
         const moduleName = entryInfo[1];
         if (!(moduleName in GeneralActions)) {
             console.error(`${moduleName}이 ${groupName}에 없음`);
+            return undefined;
         }
         return createApp(GeneralActions[moduleName]);
     }
     if (groupName == 'Nation') {
         const moduleName = entryInfo[1];
-        if (!(moduleName in GeneralActions)) {
+        if (!(moduleName in NationActions)) {
             console.error(`${moduleName}이 ${groupName}에 없음`);
+            return undefined;
         }
         return createApp(NationActions[moduleName]);
     }
@@ -95,6 +97,9 @@ const app: App<Element> | undefined = (function () {
 }());
 
 if (app === undefined) {
+    const div = document.createElement('div');
+    div.innerHTML = `모듈의 view가 없습니다. ${JSON.stringify(entryInfo)}`;
+    document.body.appendChild(div);
     console.error(`모듈이 지정되지 않음`, entryInfo);
 }
 else {
