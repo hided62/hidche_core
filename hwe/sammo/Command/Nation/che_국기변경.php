@@ -152,32 +152,12 @@ class che_국기변경 extends Command\NationCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'colorSelect'
+            'procRes' => [
+                'colors' => GetNationColors(),
+            ],
         ];
-    }
-
-
-    public function getForm(): string
-    {
-        ob_start();
-?>
-        국기를 변경합니다. 단 1회 가능합니다.<br>
-        색상 : <select class='formInput' name='colorType' id='colorType' size='1'>
-
-            <?php foreach (GetNationColors() as $idx => $color) :
-                /*
-            if($colorUsed[$color] > 0){
-                continue;
-            }
-            */
-            ?>
-                <option value="<?= $idx ?>" data-color=<?=$color?> data-font-color="<?=newColor($color)?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
-            <?php endforeach; ?> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-<?php
-        return ob_get_clean();
     }
 }
