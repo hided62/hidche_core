@@ -1155,7 +1155,7 @@ function setGift($tnmt_type, $tnmt, $phase)
     foreach (General::createGeneralObjListFromDB(Util::squeezeFromArray($gambleResult, 'general_id'), ['gold', 'npc'], 1) as $gambler) {
         $reward = Util::round($gambleResult[$gambler->getID()]['bet'] * $rewardRate);
         $gambler->increaseVar('gold', $reward);
-        if (($gambler->getNPCType() == 0) || ($gambler->getNPCType() == 1 && $gambler->getRankVar('betgold') > 0)) {
+        if (($gambler->getNPCType() == 0) || ($gambler->getNPCType() == 1 && $gambler->getRankVar('betgold', 0) > 0)) {
             $gambler->increaseRankVar('betwingold', $reward);
             $gambler->increaseRankVar('betwin', 1);
         }
