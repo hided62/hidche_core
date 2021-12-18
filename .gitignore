@@ -49,7 +49,7 @@ d_setting/*.php
 */data/file_cache
 
 **/old/*
-test.php
+test.*
 
 /che
 /kwe
