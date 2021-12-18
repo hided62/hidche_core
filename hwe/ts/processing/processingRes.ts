@@ -52,3 +52,15 @@ export type procGeneralRawItemList = procGeneralRawItem[];
 export function convertGeneralList(keys: procGeneralKeyList, rawList: procGeneralRawItemList): procGeneralList{
     return combineArray(rawList, keys) as procGeneralList;
 }
+
+
+export type procNationItem = {
+    id: number,
+    name: string,
+    color: string,
+    power: number,
+    info?: string,
+    notAvailable?: boolean,
+};
+
+export type procNationList = procNationItem[];

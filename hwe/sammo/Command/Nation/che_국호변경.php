@@ -157,23 +157,4 @@ class che_국호변경 extends Command\NationCommand
         $general->applyDB($db);
         return true;
     }
-
-    public function getJSPlugins(): array
-    {
-        return [
-            'colorSelect'
-        ];
-    }
-
-
-    public function getForm(): string
-    {
-        ob_start();
-?>
-        나라의 이름을 바꿉니다. 황제가 된 후 1회 가능합니다.<br>
-        국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-<?php
-        return ob_get_clean();
-    }
 }
