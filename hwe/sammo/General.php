@@ -781,7 +781,7 @@ class General implements iAction
         $this->rankVarSet[$key] = $value;
     }
 
-    function getRankVar(string $key): int
+    function getRankVar(string $key, $defaultValue = null): int
     {
         if (!key_exists($key, static::RANK_COLUMN)) {
             throw new \InvalidArgumentException('올바르지 않은 인자 :' . $key);
@@ -792,7 +792,10 @@ class General implements iAction
         }
 
         if (!key_exists($key, $this->rankVarRead)) {
-            throw new \RuntimeException('인자가 없음 : ' . $key);
+            if($defaultValue === null){
+                throw new \RuntimeException('인자가 없음 : ' . $key);
+            }
+            return $defaultValue;
         }
 
         return $this->rankVarRead[$key];
