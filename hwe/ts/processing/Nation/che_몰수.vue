@@ -1,15 +1,16 @@
 <template>
   <TopBackBar :title="commandName" type="chief" />
   <div class="bg0">
-    <div v-if="commandName=='몰수'">
+    <div v-if="commandName == '몰수'">
       장수의 자금이나 군량을 몰수합니다.<br />
       몰수한것은 국가재산으로 귀속됩니다.<br />
     </div>
-    <div v-else-if="commandName=='포상'">
+    <div v-else-if="commandName == '포상'">
       국고로 장수에게 자금이나 군량을 지급합니다.<br />
     </div>
     <div class="row">
       <div class="col-12 col-md-5">
+        장수 :
         <GeneralSelect
           :cities="citiesMap"
           :generals="generalList"
@@ -18,13 +19,23 @@
           :textHelper="textHelpGeneral"
         />
       </div>
-      <AmountSelect
-        :amountGuide="amountGuide"
-        v-model="amount"
-        :maxAmount="maxAmount"
-        :minAmount="minAmount"
-      />
-      <div class="col-12 col-md-2 d-grid">
+      <div class="col-2 col-md-1">
+        자원 :
+        <b-button-group>
+          <b-button :pressed="isGold" @click="isGold=true">금</b-button>
+          <b-button :pressed="!isGold" @click="isGold=false">쌀</b-button>
+        </b-button-group>
+      </div>
+      <div class="col-10 col-md-4">
+        금액 :
+        <AmountSelect
+          :amountGuide="amountGuide"
+          v-model="amount"
+          :maxAmount="maxAmount"
+          :minAmount="minAmount"
+        />
+      </div>
+      <div class="col-4 col-md-2 d-grid">
         <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
       </div>
     </div>

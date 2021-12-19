@@ -88,7 +88,6 @@ export default defineComponent({
         value,
         title,
       };
-      console.log(obj);
       forFind.push(obj);
       targets.set(value, obj);
     }

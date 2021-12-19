@@ -169,7 +169,7 @@ class che_건국 extends Command\GeneralCommand
         $general->addExperience($exp);
         $general->addDedication($ded);
 
-        $aux = Json::decode($this->nation['aux'])??[];
+        $aux = Json::decode($this->nation['aux']) ?? [];
         $aux['can_국기변경'] = 1;
 
         $db->update('city', [
@@ -197,87 +197,25 @@ class che_건국 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
-        return [
-            'colorSelect'
-        ];
-    }
-
-    public function getForm(): string
-    {
-
-        if (count(getAllNationStaticInfo()) >= $this->env['maxnation']) {
-            return '더 이상 건국은 불가능합니다.';
-        }
-
-
-        //NOTE: 새로운 방법이 생기기 전까진 아무색이나 선택 가능하도록 하자.
-        /*
-        foreach(GetNationColors() as $color){
-            $colorUsed[$color] = 0;
-        }
-
-        foreach(getAllNationStaticInfo() as $nation){
-            if($nation['level'] <= 0){
-                continue;
-            }
-            $colorUsed[$nation['color']]++;
-        }
-
-        $colorUsedCnt = 0;
-        foreach($colorUsed as $color=>$used){
-            if($used){
-                continue;
-            }
-            $colorUsedCnt += 1;
-        }
-
-        //색깔이 다 쓰였으면 그냥 모두 허용
-        if($colorUsedCnt === count($colorUsed)){
-            foreach(array_keys($colorUsed) as $color){
-                $colorUsed[$color] = 0;
-            }
-        }
-        */
-
-
-        ob_start();
-?>
-        현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br>
-
-        <?php foreach (GameConst::$availableNationType as $nationType) :
+        $nationTypes = [];
+        foreach (GameConst::$availableNationType as $nationType) {
             $nationClass = buildNationTypeClass($nationType);
+            $nationTypes[$nationType] = [
+                'type' => $nationType,
+                'name' => $nationClass->getName(),
+                'pros' => $nationClass::$pros,
+                'cons' => $nationClass::$cons
+            ];
+        }
+        return [
+            'procRes' => [
+                'available건국' => count(getAllNationStaticInfo()) < $this->env['maxnation'],
+                'nationTypes'   => $nationTypes,
+                'colors'        => GetNationColors(),
 
-            [$name, $pros, $cons] = [$nationClass->getName(), $nationClass::$pros, $nationClass::$cons];
-        ?>
-
-            - <?= $name ?> : <span style='color:cyan;'><?= $pros ?></span> <span style='color:magenta;'><?= $cons ?></span><br>
-        <?php endforeach; ?>
-        <br>
-        국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
-        색상 : <select class='formInput' name='colorType' id='colorType' size='1'>
-
-            <?php foreach (GetNationColors() as $idx => $color) :
-                /*
-            if($colorUsed[$color] > 0){
-                continue;
-            }
-            */
-            ?>
-                <option value="<?= $idx ?>" data-color="<?= $color ?>" data-font-color="<?=newColor($color)?>" style='background-color:<?= $color ?>;color:<?= newColor($color) ?>;'>국가명(<?=$color?>)</option>
-            <?php endforeach; ?>
-        </select>
-        성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
-
-            <?php foreach (GameConst::$availableNationType as $nationType) :
-                $nationTypeName = buildNationTypeClass($nationType)->getName();
-            ?>
-                <option value='<?= $nationType ?>' style=background-color:black;color:white;><?= $nationTypeName ?></option>
-            <?php endforeach; ?>
-        </select>
-        <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
-<?php
-        return ob_get_clean();
+            ]
+        ];
     }
 }

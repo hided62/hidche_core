@@ -76,7 +76,7 @@ const app: App<Element> | undefined = (function () {
             console.error(`${moduleName}이 ${groupName}에 없음`);
             return undefined;
         }
-        return createApp(GeneralActions[moduleName]());
+        return createApp(GeneralActions[moduleName]);
     }
     if (groupName == 'Nation') {
         const moduleName = entryInfo[1];
@@ -84,7 +84,7 @@ const app: App<Element> | undefined = (function () {
             console.error(`${moduleName}이 ${groupName}에 없음`);
             return undefined;
         }
-        return createApp(NationActions[moduleName]());
+        return createApp(NationActions[moduleName]);
     }
 
     console.error('알수')

@@ -64,3 +64,12 @@ export type procNationItem = {
 };
 
 export type procNationList = procNationItem[];
+
+export type procNationTypeItem = {
+    type: string,
+    name: string,
+    pros: string,
+    cons: string,
+}
+
+export type procNationTypeList = Record<string, procNationTypeItem>;

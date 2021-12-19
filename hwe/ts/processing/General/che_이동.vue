@@ -26,10 +26,11 @@
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-4 col-md-2">
+        도시:
         <CitySelect :cities="citiesMap" v-model="selectedCityID" />
       </div>
-      <div class="col">
+      <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
       </div>
     </div>

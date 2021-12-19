@@ -18,10 +18,11 @@
       표시됩니다.<br />
     </div>
     <div class="row">
-      <div class="col-12 col-md-6">
+      <div class="col-6 col-md-3">
+        국가 :
         <NationSelect :nations="nations" v-model="selectedNationID" />
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
       </div>
     </div>
