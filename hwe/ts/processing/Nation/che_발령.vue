@@ -52,7 +52,7 @@ import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
   procGeneralItem,
-  procGeneralKeyList,
+  procGeneralKey,
   procGeneralRawItemList,
   procTroopList,
 } from "../processingRes";
@@ -66,7 +66,7 @@ declare const procRes: {
   cities: [number, string][];
   troops: procTroopList;
   generals: procGeneralRawItemList;
-  generalsKey: procGeneralKeyList;
+  generalsKey: procGeneralKey[];
 };
 
 export default defineComponent({
@@ -110,7 +110,7 @@ export default defineComponent({
       const troops = (!gen.troopID)?'':`,${procRes.troops[gen.troopID].name}`;
       const nameColor = getNpcColor(gen.npc);
       const name = nameColor?`<span style="color:${nameColor}">${gen.name}</span>`:gen.name;
-      return `${name} [${citiesMap.get(gen.cityID)?.name}${troops}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${gen.crew.toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
+      return `${name} [${citiesMap.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
     }
 
     async function submit(e: Event) {

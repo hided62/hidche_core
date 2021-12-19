@@ -26,7 +26,7 @@
         <div
           class="sam-nation-own-bgcolor"
           :style="{
-            padding: '0.375rem 0.75rem',
+            padding: '0.545rem 0.75rem',
           }"
         >
           {{ props.option.title }}
@@ -37,12 +37,13 @@
       <div
         :class="`sam-color-${props.option.title.slice(1)}`"
         :style="{
-          margin: '-0.375rem -0.75rem',
+          margin: '-0.25rem -0.75rem',
         }"
         ><div
           class="sam-nation-own-bgcolor"
           :style="{
-            padding: '0.375rem 0.75rem',
+            padding: '0.30rem 0.75rem',
+            borderRadius: '0.25rem',
           }"
           >{{ props.option.title }}</div
         ></div
@@ -102,9 +103,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.multiselect__option {
-  padding: 0;
-}
-</style>

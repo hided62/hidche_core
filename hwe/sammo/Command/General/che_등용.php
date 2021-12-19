@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -21,30 +25,32 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_등용 extends Command\GeneralCommand{
+class che_등용 extends Command\GeneralCommand
+{
     static protected $actionName = '등용';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
         //NOTE: 사망 직전에 '등용' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destGeneralID', $this->arg)){
+        if (!key_exists('destGeneralID', $this->arg)) {
             return false;
         }
         $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($destGeneralID)){
+        if (!is_int($destGeneralID)) {
             return false;
         }
-        if($destGeneralID <= 0){
+        if ($destGeneralID <= 0) {
             return false;
         }
-        if($destGeneralID == $this->generalObj->getID()){
+        if ($destGeneralID == $this->generalObj->getID()) {
             return false;
         }
         $this->arg = [
-            'destGeneralID'=>$destGeneralID
+            'destGeneralID' => $destGeneralID
         ];
         return true;
     }
@@ -59,11 +65,11 @@ class che_등용 extends Command\GeneralCommand{
 
         $relYear = $this->env['year'] - $this->env['startyear'];
 
-        $this->permissionConstraints=[
+        $this->permissionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
         ];
 
-        $this->minConditionConstraints=[
+        $this->minConditionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
@@ -79,7 +85,7 @@ class che_등용 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         $relYear = $this->env['year'] - $this->env['startyear'];
 
-        $this->fullConditionConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
@@ -90,33 +96,37 @@ class che_등용 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
-        if($this->destGeneralObj->getVar('officer_level') == 12){
+        if ($this->destGeneralObj->getVar('officer_level') == 12) {
             $this->fullConditionConstraints[] = ConstraintHelper::AlwaysFail('군주에게는 등용장을 보낼 수 없습니다.');
         }
     }
 
-    public function canDisplay():bool{
+    public function canDisplay(): bool
+    {
         return $this->env['join_mode'] !== 'onlyRandom';
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         $env = $this->env;
-        if(!$this->isArgValid){
+        if (!$this->isArgValid) {
             return [$env['develcost'], 0];
         }
         $destGeneral = $this->destGeneralObj;
         $reqGold = Util::round(
             $env['develcost'] +
-            ($destGeneral->getVar('experience') + $destGeneral->getVar('dedication')) / 1000
+                ($destGeneral->getVar('experience') + $destGeneral->getVar('dedication')) / 1000
         ) * 10;
         return [$reqGold, 0];
     }
 
-    public function getPreReqTurn():int{
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
@@ -124,12 +134,13 @@ class che_등용 extends Command\GeneralCommand{
     {
         $destGeneralName = $this->destGeneralObj->getName();
         $name = $this->getName();
-        $josaUl = JosaUtil::pick($name, '을');
+        $josaUl = JosaUtil::pick($destGeneralName, '을');
         return "【{$destGeneralName}】{$josaUl} {$name}";
     }
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -145,11 +156,10 @@ class che_등용 extends Command\GeneralCommand{
 
 
         $msg = ScoutMessage::buildScoutMessage($general->getID(), $destGeneralID, $reason, new \DateTime($general->getTurnTime()));
-        if($msg){
+        if ($msg) {
             $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>에게 등용 권유 서신을 보냈습니다. <1>$date</>");
             $msg->send(true);
-        }
-        else{
+        } else {
             $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>에게 등용 권유 서신을 보내지 못했습니다. {$reason} <1>$date</>");
         }
 
@@ -172,43 +182,27 @@ class che_등용 extends Command\GeneralCommand{
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $db = DB::db();
+        $destRawGenerals = $db->queryAllLists('SELECT no,name,nation,officer_level,npc,leadership,strength,intel FROM general WHERE npc < 2 AND officer_level != 12 AND no != %i ORDER BY npc,binary(name)', $this->generalObj->getID());
+        $nationList = [];
 
-        $destGenerals = [];
-        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND officer_level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
-        foreach($destRawGenerals as $destGeneral){
-            $destNationID = $destGeneral['nation'];
-            if(!key_exists($destNationID, $destGenerals)){
-                $destGenerals[$destNationID] = [];
-            }
-            $destGenerals[$destNationID][] = $destGeneral;
+        foreach ([getNationStaticInfo(0), ...getAllNationStaticInfo()] as $destNation) {
+            $nationList[] = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
         }
 
-        $nationList = array_merge([0=>getNationStaticInfo(0)], getAllNationStaticInfo());
-
-        ob_start();
-?>
-재야나 타국의 장수를 등용합니다.<br>
-서신은 개인 메세지로 전달됩니다.<br>
-등용할 장수를 목록에서 선택하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $destNation): ?>
-    <optgroup style='background-color:<?=$destNation['color']?>;color:<?=newColor($destNation['color'])?>;' label="【<?=$destNation['name']?>】" >
-<?php   foreach($destGenerals[$destNation['nation']]??[] as $destGeneral):
-            $nameColor = \sammo\getNameColor($destGeneral['npc']);
-            if($nameColor){
-                $nameColor = " style='color:{$nameColor}'";
-            }
-?>
-            <option style="background-color:black;color:white" value='<?=$destGeneral['no']?>' <?=$nameColor?>><?=$destGeneral['name']?></option>
-<?php   endforeach; ?>
-    </optgroup>
-<?php endforeach; ?>
-
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-        <?php
-                return ob_get_clean();
+        return [
+            'procRes' => [
+                'nationList' => $nationList,
+                'generals' => $destRawGenerals,
+                'generalsKey' => ['no', 'name', 'nationID', 'officerLevel', 'npc', 'leadership', 'strength', 'intel']
+            ]
+        ];
     }
 }

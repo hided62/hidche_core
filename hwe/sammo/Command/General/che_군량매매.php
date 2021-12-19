@@ -185,23 +185,14 @@ class che_군량매매 extends Command\GeneralCommand{
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
-        ob_start();
-?>
-자신의 군량을 사거나 팝니다.<br>
-<select id='buyRice' name="buyRice" size=1 style=color:white;background-color:black>
-    <option value='false'>팜</option>
-    <option value='true'>삼</option>
-</select>
-<select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
-<?php foreach(GameConst::$resourceActionAmountGuide as $amount): ?>
-    <option value='<?=$amount?>'><?=$amount?></option>
-<?php endforeach; ?>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<?php
-        return ob_get_clean();
+        return [
+            'procRes' => [
+                'minAmount' => 100,
+                'maxAmount' => GameConst::$maxResourceActionAmount,
+                'amountGuide' => GameConst::$resourceActionAmountGuide,
+            ]
+        ];
     }
-
-
 }
