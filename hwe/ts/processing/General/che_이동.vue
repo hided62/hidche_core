@@ -10,9 +10,19 @@
       v-model="selectedCityObj"
     />
 
-    <div>
+    <div v-if="commandName == '강행'">
+      선택된 도시로 강행합니다.<br />
+      최대 3칸내 도시로만 강행이 가능합니다.<br />
+      목록을 선택하거나 도시를 클릭하세요.<br />
+    </div>
+    <div v-else-if="commandName == '이동'">
       선택된 도시로 이동합니다.<br />
       인접 도시로만 이동이 가능합니다.<br />
+      목록을 선택하거나 도시를 클릭하세요.<br />
+    </div>
+    <div v-else-if="commandName == '출병'">
+      선택된 도시를 향해 침공을 합니다.<br />
+      침공 경로에 적군의 도시가 있다면 전투를 벌입니다.<br />
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
     <div class="row">
@@ -47,9 +57,9 @@ declare const mapTheme: string;
 declare const currentCity: number;
 declare const commandName: string;
 declare const procRes: {
-  distanceList: Record<number, number[]>,
-  cities: [number, string][],
-}
+  distanceList: Record<number, number[]>;
+  cities: [number, string][];
+};
 export default defineComponent({
   components: {
     MapLegacyTemplate,

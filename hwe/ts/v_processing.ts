@@ -9,8 +9,8 @@ import { unwrap } from "@util/unwrap";
 import { recruitCrewForm } from '@/recruitCrewForm';
 import BootstrapVue3 from 'bootstrap-vue-3'
 import Multiselect from 'vue-multiselect';
-import * as GeneralActions from "@/processing/General";
-import * as NationActions from "@/processing/Nation";
+import { commandMap as GeneralActions } from "@/processing/General";
+import { commandMap as NationActions } from '@/processing/Nation';
 import { App, createApp } from 'vue';
 import { auto500px } from './util/auto500px';
 import { isString } from 'lodash';
@@ -76,7 +76,7 @@ const app: App<Element> | undefined = (function () {
             console.error(`${moduleName}이 ${groupName}에 없음`);
             return undefined;
         }
-        return createApp(GeneralActions[moduleName]);
+        return createApp(GeneralActions[moduleName]());
     }
     if (groupName == 'Nation') {
         const moduleName = entryInfo[1];
@@ -84,7 +84,7 @@ const app: App<Element> | undefined = (function () {
             console.error(`${moduleName}이 ${groupName}에 없음`);
             return undefined;
         }
-        return createApp(NationActions[moduleName]);
+        return createApp(NationActions[moduleName]());
     }
 
     console.error('알수')

@@ -2,6 +2,7 @@
 
 namespace sammo\Command\General;
 
+use phpDocumentor\Reflection\Types\Object_;
 use \sammo\DB;
 use \sammo\Util;
 use \sammo\JosaUtil;
@@ -246,6 +247,7 @@ class che_출병 extends Command\GeneralCommand
             'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'cities' => \sammo\JSOptionsForCities(),
+                'distanceList' => new \StdClass(),
             ],
         ];
     }

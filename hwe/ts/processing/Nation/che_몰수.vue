@@ -1,9 +1,12 @@
 <template>
   <TopBackBar :title="commandName" type="chief" />
   <div class="bg0">
-    <div>
+    <div v-if="commandName=='몰수'">
       장수의 자금이나 군량을 몰수합니다.<br />
       몰수한것은 국가재산으로 귀속됩니다.<br />
+    </div>
+    <div v-else-if="commandName=='포상'">
+      국고로 장수에게 자금이나 군량을 지급합니다.<br />
     </div>
     <div class="row">
       <div class="col-12 col-md-5">
@@ -42,7 +45,6 @@ import {
   procGeneralItem,
   procGeneralKeyList,
   procGeneralRawItemList,
-  procTroopList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
 declare const commandName: string;

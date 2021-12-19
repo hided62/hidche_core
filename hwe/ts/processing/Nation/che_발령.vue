@@ -54,7 +54,7 @@ import {
   procGeneralRawItemList,
   procTroopList,
 } from "../processingRes";
-import { convertDictById, getNpcColor } from "@/common_legacy";
+import { getNpcColor } from "@/common_legacy";
 declare const mapTheme: string;
 declare const currentCity: number;
 declare const commandName: string;
