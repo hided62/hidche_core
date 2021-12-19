@@ -52,6 +52,8 @@ body {
         }
 
         box-shadow: 0 -1px 0 $dark;
+        border-left: none !important;
+        border-right: none !important;
 
         .toolbarButton2 {
             text-decoration: underline;

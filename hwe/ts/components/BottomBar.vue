@@ -1,6 +1,6 @@
 <template>
   <div class="bg0">
-    <button type="button" class="btn btn-primary back_btn" @click="back">
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
       돌아가기
     </button>
     <div></div>

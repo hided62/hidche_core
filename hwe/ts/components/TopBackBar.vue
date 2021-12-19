@@ -1,6 +1,6 @@
 <template>
   <div class="bg0 back_bar">
-    <button type="button" class="btn btn-primary back_btn" @click="back">
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
       돌아가기
     </button>
     <h2 class="title">{{ title }}</h2>

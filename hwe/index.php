@@ -337,7 +337,7 @@ if (!$otherTextInfo) {
         ?>
     </div>
     <nav class="navbar navbar-expand fixed-bottom navbar-dark bg-dark d-sm-block d-md-none p-0" id="navbar500">
-        <div class="container-fluid">
+        <div class="container-fluid px-0">
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mx-auto">
                     <li class="nav-item dropup">
