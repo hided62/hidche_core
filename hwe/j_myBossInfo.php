@@ -12,7 +12,7 @@ $destGeneralID = Util::getPost('destGeneralID', 'int');
 $destCityID = Util::getPost('destCityID', 'int');
 
 //로그인 검사
-$session = Session::requireGameLogin()->setReadOnly();
+$session = Session::requireGameLogin();
 $userID = Session::getUserID();
 
 $db = DB::db();
