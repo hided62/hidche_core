@@ -1,14 +1,5 @@
 <template>
-  <div
-    class="crewTypeItem crewTypeSubGrid text-center s-border-b"
-    :style="{
-      backgroundColor: crewType.notAvailable
-        ? 'red'
-        : crewType.reqTech == 0
-        ? 'green'
-        : 'limegreen',
-    }"
-  >
+  <div class="crewTypeItem crewTypeSubGrid text-center s-border-b">
     <div
       class="crewTypeImg"
       :style="{
@@ -18,7 +9,21 @@
         outline: 'solid 1px gray',
       }"
     ></div>
-    <div class="crewTypeName">{{ crewType.name }}</div>
+    <div
+      :style="{
+        backgroundColor: crewType.notAvailable
+          ? 'red'
+          : crewType.reqTech == 0
+          ? 'green'
+          : 'limegreen',
+        height: '100%',
+      }"
+      class="d-grid crewTypeName"
+    >
+      <div style="margin: auto">
+        {{ crewType.name }}
+      </div>
+    </div>
     <div>{{ crewType.attack }}</div>
     <div>{{ crewType.defence }}</div>
     <div>{{ crewType.speed }}</div>

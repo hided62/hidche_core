@@ -20,12 +20,12 @@
     <div class="crewTypeList" ref="defaultTarget">
       <div class="listFront">
         <div class="row gx-0 bg0">
-          <div class="col-6 col-md-9 d-flex align-items-center">
+          <div class="col-12 col-md-9 d-flex align-items-center">
             <div v-if="commandName == '모병'" class="text-center w-100">
               모병은 가격 2배의 자금이 소요됩니다.<br />
             </div>
           </div>
-          <div class="col-6 col-md-3 d-grid">
+          <div class="col-md-3 d-grid only1000pxMode">
             <b-button
               :variant="showNotAvailable ? 'warning' : 'secondary'"
               :pressed="showNotAvailable"
@@ -60,16 +60,7 @@
             현재 자금 : {{ gold.toLocaleString() }}
           </div>
         </div>
-        <div
-          class="miniCrewPanel center"
-          :style="{
-            backgroundColor: destCrewType.notAvailable
-              ? 'red'
-              : destCrewType.reqTech == 0
-              ? 'green'
-              : 'limegreen',
-          }"
-        >
+        <div class="miniCrewPanel center bg0">
           <div
             class="crewTypeImg"
             :style="{
@@ -80,7 +71,21 @@
               height: '64px',
             }"
           ></div>
-          <div>{{ destCrewType.name }}</div>
+          <div
+            :style="{
+              backgroundColor: (destCrewType.notAvailable
+                ? 'red'
+                : destCrewType.reqTech == 0
+                ? 'green'
+                : 'limegreen')+' !important',
+              height: '100%',
+            }"
+            class="d-grid"
+          >
+            <div style="margin: auto">
+              {{ destCrewType.name }}
+            </div>
+          </div>
           <div>{{ destCrewType.baseCost.toFixed(1) }}</div>
           <div class="crewTypePanel">
             <b-button-group
@@ -146,10 +151,29 @@
           v-for="armCrewType in armCrewTypes"
           :key="armCrewType.armType"
         >
-          <div class="s-border-b">{{ armCrewType.armName }} 계열</div>
+          <div class="s-border-b row gx-0">
+            <div class="col-7 col-md-12 align-self-center">{{ armCrewType.armName }} 계열</div>
+            <div class="col-5 d-grid only500pxMode">
+              <b-button
+                :variant="showNotAvailableSub.get(armCrewType.armType) ? 'warning' : 'secondary'"
+                :pressed="showNotAvailableSub.get(armCrewType.armType)"
+                class="btn-sm only500pxMode"
+                @click="showNotAvailableSub.set(armCrewType.armType, !showNotAvailableSub.get(armCrewType.armType))"
+                >{{
+                  showNotAvailable
+                    ? "선택 할 수 있는 병종만 보기"
+                    : "선택 할 수 없는 병종도 보기"
+                }}</b-button
+              >
+            </div>
+          </div>
           <template v-for="crewType in armCrewType.values" :key="crewType.id">
             <CrewTypeItem
-              v-if="showNotAvailable || !crewType.notAvailable"
+              v-if="
+                showNotAvailable ||
+                showNotAvailableSub.get(armCrewType.armType) ||
+                !crewType.notAvailable
+              "
               :crewType="crewType"
               :leadership="fullLeadership"
               :commandName="commandName"
@@ -213,14 +237,16 @@ export default defineComponent({
       unwrap(e.target).dispatchEvent(event);
     }
 
+    const showNotAvailable = ref(false);
+    const showNotAvailableSub = ref(new Map<number, boolean>());
+
     const crewTypeMap = new Map<number, procCrewTypeItem>();
     for (const armType of procRes.armCrewTypes) {
+      showNotAvailableSub.value.set(armType.armType, false);
       for (const crewType of armType.values) {
         crewTypeMap.set(crewType.id, crewType);
       }
     }
-
-    const showNotAvailable = ref(false);
 
     const destCrewType = ref(unwrap(crewTypeMap.get(procRes.currentCrewType)));
 
@@ -254,6 +280,7 @@ export default defineComponent({
       destCrewType,
       amount,
       showNotAvailable,
+      showNotAvailableSub,
       relYear: procRes.relYear,
       year: procRes.year,
       tech: procRes.tech,
@@ -302,9 +329,17 @@ export default defineComponent({
   .miniCrewPanel {
     display: none;
   }
+
+  .only500pxMode{
+      display: none;
+  }
 }
 
 @include media-500px {
+  .only1000pxMode {
+    display: none !important;
+  }
+
   .listFront {
     position: sticky;
     top: 0px;
