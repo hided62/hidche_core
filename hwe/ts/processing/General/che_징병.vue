@@ -112,7 +112,11 @@
                       background-color: #ddd;
                     "
                     ><div style="margin-left: auto">
-                      {{ Math.ceil(amount * destCrewType.baseCost).toLocaleString() }}금
+                      {{
+                        Math.ceil(
+                          amount * destCrewType.baseCost
+                        ).toLocaleString()
+                      }}금
                     </div></span
                   >
                 </div>
@@ -143,17 +147,21 @@
           :key="armCrewType.armType"
         >
           <div class="s-border-b">{{ armCrewType.armName }} 계열</div>
-          <CrewTypeItem
-            v-for="crewType in armCrewType.values"
-            :key="crewType.id"
-            :crewType="crewType"
-            :leadership="fullLeadership"
-            :commandName="commandName"
-            :currentCrewType="currentCrewType"
-            :crew="crew"
-            @submitOutput="trySubmit"
-            @click="destCrewType = crewTypeMap.get(crewType.id);beFilled()"
-          />
+          <template v-for="crewType in armCrewType.values" :key="crewType.id">
+            <CrewTypeItem
+              v-if="showNotAvailable || !crewType.notAvailable"
+              :crewType="crewType"
+              :leadership="fullLeadership"
+              :commandName="commandName"
+              :currentCrewType="currentCrewType"
+              :crew="crew"
+              @submitOutput="trySubmit"
+              @click="
+                destCrewType = crewTypeMap.get(crewType.id);
+                beFilled();
+              "
+            />
+          </template>
         </template>
       </div>
     </div>
