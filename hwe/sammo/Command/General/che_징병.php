@@ -18,6 +18,7 @@ use \sammo\ServConfig;
 use function \sammo\getTechCall;
 use function \sammo\tryUniqueItemLottery;
 use function \sammo\getTechAbil;
+use function sammo\getTechLevel;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
@@ -231,6 +232,107 @@ class che_징병 extends Command\GeneralCommand
         return true;
     }
 
+    public function exportJSVars(): array
+    {
+        $general = $this->generalObj;
+        $db = DB::db();
+
+        [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $general->getNationID());
+        if (!$nationLevel) {
+            $nationLevel = 0;
+        }
+
+        if (!$tech) {
+            $tech = 0;
+        }
+
+        $year = $this->env['year'];
+        $startyear = $this->env['startyear'];
+        $relativeYear = $year - $startyear;
+
+        $ownCities = [];
+        $ownRegions = [];
+
+        foreach (DB::db()->query('SELECT city, region from city where nation = %i', $general->getNationID()) as $city) {
+            $ownCities[$city['city']] = 1;
+            $ownRegions[$city['region']] = 1;
+        }
+
+        $leadership = $general->getLeadership();
+        $fullLeadership = $general->getLeadership(false);
+        $abil = getTechAbil($tech);
+
+        $armCrewTypes = [];
+        foreach (GameUnitConst::allType() as $armType => $armName) {
+            $armCrewType = [
+                'armType' => $armType,
+                'armName' => $armName,
+                'values' => [],
+            ];
+
+            $crewTypes = [];
+            foreach (GameUnitConst::byType($armType) as $unit) {
+                $crewObj = new \stdClass;
+
+                $crewObj->id = $unit->id;
+                $crewObj->reqTech = $unit->reqTech;
+                $crewObj->reqYear = $unit->reqYear;
+
+                /*
+                if ($unit->reqTech == 0) {
+                    $crewObj->bgcolor = 'green';
+                } else {
+                    $crewObj->bgcolor = 'limegreen';
+                }
+                */
+
+                $crewObj->notAvailable = !$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech);
+
+                $crewObj->baseRice = $general->onCalcDomestic($this->getName(), 'rice', $unit->riceWithTech($tech), ['armType' => $unit->armType]);
+                $crewObj->baseCost = $general->onCalcDomestic($this->getName(), 'cost', $unit->costWithTech($tech), ['armType' => $unit->armType]);
+
+                $crewObj->name = $unit->name;
+                $crewObj->attack = $unit->attack + $abil;
+                $crewObj->defence = $unit->defence + $abil;
+                $crewObj->speed = $unit->speed;
+                $crewObj->avoid = $unit->avoid;
+                if ($this->env['show_img_level'] < 2) {
+                    $crewObj->img = ServConfig::$sharedIconPath . "/default.jpg";
+                } else {
+                    $crewObj->img = ServConfig::$gameImagePath . "/crewtype" . $unit->id . ".png";
+                }
+
+                $crewObj->info = $unit->info;
+
+                $armCrewType['values'][] = $crewObj;
+            }
+
+
+            $armCrewTypes[] = $armCrewType;
+        }
+
+        $crew = $general->getVar('crew');
+        $gold = $general->getVar('gold');
+        $crewTypeObj = $general->getCrewTypeObj();
+
+        return [
+            'procRes' => [
+                'relYear' => $relativeYear,
+                'year' => $year,
+                'tech' => $tech,
+                'techLevel' => getTechLevel($tech),
+                'startYear' => $startyear,
+                'goldCoeff' => static::$costOffset,
+                'leadership' => $leadership,
+                'fullLeadership' => $fullLeadership,
+                'armCrewTypes' => $armCrewTypes,
+                'currentCrewType' => $crewTypeObj->id,
+                'crew' => $crew,
+                'gold' => $gold,
+            ]
+        ];
+    }
+
     public function getJSPlugins(): array
     {
         return [
@@ -304,9 +406,6 @@ class che_징병 extends Command\GeneralCommand
                 } else {
                     $crewObj->img = ServConfig::$gameImagePath . "/crewtype" . $unit->id . ".png";
                 }
-
-                $crewObj->baseRiceShort = round($crewObj->baseRice, 1);
-                $crewObj->baseCostShort = round($crewObj->baseCost, 1);
 
                 $crewObj->info = join('<br>', $unit->info);
 

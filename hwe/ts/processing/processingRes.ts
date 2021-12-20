@@ -57,3 +57,26 @@ export type procNationTypeItem = {
 }
 
 export type procNationTypeList = Record<string, procNationTypeItem>;
+
+
+export type procArmTypeItem = {
+    armType: number,
+    armName: string,
+    values: procCrewTypeItem[],
+}
+
+export type procCrewTypeItem = {
+    id: number,
+    reqTech: number,
+    reqYear: number,
+    notAvailable?: boolean,
+    baseRice: number,
+    baseCost: number,
+    name: string,
+    attack: number,
+    defence: number,
+    speed: number,
+    avoid: number,
+    img: string,
+    info: string[],
+}
