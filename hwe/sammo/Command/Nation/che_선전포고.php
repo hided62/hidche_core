@@ -192,6 +192,45 @@ class che_선전포고 extends Command\NationCommand
         return true;
     }
 
+
+    public function exportJSVars(): array
+    {
+        $generalObj = $this->generalObj;
+        $nationID = $generalObj->getNationID();
+        $nationList = [];
+        $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
+        foreach (getAllNationStaticInfo() as $destNation) {
+            /*if ($destNation['nation'] == $nationID) {
+                continue;
+            }*/
+
+            $testTurn->setArg(['destNationID' => $destNation['nation']]);
+            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
+
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
+            if (!$testCommand->hasFullConditionMet()) {
+                $nationTarget['notAvailable'] = true;
+            }
+            if ($destNation['nation'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
+            }
+
+            $nationList[] = $nationTarget;
+        }
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nations' => $nationList,
+                'startYear' => $this->env['startyear'],
+            ],
+        ];
+    }
+
     public function getJSPlugins(): array
     {
         return [

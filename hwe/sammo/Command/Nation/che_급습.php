@@ -228,7 +228,8 @@ class che_급습 extends Command\NationCommand
         return [
             'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
-                'nations' => $nationList
+                'nations' => $nationList,
+                'startYear' => $this->env['startyear'],
             ],
         ];
     }
