@@ -548,7 +548,6 @@ export default defineComponent({
 @import "@scss/common/break_500px.scss";
 @import "@scss/common/variables.scss";
 @import "@scss/common/bootswatch_custom_variables.scss";
-@import "bootstrap/scss/bootstrap-utilities.scss";
 
 .commandPad {
   background-color: $gray-900;
@@ -561,7 +560,7 @@ export default defineComponent({
   //30, 70, 37.65, 160
 }
 
-@include media-breakpoint-up(md) {
+@include media-1000px{
   .commandPad {
     margin-left: 10px;
 
@@ -583,7 +582,7 @@ export default defineComponent({
   }
 }
 
-@include media-breakpoint-down(md) {
+@include media-500px {
   .dropdown-item {
     padding: 8px;
   }

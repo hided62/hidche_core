@@ -160,6 +160,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import "@scss/common/break_500px.scss";
 @import "@scss/common/variables.scss";
 @import "@scss/common/bootswatch_custom_variables.scss";
 @import "bootstrap/scss/bootstrap-utilities.scss";

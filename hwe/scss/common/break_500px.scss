@@ -13,3 +13,15 @@ $grid-breakpoints: (
   xl: 1200px,
   xxl: 1400px
 );
+
+@mixin media-1000px{
+  @media (min-width: map-get($grid-breakpoints, 'md')) {
+    @content;
+  }
+}
+
+@mixin media-500px{
+  @media (max-width: calc(map-get($grid-breakpoints, 'md') - .02px)) {
+    @content;
+  }
+}
