@@ -177,40 +177,22 @@ class che_증여 extends Command\GeneralCommand
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
-        //TODO: 암행부처럼 보여야...
         $db = DB::db();
-
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)', $this->generalObj->getNationID(), $this->generalObj->getID());
-        ob_start();
-?>
-        자신의 자금이나 군량을 다른 장수에게 증여합니다.<br>
-        장수를 선택하세요.<br>
-        <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($destRawGenerals as $destGeneral) :
-                $color = \sammo\getNameColor($destGeneral['npc']);
-                if ($color) {
-                    $color = " style='color:{$color}'";
-                }
-                $name = $destGeneral['name'];
-                if ($destGeneral['officer_level'] >= 5) {
-                    $name = "*{$name}*";
-                }
-            ?>
-                <option value='<?= $destGeneral['no'] ?>' <?= $color ?>><?= $name ?>(금:<?= $destGeneral['gold'] ?>, 쌀:<?= $destGeneral['rice'] ?>)</option>
-            <?php endforeach; ?>
-        </select>
-        <select class='formInput' name="isGold" id="isGold" size='1' style='color:white;background-color:black;'>
-            <option value="true">금</option>
-            <option value="false">쌀</option>
-        </select>
-        <select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
-            <?php foreach (GameConst::$resourceActionAmountGuide as $amount) : ?>
-                <option value='<?= $amount ?>'><?= $amount ?></option>
-            <?php endforeach; ?>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-<?php
-        return ob_get_clean();
+        $nationID = $this->getNationID();
+        $troops = Util::convertArrayToDict($db->query('SELECT * FROM troop WHERE nation=%i', $nationID), 'troop_leader');
+        $destRawGenerals = $db->queryAllLists('SELECT no,name,officer_level,npc,gold,rice,leadership,strength,intel,city,crew,train,atmos,troop FROM general WHERE nation = %i ORDER BY npc,binary(name)', $nationID);
+        return [
+            'procRes' => [
+                'troops' => $troops,
+                'generals' => $destRawGenerals,
+                'generalsKey' => ['no', 'name', 'officerLevel', 'npc', 'gold', 'rice', 'leadership', 'strength', 'intel', 'cityID', 'crew', 'train', 'atmos', 'troopID'],
+                'cities' => \sammo\JSOptionsForCities(),
+                'minAmount' => 100,
+                'maxAmount' => GameConst::$maxResourceActionAmount,
+                'amountGuide' => GameConst::$resourceActionAmountGuide,
+            ]
+        ];
     }
 }

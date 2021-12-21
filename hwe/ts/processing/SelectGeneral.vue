@@ -147,7 +147,6 @@ export default defineComponent({
       groupArray.push(obj);
       targets.set(gen.no, obj);
     }
-    console.log(forFind);
     return {
       selectedGeneral,
       searchMode: true,

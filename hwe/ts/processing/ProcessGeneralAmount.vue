@@ -8,13 +8,15 @@
     <div v-else-if="commandName == '포상'">
       국고로 장수에게 자금이나 군량을 지급합니다.<br />
     </div>
+    <div v-else-if="commandName == '증여'">
+      자신의 자금이나 군량을 다른 장수에게 증여합니다.<br>
+    </div>
     <div class="row">
       <div class="col-12 col-md-5">
         장수 :
         <SelectGeneral
           :cities="citiesMap"
           :generals="generalList"
-          :troops="troops"
           v-model="selectedGeneralID"
           :textHelper="textHelpGeneral"
         />
@@ -56,7 +58,7 @@ import {
   procGeneralItem,
   procGeneralKey,
   procGeneralRawItemList,
-} from "../processingRes";
+} from "./processingRes";
 import { getNpcColor } from "@/common_legacy";
 declare const commandName: string;
 

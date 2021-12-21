@@ -152,6 +152,17 @@ class che_헌납 extends Command\GeneralCommand
         return true;
     }
 
+    public function exportJSVars(): array
+    {
+        return [
+            'procRes' => [
+                'minAmount' => 100,
+                'maxAmount' => GameConst::$maxResourceActionAmount,
+                'amountGuide' => GameConst::$resourceActionAmountGuide,
+            ]
+        ];
+    }
+
     public function getForm(): string
     {
         ob_start();

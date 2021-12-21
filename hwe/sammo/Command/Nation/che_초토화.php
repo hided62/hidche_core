@@ -196,38 +196,14 @@ class che_초토화 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'defaultSelectCityByMap'
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'cities' => \sammo\JSOptionsForCities(),
+                'distanceList' => new \stdClass(),
+            ],
         ];
-    }
-
-
-    public function getForm(): string
-    {
-
-        $cities = Util::convertArrayToDict(DB::db()->query('SELECT * FROM city WHERE nation =%i', $this->generalObj->getNationID()), 'city');
-        $calc = function(CityInitialDetail $constCity)use($cities){
-            if(!key_exists($constCity->id, $cities)){
-                return null;
-            }
-            $amount = $this->calcReturnAmount($cities[$constCity->id]);
-            $amountText = number_format($amount);
-            return "금쌀 각 {$amountText} 회수";
-        };
-        ob_start();
-?>
-<?=\sammo\getMapHtml()?><br>
-선택된 도시를 초토화 시킵니다.<br>
-도시가 공백지가 되며, 도시의 인구, 내정 상태에 따라 상당량의 국고가 확보됩니다.<br>
-국가의 수뇌들은 명성을 잃고, 모든 장수들은 배신 수치가 1 증가합니다.<br>
-목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-<?=\sammo\optionsForCities($calc)?><br>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<br>
-<?php
-        return ob_get_clean();
     }
 }
