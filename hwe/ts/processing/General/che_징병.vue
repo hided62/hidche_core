@@ -20,22 +20,10 @@
     <div class="crewTypeList" ref="defaultTarget">
       <div class="listFront">
         <div class="row gx-0 bg0">
-          <div class="col-12 col-md-9 d-flex align-items-center">
+          <div class="col-12 col-md-12 d-flex align-items-center">
             <div v-if="commandName == '모병'" class="text-center w-100">
               모병은 가격 2배의 자금이 소요됩니다.<br />
             </div>
-          </div>
-          <div class="col-md-3 d-grid only1000pxMode">
-            <b-button
-              :variant="showNotAvailable ? 'warning' : 'secondary'"
-              :pressed="showNotAvailable"
-              @click="showNotAvailable = !showNotAvailable"
-              >{{
-                showNotAvailable
-                  ? "선택 할 수 있는 병종만 보기"
-                  : "선택 할 수 없는 병종도 보기"
-              }}</b-button
-            >
           </div>
         </div>
         <div class="row text-center bg2 gx-0">
@@ -152,15 +140,15 @@
           :key="armCrewType.armType"
         >
           <div class="s-border-b row gx-0">
-            <div class="col-7 col-md-12 align-self-center">{{ armCrewType.armName }} 계열</div>
-            <div class="col-5 d-grid only500pxMode">
+            <div class="col-7 col-md-10 align-self-center px-3" style="font-size:1.3em;">{{ armCrewType.armName }} 계열</div>
+            <div class="col-5 col-md-2 d-grid">
               <b-button
-                :variant="showNotAvailableSub.get(armCrewType.armType) ? 'warning' : 'secondary'"
-                :pressed="showNotAvailableSub.get(armCrewType.armType)"
-                class="btn-sm only500pxMode"
-                @click="showNotAvailableSub.set(armCrewType.armType, !showNotAvailableSub.get(armCrewType.armType))"
+                :variant="showNotAvailable.get(armCrewType.armType) ? 'warning' : 'dark'"
+                :pressed="showNotAvailable.get(armCrewType.armType)"
+                class="btn-sm"
+                @click="toggleShowNotAvailable(armCrewType.armType)"
                 >{{
-                  showNotAvailable
+                  showNotAvailable.get(armCrewType.armType)
                     ? "선택 할 수 있는 병종만 보기"
                     : "선택 할 수 없는 병종도 보기"
                 }}</b-button
@@ -170,8 +158,7 @@
           <template v-for="crewType in armCrewType.values" :key="crewType.id">
             <CrewTypeItem
               v-if="
-                showNotAvailable ||
-                showNotAvailableSub.get(armCrewType.armType) ||
+                showNotAvailable.get(armCrewType.armType) ||
                 !crewType.notAvailable
               "
               :crewType="crewType"
@@ -237,12 +224,11 @@ export default defineComponent({
       unwrap(e.target).dispatchEvent(event);
     }
 
-    const showNotAvailable = ref(false);
-    const showNotAvailableSub = ref(new Map<number, boolean>());
+    const showNotAvailable = ref(new Map<number, boolean>());
 
     const crewTypeMap = new Map<number, procCrewTypeItem>();
     for (const armType of procRes.armCrewTypes) {
-      showNotAvailableSub.value.set(armType.armType, false);
+      showNotAvailable.value.set(armType.armType, false);
       for (const crewType of armType.values) {
         crewTypeMap.set(crewType.id, crewType);
       }
@@ -276,11 +262,14 @@ export default defineComponent({
       void submit(e);
     }
 
+    function toggleShowNotAvailable(armType: number){
+        showNotAvailable.value.set(armType, !(showNotAvailable.value.get(armType)??0));
+    }
+
     return {
       destCrewType,
       amount,
       showNotAvailable,
-      showNotAvailableSub,
       relYear: procRes.relYear,
       year: procRes.year,
       tech: procRes.tech,
@@ -299,6 +288,7 @@ export default defineComponent({
       beFilled,
       beFull,
       submit,
+      toggleShowNotAvailable,
       trySubmit,
     };
   },
