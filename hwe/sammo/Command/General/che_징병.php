@@ -333,13 +333,6 @@ class che_징병 extends Command\GeneralCommand
         ];
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'recruitCrewForm'
-        ];
-    }
-
     public function getForm(): string
     {
         $db = DB::db();

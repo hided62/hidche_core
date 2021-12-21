@@ -25,6 +25,16 @@
       침공 경로에 적군의 도시가 있다면 전투를 벌입니다.<br />
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
+    <div v-else-if="commandName == '첩보'">
+      선택된 도시에 첩보를 실행합니다.<br />
+      인접도시일 경우 많은 정보를 얻을 수 있습니다.<br />
+      목록을 선택하거나 도시를 클릭하세요.<br />
+    </div>
+    <div v-else-if="commandName in { 화계: 1, 탈취: 1, 파괴: 1, 선동: 1 }">
+      선택된 도시에 {{ commandName }}{{JosaPick(commandName, '을')}}
+      실행합니다.<br />
+      목록을 선택하거나 도시를 클릭하세요.<br />
+    </div>
     <div class="row">
       <div class="col-4 col-md-2">
         도시:
@@ -54,6 +64,7 @@ import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
+import { pick as JosaPick } from "@util/JosaUtil";
 declare const mapTheme: string;
 declare const currentCity: number;
 declare const commandName: string;
@@ -108,6 +119,7 @@ export default defineComponent({
       selectedCityObj: ref(undefined as MapCityParsed | undefined),
       distanceList: procRes.distanceList,
       commandName,
+      JosaPick,
       selected,
       submit,
     };
