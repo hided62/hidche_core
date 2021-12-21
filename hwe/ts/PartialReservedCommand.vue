@@ -133,9 +133,9 @@
     <div class="row gx-0">
       <div class="col-2 d-grid">
         <b-button
-          :pressed="searchMode"
-          @click="searchCommand()"
-          :variant="searchMode ? 'info' : 'primary'"
+          :pressed="searchModeOn"
+          @click="toggleSearchCommand()"
+          :variant="searchModeOn ? 'info' : 'primary'"
           v-b-tooltip.hover
           title="검색 기능을 활성화합니다."
           ><i class="bi bi-search"></i
@@ -160,7 +160,7 @@
           deselectGroupLabel=""
           placeholder="턴 선택"
           :maxHeight="400"
-          :searchable="searchMode"
+          :searchable="searchModeOn"
         >
           <template v-slot:noResult>검색 결과가 없습니다.</template>
           <template v-slot:option="props"
@@ -284,7 +284,7 @@ function isDropdownChildren(e?: Event): boolean {
   return false;
 }
 
-const searchModeKey = `sammo_${serverID}_searchMode`;
+const searchModeKey = `sammo_searchModeOn`;
 
 export default defineComponent({
   name: "PartialReservedCommand",
@@ -478,10 +478,10 @@ export default defineComponent({
       }
       await this.reloadCommandList();
     },
-    searchCommand() {
-      const searchMode = !this.searchMode;
-      this.searchMode = searchMode;
-      localStorage.setItem(searchModeKey, searchMode ? "1" : "0");
+    toggleSearchCommand() {
+      const searchModeOn = !this.searchModeOn;
+      this.searchModeOn = searchModeOn;
+      localStorage.setItem(searchModeKey, searchModeOn ? "1" : "0");
     },
   },
   data() {
@@ -507,7 +507,7 @@ export default defineComponent({
       }
     }
 
-    const searchMode = (localStorage.getItem(searchModeKey) ?? "1") != "0";
+    const searchModeOn = (localStorage.getItem(searchModeKey) ?? "0") != "0";
 
     const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
       length: maxTurn,
@@ -536,7 +536,7 @@ export default defineComponent({
       selectedCommand,
       reservedCommandList: emptyTurn,
       autorun_limit: null as null | number,
-      searchMode,
+      searchModeOn,
     };
   },
   mounted() {
