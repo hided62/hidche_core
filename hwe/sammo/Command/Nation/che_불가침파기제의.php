@@ -170,6 +170,44 @@ class che_불가침파기제의 extends Command\NationCommand{
         return true;
     }
 
+    public function exportJSVars(): array
+    {
+        $generalObj = $this->generalObj;
+        $nationID = $generalObj->getNationID();
+        $nationList = [];
+
+        $db = DB::db();
+        $diplomacyStatus = Util::convertArrayToDict(
+            $db->query('SELECT * FROM diplomacy WHERE me = %i', $nationID),
+            'you'
+        );
+
+        foreach (getAllNationStaticInfo() as $destNation) {
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
+
+            if($diplomacyStatus[$destNation['nation']]['state'] != 7){
+                $nationTarget['notAvailable'] = true;
+            }
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
+            }
+
+            $nationList[] = $nationTarget;
+        }
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+            ],
+        ];
+    }
+
     public function getJSPlugins(): array
     {
         return [

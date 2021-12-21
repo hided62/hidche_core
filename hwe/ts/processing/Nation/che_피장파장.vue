@@ -9,27 +9,27 @@
       :mapTheme="mapTheme"
       v-model="selectedCityObj"
     />
-
-    <div v-if="(commandName == '선전포고')">
-      타국에게 선전 포고합니다.<br />
-      선전 포고할 국가를 목록에서 선택하세요.<br />
-      고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br />
-      초반제한 해제 2년전부터 선포가 가능합니다. ({{ startYear + 1 }}년
-      1월부터 가능)<br />
-      현재 선포가 불가능한 국가는 배경색이 <span style="color: red">붉은색</span>으로
-      표시됩니다.<br />
-    </div>
-    <div v-if="(commandName == '급습')">
-      선택된 국가에 급습을 발동합니다.<br />
+    <div>
+      선택된 국가에 피장파장을 발동합니다.<br />
+      지정한 전략을 상대국이
+      {{ delayCnt }}턴 동안 사용할 수 없게됩니다.<br />
+      대신 아국은 지정한 전략을 {{ postReqTurn }}턴 동안 사용할 수 없습니다.<br />
       선포, 전쟁중인 상대국에만 가능합니다.<br />
       상대 국가를 목록에서 선택하세요.<br />
-      배경색은 현재 급습 불가능 국가는
+      현재 피장파장이 불가능한 국가는
       <span style="color: red">붉은색</span>으로 표시됩니다.<br />
     </div>
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <NationSelect :nations="nationList" v-model="selectedNationID" />
+        <SelectNation :nations="nationList" v-model="selectedNationID" />
+      </div>
+      <div class="col-4 col-md-2">
+        <label>전략 :</label>
+        <b-form-select
+          :options="commandTypesOption"
+          v-model="selectedCommandID"
+        />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -43,7 +43,7 @@
 import MapLegacyTemplate, {
   MapCityParsed,
 } from "@/components/MapLegacyTemplate.vue";
-import NationSelect from "@/processing/NationSelect.vue";
+import SelectNation from "@/processing/SelectNation.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -55,13 +55,22 @@ declare const commandName: string;
 
 declare const procRes: {
   nationList: procNationList;
-  startYear: number,
+  startYear: number;
+  delayCnt: number;
+  postReqTurn: number;
+  availableCommandTypeList: Record<
+    number,
+    {
+      name: string;
+      remainTurn: number;
+    }
+  >;
 };
 
 export default defineComponent({
   components: {
     MapLegacyTemplate,
-    NationSelect,
+    SelectNation,
     TopBackBar,
     BottomBar,
   },
@@ -80,7 +89,23 @@ export default defineComponent({
     }
 
     const selectedNationID = ref(procRes.nationList[0].id);
-    const selectedCityObj = ref();//mapping용
+    const selectedCityObj = ref(); //mapping용
+
+    const commandTypesOption: { html: string; value: string }[] = [];
+    for (const [commandTypeID, commandTypeInfo] of Object.entries(procRes.availableCommandTypeList)) {
+      const notAvailable = commandTypeInfo.remainTurn > 0;
+      const notAvailableText = notAvailable?' (불가)':'';
+      const name = `${commandTypeInfo.name}${notAvailableText}`;
+      const html = notAvailable?`<span style='color:red;'>${name}</span>`:name;
+      commandTypesOption.push({
+        html,
+        value: commandTypeID,
+      });
+    }
+
+    const selectedCommandID = ref(
+      Object.keys(procRes.availableCommandTypeList)[0]
+    );
 
     function selectedNation(nationID: number) {
       selectedNationID.value = nationID;
@@ -90,13 +115,16 @@ export default defineComponent({
       const event = new CustomEvent<Args>("customSubmit", {
         detail: {
           destNationID: selectedNationID.value,
+          commandType: selectedCommandID.value,
         },
       });
       unwrap(e.target).dispatchEvent(event);
     }
 
     return {
-      startYear: procRes.startYear,
+      ...procRes,
+      selectedCommandID,
+      commandTypesOption,
       mapTheme: ref(mapTheme),
       nationList: ref(nationList),
       selectedCityObj,

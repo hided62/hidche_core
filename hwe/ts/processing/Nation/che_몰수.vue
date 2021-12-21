@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-12 col-md-5">
         장수 :
-        <GeneralSelect
+        <SelectGeneral
           :cities="citiesMap"
           :generals="generalList"
           :troops="troops"
@@ -26,9 +26,9 @@
           <b-button :pressed="!isGold" @click="isGold=false">쌀</b-button>
         </b-button-group>
       </div>
-      <div class="col-10 col-md-4">
+      <div class="col-6 col-md-4">
         금액 :
-        <AmountSelect
+        <SelectAmount
           :amountGuide="amountGuide"
           v-model="amount"
           :maxAmount="maxAmount"
@@ -44,8 +44,8 @@
 </template>
 
 <script lang="ts">
-import GeneralSelect from "@/processing/GeneralSelect.vue";
-import AmountSelect from "@/processing/AmountSelect.vue";
+import SelectGeneral from "@/processing/SelectGeneral.vue";
+import SelectAmount from "@/processing/SelectAmount.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -72,8 +72,8 @@ declare const procRes: {
 
 export default defineComponent({
   components: {
-    GeneralSelect,
-    AmountSelect,
+    SelectGeneral,
+    SelectAmount,
     TopBackBar,
     BottomBar,
   },

@@ -38,7 +38,7 @@
     <div class="row">
       <div class="col-4 col-md-2">
         도시:
-        <CitySelect :cities="citiesMap" v-model="selectedCityID" />
+        <SelectCity :cities="citiesMap" v-model="selectedCityID" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -57,7 +57,7 @@
 import MapLegacyTemplate, {
   MapCityParsed,
 } from "@/components/MapLegacyTemplate.vue";
-import CitySelect from "@/processing/CitySelect.vue";
+import SelectCity from "@/processing/SelectCity.vue";
 import CityBasedOnDistance from "@/processing/CitiesBasedOnDistance.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
@@ -75,7 +75,7 @@ declare const procRes: {
 export default defineComponent({
   components: {
     MapLegacyTemplate,
-    CitySelect,
+    SelectCity,
     CityBasedOnDistance,
     TopBackBar,
     BottomBar,

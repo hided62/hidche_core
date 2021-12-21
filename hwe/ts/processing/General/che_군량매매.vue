@@ -12,9 +12,9 @@
           <b-button :pressed="!buyRice" @click="buyRice=false">팜</b-button>
         </b-button-group>
       </div>
-      <div class="col-10 col-md-4">
+      <div class="col-6 col-md-4">
         금액 :
-        <AmountSelect
+        <SelectAmount
           :amountGuide="amountGuide"
           v-model="amount"
           :maxAmount="maxAmount"
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import AmountSelect from "@/processing/AmountSelect.vue";
+import SelectAmount from "@/processing/SelectAmount.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -46,7 +46,7 @@ declare const procRes: {
 
 export default defineComponent({
   components: {
-    AmountSelect,
+    SelectAmount,
     TopBackBar,
     BottomBar,
   },

@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import ColorSelect from "@/processing/ColorSelect.vue";
+import ColorSelect from "@/processing/SelectColor.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";

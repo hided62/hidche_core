@@ -18,7 +18,7 @@
     <div class="row">
       <div class="col-12 col-md-6">
         장수 :
-        <GeneralSelect
+        <SelectGeneral
           :cities="citiesMap"
           :generals="generalList"
           :troops="troops"
@@ -28,7 +28,7 @@
       </div>
       <div class="col-6 col-md-4">
         도시 :
-        <CitySelect :cities="citiesMap" v-model="selectedCityID" />
+        <SelectCity :cities="citiesMap" v-model="selectedCityID" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
@@ -42,8 +42,8 @@
 import MapLegacyTemplate, {
   MapCityParsed,
 } from "@/components/MapLegacyTemplate.vue";
-import CitySelect from "@/processing/CitySelect.vue";
-import GeneralSelect from "@/processing/GeneralSelect.vue";
+import SelectCity from "@/processing/SelectCity.vue";
+import SelectGeneral from "@/processing/SelectGeneral.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -72,8 +72,8 @@ declare const procRes: {
 export default defineComponent({
   components: {
     MapLegacyTemplate,
-    CitySelect,
-    GeneralSelect,
+    SelectCity,
+    SelectGeneral,
     TopBackBar,
     BottomBar,
   },

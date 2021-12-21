@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <NationSelect :nations="nationList" v-model="selectedNationID" />
+        <SelectNation :nations="nationList" v-model="selectedNationID" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import NationSelect from "@/processing/NationSelect.vue";
+import SelectNation from "@/processing/SelectNation.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -63,7 +63,7 @@ declare const procRes: {
 
 export default defineComponent({
   components: {
-    NationSelect,
+    SelectNation,
     TopBackBar,
     BottomBar,
   },

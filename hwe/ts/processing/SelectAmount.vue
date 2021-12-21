@@ -1,19 +1,22 @@
 <template>
   <div class="input-group">
     <b-button
-      v-if="maxAmount > 30000"
+      v-if="maxAmount > 20000"
+      class="btn-sm"
       @click="amount = Math.max(amount - 10000, minAmount)"
-      >-1만</b-button
+      >-만</b-button
     >
     <b-button
-      v-if="maxAmount > 3000"
+      v-if="maxAmount > 2000"
+      class="btn-sm"
       @click="amount = Math.max(amount - 1000, minAmount)"
-      >-1천</b-button
+      >-천</b-button
     >
     <b-button
-      v-if="maxAmount > 300"
+      v-if="maxAmount > 200"
+      class="btn-sm"
       @click="amount = Math.max(amount - 100, minAmount)"
-      >-1백</b-button
+      >-백</b-button
     >
     <input
       type="number"
@@ -35,19 +38,22 @@
       >
     </b-dropdown>
     <b-button
-      v-if="maxAmount > 300"
+      v-if="maxAmount > 200"
+      class="btn-sm"
       @click="amount = Math.min(amount + 100, maxAmount)"
-      >+1백</b-button
+      >+백</b-button
     >
     <b-button
-      v-if="maxAmount > 3000"
+      v-if="maxAmount > 2000"
+      class="btn-sm"
       @click="amount = Math.min(amount + 1000, maxAmount)"
-      >+1천</b-button
+      >+천</b-button
     >
     <b-button
-      v-if="maxAmount > 30000"
+      v-if="maxAmount > 20000"
+      class="btn-sm"
       @click="amount = Math.min(amount + 10000, maxAmount)"
-      >+1만</b-button
+      >+만</b-button
     >
   </div>
 </template>
@@ -76,7 +82,7 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 1,
-    }
+    },
   },
   emits: ["update:modelValue"],
   watch: {

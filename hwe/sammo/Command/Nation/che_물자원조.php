@@ -272,7 +272,7 @@ class che_물자원조 extends Command\NationCommand
 
             //TODO: 물자원조 자체가 가능한지도 검사?
 
-            if($nationTarget['id'] == $generalObj->getNationID()){
+            if ($nationTarget['id'] == $generalObj->getNationID()) {
                 $nationTarget['notAvailable'] = true;
             }
 
@@ -280,9 +280,9 @@ class che_물자원조 extends Command\NationCommand
         }
         $currentNationLevel = getNationStaticInfo($this->generalObj->getNationID())['level'];
 
-        $nationLevelText = [];
+        $levelInfo = [];
         foreach (\sammo\getNationLevelList() as $level => [$levelText,,]) {
-            $nationLevelText[$level] = $levelText;
+            $levelInfo[$level] = ['text' => $levelText, 'amount' => $level * GameConst::$coefAidAmount];
         }
 
         $amountGuide = [];
@@ -295,52 +295,11 @@ class che_물자원조 extends Command\NationCommand
             'procRes' => [
                 'nationList' => $nationList,
                 'currentNationLevel' => $currentNationLevel,
-                'nationLevelText' => $nationLevelText,
+                'levelInfo' => $levelInfo,
                 'minAmount' => 1000,
                 'maxAmount' => Util::array_last($amountGuide),
                 'amountGuide' => $amountGuide,
             ],
         ];
-    }
-
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
-
-
-    public function getForm(): string
-    {
-        $currentNationLevel = getNationStaticInfo($this->generalObj->getNationID())['level'];
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        타국에게 원조합니다.<br>
-        작위별로 금액 제한이 있습니다.<br>
-        <?php foreach (\sammo\getNationLevelList() as $level => [$levelText,,]) : ?>
-            <?= StringUtil::padStringAlignRight($levelText, 10) ?>: <?= number_format($level * GameConst::$coefAidAmount) ?><br>
-        <?php endforeach; ?>
-        원조할 국가를 목록에서 선택하세요.<br>
-        <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-            <?php foreach (getAllNationStaticInfo() as $nation) : ?>
-                <option value='<?= $nation['nation'] ?>' style='color:<?= $nation['color'] ?>;'>【<?= $nation['name'] ?> 】</option>
-            <?php endforeach; ?>
-        </select>
-        국고 <select class='formInput amountList' name="amountList[]" size='1' style='color:white;background-color:black;'>
-            <?php foreach (Util::range($currentNationLevel + 1) as $nationLevel) : ?>
-                <option value='<?= $nationLevel * GameConst::$coefAidAmount ?>'><?= $nationLevel * GameConst::$coefAidAmount ?></option>
-            <?php endforeach; ?>
-        </select>
-        병량 <select class='formInput amountList' name="amountList[]" size='1' style='color:white;background-color:black;'>
-            <?php foreach (Util::range($currentNationLevel + 1) as $nationLevel) : ?>
-                <option value='<?= $nationLevel * GameConst::$coefAidAmount ?>'><?= $nationLevel * GameConst::$coefAidAmount ?></option>
-            <?php endforeach; ?>
-        </select>
-        <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-<?php
-        return ob_get_clean();
     }
 }

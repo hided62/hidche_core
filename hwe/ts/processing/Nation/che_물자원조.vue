@@ -11,17 +11,38 @@
     />
     <div>
       타국에게 원조합니다.<br />
-      작위별로 금액 제한이 있습니다.<br />
+      작위별로 금액 제한이 있습니다.<br /><br />
+      <ul>
+        <template v-for="({ text, amount }, level) in levelInfo" :key="level">
+          <li>
+            <span
+              :style="{
+                width: '4em',
+                display: 'inline-block',
+                ...(level != currentNationLevel
+                  ? {}
+                  : {
+                      textDecoration: 'underline',
+                      fontWeight: 'bold',
+                    }),
+              }"
+              >{{ text }}</span
+            >: {{ amount.toLocaleString() }}
+          </li>
+        </template>
+      </ul>
+      <br />
+      원조할 국가를 목록에서 선택하세요.<br /><br />
     </div>
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <NationSelect :nations="nationList" v-model="selectedNationID" />
+        <SelectNation :nations="nationList" v-model="selectedNationID" />
       </div>
       <div class="col-6 col-md-0"></div>
-      <div class="col-10 col-md-5">
+      <div class="col-8 col-md-4">
         금 :
-        <AmountSelect
+        <SelectAmount
           :amountGuide="amountGuide"
           v-model="goldAmount"
           :step="10"
@@ -29,9 +50,9 @@
           :minAmount="minAmount"
         />
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-8 col-md-4">
         쌀 :
-        <AmountSelect
+        <SelectAmount
           :amountGuide="amountGuide"
           v-model="riceAmount"
           :step="10"
@@ -51,8 +72,8 @@
 import MapLegacyTemplate, {
   MapCityParsed,
 } from "@/components/MapLegacyTemplate.vue";
-import NationSelect from "@/processing/NationSelect.vue";
-import AmountSelect from "@/processing/AmountSelect.vue";
+import SelectNation from "@/processing/SelectNation.vue";
+import SelectAmount from "@/processing/SelectAmount.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -65,7 +86,13 @@ declare const commandName: string;
 declare const procRes: {
   nationList: procNationList;
   currentNationLevel: number;
-  nationLevelText: Record<number, string>;
+  levelInfo: Record<
+    number,
+    {
+      text: string;
+      amount: number;
+    }
+  >;
   minAmount: number;
   maxAmount: number;
   amountGuide: number[];
@@ -74,8 +101,8 @@ declare const procRes: {
 export default defineComponent({
   components: {
     MapLegacyTemplate,
-    NationSelect,
-    AmountSelect,
+    SelectNation,
+    SelectAmount,
     TopBackBar,
     BottomBar,
   },
@@ -117,7 +144,7 @@ export default defineComponent({
       selectedNationID,
       selectedCityObj,
       currentNationLevel: procRes.currentNationLevel,
-      nationLevelText: procRes.nationLevelText,
+      levelInfo: procRes.levelInfo,
       minAmount: ref(procRes.minAmount),
       maxAmount: ref(procRes.maxAmount),
       amountGuide: procRes.amountGuide,

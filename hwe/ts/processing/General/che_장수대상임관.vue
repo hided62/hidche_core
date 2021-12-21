@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-12 col-md-6">
         장수 :
-        <GeneralSelect
+        <SelectGeneral
           :generals="generalList"
           :groupByNation="nationList"
           :textHelper="textHelpGeneral"
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import GeneralSelect from "@/processing/GeneralSelect.vue";
+import SelectGeneral from "@/processing/SelectGeneral.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -77,7 +77,7 @@ declare const procRes: {
 
 export default defineComponent({
   components: {
-    GeneralSelect,
+    SelectGeneral,
     TopBackBar,
     BottomBar,
   },
