@@ -46,8 +46,6 @@ export default defineComponent({
   width: 100%;
   margin: auto;
   position: relative;
-  border-left: 1px solid #888;
-  border-right: 1px solid #888;
   height: 24pt;
 }
 
