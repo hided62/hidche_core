@@ -145,31 +145,17 @@ class che_선양 extends Command\GeneralCommand
         return true;
     }
 
-    public function getForm(): string
-    {
-        //TODO: 암행부처럼 보여야...
-        $db = DB::db();
 
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)', $this->generalObj->getNationID(), $this->generalObj->getID());
-        ob_start();
-?>
-        군주의 자리를 다른 장수에게 물려줍니다.<br>
-        장수를 선택하세요.<br>
-        <select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($destRawGenerals as $destGeneral) :
-                $color = \sammo\getNameColor($destGeneral['npc']);
-                if ($color) {
-                    $color = " style='color:{$color}'";
-                }
-                $name = $destGeneral['name'];
-                if ($destGeneral['officer_level'] >= 5) {
-                    $name = "*{$name}*";
-                }
-            ?>
-                <option value='<?= $destGeneral['no'] ?>' <?= $color ?>><?= $name ?></option>
-            <?php endforeach; ?>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-<?php
-        return ob_get_clean();
+    public function exportJSVars(): array
+    {
+        $db = DB::db();
+        $destRawGenerals = $db->queryAllLists('SELECT no,name,officer_level,npc,leadership,strength,intel FROM general WHERE nation != 0 AND nation = %i AND no != %i ORDER BY npc,binary(name)', $this->generalObj->getNationID(), $this->generalObj->getID());
+
+        return [
+            'procRes' => [
+                'generals' => $destRawGenerals,
+                'generalsKey' => ['no', 'name', 'officerLevel', 'npc', 'leadership', 'strength', 'intel']
+            ]
+        ];
     }
 }

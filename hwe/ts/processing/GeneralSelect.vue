@@ -37,7 +37,7 @@
       </div>
     </template>
     <template v-slot:singleLabel="props">
-      {{ props.option.simpleName }}
+      {{ props.option.simpleName }} {{groupByNation?`[${groupByNation.get(props.option.obj.nationID).name}]`:undefined}}
     </template>
   </v-multiselect>
 </template>

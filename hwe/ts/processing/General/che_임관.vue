@@ -55,12 +55,10 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { procNationItem, procNationList } from "../processingRes";
 import { isBrightColor } from "@/util/isBrightColor";
-declare const mapTheme: string;
 declare const commandName: string;
 
 declare const procRes: {
-  nations: procNationList;
-  startYear: number;
+  nationList: procNationList;
 };
 
 export default defineComponent({
@@ -71,12 +69,11 @@ export default defineComponent({
   },
   setup() {
     const nations = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nations) {
+    for (const nationItem of procRes.nationList) {
       nations.set(nationItem.id, nationItem);
     }
 
-    const selectedNationID = ref(procRes.nations[0].id);
-    const selectedCityObj = ref(); //mapping용
+    const selectedNationID = ref(procRes.nationList[0].id);
 
     function selectedNation(nationID: number) {
       selectedNationID.value = nationID;
@@ -92,10 +89,7 @@ export default defineComponent({
     }
 
     return {
-      startYear: procRes.startYear,
-      mapTheme: ref(mapTheme),
       nations: ref(nations),
-      selectedCityObj,
       selectedNationID,
       commandName,
       isBrightColor,

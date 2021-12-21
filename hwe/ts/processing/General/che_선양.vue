@@ -1,17 +1,20 @@
 <template>
   <TopBackBar :title="commandName" type="chief" />
   <div class="bg0">
-    <div>
+    <div v-if="commandName == '등용'">
       재야나 타국의 장수를 등용합니다.<br />
       서신은 개인 메세지로 전달됩니다.<br />
       등용할 장수를 목록에서 선택하세요.<br />
+    </div>
+    <div v-if="commandName == '선양'">
+      군주의 자리를 다른 장수에게 물려줍니다.<br />
+      장수를 선택하세요.<br />
     </div>
     <div class="row">
       <div class="col-12 col-md-6">
         장수 :
         <GeneralSelect
           :generals="generalList"
-          :groupByNation="nationList"
           :textHelper="textHelpGeneral"
           v-model="selectedGeneralID"
         />
@@ -36,8 +39,6 @@ import {
   procGeneralItem,
   procGeneralKey,
   procGeneralRawItemList,
-  procNationItem,
-  procNationList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
 declare const commandName: string;
@@ -45,7 +46,6 @@ declare const commandName: string;
 declare const procRes: {
   generals: procGeneralRawItemList;
   generalsKey: procGeneralKey[];
-  nationList: procNationList;
 };
 
 export default defineComponent({
@@ -67,7 +67,7 @@ export default defineComponent({
       const name = nameColor
         ? `<span style="color:${nameColor}">${gen.name}</span>`
         : gen.name;
-      return name;
+      return `${name} (${gen.leadership}/${gen.strength}/${gen.leadership})`;
     }
 
     async function submit(e: Event) {
@@ -79,15 +79,9 @@ export default defineComponent({
       unwrap(e.target).dispatchEvent(event);
     }
 
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
-
     return {
       selectedGeneralID,
       generalList,
-      nationList,
       commandName,
       textHelpGeneral,
       submit,

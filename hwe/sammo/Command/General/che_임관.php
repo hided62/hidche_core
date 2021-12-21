@@ -196,7 +196,6 @@ class che_임관 extends Command\GeneralCommand
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
-        $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
         $db = DB::db();
 
         $rawNationList = Util::convertArrayToDict($db->query('SELECT nation,`name`,color,gennum,`power` FROM nation'), 'nation');
@@ -226,7 +225,7 @@ class che_임관 extends Command\GeneralCommand
         return [
             'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
-                'nations' => $nationList,
+                'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],
             ],
         ];
