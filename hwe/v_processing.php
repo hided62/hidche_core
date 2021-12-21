@@ -86,11 +86,6 @@ if (!$commandObj->hasPermissionToReserve()) {
     ])?>
     <?= WebUtil::printStaticValues($commandObj->exportJSVars(), false) ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?php
-    foreach ($cssList as $css) {
-        print(WebUtil::printCSS($css));
-    }
-    ?>
     <?= WebUtil::printDist('vue', ['v_processing'], true) ?>
 </head>
 

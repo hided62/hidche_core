@@ -43,6 +43,7 @@ export type procNationItem = {
     name: string,
     color: string,
     power: number,
+    scoutMsg?: string,
     info?: string,
     notAvailable?: boolean,
 };

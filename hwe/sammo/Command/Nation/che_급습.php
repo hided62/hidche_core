@@ -203,11 +203,6 @@ class che_급습 extends Command\NationCommand
         $nationList = [];
         $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
         foreach (getAllNationStaticInfo() as $destNation) {
-            /*if ($destNation['nation'] == $nationID) {
-                continue;
-            }*/
-
-            $testTurn->setArg(['destNationID' => $destNation['nation']]);
             $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
 
             $nationTarget = [
@@ -219,7 +214,7 @@ class che_급습 extends Command\NationCommand
             if (!$testCommand->hasFullConditionMet()) {
                 $nationTarget['notAvailable'] = true;
             }
-            if ($destNation['nation'] == $nationID) {
+            if ($destNation['id'] == $nationID) {
                 $nationTarget['notAvailable'] = true;
             }
 

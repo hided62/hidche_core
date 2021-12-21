@@ -28,7 +28,14 @@
       </span>
     </template>
     <template v-slot:singleLabel="props">
-      {{ props.option.simpleName }}
+      <span
+        :style="{
+          color: props.option.notAvailable ? 'red' : undefined,
+        }"
+      >
+        {{ props.option.simpleName }}
+        {{ props.option.notAvailable ? "(불가)" : undefined }}</span
+      >
     </template>
   </v-multiselect>
 </template>
