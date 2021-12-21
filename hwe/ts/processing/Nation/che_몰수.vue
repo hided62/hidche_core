@@ -54,7 +54,7 @@ import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
   procGeneralItem,
-  procGeneralKeyList,
+  procGeneralKey,
   procGeneralRawItemList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
@@ -64,7 +64,7 @@ declare const procRes: {
   distanceList: Record<number, number[]>;
   cities: [number, string][];
   generals: procGeneralRawItemList;
-  generalsKey: procGeneralKeyList;
+  generalsKey: procGeneralKey[];
   minAmount: number;
   maxAmount: number;
   amountGuide: number[];
@@ -103,7 +103,7 @@ export default defineComponent({
       const name = nameColor
         ? `<span style="color:${nameColor}">${gen.name}</span>`
         : gen.name;
-      return `${name} (금${gen.gold.toLocaleString()}/쌀${gen.rice.toLocaleString()}) (${
+      return `${name} (금${unwrap(gen.gold).toLocaleString()}/쌀${unwrap(gen.rice).toLocaleString()}) (${
         gen.leadership
       }/${gen.leadership}/${gen.intel})`;
     }

@@ -51,7 +51,6 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { procNationItem, procNationList } from "../processingRes";
 declare const mapTheme: string;
-declare const currentNation: number;
 declare const commandName: string;
 
 declare const procRes: {
@@ -81,6 +80,7 @@ export default defineComponent({
     }
 
     const selectedNationID = ref(procRes.nations[0].id);
+    const selectedCityObj = ref();//mapping용
 
     function selectedNation(nationID: number) {
       selectedNationID.value = nationID;
@@ -96,8 +96,10 @@ export default defineComponent({
     }
 
     return {
+      startYear: procRes.startYear,
       mapTheme: ref(mapTheme),
       nations: ref(nations),
+      selectedCityObj,
       selectedNationID,
       commandName,
       selectedNation,
