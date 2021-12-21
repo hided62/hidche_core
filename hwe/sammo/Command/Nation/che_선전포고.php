@@ -221,7 +221,7 @@ class che_선전포고 extends Command\NationCommand
         return [
             'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
-                'nations' => $nationList,
+                'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],
             ],
         ];

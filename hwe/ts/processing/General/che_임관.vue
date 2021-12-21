@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <NationSelect :nations="nations" v-model="selectedNationID" />
+        <NationSelect :nations="nationList" v-model="selectedNationID" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -22,7 +22,7 @@
         <div>임관권유문</div>
       </div>
       <div
-        v-for="[, nation] in nations"
+        v-for="[, nation] in nationList"
         :key="nation.id"
         class="nation-row s-border-b"
         @click="selectedNationID = nation.id"
@@ -68,9 +68,9 @@ export default defineComponent({
     BottomBar,
   },
   setup() {
-    const nations = new Map<number, procNationItem>();
+    const nationList = new Map<number, procNationItem>();
     for (const nationItem of procRes.nationList) {
-      nations.set(nationItem.id, nationItem);
+      nationList.set(nationItem.id, nationItem);
     }
 
     const selectedNationID = ref(procRes.nationList[0].id);
@@ -89,7 +89,7 @@ export default defineComponent({
     }
 
     return {
-      nations: ref(nations),
+      nationList: ref(nationList),
       selectedNationID,
       commandName,
       isBrightColor,

@@ -9,30 +9,38 @@
       :mapTheme="mapTheme"
       v-model="selectedCityObj"
     />
-
-    <div v-if="(commandName == '선전포고')">
-      타국에게 선전 포고합니다.<br />
-      선전 포고할 국가를 목록에서 선택하세요.<br />
-      고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br />
-      초반제한 해제 2년전부터 선포가 가능합니다. ({{ startYear + 1 }}년
-      1월부터 가능)<br />
-      현재 선포가 불가능한 국가는 배경색이 <span style="color: red">붉은색</span>으로
-      표시됩니다.<br />
-    </div>
-    <div v-if="(commandName == '급습')">
-      선택된 국가에 급습을 발동합니다.<br />
-      선포, 전쟁중인 상대국에만 가능합니다.<br />
-      상대 국가를 목록에서 선택하세요.<br />
-      배경색은 현재 급습 불가능 국가는
-      <span style="color: red">붉은색</span>으로 표시됩니다.<br />
+    <div>
+      타국에게 원조합니다.<br />
+      작위별로 금액 제한이 있습니다.<br />
     </div>
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
         <NationSelect :nations="nationList" v-model="selectedNationID" />
       </div>
+      <div class="col-6 col-md-0"></div>
+      <div class="col-10 col-md-5">
+        금 :
+        <AmountSelect
+          :amountGuide="amountGuide"
+          v-model="goldAmount"
+          :step="10"
+          :maxAmount="maxAmount"
+          :minAmount="minAmount"
+        />
+      </div>
+      <div class="col-10 col-md-5">
+        쌀 :
+        <AmountSelect
+          :amountGuide="amountGuide"
+          v-model="riceAmount"
+          :step="10"
+          :maxAmount="maxAmount"
+          :minAmount="minAmount"
+        />
+      </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button @click="submit">{{ commandName }}</b-button>
+        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
       </div>
     </div>
   </div>
@@ -44,6 +52,7 @@ import MapLegacyTemplate, {
   MapCityParsed,
 } from "@/components/MapLegacyTemplate.vue";
 import NationSelect from "@/processing/NationSelect.vue";
+import AmountSelect from "@/processing/AmountSelect.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
@@ -55,13 +64,18 @@ declare const commandName: string;
 
 declare const procRes: {
   nationList: procNationList;
-  startYear: number,
+  currentNationLevel: number;
+  nationLevelText: Record<number, string>;
+  minAmount: number;
+  maxAmount: number;
+  amountGuide: number[];
 };
 
 export default defineComponent({
   components: {
     MapLegacyTemplate,
     NationSelect,
+    AmountSelect,
     TopBackBar,
     BottomBar,
   },
@@ -79,16 +93,16 @@ export default defineComponent({
       nationList.set(nationItem.id, nationItem);
     }
 
-    const selectedNationID = ref(procRes.nationList[0].id);
-    const selectedCityObj = ref();//mapping용
+    const goldAmount = ref(procRes.minAmount);
+    const riceAmount = ref(procRes.minAmount);
 
-    function selectedNation(nationID: number) {
-      selectedNationID.value = nationID;
-    }
+    const selectedNationID = ref(procRes.nationList[0]?.id);
+    const selectedCityObj = ref(); //mapping용
 
     async function submit(e: Event) {
       const event = new CustomEvent<Args>("customSubmit", {
         detail: {
+          amountList: [goldAmount.value, riceAmount.value],
           destNationID: selectedNationID.value,
         },
       });
@@ -96,13 +110,18 @@ export default defineComponent({
     }
 
     return {
-      startYear: procRes.startYear,
-      mapTheme: ref(mapTheme),
-      nationList: ref(nationList),
-      selectedCityObj,
+      mapTheme,
+      goldAmount,
+      riceAmount,
+      nationList,
       selectedNationID,
+      selectedCityObj,
+      currentNationLevel: procRes.currentNationLevel,
+      nationLevelText: procRes.nationLevelText,
+      minAmount: ref(procRes.minAmount),
+      maxAmount: ref(procRes.maxAmount),
+      amountGuide: procRes.amountGuide,
       commandName,
-      selectedNation,
       submit,
     };
   },

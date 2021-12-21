@@ -20,6 +20,7 @@
       class="form-control"
       :max="maxAmount"
       :min="minAmount"
+      :step="step"
       v-model="amount"
       placeholder="금액"
     />
@@ -69,8 +70,13 @@ export default defineComponent({
     },
     amountGuide: {
       type: Array as PropType<number[]>,
-      reqquired: false,
+      required: false,
     },
+    step: {
+      type: Number,
+      required: false,
+      default: 1,
+    }
   },
   emits: ["update:modelValue"],
   watch: {

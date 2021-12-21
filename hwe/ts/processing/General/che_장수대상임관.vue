@@ -97,9 +97,9 @@ export default defineComponent({
       return name;
     }
 
-    const nations = new Map<number, procNationItem>();
+    const nationList = new Map<number, procNationItem>();
     for (const nationItem of procRes.nationList) {
-      nations.set(nationItem.id, nationItem);
+      nationList.set(nationItem.id, nationItem);
     }
 
     async function submit(e: Event) {
@@ -111,16 +111,10 @@ export default defineComponent({
       unwrap(e.target).dispatchEvent(event);
     }
 
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
-
     return {
-      nations: ref(nations),
+      nationList: ref(nationList),
       selectedGeneralID,
       generalList,
-      nationList,
       commandName,
       isBrightColor,
       textHelpGeneral,
