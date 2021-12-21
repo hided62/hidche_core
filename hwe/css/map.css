@@ -119,6 +119,10 @@
     height: 12px;
 }
 
+.world_map.map_detail .my_city{
+    border-radius: 33%;
+}
+
 .world_map.map_detail .my_city:before {
     content: "";
     top: -2px;
@@ -126,6 +130,8 @@
     right: -2px;
     bottom: -2px;
     position: absolute;
+    border-radius: 33%;
+    overflow: hidden;
 
     animation-duration: 3.9s;
     animation-name: blink-my-city-d1;
@@ -140,6 +146,8 @@
     right: -2px;
     bottom: -2px;
     position: absolute;
+    border-radius: 33%;
+    overflow: hidden;
 
     animation-duration: 3.9s;
     animation-name: blink-my-city-d2;
@@ -149,31 +157,31 @@
 
 @keyframes blink-my-city-d1 {
     0% {
-        outline: dashed 3px transparent;
+        outline: solid 4px transparent;
     }
 
     50% {
-        outline: dashed 3px rgba(255, 255, 255, 0.5);
+        outline: solid 4px rgba(255, 0, 0, 1);
     }
 
     100% {
 
-        outline: dashed 3px transparent;
+        outline: solid 4px transparent;
     }
 }
 
 @keyframes blink-my-city-d2 {
     0% {
-        outline: dashed 2px transparent;
+        outline: double 4px transparent;
     }
 
     50% {
-        outline: dashed 2px red;
+        outline: double 4px rgba(192, 192, 192, 1);
     }
 
     100% {
 
-        outline: dashed 2px transparent;
+        outline: double 4px transparent;
     }
 }
 
