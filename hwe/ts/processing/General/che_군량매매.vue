@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" />
   <div class="bg0">
     <div>
       자신의 군량을 사거나 팝니다.<br />

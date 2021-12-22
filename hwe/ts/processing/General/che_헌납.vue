@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" />
   <div class="bg0">
     <div>
       자신의 자금이나 군량을 국가 재산으로 헌납합니다.

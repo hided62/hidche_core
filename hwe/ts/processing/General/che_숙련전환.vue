@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" />
   <div class="bg0">
     <div>
       본인의 특정 병종 숙련을 40% 줄이고, 줄어든 숙련 중 9/10(90%p)를 다른 병종

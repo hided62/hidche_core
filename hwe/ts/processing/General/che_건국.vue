@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" />
   <div class="bg0" v-if="!available건국">더 이상 건국은 불가능합니다.</div>
   <div class="bg0" v-else>
     <div>현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.</div>

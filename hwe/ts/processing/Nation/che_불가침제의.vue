@@ -47,7 +47,7 @@
       </div>
     </div>
   </div>
-  <BottomBar :title="commandName" />
+  <BottomBar :title="commandName" type="chief" />
 </template>
 
 <script lang="ts">
