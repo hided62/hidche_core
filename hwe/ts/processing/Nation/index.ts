@@ -1,6 +1,7 @@
 import { default as che_국기변경 } from "./che_국기변경.vue";
 import { default as che_국호변경 } from "./che_국호변경.vue";
 import { default as che_물자원조 } from "./che_물자원조.vue";
+import { default as che_불가침제의 } from "./che_불가침제의.vue";
 import { default as che_피장파장 } from "./che_피장파장.vue";
 
 import { default as ProcessNation } from "../ProcessNation.vue";
@@ -16,6 +17,7 @@ export const commandMap: Record<string, typeof ProcessNation> = {
     che_물자원조,
     che_발령: ProcessGeneralCity,
     che_백성동원: ProcessCity,
+    che_불가침제의,
     che_불가침파기제의: ProcessNation,
     che_선전포고: ProcessNation,
     che_수몰: ProcessCity,
