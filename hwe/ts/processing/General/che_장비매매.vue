@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
+  <TopBackBar :title="commandName" v-model:searchable="searchable" />
   <div class="bg0">
     <div>
       장비를 구입하거나 매각합니다.<br />

@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" v-model:searchable="searchable" />
+  <TopBackBar :title="commandName" :type="procEntryMode" v-model:searchable="searchable" />
   <div class="bg0">
     <MapLegacyTemplate
       :isDetailMap="false"
@@ -77,7 +77,7 @@
       @selected="selected"
     />
   </div>
-  <BottomBar :title="commandName" />
+  <BottomBar :title="commandName" :type="procEntryMode" />
 </template>
 
 <script lang="ts">
@@ -100,6 +100,8 @@ declare const procRes: {
   distanceList: Record<number, number[]>;
   cities: [number, string][];
 };
+declare const entryInfo: ['General'|'Nation', unknown];
+
 export default defineComponent({
   components: {
     MapLegacyTemplate,
@@ -141,6 +143,7 @@ export default defineComponent({
     }
 
     return {
+      procEntryMode: entryInfo[0] == 'Nation'?'chief':'normal',
       searchable: getProcSearchable(),
       mapTheme: ref(mapTheme),
       citiesMap: ref(citiesMap),

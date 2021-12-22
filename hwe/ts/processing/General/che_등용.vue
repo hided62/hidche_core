@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
+  <TopBackBar :title="commandName" v-model:searchable="searchable" />
   <div class="bg0">
     <div>
       재야나 타국의 장수를 등용합니다.<br />

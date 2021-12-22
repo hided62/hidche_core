@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
+  <TopBackBar :title="commandName" :type="procEntryMode" v-model:searchable="searchable" />
   <div class="bg0">
     <div v-if="commandName == '몰수'">
       장수의 자금이나 군량을 몰수합니다.<br />
@@ -43,7 +43,7 @@
       </div>
     </div>
   </div>
-  <BottomBar :title="commandName" />
+  <BottomBar :title="commandName" :type="procEntryMode" />
 </template>
 
 <script lang="ts">
@@ -63,6 +63,7 @@ import {
 } from "./processingRes";
 import { getNpcColor } from "@/common_legacy";
 declare const commandName: string;
+declare const entryInfo: ['General'|'Nation', unknown];
 
 declare const procRes: {
   distanceList: Record<number, number[]>;
@@ -124,6 +125,7 @@ export default defineComponent({
     }
 
     return {
+      procEntryMode: entryInfo[0] == 'Nation'?'chief':'normal',
       searchable: getProcSearchable(),
       amount,
       isGold,
