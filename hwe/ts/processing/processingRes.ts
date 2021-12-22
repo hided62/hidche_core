@@ -1,5 +1,6 @@
 import { ItemTypeKey } from "@/defs";
 import { combineArray } from "@/util/combineArray";
+import { Ref, ref, watch } from "vue";
 
 export type procGeneralItem = {
     no: number,
@@ -96,3 +97,15 @@ export type procItemList = Record<ItemTypeKey, {
     typeName: string,
     values: procItemType[],
 }>
+
+
+//XXX: vuex 쓰기 전까지...
+export const searchableProcessingMode = 'sam.processing.searchable';
+const searchable = ref((localStorage.getItem(searchableProcessingMode) ?? "0") != "0");
+watch(searchable, (val) => {
+    localStorage.setItem(searchableProcessingMode, val ? "1" : "0");
+});
+
+export function getProcSearchable():Ref<boolean>{
+    return searchable;
+}

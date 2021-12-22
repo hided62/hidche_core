@@ -17,7 +17,7 @@
     deselectGroupLabel=""
     placeholder="장수 선택"
     :maxHeight="400"
-    :searchable="searchMode"
+    :searchable="searchable"
   >
     <template v-slot:option="props">
       <div v-if="props.option.title" v-html="props.option.title"></div>
@@ -81,6 +81,11 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+    searchable:{
+      type: Boolean,
+      required: false,
+      default: true,
+    }
   },
   emits: ["update:modelValue"],
   watch: {
@@ -146,7 +151,6 @@ export default defineComponent({
     }
     return {
       selectedGeneral,
-      searchMode: true,
       forFind,
       targets,
       isBrightColor,

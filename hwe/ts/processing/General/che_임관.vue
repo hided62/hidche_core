@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
   <div class="bg0">
     <div>
       국가에 임관합니다.<br />
@@ -10,7 +10,11 @@
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <SelectNation :nations="nationList" v-model="selectedNationID" />
+        <SelectNation
+          :nations="nationList"
+          v-model="selectedNationID"
+          :searchable="searchable"
+        />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -62,7 +66,7 @@ import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { procNationItem, procNationList } from "../processingRes";
+import { procNationItem, procNationList, getProcSearchable } from "../processingRes";
 import { isBrightColor } from "@/util/isBrightColor";
 declare const commandName: string;
 
@@ -99,6 +103,7 @@ export default defineComponent({
     }
 
     return {
+      searchable: getProcSearchable(),
       nationList: ref(nationList),
       selectedNationID,
       commandName,

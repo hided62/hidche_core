@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
   <div class="bg0">
     <MapLegacyTemplate
       :isDetailMap="false"
@@ -54,7 +54,7 @@
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <SelectNation :nations="nationList" v-model="selectedNationID" />
+        <SelectNation :nations="nationList" v-model="selectedNationID" :searchable="searchable" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -74,7 +74,7 @@ import { unwrap } from "@/util/unwrap";
 import { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { procNationItem, procNationList } from "./processingRes";
+import { getProcSearchable, procNationItem, procNationList } from "./processingRes";
 declare const mapTheme: string;
 declare const commandName: string;
 
@@ -121,6 +121,7 @@ export default defineComponent({
     }
 
     return {
+      searchable: getProcSearchable(),
       startYear: procRes.startYear,
       mapTheme: ref(mapTheme),
       nationList: ref(nationList),

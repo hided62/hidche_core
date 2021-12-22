@@ -14,7 +14,7 @@
     deselectGroupLabel=""
     placeholder="도시 선택"
     :maxHeight="400"
-    :searchable="searchMode"
+    :searchable="searchable"
   >
     <template v-slot:option="props"
       ><span
@@ -58,6 +58,11 @@ export default defineComponent({
       type: Map as PropType<Map<number, { name: string; info?: string }>>,
       required: true,
     },
+    searchable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   emits: ["update:modelValue"],
   watch: {
@@ -89,7 +94,6 @@ export default defineComponent({
     }
     return {
       selectedCity,
-      searchMode: true,
       citiesForFind,
       targets,
     };

@@ -1,12 +1,10 @@
 import '@scss/processing.scss';
 
-import { exportWindow } from '@util/exportWindow';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { convertFormData } from '@util/convertFormData';
 import { InvalidResponse } from '@/defs';
 import { unwrap } from "@util/unwrap";
-import { recruitCrewForm } from '@/recruitCrewForm';
 import BootstrapVue3 from 'bootstrap-vue-3'
 import Multiselect from 'vue-multiselect';
 import { commandMap as GeneralActions } from "@/processing/General";
@@ -98,10 +96,9 @@ if (app === undefined) {
     console.error(`모듈이 지정되지 않음`, entryInfo);
 }
 else {
-
     const div = unwrap(document.querySelector('#container'));
     div.addEventListener('customSubmit', (e: Event) => {
-        const {detail} = e as unknown as CustomEvent<Args>;
+        const { detail } = e as unknown as CustomEvent<Args>;
         void submitCommand(entryInfo[0] == 'Nation', turnList, entryInfo[1], detail);
     }, true);
 

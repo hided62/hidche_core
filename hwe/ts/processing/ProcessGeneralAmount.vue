@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
   <div class="bg0">
     <div v-if="commandName == '몰수'">
       장수의 자금이나 군량을 몰수합니다.<br />
@@ -19,6 +19,7 @@
           :generals="generalList"
           v-model="selectedGeneralID"
           :textHelper="textHelpGeneral"
+          :searchable="searchable"
         />
       </div>
       <div class="col-2 col-md-1">
@@ -55,6 +56,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
+  getProcSearchable,
   procGeneralItem,
   procGeneralKey,
   procGeneralRawItemList,
@@ -122,6 +124,7 @@ export default defineComponent({
     }
 
     return {
+      searchable: getProcSearchable(),
       amount,
       isGold,
       selectedGeneralID,

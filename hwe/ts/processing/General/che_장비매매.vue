@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
   <div class="bg0">
     <div>
       장비를 구입하거나 매각합니다.<br />
@@ -29,7 +29,7 @@
           deselectGroupLabel=""
           placeholder="아이템 선택"
           :maxHeight="400"
-          :searchable="searchMode"
+          :searchable="searchable"
         >
           <template v-slot:option="props">
             <div
@@ -81,7 +81,7 @@ import { entriesWithType } from "@util/entriesWithType";
 import { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { procItemList, procItemType } from "../processingRes";
+import { getProcSearchable, procItemList, procItemType } from "../processingRes";
 import { ItemTypeKey, ItemTypeNameMap, NoneValue, ValuesOf } from "@/defs";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 
@@ -164,7 +164,6 @@ export default defineComponent({
 
       forFind.push(forBuy);
     }
-    const searchMode = ref(true);
 
     async function submit(e: Event) {
       const event = new CustomEvent<Args>("customSubmit", {
@@ -178,7 +177,7 @@ export default defineComponent({
 
     return {
       ...procRes,
-      searchMode,
+      searchable: getProcSearchable(),
       forFind,
       NoneValue,
       ItemTypeNameMap,

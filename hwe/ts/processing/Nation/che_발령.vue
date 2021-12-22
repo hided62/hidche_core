@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
   <div class="bg0">
     <MapLegacyTemplate
       :isDetailMap="false"
@@ -23,12 +23,13 @@
           :generals="generalList"
           :troops="troops"
           :textHelper="textHelpGeneral"
+          :searchable="searchable"
           v-model="selectedGeneralID"
         />
       </div>
       <div class="col-6 col-md-4">
         도시 :
-        <SelectCity :cities="citiesMap" v-model="selectedCityID" />
+        <SelectCity :cities="citiesMap" v-model="selectedCityID" :searchable="searchable" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
@@ -51,6 +52,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
+  getProcSearchable,
   procGeneralItem,
   procGeneralKey,
   procGeneralRawItemList,
@@ -127,6 +129,7 @@ export default defineComponent({
     }
 
     return {
+      searchable: getProcSearchable(),
       mapTheme: ref(mapTheme),
       citiesMap: ref(citiesMap),
       selectedCityID,

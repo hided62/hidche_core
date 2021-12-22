@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
   <div class="bg0">
     <div>
       장수를 따라 임관합니다.<br />
@@ -14,6 +14,7 @@
           :generals="generalList"
           :groupByNation="nationList"
           :textHelper="textHelpGeneral"
+          :searchable="searchable"
           v-model="selectedGeneralID"
         />
       </div>
@@ -68,6 +69,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
+  getProcSearchable,
   procGeneralItem,
   procGeneralKey,
   procGeneralRawItemList,
@@ -122,6 +124,7 @@ export default defineComponent({
     }
 
     return {
+      searchable: getProcSearchable(),
       nationList: ref(nationList),
       selectedGeneralID,
       generalList,

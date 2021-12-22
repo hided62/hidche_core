@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" />
+  <TopBackBar :title="commandName" v-model:searchable="searchable" />
   <div class="bg0">
     <MapLegacyTemplate
       :isDetailMap="false"
@@ -65,7 +65,7 @@
     <div class="row">
       <div class="col-4 col-md-2">
         도시:
-        <SelectCity :cities="citiesMap" v-model="selectedCityID" />
+        <SelectCity :cities="citiesMap" v-model="selectedCityID" :searchable="searchable" />
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
@@ -92,6 +92,7 @@ import { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { pick as JosaPick } from "@util/JosaUtil";
+import { getProcSearchable } from "./processingRes";
 declare const mapTheme: string;
 declare const currentCity: number;
 declare const commandName: string;
@@ -140,6 +141,7 @@ export default defineComponent({
     }
 
     return {
+      searchable: getProcSearchable(),
       mapTheme: ref(mapTheme),
       citiesMap: ref(citiesMap),
       selectedCityID,
