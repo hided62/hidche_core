@@ -1,3 +1,4 @@
+import { ItemTypeKey } from "@/defs";
 import { combineArray } from "@/util/combineArray";
 
 export type procGeneralItem = {
@@ -20,7 +21,7 @@ export type procGeneralItem = {
 
 export type procGeneralList = procGeneralItem[];
 
-export type procGeneralKey = 'no'| 'name'| 'nationID' | 'officerLevel'| 'npc'| 'gold'| 'rice'| 'leadership'| 'strength'| 'intel'| 'cityID'| 'crew'| 'train'| 'atmos'| 'troopID';
+export type procGeneralKey = 'no' | 'name' | 'nationID' | 'officerLevel' | 'npc' | 'gold' | 'rice' | 'leadership' | 'strength' | 'intel' | 'cityID' | 'crew' | 'train' | 'atmos' | 'troopID';
 
 export type procGeneralRawItem = procGeneralItem[procGeneralKey][];
 
@@ -33,7 +34,7 @@ export type procTroopList = Record<number, procTroopItem>;
 
 export type procGeneralRawItemList = procGeneralRawItem[];
 
-export function convertGeneralList(keys: procGeneralKey[], rawList: procGeneralRawItemList): procGeneralList{
+export function convertGeneralList(keys: procGeneralKey[], rawList: procGeneralRawItemList): procGeneralList {
     return combineArray(rawList, keys) as procGeneralList;
 }
 
@@ -81,3 +82,17 @@ export type procCrewTypeItem = {
     img: string,
     info: string[],
 }
+
+export type procItemType = {
+    id: string,
+    name: string,
+    reqSecu: number,
+    cost: number,
+    info: string,//<br>
+    isBuyable: boolean,
+}
+
+export type procItemList = Record<ItemTypeKey, {
+    typeName: string,
+    values: procItemType[],
+}>

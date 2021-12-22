@@ -4,6 +4,7 @@ import { default as che_등용 } from "./che_등용.vue";
 import { default as che_선양 } from "./che_선양.vue";
 import { default as che_숙련전환 } from "./che_숙련전환.vue";
 import { default as che_임관 } from "./che_임관.vue";
+import { default as che_장비매매 } from "./che_장비매매.vue";
 import { default as che_장수대상임관 } from "./che_장수대상임관.vue";
 import { default as che_징병 } from "./che_징병.vue";
 import { default as che_헌납 } from "./che_헌납.vue";
@@ -25,6 +26,7 @@ export const commandMap: Record<string, typeof ProcessCity> = {
     che_숙련전환,
     che_이동: ProcessCity,
     che_임관,
+    che_장비매매,
     che_장수대상임관,
     che_징병,
     che_증여: ProcessGeneralAmount,

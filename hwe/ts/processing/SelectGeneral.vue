@@ -43,8 +43,7 @@
 </template>
 <script lang="ts">
 import { getNpcColor } from "@/common_legacy";
-import { automata초성All } from "@/util/automata초성";
-import { filter초성withAlphabet } from "@/util/filter초성withAlphabet";
+import { convertSearch초성 } from "@/util/convertSearch초성";
 import { isBrightColor } from "@/util/isBrightColor";
 import { unwrap } from "@/util/unwrap";
 import { defineComponent, PropType } from "vue";
@@ -130,15 +129,13 @@ export default defineComponent({
         ? `<span style="color:${nameColor}">${gen.name}</span>`
         : gen.name;
 
-      const [filteredTextH, filteredTextA] = filter초성withAlphabet(gen.name);
-      const [filteredTextHL1, filteredTextHL2] = automata초성All(filteredTextH);
       const obj: SelectedGeneral = {
         value: gen.no,
         title: this.textHelper
           ? this.textHelper(gen)
           : `${name} (${gen.leadership}/${gen.leadership}/${gen.intel})`,
         simpleName: gen.name,
-        searchText: `${gen.name} ${filteredTextH} ${filteredTextA} ${filteredTextHL1} ${filteredTextHL2}`,
+        searchText: convertSearch초성(gen.name).join('|'),
         obj: gen,
       };
       if (gen.no == this.modelValue) {
@@ -157,7 +154,6 @@ export default defineComponent({
   },
 });
 </script>
-
 <style lang="scss">
 @import "@scss/common/break_500px.scss";
 @import "@scss/common/variables.scss";

@@ -133,6 +133,14 @@ export type NationPolicy = {
     properWarTrainAtmos: number,
 }
 
+export type ItemTypeKey = 'horse' | 'weapon' | 'book' | 'item';
+export const ItemTypeNameMap: Record<ItemTypeKey, string> = {
+    horse: '명마',
+    weapon: '무기',
+    book: '서적',
+    item: '도구',
+}
+
 export declare type Colors = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark' | 'light';
 
 export type IDItem<T> = {
@@ -148,3 +156,7 @@ export type ToastType = {
 
 export const keyScreenMode = 'sam.screenMode';
 export type ScreenModeType = 'auto'|'500px'|'1000px';
+
+export declare type ValuesOf<T> = T[keyof T];
+
+export const NoneValue = 'None' as const;

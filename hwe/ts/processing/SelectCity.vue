@@ -36,8 +36,7 @@
   </v-multiselect>
 </template>
 <script lang="ts">
-import { automata초성All } from "@/util/automata초성";
-import { filter초성withAlphabet } from "@/util/filter초성withAlphabet";
+import { convertSearch초성 } from "@/util/convertSearch초성";
 import { defineComponent, PropType } from "vue";
 
 type SelectedCity = {
@@ -75,14 +74,12 @@ export default defineComponent({
     const targets = new Map<number, SelectedCity>();
     let selectedCity;
     for (const [value, { name, info }] of this.cities.entries()) {
-      const [filteredTextH, filteredTextA] = filter초성withAlphabet(name);
-      const [filteredTextHL1, filteredTextHL2] = automata초성All(filteredTextH);
       const obj: SelectedCity = {
         value,
         title: name,
         info: info,
         simpleName: name,
-        searchText: `${name} ${filteredTextH} ${filteredTextA} ${filteredTextHL1} ${filteredTextHL2}`,
+        searchText: convertSearch초성(name).join('|'),
       };
       if (value == this.modelValue) {
         selectedCity = obj;

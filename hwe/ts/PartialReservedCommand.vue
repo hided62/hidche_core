@@ -209,8 +209,7 @@ import { mb_strwidth } from "@util/mb_strwidth";
 import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
 import { sammoAPI } from "@util/sammoAPI";
-import { filter초성withAlphabet } from "@util/filter초성withAlphabet";
-import { automata초성All } from "@util/automata초성";
+import { convertSearch초성 } from "./util/convertSearch초성";
 type commandItem = {
   value: string;
   title: string;
@@ -499,11 +498,7 @@ export default defineComponent({
         if (command.searchText) {
           continue;
         }
-        const [filteredTextH, filteredTextA] = filter초성withAlphabet(
-          command.simpleName.replace(/\s+/g, "")
-        );
-        const [filteredTextHL1, filteredTextHL2] = automata초성All(filteredTextH);
-        command.searchText = `${command.simpleName} ${filteredTextH} ${filteredTextA} ${filteredTextHL1} ${filteredTextHL2}`;
+        command.searchText = convertSearch초성(command.simpleName).join('|');
       }
     }
 
