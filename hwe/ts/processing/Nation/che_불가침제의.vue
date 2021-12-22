@@ -18,15 +18,14 @@
       <span style="color: red">붉은색</span>으로 표시됩니다.<br />
     </div>
     <div class="row">
-      <div class="col-6 col-md-3">
+      <div class="col-4 col-md-3">
         국가 :
         <SelectNation :nations="nationList" v-model="selectedNationID" />
       </div>
-      <div class="col-6 col-md-3">
+      <div class="col-5 col-md-3">
         기간 :
-        <div class="input-group"></div>
         <div class="input-group">
-          <b-form-select v-model="selectedYear"
+          <b-form-select class="text-end selectedYear" v-model="selectedYear"
             ><b-form-select-option
               v-for="yearP in maxYear - minYear + 1"
               :key="yearP"
@@ -34,16 +33,16 @@
               >{{ yearP + minYear - 1 }}</b-form-select-option
             >
           </b-form-select>
-          <span class="input-group-text">년</span>
-          <b-form-select v-model="selectedMonth"
+          <span class="input-group-text px-2">년</span>
+          <b-form-select class="text-center" v-model="selectedMonth"
             ><b-form-select-option v-for="month in 12" :key="month" :value="month">{{
               month
             }}</b-form-select-option>
           </b-form-select>
-          <span class="input-group-text">월</span>
+          <span class="input-group-text px-2">월</span>
         </div>
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-3 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
       </div>
     </div>
@@ -130,3 +129,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.selectedYear{
+  width:32%;
+}
+</style>

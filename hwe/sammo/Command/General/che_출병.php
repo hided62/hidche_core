@@ -247,7 +247,8 @@ class che_출병 extends Command\GeneralCommand
             'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'cities' => \sammo\JSOptionsForCities(),
-                'distanceList' => new \StdClass(),
+                'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 1),
+
             ],
         ];
     }

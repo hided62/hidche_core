@@ -227,7 +227,6 @@ declare const commandList: {
   values: commandItem[];
 }[];
 declare const serverNow: string;
-declare const serverID: string;
 type TurnObj = {
   action: string;
   brief: string;

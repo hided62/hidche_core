@@ -1,3 +1,4 @@
+import { mb_strwidth } from "@/util/mb_strwidth";
 import { isArray, isBoolean, isInteger, isString } from "lodash";
 
 
@@ -54,6 +55,9 @@ export function testSubmitArgs(args: Args): true | ['int' | 'string' | 'boolean'
         }
         if (!isString(testVal)) {
             return ['string', stringKey, testVal];
+        }
+        if(stringKey == 'nationName' && mb_strwidth(testVal) > 18){
+            throw `길이가 반각 18자 분량을 넘었습니다.`;
         }
     }
     for (const booleanKey of booleanArgs) {

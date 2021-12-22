@@ -24,14 +24,14 @@
         국가 :
         <SelectNation :nations="nationList" v-model="selectedNationID" />
       </div>
-      <div class="col-4 col-md-2">
+      <div class="col-3 col-md-2">
         <label>전략 :</label>
         <b-form-select
           :options="commandTypesOption"
           v-model="selectedCommandID"
         />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-3 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
       </div>
     </div>

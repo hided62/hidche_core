@@ -16,20 +16,21 @@
       </li>
     </ul>
     <div class="row">
-      <div class="col-12 col-md-4">
-        국명 : <b-form-input v-model="destNationName" />
+      <div class="col-4 col-md-2">
+        국명 : <b-form-input maxlength="18" v-model="destNationName" />
       </div>
-      <div class="col-6 col-md-2">
+      <div class="col-3 col-md-2">
         색상 : <ColorSelect :colors="colors" v-model="selectedColorID" />
       </div>
-      <div class="col-6 col-md-2">
+      <div class="col-3 col-md-2">
         <label>성향 :</label>
         <b-form-select
           :options="nationTypesOption"
           v-model="selectedNationType"
         />
       </div>
-      <div class="col-12 col-md-2 d-grid">
+
+      <div class="col-2 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>
       </div>
     </div>

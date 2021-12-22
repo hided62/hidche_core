@@ -8,7 +8,7 @@
       임관할 국가를 목록에서 선택하세요.<br />
     </div>
     <div class="row">
-      <div class="col-12 col-md-6">
+      <div class="col-8 col-md-4">
         장수 :
         <SelectGeneral
           :generals="generalList"
@@ -25,11 +25,20 @@
       <div class="nation-header nation-row bg1 center">
         <div>국가명</div>
         <div>임관권유문</div>
+        <div class="zoom-toggle d-grid">
+          <b-button
+            :pressed="toggleZoom"
+            :variant="toggleZoom ? 'info' : 'secondary'"
+            v-model="toggleZoom"
+            @click="toggleZoom = !toggleZoom"
+            >{{ toggleZoom ? "작게 보기" : "크게 보기" }}</b-button
+          >
+        </div>
       </div>
       <div
         v-for="[, nation] in nationList"
         :key="nation.id"
-        class="nation-row s-border-b"
+        :class="['nation-row', 's-border-b', toggleZoom ? 'on-zoom' : 'on-fit']"
       >
         <div
           :style="{
@@ -87,6 +96,7 @@ export default defineComponent({
       procRes.generals
     );
 
+    const toggleZoom = ref(true);
     const selectedGeneralID = ref(generalList[0].no);
 
     function textHelpGeneral(gen: procGeneralItem): string {
@@ -116,6 +126,7 @@ export default defineComponent({
       selectedGeneralID,
       generalList,
       commandName,
+      toggleZoom,
       isBrightColor,
       textHelpGeneral,
       submit,
@@ -132,24 +143,57 @@ export default defineComponent({
     display: grid;
     grid-template-columns: 130px 870px;
   }
+
+  .zoom-toggle {
+    display: none;
+  }
+
+  .zoom-toggle > * {
+    display: none;
+  }
 }
 
 @include media-500px {
+  .nation-list .nation-row.nation-header {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    .zoom-toggle {
+      grid-column: 2/3;
+      grid-row: 1/3;
+    }
+  }
+
   .nation-list .nation-row {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr minmax(1fr, calc(200px * 500 / 870));
   }
 
-  .nation-scout-plate {
-    max-height: calc(200px * 500 / 870);
-    overflow: hidden;
+  .on-fit {
+    .nation-scout-plate {
+      max-height: calc(200px * 500 / 870);
+      overflow: hidden;
+    }
+
+    .nation-scout-msg {
+      width: 870px;
+      transform-origin: 0px 0px;
+      transform: scale(calc(500 / 870));
+    }
   }
 
-  .nation-scout-msg {
-    width: 870px;
-    transform-origin: 0px 0px;
-    transform: scale(calc(500 / 870));
+  .on-zoom {
+    .nation-scout-plate {
+      max-height: 200px;
+      overflow-y: hidden;
+      overflow-x: auto;
+    }
+
+    .nation-scout-msg {
+      max-width: 870px;
+    }
   }
 }
 </style>

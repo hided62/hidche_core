@@ -27,9 +27,9 @@
     <div>{{ crewType.attack }}</div>
     <div>{{ crewType.defence }}</div>
     <div>{{ crewType.speed }}</div>
+    <div>{{ crewType.avoid }}</div>
     <div>{{ crewType.baseCost.toFixed(1) }}</div>
     <div>{{ crewType.baseRice.toFixed(1) }}</div>
-    <div>{{ crewType.avoid }}</div>
     <div class="crewTypePanel">
       <b-button-group
         ><b-button class="py-1" variant="dark" @click="beHalf">절반</b-button
@@ -59,7 +59,7 @@
                 background-color: #ddd;
               "
               ><div style="margin-left: auto">
-                {{ Math.ceil(amount * crewType.baseCost).toLocaleString() }}금
+                {{ Math.ceil(amount * crewType.baseCost * goldCoeff).toLocaleString() }}금
               </div></span
             >
           </div>
@@ -86,6 +86,7 @@ export default defineComponent({
     commandName: VueTypes.string.isRequired,
     currentCrewType: VueTypes.number.def(-1),
     crew: VueTypes.number.def(0),
+    goldCoeff: VueTypes.number.isRequired,
   },
   emits: ["submitOutput", "update:amount"],
   watch: {

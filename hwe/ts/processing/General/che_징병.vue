@@ -61,11 +61,12 @@
           ></div>
           <div
             :style="{
-              backgroundColor: (destCrewType.notAvailable
-                ? 'red'
-                : destCrewType.reqTech == 0
-                ? 'green'
-                : 'limegreen')+' !important',
+              backgroundColor:
+                (destCrewType.notAvailable
+                  ? 'red'
+                  : destCrewType.reqTech == 0
+                  ? 'green'
+                  : 'limegreen') + ' !important',
               height: '100%',
             }"
             class="d-grid"
@@ -74,7 +75,7 @@
               {{ destCrewType.name }}
             </div>
           </div>
-          <div>{{ destCrewType.baseCost.toFixed(1) }}</div>
+          <div></div>
           <div class="crewTypePanel">
             <b-button-group
               ><b-button class="py-1" variant="dark" @click="beHalf"
@@ -107,7 +108,7 @@
                     ><div style="margin-left: auto">
                       {{
                         Math.ceil(
-                          amount * destCrewType.baseCost
+                          amount * destCrewType.baseCost * goldCoeff
                         ).toLocaleString()
                       }}금
                     </div></span
@@ -116,6 +117,7 @@
               </div>
             </div>
           </div>
+          <div></div>
           <b-button variant="primary" @click="submit">{{
             commandName
           }}</b-button>
@@ -126,9 +128,9 @@
           <div>공격</div>
           <div>방어</div>
           <div>기동</div>
+          <div>회피</div>
           <div>가격</div>
           <div>군량</div>
-          <div>회피</div>
           <div class="crewTypePanel">병사 수</div>
           <div class="crewTypeBtn">행동</div>
           <div class="crewTypeInfo">특징</div>
@@ -140,10 +142,17 @@
           :key="armCrewType.armType"
         >
           <div class="s-border-b row gx-0">
-            <div class="col-7 col-md-10 align-self-center px-3" style="font-size:1.3em;">{{ armCrewType.armName }} 계열</div>
+            <div
+              class="col-7 col-md-10 align-self-center px-3"
+              style="font-size: 1.3em"
+            >
+              {{ armCrewType.armName }} 계열
+            </div>
             <div class="col-5 col-md-2 d-grid">
               <b-button
-                :variant="showNotAvailable.get(armCrewType.armType) ? 'warning' : 'dark'"
+                :variant="
+                  showNotAvailable.get(armCrewType.armType) ? 'warning' : 'dark'
+                "
                 :pressed="showNotAvailable.get(armCrewType.armType)"
                 class="btn-sm"
                 @click="toggleShowNotAvailable(armCrewType.armType)"
@@ -166,6 +175,7 @@
               :commandName="commandName"
               :currentCrewType="currentCrewType"
               :crew="crew"
+              :goldCoeff="goldCoeff"
               @submitOutput="trySubmit"
               @click="
                 destCrewType = crewTypeMap.get(crewType.id);
@@ -262,26 +272,18 @@ export default defineComponent({
       void submit(e);
     }
 
-    function toggleShowNotAvailable(armType: number){
-        showNotAvailable.value.set(armType, !(showNotAvailable.value.get(armType)??0));
+    function toggleShowNotAvailable(armType: number) {
+      showNotAvailable.value.set(
+        armType,
+        !(showNotAvailable.value.get(armType) ?? 0)
+      );
     }
 
     return {
       destCrewType,
       amount,
       showNotAvailable,
-      relYear: procRes.relYear,
-      year: procRes.year,
-      tech: procRes.tech,
-      techLevel: procRes.techLevel,
-      startYear: procRes.startYear,
-      goldCoeff: procRes.goldCoeff,
-      leadership: procRes.leadership,
-      fullLeadership: procRes.fullLeadership,
-      armCrewTypes: procRes.armCrewTypes,
-      currentCrewType: procRes.currentCrewType,
-      crew: procRes.crew,
-      gold: procRes.gold,
+      ...procRes,
       crewTypeMap,
       commandName,
       beHalf,
@@ -320,8 +322,8 @@ export default defineComponent({
     display: none;
   }
 
-  .only500pxMode{
-      display: none;
+  .only500pxMode {
+    display: none;
   }
 }
 
@@ -367,7 +369,7 @@ export default defineComponent({
 
   .miniCrewPanel {
     display: grid;
-    grid-template-columns: 64px 1.5fr 1fr 270px 2fr;
+    grid-template-columns: 64px 1.5fr 0.5fr 270px 0.5fr 2fr;
     grid-template-rows: 64px;
     align-items: center;
   }

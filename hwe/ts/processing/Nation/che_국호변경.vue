@@ -7,7 +7,7 @@
     <div class="row">
       <div class="col-6 col-md-3">
         국명 :
-        <b-form-input v-model="destNationName"/>
+        <b-form-input maxlength="18" v-model="destNationName"/>
       </div>
       <div class="col-4 col-md-2 d-grid">
         <b-button @click="submit">{{ commandName }}</b-button>

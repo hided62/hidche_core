@@ -20,7 +20,7 @@
     >
     <input
       type="number"
-      class="form-control"
+      class="form-control text-end"
       :max="maxAmount"
       :min="minAmount"
       :step="step"

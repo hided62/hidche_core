@@ -12,7 +12,7 @@
           <b-button :pressed="!isGold" @click="isGold = false">쌀</b-button>
         </b-button-group>
       </div>
-      <div class="col-6 col-md-4">
+      <div class="col-7 col-md-4">
         금액 :
         <SelectAmount
           :amountGuide="amountGuide"
@@ -21,7 +21,7 @@
           :minAmount="minAmount"
         />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-3 col-md-2 d-grid">
         <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
       </div>
     </div>
