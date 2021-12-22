@@ -192,50 +192,38 @@ class che_선전포고 extends Command\NationCommand
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
-        $startYear = $this->env['startyear'];
-        $availableYear = $startYear + 1;
         $nationList = [];
+        $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
         foreach (getAllNationStaticInfo() as $destNation) {
-            if ($destNation['nation'] == $nationID) {
-                continue;
+            $testTurn->setArg(['destNationID' => $destNation['nation']]);
+            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
+
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
+            if (!$testCommand->hasFullConditionMet()) {
+                $nationTarget['notAvailable'] = true;
+            }
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
             }
 
-            $testCommand = new static($generalObj, $this->env, $this->getLastTurn(), ['destNationID' => $destNation['nation']]);
-            if ($testCommand->hasFullConditionMet()) {
-                $destNation['availableWar'] = true;
-            } else {
-                $destNation['availableWar'] = false;
-            }
-
-            $nationList[] = $destNation;
+            $nationList[] = $nationTarget;
         }
-
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        타국에게 선전 포고합니다.<br>
-        선전 포고할 국가를 목록에서 선택하세요.<br>
-        고립되지 않은 아국 도시에서 인접한 국가에 선포 가능합니다.<br>
-        초반제한 해제 2년전부터 선포가 가능합니다. (<?= $availableYear ?>년 1월부터 가능)<br>
-        현재 선포가 불가능한 국가는 배경색이 <font color=red>붉은색</font>으로 표시됩니다.<br>
-        <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($nationList as $nation) : ?>
-                <option value='<?= $nation['nation'] ?>' style='color:<?= $nation['color'] ?>;<?= $nation['availableWar'] ? '' : 'background-color:red;' ?>'>【<?= $nation['name'] ?> 】</option>
-            <?php endforeach; ?>
-        </select>
-        <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
-<?php
-        return ob_get_clean();
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+            ],
+        ];
     }
 }

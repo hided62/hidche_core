@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\Nation;
 
 use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -18,41 +22,44 @@ use function \sammo\cutTurn;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_발령 extends Command\NationCommand{
+class che_발령 extends Command\NationCommand
+{
     static protected $actionName = '발령';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
         //NOTE: 사망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destGeneralID', $this->arg)){
+        if (!key_exists('destGeneralID', $this->arg)) {
             return false;
         }
-        if(!key_exists('destCityID', $this->arg)){
+        if (!key_exists('destCityID', $this->arg)) {
             return false;
         }
-        if(CityConst::byID($this->arg['destCityID']) === null){
+        if (CityConst::byID($this->arg['destCityID']) === null) {
             return false;
         }
         $destGeneralID = $this->arg['destGeneralID'];
         $destCityID = $this->arg['destCityID'];
 
         $this->arg = [
-            'destGeneralID'=>$destGeneralID,
-            'destCityID'=>$destCityID,
+            'destGeneralID' => $destGeneralID,
+            'destCityID' => $destCityID,
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation();
 
-        $this->minConditionConstraints=[
+        $this->minConditionConstraints = [
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
@@ -67,14 +74,14 @@ class che_발령 extends Command\NationCommand{
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, 1);
         $this->setDestGeneral($destGeneral);
 
-        if($this->arg['destGeneralID'] == $this->getGeneral()->getID()){
-            $this->fullConditionConstraints=[
+        if ($this->arg['destGeneralID'] == $this->getGeneral()->getID()) {
+            $this->fullConditionConstraints = [
                 ConstraintHelper::AlwaysFail('본인입니다')
             ];
             return;
         }
 
-        $this->fullConditionConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity(),
@@ -86,29 +93,34 @@ class che_발령 extends Command\NationCommand{
         ];
     }
 
-    public function getFailString():string{
+    public function getFailString(): string
+    {
         $commandName = $this->getName();
         $failReason = $this->testFullConditionMet();
-        if($failReason === null){
+        if ($failReason === null) {
             throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
         }
         $destGeneralName = $this->destGeneralObj->getName();
         return "{$failReason} <Y>{$destGeneralName}</> {$commandName} 실패.";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
 
-    public function getPreReqTurn():int{
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destGeneralName = $this->destGeneralObj->getName();
         $destCityName = CityConst::byID($this->arg['destCityID'])->name;
@@ -117,8 +129,9 @@ class che_발령 extends Command\NationCommand{
     }
 
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -144,8 +157,8 @@ class che_발령 extends Command\NationCommand{
         $destGeneral->getLogger()->pushGeneralActionLog("<Y>{$generalName}</>에 의해 <G><b>{$destCityName}</b></>{$josaRo} 발령됐습니다. <1>$date</>");
 
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
-        if(cutTurn($general->getTurnTime(), $this->env['turnterm']) != cutTurn($destGeneral->getTurnTime(), $this->env['turnterm'])){
-            $yearMonth+=1;
+        if (cutTurn($general->getTurnTime(), $this->env['turnterm']) != cutTurn($destGeneral->getTurnTime(), $this->env['turnterm'])) {
+            $yearMonth += 1;
         }
         $destGeneral->setAuxVar('last발령', $yearMonth);
         $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>{$josaUl} <G><b>{$destCityName}</b></>{$josaRo} 발령했습니다. <1>$date</>");
@@ -157,56 +170,21 @@ class che_발령 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectCityByMap'
-        ];
-    }
-
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $db = DB::db();
-
-        $nationID = $this->generalObj->getNationID();
-
+        $nationID = $this->getNationID();
         $troops = Util::convertArrayToDict($db->query('SELECT * FROM troop WHERE nation=%i', $nationID), 'troop_leader');
-        $destRawGenerals = $db->query('SELECT no,name,officer_level,npc,gold,rice,leadership,strength,intel,city,crew,train,atmos,troop FROM general WHERE nation = %i ORDER BY npc,binary(name)',$nationID);
-        $destGeneralList = [];
-        foreach($destRawGenerals as $destGeneral){
-            $nameColor = \sammo\getNameColor($destGeneral['npc']);
-            if($nameColor){
-                $nameColor = " style='color:{$nameColor}'";
-            }
-
-            $name = $destGeneral['name'];
-            if($destGeneral['officer_level'] >= 5){
-                $name = "*{$name}*";
-            }
-
-            $destGeneral['name'] = $name;
-            $destGeneral['color'] = $nameColor;
-            $destGeneralList[] = $destGeneral;
-        }
-        ob_start();
-?>
-<?=\sammo\getMapHtml()?><br>
-선택된 도시로 아국 장수를 발령합니다.<br>
-아국 도시로만 발령이 가능합니다.<br>
-목록을 선택하거나 도시를 클릭하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-<?php foreach($destGeneralList as $destGeneral): ?>
-<option value='<?=$destGeneral['no']?>' <?=$destGeneral['color']?>><?=$destGeneral['name']?>[<?=CityConst::byID($destGeneral['city'])->name?>]
-(<?=$destGeneral['leadership']?>/<?=$destGeneral['strength']?>/<?=$destGeneral['intel']?>)
-&lt;병<?=number_format($destGeneral['crew'])?>/훈<?=$destGeneral['train']?>/사<?=$destGeneral['atmos']?>/<?=$destGeneral['troop']?$troops[$destGeneral['troop']]['name']:'-'?>&gt;
-</option>
-<?php endforeach; ?>
-</select>
-<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-<?=\sammo\optionsForCities()?><br>
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<br>
-<?php
-        return ob_get_clean();
+        $destRawGenerals = $db->queryAllLists('SELECT no,name,officer_level,npc,gold,rice,leadership,strength,intel,city,crew,train,atmos,troop FROM general WHERE nation = %i ORDER BY npc,binary(name)', $nationID);
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 1),
+                'cities' => \sammo\JSOptionsForCities(),
+                'troops' => $troops,
+                'generals' => $destRawGenerals,
+                'generalsKey' => ['no', 'name', 'officerLevel', 'npc', 'gold', 'rice', 'leadership', 'strength', 'intel', 'cityID', 'crew', 'train', 'atmos', 'troopID']
+            ]
+        ];
     }
 }

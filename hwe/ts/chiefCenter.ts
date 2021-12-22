@@ -237,7 +237,7 @@ $(function ($) {
         const $command = $('#chiefCommandList option:selected');
         if ($command.data('reqarg')) {
             document.location.href = stringifyUrl({
-                url: 'b_processing.php',
+                url: 'v_processing.php',
                 query: {
                     command: unwrap_any<string>($command.val()),
                     turnList: turnList.join('_'),

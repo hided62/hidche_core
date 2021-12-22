@@ -170,17 +170,11 @@ class che_불가침파기제의 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
-
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
+        $nationList = [];
 
         $db = DB::db();
         $diplomacyStatus = Util::convertArrayToDict(
@@ -188,39 +182,29 @@ class che_불가침파기제의 extends Command\NationCommand{
             'you'
         );
 
-        $nationList = [];
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['nation'] == $nationID){
-                continue;
-            }
+        foreach (getAllNationStaticInfo() as $destNation) {
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
 
             if($diplomacyStatus[$destNation['nation']]['state'] != 7){
-                $destNation['cssBgColor'] = 'background-color:red;';
+                $nationTarget['notAvailable'] = true;
             }
-            else{
-                $destNation['cssBgColor'] = '';
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
             }
 
-            $nationList[] = $destNation;
+            $nationList[] = $nationTarget;
         }
-
-        ob_start();
-?>
-<?=\sammo\getMapHtml()?><br>
-불가침중인 국가에 조약 파기를 제의합니다.<br>
-제의할 국가를 목록에서 선택하세요.<br>
-배경색은 현재 제의가 불가능한 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
-<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <option
-        value='<?=$nation['nation']?>'
-        style='color:<?=$nation['color']?>;<?=$nation['cssBgColor']?>'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-</select>에게
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
-<?php
-        return ob_get_clean();
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+            ],
+        ];
     }
 }

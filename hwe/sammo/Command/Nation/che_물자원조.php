@@ -1,9 +1,13 @@
 <?php
+
 namespace sammo\Command\Nation;
 
 use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -21,64 +25,67 @@ use function \sammo\getNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_물자원조 extends Command\NationCommand{
+class che_물자원조 extends Command\NationCommand
+{
     static protected $actionName = '원조';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
 
-        if(!key_exists('destNationID', $this->arg)){
+        if (!key_exists('destNationID', $this->arg)) {
             return false;
         }
         $destNationID = $this->arg['destNationID'];
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
-        if(!key_exists('amountList', $this->arg)){
+        if (!key_exists('amountList', $this->arg)) {
             return false;
         }
         $amountList = $this->arg['amountList'];
-        if(!is_array($amountList)){
+        if (!is_array($amountList)) {
             return false;
         }
 
-        if(count($amountList) != 2){
+        if (count($amountList) != 2) {
             return false;
         }
 
         [$goldAmount, $riceAmount] = $amountList;
 
-        if(!is_int($goldAmount) || !is_int($riceAmount)){
+        if (!is_int($goldAmount) || !is_int($riceAmount)) {
             return false;
         }
-        if($goldAmount < 0 || $riceAmount < 0){
+        if ($goldAmount < 0 || $riceAmount < 0) {
             return false;
         }
-        if($goldAmount == 0 && $riceAmount == 0){
+        if ($goldAmount == 0 && $riceAmount == 0) {
             return false;
         }
 
         $this->arg = [
-            'destNationID'=>$destNationID,
-            'amountList'=>[$goldAmount, $riceAmount]
+            'destNationID' => $destNationID,
+            'amountList' => [$goldAmount, $riceAmount]
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
 
         $this->setCity();
         $this->setNation(['gold', 'rice', 'surlimit']);
 
-        $this->minConditionConstraints=[
+        $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
@@ -94,47 +101,51 @@ class che_물자원조 extends Command\NationCommand{
         [$goldAmount, $riceAmount] = $this->arg['amountList'];
         $limit = $this->nation['level'] * GameConst::$coefAidAmount;
 
-        if($goldAmount > $limit || $riceAmount > $limit){
-            $this->fullConditionConstraints[
-                ConstraintHelper::AlwaysFail('작위 제한량 이상은 보낼 수 없습니다.')
-            ];
+        if ($goldAmount > $limit || $riceAmount > $limit) {
+            $this->fullConditionConstraints[ConstraintHelper::AlwaysFail('작위 제한량 이상은 보낼 수 없습니다.')];
             return;
         }
 
-        $this->fullConditionConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::SuppliedCity(),
-            ConstraintHelper::ReqNationGold(GameConst::$basegold+(($goldAmount>0)?1:0)),
-            ConstraintHelper::ReqNationRice(GameConst::$baserice+(($riceAmount>0)?1:0)),
+            ConstraintHelper::ReqNationGold(GameConst::$basegold + (($goldAmount > 0) ? 1 : 0)),
+            ConstraintHelper::ReqNationRice(GameConst::$baserice + (($riceAmount > 0) ? 1 : 0)),
             ConstraintHelper::ReqNationValue('surlimit', '외교제한', '==', 0, '외교제한중입니다.'),
             ConstraintHelper::ReqDestNationValue('surlimit', '외교제한', '==', 0, '상대국이 외교제한중입니다.'),
         ];
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
 
-    public function getPreReqTurn():int{
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         //NOTE: 자체 postReqTurn 사용
         return 12;
     }
 
-    public function getNextAvailableTurn():?int{
+    public function getNextAvailableTurn(): ?int
+    {
         return null;
     }
 
-    public function setNextAvailable(?int $yearMonth=null){
+    public function setNextAvailable(?int $yearMonth = null)
+    {
         return;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         [$goldAmount, $riceAmount] = $this->arg['amountList'];
         $goldAmountText = number_format($goldAmount);
         $riceAmountText = number_format($riceAmount);
@@ -144,8 +155,9 @@ class che_물자원조 extends Command\NationCommand{
     }
 
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -196,7 +208,7 @@ class che_물자원조 extends Command\NationCommand{
         $broadcastMessage = "<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원했습니다.";
 
         $chiefList = $db->queryFirstColumn('SELECT no FROM general WHERE officer_level >= 5 AND no != %i AND nation = %i', $generalID, $nationID);
-        foreach($chiefList as $chiefID){
+        foreach ($chiefList as $chiefID) {
             $chiefLogger = new ActionLogger($chiefID, $nationID, $year, $month);
             $chiefLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $chiefLogger->flush();
@@ -211,7 +223,7 @@ class che_물자원조 extends Command\NationCommand{
 
         $destBroadcastMessage = $broadcastMessage = "<D><b>{$nationName}</b></>에서 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 원조했습니다.";
         $destChiefList = $db->queryFirstColumn('SELECT no FROM general WHERE officer_level >= 5 AND nation = %i', $destNationID);
-        foreach($destChiefList as $destChiefID){
+        foreach ($destChiefList as $destChiefID) {
             $destChiefLogger = new ActionLogger($destChiefID, $nationID, $year, $month);
             $destChiefLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);
             $destChiefLogger->flush();
@@ -222,19 +234,19 @@ class che_물자원조 extends Command\NationCommand{
         $destNationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaRoSrc}부터 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원 받음");
 
         $destNationStor = KVStorage::getStorage(DB::db(), $destNationID, 'nation_env');
-        $destRecvAssist = $destNationStor->getValue('recv_assist')??[];
-        $destRecvAssist["n{$nationID}"] = [$nationID, ($destRecvAssist["n{$nationID}"][1]??0) + $goldAmount + $riceAmount];
+        $destRecvAssist = $destNationStor->getValue('recv_assist') ?? [];
+        $destRecvAssist["n{$nationID}"] = [$nationID, ($destRecvAssist["n{$nationID}"][1] ?? 0) + $goldAmount + $riceAmount];
         $destNationStor->setValue('recv_assist', $destRecvAssist);
 
         $db->update('nation', [
-            'gold'=>$db->sqleval('gold - %i', $goldAmount),
-            'rice'=>$db->sqleval('rice - %i', $riceAmount),
-            'surlimit'=>$db->sqleval('surlimit + %i', $this->getPostReqTurn())
+            'gold' => $db->sqleval('gold - %i', $goldAmount),
+            'rice' => $db->sqleval('rice - %i', $riceAmount),
+            'surlimit' => $db->sqleval('surlimit + %i', $this->getPostReqTurn())
         ], 'nation = %i', $nationID);
 
         $db->update('nation', [
-            'gold'=>$db->sqleval('gold + %i', $goldAmount),
-            'rice'=>$db->sqleval('rice + %i', $riceAmount),
+            'gold' => $db->sqleval('gold + %i', $goldAmount),
+            'rice' => $db->sqleval('rice + %i', $riceAmount),
         ], 'nation = %i', $destNationID);
 
         $general->addExperience(5);
@@ -246,47 +258,48 @@ class che_물자원조 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
+        $generalObj = $this->generalObj;
+        $nationList = [];
+        foreach (getAllNationStaticInfo() as $destNation) {
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
 
+            //TODO: 물자원조 자체가 가능한지도 검사?
 
-    public function getForm(): string
-    {
+            if ($nationTarget['id'] == $generalObj->getNationID()) {
+                $nationTarget['notAvailable'] = true;
+            }
+
+            $nationList[] = $nationTarget;
+        }
         $currentNationLevel = getNationStaticInfo($this->generalObj->getNationID())['level'];
-        ob_start();
-?>
-<?=\sammo\getMapHtml()?><br>
-타국에게 원조합니다.<br>
-작위별로 금액 제한이 있습니다.<br>
-<?php foreach(\sammo\getNationLevelList() as $level => [$levelText,,]): ?>
-<?=StringUtil::padStringAlignRight($levelText, 10)?>: <?=number_format($level*GameConst::$coefAidAmount)?><br>
-<?php endforeach; ?>
-원조할 국가를 목록에서 선택하세요.<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach(getAllNationStaticInfo() as $nation): ?>
-    <option
-        value='<?=$nation['nation']?>'
-        style='color:<?=$nation['color']?>;'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-</select>
-국고 <select class='formInput amountList' name="amountList[]" size='1' style='color:white;background-color:black;'>
-<?php foreach(Util::range($currentNationLevel+1) as $nationLevel): ?>
-    <option value='<?=$nationLevel*GameConst::$coefAidAmount?>'><?=$nationLevel*GameConst::$coefAidAmount?></option>
-<?php endforeach; ?>
-</select>
-병량 <select class='formInput amountList' name="amountList[]" size='1' style='color:white;background-color:black;'>
-<?php foreach(Util::range($currentNationLevel+1) as $nationLevel): ?>
-    <option value='<?=$nationLevel*GameConst::$coefAidAmount?>'><?=$nationLevel*GameConst::$coefAidAmount?></option>
-<?php endforeach; ?>
-</select>
-<input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-<br>
-<?php
-        return ob_get_clean();
+
+        $levelInfo = [];
+        foreach (\sammo\getNationLevelList() as $level => [$levelText,,]) {
+            $levelInfo[$level] = ['text' => $levelText, 'amount' => $level * GameConst::$coefAidAmount];
+        }
+
+        $amountGuide = [];
+        foreach (Util::range(1, $currentNationLevel + 1) as $nationLevel) {
+            $amountGuide[] = $nationLevel * GameConst::$coefAidAmount;
+        }
+
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'currentNationLevel' => $currentNationLevel,
+                'levelInfo' => $levelInfo,
+                'minAmount' => 1000,
+                'maxAmount' => Util::array_last($amountGuide),
+                'amountGuide' => $amountGuide,
+            ],
+        ];
     }
 }

@@ -1,165 +1,228 @@
 @charset "UTF-8";
 
-.world_map{
-    width:700px;
-    background:black;
-    font-size:14px;
-    color:white;
+.world_map {
+    width: 700px;
+    background: black;
+    font-size: 14px;
+    color: white;
     position: relative;
 }
 
-.map_title{
-    width:700px;
-    height:20px;
-    text-align:center;
+.map_title {
+    width: 700px;
+    height: 20px;
+    text-align: center;
 }
 
-.map_title_tooltiptext .tooltip-inner{
-    max-width:220px;
-    width:220px;
+.map_title_tooltiptext .tooltip-inner {
+    max-width: 220px;
+    width: 220px;
     text-align: left;
 }
 
-.map_title_text{
-    margin:auto;
-    text-align:center;
-    width:160px;
-    display:block;
-    line-height:20px;
-    font-size:14px;
-    font-weight:bold;
+.map_title_text {
+    margin: auto;
+    text-align: center;
+    width: 160px;
+    display: block;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.map_body{
-    width:700px;
-    height:500px;
-    position:relative;
+.map_body {
+    width: 700px;
+    height: 500px;
+    position: relative;
     overflow: hidden;
 }
 
-.map_body .map_bglayer1{
-    width:100%;
-    height:100%;
-    position:absolute;
-    left:0;
-    top:0;
-}
-
-.map_body .map_bglayer2{
-    width:100%;
-    height:100%;
-    position:absolute;
-    left:0;
-    top:0;
-}
-
-.map_body .map_bgroad{
-    width:100%;
-    height:100%;
-    position:absolute;
-    left:0;
-    top:0;
-}
-
-.map_body .map_button_stack{
-    position:absolute;
-    right:0;
-    bottom:0;
-    text-align:right;
-}
-
-.map_body .map_toggle_cityname::after{
-    content: "끄기"
-}
-
-.map_body .map_toggle_cityname.active::after{
-    content: "켜기"
-}
-
-.map_body .map_toggle_single_tap{
-    display:none;
-}
-
-.map_body .map_toggle_single_tap::after{
-    content: "끄기"
-}
-
-.map_body .map_toggle_single_tap.active::after{
-    content: "켜기"
-}
-
-.world_map .city_tooltip{
+.map_body .map_bglayer1 {
+    width: 100%;
+    height: 100%;
     position: absolute;
-    z-index:16;
-    display:none;
-    min-width:120px;
+    left: 0;
+    top: 0;
+}
+
+.map_body .map_bglayer2 {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.map_body .map_bgroad {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.map_body .map_button_stack {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: right;
+}
+
+.map_body .map_toggle_cityname::after {
+    content: "끄기"
+}
+
+.map_body .map_toggle_cityname.active::after {
+    content: "켜기"
+}
+
+.map_body .map_toggle_single_tap {
+    display: none;
+}
+
+.map_body .map_toggle_single_tap::after {
+    content: "끄기"
+}
+
+.map_body .map_toggle_single_tap.active::after {
+    content: "켜기"
+}
+
+.world_map .city_tooltip {
+    position: absolute;
+    z-index: 16;
+    display: none;
+    min-width: 120px;
     border: 0.02em gray solid;
     white-space: nowrap;
 }
-.world_map .city_name{
+
+.world_map .city_name {
     background-color: rgb(30, 164, 255);
     z-index: 6;
-    line-height:15px;
-    height:15px;
+    line-height: 15px;
+    height: 15px;
 
 }
-.world_map .nation_name{
+
+.world_map .nation_name {
     background-color: rgb(30, 164, 255);
     z-index: 6;
-    line-height:15px;
-    height:15px;
+    line-height: 15px;
+    height: 15px;
     border-top: 0.02em gray solid;
-    text-align:right;
+    text-align: right;
 }
 
-.world_map .map_flag{
-    width:12px;
-    height:12px;
+.world_map .map_flag {
+    width: 12px;
+    height: 12px;
 }
 
 .world_map.map_detail .my_city{
-    border:solid 1px red;
-    outline:dotted 4px red;
+    border-radius: 33%;
+}
+
+.world_map.map_detail .my_city:before {
+    content: "";
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    position: absolute;
+    border-radius: 33%;
+    overflow: hidden;
+
+    animation-duration: 3.9s;
+    animation-name: blink-my-city-d1;
+    animation-iteration-count: infinite;
 }
 
 
-.world_map.map_detail .city_filler{
-    position:absolute;
-    width:calc(100% + 2px);
-    height:calc(100% + 2px);
-    left:-1px;
-    top:-1px;
-    background:transparent;
+.world_map.map_detail .my_city:after {
+    content: "";
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    position: absolute;
+    border-radius: 33%;
+    overflow: hidden;
+
+    animation-duration: 3.9s;
+    animation-name: blink-my-city-d2;
+    animation-iteration-count: infinite;
 }
 
-.world_map .city_detail_name{
-    background-color:rgba(0,0,0,0.5);
-    font-size:10px;
-    position:absolute;
-    white-space:nowrap;
-    left:70%;
-    bottom:-10px;
-    color:white;
+
+@keyframes blink-my-city-d1 {
+    0% {
+        outline: solid 4px transparent;
+    }
+
+    50% {
+        outline: solid 4px rgba(255, 0, 0, 1);
+    }
+
+    100% {
+
+        outline: solid 4px transparent;
+    }
 }
 
-.world_map.hide_cityname .city_detail_name{
-    display:none;
+@keyframes blink-my-city-d2 {
+    0% {
+        outline: double 4px transparent;
+    }
+
+    50% {
+        outline: double 4px rgba(192, 192, 192, 1);
+    }
+
+    100% {
+
+        outline: double 4px transparent;
+    }
 }
 
-.city_base{
-    position:absolute;
-    width:40px;
-    height:30px;
+
+.world_map.map_detail .city_filler {
+    position: absolute;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    left: -1px;
+    top: -1px;
+    background: transparent;
 }
 
-.city_base .city_bg{
-    z-index:1;
-    position:absolute;
+.world_map .city_detail_name {
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 10px;
+    position: absolute;
+    white-space: nowrap;
+    left: 70%;
+    bottom: -10px;
+    color: white;
+}
+
+.world_map.hide_cityname .city_detail_name {
+    display: none;
+}
+
+.city_base {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+}
+
+.city_base .city_bg {
+    z-index: 1;
+    position: absolute;
     background-position: center;
 }
 
-.city_base div{
-    z-index:2;
+.city_base div {
+    z-index: 2;
 }
 
 /*
@@ -173,80 +236,80 @@
 }
 */
 
-.map_detail .city_base.city_level_1 .city_bg{
+.map_detail .city_base.city_level_1 .city_bg {
     /*수*/
-    width:48px;
-    height:45px;
-    background-size:48px 45px;
-    left:-4px;
-    top:-7.5px;
+    width: 48px;
+    height: 45px;
+    background-size: 48px 45px;
+    left: -4px;
+    top: -7.5px;
 }
 
-.map_detail .city_base.city_level_2 .city_bg{
+.map_detail .city_base.city_level_2 .city_bg {
     /*진*/
-    width:60px;
-    height:42px;
-    background-size:60px 42px;
-    left:-10px;
-    top:-6px;
+    width: 60px;
+    height: 42px;
+    background-size: 60px 42px;
+    left: -10px;
+    top: -6px;
 }
 
-.map_detail .city_base.city_level_3 .city_bg{
+.map_detail .city_base.city_level_3 .city_bg {
     /*관*/
-    width:42px;
-    height:42px;
-    background-size:42px 42px;
-    left:-1px;
-    top:-6px;
+    width: 42px;
+    height: 42px;
+    background-size: 42px 42px;
+    left: -1px;
+    top: -6px;
 }
 
-.map_detail .city_base.city_level_4 .city_bg{
+.map_detail .city_base.city_level_4 .city_bg {
     /*이*/
-    width:60px;
-    height:45px;
-    background-size:60px 45px;
-    left:-10px;
-    top:-7.5px;
+    width: 60px;
+    height: 45px;
+    background-size: 60px 45px;
+    left: -10px;
+    top: -7.5px;
 }
 
-.map_detail .city_base.city_level_5 .city_bg{
+.map_detail .city_base.city_level_5 .city_bg {
     /*소*/
-    width:72px;
-    height:48px;
-    background-size:72px 48px;
-    left:-16px;
-    top:-9px;
+    width: 72px;
+    height: 48px;
+    background-size: 72px 48px;
+    left: -16px;
+    top: -9px;
 }
 
-.map_detail .city_base.city_level_6 .city_bg{
+.map_detail .city_base.city_level_6 .city_bg {
     /*중*/
-    width:78px;
-    height:54px;
-    background-size:78px 54px;
-    left:-19px;
-    top:-12px;
+    width: 78px;
+    height: 54px;
+    background-size: 78px 54px;
+    left: -19px;
+    top: -12px;
 }
 
-.map_detail .city_base.city_level_7 .city_bg{
+.map_detail .city_base.city_level_7 .city_bg {
     /*대*/
-    width:84px;
-    height:60px;
-    background-size:84px 60px;
-    left:-22px;
-    top:-15px;
+    width: 84px;
+    height: 60px;
+    background-size: 84px 60px;
+    left: -22px;
+    top: -15px;
 }
 
-.map_detail .city_base.city_level_8 .city_bg{
+.map_detail .city_base.city_level_8 .city_bg {
     /*특*/
-    width:96px;
-    height:72px;
-    background-size:96px 72px;
-    left:-28px;
-    top:-21px;
+    width: 96px;
+    height: 72px;
+    background-size: 96px 72px;
+    left: -28px;
+    top: -21px;
 }
 
-.city_img{
-    position:absolute;
+.city_img {
+    position: absolute;
 }
 
 /*
@@ -261,241 +324,304 @@
 */
 
 
-.map_detail .city_base.city_level_1 .city_img{
-    width:16px;
-    height:15px;
-    left:12px;
-    top:7.5px;
+.map_detail .city_base.city_level_1 .city_img {
+    width: 16px;
+    height: 15px;
+    left: 12px;
+    top: 7.5px;
 }
 
-.map_detail .city_base.city_level_2 .city_img{
-    width:20px;
-    height:14px;
-    left:10px;
-    top:8px;
+.map_detail .city_base.city_level_2 .city_img {
+    width: 20px;
+    height: 14px;
+    left: 10px;
+    top: 8px;
 }
 
-.map_detail .city_base.city_level_3 .city_img{
-    width:14px;
-    height:14px;
-    left:13px;
-    top:8px;
+.map_detail .city_base.city_level_3 .city_img {
+    width: 14px;
+    height: 14px;
+    left: 13px;
+    top: 8px;
 }
 
-.map_detail .city_base.city_level_4 .city_img{
-    width:20px;
-    height:15px;
-    left:10px;
-    top:7.5px;
+.map_detail .city_base.city_level_4 .city_img {
+    width: 20px;
+    height: 15px;
+    left: 10px;
+    top: 7.5px;
 }
 
-.map_detail .city_base.city_level_5 .city_img{
-    width:24px;
-    height:16px;
-    left:8px;
-    top:7px;
+.map_detail .city_base.city_level_5 .city_img {
+    width: 24px;
+    height: 16px;
+    left: 8px;
+    top: 7px;
 }
 
-.map_detail .city_base.city_level_6 .city_img{
-    width:26px;
-    height:18px;
-    left:7px;
-    top:6px;
+.map_detail .city_base.city_level_6 .city_img {
+    width: 26px;
+    height: 18px;
+    left: 7px;
+    top: 6px;
 }
 
-.map_detail .city_base.city_level_7 .city_img{
-    width:28px;
-    height:20px;
-    left:6px;
-    top:5px;
+.map_detail .city_base.city_level_7 .city_img {
+    width: 28px;
+    height: 20px;
+    left: 6px;
+    top: 5px;
 }
 
-.map_detail .city_base.city_level_8 .city_img{
-    width:32px;
-    height:24px;
-    left:4px;
-    top:3px;
+.map_detail .city_base.city_level_8 .city_img {
+    width: 32px;
+    height: 24px;
+    left: 4px;
+    top: 3px;
 }
 
-.map_detail .city_base .city_state{
+.map_detail .city_base .city_state {
     position: absolute;
-    top:5px; /*TODO:도시 레벨 별로 다르게 위치 설정해볼 것*/
-    left:0;
+    top: 5px;
+    /*TODO:도시 레벨 별로 다르게 위치 설정해볼 것*/
+    left: 0;
 }
 
-.map_detail .city_base .city_flag{
+.map_detail .city_base .city_flag {
     position: absolute;
-    width:12px;
-    height:12px;
+    width: 12px;
+    height: 12px;
 }
 
-.map_detail .city_base .city_flag > img{
-    width:12px;
-    height:12px;
+.map_detail .city_base .city_flag>img {
+    width: 12px;
+    height: 12px;
 }
 
-.map_detail .city_base.city_level_1 .city_flag{
-    right:-8px;
-    top:-4px;
+.map_detail .city_base.city_level_1 .city_flag {
+    right: -8px;
+    top: -4px;
 }
 
-.map_detail .city_base.city_level_2 .city_flag{
-    right:-8px;
-    top:-4px;
+.map_detail .city_base.city_level_2 .city_flag {
+    right: -8px;
+    top: -4px;
 }
 
-.map_detail .city_base.city_level_3 .city_flag{
-    right:-8px;
-    top:-4px;
+.map_detail .city_base.city_level_3 .city_flag {
+    right: -8px;
+    top: -4px;
 }
 
-.map_detail .city_base.city_level_4 .city_flag{
-    right:-6px;
-    top:-3px;
+.map_detail .city_base.city_level_4 .city_flag {
+    right: -6px;
+    top: -3px;
 }
 
-.map_detail .city_base.city_level_5 .city_flag{
-    right:-6px;
-    top:-4px;
+.map_detail .city_base.city_level_5 .city_flag {
+    right: -6px;
+    top: -4px;
 }
 
-.map_detail .city_base.city_level_6 .city_flag{
-    right:-6px;
-    top:-4px;
+.map_detail .city_base.city_level_6 .city_flag {
+    right: -6px;
+    top: -4px;
 }
 
-.map_detail .city_base.city_level_7 .city_flag{
-    right:-6px;
-    top:-4px;
+.map_detail .city_base.city_level_7 .city_flag {
+    right: -6px;
+    top: -4px;
 }
 
-.map_detail .city_base.city_level_8 .city_flag{
-    right:-6px;
-    top:-3px;
+.map_detail .city_base.city_level_8 .city_flag {
+    right: -6px;
+    top: -3px;
 }
 
-.map_detail .city_base .city_flag .city_capital{
+.map_detail .city_base .city_flag .city_capital {
     position: absolute;
-    width:10px;
-    height:10px;
-    top:0;
-    right:-1px;
+    width: 10px;
+    height: 10px;
+    top: 0;
+    right: -1px;
 }
 
-.map_detail .city_base .city_flag .city_capital > img{
-    width:10px;
-    height:10px;
+.map_detail .city_base .city_flag .city_capital>img {
+    width: 10px;
+    height: 10px;
 }
 
 /* Basic */
 
 
 
-.world_map.map_basic .city_filler{
-    position:absolute;
-    width:100%;
-    height:100%;
-    left:0;
-    top:0;
-    background:transparent;
-}
-
-.world_map.map_basic .my_city{
-    outline:dotted 4px red;
-}
-
-.map_basic .city_base .city_img{
-    background-color:white;
-}
-
-.map_basic .city_base.city_level_1 .city_img{
-    width:12px;
-    height:12px;
-    left:14px;
-    top:9px;
-}
-
-.map_basic .city_base.city_level_2 .city_img{
-    width:12px;
-    height:12px;
-    left:14px;
-    top:9px;
-}
-
-.map_basic .city_base.city_level_3 .city_img{
-    width:14px;
-    height:14px;
-    left:13px;
-    top:8px;
-}
-
-.map_basic .city_base.city_level_4 .city_img{
-    width:16px;
-    height:14px;
-    left:12px;
-    top:8px;
-}
-
-.map_basic .city_base.city_level_5 .city_img{
-    width:18px;
-    height:16px;
-    left:11px;
-    top:7px;
-}
-
-.map_basic .city_base.city_level_6 .city_img{
-    width:20px;
-    height:16px;
-    left:10px;
-    top:7px;
-}
-
-.map_basic .city_base.city_level_7 .city_img{
-    width:22px;
-    height:18px;
-    left:9px;
-    top:6px;
-}
-
-.map_basic .city_base.city_level_8 .city_img{
-    width:24px;
-    height:18px;
-    left:8px;
-    top:6px;
-}
-
-
-.map_basic .city_base .city_capital{
+.world_map.map_basic .city_filler {
     position: absolute;
-    width:5px;
-    height:5px;
-    top:-2px;
-    right:-2px;
-    background-color:yellow;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: transparent;
 }
 
-.map_basic .city_base .city_state{
+/*
+.world_map.map_basic .my_city {
+
+}*/
+
+
+.world_map.map_basic .my_city:before {
+    content: "";
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
     position: absolute;
-    width:10px;
-    height:10px;
-    top:-2px;
-    left:-4px;
-    background-color:white;
+
+    animation-duration: 2s;
+    animation-name: blink-my-city;
+    animation-iteration-count: infinite;
 }
 
-.map_basic .city_base .city_state.city_state_war{
-    background-color:red;
+
+.world_map.map_basic .my_city:after {
+    content: "";
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    position: absolute;
+
+    animation-duration: 2s;
+    animation-name: blink-my-city2;
+    animation-iteration-count: infinite;
 }
 
-.map_basic .city_base .city_state.city_state_bad{
-    background-color:orange;
+
+@keyframes blink-my-city {
+    0% {
+        outline: dashed 5px transparent;
+    }
+
+    50% {
+        outline: dashed 5px white;
+    }
+
+    100% {
+
+        outline: dashed 5px transparent;
+    }
 }
 
-.map_basic .city_base .city_state.city_state_good{
-    background-color:blue;
+@keyframes blink-my-city2 {
+    0% {
+        outline: dashed 4px transparent;
+    }
+
+    50% {
+        outline: dashed 4px red;
+    }
+
+    100% {
+
+        outline: dashed 4px transparent;
+    }
 }
 
-.btn.btn-minimum{
+
+
+.map_basic .city_base .city_img {
+    background-color: white;
+}
+
+.map_basic .city_base.city_level_1 .city_img {
+    width: 12px;
+    height: 12px;
+    left: 14px;
+    top: 9px;
+}
+
+.map_basic .city_base.city_level_2 .city_img {
+    width: 12px;
+    height: 12px;
+    left: 14px;
+    top: 9px;
+}
+
+.map_basic .city_base.city_level_3 .city_img {
+    width: 14px;
+    height: 14px;
+    left: 13px;
+    top: 8px;
+}
+
+.map_basic .city_base.city_level_4 .city_img {
+    width: 16px;
+    height: 14px;
+    left: 12px;
+    top: 8px;
+}
+
+.map_basic .city_base.city_level_5 .city_img {
+    width: 18px;
+    height: 16px;
+    left: 11px;
+    top: 7px;
+}
+
+.map_basic .city_base.city_level_6 .city_img {
+    width: 20px;
+    height: 16px;
+    left: 10px;
+    top: 7px;
+}
+
+.map_basic .city_base.city_level_7 .city_img {
+    width: 22px;
+    height: 18px;
+    left: 9px;
+    top: 6px;
+}
+
+.map_basic .city_base.city_level_8 .city_img {
+    width: 24px;
+    height: 18px;
+    left: 8px;
+    top: 6px;
+}
+
+
+.map_basic .city_base .city_capital {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    top: -2px;
+    right: -2px;
+    background-color: yellow;
+}
+
+.map_basic .city_base .city_state {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -2px;
+    left: -4px;
+    background-color: white;
+}
+
+.map_basic .city_base .city_state.city_state_war {
+    background-color: red;
+}
+
+.map_basic .city_base .city_state.city_state_bad {
+    background-color: orange;
+}
+
+.map_basic .city_base .city_state.city_state_good {
+    background-color: blue;
+}
+
+.btn.btn-minimum {
     padding-top: 1px;
     padding-bottom: 1px;
 }

@@ -225,6 +225,14 @@ function formatName(string $name, int $npc): string
     return $name;
 }
 
+function getMapTheme(): string
+{
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $mapTheme = $gameStor->map_theme ?? 'che';
+    return $mapTheme;
+}
+
 function getMapHtml(?string $mapTheme = null)
 {
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');

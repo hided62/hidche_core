@@ -1,0 +1,53 @@
+@import "./common/bootstrap5.scss";
+@import "./editor_component.scss";
+@import "./common_legacy.scss";
+@import "./util.scss";
+
+#amount {
+    width: 100px;
+}
+
+#colorType {
+    width: 150px;
+}
+
+.no-padding .select2-results__option {
+    padding: 0;
+}
+
+
+@include media-1000px{
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+    }
+}
+
+@include media-500px{
+    body {
+        overflow-x: hidden;
+    }
+
+    #container {
+        width: 500px;
+        margin: 0 auto;
+
+        .world_map {
+            width: 500px;
+            height: calc((500px + 20px) * 500 / 700);
+        }
+
+        .map_title {
+            transform-origin: 0px 0px;
+            transform: scale(calc(500 / 700));
+            margin-bottom: calc(-20px * 200 / 700);
+        }
+
+        .map_body {
+            transform-origin: 0px 0px;
+            transform: scale(calc(500 / 700));
+        }
+    }
+
+
+}

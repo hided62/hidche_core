@@ -218,44 +218,4 @@ class che_등용수락 extends Command\GeneralCommand{
 
         return true;
     }
-
-    public function getForm(): string
-    {
-        $db = DB::db();
-
-        $destGenerals = [];
-        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND officer_level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
-        foreach($destRawGenerals as $destGeneral){
-            $destNationID = $destGeneral['nation'];
-            if(!key_exists($destNationID, $destGenerals)){
-                $destGenerals[$destNationID] = [];
-            }
-            $destGenerals[$destNationID] = [$destGeneral];
-        }
-
-        $nationList = array_merge([0=>getNationStaticInfo(0)], getAllNationStaticInfo());
-
-        ob_start();
-?>
-재야나 타국의 장수를 등용합니다.<br>
-서신은 개인 메세지로 전달됩니다.<br>
-등용할 장수를 목록에서 선택하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $destNation): ?>
-    <optgroup style='color:<?=$destNation['color']?>'>【<?=$destNation['name']?>】
-<?php   foreach($destGenerals[$destNation['nation']]??[] as $destGeneral):
-            $nameColor = \sammo\getNameColor($destGeneral['npc']);
-            if($nameColor){
-                $nameColor = " style='color:{$nameColor}'";
-            }
-?>
-            <option value='<?=$destGeneral['no']?>' <?=$nameColor?>><?=$destGeneral['name']?></option>
-<?php   endforeach; ?>
-    </optgroup>
-<?php endforeach; ?>
-
-</select> <input type=button id="commonSubmit" value="<?=$this->getName()?>"><br>
-        <?php
-                return ob_get_clean();
-    }
 }

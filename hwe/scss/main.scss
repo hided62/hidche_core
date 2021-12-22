@@ -1,6 +1,6 @@
-@import "./common/break_500px.scss";
 @import "./common/bootstrap5.scss";
 @import "./editor_component.scss";
+@import "./util.scss";
 body {
     color: white;
     background-color: black;
@@ -10,14 +10,14 @@ body {
     background-repeat: repeat-y;
 }
 
-@include media-breakpoint-up(md) {
+@include media-1000px {
     #container {
         width: 1000px;
         margin: 0 auto;
     }
 }
 
-@include media-breakpoint-down(md) {
+@include media-500px {
     body {
         overflow-x: hidden;
     }
@@ -52,6 +52,8 @@ body {
         }
 
         box-shadow: 0 -1px 0 $dark;
+        border-left: none !important;
+        border-right: none !important;
 
         .toolbarButton2 {
             text-decoration: underline;
@@ -118,7 +120,7 @@ body {
     text-overflow: ellipsis;
 }
 
-@include media-breakpoint-up(md) {
+@include media-1000px {
     #map_view {
         grid-template-columns: 500px 200px 300px;
         grid-template-rows: 520px 130px;
@@ -218,7 +220,7 @@ body {
     overflow: hidden;
 }
 
-@include media-breakpoint-down(md) {
+@include media-500px {
     .buttonPlate {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -394,7 +396,7 @@ body {
 
 }
 
-@include media-breakpoint-up(md) {
+@include media-1000px {
     #message_board section {
         overflow-y: auto;
         overflow-x: hidden;
@@ -410,7 +412,7 @@ body {
     }
 }
 
-@include media-breakpoint-down(md) {
+@include media-500px {
 
     #message_board .message_input_form {
         position: -webkit-sticky;
@@ -535,7 +537,7 @@ body {
 }
 
 
-@include media-breakpoint-down(md) {
+@include media-500px {
     #mailbox_list-col {
         order: 1;
     }
@@ -586,13 +588,13 @@ body {
 }
 
 
-@include media-breakpoint-up(md) {
+@include media-1000px {
     #float-tabs {
         display: none;
     }
 }
 
-@include media-breakpoint-down(md) {
+@include media-500px {
     #float-tabs {
         position: fixed;
         right: -1rem;
@@ -626,18 +628,4 @@ body {
             opacity: 0.7;
         }
     }
-}
-
-
-.s-border-t {
-    border-top: gray solid 1px;
-}
-
-.s-border-b {
-    border-bottom: gray solid 1px;
-}
-
-.s-border-tb {
-    border-top: gray solid 1px;
-    border-bottom: gray solid 1px;
 }

@@ -39,8 +39,6 @@ if ($permission < 1) {
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printCSS('../e_lib/select2/select2.min.css') ?>
     <?= WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css') ?>
-    <!--<?= WebUtil::printCSS('../e_lib/tui.editor/tui-editor.min.css') ?>-->
-    <!--<?= WebUtil::printCSS('../e_lib/tui.editor/tui-editor-contents.min.css') ?>-->
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printCSS('../css/config.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />

@@ -335,31 +335,14 @@ class che_화계 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'defaultSelectCityByMap'
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'cities' => \sammo\JSOptionsForCities(),
+                'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 3),
+            ],
         ];
-    }
-
-    public function getForm(): string
-    {
-        $currentCityID = $this->generalObj->getCityID();
-        $commandName = $this->getName();
-        $josaUl = JosaUtil::pick($commandName, '을');
-
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        선택된 도시에 <?= $commandName ?><?= $josaUl ?> 실행합니다.<br>
-        목록을 선택하거나 도시를 클릭하세요.<br>
-        <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
-            <?= \sammo\optionsForCities() ?><br>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-        <br>
-        <?= printCitiesBasedOnDistance($currentCityID, 2) ?>
-<?php
-        return ob_get_clean();
     }
 }

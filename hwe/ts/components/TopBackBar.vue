@@ -1,9 +1,17 @@
 <template>
   <div class="bg0 back_bar">
-    <button type="button" class="btn btn-primary back_btn" @click="back">
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
       돌아가기
-    </button>
+    </button><b-button
+      class="btn-toggle-zoom"
+      :variant="toggleSearch ? 'info' : 'secondary'"
+      :pressed="toggleSearch"
+      v-if="toggleSearch !== undefined"
+      @click="toggleSearch = !toggleSearch"
+      >{{ toggleSearch ? "검색 켜짐" : "검색 꺼짐" }}</b-button
+    >
     <h2 class="title">{{ title }}</h2>
+
   </div>
 </template>
 
@@ -25,6 +33,17 @@ export default defineComponent({
       }
     },
   },
+  data() {
+    return {
+      toggleSearch: this.searchable,
+    };
+  },
+  emits: ["update:searchable"],
+  watch: {
+    toggleSearch(val: boolean) {
+      this.$emit("update:searchable", val);
+    },
+  },
   props: {
     title: {
       type: String,
@@ -33,6 +52,11 @@ export default defineComponent({
     type: {
       type: String as PropType<"normal" | "chief" | "close">,
       default: "normal",
+      required: false,
+    },
+    searchable: {
+      type: Boolean,
+      default: undefined,
       required: false,
     },
   },
@@ -46,8 +70,6 @@ export default defineComponent({
   width: 100%;
   margin: auto;
   position: relative;
-  border-left: 1px solid #888;
-  border-right: 1px solid #888;
   height: 24pt;
 }
 
@@ -55,6 +77,12 @@ export default defineComponent({
   position: absolute;
   left: 0;
   height: 24pt;
+}
+
+.btn-toggle-zoom{
+  position: absolute;
+  height: 24pt;
+  right: 0;
 }
 
 .title {

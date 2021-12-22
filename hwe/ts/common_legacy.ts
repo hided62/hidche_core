@@ -69,16 +69,6 @@ export function combineObject<K extends string, V>(item: V[], columnList: K[]): 
     return newItem;
 }
 
-export function combineArray<K extends string, V>(array: V[][], columnList: K[]): Record<K, V>[] {
-    const result: Record<K, V>[] = [];
-    for (const key of array.keys()) {
-        const item = array[key];
-        result[key] = combineObject(item, columnList);
-    }
-    return result;
-}
-
-
 export function errUnknown(): void {
     alert('작업을 실패했습니다.');
 }

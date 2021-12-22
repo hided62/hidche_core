@@ -225,29 +225,14 @@ class che_첩보 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'defaultSelectCityByMap'
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'cities' => \sammo\JSOptionsForCities(),
+                'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 3),
+            ],
         ];
-    }
-
-    public function getForm(): string
-    {
-        $currentCityID = $this->generalObj->getCityID();
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        선택된 도시에 첩보를 실행합니다.<br>
-        인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
-        목록을 선택하거나 도시를 클릭하세요.<br>
-        <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
-            <?= \sammo\optionsForCities() ?><br>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-        <br>
-        <?= printCitiesBasedOnDistance($currentCityID, 3) ?>
-<?php
-        return ob_get_clean();
     }
 }

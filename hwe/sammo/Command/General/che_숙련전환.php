@@ -16,6 +16,7 @@ use \sammo\Command;
 use \sammo\ServConfig;
 
 use function \sammo\getDexCall;
+use function sammo\getDexLevelList;
 use function \sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
@@ -36,6 +37,9 @@ class che_숙련전환 extends Command\GeneralCommand
     protected $destArmType;
     /** @var string */
     protected $destArmTypeName;
+
+    static $decreaseCoeff = 0.4;
+    static $convertCoeff = 0.9;
 
     protected function argTest(): bool
     {
@@ -162,9 +166,9 @@ class che_숙련전환 extends Command\GeneralCommand
         $logger = $general->getLogger();
 
         $srcDex = $general->getVar('dex' . $this->srcArmType);
-        $cutDex = Util::toInt($srcDex * 0.4);
+        $cutDex = Util::toInt($srcDex * static::$decreaseCoeff);
         $cutDexText = number_format($cutDex);
-        $addDex = Util::toInt($cutDex * 9 / 10);
+        $addDex = Util::toInt($cutDex * static::$convertCoeff);
         $addDexText = number_format($addDex);
 
         $general->increaseVar('dex' . $this->srcArmType, -$cutDex);
@@ -189,47 +193,33 @@ class che_숙련전환 extends Command\GeneralCommand
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
-        $db = DB::db();
-
         $general = $this->generalObj;
-
-        $dexSrcTexts = [];
-        $dexDestTexts = [];
+        $ownDexList = [];
         foreach (GameUnitConst::allType() as $armType => $armName) {
-            $dexVal = $general->getVar('dex' . $armType);
-            $dexValText = number_format($dexVal);
-            $cutDex = Util::toInt($dexVal * 0.4);
-            $addDex = Util::toInt($cutDex * 9 / 10);
-            $addDexText = number_format($addDex);
-            $newDex = $dexVal - $cutDex;
-            $beforeDexLevel = getDexCall($dexVal);
-            $afterDexLevel = getDexCall($newDex);
-
-            $dexSrcTexts[$armType] = "{$armName} ({$beforeDexLevel} ⇒ {$afterDexLevel}, {$addDexText} 전환)";
-            $dexDestTexts[$armType] = "{$armName} ({$dexValText})";
+            $ownDexList[] = [
+                'armType' => $armType,
+                'name' => $armName,
+                'amount' => $general->getVar('dex' . $armType),
+            ];
         }
 
-        ob_start();
-?>
-        본인의 특정 병종 숙련을 40% 줄이고, 줄어든 숙련 중 9/10(90%p)를 다른 병종 숙련으로 전환합니다.<br>
-
-        <select class='formInput' name="srcArmType" id="srcArmType" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($dexSrcTexts as $armType => $infoText) : ?>
-                <option value="<?= $armType ?>"><?= $infoText ?></option>
-            <?php endforeach; ?>
-        </select>
-        숙련을
-
-        <select class='formInput' name="destArmType" id="destArmType" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($dexDestTexts as $armType => $infoText) : ?>
-                <option value="<?= $armType ?>"><?= $infoText ?></option>
-            <?php endforeach; ?>
-        </select>
-        숙련으로 <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-
-<?php
-        return ob_get_clean();
+        $dexLevelList = [];
+        foreach(getDexLevelList() as [$dexKey, $color, $name]){
+            $dexLevelList[] = [
+                'amount'=>$dexKey,
+                'color'=>$color,
+                'name'=>$name
+            ];
+        }
+        return [
+            'procRes' => [
+                'ownDexList' => $ownDexList,
+                'dexLevelList' => $dexLevelList,
+                'decreaseCoeff' => static::$decreaseCoeff,
+                'convertCoeff' => static::$convertCoeff,
+            ]
+        ];
     }
 }

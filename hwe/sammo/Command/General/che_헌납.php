@@ -152,21 +152,14 @@ class che_헌납 extends Command\GeneralCommand
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
-        ob_start();
-?>
-        자신의 자금이나 군량을 국가 재산으로 헌납합니다.<br>
-        <select id='isGold' name="isGold" size=1 style=color:white;background-color:black>
-            <option value='true'>금</option>
-            <option value='false'>쌀</option>
-        </select>
-        <select name=amount id='amount' size=1 style=text-align:right;color:white;background-color:black>
-            <?php foreach (GameConst::$resourceActionAmountGuide as $amount) : ?>
-                <option value='<?= $amount ?>'><?= $amount ?></option>
-            <?php endforeach; ?>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-<?php
-        return ob_get_clean();
+        return [
+            'procRes' => [
+                'minAmount' => 100,
+                'maxAmount' => GameConst::$maxResourceActionAmount,
+                'amountGuide' => GameConst::$resourceActionAmountGuide,
+            ]
+        ];
     }
 }

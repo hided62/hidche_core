@@ -1,4 +1,3 @@
-//TODO: X-Requested-With 믿지 말자.
 //https://gist.github.com/demouth/3217440
 /**
  * mb_strwidth

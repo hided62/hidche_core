@@ -12,6 +12,7 @@ use \sammo\{
     KVStorage
 };
 
+use function sammo\getAllNationStaticInfo;
 use function \sammo\getColoredName;
 use function \sammo\tryUniqueItemLottery;
 use function \sammo\getInvitationList;
@@ -20,8 +21,6 @@ use function \sammo\getNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-
-
 
 class che_장수대상임관 extends Command\GeneralCommand{
     static protected $actionName = '장수를 따라 임관';
@@ -186,65 +185,29 @@ class che_장수대상임관 extends Command\GeneralCommand{
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $db = DB::db();
-
-        $generalObj = $this->generalObj;
-
-        $env = $this->env;
-
-        $joinedNations = $generalObj->getAuxVar('joinedNations')??[];
-        $generalList = $db->query('SELECT no,name,nation,npc FROM general WHERE no!=%i ORDER BY name ASC', $generalObj->getID());
-
-
-        $nationList = $db->query('SELECT nation,`name`,color,scout,gennum FROM nation');
-        shuffle($nationList);
-        $nationList = Util::convertArrayToDict($nationList, 'nation');
-        //NOTE: join 안할것임
+        $destRawGenerals = $db->queryAllLists('SELECT no,name,nation,officer_level,npc,leadership,strength,intel FROM general WHERE no != %i ORDER BY npc,binary(name)', $this->generalObj->getID());
+        $nationList = [];
         $scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_msg');
-        foreach($scoutMsgs as $nationID=>$scoutMsg){
-            $nationList[$nationID]['scoutmsg'] = $scoutMsg;
+
+        foreach ([getNationStaticInfo(0), ...getAllNationStaticInfo()] as $destNation) {
+            $nationList[] = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+                'scoutMsg' => $scoutMsgs[$destNation['nation']]??' '
+            ];
         }
 
-        $hiddenItems = [];
-
-        foreach($nationList as &$nation){
-            $nation['hideen'] = false;
-            if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
-                $nation['availableJoin'] = false;
-            }
-            else if($nation['scout'] == 1) {
-                $nation['availableJoin'] = false;
-            }
-            else{
-                $nation['availableJoin'] = true;
-            }
-
-            if(in_array($nation['nation'], $joinedNations)){
-                $nation['availableJoin'] = false;
-            }
-
-            if(Util::starts_with($nation['name'], 'ⓤ')){
-                $hiddenItems[$nation['nation']] = $nation['nation'];
-            }
-        }
-        unset($nation);
-        ob_start();
-?>
-장수를 따라 임관합니다.<br>
-이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
-바로 군주의 위치로 이동합니다.<br>
-임관할 국가를 목록에서 선택하세요.<br>
-<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
-<?php foreach($generalList as $targetGeneral): ?>
-    <?php if(key_exists($targetGeneral['nation'], $hiddenItems)){ continue; } ?>
-            <option value='<?=$targetGeneral['no']?>'><?=getColoredName($targetGeneral['name'],$targetGeneral['npc'])?>【<?=getNationStaticInfo($targetGeneral['nation'])['name']??'재야'?>】</option>
-<?php endforeach; ?>
-</select>
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
-<?=getInvitationList($nationList)?>
-<?php
-        return ob_get_clean();
+        return [
+            'procRes' => [
+                'nationList' => $nationList,
+                'generals' => $destRawGenerals,
+                'generalsKey' => ['no', 'name', 'nationID', 'officerLevel', 'npc', 'leadership', 'strength', 'intel']
+            ]
+        ];
     }
 }

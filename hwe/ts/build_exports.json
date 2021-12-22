@@ -7,7 +7,6 @@
         "install": "install.ts",
         "battle_simulator": "battle_simulator.ts",
         "recent_map": "recent_map.ts",
-        "processing": "processing.ts",
         "select_npc": "select_npc.ts",
         "betting": "betting.ts",
         "bossInfo": "bossInfo.ts",
@@ -27,7 +26,7 @@
         "v_NPCControl": "v_NPCControl.ts",
         "v_join": "v_join.ts",
         "v_main": "v_main.ts",
-        "v_dipcenter": "v_dipcenter.ts"
-
+        "v_dipcenter": "v_dipcenter.ts",
+        "v_processing": "v_processing.ts"
     }
 }

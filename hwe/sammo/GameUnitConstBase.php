@@ -50,7 +50,7 @@ class GameUnitConstBase{
             0, null,     null,     0,
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
-            ['표준적인 보병입니다.','보병은 방어특화이며, 상대가 회피하기 어렵습니다.'],
+            ['표준적인 보병입니다.','보병은 방어특화이며,','상대가 회피하기 어렵습니다.'],
             null, ['che_방어력증가5p']
         ],
         [

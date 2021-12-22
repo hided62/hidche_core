@@ -223,74 +223,46 @@ class che_불가침제의 extends Command\NationCommand
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
-
-        $db = DB::db();
-
+        $nationList = [];
+        $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
         $currYear = $this->env['year'];
 
-        $diplomacyStatus = Util::convertArrayToDict(
-            $db->query('SELECT * FROM diplomacy WHERE me = %i', $nationID),
-            'you'
-        );
-
-        $nationList = [];
         foreach (getAllNationStaticInfo() as $destNation) {
-            if ($destNation['nation'] == $nationID) {
-                continue;
-            }
-
-            $testCommand = new static($generalObj, $this->env, $this->getLastTurn(), [
+            $testCommand = new static($generalObj, $this->env, $testTurn, [
                 'destNationID' => $destNation['nation'],
-                'year' => $currYear + 1,
-                'month' => 12
+                'year' => $currYear + 2,
+                'month' => 1
             ]);
+
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
             if (!$testCommand->hasFullConditionMet()) {
-                $destNation['cssBgColor'] = 'background-color:red;';
-            } else if ($diplomacyStatus[$destNation['nation']]['state'] == 7) {
-                $destNation['cssBgColor'] = 'background-color:blue;';
-            } else {
-                $destNation['cssBgColor'] = '';
+                $nationTarget['notAvailable'] = true;
+            }
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
             }
 
-            $nationList[] = $destNation;
+            $nationList[] = $nationTarget;
         }
-
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        타국에게 불가침을 제의합니다.<br>
-        제의할 국가를 목록에서 선택하세요.<br>
-        불가침 기한 다음 달부터 선포 가능합니다.<br>
-        배경색은 현재 제의가 불가능한 국가는 <font color=red>붉은색</font>, 현재 불가침중인 국가는 <font color=blue>푸른색</font>으로 표시됩니다.<br>
-        <br>
-        <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($nationList as $nation) : ?>
-                <option value='<?= $nation['nation'] ?>' style='color:<?= $nation['color'] ?>;<?= $nation['cssBgColor'] ?>'>【<?= $nation['name'] ?> 】</option>
-            <?php endforeach; ?>
-        </select>에게
-        <select class='formInput' name="year" id="year" size='1' style='color:white;background-color:black;'>
-            <?php foreach (Util::range($currYear + 1, $currYear + 20 + 1) as $formYear) : ?>
-                <option value='<?= $formYear ?>'><?= $formYear ?></option>
-            <?php endforeach; ?>
-        </select>년
-        <select class='formInput' name="month" id="month" size='1' style='color:white;background-color:black;'>
-            <?php foreach (Util::range(1, 12 + 1) as $formMonth) : ?>
-                <option value='<?= $formMonth ?>'><?= $formMonth ?></option>
-            <?php endforeach; ?>
-        </select>월까지
-        <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
-<?php
-        return ob_get_clean();
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+                'minYear' => $this->env['year'] + 1,
+                'maxYear' => $this->env['year'] + 20,
+                'month' => $this->env['month'],
+            ],
+        ];
     }
 }

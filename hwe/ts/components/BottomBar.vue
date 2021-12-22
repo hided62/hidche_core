@@ -1,15 +1,10 @@
 <template>
-  <table style="width: 1000px; margin: auto" class="bg0">
-    <tr>
-      <td style="text-align: left">
-        {{title}}<br /><button
-          type="button"
-          class="btn btn-primary"
-          @click="back"
-        >돌아가기</button><br />
-      </td>
-    </tr>
-  </table>
+  <div class="bg0">
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
+      돌아가기
+    </button>
+    <div></div>
+  </div>
 </template>
 
 <script lang="ts">

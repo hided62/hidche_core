@@ -196,48 +196,39 @@ class che_급습 extends Command\NationCommand
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
-
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
         $nationList = [];
         $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
         foreach (getAllNationStaticInfo() as $destNation) {
-            if ($destNation['nation'] == $nationID) {
-                continue;
-            }
-
-            $testTurn->setArg(['destNationID' => $destNation['nation']]);
             $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
-            if ($testCommand->hasFullConditionMet()) {
-                $destNation['availableCommand'] = true;
-            } else {
-                $destNation['availableCommand'] = false;
+
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
+            if (!$testCommand->hasFullConditionMet()) {
+                $nationTarget['notAvailable'] = true;
+            }
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
             }
 
-            $nationList[] = $destNation;
+            $nationList[] = $nationTarget;
         }
-
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        선택된 국가에 급습을 발동합니다.<br>
-        선포, 전쟁중인 상대국에만 가능합니다.<br>
-        상대 국가를 목록에서 선택하세요.<br>
-        배경색은 현재 급습 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
-        <select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-            <?php foreach ($nationList as $nation) : ?>
-                <option value='<?= $nation['nation'] ?>' style='color:<?= $nation['color'] ?>;<?= $nation['availableCommand'] ? '' : 'background-color:red;' ?>'>【<?= $nation['name'] ?> 】</option>
-            <?php endforeach; ?>
-            <input type=button id="commonSubmit" value="<?= $this->getName() ?>">
-    <?php
-        return ob_get_clean();
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+            ],
+        ];
     }
+
+
+
 }

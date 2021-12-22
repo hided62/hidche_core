@@ -1,16 +1,21 @@
 <?php
+
 namespace sammo\Command\Nation;
 
 use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
+    DB,
+    Util,
+    JosaUtil,
+    General,
+    DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
     GameUnitConst,
     Command,
     KVStorage,
-    Message, MessageTarget
+    Message,
+    MessageTarget
 };
 
 use function \sammo\buildNationCommandClass;
@@ -20,48 +25,51 @@ use function \sammo\getNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_피장파장 extends Command\NationCommand{
+class che_피장파장 extends Command\NationCommand
+{
     static protected $actionName = '피장파장';
     static public $reqArg = true;
     static public $delayCnt = 60;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
         //NOTE: 멸망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 국가여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destNationID', $this->arg)){
+        if (!key_exists('destNationID', $this->arg)) {
             return false;
         }
-        if(!key_exists('commandType', $this->arg)){
+        if (!key_exists('commandType', $this->arg)) {
             return false;
         }
         $destNationID = $this->arg['destNationID'];
         $commandType = $this->arg['commandType'];
 
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
-        if(!is_string($commandType)){
+        if (!is_string($commandType)) {
             return false;
         }
-        if(!in_array($commandType, GameConst::$availableChiefCommand['전략'])){
+        if (!in_array($commandType, GameConst::$availableChiefCommand['전략'])) {
             return false;
         }
 
 
         $this->arg = [
-            'destNationID'=>$destNationID,
-            'commandType'=>$commandType
+            'destNationID' => $destNationID,
+            'commandType' => $commandType
         ];
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
         $general = $this->generalObj;
 
         $env = $this->env;
@@ -69,7 +77,7 @@ class che_피장파장 extends Command\NationCommand{
         $this->setCity();
         $this->setNation();
 
-        $this->minConditionConstraints=[
+        $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
         ];
@@ -79,8 +87,8 @@ class che_피장파장 extends Command\NationCommand{
     {
         $this->setDestNation($this->arg['destNationID'], null);
 
-        if($this->getNationID() == 0){
-            $this->fullConditionConstraints=[
+        if ($this->getNationID() == 0) {
+            $this->fullConditionConstraints = [
                 ConstraintHelper::OccupiedCity()
             ];
             return;
@@ -90,14 +98,14 @@ class che_피장파장 extends Command\NationCommand{
 
         $currYearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
         $nextAvailableTurn = $cmd->getNextAvailableTurn();
-        if($currYearMonth < $nextAvailableTurn){
-            $this->fullConditionConstraints=[
+        if ($currYearMonth < $nextAvailableTurn) {
+            $this->fullConditionConstraints = [
                 ConstraintHelper::AlwaysFail('해당 전략을 아직 사용할 수 없습니다')
             ];
             return;
         }
 
-        $this->fullConditionConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::ExistsDestNation(),
@@ -108,35 +116,41 @@ class che_피장파장 extends Command\NationCommand{
         ];
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
-        $reqTurn = $this->getPreReqTurn()+1;
+        $reqTurn = $this->getPreReqTurn() + 1;
 
         return "{$name}/{$reqTurn}턴(대상 재사용 대기 {$this->getTargetPostReqTurn()})";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
 
-    public function getPreReqTurn():int{
+    public function getPreReqTurn(): int
+    {
         return 1;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getTargetPostReqTurn():int{
+    public function getTargetPostReqTurn(): int
+    {
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*2)*10);
+        $nextTerm = Util::round(sqrt($genCount * 2) * 10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         $nextTerm = Util::valueFit($nextTerm, Util::round(static::$delayCnt * 1.2));
         return $nextTerm;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $cmd = buildNationCommandClass($this->arg['commandType'], $this->generalObj, $this->env, new LastTurn());
         $targetCommandName = $cmd->getName();
@@ -145,8 +159,9 @@ class che_피장파장 extends Command\NationCommand{
     }
 
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -187,7 +202,7 @@ class che_피장파장 extends Command\NationCommand{
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <G><b>{$destNationName}</b></>에 <G><b>{$cmd->getName()}</b></> 전략의 <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
         $nationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach($nationGeneralList as $nationGeneralID){
+        foreach ($nationGeneralList as $nationGeneralID) {
             $nationGeneralLogger = new ActionLogger($nationGeneralID, $nationID, $year, $month);
             $nationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $nationGeneralLogger->flush();
@@ -198,7 +213,7 @@ class che_피장파장 extends Command\NationCommand{
         $broadcastMessage = "아국에 <G><b>{$cmd->getName()}</b></> 전략의 <M>{$commandName}</>{$josaYiCommand} 발동되었습니다.";
 
         $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $destNationID, $generalID);
-        foreach($destNationGeneralList as $destNationGeneralID){
+        foreach ($destNationGeneralList as $destNationGeneralID) {
             $destNationGeneralLogger = new ActionLogger($destNationGeneralID, $destNationID, $year, $month);
             $destNationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             $destNationGeneralLogger->flush();
@@ -222,79 +237,55 @@ class che_피장파장 extends Command\NationCommand{
         return true;
     }
 
-    public function getJSPlugins(): array
-    {
-        return [
-            'defaultSelectNationByMap'
-        ];
-    }
-
-    public function getForm(): string
+    public function exportJSVars(): array
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
         $nationList = [];
         $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
-        foreach(getAllNationStaticInfo() as $destNation){
-            if($destNation['nation'] == $nationID){
-                continue;
+        foreach (getAllNationStaticInfo() as $destNation) {
+            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
+
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
+            if (!$testCommand->hasFullConditionMet()) {
+                $nationTarget['notAvailable'] = true;
+            }
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
             }
 
-            $testTurn->setArg(['destNationID'=>$destNation['nation']]);
-            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID'=>$destNation['nation']]);
-            if($testCommand->hasFullConditionMet()){
-                $destNation['availableCommand'] = true;
-            }
-            else{
-                $destNation['availableCommand'] = false;
-            }
-
-            $nationList[] = $destNation;
+            $nationList[] = $nationTarget;
         }
+
 
         $availableCommandTypeList = [];
         $currYearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
-        foreach(GameConst::$availableChiefCommand['전략'] as $commandType){
+        foreach (GameConst::$availableChiefCommand['전략'] as $commandType) {
             $cmd = buildNationCommandClass($commandType, $generalObj, $this->env, new LastTurn());
             $cmdName = $cmd->getName();
             $remainTurn = 0;
             $nextAvailableTurn = $cmd->getNextAvailableTurn();
 
-            if($nextAvailableTurn !== null && $currYearMonth < $nextAvailableTurn){
+            if ($nextAvailableTurn !== null && $currYearMonth < $nextAvailableTurn) {
                 $remainTurn = $nextAvailableTurn - $currYearMonth;
             }
-            $availableCommandTypeList[$commandType] = [$cmdName, $remainTurn];
+            $availableCommandTypeList[$commandType] = ['name' => $cmdName, 'remainTurn' => $remainTurn];
         }
 
-        ob_start();
-?>
-<?=\sammo\getMapHtml()?><br>
-선택된 국가에 피장파장을 발동합니다.<br>
-지정한 전략을 상대국이 <?=static::$delayCnt?>턴 동안 사용할 수 없게됩니다.<br>
-대신 아국은 지정한 전략을<?=$this->getTargetPostReqTurn()?>턴 동안 사용할 수 없습니다.<br>
-선포, 전쟁중인 상대국에만 가능합니다.<br>
-상대 국가를 목록에서 선택하세요.<br>
-배경색은 현재 피장파장 불가능 국가는 <font color=red>붉은색</font>으로 표시됩니다.<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <option
-        value='<?=$nation['nation']?>'
-        style='color:<?=$nation['color']?>;<?=$nation['availableCommand']?'':'background-color:red;'?>'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-</select>에
-<select class='formInput' name="commandType" id="commandType" size='1' style='color:white;background-color:black;'>
-<?php foreach($availableCommandTypeList as $commandType=>[$cmdName, $cmdRemainTurn]):
-    /** @var \sammo\Command\NationCommand $cmdObj */
-?>
-    <option
-        value='<?=$commandType?>'
-        style='color:white;<?=$cmdRemainTurn?'background-color:red;':''?>'
-    ><?=$cmdName?><?=$cmdRemainTurn?"({$cmdRemainTurn}턴 뒤)":''?></option>
-<?php endforeach; ?>
-</select> 전략을
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
-<?php
-        return ob_get_clean();
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+                'delayCnt' => static::$delayCnt,
+                'postReqTurn' => $this->getTargetPostReqTurn(),
+                'availableCommandTypeList' => $availableCommandTypeList
+            ],
+        ];
     }
 }

@@ -15,7 +15,5 @@ import "@/legacy/main";
 import { auto500px } from './util/auto500px';
 
 setAxiosXMLHttpRequest();
-
-createApp(PartialReservedCommand).use(BootstrapVue3).component('v-multiselect', Multiselect).mount('#reservedCommandList');
-
 auto500px();
+createApp(PartialReservedCommand).use(BootstrapVue3).component('v-multiselect', Multiselect).mount('#reservedCommandList');

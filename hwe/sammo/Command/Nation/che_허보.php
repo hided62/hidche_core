@@ -199,27 +199,14 @@ class che_허보 extends Command\NationCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'defaultSelectCityByMap'
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'cities' => \sammo\JSOptionsForCities(),
+                'distanceList' => new \stdClass(),
+            ],
         ];
-    }
-
-
-    public function getForm(): string
-    {
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        선택된 도시에 허보를 발동합니다.<br>
-        전쟁중인 상대국 도시만 가능합니다.<br>
-        목록을 선택하거나 도시를 클릭하세요.<br>
-        <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
-            <?= \sammo\optionsForCities() ?><br>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-<?php
-        return ob_get_clean();
     }
 }

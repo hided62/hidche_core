@@ -1,9 +1,7 @@
-
-@import "./common/break_500px.scss";
 @import "./common/bootstrap5.scss";
 @import "./common_legacy.scss";
 
-@include media-breakpoint-up(md) {
+@include media-1000px{
     #container {
         width: 1000px;
         margin: 0 auto;
@@ -17,10 +15,7 @@
 
     }
 }
-
-
-
-@include media-breakpoint-down(md) {
+@include media-500px{
     body {
         overflow-x: hidden;
     }

@@ -1,11 +1,15 @@
 <?php
+
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil,
+    DB,
+    Util,
+    JosaUtil,
     General,
     ActionLogger,
-    GameConst, GameUnitConst,
+    GameConst,
+    GameUnitConst,
     LastTurn,
     Command,
     Json,
@@ -22,24 +26,26 @@ use sammo\CityConst;
 
 
 
-class che_임관 extends Command\GeneralCommand{
+class che_임관 extends Command\GeneralCommand
+{
     static protected $actionName = '임관';
     static public $reqArg = true;
 
-    protected function argTest():bool{
-        if($this->arg === null){
+    protected function argTest(): bool
+    {
+        if ($this->arg === null) {
             return false;
         }
-        $destNationID = $this->arg['destNationID']??null;
+        $destNationID = $this->arg['destNationID'] ?? null;
 
-        if($destNationID === null){
+        if ($destNationID === null) {
             return false;
         }
 
-        if(!is_int($destNationID)){
+        if (!is_int($destNationID)) {
             return false;
         }
-        if($destNationID < 1){
+        if ($destNationID < 1) {
             return false;
         }
 
@@ -50,7 +56,8 @@ class che_임관 extends Command\GeneralCommand{
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
         $env = $this->env;
@@ -60,23 +67,24 @@ class che_임관 extends Command\GeneralCommand{
 
         $relYear = $env['year'] - $env['startyear'];
 
-        $this->permissionConstraints=[
+        $this->permissionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다')
         ];
 
-        $this->minConditionConstraints=[
+        $this->minConditionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::AllowJoinAction()
         ];
-
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         return '지정한 국가로 임관';
     }
 
-    public function canDisplay():bool{
+    public function canDisplay(): bool
+    {
         return $this->env['join_mode'] !== 'onlyRandom';
     }
 
@@ -87,7 +95,7 @@ class che_임관 extends Command\GeneralCommand{
 
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
-        $this->fullConditionConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::ExistsDestNation(),
@@ -96,27 +104,32 @@ class che_임관 extends Command\GeneralCommand{
         ];
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         return [0, 0];
     }
 
-    public function getPreReqTurn():int{
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function getBrief():string{
+    public function getBrief(): string
+    {
         $commandName = $this->getName();
         $destNationName = getNationStaticInfo($this->arg['destNationID'])['name'];
         $josaRo = JosaUtil::pick($destNationName, '로');
         return "【{$destNationName}】{$josaRo} {$commandName}";
     }
 
-    public function run():bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -139,10 +152,9 @@ class che_임관 extends Command\GeneralCommand{
         $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 임관");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
 
-        if($gennum < GameConst::$initialNationGenLimit) {
+        if ($gennum < GameConst::$initialNationGenLimit) {
             $exp = 700;
-        }
-        else {
+        } else {
             $exp = 100;
         }
 
@@ -151,22 +163,21 @@ class che_임관 extends Command\GeneralCommand{
         $general->setVar('officer_city', 0);
         $general->setVar('belong', 1);
 
-        if($this->destGeneralObj !== null){
+        if ($this->destGeneralObj !== null) {
             $general->setVar('city', $this->destGeneralObj->getCityID());
-        }
-        else{
+        } else {
             $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND officer_level=12', $destNationID);
             $general->setVar('city', $targetCityID);
         }
 
         $db->update('nation', [
-            'gennum'=>$db->sqleval('gennum + 1')
+            'gennum' => $db->sqleval('gennum + 1')
         ], 'nation=%i', $destNationID);
         \sammo\refreshNationStaticInfo();
 
         $relYear = $env['year'] - $env['startyear'];
-        if($general->getNPCType() == 1 || $relYear >= 3){
-            $joinedNations = $general->getAuxVar('joinedNations')??[];
+        if ($general->getNPCType() == 1 || $relYear >= 3) {
+            $joinedNations = $general->getAuxVar('joinedNations') ?? [];
             $joinedNations[] = $destNationID;
             $general->setAuxVar('joinedNations', $joinedNations);
         }
@@ -181,64 +192,42 @@ class che_임관 extends Command\GeneralCommand{
         return true;
     }
 
-    public function getForm(): string
+    public function exportJSVars(): array
     {
+        $generalObj = $this->generalObj;
+        $nationID = $generalObj->getNationID();
         $db = DB::db();
 
-        $generalObj = $this->generalObj;
-
-        $env = $this->env;
-
-        $joinedNations = $generalObj->getAuxVar('joinedNations')??[];
-
-        $nationList = $db->query('SELECT nation,`name`,color,scout,gennum FROM nation');
-        shuffle($nationList);
-        $nationList = Util::convertArrayToDict($nationList, 'nation');
-        //NOTE: join 안할것임
+        $rawNationList = Util::convertArrayToDict($db->query('SELECT nation,`name`,color,gennum,`power` FROM nation'), 'nation');
         $scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_msg');
-        foreach($scoutMsgs as $nationID=>$scoutMsg){
-            $nationList[$nationID]['scoutmsg'] = $scoutMsg;
+        foreach ($scoutMsgs as $nationID => $scoutMsg) {
+            $rawNationList[$nationID]['scoutmsg'] = $scoutMsg;
         }
+        foreach ($rawNationList as $destNation) {
+            $testCommand = new static($generalObj, $this->env, ['destNationID' => $destNation['nation']]);
 
-        $hiddenItems = [];
-
-        foreach($nationList as &$nation){
-            if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
-                $nation['availableJoin'] = false;
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+                'scoutMsg' => $destNation['scoutmsg'] ?? ' ',
+            ];
+            if (!$testCommand->hasFullConditionMet()) {
+                $nationTarget['notAvailable'] = true;
             }
-            else if($nation['scout'] == 1) {
-                $nation['availableJoin'] = false;
-            }
-            else{
-                $nation['availableJoin'] = true;
-            }
-
-            if(in_array($nation['nation'], $joinedNations)){
-                $nation['availableJoin'] = false;
+            if ($destNation['id'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
             }
 
-            if(Util::starts_with($nation['name'], 'ⓤ')){
-                $hiddenItems[$nation['nation']] = $nation['nation'];
-            }
+            $nationList[] = $nationTarget;
         }
-        unset($nation);
-        ob_start();
-?>
-국가에 임관합니다.<br>
-이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
-바로 군주의 위치로 이동합니다.<br>
-임관할 국가를 목록에서 선택하세요.<br>
-<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
-<?php foreach($nationList as $nation): ?>
-    <?php if(key_exists($nation['nation'], $hiddenItems)){ continue; } ?>
-    <option
-        value='<?=$nation['nation']?>'
-        style='<?=$nation['availableJoin']?'':'background-color:red;'?>'
-    >【<?=$nation['name']?> 】</option>
-<?php endforeach; ?>
-<input type=button id="commonSubmit" value="<?=$this->getName()?>">
-<?=getInvitationList($nationList)?>
-<?php
-        return ob_get_clean();
+        return [
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'nationList' => $nationList,
+                'startYear' => $this->env['startyear'],
+            ],
+        ];
     }
 }

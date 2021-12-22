@@ -12,6 +12,7 @@ use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
 
+use function sammo\getMapTheme;
 use function \sammo\printCitiesBasedOnDistance;
 use function sammo\tryUniqueItemLottery;
 
@@ -177,31 +178,14 @@ class che_이동 extends Command\GeneralCommand
         return true;
     }
 
-    public function getJSPlugins(): array
+    public function exportJSVars(): array
     {
         return [
-            'defaultSelectCityByMap'
+            'mapTheme' => \sammo\getMapTheme(),
+            'procRes' => [
+                'cities' => \sammo\JSOptionsForCities(),
+                'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 1),
+            ],
         ];
-    }
-
-    public function getForm(): string
-    {
-        $currentCityID = $this->generalObj->getCityID();
-        $currentCityName = CityConst::byID($currentCityID)->name;
-
-        ob_start();
-?>
-        <?= \sammo\getMapHtml() ?><br>
-        선택된 도시로 이동합니다.<br>
-        인접 도시로만 이동이 가능합니다.<br>
-        목록을 선택하거나 도시를 클릭하세요.<br>
-        <?= $currentCityName ?> => <select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'><br>
-            <?= \sammo\optionsForCities() ?><br>
-        </select> <input type=button id="commonSubmit" value="<?= $this->getName() ?>"><br>
-        <br>
-        <br>
-        <?= printCitiesBasedOnDistance($currentCityID, 1) ?>
-<?php
-        return ob_get_clean();
     }
 }

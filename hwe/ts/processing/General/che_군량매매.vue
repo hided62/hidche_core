@@ -1,0 +1,78 @@
+<template>
+  <TopBackBar :title="commandName" type="chief" />
+  <div class="bg0">
+    <div>
+      자신의 군량을 사거나 팝니다.<br />
+    </div>
+    <div class="row">
+      <div class="col-2 col-md-1">
+        군량을 :
+        <b-button-group>
+          <b-button :pressed="buyRice" @click="buyRice=true">삼</b-button>
+          <b-button :pressed="!buyRice" @click="buyRice=false">팜</b-button>
+        </b-button-group>
+      </div>
+      <div class="col-7 col-md-4">
+        금액 :
+        <SelectAmount
+          :amountGuide="amountGuide"
+          v-model="amount"
+          :maxAmount="maxAmount"
+          :minAmount="minAmount"
+        />
+      </div>
+      <div class="col-3 col-md-2 d-grid">
+        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+      </div>
+    </div>
+  </div>
+  <BottomBar :title="commandName" />
+</template>
+
+<script lang="ts">
+import SelectAmount from "@/processing/SelectAmount.vue";
+import { defineComponent, ref } from "vue";
+import { unwrap } from "@/util/unwrap";
+import { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+declare const commandName: string;
+
+declare const procRes: {
+  minAmount: number;
+  maxAmount: number;
+  amountGuide: number[];
+};
+
+export default defineComponent({
+  components: {
+    SelectAmount,
+    TopBackBar,
+    BottomBar,
+  },
+  setup() {
+    const amount = ref(1000);
+    const buyRice = ref(true);
+
+    async function submit(e: Event) {
+      const event = new CustomEvent<Args>("customSubmit", {
+        detail: {
+          amount: amount.value,
+          buyRice: buyRice.value,
+        },
+      });
+      unwrap(e.target).dispatchEvent(event);
+    }
+
+    return {
+      buyRice,
+      amount,
+      minAmount: ref(procRes.minAmount),
+      maxAmount: ref(procRes.maxAmount),
+      amountGuide: procRes.amountGuide,
+      commandName,
+      submit,
+    };
+  },
+});
+</script>
