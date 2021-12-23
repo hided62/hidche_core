@@ -112,7 +112,7 @@ export default defineComponent({
       const troops = (!gen.troopID)?'':`,${procRes.troops[gen.troopID].name}`;
       const nameColor = getNpcColor(gen.npc);
       const name = nameColor?`<span style="color:${nameColor}">${gen.name}</span>`:gen.name;
-      return `${name} [${citiesMap.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
+      return `${name} [${citiesMap.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${gen.intel}) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
     }
 
     async function submit(e: Event) {
@@ -123,9 +123,6 @@ export default defineComponent({
         },
       });
       unwrap(e.target).dispatchEvent(event);
-
-      //        title: `${gen.name}[${this.cities.get(gen.cityID)?.name}] (${gen.leadership}/${gen.leadership}/${gen.intel}) <병${gen.crew.toLocaleString()}/훈${gen.train}/사${gen.atmos}`,
-
     }
 
     return {

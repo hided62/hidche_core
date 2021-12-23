@@ -117,7 +117,6 @@ export default defineComponent({
     }
 
     function doSubmit(e: Event) {
-      console.log(e);
       emit("submitOutput", e, amount.value, props.crewType.id);
     }
 

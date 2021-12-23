@@ -202,8 +202,6 @@ export default defineComponent({
       return Math.floor(value).toLocaleString();
     }
 
-    console.log(dexFullInfo);
-
     return {
       ...procRes,
       srcArmTypeID,

@@ -65,7 +65,6 @@ export default defineComponent({
     const destNationName = ref("");
     const selectedColorID = ref(0);
 
-    console.log(procRes.nationTypes);
     const selectedNationType = ref(Object.values(procRes.nationTypes)[0].type);
 
     async function submit(e: Event) {
@@ -86,7 +85,6 @@ export default defineComponent({
         value: nationType.type,
       });
     }
-    console.log(nationTypesOption);
 
     return {
       available건국: procRes.available건국,
