@@ -619,7 +619,7 @@ export default defineComponent({
 }
 
 .turn_pad:nth-child(8n) {
-  background-color: color.adjust($nbase2color, $lightness: +5%);
+  background-color: color.adjust($nbase2color, $lightness: -5%);
 }
 
 .turn_pad .turn_text {

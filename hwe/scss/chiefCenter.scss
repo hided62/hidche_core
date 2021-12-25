@@ -6,7 +6,7 @@
 @import "@scss/common/bootswatch_custom_variables.scss";
 @import "@scss/game_bg.scss";
 
-$modcolor2: color.adjust($nbase2color, $lightness: +5%);
+$modcolor2: color.adjust($nbase2color, $lightness: -5%);
 
 .turn_pad {
     white-space: nowrap;
