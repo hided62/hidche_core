@@ -186,7 +186,7 @@ class che_종전제의 extends Command\NationCommand{
             if (!$testCommand->hasFullConditionMet()) {
                 $nationTarget['notAvailable'] = true;
             }
-            if ($destNation['id'] == $nationID) {
+            if ($destNation['nation'] == $nationID) {
                 $nationTarget['notAvailable'] = true;
             }
 

@@ -255,7 +255,7 @@ class che_피장파장 extends Command\NationCommand
             if (!$testCommand->hasFullConditionMet()) {
                 $nationTarget['notAvailable'] = true;
             }
-            if ($destNation['id'] == $nationID) {
+            if ($destNation['nation'] == $nationID) {
                 $nationTarget['notAvailable'] = true;
             }
 

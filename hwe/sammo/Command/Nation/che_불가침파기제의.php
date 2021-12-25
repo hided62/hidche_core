@@ -193,7 +193,7 @@ class che_불가침파기제의 extends Command\NationCommand{
             if($diplomacyStatus[$destNation['nation']]['state'] != 7){
                 $nationTarget['notAvailable'] = true;
             }
-            if ($destNation['id'] == $nationID) {
+            if ($destNation['nation'] == $nationID) {
                 $nationTarget['notAvailable'] = true;
             }
 

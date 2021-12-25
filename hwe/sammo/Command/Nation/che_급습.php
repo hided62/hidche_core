@@ -214,7 +214,7 @@ class che_급습 extends Command\NationCommand
             if (!$testCommand->hasFullConditionMet()) {
                 $nationTarget['notAvailable'] = true;
             }
-            if ($destNation['id'] == $nationID) {
+            if ($destNation['nation'] == $nationID) {
                 $nationTarget['notAvailable'] = true;
             }
 
