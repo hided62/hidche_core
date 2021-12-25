@@ -1,37 +1,36 @@
 <template>
-  <div
-    :class="['subRows', 'c-bg2', 'chiefCommand']"
-    :style="style"
-  >
+  <div :class="['subRows', 'c-bg2', 'chiefCommand']" :style="style">
     <div class="bg1 center row gx-0" style="font-size: 1.2em">
       <div class="col-5 align-self-center text-end">
-        {{ officer.officerLevelText }} :
+        {{ officer?`${officer.officerLevelText} : `:'' }}
       </div>
       <div
         class="col-7 align-self-center"
         :style="{
-          color: getNpcColor(officer.npcType ?? 0),
+          color: getNpcColor((officer?.npcType) ?? 0),
         }"
       >
-        {{ officer.name }}
+        {{ officer?.name }}
       </div>
     </div>
-    <div class="row gx-0" v-for="(turn, idx) in officer.turn" :key="idx">
-      <div class="col-2 time_pad f_tnum">
-        {{ turnTimes[idx] }}
+    <template v-if="officer">
+      <div class="row gx-0" v-for="(turn, idx) in officer.turn" :key="idx">
+        <div class="col-2 time_pad f_tnum">
+          {{ turnTimes[idx] }}
+        </div>
+        <div
+          class="tableCell align-self-center col-10 center turn_pad"
+          :style="{
+            fontSize:
+              mb_strwidth(turn.brief) > 28
+                ? `${28 / mb_strwidth(turn.brief)}em`
+                : undefined,
+          }"
+        >
+          {{ turn.brief }}
+        </div>
       </div>
-      <div
-        class="tableCell align-self-center col-10 center turn_pad"
-        :style="{
-          fontSize:
-            mb_strwidth(turn.brief) > 28
-              ? `${28 / mb_strwidth(turn.brief)}em`
-              : undefined,
-        }"
-      >
-        {{ turn.brief }}
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 <script lang="ts">
@@ -49,8 +48,8 @@ export default defineComponent({
   props: {
     style: VueTypes.object.isRequired,
     officer: {
-        type: Object as PropType<ChiefResponse['chiefList'][0]>,
-        required: true,
+      type: Object as PropType<ChiefResponse["chiefList"][0]>,
+      required: true,
     },
     turnTerm: VueTypes.integer.isRequired,
   },
@@ -60,24 +59,31 @@ export default defineComponent({
   },
 
   data() {
-      const turnTimes: string[] = [];
+    const turnTimes: string[] = [];
+    if (!this.officer) {
+      return {};
+    }
 
-      if (!this.officer.turnTime) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          for(const _ of range(this.officer.turn.length)){
-              turnTimes.push('-');
-          }
+    if (!this.officer.turnTime) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const _ of range(this.officer.turn.length)) {
+        turnTimes.push("-");
       }
-      else{
-          const baseTurnTime = parseTime(this.officer.turnTime);
-          for(const idx of range(this.officer.turn.length)){
-              turnTimes.push(formatTime(addMinutes(baseTurnTime, idx * this.turnTerm), this.turnTerm >= 5 ? "HH:mm":"mm:ss"));
-          }
+    } else {
+      const baseTurnTime = parseTime(this.officer.turnTime);
+      for (const idx of range(this.officer.turn.length)) {
+        turnTimes.push(
+          formatTime(
+            addMinutes(baseTurnTime, idx * this.turnTerm),
+            this.turnTerm >= 5 ? "HH:mm" : "mm:ss"
+          )
+        );
       }
+    }
 
-      return {
-          turnTimes,
-      }
+    return {
+      turnTimes,
+    };
   },
 });
 </script>

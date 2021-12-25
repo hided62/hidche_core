@@ -9,19 +9,19 @@
     <div
       class="bg1 nameHeader"
       :style="{
-        color: getNpcColor(officer.npcType ?? 0),
+        color: getNpcColor(officer?.npcType ?? 0),
         textDecoration: isMe ? 'underline' : undefined,
       }"
     >
-      {{ officer.name ?? "-" }}
+      {{ officer?(officer?.name ?? "-"):'' }}
     </div>
     <div class="bg1 center row gx-0">
-      <div class="col">{{ officer.officerLevelText }}</div>
-      <div class="col">{{ (officer.turnTime ?? "  -  ").slice(-5) }}</div>
+      <div class="col">{{ officer?.officerLevelText }}</div>
+      <div class="col">{{ officer?((officer?.turnTime ?? "  -  ").slice(-5)):'' }}</div>
     </div>
     <div
       class="tableCell align-self-center"
-      v-for="(turn, idx) in officer.turn"
+      v-for="(turn, idx) in officer?.turn??[]"
       :key="idx"
       :style="{
         fontSize:

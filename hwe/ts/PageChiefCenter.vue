@@ -78,8 +78,11 @@
                 </div>
                 <div class="row gx-1 gy-1 py-1">
                   <div class="col-md-4 mx-0 mb-0 mt-1 d-grid">
-                    <div class="alert alert-primary mb-0 center" style="padding:0.5rem 0">
-                        {{ serverNow }}
+                    <div
+                      class="alert alert-primary mb-0 center"
+                      style="padding: 0.5rem 0"
+                    >
+                      {{ serverNow }}
                     </div>
                   </div>
 
@@ -207,7 +210,7 @@
           :chiefLevel="chiefLevel"
           :chiefList="chiefList"
           :style="subTableGridRows"
-          :isMe="targetIsMe"
+          :isMe="chiefLevel == officerLevel"
           @click="viewTarget = chiefLevel"
         />
         <div
@@ -407,7 +410,13 @@ export default defineComponent({
         timeDiff.value = serverNowObj.getTime() - clientNowObj.getTime();
 
         if (viewTarget.value === undefined) {
-          viewTarget.value = tableObj.officerLevel;
+          if(!tableObj.officerLevel){
+            viewTarget.value = 12;
+          }
+          else{
+            viewTarget.value = tableObj.officerLevel;
+          }
+
         }
       } catch (e) {
         if (isString(e)) {
