@@ -539,6 +539,8 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
+@use "sass:color";
+
 @import "@scss/common/break_500px.scss";
 @import "@scss/common/variables.scss";
 @import "@scss/common/bootswatch_custom_variables.scss";
@@ -614,6 +616,10 @@ export default defineComponent({
 .turn_pad {
   white-space: nowrap;
   background-color: $nbase2color;
+}
+
+.turn_pad:nth-child(8n) {
+  background-color: color.adjust($nbase2color, $lightness: +5%);
 }
 
 .turn_pad .turn_text {

@@ -20,7 +20,7 @@
       <div class="col">{{ officer?((officer?.turnTime ?? "  -  ").slice(-5)):'' }}</div>
     </div>
     <div
-      class="tableCell align-self-center"
+      class="tableCell align-self-center turn_pad"
       v-for="(turn, idx) in officer?.turn??[]"
       :key="idx"
       :style="{

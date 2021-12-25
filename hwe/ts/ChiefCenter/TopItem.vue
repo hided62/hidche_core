@@ -1,5 +1,5 @@
 <template>
-  <div :class="['subRows', 'c-bg2', 'chiefCommand']" :style="style">
+  <div :class="['subRows', 'chiefCommand']" :style="style">
     <div class="bg1 center row gx-0" style="font-size: 1.2em">
       <div class="col-5 align-self-center text-end">
         {{ officer ? `${officer.officerLevelText} : ` : "" }}
@@ -13,12 +13,12 @@
         {{ officer?.name }}
       </div>
     </div>
-    <div class="row gx-0" v-for="vidx in maxTurn" :key="vidx">
+    <div class="row c-bg2 gx-0" v-for="vidx in maxTurn" :key="vidx">
       <div class="col-2 time_pad f_tnum">
-        {{ turnTimes[vidx - 1] ?? "" }}
+        {{ turnTimes[vidx - 1] }}
       </div>
       <div
-        class="center turn_pad"
+        class="center"
         v-if="!officer || (!officer.turn) || !(vidx - 1 in officer.turn)"
       ></div>
       <div
@@ -66,7 +66,7 @@ export default defineComponent({
     if (!this.officer || !this.officer.turnTime) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const _ of range(this.maxTurn)) {
-        turnTimes.push("");
+        turnTimes.push("\xa0");
       }
     } else {
       const baseTurnTime = parseTime(this.officer.turnTime);

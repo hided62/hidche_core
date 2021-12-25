@@ -479,7 +479,6 @@ export default defineComponent({
 
   .turn_pad {
     white-space: nowrap;
-    background-color: $nbase2color;
   }
 
   .turn_pad .turn_text {

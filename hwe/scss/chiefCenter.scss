@@ -1,157 +1,180 @@
 @use "sass:math";
+@use "sass:color";
 
 @import "@scss/common/break_500px.scss";
 @import "@scss/common/variables.scss";
 @import "@scss/common/bootswatch_custom_variables.scss";
 @import "@scss/game_bg.scss";
 
+$modcolor2: color.adjust($nbase2color, $lightness: +5%);
+
 .turn_pad {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: $nbase2color;
 }
 
 #mainTable {
-  .subRows {
-    display: grid;
-    grid-template-columns: 1fr;
-    line-height: 1.05em;
-  }
+    .subRows {
+        display: grid;
+        grid-template-columns: 1fr;
+        line-height: 1.05em;
+    }
 
-  .chiefCommand .time_pad {
-    align-self: center;
-    text-align: center;
-    background-color: black;
-    line-height: 30px;
-  }
+    .chiefCommand {
+        .time_pad {
+            align-self: center;
+            text-align: center;
+            background-color: black;
+            line-height: 30px;
+        }
+
+        .turn_pad {
+            line-height: 30px;
+        }
+
+        .row:nth-child(even) .turn_pad {
+            background-color: $modcolor2;
+        }
+    }
 }
 
 .commandBox {
-  position: relative;
+    position: relative;
 }
 
 @include media-1000px {
-  #container {
-    width: 1000px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  #mainTable {
-    display: grid;
-    grid-template-columns: 24px repeat(4, 1fr) 24px;
-
-    .commandPad {
-      margin-left: 0;
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+        position: relative;
     }
 
-    .subRows {
-      display: grid;
-      grid-template-columns: 1fr;
+    #mainTable {
+        display: grid;
+        grid-template-columns: 24px repeat(4, 1fr) 24px;
+
+        .commandPad {
+            margin-left: 0;
+        }
+
+        .subRows {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .turnIdx {
+            text-align: center;
+        }
+
+        .time_pad {
+            height: 30px;
+        }
     }
 
-    .turnIdx {
-      text-align: center;
+    #bottomChiefBox {
+        display: none;
     }
 
-    .time_pad {
-      height: 30px;
+    .only500px {
+        display: none !important;
     }
-  }
-
-  #bottomChiefBox {
-    display: none;
-  }
-
-  .only500px {
-    display: none !important;
-  }
 }
 
 @include media-500px {
-  .only1000px {
-    display: none !important;
-  }
-
-  .targetIsNotMe {
-    display: none;
-  }
-
-  #container {
-    position: relative;
-    width: 500px;
-    height: 460px;
-    margin: auto;
-    overflow: hidden;
-  }
-
-  #mainTable {
-    display: block;
-    height: 420px;
-  }
-
-  #mainTable.targetIsNotMe {
-    display: grid;
-    grid-template-columns: 24px 260px 24px;
-    margin-top: 10px;
-    margin-left: calc((500px - 24px - 260px - 24px) / 2);
-
-    .commandBox {
-      display: none;
-    }
-  }
-
-  .commandBox .controlPad{
-      margin-top: 10px;
-  }
-
-  #bottomChiefBox {
-    position: relative;
-    left: calc(50% - 250px);
-
-    width: 500px;
-    height: 320px;
-    overflow: hidden;
-  }
-
-  #bottomChiefList {
-    bottom: 0;
-    left: 0;
-    width: 1000px;
-    font-size: 20px;
-    transform-origin: left top;
-    transform: scale(0.5);
-
-    display: grid;
-    grid-template-columns: 24px repeat(4, 1fr) 24px;
-
-    .subRows {
-      display: grid;
-      grid-template-columns: 1fr;
-      line-height: 1.05em;
+    .only1000px {
+        display: none !important;
     }
 
-    .subRows:not(:first-child) {
-      border-left: solid 1px white;
+    .targetIsNotMe {
+        display: none;
     }
 
-    .tableCell {
-      overflow: hidden;
-      white-space: nowrap;
-      text-align: center;
+    #container {
+        position: relative;
+        width: 500px;
+        height: 460px;
+        margin: auto;
+        overflow: hidden;
     }
 
-    .nameHeader {
-      text-align: center;
-      font-size: 28px;
-      line-height: 36px;
-      overflow: hidden;
-      white-space: nowrap;
+    #mainTable {
+        display: block;
+        height: 420px;
     }
 
-    .turnIdx {
-      font-size: 20px;
-      text-align: center;
+    #mainTable.targetIsNotMe {
+        display: grid;
+        grid-template-columns: 24px 260px 24px;
+        margin-top: 10px;
+        margin-left: calc((500px - 24px - 260px - 24px) / 2);
+
+        .commandBox {
+            display: none;
+        }
     }
-  }
+
+    .commandBox .controlPad {
+        margin-top: 10px;
+
+        .turn_pad:nth-child(even) {
+            background-color: $modcolor2;
+        }
+    }
+
+    #bottomChiefBox {
+        position: relative;
+        left: calc(50% - 250px);
+
+        width: 500px;
+        height: 320px;
+        overflow: hidden;
+
+
+        .turn_pad:nth-child(even) {
+            background-color: $modcolor2;
+        }
+    }
+
+    #bottomChiefList {
+        bottom: 0;
+        left: 0;
+        width: 1000px;
+        font-size: 20px;
+        transform-origin: left top;
+        transform: scale(0.5);
+
+        display: grid;
+        grid-template-columns: 24px repeat(4, 1fr) 24px;
+
+        .subRows {
+            display: grid;
+            grid-template-columns: 1fr;
+            line-height: 1.05em;
+        }
+
+        .subRows:not(:first-child) {
+            border-left: solid 1px white;
+        }
+
+        .tableCell {
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .nameHeader {
+            text-align: center;
+            font-size: 28px;
+            line-height: 36px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .turnIdx {
+            font-size: 20px;
+            text-align: center;
+        }
+    }
 }
