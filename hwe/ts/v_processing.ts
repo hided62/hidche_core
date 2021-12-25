@@ -14,7 +14,7 @@ import { sammoAPI, ValidResponse } from './util/sammoAPI';
 declare const turnList: number[];
 
 async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turnList: number[], action: string, arg: Args): Promise<T> {
-    const target = isChiefTurn ? 'Command/ReserveCommand' : 'NationCommand/ReserveCommand';
+    const target = isChiefTurn ? 'NationCommand/ReserveCommand' : 'Command/ReserveCommand';
 
     try {
         const testResult = testSubmitArgs(arg);
