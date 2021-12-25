@@ -1,9 +1,5 @@
 import '@scss/processing.scss';
 
-import axios from 'axios';
-import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
-import { convertFormData } from '@util/convertFormData';
-import { InvalidResponse } from '@/defs';
 import { unwrap } from "@util/unwrap";
 import BootstrapVue3 from 'bootstrap-vue-3'
 import Multiselect from 'vue-multiselect';
@@ -13,36 +9,24 @@ import { App, createApp } from 'vue';
 import { auto500px } from './util/auto500px';
 import { isString } from 'lodash';
 import { Args, testSubmitArgs } from './processing/args';
+import { sammoAPI, ValidResponse } from './util/sammoAPI';
 
 declare const turnList: number[];
 
-setAxiosXMLHttpRequest();
-
-async function submitCommand<T>(isChiefTurn: boolean, turnList: number[], command: string, args: Args): Promise<T> {
-
-
-    const target = isChiefTurn ? 'j_set_chief_command.php' : 'j_set_general_command.php';
+async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turnList: number[], action: string, arg: Args): Promise<T> {
+    const target = isChiefTurn ? 'Command/ReserveCommand' : 'NationCommand/ReserveCommand';
 
     try {
-        const testResult = testSubmitArgs(args);
+        const testResult = testSubmitArgs(arg);
         if (testResult !== true) {
             throw new TypeError(`Invalied Type ${testResult[0]}, ${testResult[2]} should be ${testResult[1]}`);
         }
-        console.log('trySubmit', args);
-        const response = await axios({
-            url: target,
-            responseType: 'json',
-            method: 'post',
-            data: convertFormData({
-                action: command,
-                turnList: turnList,
-                arg: JSON.stringify(args)
-            })
+        console.log('trySubmit', arg);
+        const response = await sammoAPI(target, {
+                action,
+                turnList,
+                arg,
         });
-        const data = response.data as InvalidResponse;
-        if (!data.result) {
-            throw data.reason;
-        }
 
         if (!isChiefTurn) {
             window.location.href = './';
@@ -50,7 +34,7 @@ async function submitCommand<T>(isChiefTurn: boolean, turnList: number[], comman
             window.location.href = 'v_chiefCenter.php';
         }
 
-        return data as unknown as T;
+        return response as T;
     }
     catch (e) {
         console.error(e);

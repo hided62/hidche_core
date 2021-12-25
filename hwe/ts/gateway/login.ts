@@ -12,15 +12,21 @@ import { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
 import { Modal } from 'bootstrap';
 import '@/gateway/common';
+import { sammoAPI } from '@/util/sammoAPI';
+import { isString } from 'lodash';
 
 type LoginResponse = {
     result: true,
     nextToken: [number, string] | undefined,
-} | {
+}
+
+type LoginFailed = {
     result: false,
     reqOTP: boolean,
     reason: string,
 }
+
+type LoginResponseWithKakao = LoginResponse | LoginFailed;
 
 type OTPResponse = {
     result: true,
@@ -31,15 +37,18 @@ type OTPResponse = {
     reason: string,
 }
 
+
 type AutoLoginNonceResponse = {
     result: true,
     loginNonce: string,
-} | InvalidResponse;
+};
 
 type AutoLoginResponse = {
     result: true,
     nextToken: [number, string] | undefined,
-} | {
+}
+
+type AutoLoginFailed = {
     result: false,
     silent: boolean,
     reason: string,
@@ -92,36 +101,26 @@ async function tryAutoLogin() {
 
         const [tokenID, token] = tokenInfo;
 
-        const result = await axios.post<AutoLoginNonceResponse>('api.php', {
-            path: ["Login", "ReqNonce"]
-        });
+        const result = await sammoAPI<AutoLoginNonceResponse, AutoLoginFailed>(["Login", "ReqNonce"], {}, true);
 
         if (!result) {
             //api 에러.
             return;
         }
 
-        if (!result.data.result) {
+        if (!result.result) {
             resetToken();
             return;
         }
 
-        const nonce = result.data.loginNonce;
+        const nonce = result.loginNonce;
 
         const hashedToken = sha512(token + nonce);
-        const _loginResult = await axios.post<AutoLoginResponse>('api.php', {
-            path: ["Login", "LoginByToken"],
-            args: {
-                'hashedToken': hashedToken,
-                'token_id': tokenID,
-            }
-        });
+        const loginResult = await sammoAPI<AutoLoginResponse, AutoLoginFailed>(["Login", "LoginByToken"], {
+            'hashedToken': hashedToken,
+            'token_id': tokenID,
+        }, true);
 
-        if (!_loginResult) {
-            return;
-        }
-
-        const loginResult = _loginResult.data;
         if (!loginResult.result) {
             if (!loginResult.silent) {
                 alert(loginResult.reason);
@@ -137,6 +136,9 @@ async function tryAutoLogin() {
 
     }
     catch (e) {
+        if (isString(e)) {
+            alert(e);
+        }
         console.error(e);
         return;
     }
@@ -201,7 +203,7 @@ async function sendTempPasswordToKakaoTalk(): Promise<void> {
 }
 
 async function doLoginUsingOAuth() {
-    let result: LoginResponse;
+    let result: LoginResponseWithKakao;
 
     try {
         const response = await axios({
@@ -307,22 +309,14 @@ $(async function ($) {
         const salt = unwrap_any<string>($('#global_salt').val());
         const hash_pw = sha512(salt + raw_password + salt);
 
-        let result: LoginResponse;
+        let result: LoginResponse | LoginFailed;
 
         try {
-            const response = await axios({
-                url: 'api.php',
-                responseType: 'json',
-                method: 'post',
-                data: {
-                    path: ["Login", "LoginByID"],
-                    args: {
-                        username: values.username,
-                        password: hash_pw,
-                    }
-                }
-            });
-            result = response.data;
+            result = await sammoAPI<LoginResponse, LoginFailed>(["Login", "LoginByID"], {
+                username: values.username,
+                password: hash_pw,
+
+            }, true);
         }
         catch (e) {
             console.error(e);

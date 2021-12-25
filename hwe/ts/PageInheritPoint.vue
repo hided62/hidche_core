@@ -265,6 +265,7 @@ import _ from "lodash";
 import { InvalidResponse } from "@/defs";
 import axios from "axios";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
+import { sammoAPI } from "./util/sammoAPI";
 
 type InheritanceType =
   | "previous"
@@ -505,24 +506,11 @@ export default defineComponent({
         return;
       }
 
-      let result: InvalidResponse;
       try {
-        const response = await axios({
-          url: "api.php",
-          method: "post",
-          responseType: "json",
-          data: {
-            path: "InheritAction/BuyHiddenBuff",
-            args: {
-              type: buffKey,
-              level,
-            },
-          },
+        await sammoAPI("InheritAction/BuyHiddenBuff", {
+          type: buffKey,
+          level,
         });
-        result = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -561,21 +549,8 @@ export default defineComponent({
         return;
       }
 
-      let result: InvalidResponse;
       try {
-        const response = await axios({
-          url: "api.php",
-          method: "post",
-          responseType: "json",
-          data: {
-            path: `InheritAction/${type}`,
-            args: {},
-          },
-        });
-        result = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
+        await sammoAPI(`InheritAction/${type}`, {});
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -608,23 +583,10 @@ export default defineComponent({
         return;
       }
 
-      let result: InvalidResponse;
       try {
-        const response = await axios({
-          url: "api.php",
-          method: "post",
-          responseType: "json",
-          data: {
-            path: `InheritAction/SetNextSpecialWar`,
-            args: {
-              type: this.nextSpecialWar,
-            },
-          },
+        await sammoAPI(`InheritAction/SetNextSpecialWar`, {
+          type: this.nextSpecialWar,
         });
-        result = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -653,24 +615,11 @@ export default defineComponent({
         return;
       }
 
-      let result: InvalidResponse;
       try {
-        const response = await axios({
-          url: "api.php",
-          method: "post",
-          responseType: "json",
-          data: {
-            path: `InheritAction/BuySpecificUnique`,
-            args: {
-              item: this.specificUnique,
-              amount,
-            },
-          },
+        await sammoAPI(`InheritAction/BuySpecificUnique`, {
+          item: this.specificUnique,
+          amount,
         });
-        result = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);

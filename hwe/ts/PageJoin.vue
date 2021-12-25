@@ -318,6 +318,7 @@ import { clone, shuffle, sum } from "lodash";
 import axios from "axios";
 import { InvalidResponse } from "@/defs";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
+import { sammoAPI } from "./util/sammoAPI";
 
 declare const nationList: {
   nation: number;
@@ -534,21 +535,8 @@ export default defineComponent({
     async submitForm() {
       //검증은 언제 되어야 하는가?
       const args = clone(this.args);
-      let result: InvalidResponse;
       try {
-        const response = await axios({
-          url: "api.php",
-          method: "post",
-          responseType: "json",
-          data: {
-            path: ["General", "Join"],
-            args,
-          },
-        });
-        result = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
+        await sammoAPI(["General", "Join"], args);
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
