@@ -497,7 +497,7 @@ export default defineComponent({
         if (command.searchText) {
           continue;
         }
-        command.searchText = convertSearch초성(command.simpleName).join('|');
+        command.searchText = convertSearch초성(command.simpleName).join("|");
       }
     }
 
@@ -542,6 +542,7 @@ export default defineComponent({
 @import "@scss/common/break_500px.scss";
 @import "@scss/common/variables.scss";
 @import "@scss/common/bootswatch_custom_variables.scss";
+@import "@scss/game_bg.scss";
 
 .commandPad {
   background-color: $gray-900;
@@ -554,7 +555,7 @@ export default defineComponent({
   //30, 70, 37.65, 160
 }
 
-@include media-1000px{
+@include media-1000px {
   .commandPad {
     margin-left: 10px;
 
@@ -612,7 +613,7 @@ export default defineComponent({
 
 .turn_pad {
   white-space: nowrap;
-  background-color: rgba($base1color, 0.5);
+  background-color: $nbase2color;
 }
 
 .turn_pad .turn_text {

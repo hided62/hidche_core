@@ -155,8 +155,58 @@ export type ToastType = {
 }
 
 export const keyScreenMode = 'sam.screenMode';
-export type ScreenModeType = 'auto'|'500px'|'1000px';
+export type ScreenModeType = 'auto' | '500px' | '1000px';
 
 export declare type ValuesOf<T> = T[keyof T];
 
 export const NoneValue = 'None' as const;
+
+export type Optional<Type> = {
+    [Property in keyof Type]+?: Type[Property];
+  };
+
+export type OptionalFull<Type> = {
+    [Property in keyof Type]: Type[Property]|undefined;
+  };
+
+export type commandItem = {
+    value: string;
+    title: string;
+    compensation: number;
+    simpleName: string;
+    possible: boolean;
+    reqArg: boolean;
+    searchText?: string;
+};
+
+
+export type ChiefResponse = {
+    result: true;
+    lastExecute: string;
+    year: number;
+    month: number;
+    turnTerm: number;
+    date: string;
+    chiefList: Record<
+        number,
+        {
+            name: string | undefined;
+            turnTime: string | undefined;
+            officerLevelText: string;
+            officerLevel: number;
+            npcType: number;
+            turn: {
+                action: string;
+                brief: string;
+                arg: Record<string, unknown>;
+            }[];
+        }
+    >;
+    isChief: boolean;
+    autorun_limit: number;
+    officerLevel: number;
+    commandList: {
+        category: string;
+        values: commandItem[];
+    }[];
+};

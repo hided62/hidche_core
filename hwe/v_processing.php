@@ -16,7 +16,7 @@ function die_redirect()
     if (!$isChiefTurn) {
         header('location:index.php', true, 303);
     } else {
-        header('location:b_chiefcenter.php', true, 303);
+        header('location:v_chiefCenter.php', true, 303);
     }
     die();
 }

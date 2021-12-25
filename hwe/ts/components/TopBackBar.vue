@@ -1,8 +1,19 @@
 <template>
   <div class="bg0 back_bar">
     <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
-      돌아가기
-    </button><b-button
+      돌아가기</button
+    ><button
+      type="button"
+      v-if="reloadable"
+      class="btn btn-sammo-base2 reload_btn"
+      @click="reload"
+    >
+      갱신
+    </button>
+    <div v-else></div>
+    <h2 class="title">{{ title }}</h2>
+    <div>&nbsp;</div>
+    <b-button
       class="btn-toggle-zoom"
       :variant="toggleSearch ? 'info' : 'secondary'"
       :pressed="toggleSearch"
@@ -10,8 +21,6 @@
       @click="toggleSearch = !toggleSearch"
       >{{ toggleSearch ? "검색 켜짐" : "검색 꺼짐" }}</b-button
     >
-    <h2 class="title">{{ title }}</h2>
-
   </div>
 </template>
 
@@ -26,11 +35,14 @@ export default defineComponent({
       if (this.type === "normal") {
         location.href = "./";
       } else if (this.type == "chief") {
-        location.href = "b_chiefcenter.php";
+        location.href = "v_chiefCenter.php";
       } else {
         //TODO: window.close하려면 부모창이 있어야함!
         window.close();
       }
+    },
+    reload() {
+      this.$emit("reload");
     },
   },
   data() {
@@ -38,7 +50,7 @@ export default defineComponent({
       toggleSearch: this.searchable,
     };
   },
-  emits: ["update:searchable"],
+  emits: ["update:searchable", "reload"],
   watch: {
     toggleSearch(val: boolean) {
       this.$emit("update:searchable", val);
@@ -59,6 +71,11 @@ export default defineComponent({
       default: undefined,
       required: false,
     },
+    reloadable: {
+      type: Boolean,
+      default: undefined,
+      required: false,
+    },
   },
 });
 </script>
@@ -69,20 +86,24 @@ export default defineComponent({
   max-width: 1000px;
   width: 100%;
   margin: auto;
+  display: grid;
+  grid-template-columns: 80px 80px 1fr 80px 80px;
   position: relative;
   height: 24pt;
 }
 
-.back_btn {
-  position: absolute;
-  left: 0;
+.reload_btn {
   height: 24pt;
+  margin-right: 2px;
 }
 
-.btn-toggle-zoom{
-  position: absolute;
+.back_btn {
   height: 24pt;
-  right: 0;
+  margin-right: 2px;
+}
+
+.btn-toggle-zoom {
+  height: 24pt;
 }
 
 .title {

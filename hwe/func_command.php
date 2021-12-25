@@ -167,6 +167,38 @@ function pullNationCommand(int $nationID, int $officerLevel, int $turnCnt=1){
     ], 'nation_id=%i AND officer_level=%i ORDER BY turn_idx ASC', $nationID, $officerLevel);
 }
 
+function repeatNationCommand(int $nationID, int $officerLevel, int $turnCnt){
+    if($turnCnt <= 0){
+        return;
+    }
+    if($turnCnt >= GameConst::$maxChiefTurn){
+        return;
+    }
+
+    $db = DB::db();
+
+    $reqTurn = $turnCnt;
+    if($turnCnt * 2 > GameConst::$maxChiefTurn){
+        $reqTurn = GameConst::$maxChiefTurn - $turnCnt;
+    }
+
+    $turnList = $db->query('SELECT turn_idx, `action`, arg, brief FROM nation_turn WHERE nation_id=%i AND officer_level=%i AND turn_idx < %i', $nationID, $officerLevel, $reqTurn);
+    if(!$turnList){
+        return;
+    }
+    foreach($turnList as $turnItem){
+        $turnIdx = $turnItem['turn_idx'];
+        $turnTarget = iterator_to_array(Util::range($turnIdx+$turnCnt, GameConst::$maxChiefTurn, $turnCnt));
+
+        $db->update('nation_turn', [
+            'action'=>$turnItem['action'],
+            'arg'=>$turnItem['arg'],
+            'brief'=>$turnItem['brief']
+        ], 'nation_id=%i AND officer_level=%i AND turn_idx IN %li', $nationID, $officerLevel, $turnTarget);
+    }
+}
+
+
 function _setGeneralCommand(GeneralCommand $command, array $turnList):void {
     if(!$turnList){
         return;

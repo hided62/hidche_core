@@ -19,7 +19,7 @@ export default defineComponent({
         location.href = './';
       }
       else if(this.type == 'chief'){
-        location.href = 'b_chiefcenter.php';
+        location.href = 'v_chiefCenter.php';
       }
       else{
         //TODO: window.close하려면 부모창이 있어야함!

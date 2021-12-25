@@ -50,7 +50,7 @@ return [
         'hwe/b_auction.php',
         'hwe/b_battleCenter.php',
         'hwe/b_betting.php',
-        'hwe/b_chiefcenter.php',
+        'hwe/v_chiefCenter.php',
         'hwe/b_currentCity.php',
         'hwe/b_dipcenter.php',
         'hwe/b_diplomacy.php',

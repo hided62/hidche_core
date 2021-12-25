@@ -1,4 +1,5 @@
 @import '../../d_shared/common.css';
+@import 'common/variables.scss';
 
 html {
     background: black;
@@ -49,4 +50,9 @@ body {
 
 .a-center {
     text-align: center;
+}
+
+
+.c-bg2{
+    background: $nbase2color;
 }

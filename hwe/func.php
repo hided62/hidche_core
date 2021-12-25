@@ -427,29 +427,6 @@ function checkSecretPermission(array $me, $checkSecretLimit = true)
     return min($secretMin, $secretMax);
 }
 
-function addCommand($typename, $value, $valid = 1, $color = 0)
-{
-    if ($valid == 1) {
-        switch ($color) {
-            case 0:
-                echo "
-    <option style='color:white;background-color:black;' value='{$value}'>{$typename}</option>";
-                break;
-            case 1:
-                echo "
-    <option style='color:skyblue;background-color:black;' value='{$value}'>{$typename}</option>";
-                break;
-            case 2:
-                echo "
-    <option style='color:orange;background-color:black;' value='{$value}'>{$typename}</option>";
-                break;
-        }
-    } else {
-        echo "
-    <option style='color:white;background-color:red;' value='{$value}'>{$typename}(불가)</option>";
-    }
-}
-
 function commandGroup($typename, $type = 0)
 {
     if ($type == 0) {
@@ -495,52 +472,37 @@ function getCommandTable(General $general)
     return $result;
 }
 
-function printCommandTable(General $generalObj)
-{
+function getChiefCommandTable(General $general){
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $userID = Session::getUserID();
-
     $gameStor->turnOnCache();
     $env = $gameStor->getAll();
 
-?>
-    <select id='generalCommandList' name='commandtype' size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
-        <?php
-
-        //보정(Pros,Cons) 여부.
-        $getCompensateClassName = function ($value) {
-            if ($value > 0) {
-                return 'compensatePositive';
-            } else if ($value < 0) {
-                return 'compensateNegative';
+    $result = [];
+    foreach (GameConst::$availableChiefCommand as $commandCategory => $commandList) {
+        $subList = [];
+        foreach ($commandList as $commandClassName) {
+            $commandObj = buildNationCommandClass($commandClassName, $general, $env, new LastTurn());
+            if (!$commandObj->canDisplay()) {
+                continue;
             }
-            return 'compensateNeutral';
-        };
-
-        foreach (GameConst::$availableGeneralCommand as $commandCategory => $commandList) {
-            if ($commandCategory) {
-                commandGroup("======= {$commandCategory} =======");
-            }
-
-            foreach ($commandList as $commandClassName) {
-                $commandObj = buildGeneralCommandClass($commandClassName, $generalObj, $env);
-                if (!$commandObj->canDisplay()) {
-                    continue;
-                }
-        ?>
-                <option class='commandBasic <?= $getCompensateClassName($commandObj->getCompensationStyle()) ?> <?= $commandObj->hasMinConditionMet() ? '' : 'commandImpossible' ?>' value='<?= Util::getClassNameFromObj($commandObj) ?>' data-reqArg='<?= ($commandObj::$reqArg) ? 'true' : 'false' ?>'><?= $commandObj->getCommandDetailTitle() ?><?= $commandObj->hasMinConditionMet() ? '' : '(불가)' ?></option>
-        <?php
-            }
-
-            if ($commandCategory) {
-                commandGroup('', 1);
-            }
+            $subList[] = [
+                'value' => Util::getClassNameFromObj($commandObj),
+                'compensation' => $commandObj->getCompensationStyle(),
+                'possible' => $commandObj->hasMinConditionMet(),
+                'title' => $commandObj->getCommandDetailTitle(),
+                'simpleName' => $commandObj->getName(),
+                'reqArg' => $commandObj::$reqArg,
+            ];
         }
 
-        ?>
-    </select>
-<?php
+        $result[] = [
+            'category' => $commandCategory,
+            'values' => $subList
+        ];
+    }
+
+    return $result;
 }
 
 function chiefCommandTable(General $generalObj)

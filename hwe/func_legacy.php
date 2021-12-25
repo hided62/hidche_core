@@ -120,7 +120,7 @@ function backButton()
 
 function CoreBackButton()
 {
-    return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('b_chiefcenter.php')>돌아가기</button><br>";
+    return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('v_chiefCenter.php')>돌아가기</button><br>";
 }
 
 function closeButton()

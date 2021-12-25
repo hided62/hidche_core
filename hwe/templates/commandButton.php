@@ -4,7 +4,7 @@
 <?=$btnBegin??''?><a href='t_diplomacy.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>외 교 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myBossInfo.php' class='commandButton <?= $meLevel >= 1 ? '' : 'disabled' ?> <?=$btnClass??""?>'>인 사 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_dipcenter.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>내 무 부</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='b_chiefcenter.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>사 령 부</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href='v_chiefCenter.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>사 령 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_NPCControl.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>NPC 정책</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_genList.php' target='_blank' class='open-window commandButton <?=$btnClass??""?> <?= $showSecret ? '' : 'disabled' ?>'>암 행 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_tournament.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>토 너 먼 트</a><?=$btnEnd??''?>

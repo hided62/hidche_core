@@ -47,7 +47,7 @@ async function submitCommand<T>(isChiefTurn: boolean, turnList: number[], comman
         if (!isChiefTurn) {
             window.location.href = './';
         } else {
-            window.location.href = 'b_chiefcenter.php';
+            window.location.href = 'v_chiefCenter.php';
         }
 
         return data as unknown as T;
