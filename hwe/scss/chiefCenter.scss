@@ -34,7 +34,7 @@ $modcolor2: color.adjust($nbase2color, $lightness: +5%);
             line-height: 30px;
         }
 
-        .row:nth-child(even) .turn_pad {
+        .row:nth-child(odd) .turn_pad {
             background-color: $modcolor2;
         }
     }
@@ -79,6 +79,12 @@ $modcolor2: color.adjust($nbase2color, $lightness: +5%);
 
     .only500px {
         display: none !important;
+    }
+
+    .commandBox .controlPad {
+        .turn_pad:nth-child(2n) {
+            background-color: $modcolor2;
+        }
     }
 }
 
