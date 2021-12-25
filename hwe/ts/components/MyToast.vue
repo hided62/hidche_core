@@ -1,5 +1,5 @@
 <template>
-  <CToaster placement="top-end">
+  <CToaster class="z99" placement="top-end">
     <CToast
       v-for="(toast, index) in modelValue"
       :key="index"
@@ -44,3 +44,8 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+.z99 {
+  z-index: 199;
+}
+</style>
