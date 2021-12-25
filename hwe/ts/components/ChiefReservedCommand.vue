@@ -5,6 +5,13 @@
         v-for="(turnObj, turnIdx) in reservedCommandList"
         :key="turnIdx"
       >
+        <div
+          @click="selectTurn(turnIdx)"
+          class="time_pad center f_tnum"
+          style="background-color: black; white-space: nowrap; overflow: hidden"
+        >
+          {{ turnObj.time }}
+        </div>
         <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
           <b-button
             size="sm"
@@ -17,13 +24,6 @@
             "
             >{{ turnIdx + 1 }}</b-button
           >
-        </div>
-        <div
-          @click="selectTurn(turnIdx)"
-          class="time_pad center"
-          style="background-color: black; white-space: nowrap; overflow: hidden"
-        >
-          {{ turnObj.time }}
         </div>
         <div class="turn_pad center">
           <span
@@ -416,7 +416,7 @@ export default defineComponent({
   .commandTable {
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(30px, 1fr) minmax(40px, 1fr) 5fr;
+    grid-template-columns: minmax(39.67px, 1fr) minmax(28px, 1fr) 5fr;
     //30, 70, 37.65, 160
   }
 
