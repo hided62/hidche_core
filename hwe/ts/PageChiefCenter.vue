@@ -38,6 +38,7 @@
             v-if="officerLevel != chiefLevel"
             :style="mainTableGridRows"
             :officer="officer"
+            :maxTurn="maxChiefTurn"
             :turnTerm="turnTerm"
           />
           <div class="commandBox" v-else>
@@ -352,7 +353,7 @@ export default defineComponent({
   setup(props) {
     const viewTarget = ref<number | undefined>();
 
-    const turnList = ref(new Set<number>([2]));
+    const turnList = ref(new Set<number>());
 
     const targetIsMe = ref<boolean>(false);
     watch(viewTarget, (val) => {
