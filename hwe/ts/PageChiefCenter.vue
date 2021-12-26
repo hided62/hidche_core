@@ -88,6 +88,9 @@
                   </div>
 
                   <b-dropdown class="col-md-4" left text="턴 선택">
+                    <b-dropdown-item @click="selectNone()"
+                      >해제</b-dropdown-item
+                    >
                     <b-dropdown-item @click="selectAll(true)"
                       >모든턴</b-dropdown-item
                     >
@@ -293,6 +296,9 @@ export default defineComponent({
       this.turnList.clear();
       this.turnList.add(turnIdx);
     },
+    selectNone() {
+      this.turnList.clear();
+    },
     selectAll(e: Event | true) {
       //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
       if (e !== true && isDropdownChildren(e)) {
@@ -411,13 +417,11 @@ export default defineComponent({
         timeDiff.value = serverNowObj.getTime() - clientNowObj.getTime();
 
         if (viewTarget.value === undefined) {
-          if(!tableObj.officerLevel){
+          if (!tableObj.officerLevel) {
             viewTarget.value = 12;
-          }
-          else{
+          } else {
             viewTarget.value = tableObj.officerLevel;
           }
-
         }
       } catch (e) {
         if (isString(e)) {

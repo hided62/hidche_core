@@ -1,22 +1,54 @@
 <template>
   <div class="commandPad chiefReservedCommand">
     <div class="commandTable">
-      <template
-        v-for="(turnObj, turnIdx) in reservedCommandList"
-        :key="turnIdx"
+      <DragSelect
+        :style="rowGridStyle"
+        attribute="turnIdx"
+        @dragStart="isDragSingle = true"
+        @dragDone="
+          isDragSingle = false;
+          selectTurn(...$event);
+        "
+        v-slot="{ selected }"
       >
         <div
-          @click="selectTurn(turnIdx)"
+          v-for="(turnObj, turnIdx) in reservedCommandList"
+          :key="turnIdx"
+          :turnIdx="turnIdx"
           class="time_pad center f_tnum"
-          style="background-color: black; white-space: nowrap; overflow: hidden"
+          :style="{
+            backgroundColor: 'black',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            color:
+              isDragSingle && selected.has(`${turnIdx}`) ? 'cyan' : undefined,
+          }"
         >
           {{ turnObj.time }}
         </div>
-        <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
+      </DragSelect>
+      <DragSelect
+        :style="rowGridStyle"
+        attribute="turnIdx"
+        @dragStart="isDragToggle = true"
+        @dragDone="
+          isDragToggle = false;
+          toggleTurn(...$event);
+        "
+        v-slot="{ selected }"
+      >
+        <div
+          v-for="(turnObj, turnIdx) in reservedCommandList"
+          :key="turnIdx"
+          :turnIdx="turnIdx"
+          class="idx_pad center d-grid"
+        >
           <b-button
             size="sm"
             :variant="
-              turnList.has(turnIdx)
+              isDragToggle && selected.has(`${turnIdx}`)
+                ? 'light'
+                : turnList.has(turnIdx)
                 ? 'info'
                 : turnList.size == 0 && prevTurnList.has(turnIdx)
                 ? 'success'
@@ -25,7 +57,13 @@
             >{{ turnIdx + 1 }}</b-button
           >
         </div>
-        <div class="turn_pad center">
+      </DragSelect>
+      <div :style="rowGridStyle">
+        <div
+          v-for="(turnObj, turnIdx) in reservedCommandList"
+          :key="turnIdx"
+          class="turn_pad center"
+        >
           <span
             class="turn_text"
             :style="turnObj.style"
@@ -34,7 +72,7 @@
             v-html="turnObj.brief"
           ></span>
         </div>
-      </template>
+      </div>
     </div>
     <div class="row gx-0">
       <div class="col-2 d-grid">
@@ -115,6 +153,9 @@ import { parseYearMonth } from "@util/parseYearMonth";
 import { sammoAPI } from "@util/sammoAPI";
 import { convertSearch초성 } from "@util/convertSearch초성";
 import VueTypes from "vue-types";
+import DragSelect from "@/components/DragSelect.vue";
+import { isString } from "lodash";
+
 type commandItem = {
   value: string;
   title: string;
@@ -147,6 +188,9 @@ const searchModeKey = `sammo_searchModeOn`;
 
 export default defineComponent({
   name: "NationReservedCommand",
+  components: {
+    DragSelect
+  },
   props: {
     maxTurn: VueTypes.integer.isRequired,
     maxPushTurn: VueTypes.integer.isRequired,
@@ -218,17 +262,28 @@ export default defineComponent({
         this.updateCommandList();
       }, 1);
     },
-    toggleTurn(val: number) {
-      if (this.turnList.has(val)) {
-        this.turnList.delete(val);
-      } else {
-        this.turnList.add(val);
+    toggleTurn(...turnList: number[] | string[]) {
+      for (let turnIdx of turnList) {
+        if (isString(turnIdx)) {
+          turnIdx = parseInt(turnIdx);
+        }
+        if (this.turnList.has(turnIdx)) {
+          this.turnList.delete(turnIdx);
+        } else {
+          this.turnList.add(turnIdx);
+        }
       }
       this.$emit("update:selectedTurn", this.turnList);
     },
-    selectTurn(val: number) {
+    selectTurn(...turnList: number[] | string[]) {
       this.turnList.clear();
-      this.turnList.add(val);
+      for (const turnIdx of turnList) {
+        if (isString(turnIdx)) {
+          this.turnList.add(parseInt(turnIdx));
+        } else {
+          this.turnList.add(turnIdx);
+        }
+      }
       this.$emit("update:selectedTurn", this.turnList);
     },
     updateCommandList() {
@@ -387,6 +442,11 @@ export default defineComponent({
 
     const prevTurnList = new Set([0]);
 
+    const rowGridStyle = {
+      display: "grid",
+      gridTemplateRows: `repeat(${this.maxTurn}, 30px)`,
+    };
+
     return {
       updated: false,
       listReqArgCommand,
@@ -398,6 +458,9 @@ export default defineComponent({
       reservedCommandList: emptyTurn,
       autorun_limit: null as null | number,
       searchModeOn,
+      rowGridStyle,
+      isDragSingle: false,
+      isDragToggle: false,
     };
   },
   mounted() {

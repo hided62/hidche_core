@@ -7,6 +7,7 @@
     <div class="row gx-1">
       <div class="col d-grid">
         <b-dropdown left text="턴 선택">
+          <b-dropdown-item @click="selectTurn()">해제</b-dropdown-item>
           <b-dropdown-item @click="selectAll(true)">모든턴</b-dropdown-item>
           <b-dropdown-item @click="selectStep(0, 2)">홀수턴</b-dropdown-item>
           <b-dropdown-item @click="selectStep(1, 2)">짝수턴</b-dropdown-item>
@@ -602,16 +603,12 @@ export default defineComponent({
     const viewMaxTurn = ref(flippedMaxTurn);
     const rowGridStyle = ref({
       display: "grid",
-      gridTemplateRows: `repeat(${viewMaxTurn.value}, 30px)`,
+      gridTemplateRows: `repeat(${viewMaxTurn.value}, 29.4px)`,
     });
 
     watch(viewMaxTurn, (val) => {
       rowGridStyle.value.gridTemplateRows = `repeat(${val}, 29.4px)`;
     });
-
-    function debugSel(val: unknown) {
-      console.log(val);
-    }
 
     const isDragSingle = ref(false);
     const isDragToggle = ref(false);
@@ -622,7 +619,6 @@ export default defineComponent({
       flippedMaxTurn,
       viewMaxTurn,
       rowGridStyle,
-      debugSel,
     };
   },
   mounted() {
