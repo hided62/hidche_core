@@ -168,7 +168,7 @@ class che_이호경식 extends Command\NationCommand
 
         $broadcastMessage = "아국에 <M>{$commandName}</>{$josaYiCommand} 발동되었습니다.";
 
-        $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $destNationID, $generalID);
+        $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i', $destNationID);
         foreach ($destNationGeneralList as $destNationGeneralID) {
             $destNationGeneralLogger = new ActionLogger($destNationGeneralID, $destNationID, $year, $month);
             $destNationGeneralLogger->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
