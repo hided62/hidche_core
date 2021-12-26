@@ -50,17 +50,29 @@
     </div>
 
     <div class="commandTable">
-      <template
-        v-for="(turnObj, turnIdx) in reservedCommandList.slice(
-          0,
-          Math.min(maxTurn, viewMaxTurn)
-        )"
-        :key="turnIdx"
+      <DragSelect
+        :style="rowGridStyle"
+        attribute="turnIdx"
+        @dragStart="isDragToggle = true"
+        @dragDone="
+          isDragToggle = false;
+          toggleTurn(...$event);
+        "
+        v-slot="{ selected }"
       >
-        <div class="idx_pad center d-grid" @click="toggleTurn(turnIdx)">
+        <div
+          v-for="(turnObj, turnIdx) in reservedCommandList.slice(
+            0,
+            viewMaxTurn
+          )"
+          :turnIdx="turnIdx"
+          :key="turnIdx"
+          class="idx_pad center d-grid"
+        >
           <b-button
             size="sm"
             :variant="
+              (isDragToggle && selected.has(`${turnIdx}`))?'light':
               turnList.has(turnIdx)
                 ? 'info'
                 : turnList.size == 0 && prevTurnList.has(turnIdx)
@@ -70,10 +82,26 @@
             >{{ turnIdx + 1 }}</b-button
           >
         </div>
+      </DragSelect>
+      <DragSelect
+        :style="rowGridStyle"
+        attribute="turnIdx"
+        @dragStart="isDragSingle = true"
+        @dragDone="
+          isDragSingle = false;
+          selectTurn(...$event);
+        "
+        v-slot="{ selected }"
+      >
         <div
-          @click="selectTurn(turnIdx)"
+          v-for="(turnObj, turnIdx) in reservedCommandList.slice(
+            0,
+            viewMaxTurn
+          )"
+          :key="turnIdx"
           height="24"
           class="month_pad center"
+          :turnIdx="turnIdx"
           :style="{
             'white-space': 'nowrap',
             'font-size': `${Math.min(
@@ -81,18 +109,40 @@
               (75 / (`${turnObj.year ?? 1}`.length + 8)) * 1.8
             )}px`,
             overflow: 'hidden',
+            color:
+              isDragSingle && selected.has(`${turnIdx}`) ? 'cyan' : undefined,
           }"
         >
           {{ turnObj.year ? `${turnObj.year}年` : "" }}
           {{ turnObj.month ? `${turnObj.month}月` : "" }}
         </div>
+      </DragSelect>
+      <div :style="rowGridStyle">
         <div
+          v-for="(turnObj, turnIdx) in reservedCommandList.slice(
+            0,
+            viewMaxTurn
+          )"
+          :key="turnIdx"
           class="time_pad center"
-          style="background-color: black; white-space: nowrap; overflow: hidden"
+          :style="{
+            backgroundColor: 'black',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+          }"
         >
           {{ turnObj.time }}
         </div>
-        <div class="turn_pad center">
+      </div>
+      <div :style="rowGridStyle">
+        <div
+          v-for="(turnObj, turnIdx) in reservedCommandList.slice(
+            0,
+            viewMaxTurn
+          )"
+          :key="turnIdx"
+          class="turn_pad center"
+        >
           <span
             class="turn_text"
             :style="turnObj.style"
@@ -101,7 +151,7 @@
             v-html="turnObj.brief"
           ></span>
         </div>
-      </template>
+      </div>
     </div>
     <div class="row gx-1">
       <div class="col d-grid">
@@ -200,9 +250,9 @@
 <script lang="ts">
 import addMilliseconds from "date-fns/esm/addMilliseconds";
 import addMinutes from "date-fns/esm/addMinutes";
-import { range } from "lodash";
+import { isString, range } from "lodash";
 import { stringifyUrl } from "query-string";
-import { defineComponent } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
@@ -210,6 +260,8 @@ import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
 import { sammoAPI } from "@util/sammoAPI";
 import { convertSearch초성 } from "./util/convertSearch초성";
+import DragSelect from "@/components/DragSelect.vue";
+
 type commandItem = {
   value: string;
   title: string;
@@ -286,7 +338,9 @@ const searchModeKey = `sammo_searchModeOn`;
 
 export default defineComponent({
   name: "PartialReservedCommand",
-
+  components: {
+    DragSelect,
+  },
   methods: {
     updateNow() {
       const serverNow = addMilliseconds(new Date(), this.timeDiff);
@@ -295,16 +349,27 @@ export default defineComponent({
         this.updateNow();
       }, 1000 - serverNow.getMilliseconds());
     },
-    toggleTurn(turnIdx: number) {
-      if (this.turnList.has(turnIdx)) {
-        this.turnList.delete(turnIdx);
-      } else {
-        this.turnList.add(turnIdx);
+    toggleTurn(...turnList: number[] | string[]) {
+      for (let turnIdx of turnList) {
+        if (isString(turnIdx)) {
+          turnIdx = parseInt(turnIdx);
+        }
+        if (this.turnList.has(turnIdx)) {
+          this.turnList.delete(turnIdx);
+        } else {
+          this.turnList.add(turnIdx);
+        }
       }
     },
-    selectTurn(turnIdx: number) {
+    selectTurn(...turnList: number[] | string[]) {
       this.turnList.clear();
-      this.turnList.add(turnIdx);
+      for (const turnIdx of turnList) {
+        if (isString(turnIdx)) {
+          this.turnList.add(parseInt(turnIdx));
+        } else {
+          this.turnList.add(turnIdx);
+        }
+      }
     },
     selectAll(e: Event | true) {
       //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
@@ -519,8 +584,7 @@ export default defineComponent({
 
     return {
       maxTurn,
-      flippedMaxTurn: 15,
-      viewMaxTurn: 15,
+
       maxPushTurn,
       commandList,
       serverNow: formatTime(serverNowObj, "HH:mm:ss"),
@@ -531,6 +595,34 @@ export default defineComponent({
       reservedCommandList: emptyTurn,
       autorun_limit: null as null | number,
       searchModeOn,
+    };
+  },
+  setup() {
+    const flippedMaxTurn = 15;
+    const viewMaxTurn = ref(flippedMaxTurn);
+    const rowGridStyle = ref({
+      display: "grid",
+      gridTemplateRows: `repeat(${viewMaxTurn.value}, 30px)`,
+    });
+
+    watch(viewMaxTurn, (val) => {
+      rowGridStyle.value.gridTemplateRows = `repeat(${val}, 29.4px)`;
+    });
+
+    function debugSel(val: unknown) {
+      console.log(val);
+    }
+
+    const isDragSingle = ref(false);
+    const isDragToggle = ref(false);
+
+    return {
+      isDragSingle,
+      isDragToggle,
+      flippedMaxTurn,
+      viewMaxTurn,
+      rowGridStyle,
+      debugSel,
     };
   },
   mounted() {

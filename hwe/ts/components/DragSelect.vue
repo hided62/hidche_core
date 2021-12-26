@@ -14,7 +14,14 @@
 
 <script lang="ts">
 /// https://github.com/andi23rosca/drag-select-vue/blob/master/src/DragSelect.vue
-import { defineComponent, ref, watch, onMounted, onBeforeUnmount, PropType } from "vue";
+import {
+  defineComponent,
+  ref,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  PropType,
+} from "vue";
 import VueTypes from "vue-types";
 
 function getDimensions(p1: coord, p2: coord): rect {
@@ -47,12 +54,12 @@ export default defineComponent({
       required: false,
     },
     modelValue: {
-        type: Object as PropType<Set<string>>,
-        required: false,
-        default: ()=>new Set(),
-    }
+      type: Object as PropType<Set<string>>,
+      required: false,
+      default: () => ref(new Set()),
+    },
   },
-  emits: ["update:modelValue", "dragDone"],
+  emits: ["update:modelValue", "dragDone", "dragStart"],
   setup(props, { emit }) {
     const intersected = ref<Set<string>>(props.modelValue);
     const container = ref<HTMLElement>();
@@ -60,11 +67,11 @@ export default defineComponent({
     watch(intersected, (val) => {
       emit("update:modelValue", val);
     });
-    watch(props.modelValue, (val)=>{
-        if(intersected.value === val){
-            return;
-        }
-        intersected.value = val;
+    watch(props.modelValue, (val) => {
+      if (intersected.value === val) {
+        return;
+      }
+      intersected.value = val;
     });
 
     onMounted(() => {
@@ -102,22 +109,22 @@ export default defineComponent({
         }
 
         let dismatch = false;
-        for(const oldVal of intersected.value){
-            if(!localIntersected.has(oldVal)){
-                dismatch = true;
-                break;
-            }
+        for (const oldVal of intersected.value) {
+          if (!localIntersected.has(oldVal)) {
+            dismatch = true;
+            break;
+          }
         }
-        if(!dismatch){
-            for(const newVal of localIntersected){
-                if(!intersected.value.has(newVal)){
-                    dismatch = true;
-                    break;
-                }
+        if (!dismatch) {
+          for (const newVal of localIntersected) {
+            if (!intersected.value.has(newVal)) {
+              dismatch = true;
+              break;
             }
+          }
         }
-        if(dismatch){
-            intersected.value = localIntersected;
+        if (dismatch) {
+          intersected.value = localIntersected;
         }
       }
       function touchStart(e: TouchEvent) {
@@ -128,8 +135,10 @@ export default defineComponent({
         e.preventDefault();
         drag(e.touches[0]);
       }
+
+      let isMine = false;
       function startDrag(e: MouseEvent | Touch) {
-        containerRect =uContainer.getBoundingClientRect();
+        containerRect = uContainer.getBoundingClientRect();
         children = uContainer.children;
         start = getCoords(e);
         end = start;
@@ -139,6 +148,8 @@ export default defineComponent({
         box.style.left = start.x + "px";
         uContainer.prepend(box);
         intersection();
+        isMine = true;
+        emit("dragStart");
       }
       function drag(e: MouseEvent | Touch) {
         end = getCoords(e);
@@ -161,7 +172,10 @@ export default defineComponent({
         document.removeEventListener("mousemove", drag);
         document.removeEventListener("touchmove", touchMove);
         box.remove();
-        emit('dragDone', intersected.value);
+        if(isMine){
+            emit("dragDone", intersected.value);
+        }
+        isMine = false;
       }
 
       uContainer.addEventListener("mousedown", startDrag);
