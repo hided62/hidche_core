@@ -143,6 +143,7 @@
           )"
           :key="turnIdx"
           class="turn_pad center"
+          @click="chooseCommand(turnObj.action)"
         >
           <span
             class="turn_text"
@@ -547,6 +548,9 @@ export default defineComponent({
       this.searchModeOn = searchModeOn;
       localStorage.setItem(searchModeKey, searchModeOn ? "1" : "0");
     },
+    chooseCommand(val: string){
+      this.selectedCommand = this.invCommandMap[val];
+    }
   },
   data() {
     const serverNowObj = parseTime(serverNow);
@@ -613,12 +617,20 @@ export default defineComponent({
     const isDragSingle = ref(false);
     const isDragToggle = ref(false);
 
+    const invCommandMap: Record<string, commandItem> = {};
+    for(const category of commandList){
+      for(const command of category.values){
+        invCommandMap[command.value] = command;
+      }
+    }
+
     return {
       isDragSingle,
       isDragToggle,
       flippedMaxTurn,
       viewMaxTurn,
       rowGridStyle,
+      invCommandMap,
     };
   },
   mounted() {

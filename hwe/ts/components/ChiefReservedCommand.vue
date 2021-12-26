@@ -63,6 +63,7 @@
           v-for="(turnObj, turnIdx) in reservedCommandList"
           :key="turnIdx"
           class="turn_pad center"
+          @click="chooseCommand(turnObj.action)"
         >
           <span
             class="turn_text"
@@ -398,6 +399,9 @@ export default defineComponent({
       this.searchModeOn = searchModeOn;
       localStorage.setItem(searchModeKey, searchModeOn ? "1" : "0");
     },
+    chooseCommand(val: string){
+      this.selectedCommand = this.invCommandMap[val];
+    },
   },
   data() {
     const serverNowObj = parseTime(this.date);
@@ -424,6 +428,13 @@ export default defineComponent({
           continue;
         }
         command.searchText = convertSearch초성(command.simpleName).join("|");
+      }
+    }
+
+    const invCommandMap: Record<string, commandItem> = {};
+    for(const category of this.commandList){
+      for(const command of category.values){
+        invCommandMap[command.value] = command;
       }
     }
 
@@ -461,6 +472,7 @@ export default defineComponent({
       rowGridStyle,
       isDragSingle: false,
       isDragToggle: false,
+      invCommandMap,
     };
   },
   mounted() {
