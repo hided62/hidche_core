@@ -286,6 +286,7 @@ class WarUnitGeneral extends WarUnit
 
         $rice *= $this->crewType->rice;
         $rice *= getTechCost($this->getNationVar('tech'));
+        $rice = $this->general->onCalcStat($this->general, 'killRice', $rice);
 
         $general->increaseVarWithLimit('rice', -$rice, 0);
 

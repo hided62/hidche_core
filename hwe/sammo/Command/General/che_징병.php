@@ -150,6 +150,7 @@ class che_징병 extends Command\GeneralCommand
         $reqGold = $this->generalObj->onCalcDomestic('징병', 'cost', $reqGold, ['armType' => $this->reqCrewType->armType]);
         $reqGold *= static::$costOffset;
         $reqRice = $this->maxCrew / 100;
+        $reqRice = $this->generalObj->onCalcDomestic('징병', 'rice', $reqRice, ['armType' => $this->reqCrewType->armType]);
 
         $reqGold = Util::round($reqGold);
         $reqRice = Util::round($reqRice);
