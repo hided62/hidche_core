@@ -706,7 +706,7 @@ export default defineComponent({
   background-color: $nbase2color;
 }
 
-.turn_pad:nth-child(8n) {
+.turn_pad:nth-child(2n) {
   background-color: color.adjust($nbase2color, $lightness: -5%);
 }
 
