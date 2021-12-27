@@ -52,7 +52,7 @@ return [
         'hwe/b_betting.php',
         'hwe/v_chiefCenter.php',
         'hwe/b_currentCity.php',
-        'hwe/b_dipcenter.php',
+        'hwe/v_nationStratFinan.php',
         'hwe/b_diplomacy.php',
         'hwe/b_genList.php',
         'hwe/b_myBossInfo.php',

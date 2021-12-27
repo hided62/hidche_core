@@ -26,7 +26,7 @@
         "v_NPCControl": "v_NPCControl.ts",
         "v_join": "v_join.ts",
         "v_main": "v_main.ts",
-        "v_dipcenter": "v_dipcenter.ts",
+        "v_nationStratFinan": "v_nationStratFinan.ts",
         "v_processing": "v_processing.ts"
     }
 }
