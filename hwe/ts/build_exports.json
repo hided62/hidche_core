@@ -1,6 +1,5 @@
 {
     "ingame": {
-        "chiefCenter": "chiefCenter.ts",
         "troop": "troop.ts",
         "map": "map.ts",
         "install_db": "install_db.ts",
