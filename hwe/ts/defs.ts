@@ -163,11 +163,11 @@ export const NoneValue = 'None' as const;
 
 export type Optional<Type> = {
     [Property in keyof Type]+?: Type[Property];
-  };
+};
 
 export type OptionalFull<Type> = {
-    [Property in keyof Type]: Type[Property]|undefined;
-  };
+    [Property in keyof Type]: Type[Property] | undefined;
+};
 
 export type commandItem = {
     value: string;
@@ -210,3 +210,16 @@ export type ChiefResponse = {
         values: commandItem[];
     }[];
 };
+
+
+type diplomacyInfo = {
+    name: string,
+    color?: string,
+}
+export type diplomacyState = 0 | 1 | 2 | 7;
+export const diplomacyStateInfo: Record<diplomacyState, diplomacyInfo> = {
+    0: { name: '교전', color: 'red' },
+    1: { name: '선포중', color: 'magenta' },
+    2: { name: '통상' },
+    7: { name: '불가침', color: 'green' },
+}
