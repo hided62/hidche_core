@@ -1,30 +1,40 @@
-type SubValue = string | { [property: string]: SubValue };
+import { InvalidResponse } from "@/defs";
+import { callSammoAPI, ValidResponse } from "./callSammoAPI";
 
-const hasKey = <T extends Record<string | symbol, unknown>>(obj: T, k: string | symbol | number): k is keyof T =>
-    k in obj;
+export type CurryCall<ResultType extends ValidResponse, ErrorType extends InvalidResponse> =
+    ((args?: Record<string, unknown>) => Promise<ResultType>)
+    | ((args: Record<string, unknown> | undefined, returnError: false) => Promise<ResultType>)
+    | ((args: Record<string, unknown> | undefined, returnError: true) => Promise<ResultType | ErrorType>);
 
-export function APIPathGen<K extends string, V extends SubValue>(obj: Record<K, V>, path?: string[]): Record<K, V> {
+type SubValue<ResultType extends ValidResponse, ErrorType extends InvalidResponse> = CurryCall<ResultType, ErrorType> | { [property: string]: SubValue<ResultType, ErrorType> };
+
+export function APIPathGen<ResultType extends ValidResponse, ErrorType extends InvalidResponse, T extends { [property: string]: SubValue<ResultType, ErrorType> },>(obj: T, path?: string[]): T {
     return new Proxy(obj, {
-        get(target, key: K) {
+        get(target, key: string) {
+            let nextPath: string[];
             if (path === undefined) {
-                path = [key];
+                nextPath = [key];
             }
-            else {
-                path.push(key);
+            else{
+                nextPath = path;
+                nextPath.push(key);
             }
 
-
-            if (hasKey(target, key)) {
-                const next: V = target[key];
-                if (typeof (next) === 'string') {
-                    return path.join('/');
-                }
-                if (typeof (next) === 'object') {
-                    return APIPathGen(next, path);
-                }
-                throw 'unknown';
+            if (!(key in target)) {
+                throw `${nextPath.join('/')} is not exists`;
             }
-            throw `${path.join('/')} is not exists`;
+
+            const next = target[key];
+            if (typeof (next) === 'function') {
+                const callAPI: CurryCall<ResultType, ErrorType> = (args: Record<string, unknown> | undefined, returnError?: boolean) => {
+                    if (returnError) {
+                        return callSammoAPI<ResultType, ErrorType>(nextPath.join('/'), args, returnError);
+                    }
+                    return callSammoAPI<ResultType>(nextPath.join('/'), args, false);
+                }
+                return callAPI;
+            }
+            return APIPathGen(next, nextPath);
         }
     })
 }

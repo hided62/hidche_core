@@ -260,9 +260,9 @@ import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
 import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
-import { sammoAPI } from "@util/sammoAPI";
 import { convertSearch초성 } from "./util/convertSearch초성";
 import DragSelect from "@/components/DragSelect.vue";
+import { SammoAPI } from "./SammoAPI";
 
 type commandItem = {
   value: string;
@@ -404,7 +404,7 @@ export default defineComponent({
     },
     async repeatGeneralCommand(amount: number) {
       try {
-        await sammoAPI(`Command/RepeatCommand`, { amount });
+        await SammoAPI.Command.RepeatCommand({ amount });
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -414,7 +414,7 @@ export default defineComponent({
     },
     async pushGeneralCommand(amount: number) {
       try {
-        await sammoAPI("Command/PushCommand", { amount });
+        await SammoAPI.Command.PushCommand({ amount });
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -439,7 +439,7 @@ export default defineComponent({
     async reloadCommandList() {
       let result: ReservedCommandResponse;
       try {
-        result = await sammoAPI("Command/GetReservedCommand");
+        result = await SammoAPI.Command.GetReservedCommand();
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -524,7 +524,7 @@ export default defineComponent({
       }
 
       try {
-        await sammoAPI("Command/ReserveCommand", {
+        await SammoAPI.Command.ReserveCommand({
           turnList,
           action: commandName,
         });

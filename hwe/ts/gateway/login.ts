@@ -12,8 +12,8 @@ import { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
 import { Modal } from 'bootstrap';
 import '@/gateway/common';
-import { sammoAPI } from '@/util/sammoAPI';
 import { isString } from 'lodash';
+import { SammoRootAPI } from '@/SammoRootAPI';
 
 type LoginResponse = {
     result: true,
@@ -101,7 +101,7 @@ async function tryAutoLogin() {
 
         const [tokenID, token] = tokenInfo;
 
-        const result = await sammoAPI<AutoLoginNonceResponse, AutoLoginFailed>(["Login", "ReqNonce"], {}, true);
+        const result = await SammoRootAPI.Login.ReqNonce<AutoLoginNonceResponse, AutoLoginFailed>({}, true);
 
         if (!result) {
             //api 에러.
@@ -116,7 +116,7 @@ async function tryAutoLogin() {
         const nonce = result.loginNonce;
 
         const hashedToken = sha512(token + nonce);
-        const loginResult = await sammoAPI<AutoLoginResponse, AutoLoginFailed>(["Login", "LoginByToken"], {
+        const loginResult = await SammoRootAPI.Login.LoginByToken<AutoLoginResponse, AutoLoginFailed>({
             'hashedToken': hashedToken,
             'token_id': tokenID,
         }, true);
@@ -312,7 +312,7 @@ $(async function ($) {
         let result: LoginResponse | LoginFailed;
 
         try {
-            result = await sammoAPI<LoginResponse, LoginFailed>(["Login", "LoginByID"], {
+            result = await SammoRootAPI.Login.LoginByID<LoginResponse, LoginFailed>({
                 username: values.username,
                 password: hash_pw,
 

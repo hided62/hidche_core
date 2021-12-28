@@ -9,12 +9,12 @@ import { App, createApp } from 'vue';
 import { auto500px } from './util/auto500px';
 import { isString } from 'lodash';
 import { Args, testSubmitArgs } from './processing/args';
-import { sammoAPI, ValidResponse } from './util/sammoAPI';
+import { SammoAPI, ValidResponse } from './SammoAPI';
 
 declare const turnList: number[];
 
 async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turnList: number[], action: string, arg: Args): Promise<T> {
-    const target = isChiefTurn ? 'NationCommand/ReserveCommand' : 'Command/ReserveCommand';
+    const targetAPI = isChiefTurn ? SammoAPI.NationCommand.ReserveCommand : SammoAPI.Command.ReserveCommand;
 
     try {
         const testResult = testSubmitArgs(arg);
@@ -22,7 +22,7 @@ async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turn
             throw new TypeError(`Invalied Type ${testResult[0]}, ${testResult[2]} should be ${testResult[1]}`);
         }
         console.log('trySubmit', arg);
-        const response = await sammoAPI(target, {
+        const response = await targetAPI({
                 action,
                 turnList,
                 arg,

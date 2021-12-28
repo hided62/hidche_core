@@ -56,10 +56,9 @@ import "@scss/common_legacy.scss";
 import "@scss/editor_component.scss";
 import TipTap from "./components/TipTap.vue";
 import { defineComponent, reactive, ref, toRefs } from "vue";
-import { sammoAPI } from "./util/sammoAPI";
 import { isString } from "lodash";
 import { diplomacyState, NationStaticItem } from "./defs";
-
+import { SammoAPI } from "./SammoAPI";
 type NationItem = NationStaticItem & {
   cityCnt: number;
   diplomacy: {
@@ -123,10 +122,12 @@ export default defineComponent({
       self.nationMsg = oldNationMsg;
     }
 
+    console.log(SammoAPI.Nation.SetScoutMsg);
+
     async function saveNationMsg() {
       const msg = self.nationMsg;
       try {
-        await sammoAPI("Nation/SetNotice", {
+        await SammoAPI.Nation.SetNotice({
           msg,
         });
         oldNationMsg = msg;
@@ -152,7 +153,7 @@ export default defineComponent({
     async function saveScoutMsg() {
       const msg = self.scoutMsg;
       try {
-        await sammoAPI("Nation/SetScoutMsg", {
+        await SammoAPI.Nation.SetScoutMsg({
           msg,
         });
         oldScoutMsg = msg;

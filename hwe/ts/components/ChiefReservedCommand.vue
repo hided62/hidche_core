@@ -151,11 +151,11 @@ import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
 import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
-import { sammoAPI } from "@util/sammoAPI";
 import { convertSearch초성 } from "@util/convertSearch초성";
 import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
 import { isString } from "lodash";
+import { SammoAPI } from "@/SammoAPI";
 
 type commandItem = {
   value: string;
@@ -375,7 +375,7 @@ export default defineComponent({
       }
 
       try {
-        await sammoAPI("NationCommand/ReserveCommand", {
+        await SammoAPI.NationCommand.ReserveCommand({
           turnList,
           action: commandName,
         });

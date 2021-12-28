@@ -262,10 +262,8 @@ import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 import TopBackBar from "@/components/TopBackBar.vue";
 import _ from "lodash";
-import { InvalidResponse } from "@/defs";
-import axios from "axios";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
-import { sammoAPI } from "./util/sammoAPI";
+import { SammoAPI } from "./SammoAPI";
 
 type InheritanceType =
   | "previous"
@@ -507,7 +505,7 @@ export default defineComponent({
       }
 
       try {
-        await sammoAPI("InheritAction/BuyHiddenBuff", {
+        await SammoAPI.InheritAction.BuyHiddenBuff({
           type: buffKey,
           level,
         });
@@ -550,7 +548,7 @@ export default defineComponent({
       }
 
       try {
-        await sammoAPI(`InheritAction/${type}`, {});
+        await SammoAPI.InheritAction[type]({});
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -584,7 +582,7 @@ export default defineComponent({
       }
 
       try {
-        await sammoAPI(`InheritAction/SetNextSpecialWar`, {
+        await SammoAPI.InheritAction.SetNextSpecialWar({
           type: this.nextSpecialWar,
         });
       } catch (e) {
@@ -616,7 +614,7 @@ export default defineComponent({
       }
 
       try {
-        await sammoAPI(`InheritAction/BuySpecificUnique`, {
+        await SammoAPI.InheritAction.BuySpecificUnique({
           item: this.specificUnique,
           amount,
         });

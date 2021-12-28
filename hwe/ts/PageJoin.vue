@@ -315,10 +315,8 @@ import {
   abilityRand,
 } from "@util/generalStats";
 import { clone, shuffle, sum } from "lodash";
-import axios from "axios";
-import { InvalidResponse } from "@/defs";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
-import { sammoAPI } from "./util/sammoAPI";
+import { SammoAPI } from "./SammoAPI";
 
 declare const nationList: {
   nation: number;
@@ -536,7 +534,7 @@ export default defineComponent({
       //검증은 언제 되어야 하는가?
       const args = clone(this.args);
       try {
-        await sammoAPI(["General", "Join"], args);
+        await SammoAPI.General.Join(args);
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);

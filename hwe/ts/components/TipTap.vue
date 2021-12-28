@@ -351,9 +351,9 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { unwrap } from "@/util/unwrap";
 import { getBase64FromFileObject } from "@/util/getBase64FromFileObject";
-import { sammoAPI } from "@/util/sammoAPI";
 import { isObject, isString } from "lodash";
 import { AxiosError } from "axios";
+import { SammoAPI } from "@/SammoAPI";
 
 const compoment = defineComponent({
   components: {
@@ -403,7 +403,7 @@ const compoment = defineComponent({
       };
       try {
         const base64Binary = await getBase64FromFileObject(targetImage);
-        imageResult = await sammoAPI("Misc/UploadImage", {
+        imageResult = await SammoAPI.Misc.UploadImage({
           imageData: base64Binary,
         });
       } catch (e) {

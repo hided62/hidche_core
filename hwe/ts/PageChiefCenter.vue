@@ -242,7 +242,6 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import VueTypes from "vue-types";
 import { isString, range } from "lodash";
 import { mb_strwidth } from "./util/mb_strwidth";
-import { sammoAPI } from "./util/sammoAPI";
 import { entriesWithType } from "./util/entriesWithType";
 import { addMilliseconds } from "date-fns";
 import { formatTime } from "./util/formatTime";
@@ -251,6 +250,7 @@ import { getNpcColor } from "./common_legacy";
 import TopItem from "@/ChiefCenter/TopItem.vue";
 import BottomItem from "@/ChiefCenter/BottomItem.vue";
 import { ChiefResponse, OptionalFull } from "./defs";
+import { SammoAPI } from "./SammoAPI";
 
 function isDropdownChildren(e?: Event): boolean {
   if (!e) {
@@ -323,7 +323,7 @@ export default defineComponent({
     },
     async repeatNationCommand(amount: number) {
       try {
-        await sammoAPI(`NationCommand/RepeatCommand`, { amount });
+        await SammoAPI.NationCommand.RepeatCommand({ amount });
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -333,7 +333,7 @@ export default defineComponent({
     },
     async pushNationCommand(amount: number) {
       try {
-        await sammoAPI("NationCommand/PushCommand", { amount });
+        await SammoAPI.NationCommand.PushCommand({ amount });
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);
@@ -390,9 +390,8 @@ export default defineComponent({
 
     async function reloadTable(): Promise<void> {
       try {
-        const response = await sammoAPI<ChiefResponse>(
-          "NationCommand/GetReservedCommand"
-        );
+        const response =
+          await SammoAPI.NationCommand.GetReservedCommand<ChiefResponse>();
         console.log(response);
         for (const [key, value] of entriesWithType(response)) {
           if (key === "result") {
