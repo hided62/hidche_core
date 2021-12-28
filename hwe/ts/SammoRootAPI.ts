@@ -20,4 +20,11 @@ const apiRealPath = {
     },
 } as const;
 
-export const SammoRootAPI = APIPathGen(apiRealPath);
+export const SammoRootAPI = APIPathGen<typeof done, typeof apiRealPath>(apiRealPath, (path: string[]) => {
+    return (args?: Record<string, unknown>, returnError?: boolean) => {
+        if (returnError) {
+            return callSammoAPI(path.join('/'), args, true);
+        }
+        return callSammoAPI(path.join('/'), args);
+    };
+});

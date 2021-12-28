@@ -1,40 +1,26 @@
-import { InvalidResponse } from "@/defs";
-import { callSammoAPI, ValidResponse } from "./callSammoAPI";
+type SubValue<V extends (...args: unknown[]) => unknown> = V | { [property: string]: SubValue<V> };
 
-export type CurryCall<ResultType extends ValidResponse, ErrorType extends InvalidResponse> =
-    ((args?: Record<string, unknown>) => Promise<ResultType>)
-    | ((args: Record<string, unknown> | undefined, returnError: false) => Promise<ResultType>)
-    | ((args: Record<string, unknown> | undefined, returnError: true) => Promise<ResultType | ErrorType>);
-
-type SubValue<ResultType extends ValidResponse, ErrorType extends InvalidResponse> = CurryCall<ResultType, ErrorType> | { [property: string]: SubValue<ResultType, ErrorType> };
-
-export function APIPathGen<ResultType extends ValidResponse, ErrorType extends InvalidResponse, T extends { [property: string]: SubValue<ResultType, ErrorType> },>(obj: T, path?: string[]): T {
+export function APIPathGen<V extends () => unknown, T extends { [property: string]: SubValue<V> }>(obj: T, callback: (path: string[]) => V, path?: string[]): T {
     return new Proxy(obj, {
         get(target, key: string) {
             let nextPath: string[];
             if (path === undefined) {
                 nextPath = [key];
             }
-            else{
+            else {
                 nextPath = path;
                 nextPath.push(key);
             }
 
             if (!(key in target)) {
-                throw `${nextPath.join('/')} is not exists`;
+                throw `${nextPath} is not exists`;
             }
 
             const next = target[key];
             if (typeof (next) === 'function') {
-                const callAPI: CurryCall<ResultType, ErrorType> = (args: Record<string, unknown> | undefined, returnError?: boolean) => {
-                    if (returnError) {
-                        return callSammoAPI<ResultType, ErrorType>(nextPath.join('/'), args, returnError);
-                    }
-                    return callSammoAPI<ResultType>(nextPath.join('/'), args, false);
-                }
-                return callAPI;
+                return callback(nextPath);
             }
-            return APIPathGen(next, nextPath);
+            return APIPathGen(next, callback, nextPath);
         }
     })
 }

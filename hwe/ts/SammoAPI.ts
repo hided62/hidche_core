@@ -7,7 +7,7 @@ async function done<ResultType extends ValidResponse>(args?: Record<string, unkn
 async function done<ResultType extends ValidResponse>(args: Record<string, unknown> | undefined, returnError: false): Promise<ResultType>;
 async function done<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(args: Record<string, unknown> | undefined, returnError: true): Promise<ResultType | ErrorType>;
 
-async function done<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(args?: Record<string, unknown>, returnError = false): Promise<ResultType | ErrorType>{
+async function done<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(args?: Record<string, unknown>, returnError = false): Promise<ResultType | ErrorType> {
     console.error(`Can't directly call. ${args}, ${returnError}. Use auto-generated path API.`);
     return callSammoAPI<ResultType, ErrorType>([], args, true);
 }
@@ -43,4 +43,11 @@ const apiRealPath = {
     },
 } as const;
 
-export const SammoAPI = APIPathGen(apiRealPath);
+export const SammoAPI = APIPathGen<typeof done, typeof apiRealPath>(apiRealPath, (path: string[]) => {
+    return (args?: Record<string, unknown>, returnError?: boolean) => {
+        if (returnError) {
+            return callSammoAPI(path.join('/'), args, true);
+        }
+        return callSammoAPI(path.join('/'), args);
+    };
+});
