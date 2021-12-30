@@ -157,7 +157,7 @@ $outcome = getOutcome(100, $dedicationList);
 </head>
 
 <body>
-    <div id="container"></div>
+    <div id="app"></div>
 </body>
 
 </html>

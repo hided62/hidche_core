@@ -215,6 +215,10 @@ body {
     }
 }
 
+#nation-msg{
+    word-break: break-all;
+}
+
 #nation-msg-box {
     position: relative;
     overflow: hidden;

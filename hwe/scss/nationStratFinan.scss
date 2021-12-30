@@ -1,0 +1,91 @@
+@import '@scss/common/bootstrap5.scss';
+@import "@scss/game_bg.scss";
+@import "@scss/util.scss";
+@import "@scss/editor_component.scss";
+
+.diplomacyTitle {
+    background-color: $blue;
+    text-align: center;
+    font-size: 1.4em;
+}
+
+.noticeTitle {
+    background-color: $white;
+    text-align: center;
+    color: black;
+    font-size: 1.4em;
+}
+
+.financeTitle{
+    background-color: $green;
+    text-align: center;
+    font-size: 1.4em;
+}
+
+#app {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.tiptap-editor{
+    width: 100%;
+    overflow: hidden;
+}
+
+@include media-1000px {
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+        position: relative;
+    }
+}
+
+@include media-500px {
+    #container {
+        position: relative;
+        width: 500px;
+        margin: auto;
+        overflow-x: hidden;
+    }
+
+
+
+    #noticeForm .ProseMirror {
+        transform: scale(0.5);
+        transform-origin: left top;
+        width: 1000px;
+    }
+
+    #scoutMsgForm .ProseMirror {
+        transform: scale(calc(500/ 870));
+        transform-origin: left top;
+        width: 870px;
+    }
+
+}
+
+.diplomacyTable {
+    .tRow {
+        display: grid;
+        grid-template-columns: minmax(130px, 3fr) 1.5fr 1fr 1fr 2fr 1fr 2fr;
+        text-align: center;
+    }
+}
+
+
+.note-editor.card {
+    background: inherit;
+    color: inherit;
+    border: none;
+}
+
+.note-editor.note-frame .note-editing-area .note-editable {
+    background: inherit;
+    color: inherit;
+    padding: 0;
+}
+
+.note-editor.note-frame .note-statusbar {
+    background-color: #444444;
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+}

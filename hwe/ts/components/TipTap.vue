@@ -223,7 +223,9 @@
       </b-button-group>
       <b-button-group class="mx-1">
         <b-button
-          @click="editor.chain().focus().setImage({ align: 'float-left' }).run()"
+          @click="
+            editor.chain().focus().setImage({ align: 'float-left' }).run()
+          "
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'float-left',
@@ -267,7 +269,9 @@
           ><i class="bi bi-align-end"></i
         ></b-button>
         <b-button
-          @click="editor.chain().focus().setImage({ align: 'float-right' }).run()"
+          @click="
+            editor.chain().focus().setImage({ align: 'float-right' }).run()
+          "
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'float-right',
@@ -280,7 +284,7 @@
       </b-button-group>
     </b-button-toolbar>
   </bubble-menu>
-  <editor-content :editor="editor" />
+  <editor-content :editor="editor" class="tiptap-editor" />
   <b-modal
     v-model="showImageModal"
     title="이미지 추가"
@@ -367,6 +371,7 @@ const compoment = defineComponent({
     BDropdownItem,
     BDropdownDivider,
   },
+  emits: ["ready", "update:modelValue"],
   methods: {
     chooseImage(e: Event) {
       const target = unwrap(e.target) as HTMLInputElement;
@@ -515,6 +520,9 @@ const compoment = defineComponent({
       onUpdate: () => {
         this.$emit("update:modelValue", this.editor.getHTML());
       },
+      onCreate: () => {
+        this.$emit("ready");
+      }
     });
     this.editor = editor;
   },

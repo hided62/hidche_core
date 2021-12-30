@@ -7,4 +7,4 @@ import { auto500px } from './util/auto500px';
 
 
 auto500px();
-createApp(PageNationStratFinan).use(BootstrapVue3).mount('#container');
+createApp(PageNationStratFinan).use(BootstrapVue3).mount('#app');

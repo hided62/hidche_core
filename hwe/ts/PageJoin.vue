@@ -549,7 +549,9 @@ export default defineComponent({
   },
 });
 </script>
-<style>
+<style lang="scss">
+@import "@scss/common/bootstrap5.scss";
+@import "@scss/editor_component.scss";
 #container {
   width: 100%;
   max-width: 1000px;
