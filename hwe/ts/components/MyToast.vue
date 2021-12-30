@@ -1,22 +1,16 @@
 <template>
-    <CToaster
-      class="z99 my-toaster"
-      placement="top-end"
-      v-if="toasts.length > 0"
-    >
-      <template v-for="(toast, index) in toasts" :key="index">
-        <CToast :delay="toast.delay ?? delay">
-          <CToastHeader
-            :class="['text-white', `bg-${toast.type ?? 'primary'}`]"
-          >
-            <span class="me-auto fw-bold">{{ toast.title }}</span>
-            <CToastClose class="my-close" color="secondary" size="sm" />
-          </CToastHeader>
-          <CToastBody> {{ toast.content }} {{ toast.visible }} </CToastBody>
-        </CToast>
-      </template>
-    </CToaster>
-  </template>
+  <CToaster class="my-toaster" placement="top-end" v-if="toasts.length > 0">
+    <template v-for="(toast, index) in toasts" :key="index">
+      <CToast :delay="toast.delay ?? delay">
+        <CToastHeader :class="['text-white', `bg-${toast.type ?? 'primary'}`]">
+          <span class="me-auto fw-bold">{{ toast.title }}</span>
+          <CToastClose class="my-close" color="secondary" size="sm" />
+        </CToastHeader>
+        <CToastBody> {{ toast.content }} {{ toast.visible }} </CToastBody>
+      </CToast>
+    </template>
+  </CToaster>
+</template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import { ToastType } from "@/defs";
@@ -68,12 +62,9 @@ export default defineComponent({
         return;
       }
 
-      console.log("clear!");
-
       doneMap.clear();
       toasts.value.length = 0;
       emit("update:modelValue", toasts);
-      console.log(toasts.value);
     }
 
     watch(props.modelValue, (values) => {
@@ -87,11 +78,9 @@ export default defineComponent({
           }, (item.delay ?? props.delay) + 1000);
         }
       }
-      if(toasts.value !== values){
+      if (toasts.value !== values) {
         toasts.value = values;
       }
-      toasts.value = values;
-      console.log(values, toasts.value);
     });
 
     return {
@@ -101,12 +90,10 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
-.z99 {
+<style>
+.my-toaster {
   z-index: 199;
 }
-</style>
-<style>
 .my-toaster .btn.btn-close.my-close,
 .my-toaster .btn.btn-close.my-close:hover,
 .my-toaster .btn.btn-close.my-close:active {
