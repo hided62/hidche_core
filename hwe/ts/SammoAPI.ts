@@ -40,6 +40,11 @@ const apiRealPath = {
     Nation: {
         SetNotice: done,
         SetScoutMsg: done,
+        SetBill: done,
+        SetRate: done,
+        SetSecretLimit: done,
+        SetBlockWar: done,
+        SetBlockScout: done,
     },
 } as const;
 

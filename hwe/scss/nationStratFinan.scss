@@ -2,6 +2,7 @@
 @import "@scss/game_bg.scss";
 @import "@scss/util.scss";
 @import "@scss/editor_component.scss";
+@import "@scss/common_legacy.scss";
 
 .diplomacyTitle {
     background-color: $blue;
@@ -30,6 +31,11 @@
 .tiptap-editor{
     width: 100%;
     overflow: hidden;
+}
+
+#scoutMsgForm .ProseMirror{
+    max-height: 200px;
+    overflow-y: hidden;
 }
 
 @include media-1000px {

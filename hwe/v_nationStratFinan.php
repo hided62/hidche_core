@@ -98,7 +98,7 @@ $wallIncome = getWallIncome(
     $cityList
 );
 
-$incomes = [
+$income = [
     'gold' => [
         'city' => $goldIncome,
         'war' => $warIncome,
@@ -132,7 +132,7 @@ $outcome = getOutcome(100, $dedicationList);
 
             'gold' => $nation['gold'],
             'rice' => $nation['rice'],
-            'income' => $incomeList,
+            'income' => $income,
             'outcome' => $outcome,
 
             'policy' => [

@@ -64,7 +64,6 @@ return [
         'hwe/b_tournament.php',
         'hwe/b_troop.php',
         'hwe/c_auction.php',
-        'hwe/c_dipcenter.php',
         'hwe/c_tournament.php',
         'hwe/c_vote.php',
         'hwe/func_auction.php',
