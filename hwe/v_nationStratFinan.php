@@ -139,8 +139,8 @@ $outcome = getOutcome(100, $dedicationList);
                 'rate' => $nation['rate'],
                 'bill' => $nation['bill'],
                 'secretLimit' => $nation['secretlimit'],
-                'blockScout' => $nation['scout']!=0,
-                'blockWar' => $nation['war']!=0,
+                'blockScout' => $nation['scout'] != 0,
+                'blockWar' => $nation['war'] != 0,
             ],
             'warSettingCnt' => [
                 'remain' => $nationStor->getValue('available_war_setting_cnt'),
@@ -148,11 +148,10 @@ $outcome = getOutcome(100, $dedicationList);
                 'max' => GameConst::$maxAvailableWarSettingCnt
             ],
         ]
-    ]) ?>
+    ], false) ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printDist('vue', 'v_nationStratFinan', true) ?>
 </head>
 

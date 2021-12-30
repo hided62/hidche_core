@@ -299,8 +299,9 @@
   </div>
 </template>
 <script lang="ts">
-import "@scss/nationStratFinan.scss";
 import TipTap from "./components/TipTap.vue";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
 import { computed, defineComponent, reactive, ref, toRefs } from "vue";
 import { isString } from "lodash";
 import {
@@ -310,8 +311,6 @@ import {
   ToastType,
 } from "./defs";
 import { SammoAPI } from "./SammoAPI";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import MyToast from "@/components/MyToast.vue";
@@ -363,10 +362,10 @@ declare const staticValues: {
 
 export default defineComponent({
   components: {
-    TipTap,
     TopBackBar,
     BottomBar,
     MyToast,
+    TipTap,
   },
   setup() {
     const toasts = ref<ToastType[]>([]);

@@ -1,3 +1,5 @@
+import "@scss/nationStratFinan.scss";
+
 import { createApp } from 'vue'
 import PageNationStratFinan from '@/PageNationStratFinan.vue';
 import BootstrapVue3 from 'bootstrap-vue-3';
