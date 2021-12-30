@@ -1,34 +1,40 @@
 <template>
-  <CToaster class="z99" placement="top-end">
-    <CToast
-      v-for="(toast, index) in modelValue"
-      :key="index"
-      :delay="toast.delay??delay"
+    <CToaster
+      class="z99 my-toaster"
+      placement="top-end"
+      v-if="toasts.length > 0"
     >
-      <CToastHeader
-        :class="['text-white', `bg-${toast.type ?? 'primary'}`]"
-        close
-      >
-        <span class="me-auto fw-bold">{{ toast.title }}</span>
-      </CToastHeader>
-      <CToastBody>
-        {{ toast.content }}
-      </CToastBody>
-    </CToast>
-  </CToaster>
-</template>
+      <template v-for="(toast, index) in toasts" :key="index">
+        <CToast :delay="toast.delay ?? delay">
+          <CToastHeader
+            :class="['text-white', `bg-${toast.type ?? 'primary'}`]"
+          >
+            <span class="me-auto fw-bold">{{ toast.title }}</span>
+            <CToastClose class="my-close" color="secondary" size="sm" />
+          </CToastHeader>
+          <CToastBody> {{ toast.content }} {{ toast.visible }} </CToastBody>
+        </CToast>
+      </template>
+    </CToaster>
+  </template>
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref, watch } from "vue";
 import { ToastType } from "@/defs";
-import { CToaster, CToast, CToastHeader, CToastBody } from "@coreui/vue/src/components/toast";
+import {
+  CToaster,
+  CToast,
+  CToastHeader,
+  CToastBody,
+  CToastClose,
+} from "@coreui/vue/src/components/toast";
 
 export default defineComponent({
-  name: "MyToast",
   components: {
     CToaster,
     CToast,
     CToastHeader,
     CToastBody,
+    CToastClose,
   },
   emits: ["update:modelValue"],
   props: {
@@ -37,15 +43,74 @@ export default defineComponent({
       required: true,
     },
     delay: {
-        type: Number,
-        required:false,
-        default:5000,
+      type: Number,
+      required: false,
+      default: 5000,
+    },
+  },
+  setup(props, { emit }) {
+    let doneCnt = 0;
+    const doneMap = new Map<ToastType, boolean>();
+    let toasts = ref(props.modelValue);
+
+    function onClose(toast: ToastType) {
+      const status = doneMap.get(toast);
+      if (status === undefined) {
+        return;
+      }
+      if (status) {
+        return;
+      }
+      doneCnt -= 1;
+
+      if (doneCnt != 0) {
+        doneMap.set(toast, true);
+        return;
+      }
+
+      console.log("clear!");
+
+      doneMap.clear();
+      toasts.value.length = 0;
+      emit("update:modelValue", toasts);
+      console.log(toasts.value);
     }
+
+    watch(props.modelValue, (values) => {
+      for (const item of values) {
+        if (!doneMap.has(item)) {
+          doneMap.set(item, false);
+          doneCnt += 1;
+
+          setTimeout(() => {
+            onClose(item);
+          }, (item.delay ?? props.delay) + 1000);
+        }
+      }
+      if(toasts.value !== values){
+        toasts.value = values;
+      }
+      toasts.value = values;
+      console.log(values, toasts.value);
+    });
+
+    return {
+      onClose,
+      toasts,
+    };
   },
 });
 </script>
 <style scoped>
 .z99 {
   z-index: 199;
+}
+</style>
+<style>
+.my-toaster .btn.btn-close.my-close,
+.my-toaster .btn.btn-close.my-close:hover,
+.my-toaster .btn.btn-close.my-close:active {
+  border: 0;
+  padding: 0;
 }
 </style>
