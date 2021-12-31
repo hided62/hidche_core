@@ -47,15 +47,24 @@ class SetBlockWar extends \sammo\BaseAPI
             return "권한이 부족합니다.";
         }
 
-
         $nationID = $me['nation'];
+        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+
+
+        $avilableCnt = $nationStor->getValue('available_war_setting_cnt') ?? 0;
+        if ($avilableCnt <= 0){
+            return "잔여 횟수가 부족합니다.";
+        }
+
 
         $db->update('nation', [
             'war' => $value?1:0,
         ], 'nation=%i', $nationID);
+        $nationStor->setValue('available_war_setting_cnt', $avilableCnt - 1);
 
         return [
-            'result' => true
+            'result' => true,
+            'availableCnt' => $avilableCnt - 1,
         ];
     }
 }

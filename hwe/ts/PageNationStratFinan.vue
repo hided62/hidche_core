@@ -268,7 +268,7 @@
             <div class="align-self-center">전쟁 금지 설정</div>
           </div>
           <div class="col-8 d-grid">
-            <div class="align-self-center">10회(월 +2회, 최대10회)</div>
+            <div class="align-self-center">{{warSettingCnt.remain}} 회(월 +{{warSettingCnt.increase}}회, 최대{{warSettingCnt.max}}회)</div>
           </div>
         </div>
       </div>
@@ -314,6 +314,7 @@ import { SammoAPI } from "./SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import MyToast from "@/components/MyToast.vue";
+import { ValidResponse } from "./util/callSammoAPI";
 
 type NationItem = NationStaticItem & {
   cityCnt: number;
@@ -322,6 +323,10 @@ type NationItem = NationStaticItem & {
     term: number | null;
   };
 };
+
+type SetBlockWarResponse = ValidResponse & {
+  availableCnt: number;
+}
 declare const staticValues: {
   editable: boolean;
   nationMsg: string;
@@ -559,6 +564,7 @@ export default defineComponent({
             type: "danger",
           });
         }
+        self.policy.secretLimit = oldSecretLimit;
         console.error(e);
       }
     }
@@ -568,7 +574,8 @@ export default defineComponent({
 
     async function setBlockWar() {
       try {
-        await SammoAPI.Nation.SetBlockWar({ value: self.policy.blockWar });
+        const result = await SammoAPI.Nation.SetBlockWar<SetBlockWarResponse>({ value: self.policy.blockWar });
+        self.warSettingCnt.remain = result.availableCnt;
         toasts.value.push({
           title: "변경",
           content: "전쟁 금지 설정을 변경했습니다.",
@@ -581,6 +588,7 @@ export default defineComponent({
             type: "danger",
           });
         }
+        self.policy.blockWar = !self.policy.blockWar;
         console.error(e);
       }
     }
@@ -600,6 +608,7 @@ export default defineComponent({
             type: "danger",
           });
         }
+        self.policy.blockScout = !self.policy.blockScout;
         console.error(e);
       }
     }
