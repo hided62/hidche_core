@@ -74,7 +74,7 @@ foreach ($nationsList as &$nationItem) {
 $goldIncome  = getGoldIncome(
     $nation['nation'],
     $nation['level'],
-    $nation['rate'],
+    100,
     $nation['capital'],
     $nation['type'],
     $cityList
@@ -84,7 +84,7 @@ $warIncome  = getWarGoldIncome($nation['type'], $cityList);
 $riceIncome = getRiceIncome(
     $nation['nation'],
     $nation['level'],
-    $nation['rate'],
+    100,
     $nation['capital'],
     $nation['type'],
     $cityList
@@ -92,7 +92,7 @@ $riceIncome = getRiceIncome(
 $wallIncome = getWallIncome(
     $nation['nation'],
     $nation['level'],
-    $nation['rate'],
+    100,
     $nation['capital'],
     $nation['type'],
     $cityList
