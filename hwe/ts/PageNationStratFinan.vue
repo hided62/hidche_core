@@ -268,7 +268,7 @@
             <div class="align-self-center">전쟁 금지 설정</div>
           </div>
           <div class="col-8 d-grid">
-            <div class="align-self-center">{{warSettingCnt.remain}} 회(월 +{{warSettingCnt.increase}}회, 최대{{warSettingCnt.max}}회)</div>
+            <div class="align-self-center">{{warSettingCnt.remain}} 회(월 +{{warSettingCnt.inc}}회, 최대{{warSettingCnt.max}}회)</div>
           </div>
         </div>
       </div>
