@@ -145,9 +145,9 @@
           <div class="col-12 bg2">군량 예산</div>
           <div class="col-4 bg1">현 재</div>
           <div class="col-8">{{ rice.toLocaleString() }}</div>
-          <div class="col-4 bg1">둔점수입</div>
+          <div class="col-4 bg1">둔전수입</div>
           <div class="col-8">
-            {{ Math.floor(income.rice.wall).toLocaleString() }}
+            {{ Math.floor(incomeRiceWall).toLocaleString() }}
           </div>
           <div class="col-4 bg1">세 금</div>
           <div class="col-8">
@@ -479,8 +479,12 @@ export default defineComponent({
       return (self.income.rice.city * self.policy.rate) / 100;
     });
 
+    const incomeRiceWall = computed(() => {
+      return (self.income.rice.wall * self.policy.rate) / 100;
+    });
+
     const incomeRice = computed(() => {
-      return incomeRiceCity.value + self.income.rice.wall;
+      return incomeRiceCity.value + incomeRiceWall.value;
     });
 
     const outcomeByBill = computed(() => {
@@ -622,6 +626,7 @@ export default defineComponent({
       incomeGoldCity,
       incomeGold,
       incomeRiceCity,
+      incomeRiceWall,
       incomeRice,
       outcomeByBill,
 
