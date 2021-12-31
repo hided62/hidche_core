@@ -5,7 +5,7 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    ignorePatterns: ['*.test.ts', '.eslintrc.cjs', 'webpack.config.cjs', '*.js'],
+    ignorePatterns: ['*.test.ts', '.eslintrc.cjs', 'postcss.config.cjs', 'webpack.config.cjs', '*.js'],
     overrides: [{
         files: ['*.ts', '*.tsx', "*.vue"],
     }],

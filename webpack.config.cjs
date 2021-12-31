@@ -160,11 +160,11 @@ module.exports = (env, argv) => {
                 },
                 {
                     test: /\.vue\.(s?[ac]ss)$/,
-                    use: ['vue-style-loader', 'css-loader', 'sass-loader']
+                    use: ['vue-style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
                 },
                 {
                     test: /(?<!\.vue)\.(s?[ac]ss)$/,
-                    use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+                    use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
                 },
                 {
                     test: /\.(png|jpe?g|gif|webp)$/,
@@ -261,7 +261,7 @@ module.exports = (env, argv) => {
             },
             {
                 test: /.(s?[ac]ss)$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
             },]
         },
         plugins: [
@@ -342,7 +342,7 @@ module.exports = (env, argv) => {
                 ]
             }, {
                 test: /.(s?[ac]ss)$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
             }]
         },
         plugins: [
