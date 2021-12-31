@@ -5,9 +5,9 @@ set_time_limit(600);
 
 function tryNpmInstall()
 {
-    $npmResultPath = '../npm_recent.json.log';
-    $packageJsonPath = '../package.json';
-    $packageJsonLockPath = '../package-lock.json';
+    $npmResultPath = 'npm_recent.json.log';
+    $packageJsonPath = 'package.json';
+    $packageJsonLockPath = 'package-lock.json';
 
     $packageJsonHash = hash_file('sha512', $packageJsonPath);
     $timestamp = time();
