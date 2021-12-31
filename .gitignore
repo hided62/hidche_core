@@ -43,6 +43,7 @@ d_pic/uploaded_image
 
 d_setting/*.php
 */d_setting/*.php
+*/d_setting/*.json
 */d_setting/templates/*.php
 !*.orig.php
 
