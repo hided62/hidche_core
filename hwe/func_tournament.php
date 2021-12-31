@@ -513,7 +513,7 @@ function fillLowGenAll($tnmt_type)
         'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weapon,book from general where tnmt=1 and tournament=0',
     ) as $gen){
         $score = $scoringCandFunction($gen);
-        $freeJoinerCandidate[$gen['no']] = [$gen, $score**2];
+        $freeJoinerCandidate[$gen['no']] = [$gen, $score**1.5];
     }
 
 
