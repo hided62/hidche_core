@@ -25,7 +25,7 @@ class RaiseNPCNation extends \sammo\Event\Action
     }
 
     const CITY_KEYS = ['pop', 'agri', 'comm', 'secu', 'def', 'wall'];
-    const MIN_DIST_USERNATION = 4;
+    const MIN_DIST_USERNATION = 3;
     const MIN_DIST_NPCNATION = 2;
 
     private function calcAvgNationCity(array $cities)
