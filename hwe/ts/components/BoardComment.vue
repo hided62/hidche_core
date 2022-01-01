@@ -1,10 +1,9 @@
 <template>
-  <tr class="comment">
-    <th class="author">{{ comment.author }}</th>
-    <td class="text">{{ comment.text }}</td>
-    <td class="date">{{ comment.date }}</td>
-    <!-- 삭제도 나중에 추가? -->
-  </tr>
+  <div class="row gx-0 comment s-border-b">
+    <div class="authorName center d-grid"><div class="align-self-center">{{ comment.author }}</div></div>
+    <div class="col text">{{ comment.text }}</div>
+    <div class="col-2 col-md-1 date center d-grid"><div class="align-self-center">{{ comment.date.slice(5, 16) }}</div></div>
+  </div>
 </template>
 <script lang="ts">
 import { BoardCommentItem } from "@/PageBoard.vue";

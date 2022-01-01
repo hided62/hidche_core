@@ -5,6 +5,7 @@
 @import "@scss/common/variables.scss";
 @import "@scss/common/bootswatch_custom_variables.scss";
 @import "@scss/game_bg.scss";
+@import "@scss/util.scss";
 
 $modcolor2: color.adjust($nbase2color, $lightness: -5%);
 
@@ -85,6 +86,12 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
         .turn_pad:nth-child(2n) {
             background-color: $modcolor2;
         }
+    }
+
+    #bottomBar{
+        width: 1000px;
+        margin: 0 auto;
+        position: relative;
     }
 }
 
@@ -182,5 +189,11 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
             font-size: 20px;
             text-align: center;
         }
+    }
+
+    #bottomBar {
+        width: 500px;
+        margin: 0 auto;
+        position: relative;
     }
 }

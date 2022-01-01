@@ -230,6 +230,9 @@
       </template>
     </div>
   </div>
+  <div id="bottomBar">
+    <BottomBar />
+  </div>
 </template>
 <script lang="ts">
 import "@scss/common/bootstrap5.scss";
@@ -239,6 +242,7 @@ import "../../css/config.css";
 import { computed, defineComponent, reactive, ref, toRefs, watch } from "vue";
 import ChiefReservedCommand from "@/components/ChiefReservedCommand.vue";
 import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
 import VueTypes from "vue-types";
 import { isString, range } from "lodash";
 import { mb_strwidth } from "./util/mb_strwidth";
@@ -272,6 +276,7 @@ function isDropdownChildren(e?: Event): boolean {
 export default defineComponent({
   components: {
     TopBackBar,
+    BottomBar,
     ChiefReservedCommand,
     TopItem,
     BottomItem,

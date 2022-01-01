@@ -1,18 +1,12 @@
 <template>
-  <top-back-bar :title="title" />
+  <div id="container">
+    <TopBackBar :title="title" />
 
-  <table id="newArticle" class="bg0">
-    <thead>
-      <tr>
-        <td colspan="2" class="newArticleHeader bg2">새 게시물 작성</td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th class="bg1" style="width: 66px">
-          <span class="articleTitle">제목</span>
-        </th>
-        <td>
+    <div id="newArticle" class="bg0">
+      <div class="newArticleHeader bg2 center">새 게시물 작성</div>
+      <div class="row gx-0">
+        <div class="col-2 col-md-1 articleTitle bg1 center">제목</div>
+        <div class="col-10 col-md-11">
           <input
             class="titleInput"
             type="text"
@@ -20,11 +14,11 @@
             placeholder="제목"
             v-model="newArticle.title"
           />
-        </td>
-      </tr>
-      <tr>
-        <th class="bg1">내용</th>
-        <td class="boardArticle">
+        </div>
+      </div>
+      <div class="row gx-0">
+        <div class="col-2 col-md-1 bg1 center">내용</div>
+        <div class="col-10 col-md-11">
           <textarea
             class="contentInput autosize"
             ref="newArticleTextForm"
@@ -32,40 +26,35 @@
             v-model="newArticle.text"
             @input="autoResizeTextarea"
           />
-        </td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="2">
-          <button type="button" id="submitArticle" @click="submitArticle">
-            등록
-          </button>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 col-md-10"></div>
+        <div class="col-4 col-md-2 d-grid">
+          <b-button id="submitArticle" @click="submitArticle"> 등록 </b-button>
+        </div>
+      </div>
+    </div>
+    <div id="board">
+      <template v-if="articles && articles.length">
+        <board-article
+          v-for="article in articles"
+          :key="article.no"
+          :article="article"
+          @submit-comment="reloadArticles"
+        />
+      </template>
+      <template v-else> 게시물이 없습니다. </template>
+    </div>
 
-  <div id="board">
-    <template v-if="articles && articles.length">
-      <board-article
-        v-for="article in articles"
-        :key="article.no"
-        :article="article"
-        @submit-comment="reloadArticles"
-      />
-    </template>
-    <template v-else> 게시물이 없습니다. </template>
+    <BottomBar/>
   </div>
 </template>
 
 <script lang="ts">
-import "@scss/common/bootstrap5.scss";
-import "@scss/game_bg.scss";
-import "../../css/config.css";
-
 import { defineComponent, onMounted, reactive, ref } from "vue";
 import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
 import BoardArticle from "@/components/BoardArticle.vue";
 import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
@@ -105,6 +94,7 @@ export default defineComponent({
   name: "PageBoard",
   components: {
     TopBackBar,
+    BottomBar,
     BoardArticle,
   },
   props: {
@@ -155,7 +145,7 @@ export default defineComponent({
 
       this.newArticle = { title: "", text: "" };
       const newArticleTextForm = unwrap(this.newArticleTextForm);
-      newArticleTextForm.style.height = 'auto';
+      newArticleTextForm.style.height = "auto";
 
       await this.reloadArticles();
     },
@@ -188,7 +178,6 @@ export default defineComponent({
         return;
       }
 
-
       articles.length = 0;
       articles.push(...Object.values(boardResponse.articles));
       articles.reverse();
@@ -206,64 +195,3 @@ export default defineComponent({
   },
 });
 </script>
-
-
-<style>
-#newArticle {
-  width: 1000px;
-  margin: 0 auto;
-}
-
-.titleInput {
-  width: 100%;
-  color: white;
-  background-color: transparent;
-  border: none;
-  margin: 1px 5px;
-}
-
-.contentInput {
-  width: 100%;
-  min-height: 3em;
-  color: white;
-  background-color: transparent;
-  border: none;
-  padding: 1px 5px;
-}
-
-.articleFrame {
-  width: 1000px;
-  margin: 20px auto;
-}
-
-.commentText {
-  width: 100%;
-}
-
-.authorName,
-.comment .author {
-  width: 110px;
-  font-size: 85%;
-}
-
-.date {
-  width: 125px;
-  font-size: 85%;
-}
-
-.text {
-  text-align: left;
-  padding: 1px 5px;
-}
-
-.submitComment {
-  width: 100%;
-}
-
-.commentText {
-  color: white;
-  background-color: transparent;
-  border: none;
-  padding: 1px 5px;
-}
-</style>

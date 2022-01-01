@@ -1,53 +1,49 @@
 <template>
-  <table class="articleFrame bg0">
-    <thead>
-      <tr class="bg1">
-        <th class="authorName">{{ article.author }}</th>
-        <th class="articleTitle">{{ article.title }}</th>
-        <th class="date">{{ article.date }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <img
-            class="authorIcon generalIcon"
-            width="64"
-            height="64"
-            :src="article.author_icon"
-          />
-        </td>
-        <td class="text" colspan="2">{{ article.text }}</td>
-      </tr>
-    </tbody>
-    <tbody class="commentList">
+  <div class="articleFrame bg0">
+    <div class="bg1 row gx-0">
+      <div class="authorName center">{{ article.author }}</div>
+      <div class="col articleTitle center">{{ article.title }}</div>
+      <div class="col-2 col-md-1 date center">{{ article.date.slice(5, 16) }}</div>
+    </div>
+    <div class="row gx-0 s-border-b">
+      <div class="col-2 col-md-1 authorIcon center">
+        <img
+          class="generalIcon"
+          width="64"
+          height="64"
+          :src="article.author_icon"
+        />
+      </div>
+      <div class="col text">{{ article.text }}</div>
+    </div>
+    <div class="commentList">
       <board-comment
         v-for="comment in article.comment"
         :key="comment.no"
         :comment="comment"
       />
-    </tbody>
-    <tfoot>
-      <tr>
-        <td class="bg2 inputCommentHeader">댓글 달기</td>
-        <td>
-          <input
-            class="commentText"
-            type="text"
-            maxlength="250"
-            placeholder="새 댓글 내용"
-            v-model.trim="newCommentText"
-            @keyup.enter="submitComment"
-          />
-        </td>
-        <td>
-          <button type="button" class="submitComment" @click="submitComment">
-            등록
-          </button>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+    </div>
+    <div class="row gx-0">
+      <div class="bg2 inputCommentHeader center d-grid">
+        <div class="align-self-center">댓글 달기</div>
+      </div>
+      <div class="col d-grid">
+        <input
+          class="commentText"
+          type="text"
+          maxlength="250"
+          placeholder="새 댓글 내용"
+          v-model.trim="newCommentText"
+          @keyup.enter="submitComment"
+        />
+      </div>
+      <div class="col-2 col-md-1 d-grid">
+        <b-button class="submitComment" @click="submitComment" size="sm"
+          >등록</b-button
+        >
+      </div>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import { BoardArticleItem } from "@/PageBoard.vue";

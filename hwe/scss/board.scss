@@ -1,0 +1,76 @@
+@import "./common/bootstrap5.scss";
+@import "@scss/game_bg.scss";
+@import "./common_legacy.scss";
+@import "../../css/config.css";
+@import "./util.scss";
+
+
+@include media-1000px {
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+    }
+}
+
+@include media-500px {
+    #container {
+        width: 500px;
+        margin: 0 auto;
+    }
+}
+
+.date{
+    font-size: 0.9em;
+}
+
+.authorName,
+.authorIcon,
+.inputCommentHeader {
+    flex: 0 0 auto;
+    width: 120px;
+}
+
+#newArticle {
+    margin-top: 1em;
+}
+
+.titleInput {
+    width: 100%;
+    color: white;
+    background-color: transparent;
+    border: none;
+    margin: 1px 5px;
+}
+
+.contentInput {
+    width: 100%;
+    min-height: 3em;
+    color: white;
+    background-color: transparent;
+    border: none;
+    padding: 1px 5px;
+}
+
+.articleFrame {
+    margin: 20px auto;
+}
+
+.commentText {
+    width: 100%;
+}
+
+.text {
+    text-align: left;
+    padding: 1px 5px;
+}
+
+.submitComment {
+    width: 100%;
+}
+
+.commentText {
+    color: white;
+    background-color: transparent;
+    border: none;
+    padding: 1px 5px;
+}

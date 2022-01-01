@@ -12,7 +12,6 @@ import { defineComponent, PropType } from "vue";
 import "@scss/game_bg.scss";
 
 export default defineComponent({
-  name: "TopBackBar",
   methods: {
     back(){
       if(this.type === 'normal'){
@@ -28,10 +27,6 @@ export default defineComponent({
     }
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     type: {
       type: String as PropType<"normal"|"chief"|"close">,
       default: "normal",
