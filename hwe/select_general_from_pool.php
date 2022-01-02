@@ -27,8 +27,8 @@ shuffle($nationList);
 $nationList = Util::convertArrayToDict($nationList, 'nation');
 //NOTE: join 안할것임
 $scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_msg');
-foreach ($scoutMsgs as $nationID => $scoutMsg) {
-    $nationList[$nationID]['scoutmsg'] = $scoutMsg;
+foreach ($scoutMsgs as $destNationID => $scoutMsg) {
+    $nationList[$destNationID]['scoutmsg'] = $scoutMsg;
 }
 
 $characterAll = []; //선택용

@@ -200,8 +200,8 @@ class che_임관 extends Command\GeneralCommand
 
         $rawNationList = Util::convertArrayToDict($db->query('SELECT nation,`name`,color,gennum,`power` FROM nation'), 'nation');
         $scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_msg');
-        foreach ($scoutMsgs as $nationID => $scoutMsg) {
-            $rawNationList[$nationID]['scoutmsg'] = $scoutMsg;
+        foreach ($scoutMsgs as $destNationID => $scoutMsg) {
+            $rawNationList[$destNationID]['scoutmsg'] = $scoutMsg;
         }
         foreach ($rawNationList as $destNation) {
             $testCommand = new static($generalObj, $this->env, ['destNationID' => $destNation['nation']]);
