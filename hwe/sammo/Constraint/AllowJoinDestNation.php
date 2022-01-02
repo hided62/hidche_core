@@ -50,7 +50,7 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        if($this->general['npc']??2 < 2 && \sammo\Util::starts_with($this->destNation['name'], 'ⓤ')){
+        if($this->general['npc']??2 < 2 && \str_starts_with($this->destNation['name'], 'ⓤ')){
             $this->reason = "유저장은 태수국에 임관할 수 없습니다.";
             return false;
         }

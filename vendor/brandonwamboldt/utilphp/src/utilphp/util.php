@@ -1000,7 +1000,7 @@ class util
      */
     public static function starts_with($string, $starts_with)
     {
-        return strpos($string, $starts_with) === 0;
+        return str_starts_with($string, $starts_with);
     }
 
     /**
