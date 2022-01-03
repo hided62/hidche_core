@@ -27,7 +27,7 @@ class event_전투특기_격노 extends \sammo\BaseItem{
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
             new che_격노시도($unit, che_격노시도::TYPE_ITEM),
-            new che_격노발동($unit, che_격노발동::TYPE_ITEM)
+            new che_격노발동($unit)
         );
     }
 }
