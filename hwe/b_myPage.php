@@ -94,6 +94,8 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                                 <option value=0 <?= (!$use_auto_nation_turn) ? "selected" : ""; ?>>허용 안함</option>
                             </select>】<br>
                             ∞<span style='color:orange'>수뇌가 되었을 때 휴식 턴이어도 적당한 턴을 알아서 넣는 것을 허용합니다.</span><br><br>
+                        <?php else: ?>
+                            <input type="hidden" id='use_auto_nation_turn' name='use_auto_nation_turn' value="1"/>
                         <?php endif; ?>
                         수비 【<select id='defence_train' name='defence_train'>
                             <?php foreach ([90, 80, 60, 40] as $targetDefenceTrain) : ?>
