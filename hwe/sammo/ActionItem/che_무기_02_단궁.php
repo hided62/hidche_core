@@ -15,7 +15,7 @@ class che_무기_02_단궁 extends \sammo\BaseStatItem{
     public function __construct()
     {
         parent::__construct();
-        $this->info .= "<br>[전투] 새로운 상대와 전투 시 1% 확률로 저격 발동, 성공 시 사기+10";
+        $this->info .= "<br>[전투] 새로운 상대와 전투 시 1% 확률로 저격 발동, 성공 시 사기+20";
     }
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
