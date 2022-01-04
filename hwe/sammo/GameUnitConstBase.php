@@ -161,7 +161,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['표준적인 기병입니다.','기병은 공격특화입니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1301, self::T_CAVALRY, '백마병',
@@ -170,7 +170,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['백마의 위용을 보여줍니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1302, self::T_CAVALRY, '중장기병',
@@ -179,7 +179,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['갑주를 두른 기병입니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1303, self::T_CAVALRY, '돌격기병',
@@ -188,7 +188,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['저돌적으로 공격합니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1304, self::T_CAVALRY, '철기병',
@@ -197,7 +197,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['철갑을 두른 기병입니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1305, self::T_CAVALRY, '수렵기병',
@@ -206,7 +206,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['날쎄고 빠른 기병입니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1306, self::T_CAVALRY, '맹수병',
@@ -215,7 +215,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['어느 누구보다 강력합니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
         [
             1307, self::T_CAVALRY, '호표기병',
@@ -224,7 +224,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['정예 기병입니다.'],
-            null, null
+            null, ['che_기병병종전투']
         ],
 
         [
