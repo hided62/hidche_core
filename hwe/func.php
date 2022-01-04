@@ -1581,6 +1581,18 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         }
     }
 
+    foreach($db->queryAllLists('SELECT namespace, count(*) as cnt FROM `storage` WHERE namespace LIKE "ut_%" GROUP BY namespace') as [$uniqueNS, $cnt]){
+        $itemCode = substr($uniqueNS, 3);
+        $itemClass = buildItemClass($itemCode);
+        if (!$itemClass) {
+            continue;
+        }
+        if ($itemClass->isBuyable()) {
+            continue;
+        }
+        $occupiedUnique[$itemCode] = ($occupiedUnique[$itemCode]??0) + $cnt;
+    }
+
     foreach (GameConst::$allItems as $itemType => $itemCategories) {
         if (key_exists($itemType, $invalidItemType)) {
             continue;
