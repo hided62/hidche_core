@@ -53,7 +53,7 @@ class SetSecretLimit extends \sammo\BaseAPI
         $nationID = $me['nation'];
 
         $db->update('nation', [
-            'bill' => $amount
+            'secretlimit' => $amount
         ], 'nation=%i', $nationID);
 
         return [
