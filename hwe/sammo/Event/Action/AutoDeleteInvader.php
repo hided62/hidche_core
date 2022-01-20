@@ -14,9 +14,9 @@ class AutoDeleteInvader extends \sammo\Event\Action{
     public function run(array $env){
         $db = DB::db();
         if(getNationStaticInfo($this->nationID)===null){
-            $db->update('general', [
+            /*$db->update('general', [
                 'killturn'=>5
-            ], 'nation = 0 AND npc = 9');
+            ], 'nation = 0 AND npc = 9');*/
             $eventID = Util::array_get($env['currentEventID']);
             $db->delete('event', 'id = %i', $eventID);
             return [__CLASS__, "Not Exists"];
@@ -33,14 +33,14 @@ class AutoDeleteInvader extends \sammo\Event\Action{
             'arg'=>'[]',
             'brief'=>"이민족 방랑"
         ], 'general_id = %i', $rulerID);
-        $db->update('general', [
+        /*$db->update('general', [
             'killturn'=>5
-        ], 'nation = %i', $this->nationID);
+        ], 'nation = %i', $this->nationID);*/
 
         $eventID = Util::array_get($env['currentEventID']);
         $db->delete('event', 'id = %i', $eventID);
 
-        return [__CLASS__, 'Deleted'];   
+        return [__CLASS__, 'Deleted'];
     }
 
 }

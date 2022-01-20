@@ -16,12 +16,12 @@ use function sammo\refreshNationStaticInfo;
 
 /**
  * 이민족 침입을 모사
- * 
+ *
  * 양수 : 정해진 값. [절대값]
  * 음수 : 합산(장수 등), 혹은 평균(기술 등)을 곱해 적용한 값 [상대값]
- * 
- * event_1.php, 센 이민족 : npcEachCount = -0.5, specAvg = 195, tech = 15000, dex = 450000
- * event_2.php, 약한 이민족 : npcEachCount = -0.5, specAvg = 150, tech = -1, dex = 0
+ *
+ * event_1.php, 센 이민족 : npcEachCount = -2, specAvg = 195, tech = 15000, dex = 450000
+ * event_2.php, 약한 이민족 : npcEachCount = -2, specAvg = 150, tech = -1, dex = 0
  * event_3.php, 엄청 약한 이민족 : npcEachCount = 100, specAvg = 50, tech = 0, dex = 0
  */
 class RaiseInvader extends \sammo\Event\Action
@@ -105,10 +105,10 @@ class RaiseInvader extends \sammo\Event\Action
 
         $specAvg = $this->specAvg;
         if ($specAvg < 0) {
-            $specAvg = $db->queryFirstField('SELECT avg((`leadership` + `strength` + `intel`)/3) from general where npc < 4');
+            $specAvg = $db->queryFirstField('SELECT avg((`leadership` + `strength` + `intel`)) from general where npc < 4');
             $specAvg *= -1 * $this->specAvg;
         }
-        $specAvg = Util::toInt($specAvg);
+        $specAvg = Util::toInt($specAvg / 3);
 
         $tech = $this->tech;
         if ($tech < 0) {
@@ -130,6 +130,8 @@ class RaiseInvader extends \sammo\Event\Action
             max($existNations),
             $db->queryFirstField("SELECT max(`nation`) FROM `ng_old_nations` WHERE server_id = %s", $serverID),
         );
+
+        $exp = $db->queryFirstField("SELECT avg(experience) from general where npc < 6");
 
 
         $db->update('general', [
@@ -163,9 +165,10 @@ class RaiseInvader extends \sammo\Event\Action
                 ->setNPCType(9)
                 ->setStat(Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.2))
                 ->setAffinity(999)
+                ->setExpDed($exp * 1.2, null)
                 ->setGoldRice(99999, 99999);
             $ruler->build($env);
-            
+
             $nationObj->addGeneral($ruler);
 
             foreach (Util::range(1, $npcEachCount) as $invaderGenIdx) {
@@ -176,6 +179,7 @@ class RaiseInvader extends \sammo\Event\Action
                     ->setCityID($cityObj->id)
                     ->setNPCType(9)
                     ->setAffinity(999)
+                    ->setExpDed($exp, null)
                     ->setGoldRice(99999, 99999);
 
                 $leadership = Util::randRangeInt(Util::toInt($specAvg * 1.2), Util::toInt($specAvg * 1.4));
@@ -196,23 +200,20 @@ class RaiseInvader extends \sammo\Event\Action
                 $gen->build($env);
                 $nationObj->addGeneral($gen);
             }
-            
+
             $nationObj->postBuild($env);
             refreshNationStaticInfo();
             $db->insert('event', [
                 'condition' => Json::encode(true),
                 'action' => Json::encode([["AutoDeleteInvader", $invaderNationID]]),
             ]);
-            
+
         }
         $db->insert('event', [
             'condition' => Json::encode(true),
             'action' => Json::encode([["InvaderEnding"]]),
         ]);
 
-        $db->update('nation', [
-            'scout' => 1
-        ], 'nation IN %li', $invaderNationIDList);
         $db->update('diplomacy', [
             'state' => 1,
             'term' => 24,
