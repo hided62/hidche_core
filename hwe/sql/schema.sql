@@ -674,3 +674,20 @@ CREATE TABLE IF NOT EXISTS `user_record` (
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria
 ;
+
+CREATE TABLE IF NOT EXISTS `ng_betting` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`betting_id` INT(11) NOT NULL,
+	`general_id` INT(11) NOT NULL,
+	`user_id` INT(11) NULL DEFAULT NULL,
+	`betting_type` VARCHAR(100) NOT NULL COMMENT 'JSON',
+	`amount` INT(11) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `by_general` (`general_id`, `betting_id`, `betting_type`),
+	UNIQUE INDEX `by_bet` (`betting_id`, `betting_type`, `general_id`),
+	INDEX `by_user` (`user_id`, `betting_id`, `betting_type`),
+	CONSTRAINT `type_json` CHECK (json_valid(`betting_type`))
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=Aria
+;
