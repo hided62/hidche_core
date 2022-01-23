@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\NationCommand;
+namespace sammo\API\NationBetting;
 
 use sammo\Session;
 use DateTimeInterface;
@@ -16,7 +16,7 @@ use sammo\Util;
 
 use function sammo\getAllNationStaticInfo;
 
-class PushCommand extends \sammo\BaseAPI
+class BetNation extends \sammo\BaseAPI
 {
     public function validateArgs(): ?string
     {
@@ -127,7 +127,7 @@ class PushCommand extends \sammo\BaseAPI
         else{
             $general->increaseVar('gold', -$amount);
         }
-        $db->insert('ng_betting', $bettingItem->toArray());
+        $db->insertUpdate('ng_betting', $bettingItem->toArray());
         if(!$db->affected_rows){
             $general->flushUpdateValues();
             return '베팅을 실패했습니다.';

@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\NationCommand;
+namespace sammo\API\NationBetting;
 
 use sammo\Session;
 use DateTimeInterface;
@@ -11,7 +11,7 @@ use sammo\KVStorage;
 use function sammo\checkLimit;
 use function sammo\increaseRefresh;
 
-class GetReservedCommand extends \sammo\BaseAPI
+class GetBettingList extends \sammo\BaseAPI
 {
     public function validateArgs(): ?string
     {
