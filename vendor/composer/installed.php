@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '872755e57f84720a9c4c63d5455441f83c41f6c6',
+    'reference' => 'd75f21035d2d747010efd234b5e7b3a42e0a41fd',
     'name' => 'sammo-hid/sammo',
   ),
   'versions' => 
@@ -427,7 +427,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '872755e57f84720a9c4c63d5455441f83c41f6c6',
+      'reference' => 'd75f21035d2d747010efd234b5e7b3a42e0a41fd',
     ),
     'sergeytsalkov/meekrodb' => 
     array (
@@ -437,6 +437,15 @@
       array (
       ),
       'reference' => 'e30c240d54bc81f58c58507a9ed768032eb494a5',
+    ),
+    'spatie/data-transfer-object' => 
+    array (
+      'pretty_version' => '3.7.3',
+      'version' => '3.7.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '341f72c77e0fce40ea2e0dcb212cb54dc27bbe72',
     ),
     'symfony/console' => 
     array (

@@ -76,6 +76,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Lock\\' => 23,
             'Symfony\\Component\\Console\\' => 26,
+            'Spatie\\DataTransferObject\\' => 26,
             'Sabre\\Event\\' => 12,
         ),
         'P' => 
@@ -216,6 +217,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Spatie\\DataTransferObject\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/data-transfer-object/src',
         ),
         'Sabre\\Event\\' => 
         array (

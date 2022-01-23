@@ -29,7 +29,8 @@
         "erusev/parsedown-extra": "^0.8.1",
         "nette/caching": "^3.0",
         "illuminate/database": "^8.61",
-        "illuminate/events": "^8.61"
+        "illuminate/events": "^8.61",
+        "spatie/data-transfer-object": "^3.7"
     },
     "autoload": {
         "psr-4": {
