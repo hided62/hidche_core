@@ -507,9 +507,14 @@ ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `event` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `condition` MEDIUMTEXT NOT NULL CHECK (json_valid(`condition`)),
-  `action` MEDIUMTEXT NOT NULL CHECK (json_valid(`action`)),
-  PRIMARY KEY (`id`)
+  `target` ENUM('MONTH','OCCUPY_CITY','DESTROY_NATION') NOT NULL DEFAULT 'MONTH',
+  `priority` INT(11) NOT NULL DEFAULT '1000',
+  `condition` MEDIUMTEXT NOT NULL,
+  `action` MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `target` (`target`, `priority`, `id`),
+  CONSTRAINT `condition` CHECK (json_valid(`condition`)),
+  CONSTRAINT `action` CHECK (json_valid(`action`))
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria;
