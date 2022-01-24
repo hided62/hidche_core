@@ -7,13 +7,17 @@ use \sammo\{
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    Json,
+    KVStorage
 };
 
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Event\EventHandler;
+
 use function sammo\refreshNationStaticInfo;
 use function sammo\deleteNation;
 use function sammo\tryRollbackInheritUniqueItem;
@@ -97,6 +101,26 @@ class che_해산 extends Command\GeneralCommand{
         }
         tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);
+
+        // 이벤트 핸들러 동작
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $e_env = null;
+        foreach (DB::db()->query('SELECT * FROM event WHERE target = "DESTROY_NATION" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
+            if ($e_env === null) {
+                $e_env = $gameStor->getAll(false);
+            }
+            $eventID = $rawEvent['id'];
+            $cond = Json::decode($rawEvent['condition']);
+            $action = Json::decode($rawEvent['action']);
+            $event = new EventHandler($cond, $action);
+            $e_env['currentEventID'] = $eventID;
+
+            $event->tryRunEvent($e_env);
+        }
+
+        if ($e_env !== null) {
+            $gameStor->resetCache();
+        }
 
         return true;
     }

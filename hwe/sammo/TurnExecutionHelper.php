@@ -398,7 +398,7 @@ class TurnExecutionHelper
 
             // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
             if (!preUpdateMonthly()) {
-                $gameStor->resetCache(true);
+                $gameStor->resetCache();
                 unlock();
                 throw new \RuntimeException('preUpdateMonthly() 처리 에러');
             }
@@ -435,7 +435,7 @@ class TurnExecutionHelper
 
             // 이벤트 핸들러 동작
             $e_env = null;
-            foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
+            foreach (DB::db()->query('SELECT * FROM event WHERE target = "MONTH" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
                 if ($e_env === null) {
                     $e_env = $gameStor->getAll(false);
                 }
@@ -449,7 +449,7 @@ class TurnExecutionHelper
             }
 
             if ($e_env !== null) {
-                $gameStor->resetCache(true);
+                $gameStor->resetCache();
             }
 
             postUpdateMonthly();
@@ -480,7 +480,7 @@ class TurnExecutionHelper
         //거래 처리
         processAuction();
         // 잡금 해제
-        $gameStor->resetCache(true);
+        $gameStor->resetCache();
         unlock();
     }
 }

@@ -1,28 +1,29 @@
 <?php
+
 namespace sammo;
 
 
-function processWar(General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity){
+function processWar(General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity)
+{
 
     $db = DB::db();
 
     $attackerNationID = $attackerGeneral->getNationID();
     $defenderNationID = $rawDefenderCity['nation'];
 
-    if($defenderNationID == 0){
+    if ($defenderNationID == 0) {
         $rawDefenderNation =  [
-            'nation'=>0,
-            'name'=>'재야',
-            'capital'=>0,
-            'level'=>0,
-            'gold'=>0,
-            'rice'=>10000,
-            'type'=>GameConst::$neutralNationType,
-            'tech'=>0,
-            'gennum'=>1
+            'nation' => 0,
+            'name' => '재야',
+            'capital' => 0,
+            'level' => 0,
+            'gold' => 0,
+            'rice' => 10000,
+            'type' => GameConst::$neutralNationType,
+            'tech' => 0,
+            'gennum' => 1
         ];
-    }
-    else{
+    } else {
         $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
     }
 
@@ -36,29 +37,29 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
     $defenderList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
 
-    usort($defenderList, function(General $lhs, General $rhs){
-        return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+    usort($defenderList, function (General $lhs, General $rhs) {
+        return - (extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
     });
 
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderNation, $rawDefenderCity, $db) {
-        if($prevDefender !== null){
+    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderNation, $rawDefenderCity, $db) {
+        if ($prevDefender !== null) {
             $prevDefender->applyDB($db);
         }
 
-        if(!$reqNext){
+        if (!$reqNext) {
             return null;
         }
 
-        if(!$iterDefender->valid()){
+        if (!$iterDefender->valid()) {
             return null;
         }
 
         $nextDefender = $iterDefender->current();
         $nextDefender->setRawCity($rawDefenderCity);
-        if(extractBattleOrder($nextDefender) <= 0){
+        if (extractBattleOrder($nextDefender) <= 0) {
             return null;
         }
 
@@ -82,8 +83,8 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $updateAttackerNation = [];
     $updateDefenderNation = [];
 
-    if($city->getVar('supply')){
-        if($city->getPhase() > 0){
+    if ($city->getVar('supply')) {
+        if ($city->getPhase() > 0) {
             $rice = $city->getKilled() / 100 * 0.8;
             $rice *= $city->getCrewType()->rice;
             $rice *= getTechCost($rawDefenderNation['tech']);
@@ -91,12 +92,10 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
             Util::setRound($rice);
 
             $updateDefenderNation['rice'] = max(0, $rawDefenderNation['rice'] - $rice);
-        }
-        else if($conquerCity){
-            if($rawDefenderNation['capital'] == $rawDefenderCity['city']){
+        } else if ($conquerCity) {
+            if ($rawDefenderNation['capital'] == $rawDefenderCity['city']) {
                 $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 1000;
-            }
-            else{
+            } else {
                 $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 500;
             }
         }
@@ -120,29 +119,29 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $attackerGenCnt_eff = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc != 5', $rawAttackerNation['nation']);
     $defenderGenCnt_eff = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc != 5', $rawDefenderNation['nation']);
 
-    if($attackerGenCnt_eff < GameConst::$initialNationGenLimit){
+    if ($attackerGenCnt_eff < GameConst::$initialNationGenLimit) {
         $attackerGenCnt = GameConst::$initialNationGenLimit;
         $attackerGenCnt_eff = GameConst::$initialNationGenLimit;
     }
 
-    if($defenderGenCnt_eff < GameConst::$initialNationGenLimit){
+    if ($defenderGenCnt_eff < GameConst::$initialNationGenLimit) {
         $defenderGenCnt = GameConst::$initialNationGenLimit;
         $defenderGenCnt_eff = GameConst::$initialNationGenLimit;
     }
 
-    if($attackerGenCnt != $attackerGenCnt_eff){
+    if ($attackerGenCnt != $attackerGenCnt_eff) {
         $attackerIncTech *= $attackerGenCnt / $attackerGenCnt_eff;
     }
 
-    if($defenderGenCnt != $defenderGenCnt_eff){
+    if ($defenderGenCnt != $defenderGenCnt_eff) {
         $defenderIncTech *= $defenderGenCnt / $defenderGenCnt_eff;
     }
 
 
-    if(TechLimit($startYear, $year, $rawAttackerNation['tech'])){
+    if (TechLimit($startYear, $year, $rawAttackerNation['tech'])) {
         $attackerIncTech /= 4;
     }
-    if(TechLimit($startYear, $year, $rawDefenderNation['tech'])){
+    if (TechLimit($startYear, $year, $rawDefenderNation['tech'])) {
         $defenderIncTech /= 4;
     }
 
@@ -159,41 +158,42 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $db->update('nation', $updateDefenderNation, 'nation=%i', $defenderNationID);
 
     $db->update('diplomacy', [
-        'dead'=>$db->sqleval('dead + %i', $attacker->getDead())
+        'dead' => $db->sqleval('dead + %i', $attacker->getDead())
     ], 'me = %i and you = %i', $attackerNationID, $defenderNationID);
 
     $db->update('diplomacy', [
-        'dead'=>$db->sqleval('dead + %i', $attacker->getKilled())
+        'dead' => $db->sqleval('dead + %i', $attacker->getKilled())
     ], 'me = %i and you = %i', $defenderNationID, $attackerNationID);
 
-    if(!$conquerCity){
+    if (!$conquerCity) {
         return;
     }
 
     ConquerCity([
-        'startyear'=>$startYear,
-        'year'=>$year,
-        'month'=>$month,
-        'city_rate'=>$cityRate,
-        'join_mode'=>$joinMode,
+        'startyear' => $startYear,
+        'year' => $year,
+        'month' => $month,
+        'city_rate' => $cityRate,
+        'join_mode' => $joinMode,
     ], $attacker->getGeneral(), $city->getRaw());
 }
 
-function extractBattleOrder(General $general){
-    if($general->getVar('crew') == 0){
+function extractBattleOrder(General $general)
+{
+    if ($general->getVar('crew') == 0) {
         return 0;
     }
 
-    if($general->getVar('rice') <= $general->getVar('crew') / 100){
+    if ($general->getVar('rice') <= $general->getVar('crew') / 100) {
         return 0;
     }
 
     $defence_train = $general->getVar('defence_train');
-    if($general->getVar('train') < $defence_train){
+    if ($general->getVar('train') < $defence_train) {
         return 0;
     }
 
-    if($general->getVar('atmos') < $defence_train){
+    if ($general->getVar('atmos') < $defence_train) {
         return 0;
     }
 
@@ -210,8 +210,8 @@ function processWar_NG(
     callable $getNextDefender,
     WarUnitCity $city,
     int $relYear
-):bool{
-    $templates = new \League\Plates\Engine(__DIR__.'/templates');
+): bool {
+    $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 
     $logger = $attacker->getLogger();
 
@@ -231,11 +231,11 @@ function processWar_NG(
     $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.");
     $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
-    for($currPhase = 0; $currPhase < $attacker->getMaxPhase(); $currPhase+=1){
-        if($defender === null){
+    for ($currPhase = 0; $currPhase < $attacker->getMaxPhase(); $currPhase += 1) {
+        if ($defender === null) {
             $defender = $city;
 
-            if($city->getNationVar('rice') <= 0 && $city->getVar('supply')){
+            if ($city->getNationVar('rice') <= 0 && $city->getVar('supply')) {
                 //병량 패퇴
                 $attacker->setOppose($defender);
                 $defender->setOppose($attacker);
@@ -256,7 +256,7 @@ function processWar_NG(
             }
         }
 
-        if($defender->getPhase() == 0){
+        if ($defender->getPhase() == 0) {
             $defender->setPrePhase($currPhase);
 
             $attacker->addTrain(1);
@@ -276,7 +276,7 @@ function processWar_NG(
             $attackerName = $attacker->getName();
             $attackerCrewTypeName = $attacker->getCrewTypeName();
 
-            if($defender instanceof WarUnitGeneral){
+            if ($defender instanceof WarUnitGeneral) {
                 $defenderName = $defender->getName();
                 $defenderCrewTypeName = $defender->getCrewTypeName();
 
@@ -291,8 +291,7 @@ function processWar_NG(
                 $josaRo = JosaUtil::pick($defenderCrewTypeName, '로');
                 $josaUl = JosaUtil::pick($attackerCrewTypeName, '을');
                 $defender->getLogger()->pushGeneralActionLog("{$defenderCrewTypeName}{$josaRo} <Y>{$attackerName}</>의 {$attackerCrewTypeName}{$josaUl} <M>수비</>합니다.");
-            }
-            else{
+            } else {
                 $josaYi = JosaUtil::pick($attackerName, '이');
                 $josaRo = JosaUtil::pick($attackerCrewTypeName, '로');
                 $logger->pushGlobalActionLog("<Y>{$attackerName}</>{$josaYi} {$attackerCrewTypeName}{$josaRo} 성벽을 공격합니다.");
@@ -324,16 +323,15 @@ function processWar_NG(
         $attackerHP = $attacker->getHP();
         $defenderHP = $defender->getHP();
 
-        if($deadAttacker > $attackerHP || $deadDefender > $defenderHP){
+        if ($deadAttacker > $attackerHP || $deadDefender > $defenderHP) {
             $deadAttackerRatio = $deadAttacker / max(1, $attackerHP);
             $deadDefenderRatio = $deadDefender / max(1, $defenderHP);
 
-            if($deadDefenderRatio > $deadAttackerRatio){
+            if ($deadDefenderRatio > $deadAttackerRatio) {
                 //수비자가 더 병력 부족
                 $deadAttacker /= $deadDefenderRatio;
                 $deadDefender = $defenderHP;
-            }
-            else{
+            } else {
                 //공격자가 더 병력 부족
                 $deadDefender /= $deadAttackerRatio;
                 $deadAttacker = $attackerHP;
@@ -351,7 +349,7 @@ function processWar_NG(
 
         $phaseNickname = $currPhase + 1;
 
-        if($deadAttacker > 0 || $deadDefender > 0){
+        if ($deadAttacker > 0 || $deadDefender > 0) {
             $attacker->getLogger()->pushGeneralBattleDetailLog(
                 "$phaseNickname : <Y1>【{$attacker->getName()}】</> <C>{$attacker->getHP()} (-$deadAttacker)</> VS <C>{$defender->getHP()} (-$deadDefender)</> <Y1>【{$defender->getName()}】</>"
             );
@@ -365,7 +363,7 @@ function processWar_NG(
         $attacker->addPhase();
         $defender->addPhase();
 
-        if(!$attacker->continueWar($noRice)){
+        if (!$attacker->continueWar($noRice)) {
             $attacker->logBattleResult();
             $defender->logBattleResult();
 
@@ -377,10 +375,9 @@ function processWar_NG(
 
             $josaYi = JosaUtil::pick($attacker->getCrewTypeName(), '이');
             $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaYi} 퇴각했습니다.");
-            if($noRice){
+            if ($noRice) {
                 $attacker->getLogger()->pushGeneralActionLog("군량 부족으로 퇴각합니다.", ActionLogger::PLAIN);
-            }
-            else{
+            } else {
                 $attacker->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
             }
             $defender->getLogger()->pushGeneralActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
@@ -388,7 +385,7 @@ function processWar_NG(
             break;
         }
 
-        if(!$defender->continueWar($noRice)){
+        if (!$defender->continueWar($noRice)) {
 
             $attacker->logBattleResult();
             $defender->logBattleResult();
@@ -399,7 +396,7 @@ function processWar_NG(
             $attacker->tryWound();
             $defender->tryWound();
 
-            if($defender === $city){
+            if ($defender === $city) {
                 $attacker->addLevelExp(1000);
                 $conquerCity = true;
                 break;
@@ -407,33 +404,30 @@ function processWar_NG(
 
             $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
 
-            if($noRice){
+            if ($noRice) {
                 $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.");
-            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.", ActionLogger::PLAIN);
+                $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.", ActionLogger::PLAIN);
                 $defender->getLogger()->pushGeneralActionLog("군량 부족으로 패퇴합니다.", ActionLogger::PLAIN);
-            }
-            else{
+            } else {
                 $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 전멸했습니다.");
-            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 전멸했습니다.", ActionLogger::PLAIN);
+                $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 전멸했습니다.", ActionLogger::PLAIN);
                 $defender->getLogger()->pushGeneralActionLog("전멸했습니다.", ActionLogger::PLAIN);
             }
 
-            if($currPhase + 1 == $attacker->getMaxPhase()){
+            if ($currPhase + 1 == $attacker->getMaxPhase()) {
                 break;
             }
 
             $defender->finishBattle();
             $defender = ($getNextDefender)($defender, true);
 
-            if($defender !== null && !($defender instanceof WarUnitGeneral)){
+            if ($defender !== null && !($defender instanceof WarUnitGeneral)) {
                 throw new \RuntimeException('다음 수비자를 받아오는데 실패');
             }
-
         }
-
     }
 
-    if($currPhase == $attacker->getMaxPhase()){
+    if ($currPhase == $attacker->getMaxPhase()) {
         //마지막 페이즈의 전투 마무리
         $attacker->logBattleResult();
         $defender->logBattleResult();
@@ -445,9 +439,9 @@ function processWar_NG(
     $attacker->finishBattle();
     $defender->finishBattle();
 
-    if($defender instanceof WarUnitCity){
+    if ($defender instanceof WarUnitCity) {
         $newConflict = $defender->addConflict();
-        if($newConflict){
+        if ($newConflict) {
             $nationName = $attacker->getNationVar('name');
             $josaYi = JosaUtil::pick($nationName, '이');
             $logger->pushGlobalHistoryLog("<M><b>【분쟁】</b></><D><b>{$nationName}</b></>{$josaYi} <G><b>{$defender->getName()}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.");
@@ -459,33 +453,36 @@ function processWar_NG(
     return $conquerCity;
 }
 
-function DeleteConflict($nation) {
+function DeleteConflict($nation)
+{
     $db = DB::db();
 
-    foreach($db->queryAllLists('SELECT city, conflict FROM city WHERE conflict!=%s', '{}') as list($cityID, $rawConflict)){
+    foreach ($db->queryAllLists('SELECT city, conflict FROM city WHERE conflict!=%s', '{}') as list($cityID, $rawConflict)) {
         $conflict = Json::decode($rawConflict);
 
-        if(!$conflict || !is_array($conflict)){
+        if (!$conflict || !is_array($conflict)) {
             continue;
         }
-        if(!key_exists($nation, $conflict)){
+        if (!key_exists($nation, $conflict)) {
             continue;
         }
 
         unset($conflict[$nation]);
 
         $db->update('city', [
-            'conflict'=>Json::encode($conflict)
+            'conflict' => Json::encode($conflict)
         ], 'city=%i', $cityID);
     }
 }
 
-function getConquerNation($city) : int {
+function getConquerNation($city): int
+{
     $conflict = Json::decode($city['conflict']);
     return Util::array_first_key($conflict);
 }
 
-function ConquerCity(array $admin, General $general, array $city) {
+function ConquerCity(array $admin, General $general, array $city)
+{
     $db = DB::db();
 
     $year = $admin['year'];
@@ -506,7 +503,7 @@ function ConquerCity(array $admin, General $general, array $city) {
 
     $defenderNationLogger = new ActionLogger(0, $defenderNationID, $year, $month);
 
-    if($defenderNationID) {
+    if ($defenderNationID) {
         $defenderNationDecoration = "<D><b>{$defenderNationName}</b></>의";
     } else {
         $defenderNationDecoration = "공백지인";
@@ -524,8 +521,29 @@ function ConquerCity(array $admin, General $general, array $city) {
 
     $defenderNationLogger->pushNationalHistoryLog("<D><b>{$attackerNationName}</b></>의 <Y>{$attackerGeneralName}</>에 의해 <G><b>{$cityName}</b></>{$josaYiCity} <O>함락</>");
 
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+
+    // 이벤트 핸들러 동작
+    $e_env = null;
+    foreach (DB::db()->query('SELECT * FROM event WHERE target = "OCCUPY_CITY" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
+        if ($e_env === null) {
+            $e_env = $gameStor->getAll(false);
+        }
+        $eventID = $rawEvent['id'];
+        $cond = Json::decode($rawEvent['condition']);
+        $action = Json::decode($rawEvent['action']);
+        $event = new Event\EventHandler($cond, $action);
+        $e_env['currentEventID'] = $eventID;
+
+        $event->tryRunEvent($e_env);
+    }
+
+    if ($e_env !== null) {
+        $gameStor->resetCache();
+    }
+
     // 국가 멸망시
-    if($defenderNationID && $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $defenderNationID) === 1) {
+    if ($defenderNationID && $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $defenderNationID) === 1) {
         $defenderNationLogger->flush();
         unset($defenderNationLogger);
 
@@ -545,17 +563,17 @@ function ConquerCity(array $admin, General $general, array $city) {
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
-        foreach($oldNationGenerals as $oldGeneral){
-            $loseGold = intdiv($oldGeneral->getVar('gold') * (rand()%30+20), 100);
-            $loseRice = intdiv($oldGeneral->getVar('rice') * (rand()%30+20), 100);
+        foreach ($oldNationGenerals as $oldGeneral) {
+            $loseGold = intdiv($oldGeneral->getVar('gold') * (rand() % 30 + 20), 100);
+            $loseRice = intdiv($oldGeneral->getVar('rice') * (rand() % 30 + 20), 100);
             $oldGeneral->getLogger()->pushGeneralActionLog(
                 "도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.",
                 ActionLogger::PLAIN
             );
             $oldGeneral->increaseVar('gold', -$loseGold);
             $oldGeneral->increaseVar('rice', -$loseRice);
-            $oldGeneral->addExperience(-$oldGeneral->getVar('experience')*0.1, false);
-            $oldGeneral->addDedication(-$oldGeneral->getVar('dedication')*0.5, false);
+            $oldGeneral->addExperience(-$oldGeneral->getVar('experience') * 0.1, false);
+            $oldGeneral->addDedication(-$oldGeneral->getVar('dedication') * 0.5, false);
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
@@ -563,21 +581,21 @@ function ConquerCity(array $admin, General $general, array $city) {
             $oldGeneral->applyDB($db);
 
             //모두 등용장 발부
-            if($admin['join_mode'] != 'onlyRandom' && Util::randBool(0.5)) {
+            if ($admin['join_mode'] != 'onlyRandom' && Util::randBool(0.5)) {
                 $msg = ScoutMessage::buildScoutMessage($attackerID, $oldGeneral->getID());
-                if($msg){
+                if ($msg) {
                     $msg->send(true);
                 }
             }
 
             //NPC인 경우 일정 확률로 임관(엔장, 인재, 의병)
             $npcType = $oldGeneral->getNPCType();
-            if($admin['join_mode'] != 'onlyRandom' && 2 <= $npcType && $npcType <= 8 && $npcType != 5 && Util::randBool(GameConst::$joinRuinedNPCProp)) {
+            if ($admin['join_mode'] != 'onlyRandom' && 2 <= $npcType && $npcType <= 8 && $npcType != 5 && Util::randBool(GameConst::$joinRuinedNPCProp)) {
                 $cmd = buildGeneralCommandClass('che_임관', $oldGeneral, $admin, [
-                    'destNationID'=>$attackerNationID
+                    'destNationID' => $attackerNationID
                 ]);
                 $joinTurn = Util::randRangeInt(0, 12);
-                if($joinTurn){
+                if ($joinTurn) {
                     _setGeneralCommand(buildGeneralCommandClass('che_견문', $oldGeneral, $admin), iterator_to_array(Util::range($joinTurn)));
                 }
                 _setGeneralCommand($cmd, [$joinTurn]);
@@ -596,37 +614,56 @@ function ConquerCity(array $admin, General $general, array $city) {
 
         // 기본량 제외 금쌀50% + 장수들 분실 금쌀50% 흡수
         $db->update('nation', [
-            'gold'=>$db->sqleval('gold + %i', $loseNationGold),
-            'rice'=>$db->sqleval('rice + %i', $loseNationRice),
+            'gold' => $db->sqleval('gold + %i', $loseNationGold),
+            'rice' => $db->sqleval('rice + %i', $loseNationRice),
         ], 'nation=%i', $attackerNationID);
 
         //아국 수뇌부에게 로그 전달
         $loseNationGoldText = number_format($loseNationGold);
         $loseNationRiceText = number_format($loseNationRice);
         $resourceLog = "<D><b>{$defenderNationName}</b></> 정복으로 금<C>{$loseNationGoldText}</> 쌀<C>{$loseNationRiceText}</>을 획득했습니다.";
-        foreach($db->queryFirstColumn(
-            'SELECT no FROM general WHERE nation=%i AND officer_level>=5', $attackerNationID
-            ) as $attackerChiefID
-        ){
-            if($attackerChiefID == $attackerID){
+        foreach ($db->queryFirstColumn(
+            'SELECT no FROM general WHERE nation=%i AND officer_level>=5',
+            $attackerNationID
+        ) as $attackerChiefID) {
+            if ($attackerChiefID == $attackerID) {
                 $attackerLogger->pushGeneralActionLog($resourceLog, ActionLogger::PLAIN);
-            }
-            else{
+            } else {
                 $chiefLogger = new ActionLogger($attackerChiefID, $attackerNationID, $year, $month);
                 $chiefLogger->pushGeneralActionLog($resourceLog, ActionLogger::PLAIN);
                 $chiefLogger->flush();
             }
         }
-    // 멸망이 아니면
+
+        // 이벤트 핸들러 동작
+        $e_env = null;
+        foreach (DB::db()->query('SELECT * FROM event WHERE target = "DESTROY_NATION" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
+            if ($e_env === null) {
+                $e_env = $gameStor->getAll(false);
+            }
+            $eventID = $rawEvent['id'];
+            $cond = Json::decode($rawEvent['condition']);
+            $action = Json::decode($rawEvent['action']);
+            $event = new Event\EventHandler($cond, $action);
+            $e_env['currentEventID'] = $eventID;
+
+            $event->tryRunEvent($e_env);
+        }
+
+        if ($e_env !== null) {
+            $gameStor->resetCache();
+        }
+
+        // 멸망이 아니면
     } else {
         // 태수,군사,종사은 일반으로...
-        $db->update('general',[
-            'officer_level'=>1,
-            'officer_city'=>0,
-        ], 'officer_city = %i',$cityID);
+        $db->update('general', [
+            'officer_level' => 1,
+            'officer_city' => 0,
+        ], 'officer_city = %i', $cityID);
 
         //수도였으면 긴급 천도
-        if($defenderNationID && $defenderStaticNation['capital'] == $cityID) {
+        if ($defenderNationID && $defenderStaticNation['capital'] == $cityID) {
             $minCity = findNextCapital($cityID, $defenderNationID);
 
             $minCityName = CityConst::byID($minCity)->name;
@@ -636,10 +673,10 @@ function ConquerCity(array $admin, General $general, array $city) {
 
             $moveLog = "수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다.";
             //아국 수뇌부에게 로그 전달
-            foreach($db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation=%i AND officer_level>=5', $defenderNationID
-                ) as $defenderChiefID
-            ){
+            foreach ($db->queryFirstColumn(
+                'SELECT no FROM general WHERE nation=%i AND officer_level>=5',
+                $defenderNationID
+            ) as $defenderChiefID) {
                 $chiefLogger = new ActionLogger($defenderChiefID, $defenderNationID, $year, $month);
                 $chiefLogger->pushGeneralActionLog($moveLog, ActionLogger::PLAIN);
                 $chiefLogger->flush();
@@ -647,22 +684,22 @@ function ConquerCity(array $admin, General $general, array $city) {
 
             //천도
             $db->update('nation', [
-                'capital'=>$minCity,
-                'gold'=>$db->sqleval('gold * 0.5'),
-                'rice'=>$db->sqleval('rice * 0.5'),
+                'capital' => $minCity,
+                'gold' => $db->sqleval('gold * 0.5'),
+                'rice' => $db->sqleval('rice * 0.5'),
             ], 'nation=%i', $defenderNationID);
             //보급도시로 만듬
             $db->update('city', [
-                'supply'=>1
+                'supply' => 1
             ], 'city=%i', $minCity);
             //수뇌부 이동
             $db->update('general', [
-                'city'=>$minCity
-            ], 'nation=%i AND officer_level>=5',$defenderNationID);
+                'city' => $minCity
+            ], 'nation=%i AND officer_level>=5', $defenderNationID);
             //장수 사기 감소
             $db->update('general', [
-                'atmos'=>$db->sqleval('atmos*0.8')
-            ], 'nation=%i',$defenderNationID);
+                'atmos' => $db->sqleval('atmos*0.8')
+            ], 'nation=%i', $defenderNationID);
 
             refreshNationStaticInfo();
         }
@@ -673,10 +710,9 @@ function ConquerCity(array $admin, General $general, array $city) {
     if ($conquerNation == $attackerNationID) {
         // 이동
         $db->update('general', [
-            'city'=>$cityID
+            'city' => $cityID
         ], 'no=%i', $attackerID);
-    }
-    else{
+    } else {
         $conquerNationName = getNationStaticInfo($conquerNation)['name'];
         $conquerNationLogger = new ActionLogger(0, $conquerNation, $year, $month);
 
@@ -690,16 +726,16 @@ function ConquerCity(array $admin, General $general, array $city) {
     }
 
     $query = [
-        'supply'=>1,
-        'term'=>0,
-        'conflict'=>'{}',
-        'agri'=>$db->sqleval('agri*0.7'),
-        'comm'=>$db->sqleval('comm*0.7'),
-        'secu'=>$db->sqleval('secu*0.7'),
-        'nation'=>$conquerNation,
-        'officer_set'=>0,
+        'supply' => 1,
+        'term' => 0,
+        'conflict' => '{}',
+        'agri' => $db->sqleval('agri*0.7'),
+        'comm' => $db->sqleval('comm*0.7'),
+        'secu' => $db->sqleval('secu*0.7'),
+        'nation' => $conquerNation,
+        'officer_set' => 0,
     ];
-    if($city['level'] > 3) {
+    if ($city['level'] > 3) {
         $query['def'] = 1000;
         $query['wall'] = 1000;
     } else {
@@ -717,43 +753,42 @@ function ConquerCity(array $admin, General $general, array $city) {
 
     $nearNationsID[] = $conquerNation;
     $nearNationsID = array_unique($nearNationsID);
-    foreach($nearNationsID as $nationNationID){
+    foreach ($nearNationsID as $nationNationID) {
         SetNationFront($nationNationID);
     }
 }
 
-function findNextCapital(int $capitalID, int $nationID):int{
+function findNextCapital(int $capitalID, int $nationID): int
+{
     $distList = searchDistance($capitalID, 99, true);
 
     $cities = [];
-    foreach(
-        DB::db()->query(
+    foreach (DB::db()->query(
             'SELECT city, pop FROM city WHERE nation=%i and city!=%i',
             $nationID,
             $capitalID
-        ) as $row
-    ){
+        ) as $row) {
         $cities[$row['city']] = $row['pop'];
     };
 
-    foreach($distList as $dist=>$distSubList){
+    foreach ($distList as $dist => $distSubList) {
         $maxCityPop = 0;
         $minCity = 0;
 
-        foreach($distSubList as $cityID){
-            if(!key_exists($cityID, $cities)){
+        foreach ($distSubList as $cityID) {
+            if (!key_exists($cityID, $cities)) {
                 continue;
             }
             $cityPop = $cities[$cityID];
 
-            if($cityPop < $maxCityPop){
+            if ($cityPop < $maxCityPop) {
                 continue;
             }
             $minCity = $cityID;
             $maxCityPop = $cityPop;
         }
 
-        if($minCity){
+        if ($minCity) {
             return $minCity;
         }
     }
