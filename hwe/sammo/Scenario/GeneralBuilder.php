@@ -671,6 +671,7 @@ class GeneralBuilder{
             'intel'=>$this->intel,
             'experience'=>$experience,
             'dedication'=>$dedication,
+            'dedlevel'=>1,
             'officer_level'=>$officerLevel,
             'gold'=>$this->gold,
             'rice'=>$this->rice,
