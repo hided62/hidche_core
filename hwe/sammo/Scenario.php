@@ -212,11 +212,11 @@ class Scenario{
         $this->events = array_map(function($rawEvent){
             //event는 여기서 풀지 않는다. 평가만 한다.
             $target = $rawEvent[0];
-            if(is_string($target)){
+            if(!is_string($target)){
                 throw new \RuntimeException("{$target}이 문자열이 아님");
             }
             $priority = $rawEvent[1];
-            if(is_int($priority)){
+            if(!is_int($priority)){
                 throw new \RuntimeException("{$priority}가 정수가 아님");
             }
             $cond = $rawEvent[2];
