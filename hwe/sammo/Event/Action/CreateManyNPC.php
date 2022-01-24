@@ -54,7 +54,7 @@ class CreateManyNPC extends \sammo\Event\Action{
         $moreGenCnt = 0;
         if($this->fillCnt){
             $db = DB::db();
-            $nations = $db->queryFirstColumn('SELECT nation FROM general WHERE npc < 2 AND officer_level = 12');
+            $nations = $db->queryFirstColumn('SELECT nation FROM general WHERE npc < 3 AND officer_level = 12');
             $regGens = $db->queryFirstField('SELECT count(*) FROM general WHERE nation IN %li AND npc < 4', $nations);
             $moreGenCnt = count($nations) * $this->fillCnt - $regGens;
         }
