@@ -59,11 +59,13 @@
     },
     "events":[
         [
+            "month", 1000,
             ["Date", "==", null, 12],
             ["CreateManyNPC", 10, 10],
             ["DeleteEvent"]
         ],
         [
+            "month", 1000,
             ["Date", "==", 182, 1],
             ["ChangeCity", "occupied", {
                 "trade":100
@@ -71,6 +73,7 @@
             ["DeleteEvent"]
         ],
         [
+            "month", 1000,
             ["Date", "==", 182, 7],
             ["ChangeCity", "occupied", {
                 "trade":100

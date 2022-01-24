@@ -11,11 +11,13 @@
     ],
     "events": [
         [
+            "month", 1000,
             ["Date", "==", null, 12],
             ["CreateManyNPC", 100, 0],
             ["DeleteEvent"]
         ],
         [
+            "month", 1000,
             ["Date", "==", 181, 12],
             ["ChangeCity", "occupied", {
                 "pop": "+60000",

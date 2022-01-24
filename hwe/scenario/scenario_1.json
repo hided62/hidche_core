@@ -11,11 +11,13 @@
     },
     "events":[
         [
+            "month", 1000,
             ["or", ["Date", "==", null, 12], ["Date", "==", null, 6]],
             ["CreateManyNPC", 10, 10],
             ["DeleteEvent"]
         ],
         [
+            "month", 1000,
             ["Date", "==", 181, 1],
             ["RaiseNPCNation"],
             ["DeleteEvent"]

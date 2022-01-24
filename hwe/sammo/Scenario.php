@@ -19,7 +19,7 @@ class Scenario{
     private $title;
 
     private $history;
-    
+
     /** @var \sammo\Scenario\Nation[] */
     private $nations;
     /** @var \sammo\Scenario\Nation[] */
@@ -52,7 +52,7 @@ class Scenario{
         }
 
         list(
-            $affinity, $name, $picturePath, $nationName, $locatedCity, 
+            $affinity, $name, $picturePath, $nationName, $locatedCity,
             $leadership, $strength, $intel, $officerLevel, $birth, $death, $ego,
             $char, $text
         ) = $rawGeneral;
@@ -70,9 +70,9 @@ class Scenario{
         $this->tmpGeneralQueue[$name] = $rawGeneral;
 
         $obj = (new Scenario\GeneralBuilder(
-            $name, 
+            $name,
             false,
-            $picturePath, 
+            $picturePath,
             $nationID
         ));
         if(!$initFull){
@@ -110,22 +110,22 @@ class Scenario{
         $this->nations = [];
         $this->nations[0] = $neutralNation;
         $this->nationsInv = [$neutralNation->getName() => $neutralNation];
-        
+
         foreach (Util::array_get($data['nation'],[]) as $idx=>$rawNation) {
             list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $rawNation;
             $nationID = $idx+1;
 
-            
+
             $nation = new Scenario\Nation(
-                $nationID, 
-                $name, 
-                $color, 
-                $gold, 
-                $rice, 
-                $infoText, 
-                $tech, 
-                $type, 
-                $nationLevel, 
+                $nationID,
+                $name,
+                $color,
+                $gold,
+                $rice,
+                $infoText,
+                $tech,
+                $type,
+                $nationLevel,
                 $cities
             );
             $this->nations[$nationID] = $nation;
@@ -134,7 +134,7 @@ class Scenario{
 
         $this->diplomacy = Util::array_get($data['diplomacy'], []);
 
-        
+
         $this->generals = array_map(function($rawGeneral){
             return $this->generateGeneral($rawGeneral, false, 2);
         }, Util::array_get($data['general'], []));
@@ -166,22 +166,22 @@ class Scenario{
         $this->nations = [];
         $this->nations[0] = $neutralNation;
         $this->nationsInv = [$neutralNation->getName() => $neutralNation];
-        
+
         foreach (Util::array_get($data['nation'],[]) as $idx=>$rawNation) {
             list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $rawNation;
             $nationID = $idx+1;
 
-            
+
             $nation = new Scenario\Nation(
-                $nationID, 
-                $name, 
-                $color, 
-                $gold, 
-                $rice, 
-                $infoText, 
-                $tech, 
-                $type, 
-                $nationLevel, 
+                $nationID,
+                $name,
+                $color,
+                $gold,
+                $rice,
+                $infoText,
+                $tech,
+                $type,
+                $nationLevel,
                 $cities
             );
             $this->nations[$nationID] = $nation;
@@ -190,7 +190,7 @@ class Scenario{
 
         $this->diplomacy = Util::array_get($data['diplomacy'], []);
 
-        
+
         $this->generals = array_map(function($rawGeneral){
             return $this->generateGeneral($rawGeneral, true, 2);
         }, Util::array_get($data['general'], []));
@@ -211,12 +211,22 @@ class Scenario{
 
         $this->events = array_map(function($rawEvent){
             //event는 여기서 풀지 않는다. 평가만 한다.
-            $cond = $rawEvent[0];
-            $action = array_slice($rawEvent, 1);
-            
+            $target = $rawEvent[0];
+            if(is_string($target)){
+                throw new \RuntimeException("{$target}이 문자열이 아님");
+            }
+            $priority = $rawEvent[1];
+            if(is_int($priority)){
+                throw new \RuntimeException("{$priority}가 정수가 아님");
+            }
+            $cond = $rawEvent[2];
+            $action = array_slice($rawEvent, 3);
+
             new \sammo\Event\EventHandler($cond, $action);
-            
+
             return [
+                'target' => $target,
+                'priority' => $priority,
                 'cond' => $cond,
                 'action' => $action
             ];
@@ -310,7 +320,7 @@ class Scenario{
         $this->initLite();
         return $this->nations;
     }
-    
+
     public function getMapTheme(){
         return $this->gameConf['mapName'];
     }
@@ -377,7 +387,7 @@ class Scenario{
     private function buildGenerals($env){
         $this->initFull();
 
-        
+
         try{
             $text = \file_get_contents(ServConfig::getSharedIconPath('../hook/list.json?1'));
             $storedIcons = Json::decode($text);
@@ -398,7 +408,7 @@ class Scenario{
             }
 
             $rawGeneral = $this->tmpGeneralQueue[$general->getGeneralRawName()];
-            $birth = $general->getBirthYear(); 
+            $birth = $general->getBirthYear();
             if(!key_exists($birth, $remainGenerals)){
                 $remainGenerals[$birth] = [];
             }
@@ -432,13 +442,13 @@ class Scenario{
             }
 
             $rawGeneral = $this->tmpGeneralQueue[$general->getGeneralRawName()];
-            $birth = $general->getBirthYear(); 
+            $birth = $general->getBirthYear();
             if(!key_exists($birth, $remainGenerals)){
                 $remainGenerals[$birth] = [];
             }
             $remainGenerals[$birth][] = array_merge(['RegNeutralNPC'], $rawGeneral);
         }
-        
+
         return $remainGenerals;
     }
 
@@ -508,7 +518,7 @@ class Scenario{
 
             $nation->build($env);
         }
-        
+
         refreshNationStaticInfo();
         CityHelper::flushCache();
 
@@ -519,6 +529,8 @@ class Scenario{
 
             $actions[] = ['DeleteEvent'];
             $this->events[] = [
+                'target'=>'Month',
+                'priority'=>1000,
                 'cond'=>['Date', '>=', $targetYear, '1'],
                 'action'=>$actions
             ];
@@ -540,6 +552,8 @@ class Scenario{
 
         $events = array_map(function($rawEvent){
             return [
+                'target'=>$rawEvent['target'],
+                'priority'=>$rawEvent['priority'],
                 'condition'=>Json::encode($rawEvent['cond']),
                 'action'=>Json::encode($rawEvent['action'])
             ];
@@ -549,7 +563,7 @@ class Scenario{
             $db->insert('event', $events);
         }
 
-        
+
 
         pushGlobalHistoryLog($this->history, $env['year'], $env['month']);
 
@@ -568,7 +582,7 @@ class Scenario{
         foreach(glob(self::SCENARIO_PATH.'/scenario_*.json') as $scenarioPath){
             $scenarioName = pathinfo(basename($scenarioPath), PATHINFO_FILENAME);
             $scenarioIdx = Util::array_last(explode('_', $scenarioName));
-            
+
             if(!is_numeric($scenarioIdx)){
                 continue;
             }
