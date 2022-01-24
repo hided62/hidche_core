@@ -4137,7 +4137,7 @@ class GeneralAI
         $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
         }, array_filter($this->nationGenerals, function (General $rawGeneral) {
-            return $rawGeneral->getVar('officer_level') != 5;
+            return $rawGeneral->getVar('npc') != 5;
         }));
 
         $riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
