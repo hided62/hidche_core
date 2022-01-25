@@ -57,7 +57,7 @@ class OpenNationBetting extends \sammo\Event\Action
             'target' => 'DESTROY_NATION',
             'priority' => 1000,
             'condition' => Json::encode(
-                ["RemainNation", $this->nationCnt],
+                ["RemainNation", "<=", $this->nationCnt],
             ),
             'action' => Json::encode([
                 ["FinishNationBetting", $bettingID],

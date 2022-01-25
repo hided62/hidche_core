@@ -204,12 +204,16 @@ class RaiseInvader extends \sammo\Event\Action
             $nationObj->postBuild($env);
             refreshNationStaticInfo();
             $db->insert('event', [
+                'target' => 'month',
+                'priority' => 1000,
                 'condition' => Json::encode(true),
                 'action' => Json::encode([["AutoDeleteInvader", $invaderNationID]]),
             ]);
 
         }
         $db->insert('event', [
+            'target' => 'month',
+            'priority' => 1000,
             'condition' => Json::encode(true),
             'action' => Json::encode([["InvaderEnding"]]),
         ]);
