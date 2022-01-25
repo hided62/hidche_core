@@ -148,8 +148,8 @@
         [
             "month", 1000,
             ["Date", "==", 181, 1],
-            ["OpenNationBetting", 4],
-            ["OpenNationBetting", 1],
+            ["OpenNationBetting", 4, 1000],
+            ["OpenNationBetting", 1, 1000],
             ["DeleteEvent"]
         ],
         [
@@ -158,8 +158,8 @@
                 ["Date", ">=", 183, 1],
                 ["RemainNation", "<=", 16]
             ],
-            ["OpenNationBetting", 4],
-            ["OpenNationBetting", 1],
+            ["OpenNationBetting", 4, 1000],
+            ["OpenNationBetting", 1, 1000],
             ["DeleteEvent"]
         ],
         [
@@ -168,7 +168,7 @@
                 ["Date", ">=", 183, 1],
                 ["RemainNation", "<=", 8]
             ],
-            ["OpenNationBetting", 1],
+            ["OpenNationBetting", 1, 1000],
             ["DeleteEvent"]
         ],
         [
@@ -177,7 +177,7 @@
                 ["Date", ">=", 183, 1],
                 ["RemainNation", "<=", 4]
             ],
-            ["OpenNationBetting", 1],
+            ["OpenNationBetting", 1, 1000],
             ["DeleteEvent"]
         ]
     ]

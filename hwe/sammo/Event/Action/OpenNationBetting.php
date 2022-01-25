@@ -11,10 +11,13 @@ use sammo\KVStorage;
 
 class OpenNationBetting extends \sammo\Event\Action
 {
-    public function __construct(private int $nationCnt = 1)
+    public function __construct(private int $nationCnt = 1, private int $bonusPoint = 0)
     {
         if ($nationCnt < 1) {
             throw new \RuntimeException("1 미만의 숫자");
+        }
+        if ($bonusPoint < 0){
+            throw new \RuntimeException("0 미만의 보너스 포인트");
         }
     }
 
@@ -51,8 +54,6 @@ class OpenNationBetting extends \sammo\Event\Action
         );
         $nationBettingStor->setValue("id_{$bettingID}", $bettingInfo->toArray());
 
-        //TODO: 초기에 부여할 포인트는 어디서 나는가?
-
         $db->insert('event', [
             'target' => 'DESTROY_NATION',
             'priority' => 1000,
@@ -64,6 +65,16 @@ class OpenNationBetting extends \sammo\Event\Action
                 ["DeleteEvent"],
             ]),
         ]);
+
+        if($this->bonusPoint > 0){
+            $db->insert('ng_betting', [
+                'betting_id' => $bettingID,
+                'general_id' => 0,
+                'betting_type' => '0',
+                'amount' => $this->bonusPoint
+            ]);
+        }
+
         $logger = new \sammo\ActionLogger(0, 0, $year, $month);
         $logger->pushGlobalHistoryLog("<B><b>【내기】</b></>천하통일을 염원하는 <C>내기</>가 진행중입니다! 호사가의 참여를 기다립니다!");
         $logger->flush();
