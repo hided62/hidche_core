@@ -51,6 +51,8 @@ class OpenNationBetting extends \sammo\Event\Action
         );
         $nationBettingStor->setValue("id_{$bettingID}", $bettingInfo->toArray());
 
+        //TODO: 초기에 부여할 포인트는 어디서 나는가?
+
         $db->insert('event', [
             'target' => 'DESTROY_NATION',
             'priority' => 1000,
