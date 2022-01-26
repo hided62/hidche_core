@@ -6,7 +6,7 @@ use \sammo\GameConst;
 use \sammo\Util;
 use \sammo\DB;
 use sammo\DTO\BettingInfo;
-use Sammo\DTO\SelectItem;
+use sammo\DTO\SelectItem;
 use sammo\Json;
 use sammo\KVStorage;
 
@@ -54,7 +54,12 @@ class OpenNationBetting extends \sammo\Event\Action
         /** @var \sammo\DTO\SelectItem[] */
         $candidates = [];
 
-        foreach (getAllNationStaticInfo() as $nationRaw) {
+        $nations = getAllNationStaticInfo();
+        uasort($nations, function($lhs, $rhs){
+            return -($lhs['power'] <=> $rhs['power']);
+        });
+
+        foreach ($nations as $nationRaw) {
             $nationID = $nationRaw['nation'];
             $cityCnt = $citiesCnt[$nationID] ?? 0;
             $nationRaw['city_cnt'] = $cityCnt;

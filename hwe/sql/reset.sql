@@ -63,3 +63,5 @@ CREATE TABLE `reserved_open` (
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=Aria;
+
+DROP TABLE IF EXISTS ng_betting;

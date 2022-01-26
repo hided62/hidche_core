@@ -2,10 +2,11 @@
 
 namespace sammo\DTO;
 
-use Sammo\DTO\SelectItem;
+use sammo\DTO\SelectItem;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\Strict;
 use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\Casters\ArrayCaster;
 
 //https://json2dto.atymic.dev/
 

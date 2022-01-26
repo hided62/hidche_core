@@ -680,7 +680,7 @@ DEFAULT CHARSET=utf8mb4
 ENGINE=Aria
 ;
 
-CREATE TABLE IF NOT EXISTS `ng_betting` (
+CREATE TABLE `ng_betting` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`betting_id` INT(11) NOT NULL,
 	`general_id` INT(11) NOT NULL,

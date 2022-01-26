@@ -27,6 +27,7 @@
         "v_join": "v_join.ts",
         "v_main": "v_main.ts",
         "v_nationStratFinan": "v_nationStratFinan.ts",
-        "v_processing": "v_processing.ts"
+        "v_processing": "v_processing.ts",
+        "v_nationBetting": "v_nationBetting.ts"
     }
 }

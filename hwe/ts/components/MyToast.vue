@@ -6,7 +6,7 @@
           <span class="me-auto fw-bold">{{ toast.title }}</span>
           <CToastClose class="my-close" color="secondary" size="sm" />
         </CToastHeader>
-        <CToastBody> {{ toast.content }} {{ toast.visible }} </CToastBody>
+        <CToastBody> {{ toast.content }} </CToastBody>
       </CToast>
     </template>
   </CToaster>
@@ -64,7 +64,7 @@ export default defineComponent({
 
       doneMap.clear();
       toasts.value.length = 0;
-      emit("update:modelValue", toasts);
+      emit("update:modelValue", toasts.value);
     }
 
     watch(props.modelValue, (values) => {

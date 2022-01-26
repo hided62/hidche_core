@@ -13,6 +13,11 @@ async function done<ResultType extends ValidResponse, ErrorType extends InvalidR
 }
 
 const apiRealPath = {
+    Betting:{
+        Bet: done,
+        GetBettingDetail: done,
+        GetBettingList: done,
+    },
     Command: {
         GetReservedCommand: done,
         PushCommand: done,

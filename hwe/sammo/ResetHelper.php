@@ -133,6 +133,8 @@ class ResetHelper{
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->resetValues();
         $gameStor->next_season_idx = $seasonIdx;
+        $bettingStor = KVStorage::getStorage($db, 'betting');
+        $bettingStor->resetValues();
 
         $lastExecuteStor = KVStorage::getStorage($db, 'next_execute');
         $lastExecuteStor->resetValues();

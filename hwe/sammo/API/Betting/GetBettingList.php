@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\NationBetting;
+namespace sammo\API\Betting;
 
 use sammo\Session;
 use DateTimeInterface;
@@ -42,6 +42,7 @@ class GetBettingList extends \sammo\BaseAPI
         $bettingList = [];
         foreach ($bettingStor->getAll() as $_key => $rawItem) {
             $item = new BettingInfo($rawItem);
+            unset($rawItem['candidates']);
             $bettingList[$item->id] = $rawItem;
             $bettingList[$item->id]['totalAmount'] = 0;
         }
@@ -61,7 +62,7 @@ class GetBettingList extends \sammo\BaseAPI
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 
         return [
-            'result' => false,
+            'result' => true,
             'bettingList' => $bettingList,
             'year' => $year,
             'month' => $month,

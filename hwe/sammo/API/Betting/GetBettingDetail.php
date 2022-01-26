@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\NationBetting;
+namespace sammo\API\Betting;
 
 use sammo\Session;
 use DateTimeInterface;
@@ -8,6 +8,7 @@ use sammo\DB;
 use sammo\DTO\BettingInfo;
 use sammo\General;
 use sammo\KVStorage;
+use sammo\Util;
 use sammo\Validator;
 
 use function sammo\increaseRefresh;
@@ -39,7 +40,7 @@ class GetBettingDetail extends \sammo\BaseAPI
 
         increaseRefresh("국가베팅장", 1);
         /** @var int */
-        $bettingID = $this->arg['betting_id'];
+        $bettingID = $this->args['betting_id'];
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $bettingStor = KVStorage::getStorage($db, 'betting');
@@ -63,7 +64,7 @@ class GetBettingDetail extends \sammo\BaseAPI
             'SELECT betting_type, sum(amount) as sum_amount FROM ng_betting WHERE betting_id = %i GROUP BY betting_type',
             $bettingID
         ) as [$bettingType, $amount]) {
-            $bettingDetail[] = [$bettingType, $amount];
+            $bettingDetail[] = [$bettingType, Util::toInt($amount)];
         }
 
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
@@ -73,20 +74,19 @@ class GetBettingDetail extends \sammo\BaseAPI
             'SELECT betting_type, sum(amount) as sum_amount FROM ng_betting WHERE betting_id = %i AND user_id = %i GROUP BY betting_type',
             $bettingID, $session->userID
         ) as [$bettingType, $amount]){
-            $myBetting[] = [$bettingType, $amount];
+            $myBetting[] = [$bettingType, Util::toInt($amount)];
         }
-
-        $general = General::createGeneralObjFromDB($session->generalID, ['gold', 'aux'], 1);
 
         if($bettingInfo->reqInheritancePoint){
-            $remainPoint = $general->getInheritancePoint('previous');
+            $inheritStor = KVStorage::getStorage($db, "inheritance_{$session->userID}");
+            $remainPoint = ($inheritStor->getValue('previous') ?? [0,0])[0];
         }
         else{
-            $remainPoint = $general->getVar('gold');
+            $remainPoint = $db->queryFirstField('SELECT gold FROM general WHERE no = %i', $session->generalID)??0;
         }
 
         return [
-            'result' => false,
+            'result' => true,
             'bettingInfo' => $rawBettingInfo,
             'bettingDetail' => $bettingDetail,
             'myBetting' => $myBetting,

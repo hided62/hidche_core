@@ -1,11 +1,11 @@
 <?php
 
-namespace sammo\API\NationBetting;
+namespace sammo\API\Betting;
 
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
-use Sammo\DTO\BettingItem;
+use sammo\DTO\BettingItem;
 use sammo\Validator;
 use sammo\Json;
 use sammo\DTO\BettingInfo;
@@ -16,18 +16,18 @@ use sammo\Util;
 
 use function sammo\getAllNationStaticInfo;
 
-class BetNation extends \sammo\BaseAPI
+class Bet extends \sammo\BaseAPI
 {
     public function validateArgs(): ?string
     {
         $v = new Validator($this->args);
         $v->rule('required', [
-            'betting_id',
-            'betting_type',
+            'bettingID',
+            'bettingType',
             'amount'
         ])
-            ->rule('integer', 'betting_id')
-            ->rule('integerArray', 'betting_type')
+            ->rule('integer', 'bettingID')
+            ->rule('integerArray', 'bettingType')
             ->rule('integer', 'amount')
             ->rule('min', 'amount', 1);
 
@@ -47,10 +47,10 @@ class BetNation extends \sammo\BaseAPI
         $db = DB::db();
 
         /** @var int */
-        $bettingID = $this->arg['betting_id'];
+        $bettingID = $this->args['bettingID'];
         /** @var int[] */
-        $bettingType = $this->arg['betting_type'];
-        /** @var int[] */
+        $bettingType = $this->args['bettingType'];
+        /** @var int */
         $amount = $this->args['amount'];
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -75,7 +75,7 @@ class BetNation extends \sammo\BaseAPI
         $yearMonth = Util::joinYearMonth($year, $month);
 
 
-        if($bettingInfo->closeYearMonth > $yearMonth){
+        if($bettingInfo->closeYearMonth <= $yearMonth){
             return '이미 마감된 베팅입니다';
         }
 
@@ -102,15 +102,24 @@ class BetNation extends \sammo\BaseAPI
         }
 
         $bettingTypeKey = Json::encode($bettingType);
-        $general = General::createGeneralObjFromDB($session->generalID, ['gold', 'aux'], 1);
+
+        $inheritStor = KVStorage::getStorage($db, "inheritance_{$session->userID}");
+
+        $prevBetAmount = $db->queryFirstField('SELECT sum(amount) FROM ng_betting WHERE betting_id = %i AND user_id = %i', $bettingID, $session->userID) ?? 0;
+
+        if($prevBetAmount + $amount > 1000){
+            return (1000 - $prevBetAmount).' 포인트까지만 베팅 가능합니다.';
+        }
 
         if($bettingInfo->reqInheritancePoint){
-            if($general->getInheritancePoint('previous') < $amount){
+            $remainPoint = ($inheritStor->getValue('previous') ?? [0,0])[0];
+            if($remainPoint < $amount){
                 return '유산포인트가 충분하지 않습니다.';
             }
         }
         else {
-            if($general->getVar('gold') < GameConst::$generalMinimumGold + $amount){
+            $remainPoint = $db->queryFirstField('SELECT gold FROM general WHERE no = %i', $session->generalID)??0;
+            if($remainPoint < GameConst::$generalMinimumGold + $amount){
                 return '금이 부족합니다.';
             }
         }
@@ -126,17 +135,17 @@ class BetNation extends \sammo\BaseAPI
         ]);
 
         if($bettingInfo->reqInheritancePoint){
-            $general->increaseInheritancePoint('previous', -$amount);
+            $inheritStor->setValue('previous', [$remainPoint - $amount, null]);
         }
         else{
-            $general->increaseVar('gold', -$amount);
+            $db->update('general', [
+                'gold' => $db->sqleval('gold - %i', $amount)
+            ], 'no = %i', $session->generalID);
         }
         $db->insertUpdate('ng_betting', $bettingItem->toArray());
         if(!$db->affected_rows){
-            $general->flushUpdateValues();
             return '베팅을 실패했습니다.';
         }
-        $general->applyDB($db);
 
         return [
             'result'=>true

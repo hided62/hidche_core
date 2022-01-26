@@ -1,6 +1,6 @@
 <?php
 
-namespace Sammo\DTO;
+namespace sammo\DTO;
 
 use Spatie\DataTransferObject\Attributes\Strict;
 use Spatie\DataTransferObject\DataTransferObject;

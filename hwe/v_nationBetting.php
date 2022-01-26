@@ -20,7 +20,7 @@ $generalID = $session->generalID;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=500" />
-    <title><?= UniqueConst::$serverName ?>: 내무부</title>
+    <title><?= UniqueConst::$serverName ?>: 국가 베팅장</title>
     <?= WebUtil::printStaticValues([
         'staticValues' => [
 

@@ -5,7 +5,7 @@
 <?=$btnBegin??''?><a href="a_history.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">연감</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_hallOfFame.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">명예의전당</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_emperior.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">왕조일람</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href="a_traffic.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">접속량정보</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="v_nationBetting.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">천통국 베팅</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="/bbs/board" target="_blank" class="toolbarButton2 <?=$btnClass??""?>">삼모게시판</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="/bbs/tip" target="_blank" class="toolbarButton <?=$btnClass??""?>">팁/강좌</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="/bbs/news" target="_blank" class="toolbarButton <?=$btnClass??""?>">삼국 일보</a><?=$btnEnd??''?>
