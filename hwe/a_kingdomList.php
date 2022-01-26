@@ -10,7 +10,7 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-
+$gameStor->cacheValues(['killturn', 'autorun_user', 'turnterm']);
 increaseRefresh("세력일람", 2);
 
 $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner=%i', $userID);
@@ -33,6 +33,7 @@ if ($con >= 2) {
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printDist('ts', ['common', 'extKingdoms']) ?>
+    <?= WebUtil::printStaticValues($gameStor->getValues(['killturn', 'autorun_user', 'turnterm'])) ?>
 </head>
 
 <body>

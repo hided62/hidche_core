@@ -3,6 +3,13 @@ import { unwrap } from '@util/unwrap';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
+declare const killturn: number;
+declare const autorun_user: undefined|null|{
+    limit_minutes: number;
+    options: Record<string, number>;
+};
+declare const turnterm: number;
+
 type KingdomGeneral = {
     html: JQuery<HTMLElement>,
     장수명: string
@@ -83,6 +90,10 @@ $(function () {
     }
 
     const runAnalysis = async function () {
+        let realKillturn = killturn;
+        if(autorun_user && autorun_user.limit_minutes){
+            realKillturn -= autorun_user.limit_minutes / turnterm;
+        }
         const $content = $('#on_mover .content');
         try {
             const response = await axios({ url: 'a_genList.php', method: 'get', responseType: 'text' });
@@ -197,7 +208,7 @@ $(function () {
                         //const 종능 = val.통 + val.무 + val.지;
                         console.log(val);
                         if (종류명 != '무능' && 종류명 != '무지') {
-                            if (val.삭턴 >= 80 && !val.NPC) {
+                            if (val.삭턴 >= realKillturn && !val.NPC) {
                                 전투유저장수 += 1;
 
                                 통솔합 += val.통;
@@ -214,7 +225,7 @@ $(function () {
                         const $obj2 = $('<span></span>');
                         $obj.html(val.장수명);
 
-                        if (!val.NPC && val.삭턴 < 80) {
+                        if (!val.NPC && val.삭턴 < realKillturn) {
                             $obj.css('text-decoration', 'line-through');
                             삭턴장수 += 1;
                         }
