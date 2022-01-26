@@ -197,7 +197,7 @@
             <small
               class="text-muted"
               v-html="
-                (availableInheritSpecial[args.inheritSpecial] ?? { info: '' })
+                (availableInheritSpecial[args.inheritSpecial??''] ?? { info: '' })
                   .info
               "
             />
@@ -263,19 +263,19 @@
             <div class="col">
               <NumberInputWithInfo
                 title="통솔"
-                v-model="args.inheritBonusStat[0]"
+                v-model="(args.inheritBonusStat??[0,0,0])[0]"
               />
             </div>
             <div class="col">
               <NumberInputWithInfo
                 title="무력"
-                v-model="args.inheritBonusStat[1]"
+                v-model="(args.inheritBonusStat??[0,0,0])[1]"
               />
             </div>
             <div class="col">
               <NumberInputWithInfo
                 title="지력"
-                v-model="args.inheritBonusStat[2]"
+                v-model="(args.inheritBonusStat??[0,0,0])[2]"
               />
             </div>
           </div>
@@ -533,6 +533,13 @@ export default defineComponent({
     async submitForm() {
       //검증은 언제 되어야 하는가?
       const args = clone(this.args);
+      const totalStat = args.leadership + args.strength + args.intel;
+
+      if(totalStat < stats.total){
+        if(!confirm(`설정한 능력치가 ${totalStat}으로, 실제 최대치인 ${stats.total}보다 적습니다.\r\n그래도 진행할까요?`)){
+          return false;
+        }
+      }
       try {
         await SammoAPI.General.Join(args);
       } catch (e) {
