@@ -2,6 +2,8 @@
 
 namespace sammo\DTO;
 
+use Sammo\DTO\SelectItem;
+use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\Strict;
 use Spatie\DataTransferObject\DataTransferObject;
 
@@ -10,15 +12,20 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 
 #[Strict]
-class NationBettingInfo extends DataTransferObject
+class BettingInfo extends DataTransferObject
 {
 	public int $id;
+  public string $type;
 	public string $name;
 	public bool $finished;
 	public int $selectCnt;
 	public bool $reqInheritancePoint;
 	public int $openYearMonth;
 	public int $closeYearMonth;
+
+  /** @var \sammo\DTO\SelectItem[] */
+  #[CastWith(ArrayCaster::class, itemType: SelectItem::class)]
+  public array $candidates;
 }
 
 

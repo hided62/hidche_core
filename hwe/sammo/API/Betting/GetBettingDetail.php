@@ -5,7 +5,7 @@ namespace sammo\API\NationBetting;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
-use sammo\DTO\NationBettingInfo;
+use sammo\DTO\BettingInfo;
 use sammo\General;
 use sammo\KVStorage;
 use sammo\Validator;
@@ -42,14 +42,14 @@ class GetBettingDetail extends \sammo\BaseAPI
         $bettingID = $this->arg['betting_id'];
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $nationBettingStor = KVStorage::getStorage($db, 'nation_betting');
-        $rawBettingInfo = $nationBettingStor->getValue("id_{$bettingID}");
+        $bettingStor = KVStorage::getStorage($db, 'betting');
+        $rawBettingInfo = $bettingStor->getValue("id_{$bettingID}");
         if($rawBettingInfo === null){
             return '해당 베팅이 없습니다';
         }
 
         try{
-            $bettingInfo = new NationBettingInfo($rawBettingInfo);
+            $bettingInfo = new BettingInfo($rawBettingInfo);
         }
         catch(\Error $e){
             return $e->getMessage();

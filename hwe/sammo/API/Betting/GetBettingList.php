@@ -5,7 +5,7 @@ namespace sammo\API\NationBetting;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
-use sammo\DTO\NationBettingInfo;
+use sammo\DTO\BettingInfo;
 use sammo\KVStorage;
 
 use function sammo\checkLimit;
@@ -27,10 +27,10 @@ class GetBettingList extends \sammo\BaseAPI
     {
         $db = DB::db();
 
-        increaseRefresh("국가베팅장", 1);
+        increaseRefresh("베팅장", 1);
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $nationBettingStor = KVStorage::getStorage($db, 'nation_betting');
+        $bettingStor = KVStorage::getStorage($db, 'betting');
         $userID = $session->userID;
 
         $me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
@@ -40,8 +40,8 @@ class GetBettingList extends \sammo\BaseAPI
         }
 
         $bettingList = [];
-        foreach ($nationBettingStor->getAll() as $_key => $rawItem) {
-            $item = new NationBettingInfo($rawItem);
+        foreach ($bettingStor->getAll() as $_key => $rawItem) {
+            $item = new BettingInfo($rawItem);
             $bettingList[$item->id] = $rawItem;
             $bettingList[$item->id]['totalAmount'] = 0;
         }

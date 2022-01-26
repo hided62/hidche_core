@@ -8,7 +8,7 @@ use sammo\DB;
 use Sammo\DTO\BettingItem;
 use sammo\Validator;
 use sammo\Json;
-use sammo\DTO\NationBettingInfo;
+use sammo\DTO\BettingInfo;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -54,14 +54,14 @@ class BetNation extends \sammo\BaseAPI
         $amount = $this->args['amount'];
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $nationBettingStor = KVStorage::getStorage($db, 'nation_betting');
-        $rawBettingInfo = $nationBettingStor->getValue("id_{$bettingID}");
+        $bettingStor = KVStorage::getStorage($db, 'betting');
+        $rawBettingInfo = $bettingStor->getValue("id_{$bettingID}");
         if($rawBettingInfo === null){
             return '해당 베팅이 없습니다';
         }
 
         try{
-            $bettingInfo = new NationBettingInfo($rawBettingInfo);
+            $bettingInfo = new BettingInfo($rawBettingInfo);
         }
         catch(\Error $e){
             return $e->getMessage();
@@ -88,16 +88,20 @@ class BetNation extends \sammo\BaseAPI
         }
 
 
-        sort($bettingType);//NOTE: key로 바로 사용하므로 중요함
-        $bettingTypeKey = Json::encode($bettingType);
-        $nations = getAllNationStaticInfo();
-
-        foreach($bettingType as $bettingNationID){
-            if(!key_exists($bettingNationID, $nations)){
-                return '존재하지 않는 국가를 선택했습니다.';
-            }
+        $bettingType = array_unique($bettingType, SORT_NUMERIC);//NOTE: key로 바로 사용하므로 중요함
+        if(count($bettingType) != $bettingInfo->selectCnt){
+            return '중복된 값이 있습니다.';
         }
 
+        if($bettingType[0] < 0){
+            return '올바르지 않은 값이 있습니다.(0 미만)';
+        }
+
+        if(Util::array_last($bettingType) >= count($bettingInfo->candidates)){
+            return '올바르지 않은 값이 있습니다.(초과)';
+        }
+
+        $bettingTypeKey = Json::encode($bettingType);
         $general = General::createGeneralObjFromDB($session->generalID, ['gold', 'aux'], 1);
 
         if($bettingInfo->reqInheritancePoint){
