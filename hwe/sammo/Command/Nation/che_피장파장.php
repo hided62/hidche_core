@@ -230,7 +230,9 @@ class che_피장파장 extends Command\NationCommand
 
         $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
         $nationStor->setValue($cmd->getNextExecuteKey(), $yearMonth + $this->getTargetPostReqTurn());
-        $destNationStor->setValue($cmd->getNextExecuteKey(), $yearMonth + static::$delayCnt);
+
+        $destDelay = max($destNationStor->getValue($cmd->getNextExecuteKey()) ?? 0, $yearMonth);
+        $destNationStor->setValue($cmd->getNextExecuteKey(), $destDelay + static::$delayCnt);
 
         $general->applyDB($db);
 
