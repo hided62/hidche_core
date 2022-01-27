@@ -472,7 +472,7 @@ import {
   ToastType,
 } from "@/defs";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
-import { cloneDeep, isEqual, last } from "lodash";
+import { cloneDeep, isEqual, isNumber, last } from "lodash";
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
@@ -592,14 +592,18 @@ export default defineComponent({
     },
     calcPolicyValue(
       title: keyof NationPolicy
-    ): NationPolicy[keyof NationPolicy] {
+    ): number {
       if (!(title in this.nationPolicy)) {
         throw `${title}이 NationPolicy key가 아님`;
       }
-      if (this.nationPolicy[title] == 0) {
-        return this.zeroPolicy[title];
+      const policyValue = this.nationPolicy[title];
+      if(!isNumber(policyValue)){
+        throw `${title}에 해당하는 값이 number가 아님`;
       }
-      return this.nationPolicy[title];
+      if (policyValue == 0) {
+        return this.zeroPolicy[title] as number;
+      }
+      return policyValue;
     },
     resetNationPriority() {
       if (!confirm("초기 설정으로 되돌릴까요?")) {
