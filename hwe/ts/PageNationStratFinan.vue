@@ -44,7 +44,7 @@
           <div
             v-for="([endYear, endMonth], _idx) in [
               parseYearMonth(
-                joinYearMonth(year, month) + nation.diplomacy.term
+                joinYearMonth(year, month) + (nation.diplomacy.term??0)
               ),
             ]"
             :key="_idx"

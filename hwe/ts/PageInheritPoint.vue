@@ -105,7 +105,7 @@
               <NumberInputWithInfo
                 title="입찰 포인트"
                 :min="inheritActionCost.minSpecificUnique"
-                :max="this.items.previous"
+                :max="items.previous"
                 v-model="specificUniqueAmount"
               />
             </div>
