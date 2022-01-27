@@ -89,6 +89,11 @@ module.exports = (env, argv) => {
         moduleIds: 'deterministic',
     };
 
+    const performance = {
+        maxAssetSize: 5*1024*1024,
+        maxEntrypointSize: 3*1024*1024,
+    }
+
     const ingame_vue = {
         name: `ingame_${versionTarget}_vue`,
         resolve: {
@@ -200,6 +205,7 @@ module.exports = (env, argv) => {
             cacheDirectory,
             cacheLocation: path.resolve(cacheDirectory, `ingame_vue_${mode}`)
         },
+        performance,
     };
     const ingame = {
         name: `ingame_${versionTarget}`,
@@ -275,6 +281,7 @@ module.exports = (env, argv) => {
             cacheDirectory,
             cacheLocation: path.resolve(cacheDirectory, `ingame_ts_${mode}`)
         },
+        performance,
     };
     const gateway = {
         name: `gateway`,
@@ -355,6 +362,7 @@ module.exports = (env, argv) => {
             cacheDirectory,
             cacheLocation: path.resolve(cacheDirectory, `gateway_ts_${mode}`)
         },
+        performance,
     };
 
     if (env.WEBPACK_WATCH || !versionValue) {
