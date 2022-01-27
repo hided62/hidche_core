@@ -67,7 +67,7 @@
           >유저전투장에게 주는 금입니다. 이보다 적으면 포상합니다. <br />
           0이면 유저전투장 긴급포상 금의 2배를 기준으로 하며, 그 수치는 현재
           {{
-            (calcPolicyValue("reqHumanWarUrgentGold") as number * 2).toLocaleString()
+            (calcPolicyValue("reqHumanWarUrgentGold") * 2).toLocaleString()
           }}입니다.</NumberInputWithInfo
         >
       </div>
@@ -79,7 +79,7 @@
           >유저전투장에게 주는 쌀입니다. 이보다 적으면 포상합니다. <br />
           0이면 유저전투장 긴급포상 쌀의 2배를 기준으로 하며, 그 수치는 현재
           {{
-            (calcPolicyValue("reqHumanWarUrgentRice") as number * 2).toLocaleString()
+            (calcPolicyValue("reqHumanWarUrgentRice") * 2).toLocaleString()
           }}입니다.</NumberInputWithInfo
         >
       </div>
