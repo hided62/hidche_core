@@ -87,7 +87,7 @@ class Bet extends \sammo\BaseAPI
             return '필요한 선택 수를 채우지 못했습니다.';
         }
 
-
+        sort($bettingType, SORT_NUMERIC);
         $bettingType = array_unique($bettingType, SORT_NUMERIC);//NOTE: key로 바로 사용하므로 중요함
         if(count($bettingType) != $bettingInfo->selectCnt){
             return '중복된 값이 있습니다.';

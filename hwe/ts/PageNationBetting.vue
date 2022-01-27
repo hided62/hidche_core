@@ -48,7 +48,9 @@
                 fontWeight: myBettings.has(betType) ? 'bold' : undefined
               }"
             >{{ getTypeStr(betType) }}</div>
-            <div class="col-3 col-md-6">{{ amount.toLocaleString() }}{{ myBettings.has(betType)?`(${myBettings.get(betType)?.toLocaleString()})`:'' }}</div>
+            <div
+              class="col-3 col-md-6"
+            >{{ amount.toLocaleString() }}{{ myBettings.has(betType) ? `(${myBettings.get(betType)?.toLocaleString()})` : '' }}</div>
             <div class="col-3 col-md-3">{{ (bettingAmount / amount).toFixed(2) }}배</div>
           </div>
         </div>
@@ -178,9 +180,8 @@ function toggleCandidate(idx: number) {
     return;
   }
 
-
   const typeArr = Array.from(choosedBetType.value.values());
-  choosedBetTypeKey.value = JSON.stringify(typeArr.sort());
+  choosedBetTypeKey.value = JSON.stringify(typeArr.sort((lhs, rhs) => lhs - rhs));
 }
 
 async function loadBetting(bettingID: number) {
@@ -236,7 +237,7 @@ async function loadBetting(bettingID: number) {
     choosedBetTypeKey.value = '[]';
     myBettings.value.clear();
 
-    for(const [betType, amount] of result.myBetting){
+    for (const [betType, amount] of result.myBetting) {
       myBettings.value.set(betType, amount);
     }
 
