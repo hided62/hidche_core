@@ -38,7 +38,6 @@ class GetBettingDetail extends \sammo\BaseAPI
     {
         $db = DB::db();
 
-        increaseRefresh("국가베팅장", 1);
         /** @var int */
         $bettingID = $this->args['betting_id'];
 

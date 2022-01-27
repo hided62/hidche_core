@@ -39,7 +39,7 @@ class Bet extends \sammo\BaseAPI
 
     public function getRequiredSessionMode(): int
     {
-        return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
+        return static::REQ_GAME_LOGIN;
     }
 
     public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)

@@ -36,7 +36,7 @@ class GetBettingList extends \sammo\BaseAPI
         $me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
         $con = checkLimit($me['con']);
         if ($con >= 2) {
-            return "접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 갱신 가능 시각 : {$me['turntime']})";
+            return "접속 제한중입니다.";
         }
 
         $bettingList = [];
@@ -45,6 +45,17 @@ class GetBettingList extends \sammo\BaseAPI
             unset($rawItem['candidates']);
             $bettingList[$item->id] = $rawItem;
             $bettingList[$item->id]['totalAmount'] = 0;
+        }
+
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+
+        if(!$bettingList){
+            return [
+                'result' => true,
+                'bettingList' => $bettingList,
+                'year' => $year,
+                'month' => $month,
+            ];
         }
 
         $bettingIDList = array_keys($bettingList);
@@ -59,7 +70,6 @@ class GetBettingList extends \sammo\BaseAPI
             $bettingList[$bettingID]['totalAmount'] = $totalAmount;
         }
 
-        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 
         return [
             'result' => true,
