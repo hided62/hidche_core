@@ -132,11 +132,8 @@ if ($str3) {
                 if ($general['name'] == "") {
                     $general['name'] = "-";
                 }
-                if ($general['npc'] >= 2) {
-                    $general['name'] = "<font color=cyan>" . $general['name'] . "</font>";
-                } elseif ($general['npc'] == 1) {
-                    $general['name'] = "<font color=skyblue>" . $general['name'] . "</font>";
-                }
+
+                $general['name'] = formatName($general['name'], $general['npc']);
                 echo "<td colspan=16>{$general['name']}</td>";
             }
 
@@ -162,11 +159,7 @@ if ($str3) {
                 if ($general['name'] == "") {
                     $general['name'] = "-";
                 }
-                if ($general['npc'] >= 2) {
-                    $general['name'] = "<font color=cyan>" . $general['name'] . "</font>";
-                } elseif ($general['npc'] == 1) {
-                    $general['name'] = "<font color=skyblue>" . $general['name'] . "</font>";
-                }
+                $general['name'] = formatName($general['name'], $general['npc']);
                 if ($general['win'] > 0) {
                     $line[$i] = "<font color=red>";
                     $cent[intdiv($i, 2)] = "<font color=red>";
@@ -208,11 +201,7 @@ if ($str3) {
                 if ($general['name'] == "") {
                     $general['name'] = "-";
                 }
-                if ($general['npc'] >= 2) {
-                    $general['name'] = "<font color=cyan>" . $general['name'] . "</font>";
-                } elseif ($general['npc'] == 1) {
-                    $general['name'] = "<font color=skyblue>" . $general['name'] . "</font>";
-                }
+                $general['name'] = formatName($general['name'], $general['npc']);
                 if ($general['win'] > 0) {
                     $line[$i] = "<font color=red>";
                     $cent[intdiv($i, 2)] = "<font color=red>";
@@ -254,11 +243,7 @@ if ($str3) {
                 if ($general['name'] == "") {
                     $general['name'] = "-";
                 }
-                if ($general['npc'] >= 2) {
-                    $general['name'] = "<font color=cyan>" . $general['name'] . "</font>";
-                } elseif ($general['npc'] == 1) {
-                    $general['name'] = "<font color=skyblue>" . $general['name'] . "</font>";
-                }
+                $general['name'] = formatName($general['name'], $general['npc']);
                 if ($general['win'] > 0) {
                     $line[$i] = "<font color=red>";
                     $cent[intdiv($i, 2)] = "<font color=red>";
@@ -300,11 +285,7 @@ if ($str3) {
                 if ($general['name'] == "") {
                     $general['name'] = "-";
                 }
-                if ($general['npc'] >= 2) {
-                    $general['name'] = "<font color=cyan>" . $general['name'] . "</font>";
-                } elseif ($general['npc'] == 1) {
-                    $general['name'] = "<font color=skyblue>" . $general['name'] . "</font>";
-                }
+                $general['name'] = formatName($general['name'], $general['npc']);
                 if ($general['win'] > 0) {
                     $line[$i] = "<font color=red>";
                     $cent[intdiv($i, 2)] = "<font color=red>";

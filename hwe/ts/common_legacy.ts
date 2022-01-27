@@ -79,7 +79,16 @@ function br2nl (text) {
 }
 */
 
-export function getNpcColor(npcType: number): 'cyan' | 'skyblue' | null {
+export function getNpcColor(npcType: number): 'skyblue' | 'cyan' | 'deepskyblue' | 'darkcyan' | 'mediumaquamarine' | null {
+    if (npcType == 6){
+        return 'mediumaquamarine';
+    }
+    if (npcType == 5){
+        return 'darkcyan';
+    }
+    if (npcType == 4){
+        return 'deepskyblue';
+    }
     if (npcType >= 2) {
         return 'cyan';
     }

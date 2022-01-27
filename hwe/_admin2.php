@@ -59,10 +59,10 @@ $db = DB::db();
                         if ($general['block']         > 0) {
                             $style .= "background-color:red;";
                         }
-                        if ($general['npc']          >= 2) {
-                            $style .= "color:cyan;";
-                        } elseif ($general['npc']      == 1) {
-                            $style .= "color:skyblue;";
+
+                        $npcColor = getNPCColor($general['npc']);
+                        if($npcColor !== null){
+                            $style .= "color:{$npcColor};";
                         }
 
                         echo "

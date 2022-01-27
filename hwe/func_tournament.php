@@ -261,10 +261,8 @@ function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, 
     $k += 1;
     if ($prmt > 0) {
         $name = "<font color=orange>" . $name . "</font>";
-    } elseif ($npc >= 2) {
-        $name = "<font color=cyan>" . $name . "</font>";
-    } elseif ($npc == 1) {
-        $name = "<font color=skyblue>" . $name . "</font>";
+    } else if($npc > 0){
+        $name = formatName($name, $npc);
     }
     echo "<tr align=center><td class='bg2'>$k</td><td style='font-size:80%;'>$name</td><td>$abil</td><td>$tgame</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
 }

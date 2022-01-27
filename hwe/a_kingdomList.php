@@ -145,13 +145,7 @@ if ($con >= 2) {
     <tr>
         <td colspan=8> 장수 일람 : ";
         foreach ($generals as $general) {
-            if ($general['npc'] >= 2) {
-                echo "<font color=cyan>{$general['name']}</font>, ";
-            } elseif ($general['npc'] == 1) {
-                echo "<font color=skyblue>{$general['name']}</font>, ";
-            } else {
-                echo "{$general['name']}, ";
-            }
+            echo formatName($general['name'], $general['npc']).', ';
         }
         echo "
         </td>

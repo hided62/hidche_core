@@ -155,13 +155,7 @@ if ($gameStor->isunited) {
 
 
 
-        if ($general['npc'] >= 2) {
-            $name = "<font color=cyan>{$general['name']}</font>";
-        } elseif ($general['npc'] == 1) {
-            $name = "<font color=skyblue>{$general['name']}</font>";
-        } else {
-            $name =  "{$general['name']}";
-        }
+        $name = formatName($general['name'], $general['npc']);
 
         if (key_exists($general['owner'], $ownerNameList)) {
             $name = $name . '<br><small>(' . $ownerNameList[$general['owner']] . ')</small>';

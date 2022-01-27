@@ -306,10 +306,8 @@ function printGeneralList(value: GeneralListResponse) {
 
         if (general.reserved == 1) {
             general.userCSS = 'color:violet';
-        } else if (general.npc >= 2) {
-            general.userCSS = 'color:cyan';
-        } else if (general.npc == 1) {
-            general.userCSS = 'color:skyblue';
+        } else if (general.npc > 0) {
+            general.userCSS = `color:${getNPCColor(general.npc)}`;
         }
 
         if (general.ownerName) {
@@ -459,3 +457,7 @@ $(function ($) {
     })
 
 });
+
+function getNPCColor(npc: number) {
+    throw new Error('Function not implemented.');
+}

@@ -70,13 +70,10 @@ function colorBlockedName($general)
                         if ($general['block']         > 0) {
                             $style .= "background-color:red;";
                         }
-                        if ($general['npc']          >= 2) {
-                            $style .= "color:cyan;";
-                        } elseif ($general['npc']      == 1) {
-                            $style .= "color:skyblue;";
-                        }
-                        if ($general['con'] > $conlimit) {
-                            $style .= "color:red;";
+
+                        $npcColor = getNPCColor($general['npc']);
+                        if($npcColor !== null){
+                            $style .= "color:{$npcColor};";
                         }
 
                         echo "
