@@ -1,0 +1,62 @@
+@import '@scss/common/bootstrap5.scss';
+@import "@scss/game_bg.scss";
+@import "@scss/util.scss";
+
+
+@include media-1000px {
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+        position: relative;
+    }
+}
+
+@include media-500px {
+    #container {
+        position: relative;
+        width: 500px;
+        margin: auto;
+        overflow-x: hidden;
+    }
+}
+
+.bettingCandidate{
+    border: gray 1px solid;
+    border-radius: 0.5em;
+    overflow: hidden;
+    cursor: pointer;
+
+    .title{
+        background-clip: padding-box;
+        text-align: center;
+    }
+
+    .info{
+        padding: 1ch;
+    }
+
+    .pickRate{
+        padding: 1ch;
+    }
+}
+
+.bettingCandidate.picked{
+    outline: white 1.5px solid;
+    border: white 1px solid;
+    .title{
+        font-weight: bolder;
+    }
+}
+
+.bettingList{
+    margin-top: 1em;
+}
+
+.bettingItem{
+    margin: 0.25em;
+    cursor: pointer;
+
+    &:hover{
+        text-decoration: underline;
+    }
+}

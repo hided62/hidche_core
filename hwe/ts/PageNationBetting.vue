@@ -4,7 +4,7 @@
     <TopBackBar :title="title" />
     <div v-if="bettingInfo !== undefined">
       <template v-for="(info, idx) in [bettingInfo.bettingInfo]" :key="idx">
-        <div>
+        <div class="bg2">
           {{ info.name }}
           <span v-if="info.finished">(종료)</span>
           <span
@@ -14,50 +14,79 @@
           (총액: {{ bettingAmount.toLocaleString() }})
         </div>
 
-        <div class="row bettingCandidates">
+        <div class="row bettingCandidates gx-1 gy-1">
           <div
             class="col-4 col-md-2"
             v-for="(candidate, idx) in bettingInfo.bettingInfo.candidates"
             :key="idx"
             @click="toggleCandidate(idx)"
           >
-            <div>{{ candidate.title }}</div>
-            <div v-if="candidate.isHtml" v-html="candidate.info"></div>
-            <div>선택율: {{ ((partialBet.get(idx) ?? 0) / pureBettingAmount * 100).toFixed(1) }}%</div>
+            <div
+              :class="[
+                'bettingCandidate',
+                pickedBetType.has(idx) ? 'picked' : undefined,
+              ]"
+            >
+              <div class="title bg1">{{ candidate.title }}</div>
+              <div class="info" v-if="candidate.isHtml" v-html="candidate.info"></div>
+              <div
+                class="pickRate"
+              >선택율: {{ ((partialBet.get(idx) ?? 0) / pureBettingAmount * 100).toFixed(1) }}%</div>
+            </div>
           </div>
         </div>
-        <div v-if="!info.finished && (yearMonth ?? 0) <= info.closeYearMonth" class="row">
+        <div v-if="!info.finished && (yearMonth ?? 0) <= info.closeYearMonth" class="row gx-0">
           <div
-            class="col-3"
+            class="col-6 col-md-3 align-self-center"
           >잔여 {{ info.reqInheritancePoint ? '포인트' : '금' }} : {{ bettingInfo.remainPoint.toLocaleString() }}</div>
-          <div class="col-3">
-            <b-form-input type="number" v-model="betPoint" :min="10" :max="1000" :step="10"></b-form-input>
+          <div
+            class="col-6 col-md-3 align-self-center"
+          >사용 포인트: {{ sum(Array.from(myBettings.values())).toLocaleString() }}</div>
+          <div class="col-6 col-md-3 align-self-center">대상: {{ getTypeStr(pickedBetTypeKey) }}</div>
+          <div class="col-4 col-md-2 d-grid">
+            <b-form-input
+              class="d-grid"
+              type="number"
+              v-model="betPoint"
+              :min="10"
+              :max="1000"
+              :step="10"
+            ></b-form-input>
           </div>
-          <div class="col-3">{{ getTypeStr(choosedBetTypeKey) }}</div>
-          <div class="col-3">
-            <b-button @click="submitBet">베팅</b-button>
+          <div class="col-2 col-md-1 d-grid">
+            <b-button class="d-grid" @click="submitBet">베팅</b-button>
           </div>
         </div>
 
         <div>
-          배당 순위
+          <div class="bg2">배당 순위</div>
+          <div class="row" :style="{
+            borderBottom: 'gray solid 1px'
+          }">
+            <div class="col-5 text-center">대상</div>
+            <div class="col-2 text-center">베팅액</div>
+            <div class="col-3 text-center">내 베팅</div>
+            <div class="col-2 text-center">배율</div>
+          </div>
           <div class="row" v-for="[betType, amount] of detailBet" :key="betType">
             <div
-              class="col-6 col-md-3"
+              class="col-5"
               :style="{
                 fontWeight: myBettings.has(betType) ? 'bold' : undefined
               }"
             >{{ getTypeStr(betType) }}</div>
+            <div class="col-2 text-end">{{ amount.toLocaleString() }}</div>
             <div
-              class="col-3 col-md-6"
-            >{{ amount.toLocaleString() }}{{ myBettings.has(betType) ? `(${myBettings.get(betType)?.toLocaleString()})` : '' }}</div>
-            <div class="col-3 col-md-3">{{ (bettingAmount / amount).toFixed(2) }}배</div>
+              class="col-3 text-center"
+            >{{ myBettings.has(betType) ? `(${myBettings.get(betType)?.toLocaleString()} -> ${((myBettings.get(betType)??0) * bettingAmount / amount).toLocaleString()})` : '' }}</div>
+            <div class="col-2 text-end">{{ (bettingAmount / amount).toFixed(1) }}배</div>
           </div>
         </div>
       </template>
     </div>
     <div v-if="bettingList === undefined">로딩 중...</div>
     <div class="bettingList" v-else>
+      <div class="bg2">베팅 목록</div>
       <div
         class="bettingItem"
         v-for="info of Object.values(bettingList).reverse()"
@@ -84,7 +113,7 @@ import BottomBar from "@/components/BottomBar.vue";
 import { ToastType } from "@/defs";
 import { onMounted, ref } from "vue";
 import { SammoAPI, ValidResponse } from "./SammoAPI";
-import { isString } from "lodash";
+import { isString, sum } from "lodash";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { joinYearMonth } from "./util/joinYearMonth";
 
@@ -153,8 +182,8 @@ function getTypeStr(type: string): string {
   return textBettingType;
 }
 
-const choosedBetType = ref(new Set<number>());
-const choosedBetTypeKey = ref('[]');
+const pickedBetType = ref(new Set<number>());
+const pickedBetTypeKey = ref('[]');
 
 const betPoint = ref(0);
 const myBettings = ref(new Map<string, number>());
@@ -166,22 +195,29 @@ function toggleCandidate(idx: number) {
   const selectCnt = bettingInfo.value.bettingInfo.selectCnt;
 
   if (selectCnt == 1) {
-    choosedBetTypeKey.value = JSON.stringify([idx]);
+    pickedBetType.value.clear();
+    pickedBetType.value.add(idx);
+    pickedBetTypeKey.value = JSON.stringify([idx]);
     return;
   }
 
-  if (choosedBetType.value.has(idx)) {
-    choosedBetType.value.delete(idx);
+  if (pickedBetType.value.has(idx)) {
+    pickedBetType.value.delete(idx);
   }
-  else if (choosedBetType.value.size < selectCnt) {
-    choosedBetType.value.add(idx);
+  else if (pickedBetType.value.size < selectCnt) {
+    pickedBetType.value.add(idx);
   }
   else {
+    toasts.value.push({
+      title: '오류',
+      type: 'warning',
+      content: `이미 ${selectCnt}개를 선택했습니다.`,
+    })
     return;
   }
 
-  const typeArr = Array.from(choosedBetType.value.values());
-  choosedBetTypeKey.value = JSON.stringify(typeArr.sort((lhs, rhs) => lhs - rhs));
+  const typeArr = Array.from(pickedBetType.value.values());
+  pickedBetTypeKey.value = JSON.stringify(typeArr.sort((lhs, rhs) => lhs - rhs));
 }
 
 async function loadBetting(bettingID: number) {
@@ -233,8 +269,8 @@ async function loadBetting(bettingID: number) {
       return rhsVal - lhsVal;
     })
 
-    choosedBetType.value.clear();
-    choosedBetTypeKey.value = '[]';
+    pickedBetType.value.clear();
+    pickedBetTypeKey.value = '[]';
     myBettings.value.clear();
 
     for (const [betType, amount] of result.myBetting) {
@@ -261,7 +297,7 @@ async function submitBet(): Promise<void> {
   }
 
   const bettingID = info.bettingInfo.id;
-  const bettingType = JSON.parse(choosedBetTypeKey.value);
+  const bettingType = JSON.parse(pickedBetTypeKey.value);
   const amount = betPoint.value;
   try {
     await SammoAPI.Betting.Bet({
