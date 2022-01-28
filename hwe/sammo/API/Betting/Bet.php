@@ -134,6 +134,7 @@ class Bet extends \sammo\BaseAPI
             'amount'=>$amount
         ]);
 
+        $db->insertUpdate('ng_betting', $bettingItem->toArray());
         if($bettingInfo->reqInheritancePoint){
             $inheritStor->setValue('previous', [$remainPoint - $amount, null]);
         }
@@ -142,7 +143,6 @@ class Bet extends \sammo\BaseAPI
                 'gold' => $db->sqleval('gold - %i', $amount)
             ], 'no = %i', $session->generalID);
         }
-        $db->insertUpdate('ng_betting', $bettingItem->toArray());
         if(!$db->affected_rows){
             return '베팅을 실패했습니다.';
         }
