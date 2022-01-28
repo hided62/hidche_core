@@ -134,11 +134,7 @@ class Bet extends \sammo\BaseAPI
             'amount'=>$amount
         ]);
 
-        $db->insertUpdate(
-            'ng_betting',
-            $bettingItem->toArray(),
-            ['amount' => $db->sqleval('amount + %i', $amount)]
-        );
+        $db->insertUpdate('ng_betting', $bettingItem->toArray());
         if($bettingInfo->reqInheritancePoint){
             $inheritStor->setValue('previous', [$remainPoint - $amount, null]);
         }
