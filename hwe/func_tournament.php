@@ -164,40 +164,44 @@ function processTournament()
     $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
 }
 
-function getTournamentTerm()
-{
+function getTournamentTerm(): ?int{
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $tnmt_auto = $gameStor->tnmt_auto;
-
-    switch ($tnmt_auto) {
-        case 0:
-            $str = '';
-            break;
-        case 1:
-            $str = "경기당 12분";
-            break;
-        case 2:
-            $str = "경기당 7분";
-            break;
-        case 3:
-            $str = "경기당 3분";
-            break;
-        case 4:
-            $str = "경기당 1분";
-            break;
-        case 5:
-            $str = "경기당 30초";
-            break;
-        case 6:
-            $str = "경기당 15초";
-            break;
-        case 7:
-            $str = "경기당 5초";
-            break;
+    switch($tnmt_auto){
+        case 0: return null;
+        case 1: return 12 * 60;
+        case 2: return 7 * 60;
+        case 3: return 3 * 60;
+        case 4: return 1 * 60;
+        case 5: return 30;
+        case 6: return 15;
+        case 7: return 5;
     }
-    return $str;
+    return null;
+}
+
+function getTournamentTermText()
+{
+    $term = getTournamentTerm();
+
+    if($term === null){
+        return '수동';
+    }
+
+    if($term % 60 === 0){
+        $termMin = intdiv($term, 60);
+        return "경기당 {$termMin}분";
+    }
+
+    if($term > 60){
+        $termSec = $term % 60;
+        $termMin = intdiv($term, 60);
+        return "경기당 {$termMin}분 {$termSec}초";
+    }
+
+    return "경기당 {$term}초";
 }
 
 function getTournamentTime()

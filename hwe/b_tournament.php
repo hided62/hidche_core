@@ -198,7 +198,7 @@ switch ($admin['tnmt_type']) {
         if ($str2) {
             $str2 = ', ' . $str2;
         }
-        $str3 = getTournamentTerm();
+        $str3 = getTournamentTermText();
         if ($str3) {
             $str3 = ', ' . $str3;
         }
