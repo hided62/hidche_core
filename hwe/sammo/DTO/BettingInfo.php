@@ -20,6 +20,7 @@ class BettingInfo extends DataTransferObject
 	public string $name;
 	public bool $finished;
 	public int $selectCnt;
+  public ?bool $isExlusive;
 	public bool $reqInheritancePoint;
 	public int $openYearMonth;
 	public int $closeYearMonth;

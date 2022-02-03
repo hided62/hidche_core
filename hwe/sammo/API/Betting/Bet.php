@@ -4,13 +4,11 @@ namespace sammo\API\Betting;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\Betting;
 use sammo\DB;
 use sammo\DTO\BettingItem;
 use sammo\Validator;
-use sammo\Json;
-use sammo\DTO\BettingInfo;
 use sammo\GameConst;
-use sammo\General;
 use sammo\KVStorage;
 use sammo\Util;
 
@@ -54,18 +52,9 @@ class Bet extends \sammo\BaseAPI
         $amount = $this->args['amount'];
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $bettingStor = KVStorage::getStorage($db, 'betting');
-        $rawBettingInfo = $bettingStor->getValue("id_{$bettingID}");
-        if($rawBettingInfo === null){
-            return '해당 베팅이 없습니다';
-        }
 
-        try{
-            $bettingInfo = new BettingInfo($rawBettingInfo);
-        }
-        catch(\Error $e){
-            return $e->getMessage();
-        }
+        $bettingHelper = new Betting($bettingID);
+        $bettingInfo = $bettingHelper->getInfo();
 
         if($bettingInfo->finished){
             return '이미 종료된 베팅입니다';
@@ -87,21 +76,7 @@ class Bet extends \sammo\BaseAPI
             return '필요한 선택 수를 채우지 못했습니다.';
         }
 
-        sort($bettingType, SORT_NUMERIC);
-        $bettingType = array_unique($bettingType, SORT_NUMERIC);//NOTE: key로 바로 사용하므로 중요함
-        if(count($bettingType) != $bettingInfo->selectCnt){
-            return '중복된 값이 있습니다.';
-        }
-
-        if($bettingType[0] < 0){
-            return '올바르지 않은 값이 있습니다.(0 미만)';
-        }
-
-        if(Util::array_last($bettingType) >= count($bettingInfo->candidates)){
-            return '올바르지 않은 값이 있습니다.(초과)';
-        }
-
-        $bettingTypeKey = Json::encode($bettingType);
+        $bettingTypeKey = $bettingHelper->convertBettingKey($bettingType);
 
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$session->userID}");
 
