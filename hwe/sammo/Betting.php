@@ -8,7 +8,6 @@ class Betting
 {
 
     private BettingInfo $info;
-    private ?array $typeKeyCache = null;
 
     public function __construct(private $bettingID)
     {
@@ -207,13 +206,17 @@ class Betting
                 $userID = $rewardItem['userID'];
                 $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
                 $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
-                $previousPointText = number_format($previousPoint);
 
                 $userLogger = new UserLogger($userID);
                 $amount = $rewardItem['amount'];
-                $amountText = number_format($amount);
+
                 $nextPoint = $previousPoint + $amount;
+                $inheritStor->setValue('previous', [$nextPoint, 0]);
+
+                $amountText = number_format($amount);
+                $previousPointText = number_format($previousPoint);
                 $nextPointText = number_format($nextPoint);
+
                 $userLogger->push("{$this->info->name} 베팅 보상으로 {$amountText} 포인트 획득.",  "inheritPoint");
                 $userLogger->push("포인트 {$previousPointText} => {$nextPointText}", "inheritPoint");
                 $userLogger->flush();
