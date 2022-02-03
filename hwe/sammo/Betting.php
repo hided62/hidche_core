@@ -25,8 +25,7 @@ class Betting
         return Json::encode($bettingType);
     }
 
-    public function convertBettingKey(array $bettingType): string
-    {
+    public function purifyBettingKey(array $bettingType): array{
         $selectCnt = $this->info->selectCnt;
         sort($bettingType, SORT_NUMERIC);
         $bettingType = array_unique($bettingType, SORT_NUMERIC); //NOTE: key로 바로 사용하므로 중요함
@@ -42,6 +41,12 @@ class Betting
             throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(초과)');
         }
 
+        return $bettingType;
+    }
+
+    public function convertBettingKey(array $bettingType): string
+    {
+        $bettingType = $this->purifyBettingKey($bettingType);
         return $this->_convertBettingKey($bettingType);
     }
 
@@ -234,5 +239,10 @@ class Betting
                 $gambler->applyDB($db);
             }
         }
+
+        $this->info->finished = true;
+        $this->info->winner = $winnerType;
+        $bettingStor = KVStorage::getStorage($db, 'betting');
+        $bettingStor->setValue("id_{$this->bettingID}", $this->info->toArray());
     }
 }

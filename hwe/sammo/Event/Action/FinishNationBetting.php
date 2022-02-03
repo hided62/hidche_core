@@ -2,6 +2,7 @@
 
 namespace sammo\Event\Action;
 
+use sammo\Betting;
 use \sammo\GameConst;
 use \sammo\Util;
 use \sammo\DB;
@@ -18,25 +19,32 @@ class FinishNationBetting extends \sammo\Event\Action
     public function run(array $env)
     {
         $db = DB::db();
-        [$year, $month] = [$env['year'], $env['month']];
 
         $bettingStor = KVStorage::getStorage($db, 'betting');
         $bettingInfoRaw = $bettingStor->getValue("id_{$this->bettingID}");
         if($bettingInfoRaw === null){
             return [__CLASS__, true];
         }
-        $bettingInfo = new BettingInfo($bettingInfoRaw);
+
+        try{
+            $bettingHelper = new Betting($this->bettingID);
+        }
+        catch (\Exception $e){
+            return [__CLASS__, false, $e->getMessage()];
+        }
+
+        $bettingInfo = $bettingHelper->getInfo();
         if($bettingInfo->type != 'nationBetting'){
             return [__CLASS__, false, 'invalid type', $bettingInfo->type];
         }
-        $bettingInfo->finished = true;
-        $bettingStor->setValue("id_{$this->bettingID}", $bettingInfo->toArray());
 
-        //TODO: 포인트를 배분해주어야 함
-        //TODO: 이후 토너먼트 베팅 결과도 같이 처리할 것이므로, 별도의 함수나 모듈을 생성하여 처리!
+        $winnerNations = $bettingHelper->purifyBettingKey($db->queryFirstColumn('SELECT nation FROM nation WHERE level > 0'));
+        if(count($winnerNations) != $bettingInfo->selectCnt){
+            return [__CLASS__, false, 'invalid winner cnt', $bettingInfo->selectCnt];
+        }
 
-        //NOTE: 완료되었음을 알릴 것인가?
+        $bettingHelper->giveReward($winnerNations);
 
-        return [__CLASS__, false, 'NYI'];
+        return [__CLASS__, true];
     }
 }

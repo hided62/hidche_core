@@ -28,6 +28,7 @@ class BettingInfo extends DataTransferObject
   /** @var \sammo\DTO\SelectItem[] */
   #[CastWith(ArrayCaster::class, itemType: SelectItem::class)]
   public array $candidates;
+  public ?array $winner;
 }
 
 
