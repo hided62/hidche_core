@@ -87,7 +87,7 @@ $(function ($) {
         }
 
         const keys: string[] = Object.keys(result.log);
-        if (keys.length > 1 && keys[0] < keys[1]) {
+        if (keys.length > 1 && parseInt(keys[0]) < parseInt(keys[1])) {
             keys.reverse();
         }
 
@@ -97,7 +97,7 @@ $(function ($) {
         }
 
         const html: string[] = [];
-        for (const key of Object.values(keys)) {
+        for (const key of keys) {
             if ($(`#log_${logType}_${key}`).length) {
                 return true;
             }
