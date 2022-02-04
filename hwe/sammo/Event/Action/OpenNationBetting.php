@@ -81,7 +81,7 @@ class OpenNationBetting extends \sammo\Event\Action
         $bettingInfo = new BettingInfo(
             id: $bettingID,
             type: 'bettingNation',
-            name: "[{$year}년 {$month}월] {$name} 예상 베팅",
+            name: "{$name} 예상",
             finished: false,
             selectCnt: $this->nationCnt,
             reqInheritancePoint: true,

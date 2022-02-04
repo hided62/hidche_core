@@ -95,7 +95,7 @@
         :key="info.id"
         @click="loadBetting(info.id)"
       >
-        {{ info.name }}
+        [{{ parseYearMonth(info.openYearMonth)[0] }}년 {{ parseYearMonth(info.openYearMonth)[1] }}월] {{ info.name }}
         <span v-if="info.finished">(종료)</span>
         <span
           v-else-if="(yearMonth ?? 0) <= info.closeYearMonth"

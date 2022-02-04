@@ -25,7 +25,8 @@ class Betting
         return Json::encode($bettingType);
     }
 
-    public function purifyBettingKey(array $bettingType): array{
+    public function purifyBettingKey(array $bettingType): array
+    {
         $selectCnt = $this->info->selectCnt;
         sort($bettingType, SORT_NUMERIC);
         $bettingType = array_unique($bettingType, SORT_NUMERIC); //NOTE: key로 바로 사용하므로 중요함
@@ -34,11 +35,11 @@ class Betting
         }
 
         if ($bettingType[0] < 0) {
-            throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(0 미만)');
+            throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(0 미만)' . print_r($bettingType, true));
         }
 
         if (Util::array_last($bettingType) >= count($this->info->candidates)) {
-            throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(초과)');
+            throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(초과)' . print_r($bettingType, true));
         }
 
         return $bettingType;
@@ -66,7 +67,7 @@ class Betting
         }
 
         $winnerList = $db->queryAllLists(
-            'SELECT general_id, user_id, amount WHERE betting_id = %i AND betting_type = %s',
+            'SELECT general_id, user_id, amount FROM ng_betting WHERE betting_id = %i AND betting_type = %s AND general_id > 0',
             $this->bettingID,
             $this->_convertBettingKey($bettingType)
         );
@@ -85,7 +86,7 @@ class Betting
 
         $result = [];
         foreach ($winnerList as [$generalID, $userID, $amount]) {
-            $result[$generalID] = [
+            $result[] = [
                 'generalID' => $generalID,
                 'userID' => $userID,
                 'amount' => $amount * $multiplier,
@@ -136,7 +137,7 @@ class Betting
 
         $db = DB::db();
         foreach ($db->queryAllLists(
-            'SELECT general_id, user_id, amount, betting_type WHERE betting_id = %i',
+            'SELECT general_id, user_id, amount, betting_type FROM ng_betting WHERE betting_id = %i',
             $this->bettingID
         ) as [$generalID, $userID, $amount, $bettingTypeKey]) {
             $bettingType = Json::decode($bettingTypeKey);
@@ -169,7 +170,7 @@ class Betting
             $remainRewardAmount -= $givenRewardAmount; // /2가 아니라 다른 값이 될 경우를 대비..
         }
 
-        foreach (Util::range(1, $selectCnt) as $matchPoint) {
+        foreach (Util::range(1, $selectCnt + 1) as $matchPoint) {
             if (!key_exists($matchPoint, $rewardAmount)) {
                 continue;
             }
@@ -190,7 +191,7 @@ class Betting
             $multiplier = $subReward / $subAmount[$matchPoint];
             foreach ($subWinners[$matchPoint] as $subWinner) {
                 $subWinner['amount'] *= $multiplier;
-                $result[$subWinner['generalID']] = $subWinner;
+                $result[] = $subWinner;
             }
         }
 
@@ -200,43 +201,78 @@ class Betting
     public function giveReward(array $winnerType)
     {
         $rewardList = $this->calcReward($winnerType);
+        $selectCnt = $this->info->selectCnt;
 
         $db = DB::db();
 
         if ($this->info->reqInheritancePoint) {
+            /** @var UserLogger[] */
+            $loggers = [];
             foreach ($rewardList as $rewardItem) {
                 if ($rewardItem['userID'] === null) {
                     continue;
                 }
                 $userID = $rewardItem['userID'];
-                $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
-                $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
-
-                $userLogger = new UserLogger($userID);
                 $amount = $rewardItem['amount'];
 
+                $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
+                $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
                 $nextPoint = $previousPoint + $amount;
                 $inheritStor->setValue('previous', [$nextPoint, 0]);
+                $inheritStor->invalidateCacheValue('previous');//XXX: 실제로는 previous 값을 사용할 수 없도록 락을 걸어야 한다.
 
                 $amountText = number_format($amount);
                 $previousPointText = number_format($previousPoint);
                 $nextPointText = number_format($nextPoint);
 
-                $userLogger->push("{$this->info->name} 베팅 보상으로 {$amountText} 포인트 획득.",  "inheritPoint");
+                $matchPoint = $rewardItem['matchPoint'];
+
+                if ($matchPoint == $selectCnt) {
+                    $partialText = '베팅 당첨';
+                } else {
+                    $partialText = "베팅 부분 당첨({$matchPoint}/{$selectCnt})";
+                }
+
+                if (key_exists($userID, $loggers)) {
+                    $userLogger = $loggers[$userID];
+                } else {
+                    $userLogger = new UserLogger($userID);
+                    $loggers[$userID] = $userLogger;
+                }
+
+                [$year, $month] = Util::parseYearMonth($this->info->openYearMonth);
+
+                $userLogger->push("{$this->info->name} {$partialText} 보상으로 {$amountText} 포인트 획득.",  "inheritPoint");
                 $userLogger->push("포인트 {$previousPointText} => {$nextPointText}", "inheritPoint");
+            }
+
+            foreach ($loggers as $userLogger) {
                 $userLogger->flush();
             }
+
         } else {
-            foreach (General::createGeneralObjListFromDB(Util::squeezeFromArray($rewardList, 'generalID'), ['gold', 'npc'], 1) as $gambler) {
-                $reward = Util::round($rewardList[$gambler->getID()]['amount']);
+            $generalList = General::createGeneralObjListFromDB(array_unique(Util::squeezeFromArray($rewardList, 'generalID')), ['gold', 'npc'], 1);
+            foreach ($rewardList as $rewardItem) {
+                $gambler = $generalList[$rewardItem['generalID']];
+                $reward = Util::round($rewardItem['amount']);
+                $matchPoint = $rewardItem['matchPoint'];
                 $gambler->increaseVar('gold', $reward);
                 if (($gambler->getNPCType() == 0) || ($gambler->getNPCType() == 1 && $gambler->getRankVar('betgold', 0) > 0)) {
                     $gambler->increaseRankVar('betwingold', $reward);
                     $gambler->increaseRankVar('betwin', 1);
                 }
+
+                if ($matchPoint == $selectCnt) {
+                    $partialText = '베팅 당첨';
+                } else {
+                    $partialText = "베팅 부분 당첨({$matchPoint}/{$selectCnt})";
+                }
                 $rewardText = number_format($reward);
-                $gambler->getLogger()->pushGeneralActionLog("<C>{$this->info->name}</>의 베팅 보상으로 <C>{$rewardText}</>의 <S>금</> 획득!", ActionLogger::EVENT_PLAIN);
-                $gambler->applyDB($db);
+                $gambler->getLogger()->pushGeneralActionLog("<C>{$this->info->name}</>의 {$partialText} 보상으로 <C>{$rewardText}</>의 <S>금</> 획득!", ActionLogger::EVENT_PLAIN);
+            }
+
+            foreach ($generalList as $general) {
+                $general->applyDB($db);
             }
         }
 
