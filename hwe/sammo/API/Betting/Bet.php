@@ -10,9 +10,8 @@ use sammo\DTO\BettingItem;
 use sammo\Validator;
 use sammo\GameConst;
 use sammo\KVStorage;
+use sammo\UserLogger;
 use sammo\Util;
-
-use function sammo\getAllNationStaticInfo;
 
 class Bet extends \sammo\BaseAPI
 {
@@ -56,7 +55,7 @@ class Bet extends \sammo\BaseAPI
         $bettingHelper = new Betting($bettingID);
         $bettingInfo = $bettingHelper->getInfo();
 
-        if($bettingInfo->finished){
+        if ($bettingInfo->finished) {
             return '이미 종료된 베팅입니다';
         }
 
@@ -64,15 +63,15 @@ class Bet extends \sammo\BaseAPI
         $yearMonth = Util::joinYearMonth($year, $month);
 
 
-        if($bettingInfo->closeYearMonth <= $yearMonth){
+        if ($bettingInfo->closeYearMonth <= $yearMonth) {
             return '이미 마감된 베팅입니다';
         }
 
-        if($bettingInfo->openYearMonth > $yearMonth){
+        if ($bettingInfo->openYearMonth > $yearMonth) {
             return '아직 시작되지 않은 베팅입니다';
         }
 
-        if(count($bettingType) != $bettingInfo->selectCnt){
+        if (count($bettingType) != $bettingInfo->selectCnt) {
             return '필요한 선택 수를 채우지 못했습니다.';
         }
 
@@ -82,19 +81,18 @@ class Bet extends \sammo\BaseAPI
 
         $prevBetAmount = $db->queryFirstField('SELECT sum(amount) FROM ng_betting WHERE betting_id = %i AND user_id = %i', $bettingID, $session->userID) ?? 0;
 
-        if($prevBetAmount + $amount > 1000){
-            return (1000 - $prevBetAmount).' 포인트까지만 베팅 가능합니다.';
+        if ($prevBetAmount + $amount > 1000) {
+            return (1000 - $prevBetAmount) . ' 포인트까지만 베팅 가능합니다.';
         }
 
-        if($bettingInfo->reqInheritancePoint){
-            $remainPoint = ($inheritStor->getValue('previous') ?? [0,0])[0];
-            if($remainPoint < $amount){
+        if ($bettingInfo->reqInheritancePoint) {
+            $remainPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
+            if ($remainPoint < $amount) {
                 return '유산포인트가 충분하지 않습니다.';
             }
-        }
-        else {
-            $remainPoint = $db->queryFirstField('SELECT gold FROM general WHERE no = %i', $session->generalID)??0;
-            if($remainPoint < GameConst::$generalMinimumGold + $amount){
+        } else {
+            $remainPoint = $db->queryFirstField('SELECT gold FROM general WHERE no = %i', $session->generalID) ?? 0;
+            if ($remainPoint < GameConst::$generalMinimumGold + $amount) {
                 return '금이 부족합니다.';
             }
         }
@@ -102,31 +100,34 @@ class Bet extends \sammo\BaseAPI
         $userID = $session->userID;
 
         $bettingItem = new BettingItem([
-            'betting_id'=>$bettingID,
-            'general_id'=>$session->generalID,
-            'user_id'=>$userID,
-            'betting_type'=>$bettingTypeKey,
-            'amount'=>$amount
+            'betting_id' => $bettingID,
+            'general_id' => $session->generalID,
+            'user_id' => $userID,
+            'betting_type' => $bettingTypeKey,
+            'amount' => $amount
         ]);
 
         $db->insertUpdate(
             'ng_betting',
             $bettingItem->toArray(),
             ['amount' => $db->sqleval('amount + %i', $amount)]
-        );        if($bettingInfo->reqInheritancePoint){
+        );
+        if ($bettingInfo->reqInheritancePoint) {
             $inheritStor->setValue('previous', [$remainPoint - $amount, null]);
-        }
-        else{
+            $userLogger = new UserLogger($userID);
+            $userLogger->push("{$amount} 포인트를 베팅에 사용", "inheritPoint");
+            $userLogger->flush();
+        } else {
             $db->update('general', [
                 'gold' => $db->sqleval('gold - %i', $amount)
             ], 'no = %i', $session->generalID);
         }
-        if(!$db->affected_rows){
+        if (!$db->affected_rows) {
             return '베팅을 실패했습니다.';
         }
 
         return [
-            'result'=>true
+            'result' => true
         ];
     }
 }

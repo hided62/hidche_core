@@ -78,8 +78,10 @@
             <div class="col-2 text-end">{{ amount.toLocaleString() }}</div>
             <div
               class="col-3 text-center"
-            >{{ myBettings.has(betType) ? `(${myBettings.get(betType)?.toLocaleString()} -> ${((myBettings.get(betType)??0) * bettingAmount / amount).toLocaleString()})` : '' }}</div>
-            <div class="col-2 text-end">{{ (bettingAmount / amount).toFixed(1) }}배</div>
+            >{{ myBettings.has(betType) ? `(${myBettings.get(betType)?.toLocaleString()} -> ${((myBettings.get(betType) ?? 0) * bettingAmount / amount / ((info.isExclusive && info.selectCnt > 1) ? 1 : 2)).toLocaleString()})` : '' }}</div>
+            <div
+              class="col-2 text-end"
+            >{{ (bettingAmount / amount / ((info.isExclusive && info.selectCnt > 1) ? 1 : 2)).toFixed(1) }}배</div>
           </div>
         </div>
       </template>
@@ -130,10 +132,12 @@ type BettingInfo = {
   name: string;
   finished: boolean;
   selectCnt: number;
+  isExclusive?: boolean;
   reqInheritancePoint: boolean;
   openYearMonth: number;
   closeYearMonth: number;
   candidates: SelectItem[];
+  winner?: number[];
 }
 
 type BettingListResponse = ValidResponse & {
