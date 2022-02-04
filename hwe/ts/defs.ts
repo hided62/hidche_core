@@ -223,3 +223,25 @@ export const diplomacyStateInfo: Record<diplomacyState, diplomacyInfo> = {
     2: { name: '통상' },
     7: { name: '불가침', color: 'green' },
 }
+
+
+export type SelectItem = {
+    title: string;
+    info?: string;
+    isHtml?: boolean;
+    aux?: Record<string, unknown>;
+}
+
+export type BettingInfo = {
+    id: number;
+    type: 'nationBetting',
+    name: string;
+    finished: boolean;
+    selectCnt: number;
+    isExclusive?: boolean;
+    reqInheritancePoint: boolean;
+    openYearMonth: number;
+    closeYearMonth: number;
+    candidates: SelectItem[];
+    winner?: number[];
+}
