@@ -110,7 +110,7 @@ export default defineComponent({
         : gen.name;
       return `${name} (금${unwrap(gen.gold).toLocaleString()}/쌀${unwrap(gen.rice).toLocaleString()}) (${
         gen.leadership
-      }/${gen.leadership}/${gen.intel})`;
+      }/${gen.strength}/${gen.intel})`;
     }
 
     async function submit(e: Event) {

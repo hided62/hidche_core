@@ -69,7 +69,7 @@ export default defineComponent({
       const name = nameColor
         ? `<span style="color:${nameColor}">${gen.name}</span>`
         : gen.name;
-      return `${name} (${gen.leadership}/${gen.strength}/${gen.leadership})`;
+      return `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`;
     }
 
     async function submit(e: Event) {

@@ -138,7 +138,7 @@ export default defineComponent({
         value: gen.no,
         title: this.textHelper
           ? this.textHelper(gen)
-          : `${name} (${gen.leadership}/${gen.leadership}/${gen.intel})`,
+          : `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`,
         simpleName: gen.name,
         searchText: convertSearch초성(gen.name).join('|'),
         obj: gen,
