@@ -169,6 +169,9 @@ function getTournamentTerm(): ?int{
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $tnmt_auto = $gameStor->tnmt_auto;
+    if($tnmt_auto === null){
+        $tnmt_auto = $gameStor->tnmt_trig;
+    }
     switch($tnmt_auto){
         case 0: return null;
         case 1: return 12 * 60;
