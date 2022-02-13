@@ -137,7 +137,7 @@ class Betting
     private function _calcRewardExclusive(array $bettingType): array
     {
         $db = DB::db();
-        $totalAmount = $db->queryFirstField('SELECT sum(amount) FROM ng_betting WHERE betting_id = %i');
+        $totalAmount = $db->queryFirstField('SELECT sum(amount) FROM ng_betting WHERE betting_id = %i', $this->bettingID);
 
         if ($totalAmount == 0) {
             return [];
