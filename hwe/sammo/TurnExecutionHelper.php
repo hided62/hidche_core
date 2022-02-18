@@ -237,7 +237,7 @@ class TurnExecutionHelper
             $general = General::createGeneralObjFromDB($rawGeneral['no']);
             $turnObj = new static($general);
 
-            $env = $gameStor->getAll(true);
+            $env = $gameStor->getAll();//NOTE: 매번 재 갱신하도록 유지할 것.
             [$startYear, $year, $month, $turnterm] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'turnterm']);
 
             $hasNationTurn = false;
