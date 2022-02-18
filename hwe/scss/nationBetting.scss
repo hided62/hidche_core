@@ -2,12 +2,16 @@
 @import "@scss/game_bg.scss";
 @import "@scss/util.scss";
 
+#container {
+    padding: 0;
+}
 
 @include media-1000px {
     #container {
         width: 1000px;
         margin: 0 auto;
         position: relative;
+
     }
 }
 

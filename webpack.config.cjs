@@ -158,7 +158,7 @@ module.exports = (env, argv) => {
                 {
                     test: /\.vue$/,
                     loader: 'vue-loader',
-                    exclude: /(node_modules)/,
+                    //exclude: /(node_modules)/,
                     options: {
                         hotReload: false,
                     }

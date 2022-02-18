@@ -148,10 +148,14 @@ export type IDItem<T> = {
 };
 
 export type ToastType = {
-    title?: string,
-    content?: string,
-    type?: Colors,
-    delay?: number,
+    content: {
+        title?: string,
+        body?: string,
+    },
+    options?: {
+        variant?: Colors,
+        delay?: number,
+    }
 }
 
 export const keyScreenMode = 'sam.screenMode';

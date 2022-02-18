@@ -1,6 +1,5 @@
 <template>
-  <MyToast v-model="toasts" />
-  <div id="container" class="pageNationStratFinan bg0">
+  <BContainer :toast="{root: true}" id="container" class="pageNationStratFinan bg0">
     <TopBackBar title="내무부" />
     <div class="diplomacyTitle">외교관계</div>
     <div class="diplomacyTable">
@@ -296,7 +295,7 @@
     </div>
     <div>추가 설정</div>
     <BottomBar title="내무부" />
-  </div>
+  </BContainer>
 </template>
 <script lang="ts">
 import TipTap from "./components/TipTap.vue";
@@ -308,13 +307,14 @@ import {
   diplomacyState,
   diplomacyStateInfo,
   NationStaticItem,
-  ToastType,
 } from "./defs";
 import { SammoAPI } from "./SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
-import MyToast from "@/components/MyToast.vue";
 import { ValidResponse } from "./util/callSammoAPI";
+import BContainer from "bootstrap-vue-3/src/components/BContainer.vue";
+import { useToast } from "bootstrap-vue-3/src/components/BToast/plugin";
+import { unwrap } from "./util/unwrap";
 
 type NationItem = NationStaticItem & {
   cityCnt: number;
@@ -369,11 +369,11 @@ export default defineComponent({
   components: {
     TopBackBar,
     BottomBar,
-    MyToast,
     TipTap,
-  },
+    BContainer
+},
   setup() {
-    const toasts = ref<ToastType[]>([]);
+    const toasts = unwrap(useToast());
     const self = reactive(staticValues);
 
     let oldNationMsg = staticValues.nationMsg;
@@ -396,16 +396,15 @@ export default defineComponent({
         });
         oldNationMsg = msg;
         inEditNationMsg.value = false;
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "국가 방침을 변경했습니다.",
+          body: "국가 방침을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         console.error(e);
@@ -430,16 +429,15 @@ export default defineComponent({
         });
         oldScoutMsg = msg;
         inEditScoutMsg.value = false;
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "임관 권유문을 변경했습니다.",
+          body: "임관 권유문을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         console.error(e);
@@ -502,16 +500,15 @@ export default defineComponent({
       try {
         await SammoAPI.Nation.SetRate({ amount: rate });
         oldRate = rate;
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "세율을 변경했습니다.",
+          body: "세율을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         console.error(e);
@@ -527,16 +524,15 @@ export default defineComponent({
       try {
         await SammoAPI.Nation.SetBill({ amount: bill });
         oldBill = bill;
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "지급률을 변경했습니다.",
+          body: "지급률을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         console.error(e);
@@ -552,16 +548,15 @@ export default defineComponent({
       try {
         await SammoAPI.Nation.SetSecretLimit({ amount: secretLimit });
         oldSecretLimit = secretLimit;
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "기밀 권한을 변경했습니다.",
+          body: "기밀 권한을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         self.policy.secretLimit = oldSecretLimit;
@@ -576,16 +571,15 @@ export default defineComponent({
       try {
         const result = await SammoAPI.Nation.SetBlockWar<SetBlockWarResponse>({ value: self.policy.blockWar });
         self.warSettingCnt.remain = result.availableCnt;
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "전쟁 금지 설정을 변경했습니다.",
+          body: "전쟁 금지 설정을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         self.policy.blockWar = !self.policy.blockWar;
@@ -596,16 +590,15 @@ export default defineComponent({
     async function setBlockScout() {
       try {
         await SammoAPI.Nation.SetBlockScout({ value: self.policy.blockScout });
-        toasts.value.push({
+        toasts.info({
           title: "변경",
-          content: "임관 설정을 변경했습니다.",
+          body: "임관 설정을 변경했습니다.",
         });
       } catch (e) {
         if (isString(e)) {
-          toasts.value.push({
+          toasts.danger({
             title: "에러",
-            content: e,
-            type: "danger",
+            body: e,
           });
         }
         self.policy.blockScout = !self.policy.blockScout;

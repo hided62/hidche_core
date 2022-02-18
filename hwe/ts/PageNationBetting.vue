@@ -1,8 +1,11 @@
 <template>
-  <MyToast v-model="toasts" />
-  <div id="container" class="pageNationBetting bg0">
+  <BContainer id="container" :toast="{ root: true }" class="pageNationBetting bg0">
     <TopBackBar :title="title" />
-    <BettingDetail v-if="targetBettingID !== undefined" :bettingID="targetBettingID" @reqToast="addToast" />
+    <BettingDetail
+      v-if="targetBettingID !== undefined"
+      :bettingID="targetBettingID"
+      @reqToast="addToast"
+    />
     <div v-if="bettingList === undefined">로딩 중...</div>
     <div class="bettingList" v-else>
       <div class="bg2">베팅 목록</div>
@@ -24,11 +27,10 @@
     </div>
 
     <BottomBar />
-  </div>
+  </BContainer>
 </template>
 
 <script lang="ts" setup>
-import MyToast from "@/components/MyToast.vue";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { BettingInfo, ToastType } from "@/defs";
@@ -38,6 +40,9 @@ import { isString } from "lodash";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { joinYearMonth } from "./util/joinYearMonth";
 import BettingDetail from "@/components/BettingDetail.vue";
+import { useToast } from "bootstrap-vue-3/src/components/BToast/plugin";
+import { unwrap } from "./util/unwrap";
+import BContainer from "bootstrap-vue-3/src/components/BContainer.vue";
 
 type BettingListResponse = ValidResponse & {
   bettingList: Record<number, Omit<BettingInfo & { totalAmount: number }, 'candidates'>>,
@@ -45,9 +50,7 @@ type BettingListResponse = ValidResponse & {
   month: number,
 };
 
-
-
-const toasts = ref<ToastType[]>([]);
+const toasts = unwrap(useToast());
 const year = ref<number>();
 const month = ref<number>();
 const yearMonth = ref<number>();
@@ -57,8 +60,8 @@ const bettingList = ref<BettingListResponse['bettingList']>();
 const targetBettingID = ref<number>();
 
 
-function addToast(msg: ToastType){
-  toasts.value.push(msg);
+function addToast(msg: ToastType) {
+  toasts.show(msg.content, msg.options);
 }
 
 
@@ -73,10 +76,9 @@ onMounted(async () => {
     console.log(result);
   } catch (e) {
     if (isString(e)) {
-      toasts.value.push({
+      toasts.danger({
         title: "에러",
-        content: e,
-        type: "danger",
+        body: e,
       });
     }
     console.error(e);

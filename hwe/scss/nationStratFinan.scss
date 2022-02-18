@@ -4,6 +4,10 @@
 @import "@scss/editor_component.scss";
 @import "@scss/common_legacy.scss";
 
+#container{
+    padding: 0;
+}
+
 .diplomacyTitle {
     background-color: $blue;
     text-align: center;

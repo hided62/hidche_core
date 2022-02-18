@@ -63,8 +63,8 @@ if ($currentNationPolicy['reqHumanWarUrgentRice'] ?? 0) {
 if ($currentNationPolicy['reqHumanWarUrgentGold'] ?? 0) {
     $autoPolicyVariable['reqHumanWarUrgentGold'] = $currentNationPolicy['reqHumanWarUrgentGold'];
 }
-$autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options']??[], ['values' => $autoPolicyVariable], null, $nation, $gameStor->getAll(true));
-$zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options']??[], null, null, $nation, $gameStor->getAll(true));
+$autoPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'] ?? [], ['values' => $autoPolicyVariable], null, $nation, $gameStor->getAll(true));
+$zeroPolicy = new AutorunNationPolicy($general, ($gameStor->autorun_user)['options'] ?? [], null, null, $nation, $gameStor->getAll(true));
 
 $lastSetters = [
     'policy' => [
@@ -91,7 +91,7 @@ $lastSetters = [
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?= UniqueConst::$serverName ?>: 임시 NPC 정책</title>
-    <?= WebUtil::printStaticValues([
+    <?= WebUtil::printStaticValues(['staticValues' => [
         'nationID' => $nationID,
         'defaultNationPolicy' => $defaultNationPolicy,
         'currentNationPolicy' => $currentNationPolicy,
@@ -109,7 +109,7 @@ $lastSetters = [
 
         'defaultStatNPCMax' => GameConst::$defaultStatNPCMax,
         'defaultStatMax' => GameConst::$defaultStatMax,
-    ]) ?>
+    ]]) ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printDist('vue', ['v_NPCControl'], true) ?>
 </head>

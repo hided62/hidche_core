@@ -66,7 +66,7 @@
                 <div class="col-5 text-center">대상</div>
                 <div class="col-2 text-center">베팅액</div>
                 <div class="col-3 text-center">내 베팅</div>
-                <div class="col-2 text-center">{{ info.finished? '배율':'기대 배율' }}</div>
+                <div class="col-2 text-center">{{ info.finished ? '배율' : '기대 배율' }}</div>
             </div>
             <template v-if="info.finished">
                 <div class="row" v-for="[betType, amount] of detailBet" :key="betType">
@@ -85,10 +85,12 @@
                         <div class="col-3 text-center" v-if="myBettings.has(betType)">
                             <template
                                 v-for="subPoint of [myBettings.get(betType) ?? 0]"
-                            >({{ subPoint.toLocaleString() }} -> {{ calculatedReward[matchPoint] == 0? 0 : (subPoint * calculatedReward[matchPoint] / (calculatedSubAmount.get(matchPoint)??1)).toFixed(1).toLocaleString() }})</template>
+                            >({{ subPoint.toLocaleString() }} -> {{ calculatedReward[matchPoint] == 0 ? 0 : (subPoint * calculatedReward[matchPoint] / (calculatedSubAmount.get(matchPoint) ?? 1)).toFixed(1).toLocaleString() }})</template>
                         </div>
                         <div class="col-3 text-center" v-else></div>
-                        <div class="col-2 text-end">{{ (calculatedReward[matchPoint] == 0? 0 : (calculatedReward[matchPoint] / (calculatedSubAmount.get(matchPoint)??1))).toFixed(1).toLocaleString() }}배</div>
+                        <div
+                            class="col-2 text-end"
+                        >{{ (calculatedReward[matchPoint] == 0 ? 0 : (calculatedReward[matchPoint] / (calculatedSubAmount.get(matchPoint) ?? 1))).toFixed(1).toLocaleString() }}배</div>
                     </template>
                 </div>
             </template>
@@ -107,7 +109,9 @@
                         >({{ subPoint.toLocaleString() }} -> {{ (subPoint * maxBettingReward / amount).toFixed(1).toLocaleString() }})</template>
                     </div>
                     <div class="col-3 text-center" v-else></div>
-                    <div class="col-2 text-end">{{ (maxBettingReward / amount).toFixed(1).toLocaleString() }}배</div>
+                    <div
+                        class="col-2 text-end"
+                    >{{ (maxBettingReward / amount).toFixed(1).toLocaleString() }}배</div>
                 </div>
             </template>
         </div>
@@ -343,9 +347,13 @@ async function loadBetting(bettingID: number) {
     } catch (e) {
         if (isString(e)) {
             emit('reqToast', {
-                title: "에러",
-                content: e,
-                type: "danger",
+                content: {
+                    title: "에러",
+                    body: e
+                },
+                options: {
+                    variant: 'danger',
+                }
             });
         }
         console.error(e);
@@ -388,9 +396,13 @@ function toggleCandidate(idx: number) {
     }
     else {
         emit('reqToast', {
-            title: '오류',
-            type: 'warning',
-            content: `이미 ${selectCnt}개를 선택했습니다.`,
+            content: {
+                title: '오류',
+                body: `이미 ${selectCnt}개를 선택했습니다.`,
+            },
+            options: {
+                variant: 'warning',
+            }
         });
         return;
     }
@@ -416,17 +428,25 @@ async function submitBet(): Promise<void> {
             amount,
         });
         emit('reqToast', {
-            title: '완료',
-            content: '베팅했습니다',
-            type: 'success'
+            content: {
+                title: '완료',
+                body: '베팅했습니다',
+            },
+            options: {
+                variant: 'success'
+            }
         });
         await loadBetting(bettingInfo.id);
     } catch (e) {
         if (isString(e)) {
             emit('reqToast', {
-                title: "에러",
-                content: e,
-                type: "danger",
+                content: {
+                    title: "에러",
+                    body: e,
+                },
+                options: {
+                    variant: "danger",
+                }
             });
         }
         console.error(e);
