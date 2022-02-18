@@ -15,7 +15,7 @@ $sel = Util::getPost('sel', 'int');
 $trig = Util::getPost('trig', 'int');
 
 //로그인 검사
-$session = Session::requireGameLogin()->setReadOnly();
+$session = Session::requireGameLogin();
 $userID = Session::getUserID();
 
 $db = DB::db();
@@ -24,7 +24,11 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost']);
 
 $me = $db->queryFirstRow('SELECT no,name,tournament from general where owner=%i',$userID);
-
+if(!$me){
+    $session->logoutGame();
+    header('location:b_tournament.php');
+    exit(1);
+}
 switch($admin['tnmt_type']) {
 case 0: $tp = "total";  $tp2 = "전력전"; $tp3 = "leadership+strength+intel"; break;
 case 1: $tp = "leadership"; $tp2 = "통솔전"; $tp3 = "leadership"; break;
@@ -40,6 +44,10 @@ if($btn == '참가') {
     }
 
     $general = $db->queryFirstRow('SELECT no,name,npc,leadership,strength,intel,explevel,gold,horse,weapon,book FROM general WHERE `no`=%i', $me['no']);
+    if(!$general){
+        header('location:b_tournament.php');
+        exit(1);
+    }
 
     //{$admin['develcost']}원 참가비
     if($general['gold'] < $admin['develcost']) {
