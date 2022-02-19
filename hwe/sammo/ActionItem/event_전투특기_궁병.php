@@ -8,7 +8,6 @@ use \sammo\GameUnitConst;
 
 class event_전투특기_궁병 extends \sammo\BaseItem{
 
-    protected $id = 51;
     protected $rawName = '비급';
     protected $name = '비급(궁병)';
     protected $info = '[군사] 궁병 계통 징·모병비 -10%<br>[전투] 회피 확률 +20%p,<br>공격시 상대 병종에/수비시 자신 병종 숙련에 궁병 숙련을 가산';
@@ -21,7 +20,7 @@ class event_전투특기_궁병 extends \sammo\BaseItem{
         if(in_array($turnType, ['징병', '모병'])){
             if($varType == 'cost' && $aux['armType'] == GameUnitConst::T_ARCHER) return $value * 0.9;
         }
-        
+
         return $value;
     }
 

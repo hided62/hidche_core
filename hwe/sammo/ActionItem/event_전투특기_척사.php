@@ -7,7 +7,6 @@ use \sammo\WarUnit;
 
 class event_전투특기_척사 extends \sammo\BaseItem{
 
-    protected $id = 75;
     protected $rawName = '비급';
     protected $name = '비급(척사)';
     protected $info = '[전투] 지역·도시 병종 상대로 대미지 +20%, 아군 피해 -20%';

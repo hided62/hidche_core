@@ -7,7 +7,6 @@ use \sammo\WarUnit;
 
 class event_전투특기_신중 extends \sammo\BaseItem{
 
-    protected $id = 44;
     protected $rawName = '비급';
     protected $name = '비급(신중)';
     protected $info = '[전투] 계략 성공 확률 100%';

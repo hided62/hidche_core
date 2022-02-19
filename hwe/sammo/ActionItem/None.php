@@ -5,7 +5,6 @@ use \sammo\General;
 
 class None extends \sammo\BaseItem{
 
-    protected $id = 0;
     protected $name = '-';
     protected $info = null;
     protected $cost = 0;

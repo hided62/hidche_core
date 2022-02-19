@@ -8,7 +8,6 @@ use \sammo\Util;
 
 class event_전투특기_무쌍 extends \sammo\BaseItem{
 
-    protected $id = 61;
     protected $rawName = '비급';
     protected $name = '비급(무쌍)';
     protected $info = '[전투] 대미지 +5%, 피해 -2%, 공격 시 필살 확률 +10%p, <br>승리 수의 로그 비례로 대미지 상승(10회 ⇒ +5%, 40회 ⇒ +15%)<br>승리 수의 로그 비례로 피해 감소(10회 ⇒ -2%, 40회 ⇒ -6%)';

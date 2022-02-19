@@ -5,7 +5,6 @@ use \sammo\General;
 
 class che_계략_향낭 extends \sammo\BaseItem{
 
-    protected $id = 5;
     protected $rawName = '항냥';
     protected $name = '항냥(계략)';
     protected $info = '[계략] 화계·탈취·파괴·선동 : 성공률 +50%p';
@@ -18,7 +17,7 @@ class che_계략_향낭 extends \sammo\BaseItem{
         if($turnType == '계략'){
             if($varType == 'success') return $value + 0.5;
         }
-        
+
         return $value;
     }
 

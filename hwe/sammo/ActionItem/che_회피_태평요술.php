@@ -5,7 +5,6 @@ use \sammo\General;
 
 class che_회피_태평요술 extends \sammo\BaseItem{
 
-    protected $id = 25;
     protected $rawName = '태평요술';
     protected $name = '태평요술(회피)';
     protected $info = '[전투] 회피 확률 +20%p';

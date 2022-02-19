@@ -5,7 +5,6 @@ use \sammo\General;
 
 class che_훈련_과실주 extends \sammo\BaseItem{
 
-    protected $id = 12;
     protected $rawName = '과실주';
     protected $name = '과실주(훈련)';
     protected $info = '[전투] 훈련 보정 +10';

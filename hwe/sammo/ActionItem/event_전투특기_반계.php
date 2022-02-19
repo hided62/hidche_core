@@ -12,7 +12,6 @@ use \sammo\WarUnitTrigger\che_반계발동;
 
 class event_전투특기_반계 extends \sammo\BaseItem{
 
-    protected $id = 45;
     protected $rawName = '비급';
     protected $name = '비급(반계)';
     protected $info = '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +150%)';

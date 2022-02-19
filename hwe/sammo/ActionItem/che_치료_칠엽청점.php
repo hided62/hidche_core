@@ -7,7 +7,6 @@ use \sammo\GeneralTriggerCaller;
 
 class che_치료_칠엽청점 extends \sammo\BaseItem{
 
-    protected $id = 10;
     protected $rawName = '칠엽청점';
     protected $name = '칠엽청점(치료)';
     protected $info = '[군사] 턴 실행 전 부상 회복.';

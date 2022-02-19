@@ -7,7 +7,6 @@ use \sammo\General;
 class BaseItem implements iAction{
     use \sammo\DefaultAction;
 
-    protected $id = 0;
     protected $rawName = '-';
     protected $name = '-';
     protected $info = '';
@@ -30,7 +29,7 @@ class BaseItem implements iAction{
         }
         return static::class;
     }
-    
+
     function getCost(){
         return $this->cost;
     }

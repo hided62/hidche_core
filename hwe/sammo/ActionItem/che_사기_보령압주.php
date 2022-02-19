@@ -5,7 +5,6 @@ use \sammo\General;
 
 class che_사기_보령압주 extends \sammo\BaseItem{
 
-    protected $id = 16;
     protected $rawName = '보령압주';
     protected $name = '보령압주(사기)';
     protected $info = '[전투] 사기 보정 +10';

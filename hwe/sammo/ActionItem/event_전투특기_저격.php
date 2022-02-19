@@ -10,7 +10,6 @@ use \sammo\WarUnitTrigger\che_저격발동;
 
 class event_전투특기_저격 extends \sammo\BaseItem{
 
-    protected $id = 70;
     protected $rawName = '비급';
     protected $name = '비급(저격)';
     protected $info = '[전투] 새로운 상대와 전투 시 50% 확률로 저격 발동, 성공 시 사기+20';

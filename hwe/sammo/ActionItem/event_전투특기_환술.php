@@ -7,7 +7,6 @@ use \sammo\WarUnit;
 
 class event_전투특기_환술 extends \sammo\BaseItem{
 
-    protected $id = 42;
     protected $rawName = '비급';
     protected $name = '비급(환술)';
     protected $info = '[전투] 계략 성공 확률 +10%p, 계략 성공 시 대미지 +30%';

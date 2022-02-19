@@ -12,7 +12,6 @@ use \sammo\WarUnitTrigger\che_반계발동;
 
 class che_반계_파초선 extends \sammo\BaseItem{
 
-    protected $id = 45;
     protected $rawName = '파초선';
     protected $name = '파초선(반계)';
     protected $info = '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 20% 확률로 되돌림';

@@ -9,7 +9,6 @@ use \sammo\WarUnitTrigger\능력치변경;
 
 class che_훈련_청주 extends \sammo\BaseItem{
 
-    protected $id = 4;
     protected $rawName = '청주';
     protected $name = '청주(훈련)';
     protected $info = '[전투] 훈련 +6. 1회용';

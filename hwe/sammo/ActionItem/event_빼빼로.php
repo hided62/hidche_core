@@ -10,7 +10,6 @@ use sammo\WarUnitTrigger\che_격노발동;
 
 class event_빼빼로 extends \sammo\BaseItem{
 
-    protected $id = 75;
     protected $rawName = '빼빼로';
     protected $name = '빼빼로';
     protected $info = '1의 상징입니다.<br>통솔 +1, 무력 +1, 지력 +1';

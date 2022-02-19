@@ -11,7 +11,6 @@ use \sammo\WarUnitTrigger\che_돌격지속;
 
 class event_전투특기_돌격 extends \sammo\BaseItem{
 
-    protected $id = 60;
     protected $rawName = '비급';
     protected $name = '비급(돌격)';
     protected $info = '[전투] 공격 시 대등/유리한 병종에게는 퇴각 전까지 전투, 공격 시 페이즈 + 2, 공격 시 대미지 +5%';

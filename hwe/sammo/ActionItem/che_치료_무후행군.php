@@ -7,7 +7,6 @@ use \sammo\GeneralTriggerCaller;
 
 class che_치료_무후행군 extends \sammo\BaseItem{
 
-    protected $id = 8;
     protected $rawName = '무후행군';
     protected $name = '무후행군(치료)';
     protected $info = '[군사] 턴 실행 전 부상 회복.';

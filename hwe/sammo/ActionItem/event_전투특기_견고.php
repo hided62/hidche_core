@@ -9,7 +9,6 @@ use sammo\WarUnitTriggerCaller;
 
 class event_전투특기_견고 extends \sammo\BaseItem{
 
-    protected $id = 74;
     protected $rawName = '비급';
     protected $name = '비급(견고)';
     protected $info = '[전투] 상대 필살 확률 -20%p, 상대 계략 시도시 성공 확률 -10%p, 부상 없음, 아군 피해 -10%';

@@ -7,7 +7,6 @@ use \sammo\WarUnit;
 
 class event_전투특기_집중 extends \sammo\BaseItem{
 
-    protected $id = 43;
     protected $rawName = '비급';
     protected $name = '비급(집중)';
     protected $info = '[전투] 계략 성공 시 대미지 +50%';

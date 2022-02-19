@@ -5,7 +5,6 @@ use \sammo\General;
 
 class che_사기_춘화첩 extends \sammo\BaseItem{
 
-    protected $id = 19;
     protected $rawName = '춘화첩';
     protected $name = '춘화첩(사기)';
     protected $info = '[전투] 사기 보정 +14';

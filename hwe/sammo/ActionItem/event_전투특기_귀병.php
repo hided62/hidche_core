@@ -8,7 +8,6 @@ use \sammo\WarUnit;
 
 class event_전투특기_귀병 extends \sammo\BaseItem{
 
-    protected $id = 40;
     protected $rawName = '비급';
     protected $name = '비급(귀병)';
     protected $info = '[군사] 귀병 계통 징·모병비 -10%<br>[전투] 계략 성공 확률 +20%p,<br>공격시 상대 병종에/수비시 자신 병종 숙련에 귀병 숙련을 가산';
@@ -21,7 +20,7 @@ class event_전투특기_귀병 extends \sammo\BaseItem{
         if(in_array($turnType, ['징병', '모병'])){
             if($varType == 'cost' && $aux['armType'] == GameUnitConst::T_WIZARD) return $value * 0.9;
         }
-        
+
         return $value;
     }
 

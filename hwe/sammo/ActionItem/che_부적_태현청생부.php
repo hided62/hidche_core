@@ -15,7 +15,6 @@ use sammo\WarUnitTrigger\WarActivateSkills;
 class che_부적_태현청생부 extends \sammo\BaseItem
 {
 
-    protected $id = 9;
     protected $rawName = '태현청생부';
     protected $name = '태현청생부(부적)';
     protected $info = '[전투] 저격 불가, 부상 없음';

@@ -7,7 +7,6 @@ use \sammo\WarUnit;
 
 class event_전투특기_징병 extends \sammo\BaseItem{
 
-    protected $id = 72;
     protected $rawName = '비급';
     protected $name = '비급(징병)';
     protected $info = '[군사] 징·모병비 -50%, 통솔 순수 능력치 보정 +15%';
@@ -20,7 +19,7 @@ class event_전투특기_징병 extends \sammo\BaseItem{
         if(in_array($turnType, ['징병', '모병'])){
             if($varType == 'cost') return $value * 0.5;
         }
-        
+
         return $value;
     }
 
