@@ -79,13 +79,20 @@ class che_물자조달 extends Command\GeneralCommand{
         $score *= getDomesticExpLevelBonus($general->getVar('explevel'));
         $score *= Util::randRange(0.8, 1.2);
 
+        $successRatio = 0.1;
+        $failRatio = 0.3;
+
+        $successRatio = $general->onCalcDomestic('조달', 'success', $successRatio);
+        $failRatio = $general->onCalcDomestic('조달', 'fail', $failRatio);
+        $normalRatio = 1 - $failRatio - $successRatio;
+
         $pick = Util::choiceRandomUsingWeight([
-            'fail'=>0.3,
-            'success'=>0.1,
-            'normal'=>0.6
+            'fail'=>$failRatio,
+            'success'=>$successRatio,
+            'normal'=>$normalRatio
         ]);
         $score *= CriticalScoreEx($pick);
-
+        $score = $general->onCalcDomestic('조달', 'score', $score);
 
         $score = Util::round($score);
         $scoreText = number_format($score, 0);
