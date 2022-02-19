@@ -536,6 +536,7 @@ class General implements iAction
         }
 
         $dexType = "dex{$armType}";
+        $exp = $this->onCalcStat($this, 'addDex', $exp, ['armType'=>$armType]);
 
         $this->increaseVar($dexType, $exp);
     }
