@@ -76,6 +76,7 @@ class che_화계 extends Command\GeneralCommand
         $destNationID = $destNation['nation'];
 
         $maxGenScore = 0;
+        $probCorrection = 0;
         foreach ($destCityGeneralList as $destGeneral) {
             /** @var General $destGeneral */
             if ($destGeneral->getNationID() != $destNationID) {
@@ -92,9 +93,11 @@ class che_화계 extends Command\GeneralCommand
                 throw new \sammo\MustNotBeReachedException();
             }
             $maxGenScore = max($maxGenScore, $genScore);
+            $probCorrection = $destGeneral->onCalcStat($destGeneral, 'sabotageDefence', $probCorrection);
         }
 
         $prob = $maxGenScore / GameConst::$sabotageProbCoefByStat;
+        $prob += $probCorrection;
 
         $prob += $destCity['secu'] / $destCity['secu_max'] / 5; //최대 20%p
         $prob += $destCity['supply'] ? 0.1 : 0;
