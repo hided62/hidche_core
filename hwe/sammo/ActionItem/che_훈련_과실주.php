@@ -18,3 +18,5 @@ class che_훈련_과실주 extends \sammo\BaseItem{
         return $value;
     }
 }
+
+//NOTE: 구버전
