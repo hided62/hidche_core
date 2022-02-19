@@ -331,8 +331,8 @@ class GameUnitConstBase{
             1502, self::T_SIEGE, '벽력거',
             200, 100, 6,  10, 0,  25,  5,
             3000, ['업'],   null,     0,
-            [self::T_FOOTMAN=>1.0, self::T_ARCHER=>1.0, self::T_CAVALRY=>1.0, self::T_WIZARD=>1.0, self::T_CASTLE=>1.8],
-            [self::T_FOOTMAN=>1.0, self::T_ARCHER=>1.0, self::T_CAVALRY=>1.0, self::T_WIZARD=>1.0],
+            [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8],
+            [self::T_FOOTMAN=>0.833, self::T_ARCHER=>0.833, self::T_CAVALRY=>0.833, self::T_WIZARD=>0.833],
             ['상대에게 돌덩이를 날립니다.'],
             ['che_성벽부상무효'], null
         ],
