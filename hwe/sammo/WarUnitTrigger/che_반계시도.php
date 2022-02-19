@@ -22,6 +22,9 @@ class che_반계시도 extends BaseWarUnitTrigger{
         if(!$oppose->hasActivatedSkill('계략')){
             return true;
         }
+        if($self->hasActivatedSkill('반계불가')){
+            return true;
+        }
 
         if(!Util::randBool($this->prob)){
             return true;
