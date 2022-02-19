@@ -173,11 +173,13 @@ class che_장비매매 extends Command\GeneralCommand
         if ($buying) {
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 구입했습니다. <1>$date</>");
             $general->increaseVarWithLimit('gold', -$cost, 0);
-            $general->setVar($itemType, $itemCode);
+            $general->setItem($itemType, $itemCode);
+            $general->onArbitraryAction($general, '장비매매', '구매', ['itemCode' => $itemCode]);
         } else {
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 판매했습니다. <1>$date</>");
             $general->increaseVarWithLimit('gold', $cost / 2);
-            $general->deleteItem($itemType);
+            $general->onArbitraryAction($general, '장비매매', '판매', ['itemCode' => $itemCode]);
+            $general->setItem($itemType, null);
         }
 
         $exp = 10;
@@ -209,96 +211,39 @@ class che_장비매매 extends Command\GeneralCommand
                     continue;
                 }
                 $values[] = [
-                    'id'=>$itemCode,
-                    'name'=>$item->getName(),
-                    'reqSecu'=>$item->getReqSecu(),
-                    'cost'=>$item->getCost(),
-                    'info'=>$item->getInfo(),
-                    'isBuyable'=>$item->isBuyable(),//항상 true지만, 일관성을 위해
+                    'id' => $itemCode,
+                    'name' => $item->getName(),
+                    'reqSecu' => $item->getReqSecu(),
+                    'cost' => $item->getCost(),
+                    'info' => $item->getInfo(),
+                    'isBuyable' => $item->isBuyable(), //항상 true지만, 일관성을 위해
                 ];
             }
             $itemList[$itemType] = [
-                'typeName'=>$typeName,
-                'values'=>$values
+                'typeName' => $typeName,
+                'values' => $values
             ];
         }
 
         $ownItem = [];
-        foreach($general->getItems() as $itemType => $item){
+        foreach ($general->getItems() as $itemType => $item) {
             $ownItem[$itemType] = [
-                'id'=>$item->getRawClassName(),
-                'name'=>$item->getName(),
-                'reqSecu'=>$item->getReqSecu(),
-                'cost'=>$item->getCost(),
-                'info'=>$item->getInfo(),
-                'isBuyable'=>$item->isBuyable(),
+                'id' => $item->getRawClassName(),
+                'name' => $item->getName(),
+                'reqSecu' => $item->getReqSecu(),
+                'cost' => $item->getCost(),
+                'info' => $item->getInfo(),
+                'isBuyable' => $item->isBuyable(),
             ];
         }
 
         return [
             'procRes' => [
-                'citySecu'=>$citySecu,
-                'gold'=>$general->getVar('gold'),
-                'itemList'=>$itemList,
-                'ownItem'=>$ownItem,
+                'citySecu' => $citySecu,
+                'gold' => $general->getVar('gold'),
+                'itemList' => $itemList,
+                'ownItem' => $ownItem,
             ]
         ];
-    }
-
-    public function getForm(): string
-    {
-        $form = [];
-
-        $db = DB::db();
-
-        $citySecu = $db->queryFirstField('SELECT secu FROM city WHERE city = %i', $this->generalObj->getCityID());
-        $gold = $this->generalObj->getVar('gold');
-
-        ob_start();
-?>
-        <script>
-            function updateItemType() {
-                $('#itemType').val($('#itemCode option:selected').data('item_type'));
-            }
-            $(function() {
-                $('#customSubmit').click(function() {
-                    updateItemType();
-                    submitAction();
-                });
-            });
-        </script>
-        <input type="hidden" class="formInput" name="itemType" id="itemType" value="item">
-        장비를 구입하거나 매각합니다.<br>
-        현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
-        현재 도시 치안 : <?= $citySecu ?> &nbsp;&nbsp;&nbsp;현재 자금 : <?= $gold ?><br>
-        장비 : <select class='formInput' name="itemCode" id="itemCode" onchange='updateItemType();' size='1' style='color:white;background-color:black;'>
-            <?php foreach (GameConst::$allItems as $itemType => $itemCategories) :
-                //매각
-                $typeName = static::$itemMap[$itemType];
-            ?>
-                <option value='None' data-item_type='<?= $itemType ?>' style='color:skyblue'>_____<?= $typeName ?>매각(반값)____</option>
-                <?php foreach ($itemCategories as $itemCode => $cnt) :
-                    if ($cnt > 0) {
-                        continue;
-                    }
-                    $itemClass = buildItemClass($itemCode);
-                    if (!$itemClass->isBuyable()) {
-                        continue;
-                    }
-                    $itemName = $itemClass->getName();
-                    $reqSecu = $itemClass->getReqSecu();
-                    $reqGold = $itemClass->getCost();
-                    $css = '';
-                    if ($reqSecu > $citySecu) {
-                        $css = 'color:red;';
-                    }
-                ?>
-                    <option value='<?= $itemCode ?>' data-item_type='<?= $itemType ?>' style='<?= $css ?>'><?= $itemName ?> 가격: <?= $reqGold ?></option>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
-        </select>
-        <input type=button id="customSubmit" value="<?= $this->getName() ?>"><br>
-<?php
-        return ob_get_clean();
     }
 }
