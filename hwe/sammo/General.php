@@ -1010,6 +1010,25 @@ class General implements iAction
         return $amount;
     }
 
+    public function onArbitraryAction(General $general, string $actionType, ?string $phase=null, $aux=null): null|array{
+        foreach (array_merge([
+            $this->nationType,
+            $this->officerLevelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj,
+            $this->getCrewTypeObj(),
+            $this->inheritBuffObj,
+        ], $this->itemObjs) as $iObj) {
+            if (!$iObj) {
+                continue;
+            }
+            /** @var iAction $iObj */
+            $aux = $iObj->onArbitraryAction($general, $actionType, $phase, $aux);
+        }
+        return $aux;
+    }
+
     public function getWarPowerMultiplier(WarUnit $unit): array
     {
         //xxx:$unit

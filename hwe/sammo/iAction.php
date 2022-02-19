@@ -18,4 +18,6 @@ interface iAction{
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller;
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller;
     //NOTE: getBattleEndSkillTriggerList도 필요한가?
+
+    public function onArbitraryAction(General $general, string $actionType, ?string $phase=null, ?array $aux=null): null|array;
 }

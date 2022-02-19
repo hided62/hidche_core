@@ -46,4 +46,8 @@ trait DefaultAction{
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return null;
     }
+
+    public function onArbitraryAction(General $general, string $actionType, ?string $phase=null, $aux=null): null|array{
+        return $aux;
+    }
 }
