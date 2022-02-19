@@ -8,7 +8,7 @@ use \sammo\General;
 use sammo\KVStorage;
 use sammo\Util;
 
-class che_능력치_통솔_두강주 extends \sammo\BaseItem{
+class che_능력치_무력_두강주 extends \sammo\BaseItem{
 
     protected $rawName = '두강주';
     protected $name = '두강주(무력)';

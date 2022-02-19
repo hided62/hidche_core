@@ -8,10 +8,10 @@ use \sammo\General;
 use sammo\KVStorage;
 use sammo\Util;
 
-class che_능력치_통솔_과실주 extends \sammo\BaseItem{
+class che_능력치_지력_이강주 extends \sammo\BaseItem{
 
     protected $rawName = '과실주';
-    protected $name = '과실주(무력)';
+    protected $name = '과실주(지력)';
     protected $info = '[능력치] 지력 보정 +5 + (5년마다 +1)';
     protected $cost = 200;
     protected $consumable = false;
