@@ -18,3 +18,5 @@ class che_사기_두강주 extends \sammo\BaseItem{
         return $value;
     }
 }
+
+//NOTE: 구버전

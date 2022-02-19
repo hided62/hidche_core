@@ -18,3 +18,5 @@ class che_사기_보령압주 extends \sammo\BaseItem{
         return $value;
     }
 }
+
+//NOTE: 구버전
