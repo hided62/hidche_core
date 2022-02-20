@@ -9,12 +9,12 @@ use sammo\WarUnit;
 use sammo\WarUnitTrigger\전투력보정;
 use sammo\WarUnitTriggerCaller;
 
-class che_광기_상편 extends \sammo\BaseItem
+class che_불굴_상편 extends \sammo\BaseItem
 {
 
     protected $rawName = '상편';
-    protected $name = '상편(광기)';
-    protected $info = '[전투] 남은 병력에 따라 공격력 증가. 최대 +50%';
+    protected $name = '상편(불굴)';
+    protected $info = '[전투] 남은 병력이 적을수록 공격력 증가. 최대 +50%';
     protected $cost = 200;
     protected $consumable = false;
 

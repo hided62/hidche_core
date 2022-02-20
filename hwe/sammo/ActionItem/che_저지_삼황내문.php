@@ -7,10 +7,10 @@ use sammo\WarUnitTrigger\che_저지발동;
 use sammo\WarUnitTrigger\WarActivateSkills;
 use sammo\WarUnitTriggerCaller;
 
-class che_저지_상황내문 extends \sammo\BaseItem{
+class che_저지_삼황내문 extends \sammo\BaseItem{
 
-    protected $rawName = '상황내문';
-    protected $name = '상황내문(저지)';
+    protected $rawName = '삼황내문';
+    protected $name = '삼황내문(저지)';
     protected $info = '[전투] 수비 시 저지';
     protected $cost = 200;
     protected $consumable = false;

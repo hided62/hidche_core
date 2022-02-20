@@ -10,7 +10,7 @@ class che_명마_12_옥란백용구 extends \sammo\BaseStatItem{
     public function __construct()
     {
         parent::__construct();
-        $this->info .= "<br>[전투] 남은 병력에 따라 회피 확률 증가. 최대 +30%p";
+        $this->info .= "<br>[전투] 남은 병력이 적을수록 회피 확률 증가. 최대 +30%p";
     }
 
     public function onCalcStat(General $general, string $statName, $value, $aux = null)
