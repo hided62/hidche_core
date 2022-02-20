@@ -4144,7 +4144,7 @@ class GeneralAI
         $wallIncome = getWallIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $income = $riceIncome + $wallIncome;
 
-        $outcome = getOutcome(100, $dedicationList);
+        $outcome = Util::valueFit(getOutcome(100, $dedicationList), 1);
 
         $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
         if ($nation['rice'] + $income - $outcome > $this->nationPolicy->reqNationRice * 2) {
