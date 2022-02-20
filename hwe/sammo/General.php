@@ -183,6 +183,7 @@ class General implements iAction
     {
         if ($itemCode === null) {
             $this->deleteItem($itemKey);
+            return;
         }
 
         $this->setVar($itemKey, $itemCode);
