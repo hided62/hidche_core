@@ -10,7 +10,8 @@ use sammo\ObjectTrigger;
 class 전투력보정 extends BaseWarUnitTrigger{
     protected $priority = ObjectTrigger::PRIORITY_BEGIN;
 
-    public function __construct(protected int|float $attackerWarPowerMultiplier, protected int|float $defenderWarPowerMultiplier = 1){
+    public function __construct(WarUnit $unit, protected int|float $attackerWarPowerMultiplier, protected int|float $defenderWarPowerMultiplier = 1){
+        $this->object = $unit;
     }
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{

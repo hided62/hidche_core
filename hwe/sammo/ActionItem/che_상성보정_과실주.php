@@ -17,15 +17,12 @@ class che_상성보정_과실주 extends \sammo\BaseItem{
     public function getBattlePhaseSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
         $oppose = $unit->getOppose();
-        if($oppose === null){
-            return null;
-        }
         $attackCoef = $unit->getCrewType()->getAttackCoef($oppose->getCrewType());
         if($attackCoef <= 1){
             return null;
         }
         return new WarUnitTriggerCaller(
-            new 전투력보정(1.1, 0.9)
+            new 전투력보정($unit, 1.1, 0.9)
         );
     }
 }

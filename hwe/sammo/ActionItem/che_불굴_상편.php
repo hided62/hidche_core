@@ -25,7 +25,7 @@ class che_불굴_상편 extends \sammo\BaseItem
 
         $crewRatio = Util::valueFit($crew / ($leadership * 100), 0, 1);
         return new WarUnitTriggerCaller(
-            new 전투력보정(1 + 0.5 * (1 - $crewRatio))
+            new 전투력보정($unit, 1 + 0.5 * (1 - $crewRatio))
         );
     }
 }
