@@ -16,6 +16,11 @@ class che_농성_위공자병법 extends \sammo\BaseItem{
         if($statName === 'sabotageDefence'){
             return $value + 0.3;
         }
+        return $value;
+    }
+
+    public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
+    {
         if($statName === 'warMagicTrialProb'){
             return $value - 0.1;
         }

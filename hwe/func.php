@@ -2415,7 +2415,9 @@ function SabotageInjury(array $cityGeneralList, string $reason): int
 
     foreach ($cityGeneralList as $general) {
         /** @var General $general */
-        if (!Util::randBool(0.3)) {
+        $injuryProb = 0.3;
+        $injuryProb = $general->onCalcStat($general, 'injuryProb', $injuryProb);
+        if (!Util::randBool($injuryProb)) {
             continue;
         }
         $general->getLogger()->pushGeneralActionLog($text);

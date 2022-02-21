@@ -21,6 +21,14 @@ class che_부적_태현청생부 extends \sammo\BaseItem
     protected $cost = 200;
     protected $consumable = false;
 
+    public function onCalcStat(General $general, string $statName, $value, $aux = null)
+    {
+        if($statName === 'injuryProb'){
+            return $value -= 1;
+        }
+        return $value;
+    }
+
     public function getBattleInitSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
         return new WarUnitTriggerCaller(

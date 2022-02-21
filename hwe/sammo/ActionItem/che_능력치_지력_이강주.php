@@ -12,7 +12,7 @@ class che_능력치_지력_이강주 extends \sammo\BaseItem{
 
     protected $rawName = '이강주';
     protected $name = '이강주(지력)';
-    protected $info = '[능력치] 지력 보정 +5 + (5년마다 +1)';
+    protected $info = '[능력치] 지력 +5 +(5년마다 +1)';
     protected $cost = 200;
     protected $consumable = false;
 

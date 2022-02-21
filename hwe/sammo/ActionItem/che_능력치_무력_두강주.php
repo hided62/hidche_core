@@ -12,7 +12,7 @@ class che_능력치_무력_두강주 extends \sammo\BaseItem{
 
     protected $rawName = '두강주';
     protected $name = '두강주(무력)';
-    protected $info = '[능력치] 무력 보정 +5 + (5년마다 +1)';
+    protected $info = '[능력치] 무력 +5 +(5년마다 +1)';
     protected $cost = 200;
     protected $consumable = false;
 
