@@ -673,17 +673,17 @@ function updateNationState()
                         continue;
                     }
 
-                    $score = $nationGen->getVar('belong') + 5;
+                    $score = $nationGen->getVar('belong') + 10;
 
                     if ($nationGen->getVar('officer_level') == 12) {
-                        $score += 100; //NOTE: 꼬우면 군주하세요.
+                        $score += 60;
                     } else if ($nationGen->getVar('officer_level') == 11) {
-                        $score += 50;
+                        $score += 30;
                     } else if ($nationGen->getVar('officer_level') > 4) {
-                        $score += 35;
+                        $score += 15;
                     }
 
-                    $score *= $trialCnt;
+                    $score *= 2**$trialCnt;
 
                     $uniqueLotteryWeightList[$nationGen->getID()] = [$nationGen, $score];
                 }
