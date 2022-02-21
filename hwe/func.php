@@ -1937,8 +1937,8 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     $prob = Util::valueFit($prob, null, 1 / 4); //최대치 감소
     $result = false;
 
-    $prob /= sqrt(2);
-    $moreProb = pow(2, 1 / 4);
+    $prob /= sqrt(7);
+    $moreProb = pow(10, 1 / 4);
 
     if ($general->getAuxVar('inheritRandomUnique') && $availableBuyUnique) {
         //포인트로 랜덤 유니크 획득
