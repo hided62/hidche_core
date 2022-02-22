@@ -5,6 +5,8 @@ namespace sammo;
 class WarUnitGeneral extends WarUnit
 {
     protected $raw;
+    protected $killedPerson = 0;
+    protected $deadPerson = 0;
 
     function __construct(General $general, array $rawNation, bool $isAttacker)
     {
@@ -271,6 +273,10 @@ class WarUnitGeneral extends WarUnit
         }
         $this->addDex($this->oppose->getCrewType(), $addDex);
 
+        if($this->oppose instanceof WarUnitGeneral){
+            $this->deadPerson += $damage;
+        }
+
         return $general->getVar('crew');
     }
 
@@ -298,6 +304,10 @@ class WarUnitGeneral extends WarUnit
 
         $this->killed += $damage;
         $this->killedCurr += $damage;
+
+        if($this->oppose instanceof WarUnitGeneral){
+            $this->killedPerson += $damage;
+        }
         return $this->killed;
     }
 
@@ -353,9 +363,11 @@ class WarUnitGeneral extends WarUnit
         $general->increaseRankVar('killcrew', $this->killed);
         $general->increaseRankVar('deathcrew', $this->dead);
 
-        if ($this->getOppose() instanceof WarUnitGeneral) {
-            $general->increaseRankVar('killcrew_person', $this->killed);
-            $general->increaseRankVar('deathcrew_person', $this->dead);
+        if($this->killedPerson){
+            $general->increaseRankVar('killcrew_person', $this->killedPerson);
+        }
+        if($this->deadPerson){
+            $general->increaseRankVar('deathcrew_person', $this->deadPerson);
         }
 
         $general->updateVar('rice', Util::round($general->getVar('rice')));
