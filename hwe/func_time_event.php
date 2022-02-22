@@ -576,7 +576,7 @@ function disaster() {
     $logger->flush();
 
     if (!$isGood) {
-        $generalListByCity = Util::arrayGroupBy($db->query('SELECT no, nation, city, injury, crew, atmos, train FROM general WHERE city IN %li', Util::squeezeFromArray($targetCityList, 'city')), 'city');
+        $generalListByCity = Util::arrayGroupBy($db->query('SELECT no, name, nation, city, officer_level, injury, leadership, strength, intel, horse, weapon, book, item, crew, crewtype, atmos, train, special, special2 FROM general WHERE city IN %li', Util::squeezeFromArray($targetCityList, 'city')), 'city');
         //NOTE: 쿼리 1번이지만 복잡하기 vs 쿼리 여러번이지만 조금 더 깔끔하기
         foreach ($targetCityList as $city) {
             $affectRatio = Util::valueFit($city['secu'] / $city['secu_max'] / 0.8, 0, 1);
