@@ -1384,9 +1384,15 @@ class General implements iAction
         switch ($key) {
             case 'dex':
                 $extractFn = function () use ($multiplier) {
+                    $dexLimit = Util::array_last(getDexLevelList())[0];
                     $totalDex = 0;
                     foreach (array_keys(GameUnitConst::allType()) as $armType) {
-                        $totalDex += $this->getVar("dex{$armType}");
+                        $subDex = $this->getVar("dex{$armType}");
+                        if($subDex > $dexLimit){
+                            $totalDex += ($subDex - $dexLimit) / 3;
+                            $subDex = $dexLimit;
+                        }
+                        $totalDex += $subDex;
                     }
                     return [$totalDex * $multiplier, null];
                 };

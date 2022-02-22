@@ -341,7 +341,7 @@ const inheritanceViewText: Record<
   },
   dex: {
     title: "숙련도",
-    info: "총 숙련도합입니다.",
+    info: "총 숙련도합입니다. <br>최대 숙련 이후에는 상승량이 1/3로 감소합니다.",
   },
   tournament: {
     title: "토너먼트",
