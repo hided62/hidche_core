@@ -45,7 +45,7 @@ class BaseItem implements iAction{
         return $this->reqSecu;
     }
 
-    function isConsumableNow(string $actionType, string $command):bool{
+    function tryConsumeNow(General $general, string $actionType, string $command):bool{
         return false;
     }
 }
