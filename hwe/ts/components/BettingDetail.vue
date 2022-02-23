@@ -242,6 +242,11 @@ function calcReward() {
     }
     calculatedSubAmount.value = subAmount;
 
+    if (selectCnt == 1){
+        rewardAmount[selectCnt - 1] = bettingAmount.value;
+        calculatedReward.value = rewardAmount;
+        return;
+    }
 
     if (info.value.isExclusive) {
         rewardAmount[selectCnt - 1] = bettingAmount.value;
@@ -316,7 +321,7 @@ async function loadBetting(bettingID: number) {
         console.log(_bettingAmount);
         bettingAmount.value = _bettingAmount;
         pureBettingAmount.value = _bettingAmount - adminBettingAmount;
-        if (info.value.isExclusive && info.value.selectCnt > 1) {
+        if (info.value.isExclusive || info.value.selectCnt == 1) {
             maxBettingReward.value = _bettingAmount;
         } else {
             maxBettingReward.value = _bettingAmount / 2;
