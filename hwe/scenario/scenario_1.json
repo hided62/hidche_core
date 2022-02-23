@@ -21,6 +21,22 @@
             ["Date", "==", 181, 1],
             ["RaiseNPCNation"],
             ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["Date", "==", 181, 1],
+            ["OpenNationBetting", 4, 1000],
+            ["OpenNationBetting", 1, 1000],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "<=", 8]
+            ],
+            ["OpenNationBetting", 1, 1000],
+            ["DeleteEvent"]
         ]
     ]
 }
