@@ -5,7 +5,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 $btn = Util::getReq('btn');
-$yearmonth = Util::getReq('yearmonth', 'int');
+$yearMonth = Util::getReq('yearmonth', 'int');
 $serverID = Util::getReq('serverID', 'string', null);
 
 //로그인 검사
@@ -36,7 +36,7 @@ if ($con >= 2) {
 
 
 [$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
-$s = $s_year * 12 + $s_month;
+$s = Util::joinYearMonth($s_year, $s_month);
 
 if ($s_year === null) {
     echo '인자 에러';
@@ -44,7 +44,7 @@ if ($s_year === null) {
 }
 
 [$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
-$e = $e_year * 12 + $e_month;
+$e = Util::joinYearMonth($e_year, $e_month);
 
 if ($serverID !== UniqueConst::$serverID) {
     $mapTheme = $db->queryFirstField('SELECT map FROM ng_games WHERE server_id=%s', $serverID) ?: 'che';
@@ -53,42 +53,47 @@ if ($serverID !== UniqueConst::$serverID) {
 }
 
 //FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
-if ($serverID !== UniqueConst::$serverID && !$yearmonth) {
-    $year = $s_year;
-    $month = $s_month;
-} else if (!$yearmonth) {
-    $year = $admin['year'];
-    $month = $admin['month'] - 1;
+if ($serverID !== UniqueConst::$serverID && !$yearMonth) {
+    $yearMonth = $s;
+} else if (!$yearMonth) {
+    $yearMonth = Util::joinYearMonth($admin['year'], $admin['month']);
 } else {
-    $year = intdiv($yearmonth, 100);
-    $month = $yearmonth % 100;
-
     if ($btn == "◀◀ 이전달") {
-        $month -= 1;
+        $yearMonth -= 1;
     } elseif ($btn == "다음달 ▶▶") {
-        $month += 1;
+        $yearMonth += 1;
     }
 }
-$now = ($year * 12) + $month;
 
-if ($now < $s) {
-    $now = $s;
+$isCurrent = false;
+if ($yearMonth < $s) {
+    $yearMonth = $s;
 }
-if ($now > $e) {
-    $now = $e;
-}
-
-$year = intdiv($now, 12);
-$month = $now % 12;
-if ($month <= 0) {
-    $year -= 1;
-    $month += 12;
+if ($yearMonth > $e) {
+    $isCurrent = true;
+    $yearMonth = $e + 1;
 }
 
-$history = $db->queryFirstRow('SELECT * FROM ng_history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
+[$year, $month] = Util::parseYearMonth($yearMonth);
+
+function getHistory($serverID, $year, $month):array{
+    $db = DB::db();
+    $history = $db->queryFirstRow('SELECT * FROM ng_history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
+    $history['global_history'] = Json::decode($history['global_history']);
+    $history['global_action'] = Json::decode($history['global_action']);
+    $history['nations'] = Json::decode($history['nations']);
+    return $history;
+}
 
 
-$nations = Json::decode($history['nations']);
+if($isCurrent){
+    $history = getCurrentHistory();
+}
+else{
+    $history = getHistory($serverID, $year, $month);
+}
+
+$nations = $history['nations'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -129,7 +134,7 @@ $nations = Json::decode($history['nations']);
                     <input type=submit name=btn value="◀◀ 이전달">
                     <select id='yearmonth' name=yearmonth size=1>
                         <option selected='selected'><?= $year ?>년 <?= $month ?>월</option>
-                        <option><?= $e_year ?>년 12월</option>
+                        <option><?= $e_year ?>년 12월 (현재)</option>
                     </select>
                     <input type=submit name=btn value='조회하기'>
                     <input type=submit name=btn value="다음달 ▶▶">
@@ -177,7 +182,7 @@ $nations = Json::decode($history['nations']);
             </tr>
             <tr>
                 <td colspan=5 valign=top>
-                    <?= formatHistoryToHTML(Json::decode($history['global_history'])) ?>
+                    <?= formatHistoryToHTML($history['global_history']) ?>
                 </td>
             </tr>
             <tr>
@@ -185,7 +190,7 @@ $nations = Json::decode($history['nations']);
             </tr>
             <tr>
                 <td colspan=5 valign=top>
-                    <?= formatHistoryToHTML(Json::decode($history['global_action'])) ?>
+                    <?= formatHistoryToHTML($history['global_action']) ?>
                 </td>
             </tr>
         </tbody>
@@ -201,6 +206,13 @@ $nations = Json::decode($history['nations']);
     <script>
         window.serverNick = '<?= DB::prefix() ?>';
         window.serverID = '<?= UniqueConst::$serverID ?>';
+        <?php if($isCurrent): ?>
+        reloadWorldMap({
+            showMe: false,
+            neutralView: true,
+            useCachedMap: true,
+        });
+        <?php else: ?>
         reloadWorldMap({
             targetJson: 'j_map_history.php?year=<?= $year ?>&month=<?= $month ?>&serverID=<?= $serverID ?>',
             showMe: false,
@@ -209,6 +221,8 @@ $nations = Json::decode($history['nations']);
             year: <?= $year ?>,
             month: <?= $month ?>,
         });
+        <?php endif; ?>
+
     </script>
 </body>
 

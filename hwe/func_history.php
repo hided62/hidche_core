@@ -371,10 +371,11 @@ function getGlobalActionLogWithDate(int $year, int $month):array {
     return $texts;
 }
 
-function LogHistory($isFirst=0) {
+function getCurrentHistory($isFirst=false) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $obj = $gameStor->getValues(['startyear', 'year', 'month']);
+    [$startYear, $year, $month]= $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
+    $yearMonth = Util::joinYearMonth($year, $month);
 
     $map = getWorldMap([
         'year'=>null,
@@ -384,21 +385,14 @@ function LogHistory($isFirst=0) {
         'aux'=>[]
     ]);
 
-
-    $map['month'] = $obj['month'];
-    $map['year'] = $obj['year'];
-    $map['startYear'] = $obj['startyear'];
-    if($isFirst == 1){
-        $map['month'] -= 1;
-        if($map['month'] == 0){
-            $map['month'] = 12;
-            $map['year'] -= 1;
-        }
+    if($isFirst){
+        $yearMonth -= 1;
     }
 
-    $year = $map['year'];
-    $month = $map['month'];
-
+    [$year, $month] = Util::parseYearMonth($yearMonth);
+    $map['startYear'] = $startYear;
+    $map['year'] = $year;
+    $map['month'] = $month;
 
     $globalHistory = getGlobalHistoryLogWithDate($year, $month);
     $globalAction = getGlobalActionLogWithDate($year, $month);
@@ -418,15 +412,27 @@ function LogHistory($isFirst=0) {
         return -($lhs['power']<=>$rhs['power']);
     });
 
-    $db->insert('ng_history', [
+    return [
         'server_id' => UniqueConst::$serverID,
         'year' => $year,
         'month' => $month,
-        'map' => Json::encode($map),
-        'global_history' => Json::encode($globalHistory),
-        'global_action' => Json::encode($globalAction),
-        'nations' => Json::encode($nations),
-    ]);
+        'map' => $map,
+        'global_history' => $globalHistory,
+        'global_action' => $globalAction,
+        'nations' => $nations,
+    ];
+}
+
+function LogHistory($isFirst=false) {
+    $history = getCurrentHistory($isFirst);
+    $db = DB::db();
+
+    $history['map'] = Json::encode($history['map']);
+    $history['global_history'] = Json::encode($history['global_history']);
+    $history['global_action'] = Json::encode($history['global_action']);
+    $history['nations'] = Json::encode($history['nations']);
+
+    $db->insert('ng_history', $history);
 
     return true;
 }
