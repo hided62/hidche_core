@@ -118,7 +118,7 @@ $nations = $history['nations'];
         var lastMonth = <?= $e_month ?>;
         var selectYear = <?= $year ?>;
         var selectMonth = <?= $month ?>;
-        var nations = <?= $nations ? $history['nations'] : '{}' ?>;
+        var nations = <?= $nations ? JSON::encode($history['nations']) : '{}' ?>;
     </script>
 </head>
 
