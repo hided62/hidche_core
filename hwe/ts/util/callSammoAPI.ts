@@ -16,13 +16,10 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
     }
 
     const response = await axios({
-        url: "api.php",
+        url: `api.php?path=${path}`,
         method: "post",
         responseType: "json",
-        data: {
-            path,
-            args,
-        },
+        data: args
     });
     const result: ErrorType | ResultType = response.data;
     if (!result.result) {

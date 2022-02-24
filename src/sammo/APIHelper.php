@@ -9,7 +9,7 @@ class APIHelper
         //static only
     }
 
-    public static function launch(string $rootPath)
+    public static function launch(string $rootPath, ?string $actionPath = null)
     {
         //TODO: path를 php://input에서 받는게 아니라 api.php?~~~~~ 로 받아오는것이 etag 캐시 측면에서 훨씬 나을 듯!
         try {
@@ -19,20 +19,35 @@ class APIHelper
             Json::dieWithReason($e->getMessage());
         }
 
-        if(!$input){
-            Json::dieWithReason("input이 비어있습니다. {$rawInput}");
+        if($actionPath !== null){
+            if ($input && !is_array($input)) {
+                Json::dieWithReason('args가 array가 아닙니다.' . gettype($input));
+            }
+            if(!$input){
+                $input = [];
+            }
+            $actionArgs = $input;
+        }
+        else{
+            if(!$input){
+                Json::dieWithReason("input이 비어있습니다. {$rawInput}");
+            }
+
+            if (!key_exists('path', $input)) {
+                Json::dieWithReason('path가 지정되지 않았습니다.');
+            }
+            $actionPath = $input['path'];
+
+            if (key_exists('args', $input) && !is_array($input['args'])) {
+                Json::dieWithReason('args가 array가 아닙니다.' . gettype($input['args']));
+            }
+            $actionArgs = $input['args'] ?? null;
         }
 
-        if (!key_exists('path', $input)) {
-            Json::dieWithReason('path가 지정되지 않았습니다.');
-        }
 
-        if (key_exists('args', $input) && !is_array($input['args'])) {
-            Json::dieWithReason('args가 array가 아닙니다.' . gettype($input['args']));
-        }
 
         try {
-            $obj = buildAPIExecutorClass($input['path'], $rootPath, $input['args'] ?? []);
+            $obj = buildAPIExecutorClass($actionPath, $rootPath, $actionArgs);
             $validateResult = $obj->validateArgs();
             if ($validateResult !== null) {
                 Json::dieWithReason($validateResult);

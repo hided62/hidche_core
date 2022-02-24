@@ -9,4 +9,4 @@ if (!class_exists('\\sammo\\RootDB')) {
     Json::dieWithReason('No DB');
 }
 
-APIHelper::launch(dirname(__FILE__));
+APIHelper::launch(dirname(__FILE__), $_GET['path']??null);
