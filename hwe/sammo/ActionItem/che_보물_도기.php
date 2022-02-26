@@ -44,9 +44,9 @@ class che_보물_도기 extends \sammo\BaseItem
             ['쌀', 'rice']
         ]);
 
-        $db->update('nation', [
-            $resKey => $db->sqleval('%b + %i', $resKey, $score)
-        ]);
+        //$db->update('nation', [
+        //    $resKey => $db->sqleval('%b + %i', $resKey, $score)
+        //]);
 
         $score = Util::round($score);
         $scoreText = number_format($score, 0);
