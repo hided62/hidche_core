@@ -44,7 +44,7 @@ class che_보물_도기 extends \sammo\BaseItem
             ['쌀', 'rice']
         ]);
 
-        $nationId = general['nation'];
+        $nationId = $general['nation'];
 
         if ($nationId != 0) {
           $db->update('nation', [
