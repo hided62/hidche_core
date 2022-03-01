@@ -69,7 +69,7 @@ class che_천도 extends Command\NationCommand
         [$reqGold, $reqRice] = $this->getCost();
 
         if ($this->getDistance() === null) {
-            $this->fullConditionConstraints[ConstraintHelper::AlwaysFail('천도 대상으로 도달할 방법이 없습니다.')];
+            $this->fullConditionConstraints = [ConstraintHelper::AlwaysFail('천도 대상으로 도달할 방법이 없습니다.')];
             return;
         }
 

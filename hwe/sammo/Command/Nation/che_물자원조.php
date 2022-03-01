@@ -102,7 +102,7 @@ class che_물자원조 extends Command\NationCommand
         $limit = $this->nation['level'] * GameConst::$coefAidAmount;
 
         if ($goldAmount > $limit || $riceAmount > $limit) {
-            $this->fullConditionConstraints[ConstraintHelper::AlwaysFail('작위 제한량 이상은 보낼 수 없습니다.')];
+            $this->fullConditionConstraints = [ConstraintHelper::AlwaysFail('작위 제한량 이상은 보낼 수 없습니다.')];
             return;
         }
 
