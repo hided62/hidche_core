@@ -50,6 +50,8 @@
         "files":[
             "f_config/config.php"
         ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
-
 }
