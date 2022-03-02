@@ -67,3 +67,4 @@ ingame/js/*
 ingame/css/*
 gateway/js/*
 gateway/css/*
+vendor/phpunit/phpunit/.phpunit.result.cache
