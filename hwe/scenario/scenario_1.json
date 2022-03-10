@@ -7,7 +7,8 @@
     "history":[
     ],
     "const": {
-        "joinRuinedNPCProp":0
+        "joinRuinedNPCProp":0,
+        "npcBanMessageProb":1
     },
     "events":[
         [

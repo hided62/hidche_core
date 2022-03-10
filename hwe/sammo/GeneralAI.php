@@ -2004,6 +2004,7 @@ class GeneralAI
 
         //수도와 연결된 도시 탐색
         while (!$queue->isEmpty()) {
+            /** @var int */
             $cityID = $queue->dequeue();
 
             foreach (array_keys(CityConst::byID($cityID)->path) as $nextCityID) {
@@ -3643,9 +3644,9 @@ class GeneralAI
         $npcType = $general->getNPCType();
         $nationID = $general->getNationID();
 
-        //특별 메세지 있는 경우 출력 하루 4번
+        //특별 메세지 있는 경우 출력
         $term = $this->env['turnterm'];
-        if ($general->getVar('npcmsg') && Util::randBool($term / (6 * 60))) {
+        if ($general->getVar('npcmsg') && Util::randBool(GameConst::$npcMessageFreqByDay * $term / (60 * 24))) {
             $src = new MessageTarget(
                 $general->getID(),
                 $general->getVar('name'),

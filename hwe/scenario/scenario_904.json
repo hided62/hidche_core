@@ -9,6 +9,7 @@
     ],
     "const": {
         "joinRuinedNPCProp":0,
+        "npcBanMessageProb":1,
         "availableGeneralCommand": {
             "": [
                 "휴식",

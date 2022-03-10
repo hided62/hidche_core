@@ -394,4 +394,8 @@ class GameConstBase
         '임', '정', '제', '조', '주', '준', '지', '찬', '책', '충', '탁', '택', '통', '패', '평', '포', '합', '해',
         '혁', '현', '화', '환', '회', '횡', '후', '훈', '휴', '흠', '흥'
     ];
+
+    public static $npcBanMessageProb = 0.01;
+    public static $npcSeizureMessageProb = 0.01;
+    public static $npcMessageFreqByDay = 4;
 }

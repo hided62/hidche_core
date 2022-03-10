@@ -11,6 +11,9 @@
     "history": [
         "<C>●</>180년 1월:<L><b>【이벤트】</b></>병기로 싸운다! 최고의 충차 지휘관을 가린다"
     ],
+    "const": {
+        "npcBanMessageProb":1
+    },
     "initialEvents":[
         [
             true,

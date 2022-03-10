@@ -9,6 +9,9 @@
     "history": [
         "<C>●</>180년 1월:<L><b>【이벤트】</b></>29기까지 내로라 하는 모든 장수들이 모였다!"
     ],
+    "const": {
+        "npcBanMessageProb":1
+    },
     "events": [
         [
             "month", 1000,

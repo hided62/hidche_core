@@ -11,7 +11,8 @@
         "expandCityDevelIncreaseAmount": 1350,
         "expandCityWallIncreaseAmount": 1600,
         "defaultMaxGeneral":300,
-        "joinRuinedNPCProp":0
+        "joinRuinedNPCProp":0,
+        "npcBanMessageProb":1
     },
     "events":[
         [

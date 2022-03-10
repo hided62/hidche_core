@@ -168,7 +168,7 @@ class che_몰수 extends Command\NationCommand
         );
         $amountText = number_format($amount, 0);
 
-        if ($destGeneral->getNPCType() >= 2 && Util::randBool(0.01)) {
+        if ($destGeneral->getNPCType() >= 2 && Util::randBool(GameConst::$npcSeizureMessageProb)) {
             $npcTexts = [
                 '몰수를 하다니... 이것이 윗사람이 할 짓이란 말입니까...',
                 '사유재산까지 몰수해가면서 이 나라가 잘 될거라 믿습니까? 정말 이해할 수가 없군요...',

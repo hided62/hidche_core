@@ -8,6 +8,7 @@
     ],
     "const": {
         "joinRuinedNPCProp":0,
+        "npcBanMessageProb":1,
         "availableSpecialWar":[
             "che_귀병", "che_신산", "che_환술", "che_집중", "che_신중", "che_반계",
             "che_보병", "che_궁병", "che_기병", "che_공성",

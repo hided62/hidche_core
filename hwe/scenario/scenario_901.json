@@ -8,6 +8,7 @@
     ],
     "const": {
         "expandCityDefaultCost": 30000,
-        "expandCityCostCoef": 250
+        "expandCityCostCoef": 250,
+        "npcBanMessageProb":1
     }
 }

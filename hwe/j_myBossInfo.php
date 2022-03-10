@@ -241,7 +241,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
     }
     $general->setVar('troop', 0);
 
-    if($general->getNPCType() >= 2 && ($env['scenario'] < 100 || Util::randBool(0.01))) {
+    if($general->getNPCType() >= 2 && Util::randBool(GameConst::$npcBanMessageProb)) {
 
         $str = Util::choiceRandom([
             '날 버리다니... 곧 전장에서 복수해주겠다...',
