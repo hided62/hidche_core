@@ -13,7 +13,7 @@
         "/nya":true,
         "/pya":true,
         "/twe":true,
-        
+
     },
     "search.exclude": {
         "e_lib/*":true,
@@ -28,5 +28,5 @@
     "cSpell.words": [
         "josa",
         "sammo"
-    ],
+    ]
 }

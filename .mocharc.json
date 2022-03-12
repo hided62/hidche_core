@@ -1,0 +1,12 @@
+{
+    "extension": ["ts"],
+    "spec": "hwe/test-ts/**/*.test.ts",
+    "require": [
+        "ts-node/register",
+        "tsconfig-paths/register"
+    ],
+    "node-option": [
+        "experimental-specifier-resolution=node",
+        "loader=ts-node/esm"
+    ]
+  }
