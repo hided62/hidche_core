@@ -5,8 +5,6 @@
 !.vscode/extensions.json
 
 /node_modules
-package-lock.json
-
 
 # 체섭 ignore
 *.log
