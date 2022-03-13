@@ -318,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 	PRIMARY KEY (`id`),
 	INDEX `server_id` (`server_id`, `nation`)
 )
-ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `ng_old_generals` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -334,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `ng_old_generals` (
 	INDEX `by_name` (`server_id`, `name`),
 	INDEX `owner` (`owner`, `server_id`)
 )
-ENGINE=Aria DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `emperior` (
 	`no` INT(6) NOT NULL AUTO_INCREMENT,
@@ -380,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `emperior` (
 	`history` MEDIUMTEXT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	`aux` MEDIUMTEXT NULL DEFAULT '{}' CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`no`)
-) ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
+) ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 외교 테이블
@@ -482,7 +482,7 @@ CREATE TABLE `statistic` (
 	`aux` TEXT NULL DEFAULT NULL CHECK (json_valid(`aux`)),
 	PRIMARY KEY (`no`)
 )
-ENGINE=Aria ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
+ENGINE=Aria DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 연감 테이블
