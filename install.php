@@ -3,6 +3,25 @@ namespace sammo;
 
 set_time_limit(600);
 
+
+class Json
+{
+    /** @return never */
+    public static function die($value)
+    {
+        if (!headers_sent()) {
+            header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+            header('Pragma: no-cache');
+        }
+
+        header('Content-Type: application/json');
+        die(json_encode($value));
+    }
+}
+
 function tryComposerInstall()
 {
     $resultPath = 'composer_result.json.log';
@@ -29,7 +48,8 @@ function tryComposerInstall()
     if ($result_code != 0) {
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => $output,
+            'state' => 'composer',
         ]);
     }
 
@@ -83,7 +103,8 @@ function tryNpmInstall()
     if ($result_code != 0) {
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => $output,
+            'state' => 'npm ci',
         ]);
     }
 
@@ -105,13 +126,14 @@ function tryNpmInstall()
 
 function genJS()
 {
-    $command = "./node_modules/.bin/webpack build";
+    $command = sprintf("./node_modules/.bin/webpack build --env target=gateway");
 
     exec(($command), $output, $result_code);
     if ($result_code != 0) {
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => $output,
+            'state' => 'webpack build',
         ]);
     }
 }
