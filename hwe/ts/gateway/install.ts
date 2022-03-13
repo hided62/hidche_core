@@ -260,7 +260,7 @@ function setupAdminForm() {
             }
         },
     }
-    const validator = new JQValidateForm($('#db_form'), descriptor);
+    const validator = new JQValidateForm($('#admin_form'), descriptor);
     validator.installChangeHandler();
 
     $('#admin_form').on('submit', async function (e) {
@@ -278,7 +278,7 @@ function setupAdminForm() {
         let result: InvalidResponse;
         try {
             const response = await axios({
-                url: 'j_setup_db.php',
+                url: 'j_create_admin.php',
                 method: 'post',
                 responseType: 'json',
                 data: convertFormData({
@@ -299,7 +299,7 @@ function setupAdminForm() {
             return;
         }
 
-        alert('RootDB.php가 생성되었습니다. 관리자 계정 생성을 진행합니다.');
+        alert('관리자 계정이 생성되었습니다.');
         await changeInstallMode();
     });
 }
