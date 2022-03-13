@@ -26,20 +26,20 @@ Docker를 이용한 설치도 제공하고 있습니다.
 
 ## Docker를 이용한 설치
 
-https://storage.hided.net/gogs/devsam/docker 를 참고해 주세요.
+https://storage.hided.net/gitea/devsam/docker 를 참고해 주세요.
 
 ## 수동 설치
 
 본 게임은 <code>git</code>을 이용한 업그레이드 시스템을 구현하였으므로, <code>git</code>이 필요합니다.
-또한 웹 서비스 데몬을 운영중인 사용자(일반적으로 <code>www-data</code>, <code>apache</code>)에게 디렉토리 권한이 주어져야합니다.
+또한 웹 서비스 데몬을 운영중인 사용자(일반적으로 <code>www-data</code>)에게 디렉토리 권한이 주어져야합니다.
 
 ### 다운로드
 
 웹 데몬 user가 <code>www-data</code>인 경우 다음과 같이 입력하여 최신 배포버전과 이미지 파일을 얻을 수 있습니다.
 
 ```
-sudo -u www-data git clone https://storage.hided.net/gogs/devsam/core.git
-sudo -u www-data git clone https://storage.hided.net/gogs/devsam/image.git
+sudo -u www-data git clone https://storage.hided.net/gitea/devsam/core.git
+sudo -u www-data git clone https://storage.hided.net/gitea/devsam/image.git
 ```
 
 > 이미지는 hook/git_hook.php을 통해 동기화되며, 서버 설치 과정에 이미지 갱신 키를 지정하는 것으로 '훼' 서버 업데이트 시 동기화됩니다. 이미지 서버가 게임 서버와 별개여도 동작하나, php와 git을 지원해야합니다.
