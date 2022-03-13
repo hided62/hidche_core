@@ -3,27 +3,39 @@ namespace sammo;
 
 set_time_limit(600);
 
-function tryNpmInstall()
+
+class Json
 {
-    $npmResultPath = 'npm_recent.json.log';
-    $packageJsonPath = 'package.json';
-    $packageJsonLockPath = 'package-lock.json';
+    /** @return never */
+    public static function die($value)
+    {
+        if (!headers_sent()) {
+            header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+            header('Pragma: no-cache');
+        }
 
-    $packageJsonHash = hash_file('sha512', $packageJsonPath);
+        header('Content-Type: application/json');
+        die(json_encode($value));
+    }
+}
+
+function tryComposerInstall()
+{
+    $resultPath = 'composer_result.json.log';
+    $lockPath = 'composer.lock';
+    $runCode = "php composer.phar install";
+
     $timestamp = time();
-    if (file_exists($npmResultPath) && file_exists($packageJsonLockPath)) {
+    if (file_exists($resultPath) && file_exists($lockPath)) {
         do {
-            $result = json_decode(file_get_contents($npmResultPath));
-            $oldJsonHash = $result->packageJsonHash;
-            $oldTimestamp = $result->updateTimestamp;
+            $result = json_decode(file_get_contents($resultPath));
+            $oldJsonHash = $result->lockHash;
+            $lockHash = hash_file('sha512', $lockPath);
 
-            //1. package.json 파일이 다르면 업데이트.
-            if ($packageJsonHash != $oldJsonHash) {
-                break;
-            }
-
-            //2. package-lock.json 업데이트가 2주를 초과했다면 업데이트.
-            if($oldTimestamp + 60*60*24*14 < $timestamp){
+            if ($lockHash != $oldJsonHash) {
                 break;
             }
 
@@ -32,32 +44,105 @@ function tryNpmInstall()
         } while (0);
     }
 
-    exec("npm install", $output, $result_code);
+    exec($runCode, $output, $result_code);
     if ($result_code != 0) {
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => $output,
+            'state' => 'composer',
         ]);
     }
 
-    file_put_contents($npmResultPath, json_encode([
-        'packageJsonHash'=>$packageJsonHash,
+    if (!file_exists($lockPath)){
+        Json::die([
+            'result' => false,
+            'reason' => "no lockfile: {$lockPath}"
+        ]);
+    }
+    $lockHash = hash_file('sha512', $lockPath);
+
+
+    file_put_contents($resultPath, json_encode([
+        'lockHash'=>$lockHash,
         'updateTimestamp'=>$timestamp,
     ]));
     return true;
 }
+
+
+function tryNpmInstall()
+{
+    $resultPath = 'npm_recent.json.log';
+    $lockPath = 'package-lock.json';
+    $runCode = "npm ci";
+    $runAltCode = "npm install";
+
+    $timestamp = time();
+    if (file_exists($resultPath) && file_exists($lockPath)) {
+        do {
+            $result = json_decode(file_get_contents($resultPath));
+            $oldJsonHash = $result->lockHash;
+            $lockHash = hash_file('sha512', $lockPath);
+
+            if ($lockHash != $oldJsonHash) {
+                break;
+            }
+
+            //그것도 아니라면 업데이트하지 않겠다.
+            return false;
+        } while (0);
+    }
+
+    if(file_exists($lockPath)){
+        exec($runCode, $output, $result_code);
+    }
+    else{
+        exec($runAltCode, $output, $result_code);
+    }
+
+    if ($result_code != 0) {
+        Json::die([
+            'result' => false,
+            'reason' => $output,
+            'state' => 'npm ci',
+        ]);
+    }
+
+    if (!file_exists($lockPath)){
+        Json::die([
+            'result' => false,
+            'reason' => "no lockfile: {$lockPath}"
+        ]);
+    }
+    $lockHash = hash_file('sha512', $lockPath);
+
+
+    file_put_contents($resultPath, json_encode([
+        'lockHash'=>$lockHash,
+        'updateTimestamp'=>$timestamp,
+    ]));
+    return true;
+}
+
 function genJS()
 {
-    $command = "./node_modules/.bin/webpack build";
+    $command = sprintf("./node_modules/.bin/webpack build --env target=gateway");
 
     exec(($command), $output, $result_code);
     if ($result_code != 0) {
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => $output,
+            'state' => 'webpack build',
         ]);
     }
 }
+
+if(tryComposerInstall()){
+    header('location:install.php');
+    die();
+}
+
 if(tryNpmInstall()){
     genJS();
 }

@@ -8,7 +8,8 @@ const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const webpack = require('webpack');
 const fs = require('fs');
 module.exports = (env, argv) => {
-    const target = env.target ?? 'hwe';
+    const rawTarget = env.target ?? 'hwe';
+    const target = (rawTarget == 'gateway') ? 'hwe' : rawTarget;
     const mode = argv.mode ?? 'production';
     const tsDir = resolve(__dirname, `${target}/ts/`);
     const build_exports = require(`${tsDir}/build_exports.json`);
@@ -90,8 +91,8 @@ module.exports = (env, argv) => {
     };
 
     const performance = {
-        maxAssetSize: 5*1024*1024,
-        maxEntrypointSize: 3*1024*1024,
+        maxAssetSize: 5 * 1024 * 1024,
+        maxEntrypointSize: 3 * 1024 * 1024,
     }
 
     const ingame_vue = {
@@ -365,11 +366,18 @@ module.exports = (env, argv) => {
         performance,
     };
 
+    const buildConfList = [];
+    if (rawTarget == 'gateway') {
+        buildConfList.push(gateway);
+        return buildConfList;
+    }
+
     if (env.WEBPACK_WATCH || !versionValue) {
         return [gateway, ingame_vue, ingame];
     }
 
-    const buildConfList = [];
+
+
     if (target == 'hwe' && !fs.existsSync(resolve(outputPath, `build_gateway.txt`))) {
         buildConfList.push(gateway);
     }

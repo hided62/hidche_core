@@ -57,12 +57,11 @@ test.*
 /pya
 /twe
 
+/vendor
 phpinfo.php
-vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/*
 *.sqlite3
 
 ingame/js/*
 ingame/css/*
 gateway/js/*
 gateway/css/*
-vendor/phpunit/phpunit/.phpunit.result.cache

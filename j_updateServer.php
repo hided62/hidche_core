@@ -66,27 +66,20 @@ function genJS($server)
     }
 }
 
-function tryNpmInstall()
+function tryComposerInstall()
 {
-    $npmResultPath = './npm_recent.json.log';
-    $packageJsonPath = './package.json';
-    $packageJsonLockPath = './package-lock.json';
+    $resultPath = 'composer_result.json.log';
+    $lockPath = 'composer.lock';
+    $runCode = "php composer.phar install";
 
-    $packageJsonHash = hash_file('sha512', $packageJsonPath);
     $timestamp = time();
-    if (file_exists($npmResultPath) && file_exists($packageJsonLockPath)) {
+    if (file_exists($resultPath) && file_exists($lockPath)) {
         do {
-            $result = json_decode(file_get_contents($npmResultPath));
-            $oldJsonHash = $result->packageJsonHash;
-            $oldTimestamp = $result->updateTimestamp;
+            $result = json_decode(file_get_contents($resultPath));
+            $oldJsonHash = $result->lockHash;
+            $lockHash = hash_file('sha512', $lockPath);
 
-            //1. package.json 파일이 다르면 업데이트.
-            if ($packageJsonHash != $oldJsonHash) {
-                break;
-            }
-
-            //2. package-lock.json 업데이트가 2주를 초과했다면 업데이트.
-            if ($oldTimestamp + 60 * 60 * 24 * 14 < $timestamp) {
+            if ($lockHash != $oldJsonHash) {
                 break;
             }
 
@@ -95,7 +88,7 @@ function tryNpmInstall()
         } while (0);
     }
 
-    exec("npm install", $output, $result_code);
+    exec($runCode, $output, $result_code);
     if ($result_code != 0) {
         Json::die([
             'result' => false,
@@ -103,16 +96,80 @@ function tryNpmInstall()
         ]);
     }
 
-    file_put_contents($npmResultPath, json_encode([
-        'packageJsonHash' => $packageJsonHash,
-        'updateTimestamp' => $timestamp,
+    if (!file_exists($lockPath)){
+        Json::die([
+            'result' => false,
+            'reason' => "no lockfile: {$lockPath}"
+        ]);
+    }
+    $lockHash = hash_file('sha512', $lockPath);
+
+
+    file_put_contents($resultPath, json_encode([
+        'lockHash'=>$lockHash,
+        'updateTimestamp'=>$timestamp,
     ]));
     return true;
 }
 
-//묻고 따지지 않고 일단 npm install은 시도한다.
+
+function tryNpmInstall()
+{
+    $resultPath = 'npm_recent.json.log';
+    $lockPath = 'package-lock.json';
+    $runCode = "npm ci";
+    $runAltCode = "npm install";
+
+    $timestamp = time();
+    if (file_exists($resultPath) && file_exists($lockPath)) {
+        do {
+            $result = json_decode(file_get_contents($resultPath));
+            $oldJsonHash = $result->lockHash;
+            $lockHash = hash_file('sha512', $lockPath);
+
+            if ($lockHash != $oldJsonHash) {
+                break;
+            }
+
+            //그것도 아니라면 업데이트하지 않겠다.
+            return false;
+        } while (0);
+    }
+
+    if(file_exists($lockPath)){
+        exec($runCode, $output, $result_code);
+    }
+    else{
+        exec($runAltCode, $output, $result_code);
+    }
+
+    if ($result_code != 0) {
+        Json::die([
+            'result' => false,
+            'reason' => $output
+        ]);
+    }
+
+    if (!file_exists($lockPath)){
+        Json::die([
+            'result' => false,
+            'reason' => "no lockfile: {$lockPath}"
+        ]);
+    }
+    $lockHash = hash_file('sha512', $lockPath);
+
+
+    file_put_contents($resultPath, json_encode([
+        'lockHash'=>$lockHash,
+        'updateTimestamp'=>$timestamp,
+    ]));
+    return true;
+}
+
+//묻고 따지지 않고 일단 composer install, npm install은 시도한다.
 //hwe 업데이트인 경우에만 한번 더 부른다.
 
+tryComposerInstall();
 if (tryNpmInstall()) {
     genJS(Util::array_last_key(ServConfig::getServerList()));
 }
@@ -268,7 +325,8 @@ if ($server == $baseServerName) {
         ]));
     }
 
-    //git 업데이트했는데, package.json이 바뀌면 곤란하니까
+    //git 업데이트했는데, package가 바뀌면 곤란하니까
+    tryComposerInstall();
     tryNpmInstall();
     genJS($server);
 

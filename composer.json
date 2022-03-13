@@ -35,15 +35,14 @@
     "autoload": {
         "psr-4": {
             "sammo\\": [
+                "d_setting",
                 "src/sammo"
             ],
             "kakao\\": [
+                "d_setting",
                 "src/kakao"
             ]
         },
-        "classmap": [
-            "d_setting/"
-        ],
         "exclude-from-classmap": [
             "**/*.orig.php"
         ],

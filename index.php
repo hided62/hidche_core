@@ -2,6 +2,10 @@
 
 namespace sammo;
 
+if (!file_exists(__DIR__ . '/vendor/autoload.php')){
+	header('Location:install.php');
+    die();
+}
 require(__DIR__ . '/vendor/autoload.php');
 
 if (!class_exists('\\sammo\\RootDB')) {
