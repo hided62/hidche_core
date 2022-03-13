@@ -138,12 +138,13 @@ if (!$userInfo) {
         'aux' => $session->tmpx,
     ]);
 }
+$userID = $userInfo['no'];
 
 if ($userInfo['delete_after']) {
     if ($userInfo['delete_after'] < $now) {
         $restAPI->unlink();
         $session->access_token = null;
-        $RootDB->delete('member', 'no=%i', $userInfo['no']);
+        $RootDB->delete('member', 'no=%i', $userID);
         Json::die([
             'result' => false,
             'reqOTP' => false,
@@ -170,20 +171,20 @@ if ($refresh_token) {
 
 RootDB::db()->update('member', [
     'oauth_info' => Json::encode($oauthInfo)
-], 'no=%i', $userInfo['no']);
+], 'no=%i', $userID);
 
 
 $tokenValidUntil = $userInfo['token_valid_until'];
 
 if (!$tokenValidUntil || $tokenValidUntil < $now) {
-    if (!createOTPbyUserNO($userInfo['no'])) {
+    if (!createOTPbyUserNO($userID)) {
         Json::die([
             'result' => false,
             'reqOTP' => false,
             'reason' => '인증 코드를 보내는데 실패했습니다.'
         ]);
     }
-    $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
+    $session->login($userID, $userInfo['id'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
     Json::die([
         'result' => false,
         'reqOTP' => true,
@@ -192,8 +193,9 @@ if (!$tokenValidUntil || $tokenValidUntil < $now) {
 }
 
 
+
 $RootDB->insert('member_log', [
-    'member_no' => $userInfo['no'],
+    'member_no' => $userID,
     'action_type' => 'login',
     'action' => Json::encode([
         'ip' => Util::get_client_ip(true),
@@ -225,7 +227,7 @@ $RootDB->query(
 );
 $token = Util::randomStr(20);
 $RootDB->insert('login_token', [
-    'user_id' => $userInfo['no'],
+    'user_id' => $userID,
     'base_token' => $token,
     'reg_ip' => Util::get_client_ip(true),
     'reg_date' => $nowDate,
@@ -233,7 +235,7 @@ $RootDB->insert('login_token', [
 ]);
 $tokenID = $RootDB->insertId();
 
-$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], false, $userInfo['token_valid_until'], $tokenID, Json::decode($userInfo['acl'] ?? '{}'));
+$session->login($userID, $userInfo['id'], $userInfo['grade'], false, $userInfo['token_valid_until'], $tokenID, Json::decode($userInfo['acl'] ?? '{}'));
 
 
 
