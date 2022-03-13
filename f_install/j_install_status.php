@@ -2,6 +2,11 @@
 
 namespace sammo;
 
+if(!file_exists(__DIR__ . '/../vendor/autoload.php')){
+    http_response_code(503);
+    die('not_ready');
+}
+
 require(__DIR__ . '/../vendor/autoload.php');
 
 if (!class_exists('\\sammo\\RootDB')) {
