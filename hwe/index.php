@@ -130,6 +130,7 @@ if (!$otherTextInfo) {
         'commandList' => getCommandTable($generalObj),
         'serverNow' => TimeUtil::now(false),
         'baseColor2' => GameConst::$basecolor2,
+        'lastExecuted' => $gameStor->turntime,
     ]) ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
