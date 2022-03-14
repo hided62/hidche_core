@@ -47,7 +47,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$plock = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
+$plock = boolval($db->queryFirstField('SELECT plock FROM plock LIMIT 1'));
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -131,6 +131,7 @@ if (!$otherTextInfo) {
         'serverNow' => TimeUtil::now(false),
         'baseColor2' => GameConst::$basecolor2,
         'lastExecuted' => $gameStor->turntime,
+        'isLocked' => $plock,
     ]) ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
@@ -178,7 +179,7 @@ if (!$otherTextInfo) {
                     <?php endif; ?>
                 </div>
                 <div class="s-border-t py-2 col col-6 col-md-2">
-                    <div style="display:inline-block;"><?= !$plock ? ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
+                    <div style="display:inline-block;"><?= $plock ? ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
                 </div>
                 <div class="s-border-t py-2 col col-6 col-md-2">
                     <?php if ($auctionCount > 0) : ?>
