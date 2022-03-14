@@ -17,10 +17,7 @@ sess_*
 */logs/*/*.txt
 */logs/preserved
 err.txt
-che/.htaccess
-kwe/.htaccess
-pwe/.htaccess
-twe/.htaccess
+
 hwe/.htaccess
 
 d_shared
@@ -56,6 +53,8 @@ test.*
 /nya
 /pya
 /twe
+
+/hwe/data
 
 /vendor
 phpinfo.php
