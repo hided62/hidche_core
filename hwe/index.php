@@ -123,6 +123,7 @@ if (!$otherTextInfo) {
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printStaticValues([
+        'serverNameWithCount' => "$serverName $serverCnt",
         'serverNick' => DB::prefix(),
         'serverID' => UniqueConst::$serverID,
         'maxTurn' => GameConst::$maxTurn,
