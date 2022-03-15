@@ -2378,6 +2378,9 @@ class GeneralAI
         }
 
         $tryBuying = false;
+        if ($general->getNPCType() < 2 && $relGold >= $goldCost * 3 && $relRice >= $riceCost * 3){
+            return null;
+        }
         if ($this->generalPolicy->can상인무시) {
             if ($relRice * 1.5 < $relGold && $relRice < $riceCost * 2) {
                 $tryBuying = true;
@@ -2385,9 +2388,6 @@ class GeneralAI
                 $tryBuying = true;
             }
         } else {
-            if ($relGold >= $goldCost * 3 && $relRice >= $riceCost * 3){
-                return null;
-            }
             if ($relRice * 2 < $relGold && $relRice < $riceCost * 3) {
                 $tryBuying = true;
             }
