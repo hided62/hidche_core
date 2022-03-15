@@ -252,6 +252,8 @@ class RaiseInvader extends \sammo\Event\Action
         $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>이민족의 기세는 그 누구도 막을 수 없을듯 합니다!");
         $logger->flush();
 
+        $gameStor->setValue('block_change_scout', false);
+
         $db->update('plock', [
             'plock' => 0
         ], true);
