@@ -2385,6 +2385,9 @@ class GeneralAI
                 $tryBuying = true;
             }
         } else {
+            if ($relGold >= $goldCost * 3 && $relRice >= $riceCost * 3){
+                return null;
+            }
             if ($relRice * 2 < $relGold && $relRice < $riceCost * 3) {
                 $tryBuying = true;
             }
