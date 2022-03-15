@@ -17,7 +17,7 @@
     "iconPath": "스타1프로게이머",
     "fiction": 1,
     "nation":[
-        
+
     ],
     "map":{
         "mapName":"miniche",
@@ -504,6 +504,21 @@
         [0, "김동준", null, 0, null, 86, 72, 93, 0, 1985, 2190, null, null]
     ],
     "general_ex":[
-        
+
+    ],
+    "initialEvents":[
+
+    ],
+    "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+
     ]
 }

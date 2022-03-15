@@ -699,8 +699,8 @@
         [0, "휴원진", -1, 0, null, 52, 68, 45, 0, 160, 250, null, null],
         [0, "희지재", -1, 0, null, 23, 7, 88, 0, 160, 250, null, null],
         [0, "왕원희", -1, 0, null, 93, 51, 90, 0, 160, 250, null, null],
-        [0, "김세정", -1, 0, null, 97, 93, 93, 0, 160, 250, null, null]       
-    ],	
+        [0, "김세정", -1, 0, null, 97, 93, 93, 0, 160, 250, null, null]
+    ],
     "general_ex":[
     ],
     "cities":[
@@ -715,6 +715,15 @@
 
     ],
     "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
 
     ]
 }
