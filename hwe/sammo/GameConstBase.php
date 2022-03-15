@@ -327,6 +327,7 @@ class GameConstBase
             'che_증여',
             'che_헌납',
             'che_하야',
+            'che_은퇴',
             'che_거병',
             'che_건국',
             'che_선양',
