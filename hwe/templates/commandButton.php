@@ -7,7 +7,7 @@
 <?=$btnBegin??''?><a href='v_chiefCenter.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>사 령 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_NPCControl.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>NPC 정책</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_genList.php' target='_blank' class='open-window commandButton <?=$btnClass??""?> <?= $showSecret ? '' : 'disabled' ?>'>암 행 부</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='b_tournament.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>토 너 먼 트</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href='b_tournament.php' target='_blank' class='open-window <?=$btnClassForTournament??""?>'>토 너 먼 트</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myKingdomInfo.php' class='commandButton <?=$btnClass??""?> <?= $meLevel >= 1 ? '' : 'disabled' ?>'>세력 정보</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myCityInfo.php' class='commandButton <?=$btnClass??""?> <?= ($meLevel >= 1 && $nationLevel >= 1) ? '' : 'disabled' ?>'>세력 도시</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myGenInfo.php' class='commandButton <?=$btnClass??""?> <?= $meLevel >= 1 ? '' : 'disabled' ?>'>세력 장수</a><?=$btnEnd??''?>
@@ -17,4 +17,4 @@
 <?=$btnBegin??''?><a href='v_inheritPoint.php' class='commandButton <?=$btnClass??""?>'>유산 관리</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myPage.php' class='commandButton <?=$btnClass??""?>'>내 정보&amp;설정</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_auction.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>거 래 장</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='b_betting.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>베 팅 장</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href='b_betting.php' target='_blank' class='open-window <?=$btnClassForBetting??""?>'>베 팅 장</a><?=$btnEnd??''?>

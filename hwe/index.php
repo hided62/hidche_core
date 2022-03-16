@@ -88,6 +88,8 @@ $serverName = UniqueConst::$serverName;
 $serverCnt = $gameStor->server_cnt;
 
 $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
+$isTournamentActive = $gameStor->tournament > 0;
+$isBettingActive = $gameStor->tournament == 6;
 
 $myNationStatic = getNationStaticInfo($generalObj->getNationID());
 $nationColorType = substr($myNationStatic['color'] ?? '#000000', 1);
@@ -134,6 +136,8 @@ if (!$otherTextInfo) {
         'baseColor2' => GameConst::$basecolor2,
         'lastExecuted' => $gameStor->turntime,
         'isLocked' => $plock,
+        'isTournamentActive' => $isTournamentActive,
+        'isBettingActive' => $isBettingActive
     ]) ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
@@ -169,16 +173,12 @@ if (!$otherTextInfo) {
                 <div class="s-border-t col py-2 col-4 col-md-2">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
                 <div class="s-border-t col py-2 col-4 col-md-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
                 <div class="s-border-t col py-2 col-8 col-md-4"><?= info(3) ?></div>
-                <div class="s-border-t py-2 col col-6 col-md-4"><?php if ($gameStor->tournament == 0) : ?>
-                        <span style='color:magenta'>현재 토너먼트 경기 없음</span>
-                    <?php else : ?>
-                        ↑<span style='color:cyan'><?=
-                                                                    ([
-                                                                        '전력전', '통솔전', '일기토', '설전',
-                                                                    ])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?></span>↑
-
-
-                    <?php endif; ?>
+                <div class="s-border-t py-2 col col-6 col-md-4">
+                  <?php if ($isTournamentActive) : ?>
+                    ↑<span style='color:cyan'><?=(['전력전', '통솔전', '일기토', '설전',])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?></span>↑
+                  <?php else : ?>
+                    <span style='color:magenta'>현재 토너먼트 경기 없음</span>
+                  <?php endif; ?>
                 </div>
                 <div class="s-border-t py-2 col col-6 col-md-2">
                     <div style="display:inline-block;"><?= $plock ? ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
@@ -257,7 +257,7 @@ if (!$otherTextInfo) {
                 <div id="nation-position"><?php myNationInfo($generalObj); ?></div>
                 <div id="general-position"><?php generalInfo($generalObj); ?></div>
                 <div id="generalCommandButton" class="row gx-0">
-                    <div class="buttonPlate bg2"><?= commandButton(['btnClass' => 'btn btn-sammo-nation']) ?></div>
+                    <div class="buttonPlate bg2"><?= commandButton(['btnClass' => 'btn btn-sammo-nation', 'isTournamentActive' => $isTournamentActive, 'isBettingActive' => $isBettingActive]) ?></div>
                 </div>
             </div>
         </div>
@@ -357,7 +357,7 @@ if (!$otherTextInfo) {
                             국가 메뉴
                         </div>
                         <ul class="dropdown-menu" aria-labelledby="navbarNation" id="navbarNationItems">
-                            <?= commandButton(['btnBegin' => '<li>', 'btnEnd' => '</li>', 'btnClass' => 'dropdown-item']) ?>
+                            <?= commandButton(['btnBegin' => '<li>', 'btnEnd' => '</li>', 'btnClass' => 'dropdown-item', 'isTournamentActive' => $isTournamentActive, 'isBettingActive' => $isBettingActive]) ?>
                         </ul>
                     </li>
                     <li class="nav-item dropup">

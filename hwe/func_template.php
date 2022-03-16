@@ -167,6 +167,20 @@ function commandButton(array $opts = [])
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');
     $showSecret = false;
     $permission = checkSecretPermission($me);
+    $btnClassForTournament = $opts['btnClass'];
+    if ($opts['isTournamentActive']) {
+      if ($btnClassForTournament != 'dropdown-item') {
+        $btnClassForTournament = 'toolbarButton2';
+      }
+    }
+
+    $btnClassForBetting = $opts['btnClass'];
+    if ($opts['isBettingActive']) {
+      if ($btnClassForTournament != 'dropdown-item') {
+        $btnClassForBetting = 'toolbarButton2';
+      }
+    }
+
     if ($permission >= 1) {
         $showSecret = true;
     } else if ($me['officer_level'] == 0) {
@@ -180,6 +194,8 @@ function commandButton(array $opts = [])
         'nationLevel' => $nation['level'],
         'showSecret' => $showSecret,
         'permission' => $permission,
+        'btnClassForTournament' => $btnClassForTournament,
+        'btnClassForBetting' => $btnClassForBetting,
     ], $opts));
 }
 
