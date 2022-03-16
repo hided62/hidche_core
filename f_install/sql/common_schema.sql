@@ -31,8 +31,8 @@ CREATE TABLE `member` (
 	`NAME` VARCHAR(64) NOT NULL,
 	`PICTURE` VARCHAR(64) NULL DEFAULT 'default.jpg',
 	`IMGSVR` INT(1) NULL DEFAULT '0',
-	`acl` TEXT NOT NULL DEFAULT '{}' COMMENT 'json',
-	`penalty` TEXT NOT NULL DEFAULT '{}' COMMENT 'json',
+	`acl` TEXT NOT NULL DEFAULT '{}' COLLATE 'utf8mb4_bin',
+	`penalty` TEXT NOT NULL DEFAULT '{}' COLLATE 'utf8mb4_bin',
 	`GRADE` INT(1) NULL DEFAULT '1',
 	`REG_NUM` INT(3) NULL DEFAULT '0',
 	`REG_DATE` DATETIME NOT NULL,
@@ -43,9 +43,12 @@ CREATE TABLE `member` (
 	UNIQUE INDEX `ID` (`ID`),
 	UNIQUE INDEX `EMAIL` (`EMAIL`),
 	UNIQUE INDEX `kauth_id` (`oauth_id`),
-	INDEX `delete_after` (`delete_after`)
+	INDEX `delete_after` (`delete_after`),
+	CONSTRAINT `json1` CHECK (json_valid(`acl`)),
+	CONSTRAINT `json2` CHECK (json_valid(`penalty`))
 )
-ENGINE=Aria DEFAULT CHARSET=utf8mb4;
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria;
 
 -- 로그인 로그 테이블
 CREATE TABLE `member_log` (
@@ -53,12 +56,14 @@ CREATE TABLE `member_log` (
 	`member_no` INT(11) NOT NULL,
 	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`action_type` ENUM('reg','try_login','login','logout','oauth','change_pw','make_general','access_server','delete') NOT NULL,
-	`action` TEXT NULL DEFAULT NULL COMMENT 'JSON',
+	`action` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	PRIMARY KEY (`id`),
 	INDEX `action` (`member_no`, `action_type`, `date`),
-	INDEX `member` (`member_no`, `date`)
+	INDEX `member` (`member_no`, `date`),
+	CONSTRAINT `json` CHECK (json_valid(`action`))
 )
-ENGINE=Aria DEFAULT CHARSET=utf8mb4;
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria;
 
 ###################
 # KV storage
@@ -69,9 +74,10 @@ CREATE TABLE if not exists `storage` (
 	`key` VARCHAR(40) NOT NULL,
 	`value` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE INDEX `key` (`namespace`, `key`)
+	UNIQUE INDEX `key` (`namespace`, `key`),
+	CONSTRAINT `json` CHECK (json_valid(`value`))
 )
-COLLATE='utf8mb4_general_ci'
+COLLATE='utf8mb4_bin'
 ENGINE=Aria;
 
 CREATE TABLE `login_token` (
@@ -86,5 +92,4 @@ CREATE TABLE `login_token` (
 	INDEX `by_date` (`user_id`, `expire_date`)
 )
 COLLATE='utf8mb4_general_ci'
-ENGINE=Aria
-;
+ENGINE=Aria;
