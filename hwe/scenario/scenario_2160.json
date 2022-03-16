@@ -768,5 +768,20 @@
         [0, "플랑크톤", null, 0, null, 60, 33, 81, 0, 160, 300, null, "발명"],
         [0, "퐁퐁부인", null, 0, null, 71, 47, 84, 0, 160, 300, null, null],
         [0, "사이타마", null, 0, null, 83, 105, 74, 0, 160, 300, null, "무쌍", "압도적인 힘이라는 건 참 시시한 거야."]
+    ],
+    "initialEvents":[
+
+    ],
+    "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+
     ]
 }

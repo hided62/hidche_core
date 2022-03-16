@@ -366,7 +366,7 @@
 [0, "배영섭", null, 0, null, 70, 16, 81, 0, 160, 300, null, null],
 [0, "구자욱", null, 0, null, 73, 59, 72, 0, 160, 300, null, null],
 [0, "신재영", null, 0, null, 64, 66, 62, 0, 160, 300, null, null]
-    ],	
+    ],
     "general_ex":[
     ],
     "cities":[
@@ -380,6 +380,15 @@
 
     ],
     "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
 
     ]
 }

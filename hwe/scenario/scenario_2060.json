@@ -2,7 +2,7 @@
     "title":"【가상모드6】 영웅독존",
     "life":1,
     "fiction":1,
-    "nation":[    
+    "nation":[
     ],
     "diplomacy":[
     ],
@@ -268,6 +268,14 @@
 
     ],
     "events":[
-
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
     ]
 }

@@ -27,6 +27,15 @@
                 "agri": "+1200",
                 "comm": "+1200"
             }]
+        ],
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
         ]
     ]
 }

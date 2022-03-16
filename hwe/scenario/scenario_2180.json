@@ -13,7 +13,7 @@
     "iconPath": ".",
     "fiction": 1,
     "nation":[
-        
+
     ],
     "map":{
         "mapName":"ludo_rathowm",
@@ -786,5 +786,20 @@
         [0, "장선", null, 0, null, 72, 71, 48, 0, 160, 300, null, null],
         [0, "뇌서", null, 0, null, 76, 74, 61, 0, 160, 300, null, null],
         [0, "번궁", null, 0, null, 71, 67, 58, 0, 160, 300, null, null]
+    ],
+    "initialEvents":[
+
+    ],
+    "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+
     ]
 }

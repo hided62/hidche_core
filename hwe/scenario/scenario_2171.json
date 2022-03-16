@@ -598,5 +598,20 @@
         [999, "프란체스카", null, 0, null, 1, 1, 1, 0, -15, 300, null, null],
         [999, "하모니트", null, 0, null, 1, 1, 1, 0, -15, 300, null, null],
         [999, "후지와라", null, 0, null, 1, 1, 1, 0, -15, 300, null, null]
+    ],
+    "initialEvents":[
+
+    ],
+    "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+
     ]
 }

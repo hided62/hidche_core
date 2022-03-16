@@ -47,6 +47,11 @@ class SetBlockScout extends \sammo\BaseAPI
             return "권한이 부족합니다.";
         }
 
+        $gameStor = new KVStorage($db, 'game_env');
+        $blockChangeScout = $gameStor->getValue('block_change_scout')??false;
+        if ($blockChangeScout){
+            return "임관 설정을 바꿀 수 없도록 설정되어 있습니다.";
+        }
 
         $nationID = $me['nation'];
 

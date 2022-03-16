@@ -17,7 +17,7 @@
     "iconPath": "포켓몬스터",
     "fiction": 1,
     "nation":[
-        
+
     ],
     "map": {
         "mapName": "pokemon_v1",
@@ -224,5 +224,20 @@
         [0, "국화", null, 0, "석영고원", 83, 87, 88, 0, 1973, 2100, null, "환술"],
         [0, "목호", null, 0, "석영고원", 94, 73, 94, 0, 1973, 2100, null, null],
         [0, "로켓단", null, 0, null, 85, 85, 85, 0, 1973, 2100, null, null, "우리가 그렇게 궁금하시다면 대답해 드리는게 인지상정\n이 세계의 파괴를 막기 위해! 이 세계의 평화를 지키기 위해! \n사랑과 진실, 어둠을 뿌리고 다니는...! \n포켓몬의 감초 귀"]
+    ],
+    "initialEvents":[
+
+    ],
+    "events":[
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+
     ]
 }
