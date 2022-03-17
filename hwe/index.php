@@ -88,7 +88,8 @@ $serverName = UniqueConst::$serverName;
 $serverCnt = $gameStor->server_cnt;
 
 $auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
-$isTournamentActive = $gameStor->tournament == 1;
+$isTournamentActive = $gameStor->tournament > 0;
+$isTournamentApplicationOpen = $gameStor->tournament == 1;
 $isBettingActive = $gameStor->tournament == 6;
 
 $myNationStatic = getNationStaticInfo($generalObj->getNationID());
@@ -257,7 +258,7 @@ if (!$otherTextInfo) {
                 <div id="nation-position"><?php myNationInfo($generalObj); ?></div>
                 <div id="general-position"><?php generalInfo($generalObj); ?></div>
                 <div id="generalCommandButton" class="row gx-0">
-                    <div class="buttonPlate bg2"><?= commandButton(['btnClass' => 'btn btn-sammo-nation', 'isTournamentActive' => $isTournamentActive, 'isBettingActive' => $isBettingActive]) ?></div>
+                    <div class="buttonPlate bg2"><?= commandButton(['btnClass' => 'btn btn-sammo-nation', 'isTournamentApplicationOpen' => $isTournamentApplicationOpen, 'isBettingActive' => $isBettingActive]) ?></div>
                 </div>
             </div>
         </div>
@@ -357,7 +358,7 @@ if (!$otherTextInfo) {
                             국가 메뉴
                         </div>
                         <ul class="dropdown-menu" aria-labelledby="navbarNation" id="navbarNationItems">
-                            <?= commandButton(['btnBegin' => '<li>', 'btnEnd' => '</li>', 'btnClass' => 'dropdown-item', 'isTournamentActive' => $isTournamentActive, 'isBettingActive' => $isBettingActive]) ?>
+                            <?= commandButton(['btnBegin' => '<li>', 'btnEnd' => '</li>', 'btnClass' => 'dropdown-item', 'isTournamentApplicationOpen' => $isTournamentApplicationOpen, 'isBettingActive' => $isBettingActive]) ?>
                         </ul>
                     </li>
                     <li class="nav-item dropup">

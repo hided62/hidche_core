@@ -168,7 +168,7 @@ function commandButton(array $opts = [])
     $showSecret = false;
     $permission = checkSecretPermission($me);
     $btnClassForTournament = $opts['btnClass'];
-    if ($opts['isTournamentActive']) {
+    if ($opts['isTournamentApplicationOpen']) {
       if ($btnClassForTournament != 'dropdown-item') {
         $btnClassForTournament = 'toolbarButton2';
       }
