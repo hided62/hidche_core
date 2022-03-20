@@ -2,6 +2,7 @@ import axios from 'axios';
 import { errUnknown } from '@/common_legacy';
 import { getIconPath } from "@util/getIconPath";
 import { TemplateEngine } from "@util/TemplateEngine";
+import { getNpcColor } from '@/common_legacy';
 import { GeneralListResponse, InvalidResponse } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
@@ -267,6 +268,7 @@ function printGenerals(value: NPCToken) {
 }
 
 function printGeneralList(value: GeneralListResponse) {
+    console.log(value);
     const tokenList = value.token;
     const generalList:NPCPickPrintable[] = value.list.map((rawGeneral) => {
         const general: NPCPickPrintableR = {
@@ -307,7 +309,7 @@ function printGeneralList(value: GeneralListResponse) {
         if (general.reserved == 1) {
             general.userCSS = 'color:violet';
         } else if (general.npc > 0) {
-            general.userCSS = `color:${getNPCColor(general.npc)}`;
+            general.userCSS = `color:${getNpcColor(general.npc)}`;
         }
 
         if (general.ownerName) {
@@ -457,7 +459,3 @@ $(function ($) {
     })
 
 });
-
-function getNPCColor(npc: number) {
-    throw new Error('Function not implemented.');
-}
