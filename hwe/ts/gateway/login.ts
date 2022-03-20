@@ -1,14 +1,14 @@
 import '@scss/gateway/login.scss';
 
 import $ from 'jquery';
-import { JQValidateForm, NamedRules } from '@util/jqValidateForm';
+import { JQValidateForm, type NamedRules } from '@util/jqValidateForm';
 import axios from 'axios';
 import { convertFormData } from '@util/convertFormData';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '@util/unwrap_any';
 import { sha512 } from 'js-sha512';
 import { unwrap } from '@util/unwrap';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
 import { Modal } from 'bootstrap';
 import '@/gateway/common';

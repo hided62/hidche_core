@@ -4,7 +4,7 @@ exportWindow($, '$');
 import axios from 'axios';
 import { initTooltip } from "@/legacy/initTooltip";
 import { TemplateEngine } from '@util/TemplateEngine';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { getDateTimeNow } from '@util/getDateTimeNow';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { loadPlugin as loadAdminPlugin } from '@/gateway/admin_server';

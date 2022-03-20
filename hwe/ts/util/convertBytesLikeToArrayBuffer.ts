@@ -1,4 +1,4 @@
-import { BytesLike } from "./BytesLike";
+import type { BytesLike } from "./BytesLike";
 
 export function convertBytesLikeToArrayBuffer(data: BytesLike, encodeUTF8 = true): ArrayBuffer{
     if (data instanceof ArrayBuffer) {

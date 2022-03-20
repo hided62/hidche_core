@@ -8,7 +8,7 @@ import { combineArray } from "@util/combineArray";
 import { isBrightColor } from "@util/isBrightColor";
 import { numberWithCommas } from "@util/numberWithCommas";
 import { unwrap_any } from '@util/unwrap_any';
-import { BasicGeneralListResponse, InvalidResponse } from '@/defs';
+import type { BasicGeneralListResponse, InvalidResponse } from '@/defs';
 import { formatTime } from '@util/formatTime';
 import { Modal } from 'bootstrap';
 

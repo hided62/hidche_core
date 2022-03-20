@@ -1,6 +1,6 @@
-import { InvalidResponse } from "./defs";
+import type { InvalidResponse } from "./defs";
 import { APIPathGen } from "./util/APIPathGen";
-import { callSammoAPI, ValidResponse } from "./util/callSammoAPI";
+import { callSammoAPI, type ValidResponse } from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
 
 async function done<ResultType extends ValidResponse>(args?: Record<string, unknown>): Promise<ResultType>;

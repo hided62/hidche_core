@@ -1,9 +1,9 @@
-import { RNG } from "./RNG";
+import type { RNG } from "./RNG";
 
 import { sha512 } from 'js-sha512';
 
 import { convertBytesLikeToUint8Array } from "./convertBytesLikeToUint8Array";
-import { BytesLike } from "./BytesLike";
+import type { BytesLike } from "./BytesLike";
 
 const maxRngSupportBit = 53;
 const maxInt = 0x1f_ffff_ffff_ffff; //      NOTE: b 0, 10000110011, 11...11

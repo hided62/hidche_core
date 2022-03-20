@@ -2,8 +2,8 @@ import $ from "jquery";
 import 'bootstrap';
 import { setAxiosXMLHttpRequest } from "@util/setAxiosXMLHttpRequest";
 import axios from "axios";
-import { InvalidResponse } from "@/defs";
-import { JQValidateForm, NamedRules } from "@util/jqValidateForm";
+import type { InvalidResponse } from "@/defs";
+import { JQValidateForm, type NamedRules } from "@util/jqValidateForm";
 import { convertFormData } from "@util/convertFormData";
 import { exportWindow } from "@util/exportWindow";
 

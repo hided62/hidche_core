@@ -2,7 +2,7 @@ import "@scss/myPage.scss";
 
 import axios from 'axios';
 import $ from 'jquery';
-import { InvalidResponse, keyScreenMode, ScreenModeType } from '@/defs';
+import { type InvalidResponse, keyScreenMode, type ScreenModeType } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap } from '@util/unwrap';

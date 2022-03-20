@@ -5,7 +5,7 @@ import { subDays } from 'date-fns';
 import { getDateTimeNow } from '@util/getDateTimeNow';
 import { sha512 } from "js-sha512";
 import { convertFormData } from '@util/convertFormData';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { unwrap } from '@util/unwrap';
 import { parseTime } from '@util/parseTime';
 import { formatTime } from '@util/formatTime';

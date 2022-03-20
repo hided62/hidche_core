@@ -1,6 +1,6 @@
-import { ItemTypeKey } from "@/defs";
+import type { ItemTypeKey } from "@/defs";
 import { combineArray } from "@/util/combineArray";
-import { Ref, ref, watch } from "vue";
+import { type Ref, ref, watch } from "vue";
 
 export type procGeneralItem = {
     no: number,

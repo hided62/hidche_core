@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
 

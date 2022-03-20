@@ -2,7 +2,7 @@ import axios from 'axios';
 import $ from 'jquery';
 import { isNumber, merge } from 'lodash';
 import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';

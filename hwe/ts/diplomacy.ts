@@ -5,13 +5,13 @@ import { isBrightColor } from "@util/isBrightColor";
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { isString } from 'lodash';
 import { convertFormData } from '@util/convertFormData';
-import { InvalidResponse, NationStaticItem } from '@/defs';
+import type { InvalidResponse, NationStaticItem } from '@/defs';
 import { escapeHtml } from '@/legacy/escapeHtml';
 import { nl2br } from '@util/nl2br';
 import { unwrap } from '@util/unwrap';
 import 'bootstrap';
 import 'select2/dist/js/select2.full.js'
-import { LoadingData } from 'select2';
+import type { LoadingData } from 'select2';
 
 declare const permissionLevel: number;
 let myNationID: number | undefined;

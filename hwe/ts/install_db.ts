@@ -1,9 +1,9 @@
 
 import axios from 'axios';
 import jQuery from 'jquery';
-import { JQValidateForm, NamedRules } from '@util/jqValidateForm';
+import { JQValidateForm, type NamedRules } from '@util/jqValidateForm';
 import { convertFormData } from '@util/convertFormData';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 
 jQuery(async function ($) {

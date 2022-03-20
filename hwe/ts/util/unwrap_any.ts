@@ -1,4 +1,4 @@
-import { Nullable } from "@util/Nullable";
+import type { Nullable } from "@util/Nullable";
 import { NotNullExpected } from "@util/NotNullExpected";
 
 

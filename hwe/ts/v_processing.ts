@@ -5,11 +5,11 @@ import BootstrapVue3 from 'bootstrap-vue-3'
 import Multiselect from 'vue-multiselect';
 import { commandMap as GeneralActions } from "@/processing/General";
 import { commandMap as NationActions } from '@/processing/Nation';
-import { App, createApp } from 'vue';
+import { type App, createApp } from 'vue';
 import { auto500px } from './util/auto500px';
 import { isString } from 'lodash';
-import { Args, testSubmitArgs } from './processing/args';
-import { SammoAPI, ValidResponse } from './SammoAPI';
+import { type Args, testSubmitArgs } from './processing/args';
+import { SammoAPI, type ValidResponse } from './SammoAPI';
 
 declare const turnList: number[];
 

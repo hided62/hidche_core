@@ -1,5 +1,5 @@
 //https://github.com/joevallender/tiptap2-image-example/blob/main/src/extensions/custom-image-3.js
-import Image, { ImageOptions } from '@tiptap/extension-image'
+import Image, { type ImageOptions } from '@tiptap/extension-image'
 import { mergeAttributes } from '@tiptap/core'
 
 export interface CustomImageOptions extends ImageOptions {

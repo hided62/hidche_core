@@ -1,6 +1,6 @@
 import axios from "axios";
 import { isArray } from "lodash";
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 
 export type ValidResponse = {
     result: true

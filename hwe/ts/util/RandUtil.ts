@@ -1,4 +1,4 @@
-import { RNG } from './RNG';
+import type { RNG } from './RNG';
 
 export class RandUtil {
     constructor(protected rng: RNG) {

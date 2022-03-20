@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { initTooltip } from "@/legacy/initTooltip";
 import { getIconPath } from "@util/getIconPath";
 import { convertFormData } from '@util/convertFormData';

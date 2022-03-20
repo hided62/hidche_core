@@ -1,6 +1,6 @@
 
 import $ from 'jquery';
-import { InvalidResponse } from '@/defs';
+import type { InvalidResponse } from '@/defs';
 import { getDateTimeNow } from '@util/getDateTimeNow';
 import axios from 'axios';
 import { convertFormData } from '@util/convertFormData';
