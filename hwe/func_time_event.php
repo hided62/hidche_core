@@ -4,14 +4,12 @@ namespace sammo;
  * 시간 단위로 일어나는 이벤트들에 대한 함수 모음
  */
 
- 
+
 //1월마다 실행
 function processSpring() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    //인구 증가
-    popIncrease();
     // 1월엔 무조건 내정 1% 감소
     $db->update('city',[
         'dead'=>0,
@@ -21,6 +19,9 @@ function processSpring() {
         'def'=>$db->sqleval('def * 0.99'),
         'wall'=>$db->sqleval('wall * 0.99'),
     ],true);
+
+    //인구 증가
+    popIncrease();
 
     // > 10000 유지비 3%, > 1000 유지비 1%
     // 유지비 1%
@@ -100,7 +101,7 @@ function processGoldIncome() {
             $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
             $gold = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
             $generalObj->increaseVar('gold', $gold);
-            
+
             $logger = $generalObj->getLogger();
             if($generalObj->getVar('officer_level') > 4){
                 $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
@@ -121,9 +122,9 @@ function processGoldIncome() {
 
 function popIncrease() {
     $db = DB::db();
-    
+
     $nationList = $db->queryAllLists('SELECT nation,rate_tmp,type FROM nation');
-    
+
     // 인구 및 민심
 
     $db->update('city', [
@@ -138,7 +139,7 @@ function popIncrease() {
     foreach($nationList as [$nationID, $taxRate, $nationType]){
         $nationTypeObj = buildNationTypeClass($nationType);
 
-        
+
         $popRatio = (30 - $taxRate)/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
         $popRatio = $nationTypeObj->onCalcNationalIncome('pop', $popRatio);
 
@@ -246,7 +247,7 @@ function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     }
 
     $cityIncome *= ($taxRate / 20);
-    
+
     return $cityIncome;
 }
 
@@ -290,9 +291,6 @@ function getWarGoldIncome(string $nationType, array $cityList){
 function processFall() {
     $db = DB::db();
 
-    //인구 증가
-    popIncrease();
-    
     // 7월엔 무조건 내정 1% 감소
     $db->update('city',[
         'dead'=>0,
@@ -303,6 +301,8 @@ function processFall() {
         'wall'=>$db->sqleval('wall * 0.99'),
     ],true);
 
+    //인구 증가
+    popIncrease();
 
     // > 10000 유지비 3%, > 1000 유지비 1%
     // 유지비 1%
@@ -378,7 +378,7 @@ function processRiceIncome() {
             $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
             $rice = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
             $generalObj->increaseVar('rice', $rice);
-            
+
             $logger = $generalObj->getLogger();
             if($generalObj->getVar('officer_level') > 4){
                 $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
@@ -418,7 +418,7 @@ function getRiceIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     }
 
     $cityIncome *= ($taxRate / 20);
-    
+
     return $cityIncome;
 }
 
@@ -439,12 +439,12 @@ function getWallIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     $cityIncome = 0;
     foreach($cityList as $rawCity){
         $cityID = $rawCity['city'];
-        
+
         $cityIncome += calcCityWallRiceIncome($rawCity, $officersCnt[$cityID]??0, $capitalID == $cityID, $nationLevel, $nationTypeObj);
     }
 
     $cityIncome *= ($taxRate / 20);
-    
+
     return $cityIncome;
 }
 
@@ -520,7 +520,7 @@ function disaster() {
         }
         else {
             $raiseProp = 0.06 - ($city['secu'] / $city['secu_max']) * 0.05; // 1 ~ 6%
-        }    
+        }
 
         if(Util::randBool($raiseProp)) {
             $targetCityList[] = $city;
@@ -592,11 +592,11 @@ function disaster() {
                 'def'=>$db->sqleval('def * %d', $affectRatio),
                 'wall'=>$db->sqleval('wall * %d', $affectRatio),
             ], 'city = %i', $city['city']);
-            
+
             $generalList = array_map(
                 function($rawGeneral) use ($city, $year, $month){
                     return new General($rawGeneral, null, $city, null, $year, $month, false);
-                }, 
+                },
                 $generalListByCity[$city['city']]??[]
             );
 
@@ -619,7 +619,7 @@ function disaster() {
                 'wall'=>$db->sqleval('least(wall * %d, wall_max)', $affectRatio),
             ], 'city = %i', $city['city']);
 
-            
+
         }
     }
 
