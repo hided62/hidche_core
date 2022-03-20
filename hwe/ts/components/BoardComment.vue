@@ -6,8 +6,8 @@
   </div>
 </template>
 <script lang="ts">
-import { BoardCommentItem } from "@/PageBoard.vue";
-import { defineComponent, PropType } from "vue";
+import type { BoardCommentItem } from "@/PageBoard.vue";
+import { defineComponent, type PropType } from "vue";
 
 export default defineComponent({
   name: "BoardComment",

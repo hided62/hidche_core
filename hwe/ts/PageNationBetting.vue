@@ -33,16 +33,15 @@
 <script lang="ts" setup>
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { BettingInfo, ToastType } from "@/defs";
+import type { BettingInfo, ToastType } from "@/defs";
 import { onMounted, ref } from "vue";
-import { SammoAPI, ValidResponse } from "./SammoAPI";
+import { SammoAPI, type ValidResponse } from "./SammoAPI";
 import { isString } from "lodash";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { joinYearMonth } from "./util/joinYearMonth";
 import BettingDetail from "@/components/BettingDetail.vue";
-import { useToast } from "bootstrap-vue-3/src/components/BToast/plugin";
+import { BContainer, useToast } from "bootstrap-vue-3";
 import { unwrap } from "./util/unwrap";
-import BContainer from "bootstrap-vue-3/src/components/BContainer.vue";
 
 type BettingListResponse = ValidResponse & {
   bettingList: Record<number, Omit<BettingInfo & { totalAmount: number }, 'candidates'>>,

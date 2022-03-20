@@ -1,6 +1,6 @@
+import { mergeAttributes } from '@tiptap/core'
 //https://github.com/joevallender/tiptap2-image-example/blob/main/src/extensions/custom-image-3.js
 import Image, { type ImageOptions } from '@tiptap/extension-image'
-import { mergeAttributes } from '@tiptap/core'
 
 export interface CustomImageOptions extends ImageOptions {
     sizes: string[],
@@ -8,7 +8,15 @@ export interface CustomImageOptions extends ImageOptions {
 
 declare module '@tiptap/core' {
     interface Commands<ReturnType> {
-        setImage: (options: { src: string, alt?: string, title?: string, size: string }) => ReturnType,
+        imageEx: {
+            setImageEx: (options: {
+                src?: string,
+                alt?: string,
+                title?: string,
+                size?: string,
+                align?: string,
+            }) => ReturnType,
+        }
     }
 }
 
@@ -51,7 +59,7 @@ export default Image.extend<CustomImageOptions>({
             // the same way as addAttributes `this`
             // seemed to lose context, so I've just
             // copied it in here directly
-            setImage: (options) => ({ tr, commands }) => {
+            setImageEx: (options) => ({ tr, commands }) => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 if (tr.selection?.node?.type?.name == 'custom-image') {

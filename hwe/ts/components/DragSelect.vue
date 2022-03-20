@@ -20,7 +20,7 @@ import {
   watch,
   onMounted,
   onBeforeUnmount,
-  PropType,
+  type PropType,
 } from "vue";
 import VueTypes from "vue-types";
 

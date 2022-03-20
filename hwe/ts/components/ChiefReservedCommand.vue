@@ -145,7 +145,7 @@
 <script lang="ts">
 import addMinutes from "date-fns/esm/addMinutes";
 import { stringifyUrl } from "query-string";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
@@ -156,26 +156,13 @@ import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
 import { isString } from "lodash";
 import { SammoAPI } from "@/SammoAPI";
+import type { ChiefResponse, CommandItem, TurnObj } from "@/defs";
 
-type commandItem = {
-  value: string;
-  title: string;
-  compensation: number;
-  simpleName: string;
-  possible: boolean;
-  reqArg: boolean;
-  searchText?: string;
-};
 
 /*declare const commandList: {
   category: string;
   values: commandItem[];
 }[];*/
-type TurnObj = {
-  action: string;
-  brief: string;
-  arg: null | [] | Record<string, number | string | number[] | string[]>;
-};
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -210,12 +197,7 @@ export default defineComponent({
       required: true,
     },
     commandList: {
-      type: Object as PropType<
-        {
-          category: string;
-          values: commandItem[];
-        }[]
-      >,
+      type: Object as PropType<ChiefResponse['commandList']>,
       required: true,
     },
   },
@@ -431,7 +413,7 @@ export default defineComponent({
       }
     }
 
-    const invCommandMap: Record<string, commandItem> = {};
+    const invCommandMap: Record<string, CommandItem> = {};
     for(const category of this.commandList){
       for(const command of category.values){
         invCommandMap[command.value] = command;

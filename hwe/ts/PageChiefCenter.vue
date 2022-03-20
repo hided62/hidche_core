@@ -161,7 +161,7 @@
                   :month="month"
                   :turn="officer.turn"
                   :turnTerm="turnTerm"
-                  :commandList="commandList"
+                  :commandList="unwrap(commandList)"
                   :turnTime="officer.turnTime"
                   :maxTurn="maxChiefTurn"
                   :maxPushTurn="Math.floor(maxChiefTurn / 2)"
@@ -253,8 +253,9 @@ import { parseTime } from "./util/parseTime";
 import { getNpcColor } from "./common_legacy";
 import TopItem from "@/ChiefCenter/TopItem.vue";
 import BottomItem from "@/ChiefCenter/BottomItem.vue";
-import { ChiefResponse, OptionalFull } from "./defs";
+import type { ChiefResponse, OptionalFull } from "./defs";
 import { SammoAPI } from "./SammoAPI";
+import { unwrap } from "@/util/unwrap";
 
 function isDropdownChildren(e?: Event): boolean {
   if (!e) {
@@ -477,6 +478,7 @@ export default defineComponent({
       subTableGridRows,
       reloadTable,
       getNpcColor,
+      unwrap,
       viewTarget,
       targetIsMe,
       maxPushTurn: props.maxChiefTurn / 2,

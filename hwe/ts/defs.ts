@@ -173,7 +173,14 @@ export type OptionalFull<Type> = {
     [Property in keyof Type]: Type[Property] | undefined;
 };
 
-export type commandItem = {
+export type TurnObj = {
+    action: string;
+    brief: string;
+    arg: null | [] | Record<string, number | string | number[] | string[]>;
+};
+
+
+export type CommandItem = {
     value: string;
     title: string;
     compensation: number;
@@ -181,8 +188,7 @@ export type commandItem = {
     possible: boolean;
     reqArg: boolean;
     searchText?: string;
-};
-
+  };
 
 export type ChiefResponse = {
     result: true;
@@ -199,11 +205,7 @@ export type ChiefResponse = {
             officerLevelText: string;
             officerLevel: number;
             npcType: number;
-            turn: {
-                action: string;
-                brief: string;
-                arg: Record<string, unknown>;
-            }[];
+            turn: TurnObj[];
         }
     >;
     isChief: boolean;
@@ -211,7 +213,7 @@ export type ChiefResponse = {
     officerLevel: number;
     commandList: {
         category: string;
-        values: commandItem[];
+        values: CommandItem[];
     }[];
 };
 

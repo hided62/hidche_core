@@ -480,7 +480,7 @@ import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 
 import { ref } from "vue";
-import {
+import type {
   IDItem,
   InvalidResponse,
   NationPolicy,
@@ -496,8 +496,7 @@ import { NPCPriorityBtnHelpMessage } from "@/helpTexts";
 import draggable from "vuedraggable";
 import TopBackBar from "@/components/TopBackBar.vue";
 import { convertIDArray } from "@util/convertIDArray";
-import { useToast } from 'bootstrap-vue-3/src/components/BToast/plugin';
-import BContainer from "bootstrap-vue-3/src/components/BContainer.vue";
+import { useToast, BContainer } from 'bootstrap-vue-3';
 
 const chiefActionPriority = ref<IDItem<NPCChiefActions>[]>([]);
 const chiefActionKeys = ref(new Set(staticValues.availableNationPriorityItems));

@@ -58,7 +58,7 @@ import BottomBar from "@/components/BottomBar.vue";
 import BoardArticle from "@/components/BoardArticle.vue";
 import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
-import { InvalidResponse } from "@/defs";
+import type { InvalidResponse } from "@/defs";
 import { autoResizeTextarea } from "@util/autoResizeTextarea";
 import { unwrap } from "@util/unwrap";
 export type BoardResponse = {

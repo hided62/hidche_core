@@ -89,7 +89,7 @@
         :value="
           colorConvert(editor.getAttributes('textStyle').color, '#ffffff')
         "
-        @input="editor.chain().focus().setColor($event.target.value).run()"
+        @input="editor.chain().focus().setColor(($event.target as HTMLInputElement).value).run()"
         v-b-tooltip.hover
         title="글자색"
       />
@@ -103,7 +103,7 @@
           )
         "
         @input="
-          editor.chain().focus().setBackgroundColor($event.target.value).run()
+          editor.chain().focus().setBackgroundColor(($event.target as HTMLInputElement).value).run()
         "
         v-b-tooltip.hover
         title="배경색"
@@ -176,7 +176,7 @@
     <b-button-toolbar>
       <b-button-group class="mx-1">
         <b-button
-          @click="editor.chain().focus().setImage({ size: 'small' }).run()"
+          @click="editor.chain().focus().setImageEx({ size: 'small' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'small',
@@ -188,7 +188,7 @@
           >1/4</b-button
         >
         <b-button
-          @click="editor.chain().focus().setImage({ size: 'medium' }).run()"
+          @click="editor.chain().focus().setImageEx({ size: 'medium' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'medium',
@@ -200,7 +200,7 @@
           >1/2</b-button
         >
         <b-button
-          @click="editor.chain().focus().setImage({ size: 'large' }).run()"
+          @click="editor.chain().focus().setImageEx({ size: 'large' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'large',
@@ -212,7 +212,7 @@
           >1</b-button
         >
         <b-button
-          @click="editor.chain().focus().setImage({ size: 'original' }).run()"
+          @click="editor.chain().focus().setImageEx({ size: 'original' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'original',
@@ -224,7 +224,7 @@
       <b-button-group class="mx-1">
         <b-button
           @click="
-            editor.chain().focus().setImage({ align: 'float-left' }).run()
+            editor.chain().focus().setImageEx({ align: 'float-left' }).run()
           "
           :class="{
             'is-active': editor.isActive('custom-image', {
@@ -236,7 +236,7 @@
           ><i class="bi bi-chevron-bar-left"></i
         ></b-button>
         <b-button
-          @click="editor.chain().focus().setImage({ align: 'left' }).run()"
+          @click="editor.chain().focus().setImageEx({ align: 'left' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'left',
@@ -247,7 +247,7 @@
           ><i class="bi bi-align-start"></i
         ></b-button>
         <b-button
-          @click="editor.chain().focus().setImage({ align: 'center' }).run()"
+          @click="editor.chain().focus().setImageEx({ align: 'center' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'center',
@@ -258,7 +258,7 @@
           ><i class="bi bi-align-center"></i
         ></b-button>
         <b-button
-          @click="editor.chain().focus().setImage({ align: 'right' }).run()"
+          @click="editor.chain().focus().setImageEx({ align: 'right' }).run()"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'right',
@@ -270,7 +270,7 @@
         ></b-button>
         <b-button
           @click="
-            editor.chain().focus().setImage({ align: 'float-right' }).run()
+            editor.chain().focus().setImageEx({ align: 'float-right' }).run()
           "
           :class="{
             'is-active': editor.isActive('custom-image', {
@@ -356,7 +356,7 @@ import { v4 as uuidv4 } from "uuid";
 import { unwrap } from "@/util/unwrap";
 import { getBase64FromFileObject } from "@/util/getBase64FromFileObject";
 import { isObject, isString } from "lodash";
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
 import { SammoAPI } from "@/SammoAPI";
 
 const compoment = defineComponent({
@@ -373,6 +373,7 @@ const compoment = defineComponent({
   },
   emits: ["ready", "update:modelValue"],
   methods: {
+    unwrap,
     chooseImage(e: Event) {
       const target = unwrap(e.target) as HTMLInputElement;
       this.imageUploadFiles = target.files;

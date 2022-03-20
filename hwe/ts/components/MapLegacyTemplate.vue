@@ -45,8 +45,8 @@
 </template>
 <script lang="ts">
 import "@/../css/map.css";
-import { reloadWorldMap, loadMapOption, MapCityParsed } from "@/map";
-import { defineComponent, onMounted, PropType, ref } from "vue";
+import { reloadWorldMap, type loadMapOption, type MapCityParsed } from "@/map";
+import { defineComponent, onMounted, type PropType, ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 export type { MapCityParsed };
 export default defineComponent({

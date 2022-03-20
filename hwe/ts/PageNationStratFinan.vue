@@ -304,16 +304,15 @@ import BottomBar from "@/components/BottomBar.vue";
 import { computed, defineComponent, reactive, ref, toRefs } from "vue";
 import { isString } from "lodash";
 import {
-  diplomacyState,
+  type diplomacyState,
   diplomacyStateInfo,
-  NationStaticItem,
+  type NationStaticItem,
 } from "./defs";
 import { SammoAPI } from "./SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
-import { ValidResponse } from "./util/callSammoAPI";
-import BContainer from "bootstrap-vue-3/src/components/BContainer.vue";
-import { useToast } from "bootstrap-vue-3/src/components/BToast/plugin";
+import type { ValidResponse } from "./util/callSammoAPI";
+import { useToast, BContainer } from "bootstrap-vue-3";
 import { unwrap } from "./util/unwrap";
 
 type NationItem = NationStaticItem & {

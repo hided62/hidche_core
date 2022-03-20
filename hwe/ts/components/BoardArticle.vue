@@ -46,12 +46,12 @@
   </div>
 </template>
 <script lang="ts">
-import { BoardArticleItem } from "@/PageBoard.vue";
+import type { BoardArticleItem } from "@/PageBoard.vue";
 import BoardComment from "@/components/BoardComment.vue";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, type PropType } from "vue";
 import axios from "axios";
 import { convertFormData } from "@util/convertFormData";
-import { InvalidResponse } from "@/defs";
+import type { InvalidResponse } from "@/defs";
 export default defineComponent({
   name: "BoardArticle",
   components: {
