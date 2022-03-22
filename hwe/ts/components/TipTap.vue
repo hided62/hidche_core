@@ -430,7 +430,7 @@ const compoment = defineComponent({
       }
 
       const imagePath = imageResult.path;
-      this.editor.chain().focus().setImage({ src: imagePath }).run();
+      this.editor.chain().focus().setImageEx({ src: imagePath }).run();
     },
     addImageLink(bvModalEvt: Event) {
       if (!this.imageLink) {
@@ -438,7 +438,7 @@ const compoment = defineComponent({
         bvModalEvt.preventDefault();
         return false;
       }
-      this.editor.chain().focus().setImage({ src: this.imageLink }).run();
+      this.editor.chain().focus().setImageEx({ src: this.imageLink }).run();
     },
     resetModal() {
       this.imageLink = "";
