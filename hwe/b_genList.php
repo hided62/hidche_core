@@ -172,7 +172,7 @@ $templates = new \League\Plates\Engine('templates');
 
         $general['expLevelText'] = getExpLevel($general['experience']);
 
-        $general['nameText'] = getColoredName($general['name'], $general['npc']);
+        $general['nameText'] = formatName($general['name'], $general['npc']);
 
         $general['modeText'] = formatDefenceTrain($general['defence_train']);
         $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name ?? '-';

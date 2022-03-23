@@ -111,7 +111,7 @@ if ($con >= 2) {
             }
             $chief = $chiefs[$chiefLevel] ?? ['name' => '-', 'npc' => 0];
             $officerLevelText = getOfficerLevelText($chiefLevel, $nation['level']);
-            $chiefText = getColoredName($chief['name'], $chief['npc']);
+            $chiefText = formatName($chief['name'], $chief['npc']);
             echo "<td class='center bg1'>{$officerLevelText}</td>
         <td class='center'>{$chiefText}</td>";
         }
@@ -178,7 +178,7 @@ if ($con >= 2) {
     <tr>
         <td colspan=5> 장수 일람 : ";
     foreach ($nations[0]['generals'] as $general) {
-        $generalText = getColoredName($general['name'], $general['npc']);
+        $generalText = formatName($general['name'], $general['npc']);
         echo "{$generalText}, ";
     }
     echo "

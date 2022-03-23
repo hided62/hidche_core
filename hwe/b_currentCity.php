@@ -364,7 +364,7 @@ $templates = new \League\Plates\Engine('templates');
                             }
 
                             $generalsName = array_map(function ($gen) {
-                                return getColoredName($gen['name'], $gen['npc']);
+                                return formatName($gen['name'], $gen['npc']);
                             }, $generals);
 
                             $enemyCrew = 0;

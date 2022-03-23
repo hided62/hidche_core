@@ -111,7 +111,7 @@ $sel[$type] = "selected";
         </tr>
         <?php foreach ($generalList as $general) : ?>
             <tr>
-                <td align=center><?= getColoredName($general['name'], $general['npc']) ?></td>
+                <td align=center><?= formatName($general['name'], $general['npc']) ?></td>
                 <td align=center><?= $general['owner_name'] ?></td>
                 <td align=center>Lv <?= $general['explevel'] ?></td>
                 <td align=center><?= $nationName[$general['nation']] ?></td>

@@ -692,21 +692,35 @@ function isConsumable(?string $item) : bool{
     return $itemClass->isConsumable();
 }
 
-function getNameColor(int $npcType):?string{
-    if($npcType >= 2){
-        return 'cyan';
-    }
-    if($npcType == 1){
+function getNPCColor(int $npc): ?string{
+    if ($npc == 1) {
         return 'skyblue';
     }
+    if ($npc == 4){
+        return 'deepskyblue';
+    }
+    if ($npc == 5){
+        return 'darkcyan';
+    }
+    if ($npc == 6){
+        return 'mediumaquamarine';
+    }
+
+    if ($npc > 1) {
+        return 'cyan';
+    }
+
     return null;
 }
-function getColoredName(string $name, int $npcType):string{
-    $color = getNameColor($npcType);
+
+function formatName(string $name, int $npc): string
+{
+    $color = getNPCColor($npc);
     if($color === null){
         return $name;
     }
-    return "<span style='color:{$color}'>{$name}</span>";
+
+    return "<span style='color:{$color}'>$name</span>";
 }
 
 function ConvertLog(?string $str, $type=1) : string {

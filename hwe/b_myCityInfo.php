@@ -71,7 +71,8 @@ $sel = [$type => "selected"];
     </table>
     <?php
 
-    $nation = getNationStaticInfo($me['nation']);  //국가정보
+    $nation = $db->queryFirstRow('SELECT nation, name, color, type, level, capital, gennum, `power`, `rate` from nation WHERE nation = %i', $nationID);  //국가정보
+    $nationTypeObj = buildNationTypeClass($nation['type']);
 
     $officerList = [];
     foreach ($db->query('SELECT no,name,npc,city,officer_level,officer_city,belong FROM general WHERE nation = %i AND 2 <= officer_level AND officer_level <= 4', $nationID) as $officer) {
@@ -80,6 +81,17 @@ $sel = [$type => "selected"];
             $officerList[$officerCityID] = [];
         }
         $officerList[$officerCityID][$officer['officer_level']] = $officer;
+    }
+
+    $generalList = $db->query('SELECT npc, name, city FROM general WHERE nation = %i', $me['nation']);
+    $cityGeneralList = [];
+    foreach ($generalList as $general) {
+        $cityID = $general['city'];
+        if (!key_exists($cityID, $cityGeneralList)) {
+            $cityGeneralList[$cityID] = [];
+        }
+
+        $cityGeneralList[$cityID][] = formatName($general['name'], $general['npc']);
     }
 
 
@@ -171,8 +183,12 @@ $sel = [$type => "selected"];
         ];
 
         $cityOfficerList = $officerList[$cityID] ?? [];
+        $effectiveOfficerCnt = 0;
         foreach ($cityOfficerList as $cityOfficer) {
-            $officerName[$cityOfficer['officer_level']] = getColoredName($cityOfficer['name'], $cityOfficer['npc']);
+            if ($cityOfficer['city'] == $cityID) {
+                $effectiveOfficerCnt += 1;
+            }
+            $officerName[$cityOfficer['officer_level']] = formatName($cityOfficer['name'], $cityOfficer['npc']);
         }
 
         if ($type == 10 && $city['region'] != $region) {
@@ -187,62 +203,60 @@ $sel = [$type => "selected"];
             $city['trade'] = "- ";
         }
 
-        echo "
-<table align=center width=1000 class='tb_layout bg2'>
-    <tr>
-        <td colspan=12 style=color:" . newColor($nation['color']) . "; bgcolor={$nation['color']}><font size=2>【 " . CityConst::$regionMap[$city['region']] . " | " . CityConst::$levelMap[$city['level']] . " 】 {$city['name']}</font></td>
-    </tr>
-    <tr>
-        <td align=center width=46 class='bg1'>주민</td>
-        <td align=center width=140>{$city['pop']}/{$city['pop_max']}</td>
-        <td align=center width=46 class='bg1'>농업</td>
-        <td align=center width=140>{$city['agri']}/{$city['agri_max']}</td>
-        <td align=center width=46 class='bg1'>상업</td>
-        <td align=center width=140>{$city['comm']}/{$city['comm_max']}</td>
-        <td align=center width=46 class='bg1'>치안</td>
-        <td align=center width=140>{$city['secu']}/{$city['secu_max']}</td>
-        <td align=center width=46 class='bg1'>수비</td>
-        <td align=center width=140>{$city['def']}/{$city['def_max']}</td>
-        <td align=center width=46 class='bg1'>성벽</td>
-        <td align=center width=140>{$city['wall']}/{$city['wall_max']}</td>
-    </tr>
-    <tr>
-        <td align=center class='bg1'>민심</td>
-        <td align=center>" . round($city['trust'], 1) . "</td>
-        <td align=center class='bg1'>시세</td>
-        <td align=center>{$city['trade']}%</td>
-        <td align=center class='bg1'>인구</td>
-        <td align=center>" . round($city['pop'] / $city['pop_max'] * 100, 2) . " %</td>
-        <td align=center class='bg1'>태수</td>
-        <td align=center>";
-        echo $officerName[4];
-        echo "</td>
-        <td align=center class='bg1'>군사</td>
-        <td align=center>";
-        echo $officerName[3];
-        echo "</td>
-        <td align=center class='bg1'>종사</td>
-        <td align=center>";
-        echo $officerName[2];
-        echo "</td>
-    </tr>
-    <tr>
-        <td align=center class='bg1'>장수</td>
-        <td colspan=11>";
-        $generalList = $db->query('SELECT npc, name FROM general WHERE city = %i AND nation = %i', $city['city'], $me['nation']);
-        if (!$generalList) {
-            echo "-";
-        }
-        foreach ($generalList as $general) {
-            echo getColoredName($general['name'], $general['npc']) . ', ';
-        }
-        echo "
-        </td>
-    </tr>
-</table>
-";
-    }
+
+        $cityGoldIncome = $nation['rate'] / 20 * calcCityGoldIncome($city, $effectiveOfficerCnt, $nation['capital'] == $cityID, $nation['level'], $nationTypeObj);
+        $cityRiceIncome = $nation['rate'] / 20 * calcCityRiceIncome($city, $effectiveOfficerCnt, $nation['capital'] == $cityID, $nation['level'], $nationTypeObj);
+        $cityWallIncome = $nation['rate'] / 20 * calcCityWallRiceIncome($city, $effectiveOfficerCnt, $nation['capital'] == $cityID, $nation['level'], $nationTypeObj);
+
     ?>
+        <table align=center width=1000 class='tb_layout bg2'>
+            <tr>
+                <td colspan=10 style="color:<?= newColor($nation['color']) ?>; bgcolor=<?= $nation['color'] ?>;">
+                    <font size=2>【 <?= CityConst::$regionMap[$city['region']] ?> | <?= CityConst::$levelMap[$city['level']] ?> 】 <?= $city['name'] ?></font>
+                </td>
+            </tr>
+            <tr style='text-align:center;'>
+                <td width=60 class='bg1'>주민</td>
+                <td width=140 class='pop-value'><?= $city['pop'] ?>/<?= $city['pop_max'] ?></td>
+                <td width=60 class='bg1'>인구율</td>
+                <td width=140 class='pop-prop-value'><?= round($city['pop'] / $city['pop_max'] * 100, 2) ?>%</td>
+                <td width=60 class='bg1'>자금 수입</td>
+                <td width=140 class='gold-income'><?= number_format($cityGoldIncome) ?></td>
+                <td width=60 class='bg1'>군량 수입</td>
+                <td width=140 class='rice-income'><?= number_format($cityRiceIncome) ?></td>
+                <td width=60 class='bg1'>둔전 수입</td>
+                <td width=140 class='wall-income'><?= number_format($cityWallIncome) ?></td>
+            </tr>
+            <tr style='text-align:center;'>
+                <td class='bg1'>농업</td>
+                <td class='agri-value'><?= $city['agri'] ?>/<?= $city['agri_max'] ?></td>
+                <td class='bg1'>상업</td>
+                <td class='comm-value'><?= $city['comm'] ?>/<?= $city['comm_max'] ?></td>
+                <td class='bg1'>치안</td>
+                <td class='secu-value'><?= $city['secu'] ?>/<?= $city['secu_max'] ?></td>
+                <td class='bg1'>수비</td>
+                <td class='def-value'><?= $city['def'] ?>/<?= $city['def_max'] ?></td>
+                <td class='bg1'>성벽</td>
+                <td class='wall-value'><?= $city['wall'] ?>/<?= $city['wall_max'] ?></td>
+            </tr>
+            <tr style='text-align:center;'>
+                <td class='bg1'>민심</td>
+                <td class='trust-value'><?= round($city['trust'], 1) ?></td>
+                <td class='bg1'>시세</td>
+                <td class='trade-value'><?= $city['trade'] ?>%</td>
+                <td class='bg1'>태수</td>
+                <td class='officer-4-value'><?= $officerName[4] ?></td>
+                <td class='bg1'>군사</td>
+                <td class='officer-3-value'><?= $officerName[3] ?></td>
+                <td class='bg1'>종사</td>
+                <td class='officer-2-value'><?= $officerName[2] ?></td>
+            </tr>
+            <tr>
+                <td style='text-align:center;' class='bg1'>장수</td>
+                <td colspan=9 class='city-generals'><?= key_exists($cityID, $cityGeneralList) ? join(', ', $cityGeneralList[$cityID]) : '-' ?></td>
+            </tr>
+        </table>
+    <?php } ?>
 
     <table align=center width=1000 class='tb_layout bg0 anchor'>
         <tr>
@@ -252,7 +266,7 @@ $sel = [$type => "selected"];
             <td><?= banner() ?></td>
         </tr>
     </table>
+    <div id="helper_genlist" style="display:none;"></div>
 </body>
-<div id="helper_genlist" style="display:none;"></div>
 
 </html>

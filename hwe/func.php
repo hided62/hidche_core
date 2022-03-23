@@ -171,7 +171,7 @@ function cityInfo(General $generalObj)
     ];
 
     foreach ($db->query('SELECT `officer_level`, `name`, npc, no FROM general WHERE officer_city = %i', $cityID) as $officer) {
-        $officerName[$officer['officer_level']] = getColoredName($officer['name'], $officer['npc']);
+        $officerName[$officer['officer_level']] = formatName($officer['name'], $officer['npc']);
     }
 
     $city['officerName'] = $officerName;
@@ -199,8 +199,8 @@ function myNationInfo(General $generalObj)
 
     $topChiefs = Util::convertArrayToDict($db->query('SELECT officer_level, no, name, npc FROM general WHERE nation = %i AND officer_level >= 11', $nationID), 'officer_level');
 
-    $level12Name = key_exists(12, $topChiefs) ? getColoredName($topChiefs[12]['name'], $topChiefs[12]['npc']) : '-';
-    $level11Name = key_exists(11, $topChiefs) ? getColoredName($topChiefs[11]['name'], $topChiefs[11]['npc']) : '-';
+    $level12Name = key_exists(12, $topChiefs) ? formatName($topChiefs[12]['name'], $topChiefs[12]['npc']) : '-';
+    $level11Name = key_exists(11, $topChiefs) ? formatName($topChiefs[11]['name'], $topChiefs[11]['npc']) : '-';
 
     $impossibleStrategicCommandLists = [];
     $strategicCommandLists = GameConst::$availableChiefCommand['전략'];

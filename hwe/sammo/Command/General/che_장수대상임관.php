@@ -13,7 +13,7 @@ use \sammo\{
 };
 
 use function sammo\getAllNationStaticInfo;
-use function \sammo\getColoredName;
+use function \sammo\formatName;
 use function \sammo\tryUniqueItemLottery;
 use function \sammo\getInvitationList;
 use function \sammo\getNationStaticInfo;

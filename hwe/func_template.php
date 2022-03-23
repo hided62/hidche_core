@@ -231,36 +231,7 @@ function formatLeadershipBonus(int $value): string
     return "<font color=cyan>+{$value}</font>";
 }
 
-function getNPCColor(int $npc): ?string{
-    if ($npc == 1) {
-        return 'skyblue';
-    }
-    if ($npc == 4){
-        return 'deepskyblue';
-    }
-    if ($npc == 5){
-        return 'darkcyan';
-    }
-    if ($npc == 6){
-        return 'mediumaquamarine';
-    }
 
-    if ($npc > 1) {
-        return 'cyan';
-    }
-
-    return null;
-}
-
-function formatName(string $name, int $npc): string
-{
-    $color = getNPCColor($npc);
-    if($color === null){
-        return $name;
-    }
-
-    return "<span style='color:{$color}'>$name</span>";
-}
 
 function getMapTheme(): string
 {

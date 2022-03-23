@@ -45,6 +45,7 @@ type CityItem = {
     warn성벽: boolean,
 
     $주민: JQuery<HTMLElement>,
+    $인구율: JQuery<HTMLElement>,
     $농업: JQuery<HTMLElement>,
     $상업: JQuery<HTMLElement>,
     $치안: JQuery<HTMLElement>,
@@ -294,7 +295,7 @@ $(function () {
     const loadUser = function () {
         $.each(cityList, function (idx, val) {
             if (typeof val.users == "undefined") {
-                val.obj.append('<tr><td colspan="12"><table align="center" class="tb_layout cityUser bg0">' +
+                val.obj.append('<tr><td colspan="10"><table align="center" class="tb_layout cityUser bg0">' +
                     '<thead><tr>' +
                     '<td width="100" align="center" class="bg1">이 름</td><td width="100" align="center" class="bg1">통무지</td><td width="100" align="center" class="bg1">부 대</td><td width="60" align="center" class="bg1">자 금</td>' +
                     '<td width="60" align="center" class="bg1">군 량</td><td width="30" align="center" class="bg1">守</td><td width="60" align="center" class="bg1">병 종</td>' +
@@ -341,8 +342,6 @@ $(function () {
                 if (cityInfo.warn치안) $work.html($work.html().split('치안 강화').join('<span style="color:yellow;">치안 강화</span>'));
                 if (cityInfo.warn수비) $work.html($work.html().split('수비 강화').join('<span style="color:yellow;">수비 강화</span>'));
                 if (cityInfo.warn성벽) $work.html($work.html().split('성벽 보수').join('<span style="color:yellow;">성벽 보수</span>'));
-
-
 
                 const $stat = $this.children('.i_stat');
                 const stat = $stat.text();
@@ -414,9 +413,9 @@ $(function () {
             }
 
             const cityInfo: CityItem = {
-                태수:{},
-                군사:{},
-                종사:{},
+                태수: {},
+                군사: {},
+                종사: {},
             } as CityItem;
 
             //이름 추출
@@ -450,13 +449,13 @@ $(function () {
 
 
             {
-                const $baseTr = $this.find('tr:eq(1)');
-                cityInfo.$주민 = $baseTr.find('td:eq(1)');
-                cityInfo.$농업 = $baseTr.find('td:eq(3)');
-                cityInfo.$상업 = $baseTr.find('td:eq(5)');
-                cityInfo.$치안 = $baseTr.find('td:eq(7)');
-                cityInfo.$수비 = $baseTr.find('td:eq(9)');
-                cityInfo.$성벽 = $baseTr.find('td:eq(11)');
+                cityInfo.$주민 = $this.find('.pop-value');
+                cityInfo.$인구율 = $this.find('.pop-prop-value');
+                cityInfo.$농업 = $this.find('.agri-value');
+                cityInfo.$상업 = $this.find('.comm-value');
+                cityInfo.$치안 = $this.find('.secu-value');
+                cityInfo.$수비 = $this.find('.def-value');
+                cityInfo.$성벽 = $this.find('.wall-value');
 
                 let tmpVal;
 
@@ -484,9 +483,18 @@ $(function () {
                 cityInfo.성벽 = parseInt(tmpVal[0]);
                 cityInfo.max성벽 = parseInt(tmpVal[1]);
 
-                if (cityInfo.주민 > cityInfo.max주민 * 0.9) { cityInfo.$주민.css('color', 'lightgreen'); }
-                else if (cityInfo.주민 > cityInfo.max주민 * 0.7) { cityInfo.$주민.css('color', 'yellow'); }
-                else { cityInfo.$주민.css('color', 'orangered'); }
+                if (cityInfo.주민 > cityInfo.max주민 * 0.9) {
+                    cityInfo.$주민.css('color', 'lightgreen');
+                    cityInfo.$인구율.css('color', 'lightgreen');
+                }
+                else if (cityInfo.주민 > cityInfo.max주민 * 0.7) {
+                    cityInfo.$주민.css('color', 'yellow');
+                    cityInfo.$인구율.css('color', 'yellow');
+                }
+                else {
+                    cityInfo.$주민.css('color', 'orangered');
+                    cityInfo.$인구율.css('color', 'orangered');
+                }
 
                 if (cityInfo.농업 > cityInfo.max농업 * 0.8) { cityInfo.$농업.css('color', 'lightgreen'); }
                 else if (cityInfo.농업 > cityInfo.max농업 * 0.4) { cityInfo.$농업.css('color', 'yellow'); }
@@ -541,16 +549,15 @@ $(function () {
 
             //태수,군사,종사
             {
-                const $baseTr = $this.find('tr:eq(2)');
-                cityInfo.태수.$obj = $baseTr.find('td:eq(7)');
-                cityInfo.군사.$obj = $baseTr.find('td:eq(9)');
-                cityInfo.종사.$obj = $baseTr.find('td:eq(11)');
+                cityInfo.태수.$obj = $this.find('.officer-4-value');
+                cityInfo.군사.$obj = $this.find('.officer-3-value');
+                cityInfo.종사.$obj = $this.find('.officer-2-valuet');
             }
 
             //기타
             {
 
-                cityInfo.userCnt = $this.find('tr:eq(3) td:eq(1)').text().split(',').length - 1;
+                cityInfo.userCnt = $this.find('.city-generals').text().split(',').length - 1;
             }
 
             cityInfo.obj = $this;
@@ -572,7 +579,7 @@ $(function () {
         const $sort_more = $('#sort_more');
         $sort_more.html('재 정렬 순서 :');
 
-        const sortIt = function(callback: (lhs:CityItem, rhs:CityItem)=>number) {
+        const sortIt = function (callback: (lhs: CityItem, rhs: CityItem) => number) {
             let arCity: CityItem[] = [];
             $('.cityInfo').each(function () {
                 const $this = $(this);
