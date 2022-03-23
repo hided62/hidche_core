@@ -6,11 +6,11 @@ export type ValidResponse = {
     result: true
 }
 
-export async function callSammoAPI<ResultType extends ValidResponse>(path: string | string[], args?: Record<string, unknown>): Promise<ResultType>;
-export async function callSammoAPI<ResultType extends ValidResponse>(path: string | string[], args: Record<string, unknown> | undefined, returnError: false): Promise<ResultType>;
-export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(path: string | string[], args: Record<string, unknown> | undefined, returnError: true): Promise<ResultType | ErrorType>;
+export async function callSammoAPI<ResultType extends ValidResponse>(path: string | string[], args?: Record<string, unknown> | Record<string, unknown>[]): Promise<ResultType>;
+export async function callSammoAPI<ResultType extends ValidResponse>(path: string | string[], args: Record<string, unknown> | Record<string, unknown>[] | undefined, returnError: false): Promise<ResultType>;
+export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(path: string | string[], args: Record<string, unknown> | Record<string, unknown>[] | undefined, returnError: true): Promise<ResultType | ErrorType>;
 
-export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(path: string | string[], args?: Record<string, unknown>, returnError = false): Promise<ResultType | ErrorType> {
+export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(path: string | string[], args?: Record<string, unknown> | Record<string, unknown>[], returnError = false): Promise<ResultType | ErrorType> {
     if (isArray(path)) {
         path = path.join('/');
     }

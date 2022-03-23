@@ -319,12 +319,13 @@ import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
 import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI, type InvalidResponse } from "./SammoAPI";
-import type { CommandItem, ReserveCommandResponse } from "@/defs";
+import type { CommandItem, ReserveBulkCommandResponse, ReserveCommandResponse } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider } from "bootstrap-vue-3";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { TurnObj } from '@/defs';
 import { unwrap } from "./util/unwrap";
+import type { Args } from "./processing/args";
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -620,37 +621,33 @@ async function reloadCommandList() {
 
 async function reserveCommandDirect(args: [number[], TurnObj][], reload = true): Promise<boolean> {
   const waiterList: Promise<ReserveCommandResponse | InvalidResponse>[] = [];
+
+  const query: {
+    turnList: number[],
+    action: string,
+    arg: Args
+  }[] = [];
   for (const [turnList, { action, arg }] of args) {
-    waiterList.push(
-      SammoAPI.Command.ReserveCommand<ReserveCommandResponse, InvalidResponse>({
-        turnList,
-        action,
-        arg,
-      }, true)
-    );
+    query.push({
+      turnList,
+      action,
+      arg
+    });
   }
 
-  let success = true;
-  for (const [idx, waiter] of waiterList.entries()) {
-    try {
-      const response = await waiter;
-      if (!response.result) {
-        const message = `${args[idx][0].join(',')}을 예약하지 못했습니다: ${response.reason}`
-        console.error(message, args[idx][1]);
-        alert(message);
-        success = false;
-      }
-    }
-    catch (e) {
-      const message = `${args[idx][0].join(',')}을 예약하지 못했습니다: ${e}`
-      console.error(message, args[idx][1]);
-      success = false;
-    }
+  try {
+    await SammoAPI.Command.ReserveBulkCommand<ReserveBulkCommandResponse>(query);
+    releaseSelectedTurnList();
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return false;
   }
+
   if (reload) {
     await reloadCommandList();
   }
-  return success;
+  return true;
 }
 
 function getSelectedTurnList(): number[] {

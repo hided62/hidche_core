@@ -40,6 +40,11 @@ export type ReserveCommandResponse = {
     brief: string,
 }
 
+export type ReserveBulkCommandResponse = {
+    result: true,
+    briefList: string[],
+}
+
 export type NationLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export const NationLevelText: Record<NationLevel, string> = {
     0: '방랑군',
