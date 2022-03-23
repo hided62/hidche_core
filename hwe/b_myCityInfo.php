@@ -211,7 +211,7 @@ $sel = [$type => "selected"];
     ?>
         <table align=center width=1000 class='tb_layout bg2'>
             <tr>
-                <td colspan=10 style="color:<?= newColor($nation['color']) ?>; bgcolor=<?= $nation['color'] ?>;">
+                <td colspan=10 style="color:<?= newColor($nation['color']) ?>; bgcolor:<?= $nation['color'] ?>;">
                     <font size=2>【 <?= CityConst::$regionMap[$city['region']] ?> | <?= CityConst::$levelMap[$city['level']] ?> 】 <?= $city['name'] ?></font>
                 </td>
             </tr>
