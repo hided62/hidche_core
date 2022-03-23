@@ -41,8 +41,6 @@ if ($permission < 4) {
     ]);
 }
 
-$reason = trim($reason);
-
 $letter = $db->queryFirstRow('SELECT * FROM ng_diplomacy WHERE no=%i AND src_nation_id = %i AND state = \'proposed\'', $letterNo, $me['nation']);
 if(!$letter){
     Json::die([
@@ -66,7 +64,7 @@ $unlimited = new \DateTime('9999-12-31');
 $aux['reason'] = [
     'who'=>$me['no'],
     'action'=>'cancelled',
-    'reason'=>$reason
+    'reason'=>'회수',
 ];
 $db->update('ng_diplomacy', [
     'state'=>'cancelled',

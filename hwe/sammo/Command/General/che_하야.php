@@ -62,6 +62,7 @@ class che_하야 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
+        $generalID = $general->getID();
         $generalName = $general->getName();
         $josaYi = JosaUtil::pick($generalName, '이');
 
@@ -101,6 +102,17 @@ class che_하야 extends Command\GeneralCommand{
         $general->setVar('officer_city', 0);
         $general->setVar('belong', 0);
         $general->setVar('makelimit', 12);
+
+        //부대장일 경우
+        if($general->getVar('troop') == $generalID){
+            // 모두 탈퇴
+            $db->update('general', [
+                'troop'=>0,
+            ], 'troop = %i', $generalID);
+            $db->delete('troop', 'troop_leader=%i', $generalID);
+        }
+        $general->setVar('troop', 0);
+
         $general->increaseInheritancePoint('active_action', 1);
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));

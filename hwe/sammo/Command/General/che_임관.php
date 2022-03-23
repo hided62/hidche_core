@@ -162,6 +162,7 @@ class che_임관 extends Command\GeneralCommand
         $general->setVar('officer_level', 1);
         $general->setVar('officer_city', 0);
         $general->setVar('belong', 1);
+        $general->setVar('troop', 0);
 
         if ($this->destGeneralObj !== null) {
             $general->setVar('city', $this->destGeneralObj->getCityID());
@@ -200,6 +201,7 @@ class che_임관 extends Command\GeneralCommand
 
         $rawNationList = Util::convertArrayToDict($db->query('SELECT nation,`name`,color,gennum,`power` FROM nation'), 'nation');
         $scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_msg');
+        $nationList = [];
         foreach ($scoutMsgs as $destNationID => $scoutMsg) {
             $rawNationList[$destNationID]['scoutmsg'] = $scoutMsg;
         }

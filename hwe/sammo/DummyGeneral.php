@@ -16,6 +16,9 @@ class DummyGeneral extends General{
             'dedication'=>0,
             'gold'=>0,
             'rice'=>0,
+            'leadership'=>10,
+            'strength'=>10,
+            'intel'=>10,
         ];
 
         $this->raw = $raw;
