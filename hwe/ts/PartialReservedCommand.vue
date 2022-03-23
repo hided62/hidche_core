@@ -224,7 +224,6 @@ selectTurn(...$event);
           )"
           :key="turnIdx"
           class="turn_pad center"
-          @click="chooseCommand(turnObj.action)"
         >
           <span
             class="turn_text"
