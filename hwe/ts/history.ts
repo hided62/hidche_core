@@ -25,7 +25,7 @@ $(function ($) {
     let $elements = $();
 
     const endDate = joinYearMonth(staticValues.lastYear, staticValues.lastMonth) + 1;//연감 마지막 + 1(현재)
-    let currDate = joinYearMonth(staticValues.startYear, staticValues.startMonth);
+    let currDate = joinYearMonth(currYear, currMonth);
     while (currDate <= endDate) {
         let sel = '';
         if (currDate == selectDate) {

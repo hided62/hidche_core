@@ -117,7 +117,9 @@ $nations = $history['nations'];
             'lastMonth' => $e_month,
             'selectYear' => $year,
             'selectMonth' => $month,
-            'nations' => $nations ? JSON::encode($history['nations']) : '{}'
+            'nations' => $nations ? $history['nations'] : [],
+            'serverNick' => DB::prefix(),
+            'serverID' => UniqueConst::$serverID,
         ]
     ])?>
     <?= WebUtil::printDist('ts', ['common', 'history']) ?>
@@ -205,12 +207,6 @@ $nations = $history['nations'];
             <td><?= banner() ?> </td>
         </tr>
     </table>
-    <?= WebUtil::printStaticValues([
-        'staticValues' => [
-            'serverNick' => DB::prefix(),
-            'serverID' => UniqueConst::$serverID,
-        ]
-    ])?>
     <script>
         <?php if($isCurrent): ?>
         reloadWorldMap({
