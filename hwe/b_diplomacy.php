@@ -98,9 +98,13 @@ $neutralStateCharMap = [
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printCSS('css/history.css') ?>
     <?= WebUtil::printDist('ts', ['common', 'map']) ?>
+    <?= WebUtil::printStaticValues([
+        'staticValues' => [
+            'serverNick' => DB::prefix(),
+            'serverID' => UniqueConst::$serverID
+        ],
+    ]) ?>
     <script>
-        window.serverNick = '<?= DB::prefix() ?>';
-        window.serverID = '<?= UniqueConst::$serverID ?>';
         $(function() {
 
             reloadWorldMap({

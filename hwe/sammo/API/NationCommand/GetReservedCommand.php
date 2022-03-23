@@ -117,6 +117,8 @@ class GetReservedCommand extends \sammo\BaseAPI
             'autorun_limit' => $generalObj->getAuxVar('autorun_limit'),
             'officerLevel' => $me['officer_level'],
             'commandList' => getChiefCommandTable($generalObj),
+            'mapName' => GameConst::$mapName,
+            'unitSet' => GameConst::$unitSet,
         ];
     }
 }

@@ -9,8 +9,12 @@ import { exportWindow } from '@util/exportWindow';
 import { htmlReady } from './util/htmlReady';
 import { initTooltip } from './legacy/initTooltip';
 
-declare const serverNick: string;
-declare const serverID: string;
+declare const staticValues: {
+    serverNick: string;
+    serverID: string;
+}
+
+const { serverNick, serverID } = staticValues;
 
 type CityPositionMap = {
     [cityID: number]: [string, number, number];

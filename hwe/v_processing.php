@@ -76,13 +76,22 @@ if (!$commandObj->hasPermissionToReserve()) {
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
     <?= WebUtil::printStaticValues([
-        'serverNick' => DB::prefix(),
-        'serverID' => UniqueConst::$serverID,
+        'staticValues' => [
+            'serverNick' => DB::prefix(),
+            'serverID' => UniqueConst::$serverID,
+            'commandName' => $commandObj->getName(),
+            'turnList' => $turnList,
+            'currentCity' => $general->getCityID(),
+            'currentNation' => $general->getNationID(),
+            'entryInfo' => [$isChiefTurn?'Nation':'General', $commandType],
+            'mapName' => GameConst::$mapName,
+            'unitSet' => GameConst::$unitSet,
+        ],
         'commandName' => $commandObj->getName(),
         'turnList' => $turnList,
         'currentCity' => $general->getCityID(),
         'currentNation' => $general->getNationID(),
-        'entryInfo' => [$isChiefTurn?'Nation':'General', $commandType]
+        'entryInfo' => [$isChiefTurn?'Nation':'General', $commandType],
     ])?>
     <?= WebUtil::printStaticValues($commandObj->exportJSVars(), false) ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />

@@ -275,9 +275,17 @@ class GameConstBase
 
     /** @var array 선택 가능한 커맨드 */
     public static $availableGeneralCommand = [
-        '' => [
+        '개인' => [
             '휴식',
-            'che_요양'
+            'che_요양',
+            'che_단련',
+            'che_숙련전환',
+            'che_견문',
+            'che_은퇴',
+            'che_장비매매',
+            'che_군량매매',
+            'che_내정특기초기화',
+            'che_전투특기초기화',
         ],
         '내정' => [
             'che_농지개간',
@@ -291,43 +299,35 @@ class GameConstBase
             'che_물자조달',
         ],
         '군사' => [
-            'che_소집해제',
-            'che_첩보',
             'che_징병',
             'che_모병',
             'che_훈련',
             'che_사기진작',
             'che_출병',
+            'che_집합',
+            'che_소집해제',
+            'che_첩보',
         ],
         '인사' => [
             'che_이동',
             'che_강행',
             'che_인재탐색',
             'che_등용',
-            'che_집합',
             'che_귀환',
             'che_임관',
             'che_랜덤임관',
             'che_장수대상임관',
         ],
         '계략' => [
-            'che_화계',
-            'che_파괴',
-            'che_탈취',
             'che_선동',
+            'che_탈취',
+            'che_파괴',
+            'che_화계',
         ],
-        '개인' => [
-            'che_내정특기초기화',
-            'che_전투특기초기화',
-            'che_단련',
-            'che_숙련전환',
-            'che_견문',
-            'che_장비매매',
-            'che_군량매매',
+        '국가' => [
             'che_증여',
             'che_헌납',
             'che_하야',
-            'che_은퇴',
             'che_거병',
             'che_건국',
             'che_선양',

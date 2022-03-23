@@ -425,7 +425,7 @@ export default defineComponent({
     const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
       length: this.maxTurn,
     }).fill({
-      arg: null,
+      arg: {},
       brief: "",
       action: "",
       year: undefined,

@@ -1,12 +1,14 @@
 <template>
   <div
     ref="container"
-    style="
-      position: relative;
-      user-select: none;
-      overflow: hidden;
-      touch-action: none;
+    :style="{
+      position: 'relative',
+      userSelect: disabled ? undefined : 'none',
+      overflow: 'hidden',
+      touchAction: disabled ? undefined : 'none',
+    }
     "
+    :class="{ disabledDrag: disabled }"
   >
     <slot :selected="intersected" />
   </div>
@@ -58,6 +60,11 @@ export default defineComponent({
       required: false,
       default: () => ref(new Set()),
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
   emits: ["update:modelValue", "dragDone", "dragStart"],
   setup(props, { emit }) {
@@ -138,6 +145,9 @@ export default defineComponent({
 
       let isMine = false;
       function startDrag(e: MouseEvent | Touch) {
+        if (props.disabled) {
+          return;
+        }
         containerRect = uContainer.getBoundingClientRect();
         children = uContainer.children;
         start = getCoords(e);
@@ -152,6 +162,9 @@ export default defineComponent({
         emit("dragStart");
       }
       function drag(e: MouseEvent | Touch) {
+        if (props.disabled) {
+          return;
+        }
         end = getCoords(e);
         const dimensions = getDimensions(start, end);
         if (end.x < start.x) {
@@ -165,6 +178,9 @@ export default defineComponent({
         intersection();
       }
       function endDrag() {
+        if (props.disabled) {
+          return;
+        }
         start = { x: 0, y: 0 };
         end = { x: 0, y: 0 };
         box.style.width = "0";
@@ -172,16 +188,34 @@ export default defineComponent({
         document.removeEventListener("mousemove", drag);
         document.removeEventListener("touchmove", touchMove);
         box.remove();
-        if(isMine){
-            emit("dragDone", intersected.value);
+        if (isMine) {
+          emit("dragDone", intersected.value);
         }
         isMine = false;
       }
 
-      uContainer.addEventListener("mousedown", startDrag);
-      uContainer.addEventListener("touchstart", touchStart);
-      document.addEventListener("mouseup", endDrag);
-      document.addEventListener("touchend", endDrag);
+      watch(() => props.disabled, disabledNext => {
+        if (disabledNext) {
+          uContainer.removeEventListener("mousedown", startDrag);
+          uContainer.removeEventListener("touchstart", touchStart);
+          document.removeEventListener("mouseup", endDrag);
+          document.removeEventListener("touchend", endDrag);
+        }
+        else {
+          uContainer.addEventListener("mousedown", startDrag);
+          uContainer.addEventListener("touchstart", touchStart);
+          document.addEventListener("mouseup", endDrag);
+          document.addEventListener("touchend", endDrag);
+        }
+      });
+
+      if (!props.disabled) {
+        uContainer.addEventListener("mousedown", startDrag);
+        uContainer.addEventListener("touchstart", touchStart);
+        document.addEventListener("mouseup", endDrag);
+        document.addEventListener("touchend", endDrag);
+      }
+
 
       onBeforeUnmount(() => {
         uContainer.removeEventListener("mousedown", startDrag);

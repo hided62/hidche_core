@@ -126,19 +126,34 @@ if (!$otherTextInfo) {
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printStaticValues([
+        //deprecated, staticValues를 이용할 것
         'serverName' => $serverName,
         'serverCnt' => $serverCnt,
         'serverNick' => DB::prefix(),
         'serverID' => UniqueConst::$serverID,
         'maxTurn' => GameConst::$maxTurn,
         'maxPushTurn' => 12,
-        'commandList' => getCommandTable($generalObj),
         'serverNow' => TimeUtil::now(false),
-        'baseColor2' => GameConst::$basecolor2,
         'lastExecuted' => $gameStor->turntime,
         'isLocked' => $plock,
         'isTournamentActive' => $isTournamentActive,
-        'isBettingActive' => $isBettingActive
+        'isBettingActive' => $isBettingActive,
+        'staticValues' => [
+            'serverName' => $serverName,
+            'serverCnt' => $serverCnt,
+            'serverNick' => DB::prefix(),
+            'serverID' => UniqueConst::$serverID,
+            'maxTurn' => GameConst::$maxTurn,
+            'maxPushTurn' => 12,
+            'commandList' => getCommandTable($generalObj),
+            'serverNow' => TimeUtil::now(false),
+            'lastExecuted' => $gameStor->turntime,
+            'isLocked' => $plock,
+            'isTournamentActive' => $isTournamentActive,
+            'isBettingActive' => $isBettingActive,
+            'mapName' => GameConst::$mapName,
+            'unitSet' => GameConst::$unitSet,
+        ]
     ]) ?>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>

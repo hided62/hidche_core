@@ -3,29 +3,12 @@
     <div class="col alert alert-dark m-0 p-1 center">
       <h4 class="m-0">명령 목록</h4>
     </div>
-
     <div class="row gx-1">
       <div class="col d-grid">
-        <b-dropdown left text="턴 선택">
-          <b-dropdown-item @click="selectTurn()">해제</b-dropdown-item>
-          <b-dropdown-item @click="selectAll(true)">모든턴</b-dropdown-item>
-          <b-dropdown-item @click="selectStep(0, 2)">홀수턴</b-dropdown-item>
-          <b-dropdown-item @click="selectStep(1, 2)">짝수턴</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-
-          <b-dropdown-text v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
-            {{ spanIdx }}턴 간격<br />
-            <b-button-group>
-              <b-button
-                class="ignoreMe"
-                v-for="beginIdx in spanIdx"
-                :key="beginIdx"
-                @click="selectStep(beginIdx - 1, spanIdx)"
-                >{{ beginIdx }}</b-button
-              >
-            </b-button-group>
-          </b-dropdown-text>
-        </b-dropdown>
+        <BButton
+          variant="secondary"
+          @click="isEditMode = !isEditMode"
+        >{{ isEditMode ? '일반 모드로' : '고급 모드로' }}</BButton>
       </div>
       <div
         class="col alert alert-primary m-0 p-0"
@@ -35,29 +18,127 @@
           justify-content: center;
           align-items: center;
         "
-      >
-        {{ serverNow }}
-      </div>
+      >{{ formatTime(serverNow, "HH:mm:ss") }}</div>
       <div class="col d-grid">
-        <b-dropdown right text="반복">
-          <b-dropdown-item
+        <BDropdown right text="반복">
+          <BDropdownItem
             v-for="turnIdx in maxPushTurn"
             :key="turnIdx"
             @click="repeatGeneralCommand(turnIdx)"
-            >{{ turnIdx }}턴
-          </b-dropdown-item>
-        </b-dropdown>
+          >{{ turnIdx }}턴</BDropdownItem>
+        </BDropdown>
       </div>
     </div>
 
-    <div class="commandTable">
+    <div class="commandSelectFormAnchor">
+      <div v-if="isEditMode" class="row gx-1">
+        <div class="col-4 d-grid">
+          <BDropdown left text="범위">
+            <BDropdownItem @click="selectTurn()">해제</BDropdownItem>
+            <BDropdownItem @click="selectAll(true)">모든턴</BDropdownItem>
+            <BDropdownItem @click="selectStep(0, 2)">홀수턴</BDropdownItem>
+            <BDropdownItem @click="selectStep(1, 2)">짝수턴</BDropdownItem>
+            <BDropdownDivider></BDropdownDivider>
+
+            <BDropdownText v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
+              {{ spanIdx }}턴 간격
+              <br />
+              <BButtonGroup>
+                <BButton
+                  class="ignoreMe"
+                  v-for="beginIdx in spanIdx"
+                  :key="beginIdx"
+                  @click="selectStep(beginIdx - 1, spanIdx)"
+                >{{ beginIdx }}</BButton>
+              </BButtonGroup>
+            </BDropdownText>
+          </BDropdown>
+        </div>
+
+        <div class="col-4 d-grid">
+          <BDropdown left text="보관함">
+            <BDropdownItem
+              v-for="[actionKey, actions] of storedActions"
+              :key="actionKey"
+              @click="useStoredAction(actions)"
+            >
+              {{ actionKey }}
+              <BButton @click.prevent="deleteStoredActions(actionKey)" size="sm">삭제</BButton>
+            </BDropdownItem>
+          </BDropdown>
+        </div>
+
+        <div class="col-4 d-grid">
+          <BDropdown right text="최근 실행">
+            <BDropdownItem
+              v-for="(action, idx) in recentActions"
+              :key="idx"
+              @click="void reserveCommandDirect([[Array.from(turnList.values()), action]])"
+            >{{ action.brief }}</BDropdownItem>
+          </BDropdown>
+        </div>
+
+        <div class="col-5 d-grid">
+          <BDropdown left variant="info" text="선택한 턴을">
+            <BDropdownItem @click="clipboardCut">
+              <i class="bi bi-scissors"></i>&nbsp;잘라내기
+            </BDropdownItem>
+            <BDropdownItem @click="clipboardCopy">
+              <i class="bi bi-files"></i>&nbsp;복사하기
+            </BDropdownItem>
+            <BDropdownItem @click="clipboardPaste">
+              <i class="bi bi-clipboard-fill"></i>&nbsp;붙여넣기
+            </BDropdownItem>
+            <BDropdownDivider />
+            <BDropdownItem @click="setStoredActions">
+              <i class="bi bi-bookmark-plus-fill"></i>&nbsp;보관하기
+            </BDropdownItem>
+            <BDropdownItem @click="subRepeatCommand">
+              <i class="bi bi-arrow-repeat"></i>&nbsp;반복하기
+            </BDropdownItem>
+            <BDropdownDivider />
+            <BDropdownItem @click="eraseSelectedTurnList">
+              <i class="bi bi-eraser"></i>&nbsp;비우기
+            </BDropdownItem>
+            <BDropdownItem @click="eraseAndPullCommand">
+              <i class="bi bi-arrow-bar-up"></i>&nbsp;지우고 당기기
+            </BDropdownItem>
+            <BDropdownItem @click="pushEmptyCommand">
+              <i class="bi bi-arrow-bar-down"></i>&nbsp;뒤로 밀기
+            </BDropdownItem>
+            <!-- 최근에 실행한 10턴 -->
+          </BDropdown>
+        </div>
+
+        <div class="col-7 d-grid">
+          <BButton variant="light" @click="toggleForm($event)" :style="{ color: 'black' }">명령 선택 ▾</BButton>
+        </div>
+      </div>
+    </div>
+
+    <div :style="{ position: 'relative' }">
+      <div
+        class="commandQuickReserveFormAnchor bg-dark"
+        :style="{
+          position: 'absolute',
+          top: `${basicModeRowHeight * currentQuickReserveTarget + 30}px`,
+          width: '100%',
+          zIndex: 9,
+        }"
+      ></div>
+    </div>
+    <div :class="{
+      commandTable: true,
+      isEditMode,
+    }">
       <DragSelect
         :style="rowGridStyle"
+        :disabled="!isEditMode"
         attribute="turnIdx"
         @dragStart="isDragToggle = true"
         @dragDone="
-          isDragToggle = false;
-          toggleTurn(...$event);
+  isDragToggle = false;
+toggleTurn(...$event);
         "
         v-slot="{ selected }"
       >
@@ -70,27 +151,29 @@
           :key="turnIdx"
           class="idx_pad center d-grid"
         >
-          <b-button
+          <BButton
+            v-if="isEditMode"
             size="sm"
             :variant="
-              (isDragToggle && selected.has(`${turnIdx}`))?'light':
-              turnList.has(turnIdx)
-                ? 'info'
-                : turnList.size == 0 && prevTurnList.has(turnIdx)
-                ? 'success'
-                : 'primary'
+              (isDragToggle && selected.has(`${turnIdx}`)) ? 'light' :
+                turnList.has(turnIdx)
+                  ? 'info'
+                  : turnList.size == 0 && prevTurnList.has(turnIdx)
+                    ? 'success'
+                    : 'primary'
             "
-            >{{ turnIdx + 1 }}</b-button
-          >
+          >{{ turnIdx + 1 }}</BButton>
+          <div v-else class="plain-center">{{ turnIdx + 1 }}</div>
         </div>
       </DragSelect>
       <DragSelect
         :style="rowGridStyle"
         attribute="turnIdx"
+        :disabled="!isEditMode"
         @dragStart="isDragSingle = true"
         @dragDone="
-          isDragSingle = false;
-          selectTurn(...$event);
+  isDragSingle = false;
+selectTurn(...$event);
         "
         v-slot="{ selected }"
       >
@@ -131,9 +214,7 @@
             whiteSpace: 'nowrap',
             overflow: 'hidden',
           }"
-        >
-          {{ turnObj.time }}
-        </div>
+        >{{ turnObj.time }}</div>
       </div>
       <div :style="rowGridStyle">
         <div
@@ -154,138 +235,97 @@
           ></span>
         </div>
       </div>
+      <div v-if="!isEditMode" :style="rowGridStyle">
+        <div
+          v-for="(turnObj, turnIdx) in reservedCommandList.slice(
+            0,
+            viewMaxTurn
+          )"
+          :key="turnIdx"
+          class="action_pad d-grid"
+        >
+          <BButton
+            :variant="(turnIdx % 2 == 0) ? 'secondary' : 'dark'"
+            size="sm"
+            class="simple_action_btn bi bi-pencil"
+            @click="toggleQuickReserveForm(turnIdx)"
+          ></BButton>
+        </div>
+      </div>
     </div>
     <div class="row gx-1">
       <div class="col d-grid">
-        <b-dropdown right split text="당기기" @click="pullGeneralCommandSingle">
-          <b-dropdown-item
+        <BDropdown :split="isEditMode" text="당기기" @click="pullGeneralCommandSingle">
+          <BDropdownItem
             v-for="turnIdx in maxPushTurn"
             :key="turnIdx"
             @click="pushGeneralCommand(-turnIdx)"
-            >{{ turnIdx }}턴
-          </b-dropdown-item>
-        </b-dropdown>
+          >{{ turnIdx }}턴</BDropdownItem>
+        </BDropdown>
       </div>
       <div class="col d-grid">
-        <b-dropdown right split text="미루기" @click="pushGeneralCommandSingle">
-          <b-dropdown-item
+        <BDropdown :split="isEditMode" text="미루기" @click="pushGeneralCommandSingle">
+          <BDropdownItem
             v-for="turnIdx in maxPushTurn"
             :key="turnIdx"
             @click="pushGeneralCommand(turnIdx)"
-            >{{ turnIdx }}턴
-          </b-dropdown-item>
-        </b-dropdown>
+          >{{ turnIdx }}턴</BDropdownItem>
+        </BDropdown>
       </div>
       <div class="col d-grid">
-        <b-button @click="toggleViewMaxTurn">{{
-          flippedMaxTurn == viewMaxTurn ? "펼치기" : "접기"
-        }}</b-button>
-      </div>
-    </div>
-    <div class="row gx-0">
-      <div class="col-2 d-grid">
-        <b-button
-          :pressed="searchModeOn"
-          @click="toggleSearchCommand()"
-          :variant="searchModeOn ? 'info' : 'primary'"
-          v-b-tooltip.hover
-          title="검색 기능을 활성화합니다."
-          ><i class="bi bi-search"></i
-        ></b-button>
-      </div>
-      <div class="col-7">
-        <v-multiselect
-          v-model="selectedCommand"
-          :allow-empty="false"
-          :options="commandList"
-          :group-select="false"
-          group-values="values"
-          group-label="category"
-          label="searchText"
-          track-by="value"
-          open-direction="top"
-          :show-labels="false"
-          selectLabel="선택(엔터)"
-          selectGroupLabel=""
-          selectedLabel="선택됨"
-          deselectLabel="해제(엔터)"
-          deselectGroupLabel=""
-          placeholder="턴 선택"
-          :maxHeight="400"
-          :searchable="searchModeOn"
-        >
-          <template v-slot:noResult>검색 결과가 없습니다.</template>
-          <template v-slot:option="props"
-            ><!--FIXME: 카테고리-->
-            <template v-if="props.option.title">
-              <span
-                class="compensatePositive"
-                v-if="props.option.compensation > 0"
-                >▲</span
-              >
-              <span
-                class="compensateNegative"
-                v-else-if="props.option.compensation < 0"
-                >▼</span
-              >
-              <span class="compensateNeutral" v-else></span>
-              <span :class="[props.option.possible ? '' : 'commandImpossible']">
-                {{ props.option.title }}
-              </span>
-            </template>
-            <template v-else-if="props.option.category">
-              {{ props.option.category }}
-            </template>
-          </template>
-          <template v-slot:singleLabel="props">
-            {{ props.option.simpleName }}
-          </template>
-        </v-multiselect>
-      </div>
-      <div class="col-3 d-grid">
-        <b-button @click="reserveCommand()" variant="primary">실행</b-button>
+        <BButton @click="toggleViewMaxTurn">{{ flippedMaxTurn == viewMaxTurn ? "펼치기" : "접기" }}</BButton>
       </div>
     </div>
   </div>
+  <CommandSelectForm
+    :commandList="commandList"
+    anchor=".commandSelectFormAnchor"
+    ref="commandSelectForm"
+    @on-close="chooseCommand($event)"
+  />
+  <CommandSelectForm
+    :commandList="commandList"
+    anchor=".commandQuickReserveFormAnchor"
+    ref="commandQuickReserveForm"
+    @on-close="chooseQuickReserveCommand($event)"
+    :hideClose="false"
+  />
 </template>
 
 <script lang="ts">
+declare const staticValues: {
+  maxTurn: number,
+  maxPushTurn: number,
+  commandList: {
+    category: string;
+    values: CommandItem[];
+  }[],
+  serverNow: string,
+  serverNick: string,
+  mapName: string,
+  unitSet: string,
+}
+</script>
+
+<script lang="ts" setup>
 import addMilliseconds from "date-fns/esm/addMilliseconds";
 import addMinutes from "date-fns/esm/addMinutes";
-import { isString, range } from "lodash";
+import { clone, isString, min, range, repeat, trim } from "lodash";
 import { stringifyUrl } from "query-string";
-import { defineComponent, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
 import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
-import { convertSearch초성 } from "./util/convertSearch초성";
 import DragSelect from "@/components/DragSelect.vue";
-import { SammoAPI } from "./SammoAPI";
-
-type commandItem = {
-  value: string;
-  title: string;
-  compensation: number;
-  simpleName: string;
-  possible: boolean;
-  reqArg: boolean;
-  searchText?: string;
-};
-
-declare const maxTurn: number;
-declare const maxPushTurn: number;
-declare const commandList: {
-  category: string;
-  values: commandItem[];
-}[];
-declare const serverNow: string;
-type TurnObj = {
-  action: string;
-  brief: string;
-  arg: null | [] | Record<string, number | string | number[] | string[]>;
-};
+import { SammoAPI, type InvalidResponse } from "./SammoAPI";
+import type { CommandItem, ReserveCommandResponse } from "@/defs";
+import CommandSelectForm from "@/components/CommandSelectForm.vue";
+import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider } from "bootstrap-vue-3";
+import { StoredActionsHelper } from "./util/StoredActionsHelper";
+import type { TurnObj } from '@/defs';
+import { unwrap } from "./util/unwrap";
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -306,7 +346,21 @@ type ReservedCommandResponse = {
   autorun_limit: null | number;
 };
 
+
+const {
+  maxTurn,
+  maxPushTurn,
+  commandList,
+} = staticValues;
+
+
 const listReqArgCommand = new Set<string>();
+const serverNow = ref(parseTime(staticValues.serverNow));
+const clientNow = ref(new Date());
+const timeDiff = ref(serverNow.value.getTime() - clientNow.value.getTime());
+const selectedCommand = ref(staticValues.commandList[0].values[0]);
+const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
+
 for (const commandCategories of commandList) {
   if (!commandCategories.values) {
     continue;
@@ -317,6 +371,16 @@ for (const commandCategories of commandList) {
     }
     listReqArgCommand.add(commandObj.value);
   }
+}
+
+function toggleForm($event: Event): void {
+  $event.preventDefault();
+
+  const form = commandSelectForm.value;
+  if (!form) {
+    return;
+  }
+  form.toggle();
 }
 
 function isDropdownChildren(e?: Event): boolean {
@@ -336,307 +400,608 @@ function isDropdownChildren(e?: Event): boolean {
   return false;
 }
 
-const searchModeKey = `sammo_searchModeOn`;
 
-export default defineComponent({
-  name: "PartialReservedCommand",
-  components: {
-    DragSelect,
-  },
-  methods: {
-    updateNow() {
-      const serverNow = addMilliseconds(new Date(), this.timeDiff);
-      this.serverNow = formatTime(serverNow, "HH:mm:ss");
-      setTimeout(() => {
-        this.updateNow();
-      }, 1000 - serverNow.getMilliseconds());
-    },
-    toggleTurn(...turnList: number[] | string[]) {
-      for (let turnIdx of turnList) {
-        if (isString(turnIdx)) {
-          turnIdx = parseInt(turnIdx);
-        }
-        if (this.turnList.has(turnIdx)) {
-          this.turnList.delete(turnIdx);
-        } else {
-          this.turnList.add(turnIdx);
-        }
-      }
-    },
-    selectTurn(...turnList: number[] | string[]) {
-      this.turnList.clear();
-      for (const turnIdx of turnList) {
-        if (isString(turnIdx)) {
-          this.turnList.add(parseInt(turnIdx));
-        } else {
-          this.turnList.add(turnIdx);
-        }
-      }
-    },
-    selectAll(e: Event | true) {
-      //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
-      if (e !== true && isDropdownChildren(e)) {
-        return;
-      }
+setTimeout(() => {
+  updateNow();
+}, 1000 - serverNow.value.getMilliseconds());
 
-      if (this.turnList.size * 3 > this.maxTurn) {
-        this.turnList.clear();
-      } else {
-        for (let i = 0; i < this.maxTurn; i++) {
-          this.turnList.add(i);
-        }
-      }
-    },
-    selectStep(begin: number, step: number) {
-      this.turnList.clear();
-      for (const idx of range(0, maxTurn)) {
-        if ((idx - begin) % step == 0) {
-          this.turnList.add(idx);
-        }
-      }
-    },
-    toggleViewMaxTurn() {
-      if (this.viewMaxTurn == this.flippedMaxTurn) {
-        this.viewMaxTurn = this.maxTurn;
-      } else {
-        this.viewMaxTurn = this.flippedMaxTurn;
-      }
-    },
-    async repeatGeneralCommand(amount: number) {
-      try {
-        await SammoAPI.Command.RepeatCommand({ amount });
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
-      await this.reloadCommandList();
-    },
-    async pushGeneralCommand(amount: number) {
-      try {
-        await SammoAPI.Command.PushCommand({ amount });
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
-      await this.reloadCommandList();
-    },
-    pushGeneralCommandSingle(e: Event) {
-      //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
-      if (isDropdownChildren(e)) {
-        return;
-      }
-      void this.pushGeneralCommand(1);
-    },
-    pullGeneralCommandSingle(e: Event) {
-      //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
-      if (isDropdownChildren(e)) {
-        return;
-      }
-      void this.pushGeneralCommand(-1);
-    },
-    async reloadCommandList() {
-      let result: ReservedCommandResponse;
-      try {
-        result = await SammoAPI.Command.GetReservedCommand();
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
 
-      const reservedCommandList: TurnObjWithTime[] = [];
-      let yearMonth = joinYearMonth(result.year, result.month);
+const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
+  length: staticValues.maxTurn,
+}).fill({
+  arg: {},
+  brief: "",
+  action: "",
+  year: undefined,
+  month: undefined,
+  time: "",
+});
 
-      const turnTime = parseTime(result.turnTime);
-      let nextTurnTime = new Date(turnTime);
+const editModeKey = `sammo_edit_mode_key`;
 
-      const autorunLimitYearMonth = result.autorun_limit ?? yearMonth - 1;
-      const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(
-        autorunLimitYearMonth
-      );
+const prevTurnList = ref(new Set([0]));
+const turnList = ref(new Set<number>());
+const reservedCommandList = ref(emptyTurn);
+const isEditMode = ref(localStorage.getItem(editModeKey) === '1');
 
-      for (const obj of result.turn) {
-        const [year, month] = parseYearMonth(yearMonth);
-        let tooltip: string[] = [];
-        let style: Record<string, unknown> = {};
+const flippedMaxTurn = 14;
 
-        const brief = obj.brief;
+const editModeRowHeight = 29.35;
+const basicModeRowHeight = 34.4;
+const viewMaxTurn = ref(flippedMaxTurn);
+const rowGridStyle = ref({
+  display: "grid",
+  gridTemplateRows: `repeat(${viewMaxTurn.value}, ${isEditMode.value ? editModeRowHeight : basicModeRowHeight}px)`,
+});
 
-        if (yearMonth <= autorunLimitYearMonth) {
-          if (obj.brief == "휴식") {
-            obj.brief = "휴식<small>(자율 행동)</small>";
-          }
-          style.color = "#aaffff";
+watch([isEditMode, viewMaxTurn], ([isEditMode, maxTurn]) => {
+  rowGridStyle.value.gridTemplateRows = `repeat(${maxTurn}, ${isEditMode ? editModeRowHeight : basicModeRowHeight}px)`;
+});
 
-          tooltip.push(
-            `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`
-          );
-        }
+const isDragSingle = ref(false);
+const isDragToggle = ref(false);
 
-        if (mb_strwidth(brief) > 22) {
-          tooltip.push(brief);
-        }
+const invCommandMap: Record<string, CommandItem> = {};
+for (const category of commandList) {
+  for (const command of category.values) {
+    invCommandMap[command.value] = command;
+  }
+}
 
-        reservedCommandList.push({
-          ...obj,
-          year,
-          month,
-          time: formatTime(nextTurnTime, "HH:mm"),
-          tooltip: tooltip.length == 0 ? undefined : tooltip.join("\n"),
-          style,
-        });
 
-        yearMonth += 1;
-        nextTurnTime = addMinutes(nextTurnTime, result.turnTerm);
-      }
-      this.reservedCommandList = reservedCommandList;
+function updateNow() {
+  serverNow.value = addMilliseconds(new Date(), timeDiff.value);
+  setTimeout(() => {
+    updateNow();
+  }, 1000 - serverNow.value.getMilliseconds());
+}
 
-      const serverNowObj = parseTime(result.date);
-      const clientNowObj = new Date();
-      const timeDiff = serverNowObj.getTime() - clientNowObj.getTime();
-      this.timeDiff = timeDiff;
-    },
-    async reserveCommand() {
-      let turnList: number[];
-      if (this.turnList.size == 0) {
-        turnList = Array.from(this.prevTurnList.values());
-      } else {
-        turnList = Array.from(this.turnList.values());
-      }
-
-      if (turnList.length == 0) {
-        turnList.push(0);
-      }
-
-      const commandName = this.selectedCommand.value;
-
-      if (listReqArgCommand.has(commandName)) {
-        document.location.href = stringifyUrl({
-          url: "v_processing.php",
-          query: {
-            command: commandName,
-            turnList: turnList.join("_"),
-          },
-        });
-        return;
-      }
-
-      try {
-        await SammoAPI.Command.ReserveCommand({
-          turnList,
-          action: commandName,
-        });
-
-        if (this.turnList.size > 0) {
-          this.prevTurnList.clear();
-          for (const v of this.turnList) {
-            this.prevTurnList.add(v);
-          }
-          this.turnList.clear();
-        }
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
-      await this.reloadCommandList();
-    },
-    toggleSearchCommand() {
-      const searchModeOn = !this.searchModeOn;
-      this.searchModeOn = searchModeOn;
-      localStorage.setItem(searchModeKey, searchModeOn ? "1" : "0");
-    },
-    chooseCommand(val: string){
-      this.selectedCommand = this.invCommandMap[val];
+function toggleTurn(...reqTurnList: number[] | string[]) {
+  for (let turnIdx of reqTurnList) {
+    if (isString(turnIdx)) {
+      turnIdx = parseInt(turnIdx);
     }
-  },
-  data() {
-    const serverNowObj = parseTime(serverNow);
-    const clientNowObj = new Date();
-    const timeDiff = serverNowObj.getTime() - clientNowObj.getTime();
+    if (turnList.value.has(turnIdx)) {
+      turnList.value.delete(turnIdx);
+    } else {
+      turnList.value.add(turnIdx);
+    }
+  }
+}
 
-    setTimeout(() => {
-      this.updateNow();
-    }, 1000 - serverNowObj.getMilliseconds());
+function selectTurn(...reqTurnList: number[] | string[]) {
+  turnList.value.clear();
+  for (const turnIdx of reqTurnList) {
+    if (isString(turnIdx)) {
+      turnList.value.add(parseInt(turnIdx));
+    } else {
+      turnList.value.add(turnIdx);
+    }
+  }
+}
 
-    const selectedCommand = commandList[0].values[0];
-    for (const subCategory of commandList) {
-      for (const command of subCategory.values) {
-        if (command.searchText) {
+function selectAll(e: Event | true) {
+  //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
+  if (e !== true && isDropdownChildren(e)) {
+    return;
+  }
+
+  if (turnList.value.size * 3 > maxTurn) {
+    turnList.value.clear();
+  } else {
+    for (let i = 0; i < maxTurn; i++) {
+      turnList.value.add(i);
+    }
+  }
+}
+
+function selectStep(begin: number, step: number) {
+  turnList.value.clear();
+  for (const idx of range(0, maxTurn)) {
+    if ((idx - begin) % step == 0) {
+      turnList.value.add(idx);
+    }
+  }
+}
+
+function toggleViewMaxTurn() {
+  if (viewMaxTurn.value == flippedMaxTurn) {
+    viewMaxTurn.value = maxTurn;
+  } else {
+    viewMaxTurn.value = flippedMaxTurn;
+  }
+}
+
+async function repeatGeneralCommand(amount: number) {
+  try {
+    await SammoAPI.Command.RepeatCommand({ amount });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+  await reloadCommandList();
+}
+
+async function pushGeneralCommand(amount: number) {
+  try {
+    await SammoAPI.Command.PushCommand({ amount });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+  await reloadCommandList();
+}
+
+
+function pushGeneralCommandSingle(e: Event) {
+  //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
+  if (isDropdownChildren(e)) {
+    return;
+  }
+  if (!isEditMode.value) {
+    return;
+  }
+  void pushGeneralCommand(1);
+}
+
+function pullGeneralCommandSingle(e: Event) {
+  //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
+  if (isDropdownChildren(e)) {
+    return;
+  }
+  if (!isEditMode.value) {
+    return;
+  }
+  void pushGeneralCommand(-1);
+}
+
+
+async function reloadCommandList() {
+  let result: ReservedCommandResponse;
+  try {
+    result = await SammoAPI.Command.GetReservedCommand();
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+
+  let yearMonth = joinYearMonth(result.year, result.month);
+
+  const turnTime = parseTime(result.turnTime);
+  let nextTurnTime = new Date(turnTime);
+
+  const autorunLimitYearMonth = result.autorun_limit ?? yearMonth - 1;
+  const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(
+    autorunLimitYearMonth
+  );
+
+  reservedCommandList.value = [];
+  for (const obj of result.turn) {
+    const [year, month] = parseYearMonth(yearMonth);
+    let tooltip: string[] = [];
+    let style: Record<string, unknown> = {};
+
+    const brief = obj.brief;
+
+    if (yearMonth <= autorunLimitYearMonth) {
+      if (obj.brief == "휴식") {
+        obj.brief = "휴식<small>(자율 행동)</small>";
+      }
+      style.color = "#aaffff";
+
+      tooltip.push(
+        `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`
+      );
+    }
+
+    if (mb_strwidth(brief) > 22) {
+      tooltip.push(brief);
+    }
+
+    reservedCommandList.value.push({
+      ...obj,
+      year,
+      month,
+      time: formatTime(nextTurnTime, "HH:mm"),
+      tooltip: tooltip.length == 0 ? undefined : tooltip.join("\n"),
+      style,
+    });
+
+    yearMonth += 1;
+    nextTurnTime = addMinutes(nextTurnTime, result.turnTerm);
+  }
+
+  serverNow.value = parseTime(result.date);
+  clientNow.value = new Date();
+  timeDiff.value = serverNow.value.getTime() - clientNow.value.getTime();
+}
+
+async function reserveCommandDirect(args: [number[], TurnObj][], reload = true): Promise<boolean> {
+  const waiterList: Promise<ReserveCommandResponse | InvalidResponse>[] = [];
+  for (const [turnList, { action, arg }] of args) {
+    waiterList.push(
+      SammoAPI.Command.ReserveCommand<ReserveCommandResponse, InvalidResponse>({
+        turnList,
+        action,
+        arg,
+      }, true)
+    );
+  }
+
+  let success = true;
+  for (const [idx, waiter] of waiterList.entries()) {
+    try {
+      const response = await waiter;
+      if (!response.result) {
+        const message = `${args[idx][0].join(',')}을 예약하지 못했습니다: ${response.reason}`
+        console.error(message, args[idx][1]);
+        alert(message);
+        success = false;
+      }
+    }
+    catch (e) {
+      const message = `${args[idx][0].join(',')}을 예약하지 못했습니다: ${e}`
+      console.error(message, args[idx][1]);
+      success = false;
+    }
+  }
+  if (reload) {
+    await reloadCommandList();
+  }
+  return success;
+}
+
+function getSelectedTurnList(): number[] {
+  if (turnList.value.size) {
+    return Array.from(turnList.value);
+  }
+  if (prevTurnList.value.size) {
+    return Array.from(prevTurnList.value);
+  }
+  return [0];
+}
+
+function releaseSelectedTurnList() {
+  if (turnList.value.size > 0) {
+    prevTurnList.value.clear();
+    for (const v of turnList.value) {
+      prevTurnList.value.add(v);
+    }
+    turnList.value.clear();
+  }
+}
+
+async function reserveCommand() {
+  let reqTurnList: number[] = getSelectedTurnList();
+
+  const commandName = selectedCommand.value.value;
+
+  if (listReqArgCommand.has(commandName)) {
+    document.location.href = stringifyUrl({
+      url: "v_processing.php",
+      query: {
+        command: commandName,
+        turnList: reqTurnList.join("_"),
+      },
+    });
+    return;
+  }
+
+  try {
+    const result = await SammoAPI.Command.ReserveCommand<ReserveCommandResponse>({
+      turnList: reqTurnList,
+      action: commandName,
+    });
+
+    storedActionsHelper.pushRecentActions({
+      action: commandName,
+      brief: result.brief,
+      arg: {}
+    });
+
+    releaseSelectedTurnList();
+
+
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+  await reloadCommandList();
+}
+
+function chooseCommand(val?: string) {
+  if (!val) {
+    return;
+  }
+  selectedCommand.value = invCommandMap[val];
+  void reserveCommand();
+}
+
+const commandQuickReserveForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
+
+const currentQuickReserveTarget = ref(-1);
+function chooseQuickReserveCommand(val?: string) {
+  if (!val) {
+    return;
+  }
+  selectedCommand.value = invCommandMap[val];
+  turnList.value.clear();
+  turnList.value.add(currentQuickReserveTarget.value);
+  void reserveCommand();
+}
+function toggleQuickReserveForm(turnIdx: number) {
+  if (turnIdx == currentQuickReserveTarget.value) {
+    commandQuickReserveForm.value?.toggle();
+    return;
+  }
+  currentQuickReserveTarget.value = turnIdx;
+  commandQuickReserveForm.value?.show();
+}
+
+
+watch(isEditMode, newEditMode => {
+  localStorage.setItem(editModeKey, newEditMode ? '1' : '0');
+  if (newEditMode) {
+    commandQuickReserveForm.value?.close();
+    currentQuickReserveTarget.value = -1;
+  }
+  else {
+    commandSelectForm.value?.close();
+  }
+});
+
+const emptyTurnObj: TurnObj = { action: '휴식', brief: '휴식', arg: {} };
+
+const storedActionsHelper = new StoredActionsHelper(staticValues.serverNick, 'general', staticValues.mapName, staticValues.unitSet);
+
+const recentActions = storedActionsHelper.recentActions;
+const storedActions = storedActionsHelper.storedActions;
+
+async function eraseSelectedTurnList(releaseSelect = true): Promise<boolean> {
+  const result = await reserveCommandDirect([[
+    getSelectedTurnList(),
+    emptyTurnObj
+  ]]);
+  if (releaseSelect) {
+    releaseSelectedTurnList();
+  }
+  return result;
+}
+
+
+function refineQueryActions(): [number[], TurnObj][] {
+  const reqTurnList = getSelectedTurnList();
+  const selectedMinTurnIdx = unwrap(min<number>(reqTurnList));
+  const buffer: [number[], TurnObj][] = [];
+  for (const rawTurnIdx of reqTurnList) {
+    const turnIdx = rawTurnIdx - selectedMinTurnIdx;
+    const rawAction = reservedCommandList.value[rawTurnIdx]
+    buffer.push([[turnIdx], {
+      action: rawAction.action,
+      arg: clone(rawAction.arg),
+      brief: rawAction.brief
+    }]);
+  }
+  return buffer;
+}
+
+function amplifyQueryActions(rawActions: [number[], TurnObj][], reqTurnList: number[]): [number[], TurnObj][] {
+  if (reqTurnList.length < 1) {
+    return [];
+  }
+
+  let minQueryIdx = maxTurn;
+  let maxQueryIdx = 0;
+  for (const [turnList] of rawActions) {
+    for (const turnIdx of turnList) {
+      minQueryIdx = Math.min(minQueryIdx, turnIdx);
+      maxQueryIdx = Math.max(maxQueryIdx, turnIdx);
+    }
+  }
+  const queryLength = maxQueryIdx - minQueryIdx + 1;
+
+  const queryTurnList: number[] = [reqTurnList[0]];
+  for (const reqTurnIdx of reqTurnList) {
+    const last = queryTurnList[queryTurnList.length - 1];
+    if (reqTurnIdx < last + queryLength) {
+      continue;
+    }
+    queryTurnList.push(reqTurnIdx);
+  }
+
+  const actions: [number[], TurnObj][] = [];
+  for (const [baseTurnList, action] of rawActions) {
+    const subTurnList: number[] = [];
+    for (const baseTurnIdx of baseTurnList) {
+      for (const queryTurnIdx of queryTurnList) {
+        const targetTurn = baseTurnIdx + queryTurnIdx;
+        if (targetTurn >= maxTurn) {
           continue;
         }
-        command.searchText = convertSearch초성(command.simpleName).join("|");
+        subTurnList.push(baseTurnIdx + queryTurnIdx);
       }
     }
-
-    const searchModeOn = (localStorage.getItem(searchModeKey) ?? "0") != "0";
-
-    const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
-      length: maxTurn,
-    }).fill({
-      arg: null,
-      brief: "",
-      action: "",
-      year: undefined,
-      month: undefined,
-      time: "",
-    });
-
-    const prevTurnList = new Set([0]);
-    const turnList = new Set<number>();
-
-    return {
-      maxTurn,
-
-      maxPushTurn,
-      commandList,
-      serverNow: formatTime(serverNowObj, "HH:mm:ss"),
-      timeDiff,
-      prevTurnList,
-      turnList,
-      selectedCommand,
-      reservedCommandList: emptyTurn,
-      autorun_limit: null as null | number,
-      searchModeOn,
-    };
-  },
-  setup() {
-    const flippedMaxTurn = 15;
-    const viewMaxTurn = ref(flippedMaxTurn);
-    const rowGridStyle = ref({
-      display: "grid",
-      gridTemplateRows: `repeat(${viewMaxTurn.value}, 29.4px)`,
-    });
-
-    watch(viewMaxTurn, (val) => {
-      rowGridStyle.value.gridTemplateRows = `repeat(${val}, 29.4px)`;
-    });
-
-    const isDragSingle = ref(false);
-    const isDragToggle = ref(false);
-
-    const invCommandMap: Record<string, commandItem> = {};
-    for(const category of commandList){
-      for(const command of category.values){
-        invCommandMap[command.value] = command;
-      }
+    if (subTurnList.length == 0) {
+      continue;
     }
+    actions.push([subTurnList, action]);
+  }
 
-    return {
-      isDragSingle,
-      isDragToggle,
-      flippedMaxTurn,
-      viewMaxTurn,
-      rowGridStyle,
-      invCommandMap,
-    };
-  },
-  mounted() {
-    void this.reloadCommandList();
-  },
+  return actions;
+}
+
+const clipboard = ref<[number[], TurnObj][] | undefined>(undefined);
+
+async function clipboardCut(releaseSelect = true) {
+  clipboardCopy(false);
+  return eraseSelectedTurnList(releaseSelect);
+}
+
+function clipboardCopy(releaseSelect = true) {
+  clipboard.value = refineQueryActions();
+  if (releaseSelect) {
+    releaseSelectedTurnList();
+  }
+}
+
+async function clipboardPaste(releaseSelect = true) {
+  const rawActions = clipboard.value;
+  if (rawActions === undefined) {
+    return;
+  }
+
+  const actions = amplifyQueryActions(rawActions, getSelectedTurnList());
+  if (actions.length === 0) {
+    return;
+  }
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    releaseSelectedTurnList();
+  }
+  return result;
+}
+
+async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
+  const reqTurnList = getSelectedTurnList().sort((a, b) => (a - b));
+  const selectedMinTurnIdx = reqTurnList[0];
+  const selectedMaxTurnIdx = reqTurnList[reqTurnList.length - 1];
+  const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
+
+  const rawActions = refineQueryActions();
+  const actions = amplifyQueryActions(rawActions, range(selectedMinTurnIdx, maxTurn, queryLength));
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    releaseSelectedTurnList();
+  }
+  return result;
+}
+
+
+async function eraseAndPullCommand(releaseSelect = true): Promise<boolean> {
+  const reqTurnList = getSelectedTurnList().sort((a, b) => (a - b));
+  const selectedMinTurnIdx = reqTurnList[0];
+  const selectedMaxTurnIdx = reqTurnList[reqTurnList.length - 1];
+  const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
+
+  if (selectedMinTurnIdx === 0) {
+    await pushGeneralCommand(-queryLength);
+    return true;
+  }
+
+  if (selectedMinTurnIdx + queryLength == maxTurn) {
+    return eraseSelectedTurnList(releaseSelect);
+  }
+
+  const actions: [number[], TurnObj][] = [];
+
+
+  const emptyTurnList: number[] = [];
+
+  for (const srcTurnIdx of range(selectedMinTurnIdx + queryLength, maxTurn)) {
+    const rawAction = reservedCommandList.value[srcTurnIdx];
+    if (rawAction.action == emptyTurnObj.action) {
+      emptyTurnList.push(srcTurnIdx - queryLength);
+      continue;
+    }
+    actions.push([[srcTurnIdx - queryLength], {
+      action: rawAction.action,
+      arg: rawAction.arg,
+      brief: rawAction.brief
+    }]);
+  }
+
+  emptyTurnList.push(...range(maxTurn - queryLength, maxTurn));
+  actions.push([emptyTurnList, emptyTurnObj]);
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    releaseSelectedTurnList();
+  }
+  return result;
+}
+
+async function pushEmptyCommand(releaseSelect = true): Promise<boolean> {
+  const reqTurnList = getSelectedTurnList().sort((a, b) => (a - b));
+  const selectedMinTurnIdx = reqTurnList[0];
+  const selectedMaxTurnIdx = reqTurnList[reqTurnList.length - 1];
+  const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
+
+  if (selectedMinTurnIdx === 0) {
+    await pushGeneralCommand(queryLength);
+    return true;
+  }
+
+  if (selectedMaxTurnIdx == maxTurn) {
+    return eraseSelectedTurnList(releaseSelect);
+  }
+
+  const actions: [number[], TurnObj][] = [];
+
+
+  const emptyTurnList: number[] = [];
+
+  for (const srcTurnIdx of range(selectedMinTurnIdx, maxTurn - queryLength)) {
+    const rawAction = reservedCommandList.value[srcTurnIdx];
+    if (rawAction.action == emptyTurnObj.action) {
+      emptyTurnList.push(srcTurnIdx + queryLength);
+      continue;
+    }
+    actions.push([[srcTurnIdx + queryLength], {
+      action: rawAction.action,
+      arg: rawAction.arg,
+      brief: rawAction.brief
+    }]);
+  }
+
+  emptyTurnList.push(...range(selectedMinTurnIdx, selectedMinTurnIdx + queryLength));
+  actions.push([emptyTurnList, emptyTurnObj]);
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    releaseSelectedTurnList();
+  }
+  return result;
+}
+
+function setStoredActions() {
+  const actions = refineQueryActions();
+  const turnBrief: string[] = [];
+  for (const [subTurnList, action] of actions) {
+    const actionName = action.action.split('_');
+    const actionShortName = actionName.length == 1 ? actionName[0] : actionName[1];
+    turnBrief.push(repeat(actionShortName[0], subTurnList.length));
+  }
+  const nickName = trim(prompt('선택한 턴들의 별명을 지어주세요', turnBrief.join()) ?? '');
+  if (nickName == '') {
+    return;
+  }
+
+  storedActionsHelper.setStoredActions(nickName, actions);
+  releaseSelectedTurnList();
+}
+
+function deleteStoredActions(actionKey: string) {
+  storedActionsHelper.deleteStoredActions(actionKey)
+}
+
+async function useStoredAction(rawActions: [number[], TurnObj][]) {
+  const reqTurnList = getSelectedTurnList().sort((a, b) => (a - b));
+  const actions = amplifyQueryActions(rawActions, reqTurnList)
+  const result = await reserveCommandDirect(actions);
+  releaseSelectedTurnList();
+  return result;
+}
+
+onMounted(() => {
+  void reloadCommandList();
 });
+
 </script>
 <style lang="scss">
 @use "sass:color";
@@ -648,9 +1013,19 @@ export default defineComponent({
 
 .commandPad {
   background-color: $gray-900;
+  position: relative;
 }
 
 .commandTable {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    minmax(20px, 0.8fr) minmax(75px, 2.4fr) minmax(40px, 0.9fr)
+    4.8fr minmax(28px, 0.8fr);
+  //30, 70, 37.65, 160
+}
+
+.commandTable.isEditMode {
   width: 100%;
   display: grid;
   grid-template-columns: minmax(30px, 1fr) minmax(75px, 2.5fr) minmax(40px, 1fr) 5fr;
@@ -700,11 +1075,16 @@ export default defineComponent({
   }
 }
 
-.month_pad:hover {
+.isEditMode .month_pad:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
+.plain-center {
+  background-color: black;
+}
+
+.plain-center,
 .month_pad,
 .time_pad,
 .turn_pad {

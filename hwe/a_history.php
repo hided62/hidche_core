@@ -203,9 +203,13 @@ $nations = $history['nations'];
             <td><?= banner() ?> </td>
         </tr>
     </table>
+    <?= WebUtil::printStaticValues([
+        'staticValues' => [
+            'serverNick' => DB::prefix(),
+            'serverID' => UniqueConst::$serverID,
+        ]
+    ])?>
     <script>
-        window.serverNick = '<?= DB::prefix() ?>';
-        window.serverID = '<?= UniqueConst::$serverID ?>';
         <?php if($isCurrent): ?>
         reloadWorldMap({
             showMe: false,

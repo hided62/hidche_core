@@ -393,6 +393,7 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
     _setGeneralCommand($commandObj, $turnList);
     return [
         'result'=>true,
+        'brief'=>$commandObj->getBrief(),
         'reason'=>'success'
     ];
 }
@@ -474,6 +475,7 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
     _setNationCommand($commandObj, $turnList);
     return [
         'result'=>true,
+        'brief'=>$commandObj->getBrief(),
         'arg_test'=>true,
         'reason'=>'success'
     ];

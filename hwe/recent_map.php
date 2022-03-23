@@ -16,8 +16,10 @@ include "func.php";
     <title>최근 지도</title>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printStaticValues([
-        'serverNick' => DB::prefix(),
-        'serverID' => UniqueConst::$serverID
+        'staticValues' => [
+            'serverNick' => DB::prefix(),
+            'serverID' => UniqueConst::$serverID
+        ],
     ]) ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
 

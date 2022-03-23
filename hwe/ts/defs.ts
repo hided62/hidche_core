@@ -1,3 +1,5 @@
+import type { Args } from "./processing/args";
+
 export type InvalidResponse = {
     result: false;
     reason: string;
@@ -31,6 +33,11 @@ export type GeneralListResponse = {
         number, number
     ][],
     token: Record<number, number>,
+}
+
+export type ReserveCommandResponse = {
+    result: true,
+    brief: string,
 }
 
 export type NationLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -176,13 +183,14 @@ export type OptionalFull<Type> = {
 export type TurnObj = {
     action: string;
     brief: string;
-    arg: null | [] | Record<string, number | string | number[] | string[]>;
+    arg: Args;
 };
 
 
 export type CommandItem = {
     value: string;
     title: string;
+    info: string,
     compensation: number;
     simpleName: string;
     possible: boolean;
@@ -215,6 +223,8 @@ export type ChiefResponse = {
         category: string;
         values: CommandItem[];
     }[];
+    mapName: string,
+    unitSet: string,
 };
 
 

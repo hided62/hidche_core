@@ -9,11 +9,20 @@ import { type App, createApp } from 'vue';
 import { auto500px } from './util/auto500px';
 import { isString } from 'lodash';
 import { type Args, testSubmitArgs } from './processing/args';
-import { SammoAPI, type ValidResponse } from './SammoAPI';
+import { SammoAPI } from './SammoAPI';
+import { StoredActionsHelper } from './util/StoredActionsHelper';
+import type { ReserveCommandResponse } from './defs';
 
-declare const turnList: number[];
+declare const staticValues: {
+    serverNick: string,
+    turnList: number[],
+    mapName: string,
+    unitSet: string,
+};
 
-async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turnList: number[], action: string, arg: Args): Promise<T> {
+const { turnList } = staticValues;
+
+async function submitCommand<T extends ReserveCommandResponse>(isChiefTurn: boolean, turnList: number[], action: string, arg: Args): Promise<T> {
     const targetAPI = isChiefTurn ? SammoAPI.NationCommand.ReserveCommand : SammoAPI.Command.ReserveCommand;
 
     try {
@@ -22,11 +31,20 @@ async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turn
             throw new TypeError(`Invalied Type ${testResult[0]}, ${testResult[2]} should be ${testResult[1]}`);
         }
         console.log('trySubmit', arg);
-        const response = await targetAPI({
+        const responseP = targetAPI<T>({
                 action,
                 turnList,
                 arg,
         });
+
+        const storedActionsHelper = new StoredActionsHelper(staticValues.serverNick, isChiefTurn?'nation':'general', staticValues.mapName, staticValues.unitSet);
+
+        const response = await responseP;
+        storedActionsHelper.pushRecentActions({
+            action,
+            brief: response.brief,
+            arg: (arg??{}),
+        })
 
         if (!isChiefTurn) {
             window.location.href = './';
@@ -34,7 +52,7 @@ async function submitCommand<T extends ValidResponse>(isChiefTurn: boolean, turn
             window.location.href = 'v_chiefCenter.php';
         }
 
-        return response as T;
+        return response;
     }
     catch (e) {
         console.error(e);

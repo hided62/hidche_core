@@ -392,6 +392,8 @@ export default defineComponent({
       autorun_limit: undefined,
       officerLevel: undefined,
       commandList: undefined,
+      mapName: undefined,
+      unitSet: undefined,
     });
 
     async function reloadTable(): Promise<void> {
