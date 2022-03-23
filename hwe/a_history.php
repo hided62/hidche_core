@@ -109,17 +109,19 @@ $nations = $history['nations'];
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printCSS('css/history.css') ?>
+    <?= WebUtil::printStaticValues([
+        'staticValues' => [
+            'startYear' => $s_year,
+            'startMonth' => $s_month,
+            'lastYear' => $e_year,
+            'lastMonth' => $e_month,
+            'selectYear' => $year,
+            'selectMonth' => $month,
+            'nations' => $nations ? JSON::encode($history['nations']) : '{}'
+        ]
+    ])?>
     <?= WebUtil::printDist('ts', ['common', 'history']) ?>
 
-    <script>
-        var startYear = <?= $s_year ?>;
-        var startMonth = <?= $s_month ?>;
-        var lastYear = <?= $e_year ?>;
-        var lastMonth = <?= $e_month ?>;
-        var selectYear = <?= $year ?>;
-        var selectMonth = <?= $month ?>;
-        var nations = <?= $nations ? JSON::encode($history['nations']) : '{}' ?>;
-    </script>
 </head>
 
 <body>

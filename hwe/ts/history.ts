@@ -3,25 +3,29 @@ import '@/map';
 import { joinYearMonth } from './util/joinYearMonth';
 import { parseYearMonth } from './util/parseYearMonth';
 
-declare const startYear:number;
-declare const startMonth:number;
+declare const staticValues: {
+    startYear:number;
+    startMonth:number;
 
-declare const lastYear: number;
-declare const lastMonth: number;
+    lastYear: number;
+    lastMonth: number;
 
-declare const selectYear: number;
-declare const selectMonth: number;
+    selectYear: number;
+    selectMonth: number;
+}
+
+
 
 $(function ($) {
-    let currYear = startYear;
-    let currMonth = startMonth;
-    const selectDate = joinYearMonth(selectYear, selectMonth);
+    let currYear = staticValues.startYear;
+    let currMonth = staticValues.startMonth;
+    const selectDate = joinYearMonth(staticValues.selectYear, staticValues.selectMonth);
 
     const $yearMonth = $('#yearmonth');
     let $elements = $();
 
-    const endDate = joinYearMonth(lastYear, lastMonth) + 1;//연감 마지막 + 1(현재)
-    let currDate = joinYearMonth(startYear, startMonth);
+    const endDate = joinYearMonth(staticValues.lastYear, staticValues.lastMonth) + 1;//연감 마지막 + 1(현재)
+    let currDate = joinYearMonth(staticValues.startYear, staticValues.startMonth);
     while (currDate <= endDate) {
         let sel = '';
         if (currDate == selectDate) {
