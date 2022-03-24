@@ -101,13 +101,13 @@ class che_불가침제의 extends Command\NationCommand
 
         $nationID = $this->nation['nation'];
 
-        if ($reqMonth < $currentMonth + 12) {
+        if ($reqMonth < $currentMonth + 6) {
             $this->permissionConstraints = [
-                ConstraintHelper::AlwaysFail('기한은 1년 이상이어야 합니다.')
+                ConstraintHelper::AlwaysFail('기한은 6개월 이상이어야 합니다.')
             ];
 
             $this->fullConditionConstraints = [
-                ConstraintHelper::AlwaysFail('기한은 1년 이상이어야 합니다.')
+                ConstraintHelper::AlwaysFail('기한은 6개월 이상이어야 합니다.')
             ];
             return;
         }
