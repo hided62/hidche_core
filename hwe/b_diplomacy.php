@@ -97,24 +97,13 @@ $neutralStateCharMap = [
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
     <?= WebUtil::printCSS('css/history.css') ?>
-    <?= WebUtil::printDist('ts', ['common', 'map']) ?>
     <?= WebUtil::printStaticValues([
         'staticValues' => [
             'serverNick' => DB::prefix(),
             'serverID' => UniqueConst::$serverID
         ],
     ]) ?>
-    <script>
-        $(function() {
-
-            reloadWorldMap({
-                neutralView: true,
-                showMe: true,
-                useCachedMap: true
-            });
-
-        });
-    </script>
+    <?= WebUtil::printDist('ts', ['common', 'map']) ?>
 </head>
 
 <body>
@@ -235,6 +224,13 @@ $neutralStateCharMap = [
             <td><?= banner() ?></td>
         </tr>
     </table>
+    <script>
+        reloadWorldMap({
+            neutralView: true,
+            showMe: true,
+            useCachedMap: true
+        });
+    </script>
 </body>
 
 </html>
