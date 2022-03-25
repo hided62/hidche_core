@@ -12,8 +12,7 @@ export function APIPathGen(obj, callback, path) {
                 nextPath = [key];
             }
             else {
-                nextPath = path;
-                nextPath.push(key);
+                nextPath = [...path, key];
             }
 
             if (!(key in target)) {
