@@ -636,7 +636,7 @@ async function reserveCommandDirect(args: [number[], TurnObj][], reload = true):
   }
 
   try {
-    await SammoAPI.Command.ReserveBulkCommand<ReserveBulkCommandResponse>(query);
+    await SammoAPI.Command.ReserveBulkCommand(query);
     releaseSelectedTurnList();
   } catch (e) {
     console.error(e);

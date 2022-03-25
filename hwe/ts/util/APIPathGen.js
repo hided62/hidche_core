@@ -1,9 +1,7 @@
-type SubValue<V extends (...args: unknown[]) => unknown> = V | { [property: string]: SubValue<V> };
-
-export function APIPathGen<V extends () => unknown, T extends { [property: string]: SubValue<V> }>(obj: T, callback: (path: string[]) => V, path?: string[]): T {
+export function APIPathGen(obj, callback, path) {
     return new Proxy(obj, {
-        get(target, key: string) {
-            let nextPath: string[];
+        get(target, key) {
+            let nextPath;
             if (path === undefined) {
                 nextPath = [key];
             }
