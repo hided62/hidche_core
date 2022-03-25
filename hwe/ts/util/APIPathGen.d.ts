@@ -14,6 +14,9 @@ const apiPath = {
     User: StrVar<'a'|'b'>()({
         Update: someFunc,
         Delete: someFunc,
+    }),
+    NationInfo: NumVar({
+        show: someFunc
     })
 }
 */

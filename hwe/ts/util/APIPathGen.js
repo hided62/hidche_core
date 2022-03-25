@@ -1,25 +1,29 @@
 export function APIPathGen(obj, callback, path) {
     return new Proxy(obj, {
         get(target, key) {
-            if(typeof key === 'number'){
-                key = key.toString();
-            }
-            else if(typeof key !== 'string'){
-                throw `${key} is not string`;
-            }
             let nextPath;
             if (path === undefined) {
-                nextPath = [key];
+                nextPath = [key.toString()];
             }
             else {
-                nextPath = [...path, key];
+                nextPath = [...path, key.toString()];
             }
 
-            if (!(key in target)) {
+            const varType = target.__nextVarType;
+            let next;
+            if (varType !== undefined) {
+                if (typeof key !== varType) {
+                    throw `${key} is not ${varType}`;
+                }
+                next = target.next;
+            }
+            else if (key in target) {
+                next = target[key];
+            }
+            else {
                 throw `${nextPath} is not exists`;
             }
 
-            const next = target[key];
             if (typeof (next) === 'function') {
                 return callback(nextPath);
             }
@@ -28,6 +32,19 @@ export function APIPathGen(obj, callback, path) {
     })
 }
 
-export function StrVar(){
-    return (next)=>next;
+//generic 인자로 '자동'을 주려면 생략해야하므로 2단 호출
+export function StrVar() {
+    return (next) => {
+        return {
+            __nextVarType: 'string',
+            next
+        }
+    }
+}
+
+export function NumVar(next) {
+    return {
+        __nextVarType: 'number',
+        next
+    }
 }
