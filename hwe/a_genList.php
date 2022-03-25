@@ -172,6 +172,7 @@ if ($gameStor->isunited) {
         data-general-strength='{$general['strength']}'
         data-general-intel='{$general['intel']}'
         data-is-npc='" . ($general['npc'] >= 2 ? 'true' : 'false') . "'
+        data-npc-type='{$general['npc']}'
     >
         <td align=center><img class='generalIcon' width='64' height='64' src='{$imageTemp}/{$general['picture']}'></img></td>
         <td align=center>$name</td>

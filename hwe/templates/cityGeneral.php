@@ -1,6 +1,7 @@
 <tr
     data-is-our-general="<?=$ourGeneral?'true':'false'?>"
     data-is-npc="<?=$isNPC?'true':'false'?>"
+    data-npc-type="<?=$npc?>"
     data-general-wounded="<?=$wounded?>"
     data-general-name="<?=$this->e($name)?>"
     data-general-leadership="<?=$leadership?>"
@@ -33,7 +34,7 @@
     <td><?=$train?></td>
     <td><?=$atmos?></td>
     <?php if($isNPC): ?>
-    <td>NPC 장수</td>    
+    <td>NPC 장수</td>
     <?php else: ?>
     <td class="general_turn_text"><?=$turnText?></td>
     <?php endif; ?>
@@ -49,5 +50,5 @@
     <td>재 야</td>
     <?php endif; ?>
 <?php endif; ?>
-    
+
 </tr>

@@ -337,6 +337,7 @@ $templates = new \League\Plates\Engine('templates');
                                     'ourGeneral' => $ourGeneral,
                                     'iconPath' => GetImageURL($general['imgsvr']) . '/' . $general['picture'],
                                     'isNPC' => $isNPC,
+                                    'npc' => $general['npc'],
                                     'wounded' => $wounded,
                                     'name' => $name,
                                     'nameText' => $nameText,

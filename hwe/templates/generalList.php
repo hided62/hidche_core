@@ -22,6 +22,7 @@
 <tr class='general_id_<?=$general['no']?>'
     data-general-id="<?=$general['no']?>"
     data-is-npc="<?=$general['npc']>=2?'true':'false'?>"
+    data-npc-type='<?=$general['npc']?>'
     data-general-wounded="<?=$general['injury']?>"
     data-general-name="<?=$general['name']?>"
     data-general-leadership="<?=$general['leadership']?>"

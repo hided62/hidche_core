@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { unwrap } from '@util/unwrap';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import { getNpcColor } from './common_legacy';
 
 declare const killturn: number;
 declare const autorun_user: undefined|null|{
@@ -20,7 +21,7 @@ type KingdomGeneral = {
     지: number,
     삭턴: number,
     종류: UserType,
-    NPC: boolean,
+    NPC: number,
 }
 
 type UserType = "통" | "무" | "지" | "만능" | "평범" | "무능" | "무지";
@@ -132,7 +133,7 @@ $(function () {
                     장수.지 = parseInt($this.data('general-intel'));
                     장수.삭턴 = parseInt($tds.eq(-2).text());
                     장수.종류 = getUserType(장수.통, 장수.무, 장수.지);
-                    장수.NPC = $this.data('is-npc');
+                    장수.NPC = $this.data('npc-type');
 
                     if (!(국가 in 국가별)) {
                         국가별[국가] = {
@@ -208,13 +209,13 @@ $(function () {
                         //const 종능 = val.통 + val.무 + val.지;
                         console.log(val);
                         if (종류명 != '무능' && 종류명 != '무지') {
-                            if (val.삭턴 >= realKillturn && !val.NPC) {
+                            if (val.삭턴 >= realKillturn && val.NPC < 2) {
                                 전투유저장수 += 1;
 
                                 통솔합 += val.통;
                             }
 
-                            if (val.삭턴 > 5 && val.NPC) {
+                            if (val.삭턴 > 5 && val.NPC >= 2) {
                                 전투N장수 += 1;
 
                                 N장통솔합 += val.통;
@@ -225,12 +226,13 @@ $(function () {
                         const $obj2 = $('<span></span>');
                         $obj.html(val.장수명);
 
-                        if (!val.NPC && val.삭턴 < realKillturn) {
+                        if (val.NPC < 2 && val.삭턴 < realKillturn) {
                             $obj.css('text-decoration', 'line-through');
                             삭턴장수 += 1;
                         }
-                        if (val.NPC) {
-                            $obj.css('color', 'cyan');
+                        const colorNPC = getNpcColor(val.NPC);
+                        if (colorNPC !== undefined) {
+                            $obj.css('color', colorNPC);
                         }
                         if (val.벌점 >= 1500) $obj.css('color', 'yellow');
                         else if (val.벌점 >= 200) $obj.css('color', 'lightgreen');
