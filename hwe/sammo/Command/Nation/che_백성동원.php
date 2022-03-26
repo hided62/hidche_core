@@ -156,11 +156,8 @@ class che_백성동원 extends Command\NationCommand
             'wall' => $db->sqleval('GREATEST(wall_max * 0.8, wall)'),
         ], 'city=%i', $destCityID);
 
-        $josaYiNation = JosaUtil::pick($nationName, '이');
-
-
         $logger->pushGeneralHistoryLog('<M>백성동원</>을 발동');
-        $logger->pushNationalHistoryLog("<L><b>【전략】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 하였습니다.");
+        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 발동");
 
         $db->update('nation', [
             'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 9)
