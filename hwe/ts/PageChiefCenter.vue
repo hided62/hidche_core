@@ -51,7 +51,6 @@
             :date="date"
             @raiseReload="reloadTable()"
             :officer="officer"
-            :timeDiff="timeDiff"
           />
         </div>
         <div
@@ -117,7 +116,6 @@ import BottomBar from "@/components/BottomBar.vue";
 import VueTypes from "vue-types";
 import { isString } from "lodash";
 import { entriesWithType } from "./util/entriesWithType";
-import { parseTime } from "./util/parseTime";
 import TopItem from "@/ChiefCenter/TopItem.vue";
 import BottomItem from "@/ChiefCenter/BottomItem.vue";
 import type { ChiefResponse, OptionalFull } from "./defs";
@@ -167,10 +165,8 @@ watch(viewTarget, (val) => {
     targetIsMe.value = false;
   }
   targetIsMe.value = val === tableObj.officerLevel;
-  console.log("result", targetIsMe.value);
 });
 
-const timeDiff = ref(0);
 async function reloadTable(): Promise<void> {
   try {
     const response =
@@ -193,10 +189,6 @@ async function reloadTable(): Promise<void> {
       //HACK:
       tableObj[key as unknown as "year"] = value as unknown as undefined;
     }
-
-    const serverNowObj = parseTime(response.date);
-    const clientNowObj = new Date();
-    timeDiff.value = serverNowObj.getTime() - clientNowObj.getTime();
 
     if (viewTarget.value === undefined) {
       if (!tableObj.officerLevel) {

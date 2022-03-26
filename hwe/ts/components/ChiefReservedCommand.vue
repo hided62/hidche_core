@@ -28,7 +28,7 @@
         </div>
         <div class="row gx-1 gy-1 py-1">
           <div class="col-md-4 mx-0 mb-0 mt-1 d-grid">
-            <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0">{{ serverNow }}</div>
+            <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0"><SimpleClock :serverTime="parseTime(props.date)" /></div>
           </div>
 
           <div class="col-md-4 d-grid">
@@ -306,9 +306,8 @@ import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import { getNpcColor } from "@/common_legacy";
 import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown } from "bootstrap-vue-3";
-import addMilliseconds from "date-fns/addMilliseconds";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
-
+import SimpleClock from "@/components/SimpleClock.vue";
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -328,7 +327,6 @@ const props = defineProps({
   turnTime: VueTypes.string.isRequired,
   targetIsMe: VueTypes.bool.isRequired,
 
-  timeDiff: VueTypes.number.isRequired,
 
   selectedTurn: {
     type: Object as PropType<Set<number>>,
@@ -896,22 +894,6 @@ function toggleForm($event: Event): void {
   }
   form.toggle();
 }
-
-
-const serverNow = ref(formatTime(new Date(), "HH:mm:ss"));
-
-function updateNow() {
-  const serverNowObj = addMilliseconds(new Date(), props.timeDiff);
-  serverNow.value = formatTime(serverNowObj, "HH:mm:ss");
-  setTimeout(() => {
-    updateNow();
-  }, 1000 - serverNowObj.getMilliseconds());
-}
-
-setTimeout(() => {
-  updateNow();
-}, 500);
-
 
 onMounted(() => {
   updateCommandList();

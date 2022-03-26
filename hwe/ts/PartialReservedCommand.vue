@@ -18,7 +18,7 @@
           justify-content: center;
           align-items: center;
         "
-      >{{ formatTime(serverNow, "HH:mm:ss") }}</div>
+      ><SimpleClock :serverTime="serverNow" /></div>
       <div class="col d-grid">
         <BDropdown right text="반복">
           <BDropdownItem
@@ -306,7 +306,6 @@ declare const staticValues: {
 </script>
 
 <script lang="ts" setup>
-import addMilliseconds from "date-fns/esm/addMilliseconds";
 import addMinutes from "date-fns/esm/addMinutes";
 import { range, trim } from "lodash";
 import { stringifyUrl } from "query-string";
@@ -325,6 +324,7 @@ import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { TurnObj } from '@/defs';
 import type { Args } from "./processing/args";
 import { QueryActionHelper } from "./util/QueryActionHelper";
+import SimpleClock from "./components/SimpleClock.vue";
 
 
 
@@ -348,9 +348,6 @@ const {
 
 
 const listReqArgCommand = new Set<string>();
-const serverNow = ref(parseTime(staticValues.serverNow));
-const clientNow = ref(new Date());
-const timeDiff = ref(serverNow.value.getTime() - clientNow.value.getTime());
 const selectedCommand = ref(staticValues.commandList[0].values[0]);
 const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
 
@@ -393,11 +390,6 @@ function isDropdownChildren(e?: Event): boolean {
   return false;
 }
 
-
-setTimeout(() => {
-  updateNow();
-}, 1000 - serverNow.value.getMilliseconds());
-
 const queryActionHelper = new QueryActionHelper(staticValues.maxTurn);
 const storedActionsHelper = new StoredActionsHelper(staticValues.serverNick, 'general', staticValues.mapName, staticValues.unitSet);
 
@@ -431,16 +423,6 @@ for (const category of commandList) {
   }
 }
 
-
-function updateNow() {
-  serverNow.value = addMilliseconds(new Date(), timeDiff.value);
-  setTimeout(() => {
-    updateNow();
-  }, 1000 - serverNow.value.getMilliseconds());
-}
-
-
-
 function toggleViewMaxTurn() {
   if (viewMaxTurn.value == flippedMaxTurn) {
     viewMaxTurn.value = maxTurn;
@@ -471,6 +453,7 @@ async function pushGeneralCommand(amount: number) {
   await reloadCommandList();
 }
 
+const serverNow = ref(new Date());
 
 function pushGeneralCommandSingle(e: Event) {
   //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
@@ -551,9 +534,9 @@ async function reloadCommandList() {
     nextTurnTime = addMinutes(nextTurnTime, result.turnTerm);
   }
 
+
+
   serverNow.value = parseTime(result.date);
-  clientNow.value = new Date();
-  timeDiff.value = serverNow.value.getTime() - clientNow.value.getTime();
 }
 
 async function reserveCommandDirect(args: [number[], TurnObj][], reload = true): Promise<boolean> {
