@@ -1,151 +1,295 @@
 <template>
-  <div class="commandPad chiefReservedCommand">
-    <div class="commandTable">
-      <DragSelect
-        :style="rowGridStyle"
-        attribute="turnIdx"
-        @dragStart="isDragSingle = true"
-        @dragDone="
-          isDragSingle = false;
-          selectTurn(...$event);
-        "
-        v-slot="{ selected }"
-      >
-        <div
-          v-for="(turnObj, turnIdx) in reservedCommandList"
-          :key="turnIdx"
-          :turnIdx="turnIdx"
-          class="time_pad center f_tnum"
-          :style="{
-            backgroundColor: 'black',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            color:
-              isDragSingle && selected.has(`${turnIdx}`) ? 'cyan' : undefined,
-          }"
-        >
-          {{ turnObj.time }}
-        </div>
-      </DragSelect>
-      <DragSelect
-        :style="rowGridStyle"
-        attribute="turnIdx"
-        @dragStart="isDragToggle = true"
-        @dragDone="
-          isDragToggle = false;
-          toggleTurn(...$event);
-        "
-        v-slot="{ selected }"
-      >
-        <div
-          v-for="(turnObj, turnIdx) in reservedCommandList"
-          :key="turnIdx"
-          :turnIdx="turnIdx"
-          class="idx_pad center d-grid"
-        >
-          <b-button
-            size="sm"
-            :variant="
-              isDragToggle && selected.has(`${turnIdx}`)
-                ? 'light'
-                : turnList.has(turnIdx)
-                ? 'info'
-                : turnList.size == 0 && prevTurnList.has(turnIdx)
-                ? 'success'
-                : 'primary'
-            "
-            >{{ turnIdx + 1 }}</b-button
-          >
-        </div>
-      </DragSelect>
-      <div :style="rowGridStyle">
-        <div
-          v-for="(turnObj, turnIdx) in reservedCommandList"
-          :key="turnIdx"
-          class="turn_pad center"
-          @click="chooseCommand(turnObj.action)"
-        >
-          <span
-            class="turn_text"
-            :style="turnObj.style"
-            v-b-tooltip.hover
-            :title="turnObj.tooltip"
-            v-html="turnObj.brief"
-          ></span>
-        </div>
-      </div>
+  <div class="commandBox">
+    <div class="only1000px bg1 center row gx-0" style="height: 24px; font-size: 1.2em">
+      <div class="col-5 align-self-center text-end">{{ officer.officerLevelText }} :</div>
+      <div
+        class="col-7 align-self-center"
+        :style="{
+          color: getNpcColor(officer.npcType ?? 0),
+        }"
+      >{{ officer.name }}</div>
     </div>
-    <div class="row gx-0">
-      <div class="col-2 d-grid">
-        <b-button
-          :pressed="searchModeOn"
-          @click="toggleSearchCommand()"
-          :variant="searchModeOn ? 'info' : 'primary'"
-          v-b-tooltip.hover
-          title="검색 기능을 활성화합니다."
-          ><i class="bi bi-search"></i
-        ></b-button>
-      </div>
-      <div class="col-7">
-        <v-multiselect
-          v-model="selectedCommand"
-          :allow-empty="false"
-          :options="commandList"
-          :group-select="false"
-          group-values="values"
-          group-label="category"
-          label="searchText"
-          track-by="value"
-          open-direction="top"
-          :show-labels="false"
-          selectLabel="선택(엔터)"
-          selectGroupLabel=""
-          selectedLabel="선택됨"
-          deselectLabel="해제(엔터)"
-          deselectGroupLabel=""
-          placeholder="턴 선택"
-          :maxHeight="400"
-          :searchable="searchModeOn"
-        >
-          <template v-slot:noResult>검색 결과가 없습니다.</template>
-          <template v-slot:option="props"
-            ><!--FIXME: 카테고리-->
-            <template v-if="props.option.title">
-              <span
-                class="compensatePositive"
-                v-if="props.option.compensation > 0"
-                >▲</span
+    <div
+      :class="[
+        'row',
+        'controlPad',
+        props.targetIsMe ? 'targetIsMe' : 'targetIsNotMe',
+      ]"
+    >
+      <div class="col-3 col-md-12 order-md-last">
+        <div class="d-grid mb-1 py-1 only500px bg1 center">
+          <div
+            :style="{
+              color: getNpcColor(officer.npcType ?? 0),
+              fontSize: '1.2em',
+            }"
+          >{{ officer.name }}</div>
+          <div>{{ officer.officerLevelText }}</div>
+        </div>
+        <div class="row gx-1 gy-1 py-1">
+          <div class="col-md-4 mx-0 mb-0 mt-1 d-grid">
+            <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0">{{ serverNow }}</div>
+          </div>
+
+          <div class="col-md-4 d-grid">
+            <BButton
+              variant="secondary"
+              @click="isEditMode = !isEditMode"
+            >{{ isEditMode ? '일반 모드' : '고급 모드' }}</BButton>
+          </div>
+
+          <BDropdown class="col-md-4" text="반복">
+            <BDropdownItem
+              v-for="turnIdx in maxPushTurn"
+              :key="turnIdx"
+              @click="repeatNationCommand(turnIdx)"
+            >
+              {{
+                turnIdx
+              }}턴
+            </BDropdownItem>
+          </BDropdown>
+
+          <template v-if="isEditMode">
+            <BDropdown class="col-md-4" left text="범위">
+              <BDropdownItem @click="queryActionHelper.selectTurn()">해제</BDropdownItem>
+              <BDropdownItem @click="queryActionHelper.selectAll()">모든턴</BDropdownItem>
+              <BDropdownItem @click="queryActionHelper.selectStep(0, 2)">홀수턴</BDropdownItem>
+              <BDropdownItem @click="queryActionHelper.selectStep(1, 2)">짝수턴</BDropdownItem>
+              <BDropdownDivider></BDropdownDivider>
+
+              <BDropdownText v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
+                {{ spanIdx }}턴 간격
+                <br />
+                <BButtonGroup>
+                  <BButton
+                    class="ignoreMe"
+                    v-for="beginIdx in spanIdx"
+                    :key="beginIdx"
+                    @click="queryActionHelper.selectStep(beginIdx - 1, spanIdx)"
+                  >{{ beginIdx }}</BButton>
+                </BButtonGroup>
+              </BDropdownText>
+            </BDropdown>
+
+            <BDropdown class="col-md-4" left text="보관함">
+              <BDropdownItem
+                v-for="[actionKey, actions] of storedActions"
+                :key="actionKey"
+                @click.self="useStoredAction(actions)"
               >
-              <span
-                class="compensateNegative"
-                v-else-if="props.option.compensation < 0"
-                >▼</span
-              >
-              <span class="compensateNeutral" v-else></span>
-              <span :class="[props.option.possible ? '' : 'commandImpossible']">
-                {{ props.option.title }}
-              </span>
-            </template>
-            <template v-else-if="props.option.category">
-              {{ props.option.category }}
-            </template>
+                {{ actionKey }}
+                <BButton @click.prevent="deleteStoredActions(actionKey)" size="sm">삭제</BButton>
+              </BDropdownItem>
+            </BDropdown>
+
+            <div class="col-md-4 d-grid">
+              <BDropdown right text="최근">
+                <BDropdownItem
+                  v-for="(action, idx) in recentActions"
+                  :key="idx"
+                  @click="void reserveCommandDirect([[Array.from(selectedTurnList.values()), action]])"
+                >
+                  {{
+                    action.brief
+                  }}
+                </BDropdownItem>
+              </BDropdown>
+            </div>
           </template>
-          <template v-slot:singleLabel="props">
-            {{ props.option.simpleName }}
-          </template>
-        </v-multiselect>
+
+          <BDropdown class="col-md-6" split text="당기기" @click="pullNationCommandSingle">
+            <BDropdownItem
+              v-for="turnIdx in maxPushTurn"
+              :key="turnIdx"
+              @click="pushNationCommand(-turnIdx)"
+            >
+              {{
+                turnIdx
+              }}턴
+            </BDropdownItem>
+          </BDropdown>
+          <BDropdown class="col-md-6" split text="미루기" @click="pushNationCommandSingle">
+            <BDropdownItem
+              v-for="turnIdx in maxPushTurn"
+              :key="turnIdx"
+              @click="pushNationCommand(turnIdx)"
+            >
+              {{
+                turnIdx
+              }}턴
+            </BDropdownItem>
+          </BDropdown>
+        </div>
       </div>
-      <div class="col-3 d-grid">
-        <b-button @click="reserveCommand()" variant="primary">실행</b-button>
+      <div class="col">
+        <div :style="{ position: 'relative' }">
+          <div
+            class="commandQuickReserveFormAnchor bg-dark"
+            :style="{
+              position: 'absolute',
+              top: `${basicModeRowHeight * currentQuickReserveTarget + 26}px`,
+              width: '100%',
+              zIndex: 9,
+            }"
+          >
+            <CommandSelectForm
+              :commandList="commandList"
+              ref="commandQuickReserveForm"
+              @on-close="chooseQuickReserveCommand($event)"
+              :hideClose="false"
+              v-model:activatedCategory="activatedCategory"
+              class="bg-dark"
+              style="position:absolute"
+            />
+          </div>
+        </div>
+        <div class="commandPad chiefReservedCommand">
+          <div :class="['commandTable', isEditMode ? 'editMode' : 'singleMode']">
+            <DragSelect
+              :style="rowGridStyle"
+              attribute="turnIdx"
+              :disabled="!isEditMode"
+              @dragStart="isDragSingle = true"
+              @dragDone="
+  isDragSingle = false;
+queryActionHelper.selectTurn(...$event);
+              "
+              v-slot="{ selected }"
+            >
+              <div
+                v-for="(turnObj, turnIdx) in reservedCommandList"
+                :key="turnIdx"
+                :turnIdx="turnIdx"
+                class="time_pad center f_tnum"
+                :style="{
+                  backgroundColor: 'black',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  color:
+                    isDragSingle && selected.has(`${turnIdx}`) ? 'cyan' : undefined,
+                }"
+              >{{ turnObj.time }}</div>
+            </DragSelect>
+            <DragSelect
+              :style="{ ...rowGridStyle, display: isEditMode ? 'grid' : 'none' }"
+              attribute="turnIdx"
+              :disabled="!isEditMode"
+              @dragStart="isDragToggle = true"
+              @dragDone="
+  isDragToggle = false;
+toggleTurn(...$event);
+              "
+              v-slot="{ selected }"
+            >
+              <div
+                v-for="(turnObj, turnIdx) in reservedCommandList"
+                :key="turnIdx"
+                :turnIdx="turnIdx"
+                class="idx_pad center d-grid"
+              >
+                <BButton
+                  size="sm"
+                  :variant="
+                    isDragToggle && selected.has(`${turnIdx}`)
+                      ? 'light'
+                      : selectedTurnList.has(turnIdx)
+                        ? 'info'
+                        : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
+                          ? 'success'
+                          : 'primary'
+                  "
+                >{{ turnIdx + 1 }}</BButton>
+              </div>
+            </DragSelect>
+            <div :style="rowGridStyle">
+              <div
+                v-for="(turnObj, turnIdx) in reservedCommandList"
+                :key="turnIdx"
+                class="turn_pad center"
+              >
+                <span
+                  class="turn_text"
+                  :style="turnObj.style"
+                  v-b-tooltip.hover
+                  :title="turnObj.tooltip"
+                  v-html="turnObj.brief"
+                ></span>
+              </div>
+            </div>
+            <div :style="{ ...rowGridStyle, display: isEditMode ? 'none' : 'grid' }">
+              <div v-for="turnIdx in range(props.maxTurn)" :key="turnIdx" class="action_pad d-grid">
+                <BButton
+                  :variant="(turnIdx % 2 == 0) ? 'secondary' : 'dark'"
+                  size="sm"
+                  class="simple_action_btn bi bi-pencil"
+                  @click="toggleQuickReserveForm(turnIdx)"
+                ></BButton>
+              </div>
+            </div>
+          </div>
+          <div style="position:relative">
+            <CommandSelectForm
+              :commandList="commandList"
+              ref="commandSelectForm"
+              @on-close="chooseCommand($event)"
+              v-model:activatedCategory="activatedCategory"
+              class="bg-dark"
+              :style="{ position: 'absolute', bottom: '0' }"
+            />
+          </div>
+
+          <div class="row gx-0" v-if="isEditMode">
+            <div class="col-5 col-md-6 d-grid">
+              <BDropdown left variant="info" text="선택한 턴을">
+                <BDropdownItem @click="clipboardCut">
+                  <i class="bi bi-scissors"></i>&nbsp;잘라내기
+                </BDropdownItem>
+                <BDropdownItem @click="clipboardCopy">
+                  <i class="bi bi-files"></i>&nbsp;복사하기
+                </BDropdownItem>
+                <BDropdownItem @click="clipboardPaste">
+                  <i class="bi bi-clipboard-fill"></i>&nbsp;붙여넣기
+                </BDropdownItem>
+                <BDropdownDivider />
+                <BDropdownItem @click="setStoredActions">
+                  <i class="bi bi-bookmark-plus-fill"></i>&nbsp;보관하기
+                </BDropdownItem>
+                <BDropdownItem @click="subRepeatCommand">
+                  <i class="bi bi-arrow-repeat"></i>&nbsp;반복하기
+                </BDropdownItem>
+                <BDropdownDivider />
+                <BDropdownItem @click="eraseSelectedTurnList">
+                  <i class="bi bi-eraser"></i>&nbsp;비우기
+                </BDropdownItem>
+                <BDropdownItem @click="eraseAndPullCommand">
+                  <i class="bi bi-arrow-bar-up"></i>&nbsp;지우고 당기기
+                </BDropdownItem>
+                <BDropdownItem @click="pushEmptyCommand">
+                  <i class="bi bi-arrow-bar-down"></i>&nbsp;뒤로 밀기
+                </BDropdownItem>
+                <!-- 최근에 실행한 10턴 -->
+              </BDropdown>
+            </div>
+
+            <div class="col-7 col-md-6 d-grid">
+              <BButton
+                variant="light"
+                @click="toggleForm($event)"
+                :style="{ color: 'black' }"
+              >명령 선택 ▾</BButton>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import addMinutes from "date-fns/esm/addMinutes";
 import { stringifyUrl } from "query-string";
-import { defineComponent, type PropType } from "vue";
+import { defineProps, defineEmits, defineExpose, onMounted, ref, watch, type PropType, inject } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
@@ -154,15 +298,17 @@ import { parseYearMonth } from "@util/parseYearMonth";
 import { convertSearch초성 } from "@util/convertSearch초성";
 import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
-import { isString } from "lodash";
+import { isString, range, trim } from "lodash";
 import { SammoAPI } from "@/SammoAPI";
 import type { ChiefResponse, CommandItem, TurnObj } from "@/defs";
+import { QueryActionHelper } from "@/util/QueryActionHelper";
+import type { Args } from "@/processing/args";
+import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
+import { getNpcColor } from "@/common_legacy";
+import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown } from "bootstrap-vue-3";
+import addMilliseconds from "date-fns/addMilliseconds";
+import CommandSelectForm from "@/components/CommandSelectForm.vue";
 
-
-/*declare const commandList: {
-  category: string;
-  values: commandItem[];
-}[];*/
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -172,295 +318,599 @@ type TurnObjWithTime = TurnObj & {
   style?: Record<string, unknown>;
 };
 
-const searchModeKey = `sammo_searchModeOn`;
+const props = defineProps({
+  maxTurn: VueTypes.integer.isRequired,
+  maxPushTurn: VueTypes.integer.isRequired,
+  date: VueTypes.string.isRequired,
+  year: VueTypes.integer.isRequired,
+  month: VueTypes.integer.isRequired,
+  turnTerm: VueTypes.integer.isRequired,
+  turnTime: VueTypes.string.isRequired,
+  targetIsMe: VueTypes.bool.isRequired,
 
-export default defineComponent({
-  name: "NationReservedCommand",
-  components: {
-    DragSelect
-  },
-  props: {
-    maxTurn: VueTypes.integer.isRequired,
-    maxPushTurn: VueTypes.integer.isRequired,
-    date: VueTypes.string.isRequired,
-    year: VueTypes.integer.isRequired,
-    month: VueTypes.integer.isRequired,
-    turnTerm: VueTypes.integer.isRequired,
-    turnTime: VueTypes.string.isRequired,
-    selectedTurn: {
-      type: Object as PropType<Set<number>>,
-      required: false,
-      default: () => new Set(),
-    },
-    turn: {
-      type: Array as PropType<TurnObj[]>,
-      required: true,
-    },
-    commandList: {
-      type: Object as PropType<ChiefResponse['commandList']>,
-      required: true,
-    },
-  },
-  emits: ["raiseReload", "update:selectedTurn"],
-  watch: {
-    date() {
-      this.triggerUpdateCommandList("date");
-    },
-    year() {
-      this.triggerUpdateCommandList("year");
-    },
-    month() {
-      this.triggerUpdateCommandList("month");
-    },
-    turnTime() {
-      this.triggerUpdateCommandList("turnTime");
-    },
-    commandList() {
-      this.triggerUpdateCommandList("commandList");
-    },
-    selectedTurn(val: Set<number>) {
-      console.log(val);
-      if (val === this.turnList) {
-        console.log("pass!");
-        return;
-      }
-      this.turnList.clear();
-      for (const t of val.values()) {
-        this.turnList.add(t);
-      }
-    },
-    turnList: {
-      handler() {
-        console.log(this.turnList);
-        this.$emit("update:selectedTurn", this.turnList);
-      },
-      deep: true,
-    },
-  },
-  methods: {
-    triggerUpdateCommandList(type?: string) {
-      console.log("try update", type);
-      this.updated = false;
-      setTimeout(() => {
-        this.updateCommandList();
-      }, 1);
-    },
-    toggleTurn(...turnList: number[] | string[]) {
-      for (let turnIdx of turnList) {
-        if (isString(turnIdx)) {
-          turnIdx = parseInt(turnIdx);
-        }
-        if (this.turnList.has(turnIdx)) {
-          this.turnList.delete(turnIdx);
-        } else {
-          this.turnList.add(turnIdx);
-        }
-      }
-      this.$emit("update:selectedTurn", this.turnList);
-    },
-    selectTurn(...turnList: number[] | string[]) {
-      this.turnList.clear();
-      for (const turnIdx of turnList) {
-        if (isString(turnIdx)) {
-          this.turnList.add(parseInt(turnIdx));
-        } else {
-          this.turnList.add(turnIdx);
-        }
-      }
-      this.$emit("update:selectedTurn", this.turnList);
-    },
-    updateCommandList() {
-      if (this.updated) {
-        return;
-      }
-      console.log("do update!");
-      const reservedCommandList: TurnObjWithTime[] = [];
-      let yearMonth = joinYearMonth(this.year, this.month);
+  timeDiff: VueTypes.number.isRequired,
 
-      const turnTime = parseTime(this.turnTime);
-      let nextTurnTime = new Date(turnTime);
+  selectedTurn: {
+    type: Object as PropType<Set<number>>,
+    required: false,
+    default: () => new Set(),
+  },
+  turn: {
+    type: Array as PropType<TurnObj[]>,
+    required: true,
+  },
+  commandList: {
+    type: Object as PropType<ChiefResponse['commandList']>,
+    required: true,
+  },
 
-      const autorunLimitYearMonth = this.autorun_limit ?? yearMonth - 1;
-      const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(
-        autorunLimitYearMonth
+  officer: {
+    type: Object as PropType<ChiefResponse['chiefList'][0]>,
+    required: true,
+  }
+})
+
+const basicModeRowHeight = 30;
+
+const listReqArgCommand = new Set<string>();
+for (const commandCategories of props.commandList) {
+  if (!commandCategories.values) {
+    continue;
+  }
+  for (const commandObj of commandCategories.values) {
+    if (!commandObj.reqArg) {
+      continue;
+    }
+    listReqArgCommand.add(commandObj.value);
+  }
+}
+
+const selectedCommand = ref(props.commandList[0].values[0]);
+for (const subCategory of props.commandList) {
+  for (const command of subCategory.values) {
+    if (command.searchText) {
+      continue;
+    }
+    command.searchText = convertSearch초성(command.simpleName).join("|");
+  }
+}
+
+const invCommandMap: Record<string, CommandItem> = {};
+for (const category of props.commandList) {
+  for (const command of category.values) {
+    invCommandMap[command.value] = command;
+  }
+}
+
+const rowGridStyle = ref({
+  display: "grid",
+  gridTemplateRows: `repeat(${props.maxTurn}, 30px)`,
+});
+
+const updated = ref(false);
+const isDragSingle = ref(false);
+const isDragToggle = ref(false);
+const autorun_limit = ref<number | null>(null);
+
+const emit = defineEmits<{
+  (event: 'raiseReload'): void,
+  (event: 'update:selectedTurn', value: Set<number>): void,
+}>();
+
+function triggerUpdateCommandList(type?: string) {
+  console.log("try update", type);
+  updated.value = false;
+  setTimeout(() => {
+    updateCommandList();
+  }, 1);
+}
+
+function toggleTurn(...reqTurnList: number[] | string[]) {
+  for (let turnIdx of reqTurnList) {
+    if (isString(turnIdx)) {
+      turnIdx = parseInt(turnIdx);
+    }
+    if (selectedTurnList.value.has(turnIdx)) {
+      selectedTurnList.value.delete(turnIdx);
+    } else {
+      selectedTurnList.value.add(turnIdx);
+    }
+  }
+  emit("update:selectedTurn", selectedTurnList.value);
+}
+
+function isDropdownChildren(e?: Event): boolean {
+  if (!e) {
+    return false;
+  }
+  if (!e.target) {
+    return false;
+  }
+  if (
+    (e.target as HTMLElement).classList.contains("dropdown-item") ||
+    (e.target as HTMLElement).classList.contains("dropdown-toggle-split") ||
+    (e.target as HTMLElement).classList.contains("ignoreMe")
+  ) {
+    return true;
+  }
+  return false;
+}
+
+async function repeatNationCommand(amount: number) {
+  try {
+    await SammoAPI.NationCommand.RepeatCommand({ amount });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+  emit('raiseReload');
+}
+
+
+function pushNationCommandSingle(e: Event) {
+  //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
+  if (isDropdownChildren(e)) {
+    return;
+  }
+  void pushNationCommand(1);
+}
+
+function pullNationCommandSingle(e: Event) {
+  //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
+  if (isDropdownChildren(e)) {
+    return;
+  }
+  void pushNationCommand(-1);
+}
+
+async function pushNationCommand(amount: number) {
+  try {
+    await SammoAPI.NationCommand.PushCommand({ amount });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+  emit('raiseReload');
+}
+
+
+const queryActionHelper = new QueryActionHelper(props.maxTurn);
+const reservedCommandList = queryActionHelper.reservedCommandList;
+const prevSelectedTurnList = queryActionHelper.prevSelectedTurnList;
+const selectedTurnList = queryActionHelper.selectedTurnList;
+
+async function reserveCommandDirect(args: [number[], TurnObj][], reload = true): Promise<boolean> {
+  const query: {
+    turnList: number[],
+    action: string,
+    arg: Args
+  }[] = [];
+  for (const [turnList, { action, arg }] of args) {
+    query.push({
+      turnList,
+      action,
+      arg
+    });
+  }
+
+  try {
+    await SammoAPI.NationCommand.ReserveBulkCommand(query);
+    queryActionHelper.releaseSelectedTurnList();
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return false;
+  }
+
+  if (reload) {
+    emit('raiseReload');
+  }
+  return true;
+}
+
+function updateCommandList() {
+  if (updated.value) {
+    return;
+  }
+  console.log("do update!");
+  const _reservedCommandList: TurnObjWithTime[] = [];
+  let yearMonth = joinYearMonth(props.year, props.month);
+
+  const turnTime = parseTime(props.turnTime);
+  let nextTurnTime = new Date(turnTime);
+
+  const autorunLimitYearMonth = autorun_limit.value ?? yearMonth - 1;
+  const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(
+    autorunLimitYearMonth
+  );
+
+  for (const obj of props.turn) {
+    const [year, month] = parseYearMonth(yearMonth);
+    let tooltip: string[] = [];
+    let style: Record<string, unknown> = {};
+
+    const brief = obj.brief;
+
+    if (yearMonth <= autorunLimitYearMonth) {
+      if (obj.brief == "휴식") {
+        obj.brief = "휴식<small>(자율 행동)</small>";
+      }
+      style.color = "#aaffff";
+
+      tooltip.push(
+        `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`
       );
-
-      for (const obj of this.turn) {
-        const [year, month] = parseYearMonth(yearMonth);
-        let tooltip: string[] = [];
-        let style: Record<string, unknown> = {};
-
-        const brief = obj.brief;
-
-        if (yearMonth <= autorunLimitYearMonth) {
-          if (obj.brief == "휴식") {
-            obj.brief = "휴식<small>(자율 행동)</small>";
-          }
-          style.color = "#aaffff";
-
-          tooltip.push(
-            `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`
-          );
-        }
-
-        if (mb_strwidth(brief) > 22) {
-          tooltip.push(brief);
-        }
-
-        reservedCommandList.push({
-          ...obj,
-          year,
-          month,
-          time: formatTime(
-            nextTurnTime,
-            this.turnTerm >= 5 ? "HH:mm" : "mm:ss"
-          ),
-          tooltip: tooltip.length == 0 ? undefined : tooltip.join("\n"),
-          style,
-        });
-
-        yearMonth += 1;
-        nextTurnTime = addMinutes(nextTurnTime, this.turnTerm);
-      }
-      this.reservedCommandList = reservedCommandList;
-
-      const serverNowObj = parseTime(this.date);
-      const clientNowObj = new Date();
-      const timeDiff = serverNowObj.getTime() - clientNowObj.getTime();
-      this.timeDiff = timeDiff;
-      this.updated = true;
-    },
-    async reserveCommand() {
-      let turnList: number[];
-      if (this.turnList.size == 0) {
-        turnList = Array.from(this.prevTurnList.values());
-      } else {
-        turnList = Array.from(this.turnList.values());
-      }
-
-      if (turnList.length == 0) {
-        turnList.push(0);
-      }
-
-      const commandName = this.selectedCommand.value;
-
-      if (this.listReqArgCommand.has(commandName)) {
-        document.location.href = stringifyUrl({
-          url: "v_processing.php",
-          query: {
-            command: commandName,
-            turnList: turnList.join("_"),
-            is_chief: true,
-          },
-        });
-        return;
-      }
-
-      try {
-        await SammoAPI.NationCommand.ReserveCommand({
-          turnList,
-          action: commandName,
-        });
-
-        if (this.turnList.size > 0) {
-          this.prevTurnList.clear();
-          for (const v of this.turnList) {
-            this.prevTurnList.add(v);
-          }
-          this.turnList.clear();
-        }
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
-      this.$emit("raiseReload");
-    },
-    toggleSearchCommand() {
-      const searchModeOn = !this.searchModeOn;
-      this.searchModeOn = searchModeOn;
-      localStorage.setItem(searchModeKey, searchModeOn ? "1" : "0");
-    },
-    chooseCommand(val: string){
-      this.selectedCommand = this.invCommandMap[val];
-    },
-  },
-  data() {
-    const serverNowObj = parseTime(this.date);
-    const clientNowObj = new Date();
-    const timeDiff = serverNowObj.getTime() - clientNowObj.getTime();
-
-    const listReqArgCommand = new Set<string>();
-    for (const commandCategories of this.commandList) {
-      if (!commandCategories.values) {
-        continue;
-      }
-      for (const commandObj of commandCategories.values) {
-        if (!commandObj.reqArg) {
-          continue;
-        }
-        listReqArgCommand.add(commandObj.value);
-      }
     }
 
-    const selectedCommand = this.commandList[0].values[0];
-    for (const subCategory of this.commandList) {
-      for (const command of subCategory.values) {
-        if (command.searchText) {
-          continue;
-        }
-        command.searchText = convertSearch초성(command.simpleName).join("|");
-      }
+    if (mb_strwidth(brief) > 22) {
+      tooltip.push(brief);
     }
 
-    const invCommandMap: Record<string, CommandItem> = {};
-    for(const category of this.commandList){
-      for(const command of category.values){
-        invCommandMap[command.value] = command;
-      }
-    }
-
-    const searchModeOn = (localStorage.getItem(searchModeKey) ?? "0") != "0";
-
-    const emptyTurn: TurnObjWithTime[] = Array.from<TurnObjWithTime>({
-      length: this.maxTurn,
-    }).fill({
-      arg: {},
-      brief: "",
-      action: "",
-      year: undefined,
-      month: undefined,
-      time: "",
+    _reservedCommandList.push({
+      ...obj,
+      year,
+      month,
+      time: formatTime(
+        nextTurnTime,
+        props.turnTerm >= 5 ? "HH:mm" : "mm:ss"
+      ),
+      tooltip: tooltip.length == 0 ? undefined : tooltip.join("\n"),
+      style,
     });
 
-    const prevTurnList = new Set([0]);
+    yearMonth += 1;
+    nextTurnTime = addMinutes(nextTurnTime, props.turnTerm);
+  }
+  reservedCommandList.value = _reservedCommandList;
+  updated.value = true;
+}
 
-    const rowGridStyle = {
-      display: "grid",
-      gridTemplateRows: `repeat(${this.maxTurn}, 30px)`,
-    };
+async function reserveCommand() {
+  const reqTurnList = queryActionHelper.getSelectedTurnList();
+  const commandName = selectedCommand.value.value;
 
-    return {
-      updated: false,
-      listReqArgCommand,
-      serverNow: formatTime(serverNowObj, "HH:mm:ss"),
-      timeDiff,
-      prevTurnList,
-      turnList: this.selectedTurn,
-      selectedCommand,
-      reservedCommandList: emptyTurn,
-      autorun_limit: null as null | number,
-      searchModeOn,
-      rowGridStyle,
-      isDragSingle: false,
-      isDragToggle: false,
-      invCommandMap,
-    };
-  },
-  mounted() {
-    this.updateCommandList();
-  },
+  if (listReqArgCommand.has(commandName)) {
+    document.location.href = stringifyUrl({
+      url: "v_processing.php",
+      query: {
+        command: commandName,
+        turnList: reqTurnList.join("_"),
+        is_chief: true,
+      },
+    });
+    return;
+  }
+
+  try {
+    await SammoAPI.NationCommand.ReserveCommand({
+      turnList: reqTurnList,
+      action: commandName,
+    });
+
+    queryActionHelper.releaseSelectedTurnList();
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+  emit("raiseReload");
+}
+
+function chooseCommand(val?: string) {
+  if (val === undefined) {
+    return;
+  }
+  selectedCommand.value = invCommandMap[val];
+  void reserveCommand();
+}
+
+const emptyTurnObj: TurnObj = { action: '휴식', brief: '휴식', arg: {} };
+
+
+const storedActionsHelper = inject('storedNationActionsHelper') as StoredActionsHelper;
+
+const recentActions = storedActionsHelper.recentActions;
+const storedActions = storedActionsHelper.storedActions;
+const activatedCategory = storedActionsHelper.activatedCategory;
+
+async function eraseSelectedTurnList(releaseSelect = true): Promise<boolean> {
+  const result = await reserveCommandDirect([[
+    queryActionHelper.getSelectedTurnList(),
+    emptyTurnObj
+  ]]);
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+  return result;
+}
+
+const clipboard = storedActionsHelper.clipboard;
+
+async function clipboardCut(releaseSelect = true) {
+  clipboardCopy(false);
+  return eraseSelectedTurnList(releaseSelect);
+}
+
+function clipboardCopy(releaseSelect = true) {
+  clipboard.value = queryActionHelper.extractQueryActions();
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+}
+
+async function clipboardPaste(releaseSelect = true) {
+  const rawActions = clipboard.value;
+  if (rawActions === undefined) {
+    return;
+  }
+
+  const actions = queryActionHelper.amplifyQueryActions(rawActions, queryActionHelper.getSelectedTurnList());
+  if (actions.length === 0) {
+    return;
+  }
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+  return result;
+}
+
+async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
+  const reqTurnList = queryActionHelper.getSelectedTurnList();
+  const selectedMinTurnIdx = reqTurnList[0];
+  const selectedMaxTurnIdx = reqTurnList[reqTurnList.length - 1];
+  const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
+
+  const rawActions = queryActionHelper.extractQueryActions();
+  const actions = queryActionHelper.amplifyQueryActions(rawActions, range(selectedMinTurnIdx, props.maxTurn, queryLength));
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+  return result;
+}
+
+
+async function eraseAndPullCommand(releaseSelect = true): Promise<boolean> {
+  const reqTurnList = queryActionHelper.getSelectedTurnList();
+  const selectedMinTurnIdx = reqTurnList[0];
+  const selectedMaxTurnIdx = reqTurnList[reqTurnList.length - 1];
+  const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
+
+  if (selectedMinTurnIdx === 0) {
+    await pushNationCommand(-queryLength);
+    return true;
+  }
+
+  if (selectedMinTurnIdx + queryLength == props.maxTurn) {
+    return eraseSelectedTurnList(releaseSelect);
+  }
+
+  const actions: [number[], TurnObj][] = [];
+
+
+  const emptyTurnList: number[] = [];
+
+  for (const srcTurnIdx of range(selectedMinTurnIdx + queryLength, props.maxTurn)) {
+    const rawAction = reservedCommandList.value[srcTurnIdx];
+    if (rawAction.action == emptyTurnObj.action) {
+      emptyTurnList.push(srcTurnIdx - queryLength);
+      continue;
+    }
+    actions.push([[srcTurnIdx - queryLength], {
+      action: rawAction.action,
+      arg: rawAction.arg,
+      brief: rawAction.brief
+    }]);
+  }
+
+  emptyTurnList.push(...range(props.maxTurn - queryLength, props.maxTurn));
+  actions.push([emptyTurnList, emptyTurnObj]);
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+  return result;
+}
+
+async function pushEmptyCommand(releaseSelect = true): Promise<boolean> {
+  const reqTurnList = queryActionHelper.getSelectedTurnList();
+  const selectedMinTurnIdx = reqTurnList[0];
+  const selectedMaxTurnIdx = reqTurnList[reqTurnList.length - 1];
+  const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
+
+  if (selectedMinTurnIdx === 0) {
+    await pushNationCommand(queryLength);
+    return true;
+  }
+
+  if (selectedMaxTurnIdx == props.maxTurn) {
+    return eraseSelectedTurnList(releaseSelect);
+  }
+
+  const actions: [number[], TurnObj][] = [];
+
+
+  const emptyTurnList: number[] = [];
+
+  for (const srcTurnIdx of range(selectedMinTurnIdx, props.maxTurn - queryLength)) {
+    const rawAction = reservedCommandList.value[srcTurnIdx];
+    if (rawAction.action == emptyTurnObj.action) {
+      emptyTurnList.push(srcTurnIdx + queryLength);
+      continue;
+    }
+    actions.push([[srcTurnIdx + queryLength], {
+      action: rawAction.action,
+      arg: rawAction.arg,
+      brief: rawAction.brief
+    }]);
+  }
+
+  emptyTurnList.push(...range(selectedMinTurnIdx, selectedMinTurnIdx + queryLength));
+  actions.push([emptyTurnList, emptyTurnObj]);
+
+  const result = await reserveCommandDirect(actions);
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+  return result;
+}
+
+function setStoredActions() {
+  const actions = queryActionHelper.extractQueryActions();
+  const turnBrief = new Map<number, string>();
+  for (const [subTurnList, action] of actions) {
+    const actionName = action.action.split('_');
+    const actionShortName = actionName.length == 1 ? actionName[0] : actionName[1];
+    for (const turnIdx of subTurnList) {
+      turnBrief.set(turnIdx, actionShortName[0]);
+    }
+  }
+
+  const turnBriefStr = Array.from(turnBrief.entries())
+    .sort(([turnA], [turnB]) => turnA - turnB)
+    .map(([, action]) => action)
+    .join('');
+
+  const nickName = trim(prompt('선택한 턴들의 별명을 지어주세요', turnBriefStr) ?? '');
+  if (nickName == '') {
+    return;
+  }
+
+  storedActionsHelper.setStoredActions(nickName, actions);
+  queryActionHelper.releaseSelectedTurnList();
+}
+
+function deleteStoredActions(actionKey: string) {
+  storedActionsHelper.deleteStoredActions(actionKey)
+}
+
+async function useStoredAction(rawActions: [number[], TurnObj][]) {
+  const reqTurnList = queryActionHelper.getSelectedTurnList();
+  const actions = queryActionHelper.amplifyQueryActions(rawActions, reqTurnList)
+  const result = await reserveCommandDirect(actions);
+  queryActionHelper.releaseSelectedTurnList();
+  return result;
+}
+
+function getQueryActionHelper(): QueryActionHelper {
+  return queryActionHelper;
+}
+
+function getStoredActionHeler(): StoredActionsHelper {
+  return storedActionsHelper;
+}
+
+defineExpose({
+  useStoredAction,
+  deleteStoredActions,
+  clipboardCut,
+  clipboardCopy,
+  clipboardPaste,
+  getQueryActionHelper,
+  getStoredActionHeler,
+})
+
+watch(() => props.date, () => {
+  triggerUpdateCommandList("date");
+})
+watch(() => props.year, () => {
+  triggerUpdateCommandList("year");
+})
+watch(() => props.month, () => {
+  triggerUpdateCommandList("month");
+})
+watch(() => props.turnTime, () => {
+  triggerUpdateCommandList("turnTime");
+})
+watch(() => props.commandList, () => {
+  triggerUpdateCommandList("commandList");
+})
+watch(() => props.selectedTurn, (val: Set<number>) => {
+  console.log(val);
+  if (val === selectedTurnList.value) {
+    console.log("pass!");
+    return;
+  }
+  selectedTurnList.value.clear();
+  for (const t of val.values()) {
+    selectedTurnList.value.add(t);
+  }
+})
+
+watch(selectedTurnList, () => {
+  console.log(selectedTurnList.value);
+  emit("update:selectedTurn", selectedTurnList.value);
+})
+
+const commandQuickReserveForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
+const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
+
+const currentQuickReserveTarget = ref(-1);
+function chooseQuickReserveCommand(val?: string) {
+  if (!val) {
+    return;
+  }
+  selectedCommand.value = invCommandMap[val];
+  selectedTurnList.value.clear();
+  selectedTurnList.value.add(currentQuickReserveTarget.value);
+  void reserveCommand();
+}
+
+function toggleQuickReserveForm(turnIdx: number) {
+  if (turnIdx == currentQuickReserveTarget.value) {
+    commandQuickReserveForm.value?.toggle();
+    return;
+  }
+  currentQuickReserveTarget.value = turnIdx;
+  commandQuickReserveForm.value?.show();
+}
+
+const isEditMode = storedActionsHelper.isEditMode;
+watch(isEditMode, newEditMode => {
+  if (newEditMode) {
+    commandQuickReserveForm.value?.close();
+    currentQuickReserveTarget.value = -1;
+  }
+  else {
+    commandSelectForm.value?.close();
+  }
 });
+function toggleForm($event: Event): void {
+  $event.preventDefault();
+
+  const form = commandSelectForm.value;
+  if (!form) {
+    return;
+  }
+  form.toggle();
+}
+
+
+const serverNow = ref(formatTime(new Date(), "HH:mm:ss"));
+
+function updateNow() {
+  const serverNowObj = addMilliseconds(new Date(), props.timeDiff);
+  serverNow.value = formatTime(serverNowObj, "HH:mm:ss");
+  setTimeout(() => {
+    updateNow();
+  }, 1000 - serverNowObj.getMilliseconds());
+}
+
+setTimeout(() => {
+  updateNow();
+}, 500);
+
+
+onMounted(() => {
+  updateCommandList();
+})
+
 </script>
 <style lang="scss">
 @import "@scss/common/break_500px.scss";
@@ -470,11 +920,18 @@ export default defineComponent({
 .chiefReservedCommand {
   background-color: $gray-900;
 
-  .commandTable {
+  .commandTable.editMode {
     width: 100%;
     display: grid;
     grid-template-columns: minmax(39.67px, 1fr) minmax(28px, 1fr) 5fr;
     //30, 70, 37.65, 160
+  }
+
+  .commandTable.singleMode {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(39.67px, 1fr) 5fr minmax(28px, 1fr);
+    //30, 70, 160, 37.65
   }
 
   @include media-1000px {

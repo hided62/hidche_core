@@ -38,6 +38,11 @@ const apiRealPath = {
         PushCommand: done,
         RepeatCommand: done,
         ReserveCommand: done,
+        ReserveBulkCommand: done as CallbackT<{
+            turnList: number[],
+            action: string,
+            arg: Args
+        }[], ReserveBulkCommandResponse>,
     },
     Nation: {
         SetNotice: done,

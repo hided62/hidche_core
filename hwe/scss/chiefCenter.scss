@@ -31,11 +31,16 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
             line-height: 30px;
         }
 
+        .time_pad.inverted{
+            background-color: gray;
+            color: white;
+        }
+
         .turn_pad {
             line-height: 30px;
         }
 
-        .row:nth-child(odd) .turn_pad {
+        .row:nth-of-type(odd) .turn_pad {
             background-color: $modcolor2;
         }
     }
@@ -83,7 +88,7 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
     }
 
     .commandBox .controlPad {
-        .turn_pad:nth-child(2n) {
+        .turn_pad:nth-of-type(even) {
             background-color: $modcolor2;
         }
     }
@@ -109,7 +114,6 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
         width: 500px;
         height: 460px;
         margin: auto;
-        overflow: hidden;
     }
 
     #mainTable {
@@ -131,7 +135,7 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
     .commandBox .controlPad {
         margin-top: 10px;
 
-        .turn_pad:nth-child(even) {
+        .turn_pad:nth-of-type(even) {
             background-color: $modcolor2;
         }
     }
@@ -145,7 +149,7 @@ $modcolor2: color.adjust($nbase2color, $lightness: -5%);
         overflow: hidden;
 
 
-        .turn_pad:nth-child(even) {
+        .turn_pad:nth-of-type(even) {
             background-color: $modcolor2;
         }
     }

@@ -24,6 +24,11 @@ $generalObj = General::createGeneralObjFromDB($session->generalID);
     <?= WebUtil::printStaticValues([
         'maxChiefTurn'=>GameConst::$maxChiefTurn,
         'generalID'=>$generalObj->getID(),
+        'staticValues'=>[
+            'serverNick' => DB::prefix(),
+            'mapName' => GameConst::$mapName,
+            'unitSet' => GameConst::$unitSet,
+        ]
     ])?>
     <?= WebUtil::printDist('vue', 'v_chiefCenter', true) ?>
 </head>

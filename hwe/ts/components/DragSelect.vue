@@ -156,7 +156,7 @@ export default defineComponent({
         document.addEventListener("touchmove", touchMove);
         box.style.top = start.y + "px";
         box.style.left = start.x + "px";
-        uContainer.prepend(box);
+        uContainer.append(box);
         intersection();
         isMine = true;
         emit("dragStart");

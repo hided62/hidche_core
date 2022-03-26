@@ -1,28 +1,41 @@
 <template>
-    <teleport :to="anchor">
-        <div v-if="showForm" class="my-1">
-            <div class="commandCategory row gx-0 gy-1">
-                <div
-                    class="categoryItem col-4 d-grid"
-                    v-for="[categoryKey, { deco: categoryDeco }] of commandList"
-                    :key="categoryKey"
-                >
-                    <BButton
-                        variant="success"
-                        @click="chosenCategory = categoryKey"
-                        :active="chosenCategory == categoryKey"
-                    >{{ categoryDeco.altName ?? categoryDeco.name }}</BButton>
-                </div>
+    <div v-if="showForm" class="my-1">
+        <div class="commandCategory row gx-0 gy-1">
+            <div
+                class="categoryItem col-4 d-grid"
+                v-for="[categoryKey, { deco: categoryDeco }] of commandList"
+                :key="categoryKey"
+            >
+                <BButton
+                    variant="success"
+                    @click="chosenCategory = categoryKey"
+                    :active="chosenCategory == categoryKey"
+                >{{ categoryDeco.altName ?? categoryDeco.name }}</BButton>
             </div>
-            <div class="commandList row gx-1 gy-1 my-1">
+        </div>
+        <div
+            class="commandList my-1"
+            :style="{
+                display: 'grid',
+                alignItems: 'self-start',
+            }"
+        >
+            <div
+                class="row gx-1 gy-1"
+                v-for="[category, { values }] of commandList"
+                :key="category"
+                :style="{ visibility: category == chosenCategory ? 'visible' : 'hidden', gridRow: '1', gridColumn: '1' }"
+            >
                 <div
                     class="col-6 d-grid"
-                    v-for="commandItem of chosenSubList"
+                    v-for="commandItem of values"
                     :key="commandItem.value"
                     @click="close(commandItem.value)"
                 >
                     <div class="commandItem">
-                        <p :class="['center', 'my-0', commandItem.possible ? '' : 'commandImpossible']">
+                        <p
+                            :class="['center', 'my-0', commandItem.possible ? '' : 'commandImpossible']"
+                        >
                             {{ commandItem.simpleName }}
                             <span
                                 class="compensatePositive"
@@ -43,34 +56,18 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!hideClose" class="commandBottom row mt-1 mb-1">
-                <div class="offset-8 col-4 d-grid">
-                    <BButton @click="close()">닫기</BButton>
-                </div>
+        </div>
+        <div v-if="!hideClose" class="commandBottom row mt-1 mb-1">
+            <div class="offset-8 col-4 d-grid">
+                <BButton @click="close()">닫기</BButton>
             </div>
         </div>
-    </teleport>
+    </div>
 </template>
 <script setup lang="ts">
-/*
-            <template v-if="props.option.title">
-              <span class="compensatePositive" v-if="props.option.compensation > 0">▲</span>
-              <span class="compensateNegative" v-else-if="props.option.compensation < 0">▼</span>
-              <span class="compensateNeutral" v-else></span>
-              <span
-                :class="[props.option.possible ? '' : 'commandImpossible']"
-              >{{ props.option.title }}</span>
-            </template>
-            <template v-else-if="props.option.category">{{ props.option.category }}</template>
-          </template>
-          <template v-slot:singleLabel="props">{{ props.option.simpleName }}</template>
- */
 import type { CommandItem } from "@/defs";
 import { BButton } from "bootstrap-vue-3";
 import { ref, defineProps, defineEmits, defineExpose, type PropType, watch, onMounted } from "vue";
-
-const chosenCategory = ref<string>("-");
-const chosenSubList = ref<CommandItem[]>([]);
 
 interface CategoryDecoration {
     name: string,
@@ -101,7 +98,21 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: true,
+    },
+    activatedCategory: {
+        type: String,
+        required: false,
+        default: "",
     }
+})
+
+const chosenCategory = ref<string>('-');
+const chosenSubList = ref<CommandItem[]>([]);
+
+const categories = new Set(props.commandList.map(({ category }) => category));
+
+watch(() => props.activatedCategory, (newValue) => {
+    chosenCategory.value = newValue;
 })
 
 const showForm = ref(false);
@@ -140,17 +151,25 @@ watch(() => props.commandList, updateCommandList);
 updateCommandList(props.commandList);
 
 watch(chosenCategory, (category) => {
-    console.log('sel', category);
     const itemInfo = commandList.value?.get(category);
     if (itemInfo === undefined) {
         console.error(`category 없음: ${category}`);
         return;
     }
     chosenSubList.value = itemInfo.values;
+    if (props.activatedCategory !== category) {
+        emits('update:activatedCategory', category);
+    }
 });
 
 onMounted(() => {
-    chosenCategory.value = props.commandList[0].category;
+    if (!categories.has(props.activatedCategory)) {
+        chosenCategory.value = props.commandList[0].category;
+    }
+    else {
+        chosenCategory.value = props.activatedCategory;
+    }
+
 });
 
 function show(): void {
@@ -171,6 +190,7 @@ function close(category?: string): void {
 
 const emits = defineEmits<{
     (event: 'onClose', command?: string): void,
+    (event: 'update:activatedCategory', category: string): void,
 }>();
 
 defineExpose({
