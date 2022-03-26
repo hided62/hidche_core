@@ -13,7 +13,7 @@ class che_보물_도기 extends \sammo\BaseItem
 
     protected $rawName = '도기';
     protected $name = '도기(보물)';
-    protected $info = '[개인] 판매 시 국고에 금, 쌀 중 하나를 추가 (+10,000, 5년마다 +10,000)';
+    protected $info = '[개인] 판매 시 장수 소지금과 국고에 금, 쌀 중 하나를 추가 (총 +10,000, 5년마다 +10,000)';
     protected $cost = 200;
     protected $consumable = false;
 
@@ -48,15 +48,16 @@ class che_보물_도기 extends \sammo\BaseItem
 
         if ($nationId != 0) {
           $db->update('nation', [
-            $resKey => $db->sqleval('%b + %i', $resKey, $score)
+            $resKey => $db->sqleval('%b + %i', $resKey, Util::toInt($score / 2))
           ], 'nation=%i', $nationId);
         }
+        $general->increaseVar($resKey, $score - Util::toInt($score / 2));
 
         $score = Util::round($score);
         $scoreText = number_format($score, 0);
 
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("국고에 {$resName} <C>{$scoreText}</>을 보충합니다.");
+        $logger->pushGeneralActionLog("재산과 국고에 총 {$resName} <C>{$scoreText}</>을 보충합니다.");
         return $aux;
     }
 }
