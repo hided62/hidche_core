@@ -98,8 +98,8 @@ if($btn == '참가') {
         ], 'no=%i', $general['no']);
     }
 
-    $grpCount = $db->queryFirstField('SELECT count(*) FROM tournament where grp<10 GROUP BY grp HAVING count(*)=8');
-    if($grpCount >= 8) {
+    $grpCount = $db->queryFirstColumn('SELECT count(grp) FROM tournament where grp<10 GROUP BY grp;');
+    if(min($grpCount) >= 8) {
         $gameStor->tournament = 2;
         $gameStor->phase = 0;
     }
