@@ -70,7 +70,7 @@
       <div class="col-4 d-grid">
         <BDropdown right text="최근 실행">
           <BDropdownItem
-            v-for="(action, idx) in recentActions"
+            v-for="(action, idx) of Array.from(recentActions.values()).reverse()"
             :key="idx"
             @click="void reserveCommandDirect([[Array.from(selectedTurnList.values()), action]])"
           >{{ action.brief }}</BDropdownItem>

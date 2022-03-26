@@ -1,9 +1,9 @@
 import type { TurnObj } from '@/defs';
-import { ref, watch } from 'vue';
+import { ref, watch, type Ref } from 'vue';
 
 
 export class StoredActionsHelper {
-    public readonly recentActions = ref<TurnObj[]>([]);
+    public readonly recentActions: Ref<Map<string, TurnObj>>;
     public readonly storedActions = ref(new Map<string, [number[], TurnObj][]>());
     public readonly clipboard = ref<[number[], TurnObj][] | undefined>(undefined);
     public readonly activatedCategory = ref<string>("");
@@ -16,6 +16,7 @@ export class StoredActionsHelper {
     public readonly editModeKey: string;
 
     constructor(protected serverNick: string, protected type: 'general' | 'nation', protected mapName: string, protected unitSet: string, protected maxRecent = 10) {
+        this.recentActions = ref(new Map());
         const typeKey = `${serverNick}_${mapName}_${unitSet}_${type}`;
         this.recentActionsKey = `${typeKey}RecentActions`;
         this.storedActionsKey = `${typeKey}StoredActions`;
@@ -49,26 +50,47 @@ export class StoredActionsHelper {
     }
 
     loadRecentActions() {
-        this.recentActions.value = JSON.parse(localStorage.getItem(this.recentActionsKey) ?? '[]');
+        try {
+            const rawRecentActions = JSON.parse(localStorage.getItem(this.recentActionsKey) ?? '[]') as TurnObj[];
+            const recentActions = new Map<string, TurnObj>();
+            for (const action of rawRecentActions) {
+                const actionKey = JSON.stringify([action.action, action.arg]);
+                recentActions.set(actionKey, action);
+            }
+            this.recentActions.value = recentActions;
+        }
+        catch(e){
+            console.log(`loadRecentActions error ${e}`);
+        }
     }
 
     pushRecentActions(action: TurnObj) {
-        this.recentActions.value.unshift(action);
-        if (this.recentActions.value.length > this.maxRecent) {
-            this.recentActions.value.pop();
+        const actionKey = JSON.stringify([action.action, action.arg]);
+        if (this.recentActions.value.has(actionKey)) {
+            this.recentActions.value.delete(actionKey);
         }
+        else if (this.recentActions.value.size > this.maxRecent) {
+            const firstKey = this.recentActions.value.keys().next().value;
+            this.recentActions.value.delete(firstKey);
+        }
+        this.recentActions.value.set(actionKey, action);
         this.saveRecentActions();
     }
 
     saveRecentActions() {
-        localStorage.setItem(this.recentActionsKey, JSON.stringify(this.recentActions.value));
+        localStorage.setItem(this.recentActionsKey, JSON.stringify(Array.from(this.recentActions.value.values())));
     }
 
     loadStoredActions() {
+        try {
         const rawValue: [string, [number[], TurnObj][]][] = JSON.parse(
             localStorage.getItem(this.storedActionsKey) ?? '[]'
         );
         this.storedActions.value = new Map(rawValue);
+        }
+        catch(e){
+            console.log(`loadStoredActions error ${e}`);
+        }
     }
 
     setStoredActions(actionKey: string, actions: [number[], TurnObj][]) {
