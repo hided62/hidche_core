@@ -371,7 +371,7 @@ function postUpdateMonthly()
                 sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop_max+agri_max+comm_max+secu_max+wall_max+def_max)/100
             ) from city where nation=A.nation and supply=1
         ))
-        +(select SUM((ra.value + 1000)/(rb.value + 1000)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)*2 + (SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/2)
+        +(select SUM((ra.value + 1000)/(rb.value + 1000)*(CASE WHEN g.`npc` < 2 THEN 1.2 ELSE 1 END)*(CASE WHEN g.`leadership` >= 40 THEN g.`leadership` ELSE 0 END)*2 + (SQRT(g.intel * g.strength) * 2 + g.leadership / 2)/2)
                 FROM general AS g
                 LEFT JOIN `rank_data` AS ra ON g.`no` = ra.general_id AND ra.`type` = \'killcrew_person\'
                 LEFT JOIN `rank_data` AS rb ON g.`no` = rb.general_id AND rb.`type` = \'deathcrew_person\'
