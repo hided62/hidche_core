@@ -300,7 +300,7 @@ import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
 import { isString, range, trim } from "lodash";
 import { SammoAPI } from "@/SammoAPI";
-import type { ChiefResponse, CommandItem, TurnObj } from "@/defs";
+import type { ChiefResponse, CommandItem, ReserveCommandResponse, TurnObj } from "@/defs";
 import { QueryActionHelper } from "@/util/QueryActionHelper";
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
@@ -584,9 +584,15 @@ async function reserveCommand() {
   }
 
   try {
-    await SammoAPI.NationCommand.ReserveCommand({
+    const result = await SammoAPI.NationCommand.ReserveCommand<ReserveCommandResponse>({
       turnList: reqTurnList,
       action: commandName,
+    });
+
+    storedActionsHelper.pushRecentActions({
+      action: commandName,
+      brief: result.brief,
+      arg: {}
     });
 
     queryActionHelper.releaseSelectedTurnList();

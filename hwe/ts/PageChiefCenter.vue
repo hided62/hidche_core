@@ -125,12 +125,6 @@ import { SammoAPI } from "./SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 
-const {
-  serverNick,
-  mapName,
-  unitSet,
-} = staticValues;
-
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
 })
