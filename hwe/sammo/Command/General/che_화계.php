@@ -281,6 +281,7 @@ class che_화계 extends Command\GeneralCommand
 
         $prob = GameConst::$sabotageDefaultProb + $this->calcSabotageAttackProb() - $this->calcSabotageDefenceProb($destCityGeneralList);
         $prob /= $dist;
+        $prob = Util::valueFit($prob, 0, 0.5);
 
         if (!Util::randBool($prob)) {
             $josaYi = JosaUtil::pick($commandName, '이');
