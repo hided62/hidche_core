@@ -4095,17 +4095,18 @@ class GeneralAI
             return 20;
         }
 
+        $nationGenerals = $this->nationGenerals;
+        $nationGenerals[] = $this->general;
+
         $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
-        }, array_filter($this->nationGenerals, function (General $rawGeneral) {
-            return $rawGeneral->getVar('officer_level') != 5;
-        }));
+        }, $nationGenerals);
 
         $goldIncome  = getGoldIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $warIncome  = getWarGoldIncome($nation['type'], $cityList);
         $income = $goldIncome + $warIncome;
 
-        $outcome = getOutcome(100, $dedicationList);
+        $outcome = Util::valueFit(getOutcome(100, $dedicationList), 1);
 
         $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
         if ($nation['gold'] + $income - $outcome > $this->nationPolicy->reqNationGold * 2) {
@@ -4138,11 +4139,12 @@ class GeneralAI
             return 20;
         }
 
+        $nationGenerals = $this->nationGenerals;
+        $nationGenerals[] = $this->general;
+
         $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
-        }, array_filter($this->nationGenerals, function (General $rawGeneral) {
-            return $rawGeneral->getVar('npc') != 5;
-        }));
+        }, $nationGenerals);
 
         $riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $wallIncome = getWallIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
