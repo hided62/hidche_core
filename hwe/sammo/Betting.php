@@ -26,7 +26,7 @@ class Betting
         return Json::encode($bettingType);
     }
 
-    public function purifyBettingKey(array $bettingType): array
+    public function purifyBettingKey(array $bettingType, bool $ignoreOver = false): array
     {
         $selectCnt = $this->info->selectCnt;
         sort($bettingType, SORT_NUMERIC);
@@ -39,7 +39,7 @@ class Betting
             throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(0 미만)' . print_r($bettingType, true));
         }
 
-        if (Util::array_last($bettingType) >= count($this->info->candidates)) {
+        if (!$ignoreOver && Util::array_last($bettingType) >= count($this->info->candidates)) {
             throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(초과)' . print_r($bettingType, true));
         }
 

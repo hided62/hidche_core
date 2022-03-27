@@ -49,10 +49,20 @@ class FinishNationBetting extends \sammo\Event\Action
         }
 
         $winnerTypes = [];
+
+        $notInBettingWinner = 0;
         foreach ($winnerNations as $winnerNationID) {
-            $winnerTypes[] = $nationIDMap[$winnerNationID];
+            if(key_exists($winnerNationID, $nationIDMap)){
+                $winnerTypes[] = $nationIDMap[$winnerNationID];
+            }
+            else{
+                //혹시라도 베팅 시점 이후에 생성된 국가라 없을 수 있다.
+                $winnerTypes[] = count($nationIDMap) + $notInBettingWinner;
+                $notInBettingWinner += 1;
+            }
         }
-        $winnerTypes = $bettingHelper->purifyBettingKey($winnerTypes);
+
+        $winnerTypes = $bettingHelper->purifyBettingKey($winnerTypes, $notInBettingWinner > 0);
 
         $bettingHelper->giveReward($winnerTypes);
         $logger = new ActionLogger(0, 0, $env['year'], $env['month']);
