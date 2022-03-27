@@ -4100,7 +4100,10 @@ class GeneralAI
 
         $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
-        }, $nationGenerals);
+        }, array_filter($this->nationGenerals, function (General $rawGeneral) {
+            return $rawGeneral->getVar('npc') != 5;
+        }));
+
 
         $goldIncome  = getGoldIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $warIncome  = getWarGoldIncome($nation['type'], $cityList);
@@ -4144,7 +4147,9 @@ class GeneralAI
 
         $dedicationList = array_map(function (General $general) {
             return $general->getRaw();
-        }, $nationGenerals);
+        }, array_filter($this->nationGenerals, function (General $rawGeneral) {
+            return $rawGeneral->getVar('npc') != 5;
+        }));
 
         $riceIncome = getRiceIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
         $wallIncome = getWallIncome($nation['nation'], $nation['level'], $nation['rate'], $nation['capital'], $nation['type'], $cityList);
