@@ -124,7 +124,7 @@ import { SammoAPI, type ValidResponse } from "@/SammoAPI";
 import { joinYearMonth } from '@/util/joinYearMonth';
 import { parseYearMonth } from '@/util/parseYearMonth';
 import { isString, range, sum } from 'lodash';
-import { ref, defineProps, defineEmits, type PropType, watch } from "vue";
+import { ref, type PropType, watch } from "vue";
 
 type BettingDetailResponse = ValidResponse & {
     bettingInfo: BettingInfo;

@@ -3,7 +3,8 @@ module.exports = {
     parser: "vue-eslint-parser",
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        'vue/setup-compiler-macros': true
     },
     ignorePatterns: ['*.test.ts', '.eslintrc.cjs', 'postcss.config.cjs', 'webpack.config.cjs', '*.js'],
     overrides: [{
@@ -27,6 +28,7 @@ module.exports = {
     },
     rules: {
         '@typescript-eslint/no-floating-promises': 'error',
+        'vue/script-setup-uses-vars': 'error',
     },
     settings: {
         'import/resolver': {

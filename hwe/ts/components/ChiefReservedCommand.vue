@@ -289,7 +289,7 @@ toggleTurn(...$event);
 <script lang="ts" setup>
 import addMinutes from "date-fns/esm/addMinutes";
 import { stringifyUrl } from "query-string";
-import { defineProps, defineEmits, defineExpose, onMounted, ref, watch, type PropType, inject } from "vue";
+import { onMounted, ref, watch, type PropType, inject } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";

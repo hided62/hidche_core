@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import { addMilliseconds } from 'date-fns';
-import { defineProps, type PropType, ref, onMounted, watch } from 'vue';
+import { type PropType, ref, onMounted, watch } from 'vue';
 import { formatTime } from '@/util/formatTime';
 const props = defineProps({
     serverTime: {

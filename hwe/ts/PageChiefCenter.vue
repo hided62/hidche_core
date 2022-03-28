@@ -109,7 +109,7 @@ import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 import "../../css/config.css";
 
-import { computed, defineProps, provide, reactive, ref, toRefs, watch } from "vue";
+import { computed, provide, reactive, ref, toRefs, watch } from "vue";
 import ChiefReservedCommand from "@/components/ChiefReservedCommand.vue";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";

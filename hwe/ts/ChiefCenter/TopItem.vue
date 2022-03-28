@@ -59,7 +59,7 @@ import { parseTime } from "@/util/parseTime";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import addMinutes from "date-fns/esm/addMinutes/index";
 import { range } from "lodash";
-import { defineProps, inject, onMounted, ref, type PropType } from "vue";
+import { inject, onMounted, ref, type PropType } from "vue";
 import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
 import { BButton } from "bootstrap-vue-3";

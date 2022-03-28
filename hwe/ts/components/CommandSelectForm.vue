@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import type { CommandItem } from "@/defs";
 import { BButton } from "bootstrap-vue-3";
-import { ref, defineProps, defineEmits, defineExpose, type PropType, watch, onMounted } from "vue";
+import { ref, type PropType, watch, onMounted } from "vue";
 
 interface CategoryDecoration {
     name: string,
