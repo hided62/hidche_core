@@ -16,28 +16,30 @@
     :maxHeight="400"
     :searchable="searchable"
   >
-    <template v-slot:option="props"
+    <template #option="props"
       ><span
         :style="{
           color: props.option.notAvailable ? 'red' : undefined,
         }"
       >
         {{ props.option.title }}
-        <span v-if="props.option.info">({{ props.option.info }})</span> {{ props.option.notAvailable ? "(불가)" : undefined }}</span
+        <span v-if="props.option.info">({{ props.option.info }})</span>
+        {{ props.option.notAvailable ? "(불가)" : undefined }}</span
       >
     </template>
-    <template v-slot:singleLabel="props">
+    <template #singleLabel="props">
       <span
         :style="{
           color: props.option.notAvailable ? 'red' : undefined,
         }"
-      >{{ props.option.simpleName }} {{ props.option.notAvailable ? "(불가)" : undefined }}</span>
+        >{{ props.option.simpleName }} {{ props.option.notAvailable ? "(불가)" : undefined }}</span
+      >
     </template>
   </v-multiselect>
 </template>
 <script lang="ts">
 import { convertSearch초성 } from "@/util/convertSearch초성";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, type PropType } from "vue";
 
 type SelectedCity = {
   value: number;
@@ -65,15 +67,6 @@ export default defineComponent({
     },
   },
   emits: ["update:modelValue"],
-  watch: {
-    modelValue(val: number) {
-      const target = this.targets.get(val);
-      this.selectedCity = target;
-    },
-    selectedCity(val: SelectedCity) {
-      this.$emit("update:modelValue", val.value);
-    },
-  },
   data() {
     const citiesForFind = [];
     const targets = new Map<number, SelectedCity>();
@@ -84,7 +77,7 @@ export default defineComponent({
         title: name,
         info: info,
         simpleName: name,
-        searchText: convertSearch초성(name).join('|'),
+        searchText: convertSearch초성(name).join("|"),
       };
       if (value == this.modelValue) {
         selectedCity = obj;
@@ -97,6 +90,15 @@ export default defineComponent({
       citiesForFind,
       targets,
     };
+  },
+  watch: {
+    modelValue(val: number) {
+      const target = this.targets.get(val);
+      this.selectedCity = target;
+    },
+    selectedCity(val: SelectedCity) {
+      this.$emit("update:modelValue", val.value);
+    },
   },
 });
 </script>

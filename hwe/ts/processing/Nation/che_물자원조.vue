@@ -1,13 +1,13 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
+  <TopBackBar v-model:searchable="searchable" :title="commandName" type="chief" />
   <div class="bg0">
     <MapLegacyTemplate
+      v-model="selectedCityObj"
       :isDetailMap="false"
       :clickableAll="true"
       :neutralView="true"
       :useCachedMap="true"
-      :mapTheme="mapTheme"
-      v-model="selectedCityObj"
+      :mapName="mapName"
     />
     <div>
       타국에게 원조합니다.<br />
@@ -37,14 +37,14 @@
     <div class="row">
       <div class="col-6 col-md-3">
         국가 :
-        <SelectNation :nations="nationList" v-model="selectedNationID" :searchable="searchable" />
+        <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
-      <div class="col-6 col-md-0"></div>
+      <div class="col-6 col-md-0" />
       <div class="col-8 col-md-4">
         금 :
         <SelectAmount
-          :amountGuide="amountGuide"
           v-model="goldAmount"
+          :amountGuide="amountGuide"
           :step="10"
           :maxAmount="maxAmount"
           :minAmount="minAmount"
@@ -53,15 +53,17 @@
       <div class="col-8 col-md-4">
         쌀 :
         <SelectAmount
-          :amountGuide="amountGuide"
           v-model="riceAmount"
+          :amountGuide="amountGuide"
           :step="10"
           :maxAmount="maxAmount"
           :minAmount="minAmount"
         />
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+        <b-button variant="primary" @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
@@ -69,19 +71,19 @@
 </template>
 
 <script lang="ts">
-import MapLegacyTemplate, {
-  MapCityParsed,
-} from "@/components/MapLegacyTemplate.vue";
+import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
 import SelectNation from "@/processing/SelectNation.vue";
 import SelectAmount from "@/processing/SelectAmount.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { getProcSearchable, procNationItem, procNationList } from "../processingRes";
-declare const mapTheme: string;
-declare const commandName: string;
+import { getProcSearchable, type procNationItem, type procNationList } from "../processingRes";
+declare const staticValues: {
+  mapName: string;
+  commandName: string;
+};
 
 declare const procRes: {
   nationList: procNationList;
@@ -105,14 +107,6 @@ export default defineComponent({
     SelectAmount,
     TopBackBar,
     BottomBar,
-  },
-  watch: {
-    selectedCityObj(city: MapCityParsed) {
-      if (!city.nationID) {
-        return;
-      }
-      this.selectedNationID = city.nationID;
-    },
   },
   setup() {
     const nationList = new Map<number, procNationItem>();
@@ -138,7 +132,7 @@ export default defineComponent({
 
     return {
       searchable: getProcSearchable(),
-      mapTheme,
+      mapName: staticValues.mapName,
       goldAmount,
       riceAmount,
       nationList,
@@ -149,9 +143,17 @@ export default defineComponent({
       minAmount: ref(procRes.minAmount),
       maxAmount: ref(procRes.maxAmount),
       amountGuide: procRes.amountGuide,
-      commandName,
+      commandName: staticValues.commandName,
       submit,
     };
+  },
+  watch: {
+    selectedCityObj(city: MapCityParsed) {
+      if (!city.nationID) {
+        return;
+      }
+      this.selectedNationID = city.nationID;
+    },
   },
 });
 </script>

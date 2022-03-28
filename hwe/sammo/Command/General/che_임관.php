@@ -225,7 +225,6 @@ class che_임관 extends Command\GeneralCommand
             $nationList[] = $nationTarget;
         }
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],

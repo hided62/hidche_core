@@ -233,7 +233,6 @@ class che_천도 extends Command\NationCommand
     public function exportJSVars(): array
     {
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'cities' => \sammo\JSOptionsForCities(),
                 'distanceList' => new \stdClass(),

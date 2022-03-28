@@ -7,29 +7,23 @@
       <div class="row gx-0">
         <div class="col-2 col-md-1 articleTitle bg1 center">제목</div>
         <div class="col-10 col-md-11">
-          <input
-            class="titleInput"
-            type="text"
-            maxlength="250"
-            placeholder="제목"
-            v-model="newArticle.title"
-          />
+          <input v-model="newArticle.title" class="titleInput" type="text" maxlength="250" placeholder="제목" />
         </div>
       </div>
       <div class="row gx-0">
         <div class="col-2 col-md-1 bg1 center">내용</div>
         <div class="col-10 col-md-11">
           <textarea
-            class="contentInput autosize"
             ref="newArticleTextForm"
-            placeholder="내용"
             v-model="newArticle.text"
+            class="contentInput autosize"
+            placeholder="내용"
             @input="autoResizeTextarea"
           />
         </div>
       </div>
       <div class="row">
-        <div class="col-8 col-md-10"></div>
+        <div class="col-8 col-md-10" />
         <div class="col-4 col-md-2 d-grid">
           <b-button id="submitArticle" @click="submitArticle"> 등록 </b-button>
         </div>
@@ -41,13 +35,13 @@
           v-for="article in articles"
           :key="article.no"
           :article="article"
-          @submit-comment="reloadArticles"
+          @submitComment="reloadArticles"
         />
       </template>
       <template v-else> 게시물이 없습니다. </template>
     </div>
 
-    <BottomBar/>
+    <BottomBar />
   </div>
 </template>
 
@@ -103,6 +97,49 @@ export default defineComponent({
       required: true,
     },
   },
+
+  setup(props) {
+    const newArticleTextForm = ref<HTMLInputElement>();
+    const articles = reactive<BoardArticleItem[]>([]);
+
+    const reloadArticles = async () => {
+      let boardResponse: BoardResponse;
+
+      try {
+        const response = await axios({
+          url: "j_board_get_articles.php",
+          responseType: "json",
+          method: "post",
+          data: convertFormData({
+            isSecret: props.isSecretBoard,
+          }),
+        });
+        const result: InvalidResponse | BoardResponse = response.data;
+        if (!result.result) {
+          throw result.reason;
+        }
+        boardResponse = result;
+      } catch (e) {
+        console.error(e);
+        alert(`에러: ${e}`);
+        return;
+      }
+
+      articles.length = 0;
+      articles.push(...Object.values(boardResponse.articles));
+      articles.reverse();
+    };
+
+    onMounted(async () => {
+      await reloadArticles();
+    });
+
+    return {
+      newArticleTextForm,
+      articles,
+      reloadArticles,
+    };
+  },
   data() {
     return {
       title: this.isSecretBoard ? "기밀실" : "회의실",
@@ -149,49 +186,6 @@ export default defineComponent({
 
       await this.reloadArticles();
     },
-  },
-
-  setup(props) {
-    const newArticleTextForm = ref<HTMLInputElement>();
-    const articles = reactive<BoardArticleItem[]>([]);
-
-    const reloadArticles = async () => {
-      let boardResponse: BoardResponse;
-
-      try {
-        const response = await axios({
-          url: "j_board_get_articles.php",
-          responseType: "json",
-          method: "post",
-          data: convertFormData({
-            isSecret: props.isSecretBoard,
-          }),
-        });
-        const result: InvalidResponse | BoardResponse = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
-        boardResponse = result;
-      } catch (e) {
-        console.error(e);
-        alert(`에러: ${e}`);
-        return;
-      }
-
-      articles.length = 0;
-      articles.push(...Object.values(boardResponse.articles));
-      articles.reverse();
-    };
-
-    onMounted(async () => {
-      await reloadArticles();
-    });
-
-    return {
-      newArticleTextForm,
-      articles,
-      reloadArticles,
-    };
   },
 });
 </script>

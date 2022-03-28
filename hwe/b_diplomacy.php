@@ -13,8 +13,6 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("중원정보", 1);
 
-$mapTheme = $gameStor->map_theme ?? 'che';
-
 $me = $db->queryFirstRow('SELECT no,nation FROM general WHERE owner=%i', $userID);
 $myNationID = $me['nation'];
 
@@ -100,7 +98,9 @@ $neutralStateCharMap = [
     <?= WebUtil::printStaticValues([
         'staticValues' => [
             'serverNick' => DB::prefix(),
-            'serverID' => UniqueConst::$serverID
+            'serverID' => UniqueConst::$serverID,
+            'unitSet' => GameConst::$unitSet,
+            'mapName' => GameConst::$mapName,
         ],
     ]) ?>
     <?= WebUtil::printDist('ts', ['common', 'map']) ?>
@@ -187,7 +187,7 @@ $neutralStateCharMap = [
         </tr>
         <tr>
             <td width=698 height=420>
-                <?= getMapHtml($mapTheme) ?>
+                <?= getMapHtml() ?>
             </td>
             <td id='nation_list_frame'>
                 <table id='nation_list'>

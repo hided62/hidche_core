@@ -1,12 +1,16 @@
 <template>
-  <TopBackBar :title="commandName" :type="procEntryMode" v-model:searchable="searchable" />
+  <TopBackBar
+    v-model:searchable="searchable"
+    :title="commandName"
+    :type="procEntryMode"
+  />
   <div class="bg0">
     <div v-if="commandName == '몰수'">
-      장수의 자금이나 군량을 몰수합니다.<br />
-      몰수한것은 국가재산으로 귀속됩니다.<br />
+      장수의 자금이나 군량을 몰수합니다.<br>
+      몰수한것은 국가재산으로 귀속됩니다.<br>
     </div>
     <div v-else-if="commandName == '포상'">
-      국고로 장수에게 자금이나 군량을 지급합니다.<br />
+      국고로 장수에게 자금이나 군량을 지급합니다.<br>
     </div>
     <div v-else-if="commandName == '증여'">
       자신의 자금이나 군량을 다른 장수에게 증여합니다.<br>
@@ -15,9 +19,9 @@
       <div class="col-12 col-md-5">
         장수 :
         <SelectGeneral
+          v-model="selectedGeneralID"
           :cities="citiesMap"
           :generals="generalList"
-          v-model="selectedGeneralID"
           :textHelper="textHelpGeneral"
           :searchable="searchable"
         />
@@ -25,25 +29,43 @@
       <div class="col-2 col-md-1">
         자원 :
         <b-button-group>
-          <b-button :pressed="isGold" @click="isGold=true">금</b-button>
-          <b-button :pressed="!isGold" @click="isGold=false">쌀</b-button>
+          <b-button
+            :pressed="isGold"
+            @click="isGold=true"
+          >
+            금
+          </b-button>
+          <b-button
+            :pressed="!isGold"
+            @click="isGold=false"
+          >
+            쌀
+          </b-button>
         </b-button-group>
       </div>
       <div class="col-7 col-md-4">
         금액 :
         <SelectAmount
-          :amountGuide="amountGuide"
           v-model="amount"
+          :amountGuide="amountGuide"
           :maxAmount="maxAmount"
           :minAmount="minAmount"
         />
       </div>
       <div class="col-3 col-md-2 d-grid">
-        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+        <b-button
+          variant="primary"
+          @click="submit"
+        >
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
-  <BottomBar :title="commandName" :type="procEntryMode" />
+  <BottomBar
+    :title="commandName"
+    :type="procEntryMode"
+  />
 </template>
 
 <script lang="ts">
@@ -51,15 +73,15 @@ import SelectGeneral from "@/processing/SelectGeneral.vue";
 import SelectAmount from "@/processing/SelectAmount.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
   getProcSearchable,
-  procGeneralItem,
-  procGeneralKey,
-  procGeneralRawItemList,
+  type procGeneralItem,
+  type procGeneralKey,
+  type procGeneralRawItemList,
 } from "./processingRes";
 import { getNpcColor } from "@/common_legacy";
 declare const commandName: string;
@@ -125,7 +147,7 @@ export default defineComponent({
     }
 
     return {
-      procEntryMode: entryInfo[0] == 'Nation'?'chief':'normal',
+      procEntryMode: <'chief'|'normal'>(entryInfo[0] == 'Nation'?'chief':'normal'),
       searchable: getProcSearchable(),
       amount,
       isGold,

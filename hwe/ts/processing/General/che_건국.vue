@@ -1,7 +1,7 @@
 <template>
   <TopBackBar :title="commandName" />
-  <div class="bg0" v-if="!available건국">더 이상 건국은 불가능합니다.</div>
-  <div class="bg0" v-else>
+  <div v-if="!available건국" class="bg0">더 이상 건국은 불가능합니다.</div>
+  <div v-else class="bg0">
     <div>현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.</div>
     <ul>
       <li v-for="nationType in nationTypes" :key="nationType.type" class="row">
@@ -16,22 +16,17 @@
       </li>
     </ul>
     <div class="row">
-      <div class="col-4 col-md-2">
-        국명 : <b-form-input maxlength="18" v-model="destNationName" />
-      </div>
-      <div class="col-3 col-md-2">
-        색상 : <ColorSelect :colors="colors" v-model="selectedColorID" />
-      </div>
+      <div class="col-4 col-md-2">국명 : <b-form-input v-model="destNationName" maxlength="18" /></div>
+      <div class="col-3 col-md-2">색상 : <ColorSelect v-model="selectedColorID" :colors="colors" /></div>
       <div class="col-3 col-md-2">
         <label>성향 :</label>
-        <b-form-select
-          :options="nationTypesOption"
-          v-model="selectedNationType"
-        />
+        <b-form-select v-model="selectedNationType" :options="nationTypesOption" />
       </div>
 
       <div class="col-2 col-md-2 d-grid">
-        <b-button @click="submit">{{ commandName }}</b-button>
+        <b-button @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
@@ -42,10 +37,10 @@
 import ColorSelect from "@/processing/SelectColor.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { procNationTypeList } from "../processingRes";
+import type { procNationTypeList } from "../processingRes";
 
 declare const commandName: string;
 

@@ -1,40 +1,31 @@
 <template>
-  <top-back-bar :title="title" />
+  <TopBackBar :title="title" />
   <div
     id="container"
     class="bg0 px-2"
-    style="
-      max-width: 1000px;
-      margin: auto;
-      border: solid 1px #888888;
-      overflow: hidden;
-    "
+    style="max-width: 1000px; margin: auto; border: solid 1px #888888; overflow: hidden"
   >
     <div id="inheritance_list" class="row">
       <template v-for="(text, key) in inheritanceViewText" :key="key">
-        <div
-          :id="`inherit_${key}`"
-          class="col col-sm-4 col-12 inherit_item inherit_template_item"
-        >
+        <div :id="`inherit_${key}`" class="col col-sm-4 col-12 inherit_item inherit_template_item">
           <div class="row">
-            <label
-              :id="`inherit_${key}_head`"
-              class="inherit_head col col-md-6 col-sm-7 col-6 col-form-label"
-              >{{ text.title }}</label
-            >
+            <label :id="`inherit_${key}_head`" class="inherit_head col col-md-6 col-sm-7 col-6 col-form-label">{{
+              text.title
+            }}</label>
             <div class="col col-md-6 col-sm-5 col-6">
               <input
+                :id="`inherit_${key}_value`"
                 type="text"
                 class="form-control inherit_value f_tnum"
                 readonly
-                :id="`inherit_${key}_value`"
                 :value="Math.floor(items[key]).toLocaleString()"
               />
             </div>
           </div>
 
           <div style="text-align: right">
-            <small class="form-text text-muted" v-html="text.info"></small>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <small class="form-text text-muted" v-html="text.info" />
           </div>
         </div>
         <div v-if="key == 'new'" style="width: 100%; padding: 0 10px">
@@ -44,22 +35,18 @@
     </div>
     <div id="inheritance_store">
       <div class="row">
-        <div class="col"><div class="bg1 a-center">유산 포인트 상점</div></div>
+        <div class="col">
+          <div class="bg1 a-center">유산 포인트 상점</div>
+        </div>
       </div>
 
       <div class="row">
         <div class="col offset-md-4 col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
-            <div class="a-right col-6 align-self-center">
-              다음 전투 특기 선택
-            </div>
+            <div class="a-right col-6 align-self-center">다음 전투 특기 선택</div>
             <div class="col-6">
-              <select class="form-select col-6" v-model="nextSpecialWar">
-                <option
-                  v-for="(info, key) in availableSpecialWar"
-                  :key="key"
-                  :value="key"
-                >
+              <select v-model="nextSpecialWar" class="form-select col-6">
+                <option v-for="(info, key) in availableSpecialWar" :key="key" :value="key">
                   {{ info.title }}
                 </option>
               </select>
@@ -67,34 +54,23 @@
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              ><span
-                style="color: white"
-                v-html="availableSpecialWar[nextSpecialWar].info"
-              /><br />다음에 얻을 전투 특기를 정합니다.<br /><span
-                style="color: white"
+              ><!-- eslint-disable-next-line vue/no-v-html -->
+              <span style="color: white" v-html="availableSpecialWar[nextSpecialWar].info" /><br />다음에 얻을 전투
+              특기를 정합니다.<br /><span style="color: white"
                 >필요 포인트: {{ inheritActionCost.nextSpecial }}</span
               ></small
             >
           </div>
           <div class="row px-4">
-            <b-button
-              class="col-6 offset-6"
-              variant="primary"
-              @click="setNextSpecialWar"
-              >구입</b-button
-            >
+            <b-button class="col-6 offset-6" variant="primary" @click="setNextSpecialWar"> 구입 </b-button>
           </div>
         </div>
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">유니크 입찰</div>
             <div class="col-6">
-              <select class="form-select col-6" v-model="specificUnique">
-                <option
-                  v-for="(info, key) in availableUnique"
-                  :key="key"
-                  :value="key"
-                >
+              <select v-model="specificUnique" class="form-select col-6">
+                <option v-for="(info, key) in availableUnique" :key="key" :value="key">
                   {{ info.title }}
                 </option>
               </select>
@@ -103,29 +79,23 @@
           <div class="row px-4">
             <div class="col f_tnum">
               <NumberInputWithInfo
+                v-model="specificUniqueAmount"
                 title="입찰 포인트"
                 :min="inheritActionCost.minSpecificUnique"
                 :max="items.previous"
-                v-model="specificUniqueAmount"
               />
             </div>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              >얻고자 하는 유니크 아이템을 포인트를 걸어 입찰합니다. 최고
-              포인트인 경우 다음 턴에 유니크를 얻습니다.<br /><span
-                style="color: white"
-                v-html="availableUnique[specificUnique].info"
-            /></small>
+              >얻고자 하는 유니크 아이템을 포인트를 걸어 입찰합니다. 최고 포인트인 경우 다음 턴에 유니크를 얻습니다.<br />
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <span style="color: white" v-html="availableUnique[specificUnique].info" />
+            </small>
           </div>
 
           <div class="row px-4">
-            <b-button
-              class="col-6 offset-6"
-              variant="primary"
-              @click="buySpecificUnique"
-              >구입</b-button
-            >
+            <b-button class="col-6 offset-6" variant="primary" @click="buySpecificUnique"> 구입 </b-button>
           </div>
         </div>
       </div>
@@ -136,12 +106,7 @@
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
-            <b-button
-              class="col-6"
-              variant="primary"
-              @click="buySimple('ResetTurnTime')"
-              >구입</b-button
-            >
+            <b-button class="col-6" variant="primary" @click="buySimple('ResetTurnTime')"> 구입 </b-button>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
@@ -154,12 +119,7 @@
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 유니크 획득</div>
-            <b-button
-              class="col-6"
-              variant="primary"
-              @click="buySimple('BuyRandomUnique')"
-              >구입</b-button
-            >
+            <b-button class="col-6" variant="primary" @click="buySimple('BuyRandomUnique')"> 구입 </b-button>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
@@ -171,15 +131,8 @@
         </div>
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
-            <div class="a-right col-6 align-self-center">
-              즉시 전투 특기 초기화
-            </div>
-            <b-button
-              class="col-6"
-              variant="primary"
-              @click="buySimple('ResetSpecialWar')"
-              >구입</b-button
-            >
+            <div class="a-right col-6 align-self-center">즉시 전투 특기 초기화</div>
+            <b-button class="col-6" variant="primary" @click="buySimple('ResetSpecialWar')"> 구입 </b-button>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
@@ -195,23 +148,17 @@
       <hr :style="{ opacity: 0.5 }" />
     </div>
     <div class="row">
-      <div
-        class="col col-md-4 col-sm-6 col-12"
-        v-for="(info, buffKey) in inheritBuffHelpText"
-        :key="buffKey"
-      >
+      <div v-for="(info, buffKey) in inheritBuffHelpText" :key="buffKey" class="col col-md-4 col-sm-6 col-12">
         <div class="row">
-          <label class="col col-sm-6 col-form-label" :for="`buff-${buffKey}`">{{
-            info.title
-          }}</label>
+          <label class="col col-sm-6 col-form-label" :for="`buff-${buffKey}`">{{ info.title }}</label>
           <div class="col col-sm-6 f_tnum">
             <b-form-input
               :id="`buff-${buffKey}`"
-              type="number"
               v-model="inheritBuff[buffKey]"
+              type="number"
               :min="prevInheritBuff[buffKey] ?? 0"
               :max="maxInheritBuff"
-            ></b-form-input>
+            />
           </div>
         </div>
         <div style="text-align: right">
@@ -219,8 +166,7 @@
             >{{ info.info }}<br /><span style="color: white"
               >필요 포인트:
               {{
-                inheritActionCost.buff[inheritBuff[buffKey]] -
-                inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
+                inheritActionCost.buff[inheritBuff[buffKey]] - inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
               }}</span
             ></small
           >
@@ -228,15 +174,11 @@
         <div class="row px-4" style="margin-bottom: 1em">
           <b-button
             variant="secondary"
-            @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
             class="col col-md-6 col-4 offset-md-0 offset-4"
-            >리셋</b-button
-          ><b-button
-            variant="primary"
-            class="col col-md-6 col-4"
-            @click="buyInheritBuff(buffKey)"
-            >구입</b-button
+            @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
           >
+            리셋 </b-button
+          ><b-button variant="primary" class="col col-md-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </b-button>
         </div>
       </div>
     </div>
@@ -245,7 +187,7 @@
         <div class="bg1 a-center">유산 포인트 변경 내역(최근 30건)</div>
       </div>
     </div>
-    <div class="row" v-for="(log, idx) in lastInheritPointLogs" :key="idx">
+    <div v-for="(log, idx) in lastInheritPointLogs" :key="idx" class="row">
       <div class="col a-right" style="max-width: 20ch">
         <small class="text-muted tnum">[{{ log.date }}]</small>
       </div>
@@ -291,10 +233,7 @@ declare const lastInheritPointLogs: {
 
 declare const items: Record<InheritanceType, number>;
 
-const inheritanceViewText: Record<
-  InheritanceViewType,
-  { title: string; info: string }
-> = {
+const inheritanceViewText: Record<InheritanceViewType, { title: string; info: string }> = {
   sum: {
     title: "총 포인트",
     info: "다음 플레이에서 사용할 수 있는 총 포인트입니다.",
@@ -439,11 +378,13 @@ declare const availableUnique: Record<
 
 export default defineComponent({
   name: "PageInheritPoint",
+  components: {
+    TopBackBar,
+    NumberInputWithInfo,
+  },
   data() {
     const inheritBuff = {} as Record<inheritBuffType, number>;
-    for (const buffKey of Object.keys(
-      inheritBuffHelpText
-    ) as inheritBuffType[]) {
+    for (const buffKey of Object.keys(inheritBuffHelpText) as inheritBuffType[]) {
       inheritBuff[buffKey] = currentInheritBuff[buffKey] ?? 0;
     }
     return {
@@ -486,9 +427,7 @@ export default defineComponent({
         alert("낮출 수 없습니다.");
         return;
       }
-      const cost =
-        this.inheritActionCost.buff[level] -
-        this.inheritActionCost.buff[prevLevel];
+      const cost = this.inheritActionCost.buff[level] - this.inheritActionCost.buff[prevLevel];
       if (this.items.previous < cost) {
         alert("유산 포인트가 부족합니다.");
         return;
@@ -496,11 +435,7 @@ export default defineComponent({
 
       const name = inheritBuffHelpText[buffKey].title;
 
-      if (
-        !confirm(
-          `${name}를 ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`
-        )
-      ) {
+      if (!confirm(`${name}를 ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`)) {
         return;
       }
 
@@ -519,9 +454,7 @@ export default defineComponent({
       //TODO: 페이지 새로고침 필요없이 하도록
       location.reload();
     },
-    async buySimple(
-      type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpecialWar"
-    ) {
+    async buySimple(type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpecialWar") {
       const costMap: Record<typeof type, number> = {
         ResetTurnTime: inheritActionCost.resetTurnTime,
         ResetSpecialWar: inheritActionCost.resetSpecialWar,
@@ -560,8 +493,7 @@ export default defineComponent({
       location.reload();
     },
     async setNextSpecialWar() {
-      const specialWarName =
-        this.availableSpecialWar[this.nextSpecialWar].title ?? undefined;
+      const specialWarName = this.availableSpecialWar[this.nextSpecialWar].title ?? undefined;
       if (specialWarName === undefined) {
         alert(`잘못된 타입: ${this.nextSpecialWar}`);
         return;
@@ -573,11 +505,7 @@ export default defineComponent({
         return;
       }
       //TODO: JosaUtil
-      if (
-        !confirm(
-          `${cost} 포인트로 다음 전특을 ${specialWarName}(으)로 고정하겠습니까?`
-        )
-      ) {
+      if (!confirm(`${cost} 포인트로 다음 전특을 ${specialWarName}(으)로 고정하겠습니까?`)) {
         return;
       }
 
@@ -596,8 +524,7 @@ export default defineComponent({
       location.reload();
     },
     async buySpecificUnique() {
-      const uniqueName =
-        this.availableUnique[this.specificUnique].title ?? undefined;
+      const uniqueName = this.availableUnique[this.specificUnique].title ?? undefined;
       if (uniqueName === undefined) {
         alert(`잘못된 타입: ${this.specificUnique}`);
         return;
@@ -629,13 +556,8 @@ export default defineComponent({
       location.reload();
     },
   },
-  components: {
-    TopBackBar,
-    NumberInputWithInfo,
-  },
 });
 </script>
-
 
 <style>
 .col-form-label {

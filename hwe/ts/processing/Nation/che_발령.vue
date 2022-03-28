@@ -1,13 +1,13 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
+  <TopBackBar v-model:searchable="searchable" :title="commandName" type="chief" />
   <div class="bg0">
     <MapLegacyTemplate
+      v-model="selectedCityObj"
       :isDetailMap="false"
       :clickableAll="true"
       :neutralView="true"
       :useCachedMap="true"
-      :mapTheme="mapTheme"
-      v-model="selectedCityObj"
+      :mapName="mapName"
     />
 
     <div>
@@ -19,20 +19,22 @@
       <div class="col-12 col-md-6">
         장수 :
         <SelectGeneral
+          v-model="selectedGeneralID"
           :cities="citiesMap"
           :generals="generalList"
           :troops="troops"
           :textHelper="textHelpGeneral"
           :searchable="searchable"
-          v-model="selectedGeneralID"
         />
       </div>
       <div class="col-6 col-md-4">
         도시 :
-        <SelectCity :cities="citiesMap" v-model="selectedCityID" :searchable="searchable" />
+        <SelectCity v-model="selectedCityID" :cities="citiesMap" :searchable="searchable" />
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+        <b-button variant="primary" @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
@@ -40,28 +42,29 @@
 </template>
 
 <script lang="ts">
-import MapLegacyTemplate, {
-  MapCityParsed,
-} from "@/components/MapLegacyTemplate.vue";
+import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
 import SelectCity from "@/processing/SelectCity.vue";
 import SelectGeneral from "@/processing/SelectGeneral.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
   getProcSearchable,
-  procGeneralItem,
-  procGeneralKey,
-  procGeneralRawItemList,
-  procTroopList,
+  type procGeneralItem,
+  type procGeneralKey,
+  type procGeneralRawItemList,
+  type procTroopList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
-declare const mapTheme: string;
-declare const currentCity: number;
-declare const commandName: string;
+
+declare const staticValues: {
+  mapName: string;
+  currentCity: number;
+  commandName: string;
+};
 
 declare const procRes: {
   distanceList: Record<number, number[]>;
@@ -79,11 +82,6 @@ export default defineComponent({
     TopBackBar,
     BottomBar,
   },
-  watch: {
-    selectedCityObj(city: MapCityParsed) {
-      this.selectedCityID = city.id;
-    },
-  },
   setup() {
     const citiesMap = new Map<
       number,
@@ -96,11 +94,8 @@ export default defineComponent({
       citiesMap.set(id, { name });
     }
 
-    const generalList = convertGeneralList(
-      procRes.generalsKey,
-      procRes.generals
-    );
-    const selectedCityID = ref(currentCity);
+    const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
+    const selectedCityID = ref(staticValues.currentCity);
 
     function selectedCity(cityID: number) {
       selectedCityID.value = cityID;
@@ -108,11 +103,13 @@ export default defineComponent({
 
     const selectedGeneralID = ref(generalList[0].no);
 
-    function textHelpGeneral(gen: procGeneralItem): string{
-      const troops = (!gen.troopID)?'':`,${procRes.troops[gen.troopID].name}`;
+    function textHelpGeneral(gen: procGeneralItem): string {
+      const troops = !gen.troopID ? "" : `,${procRes.troops[gen.troopID].name}`;
       const nameColor = getNpcColor(gen.npc);
-      const name = nameColor?`<span style="color:${nameColor}">${gen.name}</span>`:gen.name;
-      return `${name} [${citiesMap.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${gen.intel}) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
+      const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
+      return `${name} [${citiesMap.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${
+        gen.intel
+      }) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
     }
 
     async function submit(e: Event) {
@@ -127,7 +124,7 @@ export default defineComponent({
 
     return {
       searchable: getProcSearchable(),
-      mapTheme: ref(mapTheme),
+      mapName: ref(staticValues.mapName),
       citiesMap: ref(citiesMap),
       selectedCityID,
       selectedGeneralID,
@@ -135,11 +132,16 @@ export default defineComponent({
       distanceList: procRes.distanceList,
       troops: procRes.troops,
       generalList,
-      commandName,
+      commandName: staticValues.commandName,
       selectedCity,
       textHelpGeneral,
       submit,
     };
+  },
+  watch: {
+    selectedCityObj(city: MapCityParsed) {
+      this.selectedCityID = city.id;
+    },
   },
 });
 </script>

@@ -219,7 +219,6 @@ class che_선전포고 extends Command\NationCommand
             $nationList[] = $nationTarget;
         }
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],

@@ -4,42 +4,51 @@
     <div>
       병사를 모집합니다.
       <template v-if="commandName == '징병'">
-        훈련과 사기치는 낮지만 가격이 저렴합니다.<br />
+        훈련과 사기치는 낮지만 가격이 저렴합니다.<br>
       </template>
       <template v-else-if="commandName == '모병'">
-        훈련과 사기치는 높지만 자금이 많이 듭니다.<br />
+        훈련과 사기치는 높지만 자금이 많이 듭니다.<br>
       </template>
-      가능한 수보다 많게 입력하면 가능한 최대 병사를 모집합니다.<br />
+      가능한 수보다 많게 입력하면 가능한 최대 병사를 모집합니다.<br>
       이미 병사가 있는 경우 추가 {{ commandName }}되며, 병종이 다를경우는 기존의
-      병사는 소집해제됩니다. <br />
+      병사는 소집해제됩니다. <br>
       현재 {{ commandName }} 가능한 병종은
       <span style="color: green">녹색</span>으로 표시되며, 현재
       {{ commandName }} 가능한 특수병종은
       <span style="color: limegreen">초록색</span>으로 표시됩니다.
     </div>
-    <div class="crewTypeList" ref="defaultTarget">
+    <div
+      ref="defaultTarget"
+      class="crewTypeList"
+    >
       <div class="listFront">
         <div class="row gx-0 bg0">
           <div class="col-12 col-md-12 d-flex align-items-center">
-            <div v-if="commandName == '모병'" class="text-center w-100">
-              모병은 가격 2배의 자금이 소요됩니다.<br />
+            <div
+              v-if="commandName == '모병'"
+              class="text-center w-100"
+            >
+              모병은 가격 2배의 자금이 소요됩니다.<br>
             </div>
           </div>
         </div>
         <div class="row text-center bg2 gx-0">
-          <div class="col-4 col-md-2">현재 기술력 : {{ techLevel }}등급</div>
+          <div class="col-4 col-md-2">
+            현재 기술력 : {{ techLevel }}등급
+          </div>
           <div class="col-4 col-md-2">
             현재 통솔 :
             <span
               :style="{
                 color: leadership < fullLeadership ? 'red' : undefined,
               }"
-              >{{ leadership }}</span
-            >
+            >{{ leadership }}</span>
           </div>
-          <div class="col-4 col-md-2">최대 통솔 : {{ fullLeadership }}</div>
           <div class="col-4 col-md-2">
-            현재 병종 : {{ crewTypeMap.get(currentCrewType).name }}
+            최대 통솔 : {{ fullLeadership }}
+          </div>
+          <div class="col-4 col-md-2">
+            현재 병종 : {{ crewTypeMap?.get(currentCrewType)?.name }}
           </div>
           <div class="col-4 col-md-2">
             현재 병사 : {{ crew.toLocaleString() }}
@@ -58,15 +67,15 @@
               outline: 'solid 1px gray',
               height: '64px',
             }"
-          ></div>
+          />
           <div
             :style="{
               backgroundColor:
                 (destCrewType.notAvailable
                   ? 'red'
                   : destCrewType.reqTech == 0
-                  ? 'green'
-                  : 'limegreen') + ' !important',
+                    ? 'green'
+                    : 'limegreen') + ' !important',
               height: '100%',
             }"
             class="d-grid"
@@ -75,27 +84,39 @@
               {{ destCrewType.name }}
             </div>
           </div>
-          <div></div>
+          <div />
           <div class="crewTypePanel">
-            <b-button-group
-              ><b-button class="py-1" variant="dark" @click="beHalf"
-                >절반</b-button
-              ><b-button class="py-1" variant="dark" @click="beFilled"
-                >채우기</b-button
-              ><b-button class="py-1" variant="dark" @click="beFull"
-                >가득</b-button
-              ></b-button-group
-            >
+            <b-button-group>
+              <b-button
+                class="py-1"
+                variant="dark"
+                @click="beHalf"
+              >
+                절반
+              </b-button><b-button
+                class="py-1"
+                variant="dark"
+                @click="beFilled"
+              >
+                채우기
+              </b-button><b-button
+                class="py-1"
+                variant="dark"
+                @click="beFull"
+              >
+                가득
+              </b-button>
+            </b-button-group>
             <div class="row">
               <div class="col mx-2">
                 <div class="input-group my-0">
                   <span class="input-group-text py-1">병력</span>
                   <input
+                    v-model="amount"
                     type="number"
                     class="form-control py-1 f_tnum px-0 text-end"
-                    v-model="amount"
                     min="1"
-                  />
+                  >
                   <span class="input-group-text py-1 f_tnum">00명</span>
                   <span
                     class="input-group-text py-1 f_tnum"
@@ -105,35 +126,49 @@
                       color: #303030;
                       background-color: #ddd;
                     "
-                    ><div style="margin-left: auto">
-                      {{
-                        Math.ceil(
-                          amount * destCrewType.baseCost * goldCoeff
-                        ).toLocaleString()
-                      }}금
-                    </div></span
-                  >
+                  ><div style="margin-left: auto">
+                    {{
+                      Math.ceil(
+                        amount * destCrewType.baseCost * goldCoeff
+                      ).toLocaleString()
+                    }}금
+                  </div></span>
                 </div>
               </div>
             </div>
           </div>
-          <div></div>
-          <b-button variant="primary" @click="submit">{{
-            commandName
-          }}</b-button>
+          <div />
+          <b-button
+            variant="primary"
+            @click="submit"
+          >
+            {{
+              commandName
+            }}
+          </b-button>
         </div>
         <div class="listHeader crewTypeSubGrid text-center bg1">
-          <div class="crewTypeImg">사진</div>
-          <div class="crewTypeName">병종</div>
+          <div class="crewTypeImg">
+            사진
+          </div>
+          <div class="crewTypeName">
+            병종
+          </div>
           <div>공격</div>
           <div>방어</div>
           <div>기동</div>
           <div>회피</div>
           <div>가격</div>
           <div>군량</div>
-          <div class="crewTypePanel">병사 수</div>
-          <div class="crewTypeBtn">행동</div>
-          <div class="crewTypeInfo">특징</div>
+          <div class="crewTypePanel">
+            병사 수
+          </div>
+          <div class="crewTypeBtn">
+            행동
+          </div>
+          <div class="crewTypeInfo">
+            특징
+          </div>
         </div>
       </div>
       <div class="listMain">
@@ -156,19 +191,23 @@
                 :pressed="showNotAvailable.get(armCrewType.armType)"
                 class="btn-sm"
                 @click="toggleShowNotAvailable(armCrewType.armType)"
-                >{{
+              >
+                {{
                   showNotAvailable.get(armCrewType.armType)
                     ? "선택 할 수 있는 병종만 보기"
                     : "선택 할 수 없는 병종도 보기"
-                }}</b-button
-              >
+                }}
+              </b-button>
             </div>
           </div>
-          <template v-for="crewType in armCrewType.values" :key="crewType.id">
+          <template
+            v-for="crewType in armCrewType.values"
+            :key="crewType.id"
+          >
             <CrewTypeItem
               v-if="
                 showNotAvailable.get(armCrewType.armType) ||
-                !crewType.notAvailable
+                  !crewType.notAvailable
               "
               :crewType="crewType"
               :leadership="fullLeadership"
@@ -178,7 +217,7 @@
               :goldCoeff="goldCoeff"
               @submitOutput="trySubmit"
               @click="
-                destCrewType = crewTypeMap.get(crewType.id);
+                destCrewType = unwrap(crewTypeMap.get(crewType.id));
                 beFilled();
               "
             />
@@ -194,10 +233,10 @@
 import CrewTypeItem from "@/processing/CrewTypeItem.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { procArmTypeItem, procCrewTypeItem } from "../processingRes";
+import type { procArmTypeItem, procCrewTypeItem } from "../processingRes";
 declare const commandName: string;
 
 declare const procRes: {
@@ -292,6 +331,7 @@ export default defineComponent({
       submit,
       toggleShowNotAvailable,
       trySubmit,
+      unwrap,
     };
   },
 });

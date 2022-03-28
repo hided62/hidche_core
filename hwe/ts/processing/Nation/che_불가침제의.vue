@@ -1,13 +1,13 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" v-model:searchable="searchable" />
+  <TopBackBar v-model:searchable="searchable" :title="commandName" type="chief" />
   <div class="bg0">
     <MapLegacyTemplate
+      v-model="selectedCityObj"
       :isDetailMap="false"
       :clickableAll="true"
       :neutralView="true"
       :useCachedMap="true"
-      :mapTheme="mapTheme"
-      v-model="selectedCityObj"
+      :mapName="mapName"
     />
 
     <div>
@@ -20,30 +20,29 @@
     <div class="row">
       <div class="col-4 col-md-3">
         국가 :
-        <SelectNation :nations="nationList" v-model="selectedNationID" :searchable="searchable" />
+        <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
       <div class="col-5 col-md-3">
         기간 :
         <div class="input-group">
-          <b-form-select class="text-end selectedYear" v-model="selectedYear"
-            ><b-form-select-option
-              v-for="yearP in maxYear - minYear + 1"
-              :key="yearP"
-              :value="yearP + minYear - 1"
-              >{{ yearP + minYear - 1 }}</b-form-select-option
-            >
+          <b-form-select v-model="selectedYear" class="text-end selectedYear">
+            <b-form-select-option v-for="yearP in maxYear - minYear + 1" :key="yearP" :value="yearP + minYear - 1">
+              {{ yearP + minYear - 1 }}
+            </b-form-select-option>
           </b-form-select>
           <span class="input-group-text px-2">년</span>
-          <b-form-select class="text-center" v-model="selectedMonth"
-            ><b-form-select-option v-for="month in 12" :key="month" :value="month">{{
-              month
-            }}</b-form-select-option>
+          <b-form-select v-model="selectedMonth" class="text-center">
+            <b-form-select-option v-for="month in 12" :key="month" :value="month">
+              {{ month }}
+            </b-form-select-option>
           </b-form-select>
           <span class="input-group-text px-2">월</span>
         </div>
       </div>
       <div class="col-3 col-md-2 d-grid">
-        <b-button @click="submit">{{ commandName }}</b-button>
+        <b-button @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
@@ -51,18 +50,19 @@
 </template>
 
 <script lang="ts">
-import MapLegacyTemplate, {
-  MapCityParsed,
-} from "@/components/MapLegacyTemplate.vue";
+import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
 import SelectNation from "@/processing/SelectNation.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { getProcSearchable, procNationItem, procNationList } from "../processingRes";
-declare const mapTheme: string;
-declare const commandName: string;
+import { getProcSearchable, type procNationItem, type procNationList } from "../processingRes";
+
+declare const staticValues: {
+  mapName: string,
+  commandName: string,
+}
 
 declare const procRes: {
   nationList: procNationList;
@@ -78,14 +78,6 @@ export default defineComponent({
     SelectNation,
     TopBackBar,
     BottomBar,
-  },
-  watch: {
-    selectedCityObj(city: MapCityParsed) {
-      if (!city.nationID) {
-        return;
-      }
-      this.selectedNationID = city.nationID;
-    },
   },
   setup() {
     const nationList = new Map<number, procNationItem>();
@@ -119,20 +111,28 @@ export default defineComponent({
       ...procRes,
       selectedYear,
       selectedMonth,
-      mapTheme: ref(mapTheme),
+      mapName: staticValues.mapName,
       nationList: ref(nationList),
       selectedCityObj,
       selectedNationID,
-      commandName,
+      commandName: staticValues.commandName,
       selectedNation,
       submit,
     };
+  },
+  watch: {
+    selectedCityObj(city: MapCityParsed) {
+      if (!city.nationID) {
+        return;
+      }
+      this.selectedNationID = city.nationID;
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-.selectedYear{
-  width:32%;
+.selectedYear {
+  width: 32%;
 }
 </style>

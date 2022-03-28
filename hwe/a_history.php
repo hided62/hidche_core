@@ -23,7 +23,7 @@ if ($serverID === UniqueConst::$serverID) {
     increaseRefresh("연감", 1);
 }
 
-$admin = $gameStor->getValues(['startyear', 'year', 'month', 'map_theme']);
+$admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
 $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $userID);
 
@@ -47,9 +47,9 @@ if ($s_year === null) {
 $e = Util::joinYearMonth($e_year, $e_month);
 
 if ($serverID !== UniqueConst::$serverID) {
-    $mapTheme = $db->queryFirstField('SELECT map FROM ng_games WHERE server_id=%s', $serverID) ?: 'che';
+    $mapName = $db->queryFirstField('SELECT map FROM ng_games WHERE server_id=%s', $serverID) ?: 'che';
 } else {
-    $mapTheme = $admin['map_theme'] ?? 'che';
+    $mapName = GameConst::$mapName;
 }
 
 //FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
@@ -104,7 +104,7 @@ $nations = $history['nations'];
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 연감</title>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printJS("js/map/theme_{$mapTheme}.js") ?>
+    <?= WebUtil::printJS("js/map/theme_{$mapName}.js") ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printCSS('css/map.css') ?>
@@ -155,7 +155,7 @@ $nations = $history['nations'];
         <tbody>
             <tr height=520>
                 <td width=698>
-                    <?= getMapHtml($mapTheme) ?>
+                    <?= getMapHtml($mapName) ?>
                 </td>
                 <td id='nation_list_frame'>
                     <table id='nation_list'>

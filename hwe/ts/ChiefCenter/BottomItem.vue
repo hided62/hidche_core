@@ -1,8 +1,8 @@
 <template>
   <div
+    v-for="(officer, _idx) in [chiefList[chiefLevel]]"
+    :key="_idx"
     :class="[`chiefBox${chiefLevel}`, 'subRows']"
-    v-for="(officer, idx) in [chiefList[chiefLevel]]"
-    :key="idx"
     :style="style"
     @click="$emit('click', this)"
   >
@@ -13,21 +13,22 @@
         textDecoration: isMe ? 'underline' : undefined,
       }"
     >
-      {{ officer?(officer?.name ?? "-"):'' }}
+      {{ officer ? officer?.name ?? "-" : "" }}
     </div>
     <div class="bg1 center row gx-0">
-      <div class="col">{{ officer?.officerLevelText }}</div>
-      <div class="col">{{ officer?((officer?.turnTime ?? "  -  ").slice(-5)):'' }}</div>
+      <div class="col">
+        {{ officer?.officerLevelText }}
+      </div>
+      <div class="col">
+        {{ officer ? (officer?.turnTime ?? "  -  ").slice(-5) : "" }}
+      </div>
     </div>
     <div
-      class="tableCell align-self-center turn_pad"
-      v-for="(turn, idx) in officer?.turn??[]"
+      v-for="(turn, idx) in officer?.turn ?? []"
       :key="idx"
+      class="tableCell align-self-center turn_pad"
       :style="{
-        fontSize:
-          mb_strwidth(turn.brief) > 28
-            ? `${28 / mb_strwidth(turn.brief)}em`
-            : undefined,
+        fontSize: mb_strwidth(turn.brief) > 28 ? `${28 / mb_strwidth(turn.brief)}em` : undefined,
       }"
     >
       {{ turn.brief }}

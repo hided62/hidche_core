@@ -1,25 +1,33 @@
 <template>
-  <TopBackBar :title="commandName" v-model:searchable="searchable" />
+  <TopBackBar
+    v-model:searchable="searchable"
+    :title="commandName"
+  />
   <div class="bg0">
     <div>
-      장수를 따라 임관합니다.<br />
-      이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br />
-      바로 군주의 위치로 이동합니다.<br />
-      임관할 국가를 목록에서 선택하세요.<br />
+      장수를 따라 임관합니다.<br>
+      이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
+      바로 군주의 위치로 이동합니다.<br>
+      임관할 국가를 목록에서 선택하세요.<br>
     </div>
     <div class="row">
       <div class="col-8 col-md-4">
         장수 :
         <SelectGeneral
+          v-model="selectedGeneralID"
           :generals="generalList"
           :groupByNation="nationList"
           :textHelper="textHelpGeneral"
           :searchable="searchable"
-          v-model="selectedGeneralID"
         />
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+        <b-button
+          variant="primary"
+          @click="submit"
+        >
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
     <div class="nation-list">
@@ -28,12 +36,13 @@
         <div>임관권유문</div>
         <div class="zoom-toggle d-grid">
           <b-button
+            v-model="toggleZoom"
             :pressed="toggleZoom"
             :variant="toggleZoom ? 'info' : 'secondary'"
-            v-model="toggleZoom"
             @click="toggleZoom = !toggleZoom"
-            >{{ toggleZoom ? "작게 보기" : "크게 보기" }}</b-button
           >
+            {{ toggleZoom ? "작게 보기" : "크게 보기" }}
+          </b-button>
         </div>
       </div>
       <div
@@ -49,9 +58,12 @@
           }"
           class="d-grid"
         >
-          <div class="align-self-center center">{{ nation.name }}</div>
+          <div class="align-self-center center">
+            {{ nation.name }}
+          </div>
         </div>
         <div class="nation-scout-plate align-self-center">
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <div class="nation-scout-msg" v-html="nation.scoutMsg" />
         </div>
       </div>
@@ -64,17 +76,17 @@
 import SelectGeneral from "@/processing/SelectGeneral.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
   getProcSearchable,
-  procGeneralItem,
-  procGeneralKey,
-  procGeneralRawItemList,
-  procNationItem,
-  procNationList,
+  type procGeneralItem,
+  type procGeneralKey,
+  type procGeneralRawItemList,
+  type procNationItem,
+  type procNationList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
 import { isBrightColor } from "@/util/isBrightColor";

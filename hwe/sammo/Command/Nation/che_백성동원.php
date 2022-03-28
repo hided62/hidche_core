@@ -172,7 +172,6 @@ class che_백성동원 extends Command\NationCommand
     public function exportJSVars(): array
     {
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'cities' => \sammo\JSOptionsForCities(),
                 'distanceList' => new \stdClass(),

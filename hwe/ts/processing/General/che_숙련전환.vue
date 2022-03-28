@@ -1,78 +1,91 @@
 <template>
   <TopBackBar :title="commandName" />
   <div class="bg0">
-    <div>
-      본인의 특정 병종 숙련을 40% 줄이고, 줄어든 숙련 중 9/10(90%p)를 다른 병종
-      숙련으로 전환합니다.
-    </div>
+    <div>본인의 특정 병종 숙련을 40% 줄이고, 줄어든 숙련 중 9/10(90%p)를 다른 병종 숙련으로 전환합니다.</div>
     <div class="row">
       <div class="col-4 col-md-2">
         감소 대상 숙련 :
         <b-form-select v-model="srcArmTypeID">
-          <b-form-select-option
-            v-for="[armType, dexInfo] in dexFullInfo"
-            :key="armType"
-            :value="armType"
-            >{{ dexInfo.name }} (<span
-              :style="{ color: dexInfo.currentInfo.color }"
-              >{{ dexInfo.currentInfo.name }}</span>)</b-form-select-option
-          >
+          <b-form-select-option v-for="[armType, dexInfo] in dexFullInfo" :key="armType" :value="armType">
+            {{ dexInfo.name }} (<span :style="{ color: dexInfo.currentInfo.color }">{{ dexInfo.currentInfo.name }}</span
+            >)
+          </b-form-select-option>
         </b-form-select>
       </div>
       <div class="col-4 col-md-2">
         전환 대상 숙련 :
         <b-form-select v-model="destArmTypeID">
-          <b-form-select-option
-            v-for="[armType, dexInfo] in dexFullInfo"
-            :key="armType"
-            :value="armType"
-            >{{ dexInfo.name }} (<span
-              :style="{ color: dexInfo.currentInfo.color }"
-              >{{ dexInfo.currentInfo.name }}</span>)</b-form-select-option
-          >
+          <b-form-select-option v-for="[armType, dexInfo] in dexFullInfo" :key="armType" :value="armType">
+            {{ dexInfo.name }} (<span :style="{ color: dexInfo.currentInfo.color }">{{ dexInfo.currentInfo.name }}</span
+            >)
+          </b-form-select-option>
         </b-form-select>
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button @click="submit">{{ commandName }}</b-button>
+        <b-button @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
-      <div :style="{
-        display:'grid',
-        gridTemplateColumns: '3ch 1ch 2ch 10ch 1ch 3ch 1ch 2ch 10ch 1ch'
-      }">
-        <div>{{dexFullInfo.get(srcArmTypeID).name}}</div>
+      <div
+        :style="{
+          display: 'grid',
+          gridTemplateColumns: '3ch 1ch 2ch 10ch 1ch 3ch 1ch 2ch 10ch 1ch',
+        }"
+      >
+        <div>{{ unwrap(dexFullInfo.get(srcArmTypeID)).name }}</div>
         <div class="text-end">[</div>
-        <div :style="`color:${dexFullInfo.get(srcArmTypeID).currentInfo.color}`">{{dexFullInfo.get(srcArmTypeID).currentInfo.name}}</div>
-        <div class="f_tnum text-end">{{convNumberFormat(dexFullInfo.get(srcArmTypeID).currentInfo.amount)}}</div>
+        <div :style="`color:${unwrap(dexFullInfo.get(srcArmTypeID)).currentInfo.color}`">
+          {{ unwrap(dexFullInfo.get(srcArmTypeID)).currentInfo.name }}
+        </div>
+        <div class="f_tnum text-end">
+          {{ convNumberFormat(unwrap(dexFullInfo.get(srcArmTypeID)).currentInfo.amount) }}
+        </div>
         <div>]</div>
         <div class="text-center">→</div>
         <div class="text-end">[</div>
-        <div :style="`color:${dexFullInfo.get(srcArmTypeID).decreasedInfo.color}`">{{dexFullInfo.get(srcArmTypeID).decreasedInfo.name}}</div>
-        <div class="f_tnum text-end">{{convNumberFormat(dexFullInfo.get(srcArmTypeID).decreasedInfo.amount)}}</div>
+        <div :style="`color:${unwrap(dexFullInfo.get(srcArmTypeID)).decreasedInfo.color}`">
+          {{ unwrap(dexFullInfo.get(srcArmTypeID)).decreasedInfo.name }}
+        </div>
+        <div class="f_tnum text-end">
+          {{ convNumberFormat(unwrap(dexFullInfo.get(srcArmTypeID)).decreasedInfo.amount) }}
+        </div>
         <div>]</div>
       </div>
-      <div :style="{
-        display:'grid',
-        gridTemplateColumns: '3ch 1ch 2ch 10ch 1ch 3ch 1ch 2ch 10ch 1ch'
-      }">
-      <div>{{dexFullInfo.get(destArmTypeID).name}}</div>
+      <div
+        :style="{
+          display: 'grid',
+          gridTemplateColumns: '3ch 1ch 2ch 10ch 1ch 3ch 1ch 2ch 10ch 1ch',
+        }"
+      >
+        <div>{{ unwrap(dexFullInfo.get(destArmTypeID)).name }}</div>
         <div class="text-end">[</div>
         <template v-if="srcArmTypeID == destArmTypeID">
-          <div :style="`color:${dexFullInfo.get(destArmTypeID).decreasedInfo.color}`">{{dexFullInfo.get(destArmTypeID).decreasedInfo.name}}</div>
-          <div class="f_tnum text-end">{{convNumberFormat(dexFullInfo.get(destArmTypeID).decreasedInfo.amount)}}</div>
+          <div :style="`color:${unwrap(dexFullInfo.get(destArmTypeID)).decreasedInfo.color}`">
+            {{ unwrap(dexFullInfo.get(destArmTypeID)).decreasedInfo.name }}
+          </div>
+          <div class="f_tnum text-end">
+            {{ convNumberFormat(unwrap(dexFullInfo.get(destArmTypeID)).decreasedInfo.amount) }}
+          </div>
         </template>
         <template v-else>
-          <div :style="`color:${dexFullInfo.get(destArmTypeID).currentInfo.color}`">{{dexFullInfo.get(destArmTypeID).currentInfo.name}}</div>
-          <div class="f_tnum text-end">{{convNumberFormat(dexFullInfo.get(destArmTypeID).currentInfo.amount)}}</div>
+          <div :style="`color:${unwrap(dexFullInfo.get(destArmTypeID)).currentInfo.color}`">
+            {{ unwrap(dexFullInfo.get(destArmTypeID)).currentInfo.name }}
+          </div>
+          <div class="f_tnum text-end">
+            {{ convNumberFormat(unwrap(dexFullInfo.get(destArmTypeID)).currentInfo.amount) }}
+          </div>
         </template>
         <div>]</div>
         <div class="text-center">→</div>
         <div class="text-end">[</div>
-        <div :style="`color:${dexFullInfo.get(destArmTypeID).afterInfo.get(srcArmTypeID).color}`">{{dexFullInfo.get(destArmTypeID).afterInfo.get(srcArmTypeID).name}}</div>
-        <div class="f_tnum text-end">{{convNumberFormat(dexFullInfo.get(destArmTypeID).afterInfo.get(srcArmTypeID).amount)}}</div>
+        <div :style="`color:${unwrap(unwrap(dexFullInfo.get(destArmTypeID)).afterInfo.get(srcArmTypeID)).color}`">
+          {{ unwrap(unwrap(dexFullInfo.get(destArmTypeID)).afterInfo.get(srcArmTypeID)).name }}
+        </div>
+        <div class="f_tnum text-end">
+          {{ convNumberFormat(unwrap(unwrap(dexFullInfo.get(destArmTypeID)).afterInfo.get(srcArmTypeID)).amount) }}
+        </div>
         <div>]</div>
       </div>
-
-
     </div>
   </div>
   <BottomBar :title="commandName" />
@@ -81,7 +94,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 
@@ -195,7 +208,9 @@ export default defineComponent({
 
     function convDexFormat(value: dexInfo): string {
       const amount = convNumberFormat(value.amount);
-      return `<span class="f_tnum" style="color:${value.color}">${value.name}</span>,${"\xa0".repeat(Math.max(0, 3 - value.name.length))} ${amount}`;
+      return `<span class="f_tnum" style="color:${value.color}">${value.name}</span>,${"\xa0".repeat(
+        Math.max(0, 3 - value.name.length)
+      )} ${amount}`;
     }
 
     function convNumberFormat(value: number): string {
@@ -203,6 +218,7 @@ export default defineComponent({
     }
 
     return {
+      unwrap,
       ...procRes,
       srcArmTypeID,
       destArmTypeID,

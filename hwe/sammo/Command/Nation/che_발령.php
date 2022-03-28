@@ -177,7 +177,6 @@ class che_발령 extends Command\NationCommand
         $troops = Util::convertArrayToDict($db->query('SELECT * FROM troop WHERE nation=%i', $nationID), 'troop_leader');
         $destRawGenerals = $db->queryAllLists('SELECT no,name,officer_level,npc,gold,rice,leadership,strength,intel,city,crew,train,atmos,troop FROM general WHERE nation = %i ORDER BY npc,binary(name)', $nationID);
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 1),
                 'cities' => \sammo\JSOptionsForCities(),

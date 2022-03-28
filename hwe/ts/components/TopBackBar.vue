@@ -1,85 +1,70 @@
 <template>
   <div class="bg0 back_bar">
-    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
-      돌아가기</button
-    ><button
-      type="button"
-      v-if="reloadable"
-      class="btn btn-sammo-base2 reload_btn"
-      @click="reload"
-    >
-      갱신
-    </button>
-    <div v-else></div>
-    <h2 class="title">{{ title }}</h2>
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">돌아가기</button
+    ><button v-if="reloadable" type="button" class="btn btn-sammo-base2 reload_btn" @click="reload">갱신</button>
+    <div v-else />
+    <h2 class="title">
+      {{ title }}
+    </h2>
     <div>&nbsp;</div>
     <b-button
+      v-if="toggleSearch !== undefined"
       class="btn-toggle-zoom"
       :variant="toggleSearch ? 'info' : 'secondary'"
       :pressed="toggleSearch"
-      v-if="toggleSearch !== undefined"
       @click="toggleSearch = !toggleSearch"
-      >{{ toggleSearch ? "검색 켜짐" : "검색 꺼짐" }}</b-button
     >
+      {{ toggleSearch ? "검색 켜짐" : "검색 꺼짐" }}
+    </b-button>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import "@scss/game_bg.scss";
-import { defineComponent, type PropType } from "vue";
+import { type PropType, ref, watch } from "vue";
+import VueTypes from "vue-types";
 
-export default defineComponent({
-  name: "TopBackBar",
-  methods: {
-    back() {
-      if (this.type === "normal") {
-        location.href = "./";
-      } else if (this.type == "chief") {
-        location.href = "v_chiefCenter.php";
-      } else {
-        //TODO: window.close하려면 부모창이 있어야함!
-        window.close();
-      }
-    },
-    reload() {
-      this.$emit("reload");
-    },
+const props = defineProps({
+  title: VueTypes.string.isRequired,
+  type: {
+    type: String as PropType<"normal" | "chief" | "close">,
+    default: "normal",
+    required: false,
   },
-  data() {
-    return {
-      toggleSearch: this.searchable,
-    };
+  searchable: {
+    type: Boolean,
+    default: undefined,
+    required: false,
   },
-  emits: ["update:searchable", "reload"],
-  watch: {
-    toggleSearch(val: boolean) {
-      this.$emit("update:searchable", val);
-    },
-  },
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String as PropType<"normal" | "chief" | "close">,
-      default: "normal",
-      required: false,
-    },
-    searchable: {
-      type: Boolean,
-      default: undefined,
-      required: false,
-    },
-    reloadable: {
-      type: Boolean,
-      default: undefined,
-      required: false,
-    },
+  reloadable: {
+    type: Boolean,
+    default: undefined,
+    required: false,
   },
 });
-</script>
 
+const emit = defineEmits(["update:searchable", "reload"]);
+
+const toggleSearch = ref(props.searchable);
+
+watch(toggleSearch, (val) => {
+  emit("update:searchable", val);
+});
+
+function back() {
+  if (props.type === "normal") {
+    location.href = "./";
+  } else if (props.type == "chief") {
+    location.href = "v_chiefCenter.php";
+  } else {
+    //TODO: window.close하려면 부모창이 있어야함!
+    window.close();
+  }
+}
+function reload() {
+  emit("reload");
+}
+</script>
 
 <style scoped>
 .back_bar {

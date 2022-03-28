@@ -255,7 +255,6 @@ class che_불가침제의 extends Command\NationCommand
             $nationList[] = $nationTarget;
         }
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],

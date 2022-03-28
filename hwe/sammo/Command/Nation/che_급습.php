@@ -221,7 +221,6 @@ class che_급습 extends Command\NationCommand
             $nationList[] = $nationTarget;
         }
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],

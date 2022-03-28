@@ -31,15 +31,15 @@ $now = time();
 if($mapInfo && ($now - $mapInfo['timestamp'] < 600)){
 	$mapEtag = $mapInfo['etag'];
 	$mapModified = $mapInfo['timestamp'];
-	
-    header("Last-Modified: ".gmdate("D, d M Y H:i:s", $mapModified)." GMT"); 
-    header("Etag: $mapEtag"); 
+
+    header("Last-Modified: ".gmdate("D, d M Y H:i:s", $mapModified)." GMT");
+    header("Etag: $mapEtag");
 
     if (
-		strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']??'2000-01-01') === $mapModified || 
+		strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']??'2000-01-01') === $mapModified ||
 		trim($_SERVER['HTTP_IF_NONE_MATCH']??'') === $mapEtag
-	) { 
-        header("HTTP/1.1 304 Not Modified"); 
+	) {
+        header("HTTP/1.1 304 Not Modified");
 		die();
 	}
 
@@ -65,10 +65,9 @@ $rawMap = getWorldMap([
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$mapTheme = $gameStor->map_theme ?? 'che';
 
 $rawMap['history'] = $history;
-$rawMap['theme'] = $mapTheme;
+$rawMap['theme'] = GameConst::$mapName;
 
 $etag = hash('sha256', $serverID.$now);
 $map = [
@@ -77,7 +76,7 @@ $map = [
 	'data'=>$rawMap,
 ];
 $cache->save("recent_map", $map);
-header("Last-Modified: ".gmdate("D, d M Y H:i:s", $now)." GMT"); 
-header("Etag: $etag"); 
+header("Last-Modified: ".gmdate("D, d M Y H:i:s", $now)." GMT");
+header("Etag: $etag");
 
 Json::die($map['data'], 0);

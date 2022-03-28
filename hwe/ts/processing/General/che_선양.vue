@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar :title="commandName" v-model:searchable="searchable" />
+  <TopBackBar v-model:searchable="searchable" :title="commandName" />
   <div class="bg0">
     <div v-if="commandName == '등용'">
       재야나 타국의 장수를 등용합니다.<br />
@@ -14,14 +14,16 @@
       <div class="col-9 col-md-4">
         장수 :
         <SelectGeneral
+          v-model="selectedGeneralID"
           :generals="generalList"
           :textHelper="textHelpGeneral"
           :searchable="searchable"
-          v-model="selectedGeneralID"
         />
       </div>
       <div class="col-3 col-md-2 d-grid">
-        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+        <b-button variant="primary" @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
@@ -32,15 +34,15 @@
 import SelectGeneral from "@/processing/SelectGeneral.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import {
   convertGeneralList,
   getProcSearchable,
-  procGeneralItem,
-  procGeneralKey,
-  procGeneralRawItemList,
+  type procGeneralItem,
+  type procGeneralKey,
+  type procGeneralRawItemList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
 declare const commandName: string;
@@ -57,18 +59,13 @@ export default defineComponent({
     BottomBar,
   },
   setup() {
-    const generalList = convertGeneralList(
-      procRes.generalsKey,
-      procRes.generals
-    );
+    const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
 
     const selectedGeneralID = ref(generalList[0].no);
 
     function textHelpGeneral(gen: procGeneralItem): string {
       const nameColor = getNpcColor(gen.npc);
-      const name = nameColor
-        ? `<span style="color:${nameColor}">${gen.name}</span>`
-        : gen.name;
+      const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
       return `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`;
     }
 

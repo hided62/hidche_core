@@ -16,7 +16,7 @@
     :maxHeight="400"
     :searchable="searchable"
   >
-    <template v-slot:option="props">
+    <template #option="props">
       <span
         :style="{
           color: props.option.notAvailable ? 'red' : undefined,
@@ -27,7 +27,7 @@
         {{ props.option.notAvailable ? "(불가)" : undefined }}
       </span>
     </template>
-    <template v-slot:singleLabel="props">
+    <template #singleLabel="props">
       <span
         :style="{
           color: props.option.notAvailable ? 'red' : undefined,
@@ -41,8 +41,8 @@
 </template>
 <script lang="ts">
 import { convertSearch초성 } from "@/util/convertSearch초성";
-import { defineComponent, PropType } from "vue";
-import { procNationItem } from "./processingRes";
+import { defineComponent, type PropType } from "vue";
+import type { procNationItem } from "./processingRes";
 
 type SelectedNation = {
   value: number;
@@ -67,18 +67,9 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: true,
-    }
+    },
   },
   emits: ["update:modelValue"],
-  watch: {
-    modelValue(val: number) {
-      const target = this.targets.get(val);
-      this.selectedNation = target;
-    },
-    selectedNation(val: SelectedNation) {
-      this.$emit("update:modelValue", val.value);
-    },
-  },
   data() {
     const forFind = [];
     const targets = new Map<number, SelectedNation>();
@@ -90,7 +81,7 @@ export default defineComponent({
         info: nationItem.info,
         simpleName: nationItem.name,
         notAvailable: nationItem.notAvailable,
-        searchText: convertSearch초성(nationItem.name).join('|'),
+        searchText: convertSearch초성(nationItem.name).join("|"),
       };
       if (nationItem.id == this.modelValue) {
         selectedNation = obj;
@@ -103,6 +94,15 @@ export default defineComponent({
       forFind,
       targets,
     };
+  },
+  watch: {
+    modelValue(val: number) {
+      const target = this.targets.get(val);
+      this.selectedNation = target;
+    },
+    selectedNation(val: SelectedNation) {
+      this.$emit("update:modelValue", val.value);
+    },
   },
 });
 </script>

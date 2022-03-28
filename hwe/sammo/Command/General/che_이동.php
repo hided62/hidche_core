@@ -181,7 +181,6 @@ class che_이동 extends Command\GeneralCommand
     public function exportJSVars(): array
     {
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'cities' => \sammo\JSOptionsForCities(),
                 'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 1),

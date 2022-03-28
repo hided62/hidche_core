@@ -83,7 +83,6 @@ if ($gameStor->npcmode == 0) {
     $npcmode = "선택 생성";
 }
 $color = "cyan";
-$mapTheme = $gameStor->map_theme;
 $serverName = UniqueConst::$serverName;
 $serverCnt = $gameStor->server_cnt;
 
@@ -257,7 +256,7 @@ if (!$otherTextInfo) {
                 </div>
             <?php endif; ?>
             <div id="map_view" class="gx-0">
-                <div id="mapZone" class="view-item"><?= getMapHtml($mapTheme) ?></div>
+                <div id="mapZone" class="view-item"><?= getMapHtml() ?></div>
                 <div class="view-item" id="reservedCommandZone">
                     <div id="reservedCommandList"></div>
                     <div id="actionMiniPlate" class="gx-0 row">

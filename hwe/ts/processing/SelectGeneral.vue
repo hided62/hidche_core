@@ -19,25 +19,23 @@
     :maxHeight="400"
     :searchable="searchable"
   >
-    <template v-slot:option="props">
-      <div v-if="props.option.title" v-html="props.option.title"></div>
+    <template #option="props">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div v-if="props.option.title" v-html="props.option.title" />
       <div
         v-if="props.option.$groupLabel !== undefined"
         class="margin-filler"
         :style="{
-          backgroundColor: groupByNation.get(props.option.$groupLabel).color,
-          color: isBrightColor(
-            groupByNation.get(props.option.$groupLabel).color
-          )
-            ? 'black'
-            : 'white',
+          backgroundColor: groupByNation?.get(props.option.$groupLabel)?.color,
+          color: isBrightColor(groupByNation?.get(props.option.$groupLabel)?.color ?? '#ffffff') ? 'black' : 'white',
         }"
       >
-        {{ groupByNation.get(props.option.$groupLabel).name }}
+        {{ groupByNation?.get(props.option.$groupLabel)?.name }}
       </div>
     </template>
-    <template v-slot:singleLabel="props">
-      {{ props.option.simpleName }} {{groupByNation?`[${groupByNation.get(props.option.obj.nationID).name}]`:undefined}}
+    <template #singleLabel="props">
+      {{ props.option.simpleName }}
+      {{ groupByNation ? `[${groupByNation.get(props.option.obj.nationID)?.name}]` : undefined }}
     </template>
   </v-multiselect>
 </template>
@@ -46,12 +44,9 @@ import { getNpcColor } from "@/common_legacy";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 import { isBrightColor } from "@/util/isBrightColor";
 import { unwrap } from "@/util/unwrap";
-import { defineComponent, PropType } from "vue";
-import {
-  procGeneralItem,
-  procGeneralList,
-  procNationItem,
-} from "./processingRes";
+import { defineComponent, type PropType } from "vue";
+import VueTypes from "vue-types";
+import type { procGeneralItem, procGeneralList, procNationItem } from "./processingRes";
 
 type SelectedGeneral = {
   value: number;
@@ -63,10 +58,7 @@ type SelectedGeneral = {
 
 export default defineComponent({
   props: {
-    modelValue: {
-      type: Number,
-      required: true,
-    },
+    modelValue: VueTypes.number.isRequired,
     generals: {
       type: Array as PropType<procGeneralList>,
       required: true,
@@ -81,22 +73,13 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
-    searchable:{
+    searchable: {
       type: Boolean,
       required: false,
       default: true,
-    }
+    },
   },
   emits: ["update:modelValue"],
-  watch: {
-    modelValue(val: number) {
-      const target = this.targets.get(val);
-      this.selectedGeneral = target;
-    },
-    selectedGeneral(val: SelectedGeneral) {
-      this.$emit("update:modelValue", val.value);
-    },
-  },
   data() {
     const forFind: (
       | SelectedGeneral
@@ -130,17 +113,13 @@ export default defineComponent({
       }
 
       const nameColor = getNpcColor(gen.npc);
-      const name = nameColor
-        ? `<span style="color:${nameColor}">${gen.name}</span>`
-        : gen.name;
+      const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
 
       const obj: SelectedGeneral = {
         value: gen.no,
-        title: this.textHelper
-          ? this.textHelper(gen)
-          : `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`,
+        title: this.textHelper ? this.textHelper(gen) : `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`,
         simpleName: gen.name,
-        searchText: convertSearch초성(gen.name).join('|'),
+        searchText: convertSearch초성(gen.name).join("|"),
         obj: gen,
       };
       if (gen.no == this.modelValue) {
@@ -155,6 +134,15 @@ export default defineComponent({
       targets,
       isBrightColor,
     };
+  },
+  watch: {
+    modelValue(val: number) {
+      const target = this.targets.get(val);
+      this.selectedGeneral = target;
+    },
+    selectedGeneral(val: SelectedGeneral) {
+      this.$emit("update:modelValue", val.value);
+    },
   },
 });
 </script>

@@ -8,21 +8,36 @@
       <div class="col-2 col-md-1">
         자원 :
         <b-button-group>
-          <b-button :pressed="isGold" @click="isGold = true">금</b-button>
-          <b-button :pressed="!isGold" @click="isGold = false">쌀</b-button>
+          <b-button
+            :pressed="isGold"
+            @click="isGold = true"
+          >
+            금
+          </b-button>
+          <b-button
+            :pressed="!isGold"
+            @click="isGold = false"
+          >
+            쌀
+          </b-button>
         </b-button-group>
       </div>
       <div class="col-7 col-md-4">
         금액 :
         <SelectAmount
-          :amountGuide="amountGuide"
           v-model="amount"
+          :amountGuide="amountGuide"
           :maxAmount="maxAmount"
           :minAmount="minAmount"
         />
       </div>
       <div class="col-3 col-md-2 d-grid">
-        <b-button variant="primary" @click="submit">{{ commandName }}</b-button>
+        <b-button
+          variant="primary"
+          @click="submit"
+        >
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
@@ -33,7 +48,7 @@
 import SelectAmount from "@/processing/SelectAmount.vue";
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 declare const commandName: string;

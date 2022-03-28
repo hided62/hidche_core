@@ -224,7 +224,6 @@ class che_이호경식 extends Command\NationCommand
             $nationList[] = $nationTarget;
         }
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],

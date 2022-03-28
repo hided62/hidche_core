@@ -1,53 +1,54 @@
 <template>
-  <b-button-toolbar key-nav v-if="editable && editor" class="bg-dark">
-    <b-button-group class="mx-1">
-      <b-button
-        @click="editor.commands.undo()"
+  <BButtonToolbar v-if="editable && editor" key-nav class="bg-dark">
+    <BButtonGroup class="mx-1">
+      <BButton v-b-tooltip.hover title="되돌리기" @click="editor?.commands.undo()">
+        <i class="bi bi-arrow-90deg-left" />
+      </BButton>
+      <BButton v-b-tooltip.hover title="재실행" @click="editor?.commands.redo()">
+        <i class="bi bi-arrow-90deg-right" />
+      </BButton>
+    </BButtonGroup>
+    <BButtonGroup class="mx-1">
+      <BButton
         v-b-tooltip.hover
-        title="되돌리기"
-        ><i class="bi bi-arrow-90deg-left"></i
-      ></b-button>
-      <b-button @click="editor.commands.redo()" v-b-tooltip.hover title="재실행"
-        ><i class="bi bi-arrow-90deg-right"></i
-      ></b-button>
-    </b-button-group>
-    <b-button-group class="mx-1">
-      <b-button
-        @click="editor.chain().focus().toggleBold().run()"
         :class="{ 'is-active': editor.isActive('bold') }"
-        v-b-tooltip.hover
         title="진하게"
-        ><i class="bi bi-type-bold"></i
-      ></b-button>
-      <b-button
-        @click="editor.chain().focus().toggleItalic().run()"
+        @click="editor?.chain().focus().toggleBold().run()"
+      >
+        <i class="bi bi-type-bold" />
+      </BButton>
+      <BButton
+        v-b-tooltip.hover
         :class="{ 'is-active': editor.isActive('italic') }"
-        v-b-tooltip.hover
         title="기울이기"
-        ><i class="bi bi-type-italic"></i
-      ></b-button>
-      <b-button
-        @click="editor.chain().focus().toggleUnderline().run()"
-        :class="{ 'is-active': editor.isActive('underline') }"
+        @click="editor?.chain().focus().toggleItalic().run()"
+      >
+        <i class="bi bi-type-italic" />
+      </BButton>
+      <BButton
         v-b-tooltip.hover
+        :class="{ 'is-active': editor.isActive('underline') }"
         title="밑줄"
-        ><i class="bi bi-type-underline"></i
-      ></b-button>
+        @click="editor?.chain().focus().toggleUnderline().run()"
+      >
+        <i class="bi bi-type-underline" />
+      </BButton>
       <!-- 효과 지우기 -->
-    </b-button-group>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1">
-      <b-dropdown>
+    <BButtonGroup class="mx-1">
+      <BDropdown>
         <template #button-content> 크기 </template>
-        <b-dropdown-item @click="editor.chain().focus().unsetFontSize().run()"
-          ><span>기본</span></b-dropdown-item
-        >
-        <b-dropdown-divider />
-        <b-dropdown-item
+        <BDropdownItem @click="editor?.chain().focus().unsetFontSize().run()">
+          <span>기본</span>
+        </BDropdownItem>
+        <BDropdownDivider />
+        <BDropdownItem
           v-for="sizeItem in fontSize"
           :key="sizeItem"
-          @click="editor.chain().focus().setFontSize(sizeItem).run()"
-          ><span
+          @click="editor?.chain().focus().setFontSize(sizeItem).run()"
+        >
+          <span
             :style="{
               'font-size': sizeItem,
               'text-decoration': editor.isActive('textStyle', {
@@ -57,235 +58,230 @@
                 : undefined,
             }"
             >{{ sizeItem }}</span
-          ></b-dropdown-item
-        >
-      </b-dropdown>
+          >
+        </BDropdownItem>
+      </BDropdown>
       <!-- 글꼴 -->
-    </b-button-group>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1">
-      <b-button
-        @click="editor.chain().focus().toggleStrike().run()"
-        :class="{ 'is-active': editor.isActive('strike') }"
+    <BButtonGroup class="mx-1">
+      <BButton
         v-b-tooltip.hover
+        :class="{ 'is-active': editor.isActive('strike') }"
         title="가로선"
-        ><i class="bi bi-type-strikethrough"></i
-      ></b-button>
+        @click="editor?.chain().focus().toggleStrike().run()"
+      >
+        <i class="bi bi-type-strikethrough" />
+      </BButton>
       <!-- 윗첨자, 아랫첨자 -->
-    </b-button-group>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1">
-      <b-button
-        @click="
-          editor.chain().focus().unsetColor().unsetBackgroundColor().run()
-        "
+    <BButtonGroup class="mx-1">
+      <BButton
         v-b-tooltip.hover
         title="색상 취소"
-        ><i class="bi bi-droplet"></i
-      ></b-button>
+        @click="editor?.chain().focus().unsetColor().unsetBackgroundColor().run()"
+      >
+        <i class="bi bi-droplet" />
+      </BButton>
       <input
+        v-b-tooltip.hover
         type="color"
         class="form-control form-control-color"
-        :value="
-          colorConvert(editor.getAttributes('textStyle').color, '#ffffff')
-        "
-        @input="editor.chain().focus().setColor(($event.target as HTMLInputElement).value).run()"
-        v-b-tooltip.hover
+        :value="colorConvert(editor.getAttributes('textStyle').color, '#ffffff')"
         title="글자색"
+        @input="editor?.chain().focus().setColor(($event.target as HTMLInputElement).value).run()"
       />
       <input
+        v-b-tooltip.hover
         type="color"
         class="form-control form-control-color"
-        :value="
-          colorConvert(
-            editor.getAttributes('textStyle').backgroundColor,
-            '#000000'
-          )
-        "
-        @input="
-          editor.chain().focus().setBackgroundColor(($event.target as HTMLInputElement).value).run()
-        "
-        v-b-tooltip.hover
+        :value="colorConvert(editor.getAttributes('textStyle').backgroundColor, '#000000')"
         title="배경색"
+        @input="
+          editor?.chain().focus().setBackgroundColor(($event.target as HTMLInputElement).value).run()
+        "
       />
-    </b-button-group>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1">
-      <b-button
-        v-b-tooltip.hover
-        @click="showImageModal = true"
-        title="이미지 추가"
-        ><i class="bi bi-image"></i
-      ></b-button>
+    <BButtonGroup class="mx-1">
+      <BButton v-b-tooltip.hover title="이미지 추가" @click="showImageModal = true">
+        <i class="bi bi-image" />
+      </BButton>
       <!-- 이미지추가 -->
       <!-- 링크 -->
       <!-- 영상링크 -->
       <!-- 표 -->
       <!-- 구분선 삽입 -->
-      <b-button
-        @click="editor.chain().focus().setHorizontalRule().run()"
-        v-b-tooltip.hover
-        title="구분선"
-        ><i class="bi bi-hr"></i
-      ></b-button>
-    </b-button-group>
+      <BButton v-b-tooltip.hover title="구분선" @click="editor?.chain().focus().setHorizontalRule().run()">
+        <i class="bi bi-hr" />
+      </BButton>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1">
+    <BButtonGroup class="mx-1">
       <!-- 글머리 기호 -->
       <!-- 번호 매기기 -->
-      <b-button
-        @click="editor.chain().focus().setTextAlign('left').run()"
+      <BButton
+        v-b-tooltip.hover
         :class="{ 'is-active': editor.isActive({ textAlign: 'left' }) }"
-        v-b-tooltip.hover
         title="왼쪽 정렬"
-        ><i class="bi bi-text-left"></i
-      ></b-button>
-      <b-button
-        @click="editor.chain().focus().setTextAlign('center').run()"
+        @click="editor?.chain().focus().setTextAlign('left').run()"
+      >
+        <i class="bi bi-text-left" />
+      </BButton>
+      <BButton
+        v-b-tooltip.hover
         :class="{ 'is-active': editor.isActive({ textAlign: 'center' }) }"
-        v-b-tooltip.hover
         title="가운데 정렬"
-        ><i class="bi bi-text-center"></i
-      ></b-button>
-      <b-button
-        @click="editor.chain().focus().setTextAlign('right').run()"
-        :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }"
+        @click="editor?.chain().focus().setTextAlign('center').run()"
+      >
+        <i class="bi bi-text-center" />
+      </BButton>
+      <BButton
         v-b-tooltip.hover
+        :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }"
         title="오른쪽 정렬"
-        ><i class="bi bi-text-right"></i
-      ></b-button>
+        @click="editor?.chain().focus().setTextAlign('right').run()"
+      >
+        <i class="bi bi-text-right" />
+      </BButton>
       <!-- 문단정렬(왼, 가, 오, 양)(내어, 들여) -->
-    </b-button-group>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1"> </b-button-group>
+    <BButtonGroup class="mx-1" />
 
-    <b-button-group class="mx-1">
+    <BButtonGroup class="mx-1">
       <!-- 줄간격 (1.0, 1.2, 1.4, 1.5, 1.6, 1.8, 2.0, 3.0) -->
-    </b-button-group>
+    </BButtonGroup>
 
-    <b-button-group class="mx-1">
+    <BButtonGroup class="mx-1">
       <!-- 원본 코드 -->
-    </b-button-group>
-  </b-button-toolbar>
-  <bubble-menu
-    :tippy-options="{ animation: false, maxWidth: 600 }"
-    :editor="editor"
+    </BButtonGroup>
+  </BButtonToolbar>
+  <BubbleMenu
     v-if="editable && editor"
     v-show="editor.isActive('custom-image')"
+    :tippyOptions="{ animation: false, maxWidth: 600 }"
+    :editor="editor"
   >
-    <b-button-toolbar>
-      <b-button-group class="mx-1">
-        <b-button
-          @click="editor.chain().focus().setImageEx({ size: 'small' }).run()"
+    <BButtonToolbar>
+      <BButtonGroup class="mx-1">
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'small',
             }),
             f_frac: true,
           }"
-          v-b-tooltip.hover
           title="1/4 너비로 채우기"
-          >1/4</b-button
+          @click="editor?.chain().focus().setImageEx({ size: 'small' }).run()"
         >
-        <b-button
-          @click="editor.chain().focus().setImageEx({ size: 'medium' }).run()"
+          1/4
+        </BButton>
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'medium',
             }),
             f_frac: true,
           }"
-          v-b-tooltip.hover
           title="1/2 너비로 채우기"
-          >1/2</b-button
+          @click="editor?.chain().focus().setImageEx({ size: 'medium' }).run()"
         >
-        <b-button
-          @click="editor.chain().focus().setImageEx({ size: 'large' }).run()"
+          1/2
+        </BButton>
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'large',
             }),
             f_frac: true,
           }"
-          v-b-tooltip.hover
           title="가득 채우기"
-          >1</b-button
+          @click="editor?.chain().focus().setImageEx({ size: 'large' }).run()"
         >
-        <b-button
-          @click="editor.chain().focus().setImageEx({ size: 'original' }).run()"
+          1
+        </BButton>
+        <BButton
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'original',
             }),
           }"
-          >원본</b-button
+          @click="editor?.chain().focus().setImageEx({ size: 'original' }).run()"
         >
-      </b-button-group>
-      <b-button-group class="mx-1">
-        <b-button
-          @click="
-            editor.chain().focus().setImageEx({ align: 'float-left' }).run()
-          "
+          원본
+        </BButton>
+      </BButtonGroup>
+      <BButtonGroup class="mx-1">
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'float-left',
             }),
           }"
-          v-b-tooltip.hover
           title="왼쪽으로 붙이기"
-          ><i class="bi bi-chevron-bar-left"></i
-        ></b-button>
-        <b-button
-          @click="editor.chain().focus().setImageEx({ align: 'left' }).run()"
+          @click="editor?.chain().focus().setImageEx({ align: 'float-left' }).run()"
+        >
+          <i class="bi bi-chevron-bar-left" />
+        </BButton>
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'left',
             }),
           }"
-          v-b-tooltip.hover
           title="왼쪽으로"
-          ><i class="bi bi-align-start"></i
-        ></b-button>
-        <b-button
-          @click="editor.chain().focus().setImageEx({ align: 'center' }).run()"
+          @click="editor?.chain().focus().setImageEx({ align: 'left' }).run()"
+        >
+          <i class="bi bi-align-start" />
+        </BButton>
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'center',
             }),
           }"
-          v-b-tooltip.hover
           title="가운데로"
-          ><i class="bi bi-align-center"></i
-        ></b-button>
-        <b-button
-          @click="editor.chain().focus().setImageEx({ align: 'right' }).run()"
+          @click="editor?.chain().focus().setImageEx({ align: 'center' }).run()"
+        >
+          <i class="bi bi-align-center" />
+        </BButton>
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'right',
             }),
           }"
-          v-b-tooltip.hover
           title="오른쪽으로 붙이기"
-          ><i class="bi bi-align-end"></i
-        ></b-button>
-        <b-button
-          @click="
-            editor.chain().focus().setImageEx({ align: 'float-right' }).run()
-          "
+          @click="editor?.chain().focus().setImageEx({ align: 'right' }).run()"
+        >
+          <i class="bi bi-align-end" />
+        </BButton>
+        <BButton
+          v-b-tooltip.hover
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'float-right',
             }),
           }"
-          v-b-tooltip.hover
           title="오른쪽으로 붙이기"
-          ><i class="bi bi-chevron-bar-right"></i
-        ></b-button>
-      </b-button-group>
-    </b-button-toolbar>
-  </bubble-menu>
-  <editor-content :editor="editor" class="tiptap-editor" />
-  <b-modal
+          @click="editor?.chain().focus().setImageEx({ align: 'float-right' }).run()"
+        >
+          <i class="bi bi-chevron-bar-right" />
+        </BButton>
+      </BButtonGroup>
+    </BButtonToolbar>
+  </BubbleMenu>
+  <EditorContent :editor="editor" class="tiptap-editor" />
+  <BModal
     v-model="showImageModal"
     title="이미지 추가"
     okTitle="추가"
@@ -295,7 +291,7 @@
     @hidden="resetModal"
   >
     <div class="bg-light text-dark">
-      <b-form-group
+      <BFormGroup
         label-cols-sm="4"
         label-cols-lg="3"
         content-cols-sm
@@ -306,14 +302,14 @@
         :label-for="`${uuid}_image_upload`"
       >
         <input
+          :id="`${uuid}_image_upload`"
           class="form-control"
           type="file"
-          :id="`${uuid}_image_upload`"
-          @change="chooseImage"
           accept=".jpg,.jpeg,.png,.gif,.webp"
+          @change="chooseImage"
         />
-      </b-form-group>
-      <b-form-group
+      </BFormGroup>
+      <BFormGroup
         label-cols-sm="4"
         label-cols-lg="3"
         content-cols-sm
@@ -323,15 +319,15 @@
         label-align="right"
         :label-for="`${uuid}_image_link`"
       >
-        <b-form-input v-model="imageLink"></b-form-input>
-      </b-form-group>
+        <BFormInput v-model="imageLink" />
+      </BFormGroup>
     </div>
-  </b-modal>
+  </BModal>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 //import "@scss/common/bootstrap5.scss";
-import { defineComponent } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Editor, EditorContent, BubbleMenu } from "@tiptap/vue-3";
 import { FontSize } from "@/tiptap-ext/FontSize";
 import StarterKit from "@tiptap/starter-kit";
@@ -351,6 +347,8 @@ import {
   BDropdownItem,
   BDropdownDivider,
   BModal,
+  BFormGroup,
+  BFormInput,
 } from "bootstrap-vue-3";
 import { v4 as uuidv4 } from "uuid";
 import { unwrap } from "@/util/unwrap";
@@ -359,178 +357,160 @@ import { isObject, isString } from "lodash";
 import type { AxiosError } from "axios";
 import { SammoAPI } from "@/SammoAPI";
 
-const compoment = defineComponent({
-  components: {
-    EditorContent,
-    BubbleMenu,
-    BModal,
-    BButtonGroup,
-    BButtonToolbar,
-    BButton,
-    BDropdown,
-    BDropdownItem,
-    BDropdownDivider,
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: "",
   },
-  emits: ["ready", "update:modelValue"],
-  methods: {
-    unwrap,
-    chooseImage(e: Event) {
-      const target = unwrap(e.target) as HTMLInputElement;
-      this.imageUploadFiles = target.files;
-    },
-    colorConvert(val: string | undefined, defaultVal: string) {
-      if (!val) {
-        return defaultVal;
-      }
-      if (val.startsWith("rgb")) {
-        const rgb = val.split("(")[1].split(")")[0].split(",");
-        const vals: string[] = [];
-        for (const subColor of rgb) {
-          const hexSubColor = parseInt(subColor).toString(16);
-          if (hexSubColor.length == 1) {
-            vals.push("0");
-          }
-          vals.push(hexSubColor);
-        }
-        return `#${vals.join("")}`;
-      }
-      return val;
-    },
-    async tryAddImage(bvModalEvt: Event) {
-      if (this.imageUploadFiles === null || this.imageUploadFiles.length == 0) {
-        this.addImageLink(bvModalEvt);
-        return;
-      }
-
-      const targetImage = unwrap(this.imageUploadFiles.item(0));
-      let imageResult: {
-        result: true;
-        path: string;
-      };
-      try {
-        const base64Binary = await getBase64FromFileObject(targetImage);
-        imageResult = await SammoAPI.Misc.UploadImage({
-          imageData: base64Binary,
-        });
-      } catch (e) {
-        if (isString(e)) {
-          alert(e);
-          bvModalEvt.preventDefault();
-        }
-
-        if (isObject(e) && "response" in e) {
-          const axiosErr = e as AxiosError;
-          if (axiosErr.response?.status === 413) {
-            alert("허용 용량을 초과했습니다.");
-            bvModalEvt.preventDefault();
-          }
-        }
-        console.error(e);
-        return false;
-      }
-
-      const imagePath = imageResult.path;
-      this.editor.chain().focus().setImageEx({ src: imagePath }).run();
-    },
-    addImageLink(bvModalEvt: Event) {
-      if (!this.imageLink) {
-        alert("업로드할 이미지를 선택하거나, 이미지 주소를 입력해주세요.");
-        bvModalEvt.preventDefault();
-        return false;
-      }
-      this.editor.chain().focus().setImageEx({ src: this.imageLink }).run();
-    },
-    resetModal() {
-      this.imageLink = "";
-      this.imageUploadFiles = null;
-    },
-  },
-
-  props: {
-    modelValue: {
-      type: String,
-      default: "",
-    },
-    editable: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  data() {
-    return {
-      uuid: uuidv4(),
-      editor: null as unknown as InstanceType<typeof Editor>,
-      fontList: ["Pretendard", "맑은 고딕", "궁서", "돋움"],
-      fontSize: [
-        "8px",
-        "10px",
-        "12px",
-        "14px",
-        "18px",
-        "22px",
-        "28px",
-        "36px",
-        "48px",
-        "72px",
-      ],
-      imageUploadFiles: null as FileList | null,
-      imageLink: "",
-      showImageModal: false,
-    };
-  },
-
-  watch: {
-    modelValue(value: string) {
-      const isSame = this.editor.getHTML() === value;
-
-      if (isSame) {
-        return;
-      }
-
-      this.editor.commands.setContent(value, false);
-    },
-    editable(value: boolean) {
-      this.editor.options.editable = value;
-      if (value == true) {
-        this.editor.commands.focus();
-      }
-    },
-  },
-
-  mounted() {
-    const editor = new Editor({
-      extensions: [
-        StarterKit,
-        Underline,
-        FontSize,
-        TextStyle,
-        TextAlign.configure({
-          types: ["heading", "paragraph"],
-        }),
-        Color.configure({
-          types: ["textStyle"],
-        }),
-        BackgroundColor.configure({
-          types: ["textStyle"],
-        }),
-        CustomImage,
-        Link,
-      ],
-      editable: this.editable,
-      content: this.modelValue,
-      onUpdate: () => {
-        this.$emit("update:modelValue", this.editor.getHTML());
-      },
-      onCreate: () => {
-        this.$emit("ready");
-      }
-    });
-    this.editor = editor;
-  },
-
-  beforeUnmount() {
-    this.editor.destroy();
+  editable: {
+    type: Boolean,
+    default: true,
   },
 });
-export default compoment;
+
+const emit = defineEmits(["ready", "update:modelValue"]);
+
+const uuid = ref(uuidv4());
+const editor = ref<InstanceType<typeof Editor>>();
+//const fontList = ref(["Pretendard", "맑은 고딕", "궁서", "돋움"]);
+const fontSize = ref(["8px", "10px", "12px", "14px", "18px", "22px", "28px", "36px", "48px", "72px"]);
+const imageUploadFiles = ref(null as FileList | null);
+const imageLink = ref("");
+const showImageModal = ref(false);
+
+watch(
+  () => props.modelValue,
+  (value: string) => {
+    const isSame = editor.value?.getHTML() === value;
+
+    if (isSame) {
+      return;
+    }
+
+    editor.value?.commands.setContent(value, false);
+  }
+);
+
+watch(
+  () => props.editable,
+  (value: boolean) => {
+    if (!editor.value) {
+      return;
+    }
+    editor.value.options.editable = value;
+    if (value == true) {
+      editor.value.commands.focus();
+    }
+  }
+);
+
+onMounted(() => {
+  const vEditor = new Editor({
+    extensions: [
+      StarterKit,
+      Underline,
+      FontSize,
+      TextStyle,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Color.configure({
+        types: ["textStyle"],
+      }),
+      BackgroundColor.configure({
+        types: ["textStyle"],
+      }),
+      CustomImage,
+      Link,
+    ],
+    editable: props.editable,
+    content: props.modelValue,
+    onUpdate: () => {
+      emit("update:modelValue", editor.value?.getHTML());
+    },
+    onCreate: () => {
+      emit("ready");
+    },
+  });
+  editor.value = vEditor;
+});
+
+onBeforeUnmount(() => {
+  editor.value?.destroy();
+});
+
+function chooseImage(e: Event) {
+  const target = unwrap(e.target) as HTMLInputElement;
+  imageUploadFiles.value = target.files;
+}
+
+function colorConvert(val: string | undefined, defaultVal: string) {
+  if (!val) {
+    return defaultVal;
+  }
+  if (val.startsWith("rgb")) {
+    const rgb = val.split("(")[1].split(")")[0].split(",");
+    const vals: string[] = [];
+    for (const subColor of rgb) {
+      const hexSubColor = parseInt(subColor).toString(16);
+      if (hexSubColor.length == 1) {
+        vals.push("0");
+      }
+      vals.push(hexSubColor);
+    }
+    return `#${vals.join("")}`;
+  }
+  return val;
+}
+
+async function tryAddImage(bvModalEvt: Event) {
+  if (imageUploadFiles.value === null || imageUploadFiles.value.length == 0) {
+    addImageLink(bvModalEvt);
+    return;
+  }
+
+  const targetImage = unwrap(unwrap(imageUploadFiles.value).item(0));
+  let imageResult: {
+    result: true;
+    path: string;
+  };
+  try {
+    const base64Binary = await getBase64FromFileObject(targetImage);
+    imageResult = await SammoAPI.Misc.UploadImage({
+      imageData: base64Binary,
+    });
+  } catch (e) {
+    if (isString(e)) {
+      alert(e);
+      bvModalEvt.preventDefault();
+    }
+
+    if (isObject(e) && "response" in e) {
+      const axiosErr = e as AxiosError;
+      if (axiosErr.response?.status === 413) {
+        alert("허용 용량을 초과했습니다.");
+        bvModalEvt.preventDefault();
+      }
+    }
+    console.error(e);
+    return false;
+  }
+
+  const imagePath = imageResult.path;
+  editor.value?.chain().focus().setImageEx({ src: imagePath }).run();
+}
+
+function addImageLink(bvModalEvt: Event) {
+  if (!imageLink.value) {
+    alert("업로드할 이미지를 선택하거나, 이미지 주소를 입력해주세요.");
+    bvModalEvt.preventDefault();
+    return false;
+  }
+  editor.value?.chain().focus().setImageEx({ src: imageLink.value }).run();
+}
+
+function resetModal() {
+  imageLink.value = "";
+  imageUploadFiles.value = null;
+}
 </script>

@@ -291,7 +291,6 @@ class che_물자원조 extends Command\NationCommand
         }
 
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'currentNationLevel' => $currentNationLevel,

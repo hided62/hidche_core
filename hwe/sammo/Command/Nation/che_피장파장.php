@@ -280,7 +280,6 @@ class che_피장파장 extends Command\NationCommand
         }
 
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'nationList' => $nationList,
                 'startYear' => $this->env['startyear'],

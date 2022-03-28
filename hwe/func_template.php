@@ -235,24 +235,19 @@ function formatLeadershipBonus(int $value): string
 
 function getMapTheme(): string
 {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $mapTheme = $gameStor->map_theme ?? 'che';
-    return $mapTheme;
+    return GameConst::$mapName;
 }
 
-function getMapHtml(?string $mapTheme = null)
+function getMapHtml(?string $mapName = null)
 {
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 
-    if ($mapTheme === null) {
-        $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $mapTheme = $gameStor->map_theme ?? 'che';
+    if($mapName === null){
+        $mapName = GameConst::$mapName;
     }
 
     return $templates->render('map', [
-        'mapTheme' => $mapTheme
+        'mapName' => $mapName
     ]);
 }
 

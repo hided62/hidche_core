@@ -6,8 +6,7 @@
       userSelect: disabled ? undefined : 'none',
       overflow: 'hidden',
       touchAction: disabled ? undefined : 'none',
-    }
-    "
+    }"
     :class="{ disabledDrag: disabled }"
   >
     <slot :selected="intersected" />
@@ -16,14 +15,7 @@
 
 <script lang="ts">
 /// https://github.com/andi23rosca/drag-select-vue/blob/master/src/DragSelect.vue
-import {
-  defineComponent,
-  ref,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-  type PropType,
-} from "vue";
+import { defineComponent, ref, watch, onMounted, onBeforeUnmount, type PropType } from "vue";
 import VueTypes from "vue-types";
 
 function getDimensions(p1: coord, p2: coord): rect {
@@ -47,14 +39,8 @@ type rect = { width: number; height: number };
 export default defineComponent({
   props: {
     attribute: VueTypes.string.isRequired,
-    color: {
-      ...VueTypes.string.def("#4299E1"),
-      required: false,
-    },
-    opacity: {
-      ...VueTypes.number.def(0.7),
-      required: false,
-    },
+    color: VueTypes.string.def("#4299E1"),
+    opacity: VueTypes.number.def(0.7),
     modelValue: {
       type: Object as PropType<Set<string>>,
       required: false,
@@ -64,7 +50,7 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
   emits: ["update:modelValue", "dragDone", "dragStart"],
   setup(props, { emit }) {
@@ -194,20 +180,22 @@ export default defineComponent({
         isMine = false;
       }
 
-      watch(() => props.disabled, disabledNext => {
-        if (disabledNext) {
-          uContainer.removeEventListener("mousedown", startDrag);
-          uContainer.removeEventListener("touchstart", touchStart);
-          document.removeEventListener("mouseup", endDrag);
-          document.removeEventListener("touchend", endDrag);
+      watch(
+        () => props.disabled,
+        (disabledNext) => {
+          if (disabledNext) {
+            uContainer.removeEventListener("mousedown", startDrag);
+            uContainer.removeEventListener("touchstart", touchStart);
+            document.removeEventListener("mouseup", endDrag);
+            document.removeEventListener("touchend", endDrag);
+          } else {
+            uContainer.addEventListener("mousedown", startDrag);
+            uContainer.addEventListener("touchstart", touchStart);
+            document.addEventListener("mouseup", endDrag);
+            document.addEventListener("touchend", endDrag);
+          }
         }
-        else {
-          uContainer.addEventListener("mousedown", startDrag);
-          uContainer.addEventListener("touchstart", touchStart);
-          document.addEventListener("mouseup", endDrag);
-          document.addEventListener("touchend", endDrag);
-        }
-      });
+      );
 
       if (!props.disabled) {
         uContainer.addEventListener("mousedown", startDrag);
@@ -215,7 +203,6 @@ export default defineComponent({
         document.addEventListener("mouseup", endDrag);
         document.addEventListener("touchend", endDrag);
       }
-
 
       onBeforeUnmount(() => {
         uContainer.removeEventListener("mousedown", startDrag);

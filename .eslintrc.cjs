@@ -11,13 +11,15 @@ module.exports = {
         files: ['*.ts', '*.tsx', "*.vue"],
     }],
     plugins: [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "prettier"
     ],
 
     extends: [
         "eslint:recommended",
-        "plugin:vue/vue3-essential",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:vue/vue3-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
     ],
     parserOptions: {
         "sourceType": "module",
@@ -29,6 +31,14 @@ module.exports = {
     rules: {
         '@typescript-eslint/no-floating-promises': 'error',
         'vue/script-setup-uses-vars': 'error',
+        'vue/max-attributes-per-line': [
+            'warn',
+            {
+                singleline: 4, //prettier와 싸우지 말자
+            },
+        ],
+        'vue/v-on-event-hyphenation': 'off', //vue3에선 필요없다고 생각
+        'vue/attribute-hyphenation': 'off', //vue3에선 필요없다고 생각
     },
     settings: {
         'import/resolver': {

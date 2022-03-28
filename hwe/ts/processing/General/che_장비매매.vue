@@ -1,12 +1,16 @@
 <template>
-  <TopBackBar :title="commandName" v-model:searchable="searchable" />
+  <!-- eslint-disable vue/no-v-html -->
+  <TopBackBar v-model:searchable="searchable" :title="commandName" />
   <div class="bg0">
     <div>
-      장비를 구입하거나 매각합니다.<br />
+      장비를 구입하거나 매각합니다.
+      <br>
       현재 구입 불가능한 것은 <span style="color: red">붉은색</span>으로
-      표시됩니다.<br />
+      표시됩니다.
+      <br>
       현재 도시 치안 : {{ citySecu.toLocaleString() }} &nbsp;&nbsp;&nbsp;현재
-      자금 : {{ gold.toLocaleString() }}<br />
+      자금 : {{ gold.toLocaleString() }}
+      <br>
     </div>
     <div class="row">
       <div class="col-8 col-md-4">
@@ -22,27 +26,27 @@
           label="searchText"
           track-by="simpleName"
           :show-labels="false"
-          selectLabel="선택(엔터)"
-          selectGroupLabel=""
-          selectedLabel="선택됨"
-          deselectLabel="해제(엔터)"
-          deselectGroupLabel=""
+          select-label="선택(엔터)"
+          select-group-label
+          selected-label="선택됨"
+          deselect-label="해제(엔터)"
+          deselect-group-label
           placeholder="아이템 선택"
-          :maxHeight="400"
+          :max-height="400"
           :searchable="searchable"
         >
-          <template v-slot:option="props">
+          <template #option="props">
             <div
               v-if="props.option.html"
+              :style="{
+                color: props.option.notAvailable ? 'red' : undefined,
+              }"
               v-html="
                 `${props.option.html} ${
                   props.option.notAvailable ? '(불가)' : ''
                 }`
               "
-              :style="{
-                color: props.option.notAvailable ? 'red' : undefined,
-              }"
-            ></div>
+            />
             <div
               v-else-if="props.option.simpleName"
               :style="{
@@ -53,21 +57,23 @@
               {{ props.option.notAvailable ? "(불가)" : undefined }}
             </div>
           </template>
-          <template v-slot:singleLabel="props">
-            [{{ ItemTypeNameMap[props.option.type] }}]
+          <template #singleLabel="props">
+            [{{ ItemTypeNameMap[props.option.type as keyof typeof ItemTypeNameMap] }}]
             {{ props.option.simpleName }}
           </template>
         </v-multiselect>
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button @click="submit">{{ commandName }}</b-button>
+        <b-button @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
     <div v-if="selectedItemObj.obj.id != NoneValue" class="row">
       <div class="col-4 col-md-2 align-self-center text-center">
         {{ selectedItemObj.obj.name }}
       </div>
-      <div class="col" v-html="selectedItemObj.obj.info"></div>
+      <div class="col" v-html="selectedItemObj.obj.info" />
     </div>
   </div>
 
@@ -78,11 +84,20 @@
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import { entriesWithType } from "@util/entriesWithType";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { getProcSearchable, procItemList, procItemType } from "../processingRes";
-import { ItemTypeKey, ItemTypeNameMap, NoneValue, ValuesOf } from "@/defs";
+import {
+  getProcSearchable,
+  type procItemList,
+  type procItemType,
+} from "../processingRes";
+import {
+  type ItemTypeKey,
+  ItemTypeNameMap,
+  NoneValue,
+  type ValuesOf,
+} from "@/defs";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 
 declare const commandName: string;

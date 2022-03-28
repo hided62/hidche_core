@@ -7,15 +7,11 @@
         :style="{
           color: getNpcColor(officer.npcType ?? 0),
         }"
-      >{{ officer.name }}</div>
+      >
+        {{ officer.name }}
+      </div>
     </div>
-    <div
-      :class="[
-        'row',
-        'controlPad',
-        props.targetIsMe ? 'targetIsMe' : 'targetIsNotMe',
-      ]"
-    >
+    <div :class="['row', 'controlPad', props.targetIsMe ? 'targetIsMe' : 'targetIsNotMe']">
       <div class="col-3 col-md-12 order-md-last">
         <div class="d-grid mb-1 py-1 only500px bg1 center">
           <div
@@ -23,51 +19,50 @@
               color: getNpcColor(officer.npcType ?? 0),
               fontSize: '1.2em',
             }"
-          >{{ officer.name }}</div>
+          >
+            {{ officer.name }}
+          </div>
           <div>{{ officer.officerLevelText }}</div>
         </div>
         <div class="row gx-1 gy-1 py-1">
           <div class="col-md-4 mx-0 mb-0 mt-1 d-grid">
-            <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0"><SimpleClock :serverTime="parseTime(props.date)" /></div>
+            <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0">
+              <SimpleClock :serverTime="parseTime(props.date)" />
+            </div>
           </div>
 
           <div class="col-md-4 d-grid">
-            <BButton
-              variant="secondary"
-              @click="isEditMode = !isEditMode"
-            >{{ isEditMode ? '일반 모드' : '고급 모드' }}</BButton>
+            <BButton variant="secondary" @click="isEditMode = !isEditMode">
+              {{ isEditMode ? "일반 모드" : "고급 모드" }}
+            </BButton>
           </div>
 
           <BDropdown class="col-md-4" text="반복">
-            <BDropdownItem
-              v-for="turnIdx in maxPushTurn"
-              :key="turnIdx"
-              @click="repeatNationCommand(turnIdx)"
-            >
-              {{
-                turnIdx
-              }}턴
+            <BDropdownItem v-for="turnIdx in maxPushTurn" :key="turnIdx" @click="repeatNationCommand(turnIdx)">
+              {{ turnIdx }}턴
             </BDropdownItem>
           </BDropdown>
 
           <template v-if="isEditMode">
             <BDropdown class="col-md-4" left text="범위">
-              <BDropdownItem @click="queryActionHelper.selectTurn()">해제</BDropdownItem>
-              <BDropdownItem @click="queryActionHelper.selectAll()">모든턴</BDropdownItem>
-              <BDropdownItem @click="queryActionHelper.selectStep(0, 2)">홀수턴</BDropdownItem>
-              <BDropdownItem @click="queryActionHelper.selectStep(1, 2)">짝수턴</BDropdownItem>
-              <BDropdownDivider></BDropdownDivider>
+              <BDropdownItem @click="queryActionHelper.selectTurn()"> 해제 </BDropdownItem>
+              <BDropdownItem @click="queryActionHelper.selectAll()"> 모든턴 </BDropdownItem>
+              <BDropdownItem @click="queryActionHelper.selectStep(0, 2)"> 홀수턴 </BDropdownItem>
+              <BDropdownItem @click="queryActionHelper.selectStep(1, 2)"> 짝수턴 </BDropdownItem>
+              <BDropdownDivider />
 
               <BDropdownText v-for="spanIdx in [3, 4, 5, 6, 7]" :key="spanIdx">
                 {{ spanIdx }}턴 간격
                 <br />
                 <BButtonGroup>
                   <BButton
-                    class="ignoreMe"
                     v-for="beginIdx in spanIdx"
                     :key="beginIdx"
+                    class="ignoreMe"
                     @click="queryActionHelper.selectStep(beginIdx - 1, spanIdx)"
-                  >{{ beginIdx }}</BButton>
+                  >
+                    {{ beginIdx }}
+                  </BButton>
                 </BButtonGroup>
               </BDropdownText>
             </BDropdown>
@@ -79,7 +74,7 @@
                 @click.self="useStoredAction(actions)"
               >
                 {{ actionKey }}
-                <BButton @click.prevent="deleteStoredActions(actionKey)" size="sm">삭제</BButton>
+                <BButton size="sm" @click.prevent="deleteStoredActions(actionKey)"> 삭제 </BButton>
               </BDropdownItem>
             </BDropdown>
 
@@ -90,34 +85,20 @@
                   :key="idx"
                   @click="void reserveCommandDirect([[Array.from(selectedTurnList.values()), action]])"
                 >
-                  {{
-                    action.brief
-                  }}
+                  {{ action.brief }}
                 </BDropdownItem>
               </BDropdown>
             </div>
           </template>
 
           <BDropdown class="col-md-6" split text="당기기" @click="pullNationCommandSingle">
-            <BDropdownItem
-              v-for="turnIdx in maxPushTurn"
-              :key="turnIdx"
-              @click="pushNationCommand(-turnIdx)"
-            >
-              {{
-                turnIdx
-              }}턴
+            <BDropdownItem v-for="turnIdx in maxPushTurn" :key="turnIdx" @click="pushNationCommand(-turnIdx)">
+              {{ turnIdx }}턴
             </BDropdownItem>
           </BDropdown>
           <BDropdown class="col-md-6" split text="미루기" @click="pushNationCommandSingle">
-            <BDropdownItem
-              v-for="turnIdx in maxPushTurn"
-              :key="turnIdx"
-              @click="pushNationCommand(turnIdx)"
-            >
-              {{
-                turnIdx
-              }}턴
+            <BDropdownItem v-for="turnIdx in maxPushTurn" :key="turnIdx" @click="pushNationCommand(turnIdx)">
+              {{ turnIdx }}턴
             </BDropdownItem>
           </BDropdown>
         </div>
@@ -134,28 +115,28 @@
             }"
           >
             <CommandSelectForm
-              :commandList="commandList"
               ref="commandQuickReserveForm"
-              @on-close="chooseQuickReserveCommand($event)"
-              :hideClose="false"
               v-model:activatedCategory="activatedCategory"
+              :commandList="commandList"
+              :hideClose="false"
               class="bg-dark"
-              style="position:absolute"
+              style="position: absolute"
+              @onClose="chooseQuickReserveCommand($event)"
             />
           </div>
         </div>
         <div class="commandPad chiefReservedCommand">
           <div :class="['commandTable', isEditMode ? 'editMode' : 'singleMode']">
             <DragSelect
+              v-slot="{ selected }"
               :style="rowGridStyle"
               attribute="turnIdx"
               :disabled="!isEditMode"
               @dragStart="isDragSingle = true"
               @dragDone="
-  isDragSingle = false;
-queryActionHelper.selectTurn(...$event);
+                isDragSingle = false;
+                queryActionHelper.selectTurn(...$event);
               "
-              v-slot="{ selected }"
             >
               <div
                 v-for="(turnObj, turnIdx) in reservedCommandList"
@@ -166,21 +147,22 @@ queryActionHelper.selectTurn(...$event);
                   backgroundColor: 'black',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
-                  color:
-                    isDragSingle && selected.has(`${turnIdx}`) ? 'cyan' : undefined,
+                  color: isDragSingle && selected.has(`${turnIdx}`) ? 'cyan' : undefined,
                 }"
-              >{{ turnObj.time }}</div>
+              >
+                {{ turnObj.time }}
+              </div>
             </DragSelect>
             <DragSelect
+              v-slot="{ selected }"
               :style="{ ...rowGridStyle, display: isEditMode ? 'grid' : 'none' }"
               attribute="turnIdx"
               :disabled="!isEditMode"
               @dragStart="isDragToggle = true"
               @dragDone="
-  isDragToggle = false;
-toggleTurn(...$event);
+                isDragToggle = false;
+                toggleTurn(...$event);
               "
-              v-slot="{ selected }"
             >
               <div
                 v-for="(turnObj, turnIdx) in reservedCommandList"
@@ -194,90 +176,75 @@ toggleTurn(...$event);
                     isDragToggle && selected.has(`${turnIdx}`)
                       ? 'light'
                       : selectedTurnList.has(turnIdx)
-                        ? 'info'
-                        : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
-                          ? 'success'
-                          : 'primary'
+                      ? 'info'
+                      : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
+                      ? 'success'
+                      : 'primary'
                   "
-                >{{ turnIdx + 1 }}</BButton>
+                >
+                  {{ turnIdx + 1 }}
+                </BButton>
               </div>
             </DragSelect>
             <div :style="rowGridStyle">
-              <div
-                v-for="(turnObj, turnIdx) in reservedCommandList"
-                :key="turnIdx"
-                class="turn_pad center"
-              >
-                <span
-                  class="turn_text"
-                  :style="turnObj.style"
-                  v-b-tooltip.hover
-                  :title="turnObj.tooltip"
-                  v-html="turnObj.brief"
-                ></span>
+              <div v-for="(turnObj, turnIdx) in reservedCommandList" :key="turnIdx" class="turn_pad center">
+                <span v-b-tooltip.hover class="turn_text" :style="turnObj.style" :title="turnObj.tooltip">
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span v-html="turnObj.brief" />
+                </span>
               </div>
             </div>
             <div :style="{ ...rowGridStyle, display: isEditMode ? 'none' : 'grid' }">
               <div v-for="turnIdx in range(props.maxTurn)" :key="turnIdx" class="action_pad d-grid">
                 <BButton
-                  :variant="(turnIdx % 2 == 0) ? 'secondary' : 'dark'"
+                  :variant="turnIdx % 2 == 0 ? 'secondary' : 'dark'"
                   size="sm"
                   class="simple_action_btn bi bi-pencil"
                   @click="toggleQuickReserveForm(turnIdx)"
-                ></BButton>
+                />
               </div>
             </div>
           </div>
-          <div style="position:relative">
+          <div style="position: relative">
             <CommandSelectForm
-              :commandList="commandList"
               ref="commandSelectForm"
-              @on-close="chooseCommand($event)"
               v-model:activatedCategory="activatedCategory"
+              :commandList="commandList"
               class="bg-dark"
               :style="{ position: 'absolute', bottom: '0' }"
+              @onClose="chooseCommand($event)"
             />
           </div>
 
-          <div class="row gx-0" v-if="isEditMode">
+          <div v-if="isEditMode" class="row gx-0">
             <div class="col-5 col-md-6 d-grid">
               <BDropdown left variant="info" text="선택한 턴을">
-                <BDropdownItem @click="clipboardCut">
-                  <i class="bi bi-scissors"></i>&nbsp;잘라내기
-                </BDropdownItem>
-                <BDropdownItem @click="clipboardCopy">
-                  <i class="bi bi-files"></i>&nbsp;복사하기
-                </BDropdownItem>
+                <BDropdownItem @click="clipboardCut"> <i class="bi bi-scissors" />&nbsp;잘라내기 </BDropdownItem>
+                <BDropdownItem @click="clipboardCopy"> <i class="bi bi-files" />&nbsp;복사하기 </BDropdownItem>
                 <BDropdownItem @click="clipboardPaste">
-                  <i class="bi bi-clipboard-fill"></i>&nbsp;붙여넣기
+                  <i class="bi bi-clipboard-fill" />&nbsp;붙여넣기
                 </BDropdownItem>
                 <BDropdownDivider />
                 <BDropdownItem @click="setStoredActions">
-                  <i class="bi bi-bookmark-plus-fill"></i>&nbsp;보관하기
+                  <i class="bi bi-bookmark-plus-fill" />&nbsp;보관하기
                 </BDropdownItem>
                 <BDropdownItem @click="subRepeatCommand">
-                  <i class="bi bi-arrow-repeat"></i>&nbsp;반복하기
+                  <i class="bi bi-arrow-repeat" />&nbsp;반복하기
                 </BDropdownItem>
                 <BDropdownDivider />
-                <BDropdownItem @click="eraseSelectedTurnList">
-                  <i class="bi bi-eraser"></i>&nbsp;비우기
-                </BDropdownItem>
+                <BDropdownItem @click="eraseSelectedTurnList"> <i class="bi bi-eraser" />&nbsp;비우기 </BDropdownItem>
                 <BDropdownItem @click="eraseAndPullCommand">
-                  <i class="bi bi-arrow-bar-up"></i>&nbsp;지우고 당기기
+                  <i class="bi bi-arrow-bar-up" />&nbsp;지우고 당기기
                 </BDropdownItem>
                 <BDropdownItem @click="pushEmptyCommand">
-                  <i class="bi bi-arrow-bar-down"></i>&nbsp;뒤로 밀기
+                  <i class="bi bi-arrow-bar-down" />&nbsp;뒤로 밀기
                 </BDropdownItem>
                 <!-- 최근에 실행한 10턴 -->
               </BDropdown>
             </div>
 
             <div class="col-7 col-md-6 d-grid">
-              <BButton
-                variant="light"
-                @click="toggleForm($event)"
-                :style="{ color: 'black' }"
-              >명령 선택 ▾</BButton>
+              <BButton variant="light" :style="{ color: 'black' }" @click="toggleForm($event)"> 명령 선택 ▾ </BButton>
             </div>
           </div>
         </div>
@@ -327,7 +294,6 @@ const props = defineProps({
   turnTime: VueTypes.string.isRequired,
   targetIsMe: VueTypes.bool.isRequired,
 
-
   selectedTurn: {
     type: Object as PropType<Set<number>>,
     required: false,
@@ -338,15 +304,15 @@ const props = defineProps({
     required: true,
   },
   commandList: {
-    type: Object as PropType<ChiefResponse['commandList']>,
+    type: Object as PropType<ChiefResponse["commandList"]>,
     required: true,
   },
 
   officer: {
-    type: Object as PropType<ChiefResponse['chiefList'][0]>,
+    type: Object as PropType<ChiefResponse["chiefList"][0]>,
     required: true,
-  }
-})
+  },
+});
 
 const basicModeRowHeight = 30;
 
@@ -391,8 +357,8 @@ const isDragToggle = ref(false);
 const autorun_limit = ref<number | null>(null);
 
 const emit = defineEmits<{
-  (event: 'raiseReload'): void,
-  (event: 'update:selectedTurn', value: Set<number>): void,
+  (event: "raise-reload"): void;
+  (event: "update:selectedTurn", value: Set<number>): void;
 }>();
 
 function triggerUpdateCommandList(type?: string) {
@@ -442,9 +408,8 @@ async function repeatNationCommand(amount: number) {
     alert(`실패했습니다: ${e}`);
     return;
   }
-  emit('raiseReload');
+  emit("raise-reload");
 }
-
 
 function pushNationCommandSingle(e: Event) {
   //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
@@ -470,9 +435,8 @@ async function pushNationCommand(amount: number) {
     alert(`실패했습니다: ${e}`);
     return;
   }
-  emit('raiseReload');
+  emit("raise-reload");
 }
-
 
 const queryActionHelper = new QueryActionHelper(props.maxTurn);
 const reservedCommandList = queryActionHelper.reservedCommandList;
@@ -481,15 +445,15 @@ const selectedTurnList = queryActionHelper.selectedTurnList;
 
 async function reserveCommandDirect(args: [number[], TurnObj][], reload = true): Promise<boolean> {
   const query: {
-    turnList: number[],
-    action: string,
-    arg: Args
+    turnList: number[];
+    action: string;
+    arg: Args;
   }[] = [];
   for (const [turnList, { action, arg }] of args) {
     query.push({
       turnList,
       action,
-      arg
+      arg,
     });
   }
 
@@ -503,7 +467,7 @@ async function reserveCommandDirect(args: [number[], TurnObj][], reload = true):
   }
 
   if (reload) {
-    emit('raiseReload');
+    emit("raise-reload");
   }
   return true;
 }
@@ -520,9 +484,7 @@ function updateCommandList() {
   let nextTurnTime = new Date(turnTime);
 
   const autorunLimitYearMonth = autorun_limit.value ?? yearMonth - 1;
-  const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(
-    autorunLimitYearMonth
-  );
+  const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(autorunLimitYearMonth);
 
   for (const obj of props.turn) {
     const [year, month] = parseYearMonth(yearMonth);
@@ -537,9 +499,7 @@ function updateCommandList() {
       }
       style.color = "#aaffff";
 
-      tooltip.push(
-        `자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`
-      );
+      tooltip.push(`자율 행동 기간: ${autorunLimitYear}년 ${autorunLimitMonth}월까지`);
     }
 
     if (mb_strwidth(brief) > 22) {
@@ -550,10 +510,7 @@ function updateCommandList() {
       ...obj,
       year,
       month,
-      time: formatTime(
-        nextTurnTime,
-        props.turnTerm >= 5 ? "HH:mm" : "mm:ss"
-      ),
+      time: formatTime(nextTurnTime, props.turnTerm >= 5 ? "HH:mm" : "mm:ss"),
       tooltip: tooltip.length == 0 ? undefined : tooltip.join("\n"),
       style,
     });
@@ -590,7 +547,7 @@ async function reserveCommand() {
     storedActionsHelper.pushRecentActions({
       action: commandName,
       brief: result.brief,
-      arg: {}
+      arg: {},
     });
 
     queryActionHelper.releaseSelectedTurnList();
@@ -599,7 +556,7 @@ async function reserveCommand() {
     alert(`실패했습니다: ${e}`);
     return;
   }
-  emit("raiseReload");
+  emit("raise-reload");
 }
 
 function chooseCommand(val?: string) {
@@ -610,20 +567,16 @@ function chooseCommand(val?: string) {
   void reserveCommand();
 }
 
-const emptyTurnObj: TurnObj = { action: '휴식', brief: '휴식', arg: {} };
+const emptyTurnObj: TurnObj = { action: "휴식", brief: "휴식", arg: {} };
 
-
-const storedActionsHelper = inject('storedNationActionsHelper') as StoredActionsHelper;
+const storedActionsHelper = inject("storedNationActionsHelper") as StoredActionsHelper;
 
 const recentActions = storedActionsHelper.recentActions;
 const storedActions = storedActionsHelper.storedActions;
 const activatedCategory = storedActionsHelper.activatedCategory;
 
 async function eraseSelectedTurnList(releaseSelect = true): Promise<boolean> {
-  const result = await reserveCommandDirect([[
-    queryActionHelper.getSelectedTurnList(),
-    emptyTurnObj
-  ]]);
+  const result = await reserveCommandDirect([[queryActionHelper.getSelectedTurnList(), emptyTurnObj]]);
   if (releaseSelect) {
     queryActionHelper.releaseSelectedTurnList();
   }
@@ -669,7 +622,10 @@ async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
   const queryLength = selectedMaxTurnIdx - selectedMinTurnIdx + 1;
 
   const rawActions = queryActionHelper.extractQueryActions();
-  const actions = queryActionHelper.amplifyQueryActions(rawActions, range(selectedMinTurnIdx, props.maxTurn, queryLength));
+  const actions = queryActionHelper.amplifyQueryActions(
+    rawActions,
+    range(selectedMinTurnIdx, props.maxTurn, queryLength)
+  );
 
   const result = await reserveCommandDirect(actions);
   if (releaseSelect) {
@@ -677,7 +633,6 @@ async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
   }
   return result;
 }
-
 
 async function eraseAndPullCommand(releaseSelect = true): Promise<boolean> {
   const reqTurnList = queryActionHelper.getSelectedTurnList();
@@ -696,7 +651,6 @@ async function eraseAndPullCommand(releaseSelect = true): Promise<boolean> {
 
   const actions: [number[], TurnObj][] = [];
 
-
   const emptyTurnList: number[] = [];
 
   for (const srcTurnIdx of range(selectedMinTurnIdx + queryLength, props.maxTurn)) {
@@ -705,11 +659,14 @@ async function eraseAndPullCommand(releaseSelect = true): Promise<boolean> {
       emptyTurnList.push(srcTurnIdx - queryLength);
       continue;
     }
-    actions.push([[srcTurnIdx - queryLength], {
-      action: rawAction.action,
-      arg: rawAction.arg,
-      brief: rawAction.brief
-    }]);
+    actions.push([
+      [srcTurnIdx - queryLength],
+      {
+        action: rawAction.action,
+        arg: rawAction.arg,
+        brief: rawAction.brief,
+      },
+    ]);
   }
 
   emptyTurnList.push(...range(props.maxTurn - queryLength, props.maxTurn));
@@ -739,7 +696,6 @@ async function pushEmptyCommand(releaseSelect = true): Promise<boolean> {
 
   const actions: [number[], TurnObj][] = [];
 
-
   const emptyTurnList: number[] = [];
 
   for (const srcTurnIdx of range(selectedMinTurnIdx, props.maxTurn - queryLength)) {
@@ -748,11 +704,14 @@ async function pushEmptyCommand(releaseSelect = true): Promise<boolean> {
       emptyTurnList.push(srcTurnIdx + queryLength);
       continue;
     }
-    actions.push([[srcTurnIdx + queryLength], {
-      action: rawAction.action,
-      arg: rawAction.arg,
-      brief: rawAction.brief
-    }]);
+    actions.push([
+      [srcTurnIdx + queryLength],
+      {
+        action: rawAction.action,
+        arg: rawAction.arg,
+        brief: rawAction.brief,
+      },
+    ]);
   }
 
   emptyTurnList.push(...range(selectedMinTurnIdx, selectedMinTurnIdx + queryLength));
@@ -769,7 +728,7 @@ function setStoredActions() {
   const actions = queryActionHelper.extractQueryActions();
   const turnBrief = new Map<number, string>();
   for (const [subTurnList, action] of actions) {
-    const actionName = action.action.split('_');
+    const actionName = action.action.split("_");
     const actionShortName = actionName.length == 1 ? actionName[0] : actionName[1];
     for (const turnIdx of subTurnList) {
       turnBrief.set(turnIdx, actionShortName[0]);
@@ -779,10 +738,10 @@ function setStoredActions() {
   const turnBriefStr = Array.from(turnBrief.entries())
     .sort(([turnA], [turnB]) => turnA - turnB)
     .map(([, action]) => action)
-    .join('');
+    .join("");
 
-  const nickName = trim(prompt('선택한 턴들의 별명을 지어주세요', turnBriefStr) ?? '');
-  if (nickName == '') {
+  const nickName = trim(prompt("선택한 턴들의 별명을 지어주세요", turnBriefStr) ?? "");
+  if (nickName == "") {
     return;
   }
 
@@ -791,12 +750,12 @@ function setStoredActions() {
 }
 
 function deleteStoredActions(actionKey: string) {
-  storedActionsHelper.deleteStoredActions(actionKey)
+  storedActionsHelper.deleteStoredActions(actionKey);
 }
 
 async function useStoredAction(rawActions: [number[], TurnObj][]) {
   const reqTurnList = queryActionHelper.getSelectedTurnList();
-  const actions = queryActionHelper.amplifyQueryActions(rawActions, reqTurnList)
+  const actions = queryActionHelper.amplifyQueryActions(rawActions, reqTurnList);
   const result = await reserveCommandDirect(actions);
   queryActionHelper.releaseSelectedTurnList();
   return result;
@@ -818,39 +777,57 @@ defineExpose({
   clipboardPaste,
   getQueryActionHelper,
   getStoredActionHeler,
-})
+});
 
-watch(() => props.date, () => {
-  triggerUpdateCommandList("date");
-})
-watch(() => props.year, () => {
-  triggerUpdateCommandList("year");
-})
-watch(() => props.month, () => {
-  triggerUpdateCommandList("month");
-})
-watch(() => props.turnTime, () => {
-  triggerUpdateCommandList("turnTime");
-})
-watch(() => props.commandList, () => {
-  triggerUpdateCommandList("commandList");
-})
-watch(() => props.selectedTurn, (val: Set<number>) => {
-  console.log(val);
-  if (val === selectedTurnList.value) {
-    console.log("pass!");
-    return;
+watch(
+  () => props.date,
+  () => {
+    triggerUpdateCommandList("date");
   }
-  selectedTurnList.value.clear();
-  for (const t of val.values()) {
-    selectedTurnList.value.add(t);
+);
+watch(
+  () => props.year,
+  () => {
+    triggerUpdateCommandList("year");
   }
-})
+);
+watch(
+  () => props.month,
+  () => {
+    triggerUpdateCommandList("month");
+  }
+);
+watch(
+  () => props.turnTime,
+  () => {
+    triggerUpdateCommandList("turnTime");
+  }
+);
+watch(
+  () => props.commandList,
+  () => {
+    triggerUpdateCommandList("commandList");
+  }
+);
+watch(
+  () => props.selectedTurn,
+  (val: Set<number>) => {
+    console.log(val);
+    if (val === selectedTurnList.value) {
+      console.log("pass!");
+      return;
+    }
+    selectedTurnList.value.clear();
+    for (const t of val.values()) {
+      selectedTurnList.value.add(t);
+    }
+  }
+);
 
 watch(selectedTurnList, () => {
   console.log(selectedTurnList.value);
   emit("update:selectedTurn", selectedTurnList.value);
-})
+});
 
 const commandQuickReserveForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
 const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
@@ -876,12 +853,11 @@ function toggleQuickReserveForm(turnIdx: number) {
 }
 
 const isEditMode = storedActionsHelper.isEditMode;
-watch(isEditMode, newEditMode => {
+watch(isEditMode, (newEditMode) => {
   if (newEditMode) {
     commandQuickReserveForm.value?.close();
     currentQuickReserveTarget.value = -1;
-  }
-  else {
+  } else {
     commandSelectForm.value?.close();
   }
 });
@@ -897,8 +873,7 @@ function toggleForm($event: Event): void {
 
 onMounted(() => {
   updateCommandList();
-})
-
+});
 </script>
 <style lang="scss">
 @import "@scss/common/break_500px.scss";

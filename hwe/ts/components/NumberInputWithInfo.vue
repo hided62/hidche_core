@@ -1,32 +1,32 @@
 <template>
   <div class="row form-group number-input-with-info">
-    <label v-if="!right" class="col-6 col-form-label ">{{ title }}</label>
+    <label v-if="!right" class="col-6 col-form-label">{{ title }}</label>
     <div class="col-6">
       <input
         ref="input"
+        v-model="rawValue"
         type="number"
         :step="step ?? undefined"
-        v-model="rawValue"
         class="form-control f_tnum"
         :min="min ?? undefined"
         :max="max ?? undefined"
+        :style="{ display: editmode ? undefined : 'none' }"
         @blur="onBlurNumber"
         @input="updateValue"
-        :style="{ display: editmode ? undefined : 'none' }"
       />
       <input
         type="text"
         class="form-control f_tnum"
         :readonly="readonly"
         :value="printValue"
-        @focus="onFocusText"
         :style="{ display: !editmode ? undefined : 'none' }"
+        @focus="onFocusText"
       />
     </div>
     <label v-if="right" class="col-6 col-form-label">{{ title }}</label>
   </div>
   <div style="text-align: right">
-    <small class="form-text text-muted"><slot></slot></small>
+    <small class="form-text text-muted"><slot /></small>
   </div>
 </template>
 <script lang="ts">
@@ -56,10 +56,12 @@ export default defineComponent({
     },
     max: {
       type: Number,
+      default: undefined,
       required: false,
     },
     step: {
       type: Number,
+      default: undefined,
       required: false,
     },
     modelValue: {
@@ -70,7 +72,7 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
   emits: ["update:modelValue"],
   data() {
@@ -80,15 +82,15 @@ export default defineComponent({
       printValue: this.modelValue.toLocaleString(),
     };
   },
-  watch:{
-    modelValue: function(newVal:number){
+  watch: {
+    modelValue: function (newVal: number) {
       this.rawValue = newVal;
       this.printValue = newVal.toLocaleString();
-    }
+    },
   },
   methods: {
     updateValue() {
-      if(this.readonly){
+      if (this.readonly) {
         return;
       }
       if (this.int) {
@@ -102,7 +104,7 @@ export default defineComponent({
       this.printValue = this.rawValue.toLocaleString();
     },
     onFocusText() {
-      if(this.readonly){
+      if (this.readonly) {
         return;
       }
       this.editmode = true;

@@ -250,7 +250,7 @@ class ResetHelper{
             'month'=> $month,
             'init_year'=> $year,
             'init_month'=>$month,
-            'map_theme' => $scenarioObj->getMapTheme(),
+            'map_theme' => $scenarioObj->getMapTheme(), //@deprecated
             'season'=>$seasonIdx,
             'msg'=>'공지사항',//TODO:공지사항
             'maxgeneral'=>GameConst::$defaultMaxGeneral,

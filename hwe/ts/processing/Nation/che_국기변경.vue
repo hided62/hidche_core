@@ -1,5 +1,8 @@
 <template>
-  <TopBackBar :title="commandName" type="chief" />
+  <TopBackBar
+    :title="commandName"
+    type="chief"
+  />
   <div class="bg0">
     <div>
       국기를 변경합니다. 단 1회 가능합니다.<br>
@@ -7,14 +10,22 @@
     <div class="row">
       <div class="col-6 col-md-3">
         색상 :
-        <ColorSelect :colors="colors" v-model="selectedColorID" />
+        <ColorSelect
+          v-model="selectedColorID"
+          :colors="colors"
+        />
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button @click="submit">{{ commandName }}</b-button>
+        <b-button @click="submit">
+          {{ commandName }}
+        </b-button>
       </div>
     </div>
   </div>
-  <BottomBar :title="commandName" type="chief" />
+  <BottomBar
+    :title="commandName"
+    type="chief"
+  />
 </template>
 
 <script lang="ts">

@@ -228,7 +228,6 @@ class che_첩보 extends Command\GeneralCommand
     public function exportJSVars(): array
     {
         return [
-            'mapTheme' => \sammo\getMapTheme(),
             'procRes' => [
                 'cities' => \sammo\JSOptionsForCities(),
                 'distanceList' => \sammo\JSCitiesBasedOnDistance($this->generalObj->getCityID(), 3),

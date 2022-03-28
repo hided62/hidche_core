@@ -1,21 +1,18 @@
 <template>
-  <div
-    :id="uuid"
-    :class="['world_map', `map_theme_${mapTheme}`, 'draw_required']"
-  >
+  <div :id="uuid" :class="['world_map', `map_theme_${mapName}`, 'draw_required']">
     <div
       class="map_title obj_tooltip"
       data-bs-toggle="tooltip"
       data-bs-placement="top"
       data-tooltip-class="map_title_tooltiptext"
     >
-      <span class="map_title_text"> </span>
-      <span class="tooltiptext"></span>
+      <span class="map_title_text" />
+      <span class="tooltiptext" />
     </div>
     <div class="map_body">
-      <div class="map_bglayer1"></div>
-      <div class="map_bglayer2"></div>
-      <div class="map_bgroad"></div>
+      <div class="map_bglayer1" />
+      <div class="map_bglayer2" />
+      <div class="map_bgroad" />
       <div class="map_button_stack">
         <button
           type="button"
@@ -38,8 +35,8 @@
       </div>
     </div>
     <div class="city_tooltip">
-      <div class="city_name"></div>
-      <div class="nation_name"></div>
+      <div class="city_name" />
+      <div class="nation_name" />
     </div>
   </div>
 </template>
@@ -51,7 +48,7 @@ import { v4 as uuidv4 } from "uuid";
 export type { MapCityParsed };
 export default defineComponent({
   props: {
-    mapTheme: {
+    mapName: {
       type: String,
       required: true,
     },
@@ -59,6 +56,7 @@ export default defineComponent({
     clickableAll: { type: Boolean, default: undefined, required: false },
     selectCallback: {
       type: Function as PropType<loadMapOption["selectCallback"]>,
+      default: undefined,
       required: false,
     },
     hrefTemplate: { type: String, default: undefined, required: false },
@@ -88,6 +86,7 @@ export default defineComponent({
 
     modelValue: {
       type: Object as PropType<MapCityParsed>,
+      default: undefined,
       required: false,
     },
   },

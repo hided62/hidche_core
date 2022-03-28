@@ -16,7 +16,7 @@
     :maxHeight="400"
     :searchable="false"
   >
-    <template v-slot:option="props">
+    <template #option="props">
       <div
         :class="`sam-color-${props.option.title.slice(1)}`"
         :style="{
@@ -33,27 +33,29 @@
         </div>
       </div>
     </template>
-    <template v-slot:singleLabel="props">
+    <template #singleLabel="props">
       <div
         :class="`sam-color-${props.option.title.slice(1)}`"
         :style="{
           margin: '-0.25rem -0.75rem',
         }"
-        ><div
+      >
+        <div
           class="sam-nation-own-bgcolor"
           :style="{
             padding: '0.30rem 0.75rem',
             borderRadius: '0.25rem',
           }"
-          >{{ props.option.title }}</div
-        ></div
-      >
+        >
+          {{ props.option.title }}
+        </div>
+      </div>
     </template>
   </v-multiselect>
 </template>
 <script lang="ts">
 import { unwrap } from "@/util/unwrap";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, type PropType } from "vue";
 
 type SelectedColor = {
   value: number;
@@ -72,15 +74,6 @@ export default defineComponent({
     },
   },
   emits: ["update:modelValue"],
-  watch: {
-    modelValue(val: number) {
-      const target = unwrap(this.targets.get(val));
-      this.selectedColor = target;
-    },
-    selectedColor(val: SelectedColor) {
-      this.$emit("update:modelValue", val.value);
-    },
-  },
   data() {
     const forFind = [];
     const targets = new Map<number, SelectedColor>();
@@ -100,6 +93,15 @@ export default defineComponent({
       forFind,
       targets,
     };
+  },
+  watch: {
+    modelValue(val: number) {
+      const target = unwrap(this.targets.get(val));
+      this.selectedColor = target;
+    },
+    selectedColor(val: SelectedColor) {
+      this.$emit("update:modelValue", val.value);
+    },
   },
 });
 </script>

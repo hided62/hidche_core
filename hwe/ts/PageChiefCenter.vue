@@ -2,26 +2,14 @@
   <div id="container" class="pageChiefCenter">
     <TopBackBar title="사령부" reloadable @reload="reloadTable" />
 
-    <div
-      id="mainTable"
-      v-if="chiefList !== undefined"
-      :class="`${targetIsMe ? 'targetIsMe' : 'targetIsNotMe'}`"
-    >
+    <div v-if="chiefList !== undefined" id="mainTable" :class="`${targetIsMe ? 'targetIsMe' : 'targetIsNotMe'}`">
       <template v-for="(chiefLevel, vidx) in [12, 10, 8, 6, 11, 9, 7, 5]" :key="chiefLevel">
-        <div
-          v-if="vidx % 4 == 0"
-          :class="[
-            'turnIdx',
-            vidx == 0 && !targetIsMe ? undefined : 'only1000px',
-          ]"
-        >
+        <div v-if="vidx % 4 == 0" :class="['turnIdx', vidx == 0 && !targetIsMe ? undefined : 'only1000px']">
           <div :class="['subRows', 'bg0']" :style="mainTableGridRows">
             <div class="bg1">&nbsp;</div>
-            <div
-              v-for="idx in maxChiefTurn"
-              :class="[`turnIdxLeft`, 'align-self-center', 'center']"
-              :key="idx"
-            >{{ idx }}</div>
+            <div v-for="idx in maxChiefTurn" :key="idx" :class="[`turnIdxLeft`, 'align-self-center', 'center']">
+              {{ idx }}
+            </div>
           </div>
         </div>
         <div
@@ -49,35 +37,29 @@
             :maxTurn="maxChiefTurn"
             :maxPushTurn="Math.floor(maxChiefTurn / 2)"
             :date="date"
-            @raiseReload="reloadTable()"
             :officer="officer"
+            @raiseReload="reloadTable()"
           />
         </div>
-        <div
-          v-if="vidx % 4 == 3"
-          :class="[
-            'turnIdx',
-            vidx == 7 && !targetIsMe ? undefined : 'only1000px',
-          ]"
-        >
+        <div v-if="vidx % 4 == 3" :class="['turnIdx', vidx == 7 && !targetIsMe ? undefined : 'only1000px']">
           <div :class="['subRows', 'bg0']" :style="mainTableGridRows">
             <div class="bg1">&nbsp;</div>
-            <div
-              v-for="idx in maxChiefTurn"
-              :class="[`turnIdxRight`, 'align-self-center', 'center']"
-              :key="idx"
-            >{{ idx }}</div>
+            <div v-for="idx in maxChiefTurn" :key="idx" :class="[`turnIdxRight`, 'align-self-center', 'center']">
+              {{ idx }}
+            </div>
           </div>
         </div>
       </template>
     </div>
   </div>
-  <div id="bottomChiefBox" v-if="chiefList">
+  <div v-if="chiefList" id="bottomChiefBox">
     <div id="bottomChiefList" class="c-bg2">
       <template v-for="(chiefLevel, vidx) in [12, 10, 8, 6, 11, 9, 7, 5]" :key="chiefLevel">
-        <div class="turnIdx subRows bg0" :style="subTableGridRows" v-if="vidx % 4 == 0">
-          <div class="bg1" style="grid-row: 1/3"></div>
-          <div v-for="idx in maxChiefTurn" :class="[`turnIdxLeft`]" :key="idx">{{ idx }}</div>
+        <div v-if="vidx % 4 == 0" class="turnIdx subRows bg0" :style="subTableGridRows">
+          <div class="bg1" style="grid-row: 1/3" />
+          <div v-for="idx in maxChiefTurn" :key="idx" :class="[`turnIdxLeft`]">
+            {{ idx }}
+          </div>
         </div>
         <BottomItem
           :chiefLevel="chiefLevel"
@@ -86,9 +68,11 @@
           :isMe="chiefLevel == officerLevel"
           @click="viewTarget = chiefLevel"
         />
-        <div class="turnIdx subRows bg0" :style="subTableGridRows" v-if="vidx % 4 == 3">
-          <div class="bg1" style="grid-row: 1/3"></div>
-          <div v-for="idx in maxChiefTurn" :class="`turnIdxRight`" :key="idx">{{ idx }}</div>
+        <div v-if="vidx % 4 == 3" class="turnIdx subRows bg0" :style="subTableGridRows">
+          <div class="bg1" style="grid-row: 1/3" />
+          <div v-for="idx in maxChiefTurn" :key="idx" :class="`turnIdxRight`">
+            {{ idx }}
+          </div>
         </div>
       </template>
     </div>
@@ -99,10 +83,10 @@
 </template>
 <script lang="ts">
 declare const staticValues: {
-  serverNick: string,
-  mapName: string,
-  unitSet: string,
-}
+  serverNick: string;
+  mapName: string;
+  unitSet: string;
+};
 </script>
 <script lang="ts" setup>
 import "@scss/common/bootstrap5.scss";
@@ -125,7 +109,7 @@ import { StoredActionsHelper } from "./util/StoredActionsHelper";
 
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
-})
+});
 
 const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
   lastExecute: undefined,
@@ -142,15 +126,7 @@ const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
   unitSet: undefined,
 });
 
-const {
-  year,
-  month,
-  turnTerm,
-  date,
-  chiefList,
-  officerLevel,
-  commandList,
-} = toRefs(tableObj);
+const { year, month, turnTerm, date, chiefList, officerLevel, commandList } = toRefs(tableObj);
 
 const viewTarget = ref<number | undefined>();
 
@@ -169,8 +145,7 @@ watch(viewTarget, (val) => {
 
 async function reloadTable(): Promise<void> {
   try {
-    const response =
-      await SammoAPI.NationCommand.GetReservedCommand<ChiefResponse>();
+    const response = await SammoAPI.NationCommand.GetReservedCommand<ChiefResponse>();
     console.log(response);
     for (const [key, value] of entriesWithType(response)) {
       if (key === "result") {
@@ -220,9 +195,13 @@ const subTableGridRows = computed(() => {
 
 void reloadTable();
 
-const storedActionsHelper = new StoredActionsHelper(staticValues.serverNick, 'nation', staticValues.mapName, staticValues.unitSet);
-provide('storedNationActionsHelper', storedActionsHelper);
-
+const storedActionsHelper = new StoredActionsHelper(
+  staticValues.serverNick,
+  "nation",
+  staticValues.mapName,
+  staticValues.unitSet
+);
+provide("storedNationActionsHelper", storedActionsHelper);
 </script>
 <style lang="scss">
 @import "@scss/chiefCenter.scss";

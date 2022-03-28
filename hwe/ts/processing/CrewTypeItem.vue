@@ -8,21 +8,15 @@
         backgroundSize: '64px',
         outline: 'solid 1px gray',
       }"
-    ></div>
+    />
     <div
       :style="{
-        backgroundColor: crewType.notAvailable
-          ? 'red'
-          : crewType.reqTech == 0
-          ? 'green'
-          : 'limegreen',
+        backgroundColor: crewType.notAvailable ? 'red' : crewType.reqTech == 0 ? 'green' : 'limegreen',
         height: '100%',
       }"
       class="d-grid crewTypeName"
     >
-      <div style="margin: auto">
-        {{ crewType.name }}
-      </div>
+      <div style="margin: auto">{{ crewType.name }}</div>
     </div>
     <div>{{ crewType.attack }}</div>
     <div>{{ crewType.defence }}</div>
@@ -31,37 +25,25 @@
     <div>{{ crewType.baseCost.toFixed(1) }}</div>
     <div>{{ crewType.baseRice.toFixed(1) }}</div>
     <div class="crewTypePanel">
-      <b-button-group
-        ><b-button class="py-1" variant="dark" @click="beHalf">절반</b-button
-        ><b-button class="py-1" variant="dark" @click="beFilled"
-          >채우기</b-button
-        ><b-button class="py-1" variant="dark" @click="beFull"
-          >가득</b-button
-        ></b-button-group
-      >
+      <b-button-group>
+        <b-button class="py-1" variant="dark" @click="beHalf">절반</b-button>
+        <b-button class="py-1" variant="dark" @click="beFilled">채우기</b-button>
+        <b-button class="py-1" variant="dark" @click="beFull">가득</b-button>
+      </b-button-group>
       <div class="row">
         <div class="col mx-2">
           <div class="input-group my-0">
             <span class="input-group-text py-1">병력</span>
-            <input
-              type="number"
-              class="form-control py-1 f_tnum px-0 text-end"
-              v-model="amount"
-              min="1"
-            />
+            <input v-model="amount" type="number" class="form-control py-1 f_tnum px-0 text-end" min="1" />
             <span class="input-group-text py-1 f_tnum">00명</span>
             <span
               class="input-group-text py-1 f_tnum"
-              style="
-                text-align: right;
-                min-width: 10ch;
-                color: #303030;
-                background-color: #ddd;
-              "
-              ><div style="margin-left: auto">
-                {{ Math.ceil(amount * crewType.baseCost * goldCoeff).toLocaleString() }}금
-              </div></span
+              style="text-align: right; min-width: 10ch; color: #303030; background-color: #ddd"
             >
+              <div style="margin-left: auto">
+                {{ Math.ceil(amount * crewType.baseCost * goldCoeff).toLocaleString() }}금
+              </div>
+            </span>
           </div>
         </div>
       </div>
@@ -69,10 +51,9 @@
     <div class="crewTypeBtn d-grid">
       <b-button variant="primary" @click="doSubmit">{{ commandName }}</b-button>
     </div>
-    <div
-      class="crewTypeInfo text-start"
-      v-html="crewType.info.join('<br>')"
-    ></div>
+
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div class="crewTypeInfo text-start" v-html="crewType.info.join('<br>')" />
   </div>
 </template>
 <script lang="ts">
@@ -89,11 +70,6 @@ export default defineComponent({
     goldCoeff: VueTypes.number.isRequired,
   },
   emits: ["submitOutput", "update:amount"],
-  watch: {
-    amount(val: number) {
-      this.$emit("update:amount", val);
-    },
-  },
   setup(props, { emit }) {
     const amount = ref(0);
 
@@ -103,10 +79,7 @@ export default defineComponent({
 
     function beFilled() {
       if (props.crewType.id == props.currentCrewType) {
-        amount.value = Math.max(
-          1,
-          props.leadership - Math.floor(props.crew / 100)
-        );
+        amount.value = Math.max(1, props.leadership - Math.floor(props.crew / 100));
       } else {
         amount.value = props.leadership;
       }
@@ -129,6 +102,11 @@ export default defineComponent({
       beFull,
       doSubmit,
     };
+  },
+  watch: {
+    amount(val: number) {
+      this.$emit("update:amount", val);
+    },
   },
 });
 </script>
