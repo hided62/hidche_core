@@ -22,7 +22,7 @@ abstract class BaseAPI
     /** @return null|string|array */
     abstract function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag);
 
-    public function tryCache():?string{
+    public function tryCache():?APICacheResult{
         return null;
     }
 }

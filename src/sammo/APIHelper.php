@@ -82,8 +82,8 @@ class APIHelper
 
             $cacheResult = $obj->tryCache();
             if ($cacheResult !== null) {
-                /** @var \DateTimeInterface $lastModified  */
-                [$lastModified, $etag] = $cacheResult;
+                $lastModified = $cacheResult->lastModified;
+                $etag = $cacheResult->etag;
 
                 if ($lastModified !== null) {
                     header("Last-Modified: " . gmdate("D, d M Y H:i:s", Util::toInt(TimeUtil::DateTimeToSeconds($lastModified, true))) . " GMT");
