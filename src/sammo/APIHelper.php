@@ -98,12 +98,14 @@ class APIHelper
                     header('cache-control: private, max-age=86400');
                     header("Pragma: cache");
                     header("HTTP/1.1 304 Not Modified", true, 304);
+                    header_remove('expires');
                     die();
                 }
                 if ($reqEtags !== null && $reqEtags === $etag) {
                     header('cache-control: private, max-age=86400');
                     header("Pragma: cache");
                     header("HTTP/1.1 304 Not Modified", true, 304);
+                    header_remove('expires');
                     die();
                 }
             }
@@ -112,6 +114,7 @@ class APIHelper
                 if ($setCache) {
                     header('cache-control: private, max-age=86400');
                     header("Pragma: cache");
+                    header_remove('expires');
                 }
                 Json::die([
                     'result' => true,
@@ -121,6 +124,7 @@ class APIHelper
             if ($setCache) {
                 header('cache-control: private, max-age=86400');
                 header("Pragma: cache");
+                header_remove('expires');
             }
             Json::die($result, $setCache ? 0 : Json::NO_CACHE);
         } catch (\Throwable $e) {
