@@ -95,14 +95,14 @@ class APIHelper
                 }
 
                 if ($modifiedSince !== null && $lastModified !== null && TimeUtil::DateIntervalToSeconds($modifiedSince->diff($lastModified)) == 0) {
-                    header('cache-control: private, max-age=86400');
+                    header('cache-control: private, max-age=60');
                     header("Pragma: cache");
                     header("HTTP/1.1 304 Not Modified", true, 304);
                     header_remove('expires');
                     die();
                 }
                 if ($reqEtags !== null && $reqEtags === $etag) {
-                    header('cache-control: private, max-age=86400');
+                    header('cache-control: private, max-age=60');
                     header("Pragma: cache");
                     header("HTTP/1.1 304 Not Modified", true, 304);
                     header_remove('expires');
@@ -112,7 +112,7 @@ class APIHelper
 
             if ($result === null) {
                 if ($setCache) {
-                    header('cache-control: private, max-age=86400');
+                    header('cache-control: private, max-age=60');
                     header("Pragma: cache");
                     header_remove('expires');
                 }
@@ -122,7 +122,7 @@ class APIHelper
                 ], $setCache ? 0 : Json::NO_CACHE);
             }
             if ($setCache) {
-                header('cache-control: private, max-age=86400');
+                header('cache-control: private, max-age=60');
                 header("Pragma: cache");
                 header_remove('expires');
             }
