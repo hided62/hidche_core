@@ -19,17 +19,16 @@ class APIHelper
             Json::dieWithReason($e->getMessage());
         }
 
-        if($actionPath !== null){
+        if ($actionPath !== null) {
             if ($input && !is_array($input)) {
                 Json::dieWithReason('args가 array가 아닙니다.' . gettype($input));
             }
-            if(!$input){
+            if (!$input) {
                 $input = [];
             }
             $actionArgs = $input;
-        }
-        else{
-            if(!$input){
+        } else {
+            if (!$input) {
                 Json::dieWithReason("input이 비어있습니다. {$rawInput}");
             }
 
@@ -55,7 +54,7 @@ class APIHelper
 
             $sessionMode = $obj->getRequiredSessionMode();
             if ($sessionMode === BaseAPI::NO_SESSION) {
-                $session = Session::getInstance();//XXX: NoSession이면 진짜 NoSession이어야..?
+                $session = Session::getInstance(); //XXX: NoSession이면 진짜 NoSession이어야..?
             } else {
                 if ($sessionMode & BaseAPI::REQ_GAME_LOGIN) {
                     $session = Session::requireGameLogin();
@@ -81,34 +80,49 @@ class APIHelper
             }
 
             $cacheResult = $obj->tryCache();
+            $setCache = false;
             if ($cacheResult !== null) {
                 $lastModified = $cacheResult->lastModified;
                 $etag = $cacheResult->etag;
 
                 if ($lastModified !== null) {
                     header("Last-Modified: " . gmdate("D, d M Y H:i:s", Util::toInt(TimeUtil::DateTimeToSeconds($lastModified, true))) . " GMT");
+                    $setCache = true;
                 }
                 if ($etag !== null) {
                     header("Etag: $etag");
+                    $setCache = true;
                 }
 
                 if ($modifiedSince !== null && $lastModified !== null && TimeUtil::DateIntervalToSeconds($modifiedSince->diff($lastModified)) == 0) {
-                    header("HTTP/1.1 304 Not Modified");
+                    header('cache-control: private, max-age=86400');
+                    header("Pragma: cache");
+                    header("HTTP/1.1 304 Not Modified", true, 304);
                     die();
                 }
                 if ($reqEtags !== null && $reqEtags === $etag) {
-                    header("HTTP/1.1 304 Not Modified");
+                    header('cache-control: private, max-age=86400');
+                    header("Pragma: cache");
+                    header("HTTP/1.1 304 Not Modified", true, 304);
                     die();
                 }
             }
 
             if ($result === null) {
+                if ($setCache) {
+                    header('cache-control: private, max-age=86400');
+                    header("Pragma: cache");
+                }
                 Json::die([
                     'result' => true,
                     'reason' => 'success'
-                ], $cacheResult === null ? Json::NO_CACHE : 0);
+                ], $setCache ? 0 : Json::NO_CACHE);
             }
-            Json::die($result, $cacheResult === null ? Json::NO_CACHE : 0);
+            if ($setCache) {
+                header('cache-control: private, max-age=86400');
+                header("Pragma: cache");
+            }
+            Json::die($result, $setCache ? 0 : Json::NO_CACHE);
         } catch (\Throwable $e) {
             Json::dieWithReason($e->getMessage());
         } catch (mixed $e) {
