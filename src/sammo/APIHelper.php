@@ -21,41 +21,33 @@ class APIHelper
         die();
     }
 
-    public static function launch(string $rootPath, ?string $actionPath = null)
+    public static function launch(string $rootPath, string $actionPath, array $eParams = [], bool $loadRawInput = true)
     {
-        //TODO: path를 php://input에서 받는게 아니라 api.php?~~~~~ 로 받아오는것이 etag 캐시 측면에서 훨씬 나을 듯!
-        try {
-            $rawInput = file_get_contents('php://input');
-            $input = Json::decode($rawInput);
-        } catch (\Exception $e) {
-            Json::dieWithReason($e->getMessage());
+        if($loadRawInput){
+            try {
+                $rawInput = file_get_contents('php://input');
+                $input = Json::decode($rawInput);
+            } catch (\Exception $e) {
+                Json::dieWithReason($e->getMessage());
+                $input = null;
+            }
+        }
+        else{
+            $input = null;
         }
 
-        if ($actionPath !== null) {
-            if ($input && !is_array($input)) {
-                Json::dieWithReason('args가 array가 아닙니다.' . gettype($input));
-            }
-            if (!$input) {
-                $input = [];
-            }
-            $actionArgs = $input;
-        } else {
-            if (!$input) {
-                Json::dieWithReason("input이 비어있습니다. {$rawInput}");
-            }
-
-            if (!key_exists('path', $input)) {
-                Json::dieWithReason('path가 지정되지 않았습니다.');
-            }
-            $actionPath = $input['path'];
-
-            if (key_exists('args', $input) && !is_array($input['args'])) {
-                Json::dieWithReason('args가 array가 아닙니다.' . gettype($input['args']));
-            }
-            $actionArgs = $input['args'] ?? null;
+        if(!$actionPath){
+            Json::dieWithReason('path가 지정되지 않았습니다.');
+        }
+        if ($input && !is_array($input)) {
+            Json::dieWithReason('args가 array가 아닙니다.' . gettype($input));
+        }
+        if (!$input) {
+            $input = [];
         }
 
-
+        //NOTE: array_merge([], {})의 상황이 가능함.
+        $actionArgs = array_merge($input, $eParams);
 
         try {
             $obj = buildAPIExecutorClass($actionPath, $rootPath, $actionArgs);

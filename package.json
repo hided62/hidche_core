@@ -76,6 +76,7 @@
     "file-loader": "^6.2.0",
     "jquery": "^3.6.0",
     "js-sha512": "^0.8.0",
+    "ky": "^0.30.0",
     "linkifyjs": "^3.0",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.0",

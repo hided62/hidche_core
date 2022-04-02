@@ -129,21 +129,13 @@
 </template>
 
 <script setup lang="ts">
-import type { BettingInfo, ToastType } from "@/defs";
-import { SammoAPI, type ValidResponse } from "@/SammoAPI";
+import type { BettingDetailResponse, BettingInfo, ToastType } from "@/defs";
+import { SammoAPI } from "@/SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { isString, range, sum } from "lodash";
 import { ref, type PropType, watch } from "vue";
 
-type BettingDetailResponse = ValidResponse & {
-  bettingInfo: BettingInfo;
-  bettingDetail: [string, number][];
-  myBetting: [string, number][];
-  remainPoint: number;
-  year: number;
-  month: number;
-};
 
 const props = defineProps({
   bettingID: {
@@ -287,9 +279,7 @@ function calcReward() {
 
 async function loadBetting(bettingID: number) {
   try {
-    const result = await SammoAPI.Betting.GetBettingDetail<BettingDetailResponse>({
-      betting_id: bettingID,
-    });
+    const result = await SammoAPI.Betting.GetBettingDetail[bettingID]();
     year.value = result.year;
     month.value = result.month;
     yearMonth.value = joinYearMonth(result.year, result.month);

@@ -1,65 +1,71 @@
-import type { InvalidResponse, ReserveBulkCommandResponse } from "./defs";
+import type { BettingDetailResponse, ReserveBulkCommandResponse } from "./defs";
 import type { Args } from "./processing/args";
-import { callSammoAPI, done, type CallbackT, type RawArgType, type ValidResponse } from "./util/callSammoAPI";
+import { callSammoAPI, extractHttpMethod, GET, PATCH, POST, PUT, type APITail, type APICallT, type RawArgType, type ValidResponse, type InvalidResponse } from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
-import { APIPathGen } from "./util/APIPathGen.js";
+import { APIPathGen, NumVar } from "./util/APIPathGen.js";
 
 const apiRealPath = {
     Betting: {
-        Bet: done,
-        GetBettingDetail: done,
-        GetBettingList: done,
+        Bet: PUT,
+        GetBettingDetail: NumVar('betting_id',
+            GET as APICallT<undefined, BettingDetailResponse>
+        ),
+        GetBettingList: GET,
     },
     Command: {
-        GetReservedCommand: done,
-        PushCommand: done,
-        RepeatCommand: done,
-        ReserveCommand: done,
-        ReserveBulkCommand: done as CallbackT<{
+        GetReservedCommand: GET as APICallT<undefined>,
+        PushCommand: PATCH,
+        RepeatCommand: PATCH,
+        ReserveCommand: PUT,
+        ReserveBulkCommand: PUT as APICallT<{
             turnList: number[],
             action: string,
             arg: Args
         }[], ReserveBulkCommandResponse>,
     },
     General: {
-        Join: done,
+        Join: POST,
     },
     InheritAction: {
-        BuyHiddenBuff: done,
-        BuyRandomUnique: done,
-        BuySpecificUnique: done,
-        ResetSpecialWar: done,
-        ResetTurnTime: done,
-        SetNextSpecialWar: done,
+        BuyHiddenBuff: PUT,
+        BuyRandomUnique: PUT,
+        BuySpecificUnique: PUT,
+        ResetSpecialWar: PUT,
+        ResetTurnTime: PUT,
+        SetNextSpecialWar: PUT,
     },
-    Misc: { UploadImage: done },
+    Misc: { UploadImage: POST },
     NationCommand: {
-        GetReservedCommand: done,
-        PushCommand: done,
-        RepeatCommand: done,
-        ReserveCommand: done,
-        ReserveBulkCommand: done as CallbackT<{
+        GetReservedCommand: GET,
+        PushCommand: PATCH,
+        RepeatCommand: PATCH,
+        ReserveCommand: PUT,
+        ReserveBulkCommand: PUT as APICallT<{
             turnList: number[],
             action: string,
             arg: Args
         }[], ReserveBulkCommandResponse>,
     },
     Nation: {
-        SetNotice: done,
-        SetScoutMsg: done,
-        SetBill: done,
-        SetRate: done,
-        SetSecretLimit: done,
-        SetBlockWar: done,
-        SetBlockScout: done,
+        SetNotice: PUT,
+        SetScoutMsg: PUT,
+        SetBill: PUT,
+        SetRate: PUT,
+        SetSecretLimit: PUT,
+        SetBlockWar: PUT,
+        SetBlockScout: PUT,
     },
+    Test: NumVar('id', {
+        SetThis: PUT,
+    })
 } as const;
 
-export const SammoAPI = APIPathGen(apiRealPath, (path: string[]) => {
+export const SammoAPI = APIPathGen(apiRealPath, (path: string[], tail: APITail, pathParam) => {
+    const method = extractHttpMethod(tail);
     return (args?: RawArgType, returnError?: boolean) => {
         if (returnError) {
-            return callSammoAPI(path.join('/'), args, true);
+            return callSammoAPI(method, path.join('/'), args, pathParam, true);
         }
-        return callSammoAPI(path.join('/'), args);
+        return callSammoAPI(method, path.join('/'), args, pathParam);
     };
 });

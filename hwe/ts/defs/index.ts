@@ -1,10 +1,7 @@
-import type { Args } from "./processing/args";
+import type { Args } from "@/processing/args";
+import type { ValidResponse, InvalidResponse } from "@/util/callSammoAPI";
 
-export type InvalidResponse = {
-    result: false;
-    reason: string;
-}
-
+export type { ValidResponse, InvalidResponse };
 export type BasicGeneralListResponse = {
     result: true,
     nationID: number,
@@ -201,7 +198,7 @@ export type CommandItem = {
     possible: boolean;
     reqArg: boolean;
     searchText?: string;
-  };
+};
 
 export type ChiefResponse = {
     result: true;
@@ -266,3 +263,13 @@ export type BettingInfo = {
     candidates: SelectItem[];
     winner?: number[];
 }
+
+
+export type BettingDetailResponse = ValidResponse & {
+    bettingInfo: BettingInfo;
+    bettingDetail: [string, number][];
+    myBetting: [string, number][];
+    remainPoint: number;
+    year: number;
+    month: number;
+};

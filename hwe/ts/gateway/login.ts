@@ -8,51 +8,12 @@ import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '@util/unwrap_any';
 import { sha512 } from 'js-sha512';
 import { unwrap } from '@util/unwrap';
-import type { InvalidResponse } from '@/defs';
 import { delay } from '@util/delay';
 import { Modal } from 'bootstrap';
 import '@/gateway/common';
 import { isString } from 'lodash';
-import { SammoRootAPI } from '@/SammoRootAPI';
-
-type LoginResponse = {
-    result: true,
-    nextToken: [number, string] | undefined,
-}
-
-type LoginFailed = {
-    result: false,
-    reqOTP: boolean,
-    reason: string,
-}
-
-type LoginResponseWithKakao = LoginResponse | LoginFailed;
-
-type OTPResponse = {
-    result: true,
-    validUntil: string,
-} | {
-    result: false,
-    reset: boolean,
-    reason: string,
-}
-
-
-type AutoLoginNonceResponse = {
-    result: true,
-    loginNonce: string,
-};
-
-type AutoLoginResponse = {
-    result: true,
-    nextToken: [number, string] | undefined,
-}
-
-type AutoLoginFailed = {
-    result: false,
-    silent: boolean,
-    reason: string,
-}
+import { SammoRootAPI, type InvalidResponse } from '@/SammoRootAPI';
+import type { LoginFailed, LoginResponse, LoginResponseWithKakao, OTPResponse } from '@/defs/API/Login';
 declare global {
     interface Window {
         getOAuthToken: (mode: string, scope_list: string[]) => void;
@@ -101,7 +62,7 @@ async function tryAutoLogin() {
 
         const [tokenID, token] = tokenInfo;
 
-        const result = await SammoRootAPI.Login.ReqNonce<AutoLoginNonceResponse, AutoLoginFailed>({}, true);
+        const result = await SammoRootAPI.Login.ReqNonce(undefined, true);
 
         if (!result) {
             //api 에러.
@@ -116,7 +77,7 @@ async function tryAutoLogin() {
         const nonce = result.loginNonce;
 
         const hashedToken = sha512(token + nonce);
-        const loginResult = await SammoRootAPI.Login.LoginByToken<AutoLoginResponse, AutoLoginFailed>({
+        const loginResult = await SammoRootAPI.Login.LoginByToken({
             'hashedToken': hashedToken,
             'token_id': tokenID,
         }, true);
