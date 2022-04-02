@@ -296,17 +296,7 @@ import type { TurnObj } from "@/defs";
 import type { Args } from "./processing/args";
 import { QueryActionHelper } from "./util/QueryActionHelper";
 import SimpleClock from "./components/SimpleClock.vue";
-
-type ReservedCommandResponse = {
-  result: true;
-  turnTime: string;
-  turnTerm: number;
-  year: number;
-  month: number;
-  date: string;
-  turn: TurnObj[];
-  autorun_limit: null | number;
-};
+import type { ReservedCommandResponse } from "./defs/API/Command";
 
 const { maxTurn, maxPushTurn, commandList } = staticValues;
 

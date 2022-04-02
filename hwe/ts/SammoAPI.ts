@@ -3,6 +3,10 @@ import type { Args } from "./processing/args";
 import { callSammoAPI, extractHttpMethod, GET, PATCH, POST, PUT, type APITail, type APICallT, type RawArgType, type ValidResponse, type InvalidResponse } from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
 import { APIPathGen, NumVar } from "./util/APIPathGen.js";
+import type { BettingListResponse } from "./defs/API/Betting";
+import type { ReservedCommandResponse } from "./defs/API/Command";
+import type { ChiefResponse } from "./defs/API/NationCommand";
+import type { inheritBuffType } from "./defs/API/InheritAction";
 
 const apiRealPath = {
     Betting: {
@@ -10,11 +14,11 @@ const apiRealPath = {
         GetBettingDetail: NumVar('betting_id',
             GET as APICallT<undefined, BettingDetailResponse>
         ),
-        GetBettingList: GET,
+        GetBettingList: GET as APICallT<undefined, BettingListResponse>,
     },
     Command: {
-        GetReservedCommand: GET as APICallT<undefined>,
-        PushCommand: PATCH,
+        GetReservedCommand: GET as APICallT<undefined, ReservedCommandResponse>,
+        PushCommand: PATCH as APICallT<{amount: number}>,
         RepeatCommand: PATCH,
         ReserveCommand: PUT,
         ReserveBulkCommand: PUT as APICallT<{
@@ -27,17 +31,17 @@ const apiRealPath = {
         Join: POST,
     },
     InheritAction: {
-        BuyHiddenBuff: PUT,
-        BuyRandomUnique: PUT,
+        BuyHiddenBuff: PUT as APICallT<{type: inheritBuffType, level: number}>,
+        BuyRandomUnique: PUT as APICallT<undefined>,
         BuySpecificUnique: PUT,
-        ResetSpecialWar: PUT,
-        ResetTurnTime: PUT,
+        ResetSpecialWar: PUT as APICallT<undefined>,
+        ResetTurnTime: PUT as APICallT<undefined>,
         SetNextSpecialWar: PUT,
     },
     Misc: { UploadImage: POST },
     NationCommand: {
-        GetReservedCommand: GET,
-        PushCommand: PATCH,
+        GetReservedCommand: GET as APICallT<undefined, ChiefResponse>,
+        PushCommand: PATCH as APICallT<{amount: number}>,
         RepeatCommand: PATCH,
         ReserveCommand: PUT,
         ReserveBulkCommand: PUT as APICallT<{

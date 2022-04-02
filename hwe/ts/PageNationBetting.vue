@@ -27,21 +27,18 @@
 <script lang="ts" setup>
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import type { BettingInfo, ToastType } from "@/defs";
+import type { ToastType } from "@/defs";
 import { onMounted, ref } from "vue";
-import { SammoAPI, type ValidResponse } from "./SammoAPI";
+import { SammoAPI } from "./SammoAPI";
 import { isString } from "lodash";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { joinYearMonth } from "./util/joinYearMonth";
 import BettingDetail from "@/components/BettingDetail.vue";
 import { BContainer, useToast } from "bootstrap-vue-3";
 import { unwrap } from "./util/unwrap";
+import type { BettingListResponse } from "./defs/API/Betting";
 
-type BettingListResponse = ValidResponse & {
-  bettingList: Record<number, Omit<BettingInfo & { totalAmount: number }, "candidates">>;
-  year: number;
-  month: number;
-};
+
 
 const toasts = unwrap(useToast());
 const year = ref<number>();
@@ -58,7 +55,7 @@ function addToast(msg: ToastType) {
 console.log("시작!");
 onMounted(async () => {
   try {
-    const result = await SammoAPI.Betting.GetBettingList<BettingListResponse>();
+    const result = await SammoAPI.Betting.GetBettingList();
     year.value = result.year;
     month.value = result.month;
     yearMonth.value = joinYearMonth(result.year, result.month);

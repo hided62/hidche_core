@@ -206,6 +206,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import _ from "lodash";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
+import type { inheritBuffType } from "./defs/API/InheritAction";
 
 type InheritanceType =
   | "previous"
@@ -292,15 +293,6 @@ const inheritanceViewText: Record<InheritanceViewType, { title: string; info: st
   },
 };
 
-type inheritBuffType =
-  | "warAvoidRatio"
-  | "warCriticalRatio"
-  | "warMagicTrialProb"
-  | "domesticSuccessProb"
-  | "domesticFailProb"
-  | "warAvoidRatioOppose"
-  | "warCriticalRatioOppose"
-  | "warMagicTrialProbOppose";
 
 declare const currentInheritBuff: {
   [v in inheritBuffType]: number | undefined;
@@ -481,7 +473,7 @@ export default defineComponent({
       }
 
       try {
-        await SammoAPI.InheritAction[type]({});
+        await SammoAPI.InheritAction[type]();
       } catch (e) {
         console.error(e);
         alert(`실패했습니다: ${e}`);

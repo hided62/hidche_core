@@ -102,10 +102,11 @@ import { isString } from "lodash";
 import { entriesWithType } from "./util/entriesWithType";
 import TopItem from "@/ChiefCenter/TopItem.vue";
 import BottomItem from "@/ChiefCenter/BottomItem.vue";
-import type { ChiefResponse, OptionalFull } from "./defs";
+import type { OptionalFull } from "./defs";
 import { SammoAPI } from "./SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
+import type { ChiefResponse } from "./defs/API/NationCommand";
 
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
@@ -145,7 +146,7 @@ watch(viewTarget, (val) => {
 
 async function reloadTable(): Promise<void> {
   try {
-    const response = await SammoAPI.NationCommand.GetReservedCommand<ChiefResponse>();
+    const response = await SammoAPI.NationCommand.GetReservedCommand();
     console.log(response);
     for (const [key, value] of entriesWithType(response)) {
       if (key === "result") {
