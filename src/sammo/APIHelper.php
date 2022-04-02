@@ -9,6 +9,18 @@ class APIHelper
         //static only
     }
 
+    private static function setCacheHeader(){
+        header('cache-control: private, max-age=60');
+        header("Pragma: cache");
+        header_remove('expires');
+    }
+
+    private static function DieWithNotModified(): never{
+        static::setCacheHeader();
+        header("HTTP/1.1 304 Not Modified");
+        die();
+    }
+
     public static function launch(string $rootPath, ?string $actionPath = null)
     {
         //TODO: path를 php://input에서 받는게 아니라 api.php?~~~~~ 로 받아오는것이 etag 캐시 측면에서 훨씬 나을 듯!
@@ -95,26 +107,16 @@ class APIHelper
                 }
 
                 if ($modifiedSince !== null && $lastModified !== null && TimeUtil::DateIntervalToSeconds($modifiedSince->diff($lastModified)) == 0) {
-                    header('cache-control: private, max-age=60');
-                    header("Pragma: cache");
-                    header("HTTP/1.1 304 Not Modified", true, 304);
-                    header_remove('expires');
-                    die();
+                    static::DieWithNotModified();
                 }
                 if ($reqEtags !== null && $reqEtags === $etag) {
-                    header('cache-control: private, max-age=60');
-                    header("Pragma: cache");
-                    header("HTTP/1.1 304 Not Modified", true, 304);
-                    header_remove('expires');
-                    die();
+                    static::DieWithNotModified();
                 }
             }
 
             if ($result === null) {
                 if ($setCache) {
-                    header('cache-control: private, max-age=60');
-                    header("Pragma: cache");
-                    header_remove('expires');
+                    static::setCacheHeader();
                 }
                 Json::die([
                     'result' => true,
@@ -122,9 +124,7 @@ class APIHelper
                 ], $setCache ? 0 : Json::NO_CACHE);
             }
             if ($setCache) {
-                header('cache-control: private, max-age=60');
-                header("Pragma: cache");
-                header_remove('expires');
+                static::setCacheHeader();
             }
             Json::die($result, $setCache ? 0 : Json::NO_CACHE);
         } catch (\Throwable $e) {
