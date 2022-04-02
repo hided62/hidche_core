@@ -10,4 +10,10 @@ abstract class BaseNation implements iAction{
     protected $info = '';
     static $pros = '';
     static $cons = '';
+
+    public function getInfo(): string{
+        $pros = static::$pros;
+        $cons = static::$cons;
+        return "{$pros} {$cons}";
+    }
 }
