@@ -273,7 +273,7 @@ $(async function ($) {
         let result: LoginResponse | LoginFailed;
 
         try {
-            result = await SammoRootAPI.Login.LoginByID<LoginResponse, LoginFailed>({
+            result = await SammoRootAPI.Login.LoginByID({
                 username: values.username,
                 password: hash_pw,
 

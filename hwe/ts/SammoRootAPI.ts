@@ -1,11 +1,14 @@
-import type { AutoLoginFailed, AutoLoginNonceResponse, AutoLoginResponse } from "./defs/API/Login";
+import type { AutoLoginFailed, AutoLoginNonceResponse, AutoLoginResponse, LoginFailed, LoginResponse } from "./defs/API/Login";
 import { APIPathGen } from "./util/APIPathGen";
 import { callSammoAPI, extractHttpMethod, GET, POST, type APICallT, type APITail, type InvalidResponse, type RawArgType, type ValidResponse } from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
 
 const apiRealPath = {
     Login: {
-        LoginByID: POST,
+        LoginByID: POST as APICallT<{
+            username: string,
+            password: string,
+        }, LoginResponse, LoginFailed>,
         LoginByToken: POST as APICallT<{
             hashedToken: string,
             token_id: number,

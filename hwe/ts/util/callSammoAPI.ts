@@ -26,6 +26,9 @@ interface EmptyAPICallT<ResultType extends ValidResponse, ErrorType extends Inva
     (args: undefined, returnError: true): Promise<ResultType | ErrorType>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ArgTypeOf<T> = T extends APICallT<infer A, any, any> ? A : never;
+
 export type APICallT<
     ArgType extends RawArgType,
     ResultType extends ValidResponse = ValidResponse,

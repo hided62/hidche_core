@@ -288,7 +288,7 @@ import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
 import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI } from "./SammoAPI";
-import type { CommandItem, ReserveCommandResponse } from "@/defs";
+import type { CommandItem } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider } from "bootstrap-vue-3";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
@@ -536,7 +536,7 @@ async function reserveCommand() {
   }
 
   try {
-    const result = await SammoAPI.Command.ReserveCommand<ReserveCommandResponse>({
+    const result = await SammoAPI.Command.ReserveCommand({
       turnList: reqTurnList,
       action: commandName,
     });

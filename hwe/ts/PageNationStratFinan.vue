@@ -244,7 +244,6 @@ import { type diplomacyState, diplomacyStateInfo, type NationStaticItem } from "
 import { SammoAPI } from "./SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
-import type { ValidResponse } from "./util/callSammoAPI";
 import { useToast, BContainer } from "bootstrap-vue-3";
 import { unwrap } from "./util/unwrap";
 
@@ -256,9 +255,6 @@ type NationItem = NationStaticItem & {
   };
 };
 
-type SetBlockWarResponse = ValidResponse & {
-  availableCnt: number;
-};
 declare const staticValues: {
   editable: boolean;
   nationMsg: string;
@@ -501,7 +497,7 @@ export default defineComponent({
 
     async function setBlockWar() {
       try {
-        const result = await SammoAPI.Nation.SetBlockWar<SetBlockWarResponse>({ value: self.policy.blockWar });
+        const result = await SammoAPI.Nation.SetBlockWar({ value: self.policy.blockWar });
         self.warSettingCnt.remain = result.availableCnt;
         toasts.info({
           title: "변경",

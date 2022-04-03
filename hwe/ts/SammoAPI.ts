@@ -1,16 +1,25 @@
-import type { BettingDetailResponse, ReserveBulkCommandResponse } from "./defs";
 import type { Args } from "./processing/args";
-import { callSammoAPI, extractHttpMethod, GET, PATCH, POST, PUT, type APITail, type APICallT, type RawArgType, type ValidResponse, type InvalidResponse } from "./util/callSammoAPI";
+import {
+    callSammoAPI, extractHttpMethod, GET, PATCH, POST, PUT,
+    type APITail, type APICallT, type RawArgType, type ValidResponse, type InvalidResponse
+} from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
 import { APIPathGen, NumVar } from "./util/APIPathGen.js";
-import type { BettingListResponse } from "./defs/API/Betting";
-import type { ReservedCommandResponse } from "./defs/API/Command";
+import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Betting";
+import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import type { inheritBuffType } from "./defs/API/InheritAction";
+import type { SetBlockWarResponse } from "./defs/API/Nation";
+import type { UploadImageResponse } from "./defs/API/Misc";
+import type { JoinArgs } from "./defs/API/General";
 
 const apiRealPath = {
     Betting: {
-        Bet: PUT,
+        Bet: PUT as APICallT<{
+            bettingID: number,
+            bettingType: number[],
+            amount: number,
+        }>,
         GetBettingDetail: NumVar('betting_id',
             GET as APICallT<undefined, BettingDetailResponse>
         ),
@@ -18,50 +27,89 @@ const apiRealPath = {
     },
     Command: {
         GetReservedCommand: GET as APICallT<undefined, ReservedCommandResponse>,
-        PushCommand: PATCH as APICallT<{amount: number}>,
-        RepeatCommand: PATCH,
-        ReserveCommand: PUT,
+        PushCommand: PUT as APICallT<{
+            amount: number
+        }>,
+        RepeatCommand: PUT as APICallT<{
+            amount: number
+        }>,
+        ReserveCommand: PUT as APICallT<{
+            turnList: number[],
+            action: string,
+            arg?: Args
+        }, ReserveCommandResponse>,
         ReserveBulkCommand: PUT as APICallT<{
             turnList: number[],
             action: string,
-            arg: Args
+            arg?: Args
         }[], ReserveBulkCommandResponse>,
     },
     General: {
-        Join: POST,
+        Join: POST as APICallT<JoinArgs>,
     },
     InheritAction: {
-        BuyHiddenBuff: PUT as APICallT<{type: inheritBuffType, level: number}>,
+        BuyHiddenBuff: PUT as APICallT<{
+            type: inheritBuffType,
+            level: number
+        }>,
         BuyRandomUnique: PUT as APICallT<undefined>,
-        BuySpecificUnique: PUT,
+        BuySpecificUnique: PUT as APICallT<{
+            item: string,
+            amount: number,
+        }>,
         ResetSpecialWar: PUT as APICallT<undefined>,
         ResetTurnTime: PUT as APICallT<undefined>,
-        SetNextSpecialWar: PUT,
+        SetNextSpecialWar: PUT as APICallT<{
+            type: string,
+        }>,
     },
-    Misc: { UploadImage: POST },
+    Misc: {
+        UploadImage: POST as APICallT<{
+            imageData: string,
+        }, UploadImageResponse>
+    },
     NationCommand: {
         GetReservedCommand: GET as APICallT<undefined, ChiefResponse>,
-        PushCommand: PATCH as APICallT<{amount: number}>,
-        RepeatCommand: PATCH,
-        ReserveCommand: PUT,
+        PushCommand: PUT as APICallT<{
+            amount: number
+        }>,
+        RepeatCommand: PUT as APICallT<{
+            amount: number
+        }>,
+        ReserveCommand: PUT as APICallT<{
+            turnList: number[],
+            action: string,
+            arg?: Args
+        }, ReserveCommandResponse>,
         ReserveBulkCommand: PUT as APICallT<{
             turnList: number[],
             action: string,
-            arg: Args
+            arg?: Args
         }[], ReserveBulkCommandResponse>,
     },
     Nation: {
-        SetNotice: PUT,
-        SetScoutMsg: PUT,
-        SetBill: PUT,
-        SetRate: PUT,
-        SetSecretLimit: PUT,
-        SetBlockWar: PUT,
-        SetBlockScout: PUT,
+        SetNotice: PUT as APICallT<{
+            msg: string,
+        }>,
+        SetScoutMsg: PUT as APICallT<{
+            msg: string,
+        }>,
+        SetBill: PATCH as APICallT<{
+            amount: number,
+        }>,
+        SetRate: PATCH as APICallT<{
+            amount: number,
+        }>,
+        SetSecretLimit: PATCH as APICallT<{
+            amount: number,
+        }>,
+        SetBlockWar: PATCH as APICallT<{
+            value: boolean,
+        }, SetBlockWarResponse>,
+        SetBlockScout: PATCH as APICallT<{
+            value: boolean,
+        }>,
     },
-    Test: NumVar('id', {
-        SetThis: PUT,
-    })
 } as const;
 
 export const SammoAPI = APIPathGen(apiRealPath, (path: string[], tail: APITail, pathParam) => {

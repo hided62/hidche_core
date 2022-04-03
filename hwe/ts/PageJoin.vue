@@ -249,6 +249,7 @@ import { abilityLeadint, abilityLeadpow, abilityPowint, abilityRand } from "@uti
 import { clone, shuffle, sum } from "lodash";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
+import type { JoinArgs } from "./defs/API/General";
 
 declare const nationList: {
   nation: number;
@@ -306,19 +307,6 @@ declare module "@vue/runtime-core" {
   }
 }
 
-type APIArgs = {
-  name: string;
-  leadership: number;
-  strength: number;
-  intel: number;
-  pic: boolean;
-  character: string;
-  inheritSpecial?: string;
-  inheritTurntime?: number;
-  inheritCity?: number;
-  inheritBonusStat?: [number, number, number];
-};
-
 export default defineComponent({
   name: "PageJoin",
   components: {
@@ -329,7 +317,7 @@ export default defineComponent({
     const displayTable = JSON.parse(localStorage.getItem(`conf.${serverID}.join.displayTable`) ?? "true");
     const displayInherit = JSON.parse(localStorage.getItem(`conf.${serverID}.join.displayInherit`) ?? "true");
     const nationListShuffled = shuffle(nationList);
-    const args: APIArgs = {
+    const args: JoinArgs = {
       name: member.name,
       leadership: stats.total - 2 * Math.floor(stats.total / 3),
       strength: Math.floor(stats.total / 3),

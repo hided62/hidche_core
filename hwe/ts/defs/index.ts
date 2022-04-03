@@ -32,16 +32,6 @@ export type GeneralListResponse = {
     token: Record<number, number>,
 }
 
-export type ReserveCommandResponse = {
-    result: true,
-    brief: string,
-}
-
-export type ReserveBulkCommandResponse = {
-    result: true,
-    briefList: string[],
-}
-
 export type NationLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export const NationLevelText: Record<NationLevel, string> = {
     0: '방랑군',
@@ -211,35 +201,3 @@ export const diplomacyStateInfo: Record<diplomacyState, diplomacyInfo> = {
     2: { name: '통상' },
     7: { name: '불가침', color: 'green' },
 }
-
-
-export type SelectItem = {
-    title: string;
-    info?: string;
-    isHtml?: boolean;
-    aux?: Record<string, unknown>;
-}
-
-export type BettingInfo = {
-    id: number;
-    type: 'nationBetting',
-    name: string;
-    finished: boolean;
-    selectCnt: number;
-    isExclusive?: boolean;
-    reqInheritancePoint: boolean;
-    openYearMonth: number;
-    closeYearMonth: number;
-    candidates: SelectItem[];
-    winner?: number[];
-}
-
-
-export type BettingDetailResponse = ValidResponse & {
-    bettingInfo: BettingInfo;
-    bettingDetail: [string, number][];
-    myBetting: [string, number][];
-    remainPoint: number;
-    year: number;
-    month: number;
-};

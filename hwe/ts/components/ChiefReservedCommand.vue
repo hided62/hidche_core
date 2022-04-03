@@ -267,7 +267,7 @@ import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
 import { isString, range, trim } from "lodash";
 import { SammoAPI } from "@/SammoAPI";
-import type { ChiefResponse, CommandItem, ReserveCommandResponse, TurnObj } from "@/defs";
+import type { CommandItem, TurnObj } from "@/defs";
 import { QueryActionHelper } from "@/util/QueryActionHelper";
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
@@ -275,6 +275,7 @@ import { getNpcColor } from "@/common_legacy";
 import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown } from "bootstrap-vue-3";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";
+import type { ChiefResponse } from "@/defs/API/NationCommand";
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -539,7 +540,7 @@ async function reserveCommand() {
   }
 
   try {
-    const result = await SammoAPI.NationCommand.ReserveCommand<ReserveCommandResponse>({
+    const result = await SammoAPI.NationCommand.ReserveCommand({
       turnList: reqTurnList,
       action: commandName,
     });

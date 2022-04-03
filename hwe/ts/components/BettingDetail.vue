@@ -129,7 +129,8 @@
 </template>
 
 <script setup lang="ts">
-import type { BettingDetailResponse, BettingInfo, ToastType } from "@/defs";
+import type { ToastType } from "@/defs";
+import type { BettingDetailResponse, BettingInfo } from "@/defs/API/Betting";
 import { SammoAPI } from "@/SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";

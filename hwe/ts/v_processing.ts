@@ -11,7 +11,7 @@ import { isString } from 'lodash';
 import { type Args, testSubmitArgs } from './processing/args';
 import { SammoAPI } from './SammoAPI';
 import { StoredActionsHelper } from './util/StoredActionsHelper';
-import type { ReserveCommandResponse } from './defs';
+import type { ReserveCommandResponse } from './defs/API/Command';
 
 declare const staticValues: {
     serverNick: string,
@@ -31,11 +31,11 @@ async function submitCommand<T extends ReserveCommandResponse>(isChiefTurn: bool
             throw new TypeError(`Invalied Type ${testResult[0]}, ${testResult[2]} should be ${testResult[1]}`);
         }
         console.log('trySubmit', arg);
-        const responseP = targetAPI<T>({
+        const responseP = targetAPI({
                 action,
                 turnList,
                 arg,
-        });
+        }) as Promise<T>;
 
         const storedActionsHelper = new StoredActionsHelper(staticValues.serverNick, isChiefTurn?'nation':'general', staticValues.mapName, staticValues.unitSet);
 

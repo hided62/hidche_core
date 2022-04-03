@@ -65,7 +65,6 @@
 </template>
 <script setup lang="ts">
 import { getNpcColor } from "@/common_legacy";
-import type { ChiefResponse } from "@/defs";
 import { formatTime } from "@/util/formatTime";
 import { mb_strwidth } from "@/util/mb_strwidth";
 import { parseTime } from "@/util/parseTime";
@@ -77,6 +76,7 @@ import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
 import { BButton } from "bootstrap-vue-3";
 import { QueryActionHelper } from "@/util/QueryActionHelper";
+import type { ChiefResponse } from "@/defs/API/NationCommand";
 
 const props = defineProps({
   style: VueTypes.object.isRequired,
