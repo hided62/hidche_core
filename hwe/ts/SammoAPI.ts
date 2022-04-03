@@ -12,6 +12,7 @@ import type { inheritBuffType } from "./defs/API/InheritAction";
 import type { SetBlockWarResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { JoinArgs } from "./defs/API/General";
+import type { GetConstResponse } from "./defs/API/Global";
 
 const apiRealPath = {
     Betting: {
@@ -46,6 +47,9 @@ const apiRealPath = {
     },
     General: {
         Join: POST as APICallT<JoinArgs>,
+    },
+    Global: {
+        GetConst: GET as APICallT<undefined, GetConstResponse>,
     },
     InheritAction: {
         BuyHiddenBuff: PUT as APICallT<{

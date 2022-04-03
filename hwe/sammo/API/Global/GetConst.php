@@ -184,7 +184,7 @@ class GetConst extends \sammo\BaseAPI
         }
 
         if (is_string($target)) {
-            return $this->extractObjClassInfo($target, $callerFunction);
+            return [$target => $this->extractObjClassInfo($target, $callerFunction)];
         }
 
         if (!is_array($target)) {
