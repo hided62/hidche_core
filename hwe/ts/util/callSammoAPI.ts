@@ -13,11 +13,26 @@ export type InvalidResponse = {
 
 export type RawArgType = Record<string, unknown> | Record<string, unknown>[] | undefined;
 
-export interface APICallT<ArgType extends RawArgType, ResultType extends ValidResponse = ValidResponse, ErrorType extends InvalidResponse = InvalidResponse> {
-    (args?: ArgType): Promise<ResultType>;
-    (args: ArgType | undefined, returnError: false): Promise<ResultType>;
-    (args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
+interface BasicAPICallT<ArgType extends RawArgType, ResultType extends ValidResponse, ErrorType extends InvalidResponse> {
+    (args: ArgType): Promise<ResultType>;
+    (args: ArgType, returnError: false): Promise<ResultType>;
+    (args: ArgType, returnError: true): Promise<ResultType | ErrorType>;
 }
+
+interface EmptyAPICallT<ResultType extends ValidResponse, ErrorType extends InvalidResponse> {
+    (): Promise<ResultType>;
+    (args: undefined): Promise<ResultType>;
+    (args: undefined, returnError: false): Promise<ResultType>;
+    (args: undefined, returnError: true): Promise<ResultType | ErrorType>;
+}
+
+export type APICallT<
+    ArgType extends RawArgType,
+    ResultType extends ValidResponse = ValidResponse,
+    ErrorType extends InvalidResponse = InvalidResponse
+    > = ArgType extends undefined
+    ? EmptyAPICallT<ResultType, ErrorType>
+    : BasicAPICallT<ArgType, ResultType, ErrorType>;
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'head' | 'delete';
 export type APITail = typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof HEAD | typeof DELETE;
