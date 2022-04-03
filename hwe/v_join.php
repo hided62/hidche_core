@@ -47,31 +47,6 @@ $scoutMsgs = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'scout_ms
 foreach ($scoutMsgs as $destNationID => $scoutMsg) {
     $nationList[$destNationID]['scoutmsg'] = $scoutMsg;
 }
-
-
-$availablePersonality = [];
-foreach (GameConst::$availablePersonality as $personalityID) {
-    $personalityObj = buildPersonalityClass($personalityID);
-    $availablePersonality[$personalityID] = [
-        'name' => $personalityObj->getName(),
-        'info' => $personalityObj->getInfo(),
-    ];
-}
-
-$availableInheritSpecial = [];
-foreach (GameConst::$availableSpecialWar as $specialID){
-    $specialObj = buildGeneralSpecialWarClass($specialID);
-    $availableInheritSpecial[$specialID] = [
-        'name' => $specialObj->getName(),
-        'info' => $specialObj->getInfo(),
-    ];
-}
-
-$availableInheritCity = [];
-foreach(CityConst::all() as $city){
-    $availableInheritCity[] = [$city->id, CityConst::$regionMap[$city->region], $city->name];
-}
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -85,37 +60,21 @@ foreach(CityConst::all() as $city){
     <?= WebUtil::printDist('vue', 'v_join', true) ?>
 
     <?= WebUtil::printStaticValues([
-        'serverID' => UniqueConst::$serverID,
-        'nationList' => array_values($nationList),
-        'config' => [
-            'show_img_level' => $admin['show_img_level']
-        ],
-        'member' => [
-            'name' => $member['name'],
-            'grade' => $member['grade'],
-            'picture' => $member['picture'],
-            'imgsvr' => $member['imgsvr'],
-        ],
-        'availablePersonality' => array_merge([
-            'Random' => ['name' => '???', 'info' => '무작위 성격을 선택합니다.']
-        ], $availablePersonality),
-        'stats' => [
-            'min' => GameConst::$defaultStatMin,
-            'max' => GameConst::$defaultStatMax,
-            'total' => GameConst::$defaultStatTotal,
-            'bonusMin' => GameConst::$bornMinStatBonus,
-            'bonusMax' => GameConst::$bornMaxStatBonus,
-        ],
-        'inheritTotalPoint'=>$inheritTotalPoint,
-        'inheritPoints'=>[
-            'special'=>GameConst::$inheritBornSpecialPoint,
-            'turnTime'=>GameConst::$inheritBornTurntimePoint,
-            'city'=>GameConst::$inheritBornCityPoint,
-            'stat'=>GameConst::$inheritBornStatPoint
-        ],
-        'availableInheritSpecial' => $availableInheritSpecial,
-        'availableInheritCity'=> $availableInheritCity,
-        'turnterm'=>$gameStor->turnterm,
+        'staticValues'=>[
+            'serverID' => UniqueConst::$serverID,
+            'nationList' => array_values($nationList),
+            'config' => [
+                'show_img_level' => $admin['show_img_level']
+            ],
+            'member' => [
+                'name' => $member['name'],
+                'grade' => $member['grade'],
+                'picture' => $member['picture'],
+                'imgsvr' => $member['imgsvr'],
+            ],
+            'inheritTotalPoint'=>$inheritTotalPoint,
+            'turnterm'=>$gameStor->turnterm,
+        ]
     ]) ?>
 </head>
 

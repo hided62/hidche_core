@@ -1,12 +1,6 @@
-declare const stats: {
-    min: number;
-    max: number;
-    total: number;
-    bonusMin: number;
-    bonusMax: number;
-  };
+interface Stats { min: number, max: number, total: number };
 
-export function abilityRand(): [number, number, number] {
+export function abilityRand(stats: Stats): [number, number, number] {
     let leadership = Math.random() * 65 + 10;
     let strength = Math.random() * 65 + 10;
     let intel = Math.random() * 65 + 10;
@@ -28,13 +22,13 @@ export function abilityRand(): [number, number, number] {
         strength < stats.min ||
         intel < stats.min
     ) {
-        return abilityRand();
+        return abilityRand(stats);
     }
 
     return [leadership, strength, intel];
 }
 
-export function abilityLeadpow(): [number, number, number] {
+export function abilityLeadpow(stats: Stats): [number, number, number] {
     let leadership = Math.random() * 6;
     let strength = Math.random() * 6;
     let intel = Math.random() * 1;
@@ -71,7 +65,7 @@ export function abilityLeadpow(): [number, number, number] {
     return [leadership, strength, intel];
 }
 
-export function abilityLeadint(): [number, number, number] {
+export function abilityLeadint(stats: Stats): [number, number, number] {
     let leadership = Math.random() * 6;
     let strength = Math.random() * 1;
     let intel = Math.random() * 6;
@@ -108,7 +102,7 @@ export function abilityLeadint(): [number, number, number] {
     return [leadership, strength, intel];
 }
 
-export function abilityPowint(): [number, number, number] {
+export function abilityPowint(stats: Stats): [number, number, number] {
     let leadership = Math.random() * 1;
     let strength = Math.random() * 6;
     let intel = Math.random() * 6;
