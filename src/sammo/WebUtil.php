@@ -36,6 +36,48 @@ class WebUtil
         return strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'xmlhttprequest';
     }
 
+    public static function setCacheHeader(?APICacheResult $cache, int $maxAge=60){
+        header_remove('expires');
+        header("Cache-Control: private, max-age={$maxAge}");
+        header("Pragma: cache");
+        if($cache->etag !== null){
+            header("ETag: \"{$cache->etag}\"");
+        }
+        if($cache->lastModified !== null){
+            $lastModifiedUnixTime = Util::toInt(TimeUtil::DateTimeToSeconds($cache->lastModified, true));
+            $lastModified = gmdate("D, d M Y H:i:s", $lastModifiedUnixTime);
+            header("Last-Modified: $lastModified GMT");
+        }
+    }
+
+    public static function dieWithNotModified(): never{
+        header("HTTP/1.1 304 Not Modified");
+        die();
+    }
+
+    public static function parseETag(): ?string{
+        $etag = $_SERVER['HTTP_IF_NONE_MATCH']??null;
+        if($etag === null){
+            return $etag;
+        }
+        $etag = trim($etag);
+        if(str_starts_with($etag, 'W/"') && str_ends_with($etag, '"')){
+            return substr($etag, 3, strlen($etag) - 4);
+        }
+        if(str_starts_with($etag, '"') && str_ends_with($etag, '"')){
+            return substr($etag, 1, strlen($etag) - 2);
+        }
+        return $etag;
+    }
+
+    public static function parseLastModified(): ?\DateTimeInterface{
+        $modifiedSinceStr = $_SERVER['HTTP_IF_MODIFIED_SINCE']??null;
+        if($modifiedSinceStr === null){
+            return null;
+        }
+        return new \DateTimeImmutable($modifiedSinceStr, new \DateTimeZone("UTC"));
+    }
+
     public static function requireAJAX(): void
     {
         if (!static::isAJAX()) {

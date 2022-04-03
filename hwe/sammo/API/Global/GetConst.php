@@ -281,6 +281,13 @@ class GetConst extends \sammo\BaseAPI
         $storage = new \Nette\Caching\Storages\FileStorage($cacheDir);
         $cache = new Cache($storage);
 
+        $currentCacheKey = $this->tryCache();
+        if($modifiedSince !== null && $currentCacheKey->lastModified == $modifiedSince){
+            return null;
+        }
+        if($reqEtag !== null && $currentCacheKey->etag == $reqEtag){
+            return null;
+        }
 
         $constCache = $this->readCache($cache);
         if ($constCache !== null) {

@@ -31,17 +31,12 @@ $now = time();
 if($mapInfo && ($now - $mapInfo['timestamp'] < 600)){
 	$mapEtag = $mapInfo['etag'];
 	$mapModified = $mapInfo['timestamp'];
-
-    header("Last-Modified: ".gmdate("D, d M Y H:i:s", $mapModified)." GMT");
-    header("Etag: $mapEtag");
-
-    if (
-		strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']??'2000-01-01') === $mapModified ||
-		trim($_SERVER['HTTP_IF_NONE_MATCH']??'') === $mapEtag
-	) {
-        header("HTTP/1.1 304 Not Modified");
-		die();
-	}
+    WebUtil::setCacheHeader(new APICacheResult(TimeUtil::secondsToDateTime($mapModified), $mapEtag));
+    $reqMapEtag = WebUtil::parseETag();
+    $reqModifiedSince = WebUtil::parseLastModified();
+    if($mapEtag === $reqMapEtag || $mapModified === $reqModifiedSince){
+        WebUtil::dieWithNotModified();
+    }
 
 	Json::die($mapInfo['data'], 0);
 }
@@ -76,7 +71,6 @@ $map = [
 	'data'=>$rawMap,
 ];
 $cache->save("recent_map", $map);
-header("Last-Modified: ".gmdate("D, d M Y H:i:s", $now)." GMT");
-header("Etag: $etag");
+WebUtil::setCacheHeader(new APICacheResult(TimeUtil::secondsToDateTime($now), $etag));
 
 Json::die($map['data'], 0);
