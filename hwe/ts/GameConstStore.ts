@@ -1,4 +1,4 @@
-import { SammoAPI } from '@/SammoAPI';
+import { SammoAPI } from './SammoAPI';
 import type { GetConstResponse } from './defs/API/Global';
 import type { CityID, CrewTypeID, GameCityDefault, GameConstType, GameUnitType, GameIActionCategory, GameIActionKey, GameIActionInfo } from './defs/GameObj';
 
