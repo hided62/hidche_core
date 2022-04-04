@@ -110,7 +110,7 @@
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              >다음 턴이 랜덤으로 바뀝니다.<br /><span style="color: white"
+              >다음 턴이 랜덤으로 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
                 >필요 포인트: {{ inheritActionCost.resetTurnTime }}</span
               ></small
             >
@@ -136,7 +136,7 @@
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              >즉시 전투 특기를 초기화합니다.<br /><span style="color: white"
+              >즉시 전투 특기를 초기화합니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
                 >필요 포인트: {{ inheritActionCost.resetSpecialWar }}</span
               ></small
             >
