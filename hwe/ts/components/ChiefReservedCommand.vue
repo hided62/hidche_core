@@ -83,7 +83,7 @@
                 <BDropdownItem
                   v-for="(action, idx) in Array.from(recentActions.values()).reverse()"
                   :key="idx"
-                  @click="void reserveCommandDirect([[Array.from(selectedTurnList.values()), action]])"
+                  @click="void reserveCommandDirect([[queryActionHelper.getSelectedTurnList(), action]])"
                 >
                   {{ action.brief }}
                 </BDropdownItem>
