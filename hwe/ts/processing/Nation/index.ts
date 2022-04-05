@@ -9,7 +9,7 @@ import { default as ProcessGeneralAmount } from "../ProcessGeneralAmount.vue";
 import { default as ProcessGeneralCity } from "./che_발령.vue";
 import { default as ProcessCity } from "../ProcessCity.vue";
 
-export const commandMap: Record<string, typeof ProcessNation> = {
+export const commandMap: Record<string, typeof ProcessNation | typeof ProcessCity> = {
     che_국기변경,
     che_국호변경,
     che_급습: ProcessNation,

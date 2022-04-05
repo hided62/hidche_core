@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
-import { Args } from "@/processing/args";
+import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 
