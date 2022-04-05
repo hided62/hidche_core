@@ -76,12 +76,14 @@ function automata초성(text: string, convList: Record<string, Record<string, st
         result.push(head);
         if(!(ch in convList)){
             result.push(ch);
+            head = undefined;
             continue;
         }
         head = ch;
     }
     if(head !== undefined){
         result.push(head);
+        head = undefined;
     }
     return result.join('');
 }
