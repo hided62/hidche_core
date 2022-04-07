@@ -1,5 +1,6 @@
 import type { Args } from "@/processing/args";
 import type { ValidResponse, InvalidResponse } from "@/util/callSammoAPI";
+import type { GameObjClassKey } from "./GameObj";
 
 export type { ValidResponse, InvalidResponse };
 export type BasicGeneralListResponse = {
@@ -15,21 +16,48 @@ export type BasicGeneralListResponse = {
     }>
 }
 
+
+export type PublicGeneralItem = {
+    no: number,
+    picture: string,
+    imgsvr: 0 | 1,
+    npc: number,
+    age: number,
+    nation: string,
+    specialDomestic: GameObjClassKey,
+    specialWar: GameObjClassKey,
+    personal: GameObjClassKey,
+    name: string,
+    ownerName: string | null,
+    injury: number,
+    leadership: number,
+    lbonus: number,
+    strength: number,
+    intel:  number,
+    explevel:  number,
+    experienceStr: string,
+    dedicationStr: string,
+    officerLevelStr: string,
+    killturn: number,
+    connect: number,
+}
+
+
 export type GeneralListResponse = {
     result: true,
     list: [
-        number,
-        string, 0 | 1,
-        number, number, string,
-        string, string, string,
-        string, string | null,
-        number,
-        number, number, number, number,
-        number,
-        string, string, string,
-        number, number
+        PublicGeneralItem['no'],
+        PublicGeneralItem['picture'], PublicGeneralItem['imgsvr'],
+        PublicGeneralItem['npc'], PublicGeneralItem['age'], PublicGeneralItem['nation'],
+        PublicGeneralItem['specialDomestic'], PublicGeneralItem['specialWar'], PublicGeneralItem['personal'],
+        PublicGeneralItem['name'], PublicGeneralItem['ownerName'],
+        PublicGeneralItem['injury'],
+        PublicGeneralItem['leadership'], PublicGeneralItem['lbonus'], PublicGeneralItem['strength'], PublicGeneralItem['intel'],
+        PublicGeneralItem['explevel'],
+        PublicGeneralItem['experienceStr'], PublicGeneralItem['dedicationStr'], PublicGeneralItem['officerLevelStr'],
+        PublicGeneralItem['killturn'], PublicGeneralItem['connect']
     ][],
-    token: Record<number, number>,
+    token?: Record<number, number>,
 }
 
 export type NationLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;

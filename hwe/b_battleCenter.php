@@ -133,7 +133,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
         </tr>
         <tr>
             <td>
-                <form name=form1 method=post>
+                <form name=form1 method=get>
                     정렬순서 :
                     <select name='query_type' size=1>
                         <?php foreach ($queryMap as $queryType => [$queryTypeText,]) : ?>

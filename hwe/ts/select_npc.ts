@@ -3,12 +3,14 @@ import { errUnknown } from '@/common_legacy';
 import { getIconPath } from "@util/getIconPath";
 import { TemplateEngine } from "@util/TemplateEngine";
 import { getNpcColor } from '@/common_legacy';
-import type { GeneralListResponse, InvalidResponse } from '@/defs';
+import type { GeneralListResponse, InvalidResponse, PublicGeneralItem } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { Tooltip } from 'bootstrap';
 import { trim } from 'lodash';
+import { SammoAPI } from './SammoAPI';
+import { unwrap } from './util/unwrap';
 
 setAxiosXMLHttpRequest();
 
@@ -40,29 +42,7 @@ type NPCPick = {
     personalText?: string,
 }
 
-type NPCPickPrintableR = {
-    no: number,
-    picture: string,
-    imgsvr: 0 | 1,
-    npc: number,
-    age: number,
-    nation: string,
-    special: string,
-    special2: string,
-    personal: string,
-    name: string,
-    ownerName: string | null,
-    injury: number,
-    leadership: number,
-    lbonus: number,
-    strength: number,
-    intel: number,
-    explevel: number,
-    experience: string,
-    dedication: string,
-    officerLevel: string,
-    killturn: number,
-    connect: number,
+type NPCPickPrintableR = PublicGeneralItem & {
     reserved: number,
 
     userCSS?: string,
@@ -269,8 +249,8 @@ function printGenerals(value: NPCToken) {
 
 function printGeneralList(value: GeneralListResponse) {
     console.log(value);
-    const tokenList = value.token;
-    const generalList:NPCPickPrintable[] = value.list.map((rawGeneral) => {
+    const tokenList = unwrap(value.token);
+    const generalList: NPCPickPrintable[] = value.list.map((rawGeneral) => {
         const general: NPCPickPrintableR = {
             no: rawGeneral[0],
             picture: rawGeneral[1],
@@ -278,8 +258,8 @@ function printGeneralList(value: GeneralListResponse) {
             npc: rawGeneral[3],
             age: rawGeneral[4],
             nation: rawGeneral[5],
-            special: rawGeneral[6],
-            special2: rawGeneral[7],
+            specialDomestic: rawGeneral[6],
+            specialWar: rawGeneral[7],
             personal: rawGeneral[8],
             name: rawGeneral[9],
             ownerName: rawGeneral[10],
@@ -289,9 +269,9 @@ function printGeneralList(value: GeneralListResponse) {
             strength: rawGeneral[14],
             intel: rawGeneral[15],
             explevel: rawGeneral[16],
-            experience: rawGeneral[17],
-            dedication: rawGeneral[18],
-            officerLevel: rawGeneral[19],
+            experienceStr: rawGeneral[17],
+            dedicationStr: rawGeneral[18],
+            officerLevelStr: rawGeneral[19],
             killturn: rawGeneral[20],
             connect: rawGeneral[21],
             reserved: 0
@@ -317,7 +297,7 @@ function printGeneralList(value: GeneralListResponse) {
         }
 
         if (general.reserved == 1) {
-            general.nameAux +=  `<br><small>(${tokenList[general.no]}회)</small>`;
+            general.nameAux += `<br><small>(${tokenList[general.no]}회)</small>`;
         }
 
 
@@ -325,13 +305,13 @@ function printGeneralList(value: GeneralListResponse) {
         general.iconPath = getIconPath(general.imgsvr, general.picture);
 
         general.specialDomesticWithTooltip = TemplateEngine(templateSpecial, {
-            text: general.special,
-            info: specialInfo[general.special]
+            text: general.specialDomestic,
+            info: specialInfo[general.specialDomestic]
         });
 
         general.specialWarWithTooltip = TemplateEngine(templateSpecial, {
-            text: general.special2,
-            info: specialInfo[general.special2]
+            text: general.specialWar,
+            info: specialInfo[general.specialWar]
         });
 
         general.personalWithTooltip = TemplateEngine(templateSpecial, {
@@ -369,7 +349,7 @@ function printGeneralList(value: GeneralListResponse) {
     _printGeneralList(true);
 }
 
-function _printGeneralList(clear?:boolean) {
+function _printGeneralList(clear?: boolean) {
     const $generalTable = $('#general_list');
     if (clear) {
         $generalTable.empty();
@@ -438,23 +418,20 @@ $(function ($) {
         }, errUnknown);
     });
 
-    $('#btn_load_general_list').click(function () {
-        $.post({
-            url: 'j_get_general_list.php',
-            dataType: 'json',
-            data: {
-                with_token: true
-            }
-        }).then(function (result) {
-            if (!result.result) {
-                alert(result.reason);
-                return false;
-            }
+    $('#btn_load_general_list').on('click', async function () {
+        try {
+            const result = await SammoAPI.Global.GeneralList({
+                    with_token: true,
+            });
             printGeneralList(result);
-        }, errUnknown);
+        } catch (e) {
+            console.error(e);
+            alert(`실패했습니다: ${e}`);
+            return;
+        }
     });
 
-    $('#btn_print_more').click(function () {
+    $('#btn_print_more').on('click', function () {
         _printGeneralList();
     })
 

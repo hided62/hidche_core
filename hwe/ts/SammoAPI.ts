@@ -9,10 +9,11 @@ import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Bett
 import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import type { inheritBuffType } from "./defs/API/InheritAction";
-import type { SetBlockWarResponse } from "./defs/API/Nation";
+import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { JoinArgs } from "./defs/API/General";
 import type { GetConstResponse } from "./defs/API/Global";
+import type { GeneralListResponse } from "./defs";
 
 const apiRealPath = {
     Betting: {
@@ -49,6 +50,9 @@ const apiRealPath = {
         Join: POST as APICallT<JoinArgs>,
     },
     Global: {
+        GeneralList: GET as APICallT<{
+            with_token?: boolean
+        }, GeneralListResponse>,
         GetConst: GET as APICallT<undefined, GetConstResponse>,
     },
     InheritAction: {
@@ -92,6 +96,7 @@ const apiRealPath = {
         }[], ReserveBulkCommandResponse>,
     },
     Nation: {
+        GeneralList: GET as APICallT<undefined, NationGeneralListResponse>,
         SetNotice: PUT as APICallT<{
             msg: string,
         }>,

@@ -20,7 +20,7 @@ use function sammo\prepareDir;
 class GetConst extends \sammo\BaseAPI
 {
     /** 반환하는 StaticValues 타입이 달라지면 +1 */
-    const CONST_API_VERSION = 1;
+    const CONST_API_VERSION = 2;
     const CACHE_KEY = 'JSConst';
 
     private ?string $cacheKey = null;
@@ -109,7 +109,7 @@ class GetConst extends \sammo\BaseAPI
     public function tryCache(): ?APICacheResult
     {
         if (is_subclass_of('\\sammo\\VersionGit', '\\sammo\VersionGitDynamic')) {
-            return new APICacheResult(TimeUtil::secondsToDateTime($this->findLastModified(), true, true));
+            return new APICacheResult(TimeUtil::secondsToDateTime($this->findLastModified()??\time(), true, true));
         }
 
         return new APICacheResult(null, $this->getCacheKey());
@@ -258,6 +258,18 @@ class GetConst extends \sammo\BaseAPI
 
             $iActionInfo[$mappedKey] = $actionInfo;
         }
+
+        $crewtypeMap = [];
+        foreach(GameUnitConst::all() as $crewtypeObj){
+            $crewtypeMap[$crewtypeObj->id] = [
+                'value'=>(string)$crewtypeObj->id,
+                'name'=>$crewtypeObj->name,
+                'info'=>$crewtypeObj->getInfo(),
+            ];
+        }
+        $iActionInfo['crewtype'] = $crewtypeMap;
+
+
         return [
             'gameConst' => get_class_vars('\sammo\GameConst'),
             'gameUnitConst' => GameUnitConst::all(),

@@ -1,21 +1,24 @@
 <template>
-  <div class="bg0 back_bar">
+  <div :class="['bg0', 'back_bar', teleportZone?'back_bar_teleport':undefined]">
     <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">돌아가기</button
     ><button v-if="reloadable" type="button" class="btn btn-sammo-base2 reload_btn" @click="reload">갱신</button>
     <div v-else />
     <h2 class="title">
       {{ title }}
     </h2>
-    <div>&nbsp;</div>
-    <b-button
-      v-if="toggleSearch !== undefined"
-      class="btn-toggle-zoom"
-      :variant="toggleSearch ? 'info' : 'secondary'"
-      :pressed="toggleSearch"
-      @click="toggleSearch = !toggleSearch"
-    >
-      {{ toggleSearch ? "검색 켜짐" : "검색 꺼짐" }}
-    </b-button>
+    <div v-if="teleportZone" :id="teleportZone" class="teleport-zone"></div>
+    <template v-else>
+      <div>&nbsp;</div>
+      <b-button
+        v-if="toggleSearch !== undefined"
+        class="btn-toggle-zoom"
+        :variant="toggleSearch ? 'info' : 'secondary'"
+        :pressed="toggleSearch"
+        @click="toggleSearch = !toggleSearch"
+      >
+        {{ toggleSearch ? "검색 켜짐" : "검색 꺼짐" }}
+      </b-button>
+    </template>
   </div>
 </template>
 
@@ -38,6 +41,11 @@ const props = defineProps({
   },
   reloadable: {
     type: Boolean,
+    default: undefined,
+    required: false,
+  },
+  teleportZone: {
+    type: String,
     default: undefined,
     required: false,
   },
@@ -72,14 +80,22 @@ function reload() {
   width: 100%;
   margin: auto;
   display: grid;
-  grid-template-columns: 80px 80px 1fr 80px 80px;
+  grid-template-columns: 90px 90px 1fr 90px 90px;
   position: relative;
   height: 24pt;
+}
+
+.back_bar.back_bar_teleport {
+  grid-template-columns: 90px 90px 1fr 180px;
 }
 
 .reload_btn {
   height: 24pt;
   margin-right: 2px;
+}
+
+.teleport-zone{
+  height: 24pt;
 }
 
 .back_btn {
@@ -89,6 +105,7 @@ function reload() {
 
 .btn-toggle-zoom {
   height: 24pt;
+  position: relative;
 }
 
 .title {

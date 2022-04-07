@@ -203,7 +203,7 @@ export type GameCityDefault = {
     path: Record<CityID, string>;
 };
 
-export type GameIActionCategory = "nationType" | "specialDomestic" | "specialWar" | "personality" | "item";
+export type GameIActionCategory = "nationType" | "specialDomestic" | "specialWar" | "personality" | "item" | "crewtype";
 
 export type GameIActionInfo = {
     value: string;
