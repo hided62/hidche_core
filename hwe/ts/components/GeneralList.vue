@@ -523,6 +523,14 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       };
       return style as CellStyle;
     },
+    comparator: (_lhs, _rhs, {data: lhs}: GenRowNode, {data: rhs}: GenRowNode)=>{
+      const npcDiff = lhs.npc - rhs.npc;
+      if(npcDiff != 0){
+        return npcDiff;
+      }
+      return lhs.name.localeCompare(rhs.name);
+    },
+
     filterValueGetter: ({ data }) => convertSearch초성(data.name),
     cellClass: [props.availableGeneralClick ? "clickable-cell" : "", ...defaultCellClass],
     filter: true,
