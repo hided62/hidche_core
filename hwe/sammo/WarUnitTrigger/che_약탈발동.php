@@ -33,9 +33,6 @@ class che_약탈발동 extends BaseWarUnitTrigger
             return true;
         }
 
-
-        $general->increaseVarWithLimit('atmos', $selfEnv['addAtmos'], 0, GameConst::$maxAtmosByWar);
-
         $opposeGeneral = $oppose->getGeneral();
 
         $theftGold = $opposeGeneral->getVar('gold') * $selfEnv['theftRatio'];
