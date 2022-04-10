@@ -38,25 +38,25 @@ if ($con >= 2) {
 switch ($admin['tnmt_type']) {
     default:
         throw new \RuntimeException('Invalid tnmt_type');
-    case 0:
+    case convertTournamentType('전력전'):
         $tnmt_type = "<font color=cyan>전력전</font>";
         $tp = "total";
         $tp2 = "종합";
         $tp3 = "total";
         break;
-    case 1:
+    case convertTournamentType('통솔전'):
         $tnmt_type = "<font color=cyan>통솔전</font>";
         $tp = "leadership";
         $tp2 = "통솔";
         $tp3 = "leadership";
         break;
-    case 2:
+    case convertTournamentType('일기토'):
         $tnmt_type = "<font color=cyan>일기토</font>";
         $tp = "strength";
         $tp2 = "무력";
         $tp3 = "strength";
         break;
-    case 3:
+    case convertTournamentType('설전'):
         $tnmt_type = "<font color=cyan>설전</font>";
         $tp = "intel";
         $tp2 = "지력";
@@ -273,7 +273,7 @@ if ($str3) {
             for ($i = 0; $i < 8; $i++) {
                 $cent[$i] = "<font color=white>";
             }
-            $generalList = $db->query('SELECT npc,name,win from tournament where grp>=20 order by grp, grp_no LIMIT 16');
+            $generalList = $db->query('SELECT npc,name,win,leadership,strength,intel,leadership+strength+intel as total from tournament where grp>=20 order by grp, grp_no LIMIT 16');
             while (count($generalList) < 16) {
                 $generalList[] = [
                     'name' => '-',
@@ -293,6 +293,7 @@ if ($str3) {
                     $line[$i] = "<font color=white>";
                 }
                 $gen[$i] = $general['name'];
+                $stat[$i] = $general[$tp];
             }
             for ($i = 0; $i < 8; $i++) {
                 $cent[$i] = $cent[$i] . "┻" . "</font>";
@@ -300,40 +301,43 @@ if ($str3) {
                 $line[$i * 2 + 1] = $line[$i * 2 + 1] . "━━┓" . "</font>";
                 echo "<td colspan=2>{$line[$i * 2]}{$cent[$i]}{$line[$i * 2 + 1]}</td>";
             }
-            echo "
-    </tr>
-    <tr align=center>";
-
-            for ($i = 0; $i < 16; $i++) {
-                echo "<td width=70>{$gen[$i]}</td>";
-            }
-
-            $bet = [];
-            $gold = [];
-
-            for ($i = 0; $i < 16; $i++) {
-                if ($globalBet[$i] == 0) {
-                    $bet[$i] = "∞";
-                } else {
-                    $bet[$i]  = round($globalBetTotal /  $globalBet[$i], 2);
-                }
-            }
-
-            for ($i = 0; $i < 16; $i++) {
-                if (!is_numeric($bet[$i])) {
-                    $gold[$i] = 0;
-                } else {
-                    $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
-                }
-            }
             ?>
-        </tr>
+    </tr>
+      <tr align=center>
+        <?php for ($i = 0; $i < 16; $i++) { ?>
+            <td width=70><?=$gen[$i]?></td>
+        <?php } ?>
+      </tr>
+      <tr align=center>
+        <?php for ($i = 0; $i < 16; $i++) { ?>
+            <td width=70 style="font-size: 14px"><?=$stat[$i]?></td>
+        <?php } ?>
+      </tr>
     </table>
-    <table align=center width=1120 class='tb_layout bg0'>
+    <table align=center width=1120 style="table-layout: fixed" class='tb_layout bg0'>
         <tr align=center>
             <td height=10 colspan=16></td>
         </tr>
         <?php
+
+          $bet = [];
+          $gold = [];
+
+          for ($i = 0; $i < 16; $i++) {
+              if ($globalBet[$i] == 0) {
+                  $bet[$i] = "∞";
+              } else {
+                  $bet[$i]  = round($globalBetTotal /  $globalBet[$i], 2);
+              }
+          }
+
+          for ($i = 0; $i < 16; $i++) {
+              if (!is_numeric($bet[$i])) {
+                  $gold[$i] = 0;
+              } else {
+                  $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
+              }
+          }
         echo "
     <tr align=center>";
 

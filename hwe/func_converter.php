@@ -64,6 +64,15 @@ function getNationLevel(int $level) {
     ][$level];
 }
 
+function convertTournamentType(string $type){
+  return[
+    '전력전'=>0,
+    '통솔전'=>1,
+    '일기토'=>2,
+    '설전'=>3,
+  ][$type]??-1;
+}
+
 function getGenChar(?string $type) {
     if($type === null){
         return '-';
