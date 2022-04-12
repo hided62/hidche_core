@@ -114,8 +114,8 @@ class GameUnitConstBase{
             0, null,     null,     0,
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
-            ['표준적인 궁병입니다.','궁병은 회피특화입니다.'],
-            null, null
+            ['표준적인 궁병입니다.','궁병은 선제사격을 하는 회피특화 병종입니다.'],
+            null, ['che_궁병선제사격']
         ],
         [
             1201, self::T_ARCHER, '궁기병',
@@ -124,7 +124,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['말을 타고 잘 피합니다.'],
-            null, null
+            null, ['che_궁병선제사격']
         ],
         [
             1202, self::T_ARCHER, '연노병',
@@ -133,7 +133,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['화살을 연사합니다.'],
-            null, null
+            null, ['che_궁병선제사격']
         ],
         [
             1203, self::T_ARCHER, '강궁병',
@@ -142,7 +142,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['강건한 궁병입니다.'],
-            null, null
+            null, ['che_궁병선제사격']
         ],
         [
             1204, self::T_ARCHER, '석궁병',
@@ -151,7 +151,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['강력한 화살을 쏩니다.'],
-            null, null
+            null, ['che_궁병선제사격']
         ],
 
         [
