@@ -47,8 +47,8 @@ class TriggerOfficerLevel implements iAction{
                 }
             }
         }
-        
-        
+
+
         return $value;
     }
 
@@ -57,5 +57,31 @@ class TriggerOfficerLevel implements iAction{
             return $value + $this->lbonus;
         }
         return $value;
+    }
+
+    public function getWarPowerMultiplier(WarUnit $unit): array
+    {
+        $officerLevel = $this->officerLevel;
+        $warPowerMultiply = 1;
+        $opposeWarPowerMultiply = 1;
+        if ($officerLevel == 12) {
+            $warPowerMultiply = 1.05;
+            $opposeWarPowerMultiply = 0.95;
+        }
+        else if($officerLevel == 11){
+            $warPowerMultiply = 1.03;
+            $opposeWarPowerMultiply = 0.97;
+        }
+        else if(in_array($officerLevel, [10, 8, 6])){
+            $warPowerMultiply = 1.03;
+        }
+        else if(in_array($officerLevel, [9, 7, 5])){
+            $opposeWarPowerMultiply = 0.97;
+        }
+        else if(in_array($officerLevel, [4, 3, 2])){
+            $warPowerMultiply = 1.015;
+            $opposeWarPowerMultiply = 0.985;
+        }
+        return [$warPowerMultiply, $opposeWarPowerMultiply];
     }
 }
