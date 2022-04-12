@@ -287,6 +287,7 @@ async function loadBetting(bettingID: number) {
     bettingDetailInfo.value = result;
     info.value = result.bettingInfo;
 
+    typeMap.value.clear();
     partialBet.value.clear();
 
     const betSort = new Map<string, number>();
