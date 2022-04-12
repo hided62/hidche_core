@@ -256,7 +256,7 @@ function processWar_NG(
             }
         }
 
-        if ($defender->getPhase() == 0) {
+        if ($defender->getPhase() == 0 && $defender->getOppose() == null) {
             $defender->setPrePhase($attacker->getPhase());
 
             $attacker->addTrain(1);
@@ -421,7 +421,7 @@ function processWar_NG(
                 $defender->getLogger()->pushGeneralActionLog("전멸했습니다.", ActionLogger::PLAIN);
             }
 
-            if ($attacker->getPhase() == $attacker->getMaxPhase()) {
+            if ($attacker->getPhase() >= $attacker->getMaxPhase()) {
                 break;
             }
 
@@ -434,7 +434,7 @@ function processWar_NG(
         }
     }
 
-    if ($attacker->getPhase() == $attacker->getMaxPhase()) {
+    if ($attacker->getPhase() >= $attacker->getMaxPhase()) {
         //마지막 페이즈의 전투 마무리
         $attacker->logBattleResult();
         $defender->logBattleResult();
