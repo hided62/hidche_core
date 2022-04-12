@@ -14,16 +14,23 @@ export function APIPathGen(obj, callback, path, pathParams) {
             }
 
             const varType = target.__nextVarType;
-            const varKey = target.__nextVarKey;
+            let varKey = target.__nextVarKey;
             let next;
             if (varType !== undefined && varKey !== undefined) {
-                if (typeof key !== varType) {
-                    throw `${key} is not ${varType}`;
+                if(varType == 'number'){
+                    if(key != Number(key)){
+                        throw `${key} is not ${varType}`;
+                    }
+                    key = Number(key);
+                }
+                else if ((typeof key) !== varType) {
+                    throw `${key} is not ${varType}, but ${typeof key}`;
                 }
                 if(pathParams === undefined){
                     pathParams = {}
                 }
                 pathParams[varKey] = key;
+                nextPath.pop();
                 next = target.next;
             }
             else if (key in target) {
