@@ -1,7 +1,9 @@
 <?php
+
 namespace sammo;
 
-class WarUnit{
+class WarUnit
+{
 
     protected $general;
     protected $rawNation;
@@ -31,32 +33,39 @@ class WarUnit{
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
-    private function __construct(General $general){
+    private function __construct(General $general)
+    {
         $this->general = $general;
     }
 
     /* XXX:Dirty wrapper */
-    function getRaw():array{
+    function getRaw(): array
+    {
         return $this->general->getRaw();
     }
 
-    function getVar(string $key){
+    function getVar(string $key)
+    {
         return $this->general->getVar($key);
     }
 
-    function touchVar(string $key):bool{
+    function touchVar(string $key): bool
+    {
         return $this->general->touchVar($key);
     }
 
-    function setVar(string $key, $value){
+    function setVar(string $key, $value)
+    {
         return $this->general->setVar($key, $value);
     }
 
-    function updateVar(string $key, $value){
+    function updateVar(string $key, $value)
+    {
         return $this->general->updateVar($key, $value);
     }
 
-    function updateVarWithLimit(string $key, $value, $min = null, $max = null){
+    function updateVarWithLimit(string $key, $value, $min = null, $max = null)
+    {
         return $this->general->updateVarWithLimit($key, $value, $min, $max);
     }
 
@@ -65,7 +74,8 @@ class WarUnit{
         return $this->general->increaseVar($key, $value);
     }
 
-    function increaseVarWithLimit(string $key, $value, $min = null, $max = null){
+    function increaseVarWithLimit(string $key, $value, $min = null, $max = null)
+    {
         return $this->general->increaseVarWithLimit($key, $value, $min, $max);
     }
 
@@ -74,170 +84,203 @@ class WarUnit{
         return $this->general->multiplyVar($key, $value);
     }
 
-    function multiplyVarWithLimit(string $key, $value, $min = null, $max = null){
+    function multiplyVarWithLimit(string $key, $value, $min = null, $max = null)
+    {
         return $this->general->multiplyVarWithLimit($key, $value, $min, $max);
     }
 
-    function getUpdatedValues():array {
+    function getUpdatedValues(): array
+    {
         return $this->general->getUpdatedValues();
     }
 
-    function flushUpdateValues():void {
+    function flushUpdateValues(): void
+    {
         $this->general->flushUpdateValues();
     }
-    
-    protected function clearActivatedSkill(){
-        foreach($this->activatedSkill as $skillName=>$state){
-            if(!$state){
+
+    protected function clearActivatedSkill()
+    {
+        foreach ($this->activatedSkill as $skillName => $state) {
+            if (!$state) {
                 continue;
             }
 
-            if(!key_exists($skillName, $this->logActivatedSkill)){
+            if (!key_exists($skillName, $this->logActivatedSkill)) {
                 $this->logActivatedSkill[$skillName] = 1;
-            }
-            else{
+            } else {
                 $this->logActivatedSkill[$skillName] += 1;
             }
         }
         $this->activatedSkill = [];
     }
 
-    function getActivatedSkillLog():array{
+    function getActivatedSkillLog(): array
+    {
         return $this->logActivatedSkill;
     }
 
-    function getRawNation():array{
+    function getRawNation(): array
+    {
         return $this->rawNation;
     }
 
-    function getNationVar(string $key){
+    function getNationVar(string $key)
+    {
         return $this->rawNation[$key];
     }
 
-    function getPhase():int{
+    function getPhase(): int
+    {
         return $this->currPhase;
     }
 
-    function getRealPhase():int{
+    function getRealPhase(): int
+    {
         return $this->prePhase + $this->currPhase;
     }
 
-    function getName():string{
+    function getName(): string
+    {
         return 'EMPTY';
     }
 
-    function isAttacker():bool{
+    function isAttacker(): bool
+    {
         return $this->isAttacker;
     }
 
-    function getCrewType():GameUnitDetail{
+    function getCrewType(): GameUnitDetail
+    {
         return $this->crewType;
     }
 
-    function getCrewTypeName():string{
+    function getCrewTypeName(): string
+    {
         return $this->getCrewType()->name;
     }
 
-    function getCrewTypeShortName():string{
+    function getCrewTypeShortName(): string
+    {
         return $this->getCrewType()->getShortName();
     }
 
-    function getLogger():ActionLogger{
+    function getLogger(): ActionLogger
+    {
         $logger = $this->getGeneral()->getLogger();
-        if($logger === null){
+        if ($logger === null) {
             throw new \RuntimeException();
         }
         return $logger;
     }
 
-    function getKilled():int{
+    function getKilled(): int
+    {
         return $this->killed;
     }
 
-    function getDead():int{
+    function getDead(): int
+    {
         return $this->dead;
     }
 
-    function getKilledCurrentBattle():int{
+    function getKilledCurrentBattle(): int
+    {
         return $this->killedCurr;
     }
 
-    function getDeadCurrentBattle():int{
+    function getDeadCurrentBattle(): int
+    {
         return $this->deadCurr;
     }
 
-    function getGeneral():General{
+    function getGeneral(): General
+    {
         return $this->general;
     }
 
-    function getMaxPhase():int{
+    function getMaxPhase(): int
+    {
         $phase = $this->getCrewType()->speed;
         return $phase + $this->bonusPhase;
     }
 
-    function setPrePhase(int $phase){
+    function setPrePhase(int $phase)
+    {
         $this->prePhase = $phase;
     }
 
-    function addPhase(){
-        $this->currPhase += 1;
+    function addPhase(int $phase = 1)
+    {
+        $this->currPhase += $phase;
     }
 
-    function addBonusPhase(int $cnt){
+    function addBonusPhase(int $cnt)
+    {
         $this->bonusPhase += $cnt;
     }
 
-    function setOppose(?WarUnit $oppose){
+    function setOppose(?WarUnit $oppose)
+    {
         $this->oppose = $oppose;
         $this->killedCurr = 0;
         $this->deadCurr = 0;
         $this->clearActivatedSkill();
     }
 
-    function getOppose():?WarUnit{
+    function getOppose(): ?WarUnit
+    {
         return $this->oppose;
     }
 
-    function getWarPower(){
+    function getWarPower()
+    {
         return $this->warPower * $this->warPowerMultiply;
     }
 
-    function getRawWarPower(){
+    function getRawWarPower()
+    {
         return $this->warPower;
     }
 
-    function getWarPowerMultiply(){
+    function getWarPowerMultiply()
+    {
         return $this->warPowerMultiply;
     }
-    
-    function setWarPowerMultiply($multiply = 1.0){
+
+    function setWarPowerMultiply($multiply = 1.0)
+    {
         $this->warPowerMultiply = $multiply;
     }
 
-    function multiplyWarPowerMultiply($multiply){
+    function multiplyWarPowerMultiply($multiply)
+    {
         $this->warPowerMultiply *= $multiply;
     }
 
-    function getComputedAttack(){
+    function getComputedAttack()
+    {
         return $this->getCrewType()->getComputedAttack($this->general, $this->getNationVar('tech'));
     }
 
-    function getComputedDefence(){
+    function getComputedDefence()
+    {
         return $this->getCrewType()->getComputedDefence($this->general, $this->getNationVar('tech'));
     }
 
-    function computeWarPower(){
+    function computeWarPower()
+    {
         $oppose = $this->getOppose();
         $general = $this->general;
         $opposeGeneral = $oppose->getGeneral();
 
         $myAtt = $this->getComputedAttack();
         $opDef = $oppose->getComputedDefence();
-        // 감소할 병사 
+        // 감소할 병사
         $warPower = GameConst::$armperphase + $myAtt - $opDef;
         $opposeWarPowerMultiply = 1.0;
 
-        if($warPower < 100){
+        if ($warPower < 100) {
             //최소 전투력 50 보장
             $warPower = max(0, $warPower);
             $warPower = ($warPower + 100) / 2;
@@ -248,11 +291,11 @@ class WarUnit{
         $warPower /= $oppose->getComputedTrain();
 
         $genDexAtt = $this->getDex($this->getCrewType(), true);
-        
+
         $oppDexDef = $oppose->getDex($this->getCrewType(), false);
-        
+
         $warPower *= getDexLog($genDexAtt, $oppDexDef);
-        
+
         $warPower *= $this->getCrewType()->getAttackCoef($oppose->getCrewType());
         $opposeWarPowerMultiply *= $this->getCrewType()->getDefenceCoef($oppose->getCrewType());
 
@@ -262,117 +305,143 @@ class WarUnit{
         return [$warPower, $opposeWarPowerMultiply];
     }
 
-    function addTrain(int $train){
+    function addTrain(int $train)
+    {
         return;
     }
 
-    function addAtmos(int $atmos){
+    function addAtmos(int $atmos)
+    {
         return;
     }
 
-    function addTrainBonus(int $trainBonus){
+    function addTrainBonus(int $trainBonus)
+    {
         $this->trainBonus += $trainBonus;
     }
 
-    function addAtmosBonus(int $atmosBonus){
+    function addAtmosBonus(int $atmosBonus)
+    {
         $this->atmosBonus += $atmosBonus;
     }
 
-    function getComputedTrain(){
+    function getComputedTrain()
+    {
         return GameConst::$maxTrainByCommand;
     }
 
-    function getComputedAtmos(){
+    function getComputedAtmos()
+    {
         return GameConst::$maxAtmosByCommand;
     }
 
-    function getComputedCriticalRatio():float{
+    function getComputedCriticalRatio(): float
+    {
         return $this->getCrewType()->getCriticalRatio($this->general);
     }
 
-    function getComputedAvoidRatio():float{
+    function getComputedAvoidRatio(): float
+    {
         return $this->getCrewType()->avoid / 100;
     }
 
-    function addWin(){
+    function addWin()
+    {
     }
 
-    function addLose(){
+    function addLose()
+    {
     }
 
-    function getDex(GameUnitDetail $crewType){
+    function getDex(GameUnitDetail $crewType)
+    {
         throw new NotInheritedMethodException();
     }
 
-    function finishBattle(){
+    function finishBattle()
+    {
         throw new NotInheritedMethodException();
     }
 
-    function beginPhase():void{
+    function beginPhase(): void
+    {
         $this->clearActivatedSkill();
         $this->computeWarPower();
     }
 
-    function hasActivatedSkill(string $skillName):bool{
-        return $this->activatedSkill[$skillName]??false;
+    function hasActivatedSkill(string $skillName): bool
+    {
+        return $this->activatedSkill[$skillName] ?? false;
     }
 
-    function hasActivatedSkillOnLog(string $skillName):int{
-        return ($this->logActivatedSkill[$skillName]??0)+($this->hasActivatedSkill($skillName)?1:0);
+    function hasActivatedSkillOnLog(string $skillName): int
+    {
+        return ($this->logActivatedSkill[$skillName] ?? 0) + ($this->hasActivatedSkill($skillName) ? 1 : 0);
     }
 
-    function activateSkill(... $skillNames){
-        foreach($skillNames as $skillName){
+    function activateSkill(...$skillNames)
+    {
+        foreach ($skillNames as $skillName) {
             $this->activatedSkill[$skillName] = true;
         }
     }
 
-    function deactivateSkill(... $skillNames){
-        foreach($skillNames as $skillName){
+    function deactivateSkill(...$skillNames)
+    {
+        foreach ($skillNames as $skillName) {
             $this->activatedSkill[$skillName] = false;
         }
     }
 
-    function getHP():int{
+    function getHP(): int
+    {
         throw new NotInheritedMethodException();
     }
 
-    function decreaseHP(int $damage):int{
+    function decreaseHP(int $damage): int
+    {
         $this->dead += $damage;
         throw new NotInheritedMethodException();
     }
 
-    function increaseKilled(int $damage):int{
+    function increaseKilled(int $damage): int
+    {
         $this->killed += $damage;
         throw new NotInheritedMethodException();
     }
 
-    function calcDamage():int{
+    function calcDamage(): int
+    {
         $warPower = $this->getWarPower();
         $warPower *= Util::randRange(0.9, 1.1);
         return Util::round($warPower);
     }
 
-    function tryWound():bool{
+    function tryWound(): bool
+    {
         return false;
     }
 
-    function continueWar(&$noRice):bool{
+    function continueWar(&$noRice): bool
+    {
         //전투가 가능하면 true
         $noRice = false;
         return false;
     }
 
-    function logBattleResult(){
+    function logBattleResult()
+    {
         $this->getLogger()->pushBattleResultTemplate($this, $this->getOppose());
     }
 
-    function criticalDamage():float{
+    function criticalDamage(): float
+    {
         //전특, 병종에 따라 필살 데미지가 달라질지도 모르므로 static 함수는 아닌 것으로
         return Util::randRange(1.3, 2.0);
     }
 
-    function applyDB(\MeekroDB $db):bool{
+    function applyDB(\MeekroDB $db): bool
+    {
         throw new MustNotBeReachedException('Must be WarUnitCity or WarUnitGeneral');
     }
 }

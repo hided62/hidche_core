@@ -231,7 +231,7 @@ function processWar_NG(
     $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.");
     $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
-    for ($currPhase = 0; $currPhase < $attacker->getMaxPhase(); $currPhase += 1) {
+    while($attacker->getPhase() < $attacker->getMaxPhase()){
         if ($defender === null) {
             $defender = $city;
 
@@ -257,7 +257,7 @@ function processWar_NG(
         }
 
         if ($defender->getPhase() == 0) {
-            $defender->setPrePhase($currPhase);
+            $defender->setPrePhase($attacker->getPhase());
 
             $attacker->addTrain(1);
             $defender->addTrain(1);
@@ -347,15 +347,22 @@ function processWar_NG(
         $attacker->increaseKilled($deadDefender);
         $defender->increaseKilled($deadAttacker);
 
-        $phaseNickname = $currPhase + 1;
+        if($defender->getPhase() < 0){
+            $phaseNickname = '先';
+        }
+        else{
+            $currPhase = $attacker->getPhase() + 1;
+            $phaseNickname = "{$currPhase} ";
+        }
+
 
         if ($deadAttacker > 0 || $deadDefender > 0) {
             $attacker->getLogger()->pushGeneralBattleDetailLog(
-                "$phaseNickname : <Y1>【{$attacker->getName()}】</> <C>{$attacker->getHP()} (-$deadAttacker)</> VS <C>{$defender->getHP()} (-$deadDefender)</> <Y1>【{$defender->getName()}】</>"
+                "$phaseNickname: <Y1>【{$attacker->getName()}】</> <C>{$attacker->getHP()} (-$deadAttacker)</> VS <C>{$defender->getHP()} (-$deadDefender)</> <Y1>【{$defender->getName()}】</>"
             );
 
             $defender->getLogger()->pushGeneralBattleDetailLog(
-                "$phaseNickname : <Y1>【{$defender->getName()}】</> <C>{$defender->getHP()} (-$deadDefender)</> VS <C>{$attacker->getHP()} (-$deadAttacker)</> <Y1>【{$attacker->getName()}】</>"
+                "$phaseNickname: <Y1>【{$defender->getName()}】</> <C>{$defender->getHP()} (-$deadDefender)</> VS <C>{$attacker->getHP()} (-$deadAttacker)</> <Y1>【{$attacker->getName()}】</>"
             );
         }
 
@@ -414,7 +421,7 @@ function processWar_NG(
                 $defender->getLogger()->pushGeneralActionLog("전멸했습니다.", ActionLogger::PLAIN);
             }
 
-            if ($currPhase + 1 == $attacker->getMaxPhase()) {
+            if ($attacker->getPhase() == $attacker->getMaxPhase()) {
                 break;
             }
 
@@ -427,7 +434,7 @@ function processWar_NG(
         }
     }
 
-    if ($currPhase == $attacker->getMaxPhase()) {
+    if ($attacker->getPhase() == $attacker->getMaxPhase()) {
         //마지막 페이즈의 전투 마무리
         $attacker->logBattleResult();
         $defender->logBattleResult();
