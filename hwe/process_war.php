@@ -231,7 +231,10 @@ function processWar_NG(
     $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.");
     $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
+    $logWritten = false;
+
     while($attacker->getPhase() < $attacker->getMaxPhase()){
+        $logWritten = false;
         if ($defender === null) {
             $defender = $city;
 
@@ -371,6 +374,8 @@ function processWar_NG(
         $defender->addPhase();
 
         if (!$attacker->continueWar($noRice)) {
+            $logWritten = true;
+
             $attacker->logBattleResult();
             $defender->logBattleResult();
 
@@ -393,6 +398,7 @@ function processWar_NG(
         }
 
         if (!$defender->continueWar($noRice)) {
+            $logWritten = true;
 
             $attacker->logBattleResult();
             $defender->logBattleResult();
@@ -434,7 +440,7 @@ function processWar_NG(
         }
     }
 
-    if ($attacker->getPhase() >= $attacker->getMaxPhase()) {
+    if (!$logWritten) {
         //마지막 페이즈의 전투 마무리
         $attacker->logBattleResult();
         $defender->logBattleResult();
