@@ -418,7 +418,7 @@ async function submitBet(): Promise<void> {
   }
 
   const bettingID = bettingInfo.id;
-  const bettingType = JSON.parse(pickedBetTypeKey.value);
+  const bettingType = JSON.parse(pickedBetTypeKey.value) as number[];
   const amount = betPoint.value;
   try {
     await SammoAPI.Betting.Bet({

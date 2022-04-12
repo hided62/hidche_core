@@ -456,12 +456,12 @@ const inheritRequiredPoint = computed(() => {
 
 const toggleZoom = ref(true);
 
-const displayTable = ref(JSON.parse(localStorage.getItem(`conf.${serverID}.join.displayTable`) ?? "true"));
+const displayTable = ref<boolean>(JSON.parse(localStorage.getItem(`conf.${serverID}.join.displayTable`) ?? "true"));
 watch(displayTable, (newValue: boolean) => {
   localStorage.setItem(`conf.${serverID}.join.displayTable`, JSON.stringify(newValue));
 });
 
-const displayInherit = ref(JSON.parse(localStorage.getItem(`conf.${serverID}.join.displayInherit`) ?? "true"));
+const displayInherit = ref<boolean>(JSON.parse(localStorage.getItem(`conf.${serverID}.join.displayInherit`) ?? "true"));
 watch(displayInherit, (newValue: boolean) => {
   localStorage.setItem(`conf.${serverID}.join.displayInherit`, JSON.stringify(newValue));
 });

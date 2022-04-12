@@ -39,7 +39,7 @@ function getToken(): [number, string] | undefined {
     if (!trialToken) {
         return;
     }
-    const tokenItems = JSON.parse(trialToken);
+    const tokenItems = JSON.parse(trialToken) as [number, [number, string], string];
     if (tokenItems[0] != TOKEN_VERSION) {
         console.log(tokenItems);
         resetToken();
