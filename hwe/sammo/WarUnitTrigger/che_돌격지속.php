@@ -20,11 +20,14 @@ class che_돌격지속 extends BaseWarUnitTrigger{
         if(!$self->isAttacker()){
             return true;
         }
-        if($self->getPhase() < $self->getMaxPhase() - 1){
-            return true;
-        }
         $attackCoef = $self->getCrewType()->getAttackCoef($oppose->getCrewType());
         if($attackCoef < 1){
+            if($oppose->hasActivatedSkill('선제') && $self->getPhase() >= $self->getMaxPhase() - 2){
+                $self->addBonusPhase(-1);
+            }
+            return true;
+        }
+        if($self->getPhase() < $self->getMaxPhase() - 1){
             return true;
         }
         $self->addBonusPhase(1);
