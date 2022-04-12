@@ -155,6 +155,19 @@ class Betting
         }
 
         if ($subAmount == 0) {
+            $refundList = [];
+            //당첨자가 아무도 없다면 무효로 하자.
+            foreach ($db->queryAllLists(
+                'SELECT general_id, user_id, amount, betting_type FROM ng_betting WHERE betting_id = %i',
+                $this->bettingID
+            ) as [$generalID, $userID, $amount, $bettingTypeKey]) {
+                $refundList[] = [
+                    'generalID' => $generalID,
+                    'userID' => $userID,
+                    'amount' => $amount,
+                    'matchPoint' => 0,
+                ];
+            }
             return [];
         }
 
@@ -233,8 +246,12 @@ class Betting
         }
 
         $remainRewardAmount = $totalAmount;
+        $accumulatedRewardAmount = 0;
+        $givenRewardAmount = $totalAmount;
         $rewardAmount = [];
         foreach (Util::range($selectCnt, 0, -1) as $matchPoint) {
+            $givenRewardAmount /= 2;
+            $accumulatedRewardAmount += $givenRewardAmount;
             if (count($subWinners[$matchPoint]) == 0) {
                 continue;
             }
@@ -242,17 +259,21 @@ class Betting
                 continue;
             }
 
-            $givenRewardAmount = $remainRewardAmount / 2;
-            $rewardAmount[$matchPoint] = $givenRewardAmount;
-            $remainRewardAmount -= $givenRewardAmount; // /2가 아니라 다른 값이 될 경우를 대비..
+            $rewardAmount[$matchPoint] = $accumulatedRewardAmount;
+            $remainRewardAmount -= $accumulatedRewardAmount;
+            $accumulatedRewardAmount = 0;
         }
 
-        foreach (Util::range(1, $selectCnt + 1) as $matchPoint) {
-            if (!key_exists($matchPoint, $rewardAmount)) {
-                continue;
+        //남은 상금은 '당첨자'에게 몰아준다.
+        //당첨자가 아무도 없다면, 0개 맞춘 그룹에게 돌아간다.
+        if($rewardAmount){
+            foreach(Util::range($selectCnt, -1, -1) as $matchPoint){
+                if (!key_exists($matchPoint, $rewardAmount)) {
+                    continue;
+                }
+                $rewardAmount[$matchPoint] += $rewardAmount;
+                break;
             }
-            $rewardAmount[$matchPoint] += $remainRewardAmount;
-            break;
         }
 
         $result = [];

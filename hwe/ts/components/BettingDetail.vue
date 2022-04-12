@@ -256,18 +256,23 @@ function calcReward() {
   }
 
   let remainRewardAmount = bettingAmount.value;
+  let accumulatedRewardAmount = 0;
+  let givenRewardAmount = bettingAmount.value;
 
   for (const matchPoint of range(selectCnt, 0, -1)) {
+    givenRewardAmount /= 2;
+    accumulatedRewardAmount += givenRewardAmount;
     if (!subAmount.has(matchPoint)) {
       continue;
     }
-
-    const givenRewardAmount = remainRewardAmount / 2;
-    rewardAmount[matchPoint] = givenRewardAmount;
-    remainRewardAmount -= givenRewardAmount; // /2가 아니라 다른 값이 될 경우를 대비..
+    rewardAmount[matchPoint] = accumulatedRewardAmount;
+    remainRewardAmount -= accumulatedRewardAmount;
+    accumulatedRewardAmount = 0;
   }
 
-  for (const matchPoint of range(1, selectCnt + 1)) {
+  //남은 상금은 '당첨자'에게 몰아준다.
+  //당첨자가 아무도 없다면, 0개 맞춘 그룹에게 돌아간다.
+  for (const matchPoint of range(selectCnt, -1, -1)) {
     if (!subAmount.has(matchPoint)) {
       continue;
     }
