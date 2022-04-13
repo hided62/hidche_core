@@ -65,22 +65,22 @@ class TriggerOfficerLevel implements iAction{
         $warPowerMultiply = 1;
         $opposeWarPowerMultiply = 1;
         if ($officerLevel == 12) {
+            $warPowerMultiply = 1.07;
+            $opposeWarPowerMultiply = 0.93;
+        }
+        else if($officerLevel == 11){
             $warPowerMultiply = 1.05;
             $opposeWarPowerMultiply = 0.95;
         }
-        else if($officerLevel == 11){
-            $warPowerMultiply = 1.03;
-            $opposeWarPowerMultiply = 0.97;
-        }
         else if(in_array($officerLevel, [10, 8, 6])){
-            $warPowerMultiply = 1.03;
+            $warPowerMultiply = 1.10;
         }
         else if(in_array($officerLevel, [9, 7, 5])){
-            $opposeWarPowerMultiply = 0.97;
+            $opposeWarPowerMultiply = 0.90;
         }
         else if(in_array($officerLevel, [4, 3, 2])){
-            $warPowerMultiply = 1.015;
-            $opposeWarPowerMultiply = 0.985;
+            $warPowerMultiply = 1.05;
+            $opposeWarPowerMultiply = 0.95;
         }
         return [$warPowerMultiply, $opposeWarPowerMultiply];
     }
