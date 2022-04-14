@@ -44,22 +44,21 @@ if ($scenarioIdx && key_exists($scenarioIdx, $scenarioList[$seasonIdx] ?? [])) {
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1136" />
+    <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 명예의 전당</title>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('css/hallOfFame.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printDist('ts', ['common', 'hallOfFame']) ?>
 </head>
 
 <body>
-    <table align=center width=1100 class='tb_layout bg0'>
-        <tr>
-            <td>명 예 의 전 당<br><?= closeButton() ?></td>
-        </tr>
-        <tr>
-            <td>
+    <div id="container" class="bg0">
+        <div class="row gx-0">
+            <div class="col">명 예 의 전 당<br><?= closeButton() ?></div>
+        </div>
+        <div class="row gx-0">
+            <div class="col center">
                 시나리오 검색 : <select id="by_scenario" name="by_scenario">
                     <?php foreach ($scenarioList as $iterSeasonIdx => $subScenarioList) : ?>
                         <option data-season="<?= $iterSeasonIdx ?>" value="" <?= ($iterSeasonIdx == $seasonIdx && $scenarioIdx === null) ? "selected='selected'" : '' ?>>* 시즌 : <?= $iterSeasonIdx ?> 종합 *</option>
@@ -69,10 +68,8 @@ if ($scenarioIdx && key_exists($scenarioIdx, $scenarioList[$seasonIdx] ?? [])) {
                     <?php endforeach; ?>
                     ?>
                 </select>
-            </td>
-        </tr>
-    </table>
-    <div style="margin:auto;width:1100px;">
+            </div>
+        </div>
         <?php
         $types = [
             'experience' => ['명 성', 'int'],
@@ -156,15 +153,13 @@ if ($scenarioIdx && key_exists($scenarioIdx, $scenarioList[$seasonIdx] ?? [])) {
             ]);
         }
         ?>
+        <div class="row gx-0">
+            <div class="col"><?= closeButton() ?></div>
+        </div>
+        <div class="row bg0 gx-0">
+            <div class="col bg0"><?= banner() ?></div>
+        </div>
     </div>
-    <table align=center width=1100 class='tb_layout bg0'>
-        <tr>
-            <td><?= closeButton() ?></td>
-        </tr>
-        <tr>
-            <td><?= banner() ?> </td>
-        </tr>
-    </table>
 </body>
 
 </html>

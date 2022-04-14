@@ -6,6 +6,7 @@
         "install": "install.ts",
         "battle_simulator": "battle_simulator.ts",
         "battleCenter": "battleCenter.ts",
+        "bestGeneral": "bestGeneral.ts",
         "recent_map": "recent_map.ts",
         "select_npc": "select_npc.ts",
         "betting": "betting.ts",

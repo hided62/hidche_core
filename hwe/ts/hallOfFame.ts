@@ -1,9 +1,15 @@
+import "@scss/hallOfFame.scss";
+
 import $ from 'jquery';
 import { stringifyUrl } from 'query-string';
 import { initTooltip } from "@/legacy/initTooltip";
-import 'bootstrap';
+import { auto500px } from './util/auto500px';
+import { htmlReady } from './util/htmlReady';
+import { insertCustomCSS } from './util/customCSS';
 
-$(function ($) {
+auto500px();
+
+htmlReady(() => {
     $('#by_scenario').on('change', function (e) {
         e.preventDefault();
 
@@ -18,6 +24,6 @@ $(function ($) {
             }
         });
     })
-
     initTooltip();
+    insertCustomCSS();
 });

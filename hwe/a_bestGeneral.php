@@ -24,32 +24,26 @@ $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1136" />
+    <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 명장일람</title>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printCSS('css/hallOfFame.css') ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
-    <?= WebUtil::printDist('ts', 'common') ?>
+    <?= WebUtil::printDist('ts', ['common', 'bestGeneral']) ?>
 </head>
 
 <body>
-    <table align=center width=1100 class='tb_layout bg0'>
-        <tr>
-            <td>명 장 일 람<br><?= closeButton() ?></td>
-        </tr>
-    </table>
-    <table align=center width=1100 class='tb_layout bg0'>
-        <form name=form1 action=a_bestGeneral.php method=post>
-            <tr>
-                <td align=center>
-                    <input type=submit name=btn value='유저 보기'>
+    <div id="container" class="bg0">
+        <div class="row gx-0">
+            <div class="col">명 장 일 람<br><?= closeButton() ?></div>
+        </div>
+        <div class="row gx-0">
+            <div class="col center">
+                <form name=form1 action=a_bestGeneral.php method=get><input type=submit name=btn value='유저 보기'>
                     <input type=submit name=btn value='NPC 보기'>
-                </td>
-            </tr>
-        </form>
-    </table>
-    <div style="margin:auto;width:1100px;">
+                </form>
+            </div>
+        </div>
         <?php
 
         $ownerNameList = [];
@@ -274,10 +268,6 @@ $templates = new \League\Plates\Engine(__DIR__ . '/templates');
                 'generals' => array_slice($typeGenerals, 0, min(10, $validCnt))
             ]);
         }
-        ?>
-    </div>
-    <div style="margin:auto;width:1100px;margin-top:5px;">
-        <?php
         //유니크 아이템 소유자
         $itemTypes = [
             'horse' => '명 마',
@@ -369,15 +359,13 @@ $templates = new \League\Plates\Engine(__DIR__ . '/templates');
             ]);
         }
         ?>
+        <div class="row gx-0">
+            <div class="col"><?= closeButton() ?></div>
+        </div>
+        <div class="row bg0 gx-0">
+            <div class="col bg0"><?= banner() ?></div>
+        </div>
     </div>
-    <table align=center width=1100 class='tb_layout bg0'>
-        <tr>
-            <td><?= closeButton() ?></td>
-        </tr>
-        <tr>
-            <td><?= banner() ?> </td>
-        </tr>
-    </table>
 </body>
 
 </html>

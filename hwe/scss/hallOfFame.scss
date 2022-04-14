@@ -1,0 +1,114 @@
+@import "./common/bootstrap5.scss";
+@import "./common_legacy.scss";
+
+@include media-1000px{
+    #container {
+        width: 1000px;
+        margin: 0 auto;
+        font-size: 14px;
+    }
+}
+@include media-500px{
+    body {
+        overflow-x: hidden;
+    }
+
+    #container {
+        width: 500px;
+        margin: 0 auto;
+        margin-bottom: 100px;
+        font-size: 14px;
+    }
+}
+
+.rankView {
+    margin:auto;
+    position:relative;
+}
+
+.rankView h3{
+    text-align:center;
+    margin:0;
+    padding:2px;
+    border-bottom:1px solid gray;
+}
+
+.rankView ul{
+    list-style:none;
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    margin-top:-1px;
+    margin-bottom:-1px;
+}
+
+.rankView li{
+    flex: 0 0 auto;
+    width: 100px;
+    vertical-align: top;
+    height:149px;
+    text-align:center;
+    border-right:1px solid gray;
+    border-top:1px solid gray;
+    margin:0;
+    box-sizing: border-box;
+}
+
+.rankView li.no_value{
+    height:128px;
+}
+
+.rankView li.has_server {
+    height:168px;
+}
+
+.rankView li.no_value.has_server {
+    height:146px;
+}
+
+.rankView .hall_server{
+    border-top:1px solid gray;
+}
+
+.rankView .tooltip .tooltiptext{
+    width:220px;
+    margin-left: -110px;
+}
+
+
+
+.rankView .no_value .hall_value{
+    display:none;
+}
+
+.rankView .hall_nation{
+    font-size:11px;
+    border-top:1px solid gray;
+    border-bottom:1px solid gray;
+}
+
+.rankView .hall_name{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    resize: vertical;
+    font-size:11px;
+    height:28px;
+}
+
+.rankView .hall_name p{
+    padding:0;
+    margin:0;
+}
+
+.rankView .hall_owner{
+    font-size:95%;
+}
+
+.rankView .hall_value{
+    line-height:13px;
+    box-sizing: border-box;
+    border-top:1px solid gray;
+    padding-top:3px;
+    padding-bottom:3px;
+}
