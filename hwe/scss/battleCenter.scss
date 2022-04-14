@@ -1,0 +1,35 @@
+@import "./common/bootstrap5.scss";
+@import "./common_legacy.scss";
+
+@include media-1000px{
+  #container {
+      width: 1000px;
+      margin: 0 auto;
+
+      > .row > .col, .layout-block{
+          border-left: solid 1px gray;
+          border-right: solid 1px gray;
+          border-top: solid 1px gray;
+      }
+
+
+  }
+}
+@include media-500px{
+  body {
+      overflow-x: hidden;
+  }
+
+  #container {
+      width: 500px;
+      margin: 0 auto;
+      margin-bottom: 100px;
+  }
+}
+
+.header-cell {
+  color: orange;
+  font-size:1.3em;
+  text-align: center;
+  border: 1px gray solid;
+}

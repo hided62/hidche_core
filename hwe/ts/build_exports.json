@@ -5,6 +5,7 @@
         "install_db": "install_db.ts",
         "install": "install.ts",
         "battle_simulator": "battle_simulator.ts",
+        "battleCenter": "battleCenter.ts",
         "recent_map": "recent_map.ts",
         "select_npc": "select_npc.ts",
         "betting": "betting.ts",

@@ -74,7 +74,7 @@ if ($testGeneralNationID != $nationID) {
     $gen = 0;
 }
 
-if ($btn == '정렬하기') {
+if ($btn == '정렬') {
     $gen = 0;
 }
 
@@ -118,21 +118,20 @@ $showGeneral = General::createGeneralObjFromDB($gen);
     <title><?= UniqueConst::$serverName ?>: 감찰부</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1024" />
+    <meta name="viewport" content="width=500" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-    <?= WebUtil::printDist('ts', ['common']) ?>
-
+    <?= WebUtil::printDist('ts', ['battleCenter']) ?>
 </head>
 
 <body>
-    <table align=center width=1000 class='tb_layout bg0'>
-        <tr>
-            <td>감 찰 부<br><?= closeButton() ?></td>
-        </tr>
-        <tr>
-            <td>
+    <div id="container" class="bg0">
+        <div class="row gx-0">
+            <div class="col">감 찰 부<br><?= closeButton() ?></div>
+        </div>
+        <div class="row gx-0">
+            <div class="col-12" style="border-left: solid 1px gray; border-right:solid 1px gray;">
                 <form name=form1 method=get>
                     정렬순서 :
                     <select name='query_type' size=1>
@@ -140,78 +139,70 @@ $showGeneral = General::createGeneralObjFromDB($gen);
                             <option <?= $queryType == $reqQueryType ? 'selected' : '' ?> value='<?= $queryType ?>'><?= $queryTypeText ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <input type=submit name=btn value='정렬하기'>
+                    <input type=submit name=btn value='정렬'>
                     대상장수 :
                     <select name=gen size=1>
                         <?php foreach ($generalBasicList as $general) : ?>
                             <option <?= $gen == $general['no'] ? 'selected' : '' ?> value='<?= $general['no'] ?>'><?= $general['officer_level'] > 4 ? "*{$general['name']}*" : $general['name'] ?> (<?= substr($general['turntime'], 14, 5) ?>)</option>
                         <?php endforeach; ?>
                     </select>
-                    <input type=submit name=btn value='조회하기'>
+                    <input type=submit name=btn value='조회'>
                 </form>
-            </td>
-        </tr>
-    </table>
-    <table width=1000 align=center class='tb_layout bg0'>
-        <tr>
-            <td width=50% align=center class='bg1'>
-                <font color=skyblue size=3>장 수 정 보</font>
-            </td>
-            <td width=50% align=center class='bg1'>
-                <font color=orange size=3>장 수 열 전</font>
-            </td>
-        </tr>
-        <tr>
-            <td valign=top>
-                <?php generalInfo($showGeneral);
-                generalInfo2($showGeneral); ?>
-            </td>
-            <td valign=top>
-                <?= formatHistoryToHTML(getGeneralHistoryLogAll($gen)) ?>
-            </td>
-        </tr>
-        <tr>
-            <td align=center class='bg1'>
-                <font color=orange size=3>전투 기록</font>
-            </td>
-            <td align=center class='bg1'>
-                <font color=orange size=3>전투 결과</font>
-            </td>
-        </tr>
-        <tr>
-            <td valign=top>
-                <?= formatHistoryToHTML(getBattleDetailLogRecent($gen, 24)) ?>
-            </td>
-            <td valign=top>
-                <?= formatHistoryToHTML(getBattleResultRecent($gen, 24)) ?>
-            </td>
-        </tr>
-        <?php if ($showGeneral->getNPCType() > 1 || $permission >= 2) : ?>
-            <tr>
-                <td align=center class='bg1'>
-                    <font color=orange size=3>개인 기록</font>
-                </td>
-                <td align=center class='bg1'>
-                    <font color=orange size=3>&nbsp;</font>
-                </td>
-            </tr>
-            <tr>
-                <td valign=top>
-                    <?= formatHistoryToHTML(getGeneralActionLogRecent($gen, 24)) ?>
-                </td>
-                <td valign=top>
-                </td>
-            </tr>
-        <?php endif; ?>
-    </table>
-    <table align=center width=1000 class='tb_layout bg0'>
-        <tr>
-            <td><?= closeButton() ?></td>
-        </tr>
-        <tr>
-            <td><?= banner() ?> </td>
-        </tr>
-    </table>
+            </div>
+            <div class="col col-12 col-md-6">
+                <div class="row mx-0">
+                    <div class="col bg1 header-cell" style="color:skyblue">장수 정보</div>
+                </div>
+                <div class="row">
+                    <div class="col"><?php generalInfo($showGeneral); ?><?php generalInfo2($showGeneral); ?></div>
+                </div>
+            </div>
+
+            <div class="col col-12 col-md-6">
+                <div class="row mx-0">
+                    <div class="col bg1 header-cell">장수 열전</div>
+                </div>
+                <div class="row">
+                    <div class="col"><?= formatHistoryToHTML(getGeneralHistoryLogAll($gen)) ?></div>
+                </div>
+            </div>
+
+            <div class="col col-12 col-md-6">
+                <div class="row mx-0">
+                    <div class="col bg1 header-cell">전투 기록</div>
+                </div>
+                <div class="row">
+                    <div class="col"><?= formatHistoryToHTML(getBattleDetailLogRecent($gen, 24)) ?></div>
+                </div>
+            </div>
+
+            <div class="col col-12 col-md-6">
+                <div class="row mx-0">
+                    <div class="col bg1 header-cell">전투 결과</div>
+                </div>
+                <div class="row">
+                    <div class="col"><?= formatHistoryToHTML(getBattleResultRecent($gen, 24)) ?></div>
+                </div>
+            </div>
+
+            <?php if ($showGeneral->getNPCType() > 1 || $permission >= 2) : ?>
+                <div class="col col-12 col-md-6">
+                    <div class="row mx-0">
+                        <div class="col bg1 header-cell">개인 기록</div>
+                    </div>
+                    <div class="row">
+                        <div class="col"><?= formatHistoryToHTML(getGeneralActionLogRecent($gen, 24)) ?></div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="row gx-0">
+            <div class="col "><?= backButton() ?></div>
+        </div>
+        <div class="row bg0 gx-0">
+            <div class="col bg0"><?= banner() ?></div>
+        </div>
+    </div>
 </body>
 
 </html>
