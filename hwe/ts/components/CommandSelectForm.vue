@@ -31,18 +31,20 @@
           @click="close(commandItem.value)"
         >
           <div class="commandItem">
-            <p :class="['center', 'my-0', commandItem.possible ? '' : 'commandImpossible']">
-              {{ commandItem.simpleName }}
-              <span v-if="commandItem.compensation > 0" class="compensatePositive">▲</span>
-              <span v-else-if="commandItem.compensation < 0" class="compensateNegative">▼</span>
-            </p>
-            <small class="center" :style="{ display: 'block' }">
-              {{
-                commandItem.title.startsWith(commandItem.simpleName)
-                  ? commandItem.title.substring(commandItem.simpleName.length)
-                  : commandItem.title
-              }}
-            </small>
+            <div class="commandBody">
+              <p :class="['center', 'my-0', commandItem.possible ? '' : 'commandImpossible']">
+                {{ commandItem.simpleName }}
+                <span v-if="commandItem.compensation > 0" class="compensatePositive">▲</span>
+                <span v-else-if="commandItem.compensation < 0" class="compensateNegative">▼</span>
+              </p>
+              <small class="center" :style="{ display: 'block' }">
+                {{
+                  commandItem.title.startsWith(commandItem.simpleName)
+                    ? commandItem.title.substring(commandItem.simpleName.length)
+                    : commandItem.title
+                }}
+              </small>
+            </div>
           </div>
         </div>
       </div>
@@ -207,5 +209,10 @@ defineExpose({
   cursor: pointer;
   padding: 0.1em;
   margin: 0;
+  min-height: 2.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 </style>
