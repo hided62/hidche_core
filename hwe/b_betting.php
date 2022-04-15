@@ -265,7 +265,6 @@ if ($str3) {
             for ($i = 0; $i < 8; $i++) {
                 echo "<td colspan=2>{$gen[$i]}</td>";
             }
-
             echo "
     </tr>
     <tr align=center>";
@@ -293,7 +292,11 @@ if ($str3) {
                     $line[$i] = "<font color=white>";
                 }
                 $gen[$i] = $general['name'];
-                $stat[$i] = $general[$tp];
+                if (array_key_exists($tp, $general)) {
+                  $stat[$i] = $general[$tp];
+                } else {
+                  $stat[$i] = "-";
+                }
             }
             for ($i = 0; $i < 8; $i++) {
                 $cent[$i] = $cent[$i] . "┻" . "</font>";
