@@ -271,7 +271,7 @@ class Betting
                 if (!key_exists($matchPoint, $rewardAmount)) {
                     continue;
                 }
-                $rewardAmount[$matchPoint] += $rewardAmount;
+                $rewardAmount[$matchPoint] += $remainRewardAmount;
                 break;
             }
         }
