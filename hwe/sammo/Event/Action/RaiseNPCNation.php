@@ -129,15 +129,7 @@ class RaiseNPCNation extends \sammo\Event\Action
 
     public function calcAvgTech(): int
     {
-        $techSum = 0;
-        $nationCnt = 0;
-        foreach (\sammo\getAllNationStaticInfo() as $nation) {
-            if ($nation['level'] == 0) {
-                continue;
-            }
-            $techSum += $nation['tech'];
-            $nationCnt += 1;
-        }
+        [$techSum, $nationCnt] = DB::db()->queryFirstList('SELECT sum(tech), COUNT(tech) FROM nation WHERE level > 0') ?? [0, 0];
         if ($nationCnt == 0) {
             return 0;
         }
@@ -182,7 +174,7 @@ class RaiseNPCNation extends \sammo\Event\Action
 
         foreach (pickGeneralFromPool(DB::db(), 0, $genCnt - 1) as $pickedNPC) {
             //대충 10년후부터 6년마다 절반?
-            $deadYear = $deadYearMin + Util::toInt(60 * (1 - log(Util::randRange(1, 1024), 2)/10));
+            $deadYear = $deadYearMin + Util::toInt(60 * (1 - log(Util::randRange(1, 1024), 2) / 10));
             $newNPC = $pickedNPC->getGeneralBuilder();
             $newNPC->setNationID($nationID)
                 ->setCityID($cityID)
