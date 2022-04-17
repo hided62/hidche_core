@@ -666,7 +666,7 @@ function getDexCall(int $dex) : string {
 
 function getDexLevel(int $dex) : int {
     if($dex < 0){
-        throw new \InvalidArgumentException();
+        return 0;
     }
 
     $retVal = 0;
