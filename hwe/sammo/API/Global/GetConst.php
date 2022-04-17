@@ -25,11 +25,6 @@ class GetConst extends \sammo\BaseAPI
 
     private ?string $cacheKey = null;
 
-    public function __construct(string $rootPath, array $args)
-    {
-        parent::__construct($rootPath, $args);
-    }
-
     public function validateArgs(): ?string
     {
         return null;
@@ -37,7 +32,7 @@ class GetConst extends \sammo\BaseAPI
 
     public function getRequiredSessionMode(): int
     {
-        return static::REQ_LOGIN;
+        return static::REQ_LOGIN | static::REQ_READ_ONLY;
     }
 
     public function findLastModified(): ?int
