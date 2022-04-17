@@ -229,3 +229,22 @@ export const diplomacyStateInfo: Record<diplomacyState, diplomacyInfo> = {
     2: { name: '통상' },
     7: { name: '불가침', color: 'green' },
 }
+
+//Map
+type MapCityCompact = [number, number, number, number, number, number];
+type MapNationCompact = [number, string, string, number];
+export type MapResult = {
+    result: true,
+    startYear: number,
+    year: number,
+    month: number,
+    cityList: MapCityCompact[],
+    nationList: MapNationCompact[],
+    spyList: Record<number, number>,
+    shownByGeneralList: number[],
+    myCity?: number,
+    myNation?: number,
+
+    theme?: string,
+    history?: string[],
+}

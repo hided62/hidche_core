@@ -1,4 +1,5 @@
 import type { CityID, CrewTypeID, GameCityDefault, GameConstType, GameUnitType, GameIActionKey, GameIActionCategory, GameIActionInfo } from "@/defs/GameObj";
+import type { MapResult } from "@/defs";
 
 export interface GetConstResponse {
     result: true;
@@ -33,4 +34,37 @@ export interface GetConstResponse {
             allItems: "item";
         };
     };
+}
+
+export type HistoryObj = {
+    server_id: string,
+    year: number;
+    month: number;
+    map: MapResult,
+    global_history: string[],
+    global_action: string[],
+    nations: {
+        capital: number,
+        cities: string[],
+        color: string,
+        gennum: number,
+        level: number,
+        name: string,
+        nation: number,
+        power: number,
+        type: GameIActionKey
+    }[],
+}
+
+export type GetHistoryResponse = {
+    result: true;
+    data: HistoryObj & {
+        hash: string;
+        //no: number,
+    };
+}
+
+export type GetCurrentHistoryResponse = {
+    result: true;
+    data: HistoryObj;
 }

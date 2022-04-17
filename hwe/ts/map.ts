@@ -2,7 +2,7 @@ import axios from 'axios';
 import $ from 'jquery';
 import { isNumber, merge } from 'lodash';
 import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
-import type { InvalidResponse } from '@/defs';
+import type { InvalidResponse, MapResult } from '@/defs';
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
@@ -27,9 +27,6 @@ declare global {
         formatCityInfo: (city: MapCityParsedRaw) => MapCityParsedRegionLevelText
     }
 }
-
-type MapCityCompact = [number, number, number, number, number, number];
-type MapNationCompact = [number, string, string, number];
 
 type MapCityParsedRaw = {
     id: number,
@@ -77,21 +74,6 @@ type MapNationParsed = {
     capital: number
 }
 
-type MapResult = {
-    result: true,
-    startYear: number,
-    year: number,
-    month: number,
-    cityList: MapCityCompact[],
-    nationList: MapNationCompact[],
-    spyList: Record<number, number>,
-    shownByGeneralList: number[],
-    myCity?: number,
-    myNation?: number,
-
-    theme?: string,
-    history?: string[],
-}
 type MapRawResult = InvalidResponse | MapResult;
 
 function is_touch_device(): boolean {
@@ -285,7 +267,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
     async function convertCityObjs(obj: MapResult): Promise<MapCityDrawable> {
         //원본 Obj는 굉장히 간소하게 온다, Object 형태로 변환해서 사용한다.
 
-        function toCityObj([id, level, state, nationID, region, supply]: MapCityCompact): MapCityParsedRaw {
+        function toCityObj([id, level, state, nationID, region, supply]: MapResult['cityList'][0]): MapCityParsedRaw {
             return {
                 id: id,
                 level: level,
@@ -296,7 +278,7 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
             };
         }
 
-        function toNationObj([id, name, color, capital]: MapNationCompact): MapNationParsed {
+        function toNationObj([id, name, color, capital]: MapResult['nationList'][0]): MapNationParsed {
             return {
                 id,
                 name,

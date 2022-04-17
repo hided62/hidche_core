@@ -4,7 +4,7 @@ import {
     type APITail, type APICallT, type RawArgType, type ValidResponse, type InvalidResponse
 } from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
-import { APIPathGen, NumVar } from "./util/APIPathGen.js";
+import { APIPathGen, NumVar, StrVar } from "./util/APIPathGen.js";
 import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Betting";
 import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
@@ -12,7 +12,7 @@ import type { inheritBuffType } from "./defs/API/InheritAction";
 import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { JoinArgs } from "./defs/API/General";
-import type { GetConstResponse } from "./defs/API/Global";
+import type { GetConstResponse, GetCurrentHistoryResponse, GetHistoryResponse } from "./defs/API/Global";
 import type { GeneralListResponse } from "./defs";
 
 const apiRealPath = {
@@ -54,6 +54,11 @@ const apiRealPath = {
             with_token?: boolean
         }, GeneralListResponse>,
         GetConst: GET as APICallT<undefined, GetConstResponse>,
+        GetHistory: StrVar('serverID')(
+            NumVar('year',
+                NumVar('month', GET as APICallT<undefined, GetHistoryResponse>
+                ))),
+        GetCurrentHistory: GET as APICallT<undefined, GetCurrentHistoryResponse>
     },
     InheritAction: {
         BuyHiddenBuff: PUT as APICallT<{

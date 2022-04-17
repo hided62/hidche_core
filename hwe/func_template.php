@@ -60,6 +60,10 @@ function chiefTurnTable()
 ";
 }
 
+function templateLimitMsg(string $turntime): string{
+    return "이미 너무 많은 접속을 하셨습니다. 다음 턴에 다시 시도해주세요. (턴시간: {$turntime})";
+}
+
 function displayiActionObjInfo(?iAction $action)
 {
     if ($action === null) {
