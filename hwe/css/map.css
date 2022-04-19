@@ -1,5 +1,3 @@
-@charset "UTF-8";
-
 .world_map {
     width: 700px;
     background: black;
@@ -69,11 +67,11 @@
 }
 
 .map_body .map_toggle_cityname::after {
-    content: "끄기"
+    content: " 끄기"
 }
 
 .map_body .map_toggle_cityname.active::after {
-    content: "켜기"
+    content: " 켜기"
 }
 
 .map_body .map_toggle_single_tap {
@@ -81,11 +79,11 @@
 }
 
 .map_body .map_toggle_single_tap::after {
-    content: "끄기"
+    content: " 끄기"
 }
 
 .map_body .map_toggle_single_tap.active::after {
-    content: "켜기"
+    content: " 켜기"
 }
 
 .world_map .city_tooltip {

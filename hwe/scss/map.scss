@@ -1,0 +1,665 @@
+.map_title_tooltiptext .tooltip-inner {
+  max-width: 220px;
+  width: 220px;
+  text-align: left;
+}
+
+.map_title_text {
+  margin: auto;
+  text-align: center;
+  width: 160px;
+  display: block;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.map_body .map_bglayer1 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.map_body .map_bglayer2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.map_body .map_bgroad {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.map_body .map_button_stack {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  text-align: right;
+}
+
+.map_body .map_toggle_cityname::after {
+  content: " 끄기";
+}
+
+.map_body .map_toggle_cityname.active::after {
+  content: " 켜기";
+}
+
+.map_body .map_toggle_single_tap::after {
+  content: " 끄기";
+}
+
+.map_body .map_toggle_single_tap.active::after {
+  content: " 켜기";
+}
+
+.world_map .city_tooltip {
+  position: absolute;
+  z-index: 16;
+  display: none;
+  min-width: 120px;
+  border: 0.02em gray solid;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.world_map .city_name {
+  background-color: rgb(30, 164, 255);
+  z-index: 6;
+  line-height: 15px;
+  height: 15px;
+}
+
+.world_map .nation_name {
+  background-color: rgb(30, 164, 255);
+  z-index: 6;
+  line-height: 15px;
+  height: 15px;
+  border-top: 0.02em gray solid;
+  text-align: right;
+}
+
+@keyframes blink-my-city-d1 {
+  0% {
+    outline: solid 4px transparent;
+  }
+
+  50% {
+    outline: solid 4px rgba(255, 0, 0, 1);
+  }
+
+  100% {
+    outline: solid 4px transparent;
+  }
+}
+
+@keyframes blink-my-city-d2 {
+  0% {
+    outline: double 4px transparent;
+  }
+
+  50% {
+    outline: double 4px rgba(192, 192, 192, 1);
+  }
+
+  100% {
+    outline: double 4px transparent;
+  }
+}
+
+/* Basic */
+
+@keyframes blink-my-city {
+  0% {
+    outline: dashed 5px transparent;
+  }
+
+  50% {
+    outline: dashed 5px white;
+  }
+
+  100% {
+    outline: dashed 5px transparent;
+  }
+}
+
+@keyframes blink-my-city2 {
+  0% {
+    outline: dashed 4px transparent;
+  }
+
+  50% {
+    outline: dashed 4px red;
+  }
+
+  100% {
+    outline: dashed 4px transparent;
+  }
+}
+
+.btn.btn-minimum {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.world_map.hide_cityname .city_detail_name {
+  display: none;
+}
+
+.city_base .city_bg {
+  z-index: 1;
+  position: absolute;
+  background-position: center;
+}
+
+.city_base div {
+  z-index: 2;
+}
+
+$cityBaseWidth: 40px;
+$cityBaseHeight: 30px;
+
+$detailMapCitySizes: (
+  (1, 48px, 45px, 16px, 15px, -8px, -4px),
+  (2, 60px, 42px, 20px, 14px, -8px, -4px),
+  (3, 42px, 42px, 14px, 14px, -8px, -4px),
+  (4, 60px, 45px, 20px, 15px, -6px, -3px),
+  (5, 72px, 48px, 24px, 16px, -6px, -4px),
+  (6, 78px, 54px, 26px, 18px, -6px, -4px),
+  (7, 84px, 60px, 28px, 20px, -6px, -4px),
+  (8, 96px, 72px, 32px, 24px, -6px, -3px)
+);
+
+$basicMapCitySize: (
+  (1, 12px, 12px),
+  (2, 12px, 12px),
+  (3, 14px, 14px),
+  (4, 16px, 14px),
+  (5, 18px, 16px),
+  (6, 20px, 16px),
+  (7, 22px, 18px),
+  (8, 24px, 18px)
+);
+.city_img {
+  position: absolute;
+}
+
+.world_map.full_width_map {
+  width: 700px;
+  background: black;
+  font-size: 14px;
+  color: white;
+  position: relative;
+
+  .map_title {
+    width: 700px;
+    height: 20px;
+    text-align: center;
+  }
+
+  .map_body {
+    width: 700px;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .city_base {
+    position: absolute;
+    width: $cityBaseWidth;
+    height: $cityBaseHeight;
+  }
+
+  .city_detail_name {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    white-space: nowrap;
+    left: 70%;
+    font-size: 10px;
+    bottom: -10px;
+    color: white;
+  }
+
+  &.map_detail {
+    @each $cityIdx, $cityAreaWidth, $cityAreaHeight, $cityIconWidth, $cityIconHeight, $flagRight,
+      $flagTop in $detailMapCitySizes
+    {
+      .my_city {
+        border-radius: 33%;
+      }
+
+      .my_city:before {
+        content: "";
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        position: absolute;
+        border-radius: 33%;
+        overflow: hidden;
+
+        animation-duration: 3.9s;
+        animation-name: blink-my-city-d1;
+        animation-iteration-count: infinite;
+      }
+
+      .my_city:after {
+        content: "";
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        position: absolute;
+        border-radius: 33%;
+        overflow: hidden;
+
+        animation-duration: 3.9s;
+        animation-name: blink-my-city-d2;
+        animation-iteration-count: infinite;
+      }
+
+      .city_filler {
+        position: absolute;
+        width: calc(100% + 2px);
+        height: calc(100% + 2px);
+        left: -1px;
+        top: -1px;
+        background: transparent;
+      }
+
+      .city_base.city_level_#{$cityIdx} {
+        .city_bg {
+          width: $cityAreaWidth;
+          height: $cityAreaHeight;
+          background-size: $cityAreaWidth $cityAreaHeight;
+          left: calc(($cityBaseWidth - $cityAreaWidth) / 2);
+          top: calc(($cityBaseHeight - $cityAreaHeight) / 2);
+        }
+        .city_img {
+          width: $cityIconWidth;
+          height: $cityIconHeight;
+          background-size: $cityIconWidth $cityIconHeight;
+          left: calc(($cityBaseWidth - $cityIconWidth) / 2);
+          top: calc(($cityBaseHeight - $cityIconHeight) / 2);
+
+          > img {
+            width: $cityIconWidth;
+            height: $cityIconHeight;
+          }
+        }
+        .city_flag {
+          right: $flagRight;
+          top: $flagTop;
+        }
+      }
+    }
+
+    .city_base {
+      .city_state {
+        position: absolute;
+        top: 5px;
+        /*TODO:도시 레벨 별로 다르게 위치 설정해볼 것*/
+        left: 0;
+      }
+
+      .city_flag {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+
+        .city_capital {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          top: 0;
+          right: -1px;
+
+          > img {
+            width: 10px;
+            height: 10px;
+          }
+        }
+      }
+
+      .city_flag > img {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+
+  &.map_basic {
+    .city_filler {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background: transparent;
+    }
+
+    .my_city:before {
+      content: "";
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      position: absolute;
+
+      animation-duration: 2s;
+      animation-name: blink-my-city;
+      animation-iteration-count: infinite;
+    }
+
+    .my_city:after {
+      content: "";
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      position: absolute;
+
+      animation-duration: 2s;
+      animation-name: blink-my-city2;
+      animation-iteration-count: infinite;
+    }
+
+    .city_img {
+      background-color: white;
+    }
+
+    @each $cityIdx, $cityIconWidth, $cityIconHeight in $basicMapCitySize {
+      .city_base.city_level_#{$cityIdx} {
+        .city_img {
+          width: $cityIconWidth;
+          height: $cityIconHeight;
+          left: calc(($cityBaseWidth - $cityIconWidth) / 2);
+          top: calc(($cityBaseHeight - $cityIconHeight) / 2);
+        }
+      }
+    }
+
+    .city_base {
+      .city_capital {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        top: -2px;
+        right: -2px;
+        background-color: yellow;
+      }
+
+      .city_state {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        top: -2px;
+        left: -4px;
+        background-color: white;
+      }
+
+      .city_state.city_state_war {
+        background-color: red;
+      }
+
+      .city_state.city_state_bad {
+        background-color: orange;
+      }
+
+      .city_state.city_state_good {
+        background-color: blue;
+      }
+    }
+  }
+}
+
+$smV: calc(500 / 700);
+
+.world_map.small_width_map {
+  width: 500px;
+  background: black;
+  font-size: 12px;
+  color: white;
+  position: relative;
+
+  .map_body {
+    .map_bglayer1,
+    .map_bglayer2,
+    .map_bgroad {
+      background-size: calc(700px * $smV) calc(500px * $smV);
+    }
+  }
+
+  .map_title {
+    width: 700px * $smV;
+    height: 20px;
+    text-align: center;
+  }
+
+  .map_body {
+    width: 700px * $smV;
+    height: 500px * $smV;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .city_base {
+    position: absolute;
+    width: $cityBaseWidth;
+    height: $cityBaseHeight;
+  }
+
+  .city_detail_name {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    white-space: nowrap;
+    left: 70%;
+    font-size: 10px;
+    bottom: -12px;
+    color: white;
+  }
+
+  &.map_detail {
+    @each $cityIdx, $cityAreaWidth, $cityAreaHeight, $cityIconWidth, $cityIconHeight, $flagRight,
+      $flagTop in $detailMapCitySizes
+    {
+      .my_city {
+        border-radius: 33%;
+      }
+
+      .my_city:before {
+        content: "";
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        position: absolute;
+        border-radius: 33%;
+        overflow: hidden;
+
+        animation-duration: 3.9s;
+        animation-name: blink-my-city-d1;
+        animation-iteration-count: infinite;
+      }
+
+      .my_city:after {
+        content: "";
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        position: absolute;
+        border-radius: 33%;
+        overflow: hidden;
+
+        animation-duration: 3.9s;
+        animation-name: blink-my-city-d2;
+        animation-iteration-count: infinite;
+      }
+
+      .city_filler {
+        position: absolute;
+        width: calc(100% + 2px);
+        height: calc(100% + 2px);
+        left: -1px;
+        top: -1px;
+        background: transparent;
+      }
+
+      .city_base.city_level_#{$cityIdx} {
+        .city_bg {
+          width: $cityAreaWidth * $smV;
+          height: $cityAreaHeight * $smV;
+          background-size: calc($cityAreaWidth * $smV) calc($cityAreaHeight * $smV);
+          left: calc(($cityBaseWidth - $cityAreaWidth * $smV) / 2);
+          top: calc(($cityBaseHeight - $cityAreaHeight * $smV) / 2);
+        }
+        .city_img {
+          width: $cityIconWidth * $smV;
+          height: $cityIconHeight * $smV;
+          background-size: calc($cityIconWidth * $smV) calc($cityIconHeight * $smV);
+          left: calc(($cityBaseWidth - $cityIconWidth * $smV) / 2);
+          top: calc(($cityBaseHeight - $cityIconHeight * $smV) / 2);
+
+          > img {
+            width: $cityIconWidth * $smV;
+            height: $cityIconHeight * $smV;
+          }
+        }
+        .city_flag {
+          right: $flagRight;
+          top: $flagTop;
+        }
+      }
+    }
+
+    .city_base {
+      .city_state {
+        position: absolute;
+        top: 8px;
+        /*TODO:도시 레벨 별로 다르게 위치 설정해볼 것*/
+        left: 5px;
+        > img {
+          width: 10px;
+          object-fit: contain;
+        }
+      }
+
+      .city_flag {
+        position: absolute;
+        width: 12px * $smV;
+        height: 12px * $smV;
+
+        > img {
+          width: 12px * $smV;
+          height: 12px * $smV;
+        }
+
+        .city_capital {
+          position: absolute;
+          width: 10px * $smV;
+          height: 10px * $smV;
+          top: 0;
+          right: -1px;
+
+          > img {
+            width: 10px * $smV;
+            height: 10px * $smV;
+          }
+        }
+      }
+    }
+  }
+
+  &.map_basic {
+    .city_filler {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background: transparent;
+    }
+
+    .my_city:before {
+      content: "";
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      position: absolute;
+
+      animation-duration: 2s;
+      animation-name: blink-my-city;
+      animation-iteration-count: infinite;
+    }
+
+    .my_city:after {
+      content: "";
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      position: absolute;
+
+      animation-duration: 2s;
+      animation-name: blink-my-city2;
+      animation-iteration-count: infinite;
+    }
+
+    .city_img {
+      background-color: white;
+    }
+
+    @each $cityIdx, $cityIconWidth, $cityIconHeight in $basicMapCitySize {
+      .city_base.city_level_#{$cityIdx} {
+        .city_img {
+          width: $cityIconWidth * $smV;
+          height: $cityIconHeight * $smV;
+          left: calc(($cityBaseWidth - $cityIconWidth * $smV) / 2);
+          top: calc(($cityBaseHeight - $cityIconHeight * $smV) / 2);
+        }
+      }
+    }
+
+    .city_base {
+      .city_capital {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        top: -2px;
+        right: -2px;
+        background-color: yellow;
+      }
+
+      .city_state {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        top: -3px;
+        left: -5px;
+        background-color: white;
+      }
+
+      .city_state.city_state_war {
+        background-color: red;
+      }
+
+      .city_state.city_state_bad {
+        background-color: orange;
+      }
+
+      .city_state.city_state_good {
+        background-color: blue;
+      }
+    }
+  }
+}
