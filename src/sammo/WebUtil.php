@@ -36,9 +36,10 @@ class WebUtil
         return strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? null) === 'xmlhttprequest';
     }
 
-    public static function setCacheHeader(?APICacheResult $cache, int $maxAge=60){
+    public static function setCacheHeader(?APICacheResult $cache){
+        $control = $cache->isPublic?'public':'private';
         header_remove('expires');
-        header("Cache-Control: private, max-age={$maxAge}");
+        header("Cache-Control: {$control}, max-age={$cache->validSeconds}");
         header("Pragma: cache");
         if($cache->etag !== null){
             header("ETag: \"{$cache->etag}\"");

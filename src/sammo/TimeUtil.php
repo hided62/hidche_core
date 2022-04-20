@@ -181,6 +181,16 @@ class TimeUtil
         return $seconds;
     }
 
+    public static function nowDateTime(): \DateTime{
+        $now = time();
+        return static::secondsToDateTime($now, false, true);
+    }
+
+    public static function nowDateTimeImmutable(): \DateTimeImmutable{
+        $now = time();
+        return static::secondsToDateTime($now, true, true);
+    }
+
     public static function format(\DateTimeInterface $dateTime, bool $withFraction): string{
         if (!$withFraction) {
             return $dateTime->format('Y-m-d H:i:s');
