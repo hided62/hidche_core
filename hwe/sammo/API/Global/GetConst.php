@@ -107,7 +107,7 @@ class GetConst extends \sammo\BaseAPI
             return new APICacheResult(TimeUtil::secondsToDateTime($this->findLastModified()??\time(), true, true));
         }
 
-        return new APICacheResult(null, $this->getCacheKey());
+        return new APICacheResult(null, $this->getCacheKey(), 60, true);
     }
 
     public function readCache(Cache $cache): null|string|array|int|float|bool
