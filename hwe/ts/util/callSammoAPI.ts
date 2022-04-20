@@ -65,17 +65,32 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
         args = undefined;
     }
 
-    const result = await ky('api.php', {
-        searchParams: {
-            ...paramArgs,
-            path,
-        },
-        method,
-        json: args,
-        headers: {
-            'content-type': 'application/json'
+    const result = await (() => {
+        if (method == 'get') {
+            return ky('api.php', {
+                searchParams: {
+                    ...paramArgs,
+                    ...(args as typeof paramArgs),
+                    path,
+                },
+                method,
+                headers: {
+                    'content-type': 'application/json'
+                }
+            });
         }
-    }).json() as ErrorType | ResultType;
+        return ky('api.php', {
+            searchParams: {
+                ...paramArgs,
+                path,
+            },
+            method,
+            json: args,
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+    })().json() as ErrorType | ResultType;
 
     if (!result.result) {
         if (returnError) {
