@@ -101,9 +101,9 @@ const templateGeneralRow =
     <td><%specialDomesticWithTooltip%> / <%specialWarWithTooltip%></td>\
     <td>Lv <%explevel%></td>\
     <td><%nation%></td>\
-    <td><%experience%></td>\
-    <td><%dedication%></td>\
-    <td><%officerLevel%></td>\
+    <td><%experienceStr%></td>\
+    <td><%dedicationStr%></td>\
+    <td><%officerLevelStr%></td>\
     <td><%total%></td>\
     <td><%leadership%></td>\
     <td><%strength%></td>\
@@ -420,9 +420,7 @@ $(function ($) {
 
     $('#btn_load_general_list').on('click', async function () {
         try {
-            const result = await SammoAPI.Global.GeneralList({
-                    with_token: true,
-            });
+            const result = await SammoAPI.Global.GeneralListWithToken();
             printGeneralList(result);
         } catch (e) {
             console.error(e);

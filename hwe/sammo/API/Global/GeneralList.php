@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\List\Nation;
+namespace sammo\API\Global;
 
 use sammo\DB;
 use sammo\General;
@@ -27,14 +27,9 @@ use function sammo\increaseRefresh;
 
 class GeneralList extends \sammo\BaseAPI
 {
+    static $withToken = false;
     public function validateArgs(): ?string
     {
-        $v = new Validator($this->args);
-        $v
-            ->rule('boolean', 'with_token');
-        if (!$v->validate()) {
-            return $v->errorStr();
-        }
         return null;
     }
 
@@ -46,7 +41,6 @@ class GeneralList extends \sammo\BaseAPI
     public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
     {
         $db = DB::db();
-        $withToken = $this->args['with_token']??false;
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $userID = $session->userID;
@@ -148,7 +142,7 @@ class GeneralList extends \sammo\BaseAPI
         ];
 
 
-        if ($withToken) {
+        if (static::$withToken) {
             $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
             $tokens = [];
             foreach ($db->query('SELECT * FROM select_npc_token WHERE `valid_until`>=%s', $now) as $token) {

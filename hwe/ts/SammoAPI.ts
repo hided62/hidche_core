@@ -50,9 +50,8 @@ const apiRealPath = {
         Join: POST as APICallT<JoinArgs>,
     },
     Global: {
-        GeneralList: GET as APICallT<{
-            with_token?: boolean
-        }, GeneralListResponse>,
+        GeneralList: GET as APICallT<undefined, GeneralListResponse>,
+        GeneralListWithToken: GET as APICallT<undefined, GeneralListResponse>,
         GetConst: GET as APICallT<undefined, GetConstResponse>,
         GetHistory: StrVar('serverID')(
             NumVar('year',
