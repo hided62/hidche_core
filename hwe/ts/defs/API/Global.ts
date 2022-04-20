@@ -1,5 +1,5 @@
 import type { CityID, CrewTypeID, GameCityDefault, GameConstType, GameUnitType, GameIActionKey, GameIActionCategory, GameIActionInfo } from "@/defs/GameObj";
-import type { MapResult } from "@/defs";
+import type { diplomacyState, MapResult, SimpleNationObj } from "@/defs";
 
 export interface GetConstResponse {
     result: true;
@@ -67,4 +67,13 @@ export type GetHistoryResponse = {
 export type GetCurrentHistoryResponse = {
     result: true;
     data: HistoryObj;
+}
+
+
+export type GetDiplomacyResponse = {
+    result: true;
+    nations: SimpleNationObj[];
+    conflict: [number, Record<number, number>][];
+    diplomacyList: Record<number, Record<number, diplomacyState>>;
+    myNationID: number;
 }

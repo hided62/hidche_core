@@ -12,7 +12,7 @@ import type { inheritBuffType } from "./defs/API/InheritAction";
 import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { JoinArgs } from "./defs/API/General";
-import type { GetConstResponse, GetCurrentHistoryResponse, GetHistoryResponse } from "./defs/API/Global";
+import type { GetConstResponse, GetCurrentHistoryResponse, GetDiplomacyResponse, GetHistoryResponse } from "./defs/API/Global";
 import type { CachedMapResult, GeneralListResponse, MapResult } from "./defs";
 
 const apiRealPath = {
@@ -60,6 +60,7 @@ const apiRealPath = {
         GetCurrentHistory: GET as APICallT<undefined, GetCurrentHistoryResponse>,
         GetMap: GET as APICallT<undefined, MapResult>,
         GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
+        GetDiplomacy: GET as APICallT<undefined, GetDiplomacyResponse>,
     },
     InheritAction: {
         BuyHiddenBuff: PUT as APICallT<{
