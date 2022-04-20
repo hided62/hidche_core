@@ -14,8 +14,8 @@ class GetMap extends \sammo\BaseAPI
   public function validateArgs(): ?string
   {
     $v = new Validator($this->args);
-    $v->rule('boolean', 'neutralView')
-      ->rule('boolean', 'showMe');
+    $v->rule('in', 'neutralView', [0, 1])
+      ->rule('in', 'showMe', [0, 1]);
     if (!$v->validate()) {
       return $v->errorStr();
     }

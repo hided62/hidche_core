@@ -52,7 +52,6 @@ return [
         'hwe/v_chiefCenter.php',
         'hwe/b_currentCity.php',
         'hwe/v_nationStratFinan.php',
-        'hwe/b_diplomacy.php',
         'hwe/b_genList.php',
         'hwe/b_myBossInfo.php',
         'hwe/b_myCityInfo.php',

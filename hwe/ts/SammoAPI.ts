@@ -58,7 +58,10 @@ const apiRealPath = {
                 NumVar('month', GET as APICallT<undefined, GetHistoryResponse>
                 ))),
         GetCurrentHistory: GET as APICallT<undefined, GetCurrentHistoryResponse>,
-        GetMap: GET as APICallT<undefined, MapResult>,
+        GetMap: GET as APICallT<{
+            neutralView?: 0 | 1,
+            showMe?: 0 | 1,
+        }, MapResult>,
         GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
         GetDiplomacy: GET as APICallT<undefined, GetDiplomacyResponse>,
     },

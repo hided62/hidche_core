@@ -99,7 +99,7 @@ class GetDiplomacy extends \sammo\BaseAPI
 
     return [
       'result' => true,
-      'nations' => $nations,
+      'nations' => array_values($nations),
       'conflict' => $realConflict,
       'diplomacyList' => $diplomacyList,
       'myNationID' => $myNationID,
