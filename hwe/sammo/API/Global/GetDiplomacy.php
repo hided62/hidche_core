@@ -45,13 +45,14 @@ class GetDiplomacy extends \sammo\BaseAPI
     }
 
     $realConflict = [];
-    foreach ($db->queryAllLists('SELECT nation, city, conflict FROM city') as [
+    foreach ($db->queryAllLists('SELECT nation, city, name, conflict FROM city') as [
       $nationID,
       $cityID,
+      $cityName,
       $rawConflict
     ]) {
       if($nationID != 0){
-        $nations[$nationID]['cities'][] = $cityID;
+        $nations[$nationID]['cities'][] = $cityName;
       }
 
       if($rawConflict == '{}'){
