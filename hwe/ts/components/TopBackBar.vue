@@ -1,6 +1,7 @@
 <template>
-  <div :class="['bg0', 'back_bar', teleportZone?'back_bar_teleport':undefined]">
-    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">돌아가기</button
+  <div :class="['bg0', 'back_bar', teleportZone ? 'back_bar_teleport' : undefined]">
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
+      {{ props.type == "close" ? "창 닫기" : "돌아가기" }}</button
     ><button v-if="reloadable" type="button" class="btn btn-sammo-base2 reload_btn" @click="reload">갱신</button>
     <div v-else />
     <h2 class="title">
@@ -94,7 +95,7 @@ function reload() {
   margin-right: 2px;
 }
 
-.teleport-zone{
+.teleport-zone {
   height: 24pt;
 }
 

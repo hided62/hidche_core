@@ -2,7 +2,7 @@
 <?=$btnBegin??''?><a href="a_kingdomList.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">세력일람</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_genList.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">장수일람</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_bestGeneral.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">명장일람</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href="a_history.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">연감</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href="v_history.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">연감</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_hallOfFame.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">명예의전당</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_emperior.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">왕조일람</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href="a_traffic.php" target="_blank" class="open-window toolbarButton <?=$btnClass??""?>">접속량정보</a><?=$btnEnd??''?>

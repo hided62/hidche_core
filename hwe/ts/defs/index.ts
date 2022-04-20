@@ -1,6 +1,6 @@
 import type { Args } from "@/processing/args";
 import type { ValidResponse, InvalidResponse } from "@/util/callSammoAPI";
-import type { GameObjClassKey } from "./GameObj";
+import type { GameIActionKey, GameObjClassKey } from "./GameObj";
 
 export type { ValidResponse, InvalidResponse };
 export type BasicGeneralListResponse = {
@@ -247,4 +247,17 @@ export type MapResult = {
 
     theme?: string,
     history?: string[],
+}
+
+
+export type SimpleNationObj = {
+    capital: number,
+    cities: string[],
+    color: string,
+    gennum: number,
+    level: number,
+    name: string,
+    nation: number,
+    power: number,
+    type: GameIActionKey
 }

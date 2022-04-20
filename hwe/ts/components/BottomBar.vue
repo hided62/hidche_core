@@ -1,6 +1,8 @@
 <template>
   <div class="bg0" style="padding-top: 20px">
-    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">돌아가기</button>
+    <button type="button" class="btn btn-sammo-base2 back_btn" @click="back">
+      {{ props.type == "close" ? "창 닫기" : "돌아가기" }}
+    </button>
     <div />
   </div>
 </template>
