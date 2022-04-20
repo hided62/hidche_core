@@ -244,11 +244,12 @@ export type MapResult = {
     shownByGeneralList: number[],
     myCity?: number,
     myNation?: number,
+}
 
+export type CachedMapResult = MapResult & {
     theme?: string,
     history?: string[],
 }
-
 
 export type SimpleNationObj = {
     capital: number,

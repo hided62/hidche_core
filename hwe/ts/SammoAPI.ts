@@ -13,7 +13,7 @@ import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListRespo
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { JoinArgs } from "./defs/API/General";
 import type { GetConstResponse, GetCurrentHistoryResponse, GetHistoryResponse } from "./defs/API/Global";
-import type { GeneralListResponse } from "./defs";
+import type { CachedMapResult, GeneralListResponse, MapResult } from "./defs";
 
 const apiRealPath = {
     Betting: {
@@ -57,7 +57,9 @@ const apiRealPath = {
             NumVar('year',
                 NumVar('month', GET as APICallT<undefined, GetHistoryResponse>
                 ))),
-        GetCurrentHistory: GET as APICallT<undefined, GetCurrentHistoryResponse>
+        GetCurrentHistory: GET as APICallT<undefined, GetCurrentHistoryResponse>,
+        GetMap: GET as APICallT<undefined, MapResult>,
+        GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
     },
     InheritAction: {
         BuyHiddenBuff: PUT as APICallT<{
