@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="(modelValue.version ?? 0) == CURRENT_MAP_VERSION"
     :id="uuid"
     :class="[
       'world_map',
@@ -99,6 +100,13 @@
       <div class="nation_name">{{ activatedCity?.nation }}</div>
     </div>
   </div>
+  <div v-else class="world_map">
+    <span class="map_title_text">
+      맵 버전이 맞지 않습니다.<br />
+      렌더러 버전: {{ CURRENT_MAP_VERSION }}<br />
+      API 버전: {{ modelValue.version ?? 0 }}
+    </span>
+  </div>
 </template>
 
 <script lang="ts">
@@ -156,7 +164,7 @@ export type CityPositionMap = {
 import "@/../scss/map.scss";
 import { type PropType, toRef, inject, type Ref, ref, watch, type ComponentPublicInstance } from "vue";
 import { v4 as uuidv4 } from "uuid";
-import type { MapResult } from "@/defs";
+import { CURRENT_MAP_VERSION, type MapResult } from "@/defs";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import vMyTooltip from "@/directives/vMyTooltip";

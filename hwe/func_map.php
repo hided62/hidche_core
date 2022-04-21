@@ -35,7 +35,7 @@ function getHistoryMap($year, $month, ?string $serverID=null){
 
     $map = DB::db()->queryFirstField('SELECT map FROM ng_history WHERE server_id = %s AND year=%i and month=%i',
         $serverID,
-        $year, 
+        $year,
         $month);
 
     if(!$map){
@@ -53,7 +53,7 @@ function getWorldMap($req){
     if(is_array($req)){
         $req = new MapRequest($req);
     }
-    
+
     if($req->year && $req->month){
         return getHistoryMap($req->year, $req->month, $req->serverID??null);
     }
@@ -98,7 +98,7 @@ function getWorldMap($req){
     $spyInfo = (object)null;
 
     if($myNation){
-        $rawSpy = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
+        $rawSpy = $db->queryFirstField('select `spy` from `nation` where `nation`=%i',
             $myNation);
 
         if(strpos($rawSpy, '|') !== false || is_numeric($rawSpy)){
@@ -123,16 +123,16 @@ function getWorldMap($req){
     $nationList = [];
     foreach($db->query('select `nation`, `name`, `color`, `capital` from `nation`') as $row){
         $nationList[] = [
-            Util::toInt($row['nation']), 
-            $row['name'], 
-            $row['color'], 
+            Util::toInt($row['nation']),
+            $row['name'],
+            $row['color'],
             Util::toInt($row['capital'])
         ];
     }
 
     if($myNation){
         //굳이 타국 도시에 있는 아국 장수 리스트를 뽑을 이유가 없음. 일단 다 뽑자.
-        $shownByGeneralList = 
+        $shownByGeneralList =
             array_map('\\sammo\\Util::toInt',
                 $db->queryFirstColumn('select distinct `city` from `general` where `nation` = %i',
                     $myNation));
@@ -143,7 +143,7 @@ function getWorldMap($req){
 
     $cityList = [];
     foreach($db->query('select `city`, `level`, `state`, `nation`, `region`, `supply` from `city`') as $r){
-        $cityList[] = 
+        $cityList[] =
             array_map('\\sammo\\Util::toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
     }
 
@@ -164,6 +164,7 @@ function getWorldMap($req){
         'shownByGeneralList' => $shownByGeneralList,
         'myCity' => $myCity,
         'myNation' => $myNation,
+        'version' => 0,
         'result' => true
     ];
 }

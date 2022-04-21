@@ -230,11 +230,14 @@ export const diplomacyStateInfo: Record<diplomacyState, diplomacyInfo> = {
     7: { name: '불가침', color: 'green' },
 }
 
+export const CURRENT_MAP_VERSION = 0 as const;
+
 //Map
 type MapCityCompact = [number, number, number, number, number, number];
 type MapNationCompact = [number, string, string, number];
 export type MapResult = {
     result: true,
+    version?: typeof CURRENT_MAP_VERSION,
     startYear: number,
     year: number,
     month: number,
