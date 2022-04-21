@@ -41,7 +41,7 @@ $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
   <?= WebUtil::printStaticValues([
     'staticValues' => [
-      'fisrtYearMonth' => Util::joinYearMonth($f_year, $f_month),
+      'firstYearMonth' => Util::joinYearMonth($f_year, $f_month),
       'lastYearMonth' => Util::joinYearMonth($l_year, $l_month),
       'currentYearMonth' => Util::joinYearMonth($currentYear, $currentMonth),
       'serverNick' => DB::prefix(),

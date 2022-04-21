@@ -53,7 +53,7 @@
 
 <script lang="ts">
 declare const staticValues: {
-  fisrtYearMonth: number;
+  firstYearMonth: number;
   lastYearMonth: number;
   currentYearMonth: number;
   serverNick: string;
@@ -87,7 +87,7 @@ const queryServerID = query.serverID;
 const serverNick = staticValues.serverNick;
 
 const lastYearMonth = ref(staticValues.lastYearMonth);
-const firstYearMonth = ref(staticValues.fisrtYearMonth);
+const firstYearMonth = ref(staticValues.firstYearMonth);
 const currentYearMonth = ref(staticValues.currentYearMonth);
 
 const asyncReady = ref<boolean>(false);
@@ -179,7 +179,7 @@ onMounted(() => {
     if (query.yearMonth > staticValues.lastYearMonth + 1) {
       return staticValues.currentYearMonth;
     }
-    if (query.yearMonth < staticValues.fisrtYearMonth) {
+    if (query.yearMonth < staticValues.firstYearMonth) {
       return staticValues.currentYearMonth;
     }
     return query.yearMonth;
