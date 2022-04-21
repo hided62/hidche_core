@@ -1,13 +1,17 @@
 <template>
   <TopBackBar v-model:searchable="searchable" :title="commandName" :type="procEntryMode" />
-  <div class="bg0">
-    <MapLegacyTemplate
+  <div v-if="asyncReady" class="bg0">
+    <MapViewer
+      v-if="map"
       v-model="selectedCityObj"
+      :server-nick="serverNick"
+      :serverID="serverID"
+      :map-name="unwrap(gameConstStore?.gameConst.mapName)"
+      :mapData="map"
       :isDetailMap="false"
-      :clickableAll="true"
-      :neutralView="true"
-      :useCachedMap="true"
-      :mapName="mapName"
+      :cityPosition="cityPosition"
+      :formatCityInfo="formatCityInfoText"
+      :image-path="imagePath"
     />
 
     <div v-if="commandName == '강행'">
@@ -78,31 +82,58 @@
 
 <script lang="ts">
 declare const staticValues: {
-  mapName: string;
+  serverNick: string,
+  serverID: string,
   currentCity: number;
   commandName: string;
   entryInfo: ["General" | "Nation", unknown];
 };
 declare const procRes: {
   distanceList: Record<number, number[]>;
-  cities: [number, string][];
 };
+
+declare const getCityPosition: () => CityPositionMap;
+declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 
 <script lang="ts" setup>
-import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
+import MapViewer, { type CityPositionMap, type MapCityParsed, type MapCityParsedRaw} from '@/components/MapViewer.vue';
 import SelectCity from "@/processing/SelectCity.vue";
 import CityBasedOnDistance from "@/processing/CitiesBasedOnDistance.vue";
-import { ref, type Ref, watch } from "vue";
+import { ref, type Ref, watch, onMounted, provide } from "vue";
 import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { pick as JosaPick } from "@util/JosaUtil";
 import { getProcSearchable } from "./processingRes";
+import type { MapResult } from '@/defs';
+import { SammoAPI } from '@/SammoAPI';
+import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
+
+const serverNick = staticValues.serverNick;
+const serverID = staticValues.serverID;
+
+const cityPosition = getCityPosition();
+const formatCityInfoText = formatCityInfo;
+const imagePath = window.pathConfig.gameImage;
+
+const asyncReady = ref<boolean>(false);
+const gameConstStore = ref<GameConstStore>();
+provide("gameConstStore", gameConstStore);
+const storeP = getGameConstStore().then((store) => {
+  gameConstStore.value = store;
+});
+
+void Promise.all([storeP]).then(() => {
+  asyncReady.value = true;
+});
 
 const { distanceList } = procRes;
 
+const selectedCityID = ref(staticValues.currentCity);
+
+const map = ref<MapResult>();
 const citiesMap = ref(
   new Map<
     number,
@@ -112,11 +143,26 @@ const citiesMap = ref(
     }
   >()
 );
-for (const [id, name] of procRes.cities) {
-  citiesMap.value.set(id, { name });
-}
+watch(gameConstStore, (store)=>{
+  if(!store){
+    return;
+  }
+  const tmpCitiesMap = new Map<
+    number,
+    {
+      name: string;
+      info?: string;
+    }
+  >();
 
-const selectedCityID = ref(staticValues.currentCity);
+  for(const city of Object.values(store.cityConst)){
+    tmpCitiesMap.set(city.id, {
+      name: city.name,
+    });
+  }
+  citiesMap.value = tmpCitiesMap;
+})
+
 
 function selected(cityID: number) {
   selectedCityID.value = cityID;
@@ -132,7 +178,6 @@ async function submit(e: Event) {
 }
 
 const searchable = getProcSearchable();
-const mapName = staticValues.mapName;
 
 const procEntryMode: Ref<"chief" | "normal"> = ref(staticValues.entryInfo[0] == "Nation" ? "chief" : "normal");
 const selectedCityObj = ref<MapCityParsed>();
@@ -143,5 +188,14 @@ watch(selectedCityObj, (city?: MapCityParsed) => {
     return;
   }
   selectedCityID.value = city.id;
+});
+
+onMounted(async () => {
+  try{
+    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
+  }
+  catch(e){
+    console.error(e);
+  }
 });
 </script>

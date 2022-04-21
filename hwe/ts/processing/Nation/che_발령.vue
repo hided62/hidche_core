@@ -1,13 +1,17 @@
 <template>
   <TopBackBar v-model:searchable="searchable" :title="commandName" type="chief" />
-  <div class="bg0">
-    <MapLegacyTemplate
+  <div v-if="asyncReady" class="bg0">
+    <MapViewer
+      v-if="map"
       v-model="selectedCityObj"
+      :server-nick="serverNick"
+      :serverID="serverID"
+      :map-name="unwrap(gameConstStore?.gameConst.mapName)"
+      :mapData="map"
       :isDetailMap="false"
-      :clickableAll="true"
-      :neutralView="true"
-      :useCachedMap="true"
-      :mapName="mapName"
+      :cityPosition="cityPosition"
+      :formatCityInfo="formatCityInfoText"
+      :image-path="imagePath"
     />
 
     <div>
@@ -42,10 +46,28 @@
 </template>
 
 <script lang="ts">
-import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
+declare const staticValues: {
+  serverNick: string;
+  serverID: string;
+  currentCity: number;
+  commandName: string;
+};
+
+declare const procRes: {
+  troops: procTroopList;
+  generals: procGeneralRawItemList;
+  generalsKey: procGeneralKey[];
+};
+
+declare const getCityPosition: () => CityPositionMap;
+declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
+</script>
+
+<script lang="ts" setup>
+import MapViewer, { type CityPositionMap, type MapCityParsed, type MapCityParsedRaw } from "@/components/MapViewer.vue";
 import SelectCity from "@/processing/SelectCity.vue";
 import SelectGeneral from "@/processing/SelectGeneral.vue";
-import { defineComponent, ref } from "vue";
+import { ref, watch, onMounted, provide } from "vue";
 import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
@@ -59,89 +81,104 @@ import {
   type procTroopList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
+import type { MapResult } from '@/defs';
+import { SammoAPI } from '@/SammoAPI';
+import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
 
-declare const staticValues: {
-  mapName: string;
-  currentCity: number;
-  commandName: string;
-};
+const serverNick = staticValues.serverNick;
+const serverID = staticValues.serverID;
 
-declare const procRes: {
-  distanceList: Record<number, number[]>;
-  cities: [number, string][];
-  troops: procTroopList;
-  generals: procGeneralRawItemList;
-  generalsKey: procGeneralKey[];
-};
+const cityPosition = getCityPosition();
+const formatCityInfoText = formatCityInfo;
+const imagePath = window.pathConfig.gameImage;
 
-export default defineComponent({
-  components: {
-    MapLegacyTemplate,
-    SelectCity,
-    SelectGeneral,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const citiesMap = new Map<
-      number,
-      {
-        name: string;
-        info?: string;
-      }
-    >();
-    for (const [id, name] of procRes.cities) {
-      citiesMap.set(id, { name });
+const asyncReady = ref<boolean>(false);
+const gameConstStore = ref<GameConstStore>();
+provide("gameConstStore", gameConstStore);
+const storeP = getGameConstStore().then((store) => {
+  gameConstStore.value = store;
+});
+
+void Promise.all([storeP]).then(() => {
+  asyncReady.value = true;
+});
+
+const selectedCityID = ref(staticValues.currentCity);
+
+const map = ref<MapResult>();
+const citiesMap = ref(
+  new Map<
+    number,
+    {
+      name: string;
+      info?: string;
     }
-
-    const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
-    const selectedCityID = ref(staticValues.currentCity);
-
-    function selectedCity(cityID: number) {
-      selectedCityID.value = cityID;
+  >()
+);
+watch(gameConstStore, (store)=>{
+  if(!store){
+    return;
+  }
+  const tmpCitiesMap = new Map<
+    number,
+    {
+      name: string;
+      info?: string;
     }
+  >();
 
-    const selectedGeneralID = ref(generalList[0].no);
+  for(const city of Object.values(store.cityConst)){
+    tmpCitiesMap.set(city.id, {
+      name: city.name,
+    });
+  }
+  citiesMap.value = tmpCitiesMap;
+})
 
-    function textHelpGeneral(gen: procGeneralItem): string {
-      const troops = !gen.troopID ? "" : `,${procRes.troops[gen.troopID].name}`;
-      const nameColor = getNpcColor(gen.npc);
-      const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
-      return `${name} [${citiesMap.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${
-        gen.intel
-      }) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
-    }
+//TODO: onMount로 이전하고 장수 목록은 실시간으로 받아와야함
+const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
+const troops = procRes.troops;
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destCityID: selectedCityID.value,
-          destGeneralID: selectedGeneralID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
+const selectedGeneralID = ref(generalList[0].no);
 
-    return {
-      searchable: getProcSearchable(),
-      mapName: ref(staticValues.mapName),
-      citiesMap: ref(citiesMap),
-      selectedCityID,
-      selectedGeneralID,
-      selectedCityObj: ref(undefined as MapCityParsed | undefined),
-      distanceList: procRes.distanceList,
-      troops: procRes.troops,
-      generalList,
-      commandName: staticValues.commandName,
-      selectedCity,
-      textHelpGeneral,
-      submit,
-    };
-  },
-  watch: {
-    selectedCityObj(city: MapCityParsed) {
-      this.selectedCityID = city.id;
+function textHelpGeneral(gen: procGeneralItem): string {
+  const troops = !gen.troopID ? "" : `,${procRes.troops[gen.troopID].name}`;
+  const nameColor = getNpcColor(gen.npc);
+  const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
+  return `${name} [${citiesMap.value.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${
+    gen.intel
+  }) <병${unwrap(gen.crew).toLocaleString()}/훈${gen.train}/사${gen.atmos}>`;
+}
+
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destCityID: selectedCityID.value,
+      destGeneralID: selectedGeneralID.value,
     },
-  },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
+
+
+const searchable = getProcSearchable();
+
+const selectedCityObj = ref<MapCityParsed>();
+const commandName = ref(staticValues.commandName);
+
+watch(selectedCityObj, (city?: MapCityParsed) => {
+  if (city === undefined) {
+    return;
+  }
+  selectedCityID.value = city.id;
+});
+
+onMounted(async () => {
+  try{
+    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
+  }
+  catch(e){
+    console.error(e);
+  }
 });
 </script>

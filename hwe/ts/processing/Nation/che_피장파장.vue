@@ -1,13 +1,17 @@
 <template>
   <TopBackBar v-model:searchable="searchable" :title="commandName" type="chief" />
-  <div class="bg0">
-    <MapLegacyTemplate
+  <div v-if="asyncReady" class="bg0">
+    <MapViewer
+      v-if="map"
       v-model="selectedCityObj"
+      :server-nick="serverNick"
+      :serverID="serverID"
+      :map-name="unwrap(gameConstStore?.gameConst.mapName)"
+      :mapData="map"
       :isDetailMap="false"
-      :clickableAll="true"
-      :neutralView="true"
-      :useCachedMap="true"
-      :mapName="mapName"
+      :cityPosition="cityPosition"
+      :formatCityInfo="formatCityInfoText"
+      :image-path="imagePath"
     />
     <div>
       선택된 국가에 피장파장을 발동합니다.<br />
@@ -39,16 +43,9 @@
 </template>
 
 <script lang="ts">
-import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
-import SelectNation from "@/processing/SelectNation.vue";
-import { defineComponent, ref } from "vue";
-import { unwrap } from "@/util/unwrap";
-import type { Args } from "@/processing/args";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-import { getProcSearchable, type procNationItem, type procNationList } from "../processingRes";
-
 declare const staticValues: {
+  serverNick: string;
+  serverID: string;
   mapName: string;
   commandName: string;
 };
@@ -67,70 +64,97 @@ declare const procRes: {
   >;
 };
 
-export default defineComponent({
-  components: {
-    MapLegacyTemplate,
-    SelectNation,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
+declare const getCityPosition: () => CityPositionMap;
+declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
+</script>
+<script lang="ts" setup>
+import MapViewer, { type CityPositionMap, type MapCityParsed, type MapCityParsedRaw } from "@/components/MapViewer.vue";
+import SelectNation from "@/processing/SelectNation.vue";
+import { ref, watch, onMounted, provide } from "vue";
+import { unwrap } from "@/util/unwrap";
+import type { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+import { getProcSearchable, type procNationItem, type procNationList } from "../processingRes";
+import type { MapResult } from "@/defs";
+import { SammoAPI } from "@/SammoAPI";
+import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
 
-    const selectedNationID = ref(procRes.nationList[0].id);
-    const selectedCityObj = ref(); //mapping용
+const serverNick = staticValues.serverNick;
+const serverID = staticValues.serverID;
 
-    const commandTypesOption: { html: string; value: string }[] = [];
-    for (const [commandTypeID, commandTypeInfo] of Object.entries(procRes.availableCommandTypeList)) {
-      const notAvailable = commandTypeInfo.remainTurn > 0;
-      const notAvailableText = notAvailable ? " (불가)" : "";
-      const name = `${commandTypeInfo.name}${notAvailableText}`;
-      const html = notAvailable ? `<span style='color:red;'>${name}</span>` : name;
-      commandTypesOption.push({
-        html,
-        value: commandTypeID,
-      });
-    }
+const cityPosition = getCityPosition();
+const formatCityInfoText = formatCityInfo;
+const imagePath = window.pathConfig.gameImage;
 
-    const selectedCommandID = ref(Object.keys(procRes.availableCommandTypeList)[0]);
+const asyncReady = ref<boolean>(false);
+const gameConstStore = ref<GameConstStore>();
+provide("gameConstStore", gameConstStore);
+const storeP = getGameConstStore().then((store) => {
+  gameConstStore.value = store;
+});
 
-    function selectedNation(nationID: number) {
-      selectedNationID.value = nationID;
-    }
+void Promise.all([storeP]).then(() => {
+  asyncReady.value = true;
+});
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destNationID: selectedNationID.value,
-          commandType: selectedCommandID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
 
-    return {
-      searchable: getProcSearchable(),
-      ...procRes,
-      ...staticValues,
-      selectedCommandID,
-      commandTypesOption,
-      nationList: ref(nationList),
-      selectedCityObj,
-      selectedNationID,
-      selectedNation,
-      submit,
-    };
-  },
-  watch: {
-    selectedCityObj(city: MapCityParsed) {
-      if (!city.nationID) {
-        return;
-      }
-      this.selectedNationID = city.nationID;
+const nationList = new Map<number, procNationItem>();
+for (const nationItem of procRes.nationList) {
+  nationList.set(nationItem.id, nationItem);
+}
+
+const selectedNationID = ref(procRes.nationList[0].id);
+
+const map = ref<MapResult>();
+
+const delayCnt = procRes.delayCnt;
+const postReqTurn = procRes.postReqTurn;
+
+const commandTypesOption: { html: string; value: string }[] = [];
+for (const [commandTypeID, commandTypeInfo] of Object.entries(procRes.availableCommandTypeList)) {
+  const notAvailable = commandTypeInfo.remainTurn > 0;
+  const notAvailableText = notAvailable ? " (불가)" : "";
+  const name = `${commandTypeInfo.name}${notAvailableText}`;
+  const html = notAvailable ? `<span style='color:red;'>${name}</span>` : name;
+  commandTypesOption.push({
+    html,
+    value: commandTypeID,
+  });
+}
+
+const selectedCommandID = ref(Object.keys(procRes.availableCommandTypeList)[0]);
+
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destNationID: selectedNationID.value,
+      commandType: selectedCommandID.value,
     },
-  },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
+
+const searchable = getProcSearchable();
+
+const selectedCityObj = ref<MapCityParsed>();
+const commandName = ref(staticValues.commandName);
+
+watch(selectedCityObj, (city?: MapCityParsed) => {
+  if (city === undefined) {
+    return;
+  }
+  if (city.nationID === undefined) {
+    return;
+  }
+  selectedNationID.value = city.nationID;
+});
+
+onMounted(async () => {
+  try {
+    map.value = await SammoAPI.Global.GetMap({ neutralView: 0, showMe: 1 });
+  } catch (e) {
+    console.error(e);
+  }
 });
 </script>

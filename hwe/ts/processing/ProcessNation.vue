@@ -1,13 +1,17 @@
 <template>
   <TopBackBar v-model:searchable="searchable" :title="commandName" :type="procEntryMode" />
-  <div class="bg0">
-    <MapLegacyTemplate
+  <div v-if="asyncReady" class="bg0">
+    <MapViewer
+      v-if="map"
       v-model="selectedCityObj"
+      :server-nick="serverNick"
+      :serverID="serverID"
+      :map-name="unwrap(gameConstStore?.gameConst.mapName)"
+      :mapData="map"
       :isDetailMap="false"
-      :clickableAll="true"
-      :neutralView="true"
-      :useCachedMap="true"
-      :mapName="mapName"
+      :cityPosition="cityPosition"
+      :formatCityInfo="formatCityInfoText"
+      :image-path="imagePath"
     />
 
     <div v-if="commandName == '선전포고'">
@@ -66,17 +70,9 @@
 </template>
 
 <script lang="ts">
-import MapLegacyTemplate, { type MapCityParsed } from "@/components/MapLegacyTemplate.vue";
-import SelectNation from "@/processing/SelectNation.vue";
-import { defineComponent, ref } from "vue";
-import { unwrap } from "@/util/unwrap";
-import type { Args } from "@/processing/args";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-import { getProcSearchable, type procNationItem, type procNationList } from "./processingRes";
-
 declare const staticValues: {
-  mapName: string;
+  serverNick: string;
+  serverID: string;
   commandName: string;
   entryInfo: ["General" | "Nation", unknown];
 };
@@ -85,55 +81,91 @@ declare const procRes: {
   startYear: number;
 };
 
-export default defineComponent({
-  components: {
-    MapLegacyTemplate,
-    SelectNation,
-    TopBackBar,
-    BottomBar,
+declare const getCityPosition: () => CityPositionMap;
+declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
+</script>
+<script lang="ts" setup>
+import MapViewer, { type CityPositionMap, type MapCityParsed, type MapCityParsedRaw } from "@/components/MapViewer.vue";
+import SelectNation from "@/processing/SelectNation.vue";
+import { ref, type Ref, watch, onMounted, provide } from "vue";
+import { unwrap } from "@/util/unwrap";
+import type { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+import { getProcSearchable, type procNationItem, type procNationList } from "./processingRes";
+import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
+import { SammoAPI } from "@/SammoAPI";
+import type { MapResult } from "@/defs";
+
+const serverNick = staticValues.serverNick;
+const serverID = staticValues.serverID;
+const startYear = procRes.startYear;
+
+const cityPosition = getCityPosition();
+const formatCityInfoText = formatCityInfo;
+const imagePath = window.pathConfig.gameImage;
+
+const asyncReady = ref<boolean>(false);
+const gameConstStore = ref<GameConstStore>();
+provide("gameConstStore", gameConstStore);
+const storeP = getGameConstStore().then((store) => {
+  gameConstStore.value = store;
+});
+
+void Promise.all([storeP]).then(() => {
+  asyncReady.value = true;
+});
+
+const nationList = ref(new Map<number, procNationItem>());
+
+watch(
+  () => procRes.nationList,
+  (newNationList) => {
+    const tmpNationList = new Map<number, procNationItem>();
+    for (const nationItem of newNationList) {
+      tmpNationList.set(nationItem.id, nationItem);
+    }
+    nationList.value = tmpNationList;
   },
-  setup() {
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
+  { immediate: true }
+);
 
-    const selectedNationID = ref(procRes.nationList[0].id);
-    const selectedCityObj = ref(); //mapping용
+const selectedNationID = ref(procRes.nationList[0].id);
 
-    function selectedNation(nationID: number) {
-      selectedNationID.value = nationID;
-    }
+const map = ref<MapResult>();
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destNationID: selectedNationID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
-
-    return {
-      procEntryMode: (staticValues.entryInfo[0] == "Nation" ? "chief" : "normal") as 'chief'|'normal',
-      searchable: getProcSearchable(),
-      startYear: procRes.startYear,
-      mapName: staticValues.mapName,
-      nationList: ref(nationList),
-      selectedCityObj,
-      selectedNationID,
-      commandName: staticValues.commandName,
-      selectedNation,
-      submit,
-    };
-  },
-  watch: {
-    selectedCityObj(city: MapCityParsed) {
-      if (!city.nationID) {
-        return;
-      }
-      this.selectedNationID = city.nationID;
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destNationID: selectedNationID.value,
     },
-  },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
+
+const searchable = getProcSearchable();
+
+const procEntryMode: Ref<"chief" | "normal"> = ref(staticValues.entryInfo[0] == "Nation" ? "chief" : "normal");
+const selectedCityObj = ref<MapCityParsed>();
+const commandName = ref(staticValues.commandName);
+
+watch(selectedCityObj, (city?: MapCityParsed) => {
+  if (city === undefined) {
+    return;
+  }
+  if(city.nationID === undefined){
+    return;
+  }
+
+  selectedNationID.value = city.nationID;
+});
+
+onMounted(async () => {
+  try{
+    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
+  }
+  catch(e){
+    console.error(e);
+  }
 });
 </script>
