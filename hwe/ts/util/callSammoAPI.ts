@@ -53,6 +53,13 @@ export function extractHttpMethod(tail: APITail): HttpMethod {
     return httpMethodMap.get(tail) ?? 'post';
 }
 
+const apiTarget = 'api.php';
+let apiPath = apiTarget;
+
+export function setSammoAPIPrefix(prefix: string) {
+    apiPath = `${prefix}/${apiTarget}`;
+}
+
 export async function callSammoAPI<ResultType extends ValidResponse>(method: HttpMethod, path: string | string[], args: RawArgType, paramArgs: Record<string, string | number> | undefined): Promise<ResultType>;
 export async function callSammoAPI<ResultType extends ValidResponse>(method: HttpMethod, path: string | string[], args: RawArgType, paramArgs: Record<string, string | number> | undefined, returnError: false): Promise<ResultType>;
 export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(method: HttpMethod, path: string | string[], args: RawArgType, paramArgs: Record<string, string | number> | undefined, returnError: true): Promise<ResultType | ErrorType>;
@@ -67,7 +74,7 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
 
     const result = await (() => {
         if (method == 'get') {
-            return ky('api.php', {
+            return ky(apiPath, {
                 searchParams: {
                     ...paramArgs,
                     ...(args as typeof paramArgs),
