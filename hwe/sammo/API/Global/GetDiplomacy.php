@@ -67,10 +67,7 @@ class GetDiplomacy extends \sammo\BaseAPI
 
       $conflict = [];
       foreach ($rawConflict as $nationID => $killnum) {
-        $conflict[$nationID] = [
-          'killnum' => $killnum,
-          'percent' => round(100 * $killnum / $sum, 1),
-        ];
+        $conflict[$nationID] = round(100 * $killnum / $sum, 1);
       }
 
       $realConflict[] = [$cityID, $conflict];

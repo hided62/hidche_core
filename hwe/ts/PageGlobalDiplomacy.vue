@@ -9,9 +9,9 @@
             <tr>
               <th></th>
               <th
-                class="thead-nation"
                 v-for="nation of diplomacy.nations"
                 :key="nation.nation"
+                class="thead-nation"
                 :style="{
                   color: isBrightColor(nation.color) ? '#000' : '#fff',
                   backgroundColor: nation.color,
@@ -33,16 +33,16 @@
                 {{ me.name }}
               </th>
               <template v-for="you of diplomacy.nations" :key="you.nation">
-                <td class="tbody-cell" v-if="me.nation == you.nation">＼</td>
+                <td v-if="me.nation == you.nation" class="tbody-cell">＼</td>
                 <td
+                  v-else-if="me.nation == diplomacy.myNationID || you.nation == diplomacy.myNationID"
                   class="tbody-cell"
                   style="background-color: #660000"
-                  v-else-if="me.nation == diplomacy.myNationID || you.nation == diplomacy.myNationID"
                   v-html="infomativeStateCharMap[diplomacy.diplomacyList[me.nation][you.nation]]"
                 />
                 <td
-                  class="tbody-cell"
                   v-else
+                  class="tbody-cell"
                   v-html="neutralStateCharMap[diplomacy.diplomacyList[me.nation][you.nation]]"
                 />
               </template>
@@ -58,6 +58,55 @@
             </tr>
           </tfoot>
         </table>
+      </div>
+    </div>
+
+    <div v-if="diplomacy && diplomacy.conflict.length > 0" class="conflict-area gx-0 bg0">
+      <div class="s-border-tb center tb-title" style="background-color: magenta">분쟁 현황</div>
+      <div v-for="[cityID, conflictNations] of diplomacy.conflict" :key="cityID" class="row gx-0">
+        <div class="conflictCityName">{{ gameConstStore?.cityConst[cityID].name }}</div>
+        <div class="conflictNation col">
+          <div
+            v-for="[nation, percent] of Object.entries(conflictNations).map(
+              ([nationID, percent])=>[nationMap.get(parseInt(nationID)),percent] as [SimpleNationObj, number]
+            )"
+            :key="nation.nation"
+            class="row gx-0"
+          >
+            <div
+              class="conflictNationName"
+              :style="{
+                color: isBrightColor(nation.color) ? '#000' : '#fff',
+                backgroundColor: nation.color,
+                flexBasis: '16ch',
+                paddingLeft: '1ch',
+              }"
+            >
+              {{ nation.name }}
+            </div>
+            <div
+              class="conflictNationPercent"
+              :style="{
+                flexBasis: '6ch',
+                textAlign: 'right',
+                paddingRight: '0.5ch',
+              }"
+            >
+              {{ percent.toLocaleString(undefined, { minimumFractionDigits: 1 }) }}%
+            </div>
+            <div class="col align-self-center">
+              <div
+                class="progress"
+                :style="{
+                  width: `${percent}%`,
+                  marginLeft: 0,
+                  height: '1.2em',
+                  backgroundColor: nation.color,
+                }"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -95,7 +144,7 @@ declare const getCityPosition: () => CityPositionMap;
 declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 <script lang="ts" setup>
-import { onMounted, provide, ref } from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 import { BContainer, useToast } from "bootstrap-vue-3";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
@@ -104,7 +153,7 @@ import SimpleNationList from "./components/SimpleNationList.vue";
 import MapViewer, { type CityPositionMap, type MapCityParsedRaw, type MapCityParsed } from "./components/MapViewer.vue";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import { unwrap } from "@/util/unwrap";
-import type { diplomacyState, MapResult } from "./defs";
+import type { SimpleNationObj, diplomacyState, MapResult } from "./defs";
 import type { GetDiplomacyResponse } from "./defs/API/Global";
 import { isString } from "lodash";
 import { isBrightColor } from "@/util/isBrightColor";
@@ -144,6 +193,8 @@ const imagePath = window.pathConfig.gameImage;
 const map = ref<MapResult>();
 const diplomacy = ref<GetDiplomacyResponse>();
 
+const nationMap = ref(new Map<number, SimpleNationObj>());
+
 const toasts = unwrap(useToast());
 
 onMounted(async () => {
@@ -163,6 +214,17 @@ onMounted(async () => {
   }
 });
 
+watch(diplomacy, (diplomacy) => {
+  if (diplomacy === undefined) {
+    return;
+  }
+  const map = new Map<number, SimpleNationObj>();
+  for (const nation of diplomacy.nations) {
+    map.set(nation.nation, nation);
+  }
+  nationMap.value = map;
+});
+
 onMounted(async () => {
   try {
     diplomacy.value = await SammoAPI.Global.GetDiplomacy();
@@ -179,6 +241,9 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-size: 14px;
+}
 .diplomacy_area {
   width: 100%;
   overflow-x: auto;
@@ -205,6 +270,11 @@ onMounted(async () => {
 .diplomacy {
   margin-top: 1.5em;
 }
+
+.conflict-area{
+  margin-top: 1.5em;
+}
+
 .map_area {
   margin-top: 1.5em;
 }
@@ -217,5 +287,12 @@ onMounted(async () => {
   border-left: solid 1px gray;
   border-top: solid 1px gray;
   padding: 0;
+}
+
+.conflictCityName {
+  flex-basis: 16ch;
+  text-align: right;
+  padding-right: 1ch;
+  align-self: center;
 }
 </style>
