@@ -3480,7 +3480,7 @@ class GeneralAI
         $lastWar = \PHP_INT_MAX;
         foreach ($nationGenerals as $nationGeneral) {
             $recentWar = $nationGeneral->calcRecentWarTurn($this->env['turnterm']);
-            if ($recentWar >= $nationGeneral->getVar('belong') * 12) {
+            if ($recentWar >= ($nationGeneral->getVar('belong') - 1) * 12) {
                 //임관전 전투는 제외
                 continue;
             }
