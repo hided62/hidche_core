@@ -45,7 +45,7 @@ class APIHelper
             }
 
             $sessionMode = $obj->getRequiredSessionMode();
-            if ($sessionMode === BaseAPI::DUMMY_SESSION) {
+            if ($sessionMode === BaseAPI::NO_SESSION) {
                 $session = new DummySession();
             } else {
                 if ($sessionMode & BaseAPI::REQ_GAME_LOGIN) {

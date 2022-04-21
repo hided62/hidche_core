@@ -32,7 +32,7 @@ class GetConst extends \sammo\BaseAPI
 
     public function getRequiredSessionMode(): int
     {
-        return static::DUMMY_SESSION;
+        return static::NO_SESSION;
     }
 
     public function findLastModified(): ?int

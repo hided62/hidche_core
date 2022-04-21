@@ -41,7 +41,7 @@ class GetCachedMap extends \sammo\BaseAPI
 
   public function getRequiredSessionMode(): int
   {
-    return static::DUMMY_SESSION;
+    return static::NO_SESSION;
   }
 
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
