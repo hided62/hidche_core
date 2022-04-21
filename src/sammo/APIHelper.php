@@ -45,15 +45,15 @@ class APIHelper
             }
 
             $sessionMode = $obj->getRequiredSessionMode();
-            if ($sessionMode === BaseAPI::NO_SESSION) {
-                $session = Session::getInstance(); //XXX: NoSession이면 진짜 NoSession이어야..?
+            if ($sessionMode === BaseAPI::DUMMY_SESSION) {
+                $session = new DummySession();
             } else {
                 if ($sessionMode & BaseAPI::REQ_GAME_LOGIN) {
                     $session = Session::requireGameLogin();
                 } else if ($sessionMode & BaseAPI::REQ_LOGIN) {
                     $session = Session::requireLogin();
                 } else {
-                    Json::dieWithReason("올바르지 않은 SessionMode: {$sessionMode}");
+                    $session = Session::getInstance();
                 }
 
                 if ($sessionMode & BaseAPI::REQ_READ_ONLY) {

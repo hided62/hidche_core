@@ -17,7 +17,7 @@ class LoginByToken extends LoginByID
 
     public function getRequiredSessionMode(): int
     {
-        return \sammo\BaseAPI::NO_SESSION; //XXX: Token 때문에 엄밀히는 NO_SESSION이 아님
+        return \sammo\BaseAPI::NO_LOGIN;
     }
 
     public function validateArgs(): ?string

@@ -15,7 +15,7 @@ use sammo\Validator;
 class ReqNonce extends BaseAPI{
 
     public function getRequiredSessionMode(): int {
-        return \sammo\BaseAPI::NO_SESSION;
+        return \sammo\BaseAPI::NO_LOGIN;
     }
 
     public function validateArgs(): ?string

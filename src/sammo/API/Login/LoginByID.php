@@ -32,7 +32,7 @@ class LoginByID extends \sammo\BaseAPI
 
     public function getRequiredSessionMode(): int
     {
-        return BaseAPI::NO_SESSION;
+        return BaseAPI::NO_LOGIN;
     }
 
     public function scrubToken(int $userID)

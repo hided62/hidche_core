@@ -4,7 +4,8 @@ namespace sammo;
 
 abstract class BaseAPI
 {
-    const NO_SESSION = 0;
+    const DUMMY_SESSION = -1;
+    const NO_LOGIN = 0;
     const REQ_LOGIN = 1;
     const REQ_GAME_LOGIN = 2;
     const REQ_READ_ONLY = 4;
