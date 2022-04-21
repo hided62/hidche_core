@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="(modelValue.version ?? 0) == CURRENT_MAP_VERSION"
+    v-if="(mapData.version ?? 0) == CURRENT_MAP_VERSION"
     :id="uuid"
     :class="[
       'world_map',
@@ -20,7 +20,7 @@
       :title="getTitleTooltip()"
     >
       <span class="map_title_text" :style="{ color: getTitleColor() }"
-        >{{ mapResult?.year }}年 {{ mapResult?.month }}月</span
+        >{{ mapData?.year }}年 {{ mapData?.month }}月</span
       >
       <span class="tooltiptext" />
     </div>
@@ -104,7 +104,7 @@
     <span class="map_title_text">
       맵 버전이 맞지 않습니다.<br />
       렌더러 버전: {{ CURRENT_MAP_VERSION }}<br />
-      API 버전: {{ modelValue.version ?? 0 }}
+      API 버전: {{ mapData.version ?? 0 }}
     </span>
   </div>
 </template>
@@ -193,6 +193,7 @@ const { sourceType: cursorType } = useMouse();
 const emit = defineEmits<{
   (event: "city-click", city: MapCityParsed, e: MouseEvent | TouchEvent): void;
   (event: "parsed", drawable: MapCityDrawable): void;
+  (event: 'update:modelValue', value: MapCityParsed): void;
 }>();
 
 const isFullWidth = ref(true);
@@ -239,17 +240,23 @@ const props = defineProps({
     required: true,
   },
 
-  modelValue: {
+  mapData: {
     type: Object as PropType<MapResult>,
     required: true,
   },
+
+  modelValue: {
+    type: Object as PropType<MapCityParsed>,
+    default: undefined,
+    required: false,
+  }
 });
 
-const mapResult = toRef(props, "modelValue");
+const mapData = toRef(props, "mapData");
 
 const mapTheme = toRef(props, "mapName");
 function getTitleColor(): string | undefined {
-  const { startYear, year } = mapResult.value;
+  const { startYear, year } = mapData.value;
 
   if (year < startYear + 1) {
     return "magenta";
@@ -262,11 +269,11 @@ function getTitleColor(): string | undefined {
   }
 }
 
-const drawableMap = ref<MapCityDrawable>(convertCityObjs(props.modelValue));
+const drawableMap = ref<MapCityDrawable>(convertCityObjs(props.mapData));
 const activatedCity = ref<MapCityParsed>();
 
 function getBeginGameLimitTooltip(): string | undefined {
-  const { startYear, year, month } = mapResult.value;
+  const { startYear, year, month } = mapData.value;
   if (year > startYear + 3) return undefined;
 
   const [remainYear, remainMonth] = parseYearMonth(joinYearMonth(startYear + 3, 0) - joinYearMonth(year, month));
@@ -281,7 +288,7 @@ function getTitleTooltip(): string {
     result.push(beginLimit);
   }
 
-  const { startYear, year } = mapResult.value;
+  const { startYear, year } = mapData.value;
 
   const maxTechLevel = gameConstStore.value.gameConst.maxTechLevel;
   const currentTechLimit = getMaxRelativeTechLevel(startYear, year, maxTechLevel);
@@ -297,7 +304,7 @@ function getTitleTooltip(): string {
 }
 
 function getMapSeasonClassName(): string {
-  const { month } = mapResult.value;
+  const { month } = mapData.value;
 
   if (month <= 3) {
     return "map_spring";
@@ -422,7 +429,7 @@ function convertCityObjs(obj: MapResult): MapCityDrawable {
   return result;
 }
 watch(
-  () => props.modelValue,
+  () => props.mapData,
   (mapInfo) => {
     activatedCity.value = undefined;
     drawableMap.value = convertCityObjs(mapInfo);
@@ -446,6 +453,7 @@ function cityClick(city: MapCityParsed, $event: MouseEvent | TouchEvent): void {
     }
   }
   emit("city-click", city, $event);
+  emit("update:modelValue", city);
 }
 
 function clickOutside($event: MouseEvent): void {

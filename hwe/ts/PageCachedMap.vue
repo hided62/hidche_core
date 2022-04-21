@@ -7,7 +7,7 @@
         :server-nick="serverNick"
         :serverID="serverID"
         :map-name="unwrap(gameConstStore?.gameConst.mapName)"
-        :model-value="cachedMap"
+        :map-data="cachedMap"
         :is-detail-map="true"
         :city-position="cityPosition"
         :format-city-info="formatCityInfoText"

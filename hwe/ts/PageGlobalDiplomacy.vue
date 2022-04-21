@@ -119,7 +119,7 @@
             :server-nick="serverNick"
             :serverID="serverID"
             :map-name="unwrap(gameConstStore?.gameConst.mapName)"
-            :model-value="map"
+            :map-data="map"
             :is-detail-map="true"
             :city-position="cityPosition"
             :format-city-info="formatCityInfoText"

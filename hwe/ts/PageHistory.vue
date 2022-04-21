@@ -16,7 +16,7 @@
             :server-nick="serverNick"
             :serverID="queryServerID"
             :map-name="unwrap(gameConstStore?.gameConst.mapName)"
-            :model-value="history.map"
+            :map-data="history.map"
             :is-detail-map="true"
             :city-position="cityPosition"
             :format-city-info="formatCityInfoText"
