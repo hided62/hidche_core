@@ -4,20 +4,21 @@
 
 @include media-1000px {
   #container {
-      width: 1000px;
-      margin: 0 auto;
-      padding: 0;
+    font-size: 14px;
+    width: 1000px;
+    margin: 0 auto;
+    padding: 0;
   }
-  .year-selector{
-    margin-left: 100%/24*5;
+  .year-selector {
+    margin-left: 100%/24 * 5;
   }
 
-  .map_position{
+  .map_position {
     flex: 0 0 auto;
     width: 700px;
   }
 
-  .nation_position{
+  .nation_position {
     flex: 0 0 auto;
     width: 300px;
   }
@@ -25,17 +26,18 @@
 
 @include media-500px {
   #container {
-      width: 500px;
-      margin: 0 auto;
-      padding: 0;
+    font-size: 14px;
+    width: 500px;
+    margin: 0 auto;
+    padding: 0;
   }
 
-  .map_position{
+  .map_position {
     flex: 0 0 auto;
     width: 100%;
   }
 
-  .nation_position{
+  .nation_position {
     flex: 0 0 auto;
     width: 100%;
   }
