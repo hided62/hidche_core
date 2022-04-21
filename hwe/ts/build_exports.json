@@ -24,6 +24,7 @@
     "ingame_vue": {
         "v_inheritPoint": "v_inheritPoint.ts",
         "v_board": "v_board.ts",
+        "v_cachedMap": "v_cachedMap",
         "v_chiefCenter": "v_chiefCenter.ts",
         "v_NPCControl": "v_NPCControl.ts",
         "v_join": "v_join.ts",
