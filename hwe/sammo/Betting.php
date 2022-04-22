@@ -10,6 +10,27 @@ class Betting
 
     private BettingInfo $info;
 
+    public CONST LAST_BETTING_ID_KEY = 'last_betting_id';
+
+    static public function genNextBettingID(): int{
+        $db = DB::db();
+
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $gameStor->invalidateCacheValue(self::LAST_BETTING_ID_KEY);
+        $bettingID = ($gameStor->getValue(self::LAST_BETTING_ID_KEY) ?? 0) + 1;
+
+        $gameStor->setValue(self::LAST_BETTING_ID_KEY, $bettingID);
+
+        return $bettingID;
+    }
+
+    static public function openBetting(BettingInfo $info){
+        $db = DB::db();
+        $bettingID = $info->id;
+        $bettingStor = KVStorage::getStorage($db, 'betting');
+        $bettingStor->setValue("id_{$bettingID}", $info->toArray());
+    }
+
     public function __construct(private $bettingID)
     {
         $db = DB::db();

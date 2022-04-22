@@ -2,6 +2,7 @@
 
 namespace sammo\Event\Action;
 
+use sammo\Betting;
 use \sammo\GameConst;
 use \sammo\Util;
 use \sammo\DB;
@@ -28,12 +29,6 @@ class OpenNationBetting extends \sammo\Event\Action
     {
         $db = DB::db();
 
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $gameStor->invalidateCacheValue('last_betting_id');
-        $bettingID = ($gameStor->getValue('last_betting_id') ?? 0) + 1;
-        $gameStor->setValue('last_betting_id', $bettingID);
-
-        $bettingStor = KVStorage::getStorage($db, 'betting');
         [$year, $month] = [$env['year'], $env['month']];
 
         if ($this->nationCnt == 1) {
@@ -77,8 +72,9 @@ class OpenNationBetting extends \sammo\Event\Action
                 aux: $nationRaw,
             );
         }
-
-        $bettingInfo = new BettingInfo(
+        
+        $bettingID = \sammo\Betting::genNextBettingID();
+        Betting::openBetting(new BettingInfo(
             id: $bettingID,
             type: 'bettingNation',
             name: "{$name} 예상",
@@ -88,8 +84,7 @@ class OpenNationBetting extends \sammo\Event\Action
             openYearMonth: $openYearMonth,
             closeYearMonth: $closeYearMonth,
             candidates: $candidates,
-        );
-        $bettingStor->setValue("id_{$bettingID}", $bettingInfo->toArray());
+        ));
 
         $db->insert('event', [
             'target' => 'DESTROY_NATION',
