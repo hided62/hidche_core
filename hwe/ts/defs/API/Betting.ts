@@ -26,7 +26,7 @@ export type BettingInfo = {
   reqInheritancePoint: boolean;
   openYearMonth: number;
   closeYearMonth: number;
-  candidates: SelectItem[];
+  candidates: Record<number, SelectItem>;
   winner?: number[];
 }
 

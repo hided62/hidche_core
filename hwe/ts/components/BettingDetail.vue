@@ -24,6 +24,7 @@
           </div>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <div v-if="candidate.isHtml" class="info" v-html="candidate.info" />
+          <div v-else class="info">{{ candidate.info }}</div>
           <div class="pickRate">선택율: {{ (((partialBet.get(idx) ?? 0) / pureBettingAmount) * 100).toFixed(1) }}%</div>
         </div>
       </div>
@@ -136,7 +137,6 @@ import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { isString, range, sum } from "lodash";
 import { ref, type PropType, watch } from "vue";
-
 
 const props = defineProps({
   bettingID: {
