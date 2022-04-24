@@ -84,9 +84,6 @@ class KVStorage{
     }
 
     public function invalidateCacheValue($key):self{
-        if(is_string($key)){
-            $key = mb_strtolower($key);
-        }
         if($this->cacheData === null){
             return $this;
         }
@@ -100,7 +97,6 @@ class KVStorage{
         if($this->cacheData === null){
             return $this;
         }
-        $keys = array_map('mb_strtolower', $keys);
 
         foreach($keys as $key){
             if(key_exists($key, $this->cacheData)){
@@ -123,7 +119,6 @@ class KVStorage{
         if($this->cacheData === null){
             $this->cacheData = [];
         }
-        $keys = array_map('mb_strtolower', $keys);
 
         if($invalidateAll){
             $notExists = $keys;
@@ -168,7 +163,6 @@ class KVStorage{
         if(!$keys){
             return [];
         }
-        $keys = array_map('mb_strtolower', $keys);
         $dictResult = $this->getValues($keys, $onlyCache);
         $result = [];
         foreach($keys as $key){
@@ -181,7 +175,6 @@ class KVStorage{
         if(!$keys){
             return [];
         }
-        $keys = array_map('mb_strtolower', $keys);
         if ($this->cacheData === null) {
             return $this->getDBValues($keys);
         }
@@ -221,9 +214,6 @@ class KVStorage{
      * @return mixed|null
      */
     public function getValue($key, bool $onlyCache=false){
-        if(is_string($key)){
-            $key = mb_strtolower($key);
-        }
         if($this->cacheData !== null && ($onlyCache || key_exists($key, $this->cacheData))){
             return $this->cacheData[$key] ?? null;
         }
@@ -243,9 +233,6 @@ class KVStorage{
      * @throws MeekroDBException
      */
     public function setValue($key, $value):self{
-        if(is_string($key)){
-            $key = mb_strtolower($key);
-        }
         if($value === null){
             return $this->deleteValue($key);
         }
@@ -264,9 +251,6 @@ class KVStorage{
      * @throws MeekroDBException
      */
     public function deleteValue($key):self{
-        if(is_string($key)){
-            $key = mb_strtolower($key);
-        }
         if(isset($this->cacheData[$key])){
             unset($this->cacheData[$key]);
         }
