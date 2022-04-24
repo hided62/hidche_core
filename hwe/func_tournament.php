@@ -1206,19 +1206,12 @@ function setRefund()
 
     //베팅금 환수
     $bettingID = $gameStor->last_tournament_betting_id ?? 0;
-    if (!$bettingID == 0) {
+    if ($bettingID != 0) {
         $betting = new Betting($bettingID);
         if (!$betting->getInfo()->finished) {
             $betting->giveReward([-1]);
         }
     }
-
-
-
-
-    $db->update(['general', [
-        'gold' => $db->sqleval('gold + (SELECT bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 FROM betting WHERE general_id = general.no)')
-    ]], true);
 
     //자동진행 끝
     $gameStor->tnmt_auto = 0;
