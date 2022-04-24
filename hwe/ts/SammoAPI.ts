@@ -25,7 +25,9 @@ const apiRealPath = {
         GetBettingDetail: NumVar('betting_id',
             GET as APICallT<undefined, BettingDetailResponse>
         ),
-        GetBettingList: GET as APICallT<undefined, BettingListResponse>,
+        GetBettingList: GET as APICallT<{
+            req?: 'bettingNation' | 'tournament'
+        }, BettingListResponse>,
     },
     Command: {
         GetReservedCommand: GET as APICallT<undefined, ReservedCommandResponse>,

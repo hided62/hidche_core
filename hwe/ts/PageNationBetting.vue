@@ -55,7 +55,9 @@ function addToast(msg: ToastType) {
 console.log("시작!");
 onMounted(async () => {
   try {
-    const result = await SammoAPI.Betting.GetBettingList();
+    const result = await SammoAPI.Betting.GetBettingList({
+      req: 'bettingNation'
+    });
     year.value = result.year;
     month.value = result.month;
     yearMonth.value = joinYearMonth(result.year, result.month);

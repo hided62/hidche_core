@@ -7,6 +7,7 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\BettingInfo;
 use sammo\KVStorage;
+use sammo\Validator;
 
 use function sammo\checkLimit;
 use function sammo\increaseRefresh;
@@ -15,6 +16,11 @@ class GetBettingList extends \sammo\BaseAPI
 {
     public function validateArgs(): ?string
     {
+        $v = new Validator($this->args);
+        $v->rule('in', 'req', ['bettingNation', 'tournament']);
+        if (!$v->validate()) {
+            return $v->errorStr();
+        }
         return null;
     }
 
@@ -26,6 +32,8 @@ class GetBettingList extends \sammo\BaseAPI
     public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
     {
         $db = DB::db();
+
+        $reqType = $this->args['req'] ?? null;
 
         increaseRefresh("베팅장", 1);
 
@@ -42,6 +50,9 @@ class GetBettingList extends \sammo\BaseAPI
         $bettingList = [];
         foreach ($bettingStor->getAll() as $_key => $rawItem) {
             $item = new BettingInfo($rawItem);
+            if ($reqType !== null && $item->type != $reqType) {
+                continue;
+            }
             unset($rawItem['candidates']);
             $bettingList[$item->id] = $rawItem;
             $bettingList[$item->id]['totalAmount'] = 0;
@@ -49,7 +60,7 @@ class GetBettingList extends \sammo\BaseAPI
 
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 
-        if(!$bettingList){
+        if (!$bettingList) {
             return [
                 'result' => true,
                 'bettingList' => $bettingList,
