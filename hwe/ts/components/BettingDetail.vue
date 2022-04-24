@@ -11,12 +11,12 @@
     </div>
 
     <div class="row bettingCandidates gx-1 gy-1">
-      <div v-for="(candidate, idx) in info.candidates" :key="idx" class="col-4 col-md-2" @click="toggleCandidate(idx)">
+      <div v-for="(candidate, idx) in info.candidates" :key="idx" class="col-4 col-md-2" @click="toggleCandidate(parseInt(idx))">
         <div
           :class="[
             'bettingCandidate',
-            pickedBetType.has(idx) ? 'picked' : undefined,
-            info.finished && winner.has(idx) ? 'picked' : undefined,
+            pickedBetType.has(parseInt(idx)) ? 'picked' : undefined,
+            info.finished && winner.has(parseInt(idx)) ? 'picked' : undefined,
           ]"
         >
           <div class="title bg1">
@@ -25,7 +25,7 @@
           <!-- eslint-disable-next-line vue/no-v-html -->
           <div v-if="candidate.isHtml" class="info" v-html="candidate.info" />
           <div v-else class="info">{{ candidate.info }}</div>
-          <div class="pickRate">선택율: {{ (((partialBet.get(idx) ?? 0) / pureBettingAmount) * 100).toFixed(1) }}%</div>
+          <div class="pickRate">선택율: {{ (((partialBet.get(parseInt(idx)) ?? 0) / pureBettingAmount) * 100).toFixed(1) }}%</div>
         </div>
       </div>
     </div>
