@@ -84,7 +84,6 @@ return [
         'hwe/j_adjust_icon.php',
         'hwe/j_autoreset.php',
         'hwe/j_basic_info.php',
-        'hwe/j_betting.php',
         'hwe/j_board_article_add.php',
         'hwe/j_board_comment_add.php',
         'hwe/j_board_get_articles.php',

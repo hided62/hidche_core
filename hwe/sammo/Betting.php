@@ -10,9 +10,10 @@ class Betting
 
     private BettingInfo $info;
 
-    public CONST LAST_BETTING_ID_KEY = 'last_betting_id';
+    public const LAST_BETTING_ID_KEY = 'last_betting_id';
 
-    static public function genNextBettingID(): int{
+    static public function genNextBettingID(): int
+    {
         $db = DB::db();
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -24,7 +25,8 @@ class Betting
         return $bettingID;
     }
 
-    static public function openBetting(BettingInfo $info){
+    static public function openBetting(BettingInfo $info)
+    {
         $db = DB::db();
         $bettingID = $info->id;
         $bettingStor = KVStorage::getStorage($db, 'betting');
@@ -47,7 +49,7 @@ class Betting
         return Json::encode($bettingType);
     }
 
-    public function purifyBettingKey(array $bettingType, bool $ignoreOver = false): array
+    public function purifyBettingKey(array $bettingType, bool $noValidate = false): array
     {
         $selectCnt = $this->info->selectCnt;
         sort($bettingType, SORT_NUMERIC);
@@ -56,15 +58,28 @@ class Betting
             throw new \InvalidArgumentException('중복된 값이 있습니다.');
         }
 
-        if ($bettingType[0] < 0) {
-            throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(0 미만)' . print_r($bettingType, true));
-        }
-
-        if (!$ignoreOver && Util::array_last($bettingType) >= count($this->info->candidates)) {
-            throw new \InvalidArgumentException('올바르지 않은 값이 있습니다.(초과)' . print_r($bettingType, true));
+        if (!$noValidate) {
+            foreach($bettingType as $bettingKey){
+                if(!key_exists($bettingKey, $this->info->candidates)){
+                    throw new \InvalidArgumentException('올바른 후보가 아닙니다.' . print_r($bettingType, true));
+                }
+            }
         }
 
         return $bettingType;
+    }
+
+    public function closeBetting(): void
+    {
+        $db = DB::db();
+        $bettingStor = KVStorage::getStorage($db, 'betting');
+        $bettingID = $this->info->id;
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
+        //XXX: 베팅 종료 시점을 '현재 연월'로 하여 강제로 닫는다.
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+        $this->info->closeYearMonth = Util::joinYearMonth($year, $month);
+        $bettingStor->setValue("id_{$bettingID}", $this->info->toArray());
     }
 
     public function convertBettingKey(array $bettingType): string
@@ -78,7 +93,8 @@ class Betting
         return $this->info;
     }
 
-    public function bet(int $generalID, ?int $userID, array $bettingType, int $amount): void{
+    public function bet(int $generalID, ?int $userID, array $bettingType, int $amount): void
+    {
         $bettingInfo = $this->info;
 
         if ($bettingInfo->finished) {
@@ -107,6 +123,7 @@ class Betting
             throw new \RuntimeException('필요한 선택 수를 채우지 못했습니다.');
         }
 
+        $resKey = $this->info->reqInheritancePoint?'유산포인트':'금';
         $bettingTypeKey = $this->convertBettingKey($bettingType);
 
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
@@ -114,7 +131,7 @@ class Betting
         $prevBetAmount = $db->queryFirstField('SELECT sum(amount) FROM ng_betting WHERE betting_id = %i AND user_id = %i', $this->bettingID, $userID) ?? 0;
 
         if ($prevBetAmount + $amount > 1000) {
-            throw new \RuntimeException((1000 - $prevBetAmount) . ' 포인트까지만 베팅 가능합니다.');
+            throw new \RuntimeException((1000 - $prevBetAmount) . $resKey.'까지만 베팅 가능합니다.');
         }
 
         if ($bettingInfo->reqInheritancePoint) {
@@ -287,8 +304,8 @@ class Betting
 
         //남은 상금은 '당첨자'에게 몰아준다.
         //당첨자가 아무도 없다면, 0개 맞춘 그룹에게 돌아간다.
-        if($rewardAmount){
-            foreach(Util::range($selectCnt, -1, -1) as $matchPoint){
+        if ($rewardAmount) {
+            foreach (Util::range($selectCnt, -1, -1) as $matchPoint) {
                 if (!key_exists($matchPoint, $rewardAmount)) {
                     continue;
                 }
@@ -338,7 +355,7 @@ class Betting
                 $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
                 $nextPoint = $previousPoint + $amount;
                 $inheritStor->setValue('previous', [$nextPoint, 0]);
-                $inheritStor->invalidateCacheValue('previous');//XXX: 실제로는 previous 값을 사용할 수 없도록 락을 걸어야 한다.
+                $inheritStor->invalidateCacheValue('previous'); //XXX: 실제로는 previous 값을 사용할 수 없도록 락을 걸어야 한다.
 
                 $amountText = number_format($amount);
                 $previousPointText = number_format($previousPoint);
@@ -368,7 +385,6 @@ class Betting
             foreach ($loggers as $userLogger) {
                 $userLogger->flush();
             }
-
         } else {
             $generalList = General::createGeneralObjListFromDB(array_unique(Util::squeezeFromArray($rewardList, 'generalID')), ['gold', 'npc'], 1);
             foreach ($rewardList as $rewardItem) {

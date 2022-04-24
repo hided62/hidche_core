@@ -196,6 +196,16 @@ class ResetHelper{
             'plock'=>1,
             'locktime'=>TimeUtil::now(true)
         ]);
+        $db->insert('plock', [
+            'type'=>'TOURNAMENT',
+            'plock'=>1,
+            'locktime'=>TimeUtil::now(true)
+        ]);
+        $db->insert('plock', [
+            'type'=>'ETC',
+            'plock'=>1,
+            'locktime'=>TimeUtil::now(true)
+        ]);
 
         $prevWinner = $db->queryFirstField('SELECT l12name FROM emperior ORDER BY `no` DESC LIMIT 1');
         $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games') + 1;

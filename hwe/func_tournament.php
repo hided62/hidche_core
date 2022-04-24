@@ -2,13 +2,14 @@
 
 namespace sammo;
 
+use sammo\DTO\BettingInfo;
 
 function processTournament()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time']);
+    $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time', 'last_tournament_betting_id']);
     $now = new \DateTime();
     $offset = $now->getTimestamp() - (new \DateTime($admin['tnmt_time']))->getTimestamp();
 
@@ -90,9 +91,12 @@ function processTournament()
                 final16set();
                 $tnmt = 6;
                 $phase = 0;
-                startBetting();
+                startBetting($type, $unit);
                 break;
             case 6: //베팅중
+                $bettingID = $admin['last_tournament_betting_id'];
+                $betting = new Betting($bettingID);
+                $betting->closeBetting();
                 $tnmt = 7;
                 $phase = 0;
                 break;
@@ -164,23 +168,32 @@ function processTournament()
     $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
 }
 
-function getTournamentTerm(): ?int{
+function getTournamentTerm(): ?int
+{
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $tnmt_auto = $gameStor->tnmt_auto;
-    if($tnmt_auto === null){
+    if ($tnmt_auto === null) {
         $tnmt_auto = $gameStor->tnmt_trig;
     }
-    switch($tnmt_auto){
-        case 0: return null;
-        case 1: return 12 * 60;
-        case 2: return 7 * 60;
-        case 3: return 3 * 60;
-        case 4: return 1 * 60;
-        case 5: return 30;
-        case 6: return 15;
-        case 7: return 5;
+    switch ($tnmt_auto) {
+        case 0:
+            return null;
+        case 1:
+            return 12 * 60;
+        case 2:
+            return 7 * 60;
+        case 3:
+            return 3 * 60;
+        case 4:
+            return 1 * 60;
+        case 5:
+            return 30;
+        case 6:
+            return 15;
+        case 7:
+            return 5;
     }
     return null;
 }
@@ -189,16 +202,16 @@ function getTournamentTermText()
 {
     $term = getTournamentTerm();
 
-    if($term === null){
+    if ($term === null) {
         return '수동';
     }
 
-    if($term % 60 === 0){
+    if ($term % 60 === 0) {
         $termMin = intdiv($term, 60);
         return "경기당 {$termMin}분";
     }
 
-    if($term > 60){
+    if ($term > 60) {
         $termSec = $term % 60;
         $termMin = intdiv($term, 60);
         return "경기당 {$termMin}분 {$termSec}초";
@@ -268,7 +281,7 @@ function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, 
     $k += 1;
     if ($prmt > 0) {
         $name = "<font color=orange>" . $name . "</font>";
-    } else if($npc > 0){
+    } else if ($npc > 0) {
         $name = formatName($name, $npc);
     }
     echo "<tr align=center><td class='bg2'>$k</td><td style='font-size:80%;'>$name</td><td>$abil</td><td>$tgame</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
@@ -367,28 +380,11 @@ function startTournament($auto, $type)
     $gameStor->tnmt_time = (new \DateTimeImmutable())->add(new \DateInterval("PT{$unit}M"))->format('Y-m-d H:i:s');
     $gameStor->tournament = 1;
     $gameStor->tnmt_type = $type;
+    $gameStor->last_tournament_betting_id = 0;
     $gameStor->phase = 0;
 
     $db->update('general', [
         'tournament' => 0,
-    ], true);
-    $db->update('betting', [
-        'bet0' => 0,
-        'bet1' => 0,
-        'bet2' => 0,
-        'bet3' => 0,
-        'bet4' => 0,
-        'bet5' => 0,
-        'bet6' => 0,
-        'bet7' => 0,
-        'bet8' => 0,
-        'bet9' => 0,
-        'bet10' => 0,
-        'bet11' => 0,
-        'bet12' => 0,
-        'bet13' => 0,
-        'bet14' => 0,
-        'bet15' => 0
     ], true);
     $db->query('TRUNCATE TABLE tournament');
 
@@ -416,44 +412,90 @@ function startTournament($auto, $type)
     pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 }
 
-function startBetting()
+function getDummyBettingInfo(string $tnmt_type): BettingInfo
+{
+    return new BettingInfo(
+        id: 0,
+        type: 'tournament',
+        name: $tnmt_type,
+        finished: true,
+        selectCnt: 1,
+        reqInheritancePoint: false,
+        openYearMonth: 0,
+        closeYearMonth: 0,
+        candidates: []
+    );
+}
+
+function startBetting($type, $unit)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    [$year, $month, $startyear] = $gameStor->getValuesAsArray(['year', 'month', 'startyear']);
+    [$year, $month, $startyear, $turnterm] = $gameStor->getValuesAsArray(['year', 'month', 'startyear', 'turnterm']);
     pushGlobalHistoryLog([
         "<S>◆</>{$year}년 {$month}월:<B><b>【대회】</b></>우승자를 예상하는 <C>내기</>가 진행중입니다! 호사가의 참여를 기다립니다!"
     ], $year, $month);
+
+    [$typeText, $statName, $statKey] = [
+        ['전력전', '종능', 'total'],
+        ['통솔전', '통솔', 'leadership'],
+        ['일기토', '무력', 'strength'],
+        ['설전', '지력', 'intel'],
+    ][$type];
+
+    $bettingID = Betting::genNextBettingID();
+
+
+    //어차피 강제로 닫을 것이므로 크게 신경쓰지 않는다.
+    $openYearMonth = Util::joinYearMonth($year, $month);
+    $closeYearMonth = $openYearMonth + 120;
+
+    /** @var \sammo\DTO\SelectItem[] */
+    $candidates = [];
+
+    $generalList = $db->query('SELECT no,npc,name,win,leadership,strength,intel,leadership+strength+intel as total from tournament where grp>=20 order by grp, grp_no LIMIT 16');
+    foreach ($generalList as $idx => $general) {
+        if ($general['no'] <= 0) {
+            continue;
+        }
+        $general['idx'] = $idx;
+        $candidates[$general['no']] = new \sammo\DTO\SelectItem(
+            title: $general['name'],
+            info: "{$statName}: {$general[$statKey]}",
+            aux: $general
+        );
+    }
+    $candidateCnt = count($candidates);
+
+    Betting::openBetting(new BettingInfo(
+        id: $bettingID,
+        type: 'tournament',
+        name: $typeText,
+        finished: false,
+        selectCnt: 1,
+        reqInheritancePoint: false,
+        openYearMonth: $openYearMonth,
+        closeYearMonth: $closeYearMonth,
+        candidates: $candidates,
+    ));
+
+    $betting = new Betting($bettingID);
+
+    $gameStor->last_tournament_betting_id = $bettingID;
 
     $betGold = Util::valueFit(floor((3 + $year - $startyear) * 0.334) * 10, 10);
 
     $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE npc >= 2 AND gold >= (500 + %i)', $betGold);
     $npcBet = [];
-    $betSum = [
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0,
-    ];
 
+    $targetList = array_keys($candidates);
     foreach ($npcList as $npcID) {
-        $target = Util::randRangeInt(0, 15);
-        $betSum[$target] += $betGold;
+        $target = Util::choiceRandom($targetList);
         $npcBet[] = [$npcID, $target];
     }
 
-    $db->update('general', [
-        'gold' => $db->sqleval('gold - %i', $betGold),
-    ], 'no IN %li', $npcList);
     foreach ($npcBet as [$npcID, $betTarget]) {
-        $targetKey = "bet{$betTarget}";
-        $db->update('betting', [
-            "bet{$betTarget}" => $db->sqleval('%b + %i', $targetKey, $betGold),
-        ], 'general_id = %i', $npcID);
-    }
-    foreach ($betSum as $betTarget => $betSumGold) {
-        $targetKey = "bet{$betTarget}";
-        $db->update('betting', [
-            "bet{$betTarget}" => $db->sqleval('%b + %i', $targetKey, $betSumGold),
-        ], 'general_id = 0');
+        $betting->bet($npcID, null, [$betTarget], $betGold);
     }
 }
 
@@ -514,19 +556,19 @@ function fillLowGenAll($tnmt_type)
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
     $freeJoinerCandidate = [];
 
-    foreach($db->query(
+    foreach ($db->query(
         'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weapon,book from general where tnmt=1 and tournament=0',
-    ) as $gen){
+    ) as $gen) {
         $score = $scoringCandFunction($gen);
-        $freeJoinerCandidate[$gen['no']] = [$gen, $score**1.5];
+        $freeJoinerCandidate[$gen['no']] = [$gen, $score ** 1.5];
     }
 
 
     $joinersValues = [];
     $joinersIdx = [];
 
-    foreach(Util::range($toBeFilledCnt) as $_){
-        if(!$freeJoinerCandidate){
+    foreach (Util::range($toBeFilledCnt) as $_) {
+        if (!$freeJoinerCandidate) {
             break;
         }
         $general = Util::choiceRandomUsingWeightPair($freeJoinerCandidate);
@@ -987,7 +1029,7 @@ function setGift($tnmt_type, $tnmt, $phase)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
+    $admin = $gameStor->getValues(['year', 'month', 'develcost', 'last_tournament_betting_id']);
 
     $resultHelper = [];
 
@@ -1143,36 +1185,16 @@ function setGift($tnmt_type, $tnmt, $phase)
         $generalObjList[$generalID]->increaseInheritancePoint('tournament', $general['inheritance_point']);
     }
 
-    //우승자 번호
-    $winnerGrp = $resultHelper[$winner['no']]['grp'];
-    $winnerGrpNo = $resultHelper[$winner['no']]['grp_no'];
-    $winnerSlot = ($winnerGrp - 20) * 2 + $winnerGrpNo;
-
     //당첨칸에 베팅한 사람들만
-    $globalBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = 0');
-    $globalBet = array_splice($globalBet, -16);
-    $globalBetTotal = array_sum($globalBet);
-    $rewardRate = round($globalBetTotal / max($globalBet[$winnerSlot], 1), 2);
-
-    $betKey = "bet{$winnerSlot}";
-    $gambleResult = Util::convertArrayToDict($db->query('SELECT general_id, %b as bet FROM betting WHERE %b > 0 AND general_id > 0', $betKey, $betKey), 'general_id');
-
-    foreach (General::createGeneralObjListFromDB(Util::squeezeFromArray($gambleResult, 'general_id'), ['gold', 'npc'], 1) as $gambler) {
-        $reward = Util::round($gambleResult[$gambler->getID()]['bet'] * $rewardRate);
-        $gambler->increaseVar('gold', $reward);
-        if (($gambler->getNPCType() == 0) || ($gambler->getNPCType() == 1 && $gambler->getRankVar('betgold', 0) > 0)) {
-            $gambler->increaseRankVar('betwingold', $reward);
-            $gambler->increaseRankVar('betwin', 1);
-        }
-        $rewardText = number_format($reward);
-        $gambler->getLogger()->pushGeneralActionLog("<C>{$tp}</> 대회의 베팅 당첨으로 <C>{$rewardText}</>의 <S>금</> 획득!", ActionLogger::EVENT_PLAIN);
-        $gambler->applyDB($db);
-    }
+    $bettingID = $gameStor->last_tournament_betting_id;
+    $betting = new Betting($bettingID);
+    $betting->giveReward([$winner['no']]);
 }
 
 function setRefund()
 {
     $db = DB::db();
+
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     //16강자 명성 돈
@@ -1183,6 +1205,17 @@ function setRefund()
     ], 'no IN %li', $generalIDList);
 
     //베팅금 환수
+    $bettingID = $gameStor->last_tournament_betting_id ?? 0;
+    if (!$bettingID == 0) {
+        $betting = new Betting($bettingID);
+        if (!$betting->getInfo()->finished) {
+            $betting->giveReward([-1]);
+        }
+    }
+
+
+
+
     $db->update(['general', [
         'gold' => $db->sqleval('gold + (SELECT bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 FROM betting WHERE general_id = general.no)')
     ]], true);

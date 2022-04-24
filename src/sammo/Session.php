@@ -278,7 +278,7 @@ class Session
 
         $deadTime = $nextTurn + $general['killturn'] * $turnterm;
         if ($deadTime < $now && !$isUnited) {
-            $locked = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
+            $locked = $db->queryFirstField('SELECT plock FROM plock WHERE `type` = "GAME" LIMIT 1');
             if (!$locked) {
                 if ($result !== null) {
                     $result = false;

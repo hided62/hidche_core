@@ -225,6 +225,8 @@ if($btn == "자동개최설정") {
     finallyAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
 } elseif($btn == "배정") {
     final16set();
+    $phase = 0;
+    startBetting($admin['tnmt_type'], 720);
 } elseif($btn == "베팅마감") {
     $dt = date("Y-m-d H:i:s", time() + 60);
     $gameStor->tournament=7;

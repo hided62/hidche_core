@@ -15,6 +15,7 @@ increaseRefresh("토너먼트", 1);
 TurnExecutionHelper::executeAllCommand();
 
 $me = $db->queryFirstRow('select no,tournament,con,turntime from general where owner=%i', $userID);
+$generalID = $session->generalID;
 
 $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_msg', 'tnmt_type', 'develcost', 'tnmt_trig']);
 
@@ -25,33 +26,75 @@ if ($con >= 2) {
 }
 
 switch ($admin['tnmt_type']) {
-    default:
-        throw new \RuntimeException('invalid tnmt_type');
-    case 0:
-        $tnmt_type = "<font color=cyan>전력전</font>";
+    case convertTournamentType('전력전'):
+        $tnmt_type = "전력전";
+        $color = 'cyan';
         $tp = "total";
         $tp2 = "종합";
         $tp3 = "total";
         break;
-    case 1:
-        $tnmt_type = "<font color=cyan>통솔전</font>";
+    case convertTournamentType('통솔전'):
+        $tnmt_type = "통솔전";
+        $color = 'cyan';
         $tp = "leadership";
         $tp2 = "통솔";
         $tp3 = "leadership";
         break;
-    case 2:
-        $tnmt_type = "<font color=cyan>일기토</font>";
+    case convertTournamentType('일기토'):
+        $tnmt_type = "일기토";
+        $color = 'cyan';
         $tp = "strength";
         $tp2 = "무력";
         $tp3 = "strength";
         break;
-    case 3:
-        $tnmt_type = "<font color=cyan>설전</font>";
+    case convertTournamentType('설전'):
+        $tnmt_type = "설전";
+        $color = 'cyan';
         $tp = "intel";
         $tp2 = "지력";
         $tp3 = "intel";
         break;
+    default:
+        throw new \RuntimeException('invalid tnmt_type');
 }
+
+
+$bettingID = $gameStor->last_tournament_betting_id ?? 0;
+if ($bettingID != 0) {
+    $betting = $bettingID != 0 ? new Betting($bettingID) : null;
+    $info = $betting->getInfo();
+} else {
+    $info = getDummyBettingInfo($tnmt_type);
+}
+
+$myBet = [];
+$globalBet = [];
+
+if ($bettingID != 0) {
+    $betting = $bettingID != 0 ? new Betting($bettingID) : null;
+    $info = $betting->getInfo();
+
+    foreach ($db->queryAllLists(
+        'SELECT general_id, user_id, amount, betting_type FROM ng_betting WHERE betting_id = %i',
+        $bettingID
+    ) as [$betGeneralID, $userID, $amount, $bettingTypeKey]) {
+        $bettingKey = Json::decode($bettingTypeKey)[0];
+        if ($betGeneralID == $generalID) {
+            $myBet[$bettingKey] = $amount;
+        }
+
+        if (key_exists($bettingKey, $globalBet)) {
+            $globalBet[$bettingKey] += $amount;
+        } else {
+            $globalBet[$bettingKey] = $amount;
+        }
+    }
+} else {
+    $info = getDummyBettingInfo($tnmt_type);
+}
+
+$myBetTotal = array_sum($myBet);
+$globalBetTotal = array_sum($globalBet);
 
 ?>
 <!DOCTYPE html>
@@ -209,7 +252,7 @@ switch ($admin['tnmt_type']) {
         </tr>
         <tr>
             <td colspan=8 align=center>
-                <font color=white size=6><?= $tnmt_type ?> (<?= $str1 . $str2 . $str3 ?>)</font>
+                <font color=white size=6><span style="color:<?= $color ?>"><?= $tnmt_type ?></span> (<?= $str1 . $str2 . $str3 ?>)</font>
             </td>
         </tr>
         <tr>
@@ -418,24 +461,31 @@ switch ($admin['tnmt_type']) {
 
         echo "
                 </tr>";
-        $globalBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = 0') ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
-        $globalBet = array_splice($globalBet, -16);
-        $globalBetTotal = array_sum($globalBet);
         $admin = $gameStor->getValues(['tournament', 'phase']);
         $bet = [];
-        for ($i = 0; $i < 16; $i++) {
-            if ($globalBet[$i] == 0) {
-                $bet[$i] = '∞';
-                continue;
+        $gold = [];
+        $keyMap = [];
+        foreach ($info->candidates as $key => $candidate) {
+            $keyMap[$candidate->aux['idx']] = $key;
+        }
+
+        foreach ($globalBet as $key => $amount) {
+            if ($amount == 0) {
+                $bet[$key] = "∞";
+                $gold[$key] = 0;
+            } else {
+                $rewardRatio = round($globalBetTotal / $amount, 2);
+                $bet[$key]  = $rewardRatio;
+                $gold[$key] = $rewardRatio * ($myBet[$key] ?? 0);
             }
-            $bet[$i]  = round($globalBetTotal /  $globalBet[$i], 2);
         }
 
         echo "
                 <tr align=center>";
 
-        for ($i = 0; $i < 16; $i++) {
-            echo "<td><font color=skyblue>{$bet[$i]}</font></td>";
+        foreach (range(0, 15) as  $i) {
+            $amount = $bet[$keyMap[$i] ?? -1] ?? 0;
+            echo "<td><font color=skyblue>{$amount}</font></td>";
         }
 
         echo "

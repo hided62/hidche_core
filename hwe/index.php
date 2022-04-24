@@ -47,7 +47,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$plock = boolval($db->queryFirstField('SELECT plock FROM plock LIMIT 1'));
+$plock = boolval($db->queryFirstField('SELECT plock FROM plock WHERE `type`="GAME" LIMIT 1'));
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -189,11 +189,11 @@ if (!$otherTextInfo) {
                 <div class="s-border-t col py-2 col-4 col-md-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
                 <div class="s-border-t col py-2 col-8 col-md-4"><?= info(3) ?></div>
                 <div class="s-border-t py-2 col col-6 col-md-4">
-                  <?php if ($isTournamentActive) : ?>
-                    ↑<span style='color:cyan'><?=(['전력전', '통솔전', '일기토', '설전',])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?></span>↑
-                  <?php else : ?>
-                    <span style='color:magenta'>현재 토너먼트 경기 없음</span>
-                  <?php endif; ?>
+                    <?php if ($isTournamentActive) : ?>
+                        ↑<span style='color:cyan'><?= (['전력전', '통솔전', '일기토', '설전',])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?></span>↑
+                    <?php else : ?>
+                        <span style='color:magenta'>현재 토너먼트 경기 없음</span>
+                    <?php endif; ?>
                 </div>
                 <div class="s-border-t py-2 col col-6 col-md-2">
                     <div style="display:inline-block;"><?= $plock ? ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>

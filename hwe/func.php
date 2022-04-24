@@ -472,7 +472,8 @@ function getCommandTable(General $general)
     return $result;
 }
 
-function getChiefCommandTable(General $general){
+function getChiefCommandTable(General $general)
+{
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->turnOnCache();
@@ -1121,7 +1122,7 @@ function CheckOverhead()
 
 function isLock()
 {
-    return DB::db()->queryFirstField("SELECT plock from plock limit 1") != 0;
+    return DB::db()->queryFirstField("SELECT plock from plock WHERE `type`='GAME'") != 0;
 }
 
 function tryLock(): bool
@@ -1133,7 +1134,7 @@ function tryLock(): bool
     $db->update('plock', [
         'plock' => 1,
         'locktime' => TimeUtil::now(true)
-    ], 'plock=0');
+    ], 'plock=0 AND type="GAME"');
 
     return $db->affectedRows() > 0;
 }
@@ -1144,7 +1145,7 @@ function unlock(): bool
     $db = DB::db();
     $db->update('plock', [
         'plock' => 0
-    ], true);
+    ], 'type="GAME"');
 
     return $db->affectedRows() > 0;
 }
@@ -1581,7 +1582,7 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         }
     }
 
-    foreach($db->queryAllLists('SELECT namespace, count(*) as cnt FROM `storage` WHERE namespace LIKE "ut_%" GROUP BY namespace') as [$uniqueNS, $cnt]){
+    foreach ($db->queryAllLists('SELECT namespace, count(*) as cnt FROM `storage` WHERE namespace LIKE "ut_%" GROUP BY namespace') as [$uniqueNS, $cnt]) {
         $itemCode = substr($uniqueNS, 3);
         $itemClass = buildItemClass($itemCode);
         if (!$itemClass) {
@@ -1590,7 +1591,7 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         if ($itemClass->isBuyable()) {
             continue;
         }
-        $occupiedUnique[$itemCode] = ($occupiedUnique[$itemCode]??0) + $cnt;
+        $occupiedUnique[$itemCode] = ($occupiedUnique[$itemCode] ?? 0) + $cnt;
     }
 
     foreach (GameConst::$allItems as $itemType => $itemCategories) {
@@ -1632,7 +1633,7 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         $relMonthByInit = Util::joinYearMonth($year, $month) - Util::joinYearMonth($initYear, $initMonth);
         $availableBuyUnique = $relMonthByInit >= GameConst::$minMonthToAllowInheritItem;
 
-        if($availableBuyUnique){
+        if ($availableBuyUnique) {
             $general->setAuxVar('inheritRandomUnique', null);
         }
     }

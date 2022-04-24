@@ -14,7 +14,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 [$turntime, $tnmt_time] = $gameStor->getValuesAsArray(['turntime','tnmt_time']);
 
-$plock = $db->queryFirstField('SELECT plock FROM plock');
+$plock = $db->queryFirstField('SELECT plock FROM plock WHERE `type` ="GAME"');
 ?>
 <!DOCTYPE html>
 <html>

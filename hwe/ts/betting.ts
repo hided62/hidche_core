@@ -4,39 +4,29 @@ import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import type { InvalidResponse } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
+import { SammoAPI } from './SammoAPI';
 
-$(function($){
-    setAxiosXMLHttpRequest();
+declare const staticValues: {
+    bettingID: number;
+}
 
-    $('.submitBtn').on('click', async function(e){
+$(function ($) {
+    $('.submitBtn').on('click', async function (e) {
         e.preventDefault();
 
         const $this = $(this);
         const target = parseInt($this.data('target'));
         const amount = parseInt(unwrap_any<string>($(`#target_${target}`).val()));
 
-        let result: InvalidResponse;
-
-        try{
-            const response = await axios({
-                url: 'j_betting.php',
-                responseType: 'json',
-                method: 'post',
-                data: convertFormData({
-                    target: target,
-                    amount: amount
-                })
+        try {
+            await SammoAPI.Betting.Bet({
+                bettingID: staticValues.bettingID,
+                bettingType: [target],
+                amount: amount,
             });
-            result = response.data;
-        }catch(e){
+        } catch (e) {
             console.error(e);
-            alert(`에러: ${e}`);
-            location.reload();
-            return;
-        }
-
-        if(!result.result){
-            alert(`베팅을 실패했습니다: ${result.reason}`);
+            alert(`베팅을 실패했습니다: ${e}`);
             location.reload();
             return;
         }

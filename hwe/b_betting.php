@@ -16,16 +16,10 @@ TurnExecutionHelper::executeAllCommand();
 
 $generalID = $session->generalID;
 
-//NOTE: general_id만 빼기 귀찮음.
-$myBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = %i', $generalID);
-$myBet = array_splice($myBet, -16);
-$globalBet = $db->queryFirstList('SELECT * FROM betting WHERE general_id = 0');
-$globalBet = array_splice($globalBet, -16);
+
+
 
 $me = $db->queryFirstRow('SELECT no,tournament,con,turntime from general where owner=%i', $userID);
-
-$myBetTotal = array_sum($myBet);
-$globalBetTotal = array_sum($globalBet);
 
 $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'develcost']);
 
@@ -36,33 +30,67 @@ if ($con >= 2) {
 }
 
 switch ($admin['tnmt_type']) {
-    default:
-        throw new \RuntimeException('Invalid tnmt_type');
     case convertTournamentType('전력전'):
-        $tnmt_type = "<font color=cyan>전력전</font>";
+        $tnmt_type = "전력전";
+        $color = "cyan";
         $tp = "total";
         $tp2 = "종합";
         $tp3 = "total";
         break;
     case convertTournamentType('통솔전'):
-        $tnmt_type = "<font color=cyan>통솔전</font>";
+        $tnmt_type = "통솔전";
+        $color = "cyan";
         $tp = "leadership";
         $tp2 = "통솔";
         $tp3 = "leadership";
         break;
     case convertTournamentType('일기토'):
-        $tnmt_type = "<font color=cyan>일기토</font>";
+        $tnmt_type = "일기토";
+        $color = "cyan";
         $tp = "strength";
         $tp2 = "무력";
         $tp3 = "strength";
         break;
     case convertTournamentType('설전'):
-        $tnmt_type = "<font color=cyan>설전</font>";
+        $tnmt_type = "설전";
+        $color = "cyan";
         $tp = "intel";
         $tp2 = "지력";
         $tp3 = "intel";
         break;
+    default:
+        throw new \RuntimeException('Invalid tnmt_type');
 }
+
+$bettingID = $gameStor->last_tournament_betting_id ?? 0;
+$myBet = [];
+$globalBet = [];
+
+if ($bettingID != 0) {
+    $betting = $bettingID != 0 ? new Betting($bettingID) : null;
+    $info = $betting->getInfo();
+
+    foreach ($db->queryAllLists(
+        'SELECT general_id, user_id, amount, betting_type FROM ng_betting WHERE betting_id = %i',
+        $bettingID
+    ) as [$betGeneralID, $userID, $amount, $bettingTypeKey]) {
+        $bettingKey = Json::decode($bettingTypeKey)[0];
+        if ($betGeneralID == $generalID) {
+            $myBet[$bettingKey] = $amount;
+        }
+
+        if (key_exists($bettingKey, $globalBet)) {
+            $globalBet[$bettingKey] += $amount;
+        } else {
+            $globalBet[$bettingKey] = $amount;
+        }
+    }
+} else {
+    $info = getDummyBettingInfo($tnmt_type);
+}
+
+$myBetTotal = array_sum($myBet);
+$globalBetTotal = array_sum($globalBet);
 
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
@@ -90,6 +118,11 @@ if ($str3) {
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printDist('ts', ['common', 'betting']) ?>
+    <?= WebUtil::printStaticValues([
+        'staticValues'=>[
+            'bettingID'=> $bettingID
+        ]
+    ])?>
 </head>
 
 <body>
@@ -104,7 +137,7 @@ if ($str3) {
         </tr>
         <tr>
             <td colspan=16 align=center>
-                <font color=white size=6><?= $tnmt_type ?> (<?= $str1 . $str2 . $str3 ?>)</font>
+                <font color=white size=6><span style="color:<?= $color ?>"><?= $tnmt_type ?></span> (<?= $str1 . $str2 . $str3 ?>)</font>
             </td>
         </tr>
         <tr>
@@ -293,9 +326,9 @@ if ($str3) {
                 }
                 $gen[$i] = $general['name'];
                 if (array_key_exists($tp, $general)) {
-                  $stat[$i] = $general[$tp];
+                    $stat[$i] = $general[$tp];
                 } else {
-                  $stat[$i] = "-";
+                    $stat[$i] = "-";
                 }
             }
             for ($i = 0; $i < 8; $i++) {
@@ -305,17 +338,17 @@ if ($str3) {
                 echo "<td colspan=2>{$line[$i * 2]}{$cent[$i]}{$line[$i * 2 + 1]}</td>";
             }
             ?>
-    </tr>
-      <tr align=center>
-        <?php for ($i = 0; $i < 16; $i++) { ?>
-            <td width=70><?=$gen[$i]?></td>
-        <?php } ?>
-      </tr>
-      <tr align=center>
-        <?php for ($i = 0; $i < 16; $i++) { ?>
-            <td width=70 style="font-size: 14px"><?=$stat[$i]?></td>
-        <?php } ?>
-      </tr>
+        </tr>
+        <tr align=center>
+            <?php for ($i = 0; $i < 16; $i++) { ?>
+                <td width=70><?= $gen[$i] ?></td>
+            <?php } ?>
+        </tr>
+        <tr align=center>
+            <?php for ($i = 0; $i < 16; $i++) { ?>
+                <td width=70 style="font-size: 14px"><?= $stat[$i] ?></td>
+            <?php } ?>
+        </tr>
     </table>
     <table align=center width=1120 style="table-layout: fixed" class='tb_layout bg0'>
         <tr align=center>
@@ -323,29 +356,29 @@ if ($str3) {
         </tr>
         <?php
 
-          $bet = [];
-          $gold = [];
+        $bet = [];
+        $gold = [];
+        $keyMap = [];
+        foreach ($info->candidates as $key => $candidate) {
+            $keyMap[$candidate->aux['idx']] = $key;
+        }
 
-          for ($i = 0; $i < 16; $i++) {
-              if ($globalBet[$i] == 0) {
-                  $bet[$i] = "∞";
-              } else {
-                  $bet[$i]  = round($globalBetTotal /  $globalBet[$i], 2);
-              }
-          }
-
-          for ($i = 0; $i < 16; $i++) {
-              if (!is_numeric($bet[$i])) {
-                  $gold[$i] = 0;
-              } else {
-                  $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
-              }
-          }
+        foreach ($globalBet as $key => $amount) {
+            if ($amount == 0) {
+                $bet[$key] = "∞";
+                $gold[$key] = 0;
+            } else {
+                $rewardRatio = round($globalBetTotal / $amount, 2);
+                $bet[$key]  = $rewardRatio;
+                $gold[$key] = $rewardRatio * ($myBet[$key] ?? 0);
+            }
+        }
         echo "
     <tr align=center>";
 
-        for ($i = 0; $i < 16; $i++) {
-            echo "<td width=70><font color=skyblue>{$bet[$i]}</font></td>";
+        foreach (range(0, 15) as  $i) {
+            $amount = $bet[$keyMap[$i] ?? -1] ?? 0;
+            echo "<td width=70><font color=skyblue>{$amount}</font></td>";
         }
         ?>
         </tr>
@@ -369,8 +402,9 @@ if ($str3) {
         </tr>
         <tr align=center>
             <?php
-            for ($i = 0; $i < 16; $i++) {
-                echo "<td><font color=orange>{$myBet[$i]}</font></td>";
+            foreach (range(0, 15) as  $i) {
+                $amount = $myBet[$keyMap[$i] ?? -1] ?? 0;
+                echo "<td><font color=orange>{$amount}</font></td>";
             }
             ?>
         </tr>
@@ -394,8 +428,9 @@ if ($str3) {
         </tr>
         <tr align=center>
             <?php
-            for ($i = 0; $i < 16; $i++) {
-                echo "<td><font color=cyan>{$gold[$i]}</font></td>";
+            foreach (range(0, 15) as  $i) {
+                $amount = $gold[$keyMap[$i] ?? -1] ?? 0;
+                echo "<td><font color=cyan>{$amount}</font></td>";
             }
 
             echo "
@@ -406,10 +441,11 @@ if ($str3) {
                 echo "
     <tr align=center>";
 
-                for ($i = 0; $i < 16; $i++) {
+                foreach (range(0, 15) as  $i) {
+                    $key = $keyMap[$i] ?? -1;
                     echo "
         <td>
-            <select size=1 id='target_{$i}' style=color:white;background-color:black;>
+            <select size=1 id='target_{$key}' style=color:white;background-color:black;>
                 <option style=color:white; value=10>금10</option>
                 <option style=color:white; value=20>금20</option>
                 <option style=color:white; value=50>금50</option>
@@ -425,9 +461,10 @@ if ($str3) {
     </tr>
     <tr align=center>";
 
-                for ($i = 0; $i < 16; $i++) {
+                foreach (range(0, 15) as  $i) {
+                    $key = $keyMap[$i] ?? -1;
                     echo "
-        <td><input type=button class='submitBtn' data-target='{$i}' value=베팅! style=width:100%;color:white;background-color:black;></td>";
+        <td><input type=button class='submitBtn' data-target='{$key}' value=베팅! style=width:100%;color:white;background-color:black;></td>";
                 }
 
                 echo "</tr>";
