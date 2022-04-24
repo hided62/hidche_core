@@ -27,30 +27,17 @@ function processTournament()
     }
 
     //현시간이 스탬프 지나친경우
-    switch ($admin['tnmt_auto']) {
-        case 1:
-            $unit = 720;
-            break;
-        case 2:
-            $unit = 420;
-            break;
-        case 3:
-            $unit = 180;
-            break;
-        case 4:
-            $unit =  60;
-            break;
-        case 5:
-            $unit =  30;
-            break;
-        case 6:
-            $unit =  15;
-            break;
-        case 7:
-            $unit =   5;
-            break;
-        default:
-            throw new MustNotBeReachedException();
+    $unit = [
+        1 => 720,
+        2 => 420,
+        3 => 180,
+        4 => 60,
+        5 => 30,
+        6 => 15,
+        7 => 5,
+    ][$admin['tnmt_auto']] ?? null;
+    if($unit === null){
+        throw new MustNotBeReachedException();
     }
 
     //업데이트 횟수
@@ -177,25 +164,17 @@ function getTournamentTerm(): ?int
     if ($tnmt_auto === null) {
         $tnmt_auto = $gameStor->tnmt_trig;
     }
-    switch ($tnmt_auto) {
-        case 0:
-            return null;
-        case 1:
-            return 12 * 60;
-        case 2:
-            return 7 * 60;
-        case 3:
-            return 3 * 60;
-        case 4:
-            return 1 * 60;
-        case 5:
-            return 30;
-        case 6:
-            return 15;
-        case 7:
-            return 5;
-    }
-    return null;
+
+    return [
+        0 => null,
+        1 => 12 * 60,
+        2 => 7 * 60,
+        3 => 3 * 60,
+        4 => 1 * 60,
+        5 => 30,
+        6 => 15,
+        7 => 5,
+    ][$tnmt_auto] ?? null;
 }
 
 function getTournamentTermText()
@@ -347,32 +326,15 @@ function startTournament($auto, $type)
 
     eraseTnmtFightLogAll();
 
-    switch ($auto) {
-        case 1:
-            $unit = 60;
-            break;
-        case 2:
-            $unit = 60;
-            break;
-        case 3:
-            $unit = 60;
-            break;
-        case 4:
-            $unit = 60;
-            break;
-        case 5:
-            $unit = 30;
-            break;
-        case 6:
-            $unit = 15;
-            break;
-        case 7:
-            $unit =  5;
-            break;
-        default:
-            $unit = 60;
-            break;
-    }
+    $unit = [
+        1 => 60,
+        2 => 60,
+        3 => 60,
+        4 => 60,
+        5 => 30,
+        6 => 15,
+        7 => 5,
+    ][$auto] ?? 60;
 
     $admin = $gameStor->getValues(['year', 'month']);
 
@@ -629,154 +591,28 @@ function getTwo($tournament, $phase)
     switch ($tournament) {
         case 2:
             //예선
-            switch ($phase % 28) {
-                case  0:
-                    $cand[0] = 0;
-                    $cand[1] = 1;
-                    break;
-                case  1:
-                    $cand[0] = 2;
-                    $cand[1] = 3;
-                    break;
-                case  2:
-                    $cand[0] = 4;
-                    $cand[1] = 5;
-                    break;
-                case  3:
-                    $cand[0] = 6;
-                    $cand[1] = 7;
-                    break;
-                case  4:
-                    $cand[0] = 0;
-                    $cand[1] = 2;
-                    break;
-                case  5:
-                    $cand[0] = 1;
-                    $cand[1] = 3;
-                    break;
-                case  6:
-                    $cand[0] = 4;
-                    $cand[1] = 6;
-                    break;
-                case  7:
-                    $cand[0] = 5;
-                    $cand[1] = 7;
-                    break;
-                case  8:
-                    $cand[0] = 0;
-                    $cand[1] = 3;
-                    break;
-                case  9:
-                    $cand[0] = 1;
-                    $cand[1] = 6;
-                    break;
-                case 10:
-                    $cand[0] = 2;
-                    $cand[1] = 5;
-                    break;
-                case 11:
-                    $cand[0] = 4;
-                    $cand[1] = 7;
-                    break;
-                case 12:
-                    $cand[0] = 0;
-                    $cand[1] = 4;
-                    break;
-                case 13:
-                    $cand[0] = 1;
-                    $cand[1] = 5;
-                    break;
-                case 14:
-                    $cand[0] = 2;
-                    $cand[1] = 6;
-                    break;
-                case 15:
-                    $cand[0] = 3;
-                    $cand[1] = 7;
-                    break;
-                case 16:
-                    $cand[0] = 0;
-                    $cand[1] = 5;
-                    break;
-                case 17:
-                    $cand[0] = 1;
-                    $cand[1] = 4;
-                    break;
-                case 18:
-                    $cand[0] = 2;
-                    $cand[1] = 7;
-                    break;
-                case 19:
-                    $cand[0] = 3;
-                    $cand[1] = 6;
-                    break;
-                case 20:
-                    $cand[0] = 0;
-                    $cand[1] = 6;
-                    break;
-                case 21:
-                    $cand[0] = 1;
-                    $cand[1] = 7;
-                    break;
-                case 22:
-                    $cand[0] = 2;
-                    $cand[1] = 4;
-                    break;
-                case 23:
-                    $cand[0] = 3;
-                    $cand[1] = 5;
-                    break;
-                case 24:
-                    $cand[0] = 0;
-                    $cand[1] = 7;
-                    break;
-                case 25:
-                    $cand[0] = 1;
-                    $cand[1] = 2;
-                    break;
-                case 26:
-                    $cand[0] = 3;
-                    $cand[1] = 4;
-                    break;
-                case 27:
-                    $cand[0] = 5;
-                    $cand[1] = 6;
-                    break;
-            }
+            $candMap = [
+                [0, 1], [2, 3], [4, 5], [6, 7],
+                [0, 2], [1, 3], [4, 6], [5, 7],
+                [0, 3], [1, 6], [2, 5], [4, 7],
+                [0, 4], [1, 5], [2, 6], [3, 7],
+                [0, 5], [1, 4], [2, 7], [3, 6],
+                [0, 6], [1, 7], [2, 4], [3, 5],
+                [0, 7], [1, 2], [3, 4], [5, 6],
+            ];
+            $cand = $candMap[$phase % 28];
             if ($phase >= 28) {
-                $temp = $cand[0];
-                $cand[0] = $cand[1];
-                $cand[1] = $temp;
+                $cand = [$cand[1], $cand[0]];
             }
             break;
         case 4:
             //본선
-            switch ($phase % 6) {
-                case  0:
-                    $cand[0] = 0;
-                    $cand[1] = 1;
-                    break;
-                case  1:
-                    $cand[0] = 2;
-                    $cand[1] = 3;
-                    break;
-                case  2:
-                    $cand[0] = 0;
-                    $cand[1] = 2;
-                    break;
-                case  3:
-                    $cand[0] = 1;
-                    $cand[1] = 3;
-                    break;
-                case  4:
-                    $cand[0] = 0;
-                    $cand[1] = 3;
-                    break;
-                case  5:
-                    $cand[0] = 1;
-                    $cand[1] = 2;
-                    break;
-            }
+            $candMap = [
+                [0, 1], [2, 3],
+                [0, 2], [1, 3],
+                [0, 3], [1, 2],
+            ];
+            $cand = $candMap[$phase % 6];
             break;
     }
     return $cand;
@@ -969,29 +805,14 @@ function finalFight($tnmt_type, $tnmt, $phase, $type)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    switch ($type) {
-        case 16:
-            $offset = 20;
-            $turn = 7;
-            $next = 7;
-            break;
-        case  8:
-            $offset = 30;
-            $turn = 3;
-            $next = 8;
-            break;
-        case  4:
-            $offset = 40;
-            $turn = 1;
-            $next = 9;
-            break;
-        case  2:
-            $offset = 50;
-            $turn = 0;
-            $next = 0;
-            break;
-        default:
-            throw new MustNotBeReachedException();
+    [$offset, $turn, $next] = [
+        16 => [20, 7, 7],
+        8 => [30, 3, 8],
+        4 => [40, 1, 9],
+        2 => [50, 0, 0],
+    ][$type] ?? [0, 0, 0];
+    if ($offset === 0) {
+        throw new MustNotBeReachedException();
     }
 
     $grp = $phase + $offset;
@@ -1033,25 +854,14 @@ function setGift($tnmt_type, $tnmt, $phase)
 
     $resultHelper = [];
 
-    switch ($tnmt_type) {
-        case 0:
-            $tp = "전력전";
-            $tp2 = "tt";
-            break;
-        case 1:
-            $tp = "통솔전";
-            $tp2 = "tl";
-            break;
-        case 2:
-            $tp = "일기토";
-            $tp2 = "ts";
-            break;
-        case 3:
-            $tp = "설전";
-            $tp2 = "ti";
-            break;
-        default:
-            throw new MustNotBeReachedException();
+    [$tp, $tp2] = [
+        0 => ['전력전', 'tt'],
+        1 => ['통솔전', 'tl'],
+        2 => ['일기토', 'ts'],
+        3 => ['설전', 'ti'],
+    ][$tnmt_type] ?? [null, null];
+    if($tp === null || $tp2 === null){
+        throw new MustNotBeReachedException();
     }
 
     //16강자 명성 돈
@@ -1245,19 +1055,15 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type)
         $turn = 100;
     }
 
+    [$tp, $tp2] = [
+        0 => ['total', 'tt'],
+        1 => ['leadership', 'tl'],
+        2 => ['strength', 'ts'],
+        3 => ['intel', 'ti'],
+    ][$tnmt_type] ?? [null, null];
 
-    if ($tnmt_type == 1) {
-        $tp = "leadership";
-        $tp2 = "tl";
-    } elseif ($tnmt_type == 2) {
-        $tp = "strength";
-        $tp2 = "ts";
-    } elseif ($tnmt_type == 3) {
-        $tp = "intel";
-        $tp2 = "ti";
-    } else /*$tnmt_type == 0*/ {
-        $tp = "total";
-        $tp2 = "tt";
+    if($tp === null || $tp2 === null){
+        throw new MustNotBeReachedException($tnmt_type);
     }
 
     $e1 = $energy1 = Util::round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
@@ -1364,303 +1170,70 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type)
         }   // 10~50
         $critical1 = 0;
         $critical2 = 0;
+
+        $crticialSkillMap = [
+            0 => ['전력', '집중'],
+            1 => ['봉시진', '어린진'],
+            2 => ['삼단', '나선'],
+            3 => ['독설', '논파'],
+        ];
+        $fatalitySkillMap = [
+            0 => '압도',
+            1 => '팔문금쇄진',
+            2 => '일격 필살',
+            3 => '모독 욕설'
+        ];
+        $skillMap = [
+            0 => ['참격', '집중', '역공', '반격', '선제', '도발'],
+            1 => ['추행진', '학익진', '장사진', '형액진', '기형진', '구행진'],
+            2 => ['기합', '기염', '반격', '역공', '삼단', '나선'],
+            3 => ['논파', '항변', '반론', '반박', '도발', '면박'],
+        ];
+
         //막판 분노
         $ratio = rand() % 300;
         if ($e1 / 5 > $energy1 && $damage1 > $damage2 && $gen1[$tp] >= $ratio) {
             $damage2 *= Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
             $critical1 = 1;
-            if ($tnmt_type == 0) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "전력";
-                        break;
-                    case 1:
-                        $str = "집중";
-                        break;
-                }
-            } elseif ($tnmt_type == 1) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "봉시진";
-                        break;
-                    case 1:
-                        $str = "어린진";
-                        break;
-                }
-            } elseif ($tnmt_type == 2) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "삼단";
-                        break;
-                    case 1:
-                        $str = "나선";
-                        break;
-                }
-            } elseif ($tnmt_type == 3) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "독설";
-                        break;
-                    case 1:
-                        $str = "논파";
-                        break;
-                }
-            }
+            $str = Util::choiceRandom($crticialSkillMap[$tnmt_type]);
             $log[] = "<S>●</> <Y>{$gen1['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         $ratio = rand() % 300;
         if ($e2 / 5 > $energy2 && $damage2 > $damage1 && $gen2[$tp] >= $ratio) {
             $damage1 *= Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
             $critical2 = 1;
-            if ($tnmt_type == 0) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "전력";
-                        break;
-                    case 1:
-                        $str = "집중";
-                        break;
-                }
-            } elseif ($tnmt_type == 1) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "봉시진";
-                        break;
-                    case 1:
-                        $str = "어린진";
-                        break;
-                }
-            } elseif ($tnmt_type == 2) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "삼단";
-                        break;
-                    case 1:
-                        $str = "나선";
-                        break;
-                }
-            } elseif ($tnmt_type == 3) {
-                switch (rand() % 2) {
-                    case 0:
-                        $str = "독설";
-                        break;
-                    case 1:
-                        $str = "논파";
-                        break;
-                }
-            }
+
+            $str = Util::choiceRandom($crticialSkillMap[$tnmt_type]);
             $log[] = "<S>●</> <Y>{$gen2['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         //1합 승부
         if ($phase == 1) {
+
             $ratio = rand() % 400;
             if ($gen1[$tp] * 0.9 > $gen2[$tp] && $gen1[$tp] >= $ratio) {
                 $damage1 = 0;
                 $damage2 = $e2;
-                if ($tnmt_type == 0) {
-                    $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>압도</>!";
-                } elseif ($tnmt_type == 1) {
-                    $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>팔문금쇄진</>!";
-                } elseif ($tnmt_type == 2) {
-                    $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>일격 필살</>!";
-                } elseif ($tnmt_type == 3) {
-                    $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>모독 욕설</>!";
-                }
+                $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>{$fatalitySkillMap[$tnmt_type]}</>!";
             }
             if ($gen2[$tp] * 0.9 > $gen1[$tp] && $gen2[$tp] >= $ratio) {
                 $damage2 = 0;
                 $damage1 = $e1;
-                if ($tnmt_type == 0) {
-                    $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>압도</>!";
-                } elseif ($tnmt_type == 1) {
-                    $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>팔문금쇄진</>!";
-                } elseif ($tnmt_type == 2) {
-                    $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>일격 필살</>!";
-                } elseif ($tnmt_type == 3) {
-                    $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>모독 욕설</>!";
-                }
+                $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>{$fatalitySkillMap[$tnmt_type]}</>!";
             }
         } else {
+
             $ratio = rand() % 1000;
             if ($critical1 == 0 && $gen1[$tp] >= $ratio) {
                 $damage2 *= Util::randRangeInt(150, 300) / 100; // 150 ~ 300%
                 $critical1 = 1;
-                if ($tnmt_type == 0) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "참격";
-                            break;
-                        case 1:
-                            $str = "집중";
-                            break;
-                        case 2:
-                            $str = "역공";
-                            break;
-                        case 3:
-                            $str = "반격";
-                            break;
-                        case 4:
-                            $str = "선제";
-                            break;
-                        case 5:
-                            $str = "도발";
-                            break;
-                    }
-                } elseif ($tnmt_type == 1) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "추행진";
-                            break;
-                        case 1:
-                            $str = "학익진";
-                            break;
-                        case 2:
-                            $str = "장사진";
-                            break;
-                        case 3:
-                            $str = "형액진";
-                            break;
-                        case 4:
-                            $str = "기형진";
-                            break;
-                        case 5:
-                            $str = "구행진";
-                            break;
-                    }
-                } elseif ($tnmt_type == 2) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "기합";
-                            break;
-                        case 1:
-                            $str = "기염";
-                            break;
-                        case 2:
-                            $str = "반격";
-                            break;
-                        case 3:
-                            $str = "역공";
-                            break;
-                        case 4:
-                            $str = "삼단";
-                            break;
-                        case 5:
-                            $str = "나선";
-                            break;
-                    }
-                } elseif ($tnmt_type == 3) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "논파";
-                            break;
-                        case 1:
-                            $str = "항변";
-                            break;
-                        case 2:
-                            $str = "반론";
-                            break;
-                        case 3:
-                            $str = "반박";
-                            break;
-                        case 4:
-                            $str = "도발";
-                            break;
-                        case 5:
-                            $str = "면박";
-                            break;
-                    }
-                }
+                $str = Util::choiceRandom($skillMap[$tnmt_type]);
                 $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>{$str}</>!";
             }
             $ratio = rand() % 1000;
             if ($critical2 == 0 && $gen2[$tp] >= $ratio) {
                 $damage1 *= Util::randRangeInt(150, 300) / 100; // 150 ~ 300%
                 $critical2 = 1;
-                if ($tnmt_type == 0) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "참격";
-                            break;
-                        case 1:
-                            $str = "집중";
-                            break;
-                        case 2:
-                            $str = "역공";
-                            break;
-                        case 3:
-                            $str = "반격";
-                            break;
-                        case 4:
-                            $str = "선제";
-                            break;
-                        case 5:
-                            $str = "도발";
-                            break;
-                    }
-                } elseif ($tnmt_type == 1) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "추행진";
-                            break;
-                        case 1:
-                            $str = "학익진";
-                            break;
-                        case 2:
-                            $str = "장사진";
-                            break;
-                        case 3:
-                            $str = "형액진";
-                            break;
-                        case 4:
-                            $str = "기형진";
-                            break;
-                        case 5:
-                            $str = "구행진";
-                            break;
-                    }
-                } elseif ($tnmt_type == 2) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "기합";
-                            break;
-                        case 1:
-                            $str = "기염";
-                            break;
-                        case 2:
-                            $str = "반격";
-                            break;
-                        case 3:
-                            $str = "역공";
-                            break;
-                        case 4:
-                            $str = "삼단";
-                            break;
-                        case 5:
-                            $str = "나선";
-                            break;
-                    }
-                } elseif ($tnmt_type == 3) {
-                    switch (rand() % 6) {
-                        case 0:
-                            $str = "논파";
-                            break;
-                        case 1:
-                            $str = "항변";
-                            break;
-                        case 2:
-                            $str = "반론";
-                            break;
-                        case 3:
-                            $str = "반박";
-                            break;
-                        case 4:
-                            $str = "도발";
-                            break;
-                        case 5:
-                            $str = "면박";
-                            break;
-                    }
-                }
+                $str = Util::choiceRandom($skillMap[$tnmt_type]);
                 $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>{$str}</>!";
             }
         }
