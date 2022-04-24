@@ -168,6 +168,9 @@ class Betting
             $db->update('general', [
                 'gold' => $db->sqleval('gold - %i', $amount)
             ], 'no = %i', $generalID);
+            $db->update('rank_data', [
+                'value'=>$db->sqleval('value + %i', $amount)
+            ], 'general_id = %i AND type = "betgold"', $generalID);
         }
     }
 
