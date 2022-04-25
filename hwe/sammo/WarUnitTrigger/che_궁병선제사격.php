@@ -37,6 +37,7 @@ class che_궁병선제사격 extends BaseWarUnitTrigger
                 $oppose->multiplyWarPowerMultiply(0.5);
             } else {
                 $oppose->multiplyWarPowerMultiply(0);
+                $self->multiplyWarPowerMultiply(0.5);
                 $self->activateSkill('회피불가', '필살불가', '계략불가');
                 $oppose->activateSkill('회피불가', '계략불가');
             }
