@@ -42,6 +42,10 @@ export type GeneralListItemP0 = {
 }
 
 export type GeneralListItemP1 = {
+  con: number,
+  specage: number,
+  specage2: number,
+
   city: number,
   experience: number,
   dedication: number,

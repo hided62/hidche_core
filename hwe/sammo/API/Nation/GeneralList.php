@@ -48,6 +48,9 @@ class GeneralList extends \sammo\BaseAPI
         'belong' => 0,
         'connect' => 0,
 
+        'con' => 1,
+        'specage' => 1,
+        'specage2' => 1,
 
         'city' => 1,
         'experience' => 1,
