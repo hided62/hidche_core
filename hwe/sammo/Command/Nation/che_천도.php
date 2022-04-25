@@ -217,6 +217,7 @@ class che_천도 extends Command\NationCommand
             'capital' => $destCityID,
             'capset' => $db->sqleval('capset + 1'),
         ], 'nation=%i', $nationID);
+        \sammo\refreshNationStaticInfo();
 
         $general->increaseInheritancePoint('active_action', 1);
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 천도했습니다. <1>$date</>");
