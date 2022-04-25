@@ -45,9 +45,6 @@ export type GeneralListItemP1 = {
   city: number,
   experience: number,
   dedication: number,
-} & GeneralListItemP0;
-
-export type GeneralListItemP2 = GeneralListItemP1 & {
   officer_level: number,
   officer_city: number,
   defence_train: number,
@@ -69,7 +66,9 @@ export type GeneralListItemP2 = GeneralListItemP1 & {
   killcrew: number,
   deathcrew: number,
   firenum: number,
-}
+} & GeneralListItemP0;
+
+export type GeneralListItemP2 = GeneralListItemP1;
 
 export type RawGeneralListItem = GeneralListItemP0 | GeneralListItemP1 | GeneralListItemP2;
 

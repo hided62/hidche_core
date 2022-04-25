@@ -75,7 +75,7 @@
 </template>
 <script lang="ts"></script>
 <script lang="ts" setup>
-import type { GeneralListItem, GeneralListItemP2, GeneralListResponse } from "@/defs/API/Nation";
+import type { GeneralListItem, GeneralListItemP1, GeneralListItemP2, GeneralListResponse } from "@/defs/API/Nation";
 import { getIconPath } from "@/util/getIconPath";
 import { inject, ref, watch, type PropType, type Ref, type StyleValue } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
@@ -429,8 +429,8 @@ function numberFormatter(unit?: string) {
     return (value.value as number).toLocaleString();
   };
 }
-function extractTroopInfo(value: GeneralListItem): [string, GeneralListItemP2] | undefined {
-  if (!value.st2) {
+function extractTroopInfo(value: GeneralListItem): [string, GeneralListItemP1] | undefined {
+  if (!value.st1) {
     return undefined;
   }
   const troopID = value.troop;
@@ -438,7 +438,7 @@ function extractTroopInfo(value: GeneralListItem): [string, GeneralListItemP2] |
     return undefined;
   }
   const troopName = props.troops[troopID];
-  const troopLeader = generalByID.value.get(troopID) as GeneralListItemP2 | undefined;
+  const troopLeader = generalByID.value.get(troopID) as GeneralListItemP1 | undefined;
   if (troopLeader === undefined) {
     return undefined;
   }
@@ -590,14 +590,14 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       if (data.officerLevel >= 5) {
         return `<span style="color:cyan;">${data.officerLevelText}</span>`;
       }
-      if (data.st2 && 2 <= data.officerLevel && data.officerLevel <= 4) {
+      if (data.st1 && 2 <= data.officerLevel && data.officerLevel <= 4) {
         const cityName = gameConstStore.value.cityConst[data.officer_city].name;
         return `${cityName}<br>${data.officerLevelText}`;
       }
       return data.officerLevelText;
     },
     filterValueGetter: ({ data }) => {
-      if (data.st2 && 2 <= data.officerLevel && data.officerLevel <= 4) {
+      if (data.st1 && 2 <= data.officerLevel && data.officerLevel <= 4) {
         const cityName = gameConstStore.value.cityConst[data.officer_city].name;
         return convertSearch초성(`${cityName} ${data.officerLevelText}`);
       }
@@ -693,7 +693,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     headerName: "도시",
     field: "city",
     valueGetter: ({ data }) => {
-      if (!data.st2) {
+      if (!data.st1) {
         return "?";
       }
       return gameConstStore.value.cityConst[data.city].name;
@@ -702,7 +702,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     sortable: true,
     width: 60,
     filterValueGetter: ({ data }) => {
-      if (!data.st2) {
+      if (!data.st1) {
         return "";
       }
       return convertSearch초성(gameConstStore.value.cityConst[data.city].name);
@@ -713,7 +713,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     headerName: "부대",
     field: "troop",
     valueGetter: ({ data }: GenValueGetterParams) => {
-      if (!data.st2) {
+      if (!data.st1) {
         return "?";
       }
       const troopInfo = extractTroopInfo(data);
@@ -789,7 +789,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         columnGroupShow: "open",
         filter: true,
         filterValueGetter: ({ data }) => {
-          if (!data.st2) {
+          if (!data.st1) {
             return "?";
           }
           const name = gameConstStore.value.iActionInfo.crewtype[data.crewtype].name;
@@ -816,7 +816,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "훈/사",
         width: 60,
         cellRenderer: ({ data }: GenValueParams) => {
-          if (!data.st2) {
+          if (!data.st1) {
             return "?";
           }
           return `${data.train}<br>${data.atmos}`;
@@ -1010,7 +1010,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     field: "turntime",
     width: 60,
     valueFormatter: ({ value, data }) => {
-      if (!data.st2) {
+      if (!data.st1) {
         return "?";
       }
       const turntime = value as string;
@@ -1025,7 +1025,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     field: "recent_war",
     width: 60,
     valueFormatter: ({ value, data }) => {
-      if (!data.st2) {
+      if (!data.st1) {
         return "?";
       }
       const turntime = value as string;
@@ -1116,7 +1116,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         colId: "warResults",
         headerName: "요약",
         cellRenderer: ({ data }: GenValueParams) => {
-          if (!data.st2) {
+          if (!data.st1) {
             return "?";
           }
           const killRatePercent = Math.round((data.killcrew / Math.max(1, data.deathcrew)) * 100);
@@ -1150,7 +1150,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "killcrew",
         ...sortableNumber,
         valueGetter: ({ data }) => {
-          if (!data.st2) {
+          if (!data.st1) {
             return "?";
           }
           const killRatePercent = Math.round((data.killcrew / Math.max(1, data.deathcrew)) * 100);
