@@ -12,6 +12,8 @@ import { type Args, testSubmitArgs } from './processing/args';
 import { SammoAPI } from './SammoAPI';
 import { StoredActionsHelper } from './util/StoredActionsHelper';
 import type { ReserveCommandResponse } from './defs/API/Command';
+import { htmlReady } from './util/htmlReady';
+import { insertCustomCSS } from './util/customCSS';
 
 declare const staticValues: {
     serverNick: string,
@@ -109,3 +111,7 @@ else {
 
 
 auto500px();
+
+htmlReady(() => {
+    insertCustomCSS();
+  });

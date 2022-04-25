@@ -74,7 +74,7 @@ $lastInheritPointLogs = $db->query('SELECT server_id, year, month, date, text FR
     <title><?= UniqueConst::$serverName ?>: 유산 관리</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=500" />
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printDist('vue', 'v_inheritPoint', true) ?>
     <?= WebUtil::printStaticValues([

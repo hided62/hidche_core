@@ -6,7 +6,6 @@ import { initTooltip } from './initTooltip';
 import { exportWindow } from '@/util/exportWindow';
 import { reloadWorldMap } from '@/map';
 import { refreshMsg } from '@/msg';
-import { insertCustomCSS } from '@/util/customCSS';
 
 exportWindow(jQuery, '$');
 
@@ -50,8 +49,6 @@ htmlReady(() => {
     setInterval(function() {
         void refreshMsg();
     }, 5000);
-
-    insertCustomCSS();
 });
 
 (() => {
