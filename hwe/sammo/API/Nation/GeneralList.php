@@ -53,33 +53,33 @@ class GeneralList extends \sammo\BaseAPI
         'experience' => 1,
         'dedication' => 1,
 
-        'officer_level' => 2,
-        'officer_city' => 2,
-        'defence_train' => 2,
-        'troop' => 2,
-        'crewtype' => 2,
-        'crew' => 2,
-        'train' => 2,
-        'atmos' => 2,
-        'turntime' => 2,
-        'horse' => 2,
-        'weapon' => 2,
-        'book' => 2,
-        'item' => 2,
-        'recent_war' => 2,
+        'officer_level' => 1,
+        'officer_city' => 1,
+        'defence_train' => 1,
+        'troop' => 1,
+        'crewtype' => 1,
+        'crew' => 1,
+        'train' => 1,
+        'atmos' => 1,
+        'turntime' => 1,
+        'horse' => 1,
+        'weapon' => 1,
+        'book' => 1,
+        'item' => 1,
+        'recent_war' => 1,
 
-        'aux' => 2,
+        'aux' => 1,
 
 
-        'owner_name' => 9,//안씀.
+        'owner_name' => 9, //안씀.
 
         //RANK
-        'warnum' => 2,
-        'killnum' => 2,
-        'deathnum' => 2,
-        'killcrew' => 2,
-        'deathcrew' => 2,
-        'firenum' => 2,
+        'warnum' => 1,
+        'killnum' => 1,
+        'deathnum' => 1,
+        'killcrew' => 1,
+        'deathcrew' => 1,
+        'firenum' => 1,
     ];
 
     static $columnRemap = [
@@ -96,9 +96,9 @@ class GeneralList extends \sammo\BaseAPI
         'honorText' => 0,
         'dedLevelText' => 0,
         'bill' => 0,
-        'reservedCommand' => 2,
+        'reservedCommand' => 1,
 
-        'autorun_limit' => 2,
+        'autorun_limit' => 1,
     ];
 
     public function validateArgs(): ?string
@@ -151,7 +151,7 @@ class GeneralList extends \sammo\BaseAPI
         $rawGeneralList = Util::convertArrayToDict($db->query('SELECT %l from general WHERE nation = %i ORDER BY turntime ASC', Util::formatListOfBackticks($queryColumns), $nationID), 'no');
 
         $reservedCommand = [];
-        if ($this->permission >= 2) {
+        if ($this->permission >= 1) {
             $nonNPCGeneralIDList = [];
             foreach ($rawGeneralList as $rawGeneral) {
                 if ($rawGeneral['npc'] < 2) {
@@ -228,7 +228,7 @@ class GeneralList extends \sammo\BaseAPI
             }
             if (key_exists($column, static::$columnRemap)) {
                 $newColumn = static::$columnRemap[$column];
-                if($newColumn !== null){
+                if ($newColumn !== null) {
                     $resultColumns[$newColumn] = $column;
                 }
             } else {
@@ -263,10 +263,9 @@ class GeneralList extends \sammo\BaseAPI
             $generalList[] = $item;
         }
 
-        if($this->permission >= 2){
+        if ($this->permission >= 1) {
             $troops = $db->queryAllLists('SELECT troop_leader,name FROM troop WHERE nation = %i', $nationID);
-        }
-        else{
+        } else {
             $troops = null;
         }
 
