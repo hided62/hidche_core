@@ -21,21 +21,38 @@
 
     <div>통솔</div>
     <div>
-      <span :style="{ color: injuryInfo.color }">{{ general.leadership }}</span>
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
+      <div class="row gx-0">
+        <div class="col">
+          <span :style="{ color: injuryInfo.color }">{{ general.leadership }}</span>
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
+        </div>
+        <div class="col">
+          <SammoBar :height="10" :percent="general.leadership_exp / 20" />
+        </div>
+      </div>
     </div>
     <div>무력</div>
     <div>
-      <span :style="{ color: injuryInfo.color }">
-        {{ general.strength }}
-      </span>
+      <div class="row gx-0">
+        <div class="col" :style="{ color: injuryInfo.color }">
+          {{ general.strength }}
+        </div>
+        <div class="col">
+          <SammoBar :height="10" :percent="general.strength_exp / 20" />
+        </div>
+      </div>
     </div>
     <div>지력</div>
     <div>
-      <span :style="{ color: injuryInfo.color }">
-        {{ general.intel }}
-      </span>
+      <div class="row gx-0">
+        <div class="col" :style="{ color: injuryInfo.color }">
+          {{ general.intel }}
+        </div>
+        <div class="col">
+          <SammoBar :height="10" :percent="general.intel_exp / 20" />
+        </div>
+      </div>
     </div>
 
     <div>명마</div>
@@ -126,6 +143,7 @@ import type { GameConstStore } from "@/GameConstStore";
 import { formatGeneralTypeCall } from "@/utilGame/formatGeneralTypeCall";
 import { nextExpLevelRemain } from "@/utilGame/nextExpLevelRemain";
 import { formatConnectScore } from "@/utilGame/formatConnectScore";
+import SammoBar from "@/components/SammoBar.vue";
 import { parseTime } from "@/util/parseTime";
 import { clamp } from "lodash";
 const imagePath = window.pathConfig.gameImage;
@@ -219,8 +237,8 @@ onMounted(() => {
 .general-icon {
   width: 64px;
   height: 64px;
-  background-size: "64px 64px";
-  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
   grid-row: 1 / 4;
 }
 
@@ -233,8 +251,8 @@ onMounted(() => {
 .general-crew-type-icon {
   width: 64px;
   height: 64px;
-  background-size: "64px 64px";
-  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
   grid-row: 4 / 7;
 }
 
