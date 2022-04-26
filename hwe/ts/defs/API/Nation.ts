@@ -45,6 +45,15 @@ export type GeneralListItemP1 = {
   con: number,
   specage: number,
   specage2: number,
+  leadership_exp: number,
+  strength_exp: number,
+  intel_exp: number,
+
+  dex1: number,
+  dex2: number,
+  dex3: number,
+  dex4: number,
+  dex5: number,
 
   city: number,
   experience: number,
