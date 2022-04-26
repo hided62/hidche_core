@@ -70,6 +70,7 @@ const apiRealPath = {
         }, MapResult>,
         GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
         GetDiplomacy: GET as APICallT<undefined, GetDiplomacyResponse>,
+        ExecuteEngine: POST as APICallT<undefined, ValidResponse & { updated: boolean }>,
     },
     InheritAction: {
         BuyHiddenBuff: PUT as APICallT<{

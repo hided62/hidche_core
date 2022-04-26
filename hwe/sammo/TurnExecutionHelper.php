@@ -237,7 +237,7 @@ class TurnExecutionHelper
             $general = General::createGeneralObjFromDB($rawGeneral['no']);
             $turnObj = new static($general);
 
-            $env = $gameStor->getAll();//NOTE: 매번 재 갱신하도록 유지할 것.
+            $env = $gameStor->getAll(); //NOTE: 매번 재 갱신하도록 유지할 것.
             [$startYear, $year, $month, $turnterm] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'turnterm']);
 
             $hasNationTurn = false;
@@ -264,11 +264,11 @@ class TurnExecutionHelper
 
             $turnObj->preprocessCommand($env);
 
-            if ($general->getNPCType() >= 2){
+            if ($general->getNPCType() >= 2) {
                 $ai = new GeneralAI($turnObj->getGeneral());
             } else {
-                $limitYearMonth = $general->getAuxVar('autorun_limit')??Util::joinYearMonth($year-2, $month);
-                if(Util::joinYearMonth($year, $month) < $limitYearMonth){
+                $limitYearMonth = $general->getAuxVar('autorun_limit') ?? Util::joinYearMonth($year - 2, $month);
+                if (Util::joinYearMonth($year, $month) < $limitYearMonth) {
                     $ai = new GeneralAI($turnObj->getGeneral());
                 }
             }
@@ -315,7 +315,7 @@ class TurnExecutionHelper
             $currentTurn = $general->getTurnTime();
             $general->increaseVarWithLimit('myset', 3, null, 9);
 
-            if(($autorun_user['limit_minutes']??false) && $general->getNPCType() < 2 && $hasReservedTurn){
+            if (($autorun_user['limit_minutes'] ?? false) && $general->getNPCType() < 2 && $hasReservedTurn) {
                 $autorun_limit = Util::joinYearMonth($year, $month);
                 $autorun_limit += intdiv($autorun_user['limit_minutes'], $turnterm);
 
@@ -329,7 +329,7 @@ class TurnExecutionHelper
         return [false, $currentTurn];
     }
 
-    static public function executeAllCommand()
+    static public function executeAllCommand(): bool
     {
         //if(!timeover()) { return; }
 
@@ -339,16 +339,16 @@ class TurnExecutionHelper
 
         if (TimeUtil::now(true) < $gameStor->turntime) {
             //턴 시각 이전이면 아무것도 하지 않음
-            return true;
+            return false;
         }
 
         if (!tryLock()) {
-            return;
+            return false;
         }
 
         if ($gameStor->isunited == 2 || $gameStor->isunited == 3) {
             //천통시에는 동결
-            return;
+            return false;
         }
 
         $gameStor->cacheAll();
@@ -361,6 +361,7 @@ class TurnExecutionHelper
 
         $date = TimeUtil::now(true);
         // 최종 처리 월턴의 다음 월턴시간 구함
+        $lastExecuted = $gameStor->turntime;
         $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
 
@@ -392,7 +393,7 @@ class TurnExecutionHelper
                     $gameStor->turntime = $currentTurn;
                 }
                 unlock();
-                return;
+                return $currentTurn !== null && $lastExecuted !== $currentTurn;
             }
 
 
@@ -482,5 +483,7 @@ class TurnExecutionHelper
         // 잡금 해제
         $gameStor->resetCache();
         unlock();
+
+        return $currentTurn !== null && $lastExecuted !== $currentTurn;
     }
 }
