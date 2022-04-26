@@ -11,7 +11,7 @@ import type { ChiefResponse } from "./defs/API/NationCommand";
 import type { inheritBuffType } from "./defs/API/InheritAction";
 import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
-import type { JoinArgs } from "./defs/API/General";
+import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type { GetConstResponse, GetCurrentHistoryResponse, GetDiplomacyResponse, GetHistoryResponse } from "./defs/API/Global";
 import type { CachedMapResult, GeneralListResponse, MapResult } from "./defs";
 
@@ -50,6 +50,10 @@ const apiRealPath = {
     },
     General: {
         Join: POST as APICallT<JoinArgs>,
+        GetGeneralLog: GET as APICallT<{
+            reqType: GeneralLogType,
+            reqTo?: number
+        }, GetGeneralLogResponse>
     },
     Global: {
         GeneralList: GET as APICallT<undefined, GeneralListResponse>,
@@ -130,6 +134,11 @@ const apiRealPath = {
         SetBlockScout: PATCH as APICallT<{
             value: boolean,
         }>,
+        GetGeneralLog: GET as APICallT<{
+            generalID: number,
+            reqType: GeneralLogType,
+            reqTo?: number
+        }, GetGeneralLogResponse>
     },
 } as const;
 
