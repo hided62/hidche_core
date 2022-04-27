@@ -16,8 +16,7 @@
       />
       <div v-if="cachedMap" class="card-body">
         <template v-for="(item, idx) in cachedMap.history" :key="idx">
-          <span v-html="formatLog(item)" />
-          <br />
+          <div v-html="formatLog(item)" />
         </template>
       </div>
     </div>

@@ -3,11 +3,11 @@
     <TopBackBar title="연감" type="close"></TopBackBar>
     <div class="center row mx-0 s-border-tb">
       <div class="col-md-1 col-2 year-selector text-end align-self-center">연월 선택:</div>
-      <BButton class="col-md-1 col-2" @click="queryYearMonth -= 1">◀ 이전달</BButton>
+      <BButton class="col-md-1 col-2" @click="queryYearMonth = unwrap(queryYearMonth) - 1">◀ 이전달</BButton>
       <div class="col-md-3 col-5 d-grid">
         <BFormSelect v-model="queryYearMonth" :options="generateYearMonthList()" />
       </div>
-      <BButton class="col-md-1 col-2" @click="queryYearMonth += 1">다음달 ▶</BButton>
+      <BButton class="col-md-1 col-2" @click="queryYearMonth = unwrap(queryYearMonth) + 1">다음달 ▶</BButton>
     </div>
     <div v-if="history" class="mx-0">
       <div class="row g-0">
@@ -31,8 +31,7 @@
         <div class="content">
           <template v-for="(item, idx) in history.global_history" :key="idx">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <span v-html="formatLog(item)"></span>
-            <br />
+            <div v-html="formatLog(item)"/>
           </template>
         </div>
       </div>
@@ -41,8 +40,7 @@
         <div class="content">
           <template v-for="(item, idx) in history.global_action" :key="idx">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <span v-html="formatLog(item)"></span>
-            <br />
+            <div v-html="formatLog(item)"/>
           </template>
         </div>
       </div>
