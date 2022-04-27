@@ -188,7 +188,14 @@ const gameConstStore = unwrap_err(
 const tooltipDom = ref<ComponentPublicInstance<HTMLDivElement>>();
 const map_area = ref<ComponentPublicInstance<HTMLDivElement>>();
 const { elementX: cursorX, elementY: cursorY, isOutside } = useMouseInElement(map_area);
-const { width: tooltipWidth } = useElementSize(tooltipDom);
+
+const tooltipWidth = ref(0);
+const { width: tooltipCurrWidth } = useElementSize(tooltipDom);
+watch(tooltipCurrWidth, (newWidth)=>{
+  if(newWidth == 0) return;
+  tooltipWidth.value = newWidth;
+}, {immediate: true});
+
 const { sourceType: cursorType } = useMouse();
 const emit = defineEmits<{
   (event: "city-click", city: MapCityParsed, e: MouseEvent | TouchEvent): void;
