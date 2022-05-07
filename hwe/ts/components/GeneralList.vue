@@ -21,6 +21,7 @@
           </div></BDropdownItem
         >
       </BDropdown>
+      <!-- eslint-disable-next-line vue/max-attributes-per-line -->
       <BDropdown class="w-50" variant="info" text="열 선택" menuClass="column-menu" right>
         <template v-for="[colID, col, depth] of getColumnList()" :key="[colID, depth]">
           <BDropdownItem v-if="col instanceof ProvidedColumnGroup" disabled>
@@ -523,9 +524,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       };
       return style as CellStyle;
     },
-    comparator: (_lhs, _rhs, {data: lhs}: GenRowNode, {data: rhs}: GenRowNode)=>{
+    comparator: (_lhs, _rhs, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode) => {
       const npcDiff = lhs.npc - rhs.npc;
-      if(npcDiff != 0){
+      if (npcDiff != 0) {
         return npcDiff;
       }
       return lhs.name.localeCompare(rhs.name);
@@ -1154,7 +1155,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
             return "?";
           }
           const killRatePercent = Math.round((data.killcrew / Math.max(1, data.deathcrew)) * 100);
-          return killRatePercent
+          return killRatePercent;
         },
         valueFormatter: numberFormatter("%"),
         columnGroupShow: "open",

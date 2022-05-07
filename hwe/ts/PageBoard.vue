@@ -7,6 +7,7 @@
       <div class="row gx-0">
         <div class="col-2 col-md-1 articleTitle bg1 center">제목</div>
         <div class="col-10 col-md-11">
+          <!-- eslint-disable-next-line vue/max-attributes-per-line -->
           <input v-model="newArticle.title" class="titleInput" type="text" maxlength="250" placeholder="제목" />
         </div>
       </div>

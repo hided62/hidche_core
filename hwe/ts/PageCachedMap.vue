@@ -16,6 +16,7 @@
       />
       <div v-if="cachedMap" class="card-body">
         <template v-for="(item, idx) in cachedMap.history" :key="idx">
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <div v-html="formatLog(item)" />
         </template>
       </div>

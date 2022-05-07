@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <BContainer v-if="asyncReady" id="container" :toast="{ root: true }" class="pageGlobalDiplomacy">
     <TopBackBar title="중원 정보"></TopBackBar>
     <div class="diplomacy bg0">
@@ -271,7 +272,7 @@ onMounted(async () => {
   margin-top: 1.5em;
 }
 
-.conflict-area{
+.conflict-area {
   margin-top: 1.5em;
 }
 

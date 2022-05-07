@@ -10,7 +10,7 @@
     padding: 0;
   }
   .year-selector {
-    margin-left: 100%/24 * 5;
+    margin-left: calc(100%/24 * 5);
   }
 
   .map_position {

@@ -1,6 +1,6 @@
 <template>
   <BContainer id="container" :toast="{ root: true }" class="pageNationGeneral bg0">
-    <TopBackBar :title="title" :reloadable="true" @reload="reload" :teleport-zone="toolbarID" />
+    <TopBackBar :title="title" :reloadable="true" :teleport-zone="toolbarID" @reload="reload" />
     <!-- eslint-disable-next-line vue/max-attributes-per-line -->
     <GeneralList
       v-if="asyncReady"

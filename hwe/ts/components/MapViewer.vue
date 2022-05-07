@@ -19,6 +19,7 @@
       class="map_title"
       :title="getTitleTooltip()"
     >
+      <!-- eslint-disable-next-line vue/max-attributes-per-line -->
       <span class="map_title_text" :style="{ color: getTitleColor() }"
         >{{ mapData?.year }}年 {{ mapData?.month }}月</span
       >
@@ -191,16 +192,20 @@ const { elementX: cursorX, elementY: cursorY, isOutside } = useMouseInElement(ma
 
 const tooltipWidth = ref(0);
 const { width: tooltipCurrWidth } = useElementSize(tooltipDom);
-watch(tooltipCurrWidth, (newWidth)=>{
-  if(newWidth == 0) return;
-  tooltipWidth.value = newWidth;
-}, {immediate: true});
+watch(
+  tooltipCurrWidth,
+  (newWidth) => {
+    if (newWidth == 0) return;
+    tooltipWidth.value = newWidth;
+  },
+  { immediate: true }
+);
 
 const { sourceType: cursorType } = useMouse();
 const emit = defineEmits<{
   (event: "city-click", city: MapCityParsed, e: MouseEvent | TouchEvent): void;
   (event: "parsed", drawable: MapCityDrawable): void;
-  (event: 'update:modelValue', value: MapCityParsed): void;
+  (event: "update:modelValue", value: MapCityParsed): void;
 }>();
 
 const isFullWidth = ref(true);
@@ -256,7 +261,7 @@ const props = defineProps({
     type: Object as PropType<MapCityParsed>,
     default: undefined,
     required: false,
-  }
+  },
 });
 
 const mapData = toRef(props, "mapData");
