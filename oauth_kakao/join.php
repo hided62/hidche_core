@@ -69,12 +69,14 @@ if ($canJoin != 'Y') {
                                 <div class="col-sm-9">
                                     <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="비밀번호 확인" />
                                 </div>
+
                             </div>
 
                             <div class="form-group row">
                                 <label for="nickname" class="col-sm-3 col-form-label">닉네임</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" name="nickname" id="nickname" placeholder="닉네임" />
+                                    <small id="nicknameHelp" class="form-text text-muted">깃수가 종료될때 공개됩니다. 장수명과는 다르게 닉네임은 계속해서 고정되니 신중하게 정해주세요.</small>
                                 </div>
                             </div>
 
