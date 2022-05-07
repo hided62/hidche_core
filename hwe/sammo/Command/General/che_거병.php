@@ -14,6 +14,8 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\InheritanceKey;
+
 use function sammo\refreshNationStaticInfo;
 use function sammo\getAllNationStaticInfo;
 use function sammo\tryUniqueItemLottery;
@@ -162,7 +164,7 @@ class che_거병 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 100;
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->addExperience($exp);
         $general->addDedication($ded);
         $general->setVar('belong', 1);

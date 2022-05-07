@@ -2,7 +2,6 @@
 namespace sammo;
 
 trait DefaultAction{
-
     public function getName():string{
         return $this->name;
     }

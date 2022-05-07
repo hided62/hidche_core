@@ -13,6 +13,7 @@ use \sammo\{
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\InheritanceKey;
 
 use function sammo\tryRollbackInheritUniqueItem;
 
@@ -96,7 +97,7 @@ class che_모반시도 extends Command\GeneralCommand{
         $lordLogger->pushGeneralHistoryLog("<D><b>{$generalName}</b></>의 모반으로 인해 <D><b>{$nationName}</b></>의 군주자리를 박탈당함");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->checkStatChange();
         tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);

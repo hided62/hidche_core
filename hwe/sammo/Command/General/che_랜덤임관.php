@@ -19,6 +19,7 @@ use function \sammo\tryUniqueItemLottery;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\InheritanceKey;
 use sammo\MustNotBeReachedException;
 
 
@@ -285,7 +286,7 @@ class che_랜덤임관 extends Command\GeneralCommand
             $general->setAuxVar('joinedNations', $joinedNations);
         }
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

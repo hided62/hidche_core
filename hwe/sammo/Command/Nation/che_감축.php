@@ -17,6 +17,7 @@ use \sammo\{
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
 
 class che_감축 extends Command\NationCommand{
@@ -199,7 +200,7 @@ class che_감축 extends Command\NationCommand{
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
         $logger->pushGlobalHistoryLog("<M><b>【감축】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
 

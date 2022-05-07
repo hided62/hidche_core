@@ -3,6 +3,7 @@
 namespace sammo;
 
 use DateTime;
+use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
 
 require_once 'process_war.php';
@@ -1617,7 +1618,7 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
     if (!$availableUnique) {
         if ($general->getAuxVar('inheritRandomUnique')) {
             $general->setAuxVar('inheritRandomUnique', null);
-            $general->increaseInheritancePoint('previous', GameConst::$inheritItemRandomPoint);
+            $general->increaseInheritancePoint(InheritanceKey::previous, GameConst::$inheritItemRandomPoint);
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("얻을 유니크가 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }
@@ -1687,7 +1688,7 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
         //두 값이 general, KVStorage 둘다 있고, 이중에선 KVStorage 값을 기준으로 하자 따르자
         [,, $amount] = $ownTrial;
         $trialStor->deleteValue("u{$ownerID}");
-        $general->increaseInheritancePoint('previous', $amount);
+        $general->increaseInheritancePoint(InheritanceKey::previous, $amount);
         LogText("선택유니크 롤백포인트:{$ownerID}", $amount);
 
         $userLogger = new UserLogger($ownerID);
@@ -1902,7 +1903,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         LogText("{$general->getName()}, {$general->getID()} 모든 아이템", $trialCnt);
         if ($general->getAuxVar('inheritRandomUnique')) {
             $general->setAuxVar('inheritRandomUnique', null);
-            $general->increaseInheritancePoint('previous', GameConst::$inheritItemRandomPoint);
+            $general->increaseInheritancePoint(InheritanceKey::previous, GameConst::$inheritItemRandomPoint);
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("유니크를 얻을 공간이 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }

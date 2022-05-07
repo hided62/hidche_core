@@ -16,6 +16,7 @@ use \sammo\{
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
 
 class che_증축 extends Command\NationCommand{
@@ -162,7 +163,7 @@ class che_증축 extends Command\NationCommand{
 
         $general->addExperience(5 * ($this->getPreReqTurn() + 1));
         $general->addDedication(5 * ($this->getPreReqTurn() + 1));
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
 
         $josaUl = JosaUtil::pick($destCityName, '을');
         $josaYi = JosaUtil::pick($generalName, '이');

@@ -18,7 +18,7 @@ use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
-
+use sammo\Enums\InheritanceKey;
 
 class che_등용수락 extends Command\GeneralCommand{
     static protected $actionName = '등용 수락';
@@ -194,7 +194,7 @@ class che_등용수락 extends Command\GeneralCommand{
         }
         $db->update('nation', $setScoutNationValues, 'nation=%i', $destNationID);
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->setVar('permission', 'normal');
         $general->setVar('belong', 1);
         $general->setVar('officer_level', 1);

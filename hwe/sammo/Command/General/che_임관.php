@@ -23,8 +23,7 @@ use function \sammo\getNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-
-
+use sammo\Enums\InheritanceKey;
 
 class che_임관 extends Command\GeneralCommand
 {
@@ -183,7 +182,7 @@ class che_임관 extends Command\GeneralCommand
             $general->setAuxVar('joinedNations', $joinedNations);
         }
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

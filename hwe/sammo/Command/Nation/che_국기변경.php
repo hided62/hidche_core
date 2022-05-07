@@ -22,6 +22,7 @@ use function \sammo\newColor;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
 
 class che_국기변경 extends Command\NationCommand
@@ -146,7 +147,7 @@ class che_국기변경 extends Command\NationCommand
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <span style='color:{$color};'><b>국기</b></span>를 변경하였습니다");
         $logger->pushGlobalHistoryLog("<S><b>【국기변경】</b></><D><b>{$nationName}</b></>{$josaYiNation} <span style='color:{$color};'><b>국기</b></span>를 변경하였습니다.");
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
         return true;

@@ -19,6 +19,8 @@ use function \sammo\getAllNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\InheritanceKey;
+
 use function sammo\buildNationTypeClass;
 use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
@@ -188,7 +190,7 @@ class che_건국 extends Command\GeneralCommand
 
         refreshNationStaticInfo();
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryUniqueItemLottery($general, '건국');

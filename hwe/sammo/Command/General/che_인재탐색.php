@@ -17,7 +17,7 @@ use function \sammo\pickGeneralFromPool;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
-
+use sammo\Enums\InheritanceKey;
 
 class che_인재탐색 extends Command\GeneralCommand
 {
@@ -210,7 +210,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $exp = 200;
         $ded = 300;
 
-        $general->increaseInheritancePoint('active_action', Util::valueFit(sqrt(1 / $foundProp), 1));
+        $general->increaseInheritancePoint(InheritanceKey::active_action, Util::valueFit(sqrt(1 / $foundProp), 1));
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);
         $general->addExperience($exp);

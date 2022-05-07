@@ -13,6 +13,8 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\InheritanceKey;
+
 use function sammo\DeleteConflict;
 use function sammo\refreshNationStaticInfo;
 use function sammo\tryRollbackInheritUniqueItem;
@@ -121,7 +123,7 @@ class che_방랑 extends Command\GeneralCommand{
         ], 'me=%i OR you=%i', $nationID, $nationID);
 
         refreshNationStaticInfo();
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         tryRollbackInheritUniqueItem($general);
         $general->applyDB($db);

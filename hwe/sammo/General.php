@@ -3,6 +3,8 @@
 namespace sammo;
 
 use sammo\Command\GeneralCommand;
+use sammo\Enums\InheritanceKey;
+use sammo\VO\InheritancePointType;
 use sammo\WarUnitTrigger as WarUnitTrigger;
 
 class General implements iAction
@@ -51,21 +53,6 @@ class General implements iAction
         'betwin' => 1, 'betgold' => 1, 'betwingold' => 1,
         'killcrew_person' => 1, 'deathcrew_person' => 1,
         'occupied' => 1,
-    ];
-
-    const INHERITANCE_KEY = [
-        'previous' => [true, 1, '기존 포인트'],
-        'lived_month' => [true, 1, '생존'],
-        'max_belong' => [false, 10, '최대 임관년 수'],
-        'max_domestic_critical' => [true, 1, '최대 연속 내정 성공'],
-        'active_action' => [true, 3, '능동 행동 수'],
-        //'snipe_combat' => [true, 10, '병종 상성 우위 횟수'],
-        'combat' => [['rank', 'warnum'], 5, '전투 횟수'],
-        'sabotage' => [['rank', 'firenum'], 20, '계략 성공 횟수'],
-        'unifier' => [true, 1, '천통 기여'],
-        'dex' => [false, 0.001, '숙련도'],
-        'tournament' => [true, 1, '토너먼트'],
-        'betting' => [false, 10, '베팅 당첨'],
     ];
 
     const TURNTIME_FULL_MS = -1;
@@ -650,12 +637,13 @@ class General implements iAction
             }
 
             if ($refundPoint > 0) {
-                $this->increaseInheritancePoint('previous', $refundPoint);
+                $this->increaseInheritancePoint(InheritanceKey::previous, $refundPoint);
             }
 
-            $this->mergeTotalInheritancePoint();
-            applyInheritanceUser($this->getVar('owner'));
-            $this->clearInheritancePoint();
+            $inheritPointManager = InheritancePointManager::getInstance();
+            $inheritPointManager->mergeTotalInheritancePoint($this);
+            $inheritPointManager->applyInheritanceUser($this->getVar('owner'));
+            $inheritPointManager->clearInheritancePoint($this);
         }
 
 
@@ -712,11 +700,13 @@ class General implements iAction
 
         $generalName = $this->getName();
 
+        $inheritPointManager = InheritancePointManager::getInstance();
+
         $ownerID = $this->getVar('owner');
         if ($ownerID) {
-            $this->mergeTotalInheritancePoint();
-            applyInheritanceUser($ownerID, true);
-            $this->clearInheritancePoint();
+            $inheritPointManager->mergeTotalInheritancePoint($this);
+            $inheritPointManager->applyInheritanceUser($ownerID, true);
+            $inheritPointManager->clearInheritancePoint($this);
         }
 
         $this->multiplyVarWithLimit('leadership', 0.85, 10);
@@ -1332,237 +1322,23 @@ class General implements iAction
         return $result;
     }
 
-    /**
-     * @return int|float
-     */
-    public function getInheritancePoint(string $key, &$aux = null, bool $forceCalc = false)
+    public function getInheritancePoint(InheritanceKey $key, &$aux = null, bool $forceCalc = false): int|float
     {
-        $inheritType = static::INHERITANCE_KEY[$key] ?? null;
-        if ($inheritType === null) {
-            throw new \OutOfRangeException("{$key}는 유산 타입이 아님");
-        }
-
-        $ownerID = $this->getVar('owner');
-        if (!$ownerID) {
-            return 0;
-        }
-
-        if ($this->getVar('npc') >= 2) {
-            return 0;
-        }
-
-        [$storeType, $multiplier,] = $inheritType;
-
-        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        if ($storeType === true || ($gameStor->isunited != 0 && !$forceCalc)) {
-            $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
-            [$value, $aux] = $inheritStor->getValue($key);
-            return $value;
-        }
-
-        if (is_array($storeType)) {
-            [$storSubType, $storSubKey] = $storeType;
-            if ($storSubType === 'rank') {
-                return $this->getRankVar($storSubKey) * $multiplier;
-            }
-            if ($storSubType === 'raw') {
-                return $this->getVar($storSubKey) * $multiplier;
-            }
-            if ($storSubType === 'aux') {
-                return ($this->getAuxVar($storSubKey) ?? 0) * $multiplier;
-            }
-            throw new \InvalidArgumentException("{$storSubType}은 참조 할 수 없는 유산 세부키임");
-        }
-
-        if ($storeType !== false) {
-            throw new \InvalidArgumentException("{$storeType}은 올바르지 않은 유산 키임");
-        }
-
-        $extractFn = function () {
-            return [0, null];
-        };
-        switch ($key) {
-            case 'dex':
-                $extractFn = function () use ($multiplier) {
-                    $dexLimit = Util::array_last(getDexLevelList())[0];
-                    $totalDex = 0;
-                    foreach (array_keys(GameUnitConst::allType()) as $armType) {
-                        $subDex = $this->getVar("dex{$armType}");
-                        if($subDex > $dexLimit){
-                            $totalDex += ($subDex - $dexLimit) / 3;
-                            $subDex = $dexLimit;
-                        }
-                        $totalDex += $subDex;
-                    }
-                    return [$totalDex * $multiplier, null];
-                };
-                break;
-            case 'betting':
-                $extractFn = function () use ($multiplier) {
-                    $betWin = $this->getRankVar('betwin');
-                    $betWinRate = $this->getRankVar('betwingold') / max(1, $this->getRankVar('betgold'));
-
-                    return [$betWin * $multiplier * pow($betWinRate, 2), null];
-                };
-                break;
-            case 'max_belong':
-                $extractFn = function () use ($multiplier) {
-                    $maxBelong = max($this->getVar('belong'), $this->getAuxVar('max_belong') ?? 0);
-                    return [$maxBelong * $multiplier, null];
-                };
-                break;
-            default:
-                throw new \InvalidArgumentException("{$key}는 유산 추출기를 보유하고 있지 않음");
-        }
-
-        [$value, $aux] = ($extractFn)();
-        return $value;
+        return InheritancePointManager::getInstance()->getInheritancePoint($this, $key, $aux, $forceCalc);
     }
 
-    public function setInheritancePoint(string $key, $value, $aux = null)
+    public function setInheritancePoint(InheritanceKey $key, $value, $aux = null)
     {
-        if (!is_int($value) && !is_float($value)) {
-            throw new \InvalidArgumentException("{$value}는 숫자가 아님");
-        }
-        $inheritType = static::INHERITANCE_KEY[$key] ?? null;
-        if ($inheritType === null) {
-            throw new \OutOfRangeException("{$key}는 유산 타입이 아님");
-        }
-
-        [$storeType, $multiplier,] = $inheritType;
-        if ($storeType !== true) {
-            throw new \InvalidArgumentException("{$key}는 직접 저장형 유산 포인트가 아님");
-        }
-        if ($multiplier != 1 && $value != 0) {
-            throw new \InvalidArgumentException("{$key}는 1:1 유산 포인트가 아님");
-        }
-
-        $ownerID = $this->getVar('owner');
-        if (!$ownerID) {
-            return;
-        }
-
-        if ($this->getVar('npc') >= 2) {
-            return;
-        }
-
-        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        if ($gameStor->isunited != 0) {
-            return;
-        }
-
-        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
-        $inheritStor->setValue($key, [$value, $aux]);
+        return InheritancePointManager::getInstance()->setInheritancePoint($this, $key, $value, $aux);
     }
 
-    public function increaseInheritancePoint(string $key, $value, $aux = null)
+    public function increaseInheritancePoint(InheritanceKey $key, $value, $aux = null)
     {
-        if (!is_int($value) && !is_float($value)) {
-            throw new \InvalidArgumentException("{$value}는 숫자가 아님");
-        }
-
-        $inheritType = static::INHERITANCE_KEY[$key] ?? null;
-        if ($inheritType === null) {
-            throw new \OutOfRangeException("{$key}는 유산 타입이 아님");
-        }
-
-        [$storeType, $multiplier,] = $inheritType;
-        if ($storeType !== true) {
-            throw new \InvalidArgumentException("{$key}는 직접 저장형 유산 포인트가 아님");
-        }
-
-        $ownerID = $this->getVar('owner');
-        if (!$ownerID) {
-            return;
-        }
-
-        if ($this->getVar('npc') >= 2) {
-            return;
-        }
-
-        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        if ($gameStor->isunited != 0) {
-            return;
-        }
-
-        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
-        [$oldValue, $oldAux] = $inheritStor->getValue($key) ?? [0, null];
-
-        if ($oldAux !== $aux) {
-            $oldValue = 0;
-        }
-
-        $newValue = $oldValue + $value * $multiplier;
-        $inheritStor->setValue($key, [$newValue, $aux]);
-    }
-
-    public function clearInheritancePoint(){
-        $ownerID = $this->getVar('owner');
-        if(!$ownerID){
-            return;
-        }
-
-        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
-        $allPoints = $inheritStor->getAll();
-        if (!$allPoints || count($allPoints) == 0) {
-            //비었으므로 리셋 안함
-            return;
-        }
-        if (count($allPoints) == 1 && key_exists('previous', $allPoints)) {
-            //이미 리셋되었으므로 리셋 안함
-            return;
-        }
-
-        $previousPointInfo = $allPoints['previous'];
-        $inheritStor->resetValues();
-        $inheritStor->setValue('previous', $previousPointInfo);
+        return InheritancePointManager::getInstance()->increaseInheritancePoint($this, $key, $value, $aux);
     }
 
     public function mergeTotalInheritancePoint(bool $isEnd=false)
     {
-        $ownerID = $this->getVar('owner');
-        if (!$ownerID) {
-            return;
-        }
-
-        if ($this->getVar('npc') > 1){
-            return;
-        }
-
-        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        $gameStor->cacheValues(['year', 'startyear', 'month']);
-
-        if ($this->getVar('npc') == 1) {
-            if(!$isEnd){
-                return;
-            }
-
-            $pickYearMonth = $this->getAuxVar('pickYearMonth');
-            if($pickYearMonth === null){
-                return;
-            }
-            [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
-
-            if(($year - $pickYearMonth) * 2 <= ($year - $startYear)){
-                return;
-            }
-        }
-
-        $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
-        $inheritStor->cacheAll();
-        foreach (static::INHERITANCE_KEY as $key => [$storType,,]) {
-            $aux = null;
-            $point = $this->getInheritancePoint($key, $aux, true);
-            if ($storType === true) {
-                continue;
-            }
-            $inheritStor->setValue($key, [$point, $aux]);
-        }
-
-        $oldInheritStor = KVStorage::getStorage(DB::db(), "inheritance_result");
-        $serverID = UniqueConst::$serverID;
-        $year = $gameStor->year;
-        $month = $gameStor->month;
-        $oldInheritStor->setValue("{$serverID}_{$ownerID}_{$this->getID()}_{$year}_{$month}", $inheritStor->getAll(true));
+        InheritancePointManager::getInstance()->mergeTotalInheritancePoint($this, $isEnd);
     }
 }

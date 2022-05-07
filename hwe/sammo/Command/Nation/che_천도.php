@@ -17,6 +17,7 @@ use \sammo\Message;
 use \sammo\CityConst;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
 
 class che_천도 extends Command\NationCommand
@@ -219,7 +220,7 @@ class che_천도 extends Command\NationCommand
         ], 'nation=%i', $nationID);
         \sammo\refreshNationStaticInfo();
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 천도했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>{$josaRo} <M>천도</>명령");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</> 명령");

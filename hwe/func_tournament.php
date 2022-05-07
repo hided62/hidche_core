@@ -3,6 +3,7 @@
 namespace sammo;
 
 use sammo\DTO\BettingInfo;
+use sammo\Enums\InheritanceKey;
 
 function processTournament()
 {
@@ -920,7 +921,7 @@ function setGift($tnmt_type, $tnmt, $phase)
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
         $resultHelper[$generalID]['msg'] = "<span class='ev_highlight'>4강 진출</span>";
-        General::createGeneralObjFromDB($generalID)->increaseInheritancePoint('tournament', 10);
+        General::createGeneralObjFromDB($generalID)->increaseInheritancePoint(InheritanceKey::tournament, 10);
     }
     //결승자 명성 돈
     $cost = $admin['develcost'] * 6;
@@ -992,7 +993,7 @@ function setGift($tnmt_type, $tnmt, $phase)
         $logger = $general['logger'];
         $logger->pushGeneralActionLog("<C>{$tp}</> 대회의 {$general['msg']}로 <C>{$rewardText}</>의 <S>상금</>, 약간의 <S>명성</> 획득!", ActionLogger::EVENT_PLAIN);
         //TODO: 토너먼트의 다른 값이 모두 sql에 직접 입력하므로 기반을 바꿔야함.
-        $generalObjList[$generalID]->increaseInheritancePoint('tournament', $general['inheritance_point']);
+        $generalObjList[$generalID]->increaseInheritancePoint(InheritanceKey::tournament, $general['inheritance_point']);
     }
 
     //당첨칸에 베팅한 사람들만

@@ -13,6 +13,7 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\InheritanceKey;
 
 use function sammo\tryRollbackInheritUniqueItem;
 
@@ -113,7 +114,7 @@ class che_하야 extends Command\GeneralCommand{
         }
         $general->setVar('troop', 0);
 
-        $general->increaseInheritancePoint('active_action', 1);
+        $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

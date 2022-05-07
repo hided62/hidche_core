@@ -269,10 +269,10 @@ function processWar_NG(
             $defenderCrewTypeCoef = $defender->getCrewType()->getAttackCoef($attacker->getCrewType()) * $attacker->getCrewType()->getDefenceCoef($defender->getCrewType());
             /*
             if($attackerCrewTypeCoef > $defenderCrewTypeCoef && $attacker instanceof WarUnitGeneral){
-                $attacker->getGeneral()->increaseInheritancePoint('snipe_combat', 1);
+                $attacker->getGeneral()->increaseInheritancePoint(InheritanceKey::snipe_combat, 1);
             }
             if($defenderCrewTypeCoef > $attackerCrewTypeCoef && $defender instanceof WarUnitGeneral){
-                $defender->getGeneral()->increaseInheritancePoint('snipe_combat', 1);
+                $defender->getGeneral()->increaseInheritancePoint(InheritanceKey::snipe_combat, 1);
             }
             */
 

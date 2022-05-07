@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\InheritanceKey;
+
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -58,7 +60,7 @@ foreach (GameConst::$allItems as $subItems) {
 
 
 $items = [];
-foreach (array_keys(General::INHERITANCE_KEY) as $key) {
+foreach (InheritanceKey::cases() as $key) {
     $items[$key] = $me->getInheritancePoint($key) ?? 0;
 }
 

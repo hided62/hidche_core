@@ -8,6 +8,7 @@ use sammo\DB;
 use sammo\GameConst;
 use sammo\GameUnitConst;
 use sammo\General;
+use sammo\InheritancePointManager;
 use sammo\JosaUtil;
 use sammo\Json;
 use sammo\KVStorage;
@@ -26,7 +27,6 @@ use function sammo\cutTurn;
 use function sammo\getGeneralSpecialWarName;
 use function sammo\getRandTurn;
 use function sammo\pushAdminLog;
-use function sammo\applyInheritanceUser;
 
 class Join extends \sammo\BaseAPI
 {
@@ -155,7 +155,8 @@ class Join extends \sammo\BaseAPI
 
         $admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year', 'month']);
 
-        $inheritTotalPoint = applyInheritanceUser($userID);
+        $inheritPointManager = InheritancePointManager::getInstance();
+        $inheritTotalPoint = $inheritPointManager->applyInheritanceUser($userID);
         $inheritRequiredPoint = 0;
 
         $userLogger = new UserLogger($userID, $admin['year'], $admin['month'], false);

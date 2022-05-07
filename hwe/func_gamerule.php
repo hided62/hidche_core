@@ -3,6 +3,7 @@
 namespace sammo;
 
 use Monolog\Logger;
+use sammo\Enums\InheritanceKey;
 
 /**
  * 게임 룰에 해당하는 함수 모음
@@ -702,7 +703,7 @@ function updateNationState()
 
                 if ($chiefID) {
                     $chiefObj = General::createGeneralObjFromDB($chiefID, ['belong', 'npc', 'aux'], 2);
-                    $chiefObj->increaseInheritancePoint('unifier', 250 * $levelDiff);
+                    $chiefObj->increaseInheritancePoint(InheritanceKey::unifier, 250 * $levelDiff);
                     $chiefObj->applyDB($db);
                 }
             }
@@ -1022,15 +1023,16 @@ function checkEmperior()
     $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
     $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
 
+    $inheritPointManager = InheritancePointManager::getInstance();
     foreach (General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2')) as $genObj) {
         if ($genObj->getNationID() == $nationID) {
             if ($genObj->getVar('officer_level') > 4) {
-                $genObj->increaseInheritancePoint('unifier', 2000);
+                $genObj->increaseInheritancePoint(InheritanceKey::unifier, 2000);
             };
         }
-        $genObj->mergeTotalInheritancePoint(true);
-        applyInheritanceUser($genObj->getVar('owner'));
-        $genObj->clearInheritancePoint();
+        $inheritPointManager->mergeTotalInheritancePoint($genObj, true);
+        $inheritPointManager->applyInheritanceUser($genObj->getVar('owner'));
+        $inheritPointManager->clearInheritancePoint($genObj);
     }
 
     $gameStor->isunited = 2;
@@ -1184,55 +1186,14 @@ function checkEmperior()
     LogHistory();
 }
 
-function applyInheritanceUser(int $userID, bool $isRebirth = false): float
-{
-    //FIXME: 은퇴, 사망, 천통 시점에 바로 반영한다면 여기가 아니라 general class로 이동하는 것이 옳음
-    //또한 굳이 merge, apply, clean 3단계를 거쳐야 할 이유도 없음
-    $rebirthDegraded = [
-        'dex' => 0.5,
-    ];
-
-    $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
-    $totalPoint = 0;
-    $allPoints = $inheritStor->getAll();
-    if (!$allPoints || count($allPoints) == 0) {
-        //비었으므로 리셋 안함
-        return 0;
-    }
-    if (count($allPoints) == 1 && key_exists('previous', $allPoints)) {
-        //이미 리셋되었으므로 리셋 안함
-        return $allPoints['previous'][0];
-    }
-
-    $userLogger = new UserLogger($userID);
-
-    $previousPoint = ($allPoints['previous'] ?? [0, 0])[0];
-
-    foreach ($allPoints as $key => [$value,]) {
-        if ($isRebirth && key_exists($key, $rebirthDegraded)) {
-            $value *= $rebirthDegraded[$key];
-        }
-        $keyText = General::INHERITANCE_KEY[$key][2];
-        $userLogger->push("{$keyText} 포인트 {$value} 증가", "inheritPoint");
-        $totalPoint += $value;
-    }
-    $totalPoint = Util::toInt($totalPoint);
-    $userLogger->push("포인트 {$previousPoint} => {$totalPoint}", "inheritPoint");
-    $userLogger->flush();
-
-    $inheritStor->resetValues();
-    $inheritStor->setValue('previous', [$totalPoint, null]);
-    return $totalPoint;
-}
-
 function updateMaxDomesticCritical(General $general, $score)
 {
-    $maxDomesticCritical = $general->getAuxVar('max_domestic_critical') ?? 0;
+    $maxDomesticCritical = $general->getAuxVar(InheritanceKey::max_domestic_critical->value) ?? 0;
     $maxDomesticCritical += $score / 2;
-    $general->setAuxVar('max_domestic_critical', $maxDomesticCritical);
+    $general->setAuxVar(InheritanceKey::max_domestic_critical->value, $maxDomesticCritical);
 
-    $oldMaxDomesticCritical = $general->getInheritancePoint('max_domestic_critical');
+    $oldMaxDomesticCritical = $general->getInheritancePoint(InheritanceKey::max_domestic_critical);
     if ($maxDomesticCritical > $oldMaxDomesticCritical) {
-        $general->setInheritancePoint('max_domestic_critical', $maxDomesticCritical);
+        $general->setInheritancePoint(InheritanceKey::max_domestic_critical, $maxDomesticCritical);
     }
 }

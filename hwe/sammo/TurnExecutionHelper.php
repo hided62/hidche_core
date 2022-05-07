@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use sammo\Enums\InheritanceKey;
 use \Symfony\Component\Lock;
 
 class TurnExecutionHelper
@@ -260,7 +261,7 @@ class TurnExecutionHelper
             $autorunMode = false;
             $ai = null;
 
-            $general->increaseInheritancePoint('lived_month', 1);
+            $general->increaseInheritancePoint(InheritanceKey::lived_month, 1);
 
             $turnObj->preprocessCommand($env);
 

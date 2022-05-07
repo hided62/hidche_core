@@ -1,6 +1,9 @@
 <?php
 
 namespace sammo;
+
+use sammo\Enums\InheritanceKey;
+
 class DummyGeneral extends General{
     public function __construct(bool $initLogger=true){
         $raw = [
@@ -46,19 +49,15 @@ class DummyGeneral extends General{
         return $value;
     }
 
-    public function getInheritancePoint(string $key, &$aux = null, bool $forceCalc = false){
+    public function getInheritancePoint(InheritanceKey $key, &$aux = null, bool $forceCalc = false): int|float{
         return 0;
     }
 
-    public function setInheritancePoint(string $key, $value, $aux = null){
+    public function setInheritancePoint(InheritanceKey $key, $value, $aux = null){
         return;
     }
 
-    public function increaseInheritancePoint(string $key, $value, $aux = null){
-        return;
-    }
-
-    public function mergeTotalInheritancePoint(bool $isEnd=false){
+    public function increaseInheritancePoint(InheritanceKey $key, $value, $aux = null){
         return;
     }
 

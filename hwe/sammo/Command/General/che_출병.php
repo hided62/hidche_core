@@ -19,6 +19,7 @@ use function \sammo\processWar;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\InheritanceKey;
 
 class che_출병 extends Command\GeneralCommand
 {
@@ -226,7 +227,7 @@ class che_출병 extends Command\GeneralCommand
         $general->addDex($general->getCrewTypeObj(), $general->getVar('crew') / 100);
         if($general->getVar('crew') > 500 && $general->getVar('train') * $general->getVar('atmos') > 70 * 70){
             //500명 이상, 모훈출, 모사출
-            $general->increaseInheritancePoint('active_action', 1);
+            $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         }
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));

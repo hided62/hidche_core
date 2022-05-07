@@ -38,7 +38,8 @@ if ($gencount >= $admin['maxgeneral']) {
     die(WebUtil::errorBackMsg("더 이상 등록할 수 없습니다."));
 }
 
-$inheritTotalPoint = applyInheritanceUser($userID);
+$inheritPointManager = InheritancePointManager::getInstance();
+$inheritTotalPoint = $inheritPointManager->applyInheritanceUser($userID);
 
 $nationList = $db->query('SELECT nation,`name`,color,scout FROM nation');
 $nationList = Util::convertArrayToDict($nationList, 'nation');
@@ -60,7 +61,7 @@ foreach ($scoutMsgs as $destNationID => $scoutMsg) {
     <?= WebUtil::printDist('vue', 'v_join', true) ?>
 
     <?= WebUtil::printStaticValues([
-        'staticValues'=>[
+        'staticValues' => [
             'serverID' => UniqueConst::$serverID,
             'nationList' => array_values($nationList),
             'config' => [
@@ -72,8 +73,8 @@ foreach ($scoutMsgs as $destNationID => $scoutMsg) {
                 'picture' => $member['picture'],
                 'imgsvr' => $member['imgsvr'],
             ],
-            'inheritTotalPoint'=>$inheritTotalPoint,
-            'turnterm'=>$gameStor->turnterm,
+            'inheritTotalPoint' => $inheritTotalPoint,
+            'turnterm' => $gameStor->turnterm,
         ]
     ]) ?>
 </head>
