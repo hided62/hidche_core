@@ -1442,7 +1442,7 @@ class General implements iAction
             return;
         }
 
-        if ($this->getVar('npc') != 0) {
+        if ($this->getVar('npc') >= 2) {
             return;
         }
 
