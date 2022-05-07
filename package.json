@@ -54,7 +54,7 @@
     "ag-grid-community": "^27.2.1",
     "ag-grid-vue3": "^27.2.1",
     "async-validator": "^4.1.1",
-    "autoprefixer": "^10.4.7",
+    "autoprefixer": "=10.4.5",
     "axios": "^0.27.2",
     "babel-plugin-lodash": "^3.3.4",
     "babel-preset-modern-browsers": "^15.0.2",
