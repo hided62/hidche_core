@@ -38,7 +38,7 @@ if(count($lastMsgGet) >= 10){
         }
         array_shift($lastMsgGet);
     }
-    catch(\Exception $e){
+    catch(\Throwable $e){
         $lastMsgGet = [];
     }
 }

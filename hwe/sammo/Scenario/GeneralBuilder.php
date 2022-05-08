@@ -134,7 +134,7 @@ class GeneralBuilder{
             $this->specialDomestic = SpecialityHelper::getDomesticClassByName($special);
             $this->specialWar = GameConst::$defaultSpecialWar;
         }
-        catch (\Exception $e){
+        catch (\Throwable $e){
             $this->specialDomestic = GameConst::$defaultSpecialDomestic;
             $this->specialWar = SpecialityHelper::getWarClassByName($special);
         }
@@ -540,7 +540,7 @@ class GeneralBuilder{
                 $text = \file_get_contents(\sammo\ServConfig::getSharedIconPath('../hook/list.json?1'));
                 $storedIcons = \sammo\Json::decode($text);
             }
-            catch(\Exception $e){
+            catch(\Throwable $e){
                 $storedIcons = [];
             }
 

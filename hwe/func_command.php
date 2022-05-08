@@ -363,7 +363,7 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
             'target'=>'arg'
         ];
     }
-    catch (\Exception $e){
+    catch (\Throwable $e){
         return [
             'result'=>false,
             'reason'=>$e->getCode().$e->getMessage(),
@@ -445,7 +445,7 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
             'target'=>'arg'
         ];
     }
-    catch (\Exception $e){
+    catch (\Throwable $e){
         return [
             'result'=>false,
             'reason'=>$e->getCode().$e->getMessage(),
