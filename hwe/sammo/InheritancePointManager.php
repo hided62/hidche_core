@@ -142,10 +142,10 @@ class InheritancePointManager
     $storeType = $inheritType->storeType;
     $multiplier = $inheritType->pointCoeff;
     if ($storeType !== true) {
-      throw new \InvalidArgumentException("{$key}는 직접 저장형 유산 포인트가 아님");
+      throw new \InvalidArgumentException("{$key->value}는 직접 저장형 유산 포인트가 아님");
     }
     if ($multiplier != 1 && $value != 0) {
-      throw new \InvalidArgumentException("{$key}는 1:1 유산 포인트가 아님");
+      throw new \InvalidArgumentException("{$key->value}는 1:1 유산 포인트가 아님");
     }
 
     $ownerID = $general->getVar('owner');
@@ -177,7 +177,7 @@ class InheritancePointManager
     $storeType = $inheritType->storeType;
     $multiplier = $inheritType->pointCoeff;
     if ($storeType !== true) {
-      throw new \InvalidArgumentException("{$key}는 직접 저장형 유산 포인트가 아님");
+      throw new \InvalidArgumentException("{$key->value}는 직접 저장형 유산 포인트가 아님");
     }
 
     $ownerID = $general->getVar('owner');

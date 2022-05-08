@@ -6,12 +6,9 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\BettingInfo;
-use sammo\General;
 use sammo\KVStorage;
 use sammo\Util;
 use sammo\Validator;
-
-use function sammo\increaseRefresh;
 
 class GetBettingDetail extends \sammo\BaseAPI
 {

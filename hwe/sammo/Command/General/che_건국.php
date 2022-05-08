@@ -16,15 +16,12 @@ use \sammo\Json;
 use function \sammo\tryUniqueItemLottery;
 use function \sammo\getAllNationStaticInfo;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
-use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
 
 use function sammo\buildNationTypeClass;
 use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
-use function sammo\newColor;
 
 
 class che_건국 extends Command\GeneralCommand

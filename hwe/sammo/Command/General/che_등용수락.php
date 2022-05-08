@@ -2,21 +2,12 @@
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil,
-    General, DummyGeneral,
-    ActionLogger,
+    DB, JosaUtil,
+    General,
     GameConst,
-    LastTurn,
-    Json,
-    GameUnitConst,
     Command,
-    ScoutMessage
 };
 
-use function \sammo\getAllNationStaticInfo;
-use function \sammo\getNationStaticInfo;
-
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
 

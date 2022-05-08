@@ -13,9 +13,7 @@ use sammo\TimeUtil;
 
 use function sammo\checkLimit;
 use function sammo\checkSecretPermission;
-use function sammo\cutTurn;
 use function sammo\getChiefCommandTable;
-use function sammo\getNationChiefLevel;
 use function sammo\getOfficerLevelText;
 use function sammo\increaseRefresh;
 

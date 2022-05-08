@@ -2,18 +2,13 @@
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil,
-    General,
-    ActionLogger,
-    GameConst, GameUnitConst,
+    DB,
     LastTurn,
     Command
 };
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-use function sammo\tryRollbackInheritUniqueItem;
 use function sammo\tryUniqueItemLottery;
 
 class che_은퇴 extends Command\GeneralCommand{

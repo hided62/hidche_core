@@ -16,6 +16,7 @@ return [
     // that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
     "target_php_version" => '8.1',
+    "minimum_target_php_version" => '8.1',
     'backward_compatibility_checks ' => true,
     'minimum_severity' => \Phan\Issue::SEVERITY_NORMAL,
 
@@ -42,7 +43,6 @@ return [
         'hwe/a_kingdomList.php',
         'hwe/a_npcList.php',
         'hwe/api.php',
-        'hwe/a_status.php',
         'hwe/a_traffic.php',
         'hwe/a_vote.php',
         'hwe/battle_simulator.php',
@@ -98,10 +98,8 @@ return [
         'hwe/j_general_set_permission.php',
         'hwe/j_get_basic_general_list.php',
         'hwe/j_get_city_list.php',
-        'hwe/j_get_reserved_command.php',
         'hwe/j_get_select_npc_token.php',
         'hwe/j_get_select_pool.php',
-        'hwe/j_image_upload.php',
         'hwe/j_install_db.php',
         'hwe/j_install.php',
         'hwe/j_load_scenarios.php',

@@ -175,6 +175,7 @@ $serverID = $emperior['server_id'] ?? ($emperior['serverID'] ?? null);
             }
             $nation += Json::decode($nation['data']);
 
+            /** @var array $nation */
             $nation['typeName'] = getNationType($nation['type']);
             $nation['levelName'] = getNationLevel($nation['level']);
             /** @var int[]|null $nationGenerals */

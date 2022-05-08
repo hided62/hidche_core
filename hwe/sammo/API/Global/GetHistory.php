@@ -7,14 +7,11 @@ use DateTimeInterface;
 use sammo\APICacheResult;
 use sammo\DB;
 use sammo\Json;
-use sammo\KVStorage;
 use sammo\UniqueConst;
 use sammo\Util;
 use sammo\Validator;
 
 use function sammo\checkLimit;
-use function sammo\getAllNationStaticInfo;
-use function sammo\getNationStaticInfo;
 use function sammo\increaseRefresh;
 use function sammo\templateLimitMsg;
 

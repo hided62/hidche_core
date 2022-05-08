@@ -7,8 +7,6 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\Validator;
 
-use function sammo\cutTurn;
-use function sammo\repeatGeneralCommand;
 use function sammo\repeatNationCommand;
 
 class RepeatCommand extends \sammo\BaseAPI

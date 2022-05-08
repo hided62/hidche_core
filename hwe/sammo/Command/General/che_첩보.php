@@ -5,19 +5,15 @@ namespace sammo\Command\General;
 use \sammo\DB;
 use \sammo\Util;
 use \sammo\JosaUtil;
-use \sammo\General;
 use \sammo\ActionLogger;
-use \sammo\GameConst;
 use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
 use \sammo\Json;
 
 use function \sammo\searchDistance;
-use function \sammo\printCitiesBasedOnDistance;
 use function sammo\tryRollbackInheritUniqueItem;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\InheritanceKey;

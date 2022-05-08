@@ -6,16 +6,12 @@ use sammo\DB;
 use sammo\General;
 use sammo\Session;
 use sammo\Util;
-use sammo\Validator;
 
 use function sammo\calcLeadershipBonus;
 use function sammo\checkLimit;
 use function sammo\checkSecretPermission;
 use function sammo\getBillByLevel;
 use function sammo\getDedLevelText;
-use function sammo\getGenChar;
-use function sammo\getGeneralSpecialDomesticName;
-use function sammo\getGeneralSpecialWarName;
 use function sammo\getHonor;
 use function sammo\getNationStaticInfo;
 use function sammo\getOfficerLevelText;

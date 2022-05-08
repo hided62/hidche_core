@@ -517,6 +517,7 @@ function fillLowGenAll($tnmt_type)
     };
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
+    /** @var array<array{0:array,1:float}> */
     $freeJoinerCandidate = [];
 
     foreach ($db->query(
@@ -535,6 +536,7 @@ function fillLowGenAll($tnmt_type)
             break;
         }
         $general = Util::choiceRandomUsingWeightPair($freeJoinerCandidate);
+        /** @var array $general */
         unset($freeJoinerCandidate[$general['no']]);
 
         $grpIdx = array_keys($grpCount, min($grpCount))[0];

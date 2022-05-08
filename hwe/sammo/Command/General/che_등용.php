@@ -18,10 +18,8 @@ use \sammo\{
 
 use function \sammo\getAllNationStaticInfo;
 use function \sammo\getNationStaticInfo;
-use function \sammo\newColor;
 use function sammo\tryUniqueItemLottery;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 

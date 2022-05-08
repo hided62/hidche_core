@@ -520,9 +520,8 @@ class Util extends \utilphp\util
     /**
      * 각 값의 비중에 따라 랜덤한 값을 선택.
      *
-     * @param array $items 각 수치와 비중. [값, weight] 으로 보관
-     *
-     * @return object 선택된 랜덤 값의 첫번째 값
+     * @param array<{0:array|object,1:float|int}> $items 각 수치와 비중. [값, weight] 으로 보관
+     * @return array|object 선택된 랜덤 값의 첫번째 값
      */
     public static function choiceRandomUsingWeightPair(array $items)
     {

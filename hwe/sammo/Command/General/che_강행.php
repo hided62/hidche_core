@@ -3,20 +3,13 @@
 namespace sammo\Command\General;
 
 use \sammo\DB;
-use \sammo\Util;
 use \sammo\JosaUtil;
-use \sammo\General;
 use \sammo\ActionLogger;
-use \sammo\GameConst;
-use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
 
-use function sammo\getMapTheme;
-use function \sammo\printCitiesBasedOnDistance;
 use function sammo\tryUniqueItemLottery;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 

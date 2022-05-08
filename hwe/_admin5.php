@@ -5,7 +5,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+/** @var int */
 $type = Util::getPost('type', 'int', 0);
+/** @var int */
 $type2 = Util::getPost('type2', 'int', 0);
 
 if ($type < 0 || $type > 17) {

@@ -72,6 +72,7 @@ switch ($btn) {
         case  "30분턴": $turnterm = 30; break;
         case  "60분턴": $turnterm = 60; break;
         case "120분턴": $turnterm = 120; break;
+        default: throw new \Exception("알 수 없는 턴 기간");
         }
         $oldunit = $admin['turnterm'] * 60;
         $unit = $turnterm * 60;

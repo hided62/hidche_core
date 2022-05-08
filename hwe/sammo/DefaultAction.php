@@ -1,6 +1,10 @@
 <?php
 namespace sammo;
 
+/**
+ * @property string $name
+ * @property string|null $info
+ */
 trait DefaultAction{
     public function getName():string{
         return $this->name;

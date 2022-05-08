@@ -199,7 +199,7 @@ class KVStorage
         $keys = Util::valuesFromEnumArray($keys);
 
         if ($this->cacheData === null) {
-            return $this->getDBValues($keys);
+            return $this->getDBValues($keys)->toArray();
         }
 
         $result = [];

@@ -13,14 +13,10 @@ use \sammo\{
 };
 
 use function sammo\getAllNationStaticInfo;
-use function \sammo\formatName;
 use function \sammo\tryUniqueItemLottery;
-use function \sammo\getInvitationList;
 use function \sammo\getNationStaticInfo;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
-use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
 
 class che_장수대상임관 extends Command\GeneralCommand{

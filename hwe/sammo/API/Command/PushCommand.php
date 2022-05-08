@@ -6,7 +6,6 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\Validator;
 
-use function sammo\cutTurn;
 use function sammo\pushGeneralCommand;
 
 class PushCommand extends \sammo\BaseAPI

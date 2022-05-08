@@ -7,7 +7,6 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\Validator;
 
-use function sammo\cutTurn;
 use function sammo\pushNationCommand;
 
 class PushCommand extends \sammo\BaseAPI

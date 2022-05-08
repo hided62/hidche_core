@@ -6,23 +6,16 @@ use \sammo\{
     DB,
     Util,
     JosaUtil,
-    General,
-    ActionLogger,
     GameConst,
-    GameUnitConst,
     LastTurn,
     Command,
-    Json,
     KVStorage
 };
 
 use function \sammo\tryUniqueItemLottery;
-use function \sammo\getInvitationList;
 use function \sammo\getNationStaticInfo;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
-use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
 
 class che_임관 extends Command\GeneralCommand

@@ -5,7 +5,7 @@ namespace sammo;
 //NOTE: JavaScript 버전과 일치
 const MAX_RNG_SUPPORT_BIT = 53;
 if (PHP_INT_SIZE * 8 < MAX_RNG_SUPPORT_BIT) {
-    throw new \RangeException("PHP not support {$MAX_RNG_SUPPORT_BIT} bit integer");
+    throw new \RangeException('PHP not support '.MAX_RNG_SUPPORT_BIT.' bit integer');
 }
 
 /**

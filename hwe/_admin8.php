@@ -95,6 +95,8 @@ $sel[$type] = "selected";
                 case 7:
                     $state = "<font color=green>불가침</font>";
                     break;
+                default:
+                    throw new \Exception("알 수 없는 외교 상태: {$dip['state']}");
             }
 
             $date = TimeUtil::now();

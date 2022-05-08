@@ -5,21 +5,13 @@ namespace sammo\Command\General;
 use \sammo\DB;
 use \sammo\Util;
 use \sammo\JosaUtil;
-use \sammo\Session;
-use \sammo\KVStorage;
-use \sammo\General;
-use \sammo\ActionLogger;
-use \sammo\GameConst;
 use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
-use \sammo\ServConfig;
 
-use function \sammo\getDexCall;
 use function sammo\getDexLevelList;
 use function \sammo\tryUniqueItemLottery;
 
-use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
