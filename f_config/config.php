@@ -49,7 +49,7 @@ function getFriendlyErrorType($type)
     return "{$type}";
 }
 
-function getExceptionTraceAsString($exception)
+function getExceptionTraceAsString(\Throwable $exception)
 {
     //https://gist.github.com/abtris/1437966
     $rtn = "";
@@ -117,7 +117,7 @@ function logError(string $err, string $errstr, string $errpath, array $trace)
     ]);
 }
 
-function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=null)
+function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline)
 {
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall
@@ -152,27 +152,37 @@ function logExceptionByCustomHandler(\Throwable $e)
 }
 set_exception_handler('\\sammo\\logExceptionByCustomHandler');
 
-function getAPIExecutorClass($path){
+function checkForFatal()
+{
+    $error = error_get_last();
+    if ($error["type"] == E_ERROR) {
+        logErrorByCustomHandler($error["type"], $error["message"], $error["file"], $error["line"]);
+    }
+}
 
-    static $basePath = __NAMESPACE__.'\\API\\';
-    if(is_string($path)){
-    }
-    else if(is_array($path)){
+register_shutdown_function("\\sammo\\checkForFatal");
+
+function getAPIExecutorClass($path)
+{
+
+    static $basePath = __NAMESPACE__ . '\\API\\';
+    if (is_string($path)) {
+    } else if (is_array($path)) {
         $path = join('\\', $path);
-    }
-    else{
+    } else {
         throw new \InvalidArgumentException("{$path}는 올바른 API 지시자가 아님");
     }
 
-    $classPath = str_replace('/', '\\', $basePath.$path);
+    $classPath = str_replace('/', '\\', $basePath . $path);
 
-    if(class_exists($classPath)){
+    if (class_exists($classPath)) {
         return $classPath;
     }
     throw new \InvalidArgumentException("{$path}는 올바른 API 경로가 아님");
 }
 
-function buildAPIExecutorClass($type, string $rootPath, array $args):\sammo\BaseAPI{
+function buildAPIExecutorClass($type, string $rootPath, array $args): \sammo\BaseAPI
+{
     $class = getAPIExecutorClass($type);
     return new $class($rootPath, $args);
 }
