@@ -378,9 +378,6 @@ class Join extends \sammo\BaseAPI
             ];
         }
         $db->insert('rank_data', $rank_data);
-        $db->insert('betting', [
-            'general_id' => $generalID,
-        ]);
         $cityname = CityConst::byID($city)->name;
 
 

@@ -602,29 +602,7 @@ CREATE TABLE IF NOT EXISTS `nation_env` (
 	UNIQUE INDEX `key` (`namespace`, `key`),
 	CONSTRAINT `json` CHECK (json_valid(`value`))
 ) COLLATE = 'utf8mb4_bin' ENGINE = Aria;
-##############################
-## 베팅
-##############################
-CREATE TABLE IF NOT EXISTS `betting` (
-	`general_id` INT(11) NOT NULL,
-	`bet0` INT(11) NOT NULL DEFAULT 0,
-	`bet1` INT(11) NOT NULL DEFAULT 0,
-	`bet2` INT(11) NOT NULL DEFAULT 0,
-	`bet3` INT(11) NOT NULL DEFAULT 0,
-	`bet4` INT(11) NOT NULL DEFAULT 0,
-	`bet5` INT(11) NOT NULL DEFAULT 0,
-	`bet6` INT(11) NOT NULL DEFAULT 0,
-	`bet7` INT(11) NOT NULL DEFAULT 0,
-	`bet8` INT(11) NOT NULL DEFAULT 0,
-	`bet9` INT(11) NOT NULL DEFAULT 0,
-	`bet10` INT(11) NOT NULL DEFAULT 0,
-	`bet11` INT(11) NOT NULL DEFAULT 0,
-	`bet12` INT(11) NOT NULL DEFAULT 0,
-	`bet13` INT(11) NOT NULL DEFAULT 0,
-	`bet14` INT(11) NOT NULL DEFAULT 0,
-	`bet15` INT(11) NOT NULL DEFAULT 0,
-	PRIMARY KEY (`general_id`)
-) ENGINE = Aria;
+
 ##############################
 ## 명장일람
 ##############################

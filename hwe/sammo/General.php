@@ -686,7 +686,6 @@ class General implements iAction
         $db->delete('general', 'no=%i', $generalID);
         $db->delete('general_turn', 'general_id=%i', $generalID);
         $db->delete('rank_data', 'general_id=%i', $generalID);
-        $db->delete('betting', 'general_id=%i', $generalID);
         $this->updatedVar = [];
 
         $db->update('nation', [

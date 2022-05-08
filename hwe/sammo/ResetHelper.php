@@ -286,26 +286,6 @@ class ResetHelper{
             'server_cnt'=>$serverCnt,
         ];
 
-        $db->insert('betting', [
-            'general_id'=>0,
-            'bet0'=>0,
-            'bet1'=>0,
-            'bet2'=>0,
-            'bet3'=>0,
-            'bet4'=>0,
-            'bet5'=>0,
-            'bet6'=>0,
-            'bet7'=>0,
-            'bet8'=>0,
-            'bet9'=>0,
-            'bet10'=>0,
-            'bet11'=>0,
-            'bet12'=>0,
-            'bet13'=>0,
-            'bet14'=>0,
-            'bet15'=>0,
-        ]);
-
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
             $db->insert('general', [
                 'owner'=>$admin['no'],
@@ -340,9 +320,6 @@ class ResetHelper{
                 ];
             }
             $db->insert('rank_data', $rank_data);
-            $db->insert('betting', [
-                'general_id'=>$generalID,
-            ]);
         }
 
         foreach($env as $key=>$value){
