@@ -61,7 +61,7 @@ foreach (GameConst::$allItems as $subItems) {
 
 $items = [];
 foreach (InheritanceKey::cases() as $key) {
-    $items[$key] = $me->getInheritancePoint($key) ?? 0;
+    $items[$key->value] = $me->getInheritancePoint($key) ?? 0;
 }
 
 $resetTurnTimeLevel = ($me->getAuxVar('inheritResetTurnTime') ?? -1) + 1;

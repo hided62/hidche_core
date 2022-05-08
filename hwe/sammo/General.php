@@ -1322,7 +1322,7 @@ class General implements iAction
         return $result;
     }
 
-    public function getInheritancePoint(InheritanceKey $key, &$aux = null, bool $forceCalc = false): int|float
+    public function getInheritancePoint(InheritanceKey $key, &$aux = null, bool $forceCalc = false): int|float|null
     {
         return InheritancePointManager::getInstance()->getInheritancePoint($this, $key, $aux, $forceCalc);
     }

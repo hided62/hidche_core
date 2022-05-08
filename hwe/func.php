@@ -2015,10 +2015,10 @@ function deleteNation(General $lord, bool $applyDB): array
     // 전 장수 재야로
     foreach ($nationGeneralList as $general) {
         $general->setAuxVar(
-            'max_belong',
+            InheritanceKey::max_belong->value,
             max(
                 $general->getVar('belong'),
-                $general->getAuxVar('max_belong') ?? 0
+                $general->getAuxVar(InheritanceKey::max_belong->value) ?? 0
             )
         );
         $general->setVar('belong', 0);

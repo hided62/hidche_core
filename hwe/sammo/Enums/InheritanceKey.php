@@ -10,7 +10,7 @@ enum InheritanceKey: string
   case max_belong = 'max_belong';
   case max_domestic_critical = 'max_domestic_critical';
   case active_action = 'active_action';
-  case snipe_combat = 'snipe_combat';
+  //case snipe_combat = 'snipe_combat';
   case combat = 'combat';
   case sabotage = 'sabotage';
   case unifier = 'unifier';
