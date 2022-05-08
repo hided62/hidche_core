@@ -97,7 +97,7 @@ class KVStorage
     public function resetValues(): self
     {
         if ($this->cacheData !== null) {
-            $this->cacheData = [];
+            $this->cacheData = new Map();
         }
         return $this->resetDBNamespace();
     }
