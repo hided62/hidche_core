@@ -30,7 +30,8 @@
         "nette/caching": "^3.0",
         "illuminate/database": "^8.61",
         "illuminate/events": "^8.61",
-        "spatie/data-transfer-object": "^3.7"
+        "spatie/data-transfer-object": "^3.7",
+        "php-ds/php-ds": "^1.4"
     },
     "autoload": {
         "psr-4": {
