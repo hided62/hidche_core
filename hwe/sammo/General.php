@@ -1115,7 +1115,7 @@ class General implements iAction
 
             $rankKey = RankColumn::tryFrom($column);
             if ($rankKey !== null) {
-                $rankColumn[] = $column;
+                $rankColumn[] = $rankKey;
             } else {
                 $subColumn[] = $column;
             }
