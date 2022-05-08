@@ -16,7 +16,7 @@ class UnblockScoutAction extends \sammo\Event\Action{
         ]);
 
         if($this->blockChangeScout !== null){
-            $gameStor = new KVStorage($db, 'game_env');
+            $gameStor = KVStorage::getStorage($db, 'game_env');
             $gameStor->setValue('block_change_scout', $this->blockChangeScout);
         }
 

@@ -52,7 +52,7 @@ class ResetTurnTime extends \sammo\BaseAPI
             return '충분한 유산 포인트를 가지고 있지 않습니다.';
         }
 
-        $gameStor = new KVStorage($db, 'game_env');
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         [$turnTerm, $serverTurnTime] = $gameStor->getValuesAsArray(['turnterm', 'turntime']);
 
         $currTurnTime = new DateTimeImmutable($general->getTurnTime());

@@ -809,4 +809,29 @@ class Util extends \utilphp\util
             }
         }
     }
+
+    public static function valueFromEnum(\BackedEnum|string|int $value):string|int{
+        if($value instanceof \BackedEnum){
+            return $value->value;
+        }
+        return $value;
+    }
+
+    /**
+     * @param (int|string|\BackedEnum)[] $values
+     * @return (int|string)[]
+     */
+    public static function valuesFromEnumArray(array $values):array{
+        $result = [];
+        foreach($values as $value){
+            if($value instanceof \BackedEnum){
+                $result[] = $value->value;
+            }
+            else{
+                $result[] = $value;
+            }
+        }
+
+        return $result;
+    }
 };
