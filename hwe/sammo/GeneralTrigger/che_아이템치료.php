@@ -8,7 +8,7 @@ use sammo\Util;
 use sammo\JosaUtil;
 
 class che_아이템치료 extends BaseGeneralTrigger{
-    protected $priority = 20010;
+    protected $priority = 9990;
     protected $injuryTarget = 10;
 
     public function __construct(General $general, int $injuryTarget=10){
