@@ -2,9 +2,10 @@
 
 namespace sammo;
 
+use Ds\Map;
 use sammo\Command\GeneralCommand;
 use sammo\Enums\InheritanceKey;
-use sammo\VO\InheritancePointType;
+use sammo\Enums\RankColumn;
 use sammo\WarUnitTrigger as WarUnitTrigger;
 
 class General implements iAction
@@ -15,9 +16,12 @@ class General implements iAction
     protected $rawCity = null;
 
 
-    protected $rankVarRead = [];
-    protected $rankVarIncrease = [];
-    protected $rankVarSet = [];
+    /** @var Map<RankColumn,int|float> */
+    protected Map $rankVarRead;
+    /** @var Map<RankColumn,int|float> */
+    protected Map $rankVarIncrease;
+    /** @var Map<RankColumn,int|float> */
+    protected Map $rankVarSet;
 
     /** @var \sammo\ActionLogger */
     protected $logger;
@@ -43,17 +47,6 @@ class General implements iAction
 
     protected $lastTurn = null;
     protected $resultTurn = null;
-
-    const RANK_COLUMN = [
-        'firenum' => 1, 'warnum' => 1, 'killnum' => 1, 'deathnum' => 1, 'killcrew' => 1, 'deathcrew' => 1,
-        'ttw' => 1, 'ttd' => 1, 'ttl' => 1, 'ttg' => 1, 'ttp' => 1,
-        'tlw' => 1, 'tld' => 1, 'tll' => 1, 'tlg' => 1, 'tlp' => 1,
-        'tsw' => 1, 'tsd' => 1, 'tsl' => 1, 'tsg' => 1, 'tsp' => 1,
-        'tiw' => 1, 'tid' => 1, 'til' => 1, 'tig' => 1, 'tip' => 1,
-        'betwin' => 1, 'betgold' => 1, 'betwingold' => 1,
-        'killcrew_person' => 1, 'deathcrew_person' => 1,
-        'occupied' => 1,
-    ];
 
     const TURNTIME_FULL_MS = -1;
     const TURNTIME_FULL = 0;
@@ -82,12 +75,13 @@ class General implements iAction
 
     /**
      * @param array $raw DB row값.
+     * @param null|Map<RankColumn,int|float> $rawRank
      * @param null|array $city DB city 테이블의 row값
      * @param int|null $year 게임 연도
      * @param int|null $month 게임 월
      * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, officer_level 정도로 초기화 가능
      */
-    public function __construct(array $raw, ?array $rawRank, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct = true)
+    public function __construct(array $raw, ?Map $rawRank, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct = true)
     {
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
@@ -110,7 +104,11 @@ class General implements iAction
 
         if ($rawRank) {
             $this->rankVarRead = $rawRank;
+        } else {
+            $this->rankVarRead = new Map();
         }
+        $this->rankVarIncrease = new Map();
+        $this->rankVarSet = new Map();
 
         if (!$fullConstruct) {
             return;
@@ -524,7 +522,7 @@ class General implements iAction
         }
 
         $dexType = "dex{$armType}";
-        $exp = $this->onCalcStat($this, 'addDex', $exp, ['armType'=>$armType]);
+        $exp = $this->onCalcStat($this, 'addDex', $exp, ['armType' => $armType]);
 
         $this->increaseVar($dexType, $exp);
     }
@@ -630,7 +628,7 @@ class General implements iAction
                 $refundPoint += $amount;
             }
 
-            if($this->getAuxVar('inheritSpecificSpecialWar')){
+            if ($this->getAuxVar('inheritSpecificSpecialWar')) {
                 $this->setAuxVar('inheritSpecificSpecialWar', null);
                 $userLogger->push(sprintf("사망으로 전투 특기 지정 %d 포인트 반환", GameConst::$inheritSpecificSpecialPoint), "inheritPoint");
                 $refundPoint += GameConst::$inheritSpecificSpecialPoint;
@@ -723,7 +721,7 @@ class General implements iAction
         $this->multiplyVar('dex4', 0.5);
         $this->multiplyVar('dex5', 0.5);
 
-        foreach (array_keys(static::RANK_COLUMN) as $rankKey) {
+        foreach (RankColumn::cases() as $rankKey) {
             $this->setRankVar($rankKey, 0);
         }
 
@@ -733,24 +731,20 @@ class General implements iAction
         $logger->pushGeneralHistoryLog('나이가 들어 은퇴하고, 자손에게 관직을 물려줌');
     }
 
-    function increaseRankVar(string $key, int $value)
+    function increaseRankVar(RankColumn $key, int $value)
     {
-        if (!key_exists($key, static::RANK_COLUMN)) {
-            throw new \InvalidArgumentException('올바르지 않은 인자 :' . $key);
-        }
-
-        if (key_exists($key, $this->rankVarSet)) {
+        if ($this->rankVarSet->hasKey($key)) {
             $this->rankVarSet[$key] += $value;
             return;
         }
 
-        if (key_exists($key, $this->rankVarRead)) {
+        if ($this->rankVarRead->hasKey($key)) {
             $this->rankVarSet[$key] = $this->rankVarRead[$key] + $value;
-            unset($this->rankVarRead[$key]);
+            $this->rankVarRead->remove($key);
             return;
         }
 
-        if (key_exists($key, $this->rankVarIncrease)) {
+        if ($this->rankVarIncrease->hasKey($key)) {
             $this->rankVarIncrease[$key] += $value;
             return;
         }
@@ -758,33 +752,25 @@ class General implements iAction
         $this->rankVarIncrease[$key] = $value;
     }
 
-    function setRankVar(string $key, int $value)
+    function setRankVar(RankColumn $key, int $value)
     {
-        if (!key_exists($key, static::RANK_COLUMN)) {
-            throw new \InvalidArgumentException('올바르지 않은 인자 :' . $key);
-        }
-
-        if (key_exists($key, $this->rankVarRead)) {
-            unset($this->rankVarRead[$key]);
-        } else if (key_exists($key, $this->rankVarIncrease)) {
-            unset($this->rankVarIncrease[$key]);
+        if ($this->rankVarRead->hasKey($key)) {
+            $this->rankVarRead->remove($key);
+        } else if ($this->rankVarIncrease->hasKey($key)) {
+            $this->rankVarIncrease->remove($key);
         }
         $this->rankVarSet[$key] = $value;
     }
 
-    function getRankVar(string $key, $defaultValue = null): int
+    function getRankVar(RankColumn $key, $defaultValue = null): int
     {
-        if (!key_exists($key, static::RANK_COLUMN)) {
-            throw new \InvalidArgumentException('올바르지 않은 인자 :' . $key);
-        }
-
-        if (key_exists($key, $this->rankVarSet)) {
+        if ($this->rankVarSet->hasKey($key)) {
             return $this->rankVarSet[$key];
         }
 
-        if (!key_exists($key, $this->rankVarRead)) {
-            if($defaultValue === null){
-                throw new \RuntimeException('인자가 없음 : ' . $key);
+        if (!$this->rankVarRead->hasKey($key)) {
+            if ($defaultValue === null) {
+                throw new \RuntimeException('인자가 없음 : ' . $key->value);
             }
             return $defaultValue;
         }
@@ -818,27 +804,27 @@ class General implements iAction
             $this->flushUpdateValues();
         }
 
-        if ($this->rankVarIncrease) {
+        if ($this->rankVarIncrease->count()) {
             foreach ($this->rankVarIncrease as $rankKey => $rankVal) {
                 $db->update('rank_data', [
                     'value' => $db->sqleval('value + %i', $rankVal)
-                ], 'general_id = %i AND type = %s', $generalID, $rankKey);
+                ], 'general_id = %i AND type = %s', $generalID, $rankKey->value);
             }
             $result = true;
         }
 
-        if ($this->rankVarSet) {
+        if ($this->rankVarSet->count()) {
             foreach ($this->rankVarSet as $rankKey => $rankVal) {
                 $db->update('rank_data', [
                     'value' => $rankVal
-                ], 'general_id = %i AND type = %s', $generalID, $rankKey);
-                $this->rankVarRead[$rankKey] = $rankVal;
+                ], 'general_id = %i AND type = %s', $generalID, $rankKey->value);
+                $this->rankVarRead[$rankKey->value] = $rankVal;
             }
             $result = true;
         }
 
-        $this->rankVarIncrease = [];
-        $this->rankVarSet = [];
+        $this->rankVarIncrease = new Map();
+        $this->rankVarSet = new Map();
 
         $this->getLogger()->flush();
         return $result;
@@ -1000,7 +986,8 @@ class General implements iAction
         return $amount;
     }
 
-    public function onArbitraryAction(General $general, string $actionType, ?string $phase=null, $aux=null): null|array{
+    public function onArbitraryAction(General $general, string $actionType, ?string $phase = null, $aux = null): null|array
+    {
         foreach (array_merge([
             $this->nationType,
             $this->officerLevelObj,
@@ -1114,13 +1101,20 @@ class General implements iAction
         ];
 
         if ($reqColumns === null) {
-            return [$fullColumn, array_keys(static::RANK_COLUMN)];
+            return [$fullColumn, RankColumn::cases()];
         }
 
+        /** @var RankColumn[] */
         $rankColumn = [];
         $subColumn = [];
         foreach ($reqColumns as $column) {
-            if (key_exists($column, static::RANK_COLUMN)) {
+            if ($column instanceof RankColumn) {
+                $rankColumn[] = $column;
+                continue;
+            }
+
+            $rankKey = RankColumn::tryFrom($column);
+            if ($rankKey !== null) {
                 $rankColumn[] = $column;
             } else {
                 $subColumn[] = $column;
@@ -1136,7 +1130,7 @@ class General implements iAction
 
     /**
      * @param ?int[] $generalIDList
-     * @param null|string[] $column
+     * @param null|string|RankColumn[] $column
      * @param int $constructMode
      * @return \sammo\General[]
      * @throws MustNotBeReachedException
@@ -1156,6 +1150,10 @@ class General implements iAction
             $month = null;
         }
 
+        /**
+         * @var string[] $column
+         * @var RankColumn[] $rankColumn
+         */
         [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
 
         if ($generalIDList === null) {
@@ -1172,17 +1170,20 @@ class General implements iAction
         }
 
 
-        $rawRanks = [];
+        /** @var Map<int,Map<RankColumn,int|float>> */
+        $rawRanks = new Map();
         if ($rankColumn) {
             $rawValue = $db->queryAllLists(
                 'SELECT `general_id`, `type`, `value` FROM rank_data WHERE general_id IN %li AND `type` IN %ls',
                 $generalIDList,
-                $rankColumn
+                array_map(fn (\BackedEnum $e) => $e->value, $rankColumn)
             );
-            foreach ($rawValue as [$generalID, $rankType, $rankValue]) {
-                if (!key_exists($generalID, $rawRanks)) {
-                    $rawRanks[$generalID] = [];
+            foreach ($rawValue as [$generalID, $rawRankType, $rankValue]) {
+                if (!$rawRanks->hasKey($generalID)) {
+                    $rawRanks[$generalID] = new Map();
                 }
+
+                $rankType = RankColumn::from($rawRankType);
                 $rawRanks[$generalID][$rankType] = $rankValue;
             }
         }
@@ -1193,7 +1194,7 @@ class General implements iAction
                 $result[$generalID] = new DummyGeneral($constructMode > 0);
                 continue;
             }
-            if (key_exists($generalID, $rawRanks) && count($rawRanks[$generalID] ?? []) !== count($rankColumn)) {
+            if ($rawRanks->hasKey($generalID) && $rawRanks[$generalID]->count() !== count($rankColumn)) {
                 throw new \RuntimeException('column의 수가 일치하지 않음 : ' . $generalID);
             }
             $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID] ?? null, null, null, $year, $month, $constructMode > 1);
@@ -1213,6 +1214,10 @@ class General implements iAction
             $month = null;
         }
 
+        /**
+         * @var string[] $column
+         * @var RankColumn[] $rankColumn
+         */
         [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
 
         $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
@@ -1220,11 +1225,16 @@ class General implements iAction
             return new DummyGeneral($constructMode > 0);
         }
 
-        $rawRankValues = [];
+        $rawRankValues = new Map();
         if ($rankColumn) {
-            $rawValue = $db->queryAllLists('SELECT `type`, `value` FROM rank_data WHERE general_id = %i AND `type` IN %ls', $generalID, $rankColumn);
-            foreach ($rawValue as [$rankType, $rankValue]) {
-                $rawRankValues[$rankType] = $rankValue;
+            $rawValue = $db->queryAllLists(
+                'SELECT `type`, `value` FROM rank_data WHERE general_id = %i AND `type` IN %ls',
+                $generalID,
+                array_map(fn (\BackedEnum $e) => $e->value, $rankColumn)
+            );
+            foreach ($rawValue as [$rawRankType, $rankValue]) {
+                $rankType = RankColumn::tryFrom($rawRankType);
+                $rawRankValues->put($rankType, $rankValue);
             }
         }
 
@@ -1336,7 +1346,7 @@ class General implements iAction
         return InheritancePointManager::getInstance()->increaseInheritancePoint($this, $key, $value, $aux);
     }
 
-    public function mergeTotalInheritancePoint(bool $isEnd=false)
+    public function mergeTotalInheritancePoint(bool $isEnd = false)
     {
         InheritancePointManager::getInstance()->mergeTotalInheritancePoint($this, $isEnd);
     }

@@ -4,6 +4,7 @@ namespace sammo;
 
 use DateTime;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\RankColumn;
 use sammo\Event\Action;
 
 require_once 'process_war.php';
@@ -758,8 +759,8 @@ function generalInfo2(General $generalObj)
 {
     $general = $generalObj->getRaw();
 
-    $winRate = round($generalObj->getRankVar('killnum') / max($generalObj->getRankVar('warnum'), 1) * 100, 2);
-    $killRate = round($generalObj->getRankVar('killcrew') / max($generalObj->getRankVar('deathcrew'), 1) * 100, 2);
+    $winRate = round($generalObj->getRankVar(RankColumn::killnum) / max($generalObj->getRankVar(RankColumn::warnum), 1) * 100, 2);
+    $killRate = round($generalObj->getRankVar(RankColumn::killcrew) / max($generalObj->getRankVar(RankColumn::deathcrew), 1) * 100, 2);
 
     $experienceBonus = $generalObj->onCalcStat($generalObj, 'experience', 10000) - 10000;
     if ($experienceBonus > 0) {
@@ -823,9 +824,9 @@ function generalInfo2(General $generalObj)
     </tr>
     <tr>
         <td width=64 style='text-align:center;' class='bg1'><b>전투</b></td>
-        <td width=132 style='text-align:center;'>{$generalObj->getRankVar('warnum')}</td>
+        <td width=132 style='text-align:center;'>{$generalObj->getRankVar(RankColumn::warnum)}</td>
         <td width=48 style='text-align:center;' class='bg1'><b>계략</b></td>
-        <td width=98 style='text-align:center;'>{$generalObj->getRankVar('firenum')}</td>
+        <td width=98 style='text-align:center;'>{$generalObj->getRankVar(RankColumn::firenum)}</td>
         <td width=48 style='text-align:center;' class='bg1'><b>사관</b></td>
         <td width=98 style='text-align:center;'>{$general['belong']}년</td>
     </tr>
@@ -833,17 +834,17 @@ function generalInfo2(General $generalObj)
         <td style='text-align:center;' class='bg1'><b>승률</b></td>
         <td style='text-align:center;'>{$winRate} %</td>
         <td style='text-align:center;' class='bg1'><b>승리</b></td>
-        <td style='text-align:center;'>{$generalObj->getRankVar('killnum')}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar(RankColumn::killnum)}</td>
         <td style='text-align:center;' class='bg1'><b>패배</b></td>
-        <td style='text-align:center;'>{$generalObj->getRankVar('deathnum')}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar(RankColumn::deathnum)}</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>살상률</b></td>
         <td style='text-align:center;'>{$killRate} %</td>
         <td style='text-align:center;' class='bg1'><b>사살</b></td>
-        <td style='text-align:center;'>{$generalObj->getRankVar('killcrew')}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar(RankColumn::killcrew)}</td>
         <td style='text-align:center;' class='bg1'><b>피살</b></td>
-        <td style='text-align:center;'>{$generalObj->getRankVar('deathcrew')}</td>
+        <td style='text-align:center;'>{$generalObj->getRankVar(RankColumn::deathcrew)}</td>
     </tr>
 </table>
 <table width=498 class='tb_layout bg2 f_tnum'>
@@ -1376,6 +1377,7 @@ function CheckHall($no)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
+    //TODO: Enum타입을 두종류로 넣고, raw string이면 calcVar에서 받아오면?
     $types = [
         ["experience", 'natural'],
         ["dedication", 'natural'],
@@ -1405,33 +1407,33 @@ function CheckHall($no)
 
     $generalObj = General::createGeneralObjFromDB($no, null, 2);
 
-    $ttw = $generalObj->getRankVar('ttw');
-    $ttd = $generalObj->getRankVar('ttd');
-    $ttl = $generalObj->getRankVar('ttl');
+    $ttw = $generalObj->getRankVar(RankColumn::ttw);
+    $ttd = $generalObj->getRankVar(RankColumn::ttd);
+    $ttl = $generalObj->getRankVar(RankColumn::ttl);
 
-    $tlw = $generalObj->getRankVar('tlw');
-    $tld = $generalObj->getRankVar('tld');
-    $tll = $generalObj->getRankVar('tll');
+    $tlw = $generalObj->getRankVar(RankColumn::tlw);
+    $tld = $generalObj->getRankVar(RankColumn::tld);
+    $tll = $generalObj->getRankVar(RankColumn::tll);
 
-    $tsw = $generalObj->getRankVar('tsw');
-    $tsd = $generalObj->getRankVar('tsd');
-    $tsl = $generalObj->getRankVar('tsl');
+    $tsw = $generalObj->getRankVar(RankColumn::tsw);
+    $tsd = $generalObj->getRankVar(RankColumn::tsd);
+    $tsl = $generalObj->getRankVar(RankColumn::tsl);
 
-    $tiw = $generalObj->getRankVar('tiw');
-    $tid = $generalObj->getRankVar('tid');
-    $til = $generalObj->getRankVar('til');
+    $tiw = $generalObj->getRankVar(RankColumn::tiw);
+    $tid = $generalObj->getRankVar(RankColumn::tid);
+    $til = $generalObj->getRankVar(RankColumn::til);
 
-    $betWinGold = $generalObj->getRankVar('betwingold');
-    $betGold = Util::valueFit($generalObj->getRankVar('betgold'), 1);
+    $betWinGold = $generalObj->getRankVar(RankColumn::betwingold);
+    $betGold = Util::valueFit($generalObj->getRankVar(RankColumn::betgold), 1);
 
-    $win = $generalObj->getRankVar('killnum');
-    $war = Util::valueFit($generalObj->getRankVar('warnum'), 1);
+    $win = $generalObj->getRankVar(RankColumn::killnum);
+    $war = Util::valueFit($generalObj->getRankVar(RankColumn::warnum), 1);
 
-    $kill = $generalObj->getRankVar('killcrew');
-    $death = Util::valueFit($generalObj->getRankVar('deathcrew'), 1);
+    $kill = $generalObj->getRankVar(RankColumn::killcrew);
+    $death = Util::valueFit($generalObj->getRankVar(RankColumn::deathcrew), 1);
 
-    $killPerson = $generalObj->getRankVar('killcrew_person');
-    $deathPerson = Util::valueFit($generalObj->getRankVar('deathcrew_person'), 1);
+    $killPerson = $generalObj->getRankVar(RankColumn::killcrew_person);
+    $deathPerson = Util::valueFit($generalObj->getRankVar(RankColumn::deathcrew_person), 1);
 
     $tt = Util::valueFit($ttw + $ttd + $ttl, 1);
     $tl = Util::valueFit($tlw + $tld + $tll, 1);
@@ -1469,13 +1471,13 @@ function CheckHall($no)
         if ($valueType === 'natural') {
             $value = $generalObj->getVar($typeName);
         } else if ($valueType === 'rank') {
-            $value = $generalObj->getRankVar($typeName);
+            $value = $generalObj->getRankVar(RankColumn::from($typeName));
         } else if ($valueType === 'calc') {
             $value = $calcVar[$typeName];
         }
 
         //승률,살상률인데 10회 미만 전투시 스킵
-        if (($typeName === 'winrate' || $typeName === 'killrate') && $generalObj->getRankVar('warnum') < 10) {
+        if (($typeName === 'winrate' || $typeName === 'killrate') && $generalObj->getRankVar(RankColumn::warnum) < 10) {
             continue;
         }
         //토너승률인데 50회 미만시 스킵
@@ -1495,7 +1497,7 @@ function CheckHall($no)
             continue;
         }
         //수익률인데 1000미만시 스킵
-        if ($typeName === 'betrate' && $generalObj->getRankVar('betgold') < 1000) {
+        if ($typeName === 'betrate' && $generalObj->getRankVar(RankColumn::betgold) < 1000) {
             continue;
         }
 

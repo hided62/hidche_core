@@ -5,6 +5,7 @@ namespace sammo\API\General;
 use sammo\ActionLogger;
 use sammo\CityConst;
 use sammo\DB;
+use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\GameUnitConst;
 use sammo\General;
@@ -369,11 +370,11 @@ class Join extends \sammo\BaseAPI
         $db->insert('general_turn', $turnRows);
 
         $rank_data = [];
-        foreach (array_keys(General::RANK_COLUMN) as $rankColumn) {
+        foreach (RankColumn::cases() as $rankColumn) {
             $rank_data[] = [
                 'general_id' => $generalID,
                 'nation_id' => 0,
-                'type' => $rankColumn,
+                'type' => $rankColumn->value,
                 'value' => 0
             ];
         }

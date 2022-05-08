@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\RankColumn;
+
 class WarUnitGeneral extends WarUnit
 {
     protected $raw;
@@ -52,7 +54,7 @@ class WarUnitGeneral extends WarUnit
     {
         parent::setOppose($oppose);
         $general = $this->general;
-        $this->general->increaseRankVar('warnum', 1);
+        $this->general->increaseRankVar(RankColumn::warnum, 1);
 
         if ($this->isAttacker) {
             $semiTurn = $general->getTurnTime();
@@ -152,11 +154,11 @@ class WarUnitGeneral extends WarUnit
     function addWin()
     {
         $general = $this->general;
-        $general->increaseRankVar('killnum', 1);
+        $general->increaseRankVar(RankColumn::killnum, 1);
 
         $oppose = $this->getOppose();
         if ($oppose instanceof WarUnitCity) {
-            $general->increaseRankVar('occupied', 1);
+            $general->increaseRankVar(RankColumn::occupied, 1);
         }
 
         if($this->isAttacker()){
@@ -200,7 +202,7 @@ class WarUnitGeneral extends WarUnit
     function addLose()
     {
         $general = $this->general;
-        $general->increaseRankVar('deathnum', 1);
+        $general->increaseRankVar(RankColumn::deathnum, 1);
         $this->addStatExp(1);
     }
 
@@ -340,14 +342,14 @@ class WarUnitGeneral extends WarUnit
         $this->isFinished = true;
         $general = $this->general;
 
-        $general->increaseRankVar('killcrew', $this->killed);
-        $general->increaseRankVar('deathcrew', $this->dead);
+        $general->increaseRankVar(RankColumn::killcrew, $this->killed);
+        $general->increaseRankVar(RankColumn::deathcrew, $this->dead);
 
         if($this->killedPerson){
-            $general->increaseRankVar('killcrew_person', $this->killedPerson);
+            $general->increaseRankVar(RankColumn::killcrew_person, $this->killedPerson);
         }
         if($this->deadPerson){
-            $general->increaseRankVar('deathcrew_person', $this->deadPerson);
+            $general->increaseRankVar(RankColumn::deathcrew_person, $this->deadPerson);
         }
 
         $general->updateVar('rice', Util::round($general->getVar('rice')));

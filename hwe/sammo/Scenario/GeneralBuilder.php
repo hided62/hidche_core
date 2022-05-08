@@ -6,6 +6,7 @@ use \sammo\DB;
 use \sammo\CityHelper;
 use \sammo\GameUnitConst;
 use \sammo\CityConst;
+use sammo\Enums\RankColumn;
 use \sammo\GameConst;
 use \sammo\SpecialityHelper;
 use sammo\TimeUtil;
@@ -714,11 +715,11 @@ class GeneralBuilder{
         $db->insert('general_turn', $turnRows);
 
         $rank_data = [];
-        foreach(array_keys(\sammo\General::RANK_COLUMN) as $rankColumn){
+        foreach(RankColumn::cases() as $rankColumn){
             $rank_data[] = [
                 'general_id'=>$this->generalID,
                 'nation_id'=>0,
-                'type'=>$rankColumn,
+                'type'=>$rankColumn->value,
                 'value'=>0
             ];
         }

@@ -4,6 +4,7 @@ namespace sammo;
 
 use sammo\DTO\BettingInfo;
 use sammo\DTO\BettingItem;
+use sammo\Enums\RankColumn;
 
 class Betting
 {
@@ -395,9 +396,9 @@ class Betting
                 $reward = Util::round($rewardItem['amount']);
                 $matchPoint = $rewardItem['matchPoint'];
                 $gambler->increaseVar('gold', $reward);
-                if (($gambler->getNPCType() == 0) || ($gambler->getNPCType() == 1 && $gambler->getRankVar('betgold', 0) > 0)) {
-                    $gambler->increaseRankVar('betwingold', $reward);
-                    $gambler->increaseRankVar('betwin', 1);
+                if (($gambler->getNPCType() == 0) || ($gambler->getNPCType() == 1 && $gambler->getRankVar(RankColumn::betgold, 0) > 0)) {
+                    $gambler->increaseRankVar(RankColumn::betwingold, $reward);
+                    $gambler->increaseRankVar(RankColumn::betwin, 1);
                 }
 
                 if ($matchPoint == $selectCnt) {

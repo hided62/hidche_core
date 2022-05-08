@@ -1,5 +1,7 @@
 <?php
 namespace sammo\ActionItem;
+
+use sammo\Enums\RankColumn;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityHelper;
@@ -30,7 +32,7 @@ class event_전투특기_무쌍 extends \sammo\BaseItem{
         }
         $attackMultiplier = 1.05;
         $defenceMultiplier = 0.98;
-        $killnum = $unit->getGeneral()->getRankVar('killnum');
+        $killnum = $unit->getGeneral()->getRankVar(RankColumn::killnum);
         $attackMultiplier += log(max(1, $killnum / 5), 2) / 20;
         $defenceMultiplier -= log(max(1, $killnum / 5), 2) / 50;
         return [$attackMultiplier, $defenceMultiplier];

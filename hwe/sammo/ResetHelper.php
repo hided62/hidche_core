@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\RankColumn;
+
 class ResetHelper{
     private function __construct(){
 
@@ -311,11 +313,11 @@ class ResetHelper{
 
 
             $rank_data = [];
-            foreach(array_keys(General::RANK_COLUMN) as $rankColumn){
+            foreach(RankColumn::cases() as $rankColumn){
                 $rank_data[] = [
                     'general_id'=>$generalID,
                     'nation_id'=>0,
-                    'type'=>$rankColumn,
+                    'type'=>$rankColumn->value,
                     'value'=>0
                 ];
             }

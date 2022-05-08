@@ -4,6 +4,7 @@ namespace sammo;
 
 use sammo\Command\GeneralCommand;
 use sammo\Command\NationCommand;
+use sammo\Enums\RankColumn;
 use sammo\Scenario\NPC;
 
 class GeneralAI
@@ -2340,8 +2341,8 @@ class GeneralAI
             return null;
         }
 
-        $kill = $general->getRankVar('killcrew') + 50000;
-        $death = $general->getRankVar('deathcrew') + 50000;
+        $kill = $general->getRankVar(RankColumn::killcrew) + 50000;
+        $death = $general->getRankVar(RankColumn::deathcrew) + 50000;
         $deathRate = $death / $kill;
 
         $absGold = $general->getVar('gold');
@@ -2575,7 +2576,7 @@ class GeneralAI
         $riceCost = $crewType->riceWithTech(
             $this->nation['tech'],
             Util::toInt($this->fullLeadership * 100 *
-                $general->getRankVar('killcrew') / max($general->getRankVar('deathcrew'), 1) * 1.2)
+                $general->getRankVar(RankColumn::killcrew) / max($general->getRankVar(RankColumn::deathcrew), 1) * 1.2)
         );
 
         $cmd = buildGeneralCommandClass('che_징병', $general, $env, [

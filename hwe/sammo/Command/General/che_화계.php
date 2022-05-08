@@ -19,8 +19,7 @@ use function sammo\tryRollbackInheritUniqueItem;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
-
-
+use sammo\Enums\RankColumn;
 
 class che_화계 extends Command\GeneralCommand
 {
@@ -330,7 +329,7 @@ class che_화계 extends Command\GeneralCommand
         $general->addExperience($exp);
         $general->addDedication($ded);
         $general->increaseVar($statType . '_exp', 1);
-        $general->increaseRankVar('firenum', 1);
+        $general->increaseRankVar(RankColumn::firenum, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         tryRollbackInheritUniqueItem($general);

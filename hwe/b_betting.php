@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\RankColumn;
+
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -551,14 +553,14 @@ if ($str3) {
                             <td align=center>勝</td>
                         </tr>
                         <?php
-                        $prizeColumn = "{$rankColumn}p";
-                        $gameColumn = "{$rankColumn}g";
-                        $winColumn = "{$rankColumn}w";
-                        $drawColumn = "{$rankColumn}d";
-                        $loseColumn = "{$rankColumn}l";
+                        $prizeColumn = RankColumn::from("{$rankColumn}p");
+                        $gameColumn = RankColumn::from("{$rankColumn}g");
+                        $winColumn = RankColumn::from("{$rankColumn}w");
+                        $drawColumn = RankColumn::from("{$rankColumn}d");
+                        $loseColumn = RankColumn::from("{$rankColumn}l");
                         $tournamentRankerList = General::createGeneralObjListFromDB(
-                            $db->queryFirstColumn('SELECT general_id FROM rank_data WHERE `type`= %s ORDER BY value DESC LIMIT 40', $gameColumn),
-                            [$prizeColumn, $gameColumn, $winColumn, $drawColumn, $loseColumn, 'leadership', 'strength', 'intel', 'no', 'npc', 'name'],
+                            $db->queryFirstColumn('SELECT general_id FROM rank_data WHERE `type`= %s ORDER BY value DESC LIMIT 40', $gameColumn->value),
+                            [$prizeColumn->value, $gameColumn->value, $winColumn->value, $drawColumn->value, $loseColumn->value, 'leadership', 'strength', 'intel', 'no', 'npc', 'name'],
                             0
                         );
                         usort($tournamentRankerList, function (General $lhs, General $rhs) use ($gameColumn, $winColumn, $drawColumn, $loseColumn) {

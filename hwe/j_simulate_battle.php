@@ -1,6 +1,9 @@
 <?php
 namespace sammo;
 
+use Ds\Map;
+use sammo\Enums\RankColumn;
+
 include "lib.php";
 include "func.php";
 
@@ -54,7 +57,7 @@ $defaultCheck = [
         ['year', 0]
     ],
     'array'=>[
-        'attackerGeneral', 'attackerCity', 'attackerNation', 
+        'attackerGeneral', 'attackerCity', 'attackerNation',
         'defenderGenerals', 'defenderCity', 'defenderNation'
     ],
 ];
@@ -84,14 +87,14 @@ $rawDefenderNation = $query['defenderNation'];
 
 $generalCheck = [
     'required'=>[
-        'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
-        'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item', 
+        'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
+        'intel', 'intel_exp', 'book', 'strength', 'strength_exp', 'weapon', 'injury', 'leadership', 'leadership_exp', 'horse', 'item',
         'explevel', 'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
         'recent_war', 'warnum', 'killnum', 'killcrew',
     ],
     'integer'=>[
         'no', 'nation', 'crew', 'crewtype', 'atmos', 'train',
-        'intel', 'intel_exp', 'strength', 'strength_exp',  'injury', 'leadership', 'leadership_exp', 
+        'intel', 'intel_exp', 'strength', 'strength_exp',  'injury', 'leadership', 'leadership_exp',
         'explevel', 'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'dex1', 'dex2', 'dex3', 'dex4', 'dex5',
         'warnum', 'killnum', 'killcrew',
     ],
@@ -154,18 +157,18 @@ foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
         ]);
     }
     $rawDefenderGeneral['owner'] = 0;
-    
+
     $defenderList[] = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), $rawDefenderCity, $rawAttackerNation, $year, $month, true);
 }
 
 
 $cityCheck = [
     'required'=>[
-        'city', 'nation', 'supply', 'name', 
-        'pop', 'agri', 'comm', 'secu', 'def', 'wall', 
+        'city', 'nation', 'supply', 'name',
+        'pop', 'agri', 'comm', 'secu', 'def', 'wall',
         'trust', 'level',
         'pop_max', 'agri_max', 'comm_max', 'secu_max', 'def_max', 'wall_max',
-        'dead', 'state', 'conflict', 
+        'dead', 'state', 'conflict',
     ],
     'numeric'=>[
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 'trust', 'dead'
@@ -258,7 +261,7 @@ if($action == 'reorder'){
     foreach($defenderList as $defenderGeneral){
         $order[] = $defenderGeneral->getID();
     }
-    
+
     Json::die([
         'result'=>true,
         'reason'=>'success',
@@ -280,19 +283,21 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $startYear = $gameStor->startyear;
 $cityRate = Util::round(($year - $startYear) / 1.5) + 60;
 
-function extractRankVar(array $rawVal):array{
-    $rankVars = [];
+function extractRankVar(array $rawVal):Map{
+    $rankVars = new Map;
     foreach($rawVal as $rawKey=>$rawVal){
-        if(key_exists($rawKey, General::RANK_COLUMN)){
-            $rankVars[$rawKey] = $rawVal;
+        $key = RankColumn::tryFrom($rawKey);
+        if($key === null){
+            continue;
         }
+        $rankVars[$key] = $rawVal;
     }
     return $rankVars;
 }
 
 function simulateBattle(
-    $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
-    $rawDefenderList, $rawDefenderCity, $rawDefenderNation, 
+    $rawAttacker, $rawAttackerCity, $rawAttackerNation,
+    $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
     $startYear, $year, $month, $cityRate
 ){
     $attacker = new WarUnitGeneral(
@@ -310,7 +315,7 @@ function simulateBattle(
     $attackerRice = $rawAttacker['rice'];
     $defenderRice = 0;
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) 
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext)
         use ($iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, &$battleResult, &$defenderRice) {
         if($prevDefender !== null){
             $prevDefender->getLogger()->rollback();
@@ -393,13 +398,13 @@ $defendersActivatedSkills = [];
 foreach(Util::range($repeatCnt) as $repeatIdx){
     /** @var WarUnit $attacker */
     [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
-        $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
-        $rawDefenderList, $rawDefenderCity, $rawDefenderNation, 
+        $rawAttacker, $rawAttackerCity, $rawAttackerNation,
+        $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
         $startYear, $year, $month, $cityRate
     );
     $lastWarLog = Util::mapWithKey(function($key, $values){
         return ConvertLog(join('<br>', $values));
-    }, $attacker->getLogger()->rollback()); 
+    }, $attacker->getLogger()->rollback());
 
     $avgPhase += $attacker->getPhase() / $repeatCnt;
 
@@ -443,7 +448,7 @@ foreach(Util::range($repeatCnt) as $repeatIdx){
                 $activatedSkills[$skillName] += $skillCnt / $repeatCnt;
             }
         }
-        
+
     }
 }
 

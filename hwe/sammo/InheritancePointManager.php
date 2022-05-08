@@ -5,6 +5,7 @@ namespace sammo;
 use sammo\VO\InheritancePointType;
 use Ds\Map;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\RankColumn;
 
 class InheritancePointManager
 {
@@ -110,8 +111,8 @@ class InheritancePointManager
         break;
       case InheritanceKey::betting:
         $extractFn = function () use ($general, $multiplier) {
-          $betWin = $general->getRankVar('betwin');
-          $betWinRate = $general->getRankVar('betwingold') / max(1, $general->getRankVar('betgold'));
+          $betWin = $general->getRankVar(RankColumn::betwin);
+          $betWinRate = $general->getRankVar(RankColumn::betwingold) / max(1, $general->getRankVar(RankColumn::betgold));
 
           return [$betWin * $multiplier * pow($betWinRate, 2), null];
         };
