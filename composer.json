@@ -25,7 +25,7 @@
         "ezyang/htmlpurifier": "^4.10",
         "xemlock/htmlpurifier-html5": "^0.1.7",
         "catfan/medoo": "^1.5",
-        "phan/phan": "*",
+        "phan/phan": "^5.3",
         "erusev/parsedown-extra": "^0.8.1",
         "nette/caching": "^3.0",
         "illuminate/database": "^8.61",
