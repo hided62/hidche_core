@@ -392,7 +392,7 @@ class Scenario{
             $text = \file_get_contents(ServConfig::getSharedIconPath('../hook/list.json?1'));
             $storedIcons = Json::decode($text);
         }
-        catch(\Throwable $e){
+        catch(\Exception $e){
             $storedIcons = [];
         }
 

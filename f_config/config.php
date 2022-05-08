@@ -49,7 +49,7 @@ function getFriendlyErrorType($type)
     return "{$type}";
 }
 
-function getExceptionTraceAsString(\Throwable $exception)
+function getExceptionTraceAsString($exception)
 {
     //https://gist.github.com/abtris/1437966
     $rtn = "";
@@ -117,7 +117,7 @@ function logError(string $err, string $errstr, string $errpath, array $trace)
     ]);
 }
 
-function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline)
+function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=null)
 {
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall
@@ -171,16 +171,6 @@ function getAPIExecutorClass($path){
     }
     throw new \InvalidArgumentException("{$path}는 올바른 API 경로가 아님");
 }
-
-function checkForFatal()
-{
-    $error = error_get_last();
-    if ( $error["type"] == E_ERROR ){
-        logErrorByCustomHandler( $error["type"], $error["message"], $error["file"], $error["line"] );
-    }
-}
-
-register_shutdown_function("\\sammo\\checkForFatal" );
 
 function buildAPIExecutorClass($type, string $rootPath, array $args):\sammo\BaseAPI{
     $class = getAPIExecutorClass($type);

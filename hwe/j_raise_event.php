@@ -35,7 +35,7 @@ if($eventArgsJson !== null){
             $eventArgs[] = $eventNextArgs;
         }
     }
-    catch(\Throwable $e){
+    catch(\Exception $e){
         Json::die([
             'result'=>false,
             'reason'=>'arg가 올바른 json이 아닙니다'

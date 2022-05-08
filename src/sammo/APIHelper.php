@@ -15,7 +15,7 @@ class APIHelper
             try {
                 $rawInput = file_get_contents('php://input');
                 $input = Json::decode($rawInput);
-            } catch (\Throwable $e) {
+            } catch (\Exception $e) {
                 Json::dieWithReason($e->getMessage());
                 $input = null;
             }

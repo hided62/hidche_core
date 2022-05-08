@@ -345,7 +345,7 @@ if ($server == $baseServerName) {
                 $imgResult = false;
                 $imgDetail = $pullResult['reason'];
             }
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             $imgResult = false;
             $imgDetail = $e->getMessage();
         }

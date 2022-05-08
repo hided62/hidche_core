@@ -23,7 +23,7 @@ class FinishNationBetting extends \sammo\Event\Action
 
         try {
             $bettingHelper = new Betting($this->bettingID);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             return [__CLASS__, false, $e->getMessage()];
         }
 
