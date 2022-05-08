@@ -415,7 +415,7 @@ class General implements iAction
      * @param bool $withStatAdjust 능력치간 보정 사용 여부
      * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
      *
-     * @return int|float 계산된 능력치
+     * @return float 계산된 능력치
      */
 
     protected function getStatValue(string $statName, $withInjury = true, $withIActionObj = true, $withStatAdjust = true, $useFloor = true): float
@@ -1130,7 +1130,7 @@ class General implements iAction
 
     /**
      * @param ?int[] $generalIDList
-     * @param null|string|RankColumn[] $column
+     * @param null|array<string|RankColumn> $column
      * @param int $constructMode
      * @return \sammo\General[]
      * @throws MustNotBeReachedException

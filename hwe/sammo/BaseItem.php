@@ -15,10 +15,6 @@ class BaseItem implements iAction{
     protected $buyable = false;
     protected $reqSecu = 0;
 
-    function getID(){
-        return $this->id;
-    }
-
     function getRawName(){
         return $this->rawName;
     }

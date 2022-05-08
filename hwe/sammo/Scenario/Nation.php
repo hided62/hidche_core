@@ -25,15 +25,15 @@ class Nation{
     private $generals = [];
 
     public function __construct(
-        int $id = null, 
-        string $name = '국가', 
-        string $color = '#000000', 
-        int $gold = 0, 
-        int $rice = 2000, 
-        string $infoText = '국가 설명', 
-        int $tech = 0, 
-        ?string $type = null, 
-        int $nationLevel = 0, 
+        int $id = null,
+        string $name = '국가',
+        string $color = '#000000',
+        int $gold = 0,
+        int $rice = 2000,
+        string $infoText = '국가 설명',
+        int $tech = 0,
+        ?string $type = null,
+        int $nationLevel = 0,
         array $cities = []
     ){
         $this->id = $id;
@@ -47,7 +47,7 @@ class Nation{
         $this->nationLevel = $nationLevel;
         $this->cities = $cities;
 
-        if(count($cities)){
+        if(count($this->cities)){
             $this->capital = $this->cities[0];
         }
     }
@@ -75,7 +75,7 @@ class Nation{
         else{
             $capital = 0;
         }
-        
+
         if($this->type === null){
             $type = Util::choiceRandom(GameConst::$availableNationType);
         }
@@ -126,7 +126,7 @@ class Nation{
 
         $nationStor->scout_msg = $this->infoText;
 
-        
+
         $diplomacy = [];
         foreach($otherNations as $nation){
             $diplomacy[] = [
@@ -143,7 +143,7 @@ class Nation{
         if(count($diplomacy) > 0){
             $db->insert('diplomacy', $diplomacy);
         }
-        
+
     }
 
     public function addGeneral(GeneralBuilder $general){

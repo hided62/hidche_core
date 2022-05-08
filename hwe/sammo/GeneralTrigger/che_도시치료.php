@@ -24,6 +24,7 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         $db = DB::db();
 
+        /** @var array{int,string,string}[] $patients */
         $patients = $db->queryAllLists(
             'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i',
             $general->getCityID(),
@@ -39,6 +40,7 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         $cureList = [];
 
+        /** @var string|null */
         $curedPatientName = null;
         foreach($patients as [$patientID, $patientName, $patientNationID]){
             if (!Util::randBool(0.5)) {
@@ -54,6 +56,10 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         if(!$cureList){
             return $env;
+        }
+
+        if($curedPatientName === null){
+            throw new \sammo\MustNotBeReachedException();
         }
 
 

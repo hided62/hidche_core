@@ -8,11 +8,11 @@ class MapRequest{
     public $neutralView;
     public $showMe;
     function __construct($obj){
-        $this->serverID = Util::array_get($obj['serverID'], null);
-        $this->year = Util::array_get($obj['year']);
-        $this->month = Util::array_get($obj['month']);
-        $this->aux = Util::array_get($obj['aux'],[]);
-        $this->neutralView = Util::array_get($obj['neutralView'], false);
+        $this->serverID = $obj['serverID'] ?? null;
+        $this->year = $obj['year'] ?? null;
+        $this->month = $obj['month'] ?? null;
+        $this->aux = $obj['aux'] ?? [];
+        $this->neutralView = $obj['neutralView'] ?? false;
         $this->showMe = $obj['showMe'];
     }
 }

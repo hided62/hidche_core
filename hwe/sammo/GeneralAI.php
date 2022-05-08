@@ -11,12 +11,9 @@ class GeneralAI
 {
     /** @var General */
     protected $general;
-    /** @var array */
-    protected $city;
-    /** @var array */
-    protected $nation;
-    /** @var int */
-    protected $genType;
+    protected array $city;
+    protected array $nation;
+    protected int $genType;
 
     /** @var AutorunGeneralPolicy */
     protected $generalPolicy;
@@ -90,13 +87,12 @@ class GeneralAI
         $this->env = $gameStor->getAll(true);
         $this->baseDevelCost = $this->env['develcost'] * 12;
         $this->general = $general;
-        if ($general->getRawCity() === null) {
+        $city = $general->getRawCity();
+        if ($city === null) {
             $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
             $general->setRawCity($city);
-            $this->city = $city;
-        } else {
-            $this->city = $general->getRawCity();
         }
+        $this->city = $city;
 
         $this->nation = $db->queryFirstRow(
             'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,chief_set,type,aux FROM nation WHERE nation = %i',
@@ -866,7 +862,7 @@ class GeneralAI
 
         $userGenerals = $this->userCivilGenerals;
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
-            $userGenerals += $this->userWarGenerals;
+            $userGenerals = array_merge($this->userWarGenerals, $userGenerals);
         }
 
         $generalCandidates = [];
@@ -1142,7 +1138,7 @@ class GeneralAI
 
         $npcGenerals = $this->npcCivilGenerals;
         if (in_array($this->dipState, [self::d평화, self::d선포])) {
-            $npcGenerals += $this->npcWarGenerals;
+            $npcGenerals = array_merge($this->npcWarGenerals, $npcGenerals);
         }
 
         $generalCandidates = [];
@@ -3826,16 +3822,23 @@ class GeneralAI
 
 
             $picked = false;
+
+            /** @var General|null */
+            $randGeneral = null;
             foreach (Util::range(5) as $idx) {
 
                 /** @var General */
                 if ($this->npcWarGenerals) {
+                    /** @var General */
                     $randGeneral = Util::choiceRandom($this->npcWarGenerals);
                 } else if ($this->npcCivilGenerals) {
+                    /** @var General */
                     $randGeneral = Util::choiceRandom($this->npcCivilGenerals);
                 } else if ($this->userWarGenerals) {
+                    /** @var General */
                     $randGeneral = Util::choiceRandom($this->userWarGenerals);
                 } else if ($this->userCivilGenerals) {
+                    /** @var General */
                     $randGeneral = Util::choiceRandom($this->userCivilGenerals);
                 } else {
                     break;
@@ -3863,11 +3866,10 @@ class GeneralAI
                 break;
             }
 
-            if (!$picked || !$randGeneral) {
+            if (!$picked || $randGeneral === null) {
                 continue;
             }
 
-            /** @var General $randGeneral */
             $randGeneral->setVar('officer_level', $chiefLevel);
             $randGeneral->setVar('officer_city', 0);
             $randGeneral->applyDB($db);

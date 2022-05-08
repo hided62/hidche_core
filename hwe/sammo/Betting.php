@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use Ds\Map;
 use sammo\DTO\BettingInfo;
 use sammo\DTO\BettingItem;
 use sammo\Enums\RankColumn;
@@ -346,12 +347,13 @@ class Betting
         $db = DB::db();
 
         if ($this->info->reqInheritancePoint) {
-            /** @var UserLogger[] */
-            $loggers = [];
+            /** @var Map<int,UserLogger> */
+            $loggers = new Map();
             foreach ($rewardList as $rewardItem) {
                 if ($rewardItem['userID'] === null) {
                     continue;
                 }
+                /** @var int */
                 $userID = $rewardItem['userID'];
                 $amount = $rewardItem['amount'];
 
@@ -373,7 +375,7 @@ class Betting
                     $partialText = "베팅 부분 당첨({$matchPoint}/{$selectCnt})";
                 }
 
-                if (key_exists($userID, $loggers)) {
+                if ($loggers->hasKey($userID)) {
                     $userLogger = $loggers[$userID];
                 } else {
                     $userLogger = new UserLogger($userID);

@@ -191,6 +191,7 @@ class GetConst extends \sammo\BaseAPI
 
     public function genConstData()
     {
+        /** @var array<string,array{0:string,1:string[],2?:int> */
         $gameConstKeys = [
             'nationType' => [
                 '\sammo\buildNationTypeClass',

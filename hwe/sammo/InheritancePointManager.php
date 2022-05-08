@@ -285,14 +285,13 @@ class InheritancePointManager
     }
 
     //FIXME: 굳이 merge, apply, clean 3단계를 거쳐야 할 이유가 없음
-    /** @var array[InheritanceKey]float */
-    $rebirthDegraded = [
-      InheritanceKey::dex => 0.5,
-    ];
+    /** @var Map<InheritanceKey,float> */
+    $rebirthDegraded = new Map();
+    $rebirthDegraded[InheritanceKey::dex] = 0.5;
 
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
     $totalPoint = 0;
-    /** @var array[InheritanceKey][float, string|float] */
+    /** @var array<string,array{0:float,1:string|float}> */
     $allPoints = $inheritStor->getAll();
     if (!$allPoints || count($allPoints) == 0) {
       //비었으므로 리셋 안함
@@ -309,7 +308,7 @@ class InheritancePointManager
 
     foreach ($allPoints as $rKey => [$value,]) {
       $key = InheritanceKey::from($rKey);
-      if ($isRebirth && key_exists($key, $rebirthDegraded)) {
+      if ($isRebirth && $rebirthDegraded->hasKey($key)) {
         $value *= $rebirthDegraded[$key];
       }
       $keyText = $this->getInheritancePointType($key)->info;

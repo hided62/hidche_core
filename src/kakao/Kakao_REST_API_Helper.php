@@ -1,14 +1,16 @@
 <?php
+
 namespace kakao;
 
-if (class_exists('\\kakao\\KakaoKey') === false) {
-    // @suppress PhanRedefineClass
-    class KakaoKey
-    {
-        const REST_KEY = '';
-        const ADMIN_KEY = '';
-        const REDIRECT_URI = '';
-    }
+class KakaoKeyNull
+{
+    const REST_KEY = '';
+    const ADMIN_KEY = '';
+    const REDIRECT_URI = '';
+}
+
+if (!class_exists('\\kakao\\KakaoKey')) {
+    class_alias('\\kakao\\KakaoKeyNull', '\\kakao\\KakaoKey');
 }
 //https://devtalk.kakao.com/t/php-rest-api/14602/3
 //header('Content-Type: application/json; charset=utf-8');
@@ -46,7 +48,7 @@ class Story_Path
 
 class Talk_Path
 {
-    public static $TALK_PROFILE= "/v1/api/talk/profile";
+    public static $TALK_PROFILE = "/v1/api/talk/profile";
     public static $TALK_TO_ME  = "/v2/api/talk/memo/send";
     public static $TALK_TO_ME_DEFAULT  = "/v2/api/talk/memo/default/send";
 }
@@ -77,12 +79,12 @@ class Kakao_REST_API_Helper
         }
 
         self::$admin_apis = array(
-      User_Management_Path::$USER_IDS,
-      Push_Notification_Path::$REGISTER,
-      Push_Notification_Path::$TOKENS,
-      Push_Notification_Path::$DEREGISTER,
-      Push_Notification_Path::$SEND
-    );
+            User_Management_Path::$USER_IDS,
+            Push_Notification_Path::$REGISTER,
+            Push_Notification_Path::$TOKENS,
+            Push_Notification_Path::$DEREGISTER,
+            Push_Notification_Path::$SEND
+        );
     }
 
     public function request($api_path, $params = '', $http_method = 'GET')
@@ -94,7 +96,7 @@ class Kakao_REST_API_Helper
         $requestUrl = ($api_path == '/oauth/token' ? self::$OAUTH_HOST : self::$API_HOST) . $api_path;
 
         if (($http_method == 'GET' || $http_method == 'DELETE') && !empty($params)) {
-            $requestUrl .= '?'.$params;
+            $requestUrl .= '?' . $params;
         }
 
         $opts = [
@@ -167,25 +169,25 @@ class Kakao_REST_API_Helper
     {
         $this->AUTHORIZATION_CODE = $authorization_code;
         $params = [
-      'grant_type'=>'authorization_code',
-      'client_id'=>$this->REST_KEY,
-      'redirect_uri'=>$this->REDIRECT_URI,
-      'code'=>$this->AUTHORIZATION_CODE
-    ];
+            'grant_type' => 'authorization_code',
+            'client_id' => $this->REST_KEY,
+            'redirect_uri' => $this->REDIRECT_URI,
+            'code' => $this->AUTHORIZATION_CODE
+        ];
         $result = $this->_create_or_refresh_access_token($params);
-    
+
         return $result;
     }
 
     public function refresh_access_token($refresh_token)
     {
         $params = [
-      'grant_type'=>'refresh_token',
-      'client_id'=>$this->REST_KEY,
-      'refresh_token'=>$refresh_token
-    ];
+            'grant_type' => 'refresh_token',
+            'client_id' => $this->REST_KEY,
+            'refresh_token' => $refresh_token
+        ];
         $result = $this->_create_or_refresh_access_token($params);
-    
+
         return $result;
     }
 
@@ -212,11 +214,11 @@ class Kakao_REST_API_Helper
     public function meWithEmail()
     {
         $params = [
-            'property_keys'=>'['.
-                '"id",'.
-                '"kakao_account.has_email","kakao_account.email",'.
-                '"kakao_account.is_email_valid","kakao_account.is_email_verified"'.
-            ']'
+            'property_keys' => '[' .
+                '"id",' .
+                '"kakao_account.has_email","kakao_account.email",' .
+                '"kakao_account.is_email_valid","kakao_account.is_email_verified"' .
+                ']'
         ];
         return $this->request(User_Management_Path::$ME);
     }
@@ -257,8 +259,8 @@ class Kakao_REST_API_Helper
     public function talk_to_me_default($req)
     {
         $params = [
-      'template_object' => json_encode($req)
-    ];
+            'template_object' => json_encode($req)
+        ];
         return $this->request(Talk_Path::$TALK_TO_ME_DEFAULT, $params, 'POST');
     }
 
@@ -269,7 +271,7 @@ class Kakao_REST_API_Helper
 
 
     private $REST_KEY = KakaoKey::REST_KEY;  // 디벨로퍼스의 앱 설정에서 확인할 수 있습니다.
-  private $REDIRECT_URI = KakaoKey::REDIRECT_URI; // 설정에 등록한 사이트 도메인 + redirect uri
-  private $AUTHORIZATION_CODE = ''; // 동의를 한 후 발급되는 code
-  private $REFRESH_TOKEN = '';
+    private $REDIRECT_URI = KakaoKey::REDIRECT_URI; // 설정에 등록한 사이트 도메인 + redirect uri
+    private $AUTHORIZATION_CODE = ''; // 동의를 한 후 발급되는 code
+    private $REFRESH_TOKEN = '';
 }

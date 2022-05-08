@@ -6,6 +6,7 @@ include "func.php";
 
 WebUtil::requireAJAX();
 
+/** @var int|null */
 $pick = Util::getPost('pick', 'int');
 
 if(!$pick){

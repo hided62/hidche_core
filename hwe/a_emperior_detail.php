@@ -173,7 +173,7 @@ $serverID = $emperior['server_id'] ?? ($emperior['serverID'] ?? null);
             if (!$nation['nation'] ?? null) {
                 continue;
             }
-            $nation += Json::decode($nation['data']);
+            $nation = array_merge(Json::decode($nation['data']), $nation);
 
             /** @var array $nation */
             $nation['typeName'] = getNationType($nation['type']);
@@ -201,7 +201,7 @@ $serverID = $emperior['server_id'] ?? ($emperior['serverID'] ?? null);
             }
 
             if (key_exists('aux', $nation) && !is_array($nation['aux'])) {
-                $nation += Json::decode($nation['aux']);
+                $nation = array_merge(Json::decode($nation['aux']), $nation);
             }
 
             echo $templates->render('oldNation', $nation);

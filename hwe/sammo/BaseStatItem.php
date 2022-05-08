@@ -12,7 +12,7 @@ class BaseStatItem extends BaseItem{
     protected $rawName = '노기';
     protected $consumable = false;
     protected $buyable = true;
-    
+
     protected const ITEM_TYPE = [
         '명마'=>['통솔', 'leadership'],
         '무기'=>['무력', 'strength'],
@@ -27,7 +27,6 @@ class BaseStatItem extends BaseItem{
         $this->rawName = $nameTokens[$tokenLen-1];
         [$this->statNick, $this->statType] = static::ITEM_TYPE[$nameTokens[$tokenLen-3]];
 
-        $this->id = $this->statValue;
         $this->name = sprintf('%s(+%d)',$this->rawName, $this->statValue);
         $this->info = sprintf('%s +%d', $this->statNick, $this->statValue);
     }

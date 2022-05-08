@@ -256,7 +256,7 @@ function getTournament(int $tnmt)
     ][$tnmt] ?? "TOURNAMENT_TYPE_ERR_{$tnmt}";
 }
 
-function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt)
+function printRow(int $k, int $npc, string $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt)
 {
     $k += 1;
     if ($prmt > 0) {
@@ -588,7 +588,10 @@ function fillLowGenAll($tnmt_type)
 //7 8강
 //8 4강
 //9 결승
-function getTwo($tournament, $phase)
+/**
+ * @return array{0:int,1:int}
+ */
+function getTwo(int $tournament, int $phase): array
 {
     $cand = [];
     switch ($tournament) {

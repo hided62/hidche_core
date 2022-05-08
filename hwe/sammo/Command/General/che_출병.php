@@ -158,6 +158,8 @@ class che_출병 extends Command\GeneralCommand
 
         $candidateCities = [];
 
+        $currDist = 999;
+
         $minDist = Util::array_first_key($distanceList);
         do {
             //1: 최단 거리 도시 중 공격 대상이 있는가 확인

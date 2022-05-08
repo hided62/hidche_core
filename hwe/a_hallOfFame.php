@@ -110,7 +110,8 @@ if ($scenarioIdx && key_exists($scenarioIdx, $scenarioList[$seasonIdx] ?? [])) {
 
             $hallResult = array_map(function ($general) use ($typeValue, $ownerNameList) {
                 $aux = Json::decode($general['aux']);
-                $general += $aux;
+                /** @var array $general */
+                $general = array_merge($aux, $general);
 
                 if (key_exists($general['owner'], $ownerNameList)) {
                     $general['ownerName'] = $ownerNameList[$general['owner']];
@@ -118,10 +119,11 @@ if ($scenarioIdx && key_exists($scenarioIdx, $scenarioList[$seasonIdx] ?? [])) {
 
                 if (!key_exists('bgColor', $general)) {
                     if (!key_exists('color', $general)) {
-                        $general['bgColor'] = GameConst::$basecolor4;
+                        $color = GameConst::$basecolor4;
                     } else {
-                        $general['bgColor'] = $general['color'];
+                        $color = $general['color'];
                     }
+                    $general['bgColor'] = $color;
                 }
 
                 if (!key_exists('fgColor', $general)) {

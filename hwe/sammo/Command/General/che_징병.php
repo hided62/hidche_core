@@ -15,8 +15,7 @@ use function \sammo\getTechAbil;
 use function sammo\getTechLevel;
 
 use \sammo\Constraint\ConstraintHelper;
-
-
+use sammo\MustNotBeReachedException;
 
 class che_징병 extends Command\GeneralCommand
 {
@@ -98,6 +97,9 @@ class che_징병 extends Command\GeneralCommand
         $maxCrew = $leadership * 100;
 
         $reqCrewType = GameUnitConst::byID($this->arg['crewType']);
+        if($reqCrewType === null){
+            throw new MustNotBeReachedException();
+        }
         if ($reqCrewType->id == $currCrewType->id) {
             $maxCrew -= $general->getVar('crew');
         }

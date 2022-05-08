@@ -165,7 +165,7 @@ class RaiseInvader extends \sammo\Event\Action
                 ->setNPCType(9)
                 ->setStat(Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.8), Util::toInt($specAvg * 1.2))
                 ->setAffinity(999)
-                ->setExpDed($exp * 1.2, null)
+                ->setExpDed(Util::toInt($exp * 1.2), null)
                 ->setGoldRice(99999, 99999);
             $ruler->build($env);
 

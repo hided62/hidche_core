@@ -882,9 +882,9 @@ function generalInfo2(General $generalObj)
 </table>";
 }
 
-function getOnlineNum()
+function getOnlineNum(): int
 {
-    return KVStorage::getStorage(DB::db(), 'game_env')->online;
+    return KVStorage::getStorage(DB::db(), 'game_env')->getValue('online') ?? 0;
 }
 
 function onlinegen(General $general)
@@ -1075,6 +1075,7 @@ function updateTraffic()
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxonline', 'maxrefresh']);
+    /** @var array{year:int,month:int,refresh:int,maxonline:int,maxrefresh:int} $admin */
 
     //최다갱신자
     $user = $db->queryFirstRow('select name,refresh from general order by refresh desc limit 1');
@@ -2248,7 +2249,7 @@ function calcCityDistance(int $from, int $to, ?array $linkNationList): ?int
  * @param $from 기준 도시 코드
  * @param $to 대상 도시 코드
  * @param $linkNationList 경로에 해당하는 국가 리스트
- * @return array  $dist=>[cityID, $nation] 배열 가장 앞이 가장 가까움
+ * @return array<int,array{int,int}[]>  $dist=>[cityID, $nation] 배열 가장 앞이 가장 가까움
  */
 function searchDistanceListToDest(int $from, int $to, array $linkNationList)
 {
