@@ -11,6 +11,30 @@ class KVStorage{
 
     static private $storageList = [];
 
+    static private function convBackedEnum(string|int|\BackedEnum $key): string|int{
+        if($key instanceof \BackedEnum){
+            return $key->value;
+        }
+        return $key;
+    }
+
+    /**
+     * @param (string|int|\BackedEnum)[] $keys
+     * @return (string|int)[]
+     */
+    static private function convBackedEnums(array $keys): array{
+        $convKeys = [];
+        foreach($keys as $key){
+            if($key instanceof \BackedEnum){
+                $convKeys[] = $key->value;
+            }
+            else{
+                $convKeys[] = $key;
+            }
+        }
+        return $convKeys;
+    }
+
     static public function getStorage(\MeekroDB $db, $storNamespace, string $tableName='storage'):self{
         $obj_id = spl_object_hash($db);
         $fullKey = $obj_id.','.$storNamespace.','.$tableName;
@@ -29,8 +53,9 @@ class KVStorage{
         $this->turnOnCache();
     }
 
-    public static function getValuesFromInterNamespace(\MeekroDB $db, string $tableName, $key):array{
+    public static function getValuesFromInterNamespace(\MeekroDB $db, string $tableName, string|int|\BackedEnum $key):array{
         $result = [];
+        $key = self::convBackedEnum($key);
         foreach($db->queryAllLists(
             'SELECT `namespace`, `value` FROM %b WHERE `key`=%s', $tableName, $key
         ) as [$namespaceName, $value])
@@ -40,15 +65,15 @@ class KVStorage{
         return $result;
     }
 
-    public function __get($key) {
+    public function __get(string|int|\BackedEnum $key) {
         return $this->getValue($key);
     }
 
-    public function __set($key, $value) {
+    public function __set(string|int|\BackedEnum $key, $value) {
         $this->setValue($key, $value);
     }
 
-    public function __unset($key){
+    public function __unset(string|int|\BackedEnum $key){
         $this->deleteValue($key);
     }
 
@@ -83,10 +108,11 @@ class KVStorage{
         return $this->resetDBNamespace();
     }
 
-    public function invalidateCacheValue($key):self{
+    public function invalidateCacheValue(string|int|\BackedEnum $key):self{
         if($this->cacheData === null){
             return $this;
         }
+        $key = static::convBackedEnum($key);
         if(key_exists($key, $this->cacheData)){
             unset($this->cacheData[$key]);
         }
@@ -97,6 +123,7 @@ class KVStorage{
         if($this->cacheData === null){
             return $this;
         }
+        $keys = static::convBackedEnums($keys);
 
         foreach($keys as $key){
             if(key_exists($key, $this->cacheData)){
@@ -119,6 +146,7 @@ class KVStorage{
         if($this->cacheData === null){
             $this->cacheData = [];
         }
+        $keys = self::convBackedEnums($keys);
 
         if($invalidateAll){
             $notExists = $keys;
@@ -163,6 +191,8 @@ class KVStorage{
         if(!$keys){
             return [];
         }
+        $keys = static::convBackedEnums($keys);
+
         $dictResult = $this->getValues($keys, $onlyCache);
         $result = [];
         foreach($keys as $key){
@@ -175,6 +205,8 @@ class KVStorage{
         if(!$keys){
             return [];
         }
+        $keys = static::convBackedEnums($keys);
+
         if ($this->cacheData === null) {
             return $this->getDBValues($keys);
         }
@@ -184,6 +216,7 @@ class KVStorage{
 
         //TODO: DB Select에서 as를 쓸 수 있으면 좋을 듯.
         foreach($keys as $key){
+
             if(!key_exists($key, $this->cacheData)){
                 $notExists[] = $key;
                 continue;
@@ -208,12 +241,8 @@ class KVStorage{
         return $result;
     }
 
-    /**
-     * @param string|int $key
-     * @param bool $onlyCache
-     * @return mixed|null
-     */
-    public function getValue($key, bool $onlyCache=false){
+    public function getValue(string|int|\BackedEnum $key, bool $onlyCache=false){
+        $key = static::convBackedEnum($key);
         if($this->cacheData !== null && ($onlyCache || key_exists($key, $this->cacheData))){
             return $this->cacheData[$key] ?? null;
         }
@@ -226,13 +255,13 @@ class KVStorage{
     }
 
     /**
-     *
-     * @param string|int $key
      * @param mixed $value
      * @return KVStorage
      * @throws MeekroDBException
      */
-    public function setValue($key, $value):self{
+    public function setValue(string|int|\BackedEnum $key, $value):self{
+        $key = static::convBackedEnum($key);
+
         if($value === null){
             return $this->deleteValue($key);
         }
@@ -250,7 +279,9 @@ class KVStorage{
      * @return KVStorage
      * @throws MeekroDBException
      */
-    public function deleteValue($key):self{
+    public function deleteValue(string|int|\BackedEnum $key):self{
+        $key = static::convBackedEnum($key);
+
         if(isset($this->cacheData[$key])){
             unset($this->cacheData[$key]);
         }
