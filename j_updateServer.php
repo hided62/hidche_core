@@ -178,7 +178,7 @@ $session = Session::requireLogin(null)->setReadOnly();
 $request = $_POST + $_GET;
 
 $rootDB = RootDB::db();
-$storage = new \sammo\KVStorage($rootDB, 'git_path');
+$storage = KVStorage::getStorage($rootDB, 'git_path');
 $tmpFile = 'd_log/arc.zip';
 
 $v = new Validator($request);

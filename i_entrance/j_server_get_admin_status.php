@@ -17,7 +17,7 @@ $result = [];
 
 $server = [];
 
-$storage = new \sammo\KVStorage(RootDB::db(), 'git_path');
+$storage = KVStorage::getStorage(RootDB::db(), 'git_path');
 $serverGitPath = $storage->getAll();
 
 $rootServer = Util::array_last(ServConfig::getServerList())->getShortName();
@@ -81,7 +81,7 @@ foreach (ServConfig::getServerList() as $setting) {
         'lastGitPath' => ($serverGitPath[$serverDir][0])??($serverDir == $rootServer?'devel':'origin/devel')
     ];
     $server[] = $state;
-}  
+}
 
 Json::die([
     'acl' => $session->acl,
