@@ -276,7 +276,10 @@ class KVStorage
     {
         $key = Util::valueFromEnum($key);
 
-        $this->cacheData->remove($key, null);
+        if($this->cacheData !== null){
+            $this->cacheData->remove($key, null);
+        }
+
         return $this->deleteDBValue($key);
     }
 
