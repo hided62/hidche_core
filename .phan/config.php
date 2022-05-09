@@ -125,7 +125,6 @@ return [
         'hwe/lib.php',
         'hwe/process_war.php',
         'hwe/proc.php',
-        'hwe/readme.php',
         'hwe/recent_map.php',
         'hwe/select_general_from_pool.php',
         'hwe/select_npc.php',
