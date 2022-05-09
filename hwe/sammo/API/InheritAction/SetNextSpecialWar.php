@@ -5,6 +5,7 @@ namespace sammo\API\InheritAction;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -77,6 +78,7 @@ class SetNextSpecialWar extends \sammo\BaseAPI
 
         $general->setAuxVar('inheritSpecificSpecialWar', $type);
         $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);
+        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqAmount);
         $general->applyDB($db);
         return null;
     }

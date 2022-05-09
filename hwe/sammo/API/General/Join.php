@@ -387,6 +387,9 @@ class Join extends \sammo\BaseAPI
             $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
             $inheritStor->setValue('previous', [$inheritTotalPoint - $inheritRequiredPoint, null]);
             $userLogger->flush();
+            $db->update('rank_data', [
+                'value'=>$db->sqleval('value + %i', $inheritRequiredPoint)
+            ], 'general_id = %i AND type = %s', $generalID, RankColumn::inherit_point_spent_dynamic->value);
         }
 
         $me = [

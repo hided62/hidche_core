@@ -78,14 +78,14 @@ enum RankColumn: string
   case occupied = 'occupied';
 
   /** 유산 포인트 획득(지연) */
-  case inherit_point_earned = 'inherit_point_earned';
+  case inherit_point_earned = 'inherit_earned';
   /** 유산 포인트 소모(지연) */
-  case inherit_point_spent = 'inherit_point_spent';
+  case inherit_point_spent = 'inherit_spent';
 
   /** 유산 포인트 획득량(merge 명령) */
-  case inherit_point_earned_by_merge = 'inherit_point_earned_dynamic';
+  case inherit_point_earned_by_merge = 'inherit_earned_dyn';
   /** 유산 포인트 획득량(베팅 등 별도 명령) */
-  case inherit_point_earned_by_action = 'inherit_point_earned_by_action';
+  case inherit_point_earned_by_action = 'inherit_earned_act';
   /** 유산 포인트 소모량(증감 있음) */
-  case inherit_point_spent_dynamic = 'inherit_point_spent_dynamic';
+  case inherit_point_spent_dynamic = 'inherit_spent_dyn';
 }

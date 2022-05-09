@@ -1622,6 +1622,7 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         if ($general->getAuxVar('inheritRandomUnique')) {
             $general->setAuxVar('inheritRandomUnique', null);
             $general->increaseInheritancePoint(InheritanceKey::previous, GameConst::$inheritItemRandomPoint);
+            $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, -GameConst::$inheritItemRandomPoint);
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("얻을 유니크가 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }
@@ -1692,6 +1693,7 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
         [,, $amount] = $ownTrial;
         $trialStor->deleteValue("u{$ownerID}");
         $general->increaseInheritancePoint(InheritanceKey::previous, $amount);
+        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, -$amount);
         LogText("선택유니크 롤백포인트:{$ownerID}", $amount);
 
         $userLogger = new UserLogger($ownerID);
@@ -1907,6 +1909,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
         if ($general->getAuxVar('inheritRandomUnique')) {
             $general->setAuxVar('inheritRandomUnique', null);
             $general->increaseInheritancePoint(InheritanceKey::previous, GameConst::$inheritItemRandomPoint);
+            $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, -GameConst::$inheritItemRandomPoint);
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("유니크를 얻을 공간이 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }

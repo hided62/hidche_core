@@ -166,6 +166,9 @@ class Betting
             $userLogger = new UserLogger($userID);
             $userLogger->push("{$amount} 포인트를 베팅에 사용", "inheritPoint");
             $userLogger->flush();
+            $db->update('rank_data', [
+                'value'=>$db->sqleval('value + %i', $amount)
+            ], 'general_id = %i AND type = %s', $generalID, RankColumn::inherit_point_spent_dynamic->value);
         } else {
             $db->update('general', [
                 'gold' => $db->sqleval('gold - %i', $amount)
@@ -362,6 +365,11 @@ class Betting
                 $nextPoint = $previousPoint + $amount;
                 $inheritStor->setValue('previous', [$nextPoint, 0]);
                 $inheritStor->invalidateCacheValue('previous'); //XXX: 실제로는 previous 값을 사용할 수 없도록 락을 걸어야 한다.
+
+                $generalID = $rewardItem['generalID'];
+                $db->update('rank_data', [
+                    'value'=>$db->sqleval('value + %i', $amount)
+                ], 'general_id = %i AND type = %s', $generalID, RankColumn::inherit_point_earned_by_action->value);
 
                 $amountText = number_format($amount);
                 $previousPointText = number_format($previousPoint);

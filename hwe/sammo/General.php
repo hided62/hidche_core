@@ -636,6 +636,7 @@ class General implements iAction
 
             if ($refundPoint > 0) {
                 $this->increaseInheritancePoint(InheritanceKey::previous, $refundPoint);
+                $this->increaseRankVar(RankColumn::inherit_point_spent_dynamic, -$refundPoint);
             }
 
             $inheritPointManager = InheritancePointManager::getInstance();

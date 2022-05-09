@@ -5,6 +5,7 @@ namespace sammo\API\InheritAction;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -52,6 +53,7 @@ class BuyRandomUnique extends \sammo\BaseAPI
 
         $general->setAuxVar('inheritRandomUnique', TimeUtil::now());
         $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);
+        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqAmount);
         $general->applyDB($db);
         return null;
     }

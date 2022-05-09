@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -77,6 +78,7 @@ class ResetTurnTime extends \sammo\BaseAPI
         $general->setVar('turntime', TimeUtil::format($turnTime, true));
         $general->setAuxVar('inheritResetTurnTime', $nextLevel);
         $inheritStor->setValue('previous', [$previousPoint - $reqPoint, null]);
+        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqPoint);
         $general->applyDB($db);
         return null;
     }

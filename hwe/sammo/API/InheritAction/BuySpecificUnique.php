@@ -5,6 +5,7 @@ namespace sammo\API\InheritAction;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -82,6 +83,7 @@ class BuySpecificUnique extends \sammo\BaseAPI
         $itemTrials[$itemKey] = $amount;
         $general->setAuxVar('inheritUniqueTrial', $itemTrials);
         $inheritStor->setValue('previous', [$previousPoint - $amount, null]);
+        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $amount);
         $trialStor->setValue("u{$userID}", [$userID, $generalID, $amount]);
         $general->applyDB($db);
         return null;

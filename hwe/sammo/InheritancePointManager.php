@@ -49,6 +49,59 @@ class InheritancePointManager
     return $value;
   }
 
+  /**
+   * @param array<General> $generals
+   * @return Map<int, int|float>
+   */
+  public function getInheritancePointFromAll(array $generals, InheritanceKey $key, ?array &$aux = null, bool $forceCalc = false): Map
+  {
+    $inheritType = $this->getInheritancePointType($key);
+
+    $storeType = $inheritType->storeType;
+    $multiplier = $inheritType->pointCoeff;
+
+    $result = new Map();
+
+    $db = DB::db();
+
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    if ($storeType === true || ($gameStor->isunited != 0 && !$forceCalc)) {
+      $ownerMap = [];
+      foreach ($generals as $general) {
+        $ownerMap[$general->getVar('owner')] = $general->getID();
+      }
+
+      (array_map(fn (General $gen) => $gen->getID(), $generals));
+      $ownerMap = Util::convertPairArrayToDict($db->queryAllLists('SELECT `owner`, `no` FROM `general`'));
+      foreach (KVStorage::getValuesFromInterNamespace($db, "storage", $key) as $namespace => $value) {
+        if (!str_starts_with($namespace, 'inheritance_')) {
+          continue;
+        }
+        $userID = Util::toInt(substr($namespace, strlen('inheritance_')));
+        if (!key_exists($userID, $ownerMap)) {
+          continue;
+        }
+        [$value,] = $value;
+
+        $result[$ownerMap[$userID]] = $value;
+      }
+
+      return $result;
+    }
+
+    $auxTmp = [];
+    foreach ($generals as $general) {
+      $generalID = $general->getID();
+      $auxSub = null;
+      $value = $this->getInheritancePoint($general, $key, $auxSub, $forceCalc);
+      $auxTmp[$generalID] = $auxSub;
+      $result[$generalID] = $value;
+    }
+    $aux = $auxTmp;
+
+    return $result;
+  }
+
   public function getInheritancePoint(General $general, InheritanceKey $key, &$aux = null, bool $forceCalc = false): int|float|null
   {
     $inheritType = $this->getInheritancePointType($key);

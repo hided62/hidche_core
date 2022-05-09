@@ -5,6 +5,7 @@ namespace sammo\API\InheritAction;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -68,6 +69,7 @@ class ResetSpecialWar extends \sammo\BaseAPI
         $general->setAuxVar('inheritResetSpecialWar', $nextLevel);
         $general->setVar('special2', 'None');
         $inheritStor->setValue('previous', [$previousPoint - $reqPoint, null]);
+        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqPoint);
         $general->applyDB($db);
         return null;
     }
