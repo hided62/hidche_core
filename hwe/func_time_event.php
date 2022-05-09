@@ -1,9 +1,28 @@
 <?php
 namespace sammo;
+
+use sammo\Enums\RankColumn;
+
 /**
  * 시간 단위로 일어나는 이벤트들에 대한 함수 모음
  */
 
+
+function processSumInheritPointRank(){
+    $db = DB::db();
+
+    $db->update(
+        'UPDATE `rank_data` D SET `value` = (SELECT SUM(`value`) FROM `rank_data` S WHERE S.general_id = D.general_id AND S.`type` IN %ls) WHERE D.`type` = %s',
+        [RankColumn::inherit_point_earned_by_action->value, RankColumn::inherit_point_earned_by_merge->value],
+        RankColumn::inherit_point_earned->value
+    );
+
+    $db->update(
+        'UPDATE `rank_data` D SET `value` = (SELECT `value` FROM `rank_data` S WHERE S.general_id = D.general_id AND S.`type` = %s) WHERE D.`type` = %s',
+        RankColumn::inherit_point_spent_dynamic->value,
+        RankColumn::inherit_point_spent->value
+    );
+}
 
 //1월마다 실행
 function processSpring() {
