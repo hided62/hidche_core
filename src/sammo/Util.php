@@ -306,6 +306,15 @@ class Util extends \utilphp\util
         return $result;
     }
 
+    public static function convertTupleArrayToDict($arr){
+        $result = [];
+        foreach($arr as $val){
+            $key = array_shift($val);
+            $result[$key] = $val;
+        }
+        return $result;
+    }
+
     public static function convertDictToArray($dict, bool $withKey=true)
     {
         $result = [];
