@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\RankColumn;
+
 include "lib.php";
 include "func.php";
 
@@ -201,6 +203,32 @@ $templates = new \League\Plates\Engine(__DIR__ . '/templates');
                 } else {
                     $v['value'] = $v['betwingold'] / max(1, $v['betgold']);
                 }
+                return $v;
+            }],
+            ["유 산 소 모 량", "int", function ($v) use ($gameStor) {
+                $v['value'] = $v[RankColumn::inherit_point_spent->value];
+                if ($gameStor->isunited) {
+                    return $v;
+                }
+                $v['nationName'] = '???';
+                $v['pictureFullPath'] = GetImageURL(0) . "/default.jpg";
+                $v['name'] = '???';
+                $v['ownerName'] = null;
+                $v['bgColor'] = GameConst::$basecolor4;
+                $v['fgColor'] = newColor($v['bgColor']);
+                return $v;
+            }],
+            ["유 산 획 득 량", "int", function ($v) use ($gameStor) {
+                $v['value'] = $v[RankColumn::inherit_point_earned->value];
+                if ($gameStor->isunited) {
+                    return $v;
+                }
+                $v['nationName'] = '???';
+                $v['pictureFullPath'] = GetImageURL(0) . "/default.jpg";
+                $v['name'] = '???';
+                $v['ownerName'] = null;
+                $v['bgColor'] = GameConst::$basecolor4;
+                $v['fgColor'] = newColor($v['bgColor']);
                 return $v;
             }],
         ];
