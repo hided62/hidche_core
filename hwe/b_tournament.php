@@ -519,7 +519,7 @@ $globalBetTotal = array_sum($globalBet);
                 printRow($k, $general['npc'], $general['name'], $general[$tp], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gd'], $general['gl'], $general['prmt']);
             }
             foreach (Util::range(count($generalList), 4) as $idx) {
-                printRow($idx, '', '', '', '', '', '', '', '', '', '');
+                printRow($idx, 0, '', '', '', '', '', '', '', '', '');
             }
             echo "
             </table>
@@ -546,7 +546,7 @@ $globalBetTotal = array_sum($globalBet);
                 printRow($k, $general['npc'], $general['name'], $general[$tp], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gd'], $general['gl'], $general['prmt']);
             }
             foreach (Util::range(count($generalList), 8) as $idx) {
-                printRow($idx, '', '', '', '', '', '', '', '', '', '');
+                printRow($idx, 0, '', '', '', '', '', '', '', '', '');
             }
             echo "
             </table>
