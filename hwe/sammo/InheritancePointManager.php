@@ -23,8 +23,8 @@ class InheritancePointManager
     $inheritanceKey->put(InheritanceKey::max_domestic_critical, new InheritancePointType(true, 1, '최대 연속 내정 성공'));
     $inheritanceKey->put(InheritanceKey::active_action, new InheritancePointType(true, 3, '능동 행동 수'));
     //$inheritanceKey->put(InheritanceKey::snipe_combat, new InheritancePointType(true, 10, '병종 상성 우위 횟수'));
-    $inheritanceKey->put(InheritanceKey::combat, new InheritancePointType(['rank', 'warnum'], 5, '전투 횟수'));
-    $inheritanceKey->put(InheritanceKey::sabotage, new InheritancePointType(['rank', 'firenum'], 20, '계략 성공 횟수'));
+    $inheritanceKey->put(InheritanceKey::combat, new InheritancePointType(['rank', RankColumn::warnum], 5, '전투 횟수'));
+    $inheritanceKey->put(InheritanceKey::sabotage, new InheritancePointType(['rank', RankColumn::firenum], 20, '계략 성공 횟수'));
     $inheritanceKey->put(InheritanceKey::unifier, new InheritancePointType(true, 1, '천통 기여'));
     $inheritanceKey->put(InheritanceKey::dex, new InheritancePointType(false, 0.001, '숙련도'));
     $inheritanceKey->put(InheritanceKey::tournament, new InheritancePointType(true, 1, '토너먼트'));
