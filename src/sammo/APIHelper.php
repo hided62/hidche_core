@@ -100,7 +100,7 @@ class APIHelper
         } catch (\Exception $e) {
             Json::dieWithReason($e->getMessage());
         } catch (\Throwable $e) {
-            logExceptionByCustomHandler($e);
+            logExceptionByCustomHandler($e, false);
             Json::dieWithReason($e->getMessage());
         } catch (mixed $e) {
             Json::dieWithReason(strval($e));

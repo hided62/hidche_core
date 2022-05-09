@@ -96,7 +96,7 @@ function logError(string $err, string $errstr, string $errpath, array $trace)
     $fdb = FileDB::db(ROOT . '/d_log/err_log.sqlite3', ROOT . '/f_install/sql/err_log.sql');
     $date = date("Ymd_His");
 
-    $err = str_replace(ROOT, '{ROOT}', $errpath);
+    $err =str_replace(ROOT, '{ROOT}', $errpath);
     $errpath = str_replace(ROOT, '{ROOT}', $errpath);
     $trace = array_map(function (string $text) {
         return str_replace(ROOT, '{ROOT}', $text);
@@ -139,7 +139,7 @@ function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, in
 set_error_handler("\\sammo\\logErrorByCustomHandler");
 
 
-function logExceptionByCustomHandler(\Throwable $e)
+function logExceptionByCustomHandler(\Throwable $e, bool $withDie = true)
 {
 
     logError(
@@ -149,8 +149,11 @@ function logExceptionByCustomHandler(\Throwable $e)
         getExceptionTraceAsString($e)
     );
 
-    echo $e->getTraceAsString();
-    throw $e;
+    if($withDie){
+        echo $e->getTraceAsString();
+
+        throw $e;
+    }
 }
 set_exception_handler('\\sammo\\logExceptionByCustomHandler');
 
