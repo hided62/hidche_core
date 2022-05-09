@@ -97,7 +97,10 @@ class APIHelper
                 ], $setCache ? 0 : Json::NO_CACHE);
             }
             Json::die($result, $setCache ? 0 : Json::NO_CACHE);
+        } catch (\Exception $e) {
+            Json::dieWithReason($e->getMessage());
         } catch (\Throwable $e) {
+            logExceptionByCustomHandler($e);
             Json::dieWithReason($e->getMessage());
         } catch (mixed $e) {
             Json::dieWithReason(strval($e));
