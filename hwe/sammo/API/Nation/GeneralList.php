@@ -191,6 +191,7 @@ class GeneralList extends \sammo\BaseAPI
 
         $rankList = [];
         if ($rankColumns) {
+            $rankColumns = Util::valuesFromEnumArray($rankColumns);
             $rawRankList = $db->query('SELECT general_id, `type`, `value` FROM rank_data WHERE nation_id = %i AND `type` IN %ls', $nationID, $rankColumns);
             foreach ($rawRankList as $rawRank) {
                 [
