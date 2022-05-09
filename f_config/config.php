@@ -133,6 +133,7 @@ function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, in
         $errfile . ':' . $errline,
         getExceptionTraceAsString($e)
     );
+    return true;
 }
 set_error_handler("\\sammo\\logErrorByCustomHandler");
 
@@ -155,7 +156,10 @@ set_exception_handler('\\sammo\\logExceptionByCustomHandler');
 function checkForFatal()
 {
     $error = error_get_last();
-    if ($error["type"] == E_ERROR) {
+    if($error === null){
+        return;
+    }
+    if (($error["type"]??0) == E_ERROR) {
         logErrorByCustomHandler($error["type"], $error["message"], $error["file"], $error["line"]);
     }
 }
