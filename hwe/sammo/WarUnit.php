@@ -436,8 +436,14 @@ class WarUnit
 
     function criticalDamage(): float
     {
+        $range = [1.3, 2.0];
+
+        if($this instanceof WarUnitGeneral){
+            $general = $this->general;
+            $range = $general->onCalcStat($general, 'criticalDamageRange', $range);
+        }
         //전특, 병종에 따라 필살 데미지가 달라질지도 모르므로 static 함수는 아닌 것으로
-        return Util::randRange(1.3, 2.0);
+        return Util::randRange(...$range);
     }
 
     function applyDB(\MeekroDB $db): bool
