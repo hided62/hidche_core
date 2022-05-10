@@ -53,6 +53,7 @@ foreach (GameConst::$allItems as $subItems) {
         $itemObj = buildItemClass($itemKey);
         $availableUnique[$itemKey] = [
             'title' => $itemObj->getName(),
+            'rawName' => $itemObj->getRawName(),
             'info' => $itemObj->getInfo(),
         ];
     }

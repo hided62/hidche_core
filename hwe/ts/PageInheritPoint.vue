@@ -208,6 +208,7 @@ import _ from "lodash";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { inheritBuffType } from "./defs/API/InheritAction";
+import * as JosaUtil from '@/util/JosaUtil';
 
 type InheritanceType =
   | "previous"
@@ -365,6 +366,7 @@ declare const availableUnique: Record<
   string,
   {
     title: string;
+    rawName: string;
     info: string;
   }
 >;
@@ -427,8 +429,8 @@ export default defineComponent({
       }
 
       const name = inheritBuffHelpText[buffKey].title;
-
-      if (!confirm(`${name}를 ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`)) {
+      const josaUl = JosaUtil.pick(name, '을');
+      if (!confirm(`${name}${josaUl} ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`)) {
         return;
       }
 
@@ -497,8 +499,9 @@ export default defineComponent({
         alert("유산 포인트가 부족합니다.");
         return;
       }
-      //TODO: JosaUtil
-      if (!confirm(`${cost} 포인트로 다음 전특을 ${specialWarName}(으)로 고정하겠습니까?`)) {
+
+      const josaRo = JosaUtil.pick(specialWarName, '로');
+      if (!confirm(`${cost} 포인트로 다음 전특을 ${specialWarName}${josaRo} 고정하겠습니까?`)) {
         return;
       }
 
@@ -527,14 +530,16 @@ export default defineComponent({
         alert(`잘못된 타입: ${this.specificUnique}`);
         return;
       }
+      const uniqueRawName = this.availableUnique[this.specificUnique].rawName ?? undefined;
 
       const amount = this.specificUniqueAmount;
       if (this.items.previous < amount) {
         alert("유산 포인트가 부족합니다.");
         return;
       }
-      //TODO: JosaUtil
-      if (!confirm(`${amount} 포인트로 ${uniqueName}(을)를 입찰하겠습니까?`)) {
+
+      const josaUl = JosaUtil.pick(uniqueRawName, '을');
+      if (!confirm(`${amount} 포인트로 ${uniqueName}${josaUl} 입찰하겠습니까?`)) {
         return;
       }
 

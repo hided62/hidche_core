@@ -4,6 +4,7 @@ import { convertFormData } from '@util/convertFormData';
 import type { InvalidResponse } from '@/defs';
 import { unwrap_any } from '@util/unwrap_any';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
+import * as JosaUtil from '@/util/JosaUtil';
 import 'bootstrap';
 import 'select2/dist/js/select2.full.js'
 
@@ -118,7 +119,8 @@ $(function () {
             return;
         }
         const generalName = $kickSelect.data('name');
-        if (!confirm(`${generalName}를 추방하시겠습니까?`)) {
+        const josaUl = JosaUtil.pick(generalName, '을');
+        if (!confirm(`${generalName}${josaUl} 추방하시겠습니까?`)) {
             return;
         }
 
@@ -146,7 +148,7 @@ $(function () {
             alert(`추방하지 못했습니다. : ${result.reason}`);
             return;
         }
-        alert(`${generalName}를 추방했습니다.`);
+        alert(`${generalName}${josaUl} 추방했습니다.`);
         location.reload();
     });
 
@@ -172,11 +174,13 @@ $(function () {
                     return false;
                 }
             } else if (generalOfficerLevel >= 5) {
-                if (!confirm(`이미 수뇌인 ${generalName}을(를) ${officerLevelText}직에 임명하시겠습니까?`)) {
+                const josaUl = JosaUtil.pick(generalName, '을');
+                if (!confirm(`이미 수뇌인 ${generalName}${josaUl} ${officerLevelText}직에 임명하시겠습니까?`)) {
                     return false;
                 }
             } else {
-                if (!confirm(`${generalName}을(를) ${officerLevelText}직에 임명하시겠습니까?`)) {
+                const josaUl = JosaUtil.pick(generalName, '을');
+                if (!confirm(`${generalName}${josaUl} ${officerLevelText}직에 임명하시겠습니까?`)) {
                     return false;
                 }
             }
@@ -193,11 +197,13 @@ $(function () {
                     return false;
                 }
             } else if (generalOfficerLevel >= 5) {
-                if (!confirm(`수뇌인 ${generalName}을(를) ${cityName} ${officerLevelText}직에 임명하시겠습니까?`)) {
+                const josaUl = JosaUtil.pick(generalName, '을');
+                if (!confirm(`수뇌인 ${generalName}${josaUl} ${cityName} ${officerLevelText}직에 임명하시겠습니까?`)) {
                     return false;
                 }
             } else {
-                if (!confirm(`${generalName}을(를) ${cityName} ${officerLevelText}직에 임명하시겠습니까?`)) {
+                const josaUl = JosaUtil.pick(generalName, '을');
+                if (!confirm(`${generalName}${josaUl} ${cityName} ${officerLevelText}직에 임명하시겠습니까?`)) {
                     return false;
                 }
             }
@@ -230,7 +236,8 @@ $(function () {
         }
 
         if (generalID) {
-            alert(`${generalName}을(를) 임명했습니다.`);
+            const josaUl = JosaUtil.pick(generalName, '을');
+            alert(`${generalName}${josaUl} 임명했습니다.`);
         } else {
             alert('관직을 비웠습니다.');
         }
