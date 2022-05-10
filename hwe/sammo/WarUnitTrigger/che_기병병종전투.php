@@ -16,9 +16,14 @@ class che_기병병종전투 extends BaseWarUnitTrigger{
             $oppose->multiplyWarPowerMultiply(1/0.95);
             $self->multiplyWarPowerMultiply(0.95);
         }
-        if($oppose instanceof WarUnitCity){
+        else if($oppose instanceof WarUnitCity){
             $self->multiplyWarPowerMultiply(0.9);
         }
+        else{
+            $oppose->multiplyWarPowerMultiply(0.97);
+            $self->multiplyWarPowerMultiply(1.02);
+        }
+
 
         return true;
     }
