@@ -399,4 +399,37 @@ class GameConstBase
     public static $npcBanMessageProb = 0.01;
     public static $npcSeizureMessageProb = 0.01;
     public static $npcMessageFreqByDay = 4;
+
+    public static $defaultInitialEvents = [
+        [
+            true,
+            ["NoticeToHistoryLog", "<S>2년간 거병 및 건국이 가능합니다.</>", ActionLogger::EVENT_YEAR_MONTH]
+        ]
+    ];
+    public static $defaultEvents = [
+        [
+            "month", 2000,
+            ["DateRelative", "==", 1, 1],
+            ["NoticeToHistoryLog", "<S>2년 뒤 출병 제한이 풀립니다.</>", ActionLogger::EVENT_YEAR_MONTH],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 2000,
+            ["DateRelative", "==", 2, 1],
+            ["NoticeToHistoryLog", "<S>1년 뒤 출병 제한이 풀립니다.</>", ActionLogger::EVENT_YEAR_MONTH],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 2000,
+            ["DateRelative", "==", 2, 7],
+            ["NoticeToHistoryLog", "<S>6개월 뒤 출병 제한이 풀립니다. 병력을 준비해주세요.</>", ActionLogger::EVENT_YEAR_MONTH],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 2000,
+            ["DateRelative", "==", 3, 1],
+            ["NoticeToHistoryLog", "<S>출병 제한이 풀렸습니다.</>", ActionLogger::EVENT_YEAR_MONTH],
+            ["DeleteEvent"]
+        ],
+    ];
 }

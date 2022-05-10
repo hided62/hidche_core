@@ -7,7 +7,7 @@ use sammo\ActionLogger;
 
 class NoticeToHistoryLog extends \sammo\Event\Action
 {
-  public function __construct(private string $msg)
+  public function __construct(private string $msg, private int $type = ActionLogger::YEAR_MONTH)
   {
   }
 
@@ -17,7 +17,7 @@ class NoticeToHistoryLog extends \sammo\Event\Action
       throw new RuntimeException('year, month가 없음');
     }
     $logger = new ActionLogger(0, 0, $env['year'], $env['month']);
-    $logger->pushGlobalHistoryLog($this->msg);
+    $logger->pushGlobalHistoryLog($this->msg, $this->type);
     $logger->flush();
   }
 }

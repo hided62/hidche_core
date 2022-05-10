@@ -186,6 +186,10 @@ class ResetHelper{
         $seasonIdx = $clearResult['seasonIdx'];
 
         $scenarioObj = new Scenario($scenario, true);
+
+        if(class_exists('\\sammo\GameConst', false)){
+            trigger_error("이미 GameConst가 호출되어있습니다", E_USER_NOTICE);
+        }
         $scenarioObj->buildConf();
         $scenarioObj->initFull();
 

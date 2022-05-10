@@ -207,7 +207,7 @@ class Scenario{
             $cond = $rawEvent[0];
             $action = array_slice($rawEvent, 1);
             return new \sammo\Event\EventHandler($cond, $action);
-        }, Util::array_get($data['initialEvents'], []));
+        }, array_merge(GameConst::$defaultInitialEvents, Util::array_get($data['initialEvents'], [])));
 
         $this->events = array_map(function($rawEvent){
             //event는 여기서 풀지 않는다. 평가만 한다.
@@ -230,7 +230,7 @@ class Scenario{
                 'cond' => $cond,
                 'action' => $action
             ];
-        }, Util::array_get($data['events'], []));
+        }, array_merge(GameConst::$defaultEvents, Util::array_get($data['events'], [])));
     }
 
     public function getGameConf(){
@@ -546,6 +546,8 @@ class Scenario{
 
         $this->buildDiplomacy($env);
 
+        pushGlobalHistoryLog($this->history, $env['year'], $env['month']);
+
         foreach($this->initialEvents as $event){
             $event->tryRunEvent($env);
         }
@@ -562,10 +564,6 @@ class Scenario{
         if(count($events) > 0){
             $db->insert('event', $events);
         }
-
-
-
-        pushGlobalHistoryLog($this->history, $env['year'], $env['month']);
 
         refreshNationStaticInfo();
         foreach(getAllNationStaticInfo() as $nation){
