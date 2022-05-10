@@ -180,6 +180,14 @@ class che_장비매매 extends Command\GeneralCommand
             $general->increaseVarWithLimit('gold', $cost / 2);
             $general->onArbitraryAction($general, '장비매매', '판매', ['itemCode' => $itemCode]);
             $general->setItem($itemType, null);
+
+            if(!$itemObj->isBuyable()){
+                $generalName = $general->getName();
+                $josaYi = JosaUtil::pick($generalName, '이');
+                $nationName = $general->getStaticNation()['name'];
+                $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 판매했습니다!");
+                $logger->pushGlobalHistoryLog("<R><b>【판매】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 판매했습니다!");
+            }
         }
 
         $exp = 10;
