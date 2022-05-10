@@ -67,6 +67,19 @@ class BuySpecificUnique extends \sammo\BaseAPI
             return '이미 입찰한 아이템입니다. 다음 턴에 시도해 주세요.';
         }
 
+        foreach(GameConst::$allItems as $itemType => $items){
+            if(!key_exists($itemKey, $items)){
+                continue;
+            }
+
+            $prevItem = $general->getItem($itemType);
+            if(!$prevItem->isBuyable()){
+                return '이미 같은 자리에 유니크를 보유하고 있습니다.';
+            }
+
+            break;
+        }
+
         $db = DB::db();
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
         $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");

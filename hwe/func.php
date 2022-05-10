@@ -1758,12 +1758,11 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
                 $reasons[] = '이미 그 유니크를 가지고 있습니다.';
                 continue;
             }
-            /*
+
             if (!$ownItem->isBuyable()) {
                 $reasons[] = '이미 다른 유니크를 가지고 있습니다.';
                 continue;
             }
-            */
 
             $availableCnt = $itemList[$itemKey];
             $occupiedCnt = $db->queryFirstField('SELECT count(*) FROM general WHERE %b = %s', $itemType, $itemKey);
@@ -1864,6 +1863,9 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
     $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
 
     $general->applyDB($db);
+
+    //같은 종류의 유니크를 입찰했을 수 있으니 한번 더 검사한다.
+    tryRollbackInheritUniqueItem($general);
 
     return true;
 }
