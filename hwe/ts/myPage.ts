@@ -240,23 +240,23 @@ $(function ($) {
         console.log(item);
 
         const josaUl = JosaUtil.pick(item.rawName, '을');
-        if (!confirm(`${item.name}${josaUl} 버리시겠습니까? (판매시 가치: ${item.cost})`)) {
+        if (!confirm(`${item.name}${josaUl} 버리시겠습니까? (판매시 가치: ${item.cost / 2})`)) {
             return;
         }
 
-        if(!item.isBuyable && !confirm(`이 아이템은 유니크 아이템입니다. 진짜로 ${item.name}${josaUl} 버리시겠습니까?`)){
+        if (!item.isBuyable && !confirm(`이 아이템은 유니크 아이템입니다. 진짜로 ${item.name}${josaUl} 버리시겠습니까?`)) {
             return;
         }
 
 
-        try{
+        try {
             await SammoAPI.General.DropItem({
                 itemType: type,
             });
             alert(`${item.name}${josaUl} 버렸습니다.`);
             location.reload();
         }
-        catch(e){
+        catch (e) {
             console.error(e);
             alert(e);
         }
