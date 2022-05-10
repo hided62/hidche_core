@@ -27,6 +27,9 @@ class che_저지발동 extends BaseWarUnitTrigger{
 
         $self->getGeneral()->addDex($oppose->getCrewType(), $oppose->getWarPower() * 0.9);
         $self->getGeneral()->addDex($self->getCrewType(), $self->getWarPower() * 0.9);
+        if($self instanceof WarUnitGeneral){
+            $self->addLevelExp($self->getWarPower() * 0.9 / 50);
+        }
 
         $self->setWarPowerMultiply(0);
         $oppose->setWarPowerMultiply(0);
