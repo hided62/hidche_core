@@ -4,6 +4,7 @@ namespace sammo;
 
 use Monolog\Logger;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\RankColumn;
 
 /**
  * 게임 룰에 해당하는 함수 모음
@@ -1024,12 +1025,16 @@ function checkEmperior()
     $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
 
     $inheritPointManager = InheritancePointManager::getInstance();
-    foreach (General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2')) as $genObj) {
+    $allUserGenerals = General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2'));
+    foreach ($allUserGenerals as $genObj) {
         if ($genObj->getNationID() == $nationID) {
             if ($genObj->getVar('officer_level') > 4) {
                 $genObj->increaseInheritancePoint(InheritanceKey::unifier, 2000);
             };
         }
+    }
+    processSumInheritPointRank();
+    foreach ($allUserGenerals as $genObj) {
         $inheritPointManager->mergeTotalInheritancePoint($genObj, true);
         $inheritPointManager->applyInheritanceUser($genObj->getVar('owner'));
         $inheritPointManager->clearInheritancePoint($genObj);
