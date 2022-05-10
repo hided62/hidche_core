@@ -13,7 +13,7 @@ import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListRespo
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type { GetConstResponse, GetCurrentHistoryResponse, GetDiplomacyResponse, GetHistoryResponse } from "./defs/API/Global";
-import type { CachedMapResult, GeneralListResponse, MapResult } from "./defs";
+import type { CachedMapResult, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 
 const apiRealPath = {
     Betting: {
@@ -53,7 +53,10 @@ const apiRealPath = {
         GetGeneralLog: GET as APICallT<{
             reqType: GeneralLogType,
             reqTo?: number
-        }, GetGeneralLogResponse>
+        }, GetGeneralLogResponse>,
+        DropItem: PUT as APICallT<{
+            itemType: ItemTypeKey
+        }>
     },
     Global: {
         GeneralList: GET as APICallT<undefined, GeneralListResponse>,

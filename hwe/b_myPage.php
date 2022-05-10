@@ -50,9 +50,18 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 내정보</title>
-    <script>
-        var availableDieImmediately = <?= $availableDieImmediately ? 'true' : 'false' ?>;
-    </script>
+    <?= WebUtil::printStaticValues([
+        'availableDieImmediately' => $availableDieImmediately,
+        'staticValues' => [
+            'items' => Util::mapWithKey(fn (string $key, BaseItem $item) => [
+                'name' => $item->getName(),
+                'rawName' => $item->getRawName(),
+                'className' => $item->getRawClassName(),
+                'cost' => $item->getCost(),
+                'isBuyable' => $item->isBuyable(),
+            ], $me->getItems())
+        ]
+    ]) ?>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
@@ -72,8 +81,8 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
             </div>
 
             <div class="col col-12 col-md-6">
-                <div class="row">
-                    <div class="col" style='padding-left:4ch;'>
+                <div class="row mx-0 gx-0">
+                    <div class="col" style='padding-left:2ch;'>
                         토너먼트 【
                         <input type=radio class='tnmt' name=tnmt value=0 <?= $me->getVar('tnmt') == 0 ? "checked" : ""; ?>>수동참여
                         <input type=radio class='tnmt' name=tnmt value=1 <?= $me->getVar('tnmt') == 1 ? "checked" : ""; ?>>자동참여
@@ -94,8 +103,8 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                                 <option value=0 <?= (!$use_auto_nation_turn) ? "selected" : ""; ?>>허용 안함</option>
                             </select>】<br>
                             ∞<span style='color:orange'>수뇌가 되었을 때 휴식 턴이어도 적당한 턴을 알아서 넣는 것을 허용합니다.</span><br><br>
-                        <?php else: ?>
-                            <input type="hidden" id='use_auto_nation_turn' name='use_auto_nation_turn' value="1"/>
+                        <?php else : ?>
+                            <input type="hidden" id='use_auto_nation_turn' name='use_auto_nation_turn' value="1" />
                         <?php endif; ?>
                         수비 【<select id='defence_train' name='defence_train'>
                             <?php foreach ([90, 80, 60, 40] as $targetDefenceTrain) : ?>
@@ -136,6 +145,18 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                                     <input type="radio" class="btn-check" name="screenMode" value="1000px" id="screenMode_1000px" autocomplete="off">
                                     <label class="btn btn-primary" for="screenMode_1000px">1000px</label>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">아이템 파기</div>
+
+                        </div>
+                        <div class="row mx-1">
+                            <div class="btn-group" role="group">
+                                <?php foreach ($me->getItems() as $itemKey => $item) : ?>
+                                    <button type="button" data-item-type='<?=$itemKey?>' class="drop-item-btn btn btn-primary <?= $item->getName() == '-' ? 'disabled' : '' ?>"><?= $item->getName() ?></button>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                         <br>

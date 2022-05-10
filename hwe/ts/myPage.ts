@@ -2,7 +2,7 @@ import "@scss/myPage.scss";
 
 import axios from 'axios';
 import $ from 'jquery';
-import { type InvalidResponse, keyScreenMode, type ScreenModeType } from '@/defs';
+import { type InvalidResponse, keyScreenMode, type ScreenModeType, type ItemTypeKey } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap } from '@util/unwrap';
@@ -10,12 +10,23 @@ import { unwrap_any } from '@util/unwrap_any';
 import { auto500px } from './util/auto500px';
 import { initTooltip } from "./legacy/initTooltip";
 import { insertCustomCSS } from "./util/customCSS";
-
+import * as JosaUtil from '@util/JosaUtil';
+import { SammoAPI } from "./SammoAPI";
 
 type LogResponse = {
     result: true;
     log: Record<string, string>;
 };
+
+declare const staticValues: {
+    items: Record<ItemTypeKey, {
+        name: string;
+        rawName: string;
+        className: string;
+        cost: number;
+        isBuyable: boolean;
+    }>
+}
 
 $(function ($) {
     setAxiosXMLHttpRequest();
@@ -111,8 +122,8 @@ $(function ($) {
 
 
     const $screenModeRadios = $('input:radio[name=screenMode]');
-    $screenModeRadios.prop('checked', false).filter(`[value="${localStorage.getItem(keyScreenMode)??'auto'}"]`).prop('checked', true);
-    $screenModeRadios.on('click', function(e){
+    $screenModeRadios.prop('checked', false).filter(`[value="${localStorage.getItem(keyScreenMode) ?? 'auto'}"]`).prop('checked', true);
+    $screenModeRadios.on('click', function (e) {
         const mode = (e.target as HTMLInputElement).value as ScreenModeType;
         localStorage.setItem(keyScreenMode, mode);
         document.dispatchEvent(new CustomEvent('tryChangeScreenMode'));
@@ -201,7 +212,7 @@ $(function ($) {
                 })
             });
             result = response.data;
-            if(!result.result){
+            if (!result.result) {
                 throw result.reason;
             }
         }
@@ -213,6 +224,42 @@ $(function ($) {
         }
 
         location.reload();
+
+    });
+
+    $('.drop-item-btn').on('click', async function (e) {
+        e.preventDefault();
+        const $this = $(this);
+        const type = $this.data('item-type') as ItemTypeKey | undefined;
+        if (!type) {
+            return;
+        }
+
+        console.log(`${type} 판매 시도`);
+        const item = staticValues.items[type];
+        console.log(item);
+
+        const josaUl = JosaUtil.pick(item.rawName, '을');
+        if (!confirm(`${item.name}${josaUl} 버리시겠습니까? (판매시 가치: ${item.cost})`)) {
+            return;
+        }
+
+        if(!item.isBuyable && !confirm(`이 아이템은 유니크 아이템입니다. 진짜로 ${item.name}${josaUl} 버리시겠습니까?`)){
+            return;
+        }
+
+
+        try{
+            await SammoAPI.General.DropItem({
+                itemType: type,
+            });
+            alert(`${item.name}${josaUl} 버렸습니다.`);
+            location.reload();
+        }
+        catch(e){
+            console.error(e);
+            alert(e);
+        }
 
     });
 
