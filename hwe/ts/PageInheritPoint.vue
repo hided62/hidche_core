@@ -70,6 +70,7 @@
             <div class="a-right col-6 align-self-center">유니크 입찰</div>
             <div class="col-6">
               <select v-model="specificUnique" class="form-select col-6">
+                <option disabled selected :value="null"> 유니크 선택 </option>
                 <option v-for="(info, key) in availableUnique" :key="key" :value="key">
                   {{ info.title }}
                 </option>
@@ -90,7 +91,7 @@
             <small class="form-text text-muted"
               >얻고자 하는 유니크 아이템을 포인트를 걸어 입찰합니다. 최고 포인트인 경우 다음 턴에 유니크를 얻습니다.<br />
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <span style="color: white" v-html="availableUnique[specificUnique].info" />
+              <span style="color: white" v-html="specificUnique == null?'':availableUnique[specificUnique].info" />
             </small>
           </div>
 
@@ -401,7 +402,7 @@ export default defineComponent({
       resetTurnTimeLevel,
       resetSpecialWarLevel,
       nextSpecialWar: Object.keys(availableSpecialWar)[0],
-      specificUnique: Object.keys(availableUnique)[0],
+      specificUnique: null,
       availableSpecialWar,
       availableUnique,
       specificUniqueAmount: inheritActionCost.minSpecificUnique,
@@ -516,6 +517,11 @@ export default defineComponent({
       location.reload();
     },
     async buySpecificUnique() {
+      if(this.specificUnique === null){
+        alert("유니크를 선택해주세요.");
+        return;
+      }
+
       const uniqueName = this.availableUnique[this.specificUnique].title ?? undefined;
       if (uniqueName === undefined) {
         alert(`잘못된 타입: ${this.specificUnique}`);
