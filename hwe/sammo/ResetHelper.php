@@ -93,12 +93,15 @@ class ResetHelper{
             $gameStor->resetCache();
         }
 
+        $hiddenSeed = bin2hex(random_bytes(16));//32byte, 128bit random seed
+
         $result = Util::generateFileUsingSimpleTemplate(
             $servRoot.'/d_setting/UniqueConst.orig.php',
             $servRoot.'/d_setting/UniqueConst.php',[
                 'serverID'=>$serverID,
                 'serverName'=>ServConfig::getServerList()[$prefix]->getKorName(),
                 'seasonIdx'=>$seasonIdx,
+                'hiddenSeed'=>$hiddenSeed,
             ], true
         );
 
