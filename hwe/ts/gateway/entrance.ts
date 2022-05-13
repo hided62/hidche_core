@@ -44,54 +44,28 @@ const serverFullTemplate = "\
 <td colspan='4' class='server_full'>- 장수 등록 마감 -</td>\
 ";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const serverSelectPoolTemplate = "\
-<td colspan='2' class='not_registered'>- 미 등 록 -</td>\
-<td class='ignore_border'>\
-<a href='<%serverPath%>/select_general_from_pool.php'><button type='button' class='general_select with_skin'>장수선택</button></a>\
-</td>\
-";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const serverLoginBtn = "<a href='<%serverPath%>/' class='item'\
-><button type='button' class='fill_box with_skin'>입장</button\
-></a>";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const serverCreateBtn = "<a href='<%serverPath%>/v_join.php' class='item'\
-><button type='button' class='fill_box with_skin'>장수생성</button\
-></a>";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const serverSelectNPCBtn = "<a href='<%serverPath%>/select_npc.php' class='item'\
-><button type='button' class='fill_box with_skin'>장수빙의</button\
-></a>";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const serverSelectPoolBtn = "<a href='<%serverPath%>/select_general_from_pool.php' class='item'\
-><button type='button' class='fill_box with_skin'>장수선택</button\
-></a>";
-
 const serverCreateTemplate = "\
-<td colspan='2' class='not_registered'>- 미 등 록 -</div>\
-<td class='ignore_border vertical_flex BtnPlate'>\
+<td colspan='2' class='not_registered'>- 미 등 록 -\
+<td class='ignore_border'>\
+<div class='d-grid'>\
 <%if(canCreate) {%>\
-<a href='<%serverPath%>/v_join.php' class='item'><button type='button' class='fill_box with_skin'>장수생성</button></a>\
+<a class='btn btn-secondary server-action' href='<%serverPath%>/v_join.php'>장수생성</a>\
 <%}%>\
 <%if(canSelectNPC) {%>\
-<a href='<%serverPath%>/select_npc.php' class='item'><button type='button' class='fill_box with_skin'>장수빙의</button></a>\
+<a class='btn btn-secondary server-action' href='<%serverPath%>/select_npc.php'>장수빙의</a>\
 <%}%>\
 <%if(canSelectPool) {%>\
-<a href='<%serverPath%>/select_general_from_pool.php' class='item'><button type='button' class='fill_box with_skin'>장수선택</button></a>\
+<a class='btn btn-secondary server-action' href='<%serverPath%>/select_general_from_pool.php'>장수선택</a>\
 <%}%>\
-</td>";
+</div></td>";
 
 const serverLoginTemplate = "\
 <td style='background:url(\"<%picture%>\");background-size: 64px 64px;'></td>\
 <td><%name%></td>\
-<td class='ignore_border vertical_flex BtnPlate'>\
-<a href='<%serverPath%>/' class='item'><button type='button' class='fill_box with_skin'>입장</button></a>\
-</td>\
+<td class='ignore_border'>\
+<div class='d-grid'>\
+<a href='<%serverPath%>/' class='btn btn-secondary server-action'>입장</a>\
+</div></td>\
 ";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

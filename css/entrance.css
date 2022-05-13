@@ -36,14 +36,19 @@ body {
     height: 130px;
 }
 
-#user_info button {
+#user_info .btn {
     width: 200px;
-    height: 50px;
     margin: 10px 50px;
+    padding: 10px;
 }
 
 .center_ordered_items {
     text-align: center;
+}
+
+.server-action{
+    padding-top: 16px;
+    padding-bottom: 16px;
 }
 
 .Entrance_ServerList {
