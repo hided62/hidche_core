@@ -81,23 +81,34 @@ a.just_link {
 
 button.with_skin {
     padding: 0 4px;
-    background-color: black;
+    background-color: #191919;
     color: white;
     font-size: 14px;
+    border-top-color: gray;
+    border-left-color: gray;
+    border-right-color: black;
+    border-bottom-color: black;
 }
 
 button.with_skin:disabled {
-    background-color: #333333;
+    background-color: #333;
 }
 
 input.with_skin {
-    background-color: black;
+    background-color: #191919;
     color: white;
     font-size: 14px;
 }
 
+input.with_skin[type=button], input.with_skin[type=submit]{
+    border-top-color: gray;
+    border-left-color: gray;
+    border-right-color: black;
+    border-bottom-color: black;
+}
+
 input.with_skin:disabled {
-    background-color: #333333;
+    background-color: #333;
 }
 
 .font0 {
