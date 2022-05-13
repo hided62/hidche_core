@@ -49,8 +49,10 @@ class DropItem extends \sammo\BaseAPI
     $generalName = $me->getName();
     $josaYi = JosaUtil::pick($generalName, '이');
 
+
     $itemName = $item->getName();
-    $josaUl = JosaUtil::pick($itemName, '을');
+    $itemRawName = $item->getRawName();
+    $josaUl = JosaUtil::pick($itemRawName, '을');
     $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 버렸습니다.");
 
     $nationName = $me->getStaticNation()['name'];
