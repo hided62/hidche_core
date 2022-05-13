@@ -143,7 +143,7 @@ class Betting
             }
         } else {
             $remainPoint = $db->queryFirstField('SELECT gold FROM general WHERE no = %i', $generalID) ?? 0;
-            if ($remainPoint < GameConst::$generalMinimumGold + $amount) {
+            if ($remainPoint < GameConst::$minGoldRequiredWhenBetting + $amount) {
                 throw new \RuntimeException('금이 부족합니다.');
             }
         }
