@@ -218,7 +218,7 @@
 
           <div v-if="isEditMode" class="row gx-0">
             <div class="col-5 col-md-6 d-grid">
-              <BDropdown left variant="light" text="선택한 턴을">
+              <BDropdown left variant="light" :style="{ color: 'black' }" text="선택한 턴을">
                 <BDropdownItem @click="clipboardCut"> <i class="bi bi-scissors" />&nbsp;잘라내기 </BDropdownItem>
                 <BDropdownItem @click="clipboardCopy"> <i class="bi bi-files" />&nbsp;복사하기 </BDropdownItem>
                 <BDropdownItem @click="clipboardPaste">
@@ -244,7 +244,7 @@
             </div>
 
             <div class="col-7 col-md-6 d-grid">
-              <BButton variant="info" :style="{ color: 'black' }" @click="toggleForm($event)"> 명령 선택 ▾ </BButton>
+              <BButton variant="info" @click="toggleForm($event)"> 명령 선택 ▾ </BButton>
             </div>
           </div>
         </div>
