@@ -8,28 +8,24 @@
     ],
     "config": {
         "platform": {
-            "php": "8.0"
+            "php": "8.1"
         }
     },
     "require": {
         "brandonwamboldt/utilphp": "^1.1",
         "sergeytsalkov/meekrodb": "^2.3",
         "league/plates": "^3.3",
-        "guzzlehttp/guzzle": "^6.3",
-        "monolog/monolog": "^1.23",
-        "firephp/firephp-core": "^0.4.0",
         "vlucas/valitron": "^1.4",
         "php-extended/php-tail": "^2.1",
         "pguardiario/phpuri": "^1.0",
-        "symfony/lock": "^4.1",
+        "symfony/lock": "^6.0",
         "ezyang/htmlpurifier": "^4.10",
         "xemlock/htmlpurifier-html5": "^0.1.7",
-        "catfan/medoo": "^1.5",
+        "catfan/medoo": "^2.1",
         "phan/phan": "^5.3",
-        "erusev/parsedown-extra": "^0.8.1",
         "nette/caching": "^3.0",
-        "illuminate/database": "^8.61",
-        "illuminate/events": "^8.61",
+        "illuminate/database": "^9.12",
+        "illuminate/events": "^9.12",
         "spatie/data-transfer-object": "^3.7",
         "php-ds/php-ds": "^1.4"
     },

@@ -2,7 +2,6 @@
 
 namespace sammo;
 
-use Monolog\Logger;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 

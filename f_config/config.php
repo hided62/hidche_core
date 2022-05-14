@@ -96,7 +96,8 @@ function logError(string $err, string $errstr, string $errpath, array $trace)
     $fdb = FileDB::db(ROOT . '/d_log/err_log.sqlite3', ROOT . '/f_install/sql/err_log.sql');
     $date = date("Ymd_His");
 
-    $err =str_replace(ROOT, '{ROOT}', $errpath);
+    $err = str_replace(ROOT, '{ROOT}', $err);
+    $errstr = str_replace(ROOT, '{ROOT}', $errstr);
     $errpath = str_replace(ROOT, '{ROOT}', $errpath);
     $trace = array_map(function (string $text) {
         return str_replace(ROOT, '{ROOT}', $text);
