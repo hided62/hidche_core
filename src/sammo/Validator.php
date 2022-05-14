@@ -55,6 +55,56 @@ class Validator extends \Valitron\Validator
     }
 
     /**
+     * Validate that a field is an string array
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateStringArray($field, $value)
+    {
+        if(!is_array($value)){
+            return false;
+        }
+        foreach($value as $subItem){
+            if(!is_string($subItem)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Validate that a field is an integer value
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateInt($field, $value)
+    {
+        if(!is_int($value)){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validate that a field is an float value
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateFloat($field, $value)
+    {
+        if(!is_float($value)){
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 문자열의 '최대 너비'를 확인함. mb_strwidth 기반
      *
      * @param  string $field
