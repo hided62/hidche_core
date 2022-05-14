@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use Iterator;
+
 class Util extends \utilphp\util
 {
 
@@ -650,7 +652,7 @@ class Util extends \utilphp\util
     /**
      * 배열의 원소에 대해서 테스트를 수행하고 모두 true인지 확인
      */
-    public static function testArrayValues(array $array, ?callable $callback):bool{
+    public static function testArrayValues(iterable $array, ?callable $callback):bool{
         if($callback === null){
             foreach($array as $value){
                 if(!$value){
@@ -789,10 +791,9 @@ class Util extends \utilphp\util
      * @param int $from
      * @param null|int $to
      * @param null|int $step
-     * @return \Traversable
      * @throws \InvalidArgumentException
      */
-    public static function range(int $from, ?int $to=null, ?int $step=null):\Traversable{
+    public static function range(int $from, ?int $to=null, ?int $step=null):\Generator{
         if($to === null){
             $to = $from;
             $from = 0;
@@ -841,5 +842,11 @@ class Util extends \utilphp\util
         }
 
         return $result;
+    }
+
+    public static function generatorFromPairs(iterable $pairs = []): \Generator{
+        foreach($pairs as [$a, $b]){
+            yield $a => $b;
+        }
     }
 };
