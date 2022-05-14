@@ -59,9 +59,10 @@ function genJS($server)
 
     exec(($command), $output, $result_code);
     if ($result_code != 0) {
+        array_unshift($output, "genJS: ${server}");
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => join(", ", $output)
         ]);
     }
 }
@@ -90,9 +91,10 @@ function tryComposerInstall()
 
     exec($runCode, $output, $result_code);
     if ($result_code != 0) {
+        array_unshift($output, 'composer install');
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => join(", ", $output)
         ]);
     }
 
@@ -144,9 +146,10 @@ function tryNpmInstall()
     }
 
     if ($result_code != 0) {
+        array_unshift($output, 'node install');
         Json::die([
             'result' => false,
-            'reason' => $output
+            'reason' => join(", ", $output)
         ]);
     }
 
