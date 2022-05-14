@@ -659,3 +659,17 @@ CREATE TABLE `ng_betting` (
 	INDEX `by_user` (`user_id`, `betting_id`, `betting_type`),
 	CONSTRAINT `json` CHECK (json_valid(`betting_type`))
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
+
+##############################
+## 설문 조사
+##############################
+CREATE TABLE `vote` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`vote_id` INT(11) NOT NULL,
+	`general_id` INT(11) NOT NULL,
+	`selection` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `by_general` (`general_id`, `vote_id`),
+	UNIQUE INDEX `by_vote` (`vote_id`, `selection`, `general_id`),
+	CONSTRAINT `json` CHECK (json_valid(`selection`))
+) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
