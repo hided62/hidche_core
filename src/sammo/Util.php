@@ -791,6 +791,7 @@ class Util extends \utilphp\util
      * @param int $from
      * @param null|int $to
      * @param null|int $step
+     * @return \Generator|int[]
      * @throws \InvalidArgumentException
      */
     public static function range(int $from, ?int $to=null, ?int $step=null):\Generator{
