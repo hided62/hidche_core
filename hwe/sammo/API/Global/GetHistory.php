@@ -25,8 +25,8 @@ class GetHistory extends \sammo\BaseAPI
     $v = new Validator($this->args);
     $v->rule('required', ['year', 'month'])
       ->rule('lengthMin', 'serverID', 1)
-      ->rule('integer', 'year')
-      ->rule('integer', 'month');
+      ->rule('int', 'year')
+      ->rule('int', 'month');
     if (!$v->validate()) {
       return $v->errorStr();
     }

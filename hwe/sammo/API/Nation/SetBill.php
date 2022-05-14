@@ -19,7 +19,7 @@ class SetBill extends \sammo\BaseAPI
         $v->rule('required', [
             'amount',
         ])
-            ->rule('integer', 'amount')
+            ->rule('int', 'amount')
             ->rule('min', 'amount', 20)
             ->rule('max', 'amount', 200);
 

@@ -19,7 +19,7 @@ class SetRate extends \sammo\BaseAPI
         $v->rule('required', [
             'amount',
         ])
-            ->rule('integer', 'amount')
+            ->rule('int', 'amount')
             ->rule('min', 'amount', 5)
             ->rule('max', 'amount', 30);
 

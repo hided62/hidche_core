@@ -33,7 +33,7 @@ class BuySpecificUnique extends \sammo\BaseAPI
             'item',
             'amount',
         ])
-            ->rule('integer', 'amount')
+            ->rule('int', 'amount')
             ->rule('min', 'amount', GameConst::$inheritItemUniqueMinPoint)
             ->rule('keyExists', 'item', $availableItems);
 

@@ -20,7 +20,7 @@ class GetGeneralLog extends GetNationGeneralLog
             ->rule('required', [
                 'type',
             ])
-            ->rule('integer', [
+            ->rule('int', [
                 'reqTo',
             ])
             ->rule('in', 'type', [

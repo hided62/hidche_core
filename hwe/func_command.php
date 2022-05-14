@@ -266,7 +266,7 @@ function checkCommandArg(?array $arg):?string{
         /*'string'=>[
             'nationName', 'optionText', 'itemType', 'nationType', 'commandType',
         ],*/
-        'integer'=>[
+        'int'=>[
             'crewType', 'destGeneralID', 'destCityID', 'destNationID',
             'amount', 'colorType',
             'srcArmType', 'destArmType', //숙련전환 전용

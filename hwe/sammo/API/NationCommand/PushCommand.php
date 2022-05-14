@@ -17,7 +17,7 @@ class PushCommand extends \sammo\BaseAPI
         $v->rule('required', [
             'amount',
         ])
-            ->rule('integer', 'amount')
+            ->rule('int', 'amount')
             ->rule('min', 'amount', -12)
             ->rule('max', 'amount', 12);
 

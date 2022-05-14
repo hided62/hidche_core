@@ -30,7 +30,7 @@ class GetGeneralLog extends \sammo\BaseAPI
                 'generalID',
                 'type',
             ])
-            ->rule('integer', [
+            ->rule('int', [
                 'generalID',
                 'reqTo',
             ])

@@ -43,7 +43,7 @@ class Join extends \sammo\BaseAPI
                 'pic',
                 'character',
             ])
-            ->rule('integer', [
+            ->rule('int', [
                 'leadership',
                 'strength',
                 'intel',

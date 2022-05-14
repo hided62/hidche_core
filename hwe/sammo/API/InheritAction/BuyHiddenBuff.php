@@ -23,7 +23,7 @@ class BuyHiddenBuff extends \sammo\BaseAPI
             'type',
             'level',
         ])
-            ->rule('integer', 'level')
+            ->rule('int', 'level')
             ->rule('min', 'level', 1)
             ->rule('max', 'level', TriggerInheritBuff::MAX_STEP)
             ->rule('keyExists', 'type', TriggerInheritBuff::BUFF_KEY_TEXT);
