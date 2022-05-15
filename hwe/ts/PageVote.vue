@@ -1,6 +1,6 @@
 <template>
   <BContainer id="container" :toast="{ root: true }" class="pageVote bg0">
-    <TopBackBar :reloadable="true" title="" @reload="reloadVote" />
+    <TopBackBar type="close" :reloadable="true" title="" @reload="reloadVote" />
     <div id="vote-title" class="bg2">설문 조사({{ voteReward }}금과 추첨으로 유니크템 증정!)</div>
     <table v-if="currentVote" id="vote-result">
       <colgroup>
@@ -12,7 +12,17 @@
       <thead>
         <tr>
           <th colspan="3" class="text-end bg1">설문 제목</th>
-          <th id="vote-detail-title">{{ currentVote.voteInfo.title }}</th>
+          <th id="vote-detail-title">
+            {{ currentVote.voteInfo.title }}
+            <template v-if="currentVote.voteInfo.multipleOptions !== 1"
+              >(
+              {{
+                currentVote.voteInfo.multipleOptions == 0
+                  ? currentVote.voteInfo.options.length
+                  : currentVote.voteInfo.multipleOptions
+              }}개 선택 가능 )</template
+            >
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -122,7 +132,9 @@
     <div id="vote-old-list">
       <div v-for="[voteID, voteInfo] of voteList" :key="voteID" class="vote-old-item">
         <div class="row">
-          <div class="col"><a href="#" @click.prevent="currentVoteID = voteID">{{ voteInfo.title }}</a> ({{ voteInfo.startDate }})</div>
+          <div class="col">
+            <a href="#" @click.prevent="currentVoteID = voteID">{{ voteInfo.title }}</a> ({{ voteInfo.startDate }})
+          </div>
         </div>
       </div>
     </div>
@@ -243,6 +255,23 @@ watch(currentVoteID, async (voteID) => {
 
 const mySinglePick = ref(0);
 const myMultiPick = ref<number[]>([]);
+watch(myMultiPick, (newPick, oldPick) => {
+  if (currentVote.value === undefined) {
+    return;
+  }
+  const multipleOptions = currentVote.value.voteInfo.multipleOptions;
+  if (multipleOptions == 0) {
+    return;
+  }
+  if (newPick.length <= multipleOptions) {
+    return;
+  }
+  toasts.warning({
+    title: "오류",
+    body: `${multipleOptions}개까지만 선택할 수 있습니다.`,
+  });
+  myMultiPick.value = oldPick;
+});
 
 async function submitVote() {
   if (currentVote.value === undefined) {
