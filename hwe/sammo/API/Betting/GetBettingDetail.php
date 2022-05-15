@@ -18,11 +18,12 @@ class GetBettingDetail extends \sammo\BaseAPI
         $v->rule('required', [
             'betting_id',
         ])
-            ->rule('int', 'betting_id');
+            ->rule('integer', 'betting_id');
 
         if (!$v->validate()) {
             return $v->errorStr();
         }
+        $this->args['betting_id'] = (int)$this->args['betting_id'];
         return null;
     }
 
