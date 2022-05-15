@@ -15,7 +15,7 @@
           <MapViewer
             :server-nick="serverNick"
             :serverID="queryServerID"
-            :map-name="unwrap(gameConstStore?.gameConst.mapName)"
+            :map-name="mapName"
             :map-data="history.map"
             :is-detail-map="true"
             :city-position="cityPosition"
@@ -31,7 +31,7 @@
         <div class="content">
           <template v-for="(item, idx) in history.global_history" :key="idx">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-html="formatLog(item)"/>
+            <div v-html="formatLog(item)" />
           </template>
         </div>
       </div>
@@ -40,7 +40,7 @@
         <div class="content">
           <template v-for="(item, idx) in history.global_action" :key="idx">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-html="formatLog(item)"/>
+            <div v-html="formatLog(item)" />
           </template>
         </div>
       </div>
@@ -56,6 +56,7 @@ declare const staticValues: {
   currentYearMonth: number;
   serverNick: string;
   serverID: string;
+  mapName: string;
 };
 declare const query: {
   yearMonth: number | null;
@@ -76,7 +77,7 @@ import { joinYearMonth } from "./util/joinYearMonth";
 import { parseYearMonth } from "./util/parseYearMonth";
 import { formatLog } from "./utilGame/formatLog";
 import SimpleNationList from "./components/SimpleNationList.vue";
-import MapViewer, { type CityPositionMap, type MapCityParsedRaw, type MapCityParsed} from "./components/MapViewer.vue";
+import MapViewer, { type CityPositionMap, type MapCityParsedRaw, type MapCityParsed } from "./components/MapViewer.vue";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import { unwrap } from "@/util/unwrap";
 
@@ -99,6 +100,7 @@ void Promise.all([storeP]).then(() => {
   asyncReady.value = true;
 });
 
+const mapName = staticValues.mapName;
 const cityPosition = getCityPosition();
 const formatCityInfoText = formatCityInfo;
 const imagePath = window.pathConfig.gameImage;
@@ -122,8 +124,11 @@ function generateYearMonthList(): { text: string; value: number }[] {
   if (queryYearMonth.value === yearMonth) {
     info.push("선택");
   }
-  info.push("현재");
-  result.push({ text: `${year}년 ${month}월 ${info.length > 0 ? `(${info.join(", ")})` : ""}`, value: yearMonth });
+
+  if (staticValues.serverID === query.serverID) {
+    info.push("현재");
+    result.push({ text: `${year}년 ${month}월 ${info.length > 0 ? `(${info.join(", ")})` : ""}`, value: yearMonth });
+  }
   return result;
 }
 
@@ -136,12 +141,21 @@ watch(queryYearMonth, async (yearMonth) => {
     queryYearMonth.value = firstYearMonth.value;
     return;
   }
-  if (yearMonth > lastYearMonth.value + 1) {
-    queryYearMonth.value = lastYearMonth.value + 1;
-    return;
+
+  if (staticValues.serverID === query.serverID) {
+    if (yearMonth > lastYearMonth.value + 1) {
+      queryYearMonth.value = lastYearMonth.value + 1;
+      return;
+    }
+  }
+  else{
+    if (yearMonth > lastYearMonth.value) {
+      queryYearMonth.value = lastYearMonth.value;
+      return;
+    }
   }
 
-  if (yearMonth > lastYearMonth.value) {
+  if (yearMonth > lastYearMonth.value && staticValues.serverID === query.serverID) {
     try {
       const result = await SammoAPI.Global.GetCurrentHistory();
       history.value = result.data;

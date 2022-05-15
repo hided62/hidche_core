@@ -23,7 +23,14 @@ if ($serverID !== UniqueConst::$serverID) {
 
 [$f_year, $f_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
 [$l_year, $l_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
-[$currentYear, $currentMonth] = $gameStor->getValuesAsArray(['year', 'month']);
+
+if($serverID === UniqueConst::$serverID){
+  [$currentYear, $currentMonth] = $gameStor->getValuesAsArray(['year', 'month']);
+}
+else{
+  [$currentYear, $currentMonth] = [$l_year, $l_month];
+}
+
 
 $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $userID);
 
@@ -46,6 +53,7 @@ $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $
       'currentYearMonth' => Util::joinYearMonth($currentYear, $currentMonth),
       'serverNick' => DB::prefix(),
       'serverID' => UniqueConst::$serverID,
+      'mapName' => $mapName,
     ],
     'query' => [
       'serverID' => $serverID,
