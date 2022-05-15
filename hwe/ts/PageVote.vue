@@ -122,7 +122,7 @@
     <div id="vote-old-list">
       <div v-for="[voteID, voteInfo] of voteList" :key="voteID" class="vote-old-item">
         <div class="row">
-          <a href="#" @click.prevent="currentVoteID = voteID">{{ voteInfo.title }}</a>
+          <div class="col"><a href="#" @click.prevent="currentVoteID = voteID">{{ voteInfo.title }}</a> ({{ voteInfo.startDate }})</div>
         </div>
       </div>
     </div>

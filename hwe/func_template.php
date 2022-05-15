@@ -129,7 +129,7 @@ function allButton(bool $seizeNPCMode, array $opts = [])
         $site = "a_npcList.php";
         $call = "빙의일람";
     } else {
-        $site = "a_vote.php";
+        $site = "v_vote.php";
         $call = "설문조사";
     }
 
