@@ -413,7 +413,7 @@ export default defineComponent({
   },
   methods: {
     async buyInheritBuff(buffKey: inheritBuffType) {
-      const level = this.inheritBuff[buffKey];
+      const level = Math.floor(this.inheritBuff[buffKey]);
       const prevLevel = this.prevInheritBuff[buffKey] ?? 0;
       if (level == prevLevel) {
         return;
