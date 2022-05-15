@@ -682,6 +682,7 @@ CREATE TABLE `vote_comment` (
 	`general_name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
 	`nation_name` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_bin',
 	`text` TEXT NOT NULL,
+	`date` DATETIME NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `by_vote` (`vote_id`)
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;

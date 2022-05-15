@@ -7,6 +7,7 @@ use sammo\DB;
 use sammo\DTO\VoteInfo;
 use sammo\KVStorage;
 use sammo\Session;
+use sammo\TimeUtil;
 use sammo\Util;
 use sammo\Validator;
 
@@ -47,7 +48,7 @@ class NewVote extends \sammo\BaseAPI
             return;
         }
 
-        $lastVoteInfo->endDate = new \DateTimeImmutable();;
+        $lastVoteInfo->endDate = TimeUtil::now();
         $voteStor->setValue("vote_{$voteID}", $lastVoteInfo->toArray());
     }
 
@@ -68,11 +69,28 @@ class NewVote extends \sammo\BaseAPI
             $multipleOptions = 0;
         }
 
-
-        $now = new \DateTimeImmutable();
+        $now = TimeUtil::now();
+        /** @var ?string */
         $endDate = $this->args['endDate'] ?? null;
         /** @var string[] */
         $options = $this->args['options'] ?? [];
+
+        if(!$options){
+            return '항목이 없습니다.';
+        }
+
+        if($endDate !== null){
+            try{
+                $oNow = new \DateTimeImmutable($now);
+                $oEndDate = new \DateTimeImmutable($endDate);
+                if($oEndDate < $oNow){
+                    return '종료일이 이미 지났습니다.';
+                }
+            }
+            catch(\Throwable $e){
+                return '종료일이 잘못되었습니다.'.$e->getMessage();
+            }
+        }
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -99,6 +117,8 @@ class NewVote extends \sammo\BaseAPI
         );
 
         $voteStor->setValue("vote_{$voteID}", $voteInfo->toArray());
+        $gameStor->setValue('lastVote', $voteID);
+
         $db->update('general', [
             'newvote' => 1
         ], true);

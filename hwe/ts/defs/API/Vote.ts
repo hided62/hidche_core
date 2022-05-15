@@ -5,7 +5,7 @@ export type VoteInfo = {
   title: string;
   multipleOptions: number;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   options: string[];
 }
 
@@ -16,6 +16,7 @@ export type VoteComment = {
   nationName: string;
   generalName: string;
   text: string;
+  date: string;
 }
 
 export type VoteListResult = ValidResponse & {
@@ -26,4 +27,6 @@ export type VoteDetailResult = ValidResponse & {
   voteInfo: VoteInfo,
   votes: [number[], number][],
   comments: VoteComment[],
+  myVote: null|number[],
+  userCnt: number,
 }

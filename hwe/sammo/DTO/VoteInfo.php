@@ -9,16 +9,15 @@ use Spatie\DataTransferObject\Casters\ArrayCaster;
 
 //https://json2dto.atymic.dev/
 
-
-
 #[Strict]
 class VoteInfo extends DataTransferObject
 {
 	public int $id;
   public string $title;
   public int $multipleOptions;
-  public \DateTimeImmutable $startDate;
-  public ?\DateTimeImmutable $endDate;
+
+  public string $startDate;
+  public ?string $endDate;
 
   /** @var string[] */
   public array $options;

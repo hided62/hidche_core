@@ -33,4 +33,6 @@ class VoteComment extends DataTransferObject
   public string $generalName;
 
   public string $text;
+
+  public string $date;
 }

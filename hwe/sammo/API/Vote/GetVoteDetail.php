@@ -44,17 +44,31 @@ class GetVoteDetail extends \sammo\BaseAPI
 
 
     $votes = array_map(fn ($arr) => [Json::decode($arr[0]), $arr[1]], $db->queryAllLists(
-      'SELECT selection, count(*) AS cnt FROM vote_result WHERE voteID = %i GROUP BY selection',
+      'SELECT selection, count(*) AS cnt FROM vote WHERE vote_id = %i GROUP BY selection',
       $voteID
     ));
 
-    $comments = VoteComment::arrayOf($db->query('SELECT * FROM vote_comment WHERE voteID = %i ORDER BY `id` ASC', $voteID));
+    $comments = VoteComment::arrayOf($db->query('SELECT * FROM vote_comment WHERE vote_id = %i ORDER BY `id` ASC', $voteID));
+
+    $myVote = null;
+    if($session->isGameLoggedIn()){
+      $generalID = $session->generalID;
+      $rawMyVote = $db->queryFirstField('SELECT selection FROM vote WHERE vote_id = %i AND general_id = %i', $voteID, $generalID);
+      if($rawMyVote){
+        $myVote = Json::decode($rawMyVote);
+      }
+    }
+
+    $userCnt = $db->queryFirstField('SELECT count(*) FROM general WHERE npc < 2');
+
 
     return [
       'result' => true,
       'voteInfo' => $voteInfo,
       'votes' => $votes,
-      'comments' => $comments
+      'comments' => $comments,
+      'myVote' => $myVote,
+      'userCnt' => $userCnt,
     ];
   }
 }

@@ -7,6 +7,7 @@ use sammo\DB;
 use sammo\DTO\VoteComment;
 use sammo\General;
 use sammo\Session;
+use sammo\TimeUtil;
 use sammo\Validator;
 
 class AddComment extends \sammo\BaseAPI
@@ -23,7 +24,7 @@ class AddComment extends \sammo\BaseAPI
       'voteID',
       'text',
     ])->rule('lengthMin', 'text', 1)
-      ->rule('int', 'multipleOptions');
+      ->rule('int', 'voteID');
 
     if (!$v->validate()) {
       return $v->errorStr();
@@ -34,21 +35,24 @@ class AddComment extends \sammo\BaseAPI
   function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
   {
     $voteID = $this->args['voteID'];
-    $text = $this->args['text'];
+    $text = mb_substr($this->args['text'], 0, 200);
 
     $generalID = $session->generalID;
     $general = General::createGeneralObjFromDB($generalID, [], 0);
     $generalName = $general->getName();
     $nationID = $general->getNationID();
     $nationName = $general->getStaticNation()['name'];
+    $date = TimeUtil::now();
+
 
     $comment = new VoteComment(
-      voteID: $voteID,
-      generalID: $generalID,
-      nationID: $nationID,
-      nationName: $nationName,
-      generalName: $generalName,
+      vote_id: $voteID,
+      general_id: $generalID,
+      nation_id: $nationID,
+      nation_name: $nationName,
+      general_name: $generalName,
       text: $text,
+      date: $date
     );
 
     $db = DB::db();

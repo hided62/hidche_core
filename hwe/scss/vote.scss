@@ -1,0 +1,23 @@
+@import '@scss/common/bootstrap5.scss';
+@import "@scss/game_bg.scss";
+@import "@scss/util.scss";
+
+@include media-1000px{
+  #container {
+      width: 1000px;
+      margin: 0 auto;
+      font-size: 14px;
+  }
+}
+@include media-500px{
+  body {
+      overflow-x: hidden;
+  }
+
+  #container {
+      width: 500px;
+      margin: 0 auto;
+      margin-bottom: 100px;
+      font-size: 14px;
+  }
+}
