@@ -143,7 +143,7 @@
           <div class="col-md-3">동시 응답 수(0=모두)</div>
           <div class="col-md-9">
             <BFormInput
-              v-model="newVoteInfo.multipleOptions"
+              v-model.number="newVoteInfo.multipleOptions"
               type="number"
               :min="0"
               :max="newVoteInfo.options.length"
