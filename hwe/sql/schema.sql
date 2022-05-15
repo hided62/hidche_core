@@ -73,7 +73,6 @@ CREATE TABLE `general` (
 	`tnmt` INT(1) NULL DEFAULT '1',
 	`myset` INT(1) NULL DEFAULT '6',
 	`tournament` INT(1) NULL DEFAULT '0',
-	`vote` INT(1) NULL DEFAULT '0',
 	`newvote` INT(1) NULL DEFAULT '0',
 	`last_turn` TEXT NOT NULL DEFAULT '{}' COLLATE 'utf8mb4_bin',
 	`aux` LONGTEXT NOT NULL DEFAULT '{}' COLLATE 'utf8mb4_bin',
