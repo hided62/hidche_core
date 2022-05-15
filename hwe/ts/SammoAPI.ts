@@ -14,6 +14,7 @@ import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type { GetConstResponse, GetCurrentHistoryResponse, GetDiplomacyResponse, GetHistoryResponse } from "./defs/API/Global";
 import type { CachedMapResult, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
+import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
 
 const apiRealPath = {
     Betting: {
@@ -144,6 +145,27 @@ const apiRealPath = {
             reqTo?: number
         }, GetGeneralLogResponse>
     },
+    Vote: {
+        AddComment: POST as APICallT<{
+            voteID: number,
+            text: string,
+        }>,
+        GetVoteList: GET as APICallT<undefined, VoteListResult>,
+        GetVoteDetail: GET as APICallT<{
+            voteID: number
+        }, VoteDetailResult>,
+        NewVote: POST as APICallT<{
+            title: string,
+            multipleOptions?: number,
+            endDate?: string,
+            options: string[],
+            keepOldVote?: boolean,
+        }>,
+        Vote: POST as APICallT<{
+            voteID: number,
+            selection: number[],
+        }, ValidResponse & {wonLottery: boolean}>,
+    }
 } as const;
 
 export const SammoAPI = APIPathGen(apiRealPath, (path: string[], tail: APITail, pathParam) => {

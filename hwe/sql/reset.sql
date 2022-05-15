@@ -66,3 +66,4 @@ ENGINE=Aria;
 DROP TABLE IF EXISTS ng_betting;
 
 DROP TABLE IF EXISTS vote;
+DROP TABLE IF EXISTS vote_comment;

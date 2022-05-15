@@ -667,9 +667,21 @@ CREATE TABLE `vote` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`vote_id` INT(11) NOT NULL,
 	`general_id` INT(11) NOT NULL,
+	`nation_id` INT(11) NOT NULL,
 	`selection` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_bin',
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `by_general` (`general_id`, `vote_id`),
-	UNIQUE INDEX `by_vote` (`vote_id`, `selection`, `general_id`),
+	INDEX `by_vote` (`vote_id`, `selection`),
 	CONSTRAINT `json` CHECK (json_valid(`selection`))
+) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
+CREATE TABLE `vote_comment` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`vote_id` INT(11) NOT NULL,
+	`general_id` INT(11) NOT NULL,
+	`nation_id` INT(11) NOT NULL,
+	`general_name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
+	`nation_name` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_bin',
+	`text` TEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `by_vote` (`vote_id`)
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
