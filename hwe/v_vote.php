@@ -9,6 +9,9 @@ $session = Session::requireLogin()->loginGame()->setReadOnly();
 $userID = Session::getUserID();
 $isVoteAdmin = in_array('vote', $session->acl[DB::prefix()] ?? []);
 $isVoteAdmin = $isVoteAdmin || $session->userGrade >= 5;
+$db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
+$develcost = $gameStor->getValue('develcost');
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,6 +26,7 @@ $isVoteAdmin = $isVoteAdmin || $session->userGrade >= 5;
     'serverID' => UniqueConst::$serverID,
     'isGameLoggedIn' => $session->isGameLoggedIn(),
     'isVoteAdmin' => $isVoteAdmin,
+    'voteReward' => $develcost * 5,
   ]]) ?>
   <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
   <?= WebUtil::printDist('vue', ['v_vote'], true) ?>

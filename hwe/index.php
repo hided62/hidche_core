@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\DTO\VoteInfo;
+
 include "lib.php";
 include "func.php";
 
@@ -109,6 +111,16 @@ if (!$otherTextInfo) {
 } else {
     $otherTextInfo = join(', ', $otherTextInfo);
 }
+
+$lastVoteID = $gameStor->lastVote;
+$lastVote = null;
+if($lastVoteID){
+    $voteStor = KVStorage::getStorage($db, 'vote');
+    $lastVote = new VoteInfo($voteStor->getValue("vote_{$voteID}"));
+    if($lastVote->endDate && $lastVote->endDate < TimeUtil::now()){
+        $lastVote = null;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -207,13 +219,11 @@ if (!$otherTextInfo) {
                 </div>
                 <div class="s-border-t py-2 col col-6 col-md-4 vote-cell">
                     <?php
-                    $vote = $gameStor->vote ?: [''];
-                    $vote_title = Tag2Code($gameStor->vote_title ?? '-');
                     ?>
-                    <?php if ($vote[0] == "") : ?>
+                    <?php if ($lastVote === null) : ?>
                         <span style='color:magenta'>진행중 설문 없음</span>
                     <?php else : ?>
-                        <span style='color:cyan'>설문 진행중</span> : <span><?= $vote_title ?></span>
+                        <span style='color:cyan'>설문 진행중</span> : <span><?= $lastVote->title ?></span>
                     <?php endif; ?>
                 </div>
             </div>

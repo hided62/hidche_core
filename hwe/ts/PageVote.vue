@@ -1,7 +1,7 @@
 <template>
   <BContainer id="container" :toast="{ root: true }" class="pageVote bg0">
     <TopBackBar :reloadable="true" title="" @reload="reloadVote" />
-    <div id="vote-title" class="bg2">설문 조사({{ voteReward }}금과 추첨으로 유니크템 증정!</div>
+    <div id="vote-title" class="bg2">설문 조사({{ voteReward }}금과 추첨으로 유니크템 증정!)</div>
     <table v-if="currentVote" id="vote-result">
       <colgroup>
         <col class="vote-idx" />
@@ -167,6 +167,7 @@ declare const staticValues: {
   serverID: string;
   isGameLoggedIn: boolean;
   isVoteAdmin: boolean;
+  voteReward: number;
 };
 </script>
 <script lang="ts" setup>
@@ -182,10 +183,9 @@ import { formatTime } from "@/util/formatTime";
 import { isBrightColor } from "@/util/isBrightColor";
 import { formatVoteColor } from "@/utilGame/formatVoteColor";
 
-const { isVoteAdmin, isGameLoggedIn } = staticValues;
+const { isVoteAdmin, isGameLoggedIn, voteReward } = staticValues;
 const voteList = ref(new Map<number, VoteInfo>());
 
-const voteReward = 10;
 const toasts = unwrap(useToast());
 
 const showNewVote = ref(false);
@@ -409,7 +409,7 @@ async function submitNewVote() {
 @import "@scss/common/break_500px.scss";
 
 #vote-title {
-  font-size: 2em;
+  font-size: 1.8em;
   text-align: center;
 }
 
