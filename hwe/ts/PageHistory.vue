@@ -5,7 +5,9 @@
       <!-- HACK: variant에 정상적인 값을 넣어야 해서...-->
       <BDropdown class="optionMenu" right :variant="('sammo-base2' as 'primary')">
         <template #button-content><i class="bi bi-gear-fill"></i>&nbsp;설정</template>
-        <BDropdownItem @click="isNationRankingBottom=!isNationRankingBottom">국가 순서 위치 변경(모바일 전용)</BDropdownItem>
+        <BDropdownItem @click="isNationRankingBottom = !isNationRankingBottom"
+          >국가 순서 위치 변경(모바일 전용)</BDropdownItem
+        >
       </BDropdown>
     </TopBackBar>
     <div class="center row mx-0 s-border-tb">
@@ -207,13 +209,16 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@import "@scss/common/break_500px.scss";
 
-.optionMenu::v-deep .dropdown-toggle {
-  height: 32px;
-}
-.isNationRankingBottom{
-  .nation_position{
-    order: 4;
+@include media-500px {
+  .optionMenu::v-deep .dropdown-toggle {
+    height: 32px;
+  }
+  .isNationRankingBottom {
+    .nation_position {
+      order: 4;
+    }
   }
 }
 </style>
