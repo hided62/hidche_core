@@ -850,4 +850,25 @@ class Util extends \utilphp\util
             yield $a => $b;
         }
     }
+
+    public static function simpleSerialize(string|int|float ...$values): string{
+        $result = [];
+        foreach($values as $value){
+            if(is_string($value)){
+                $length = mb_strlen($value);
+                $result[] = "str({$length},{$value})";
+                continue;
+            }
+            if(is_int($value)){
+                $result[] = "int({$value})";
+                continue;
+            }
+            if(is_float($value)){
+                $value = number_format($value, 6, '.', '');
+                $result[] = "float({$value})";
+                continue;
+            }
+        }
+        return join('|', $result);
+    }
 };
