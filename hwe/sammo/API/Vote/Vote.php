@@ -100,7 +100,7 @@ class Vote extends \sammo\BaseAPI
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $voteReward = $gameStor->getValue('develcost') * 5;
 
-        $general = General::createGeneralObjFromDB($generalID, ['gold', 'vote', 'horse', 'weapon', 'book', 'item', 'npc', 'imgsvr', 'picture', 'aux'], 2);
+        $general = General::createGeneralObjFromDB($generalID, ['gold', 'horse', 'weapon', 'book', 'item', 'npc', 'imgsvr', 'picture', 'aux'], 2);
         $general->increaseVar('gold', $voteReward);
         $wonLottery = tryUniqueItemLottery($general, '설문조사');
 
