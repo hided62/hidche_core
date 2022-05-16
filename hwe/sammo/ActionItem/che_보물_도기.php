@@ -13,7 +13,7 @@ class che_보물_도기 extends \sammo\BaseItem
 
     protected $rawName = '도기';
     protected $name = '도기(보물)';
-    protected $info = '[개인] 판매 시 장수 소지금과 국고에 금, 쌀 중 하나를 추가 (총 +10,000, 5년마다 +10,000)';
+    protected $info = '[개인] 판매 시 장수 소지금과 국고에 금, 쌀 중 하나를 추가 (총 +10,000, 2년마다 +5,000)';
     protected $cost = 200;
     protected $consumable = false;
 
@@ -37,7 +37,7 @@ class che_보물_도기 extends \sammo\BaseItem
         [$year, $startYear] = $gameStor->getValuesAsArray(['year', 'startyear']);
         $relYear = $year - $startYear;
 
-        $score = 10000 * (1 + Util::valueFit(intdiv($relYear, 5), 0));
+        $score = 10000 + 5000 * Util::valueFit(intdiv($relYear, 2), 0);
 
         [$resName, $resKey] = Util::choiceRandom([
             ['금', 'gold'],
