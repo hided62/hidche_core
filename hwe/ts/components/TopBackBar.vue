@@ -7,7 +7,10 @@
     <h2 class="title">
       {{ title }}
     </h2>
-    <div v-if="teleportZone" :id="teleportZone" class="teleport-zone"></div>
+    <template v-if="hasSlot">
+      <slot></slot>
+    </template>
+    <div v-else-if="teleportZone" :id="teleportZone" class="teleport-zone"></div>
     <template v-else>
       <div>&nbsp;</div>
       <b-button
@@ -25,7 +28,7 @@
 
 <script lang="ts" setup>
 import "@scss/game_bg.scss";
-import { type PropType, ref, watch } from "vue";
+import { type PropType, ref, watch, useSlots } from "vue";
 import VueTypes from "vue-types";
 
 const props = defineProps({
@@ -51,6 +54,10 @@ const props = defineProps({
     required: false,
   },
 });
+
+const slots = useSlots();
+console.log(slots);
+const hasSlot = !!slots['default'];
 
 const emit = defineEmits(["update:searchable", "reload"]);
 
