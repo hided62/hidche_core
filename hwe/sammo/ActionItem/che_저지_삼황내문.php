@@ -22,7 +22,7 @@ class che_저지_삼황내문 extends \sammo\BaseItem{
         if($unit->getPhase() >= 2){
             return null;
         }
-        if($unit->getPhase() == 1 && Util::randBool(0.5)){
+        if($unit->getPhase() == 1 && $unit->rng->nextBool(0.5)){
             return null;
         }
 

@@ -8,6 +8,7 @@ use \sammo\GameUnitConst;
 use \sammo\CityConst;
 use sammo\Enums\RankColumn;
 use \sammo\GameConst;
+use sammo\RandUtil;
 use \sammo\SpecialityHelper;
 use sammo\TimeUtil;
 class GeneralBuilder{
@@ -67,6 +68,7 @@ class GeneralBuilder{
     protected $aux = [];
 
     public function __construct(
+        public readonly RandUtil $rng,
         string $name,
         bool $isDynamicImageSvr,
         $picturePath,
@@ -109,17 +111,17 @@ class GeneralBuilder{
             'intel'=>$this->intel
         ];
         if($option === '랜덤전특'){
-            $this->specialWar = SpecialityHelper::pickSpecialWar($general);
+            $this->specialWar = SpecialityHelper::pickSpecialWar($this->rng, $general);
         }
         else if($option === '랜덤내특'){
-            $this->specialDomestic = SpecialityHelper::pickSpecialDomestic($general);
+            $this->specialDomestic = SpecialityHelper::pickSpecialDomestic($this->rng, $general);
         }
         else if($option === '랜덤'){
-            if(Util::randBool(2/3)){
-                $this->specialWar = SpecialityHelper::pickSpecialWar($general);
+            if($this->rng->nextBool(2/3)){
+                $this->specialWar = SpecialityHelper::pickSpecialWar($this->rng, $general);
             }
             else{
-                $this->specialDomestic = SpecialityHelper::pickSpecialDomestic($general);
+                $this->specialDomestic = SpecialityHelper::pickSpecialDomestic($this->rng, $general);
             }
         }
         return $this;
@@ -165,7 +167,7 @@ class GeneralBuilder{
 
     public function setAffinity(int $affinity):self{
         if($affinity < 1){
-            $this->affinity = Util::randRangeInt(1, 150);
+            $this->affinity = $this->rng->nextRangeInt(1, 150);
         }
         else if($affinity >= 900){
             $this->affinity = 999;
@@ -302,11 +304,11 @@ class GeneralBuilder{
     }
 
     public function fillRandomStat(array $pickTypeList, &$pickedType=null):self{
-        $pickType = Util::choiceRandomUsingWeight($pickTypeList);
+        $pickType = $this->rng->choiceUsingWeight($pickTypeList);
         $totalStat = GameConst::$defaultStatNPCTotal;
         $minStat = GameConst::$defaultStatNPCMin;
-        $mainStat = GameConst::$defaultStatNPCMax - Util::randRangeInt(0, GameConst::$defaultStatNPCMin);
-        $otherStat = $minStat + Util::randRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
+        $mainStat = GameConst::$defaultStatNPCMax - $this->rng->nextRangeInt(0, GameConst::$defaultStatNPCMin);
+        $otherStat = $minStat + $this->rng->nextRangeInt(0, Util::toInt(GameConst::$defaultStatNPCMin/2));
         $subStat = $totalStat - $mainStat - $otherStat;
         if ($subStat < $minStat) {
             $subStat = $otherStat;
@@ -341,7 +343,7 @@ class GeneralBuilder{
         }
 
         if($this->affinity === null || $this->affinity === 0){
-            $this->affinity = Util::randRangeInt(1, 150);
+            $this->affinity = $this->rng->nextRangeInt(1, 150);
         }
 
         if($this->birth === null){
@@ -371,7 +373,7 @@ class GeneralBuilder{
         }
 
         if($this->ego === null){
-            $this->ego = Util::choiceRandom(GameConst::$availablePersonality);
+            $this->ego = $this->rng->choice(GameConst::$availablePersonality);
         }
 
         if($this->specialDomestic === null){
@@ -401,12 +403,12 @@ class GeneralBuilder{
         }
 
         if($this->affinity === null || $this->affinity === 0 || $isFictionMode){
-            $this->affinity = Util::randRangeInt(1, 150);
+            $this->affinity = $this->rng->nextRangeInt(1, 150);
         }
 
         if($this->birth === null){
-            $this->birth = $env['year']+Util::randRange(-5, 5);
-            $this->death = $this->birth+Util::randRangeInt(60, 80);
+            $this->birth = $env['year']+$this->rng->nextRange(-5, 5);
+            $this->death = $this->birth+$this->rng->nextRangeInt(60, 80);
         }
 
 
@@ -443,7 +445,7 @@ class GeneralBuilder{
                     $pickType = '무';
                     break;
                 }
-                $pickType = Util::choiceRandomUsingWeight([
+                $pickType = $this->rng->choiceUsingWeight([
                     '무'=>$strength,
                     '지'=>$intel
                 ]);
@@ -463,7 +465,7 @@ class GeneralBuilder{
         if(!$this->dex1 && key_exists('dex_t', $avgGen)){
             $dexTotal = $avgGen['dex_t'];
             if ($pickType == '무') {
-                $dexVal = Util::choiceRandom([
+                $dexVal = $this->rng->choice([
                     [$dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8, $dexTotal / 8],
                     [$dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8, $dexTotal / 8],
                     [$dexTotal / 8, $dexTotal / 8, $dexTotal * 5 / 8, $dexTotal / 8],
@@ -477,7 +479,7 @@ class GeneralBuilder{
         }
 
         if($this->ego === null || $isFictionMode){
-            $this->ego = Util::choiceRandom(GameConst::$availablePersonality);
+            $this->ego = $this->rng->choice(GameConst::$availablePersonality);
         }
 
         if($this->experience === null){
@@ -628,10 +630,10 @@ class GeneralBuilder{
 
         if($this->cityID === null){
             if($nationID == 0 || !CityHelper::getAllNationCities($nationID)){
-                $cityObj = Util::choiceRandom(CityHelper::getAllCities());
+                $cityObj = $this->rng->choice(CityHelper::getAllCities());
             }
             else{
-                $cityObj = Util::choiceRandom(CityHelper::getAllNationCities($nationID));
+                $cityObj = $this->rng->choice(CityHelper::getAllNationCities($nationID));
             }
             '@phan-var array<string,string|int> $cityObj';
             $this->cityID = $cityObj['id'];
@@ -644,7 +646,7 @@ class GeneralBuilder{
             $officerLevel = $nationID?1:0;
         }
 
-        $turntime = \sammo\getRandTurn($env['turnterm'], new \DateTimeImmutable($env['turntime']));
+        $turntime = \sammo\getRandTurn($this->rng, $env['turnterm'], new \DateTimeImmutable($env['turntime']));
 
         if($this->killturn){
             $killturn = $this->killturn;

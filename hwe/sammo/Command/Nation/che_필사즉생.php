@@ -33,7 +33,7 @@ class che_필사즉생 extends Command\NationCommand{
 
         $this->setCity();
         $this->setNation(['strategic_cmd_limit']);
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
@@ -43,7 +43,7 @@ class che_필사즉생 extends Command\NationCommand{
             ConstraintHelper::AvailableStrategicCommand()
         ];
     }
-    
+
     public function getCommandDetailTitle():string{
         $name = $this->getName();
         $reqTurn = $this->getPreReqTurn()+1;
@@ -51,24 +51,24 @@ class che_필사즉생 extends Command\NationCommand{
 
         return "{$name}/{$reqTurn}턴(재사용 대기 $postReqTurn)";
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 2;
     }
 
     public function getPostReqTurn():int{
         $genCount = Util::valueFit($this->nation['gennum'], GameConst::$initialNationGenLimit);
-        $nextTerm = Util::round(sqrt($genCount*8)*10);    
+        $nextTerm = Util::round(sqrt($genCount*8)*10);
 
         $nextTerm = $this->generalObj->onCalcStrategic($this->getName(), 'delay', $nextTerm);
         return $nextTerm;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -79,7 +79,7 @@ class che_필사즉생 extends Command\NationCommand{
         $generalID = $general->getID();
         $generalName = $general->getName();
         $date = $general->getTurnTime($general::TURNTIME_HM);
-        
+
         $nationID = $general->getNationID();
         $nationName = $this->nation['name'];
 
@@ -101,8 +101,8 @@ class che_필사즉생 extends Command\NationCommand{
             }
             if($targetGeneral->getVar('atmos') < 100){
                 $targetGeneral->setVar('atmos', 100);
-            } 
-            
+            }
+
             $targetGeneral->applyDB($db);
         }
 

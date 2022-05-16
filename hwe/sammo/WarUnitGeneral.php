@@ -10,8 +10,9 @@ class WarUnitGeneral extends WarUnit
     protected $killedPerson = 0;
     protected $deadPerson = 0;
 
-    function __construct(General $general, array $rawNation, bool $isAttacker)
+    function __construct(RandUtil $rng, General $general, array $rawNation, bool $isAttacker)
     {
+        $this->rng = $rng;
         $this->general = $general;
         $this->raw = $general->getRaw();
         $this->rawNation = $rawNation; //read-only
@@ -302,13 +303,13 @@ class WarUnitGeneral extends WarUnit
         if ($this->hasActivatedSkillOnLog('퇴각부상무효')) {
             return false;
         }
-        if (!Util::randBool(0.05)) {
+        if (!$this->rng->nextBool(0.05)) {
             return false;
         }
 
         $this->activateSkill('부상');
 
-        $general->increaseVarWithLimit('injury', Util::randRangeInt(10, 80), null, 80);
+        $general->increaseVarWithLimit('injury', $this->rng->nextRangeInt(10, 80), null, 80);
         $this->getLogger()->pushGeneralActionLog("전투중 <R>부상</>당했다!", ActionLogger::PLAIN);
 
         return true;

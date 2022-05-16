@@ -43,7 +43,7 @@ class che_저격발동 extends BaseWarUnitTrigger
         $general->increaseVarWithLimit('atmos', $selfEnv['addAtmos'], 0, GameConst::$maxAtmosByWar);
 
         if (!$oppose->hasActivatedSkill('부상무효') && $oppose instanceof WarUnitGeneral) {
-            $oppose->getGeneral()->increaseVarWithLimit('injury', Util::randRangeInt($selfEnv['woundMin'], $selfEnv['woundMax']), null, 80);
+            $oppose->getGeneral()->increaseVarWithLimit('injury', $self->rng->nextRangeInt($selfEnv['woundMin'], $selfEnv['woundMax']), null, 80);
         }
 
         $this->processConsumableItem();

@@ -6,6 +6,8 @@ use sammo\Scenario\GeneralBuilder;
 class Scenario{
     const SCENARIO_PATH = __DIR__.'/../scenario';
 
+    private readonly RandUtil $rng;
+
     private $scenarioIdx;
     private $scenarioPath;
 
@@ -70,6 +72,7 @@ class Scenario{
         $this->tmpGeneralQueue[$name] = $rawGeneral;
 
         $obj = (new Scenario\GeneralBuilder(
+            $this->rng,
             $name,
             false,
             $picturePath,
@@ -106,7 +109,7 @@ class Scenario{
             'month'=>0 //포인트
         ];
 
-        $neutralNation = new Scenario\Nation(0, '재야', '#000000', 0, 0);
+        $neutralNation = new Scenario\Nation($this->rng, 0, '재야', '#000000', 0, 0);
         $this->nations = [];
         $this->nations[0] = $neutralNation;
         $this->nationsInv = [$neutralNation->getName() => $neutralNation];
@@ -117,6 +120,7 @@ class Scenario{
 
 
             $nation = new Scenario\Nation(
+                $this->rng,
                 $nationID,
                 $name,
                 $color,
@@ -162,7 +166,7 @@ class Scenario{
             'month'=>0 //포인트
         ];
 
-        $neutralNation = new Scenario\Nation(0, '재야', '#000000', 0, 0);
+        $neutralNation = new Scenario\Nation($this->rng, 0, '재야', '#000000', 0, 0);
         $this->nations = [];
         $this->nations[0] = $neutralNation;
         $this->nationsInv = [$neutralNation->getName() => $neutralNation];
@@ -173,6 +177,7 @@ class Scenario{
 
 
             $nation = new Scenario\Nation(
+                $this->rng,
                 $nationID,
                 $name,
                 $color,
@@ -263,7 +268,8 @@ class Scenario{
         return $this->gameConf;
     }
 
-    public function __construct(int $scenarioIdx, bool $lazyInit = true){
+    public function __construct(RandUtil $rng, int $scenarioIdx, bool $lazyInit = true){
+        $this->rng = $rng;
         $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
 
         $this->scenarioIdx = $scenarioIdx;
@@ -577,6 +583,8 @@ class Scenario{
     public static function getAllScenarios(){
         $result = [];
 
+        $rng = new RandUtil(new LiteHashDRBG(random_bytes(16)));
+
         foreach(glob(self::SCENARIO_PATH.'/scenario_*.json') as $scenarioPath){
             $scenarioName = pathinfo(basename($scenarioPath), PATHINFO_FILENAME);
             $scenarioIdx = Util::array_last(explode('_', $scenarioName));
@@ -590,7 +598,7 @@ class Scenario{
                 continue;
             }
 
-            $result[$scenarioIdx] = new Scenario($scenarioIdx);
+            $result[$scenarioIdx] = new Scenario($rng, $scenarioIdx);
         }
         return $result;
     }

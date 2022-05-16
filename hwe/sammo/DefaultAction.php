@@ -50,7 +50,7 @@ trait DefaultAction{
         return null;
     }
 
-    public function onArbitraryAction(General $general, string $actionType, ?string $phase=null, $aux=null): null|array{
+    public function onArbitraryAction(General $general, RandUtil $rng, string $actionType, ?string $phase=null, $aux=null): null|array{
         return $aux;
     }
 }

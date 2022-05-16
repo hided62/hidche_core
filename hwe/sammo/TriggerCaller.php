@@ -47,7 +47,7 @@ abstract class TriggerCaller{
         if(!$sorted){
             ksort($this->triggerListByPriority);
         }
-        
+
     }
 
     function append(ObjectTrigger $trigger):self{
@@ -118,11 +118,11 @@ abstract class TriggerCaller{
         return $this;
     }
 
-    function fire(array $env, $arg = null):?array{
+    function fire(RandUtil $rng, array $env, $arg = null):?array{
         foreach($this->triggerListByPriority as $priority=>$subTriggerList){
             /** @var ObjectTrigger[] $subTriggerList */
             foreach($subTriggerList as $trigger){
-                $env = $trigger->action($env, $arg);
+                $env = $trigger->action($rng, $env, $arg);
             }
         }
         return $env;

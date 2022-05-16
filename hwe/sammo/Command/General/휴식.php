@@ -34,14 +34,14 @@ class 휴식 extends Command\GeneralCommand{
         return 0;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         $general = $this->generalObj;
         $logger = $general->getLogger();
         $date = $general->getTurnTime($general::TURNTIME_HM);
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn());
-        tryRollbackInheritUniqueItem($general);
+        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB(DB::db());
         return true;
     }

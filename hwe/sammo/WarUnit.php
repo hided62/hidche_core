@@ -4,6 +4,7 @@ namespace sammo;
 
 class WarUnit
 {
+    public readonly RandUtil $rng;
 
     protected $general;
     protected $rawNation;
@@ -33,8 +34,9 @@ class WarUnit
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
-    private function __construct(General $general)
+    private function __construct(RandUtil $rng, General $general)
     {
+        $this->rng = $rng;
         $this->general = $general;
     }
 
@@ -413,7 +415,7 @@ class WarUnit
     function calcDamage(): int
     {
         $warPower = $this->getWarPower();
-        $warPower *= Util::randRange(0.9, 1.1);
+        $warPower *= $this->rng->nextRange(0.9, 1.1);
         return Util::round($warPower);
     }
 
@@ -443,7 +445,7 @@ class WarUnit
             $range = $general->onCalcStat($general, 'criticalDamageRange', $range);
         }
         //전특, 병종에 따라 필살 데미지가 달라질지도 모르므로 static 함수는 아닌 것으로
-        return Util::randRange(...$range);
+        return $this->rng->nextRange(...$range);
     }
 
     function applyDB(\MeekroDB $db): bool

@@ -22,13 +22,13 @@ class che_회피시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        if(!Util::randBool($self->getComputedAvoidRatio())){
+        if(!$self->rng->nextBool($self->getComputedAvoidRatio())){
             return true;
         }
 
         $self->activateSkill('회피시도', '회피');
 
-        
+
         return true;
     }
 }

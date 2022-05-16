@@ -48,7 +48,7 @@ class che_계략시도 extends BaseWarUnitTrigger{
             $magicTrialProb *= 3;
         }
 
-        if(!Util::randBool($magicTrialProb)){
+        if(!$self->rng->nextBool($magicTrialProb)){
             return true;
         }
 
@@ -57,11 +57,11 @@ class che_계략시도 extends BaseWarUnitTrigger{
         $magicSuccessProb = $oppose->getGeneral()->onCalcOpposeStat($general, 'warMagicSuccessProb', $magicSuccessProb);
 
         if($oppose instanceof WarUnitCity){
-            $magic = Util::choiceRandom(array_keys(static::$tableToCity));
+            $magic = $self->rng->choice(array_keys(static::$tableToCity));
             [$successDamage, $failDamage] = static::$tableToCity[$magic];
         }
         else{
-            $magic = Util::choiceRandom(array_keys(static::$tableToGeneral));
+            $magic = $self->rng->choice(array_keys(static::$tableToGeneral));
             [$successDamage, $failDamage] = static::$tableToGeneral[$magic];
         }
 
@@ -70,7 +70,7 @@ class che_계략시도 extends BaseWarUnitTrigger{
 
 
         $self->activateSkill('계략시도', $magic);
-        if(Util::randBool($magicSuccessProb)){
+        if($self->rng->nextBool($magicSuccessProb)){
             $self->activateSkill('계략');
             $selfEnv['magic'] = [$magic, $successDamage];
         }

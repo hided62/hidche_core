@@ -16,7 +16,7 @@ class che_아이템치료 extends BaseGeneralTrigger{
         $this->injuryTarget = $injuryTarget;
     }
 
-    public function action(?array $env=null, $arg=null):?array{
+    public function action(\sammo\RandUtil $rng, ?array $env=null, $arg=null):?array{
 
         /** @var \sammo\General $general */
         $general = $this->object;

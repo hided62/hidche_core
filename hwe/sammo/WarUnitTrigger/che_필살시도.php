@@ -22,13 +22,13 @@ class che_필살시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        if(!Util::randBool($self->getComputedCriticalRatio())){
+        if(!$self->rng->nextBool($self->getComputedCriticalRatio())){
             return true;
         }
 
         $self->activateSkill('필살시도', '필살');
 
-        
+
         return true;
     }
 }

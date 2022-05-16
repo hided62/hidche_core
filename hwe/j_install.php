@@ -144,7 +144,7 @@ $autorun_user = $autorun_user_minutes?[
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
-    
+
     if (!$db->queryFirstField("SHOW TABLES LIKE 'storage'")) {
         $clearResult = ResetHelper::clearDB();
         if(!$clearResult['result']){
@@ -159,7 +159,9 @@ if($reserve_open){
         ]);
     }
 
-    $scenarioObj = new Scenario($scenario, true);
+    $rng = new RandUtil(new LiteHashDRBG(random_bytes(16)));
+
+    $scenarioObj = new Scenario($rng, $scenario, true);
     $open_date = $reserve_open->format('Y-m-d H:i:s');
 
     $reserveInfo = [
@@ -179,14 +181,14 @@ if($reserve_open){
         'autorun_user'=>$autorun_user
     ];
 
-    
+
     if($pre_reserve_open){
         $pre_reserve_open = new \DateTime($pre_reserve_open);
         $open_date = $pre_reserve_open->format('Y-m-d H:i:s');
     }
 
 
-    
+
     $db->delete('reserved_open', true);
     $db->insert('reserved_open', [
         'options'=>Json::encode($reserveInfo),

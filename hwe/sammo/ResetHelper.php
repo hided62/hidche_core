@@ -147,7 +147,8 @@ class ResetHelper{
         return [
             'result'=>true,
             'serverID'=>$serverID,
-            'seasonIdx'=>$seasonIdx
+            'seasonIdx'=>$seasonIdx,
+            'hiddenSeed'=>$hiddenSeed,
         ];
     }
 
@@ -187,8 +188,14 @@ class ResetHelper{
 
         $serverID = $clearResult['serverID'];
         $seasonIdx = $clearResult['seasonIdx'];
+        $hiddenSeed = $clearResult['hiddenSeed'];
 
-        $scenarioObj = new Scenario($scenario, true);
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            $hiddenSeed,
+            'InitScenario'
+        )));
+
+        $scenarioObj = new Scenario($rng, $scenario, true);
 
         if(class_exists('\\sammo\GameConst', false)){
             trigger_error("이미 GameConst가 호출되어있습니다", E_USER_NOTICE);

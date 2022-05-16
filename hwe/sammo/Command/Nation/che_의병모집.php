@@ -74,7 +74,7 @@ class che_의병모집 extends Command\NationCommand
         return $nextTerm;
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -143,8 +143,8 @@ class che_의병모집 extends Command\NationCommand
             from general where nation=%i',
             $nationID
         );
-        foreach(\sammo\pickGeneralFromPool($db, 0, $createGenCnt) as $pickedNPC){
-            
+        foreach(\sammo\pickGeneralFromPool($db, $rng, 0, $createGenCnt) as $pickedNPC){
+
             $newNPC = $pickedNPC->getGeneralBuilder();
 
             $newNPC->setCityID($general->getCityID());
@@ -152,12 +152,12 @@ class che_의병모집 extends Command\NationCommand
 
             $newNPC->setSpecial('None', 'None');
             $newNPC->setLifeSpan($env['year']-20, $env['year']+10);
-            $newNPC->setKillturn(Util::randRangeInt(64, 70));
+            $newNPC->setKillturn($rng->nextRangeInt(64, 70));
             $newNPC->setNPCType(4);
             $newNPC->setMoney(1000, 1000);
             $newNPC->setSpecYear(19, 19);
             $newNPC->fillRemainSpecAsRandom($pickTypeList, $avgGen, $env);
-            
+
             $newNPC->build($this->env);
             $pickedNPC->occupyGeneralName();
         }

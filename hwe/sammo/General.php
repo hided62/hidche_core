@@ -987,7 +987,7 @@ class General implements iAction
         return $amount;
     }
 
-    public function onArbitraryAction(General $general, string $actionType, ?string $phase = null, $aux = null): null|array
+    public function onArbitraryAction(General $general, RandUtil $rng, string $actionType, ?string $phase = null, $aux = null): null|array
     {
         foreach (array_merge([
             $this->nationType,
@@ -1002,7 +1002,7 @@ class General implements iAction
                 continue;
             }
             /** @var iAction $iObj */
-            $aux = $iObj->onArbitraryAction($general, $actionType, $phase, $aux);
+            $aux = $iObj->onArbitraryAction($general, $rng, $actionType, $phase, $aux);
         }
         return $aux;
     }

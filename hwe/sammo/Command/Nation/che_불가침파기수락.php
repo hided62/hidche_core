@@ -20,6 +20,7 @@ use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\RandUtil;
 
 class che_불가침파기수락 extends Command\NationCommand
 {
@@ -71,7 +72,7 @@ class che_불가침파기수락 extends Command\NationCommand
 
         $this->permissionConstraints = [
             ConstraintHelper::AlwaysFail('예약 불가능 커맨드')
-        ];   
+        ];
     }
 
     protected function initWithArg()
@@ -120,7 +121,7 @@ class che_불가침파기수락 extends Command\NationCommand
         return "{$destNationName}국과 불가침 파기 합의";
     }
 
-    public function run(): bool
+    public function run(RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

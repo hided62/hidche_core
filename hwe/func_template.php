@@ -60,7 +60,8 @@ function chiefTurnTable()
 ";
 }
 
-function templateLimitMsg(string $turntime): string{
+function templateLimitMsg(string $turntime): string
+{
     return "이미 너무 많은 접속을 하셨습니다. 다음 턴에 다시 시도해주세요. (턴시간: {$turntime})";
 }
 
@@ -165,7 +166,7 @@ function commandButton(array $opts = [])
         'color' => '#000000'
     ];
 
-    $bgColor = Util::array_get($nation['color']) ?: '#000000';
+    $bgColor = $nation['color'] ?? '#000000';
     $fgColor = newColor($bgColor);
 
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');
@@ -173,16 +174,16 @@ function commandButton(array $opts = [])
     $permission = checkSecretPermission($me);
     $btnClassForTournament = $opts['btnClass'];
     if ($opts['isTournamentApplicationOpen']) {
-      if ($btnClassForTournament != 'dropdown-item') {
-        $btnClassForTournament = 'toolbarButton2';
-      }
+        if ($btnClassForTournament != 'dropdown-item') {
+            $btnClassForTournament = 'toolbarButton2';
+        }
     }
 
     $btnClassForBetting = $opts['btnClass'];
     if ($opts['isBettingActive']) {
-      if ($btnClassForTournament != 'dropdown-item') {
-        $btnClassForBetting = 'toolbarButton2';
-      }
+        if ($btnClassForTournament != 'dropdown-item') {
+            $btnClassForBetting = 'toolbarButton2';
+        }
     }
 
     if ($permission >= 1) {
@@ -246,7 +247,7 @@ function getMapHtml(?string $mapName = null)
 {
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 
-    if($mapName === null){
+    if ($mapName === null) {
         $mapName = GameConst::$mapName;
     }
 

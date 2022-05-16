@@ -16,7 +16,7 @@ class 휴식 extends Command\NationCommand{
     protected function init(){
         //아무것도 하지 않음
         $this->fullConditionConstraints=[];
-        
+
     }
 
     public function getPreReqTurn():int{
@@ -31,7 +31,7 @@ class 휴식 extends Command\NationCommand{
         return [0, 0];
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         return true;
     }

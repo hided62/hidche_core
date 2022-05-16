@@ -448,12 +448,18 @@ function startBetting($type, $unit)
 
     $betGold = Util::valueFit(floor((3 + $year - $startyear) * 0.334) * 10, 10);
 
+    $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+        UniqueConst::$hiddenSeed,
+        'OpenBettingTournament',
+        $bettingID,
+    )));
+
     $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE npc >= 2 AND gold >= (500 + %i)', $betGold);
     $npcBet = [];
 
     $targetList = array_keys($candidates);
     foreach ($npcList as $npcID) {
-        $target = Util::choiceRandom($targetList);
+        $target = $rng->choice($targetList);
         $npcBet[] = [$npcID, $target];
     }
 

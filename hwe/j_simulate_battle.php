@@ -300,12 +300,17 @@ function simulateBattle(
     $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
     $startYear, $year, $month, $cityRate
 ){
+
+    $warSeed = bin2hex(random_bytes(16));
+    $warRng = new RandUtil(new LiteHashDRBG($warSeed));
+
     $attacker = new WarUnitGeneral(
+        $warRng,
         new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month),
         $rawAttackerNation,
         true
     );
-    $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
+    $city = new WarUnitCity($warRng, $rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
     $iterDefender = new \ArrayIterator($rawDefenderList);
     $iterDefender->rewind();
@@ -316,7 +321,7 @@ function simulateBattle(
     $defenderRice = 0;
 
     $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext)
-        use ($iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, &$battleResult, &$defenderRice) {
+        use ($warRng, $iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, &$battleResult, &$defenderRice) {
         if($prevDefender !== null){
             $prevDefender->getLogger()->rollback();
             $battleResult[] = $prevDefender;
@@ -341,6 +346,7 @@ function simulateBattle(
         $defenderRice += $defenderObj->getVar('rice');
 
         $retVal = new WarUnitGeneral(
+            $warRng,
             $defenderObj,
             $rawDefenderNation,
             false
@@ -349,7 +355,7 @@ function simulateBattle(
         return $retVal;
     };
 
-    $conquerCity = processWar_NG($attacker, $getNextDefender, $city, $year - $startYear);
+    $conquerCity = processWar_NG($warSeed, $attacker, $getNextDefender, $city, $year - $startYear);
 
     $rawDefenderCity = $city->getRaw();
     $updateAttackerNation = [];

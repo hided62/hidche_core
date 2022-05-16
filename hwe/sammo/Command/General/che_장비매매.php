@@ -141,7 +141,7 @@ class che_장비매매 extends Command\GeneralCommand
         return "【{$itemName}】{$josaUl} 구입";
     }
 
-    public function run(): bool
+    public function run(\sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -174,11 +174,11 @@ class che_장비매매 extends Command\GeneralCommand
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 구입했습니다. <1>$date</>");
             $general->increaseVarWithLimit('gold', -$cost, 0);
             $general->setItem($itemType, $itemCode);
-            $general->onArbitraryAction($general, '장비매매', '구매', ['itemCode' => $itemCode]);
+            $general->onArbitraryAction($general, $rng, '장비매매', '구매', ['itemCode' => $itemCode]);
         } else {
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 판매했습니다. <1>$date</>");
             $general->increaseVarWithLimit('gold', $cost / 2);
-            $general->onArbitraryAction($general, '장비매매', '판매', ['itemCode' => $itemCode]);
+            $general->onArbitraryAction($general, $rng, '장비매매', '판매', ['itemCode' => $itemCode]);
             $general->setItem($itemType, null);
 
             if(!$itemObj->isBuyable()){
@@ -195,7 +195,7 @@ class che_장비매매 extends Command\GeneralCommand
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;

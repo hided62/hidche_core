@@ -3,10 +3,10 @@ namespace sammo;
 
 /**
  * 내정 커맨드 사용시 성공 확률 계산
- * 
+ *
  * @param General $general 장수 정보
  * @param string $type 내정 커맨드 타입, 'leadership' = 통솔 기반, 'strength' = 무력 기반, 'intel' = 지력 기반
- * 
+ *
  * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
 function CriticalRatioDomestic(General $general, string $type) {
@@ -24,7 +24,7 @@ function CriticalRatioDomestic(General $general, string $type) {
       506040(33%/30%), 505050(43%/40%), 504060(50%/50%)
 
     * 통솔 내정 기준
-      756510(25%/22%), 707010(31%/28%), 657510(38%,35%), 
+      756510(25%/22%), 707010(31%/28%), 657510(38%,35%),
       505050(50%,50%), 107070(50%,50%)
     */
     switch($type) {
@@ -60,13 +60,12 @@ function calcLeadershipBonus($officerLevel, $nationLevel):int{
     return $lbonus;
 }
 
-function CriticalScoreEx(string $type):float {
+function CriticalScoreEx(RandUtil $rng, string $type):float {
     if ($type == 'success') {
-        return Util::randRange(2.2, 3.0);
+        return $rng->nextRange(2.2, 3.0);
     }
     if ($type == 'fail') {
-        return  Util::randRange(0.2, 0.4);
+        return $rng->nextRange(0.2, 0.4);
     }
     return 1;
 }
-

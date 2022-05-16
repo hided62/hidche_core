@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -34,13 +34,13 @@ class che_사기진작 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->minConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
         ];
-        
+
         $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::ReqGeneralCrew(),
@@ -62,7 +62,7 @@ class che_사기진작 extends Command\GeneralCommand{
         $general = $this->generalObj;
         return [Util::round($general->getVar('crew')/100), 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -71,7 +71,7 @@ class che_사기진작 extends Command\GeneralCommand{
         return 0;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -103,11 +103,11 @@ class che_사기진작 extends Command\GeneralCommand{
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

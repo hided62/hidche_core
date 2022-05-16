@@ -10,7 +10,7 @@ use sammo\JosaUtil;
 class che_병력군량소모 extends BaseGeneralTrigger{
     protected $priority = 50000;
 
-    public function action(?array $env=null, $arg=null):?array{
+    public function action(\sammo\RandUtil $rng, ?array $env=null, $arg=null):?array{
 
         /** @var \sammo\General $general */
         $general = $this->object;
@@ -26,13 +26,13 @@ class che_병력군량소모 extends BaseGeneralTrigger{
                 $db->update('city', [
                     'pop'=>$db->sqleval('pop + %i', $general->getVar('crew'))
                 ], 'city=%i', $general->getCityID());
-                
+
                 $general->setVar('crew', 0);
                 $general->setVar('rice', 0);
                 $general->getLogger()->pushGeneralActionLog(
                     '군량이 모자라 병사들이 <R>소집해제</>되었습니다!', ActionLogger::PLAIN
                 );
-                
+
                 $general->activateSkill('pre.소집해제');
             }
             $general->activateSkill('pre.병력군량소모');

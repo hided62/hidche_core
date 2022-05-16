@@ -333,7 +333,7 @@ EOD),
 }
 
 // 외교 로그처리, 외교 상태 처리
-function postUpdateMonthly()
+function postUpdateMonthly(RandUtil $rng)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -485,12 +485,12 @@ function postUpdateMonthly()
     $availableWarSettingCnt = KVStorage::getValuesFromInterNamespace($db, 'nation_env', 'available_war_setting_cnt');
     foreach ($nations as $nation) {
         $nationID = $nation['nation'];
-        if(!key_exists($nationID, $availableWarSettingCnt)){
+        if (!key_exists($nationID, $availableWarSettingCnt)) {
             $availableWarSettingCnt[$nationID] = 0;
         }
     }
-    foreach($availableWarSettingCnt as $nationID=>$cnt){
-        if($cnt >= GameConst::$maxAvailableWarSettingCnt){
+    foreach ($availableWarSettingCnt as $nationID => $cnt) {
+        if ($cnt >= GameConst::$maxAvailableWarSettingCnt) {
             continue;
         }
         $cnt = Util::valueFit($cnt + GameConst::$incAvailableWarSettingCnt, 0, GameConst::$maxAvailableWarSettingCnt);
@@ -499,7 +499,7 @@ function postUpdateMonthly()
 
     //초반이후 방랑군 자동 해체
     if ($admin['year'] >= $admin['startyear'] + 2) {
-        checkWander();
+        checkWander($rng);
     }
     // 작위 업데이트
     updateNationState();
@@ -508,7 +508,7 @@ function postUpdateMonthly()
     // 천통여부 검사
     checkEmperior();
     //토너먼트 개시
-    triggerTournament();
+    triggerTournament($rng);
     // 시스템 거래건 등록
     registerAuction();
     //전방설정
@@ -521,7 +521,7 @@ function postUpdateMonthly()
 }
 
 
-function checkWander()
+function checkWander(RandUtil $rng)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -535,7 +535,7 @@ function checkWander()
         if ($wanderCmd->hasFullConditionMet()) {
             $logger = $wanderer->getLogger();
             $logger->pushGeneralActionLog('초반 제한후 방랑군은 자동 해산됩니다.', ActionLogger::PLAIN);
-            $wanderCmd->run();
+            $wanderCmd->run($rng);
             $wanderCmd->setNextAvailable();
         }
     }
@@ -552,6 +552,9 @@ function updateNationState()
 
     $history = array();
     $admin = $gameStor->getValues(['killturn', 'year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm', 'turntime']);
+    $year = $admin['year'];
+    $month = $admin['month'];
+    $startYear = $admin['startyear'];
 
     $assemblerCnts = [];
     foreach ($db->queryAllLists('SELECT nation,count(no) FROM general WHERE npc = 5 GROUP BY nation') as [$nationID, $assemblerCnt]) {
@@ -560,7 +563,9 @@ function updateNationState()
 
     foreach ($db->query('SELECT nation,name,level,tech,aux FROM nation') as $nation) {
         //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
-        $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nation['nation']);
+        $nationID = $nation['nation'];
+        $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nationID);
+
 
         if ($citycount == 0) {
             $nationlevel = 0;   // 방랑군
@@ -594,26 +599,26 @@ function updateNationState()
             switch ($nationlevel) {
                 case 7:
                     $josaUl = JosaUtil::pick(getNationLevel($nationlevel), '을');
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭하였습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭"]);
+                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭하였습니다.";
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭"]);
                     $auxVal = Json::decode($nation['aux']);
                     $auxVal['can_국기변경'] = 1;
                     $auxVal['can_국호변경'] = 1;
                     $updateVals['aux'] = Json::encode($auxVal);
                     break;
                 case 6:
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극하였습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극"]);
+                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극하였습니다.";
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극"]);
                     break;
                 case 5:
                 case 4:
                 case 3:
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명되었습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명됨"]);
+                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명되었습니다.";
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명됨"]);
                     break;
                 case 2:
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 독립하여 <Y>" . getNationLevel($nationlevel) . "</>로 나섰습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>로 나서다"]);
+                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 독립하여 <Y>" . getNationLevel($nationlevel) . "</>로 나섰습니다.";
+                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>로 나서다"]);
                     break;
             }
 
@@ -648,7 +653,6 @@ function updateNationState()
 
                 $uniqueLotteryWeightList = [];
 
-                [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
                 $relYear = $year - $startYear;
                 $maxTrialCountByYear = 1;
                 foreach (GameConst::$maxUniqueItemLimit as $tmpVals) {
@@ -684,10 +688,18 @@ function updateNationState()
                         $score += 15;
                     }
 
-                    $score *= 2**$trialCnt;
+                    $score *= 2 ** $trialCnt;
 
                     $uniqueLotteryWeightList[$nationGen->getID()] = [$nationGen, $score];
                 }
+
+                $nationLevelUpRNG = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                    UniqueConst::$hiddenSeed,
+                    'nationLevelUp',
+                    $year,
+                    $month,
+                    $nationID
+                )));
 
                 foreach (Util::range($levelDiff) as $idx) {
                     if (!$uniqueLotteryWeightList) {
@@ -695,9 +707,18 @@ function updateNationState()
                     }
 
                     /** @var General */
-                    $winnerObj = Util::choiceRandomUsingWeightPair($uniqueLotteryWeightList);
+                    $winnerObj = $nationLevelUpRNG->choiceUsingWeightPair($uniqueLotteryWeightList);
                     unset($uniqueLotteryWeightList[$winnerObj->getID()]);
-                    giveRandomUniqueItem($winnerObj, '작위보상');
+
+                    $givenUniqueRNG = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                        UniqueConst::$hiddenSeed,
+                        'givenUnique',
+                        $year,
+                        $month,
+                        $nationID,
+                        $winnerObj->getID(),
+                    )));
+                    giveRandomUniqueItem($givenUniqueRNG, $winnerObj, '작위보상');
                     $winnerObj->applyDB($db);
                 }
 
@@ -723,9 +744,18 @@ function updateNationState()
         if ($assemblerCnt < $maxAssemblerCnt) {
             $lastAssemblerID = $gameStor->assembler_id ?? 0;
 
+            $troopLeaderRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                UniqueConst::$hiddenSeed,
+                'troopLeader',
+                $year,
+                $month,
+                $nationID
+            )));
+
             while ($assemblerCnt < $maxAssemblerCnt) {
                 $lastAssemblerID += 1;
                 $npcObj = new Scenario\GeneralBuilder(
+                    $troopLeaderRng,
                     sprintf('부대장%4d', $lastAssemblerID),
                     false,
                     null,
@@ -1183,7 +1213,8 @@ function checkEmperior()
         'aux' => $statGeneral['aux']
     ]);
 
-    $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
+    $hiddenSeed = UniqueConst::$hiddenSeed;
+    $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다. <span class='hidden_but_copyable'>(서버시드: $hiddenSeed})</span>"];
     pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 
     //연감 월결산
@@ -1200,4 +1231,27 @@ function updateMaxDomesticCritical(General $general, $score)
     if ($maxDomesticCritical > $oldMaxDomesticCritical) {
         $general->setInheritancePoint(InheritanceKey::max_domestic_critical, $maxDomesticCritical);
     }
+}
+
+function genGenericUniqueRNG(int $year, int $month, int $generalID): RandUtil
+{
+    return new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+        UniqueConst::$hiddenSeed,
+        'unique',
+        $year,
+        $month,
+        $generalID
+    )));
+}
+
+function genGenericUniqueRNGFromGeneral(General $general): RandUtil
+{
+    $logger = $general->getLogger();
+    if (!$logger) {
+        throw new \Exception('정식 초기화된 객체가 아닙니다.');
+    }
+    $year = $logger->getYear();
+    $month = $logger->getMonth();
+    $generalID = $general->getID();
+    return genGenericUniqueRNG($year, $month, $generalID);
 }

@@ -3,9 +3,10 @@
 namespace sammo;
 
 
-function processWar(General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity)
+function processWar(string $warSeed, General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity)
 {
 
+    $rng = new RandUtil(new LiteHashDRBG($warSeed));
     $db = DB::db();
 
     $attackerNationID = $attackerGeneral->getNationID();
@@ -30,9 +31,9 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$startYear, $year, $month, $cityRate, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate', 'join_mode']);
 
-    $attacker = new WarUnitGeneral($attackerGeneral, $rawAttackerNation, true);
+    $attacker = new WarUnitGeneral($rng, $attackerGeneral,$rawAttackerNation, true);
 
-    $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
+    $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
     $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
     $defenderList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
@@ -44,7 +45,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
 
-    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderNation, $rawDefenderCity, $db) {
+    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($rng, $iterDefender, $rawDefenderNation, $rawDefenderCity, $db) {
         if ($prevDefender !== null) {
             $prevDefender->applyDB($db);
         }
@@ -65,6 +66,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
 
 
         $retVal = new WarUnitGeneral(
+            $rng,
             $nextDefender,
             $rawDefenderNation,
             false
@@ -73,7 +75,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
         return $retVal;
     };
 
-    $conquerCity = processWar_NG($attacker, $getNextDefender, $city, $year - $startYear);
+    $conquerCity = processWar_NG($warSeed, $attacker, $getNextDefender, $city, $year - $startYear);
 
     $attacker->applyDB($db);
 
@@ -206,6 +208,7 @@ function extractBattleOrder(General $general)
 }
 
 function processWar_NG(
+    string $warSeed,
     WarUnitGeneral $attacker,
     callable $getNextDefender,
     WarUnitCity $city,
@@ -228,8 +231,8 @@ function processWar_NG(
     $josaRo = JosaUtil::pick($city->getName(), '로');
     $josaYi = JosaUtil::pick($attacker->getName(), '이');
 
-    $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.");
-    $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
+    $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.<span class='hidden_but_copyable'>(전투시드: {$warSeed})</span>");
+    $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다.<span class='hidden_but_copyable'>(전투시드: {$warSeed})</span> <1>$date</>");
 
     $logWritten = false;
 
@@ -309,7 +312,7 @@ function processWar_NG(
             $initCaller = $attacker->getGeneral()->getBattleInitSkillTriggerList($attacker);
             $initCaller->merge($defender->getGeneral()->getBattleInitSkillTriggerList($defender));
 
-            $initCaller->fire([], [$attacker, $defender]);
+            $initCaller->fire($attacker->rng, [], [$attacker, $defender]);
         }
 
         $attacker->beginPhase();
@@ -318,7 +321,7 @@ function processWar_NG(
         $battleCaller = $attacker->getGeneral()->getBattlePhaseSkillTriggerList($attacker);
         $battleCaller->merge($defender->getGeneral()->getBattlePhaseSkillTriggerList($defender));
 
-        $battleCaller->fire([], [$attacker, $defender]);
+        $battleCaller->fire($attacker->rng, [], [$attacker, $defender]);
 
         $deadDefender = $attacker->calcDamage();
         $deadAttacker = $defender->calcDamage();
@@ -510,6 +513,16 @@ function ConquerCity(array $admin, General $general, array $city)
     $cityID = $city['city'];
     $cityName = $city['name'];
 
+    $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+        UniqueConst::$hiddenSeed,
+        'ConquerCity',
+        $year,
+        $month,
+        $attackerNationID,
+        $attackerID,
+        $cityID
+    )));
+
     $defenderNationID = $city['nation'];
     $defenderStaticNation = getNationStaticInfo($defenderNationID);
     $defenderNationName = $defenderStaticNation['name'];
@@ -594,7 +607,7 @@ function ConquerCity(array $admin, General $general, array $city)
             $oldGeneral->applyDB($db);
 
             //모두 등용장 발부
-            if ($admin['join_mode'] != 'onlyRandom' && Util::randBool(0.5)) {
+            if ($admin['join_mode'] != 'onlyRandom' && $rng->nextBool(0.5)) {
                 $msg = ScoutMessage::buildScoutMessage($attackerID, $oldGeneral->getID());
                 if ($msg) {
                     $msg->send(true);
@@ -603,11 +616,11 @@ function ConquerCity(array $admin, General $general, array $city)
 
             //NPC인 경우 일정 확률로 임관(엔장, 인재, 의병)
             $npcType = $oldGeneral->getNPCType();
-            if ($admin['join_mode'] != 'onlyRandom' && 2 <= $npcType && $npcType <= 8 && $npcType != 5 && Util::randBool(GameConst::$joinRuinedNPCProp)) {
+            if ($admin['join_mode'] != 'onlyRandom' && 2 <= $npcType && $npcType <= 8 && $npcType != 5 && $rng->nextBool(GameConst::$joinRuinedNPCProp)) {
                 $cmd = buildGeneralCommandClass('che_임관', $oldGeneral, $admin, [
                     'destNationID' => $attackerNationID
                 ]);
-                $joinTurn = Util::randRangeInt(0, 12);
+                $joinTurn = $rng->nextRangeInt(0, 12);
                 if ($joinTurn) {
                     _setGeneralCommand(buildGeneralCommandClass('che_견문', $oldGeneral, $admin), iterator_to_array(Util::range($joinTurn)));
                 }

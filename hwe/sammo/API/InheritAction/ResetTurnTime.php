@@ -10,7 +10,10 @@ use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
 use sammo\TimeUtil;
+use sammo\UniqueConst;
 use sammo\UserLogger;
 use sammo\Util;
 
@@ -59,7 +62,14 @@ class ResetTurnTime extends \sammo\BaseAPI
         $currTurnTime = new DateTimeImmutable($general->getTurnTime());
         $serverTurnTimeObj = new DateTimeImmutable($serverTurnTime);
 
-        $afterTurn = Util::randRange($turnTerm * -60 / 2, $turnTerm * 60 / 2);
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'ResetTurnTime',
+            $userID,
+            $general->getTurnTime()
+        )));
+
+        $afterTurn = $rng->nextRange($turnTerm * -60 / 2, $turnTerm * 60 / 2);
 
         $userLogger = new UserLogger($userID);
         if($afterTurn >= 0){

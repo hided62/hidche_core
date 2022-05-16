@@ -10,7 +10,7 @@ use sammo\JosaUtil;
 class che_도시치료 extends BaseGeneralTrigger{
     protected $priority = 10010;
 
-    public function action(?array $env=null, $arg=null):?array{
+    public function action(\sammo\RandUtil $rng, ?array $env=null, $arg=null):?array{
 
         /** @var \sammo\General $general */
         $general = $this->object;
@@ -43,7 +43,7 @@ class che_도시치료 extends BaseGeneralTrigger{
         /** @var string|null */
         $curedPatientName = null;
         foreach($patients as [$patientID, $patientName, $patientNationID]){
-            if (!Util::randBool(0.5)) {
+            if (!$rng->nextBool(0.5)) {
                 continue;
             }
 

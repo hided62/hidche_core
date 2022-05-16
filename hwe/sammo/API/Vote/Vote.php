@@ -8,7 +8,11 @@ use sammo\DTO\VoteInfo;
 use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
 use sammo\Session;
+use sammo\UniqueConst;
+use sammo\Util;
 use sammo\Validator;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\SemaphoreStore;
@@ -102,7 +106,13 @@ class Vote extends \sammo\BaseAPI
 
         $general = General::createGeneralObjFromDB($generalID, ['gold', 'horse', 'weapon', 'book', 'item', 'npc', 'imgsvr', 'picture', 'aux'], 2);
         $general->increaseVar('gold', $voteReward);
-        $wonLottery = tryUniqueItemLottery($general, '설문조사');
+        $uniqueRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'voteUnique',
+            $voteID,
+            $generalID
+        )));
+        $wonLottery = tryUniqueItemLottery($uniqueRng, $general, '설문조사');
 
         $general->applyDB($db);
 

@@ -405,10 +405,10 @@ function getGeneralPoolClass(string $type){
  * @param null|string $prefix
  * @return AbsGeneralPool[]
  */
-function pickGeneralFromPool(\MeekroDB $db, int $owner, int $pickCnt, ?string $prefix=null):array{
+function pickGeneralFromPool(\MeekroDB $db, RandUtil $rng, int $owner, int $pickCnt, ?string $prefix=null):array{
     /** @var AbsGeneralPool */
     $class = getGeneralPoolClass(GameConst::$targetGeneralPool);
-    return $class::pickGeneralFromPool($db, $owner, $pickCnt, $prefix);
+    return $class::pickGeneralFromPool($db, $rng, $owner, $pickCnt, $prefix);
 }
 
 function countPureGeneralFromRawList(?array $rawGeneralList=null):int{

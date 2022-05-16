@@ -9,6 +9,7 @@ use \sammo\ActionLogger;
 use \sammo\GameConst;
 use \sammo\GameUnitConst;
 use \sammo\Command;
+use sammo\RandUtil;
 
 class che_선동 extends che_화계{
     static protected $actionName = '선동';
@@ -16,7 +17,7 @@ class che_선동 extends che_화계{
     static protected $statType = 'leadership';
     static protected $injuryGeneral = true;
 
-    protected function affectDestCity(int $injuryCount){
+    protected function affectDestCity(RandUtil $rng, int $injuryCount){
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
@@ -30,15 +31,15 @@ class che_선동 extends che_화계{
         $commandName = $this->getName();
 
         // 선동 최대 10
-        $secuAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['secu']);
+        $secuAmount = Util::valueFit($rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['secu']);
         $trustAmount = Util::valueFit(
-            Util::randRange(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50,
-            null, 
+            $rng->nextRange(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50,
+            null,
             $destCity['trust']
         );
         $destCity['secu'] -= $secuAmount;
         $destCity['trust'] -= $trustAmount;
-        
+
         DB::db()->update('city', [
             'state'=>32,
             'secu'=>$destCity['secu'],
@@ -57,5 +58,5 @@ class che_선동 extends che_화계{
             ActionLogger::PLAIN
         );
     }
-    
+
 }

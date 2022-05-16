@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -35,9 +35,9 @@ class che_단련 extends Command\GeneralCommand{
         $this->setNation();
 
         [$reqGold, $reqRice] = $this->getCost();
-        
+
         $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::ReqGeneralCrew(),
             ConstraintHelper::ReqGeneralValue('train', '훈련', '>=', GameConst::$defaultTrainLow),
             ConstraintHelper::ReqGeneralValue('atmos', '사기', '>=', GameConst::$defaultAtmosLow),
@@ -66,7 +66,7 @@ class che_단련 extends Command\GeneralCommand{
         $env = $this->env;
         return [$env['develcost'], $env['develcost']];
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -75,7 +75,7 @@ class che_단련 extends Command\GeneralCommand{
         return 0;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -85,7 +85,7 @@ class che_단련 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        [$pick, $multiplier] = Util::choiceRandomUsingWeightPair([
+        [$pick, $multiplier] = $rng->choiceUsingWeightPair([
             [['success', 3], 0.34],
             [['normal', 2], 0.33],
             [['fail', 1], 0.33]
@@ -113,7 +113,7 @@ class che_단련 extends Command\GeneralCommand{
 
         $general->addDex($general->getCrewTypeObj(), $score, false);
 
-        $incStat = Util::choiceRandomUsingWeight([
+        $incStat = $rng->choiceUsingWeight([
             'leadership_exp'=>$general->getLeadership(false, false, false, false),
             'strength_exp'=>$general->getStrength(false, false, false, false),
             'intel_exp'=>$general->getIntel(false, false, false, false)
@@ -126,11 +126,11 @@ class che_단련 extends Command\GeneralCommand{
         $general->increaseVar($incStat, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

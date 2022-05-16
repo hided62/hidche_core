@@ -91,7 +91,7 @@ class che_국기변경 extends Command\NationCommand
         return "【<span style='color:{$color};'>국기</span>】를 변경";
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

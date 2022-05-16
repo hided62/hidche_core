@@ -122,7 +122,7 @@ class SpecialityHelper{
         return $myCond;
     }
 
-    private static function calcCondDexterity(array $general) : int {
+    private static function calcCondDexterity(RandUtil $rng, array $general) : int {
         $dex = [
             static::ARMY_FOOTMAN => $general['dex1']??0,
             static::ARMY_ARCHER => $general['dex2']??0,
@@ -134,19 +134,19 @@ class SpecialityHelper{
         $dexSum = array_sum($dex);
         $dexBase = Util::round(sqrt($dexSum) / 4);
 
-        if(Util::randBool(0.8)){
+        if($rng->nextBool(0.8)){
             return 0;
         }
 
-        if(mt_rand(0, 99) < $dexBase){
+        if($rng->nextRangeInt(0, 99) < $dexBase){
             return 0;
         }
 
         if(!$dexSum){
-            return array_rand($dex);
+            return $rng->choice($dex);
         }
 
-        return Util::choiceRandom(array_keys($dex, max($dex)));
+        return $rng->choice(array_keys($dex, max($dex)));
     }
 
     /** @return BaseSpecial[] */
@@ -195,7 +195,7 @@ class SpecialityHelper{
         return $result;
     }
 
-    public static function pickSpecialDomestic(array $general, array $prevSpecials=[]) : string{
+    public static function pickSpecialDomestic(RandUtil $rng, array $general, array $prevSpecials=[]) : string{
         $pAbs = [];
         $pRel = [];
 
@@ -234,31 +234,31 @@ class SpecialityHelper{
             if($pRel){
                 $pAbs[0] = max(0, 100 - array_sum($pAbs));
             }
-            $id = Util::choiceRandomUsingWeight($pAbs);
+            $id = $rng->choiceUsingWeight($pAbs);
             if($id){
                 return $id;
             }
         }
 
-        $id = Util::choiceRandomUsingWeight($pRel);
+        $id = $rng->choiceUsingWeight($pRel);
         if($id){
             return $id;
         }
 
         if($prevSpecials){
-            return static::pickSpecialDomestic($general, []);
+            return static::pickSpecialDomestic($rng, $general, []);
         }
 
         throw new MustNotBeReachedException("{$general['name']}, {$myCond}");
     }
 
-    public static function pickSpecialWar(array $general, array $prevSpecials=[]) : string{
+    public static function pickSpecialWar(RandUtil $rng, array $general, array $prevSpecials=[]) : string{
         $reqDex = [];
         $pAbs = [];
         $pRel = [];
 
         $myCond = static::calcCondGeneric($general);
-        $myCond |= static::calcCondDexterity($general);
+        $myCond |= static::calcCondDexterity($rng, $general);
         $myCond |= static::REQ_DEXTERITY;
 
         foreach(static::getSpecialWarList() as $specialID=>$specialObj){
@@ -294,26 +294,26 @@ class SpecialityHelper{
         }
 
         if($reqDex){
-            return Util::choiceRandomUsingWeight($reqDex);
+            return $rng->choiceUsingWeight($reqDex);
         }
 
         if($pAbs){
             if($pRel){
                 $pAbs[0] = max(0, 100 - array_sum($pAbs));
             }
-            $id = Util::choiceRandomUsingWeight($pAbs);
+            $id = $rng->choiceUsingWeight($pAbs);
             if($id){
                 return $id;
             }
         }
 
-        $id = Util::choiceRandomUsingWeight($pRel);
+        $id = $rng->choiceUsingWeight($pRel);
         if($id){
             return $id;
         }
 
         if($prevSpecials){
-            return static::pickSpecialWar($general, []);
+            return static::pickSpecialWar($rng, $general, []);
         }
 
         throw new MustNotBeReachedException();

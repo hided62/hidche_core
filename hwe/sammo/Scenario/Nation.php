@@ -5,6 +5,8 @@ use \sammo\GameConst;
 use \sammo\Util;
 use \sammo\KVStorage;
 use \sammo\Json;
+use sammo\RandUtil;
+
 use function \sammo\getNationChiefLevel;
 
 class Nation{
@@ -25,6 +27,7 @@ class Nation{
     private $generals = [];
 
     public function __construct(
+        private readonly RandUtil $rng,
         int $id = null,
         string $name = '국가',
         string $color = '#000000',
@@ -77,7 +80,7 @@ class Nation{
         }
 
         if($this->type === null){
-            $type = Util::choiceRandom(GameConst::$availableNationType);
+            $type = $this->rng->choice(GameConst::$availableNationType);
         }
         else if(strpos($this->type, '_') === FALSE){
             $type = 'che_'.$this->type;

@@ -108,28 +108,6 @@ switch ($btn) {
             'brief' => '휴식',
         ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
-    case "특기 부여":
-        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-        $text = "특기 부여!";
-
-        foreach ($db->query("SELECT `no`,leadership,strength,intel,dex1,dex2,dex3,dex4,dex5 FROM general WHERE `no` IN %li", $genlist) as $general) {
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
-            $msg->send(true);
-
-            $specialWar = SpecialityHelper::pickSpecialWar($general);
-            $db->update('general', [
-                'specage2' => $db->sqleval('age'),
-                'special2' => $specialWar
-            ], 'no=%i', $general['no']);
-            $specialWarName = buildGeneralSpecialWarClass($specialWar)->getName();
-            $josaUl = JosaUtil::pick($specialWarName, '을');
-            $logger = new ActionLogger($general['no'], 0, $year, $month);
-            $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialWarName}</></b>】{$josaUl} 습득");
-            $logger->pushGeneralActionLog("특기 【<b><L>{$specialWarName}</></b>】{$josaUl} 익혔습니다!",ActionLogger::PLAIN);
-            $logger->flush();
-        }
-
-        break;
     case "경험치1000":
         $text = $btn . " 지급!";
         foreach ($genlist as $generalID) {
@@ -329,26 +307,6 @@ switch ($btn) {
             'arg' => '{}',
             'brief' => '해산',
         ], 'general_id IN %li AND turn_idx = 1', $genlist);
-        break;
-    case "00턴":
-        $turnterm = $gameStor->turnterm;
-
-        foreach ($genlist as $generalID) {
-            $turntime = getRandTurn($turnterm);
-            $cutTurn = cutTurn($turntime, $turnterm);
-            $db->update('general', [
-                'turntime' => $cutTurn
-            ], '`no` IN %li', $genlist);
-        }
-        break;
-    case "랜덤턴":
-        $turnterm = $gameStor->turnterm;
-        foreach ($genlist as $generalID) {
-            $turntime = getRandTurn($turnterm);
-            $db->update('general', [
-                'turntime' => $turntime
-            ], '`no` IN %li', $genlist);
-        }
         break;
 }
 

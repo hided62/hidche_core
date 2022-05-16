@@ -148,7 +148,7 @@ class che_불가침제의 extends Command\NationCommand
     }
 
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

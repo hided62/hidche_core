@@ -10,7 +10,7 @@ use sammo\JosaUtil;
 class che_부상경감 extends BaseGeneralTrigger{
     protected $priority = 10000;
 
-    public function action(?array $env=null, $arg=null):?array{
+    public function action(\sammo\RandUtil $rng, ?array $env=null, $arg=null):?array{
 
         /** @var \sammo\General $general */
         $general = $this->object;

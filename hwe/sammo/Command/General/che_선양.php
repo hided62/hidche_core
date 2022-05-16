@@ -99,7 +99,7 @@ class che_선양 extends Command\GeneralCommand
         return "【{$destGeneralName}】에게 {$name}";
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -139,7 +139,7 @@ class che_선양 extends Command\GeneralCommand
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($general);
+        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

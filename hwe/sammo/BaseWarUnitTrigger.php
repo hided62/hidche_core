@@ -28,7 +28,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         return "{$priority}_{$fqn}_{$objID}_{$this->raiseType}";
     }
 
-    public function action(?array $env=null, $arg=null):?array{
+    public function action(\sammo\RandUtil $rng, ?array $env=null, $arg=null):?array{
         if($env === null){
             $env = [];
         }
@@ -46,7 +46,7 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
         /** @var WarUnitGeneral $attacker */
         /** @var WarUnit $defender */
         [$attacker, $defender] = $arg;
-        
+
         /** @var WarUnit $self */
         $self = $this->object;
         $isAttacker = $self->isAttacker();

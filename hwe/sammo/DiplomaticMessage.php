@@ -88,7 +88,7 @@ class DiplomaticMessage extends Message{
             return [self::INVALID, $commandObj->getFailString()];
         }
 
-        $commandObj->run();
+        $commandObj->run(NoRNG::rngInstance());
         $commandObj->setNextAvailable();
 
         return [self::ACCEPTED, ''];
@@ -110,7 +110,7 @@ class DiplomaticMessage extends Message{
             return [self::INVALID, $commandObj->getFailString()];
         }
 
-        $commandObj->run();
+        $commandObj->run(NoRNG::rngInstance());
         $commandObj->setNextAvailable();
 
         return [self::ACCEPTED, ''];
@@ -132,7 +132,7 @@ class DiplomaticMessage extends Message{
             return [self::INVALID, $commandObj->getFailString()];
         }
 
-        $commandObj->run();
+        $commandObj->run(NoRNG::rngInstance());
         $commandObj->setNextAvailable();
 
         return [self::ACCEPTED, ''];

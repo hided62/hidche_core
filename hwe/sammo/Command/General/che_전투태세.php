@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -34,9 +34,9 @@ class che_전투태세 extends Command\GeneralCommand{
         $this->setNation();
 
         [$reqGold, $reqRice] = $this->getCost();
-        
+
         $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::ReqGeneralCrew(),
@@ -53,7 +53,7 @@ class che_전투태세 extends Command\GeneralCommand{
         $techCost = getTechCost($this->nation['tech']);
         return [Util::round($crew / 100 * 3 * $techCost), 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 3;
     }
@@ -62,7 +62,7 @@ class che_전투태세 extends Command\GeneralCommand{
         return 0;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -102,7 +102,7 @@ class che_전투태세 extends Command\GeneralCommand{
 
             return true;
         }
-        
+
         $logger->pushGeneralActionLog("전투태세 완료! ({$term}/3) <1>$date</>");
 
         $general->increaseVarWithLimit('train', 0, GameConst::$maxTrainByCommand - 5); //95보다 높으면 '깎이지는 않음'
@@ -117,15 +117,15 @@ class che_전투태세 extends Command\GeneralCommand{
         $crew = $general->getVar('crew');
 
         $general->addDex($general->getCrewTypeObj(), $crew / 100 * 3, false);
-        
+
         $general->increaseVar('leadership_exp', 3);
         $this->setResultTurn($turnResult);
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

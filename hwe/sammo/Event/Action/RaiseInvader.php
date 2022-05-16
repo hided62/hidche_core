@@ -7,6 +7,8 @@ use sammo\CityConst;
 use sammo\DB;
 use sammo\Json;
 use sammo\KVStorage;
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
 use sammo\Scenario\GeneralBuilder;
 use sammo\Scenario\Nation;
 use sammo\UniqueConst;
@@ -140,6 +142,14 @@ class RaiseInvader extends \sammo\Event\Action
         ], true);
 
         $year = $env['year'];
+        $month = $env['month'];
+
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'RaiseInvader',
+            $year,
+            $month,
+        )));
 
         $invaderNationIDList = [];
         refreshNationStaticInfo();
@@ -154,10 +164,10 @@ class RaiseInvader extends \sammo\Event\Action
 
             $invaderName = $cityObj->name;
             $nationName = "ⓞ{$invaderName}족";
-            $nationObj = new Nation($invaderNationID, $nationName, '#800080', 9999999, 9999999, "중원의 부패를 물리쳐라! 이민족 침범!", $tech, "che_병가", 2, [$cityObj->name]);
+            $nationObj = new Nation($rng, $invaderNationID, $nationName, '#800080', 9999999, 9999999, "중원의 부패를 물리쳐라! 이민족 침범!", $tech, "che_병가", 2, [$cityObj->name]);
             $nationObj->build($env);
 
-            $ruler = (new GeneralBuilder("{$invaderName}대왕", false, null, $lastNationID))
+            $ruler = (new GeneralBuilder($rng, "{$invaderName}대왕", false, null, $lastNationID))
                 ->setEgo('che_패권')
                 ->setSpecial('che_인덕', 'che_척사')
                 ->setLifeSpan($year - 20, $year + 20)
@@ -172,7 +182,7 @@ class RaiseInvader extends \sammo\Event\Action
             $nationObj->addGeneral($ruler);
 
             foreach (Util::range(1, $npcEachCount) as $invaderGenIdx) {
-                $gen = (new GeneralBuilder("{$invaderName}장수{$invaderGenIdx}", false, null, $invaderNationID))
+                $gen = (new GeneralBuilder($rng, "{$invaderName}장수{$invaderGenIdx}", false, null, $invaderNationID))
                     ->setEgo('che_패권')
                     ->setSpecial('che_인덕', 'che_척사')
                     ->setLifeSpan($year - 20, $year + 20)
@@ -182,11 +192,11 @@ class RaiseInvader extends \sammo\Event\Action
                     ->setExpDed($exp, null)
                     ->setGoldRice(99999, 99999);
 
-                $leadership = Util::randRangeInt(Util::toInt($specAvg * 1.2), Util::toInt($specAvg * 1.4));
-                $mainStat = Util::randRangeInt(Util::toInt($specAvg * 1.2), Util::toInt($specAvg * 1.4));
+                $leadership = $rng->nextRangeInt(Util::toInt($specAvg * 1.2), Util::toInt($specAvg * 1.4));
+                $mainStat = $rng->nextRangeInt(Util::toInt($specAvg * 1.2), Util::toInt($specAvg * 1.4));
                 $subStat = $specAvg * 3 - $leadership - $mainStat;
 
-                if (Util::randBool()) {
+                if ($rng->nextBit()) {
                     //무장
                     $dexTable = [$dex * 2, $dex, $dex];
                     shuffle($dexTable);

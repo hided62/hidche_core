@@ -14,6 +14,7 @@ use \sammo\GameUnitConst;
 use \sammo\LastTurn;
 use \sammo\Command;
 
+use function sammo\genGenericUniqueRNGFromGeneral;
 use function \sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\Constraint;
@@ -110,7 +111,7 @@ class che_랜덤임관 extends Command\GeneralCommand
         return 0;
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -162,7 +163,7 @@ class che_랜덤임관 extends Command\GeneralCommand
                 $score = log($affinity + 1, 2); //0~
 
                 //쉐킷쉐킷
-                $score += Util::randF();
+                $score += $rng->nextFloat1();
 
                 $score += sqrt($testNation['gennum'] / $allGen);
 
@@ -219,7 +220,7 @@ class che_랜덤임관 extends Command\GeneralCommand
             }
 
             if ($generalsCnt) {
-                $destNation = Util::choiceRandomUsingWeightPair($generalsCnt);
+                $destNation = $rng->choiceUsingWeightPair($generalsCnt);
             }
         }
 
@@ -251,7 +252,7 @@ class che_랜덤임관 extends Command\GeneralCommand
             '천하의 균형을 맞추기 위해',
             '오랜 은거를 마치고',
         ];
-        $randomTalk = Util::choiceRandom($talkList);
+        $randomTalk = $rng->choice($talkList);
 
         $logger->pushGeneralActionLog("<D>{$destNationName}</>에 랜덤 임관했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 랜덤 임관");
@@ -290,7 +291,7 @@ class che_랜덤임관 extends Command\GeneralCommand
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general, '랜덤 임관');
+        tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general), $general, '랜덤 임관');
         $general->applyDB($db);
 
         return true;

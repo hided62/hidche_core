@@ -74,9 +74,13 @@ if($tokens){
     ]);
 }
 
+$rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+    UniqueConst::$hiddenSeed, 'selectPool', $userID, $now
+)));
+
 $pick = [];
 $valid_until = null;
-foreach(pickGeneralFromPool($db, $userID, 14) as $pickObj){
+foreach(pickGeneralFromPool($db, $rng, $userID, 14) as $pickObj){
     $valid_until = $pickObj->getValidUntil();
     $info = $pickObj->getInfo();
     putInfoText($info);

@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     LastTurn,
     Command, GameConst
@@ -11,7 +11,7 @@ use \sammo\{
 
 use function sammo\{
     TechLimit,
-    CriticalRatioDomestic, 
+    CriticalRatioDomestic,
     CriticalScoreEx,
     tryUniqueItemLottery,
     updateMaxDomesticCritical
@@ -38,11 +38,11 @@ class che_기술연구 extends che_상업투자{
 
         $this->setCity();
         $this->setNation(['tech']);
-        
+
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
@@ -53,7 +53,7 @@ class che_기술연구 extends che_상업투자{
         $this->reqGold = $reqGold;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -64,7 +64,7 @@ class che_기술연구 extends che_상업투자{
 
         $trust = Util::valueFit($this->city['trust'], 50);
 
-        $score = Util::valueFit($this->calcBaseScore(), 1);
+        $score = Util::valueFit($this->calcBaseScore($rng), 1);
 
         ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, static::$statKey);
         if($trust < 80){
@@ -77,9 +77,9 @@ class che_기술연구 extends che_상업투자{
         $failRatio = Util::valueFit($failRatio, 0, 1 - $successRatio);
         $normalRatio = 1 - $failRatio - $successRatio;
 
-        $pick = Util::choiceRandomUsingWeight([
-            'fail'=>$failRatio, 
-            'success'=>$successRatio, 
+        $pick = $rng->choiceUsingWeight([
+            'fail'=>$failRatio,
+            'success'=>$successRatio,
             'normal'=>$normalRatio
         ]);
 
@@ -87,14 +87,14 @@ class che_기술연구 extends che_상업투자{
 
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $score *= CriticalScoreEx($pick);
+        $score *= CriticalScoreEx($rng, $pick);
         $score = Util::round($score);
 
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
         if($pick == 'success'){
-            updateMaxDomesticCritical($general, $score);   
+            updateMaxDomesticCritical($general, $score);
         }
         else{
             $general->setAuxVar('max_domestic_critical', 0);
@@ -134,11 +134,11 @@ class che_기술연구 extends che_상업투자{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

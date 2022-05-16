@@ -13,11 +13,14 @@ use sammo\InheritancePointManager;
 use sammo\JosaUtil;
 use sammo\Json;
 use sammo\KVStorage;
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
 use sammo\RootDB;
 use sammo\Session;
 use sammo\SpecialityHelper;
 use sammo\StringUtil;
 use sammo\TimeUtil;
+use sammo\UniqueConst;
 use sammo\UserLogger;
 use sammo\Util;
 use sammo\Validator;
@@ -162,6 +165,14 @@ class Join extends \sammo\BaseAPI
 
         $userLogger = new UserLogger($userID, $admin['year'], $admin['month'], false);
 
+        $now = TimeUtil::now(false);
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'MakeGeneral',
+            $userID,
+            $now
+        )));
+
         if ($inheritCity !== null) {
             $inheritRequiredPoint += GameConst::$inheritBornCityPoint;
         }
@@ -193,7 +204,7 @@ class Join extends \sammo\BaseAPI
             $genius = true;
         } else {
             // 현재 1%
-            $genius = Util::randBool(0.01);
+            $genius = $rng->nextBool(0.01);
         }
 
         if ($genius && $gameStor->genius > 0) {
@@ -208,10 +219,12 @@ class Join extends \sammo\BaseAPI
             $city = $inheritCity;
         } else {
             // 공백지에서만 태어나게
-            $city = $db->queryFirstField("select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1");
-            if (!$city) {
-                $city = $db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1");
+            $cities = $db->queryFirstColumn('SELECT city FROM city where `level`>=5 and `level`<=6 and nation=0');
+            if (!$cities) {
+                $db->queryFirstColumn('SELECT city FROM city where `level`>=5 and `level`<=6');
+                $cities = $db->queryFirstField("SELECT city from city where `level`>=5 and `level`<=6");
             }
+            $city = $rng->choice($cities);
         }
 
         if ($inheritBonusStat) {
@@ -221,8 +234,8 @@ class Join extends \sammo\BaseAPI
             $pleadership = 0;
             $pstrength = 0;
             $pintel = 0;
-            foreach (Util::range(Util::randRangeInt(3, 5)) as $statIdx) {
-                switch (Util::choiceRandomUsingWeight([$leadership, $strength, $intel])) {
+            foreach (Util::range($rng->nextRangeInt(3, 5)) as $statIdx) {
+                switch ($rng->choiceUsingWeight([$leadership, $strength, $intel])) {
                     case 0:
                         $pleadership++;
                         break;
@@ -242,14 +255,14 @@ class Join extends \sammo\BaseAPI
 
         $relYear = Util::valueFit($admin['year'] - $admin['startyear'], 0);
 
-        $age = 20 + ($pleadership + $pstrength + $pintel) * 2 - (mt_rand(0, 1));
+        $age = 20 + ($pleadership + $pstrength + $pintel) * 2 - $rng->nextRangeInt(0, 1);
         // 아직 남았고 천재등록상태이면 특기 부여
         if ($genius) {
             $specage2 = $age;
             if ($inheritSpecial) {
                 $special2 = $inheritSpecial;
             } else {
-                $special2 = SpecialityHelper::pickSpecialWar([
+                $special2 = SpecialityHelper::pickSpecialWar($rng, [
                     'leadership' => $leadership,
                     'strength' => $strength,
                     'intel' => $intel,
@@ -290,12 +303,12 @@ class Join extends \sammo\BaseAPI
 
             $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime%60), "inheritPoint");
 
-            $inheritTurntime += Util::randRangeInt(0, 999999) / 1000000;
+            $inheritTurntime += $rng->nextRangeInt(0, 999999) / 1000000;
             $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
             $turntime = $turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime));
             $turntime = TimeUtil::format($turntime, true);
         } else {
-            $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
+            $turntime = getRandTurn($rng, $admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
         }
 
 
@@ -315,7 +328,7 @@ class Join extends \sammo\BaseAPI
 
         //성격 랜덤시
         if (!in_array($character, GameConst::$availablePersonality)) {
-            $character = Util::choiceRandom(GameConst::$availablePersonality);
+            $character = $rng->choice(GameConst::$availablePersonality);
         }
         //상성 랜덤
         $affinity = rand() % 150 + 1;

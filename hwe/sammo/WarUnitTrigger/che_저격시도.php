@@ -36,7 +36,7 @@ class che_저격시도 extends BaseWarUnitTrigger{
         if($self->hasActivatedSkill('저격불가')){
             return true;
         }
-        if(!Util::randBool($this->ratio)){
+        if(!$self->rng->nextBool($this->ratio)){
             return true;
         }
 

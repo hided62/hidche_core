@@ -22,6 +22,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Json;
 use sammo\KVStorage;
+use sammo\RandUtil;
 
 class che_불가침수락 extends Command\NationCommand
 {
@@ -165,7 +166,7 @@ class che_불가침수락 extends Command\NationCommand
         return "{$year}년 {$month}월까지 불가침 합의";
     }
 
-    public function run(): bool
+    public function run(RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

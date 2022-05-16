@@ -6,6 +6,7 @@ use sammo\DB;
 use \sammo\iAction;
 use \sammo\General;
 use sammo\KVStorage;
+use sammo\RandUtil;
 use sammo\Util;
 
 class che_보물_도기 extends \sammo\BaseItem
@@ -17,7 +18,7 @@ class che_보물_도기 extends \sammo\BaseItem
     protected $cost = 200;
     protected $consumable = false;
 
-    public function onArbitraryAction(General $general, string $actionType, ?string $phase = null, $aux = null): ?array
+    public function onArbitraryAction(General $general, RandUtil $rng, string $actionType, ?string $phase = null, $aux = null): ?array
     {
         if ($aux === null){
             return $aux;
@@ -39,7 +40,7 @@ class che_보물_도기 extends \sammo\BaseItem
 
         $score = 10000 + 5000 * Util::valueFit(intdiv($relYear, 2), 0);
 
-        [$resName, $resKey] = Util::choiceRandom([
+        [$resName, $resKey] = $rng->choice([
             ['금', 'gold'],
             ['쌀', 'rice']
         ]);

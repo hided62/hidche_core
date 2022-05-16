@@ -513,7 +513,7 @@ function getOutcome(float $billRate, array $generalList) {
     return $outcome;
 }
 
-function tradeRate() {
+function tradeRate(RandUtil $rng) {
     $db = DB::db();
 
     foreach($db->query('SELECT city,level FROM city') as $city){
@@ -528,8 +528,8 @@ function tradeRate() {
             7=>0.8,
             8=>1
         ][$city['level']];
-        if($prob > 0 && Util::randBool($prob)) {
-            $trade = Util::randRangeInt(95, 105);
+        if($prob > 0 && $rng->nextBool($prob)) {
+            $trade = $rng->nextRangeInt(95, 105);
         } else {
             $trade = null;
         }
@@ -539,7 +539,7 @@ function tradeRate() {
     }
 }
 
-function disaster() {
+function disaster(RandUtil $rng) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
@@ -560,7 +560,7 @@ function disaster() {
         10=>0
     ];
 
-    $isGood = Util::randBool($boomingRate[$month]);
+    $isGood = $rng->nextBool($boomingRate[$month]);
 
 
     $targetCityList = [];
@@ -575,7 +575,7 @@ function disaster() {
             $raiseProp = 0.06 - ($city['secu'] / $city['secu_max']) * 0.05; // 1 ~ 6%
         }
 
-        if(Util::randBool($raiseProp)) {
+        if($rng->nextBool($raiseProp)) {
             $targetCityList[] = $city;
         }
     }
@@ -621,7 +621,7 @@ function disaster() {
         10 => null
     ];
 
-    [$logTitle, $stateCode, $logBody] = Util::choiceRandom(($isGood?$boomingTextList:$disasterTextList)[$month]);
+    [$logTitle, $stateCode, $logBody] = $rng->choice(($isGood?$boomingTextList:$disasterTextList)[$month]);
 
     $logger = new ActionLogger(0, 0, $year, $month, false);
 
@@ -653,7 +653,7 @@ function disaster() {
                 $generalListByCity[$city['city']]??[]
             );
 
-            SabotageInjury($generalList, '재난');
+            SabotageInjury($rng, $generalList, '재난');
         }
     }
     else{

@@ -8,7 +8,8 @@ class WarUnitCity extends WarUnit{
 
     protected $cityRate;
 
-    function __construct($raw, $rawNation, int $year, int $month, $cityRate){
+    function __construct(RandUtil $rng, $raw, $rawNation, int $year, int $month, $cityRate){
+        $this->rng = $rng;
         $general = new DummyGeneral(false);
         $general->setVar('city', $raw['city']);
         $general->setVar('nation', $raw['nation']);
@@ -23,7 +24,7 @@ class WarUnitCity extends WarUnit{
         $this->logger = $general->getLogger();
         $this->crewType = GameUnitConst::byID(GameUnitConst::CREWTYPE_CASTLE);
 
-        $this->hp = $this->getCityVar('def') * 10; 
+        $this->hp = $this->getCityVar('def') * 10;
 
         //수비자 보정
         if($this->getCityVar('level') == 1){
@@ -78,7 +79,7 @@ class WarUnitCity extends WarUnit{
         $this->deadCurr += $damage;
         $this->hp -= $damage;
         $this->increaseVarWithLimit('wall', -$damage/20, 0);
-        
+
         return $this->hp;
     }
 
@@ -123,7 +124,7 @@ class WarUnitCity extends WarUnit{
 
         $nationID = $oppose->getNationVar('nation');
         $newConflict = false;
-        
+
         $dead = max(1, $this->dead);
 
         if(!$conflict || $this->getHP() == 0){ // 선타, 막타 보너스
@@ -147,7 +148,7 @@ class WarUnitCity extends WarUnit{
 
         return $newConflict;
     }
-    
+
 
     function applyDB(\MeekroDB $db):bool{
         $updateVals = $this->getUpdatedValues();
@@ -156,7 +157,7 @@ class WarUnitCity extends WarUnit{
         if(!$updateVals){
             return false;
         }
-        
+
         $db->update('city', $updateVals, 'city=%i', $this->raw['city']);
         $this->flushUpdateValues();
         return $db->affectedRows() > 0;

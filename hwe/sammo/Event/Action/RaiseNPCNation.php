@@ -9,6 +9,8 @@ use sammo\DB;
 use sammo\GameConst;
 use sammo\Json;
 use sammo\KVStorage;
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
 use sammo\Scenario\GeneralBuilder;
 use sammo\Scenario\Nation;
 use sammo\UniqueConst;
@@ -28,7 +30,7 @@ class RaiseNPCNation extends \sammo\Event\Action
     const MIN_DIST_USERNATION = 3;
     const MIN_DIST_NPCNATION = 2;
 
-    private function calcAvgNationCity(array $cities)
+    private function calcAvgNationCity(RandUtil $rng, array $cities)
     {
         if (count($cities) == 0) {
             throw new InvalidArgumentException();
@@ -55,7 +57,7 @@ class RaiseNPCNation extends \sammo\Event\Action
         $cityCnt = count($targetCities);
 
         if ($cityCnt == 0) {
-            $target = Util::choiceRandom($cities);
+            $target = $rng->choice($cities);
             $randCity = [];
             foreach (static::CITY_KEYS as $key) {
                 $randCity[$key] = $target["{$key}_max"];
@@ -136,7 +138,7 @@ class RaiseNPCNation extends \sammo\Event\Action
         return Util::toInt($techSum / $nationCnt);
     }
 
-    private function buildNation(int $nationID, int $tech, array $baseCity, array $avgCity, int $genCnt, $env)
+    private function buildNation(RandUtil $rng, int $nationID, int $tech, array $baseCity, array $avgCity, int $genCnt, $env)
     {
         $db = DB::db();
 
@@ -153,11 +155,11 @@ class RaiseNPCNation extends \sammo\Event\Action
         $cityName = $baseCity['name'];
         $nationName = "ⓤ{$cityName}";
 
-        $color = Util::choiceRandom(GetNationColors());
-        $nationObj = new Nation($nationID, $nationName, $color, 0, 2000, "우리도 할 수 있다! {$cityName}군", $tech, null, 2, [$cityName]);
+        $color = $rng->choice(GetNationColors());
+        $nationObj = new Nation($rng, $nationID, $nationName, $color, 0, 2000, "우리도 할 수 있다! {$cityName}군", $tech, null, 2, [$cityName]);
         $nationObj->build($env);
 
-        $ruler = (new GeneralBuilder("{$cityName}태수", false, null, $nationID))
+        $ruler = (new GeneralBuilder($rng, "{$cityName}태수", false, null, $nationID))
             ->setOfficerLevel(12)
             ->setCityID($cityID)
             ->setNPCType(6)
@@ -172,9 +174,9 @@ class RaiseNPCNation extends \sammo\Event\Action
         $birthYear = $env['year'] - 20;
         $deadYearMin = $env['year'] + 10;
 
-        foreach (pickGeneralFromPool(DB::db(), 0, $genCnt - 1) as $pickedNPC) {
+        foreach (pickGeneralFromPool(DB::db(), $rng, 0, $genCnt - 1) as $pickedNPC) {
             //대충 10년후부터 6년마다 절반?
-            $deadYear = $deadYearMin + Util::toInt(60 * (1 - log(Util::randRange(1, 1024), 2) / 10));
+            $deadYear = $deadYearMin + Util::toInt(60 * (1 - log($rng->nextRange(1, 1024), 2) / 10));
             $newNPC = $pickedNPC->getGeneralBuilder();
             $newNPC->setNationID($nationID)
                 ->setCityID($cityID)
@@ -204,7 +206,11 @@ class RaiseNPCNation extends \sammo\Event\Action
         $occupiedCities = [];
         $npcCities = [];
 
-        $avgCity = $this->calcAvgNationCity($allCities);
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed, 'RaiseNPCNation', $env['year'], $env['month']
+        )));
+
+        $avgCity = $this->calcAvgNationCity($rng, $allCities);
 
         foreach ($allCities as $city) {
             if ($city['nation'] == 0) {
@@ -257,7 +263,7 @@ class RaiseNPCNation extends \sammo\Event\Action
 
             //TODO: 거리 측정
             $lastNationID += 1;
-            $this->buildNation($lastNationID, $avgTech, $emptyCity, $avgCity, $avgGenCnt, $env);
+            $this->buildNation($rng, $lastNationID, $avgTech, $emptyCity, $avgCity, $avgGenCnt, $env);
             $npcCities[$cityID] = $emptyCity;
             $npcCitiesID[] = $cityID;
         }

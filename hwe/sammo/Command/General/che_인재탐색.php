@@ -109,7 +109,7 @@ class che_인재탐색 extends Command\GeneralCommand
         return $foundProp;
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -128,14 +128,14 @@ class che_인재탐색 extends Command\GeneralCommand
         $totalNpcCnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4');
 
         $foundProp = $this->calcFoundProp($env['maxgeneral'], $totalGenCnt, $totalNpcCnt);
-        $foundNpc = Util::randBool($foundProp);
+        $foundNpc = $rng->nextBool($foundProp);
 
         $logger = $general->getLogger();
 
         if (!$foundNpc) {
             $logger->pushGeneralActionLog("인재를 찾을 수 없었습니다. <1>$date</>");
 
-            $incStat = Util::choiceRandomUsingWeight([
+            $incStat = $rng->choiceUsingWeight([
                 'leadership_exp' => $general->getLeadership(false, false, false, false),
                 'strength_exp' => $general->getStrength(false, false, false, false),
                 'intel_exp' => $general->getIntel(false, false, false, false)
@@ -152,7 +152,7 @@ class che_인재탐색 extends Command\GeneralCommand
             $general->increaseVar($incStat, 1);
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
-            tryUniqueItemLottery($general);
+            tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
             $general->applyDB($db);
             return true;
         }
@@ -163,9 +163,9 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $scoutType = "발견";
 
-        $age = Util::randRangeInt(20, 25);
+        $age = $rng->nextRangeInt(20, 25);
         $birthYear = $env['year'] - $age;
-        $deathYear = $env['year'] + Util::randRangeInt(10, 50);
+        $deathYear = $env['year'] + $rng->nextRangeInt(10, 50);
 
         $avgGen = $db->queryFirstRow(
             'SELECT avg(dedication) as ded,avg(experience) as exp,
@@ -175,7 +175,7 @@ class che_인재탐색 extends Command\GeneralCommand
 
         $pickTypeList = ['무' => 6, '지' => 6, '무지' => 3];
 
-        $pickedNPC = pickGeneralFromPool($db, 0, 1)[0];
+        $pickedNPC = pickGeneralFromPool($db, $rng, 0, 1)[0];
         $newNPC = $pickedNPC->getGeneralBuilder();
 
         $newNPC->setSpecial('None', 'None');
@@ -200,7 +200,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다!");
         $logger->pushGeneralHistoryLog("<Y>$npcName</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
-        $incStat = Util::choiceRandomUsingWeight([
+        $incStat = $rng->choiceUsingWeight([
             'leadership_exp' => $general->getLeadership(false, false, false, false),
             'strength_exp' => $general->getStrength(false, false, false, false),
             'intel_exp' => $general->getIntel(false, false, false, false)
@@ -218,7 +218,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $general->increaseVar($incStat, 3);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
         return true;
     }

@@ -27,7 +27,7 @@ class ScoutMessage extends Message{
         }
 
         parent::__construct(...func_get_args());
-        
+
         if(Util::array_get($msgOption['used'])){
             $this->validScout = false;
         }
@@ -66,7 +66,7 @@ class ScoutMessage extends Message{
         $general = \sammo\General::createGeneralObjFromDB($receiverID, null, 2);
 
         $logger = $general->getLogger();
-        
+
         list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
 
         if($result !== self::ACCEPTED){
@@ -88,7 +88,7 @@ class ScoutMessage extends Message{
             return self::DECLINED;
         }
 
-        $commandObj->run();
+        $commandObj->run(NoRNG::rngInstance());
         $commandObj->setNextAvailable();
 
         //메시지 비 활성화
@@ -98,9 +98,9 @@ class ScoutMessage extends Message{
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $newMsg = new Message(
-            self::MSGTYPE_PRIVATE, 
-            $this->src, 
-            $this->dest, 
+            self::MSGTYPE_PRIVATE,
+            $this->src,
+            $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 수락",
             new \DateTime(),
             new \DateTime('9999-12-31'),
@@ -120,9 +120,9 @@ class ScoutMessage extends Message{
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $newMsg = new Message(
-            self::MSGTYPE_PRIVATE, 
-            $this->src, 
-            $this->dest, 
+            self::MSGTYPE_PRIVATE,
+            $this->src,
+            $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 거부",
             new \DateTime(),
             new \DateTime('9999-12-31'),
@@ -155,7 +155,7 @@ class ScoutMessage extends Message{
         $josaYi = JosaUtil::pick($this->dest->generalName, '이');
         (new ActionLogger($receiverID, 0, $year, $month))->pushGeneralActionLog("{$this->src->nationName}</>{$josaRo} 망명을 거부했습니다.", ActionLogger::PLAIN);
         (new ActionLogger($this->src->generalID, 0, $year, $month))->pushGeneralActionLog("<Y>{$this->dest->generalName}</>{$josaYi} 등용을 거부했습니다.", ActionLogger::PLAIN);
-        $this->_declineMessage();        
+        $this->_declineMessage();
 
         return self::DECLINED;
     }
@@ -200,18 +200,18 @@ class ScoutMessage extends Message{
         $destNationInfo = getNationStaticInfo($destGeneral['nation']);
 
         $src = new MessageTarget(
-            $srcGeneralID, 
+            $srcGeneralID,
             $srcGeneral['name'],
-            $srcGeneral['nation'], 
-            $srcNationInfo['name'], 
+            $srcGeneral['nation'],
+            $srcNationInfo['name'],
             $srcNationInfo['color']
         );
 
         $dest = new MessageTarget(
-            $destGeneralID, 
+            $destGeneralID,
             $destGeneral['name'],
             $destGeneral['nation'],
-            $destNationInfo['name'], 
+            $destNationInfo['name'],
             $destNationInfo['color']
         );
 

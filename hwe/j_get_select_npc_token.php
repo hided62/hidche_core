@@ -110,10 +110,17 @@ foreach($db->queryFirstColumn('SELECT pick_result FROM select_npc_token WHERE `o
     }
 }
 
+$rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+    UniqueConst::$hiddenSeed,
+    'SelectNPCToken',
+    $userID,
+    $now,
+)));
+
 $pickLimit = min(count($candidates), 5);
 
 while(count($pickResult) < $pickLimit){
-    $generalID = Util::choiceRandomUsingWeight($weight);
+    $generalID = $rng->choiceUsingWeight($weight);
     if(!key_exists($generalID, $pickResult)){
         $pickResult[$generalID] = $candidates[$generalID];
     }

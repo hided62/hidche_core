@@ -9,6 +9,8 @@ use sammo\Scenario\NPC;
 
 class GeneralAI
 {
+    protected RandUtil $rng;
+
     /** @var General */
     protected $general;
     protected array $city;
@@ -94,6 +96,14 @@ class GeneralAI
         }
         $this->city = $city;
 
+        $this->rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'GeneralAI',
+            $this->env['year'],
+            $this->env['month'],
+            $general->getID(),
+        )));
+
         $this->nation = $db->queryFirstRow(
             'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,chief_set,type,aux FROM nation WHERE nation = %i',
             $general->getNationID()
@@ -161,7 +171,7 @@ class GeneralAI
         if ($strength >= $intel) {
             $genType = self::t무장;
             if ($intel >= $strength * 0.8) {  //무지장
-                if (Util::randBool($intel / $strength / 2)) {
+                if ($this->rng->nextBool($intel / $strength / 2)) {
                     $genType |= self::t지장;
                 }
             }
@@ -169,7 +179,7 @@ class GeneralAI
         } else {
             $genType = self::t지장;
             if ($strength >= $intel * 0.8) {  //지무장
-                if (Util::randBool($strength / $intel / 2)) {
+                if ($this->rng->nextBool($strength / $intel / 2)) {
                     $genType |= self::t무장;
                 }
             }
@@ -310,19 +320,19 @@ class GeneralAI
 
             if (!key_exists($fromCityID, $this->warRoute) && !key_exists($toCityID, $this->warRoute)) {
                 //공격 루트 상실, 전방 아무데나
-                $troopCandidate[] = [$leaderID, Util::choiceRandom($this->frontCities)['city']];
+                $troopCandidate[] = [$leaderID, $this->rng->choice($this->frontCities)['city']];
                 continue;
             }
 
             if (!key_exists($toCityID, $this->warRoute[$fromCityID])) {
                 //공격 루트 상실, 전방 아무데나
-                $troopCandidate[] = [$leaderID, Util::choiceRandom($this->frontCities)['city']];
+                $troopCandidate[] = [$leaderID, $this->rng->choice($this->frontCities)['city']];
                 continue;
             }
 
             if (key_exists($fromCityID, $this->supplyCities) && key_exists($toCityID, $this->supplyCities)) {
                 //점령 완료, 전방 아무데나
-                $troopCandidate[] = [$leaderID, Util::choiceRandom($this->frontCities)['city']];
+                $troopCandidate[] = [$leaderID, $this->rng->choice($this->frontCities)['city']];
                 continue;
             }
 
@@ -354,7 +364,7 @@ class GeneralAI
                     $targetCityID = $nextCityCandidate[0];
                     continue;
                 }
-                $targetCityID = Util::choiceRandom($nextCityCandidate);
+                $targetCityID = $this->rng->choice($nextCityCandidate);
             }
 
             $troopCandidate[] = ['destGenaralID' => $leaderID, 'destCityID' => $targetCityID];
@@ -364,7 +374,7 @@ class GeneralAI
             return null;
         }
 
-        $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($troopCandidate));
+        $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, $this->rng->choice($troopCandidate));
         if (!$cmd->hasFullConditionMet()) {
             return null;
         }
@@ -450,8 +460,8 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID' => Util::choiceRandom($troopCandidate)->getID(),
-            'destCityID' => Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID' => $this->rng->choice($troopCandidate)->getID(),
+            'destCityID' => $this->rng->choice($cityCandidates)['city']
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -503,8 +513,8 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID' => Util::choiceRandom($troopCandidate)->getID(),
-            'destCityID' => Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID' => $this->rng->choice($troopCandidate)->getID(),
+            'destCityID' => $this->rng->choice($cityCandidates)['city']
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -612,8 +622,8 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID' => Util::choiceRandom($generalCadidates)->getID(),
-            'destCityID' => Util::choiceRandom($cityCandidates)['city']
+            'destGeneralID' => $this->rng->choice($generalCadidates)->getID(),
+            'destCityID' => $this->rng->choice($cityCandidates)['city']
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -663,7 +673,7 @@ class GeneralAI
         }
 
         /** @var General */
-        $pickedGeneral = Util::choiceRandom($generalCadidates);
+        $pickedGeneral = $this->rng->choice($generalCadidates);
         $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
         if (!$this->generalPolicy->can한계징병) {
             $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
@@ -717,7 +727,7 @@ class GeneralAI
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
             'destGeneralID' => $pickedGeneral->getID(),
-            'destCityID' => Util::choiceRandomUsingWeight($recruitableCityList)
+            'destCityID' => $this->rng->choiceUsingWeight($recruitableCityList)
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -762,9 +772,9 @@ class GeneralAI
             }
 
             if (in_array($this->dipState, [self::d직전, self::d전쟁]) && count($this->frontCities) > 2) {
-                $selCity = Util::choiceRandom($this->frontCities);
+                $selCity = $this->rng->choice($this->frontCities);
             } else {
-                $selCity = Util::choiceRandom($this->supplyCities);
+                $selCity = $this->rng->choice($this->supplyCities);
             }
             //고립된 장수가 많을 수록 발령 확률 증가
             $args[] = [
@@ -776,7 +786,7 @@ class GeneralAI
             return null;
         }
 
-        $arg = Util::choiceRandom($args);
+        $arg = $this->rng->choice($args);
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, $arg);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -835,8 +845,8 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID' => Util::choiceRandom($generalCandidates)->getID(),
-            'destCityID' => Util::choiceRandomUsingWeight($cityCandidates)
+            'destGeneralID' => $this->rng->choice($generalCandidates)->getID(),
+            'destCityID' => $this->rng->choiceUsingWeight($cityCandidates)
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -898,9 +908,9 @@ class GeneralAI
         }
 
         /** @var General */
-        $destGeneral = Util::choiceRandom($generalCandidates);
+        $destGeneral = $this->rng->choice($generalCandidates);
         $srcCity = $this->supplyCities[$destGeneral->getCityID()];
-        $destCity = $this->supplyCities[Util::choiceRandomUsingWeight($cityCandidiates)];
+        $destCity = $this->supplyCities[$this->rng->choiceUsingWeight($cityCandidiates)];
 
         if ($srcCity['dev'] <= $destCity['dev']) {
             return null;
@@ -962,7 +972,7 @@ class GeneralAI
         }
 
         /** @var General */
-        $pickedGeneral = Util::choiceRandom($generalCadidates);
+        $pickedGeneral = $this->rng->choice($generalCadidates);
         $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
         if (!$this->generalPolicy->can한계징병) {
             $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
@@ -1020,7 +1030,7 @@ class GeneralAI
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
             'destGeneralID' => $pickedGeneral->getID(),
-            'destCityID' => Util::choiceRandomUsingWeight($recruitableCityList)
+            'destCityID' => $this->rng->choiceUsingWeight($recruitableCityList)
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -1042,7 +1052,7 @@ class GeneralAI
             if ($lostGeneral->getNPCType() < 2 || $lostGeneral->getNPCType() == 5) {
                 continue;
             }
-            $selCity = Util::choiceRandom($this->supplyCities);
+            $selCity = $this->rng->choice($this->supplyCities);
             //고립된 장수가 많을 수록 발령 확률 증가
             $args[] = [
                 'destGeneralID' => $lostGeneral->getID(),
@@ -1052,7 +1062,7 @@ class GeneralAI
         if (!$args) {
             return null;
         }
-        $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, Util::choiceRandom($args));
+        $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, $this->rng->choice($args));
         if (!$cmd->hasFullConditionMet()) {
             return null;
         }
@@ -1111,8 +1121,8 @@ class GeneralAI
         }
 
         $cmd = buildNationCommandClass('che_발령', $this->general, $this->env, $lastTurn, [
-            'destGeneralID' => Util::choiceRandom($generalCandidates)->getID(),
-            'destCityID' => Util::choiceRandomUsingWeight($cityCandidates)
+            'destGeneralID' => $this->rng->choice($generalCandidates)->getID(),
+            'destCityID' => $this->rng->choiceUsingWeight($cityCandidates)
         ]);
 
         if (!$cmd->hasFullConditionMet()) {
@@ -1170,9 +1180,9 @@ class GeneralAI
         }
 
         /** @var General */
-        $destGeneral = Util::choiceRandom($generalCandidates);
+        $destGeneral = $this->rng->choice($generalCandidates);
         $srcCity = $this->supplyCities[$destGeneral->getCityID()];
-        $destCity = $this->supplyCities[Util::choiceRandomUsingWeight($cityCandidiates)];
+        $destCity = $this->supplyCities[$this->rng->choiceUsingWeight($cityCandidiates)];
 
         if ($srcCity['dev'] <= $destCity['dev']) {
             return null;
@@ -1269,7 +1279,7 @@ class GeneralAI
             $this->general,
             $this->env,
             $lastTurn,
-            Util::choiceRandomUsingWeightPair($candidateArgs)
+            $this->rng->choiceUsingWeightPair($candidateArgs)
         );
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -1376,7 +1386,7 @@ class GeneralAI
             $this->general,
             $this->env,
             $lastTurn,
-            Util::choiceRandomUsingWeightPair($candidateArgs)
+            $this->rng->choiceUsingWeightPair($candidateArgs)
         );
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -1469,7 +1479,7 @@ class GeneralAI
             $this->general,
             $this->env,
             $lastTurn,
-            Util::choiceRandomUsingWeightPair($candidateArgs)
+            $this->rng->choiceUsingWeightPair($candidateArgs)
         );
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -1590,7 +1600,7 @@ class GeneralAI
             $this->general,
             $this->env,
             $lastTurn,
-            Util::choiceRandomUsingWeightPair($candidateArgs)
+            $this->rng->choiceUsingWeightPair($candidateArgs)
         );
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -1720,7 +1730,7 @@ class GeneralAI
             $this->general,
             $this->env,
             $lastTurn,
-            Util::choiceRandomUsingWeightPair($candidateArgs)
+            $this->rng->choiceUsingWeightPair($candidateArgs)
         );
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -1888,7 +1898,7 @@ class GeneralAI
         $trialProp /= 4;
         $trialProp = $trialProp ** 6;
 
-        if (!Util::randBool($trialProp)) {
+        if (!$this->rng->nextBool($trialProp)) {
             return null;
         }
 
@@ -1924,14 +1934,14 @@ class GeneralAI
             if (!$lowTargetNations) {
                 return null;
             }
-            if (Util::randBool(1 / count($lowTargetNations))) {
+            if ($this->rng->nextBool(1 / count($lowTargetNations))) {
                 return null;
             }
             $nations = $warNations;
         }
 
         $cmd = buildNationCommandClass('che_선전포고', $this->general, $this->env, $lastTurn, [
-            'destNationID' => Util::choiceRandomUsingWeight($nations)
+            'destNationID' => $this->rng->choiceUsingWeight($nations)
         ]);
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -2063,7 +2073,7 @@ class GeneralAI
                     $candidates[] = $stopID;
                 }
             }
-            $targetCityID = Util::choiceRandom($candidates);
+            $targetCityID = $this->rng->choice($candidates);
         }
 
         $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, [
@@ -2098,7 +2108,7 @@ class GeneralAI
 
         $cmdList = [];
 
-        if (($nation['rice'] < GameConst::$baserice) && Util::randBool(0.3)) {
+        if (($nation['rice'] < GameConst::$baserice) && $this->rng->nextBool(0.3)) {
             return null;
         }
 
@@ -2179,7 +2189,7 @@ class GeneralAI
             return null;
         }
 
-        return Util::choiceRandomUsingWeightPair($cmdList);
+        return $this->rng->choiceUsingWeightPair($cmdList);
     }
 
     protected function do긴급내정(): ?GeneralCommand
@@ -2198,14 +2208,14 @@ class GeneralAI
 
         $city = $this->city;
 
-        if ($city['trust'] < 70 && Util::randBool($leadership / GameConst::$chiefStatMin)) {
+        if ($city['trust'] < 70 && $this->rng->nextBool($leadership / GameConst::$chiefStatMin)) {
             $cmd = buildGeneralCommandClass('che_주민선정', $general, $env);
             if ($cmd->hasFullConditionMet()) {
                 return $cmd;
             }
         }
 
-        if ($city['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation && Util::randBool($leadership / GameConst::$chiefStatMin / 2)) {
+        if ($city['pop'] < $this->nationPolicy->minNPCRecruitCityPopulation && $this->rng->nextBool($leadership / GameConst::$chiefStatMin / 2)) {
             $cmd = buildGeneralCommandClass('che_정착장려', $general, $env);
             if ($cmd->hasFullConditionMet()) {
                 return $cmd;
@@ -2233,7 +2243,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if (($nation['rice'] < GameConst::$baserice) && Util::randBool(0.3)) {
+        if (($nation['rice'] < GameConst::$baserice) && $this->rng->nextBool(0.3)) {
             return null;
         }
 
@@ -2241,7 +2251,7 @@ class GeneralAI
         $isSpringSummer = $this->env['month'] <= 6;
         $cmdList = [];
 
-        if (Util::randBool(0.3)) {
+        if ($this->rng->nextBool(0.3)) {
             return null;
         }
 
@@ -2324,7 +2334,7 @@ class GeneralAI
             return null;
         }
 
-        $cmd = Util::choiceRandomUsingWeightPair($cmdList);
+        $cmd = $this->rng->choiceUsingWeightPair($cmdList);
         return $cmd;
     }
 
@@ -2474,7 +2484,7 @@ class GeneralAI
 
             $maxPop = $city['pop_max'] - $this->nationPolicy->minNPCRecruitCityPopulation;
             if (($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) &&
-                (Util::randF($remainPop / $maxPop))
+                ($this->rng->nextFloat1($remainPop / $maxPop))
             ) {
                 return null;
             }
@@ -2516,7 +2526,7 @@ class GeneralAI
                 $availableArmType[GameUnitConst::T_WIZARD] = $dex[GameUnitConst::T_WIZARD] * $this->fullIntel * 3;
             }
 
-            $armType = Util::choiceRandomUsingWeight($availableArmType);
+            $armType = $this->rng->choiceUsingWeight($availableArmType);
         }
 
 
@@ -2539,7 +2549,7 @@ class GeneralAI
         }
 
         if ($types) {
-            $type = Util::choiceRandomUsingWeight($types);
+            $type = $this->rng->choiceUsingWeight($types);
         } else {
             throw new MustNotBeReachedException('에러:' . print_r([$general->getName(), $general->getAuxVar('armType'), $armType, $cities, $regions, $relYear, $tech], true));
         }
@@ -2636,7 +2646,7 @@ class GeneralAI
         if (!$cmdList) {
             return null;
         }
-        return Util::choiceRandomUsingWeightPair($cmdList);
+        return $this->rng->choiceUsingWeightPair($cmdList);
     }
 
     public function do소집해제(): ?GeneralCommand
@@ -2650,7 +2660,7 @@ class GeneralAI
         if ($this->general->getVar('crew') == 0) {
             return null;
         }
-        if (Util::randBool(0.75)) {
+        if ($this->rng->nextBool(0.75)) {
             return null;
         }
         $cmd = buildGeneralCommandClass('che_소집해제', $this->general, $this->env);
@@ -2675,7 +2685,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if (($nation['rice'] < GameConst::$baserice) && Util::randBool(0.7)) {
+        if (($nation['rice'] < GameConst::$baserice) && $this->rng->nextBool(0.7)) {
             return null;
         }
 
@@ -2724,7 +2734,7 @@ class GeneralAI
             throw new \RuntimeException('출병 불가' . $cityID . var_export($attackableNations, true) . var_export($nearCities, true));
         }
 
-        $cmd = buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => Util::choiceRandom($attackableCities)]);
+        $cmd = buildGeneralCommandClass('che_출병', $general, $this->env, ['destCityID' => $this->rng->choice($attackableCities)]);
         if (!$cmd->hasFullConditionMet()) {
             return null;
         }
@@ -2796,7 +2806,7 @@ class GeneralAI
             if ($genRes < $reqRes * 1.5) {
                 continue;
             }
-            if ($reqRes > 0 && !Util::randBool(($genRes / $reqRes) - 0.5)) {
+            if ($reqRes > 0 && !$this->rng->nextBool(($genRes / $reqRes) - 0.5)) {
                 continue;
             }
             $amount = $genRes - $reqRes;
@@ -2813,7 +2823,7 @@ class GeneralAI
             return null;
         }
 
-        $cmd = buildGeneralCommandClass('che_헌납', $general, $this->env, Util::choiceRandomUsingWeightPair($args));
+        $cmd = buildGeneralCommandClass('che_헌납', $general, $this->env, $this->rng->choiceUsingWeightPair($args));
         if (!$cmd->hasFullConditionMet()) {
             return null;
         }
@@ -2915,7 +2925,7 @@ class GeneralAI
 
         $cmd = buildGeneralCommandClass('che_NPC능동', $this->general, $this->env, [
             'optionText' => '순간이동',
-            'destCityID' => Util::choiceRandomUsingWeight($recruitableCityList),
+            'destCityID' => $this->rng->choiceUsingWeight($recruitableCityList),
         ]);
 
 
@@ -2963,7 +2973,7 @@ class GeneralAI
 
         $cmd = buildGeneralCommandClass('che_NPC능동', $this->general, $this->env, [
             'optionText' => '순간이동',
-            'destCityID' => Util::choiceRandomUsingWeight($candidateCities),
+            'destCityID' => $this->rng->choiceUsingWeight($candidateCities),
         ]);
 
 
@@ -2981,7 +2991,7 @@ class GeneralAI
         }
 
         $city = $this->city;
-        if (Util::randBool(0.6)) {
+        if ($this->rng->nextBool(0.6)) {
             return null;
         }
 
@@ -3002,7 +3012,7 @@ class GeneralAI
             return null;
         }
 
-        if (!Util::randBool($warpProp)) {
+        if (!$this->rng->nextBool($warpProp)) {
             return null;
         }
 
@@ -3037,7 +3047,7 @@ class GeneralAI
 
         $cmd = buildGeneralCommandClass('che_NPC능동', $this->general, $this->env, [
             'optionText' => '순간이동',
-            'destCityID' => Util::choiceRandomUsingWeight($candidateCities),
+            'destCityID' => $this->rng->choiceUsingWeight($candidateCities),
         ]);
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -3068,7 +3078,7 @@ class GeneralAI
         $general = $this->general;
 
         if ($general->getNPCType() == 5) {
-            $newKillTurn = ($general->getVar('killturn') + Util::randRangeInt(2, 4)) % 5;
+            $newKillTurn = ($general->getVar('killturn') + $this->rng->nextRangeInt(2, 4)) % 5;
             $newKillTurn += 70;
             $general->setVar('killturn', $newKillTurn);
         }
@@ -3121,7 +3131,7 @@ class GeneralAI
             if (!$candidateCities) {
                 return null;
             }
-            $movingTargetCityID = Util::choiceRandomUsingWeightPair($candidateCities);
+            $movingTargetCityID = $this->rng->choiceUsingWeightPair($candidateCities);
             $general->setAuxVar('movingTargetCityID', $movingTargetCityID);
         }
 
@@ -3149,7 +3159,7 @@ class GeneralAI
         }
 
         $cmd = buildGeneralCommandClass('che_이동', $general, $this->env, [
-            'destCityID' => Util::choiceRandomUsingWeightPair($candidateCities)
+            'destCityID' => $this->rng->choiceUsingWeightPair($candidateCities)
         ]);
         if (!$cmd->hasFullConditionMet()) {
             return null;
@@ -3173,7 +3183,7 @@ class GeneralAI
         }
 
         $currentCityLevel = CityConst::byID($general->getCityID())->level;
-        if (($currentCityLevel < 5 || 6 < $currentCityLevel) && Util::randBool(0.5)) {
+        if (($currentCityLevel < 5 || 6 < $currentCityLevel) && $this->rng->nextBool(0.5)) {
             return null;
         }
 
@@ -3199,7 +3209,7 @@ class GeneralAI
             if ($cityLevel < 5 || 6 < $cityLevel) {
                 continue;
             }
-            if ($dist == 3 && Util::randBool()) {
+            if ($dist == 3 && $this->rng->nextBool()) {
                 continue;
             }
             $availableNearCity = true;
@@ -3209,7 +3219,7 @@ class GeneralAI
             return null;
         }
 
-        $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
+        $prop = $this->rng->nextFloat1() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
         $ratio = ($this->fullLeadership + $this->fullStrength + $this->fullIntel) / 3;
 
 
@@ -3219,7 +3229,7 @@ class GeneralAI
 
         //XXX: 건국기한 2년
         $more = Util::valueFit(3 - $this->env['year'] + $this->env['init_year'], 1, 3);
-        if (!Util::randBool(0.0075 * $more)) {
+        if (!$this->rng->nextBool(0.0075 * $more)) {
             return null;
         }
 
@@ -3245,8 +3255,8 @@ class GeneralAI
 
     protected function do건국(): ?GeneralCommand
     {
-        $nationType = Util::choiceRandom(GameConst::$availableNationType);
-        $nationColor = Util::choiceRandom(array_keys(GetNationColors()));
+        $nationType = $this->rng->choice(GameConst::$availableNationType);
+        $nationColor = $this->rng->choice(array_keys(GetNationColors()));
         $cmd = buildGeneralCommandClass('che_건국', $this->general, $this->env, [
             'nationName' => "㉿" . mb_substr($this->general->getName(), 1),
             'nationType' => $nationType,
@@ -3300,7 +3310,7 @@ class GeneralAI
             }
         }
 
-        if (Util::randBool(0.3)) {
+        if ($this->rng->nextBool(0.3)) {
             if ($env['startyear'] + 3 > $env['year']) {
                 //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
                 $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
@@ -3309,7 +3319,7 @@ class GeneralAI
                     return null;
                 }
 
-                if (Util::randBool(pow(1 / ($nationCnt + 1) / pow($notFullNationCnt, 3), 1 / 4))) {
+                if ($this->rng->nextBool(pow(1 / ($nationCnt + 1) / pow($notFullNationCnt, 3), 1 / 4))) {
                     return null;
                 }
             }
@@ -3327,10 +3337,10 @@ class GeneralAI
             return $cmd;
         }
 
-        if (Util::randBool(0.2)) {
+        if ($this->rng->nextBool(0.2)) {
             $paths = array_keys(CityConst::byID($city['city'])->path);
 
-            $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => Util::choiceRandom($paths)]);
+            $cmd = buildGeneralCommandClass('che_이동', $general, $env, ['destCityID' => $this->rng->choice($paths)]);
             if (!$cmd->hasFullConditionMet()) {
                 return null;
             }
@@ -3350,7 +3360,7 @@ class GeneralAI
 
         if ($general->getNationID() == 0) {
             $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
-            if (!$cmd->hasFullConditionMet() || Util::randBool()) {
+            if (!$cmd->hasFullConditionMet() || $this->rng->nextBool()) {
                 $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
             }
             return $cmd;
@@ -3378,7 +3388,7 @@ class GeneralAI
         $general = $this->general;
         if ($general->getNationID() == 0) {
             $cmd = buildGeneralCommandClass('che_인재탐색', $general, $this->env);
-            if (!$cmd->hasFullConditionMet() || Util::randBool(0.8)) {
+            if (!$cmd->hasFullConditionMet() || $this->rng->nextBool(0.8)) {
                 $cmd = buildGeneralCommandClass('che_견문', $general, $this->env);
             }
             return $cmd;
@@ -3395,7 +3405,7 @@ class GeneralAI
         }
 
 
-        $cmd = buildGeneralCommandClass(Util::choiceRandom($candidate), $this->general, $this->env);
+        $cmd = buildGeneralCommandClass($this->rng->choice($candidate), $this->general, $this->env);
         if (!$cmd->hasFullConditionMet()) {
             return buildGeneralCommandClass('che_물자조달', $this->general, $this->env);
         }
@@ -3646,7 +3656,7 @@ class GeneralAI
 
         //특별 메세지 있는 경우 출력
         $term = $this->env['turnterm'];
-        if ($general->getVar('npcmsg') && Util::randBool(GameConst::$npcMessageFreqByDay * $term / (60 * 24))) {
+        if ($general->getVar('npcmsg') && $this->rng->nextBool(GameConst::$npcMessageFreqByDay * $term / (60 * 24))) {
             $src = new MessageTarget(
                 $general->getID(),
                 $general->getVar('name'),
@@ -3830,16 +3840,16 @@ class GeneralAI
                 /** @var General */
                 if ($this->npcWarGenerals) {
                     /** @var General */
-                    $randGeneral = Util::choiceRandom($this->npcWarGenerals);
+                    $randGeneral = $this->rng->choice($this->npcWarGenerals);
                 } else if ($this->npcCivilGenerals) {
                     /** @var General */
-                    $randGeneral = Util::choiceRandom($this->npcCivilGenerals);
+                    $randGeneral = $this->rng->choice($this->npcCivilGenerals);
                 } else if ($this->userWarGenerals) {
                     /** @var General */
-                    $randGeneral = Util::choiceRandom($this->userWarGenerals);
+                    $randGeneral = $this->rng->choice($this->userWarGenerals);
                 } else if ($this->userCivilGenerals) {
                     /** @var General */
-                    $randGeneral = Util::choiceRandom($this->userCivilGenerals);
+                    $randGeneral = $this->rng->choice($this->userCivilGenerals);
                 } else {
                     break;
                 }
@@ -3987,10 +3997,10 @@ class GeneralAI
             if (!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)) {
                 $newChiefProb = 1;
             } else {
-                $newChiefProb = Util::randF(0.1);
+                $newChiefProb = $this->rng->nextFloat1(0.1);
             }
 
-            if ($newChiefProb < 1 && !Util::randF($newChiefProb)) {
+            if ($newChiefProb < 1 && !$this->rng->nextFloat1($newChiefProb)) {
                 continue;
             }
 

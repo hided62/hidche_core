@@ -430,6 +430,7 @@ class Util extends \utilphp\util
 
     /**
      * [0.0, 1.0] 사이의 선형 랜덤 float
+     * @deprecated
      * @return float
      */
     public static function randF()
@@ -439,6 +440,7 @@ class Util extends \utilphp\util
 
     /**
      * [min, max] 사이의 선형 랜덤 float
+     * @deprecated
      * @return float
      */
     public static function randRange(float $min, float $max)
@@ -449,6 +451,7 @@ class Util extends \utilphp\util
     /**
      * [min, max] 사이의 선형 랜덤 int
      * 현재는 rand(min, max)와 동일
+     * @deprecated
      * @return int
      */
     public static function randRangeInt(int $min, int $max){
@@ -457,6 +460,7 @@ class Util extends \utilphp\util
 
     /**
      * $prob의 확률로 true를 반환
+     * @deprecated
      * @return boolean
      */
     public static function randBool($prob = 0.5)
@@ -501,6 +505,7 @@ class Util extends \utilphp\util
      * @param array $items 각 수치의 비중
      *
      * @return int|string 선택된 랜덤 값의 key값. 단순 배열인 경우에는 index
+     * @deprecated
      */
     public static function choiceRandomUsingWeight(array $items)
     {
@@ -533,6 +538,7 @@ class Util extends \utilphp\util
      *
      * @param array<{0:array|object,1:float|int}> $items 각 수치와 비중. [값, weight] 으로 보관
      * @return array|object 선택된 랜덤 값의 첫번째 값
+     * @deprecated
      */
     public static function choiceRandomUsingWeightPair(array $items)
     {
@@ -629,6 +635,7 @@ class Util extends \utilphp\util
      * @param array $items 선택하고자 하는 배열
      *
      * @return int|float|string|array|object 선택된 value값.
+     * @deprecated
      */
     public static function choiceRandom(array $items)
     {

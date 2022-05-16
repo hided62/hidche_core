@@ -6,7 +6,8 @@ use \sammo\{
     General, GameConst,
     ActionLogger,
     LastTurn,
-    NotInheritedMethodException
+    NotInheritedMethodException,
+    RandUtil
 };
 
 use function \sammo\getNationStaticInfo;
@@ -473,7 +474,7 @@ abstract class BaseCommand{
     abstract public function getPreReqTurn():int;
     abstract public function getPostReqTurn():int;
 
-    abstract public function run():bool;
+    abstract public function run(RandUtil $rng):bool;
 
     public function exportJSVars():array {
         return [];

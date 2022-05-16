@@ -1,31 +1,39 @@
 <?php
 namespace sammo\Event\Action;
 
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
+use sammo\UniqueConst;
+use sammo\Util;
+
 class RegNeutralNPC extends \sammo\Event\Action{
 
     /** @var \sammo\Scenario\GeneralBuilder */
     private $npc;
 
     public function __construct(
-        int $affinity, 
-        string $name, 
-        $picturePath, 
+        int $affinity,
+        string $name,
+        $picturePath,
         int $nationID,
-        $locatedCity, 
-        int $leadership, 
-        int $strength, 
-        int $intel, 
-        int $birth = 160, 
-        int $death = 300, 
+        $locatedCity,
+        int $leadership,
+        int $strength,
+        int $intel,
+        int $birth = 160,
+        int $death = 300,
         $ego = null,
-        $char = '', 
+        $char = '',
         $text = ''
     ){
+
+        $rng = new RandUtil(new LiteHashDRBG(bin2hex(random_bytes(16))));
         $this->npc=(new \sammo\Scenario\GeneralBuilder(
-            $name, 
+            $rng,
+            $name,
             false,
-            $picturePath, 
-            $nationID 
+            $picturePath,
+            $nationID
         ))
         ->setCity($locatedCity)
         ->setStat($leadership, $strength, $intel)

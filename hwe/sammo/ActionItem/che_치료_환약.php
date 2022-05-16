@@ -4,6 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\GeneralTrigger;
 use \sammo\GeneralTriggerCaller;
+use sammo\RandUtil;
 
 class che_치료_환약 extends \sammo\BaseItem{
 
@@ -23,7 +24,7 @@ class che_치료_환약 extends \sammo\BaseItem{
         );
     }
 
-    function onArbitraryAction(General $general, string $actionType, ?string $phase = null, $aux = null): ?array
+    function onArbitraryAction(General $general, RandUtil $rng, string $actionType, ?string $phase = null, $aux = null): ?array
     {
         if($actionType != '장비매매'){
             return $aux;

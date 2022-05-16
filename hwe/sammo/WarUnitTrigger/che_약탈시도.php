@@ -35,7 +35,7 @@ class che_약탈시도 extends BaseWarUnitTrigger{
         if($self->hasActivatedSkill('약탈불가')){
             return true;
         }
-        if(!Util::randBool($this->ratio)){
+        if(!$self->rng->nextBool($this->ratio)){
             return true;
         }
 

@@ -3,10 +3,11 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
-    Command
+    Command,
+    RandUtil
 };
 
 class che_파괴 extends che_화계{
@@ -15,7 +16,7 @@ class che_파괴 extends che_화계{
     static protected $statType = 'strength';
     static protected $injuryGeneral = true;
 
-    protected function affectDestCity(int $injuryCount){
+    protected function affectDestCity(RandUtil $rng, int $injuryCount){
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
@@ -29,8 +30,8 @@ class che_파괴 extends che_화계{
         $commandName = $this->getName();
 
         // 파괴
-        $defAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['def']);
-        $wallAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['wall']);
+        $defAmount = Util::valueFit($rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['def']);
+        $wallAmount = Util::valueFit($rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['wall']);
         if($defAmount < 0){ $defAmount = 0; }
         if($wallAmount < 0){ $wallAmount = 0; }
 
@@ -56,5 +57,5 @@ class che_파괴 extends che_화계{
             ActionLogger::PLAIN
         );
     }
-    
+
 }

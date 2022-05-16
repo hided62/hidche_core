@@ -6,7 +6,8 @@ use \sammo\{
     General,
     ActionLogger,
     GameConst, GameUnitConst,
-    Command
+    Command,
+    RandUtil
 };
 
 class che_탈취 extends che_화계{
@@ -15,7 +16,7 @@ class che_탈취 extends che_화계{
     static protected $statType = 'strength';
     static protected $injuryGeneral = false;
 
-    protected function affectDestCity(int $injuryCount){
+    protected function affectDestCity(RandUtil $rng, int $injuryCount){
         $general = $this->generalObj;
         $nationID = $general->getNationID();
         $date = $general->getTurnTime($general::TURNTIME_HM);
@@ -35,8 +36,8 @@ class che_탈취 extends che_화계{
         $yearCoef = sqrt(1 + ($this->env['year'] - $this->env['startyear']) / 4) / 2;
         $commRatio = $destCity['comm'] / $destCity['comm_max'];
         $agriRatio = $destCity['agri'] / $destCity['agri_max'];
-        $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef * (0.25 + $commRatio / 4);
-        $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef * (0.25 + $agriRatio / 4);
+        $gold = $rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef * (0.25 + $commRatio / 4);
+        $rice = $rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'] * $yearCoef * (0.25 + $agriRatio / 4);
 
         if($destCity['supply']){
             [$destNationGold, $destNationRice] = $db->queryFirstList('SELECT gold,rice FROM nation WHERE nation=%i', $destNationID);

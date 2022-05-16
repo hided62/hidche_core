@@ -103,7 +103,7 @@ foreach(GameConst::$generalPoolAllowOption as $allowOption){
     }
     else if($allowOption == 'ego'){
         if(!$personal || $personal == 'Random'){
-            $personal = Util::choiceRandom(GameConst::$availablePersonality);
+            $personal =  Util::choiceRandom(GameConst::$availablePersonality);
         }
         if(!array_search($personal, GameConst::$availablePersonality)){
             Json::die([

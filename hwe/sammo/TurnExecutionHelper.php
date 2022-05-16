@@ -31,7 +31,7 @@ class TurnExecutionHelper
         return $this->generalObj;
     }
 
-    public function preprocessCommand(array $env)
+    public function preprocessCommand(RandUtil $rng, array $env)
     {
         $general = $this->getGeneral();
         $caller = $general->getPreTurnExecuteTriggerList($general);
@@ -40,7 +40,7 @@ class TurnExecutionHelper
             new GeneralTrigger\che_병력군량소모($general)
         ));
 
-        $caller->fire($env);
+        $caller->fire($rng, $env);
     }
 
     public function processBlocked(): bool
@@ -68,7 +68,7 @@ class TurnExecutionHelper
         return true;
     }
 
-    public function processNationCommand(Command\NationCommand $commandObj): LastTurn
+    public function processNationCommand(RandUtil $rng, Command\NationCommand $commandObj): LastTurn
     {
         $general = $this->getGeneral();
 
@@ -89,7 +89,7 @@ class TurnExecutionHelper
                 break;
             }
 
-            $result = $commandObj->run();
+            $result = $commandObj->run($rng);
             if ($result) {
                 $commandObj->setNextAvailable();
                 break;
@@ -107,7 +107,7 @@ class TurnExecutionHelper
         return $commandObj->getResultTurn();
     }
 
-    public function processCommand(Command\GeneralCommand $commandObj, bool $autorunMode)
+    public function processCommand(RandUtil $rng, Command\GeneralCommand $commandObj, bool $autorunMode)
     {
 
         $general = $this->getGeneral();
@@ -133,7 +133,7 @@ class TurnExecutionHelper
                 break;
             }
 
-            $result = $commandObj->run();
+            $result = $commandObj->run($rng);
             if ($result) {
                 $commandObj->setNextAvailable();
                 break;
@@ -263,7 +263,14 @@ class TurnExecutionHelper
 
             $general->increaseInheritancePoint(InheritanceKey::lived_month, 1);
 
-            $turnObj->preprocessCommand($env);
+            $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                UniqueConst::$hiddenSeed,
+                'preprocess',
+                $year,
+                $month,
+                $general->getID(),
+            )));
+            $turnObj->preprocessCommand($rng, $env);
 
             if ($general->getNPCType() >= 2) {
                 $ai = new GeneralAI($turnObj->getGeneral());
@@ -286,7 +293,16 @@ class TurnExecutionHelper
                         $cityName = CityConst::byID($general->getCityID())->name;
                         LogText("NationTurn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$nationCommandObj->getBrief()}, {$nationCommandObj->reason}, ");
                     }
+                    $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                        UniqueConst::$hiddenSeed,
+                        'nationCommand',
+                        $year,
+                        $month,
+                        $general->getID(),
+                        $nationCommandObj->getRawClassName()
+                    )));
                     $resultNationTurn = $turnObj->processNationCommand(
+                        $rng,
                         $nationCommandObj
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toRaw());
@@ -307,8 +323,15 @@ class TurnExecutionHelper
                     $cityName = CityConst::byID($general->getCityID())->name;
                     LogText("turn", "General, {$general->getName()}, {$general->getID()}, {$cityName}, {$general->getStaticNation()['name']}, {$generalCommandObj->getBrief()}, {$generalCommandObj->reason}, ");
                 }
-
-                $turnObj->processCommand($generalCommandObj, $autorunMode);
+                $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                    UniqueConst::$hiddenSeed,
+                    'generalCommand',
+                    $year,
+                    $month,
+                    $general->getID(),
+                    $generalCommandObj->getRawClassName()
+                )));
+                $turnObj->processCommand($rng, $generalCommandObj, $autorunMode);
             }
             pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));
             pullGeneralCommand($general->getID());
@@ -397,6 +420,12 @@ class TurnExecutionHelper
                 return $currentTurn !== null && $lastExecuted !== $currentTurn;
             }
 
+            $monthlyRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+                UniqueConst::$hiddenSeed,
+                'monthly',
+                $gameStor->year,
+                $gameStor->month
+            )));
 
             // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
             if (!preUpdateMonthly()) {
@@ -416,25 +445,25 @@ class TurnExecutionHelper
                 processGoldIncome();
                 updateYearly();
                 updateQuaterly();
-                disaster();
-                tradeRate();
+                disaster($monthlyRng);
+                tradeRate($monthlyRng);
                 addAge();
                 // 새해 알림
                 $logger->pushGlobalActionLog("<C>{$gameStor->year}</>년이 되었습니다.");
                 $logger->flush(); //TODO: globalAction류는 전역에서 관리하는것이 좋을 듯.
             } elseif ($gameStor->month == 4) {
                 updateQuaterly();
-                disaster();
+                disaster($monthlyRng);
             } elseif ($gameStor->month == 7) {
                 processSumInheritPointRank();
                 processFall();
                 processRiceIncome();
                 updateQuaterly();
-                disaster();
-                tradeRate();
+                disaster($monthlyRng);
+                tradeRate($monthlyRng);
             } elseif ($gameStor->month == 10) {
                 updateQuaterly();
-                disaster();
+                disaster($monthlyRng);
             }
 
             // 이벤트 핸들러 동작
@@ -456,7 +485,7 @@ class TurnExecutionHelper
                 $gameStor->resetCache();
             }
 
-            postUpdateMonthly();
+            postUpdateMonthly($monthlyRng);
 
             // 다음달로 넘김
             $prevTurn = $nextTurn;

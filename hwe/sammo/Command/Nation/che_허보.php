@@ -116,7 +116,7 @@ class che_허보 extends Command\NationCommand
         return "【{$destCityName}】에 {$commandName}";
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -167,10 +167,10 @@ class che_허보 extends Command\NationCommand
             $targetLogger = $targetGeneral->getLogger();
             $targetLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);
 
-            $moveCityID = Util::choiceRandom($destNationCityList);
+            $moveCityID = $rng->choice($destNationCityList);
             if ($moveCityID == $destCityID) {
                 //현재도시면 다시 랜덤 추첨
-                $moveCityID = Util::choiceRandom($destNationCityList);
+                $moveCityID = $rng->choice($destNationCityList);
             }
 
             $targetGeneral->setVar('city', $moveCityID);

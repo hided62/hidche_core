@@ -20,6 +20,9 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
+use sammo\LiteHashDRBG;
+use sammo\RandUtil;
+use sammo\UniqueConst;
 
 class che_출병 extends Command\GeneralCommand
 {
@@ -127,7 +130,7 @@ class che_출병 extends Command\GeneralCommand
         return "{$failReason} <G><b>{$destCityName}</b></>{$josaRo} {$commandName} 실패.";
     }
 
-    public function run(): bool
+    public function run(RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -188,7 +191,7 @@ class che_출병 extends Command\GeneralCommand
             }
         } while (false);
 
-        $defenderCityID = (int) Util::choiceRandom($candidateCities);
+        $defenderCityID = (int) $rng->choice($candidateCities);
         $this->setDestCity($defenderCityID);
         $defenderCityName = $this->destCity['name'];
         $josaRo = JosaUtil::pick($defenderCityName, '로');
@@ -236,9 +239,21 @@ class che_출병 extends Command\GeneralCommand
 
         $general->applyDB($db);
 
-        processWar($general, $this->nation, $this->destCity);
 
-        tryUniqueItemLottery($general);
+        //어디로 출병하느냐에 따라 사실 결과가 다르다
+        $warRngPre = new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'war',
+            $logger->getYear(),
+            $logger->getMonth(),
+            $general->getID(),
+            $defenderCityID,
+        ));
+        $warRngSeed = bin2hex($warRngPre->nextBytes(16));
+
+        processWar($warRngSeed, $general, $this->nation, $this->destCity);
+
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;

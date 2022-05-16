@@ -20,27 +20,28 @@ abstract class AbsGeneralPool{
      * generalName
      * imgsvr
      * picture
-     * 
+     *
      * leadership
      * strength
      * intel
-     * 
+     *
      * experience
      * dedication
-     * 
+     *
      * dex[5]
-     * 
+     *
      * specialDomestic
      * specialWar
      */
 
-    public function __construct(\MeekroDB $db, array $info, string $validUntil)
+    public function __construct(\MeekroDB $db, RandUtil $rng, array $info, string $validUntil)
     {
         $this->db = $db;
         $this->info = $info;
         $this->uniqueName = $info['uniqueName'];
         $this->generalName = $info['generalName'];
         $this->builder = new GeneralBuilder(
+            $rng,
             $info['generalName'],
             $info['imgsvr'],
             $info['picture'],
@@ -97,14 +98,14 @@ abstract class AbsGeneralPool{
 
     /**
      * @param \MeekroDB $db
-     * @param int $owner 
-     * @param int $pickCnt 
+     * @param int $owner
+     * @param int $pickCnt
      * @param null|string $prefix
      * @return AbsGeneralPool[]
      */
-    static abstract public function pickGeneralFromPool(\MeekroDB $db, int $owner, int $pickCnt, ?string $prefix=null):array;
+    static abstract public function pickGeneralFromPool(\MeekroDB $db, RandUtil $rng, int $owner, int $pickCnt, ?string $prefix=null):array;
     abstract public function occupyGeneralName():bool;
-    
+
 
     abstract public static function getPoolName():string;
     abstract public static function initPool(\MeekroDB $db);

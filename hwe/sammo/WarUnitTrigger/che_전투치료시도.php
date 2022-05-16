@@ -19,13 +19,13 @@ class che_전투치료시도 extends BaseWarUnitTrigger{
         if($self->hasActivatedSkill('치료불가')){
             return true;
         }
-        if(!Util::randBool(0.4)){
+        if(!$self->rng->nextBool(0.4)){
             return true;
         }
 
         $self->activateSkill('치료');
 
-        
+
         return true;
     }
 }

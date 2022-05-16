@@ -17,6 +17,7 @@ use function sammo\tryRollbackInheritUniqueItem;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\RankColumn;
+use sammo\RandUtil;
 
 class che_화계 extends Command\GeneralCommand
 {
@@ -200,7 +201,7 @@ class che_화계 extends Command\GeneralCommand
         return "{$failReason} <G><b>{$destCityName}</b></>에 {$commandName} 실패.";
     }
 
-    protected function affectDestCity(int $injuryCount)
+    protected function affectDestCity(RandUtil $rng, int $injuryCount)
     {
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
@@ -214,8 +215,8 @@ class che_화계 extends Command\GeneralCommand
 
         $commandName = $this->getName();
 
-        $agriAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['agri']);
-        $commAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['comm']);
+        $agriAmount = Util::valueFit($rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['agri']);
+        $commAmount = Util::valueFit($rng->nextRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['comm']);
         $destCity['agri'] -= $agriAmount;
         $destCity['comm'] -= $commAmount;
 
@@ -239,7 +240,7 @@ class che_화계 extends Command\GeneralCommand
         );
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -279,12 +280,12 @@ class che_화계 extends Command\GeneralCommand
         $prob /= $dist;
         $prob = Util::valueFit($prob, 0, 0.5);
 
-        if (!Util::randBool($prob)) {
+        if (!$rng->nextBool($prob)) {
             $josaYi = JosaUtil::pick($commandName, '이');
             $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$commandName}{$josaYi} 실패했습니다. <1>$date</>");
 
-            $exp = Util::randRangeInt(1, 100);
-            $ded = Util::randRangeInt(1, 70);
+            $exp = $rng->nextRangeInt(1, 100);
+            $ded = $rng->nextRangeInt(1, 70);
 
             [$reqGold, $reqRice] = $this->getCost();
             $general->increaseVarWithLimit('gold', -$reqGold, 0);
@@ -295,18 +296,18 @@ class che_화계 extends Command\GeneralCommand
 
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
-            tryRollbackInheritUniqueItem($general);
+            tryRollbackInheritUniqueItem($rng, $general);
             $general->applyDB($db);
             return false;
         }
 
         if (static::$injuryGeneral) {
-            $injuryCount = \sammo\SabotageInjury($destCityGeneralList, '계략');
+            $injuryCount = \sammo\SabotageInjury($rng, $destCityGeneralList, '계략');
         } else {
             $injuryCount = 0;
         }
 
-        $this->affectDestCity($injuryCount);
+        $this->affectDestCity($rng, $injuryCount);
 
         $itemObj = $general->getItem();
         if ($itemObj->tryConsumeNow($general, 'GeneralCommand', '계략')) {
@@ -317,8 +318,8 @@ class che_화계 extends Command\GeneralCommand
             $general->deleteItem();
         }
 
-        $exp = Util::randRangeInt(201, 300);
-        $ded = Util::randRangeInt(141, 210);
+        $exp = $rng->nextRangeInt(201, 300);
+        $ded = $rng->nextRangeInt(141, 210);
 
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
@@ -329,7 +330,7 @@ class che_화계 extends Command\GeneralCommand
         $general->increaseRankVar(RankColumn::firenum, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($general);
+        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

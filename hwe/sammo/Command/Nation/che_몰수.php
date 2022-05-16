@@ -141,7 +141,7 @@ class che_몰수 extends Command\NationCommand
     }
 
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -168,7 +168,7 @@ class che_몰수 extends Command\NationCommand
         );
         $amountText = number_format($amount, 0);
 
-        if ($destGeneral->getNPCType() >= 2 && Util::randBool(GameConst::$npcSeizureMessageProb)) {
+        if ($destGeneral->getNPCType() >= 2 && $rng->nextBool(GameConst::$npcSeizureMessageProb)) {
             $npcTexts = [
                 '몰수를 하다니... 이것이 윗사람이 할 짓이란 말입니까...',
                 '사유재산까지 몰수해가면서 이 나라가 잘 될거라 믿습니까? 정말 이해할 수가 없군요...',
@@ -176,7 +176,7 @@ class che_몰수 extends Command\NationCommand
                 '몰수해간 내 자금... 언젠가 몰래 다시 빼내올 것이다...',
                 '몰수로 인한 사기 저하는 몰수로 얻은 물자보다 더 손해란걸 모른단 말인가!'
             ];
-            $text = Util::choiceRandom($npcTexts);
+            $text = $rng->choice($npcTexts);
             $src = new MessageTarget(
                 $destGeneral->getID(),
                 $destGeneral->getName(),

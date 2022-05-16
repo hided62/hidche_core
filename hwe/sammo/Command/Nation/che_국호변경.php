@@ -103,7 +103,7 @@ class che_국호변경 extends Command\NationCommand
         return "국호를 【{$newNationName}】{$josaRo} 변경";
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

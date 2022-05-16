@@ -22,12 +22,12 @@ class che_저지시도 extends BaseWarUnitTrigger{
         if($self->hasActivatedSkill('저지불가')){
             return true;
         }
-        
+
         $ratio = $self->getComputedAtmos() + $self->getComputedTrain();
-        if(Util::randBool($ratio / 400)){
+        if($self->rng->nextBool($ratio / 400)){
             $self->activateSkill('특수', '저지');
         }
-        
+
         return true;
     }
 }

@@ -22,7 +22,7 @@ abstract class ObjectTrigger{
         return $this;
     }
 
-    abstract public function action(?array $env=null, $arg=null):?array;
+    abstract public function action(RandUtil $rng, ?array $env=null, $arg=null):?array;
     public function getUniqueID():string{
         $priority = $this->priority;
         $fqn = static::class;

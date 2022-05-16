@@ -135,11 +135,11 @@ function getBlockLevel()
     return DB::db()->queryFirstField('select block from general where no = %i', Session::getInstance()->generalID);
 }
 
-function getRandGenName()
+function getRandGenName(RandUtil $rng)
 {
-    $firstname = Util::choiceRandom(GameConst::$randGenFirstName);
-    $middlename = Util::choiceRandom(GameConst::$randGenMiddleName);
-    $lastname = Util::choiceRandom(GameConst::$randGenLastName);
+    $firstname = $rng->choice(GameConst::$randGenFirstName);
+    $middlename = $rng->choice(GameConst::$randGenMiddleName);
+    $lastname = $rng->choice(GameConst::$randGenLastName);
 
     return "{$firstname}{$middlename}{$lastname}";
 }
@@ -1343,7 +1343,7 @@ function turnDate($curtime)
 }
 
 
-function triggerTournament()
+function triggerTournament(RandUtil $rng)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -1357,7 +1357,7 @@ function triggerTournament()
     if ($tnmt_trig == 0) {
         return;
     }
-    if (!Util::randBool(0.4)) {
+    if (!$rng->nextBool(0.4)) {
         return;
     }
 
@@ -1552,7 +1552,7 @@ function CheckHall($no)
     }
 }
 
-function giveRandomUniqueItem(General $general, string $acquireType): bool
+function giveRandomUniqueItem(RandUtil $rng, General $general, string $acquireType): bool
 {
     $db = DB::db();
     //아이템 습득 상황
@@ -1643,7 +1643,7 @@ function giveRandomUniqueItem(General $general, string $acquireType): bool
         }
     }
 
-    [$itemType, $itemCode] = Util::choiceRandomUsingWeightPair($availableUnique);
+    [$itemType, $itemCode] = $rng->choiceUsingWeightPair($availableUnique);
 
     $nationName = $general->getStaticNation()['name'];
     $generalName = $general->getName();
@@ -1722,12 +1722,12 @@ function rollbackInheritUniqueTrial(General $general, string $itemKey, string $r
     $msg->send(true);
 }
 
-function tryRollbackInheritUniqueItem(General $general): void
+function tryRollbackInheritUniqueItem(RandUtil $rng, General $general): void
 {
-    tryInheritUniqueItem($general, 'Rollback', true);
+    tryInheritUniqueItem($rng, $general, 'Rollback', true);
 }
 
-function tryInheritUniqueItem(General $general, string $acquireType = '아이템', bool $justRollback = false): bool
+function tryInheritUniqueItem(RandUtil $rng, General $general, string $acquireType = '아이템', bool $justRollback = false): bool
 {
     $ownerID = $general->getVar('owner');
     if (!$ownerID) {
@@ -1779,7 +1779,7 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
         }
         $reasons = [];
 
-        $itemType = Util::choiceRandom($availableItemTypes);
+        $itemType = $rng->choice($availableItemTypes);
 
         $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}"); //혹시 itemKey의 크기가 37이 넘을 수 있을까?
         $anyTrials = $trialStor->getAll();
@@ -1865,12 +1865,12 @@ function tryInheritUniqueItem(General $general, string $acquireType = '아이템
     $general->applyDB($db);
 
     //같은 종류의 유니크를 입찰했을 수 있으니 한번 더 검사한다.
-    tryRollbackInheritUniqueItem($general);
+    tryRollbackInheritUniqueItem($rng, $general);
 
     return true;
 }
 
-function tryUniqueItemLottery(General $general, string $acquireType = '아이템'): bool
+function tryUniqueItemLottery(RandUtil $rng, General $general, string $acquireType = '아이템'): bool
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -1915,13 +1915,13 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("유니크를 얻을 공간이 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }
-        tryRollbackInheritUniqueItem($general);
+        tryRollbackInheritUniqueItem($rng, $general);
         return false;
     }
 
     $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
     if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique) && $availableBuyUnique) {
-        $trialResult = tryInheritUniqueItem($general, $acquireType);
+        $trialResult = tryInheritUniqueItem($rng, $general, $acquireType);
         if ($trialResult) {
             return true;
         }
@@ -1956,7 +1956,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     }
 
     foreach (Util::range($maxCnt) as $_idx) {
-        if (Util::randBool($prob)) {
+        if ($rng->nextBool($prob)) {
             $result = true;
             break;
         }
@@ -1968,7 +1968,7 @@ function tryUniqueItemLottery(General $general, string $acquireType = '아이템
     }
     LogText("{$general->getName()}, {$general->getID()} 유니크 성공 {$maxCnt}", $prob);
 
-    return giveRandomUniqueItem($general, $acquireType);
+    return giveRandomUniqueItem($rng, $general, $acquireType);
 }
 
 function getAdmin()
@@ -2415,7 +2415,7 @@ function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply = true)
     return false;
 }
 
-function SabotageInjury(array $cityGeneralList, string $reason): int
+function SabotageInjury(RandUtil $rng, array $cityGeneralList, string $reason): int
 {
     $injuryCount = 0;
     $josaRo = JosaUtil::pick($reason, '로');
@@ -2427,12 +2427,12 @@ function SabotageInjury(array $cityGeneralList, string $reason): int
         /** @var General $general */
         $injuryProb = 0.3;
         $injuryProb = $general->onCalcStat($general, 'injuryProb', $injuryProb);
-        if (!Util::randBool($injuryProb)) {
+        if (!$rng->nextBool($injuryProb)) {
             continue;
         }
         $general->getLogger()->pushGeneralActionLog($text);
 
-        $general->increaseVarWithLimit('injury', Util::randRangeInt(1, 16), 0, 80);
+        $general->increaseVarWithLimit('injury', $rng->nextRangeInt(1, 16), 0, 80);
         $general->multiplyVar('crew', 0.98);
         $general->multiplyVar('atmos', 0.98);
         $general->multiplyVar('train', 0.98);
@@ -2445,7 +2445,7 @@ function SabotageInjury(array $cityGeneralList, string $reason): int
     return $injuryCount;
 }
 
-function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null)
+function getRandTurn(RandUtil $rng, $term, ?\DateTimeInterface $baseDateTime = null)
 {
     if ($baseDateTime === null) {
         $baseDateTime = new \DateTimeImmutable();
@@ -2457,13 +2457,13 @@ function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null)
         throw new MustNotBeReachedException();
     }
 
-    $randSecond = Util::randRangeInt(0, 60 * $term - 1);
-    $randFraction = Util::randRangeInt(0, 999999) / 1000000; //6자리 소수
+    $randSecond = $rng->nextRangeInt(0, 60 * $term - 1);
+    $randFraction = $rng->nextRangeInt(0, 999999) / 1000000; //6자리 소수
 
     return TimeUtil::format($baseDateTime->add(TimeUtil::secondsToDateInterval($randSecond + $randFraction)), true);
 }
 
-function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
+function getRandTurn2(RandUtil $rng, $term, ?\DateTimeInterface $baseDateTime = null)
 {
     if ($baseDateTime === null) {
         $baseDateTime = new \DateTimeImmutable();
@@ -2472,8 +2472,8 @@ function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
     } else {
         throw new MustNotBeReachedException();
     }
-    $randSecond = Util::randRangeInt(0, 60 * $term - 1);
-    $randFraction = Util::randRangeInt(0, 999999) / 1000000; //6자리 소수
+    $randSecond = $rng->nextRangeInt(0, 60 * $term - 1);
+    $randFraction = $rng->nextRangeInt(0, 999999) / 1000000; //6자리 소수
 
     return $baseDateTime->sub(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s.u');
 }

@@ -4,7 +4,7 @@ namespace sammo;
 
 class RandUtil
 {
-    public function __construct(protected RNG $rng)
+    public function __construct(public readonly RNG $rng)
     {
     }
 

@@ -110,20 +110,12 @@ $db = DB::db();
                 <td><input type=submit name=btn value='강제 사망'></td>
             </tr>
             <tr>
-                <td align=center>이벤트</td>
-                <td><input type=submit name=btn value='특기 부여'><input type=submit name=btn value='공헌치1000'><input type=submit name=btn value='경험치1000'></td>
-            </tr>
-            <tr>
                 <td align=center>이벤트2</td>
                 <td><input type=submit name=btn value='보숙10000'><input type=submit name=btn value='궁숙10000'><input type=submit name=btn value='기숙10000'><input type=submit name=btn value='귀숙10000'><input type=submit name=btn value='차숙10000'></td>
             </tr>
             <tr>
                 <td align=center>접속제한</td>
                 <td><input type=submit name=btn value='접속 허용'><input type=submit name=btn value='접속 제한'></td>
-            </tr>
-            <tr>
-                <td align=center>턴 시각 설정</td>
-                <td><input type=submit name=btn value='00턴'><input type=submit name=btn value='랜덤턴'></td>
             </tr>
             <tr>
                 <td align=center>명령 설정</td>

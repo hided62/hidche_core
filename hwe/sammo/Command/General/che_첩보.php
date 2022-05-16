@@ -120,7 +120,7 @@ class che_첩보 extends Command\GeneralCommand
         return "{$failReason} <G><b>{$destCityName}</b></>에 {$commandName} 실패.";
     }
 
-    public function run(): bool
+    public function run(\Sammo\RandUtil $rng): bool
     {
         if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -202,8 +202,8 @@ class che_첩보 extends Command\GeneralCommand
             'spy'=>Json::encode($spyInfo)
         ], 'nation=%i',$nationID);
 
-        $exp = Util::randRangeInt(1, 100);
-        $ded = Util::randRangeInt(1, 70);
+        $exp = $rng->nextRangeInt(1, 100);
+        $ded = $rng->nextRangeInt(1, 70);
 
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseInheritancePoint(InheritanceKey::active_action, 0.5);//NOTE: 첩보만 예외!
@@ -214,7 +214,7 @@ class che_첩보 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($general);
+        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

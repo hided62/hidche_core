@@ -26,7 +26,7 @@ class che_반계시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        if(!Util::randBool($this->prob)){
+        if(!$self->rng->nextBool($this->prob)){
             return true;
         }
 

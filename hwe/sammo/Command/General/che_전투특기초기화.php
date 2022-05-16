@@ -3,7 +3,7 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
@@ -32,7 +32,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         $this->minConditionConstraints=[
             ConstraintHelper::ReqGeneralValue(static::$specialType, static::$specialText, '!=', 'None', '특기가 없습니다.'),
         ];
-        
+
         $this->fullConditionConstraints=[
             ConstraintHelper::ReqGeneralValue(static::$specialType, static::$specialText, '!=', 'None', '특기가 없습니다.')
         ];
@@ -54,7 +54,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
     public function getCost():array{
         return [0, 0];
     }
-    
+
     public function getPreReqTurn():int{
         return 1;
     }
@@ -69,7 +69,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         return "새로운 적성을 찾는 중... ({$term}/{$termMax})";
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -83,7 +83,7 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         $specialName = static::$specialText;
 
         $env = $this->env;
-        
+
         $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
         $oldSpecialList = $general->getAuxVar($oldTypeKey)??[];
         $oldSpecialList[] = $general->getVar(static::$specialType);
@@ -97,11 +97,11 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("새로운 {$specialName}를 가질 준비가 되었습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

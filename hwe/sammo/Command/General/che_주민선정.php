@@ -3,12 +3,13 @@ namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General,
     ActionLogger,
     GameConst,
     LastTurn,
     GameUnitConst,
-    Command
+    Command,
+    RandUtil
 };
 
 use function \sammo\getDomesticExpLevelBonus;
@@ -40,11 +41,11 @@ class che_주민선정 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
-        
+
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->fullConditionConstraints=[
-            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::SuppliedCity(),
@@ -81,14 +82,14 @@ class che_주민선정 extends Command\GeneralCommand{
         $develCost = $this->env['develcost'] * 2;
         $reqGold = 0;
         $reqRice = $this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost);
-        
+
         return [$reqGold, Util::round($reqRice)];
     }
 
     public function getCompensationStyle():?int{
         return $this->generalObj->onCalcDomestic(static::$actionKey, 'score', 100)<=>100;
     }
-    
+
     public function getPreReqTurn():int{
         return 0;
     }
@@ -97,7 +98,7 @@ class che_주민선정 extends Command\GeneralCommand{
         return 0;
     }
 
-    protected function calcBaseScore():float{
+    protected function calcBaseScore(RandUtil $rng):float{
         $general = $this->generalObj;
 
         if(static::$statKey == 'leadership'){
@@ -106,16 +107,16 @@ class che_주민선정 extends Command\GeneralCommand{
         else{
             throw new \sammo\MustNotBeReachedException();
         }
-        
+
         $score *= getDomesticExpLevelBonus($general->getVar('explevel'));
-        $score *= Util::randRange(0.8, 1.2);
+        $score *= $rng->nextRange(0.8, 1.2);
         $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
         $score = Util::valueFit($score, 1);
 
         return $score;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -124,7 +125,7 @@ class che_주민선정 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
 
-        $score = Util::valueFit($this->calcBaseScore(), 1);
+        $score = Util::valueFit($this->calcBaseScore($rng), 1);
 
         ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, static::$statKey);
         $successRatio = $general->onCalcDomestic(static::$actionKey, 'success', $successRatio);
@@ -134,9 +135,9 @@ class che_주민선정 extends Command\GeneralCommand{
         $failRatio = Util::valueFit($failRatio, 0, 1 - $successRatio);
         $normalRatio = 1 - $failRatio - $successRatio;
 
-        $pick = Util::choiceRandomUsingWeight([
-            'fail'=>$failRatio, 
-            'success'=>$successRatio, 
+        $pick = $rng->choiceUsingWeight([
+            'fail'=>$failRatio,
+            'success'=>$successRatio,
             'normal'=>$normalRatio
         ]);
 
@@ -144,13 +145,13 @@ class che_주민선정 extends Command\GeneralCommand{
 
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $score *= CriticalScoreEx($pick);
+        $score *= CriticalScoreEx($rng, $pick);
 
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
         if($pick == 'success'){
-            updateMaxDomesticCritical($general, $score);   
+            updateMaxDomesticCritical($general, $score);
         }
         else{
             $general->setAuxVar('max_domestic_critical', 0);
@@ -187,11 +188,11 @@ class che_주민선정 extends Command\GeneralCommand{
         $general->increaseVar(static::$statKey.'_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
 
         return true;
     }
 
-    
+
 }

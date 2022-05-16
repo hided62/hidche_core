@@ -24,7 +24,7 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
         return $db->affectedRows()!=0;
     }
 
-    static public function pickGeneralFromPool(\MeekroDB $db, int $owner, int $pickCnt, ?string $prefix=null):array{
+    static public function pickGeneralFromPool(\MeekroDB $db, RandUtil $rng, int $owner, int $pickCnt, ?string $prefix=null):array{
         $oNow = new \DateTimeImmutable();
         $now = $oNow->format('Y-m-d H:i:s');
 
@@ -48,7 +48,7 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
         $result = [];
         $validUntil = TimeUtil::nowAddMinutes(2 * $gameStor->turnterm);
         while(count($result) < $pickCnt){
-            $cand = Util::choiceRandomUsingWeightPair($pool);
+            $cand = $rng->choiceUsingWeightPair($pool);
             $poolID = $cand['id'];
             if(key_exists($poolID, $result)){
                 continue;
@@ -64,7 +64,7 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
             if($db->affectedRows()==0){
                 continue;
             }
-            $result[$poolID] = new static($db, $candInfo, $validUntil);
+            $result[$poolID] = new static($db, $rng, $candInfo, $validUntil);
         }
 
         return array_values($result);

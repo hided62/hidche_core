@@ -60,7 +60,7 @@ class che_물자조달 extends Command\GeneralCommand{
         return 0;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -70,14 +70,14 @@ class che_물자조달 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        [$resName, $resKey] = Util::choiceRandom([
+        [$resName, $resKey] = $rng->choice([
             ['금', 'gold'],
             ['쌀', 'rice']
         ]);
 
         $score = $general->getLeadership() + $general->getStrength() + $general->getIntel();
         $score *= getDomesticExpLevelBonus($general->getVar('explevel'));
-        $score *= Util::randRange(0.8, 1.2);
+        $score *= $rng->nextRange(0.8, 1.2);
 
         $successRatio = 0.1;
         $failRatio = 0.3;
@@ -86,12 +86,12 @@ class che_물자조달 extends Command\GeneralCommand{
         $failRatio = $general->onCalcDomestic('조달', 'fail', $failRatio);
         $normalRatio = 1 - $failRatio - $successRatio;
 
-        $pick = Util::choiceRandomUsingWeight([
+        $pick = $rng->choiceUsingWeight([
             'fail'=>$failRatio,
             'success'=>$successRatio,
             'normal'=>$normalRatio
         ]);
-        $score *= CriticalScoreEx($pick);
+        $score *= CriticalScoreEx($rng, $pick);
         $score = $general->onCalcDomestic('조달', 'score', $score);
 
         $score = Util::round($score);
@@ -112,7 +112,7 @@ class che_물자조달 extends Command\GeneralCommand{
         $exp = $score * 0.7 / 3;
         $ded = $score * 1.0 / 3;
 
-        $incStat = Util::choiceRandomUsingWeight([
+        $incStat = $rng->choiceUsingWeight([
             'leadership_exp'=>$general->getLeadership(false, false, false, false),
             'strength_exp'=>$general->getStrength(false, false, false, false),
             'intel_exp'=>$general->getIntel(false, false, false, false)
@@ -128,7 +128,7 @@ class che_물자조달 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
 
         $general->applyDB($db);
 

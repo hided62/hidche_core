@@ -124,7 +124,7 @@ class che_초토화 extends Command\NationCommand{
         return Util::toInt($amount);
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }

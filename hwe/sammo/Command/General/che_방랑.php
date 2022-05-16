@@ -59,7 +59,7 @@ class che_방랑 extends Command\GeneralCommand{
         return 0;
     }
 
-    public function run():bool{
+    public function run(\Sammo\RandUtil $rng):bool{
         if(!$this->hasFullConditionMet()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
@@ -125,7 +125,7 @@ class che_방랑 extends Command\GeneralCommand{
         refreshNationStaticInfo();
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        tryRollbackInheritUniqueItem($general);
+        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;
