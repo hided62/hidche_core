@@ -1247,7 +1247,7 @@ function updateOnline()
     $gameStor->online_nation = join(', ', $onlineNation);
 }
 
-function addAge()
+function addAge(RandUtil $rng)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -1268,6 +1268,7 @@ function addAge()
         foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,aux from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general) {
             $generalID = $general['no'];
             $special = SpecialityHelper::pickSpecialDomestic(
+                $rng,
                 $general,
                 (Json::decode($general['aux'])['prev_types_special']) ?? []
             );
@@ -1295,6 +1296,7 @@ function addAge()
                 $updateVars['aux'] = Json::encode($generalAux);
             } else {
                 $special2 = SpecialityHelper::pickSpecialWar(
+                    $rng,
                     $general,
                     ($generalAux['prev_types_special2']) ?? []
                 );

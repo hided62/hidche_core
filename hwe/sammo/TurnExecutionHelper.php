@@ -447,7 +447,7 @@ class TurnExecutionHelper
                 updateQuaterly();
                 disaster($monthlyRng);
                 tradeRate($monthlyRng);
-                addAge();
+                addAge($monthlyRng);
                 // 새해 알림
                 $logger->pushGlobalActionLog("<C>{$gameStor->year}</>년이 되었습니다.");
                 $logger->flush(); //TODO: globalAction류는 전역에서 관리하는것이 좋을 듯.

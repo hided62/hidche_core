@@ -10,9 +10,8 @@ class WarUnitGeneral extends WarUnit
     protected $killedPerson = 0;
     protected $deadPerson = 0;
 
-    function __construct(RandUtil $rng, General $general, array $rawNation, bool $isAttacker)
+    function __construct(public readonly RandUtil $rng, General $general, array $rawNation, bool $isAttacker)
     {
-        $this->rng = $rng;
         $this->general = $general;
         $this->raw = $general->getRaw();
         $this->rawNation = $rawNation; //read-only

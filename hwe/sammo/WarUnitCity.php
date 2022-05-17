@@ -8,8 +8,7 @@ class WarUnitCity extends WarUnit{
 
     protected $cityRate;
 
-    function __construct(RandUtil $rng, $raw, $rawNation, int $year, int $month, $cityRate){
-        $this->rng = $rng;
+    function __construct(public readonly RandUtil $rng, $raw, $rawNation, int $year, int $month, $cityRate){
         $general = new DummyGeneral(false);
         $general->setVar('city', $raw['city']);
         $general->setVar('nation', $raw['nation']);

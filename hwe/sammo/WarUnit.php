@@ -4,8 +4,6 @@ namespace sammo;
 
 class WarUnit
 {
-    public readonly RandUtil $rng;
-
     protected $general;
     protected $rawNation;
 
@@ -34,7 +32,7 @@ class WarUnit
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
-    private function __construct(RandUtil $rng, General $general)
+    private function __construct(public readonly RandUtil $rng, General $general)
     {
         $this->rng = $rng;
         $this->general = $general;
