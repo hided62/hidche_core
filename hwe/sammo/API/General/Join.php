@@ -331,7 +331,7 @@ class Join extends \sammo\BaseAPI
             $character = $rng->choice(GameConst::$availablePersonality);
         }
         //상성 랜덤
-        $affinity = rand() % 150 + 1;
+        $affinity = $rng->nextRangeInt(1, 150);
 
         ########## 회원정보 테이블에 입력값을 등록한다. ##########
         $db->insert('general', [

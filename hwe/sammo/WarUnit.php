@@ -286,7 +286,7 @@ class WarUnit
             //최소 전투력 50 보장
             $warPower = max(0, $warPower);
             $warPower = ($warPower + 100) / 2;
-            $warPower = rand($warPower, 100);
+            $warPower = $this->rng->nextRangeInt($warPower, 100);
         }
 
         $warPower *= $this->getComputedAtmos();

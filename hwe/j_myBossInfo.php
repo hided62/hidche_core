@@ -241,34 +241,43 @@ function do추방(General $general, int $myOfficerLevel):?string{
     }
     $general->setVar('troop', 0);
 
-    if($general->getNPCType() >= 2 && Util::randBool(GameConst::$npcBanMessageProb)) {
+    if($general->getNPCType() >= 2){
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'BanNPC',
+            $env['year'],
+            $env['month'],
+            $general->getID(),
+        )));
+        if ($rng->nextBool(GameConst::$npcBanMessageProb)) {
 
-        $str = Util::choiceRandom([
-            '날 버리다니... 곧 전장에서 복수해주겠다...',
-            '추방이라... 내가 무얼 잘못했단 말인가...',
-            '어디 추방해가면서 잘되나 보자... 꼭 복수하겠다...',
-            '인덕이 제일이거늘... 추방이 웬말인가... 저주한다!',
-            '날 추방했으니 그 복수로 적국에 정보를 팔아 넘겨야겠군요. 그럼 이만.'
-        ]);
+            $str = $rng->choice([
+                '날 버리다니... 곧 전장에서 복수해주겠다...',
+                '추방이라... 내가 무얼 잘못했단 말인가...',
+                '어디 추방해가면서 잘되나 보자... 꼭 복수하겠다...',
+                '인덕이 제일이거늘... 추방이 웬말인가... 저주한다!',
+                '날 추방했으니 그 복수로 적국에 정보를 팔아 넘겨야겠군요. 그럼 이만.'
+            ]);
 
-        $src = new MessageTarget(
-            $generalID,
-            $generalName,
-            $nationID,
-            $nation['name'],
-            $nation['color'],
-            GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
-        );
-        $msg = new Message(
-            Message::MSGTYPE_PUBLIC,
-            $src,
-            $src,
-            $str,
-            new \DateTime(),
-            new \DateTime('9999-12-31'),
-            []
-        );
-        $msg->send();
+            $src = new MessageTarget(
+                $generalID,
+                $generalName,
+                $nationID,
+                $nation['name'],
+                $nation['color'],
+                GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
+            );
+            $msg = new Message(
+                Message::MSGTYPE_PUBLIC,
+                $src,
+                $src,
+                $str,
+                new \DateTime(),
+                new \DateTime('9999-12-31'),
+                []
+            );
+            $msg->send();
+        }
     }
 
     if($env['year'] < $env['startyear']+3) {

@@ -2085,13 +2085,31 @@ function nextRuler(General $general)
 
     //npc or npc유저인 경우 후계 찾기
     if (!$fiction && $general->getNPCType() > 0) {
-        $candidate = $db->queryFirstRow(
-            'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and 1 <= npc and npc<=3 order by npcmatch2,rand() LIMIT 1',
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'NextNPCRuler',
+            $year,
+            $month,
+            $general->getID(),
+        )));
+        $rawCandidates = $db->query(
+            'SELECT no,name,officer_level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and officer_level!=12 and 1 <= npc and npc<=3 order by npcmatch2 asc',
             $general->getVar('affinity'),
             $general->getVar('affinity'),
             $general->getVar('affinity'),
             $nationID
         );
+        if ($rawCandidates) {
+            $candidates = [];
+            $minNPCMatch = $rawCandidates[0]['npcmatch2'];
+            foreach ($rawCandidates as $candidate) {
+                if (!$candidate['npcmatch2'] == $minNPCMatch) {
+                    break;
+                }
+                $candidates[] = $candidate;
+            }
+            $candidate = $rng->choice($candidates);
+        }
     }
     if (!$candidate) {
         $candidate = $db->queryFirstRow(

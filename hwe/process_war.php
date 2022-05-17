@@ -590,8 +590,8 @@ function ConquerCity(array $admin, General $general, array $city)
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
         foreach ($oldNationGenerals as $oldGeneral) {
-            $loseGold = intdiv($oldGeneral->getVar('gold') * (rand() % 30 + 20), 100);
-            $loseRice = intdiv($oldGeneral->getVar('rice') * (rand() % 30 + 20), 100);
+            $loseGold = Util::toInt($oldGeneral->getVar('gold') * $rng->nextRange(0.2, 0.5));
+            $loseRice = Util::toInt($oldGeneral->getVar('rice') * $rng->nextRange(0.2, 0.5));
             $oldGeneral->getLogger()->pushGeneralActionLog(
                 "도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.",
                 ActionLogger::PLAIN

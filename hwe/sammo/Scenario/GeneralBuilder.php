@@ -652,7 +652,7 @@ class GeneralBuilder{
             $killturn = $this->killturn;
         }
         else if($this->birth !== null){
-            $killturn = ($this->death - $year) * 12 + mt_rand(0, 11) + $month - 1;
+            $killturn = ($this->death - $year) * 12 + $this->rng->nextRangeInt(0, 11) + $month - 1;
         }
         else{
             throw new \InvalidArgumentException();

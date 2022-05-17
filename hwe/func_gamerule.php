@@ -396,7 +396,7 @@ function postUpdateMonthly(RandUtil $rng)
 
         //약간의 랜덤치 부여 (95% ~ 105%)
 
-        $nation['power'] = Util::round($nation['power'] * (rand() % 101 + 950) / 1000);
+        $nation['power'] = Util::round($nation['power'] * $rng->nextRange(0.95, 1.05));
         $powerValues['maxPower'] = max($powerValues['maxPower'] ?? 0, $nation['power']);
         $powerValues['maxCrew'] = max($powerValues['maxCrew'] ?? 0, Util::toInt($nation['totalCrew']));
 

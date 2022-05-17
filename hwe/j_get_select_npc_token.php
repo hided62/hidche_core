@@ -126,7 +126,7 @@ while(count($pickResult) < $pickLimit){
     }
 }
 
-$newNonce = mt_rand(0, 0xfffffff);
+$newNonce = random_int(0, 0xfffffff);
 
 $validSecond = max(VALID_SECOND, $turnterm*40);
 $pickMoreSecond = max(PICK_MORE_SECOND, Util::round(pow($turnterm, 0.672)*8));

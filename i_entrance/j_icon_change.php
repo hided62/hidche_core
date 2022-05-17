@@ -70,7 +70,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
     //이미지 저장
 
     while(true){
-        $newPicName = dechex(rand(0x000000f,0xfffffff)).$newExt;
+        $newPicName = bin2hex(random_bytes(4)).$newExt;
         $dest = AppConf::getUserIconPathFS().'/'.$newPicName;
         if(file_exists($dest)){
             continue;
