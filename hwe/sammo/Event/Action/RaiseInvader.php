@@ -2,6 +2,7 @@
 
 namespace sammo\Event\Action;
 
+use Ds\Set;
 use sammo\ActionLogger;
 use sammo\CityConst;
 use sammo\DB;
@@ -45,7 +46,7 @@ class RaiseInvader extends \sammo\Event\Action
         $this->dex = $dex;
     }
 
-    private function moveCapital()
+    private function moveCapital(RandUtil $rng): Set
     {
         $cities = [];
         foreach (CityConst::all() as $cityObj) {
@@ -55,19 +56,22 @@ class RaiseInvader extends \sammo\Event\Action
             $cities[] = $cityObj->id;
         }
 
+        $disabledInvaderCity = new Set();
         if (count($cities) == 0) {
-            return [__CLASS__, 0];
+            return $disabledInvaderCity;
         }
 
         $db = DB::db();
 
-
-        foreach ($db->queryFirstColumn('SELECT capital, nation from nation WHERE capital in %li', $cities) as $row) {
-            list($oldCapital, $nation) = $row;
-            $newCapital = $db->queryFirstRow('SELECT city from city where nation=%i and city !=%i \
-                order by rand() limit 1', $nation, $oldCapital);
+        foreach ($db->queryAllLists('SELECT capital, nation from nation WHERE capital in %li', $cities) as $row) {
+            [$oldCapital, $nation] = $row;
+            $capitalCandidates = $db->queryFirstColumn('SELECT from city WHERE nation = %i AND city != %i', $nation);
+            if (!$capitalCandidates) {
+                $disabledInvaderCity->add($oldCapital);
+                continue;
+            }
+            $newCapital = $rng->choice($capitalCandidates);
             $db->update('nation', ['capital' => $newCapital], 'nation=%i', $nation);
-
             $db->update('general', ['city' => $newCapital], 'nation=%i and city=%i', $nation, $oldCapital);
         }
 
@@ -82,6 +86,8 @@ class RaiseInvader extends \sammo\Event\Action
             'front' => 0,
             'supply' => 1,
         ], 'city in %li', $cities);
+
+        return $disabledInvaderCity;
     }
 
     public function run(array $env)
@@ -125,7 +131,16 @@ class RaiseInvader extends \sammo\Event\Action
         }
         $dex = Util::toInt($dex);
 
-        $this->moveCapital();
+        $year = $env['year'];
+        $month = $env['month'];
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'RaiseInvader',
+            $year,
+            $month,
+        )));
+
+        $disabledInvaderCity = $this->moveCapital($rng);
         $serverID = UniqueConst::$serverID;
         $existNations = $db->queryFirstColumn("SELECT nation FROM `nation`");
         $lastNationID = max(
@@ -141,20 +156,13 @@ class RaiseInvader extends \sammo\Event\Action
             'rice' => 999999,
         ], true);
 
-        $year = $env['year'];
-        $month = $env['month'];
-
-        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
-            UniqueConst::$hiddenSeed,
-            'RaiseInvader',
-            $year,
-            $month,
-        )));
-
         $invaderNationIDList = [];
         refreshNationStaticInfo();
         foreach ($cities as $cityObj) {
             if ($cityObj->level != 4) {
+                continue;
+            }
+            if($disabledInvaderCity->contains($cityObj->id)){
                 continue;
             }
 
