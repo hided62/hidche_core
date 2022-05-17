@@ -118,13 +118,6 @@ class che_등용수락 extends Command\GeneralCommand{
         $destNationID = $this->destNation['nation'];
         $destNationName = $this->destNation['name'];
 
-        $relYear = $env['year'] - $env['startyear'];
-        if($general->getNPCType() == 1 || $relYear >= 3){
-            $joinedNations = $general->getAuxVar('joinedNations')??[];
-            $joinedNations[] = $destNationID;
-            $general->setAuxVar('joinedNations', $joinedNations);
-        }
-
         $isTroopLeader = ($generalID == $general->getVar('troop'));
 
         $destGeneral->addExperience(100);

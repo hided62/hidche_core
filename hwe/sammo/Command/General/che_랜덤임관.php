@@ -128,7 +128,7 @@ class che_랜덤임관 extends Command\GeneralCommand
         $relYear = $env['year'] - $env['startyear'];
 
         /*
-        $notIn = array_merge($general->getAuxVar('joinedNations')??[], $this->arg['destNationIDList']);
+        $notIn = $this->arg['destNationIDList']);
         */
         $notIn = null;
 
@@ -279,13 +279,6 @@ class che_랜덤임관 extends Command\GeneralCommand
         $db->update('nation', [
             'gennum' => $db->sqleval('gennum + 1')
         ], 'nation=%i', $destNationID);
-
-        $relYear = $env['year'] - $env['startyear'];
-        if ($general->getNPCType() == 1 || $relYear >= 3) {
-            $joinedNations = $general->getAuxVar('joinedNations') ?? [];
-            $joinedNations[] = $destNationID;
-            $general->setAuxVar('joinedNations', $joinedNations);
-        }
 
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->addExperience($exp);

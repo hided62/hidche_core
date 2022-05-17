@@ -60,12 +60,6 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        $joinedNations = $this->general['auxVar']['joinedNations']??[];
-        if(in_array($this->destNation['nation'], $joinedNations)){
-            $this->reason = "이미 임관했었던 국가입니다.";
-            return false;
-        }
-
         return true;
     }
 }

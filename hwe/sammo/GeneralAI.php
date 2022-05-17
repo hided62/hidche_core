@@ -271,7 +271,7 @@ class GeneralAI
         if ($this->warRoute !== null) {
             return;
         }
-        $target = array_keys($this->warTargetNation??[]);
+        $target = array_keys($this->warTargetNation ?? []);
         $target[] = $this->nation['nation'];
 
         $this->warRoute = searchAllDistanceByNationList($target, false);
@@ -2385,7 +2385,7 @@ class GeneralAI
         }
 
         $tryBuying = false;
-        if ($general->getNPCType() < 2 && $relGold >= $goldCost * 3 && $relRice >= $riceCost * 3){
+        if ($general->getNPCType() < 2 && $relGold >= $goldCost * 3 && $relRice >= $riceCost * 3) {
             return null;
         }
         if ($this->generalPolicy->can상인무시) {
@@ -3296,8 +3296,7 @@ class GeneralAI
         // 오랑캐는 바로 임관
         if ($general->getNPCType() == 9) {
             $rulerNation = $db->queryFirstField(
-                'SELECT nation FROM general WHERE `officer_level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1',
-                $general->getAuxVar('joinedNations') ?? [0]
+                'SELECT nation FROM general WHERE `officer_level`=12 AND npc=9 and nation ORDER BY RAND() limit 1'
             );
 
             if ($rulerNation) {

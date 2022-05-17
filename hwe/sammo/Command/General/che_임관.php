@@ -168,13 +168,6 @@ class che_임관 extends Command\GeneralCommand
         ], 'nation=%i', $destNationID);
         \sammo\refreshNationStaticInfo();
 
-        $relYear = $env['year'] - $env['startyear'];
-        if ($general->getNPCType() == 1 || $relYear >= 3) {
-            $joinedNations = $general->getAuxVar('joinedNations') ?? [];
-            $joinedNations[] = $destNationID;
-            $general->setAuxVar('joinedNations', $joinedNations);
-        }
-
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));

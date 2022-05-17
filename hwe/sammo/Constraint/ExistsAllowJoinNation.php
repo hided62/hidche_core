@@ -20,11 +20,6 @@ class ExistsAllowJoinNation extends Constraint{
             throw new \InvalidArgumentException("require auxVar in general");
         }
 
-        if(!key_exists('joinedNations', $this->general['auxVar'])){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require joinedNations in general['auxVar']");
-        }
-
         if(!is_int($this->arg[0])){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException("first arg must be int(relYear)");
@@ -34,7 +29,7 @@ class ExistsAllowJoinNation extends Constraint{
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException("first arg must be array(exludeList)");
         }
-        
+
         $this->relYear = $this->arg;
 
         return true;
@@ -47,14 +42,14 @@ class ExistsAllowJoinNation extends Constraint{
         $db = DB::db();
 
         $relYear = $this->arg[0];
-        $notIn = array_merge($this->general['auxVar']['joinedNations'], $this->arg[1]);
+        $notIn = $this->arg[1];
         //이걸 호출하는 경우 분명 동일한 쿼리를 한번 더 부를 것. 쿼리 캐시를 기대함
         $nations = $db->queryFirstColumn(
             'SELECT nation, name, gennum, scout FROM nation WHERE scout=0 AND gennum < %i AND no NOT IN %li',
             $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral,
             $notIn
         );
-        
+
         if($nations){
             return true;
         }
