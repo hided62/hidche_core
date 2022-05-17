@@ -32,6 +32,9 @@ export class RandUtil {
         if (prob >= 1) {
             return true;
         }
+        if (prob === 0.5){
+            return this.nextBit();
+        }
         return this.nextFloat1() < prob;
     }
 
