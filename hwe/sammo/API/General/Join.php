@@ -221,8 +221,7 @@ class Join extends \sammo\BaseAPI
             // 공백지에서만 태어나게
             $cities = $db->queryFirstColumn('SELECT city FROM city where `level`>=5 and `level`<=6 and nation=0');
             if (!$cities) {
-                $db->queryFirstColumn('SELECT city FROM city where `level`>=5 and `level`<=6');
-                $cities = $db->queryFirstField("SELECT city from city where `level`>=5 and `level`<=6");
+                $cities = $db->queryFirstColumn('SELECT city FROM city where `level`>=5 and `level`<=6');
             }
             $city = $rng->choice($cities);
         }
