@@ -9,6 +9,7 @@ export function simpleSerialize(...values : (string|number)[]): string{
     }
     if(isInteger(value)){
       result.push(`int(${value})`);
+      continue;
     }
     const float6 = value.toLocaleString("en-US", {maximumFractionDigits: 6});
     result.push(`float(${float6})`);
