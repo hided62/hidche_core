@@ -2484,7 +2484,7 @@ class GeneralAI
 
             $maxPop = $city['pop_max'] - $this->nationPolicy->minNPCRecruitCityPopulation;
             if (($city['pop'] / $city['pop_max'] < $this->nationPolicy->safeRecruitCityPopulationRatio) &&
-                ($this->rng->nextFloat1($remainPop / $maxPop))
+                ($this->rng->nextBool($remainPop / $maxPop))
             ) {
                 return null;
             }
@@ -3997,10 +3997,10 @@ class GeneralAI
             if (!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)) {
                 $newChiefProb = 1;
             } else {
-                $newChiefProb = $this->rng->nextFloat1(0.1);
+                $newChiefProb = $this->rng->nextBool(0.1);
             }
 
-            if ($newChiefProb < 1 && !$this->rng->nextFloat1($newChiefProb)) {
+            if ($newChiefProb < 1 && !$this->rng->nextBool($newChiefProb)) {
                 continue;
             }
 
