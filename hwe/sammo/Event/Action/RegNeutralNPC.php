@@ -26,8 +26,15 @@ class RegNeutralNPC extends \sammo\Event\Action{
         $char = '',
         $text = ''
     ){
-
-        $rng = new RandUtil(new LiteHashDRBG(bin2hex(random_bytes(16))));
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'RegNeutralNPC',
+            $name,
+            $nationID,
+            $leadership,
+            $strength,
+            $intel,
+        )));
         $this->npc=(new \sammo\Scenario\GeneralBuilder(
             $rng,
             $name,

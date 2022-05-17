@@ -3,6 +3,8 @@ namespace sammo\Event\Action;
 
 use sammo\LiteHashDRBG;
 use sammo\RandUtil;
+use sammo\UniqueConst;
+use sammo\Util;
 
 //이전 RegNPC 함수를 EventAction으로 재구성
 class RegNPC extends \sammo\Event\Action{
@@ -26,7 +28,15 @@ class RegNPC extends \sammo\Event\Action{
         $text = ''
     ){
 
-        $rng = new RandUtil(new LiteHashDRBG(bin2hex(random_bytes(16))));
+        $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'RegNPC',
+            $name,
+            $nationID,
+            $leadership,
+            $strength,
+            $intel,
+        )));
         $this->npc=(new \sammo\Scenario\GeneralBuilder(
             $rng,
             $name,
