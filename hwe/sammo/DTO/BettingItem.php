@@ -2,32 +2,28 @@
 
 namespace sammo\DTO;
 
-use Spatie\DataTransferObject\Attributes\MapFrom;
-use Spatie\DataTransferObject\Attributes\MapTo;
-use Spatie\DataTransferObject\Attributes\Strict;
-use Spatie\DataTransferObject\DataTransferObject;
+use sammo\DTO\Attr\NullIsUndefined;
+use sammo\DTO\Attr\RawName;
 
-#[Strict]
-class BettingItem extends DataTransferObject
+class BettingItem extends DTO
 {
-    #[MapFrom('id')]
-	#[MapTo('id')]
-	public null|int $rowID = null;
+	public function __construct(
+		#[RawName('id')]
+		#[NullIsUndefined]
+		public ?int $rowID,
 
-    #[MapFrom('betting_id')]
-	#[MapTo('betting_id')]
-	public int $bettingID;
+		#[RawName('betting_id')]
+		public int $bettingID,
 
-    #[MapFrom('general_id')]
-	#[MapTo('general_id')]
-	public int $generalID;
+		#[RawName('general_id')]
+		public int $generalID,
 
-    #[MapFrom('user_id')]
-	#[MapTo('user_id')]
-	public null|int $userID;
+		#[RawName('user_id')]
+		public ?int $userID,
 
-    #[MapFrom('betting_type')]
-	#[MapTo('betting_type')]
-	public string $bettingType;
-	public int $amount;
+		#[RawName('betting_type')]
+		public string $bettingType,
+		public int $amount,
+	) {
+	}
 }

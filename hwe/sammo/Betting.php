@@ -43,7 +43,7 @@ class Betting
         if ($rawBettingInfo === null) {
             throw new \RuntimeException("해당 베팅이 없습니다: {$bettingID}");
         }
-        $this->info = new BettingInfo($rawBettingInfo);
+        $this->info = BettingInfo::fromArray($rawBettingInfo);
     }
 
     private function _convertBettingKey(array $bettingType): string
@@ -148,13 +148,14 @@ class Betting
             }
         }
 
-        $bettingItem = new BettingItem([
-            'betting_id' => $this->bettingID,
-            'general_id' => $generalID,
-            'user_id' => $userID,
-            'betting_type' => $bettingTypeKey,
-            'amount' => $amount
-        ]);
+        $bettingItem = new BettingItem(
+            rowID: null,
+            bettingID: $this->bettingID,
+            generalID: $generalID,
+            userID: $userID,
+            bettingType: $bettingTypeKey,
+            amount: $amount
+        );
 
         $db->insertUpdate(
             'ng_betting',

@@ -39,7 +39,7 @@
       <div class="col-6 col-md-3 align-self-center">대상: {{ getTypeStr(pickedBetTypeKey) }}</div>
       <div class="col-4 col-md-2 d-grid">
         <!-- eslint-disable-next-line vue/max-attributes-per-line -->
-        <b-form-input v-model="betPoint" class="d-grid" type="number" :min="10" :max="1000" :step="10" />
+        <b-form-input v-model.number="betPoint" class="d-grid" type="number" :min="10" :max="1000" :step="10" />
       </div>
       <div class="col-2 col-md-1 d-grid">
         <b-button class="d-grid" @click="submitBet"> 베팅 </b-button>

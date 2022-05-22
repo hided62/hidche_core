@@ -49,7 +49,7 @@ class GetBettingList extends \sammo\BaseAPI
 
         $bettingList = [];
         foreach ($bettingStor->getAll() as $_key => $rawItem) {
-            $item = new BettingInfo($rawItem);
+            $item = BettingInfo::fromArray($rawItem);
             if ($reqType !== null && $item->type != $reqType) {
                 continue;
             }

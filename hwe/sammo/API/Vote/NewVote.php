@@ -43,7 +43,7 @@ class NewVote extends \sammo\BaseAPI
         if (!$rawLastVoteInfo) {
             return;
         }
-        $lastVoteInfo = new VoteInfo(...$rawLastVoteInfo);
+        $lastVoteInfo = VoteInfo::fromArray($rawLastVoteInfo);
         if ($lastVoteInfo->endDate) {
             return;
         }

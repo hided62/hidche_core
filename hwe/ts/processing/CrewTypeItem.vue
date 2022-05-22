@@ -34,7 +34,7 @@
         <div class="col mx-2">
           <div class="input-group my-0">
             <span class="input-group-text py-1">병력</span>
-            <input v-model="amount" type="number" class="form-control py-1 f_tnum px-0 text-end" min="1" />
+            <input v-model.number="amount" type="number" class="form-control py-1 f_tnum px-0 text-end" min="1" />
             <span class="input-group-text py-1 f_tnum">00명</span>
             <span
               class="input-group-text py-1 f_tnum"

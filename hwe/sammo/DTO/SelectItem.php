@@ -2,14 +2,17 @@
 
 namespace sammo\DTO;
 
-use Spatie\DataTransferObject\Attributes\Strict;
-use Spatie\DataTransferObject\DataTransferObject;
+use sammo\DTO\Attr\Convert;
+use sammo\DTO\Converter\MapConverter;
 
-#[Strict]
-class SelectItem extends DataTransferObject
+class SelectItem extends DTO
 {
-	public string $title;
-	public ?string $info;
-	public ?bool $isHtml;
-	public ?array $aux;
+	public function __construct(
+		public string $title,
+		public ?string $info,
+		public ?bool $isHtml,
+		#[Convert(MapConverter::class, ['string', 'int', 'float', 'array', 'null', 'bool'])]
+		public ?array $aux,
+	) {
+	}
 }

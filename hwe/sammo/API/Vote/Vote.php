@@ -58,7 +58,7 @@ class Vote extends \sammo\BaseAPI
         if (!$rawVoteInfo) {
             return '설문조사가 없습니다.';
         }
-        $voteInfo = new VoteInfo(...$rawVoteInfo);
+        $voteInfo = VoteInfo::fromArray($rawVoteInfo);
 
         if ($voteInfo->endDate && $voteInfo->endDate < new \DateTimeImmutable()) {
             return '설문조사가 종료되었습니다.';

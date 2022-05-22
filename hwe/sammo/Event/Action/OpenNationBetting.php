@@ -72,7 +72,7 @@ class OpenNationBetting extends \sammo\Event\Action
                 aux: $nationRaw,
             );
         }
-        
+
         $bettingID = \sammo\Betting::genNextBettingID();
         Betting::openBetting(new BettingInfo(
             id: $bettingID,
@@ -80,10 +80,12 @@ class OpenNationBetting extends \sammo\Event\Action
             name: "{$name} 예상",
             finished: false,
             selectCnt: $this->nationCnt,
+            isExclusive: null,
             reqInheritancePoint: true,
             openYearMonth: $openYearMonth,
             closeYearMonth: $closeYearMonth,
             candidates: $candidates,
+            winner: null,
         ));
 
         $db->insert('event', [

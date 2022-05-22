@@ -40,7 +40,7 @@ class GetVoteDetail extends \sammo\BaseAPI
     if (!$rawVote) {
       return '설문조사가 없습니다.';
     }
-    $voteInfo = new VoteInfo(...$rawVote);
+    $voteInfo = VoteInfo::fromArray($rawVote);
 
 
     $votes = array_map(fn ($arr) => [Json::decode($arr[0]), $arr[1]], $db->queryAllLists(
@@ -48,13 +48,13 @@ class GetVoteDetail extends \sammo\BaseAPI
       $voteID
     ));
 
-    $comments = VoteComment::arrayOf($db->query('SELECT * FROM vote_comment WHERE vote_id = %i ORDER BY `id` ASC', $voteID));
+    $comments = array_map(fn ($arr) => VoteComment::fromArray($arr), $db->query('SELECT * FROM vote_comment WHERE vote_id = %i ORDER BY `id` ASC', $voteID));
 
     $myVote = null;
-    if($session->isGameLoggedIn()){
+    if ($session->isGameLoggedIn()) {
       $generalID = $session->generalID;
       $rawMyVote = $db->queryFirstField('SELECT selection FROM vote WHERE vote_id = %i AND general_id = %i', $voteID, $generalID);
-      if($rawMyVote){
+      if ($rawMyVote) {
         $myVote = Json::decode($rawMyVote);
       }
     }

@@ -29,6 +29,7 @@ class AddComment extends \sammo\BaseAPI
     if (!$v->validate()) {
       return $v->errorStr();
     }
+    $this->args['voteID'] = (int)$this->args['voteID'];
     return null;
   }
 
@@ -46,11 +47,12 @@ class AddComment extends \sammo\BaseAPI
 
 
     $comment = new VoteComment(
-      vote_id: $voteID,
-      general_id: $generalID,
-      nation_id: $nationID,
-      nation_name: $nationName,
-      general_name: $generalName,
+      id: null,
+      voteID: $voteID,
+      generalID: $generalID,
+      nationID: $nationID,
+      nationName: $nationName,
+      generalName: $generalName,
       text: $text,
       date: $date
     );

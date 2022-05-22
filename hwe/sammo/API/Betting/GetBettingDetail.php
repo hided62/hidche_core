@@ -47,7 +47,7 @@ class GetBettingDetail extends \sammo\BaseAPI
         }
 
         try{
-            $bettingInfo = new BettingInfo($rawBettingInfo);
+            $bettingInfo = BettingInfo::fromArray($rawBettingInfo);
         }
         catch(\Error $e){
             return $e->getMessage();

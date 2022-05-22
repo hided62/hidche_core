@@ -100,13 +100,13 @@
           <small class="text-muted">통/무/지</small>
         </div>
         <div class="col col-md-2 col-3 align-self-center">
-          <input v-model="args.leadership" type="number" class="form-control" />
+          <input v-model.number="args.leadership" type="number" class="form-control" />
         </div>
         <div class="col col-md-2 col-3 align-self-center">
-          <input v-model="args.strength" type="number" class="form-control" />
+          <input v-model.number="args.strength" type="number" class="form-control" />
         </div>
         <div class="col col-md-2 col-3 align-self-center">
-          <input v-model="args.intel" type="number" class="form-control" />
+          <input v-model.number="args.intel" type="number" class="form-control" />
         </div>
       </div>
       <div class="row" style="margin-top: 1em">
@@ -144,10 +144,10 @@
     <div v-if="displayInherit" class="inherit-block">
       <div class="row">
         <div class="col">
-          <NumberInputWithInfo v-model="inheritTotalPoint" title="보유한 유산 포인트" :readonly="true" />
+          <NumberInputWithInfo v-model.number="inheritTotalPoint" title="보유한 유산 포인트" :readonly="true" />
         </div>
         <div class="col">
-          <NumberInputWithInfo v-model="inheritRequiredPoint" title="필요 유산 포인트" :readonly="true" />
+          <NumberInputWithInfo v-model.number="inheritRequiredPoint" title="필요 유산 포인트" :readonly="true" />
         </div>
       </div>
       <hr />
@@ -174,7 +174,7 @@
           <div class="row">
             <div class="col col-6 a-right align-self-center">도시</div>
             <div class="col col-6 align-self-center">
-              <select v-model="args.inheritCity" class="form-select form-inline" style="max-width: 20ch">
+              <select v-model.number="args.inheritCity" class="form-select form-inline" style="max-width: 20ch">
                 <option :value="undefined">사용안함</option>
                 <option v-for="city in availableInheritCity" :key="city.id" :value="city.id">
                   {{ `[${city.region}] ${city.name}` }}

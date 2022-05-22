@@ -8,7 +8,7 @@
     </b-button>
     <b-button v-if="maxAmount > 200" class="btn-sm" @click="amount = Math.max(amount - 100, minAmount)"> -백 </b-button>
     <input
-      v-model="amount"
+      v-model.number="amount"
       type="number"
       class="form-control text-end"
       :max="maxAmount"

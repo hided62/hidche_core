@@ -2,37 +2,33 @@
 
 namespace sammo\DTO;
 
-use Spatie\DataTransferObject\Attributes\MapFrom;
-use Spatie\DataTransferObject\Attributes\MapTo;
-use Spatie\DataTransferObject\Attributes\Strict;
-use Spatie\DataTransferObject\DataTransferObject;
+use sammo\DTO\Attr\NullIsUndefined;
+use sammo\DTO\Attr\RawName;
 
-#[Strict]
-class VoteComment extends DataTransferObject
+class VoteComment extends DTO
 {
-	public ?int $id;
+  public function __construct(
+    #[NullIsUndefined]
+    public ?int $id,
 
-  #[MapFrom('vote_id')]
-	#[MapTo('vote_id')]
-  public int $voteID;
+    #[RawName('vote_id')]
+    public int $voteID,
 
-  #[MapFrom('general_id')]
-	#[MapTo('general_id')]
-  public int $generalID;
+    #[RawName('general_id')]
+    public int $generalID,
 
-  #[MapFrom('nation_id')]
-	#[MapTo('nation_id')]
-  public int $nationID;
+    #[RawName('nation_id')]
+    public int $nationID,
 
-  #[MapFrom('nation_name')]
-	#[MapTo('nation_name')]
-  public string $nationName;
+    #[RawName('nation_name')]
+    public string $nationName,
 
-  #[MapFrom('general_name')]
-	#[MapTo('general_name')]
-  public string $generalName;
+    #[RawName('general_name')]
+    public string $generalName,
 
-  public string $text;
+    public string $text,
 
-  public string $date;
+    public string $date,
+  ) {
+  }
 }

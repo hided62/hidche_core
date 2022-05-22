@@ -116,7 +116,7 @@ $lastVoteID = $gameStor->lastVote;
 $lastVote = null;
 if($lastVoteID){
     $voteStor = KVStorage::getStorage($db, 'vote');
-    $lastVote = new VoteInfo($voteStor->getValue("vote_{$lastVoteID}"));
+    $lastVote = VoteInfo::fromArray($voteStor->getValue("vote_{$lastVoteID}"));
     if($lastVote->endDate && $lastVote->endDate < TimeUtil::now()){
         $lastVote = null;
     }

@@ -33,7 +33,7 @@ class GetVoteList extends \sammo\BaseAPI
         continue;
       }
       $voteID = (int)substr($voteKey, 5);
-      $votes[$voteID] = new VoteInfo(...$rawVote);
+      $votes[$voteID] = VoteInfo::fromArray($rawVote);
     }
 
     return [

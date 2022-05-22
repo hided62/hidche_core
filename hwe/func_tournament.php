@@ -383,10 +383,12 @@ function getDummyBettingInfo(string $tnmt_type): BettingInfo
         name: $tnmt_type,
         finished: true,
         selectCnt: 1,
+        isExclusive: null,
         reqInheritancePoint: false,
         openYearMonth: 0,
         closeYearMonth: 0,
-        candidates: []
+        candidates: [],
+        winner: null,
     );
 }
 
@@ -425,6 +427,7 @@ function startBetting($type, $unit)
         $candidates[$general['no']] = new \sammo\DTO\SelectItem(
             title: $general['name'],
             info: "{$statName}: {$general[$statKey]}",
+            isHtml: null,
             aux: $general
         );
     }
@@ -436,10 +439,12 @@ function startBetting($type, $unit)
         name: $typeText,
         finished: false,
         selectCnt: 1,
+        isExclusive: null,
         reqInheritancePoint: false,
         openYearMonth: $openYearMonth,
         closeYearMonth: $closeYearMonth,
         candidates: $candidates,
+        winner: null,
     ));
 
     $betting = new Betting($bettingID);

@@ -4,6 +4,7 @@ use sammo\DTO\Attr\Convert;
 use sammo\DTO\DTO;
 use sammo\DTO\Attr\JsonString;
 use sammo\DTO\Attr\NullIsUndefined;
+use sammo\DTO\Attr\RawName;
 use sammo\DTO\Converter\ArrayConverter;
 use sammo\DTO\Converter\Converter;
 use sammo\DTO\Converter\MapConverter;
@@ -138,6 +139,19 @@ class TypeNestedMap extends DTO
     #[Convert(MapConverter::class, ['null', TypeBA::class])]
     public array $b,
   ) {
+  }
+}
+
+class TypeRawName extends DTO
+{
+  public function __construct(
+    #[RawName('arg_name')]
+    public int $argName,
+    #[RawName('vID')]
+    public int $vID,
+  )
+  {
+
   }
 }
 
@@ -322,6 +336,17 @@ class DTOTest extends PHPUnit\Framework\TestCase
       ],
     ];
     $obj = TypeNestedMap::fromArray($rawType);
+    $testType = $obj->toArray();
+
+    $this->assertEquals($rawType, $testType);
+  }
+
+  public function testRawName(){
+    $rawType = [
+      'arg_name' => 1,
+      'vID' => 2,
+    ];
+    $obj = TypeRawName::fromArray($rawType);
     $testType = $obj->toArray();
 
     $this->assertEquals($rawType, $testType);

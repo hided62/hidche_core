@@ -3996,7 +3996,7 @@ class GeneralAI
             if (!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)) {
                 $newChiefProb = 1;
             } else {
-                $newChiefProb = $this->rng->nextBool(0.1);
+                $newChiefProb = $this->rng->nextBool(0.1)?1:0;
             }
 
             if ($newChiefProb < 1 && !$this->rng->nextBool($newChiefProb)) {

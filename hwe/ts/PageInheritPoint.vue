@@ -155,7 +155,7 @@
           <div class="col col-sm-6 f_tnum">
             <b-form-input
               :id="`buff-${buffKey}`"
-              v-model="inheritBuff[buffKey]"
+              v-model.number="inheritBuff[buffKey]"
               type="number"
               :min="prevInheritBuff[buffKey] ?? 0"
               :max="maxInheritBuff"
