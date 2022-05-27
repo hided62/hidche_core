@@ -11,7 +11,7 @@ class Convert
   public function __construct(
     public readonly array $targetTypes,
     public readonly string $converterType,
-    array  ...$args
+    ...$args
   ) {
     if(!is_subclass_of($converterType, \sammo\DTO\Converter\Converter::class)){
       throw new \Exception("$converterType is not a subclass of \sammo\DTO\Converter\Converter");

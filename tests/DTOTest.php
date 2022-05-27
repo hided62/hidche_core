@@ -8,6 +8,7 @@ use sammo\DTO\Attr\RawName;
 use sammo\DTO\Converter\ArrayConverter;
 use sammo\DTO\Converter\Converter;
 use sammo\DTO\Converter\MapConverter;
+use sammo\DTO\Converter\DateTimeConverter;
 use sammo\Json;
 
 class TypeA extends DTO
@@ -152,6 +153,21 @@ class TypeRawName extends DTO
   )
   {
 
+  }
+}
+
+
+class TypeDateTime extends DTO{
+  public function __construct(
+    #[Convert(DateTimeConverter::class)]
+    public \DateTimeImmutable $a,
+    #[Convert(DateTimeConverter::class, false, 9)]
+    public \DateTime $b,
+    #[Convert(DateTimeConverter::class, true, 8)]
+    public \DateTimeImmutable|\DateTime $c,
+    #[Convert(DateTimeConverter::class)]
+    public \DateTimeInterface $d,
+  ) {
   }
 }
 
@@ -350,5 +366,25 @@ class DTOTest extends PHPUnit\Framework\TestCase
     $testType = $obj->toArray();
 
     $this->assertEquals($rawType, $testType);
+  }
+
+  public function testDateTime(){
+    $rawType = [
+      'a' => '2022-01-01 10:11:22',
+      'b' => '2022-02-01T12:34:56.1234+09:00',
+      'c' => '2022-03-01T00:00:00.1234+09:00',
+      'd' => '2022-04-01',
+    ];
+
+    $testValue = [
+      'a' => '2022-01-01 10:11:22',
+      'b' => '2022-02-01 12:34:56',
+      'c' => '2022-02-28 23:00:00.123400',
+      'd' => '2022-04-01 00:00:00',
+    ];
+    $obj = TypeDateTime::fromArray($rawType);
+    $testType = $obj->toArray();
+
+    $this->assertEquals($testValue, $testType);
   }
 }
