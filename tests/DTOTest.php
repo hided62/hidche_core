@@ -3,6 +3,7 @@
 use sammo\DTO\Attr\Convert;
 use sammo\DTO\Attr\DefaultValue;
 use sammo\DTO\Attr\DefaultValueGenerator;
+use sammo\DTO\Attr\Ignore;
 use sammo\DTO\DTO;
 use sammo\DTO\Attr\JsonString;
 use sammo\DTO\Attr\NullIsUndefined;
@@ -193,6 +194,23 @@ class TypeDefaultValue extends DTO
     public \DateTimeInterface $d,
     public int $f = 111, //contstruct의 뒤에서 default 값이 설정될 경우에만
   ) {
+  }
+}
+
+class TypeIgnore extends DTO
+{
+  #[Ignore]
+  public int $c = 100;
+  #[Ignore]
+  public $d;
+  #[Ignore]
+  public $e;
+
+  public function __construct(
+    public int $a,
+    public int $b,
+  ) {
+    $this->d = $a * 2;
   }
 }
 
@@ -435,5 +453,16 @@ class DTOTest extends PHPUnit\Framework\TestCase
     $testType = $obj->toArray();
 
     $this->assertEquals($testValue, $testType);
+  }
+
+  public function testIgnore(){
+    $rawType = [
+      'a' => 1,
+      'b' => 2,
+    ];
+    $obj = TypeIgnore::fromArray($rawType);
+    $testType = $obj->toArray();
+
+    $this->assertEquals($rawType, $testType);
   }
 }

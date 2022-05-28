@@ -32,6 +32,13 @@ abstract class DTO
 
       $param = $params[$name] ?? null;
 
+      if(key_exists(Attr\Ignore::class, $attrs)){
+        if($param !== null){
+          throw new \Exception("Property {$name} is ignored but has a constructor parameter");
+        }
+        continue;
+      }
+
       if (key_exists(Attr\DefaultValueGenerator::class, $attrs)){
         /** @var Attr\DefaultValueGenerator */
         $defaultValueSetter = $attrs[Attr\DefaultValueGenerator::class]->newInstance();
@@ -112,6 +119,10 @@ abstract class DTO
       $value = $property->getValue($this);
       $attrs = Util\Util::getAttrs($property);
       $name = $property->getName();
+
+      if(key_exists(Attr\Ignore::class, $attrs)){
+        continue;
+      }
 
       if (key_exists(Attr\RawName::class, $attrs)) {
         $rawAttr = $attrs[Attr\RawName::class];
