@@ -21,6 +21,21 @@ class Util{
   }
 
   /**
+   * @return array<string,\ReflectionParameter>
+   */
+  public static function getConstructorParams(\ReflectionClass $class): array{
+    $constructor = $class->getConstructor();
+    if($constructor === null){
+      return [];
+    }
+    $result = [];
+    foreach($constructor->getParameters() as $param){
+      $result[$param->getName()] = $param;
+    }
+    return $result;
+  }
+
+  /**
    * @return array<string>
    */
   public static function getPropTypes(\ReflectionProperty $prop): array{

@@ -1,6 +1,8 @@
 <?php
 
 use sammo\DTO\Attr\Convert;
+use sammo\DTO\Attr\DefaultValue;
+use sammo\DTO\Attr\DefaultValueGenerator;
 use sammo\DTO\DTO;
 use sammo\DTO\Attr\JsonString;
 use sammo\DTO\Attr\NullIsUndefined;
@@ -150,14 +152,13 @@ class TypeRawName extends DTO
     public int $argName,
     #[RawName('vID')]
     public int $vID,
-  )
-  {
-
+  ) {
   }
 }
 
 
-class TypeDateTime extends DTO{
+class TypeDateTime extends DTO
+{
   public function __construct(
     #[Convert(DateTimeConverter::class)]
     public \DateTimeImmutable $a,
@@ -167,6 +168,30 @@ class TypeDateTime extends DTO{
     public \DateTimeImmutable|\DateTime $c,
     #[Convert(DateTimeConverter::class)]
     public \DateTimeInterface $d,
+  ) {
+  }
+}
+
+function returnDateTime()
+{
+  return new \DateTimeImmutable('2022-04-01 00:00:00');
+}
+
+class TypeDefaultValue extends DTO
+{
+  public bool $g = true;
+
+  public function __construct(
+    public ?string $a,
+    #[DefaultValue(false)]
+    public bool $b,
+    public int $c,
+    #[DefaultValue([1,2,3])]
+    public array $e,
+    #[DefaultValueGenerator('returnDateTime')]
+    #[Convert(DateTimeConverter::class)]
+    public \DateTimeInterface $d,
+    public int $f = 111, //contstruct의 뒤에서 default 값이 설정될 경우에만
   ) {
   }
 }
@@ -321,7 +346,8 @@ class DTOTest extends PHPUnit\Framework\TestCase
     $this->assertEquals($rawType, $testType);
   }
 
-  public function testMap(){
+  public function testMap()
+  {
     $rawType = [
       'a' => 1,
       'b' => [
@@ -336,7 +362,8 @@ class DTOTest extends PHPUnit\Framework\TestCase
     $this->assertEquals($rawType, $testType);
   }
 
-  public function testNestedMap(){
+  public function testNestedMap()
+  {
     $rawType = [
       'a' => 1,
       'b' => [
@@ -357,7 +384,8 @@ class DTOTest extends PHPUnit\Framework\TestCase
     $this->assertEquals($rawType, $testType);
   }
 
-  public function testRawName(){
+  public function testRawName()
+  {
     $rawType = [
       'arg_name' => 1,
       'vID' => 2,
@@ -368,7 +396,8 @@ class DTOTest extends PHPUnit\Framework\TestCase
     $this->assertEquals($rawType, $testType);
   }
 
-  public function testDateTime(){
+  public function testDateTime()
+  {
     $rawType = [
       'a' => '2022-01-01 10:11:22',
       'b' => '2022-02-01T12:34:56.1234+09:00',
@@ -383,6 +412,26 @@ class DTOTest extends PHPUnit\Framework\TestCase
       'd' => '2022-04-01 00:00:00',
     ];
     $obj = TypeDateTime::fromArray($rawType);
+    $testType = $obj->toArray();
+
+    $this->assertEquals($testValue, $testType);
+  }
+
+  public function testDefaultValue()
+  {
+    $rawType = [
+      'c' => 3,
+    ];
+    $testValue = [
+      'g' => true,
+      'a' => null,
+      'b' => false,
+      'c' => 3,
+      'e' => [1, 2, 3],
+      'd' => '2022-04-01 00:00:00',
+      'f' => 111,
+    ];
+    $obj = TypeDefaultValue::fromArray($rawType);
     $testType = $obj->toArray();
 
     $this->assertEquals($testValue, $testType);

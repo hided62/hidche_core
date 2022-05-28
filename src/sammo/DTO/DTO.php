@@ -11,13 +11,17 @@ abstract class DTO
   public static function fromArray(\ArrayAccess|array $array): static
   {
     $reflection = new \ReflectionClass(static::class);
-    $args = [];
 
     if ($array instanceof \ArrayAccess) {
       $keyExists = fn (string|int $key) => $array->offsetExists($key);
     } else {
       $keyExists = fn (string|int $key) => array_key_exists($key, $array);
     }
+
+    $params = Util\Util::getConstructorParams($reflection);
+
+    $args = [];
+    $lazyMap = [];
 
     foreach ($reflection->getProperties(
       \ReflectionProperty::IS_PUBLIC
@@ -26,6 +30,19 @@ abstract class DTO
       $name = $property->getName();
       $rawName = $name;
 
+      $param = $params[$name] ?? null;
+
+      if (key_exists(Attr\DefaultValueGenerator::class, $attrs)){
+        /** @var Attr\DefaultValueGenerator */
+        $defaultValueSetter = $attrs[Attr\DefaultValueGenerator::class]->newInstance();
+      } else if (key_exists(Attr\DefaultValue::class, $attrs)) {
+        /** @var Attr\DefaultValue */
+        $defaultValueSetter = $attrs[Attr\DefaultValue::class]->newInstance();
+      }
+      else{
+        $defaultValueSetter = null;
+      }
+
       if (key_exists(Attr\RawName::class, $attrs)) {
         $rawAttr = $attrs[Attr\RawName::class];
         $attr = new Attr\RawName(...$rawAttr->getArguments());
@@ -33,12 +50,24 @@ abstract class DTO
       }
 
       if (!$keyExists($rawName)) {
-        if ($property->hasDefaultValue()) {
-          $args[$name] = $property->getDefaultValue();
+        if ($param !== null && $param->isOptional()){
+          $defaultValue = $param->getDefaultValue();
+        }
+        else if ($property->hasDefaultValue()) {
+          $defaultValue = $property->getDefaultValue();
+        } else if($defaultValueSetter !== null){
+          $defaultValue = $defaultValueSetter->getDefaultValue();
         } else if ($property->getType()->allowsNull()) {
-          $args[$name] = null;
+          $defaultValue = null;
         } else {
           throw new \Exception("Missing property: {$name}");
+        }
+
+        if($param !== null){
+          $args[$name] = $defaultValue;
+        }
+        else{
+          $lazyMap[$name] = $defaultValue;
         }
         continue;
       }
@@ -60,10 +89,18 @@ abstract class DTO
       }
       $value = $converter->convertFrom($value);
 
-      $args[$name] = $value;
+      if($param !== null){
+        $args[$name] = $value;
+      }
+      else{
+        $lazyMap[$name] = $value;
+      }
     }
 
     $object = $reflection->newInstanceArgs($args);
+    foreach($lazyMap as $name => $value){
+      $object->{$name} = $value;
+    }
     return $object;
   }
 
