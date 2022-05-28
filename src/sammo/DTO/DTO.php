@@ -4,7 +4,6 @@ namespace sammo\DTO;
 
 use sammo\DTO\Attr\Convert;
 use sammo\DTO\Converter\DefaultConverter;
-use sammo\Json;
 
 abstract class DTO
 {
@@ -18,7 +17,7 @@ abstract class DTO
       $keyExists = fn (string|int $key) => array_key_exists($key, $array);
     }
 
-    $params = Util\Util::getConstructorParams($reflection);
+    $params = Util\DTOUtil::getConstructorParams($reflection);
 
     $args = [];
     $lazyMap = [];
@@ -26,7 +25,7 @@ abstract class DTO
     foreach ($reflection->getProperties(
       \ReflectionProperty::IS_PUBLIC
     ) as $property) {
-      $attrs = Util\Util::getAttrs($property);
+      $attrs = Util\DTOUtil::getAttrs($property);
       $name = $property->getName();
       $rawName = $name;
 
@@ -84,17 +83,17 @@ abstract class DTO
       if (key_exists(Attr\JsonString::class, $attrs)) {
         $rawAttr = $attrs[Attr\JsonString::class];
         $attr = new Attr\JsonString(...$rawAttr->getArguments());
-        $value = Json::decode($value);
+        $value = json_decode($value, true);
       }
 
-      $propTypes = Util\Util::getPropTypes($property);
+      $propTypes = Util\DTOUtil::getPropTypes($property);
       if (key_exists(Attr\Convert::class, $attrs)) {
         $rawAttr = $attrs[Attr\Convert::class];
-        $converter = new Convert($propTypes, ...$rawAttr->getArguments());
+        $converter = new Convert(...$rawAttr->getArguments());
       } else {
-        $converter = new Convert($propTypes, DefaultConverter::class);
+        $converter = new Convert(DefaultConverter::class);
       }
-      $value = $converter->convertFrom($value);
+      $value = $converter->setType($propTypes)->convertFrom($value);
 
       if($param !== null){
         $args[$name] = $value;
@@ -117,7 +116,7 @@ abstract class DTO
     $result = [];
     foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
       $value = $property->getValue($this);
-      $attrs = Util\Util::getAttrs($property);
+      $attrs = Util\DTOUtil::getAttrs($property);
       $name = $property->getName();
 
       if(key_exists(Attr\Ignore::class, $attrs)){
@@ -130,18 +129,21 @@ abstract class DTO
         $name = $attr->rawName;
       }
 
-      $propTypes = Util\Util::getPropTypes($property);
+      $propTypes = Util\DTOUtil::getPropTypes($property);
       if (key_exists(Attr\Convert::class, $attrs)) {
-        $converter = new Convert($propTypes, ...$attrs[Attr\Convert::class]->getArguments());
+        $converter = new Convert(...$attrs[Attr\Convert::class]->getArguments());
       } else {
-        $converter = new Convert($propTypes, DefaultConverter::class);
+        $converter = new Convert(DefaultConverter::class);
       }
-      $value = $converter->convertTo($value);
+      $value = $converter->setType($propTypes)->convertTo($value);
 
       if (key_exists(Attr\JsonString::class, $attrs)) {
         $rawAttr = $attrs[Attr\JsonString::class];
         $attr = new Attr\JsonString(...$rawAttr->getArguments());
-        $value = Json::encode($value, $attr->emptyItemIsArray ? JSON::EMPTY_ARRAY_IS_DICT : 0);
+        if($value === [] && $attr->emptyItemIsArray){
+          $value = (object)null;
+        }
+        $value = json_encode($value, $attr->jsonFlag);
       }
 
       if ($value === null && key_exists(Attr\NullIsUndefined::class, $attrs)) {

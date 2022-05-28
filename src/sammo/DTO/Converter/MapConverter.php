@@ -5,20 +5,19 @@ namespace sammo\DTO\Converter;
 class MapConverter implements Converter
 {
   private Converter $itemConverter;
-  public function __construct(private array $types, ...$args)
+  public function __construct(private array $types, array $itemTypes, ?string $itemConverterClass = null, ...$args)
   {
-    $itemTypes = array_shift($args);
     if(!is_array($itemTypes)){
       throw new \Exception('itemTypes is not a array');
     }
-    $itemConverterType = array_shift($args);
-    if($itemConverterType === null){
-      $itemConverterType = DefaultConverter::class;
+    $itemConverterClass = array_shift($args);
+    if($itemConverterClass === null){
+      $itemConverterClass = DefaultConverter::class;
     }
-    else if (!is_subclass_of($itemConverterType, Converter::class)) {
-      throw new \Exception("$itemConverterType is not a subclass of \sammo\DTO\Converter\Converter");
+    else if (!is_subclass_of($itemConverterClass, Converter::class)) {
+      throw new \Exception("$itemConverterClass is not a subclass of \sammo\DTO\Converter\Converter");
     }
-    $this->itemConverter = new $itemConverterType($itemTypes, ...$args);
+    $this->itemConverter = new $itemConverterClass($itemTypes, ...$args);
   }
 
   public function convertFrom(string|array|int|float|bool|null $raw): mixed

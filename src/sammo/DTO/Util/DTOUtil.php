@@ -1,9 +1,7 @@
 <?php
 namespace sammo\DTO\Util;
 
-use Ds\Map;
-
-class Util{
+class DTOUtil{
   private function __construct()
   {
     

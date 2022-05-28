@@ -6,7 +6,7 @@ use sammo\DTO\DTO;
 
 class DefaultConverter implements Converter
 {
-  public function __construct(private array $types, ...$args)
+  public function __construct(private array $types)
   {
   }
 

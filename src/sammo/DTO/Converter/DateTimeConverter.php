@@ -2,64 +2,52 @@
 
 namespace sammo\DTO\Converter;
 
-use sammo\TimeUtil;
-
 class DateTimeConverter implements Converter
 {
-  protected bool $useFraction;
+  const YMD_HIS = 'Y-m-d H:i:s';
+  const YMD_HISU = 'Y-m-d H:i:s.u';
+
   protected \DateTimeZone $timeZoneOffset;
-  public function __construct(private array $types, ...$args)
+  public function __construct(private array $types, string|int|float|null $timezone = null, public readonly string $datetimeFormat = self::YMD_HIS)
   {
-    if(count($args) > 0) {
-      if(!is_bool($args[0])) {
-        throw new \Exception('DateTimeConverter constructor argument must be boolean');
-      }
-      $this->useFraction = $args[0];
-    } else {
-      $this->useFraction = false;
+    $this->timeZoneOffset = static::extractDateTimeZone($timezone);
+  }
+
+  private static function extractDateTimeZone(string|int|float|null $timezone): \DateTimeZone
+  {
+    if ($timezone === null) {
+      return new \DateTimeZone(date_default_timezone_get());
     }
 
-    if(count($args) > 1) {
-      $args1 = $args[1];
-      if(is_int($args1)){
-        if($args1 < -12 || $args1 > 14){
-          throw new \Exception('TimeZone argument must be between -12 and 14');
-        }
-        if($args1 > 0){
-          $offset = sprintf('+%02d00', $args1);
-        }
-        else{
-          $offset = sprintf('-%02d00', abs($args1));
-        }
-        $this->timeZoneOffset = new \DateTimeZone($offset);
-      } else if(is_float($args1)) {
-        if($args1 < -12 || $args1 > 14){
-          throw new \Exception('TimeZone argument must be between -12 and 14');
-        }
-        $isPositive = $args1 > 0;
-        $offset = abs($args1);
-        $hour = floor($offset);
-        $minute = floor(($offset - $hour) * 60);
-        if($isPositive){
-          $offset = sprintf('+%02d%02d', $hour, $minute);
-        } else {
-          $offset = sprintf('-%02d%02d', $hour, $minute);
-        }
-        $this->timeZoneOffset = new \DateTimeZone($offset);
+    if (is_int($timezone)) {
+      if ($timezone < -12 || $timezone > 14) {
+        throw new \InvalidArgumentException('TimeZone argument must be between -12 and 14');
       }
-      else if(is_string($args1)){
-        $this->timeZoneOffset = new \DateTimeZone($args1);
-      } else if($args1 instanceof \DateTimeZone){
-        $this->timeZoneOffset = $args1;
-      } else if($args1 === null){
-        $this->timeZoneOffset = new \DateTimeZone(\date_default_timezone_get());
+      if ($timezone > 0) {
+        $offset = sprintf('+%02d00', $timezone);
       } else {
-        throw new \Exception('DateTimeConverter constructor argument must be int|string|\DateTimeZone');
+        $offset = sprintf('-%02d00', abs($timezone));
       }
+      return new \DateTimeZone($offset);
     }
-    else{
-      $this->timeZoneOffset = new \DateTimeZone(\date_default_timezone_get());
+
+    if (is_float($timezone)) {
+      if ($timezone < -12 || $timezone > 14) {
+        throw new \InvalidArgumentException('TimeZone argument must be between -12 and 14');
+      }
+      $isPositive = $timezone > 0;
+      $offset = abs($timezone);
+      $hour = floor($offset);
+      $minute = floor(($offset - $hour) * 60);
+      if ($isPositive) {
+        $offset = sprintf('+%02d%02d', $hour, $minute);
+      } else {
+        $offset = sprintf('-%02d%02d', $hour, $minute);
+      }
+      return new \DateTimeZone($offset);
     }
+
+    return  new \DateTimeZone($timezone);
   }
 
   public function convertFrom(string|array|int|float|bool|null $raw): mixed
@@ -67,20 +55,18 @@ class DateTimeConverter implements Converter
     if ($raw === null && array_search('null', $this->types, true) !== false) {
       return null;
     }
-    if (!is_string($raw)){
-      throw new \Exception('DateTimeConverter can not convert non-string');
+    if (!is_string($raw)) {
+      throw new \InvalidArgumentException('DateTimeConverter can not convert non-string');
     }
     if (array_search('DateTimeImmutable', $this->types, true) !== false) {
       $objDateTime = new \DateTimeImmutable($raw, $this->timeZoneOffset);
-    }
-    else if (array_search('DateTime', $this->types, true) !== false) {
+    } else if (array_search('DateTime', $this->types, true) !== false) {
       $objDateTime = new \DateTime($raw, $this->timeZoneOffset);
-    }
-    else{
+    } else {
       $objDateTime = new \DateTimeImmutable($raw, $this->timeZoneOffset);
     }
 
-    if($objDateTime->getTimezone() !== $this->timeZoneOffset){
+    if ($objDateTime->getTimezone() !== $this->timeZoneOffset) {
       $objDateTime = $objDateTime->setTimezone($this->timeZoneOffset);
     }
     return $objDateTime;
@@ -95,9 +81,9 @@ class DateTimeConverter implements Converter
       throw new \Exception('DateTimeConverter can not convert non-DateTimeInterface');
     }
 
-    if($data->getTimezone() !== $this->timeZoneOffset){
+    if ($data->getTimezone() !== $this->timeZoneOffset) {
       $data = \DateTimeImmutable::createFromInterface($data)->setTimezone($this->timeZoneOffset);
     }
-    return TimeUtil::format($data, $this->useFraction);
+    return $data->format($this->datetimeFormat);
   }
 }

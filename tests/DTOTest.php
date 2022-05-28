@@ -163,9 +163,9 @@ class TypeDateTime extends DTO
   public function __construct(
     #[Convert(DateTimeConverter::class)]
     public \DateTimeImmutable $a,
-    #[Convert(DateTimeConverter::class, false, 9)]
+    #[Convert(DateTimeConverter::class, 9, DateTimeConverter::YMD_HIS)]
     public \DateTime $b,
-    #[Convert(DateTimeConverter::class, true, 8)]
+    #[Convert(DateTimeConverter::class, 8, DateTimeConverter::YMD_HISU)]
     public \DateTimeImmutable|\DateTime $c,
     #[Convert(DateTimeConverter::class)]
     public \DateTimeInterface $d,
