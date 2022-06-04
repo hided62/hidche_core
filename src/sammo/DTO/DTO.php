@@ -153,4 +153,18 @@ abstract class DTO
     }
     return $result;
   }
+
+  public function toArrayExcept(string ...$keys): array{
+    $reflection = new \ReflectionClass($this::class);
+    $values = $this->toArray();
+    foreach($keys as $key){
+      if(!$reflection->hasProperty($key)){
+        throw new \Exception("Key {$key} does not exist");
+      }
+      if(key_exists($key, $values)){
+        unset($values[$key]);
+      }
+    }
+    return $values;
+  }
 }
