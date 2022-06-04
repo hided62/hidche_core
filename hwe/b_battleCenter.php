@@ -197,7 +197,7 @@ $showGeneral = General::createGeneralObjFromDB($gen);
             <?php endif; ?>
         </div>
         <div class="row gx-0">
-            <div class="col "><?= backButton() ?></div>
+            <div class="col "><?= closeButton() ?></div>
         </div>
         <div class="row bg0 gx-0">
             <div class="col bg0"><?= banner() ?></div>
