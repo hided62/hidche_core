@@ -155,7 +155,7 @@ class AuctionUniqueItem extends Auction
 
     $bidItemTypes = new Set();
     foreach (GameConst::$allItems as $itemType => $itemList) {
-      if (key_exists($itemCode, $itemList) && $itemList[$itemCode] <= 0) {
+      if (($itemList[$itemCode] ?? 0) <= 0) {
         continue;
       }
       $bidItemTypes->add($itemType);
