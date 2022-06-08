@@ -13,8 +13,6 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-use function sammo\tryRollbackInheritUniqueItem;
-
 class che_NPC능동 extends Command\GeneralCommand{
     static protected $actionName = 'NPC능동';
 
@@ -98,7 +96,6 @@ class che_NPC능동 extends Command\GeneralCommand{
 
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         }
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

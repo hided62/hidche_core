@@ -3,6 +3,8 @@
 namespace sammo;
 
 use DateTime;
+use Ds\Set;
+use sammo\Enums\AuctionType;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 use sammo\Event\Action;
@@ -1204,9 +1206,9 @@ function checkDelay()
         $db->update('general', [
             'turntime' => $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
         ], 'turntime<=DATE_ADD(turntime, INTERVAL %i MINUTE)', $term);
-        $db->update('auction', [
-            'expire' => $db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
-        ], true);
+        $db->update('ng_auction', [
+            'close_date' => $db->sqleval('DATE_ADD(close_date, INTERVAL %i MINUTE)', $minute)
+        ], 'finished = 0');
     }
 }
 
@@ -1557,6 +1559,7 @@ function CheckHall($no)
 function giveRandomUniqueItem(RandUtil $rng, General $general, string $acquireType): bool
 {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     //아이템 습득 상황
     $availableUnique = [];
 
@@ -1585,6 +1588,18 @@ function giveRandomUniqueItem(RandUtil $rng, General $general, string $acquireTy
                 continue;
             }
             $occupiedUnique[$itemCode] = $cnt;
+        }
+    }
+
+    $auctionItems = $db->queryFirstColumn(
+        'SELECT `target` FROM `ng_auction` WHERE `type` = %s AND `finished` = 0',
+        AuctionType::UniqueItem->value
+    );
+    foreach ($auctionItems as $itemCode) {
+        if (key_exists($itemCode, $occupiedUnique)) {
+            $occupiedUnique[$itemCode]++;
+        } else {
+            $occupiedUnique[$itemCode] = 1;
         }
     }
 
@@ -1631,10 +1646,7 @@ function giveRandomUniqueItem(RandUtil $rng, General $general, string $acquireTy
         return false;
     }
 
-
-
     if ($general->getAuxVar('inheritRandomUnique')) {
-        $gameStor = KVStorage::getStorage($db, 'game_env');
         [$year, $month, $initYear, $initMonth] = $gameStor->getValuesAsArray(['year', 'month', 'init_year', 'init_month']);
 
         $relMonthByInit = Util::joinYearMonth($year, $month) - Util::joinYearMonth($initYear, $initMonth);
@@ -1664,210 +1676,6 @@ function giveRandomUniqueItem(RandUtil $rng, General $general, string $acquireTy
     $logger->pushGeneralHistoryLog("<C>{$itemName}</>{$josaUl} 습득");
     $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
     $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
-
-    return true;
-}
-
-function rollbackInheritUniqueTrial(General $general, string $itemKey, string $reason)
-{
-
-    $ownerID = $general->getVar('owner');
-
-    $db = DB::db();
-
-    $itemTrials = $general->getAuxVar('inheritUniqueTrial');
-    LogText("선택유니크 롤백:{$ownerID}", [$itemKey, $itemTrials]);
-    unset($itemTrials[$itemKey]);
-    if (count($itemTrials) == 0) {
-        $itemTrials = null;
-    }
-    $general->setAuxVar('inheritUniqueTrial', $itemTrials);
-
-
-    $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");
-    $ownTrial = $trialStor->getValue("u{$ownerID}");
-
-    $itemObj = buildItemClass($itemKey);
-    $itemName = $itemObj->getName();
-
-    if ($ownTrial) {
-        //두 값이 general, KVStorage 둘다 있고, 이중에선 KVStorage 값을 기준으로 하자 따르자
-        [,, $amount] = $ownTrial;
-        $trialStor->deleteValue("u{$ownerID}");
-        $general->increaseInheritancePoint(InheritanceKey::previous, $amount);
-        $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, -$amount);
-        LogText("선택유니크 롤백포인트:{$ownerID}", $amount);
-
-        $userLogger = new UserLogger($ownerID);
-        $userLogger->push("{$itemName} 입찰에 사용한 {$amount} 포인트 반환", "inheritPoint");
-    }
-
-    //메시지
-
-    $staticNation = $general->getStaticNation();
-
-    $unlimited = new \DateTime('9999-12-31');
-    $src = new MessageTarget(0, '', 0, 'System', '#000000');
-    $dest = new MessageTarget($general->getID(), $general->getName(), $general->getNationID(), $staticNation['name'], $staticNation['color'], GetImageURL($general->getVar('imgsvr'), $general->getVar('picture')));
-    $josaUl = JosaUtil::pick($itemName, '을');
-    $msg = new Message(
-        Message::MSGTYPE_PRIVATE,
-        $src,
-        $dest,
-        "{$itemName}{$josaUl} 얻지 못했습니다. {$reason}",
-        new DateTime(),
-        $unlimited,
-        []
-    );
-
-    $general->applyDB($db);
-    $msg->send(true);
-}
-
-function tryRollbackInheritUniqueItem(RandUtil $rng, General $general): void
-{
-    tryInheritUniqueItem($rng, $general, 'Rollback', true);
-}
-
-function tryInheritUniqueItem(RandUtil $rng, General $general, string $acquireType = '아이템', bool $justRollback = false): bool
-{
-    $ownerID = $general->getVar('owner');
-    if (!$ownerID) {
-        LogText("선택유니크 실패???: {$ownerID}", $general->getName());
-        return false;
-    }
-
-    $itemTrials = $general->getAuxVar('inheritUniqueTrial') ?? [];
-    arsort($itemTrials);
-    LogText("선택유니크항목: {$ownerID}", $itemTrials);
-
-    $db = DB::db();
-
-    $ownTarget = null;
-    $ownType = null;
-
-    foreach ($itemTrials as $itemKey => $amount) {
-        $availableItemTypes = [];
-        $reasons = [];
-        foreach (GameConst::$allItems as $itemType => $itemList) {
-            //아직은 그런 경우는 없지만 동일 유니크를 여러 부위에 장착할 수 있을지도 모름
-            if (!key_exists($itemKey, $itemList)) {
-                continue;
-            }
-
-            $ownItem = $general->getItem($itemType);
-            if ($ownItem->getRawClassName() == $itemKey) {
-                $reasons[] = '이미 그 유니크를 가지고 있습니다.';
-                continue;
-            }
-
-            if (!$ownItem->isBuyable()) {
-                $reasons[] = '이미 다른 유니크를 가지고 있습니다.';
-                continue;
-            }
-
-            $availableCnt = $itemList[$itemKey];
-            $occupiedCnt = $db->queryFirstField('SELECT count(*) FROM general WHERE %b = %s', $itemType, $itemKey);
-            if ($occupiedCnt >= $availableCnt) {
-                $reasons[] = '그 유니크는 모두 점유되었습니다.';
-                continue;
-            }
-            $availableItemTypes[] = $itemType;
-        }
-
-        if (!$availableItemTypes) {
-            rollbackInheritUniqueTrial($general, $itemKey, join(' ', $reasons));
-            continue;
-        }
-        $reasons = [];
-
-        $itemType = $rng->choice($availableItemTypes);
-
-        $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}"); //혹시 itemKey의 크기가 37이 넘을 수 있을까?
-        $anyTrials = $trialStor->getAll();
-        if (!$anyTrials) {
-            //순서가 꼬였던 모양, 실제 값은 storage를 우선시하자
-            rollbackInheritUniqueTrial($general, $itemKey, '절차상의 오류입니다.');
-            continue;
-        }
-
-        //XXX: 정렬할 필요 없지 않나?
-        usort($anyTrials, function ($lhsTrial, $rhsTrial) {
-            [,, $lhsAmount] = $lhsTrial;
-            [,, $rhsAmount] = $rhsTrial;
-            return $rhsAmount <=> $lhsAmount; //큰 값이 앞에 오도록
-        });
-
-        LogText("선택유니크상태 {$ownerID} {$itemKey}", $anyTrials);
-
-        //공동 1등인데 본인이 있을 수도 있다.
-        [,, $topAmount] = $anyTrials[0];
-        if ($amount < $topAmount) {
-            $compAmount = $topAmount / $amount;
-            if ($compAmount > 2.0) {
-                $compText = '엄청난 차이로 ';
-            } else if ($compAmount > 1.2) {
-                $compText = '큰 차이로 ';
-            } else if ($compAmount > 1.05) {
-                $compText = '';
-            } else {
-                $compText = '아슬아슬한 차이로 ';
-            }
-            rollbackInheritUniqueTrial($general, $itemKey, "{$compText}상위 입찰한 장수가 있습니다.");
-            continue;
-        }
-
-        //내가 1위다
-        if ($ownTarget !== null) {
-            //이미 다른 아이템을 얻기로 되어있다.
-            continue;
-        }
-        $ownTarget = $itemKey;
-        $ownType = $itemType;
-    }
-    unset($itemKey);
-    unset($itemType);
-
-    if ($ownTarget === null) {
-        return false;
-    }
-    if ($justRollback) {
-        return false;
-    }
-
-    LogText("선택유니크획득{$ownerID}", $ownTarget);
-
-    $trialStor = KVStorage::getStorage($db, "ut_{$ownTarget}");
-    $trialStor->deleteValue("u{$ownerID}");
-
-    //rollbackInheritUniqueTrial 과정 때문에 새로 받아와야함
-    $itemTrials = $general->getAuxVar('inheritUniqueTrial');
-    unset($itemTrials[$ownTarget]);
-    $general->setAuxVar('inheritUniqueTrial', $itemTrials);
-
-    $nationName = $general->getStaticNation()['name'];
-    $generalName = $general->getName();
-    $josaYi = JosaUtil::pick($generalName, '이');
-    $itemObj = buildItemClass($ownTarget);
-    $itemName = $itemObj->getName();
-    $itemRawName = $itemObj->getRawName();
-    $josaUl = JosaUtil::pick($itemRawName, '을');
-
-
-    $general->setVar($ownType, $ownTarget);
-
-
-    $logger = $general->getLogger();
-
-    $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 습득했습니다!");
-    $logger->pushGeneralHistoryLog("<C>{$itemName}</>{$josaUl} 습득");
-    $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
-    $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
-
-    $general->applyDB($db);
-
-    //같은 종류의 유니크를 입찰했을 수 있으니 한번 더 검사한다.
-    tryRollbackInheritUniqueItem($rng, $general);
 
     return true;
 }
@@ -1917,16 +1725,7 @@ function tryUniqueItemLottery(RandUtil $rng, General $general, string $acquireTy
             $userLogger = new UserLogger($general->getVar('owner'));
             $userLogger->push(sprintf("유니크를 얻을 공간이 없어 %d 포인트 반환", GameConst::$inheritItemRandomPoint), "inheritPoint");
         }
-        tryRollbackInheritUniqueItem($rng, $general);
         return false;
-    }
-
-    $inheritUnique = $general->getAuxVar('inheritUniqueTrial');
-    if ($acquireType != '설문조사' && $inheritUnique && count($inheritUnique) && $availableBuyUnique) {
-        $trialResult = tryInheritUniqueItem($rng, $general, $acquireType);
-        if ($trialResult) {
-            return true;
-        }
     }
 
     $scenario = $gameStor->scenario;

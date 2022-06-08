@@ -20,7 +20,6 @@ use sammo\Event\EventHandler;
 
 use function sammo\refreshNationStaticInfo;
 use function sammo\deleteNation;
-use function sammo\tryRollbackInheritUniqueItem;
 
 class che_해산 extends Command\GeneralCommand{
     static protected $actionName = '해산';
@@ -99,7 +98,6 @@ class che_해산 extends Command\GeneralCommand{
             $oldGeneral->setVar('makelimit', 12);
             $oldGeneral->applyDB($db);
         }
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         // 이벤트 핸들러 동작

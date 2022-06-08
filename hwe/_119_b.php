@@ -50,9 +50,9 @@ switch ($btn) {
         $db->update('general', [
             'turntime' => $db->sqleval('DATE_SUB(turntime, INTERVAL %i MINUTE)', $minute)
         ], true);
-        $db->update('auction', [
-            'expire' => $db->sqleval('DATE_SUB(expire, INTERVAL %i MINUTE)', $minute)
-        ], true);
+        $db->update('ng_auction', [
+            'close_date' => $db->sqleval('DATE_SUB(close_date, INTERVAL %i MINUTE)', $minute)
+        ], 'finished = 0');
         if ($locked) {
             unlock();
         }
@@ -78,9 +78,9 @@ switch ($btn) {
         $db->update('general', [
             'turntime' => $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
         ], true);
-        $db->update('auction', [
-            'expire' => $db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
-        ], true);
+        $db->update('ng_auction', [
+            'close_date' => $db->sqleval('DATE_ADD(close_date, INTERVAL %i MINUTE)', $minute)
+        ], 'finished = 0');
         if ($locked) {
             unlock();
         }

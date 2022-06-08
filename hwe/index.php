@@ -88,7 +88,7 @@ $color = "cyan";
 $serverName = UniqueConst::$serverName;
 $serverCnt = $gameStor->server_cnt;
 
-$auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
+$auctionCount = $db->queryFirstField('SELECT count(*) FROM ng_auction WHERE finished = 0');
 $isTournamentActive = $gameStor->tournament > 0;
 $isTournamentApplicationOpen = $gameStor->tournament == 1;
 $isBettingActive = $gameStor->tournament == 6;

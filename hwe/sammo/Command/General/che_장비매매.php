@@ -13,7 +13,8 @@ use \sammo\{
     GameConst,
     GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    KVStorage
 };
 
 use function \sammo\buildItemClass;
@@ -181,7 +182,7 @@ class che_장비매매 extends Command\GeneralCommand
             $general->onArbitraryAction($general, $rng, '장비매매', '판매', ['itemCode' => $itemCode]);
             $general->setItem($itemType, null);
 
-            if(!$itemObj->isBuyable()){
+            if (!$itemObj->isBuyable()) {
                 $generalName = $general->getName();
                 $josaYi = JosaUtil::pick($generalName, '이');
                 $nationName = $general->getStaticNation()['name'];

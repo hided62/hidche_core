@@ -12,7 +12,6 @@ use \sammo\Command;
 use \sammo\Json;
 
 use function \sammo\searchDistance;
-use function sammo\tryRollbackInheritUniqueItem;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
@@ -214,7 +213,6 @@ class che_첩보 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

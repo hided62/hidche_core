@@ -15,8 +15,6 @@ use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
 
-use function sammo\tryRollbackInheritUniqueItem;
-
 class che_하야 extends Command\GeneralCommand{
     static protected $actionName = '하야';
 
@@ -118,7 +116,6 @@ class che_하야 extends Command\GeneralCommand{
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

@@ -16,5 +16,5 @@
 <?=$btnBegin??''?><a href='b_battleCenter.php' target='_blank' class='open-window commandButton <?=$btnClass??""?> <?= $showSecret ? '' : 'disabled' ?>'>감 찰 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_inheritPoint.php' class='commandButton <?=$btnClass??""?>'>유산 관리</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myPage.php' class='commandButton <?=$btnClass??""?>'>내 정보&amp;설정</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='b_auction.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>거 래 장</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href='v_auction.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>거 래 장</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_betting.php' target='_blank' class='open-window <?=$btnClassForBetting??""?>'>베 팅 장</a><?=$btnEnd??''?>

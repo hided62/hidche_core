@@ -12,7 +12,6 @@ use \sammo\LastTurn;
 use \sammo\Command;
 
 use function \sammo\searchDistance;
-use function sammo\tryRollbackInheritUniqueItem;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
@@ -296,7 +295,6 @@ class che_화계 extends Command\GeneralCommand
 
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
-            tryRollbackInheritUniqueItem($rng, $general);
             $general->applyDB($db);
             return false;
         }
@@ -330,7 +328,6 @@ class che_화계 extends Command\GeneralCommand
         $general->increaseRankVar(RankColumn::firenum, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

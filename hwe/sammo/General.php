@@ -610,23 +610,7 @@ class General implements iAction
                 $refundPoint += GameConst::$inheritItemRandomPoint;
             }
 
-            $itemTrials = $this->getAuxVar('inheritUniqueTrial') ?? [];
-            foreach (array_keys($itemTrials) as $itemKey) {
-                $trialStor = KVStorage::getStorage($db, "ut_{$itemKey}");
-                $ownTrial = $trialStor->getValue("u{$userID}");
-
-                $itemObj = buildItemClass($itemKey);
-                $itemName = $itemObj->getName();
-
-                if (!$ownTrial) {
-                    continue;
-                }
-
-                [,, $amount] = $ownTrial;
-                $trialStor->deleteValue("u{$userID}");
-                $userLogger->push("사망으로 {$itemName} 입찰에 사용한 {$amount} 포인트 반환", "inheritPoint");
-                $refundPoint += $amount;
-            }
+            //TODO: 경매 최우선 입찰자인경우 반환
 
             if ($this->getAuxVar('inheritSpecificSpecialWar')) {
                 $this->setAuxVar('inheritSpecificSpecialWar', null);

@@ -2,6 +2,7 @@
 
 namespace sammo\DTO;
 
+use Ds\Set;
 use sammo\DTO\Attr\Convert;
 use sammo\DTO\Converter\DefaultConverter;
 
@@ -110,16 +111,23 @@ abstract class DTO
     return $object;
   }
 
-  public function toArray(): array
+  public function toArray(string ...$exceptKeys): array
   {
     $reflection = new \ReflectionClass($this::class);
     $result = [];
+
+    $exceptKeySet = new Set($exceptKeys);
+
     foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
       $value = $property->getValue($this);
       $attrs = Util\DTOUtil::getAttrs($property);
       $name = $property->getName();
 
       if(key_exists(Attr\Ignore::class, $attrs)){
+        continue;
+      }
+
+      if($exceptKeySet->contains($name)){
         continue;
       }
 
@@ -152,19 +160,5 @@ abstract class DTO
       $result[$name] = $value;
     }
     return $result;
-  }
-
-  public function toArrayExcept(string ...$keys): array{
-    $reflection = new \ReflectionClass($this::class);
-    $values = $this->toArray();
-    foreach($keys as $key){
-      if(!$reflection->hasProperty($key)){
-        throw new \Exception("Key {$key} does not exist");
-      }
-      if(key_exists($key, $values)){
-        unset($values[$key]);
-      }
-    }
-    return $values;
   }
 }

@@ -441,23 +441,6 @@ CREATE TABLE `tournament` (
 	INDEX `grp` (`grp`, `grp_no`)
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
 ##############################
-## 거래 테이블
-##############################
-create table `auction` (
-	`no` int(6) not null auto_increment,
-	`type` int(6) default 0,
-	`no1` int(6) default 0,
-	`name1` varchar(64) default '-',
-	`amount` int(6) default 0,
-	`cost` int(6) default 0,
-	`value` int(6) default 0,
-	`topv` int(6) default 0,
-	`no2` int(6) default 0,
-	`name2` varchar(64) default '-',
-	`expire` datetime,
-	PRIMARY KEY (`no`)
-) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
-##############################
 ## 통계 테이블
 ##############################
 CREATE TABLE `statistic` (
@@ -685,3 +668,44 @@ CREATE TABLE `vote_comment` (
 	PRIMARY KEY (`id`),
 	INDEX `by_vote` (`vote_id`)
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
+
+
+##############################
+## 거래장 / 경매장
+##############################
+# 경매 객체는 KVStorage에 저장
+CREATE TABLE `ng_auction` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`type` ENUM('buyRice','sellRice','uniqueItem') NOT NULL COLLATE 'utf8mb4_bin',
+	`finished` BIT(1) NOT NULL,
+	`target` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
+	`host_general_id` INT(11) NOT NULL,
+	`req_resource` ENUM('gold','rice','inheritPoint') NOT NULL COLLATE 'utf8mb4_bin',
+	`open_date` DATETIME NOT NULL,
+	`close_date` DATETIME NOT NULL,
+	`detail` LONGTEXT NOT NULL COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `by_close` (`finished`, `type`, `close_date`) USING BTREE,
+	INDEX `by_general_id` (`host_general_id`, `type`, `finished`) USING BTREE,
+	CONSTRAINT `detail` CHECK (json_valid(`detail`))
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria
+;
+
+CREATE TABLE `ng_auction_bid` (
+	`no` INT(11) NOT NULL AUTO_INCREMENT,
+	`auction_id` INT(11) NOT NULL,
+	`owner` INT(11) NULL DEFAULT NULL,
+	`general_id` INT(11) NOT NULL,
+	`amount` INT(11) NOT NULL,
+	`date` DATETIME NOT NULL,
+	`aux` LONGTEXT NOT NULL COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`no`),
+	UNIQUE INDEX `by_general` (`general_id`, `auction_id`, `amount`),
+	UNIQUE INDEX `by_owner` (`owner`, `auction_id`, `amount`),
+	UNIQUE INDEX `by_amount` (`auction_id`, `amount`),
+	CONSTRAINT `aux` CHECK (json_valid(`aux`))
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE = Aria;

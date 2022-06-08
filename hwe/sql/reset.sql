@@ -32,9 +32,6 @@ DROP TABLE IF EXISTS ng_diplomacy;
 # 토너먼트 테이블 삭제
 DROP TABLE IF EXISTS tournament;
 
-# 거래 테이블 삭제
-DROP TABLE IF EXISTS auction;
-
 # 통계 테이블 삭제
 DROP TABLE IF EXISTS statistic;
 
@@ -67,3 +64,6 @@ DROP TABLE IF EXISTS ng_betting;
 
 DROP TABLE IF EXISTS vote;
 DROP TABLE IF EXISTS vote_comment;
+
+DROP TABLE IF EXISTS `ng_auction`;
+DROP TABLE IF EXISTS `ng_auction_bid`;

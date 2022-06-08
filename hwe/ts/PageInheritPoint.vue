@@ -62,12 +62,12 @@
             >
           </div>
           <div class="row px-4">
-            <b-button class="col-6 offset-6" variant="primary" @click="setNextSpecialWar"> 구입 </b-button>
+            <BButton class="col-6 offset-6" variant="primary" @click="setNextSpecialWar"> 구입 </BButton>
           </div>
         </div>
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
-            <div class="a-right col-6 align-self-center">유니크 입찰</div>
+            <div class="a-right col-6 align-self-center">유니크 경매</div>
             <div class="col-6">
               <select v-model="specificUnique" class="form-select col-6">
                 <option disabled selected :value="null"> 유니크 선택 </option>
@@ -89,14 +89,14 @@
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              >얻고자 하는 유니크 아이템을 포인트를 걸어 입찰합니다. 최고 포인트인 경우 다음 턴에 유니크를 얻습니다.<br />
+              >얻고자 하는 유니크 아이템으로 경매를 시작합니다. 24턴 동안 진행됩니다.<br />
               <!-- eslint-disable-next-line vue/no-v-html -->
               <span style="color: white" v-html="specificUnique == null?'':availableUnique[specificUnique].info" />
             </small>
           </div>
 
           <div class="row px-4">
-            <b-button class="col-6 offset-6" variant="primary" @click="buySpecificUnique"> 구입 </b-button>
+            <BButton class="col-6 offset-6" variant="primary" @click="openUniqueItemAuction"> 경매 시작 </BButton>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
-            <b-button class="col-6" variant="primary" @click="buySimple('ResetTurnTime')"> 구입 </b-button>
+            <BButton class="col-6" variant="primary" @click="buySimple('ResetTurnTime')"> 구입 </BButton>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
@@ -120,7 +120,7 @@
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 유니크 획득</div>
-            <b-button class="col-6" variant="primary" @click="buySimple('BuyRandomUnique')"> 구입 </b-button>
+            <BButton class="col-6" variant="primary" @click="buySimple('BuyRandomUnique')"> 구입 </BButton>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
@@ -133,7 +133,7 @@
         <div class="col col-md-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">즉시 전투 특기 초기화</div>
-            <b-button class="col-6" variant="primary" @click="buySimple('ResetSpecialWar')"> 구입 </b-button>
+            <BButton class="col-6" variant="primary" @click="buySimple('ResetSpecialWar')"> 구입 </BButton>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
@@ -173,13 +173,13 @@
           >
         </div>
         <div class="row px-4" style="margin-bottom: 1em">
-          <b-button
+          <BButton
             variant="secondary"
             class="col col-md-6 col-4 offset-md-0 offset-4"
             @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
           >
-            리셋 </b-button
-          ><b-button variant="primary" class="col col-md-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </b-button>
+            리셋 </BButton
+          ><BButton variant="primary" class="col col-md-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </BButton>
         </div>
       </div>
     </div>
@@ -209,6 +209,7 @@ import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { inheritBuffType } from "./defs/API/InheritAction";
 import * as JosaUtil from '@/util/JosaUtil';
+import { BButton } from "bootstrap-vue-3";
 
 type InheritanceType =
   | "previous"
@@ -376,6 +377,7 @@ export default defineComponent({
   components: {
     TopBackBar,
     NumberInputWithInfo,
+    BButton,
   },
   data() {
     const inheritBuff = {} as Record<inheritBuffType, number>;
@@ -519,7 +521,7 @@ export default defineComponent({
       //TODO: 페이지 새로고침 필요없이 하도록
       location.reload();
     },
-    async buySpecificUnique() {
+    async openUniqueItemAuction() {
       if(this.specificUnique === null){
         alert("유니크를 선택해주세요.");
         return;
@@ -544,8 +546,8 @@ export default defineComponent({
       }
 
       try {
-        await SammoAPI.InheritAction.BuySpecificUnique({
-          item: this.specificUnique,
+        await SammoAPI.Auction.OpenUniqueAuction({
+          itemID: this.specificUnique,
           amount,
         });
       } catch (e) {
@@ -554,7 +556,7 @@ export default defineComponent({
         return;
       }
 
-      alert("성공했습니다.");
+      alert("성공했습니다. 경매장을 확인해주세요.");
       //TODO: 페이지 새로고침 필요없이 하도록
       location.reload();
     },

@@ -15,8 +15,6 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
 
-use function sammo\tryRollbackInheritUniqueItem;
-
 class che_모반시도 extends Command\GeneralCommand{
     static protected $actionName = '모반시도';
 
@@ -99,7 +97,6 @@ class che_모반시도 extends Command\GeneralCommand{
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
         $lordGeneral->applyDB($db);
 

@@ -2,6 +2,7 @@
 
 namespace sammo\API\General;
 
+use Ds\Set;
 use sammo\DB;
 use sammo\Validator;
 
@@ -9,6 +10,7 @@ use sammo\Session;
 use sammo\GameConst;
 use sammo\General;
 use sammo\JosaUtil;
+use sammo\KVStorage;
 
 class DropItem extends \sammo\BaseAPI
 {
@@ -56,12 +58,13 @@ class DropItem extends \sammo\BaseAPI
     $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 버렸습니다.");
 
     $nationName = $me->getStaticNation()['name'];
+    $db = DB::db();
     if (!$item->isBuyable()) {
       $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 잃었습니다!");
       $logger->pushGlobalHistoryLog("<R><b>【망실】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 잃었습니다!");
     }
 
-    $me->applyDB(DB::db());
+    $me->applyDB($db);
 
     return null;
   }

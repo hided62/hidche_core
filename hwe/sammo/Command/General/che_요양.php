@@ -13,8 +13,6 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-use function sammo\tryRollbackInheritUniqueItem;
-
 class che_요양 extends Command\GeneralCommand{
     static protected $actionName = '요양';
 
@@ -71,7 +69,6 @@ class che_요양 extends Command\GeneralCommand{
         $general->addDedication($ded);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

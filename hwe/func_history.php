@@ -90,8 +90,8 @@ function pushAuctionLog($log) {
     pushRawFileLog(__DIR__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $log);
 }
 
-function getAuctionLogRecent(int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $count, 300)));
+function getAuctionLogRecent(int $count): array {
+    return array_reverse(getRawFileLogRecent(__DIR__."/logs/".UniqueConst::$serverID."/_auctionlog.txt", $count, 300));
 }
 
 //DB-based

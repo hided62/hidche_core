@@ -48,54 +48,25 @@ $db = DB::db();
                     <font color=red>접속제한</font><br><b style=background-color:red;>블럭회원</b>
                 </td>
                 <td width=105 rowspan=12>
-                    <?php
+                    <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:14px'>
+                        <?php
+                        $generalList = $db->query('SELECT `no`, `name`, npc, `block` FROM general ORDER BY npc, binary(`name`)');
 
-                    echo "
-            <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:14px'>";
-                    $generalList = $db->query('SELECT `no`, `name`, npc, `block` FROM general ORDER BY npc, binary(`name`)');
-
-                    foreach ($generalList as $general) {
-                        $style = "style=;";
-                        if ($general['block']         > 0) {
-                            $style .= "background-color:red;";
-                        }
-
-                        $npcColor = getNPCColor($general['npc']);
-                        if($npcColor !== null){
-                            $style .= "color:{$npcColor};";
-                        }
-
-                        echo "
-                <option value={$general['no']} $style>{$general['name']}</option>";
-                    }
-
-                    echo "
-            </select>
-        </td>
-        <td width=100 align=center>아이템 지급</td>
-        <td width=504>
-            <select name=weapon size=1 style='color:white;background-color:black;font-size:14px'>";
-                    foreach (GameConst::$allItems as $itemCategories) {
-                        foreach ($itemCategories as $item => $cnt) {
-                            if ($cnt == 0) {
-                                continue;
+                        foreach ($generalList as $general) {
+                            $style = "style=;";
+                            if ($general['block']         > 0) {
+                                $style .= "background-color:red;";
                             }
-                            $itemObj = buildItemClass($item);
-                            if ($itemObj->isBuyable()) {
-                                continue;
+
+                            $npcColor = getNPCColor($general['npc']);
+                            if ($npcColor !== null) {
+                                $style .= "color:{$npcColor};";
                             }
+
+                            echo "<option value={$general['no']} $style>{$general['name']}</option>";
                         }
-                    }
-                    for ($i = 0; $i < 27; $i++) {
-                        echo "
-                <option value={$i}>{$i}</option>";
-                    }
-                    ?>
+                        ?>
                     </select>
-                    <input type=submit name=btn value='무기지급'>
-                    <input type=submit name=btn value='책지급'>
-                    <input type=submit name=btn value='말지급'>
-                    <input type=submit name=btn value='도구지급'>
                 </td>
             </tr>
             <tr>

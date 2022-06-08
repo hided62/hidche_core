@@ -510,7 +510,7 @@ function postUpdateMonthly(RandUtil $rng)
     //토너먼트 개시
     triggerTournament($rng);
     // 시스템 거래건 등록
-    registerAuction();
+    registerAuction($rng);
     //전방설정
     foreach (getAllNationStaticInfo() as $nation) {
         if ($nation['level'] <= 0) {

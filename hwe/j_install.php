@@ -4,8 +4,6 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-WebUtil::requireAJAX();
-
 $session = Session::requireLogin([])->setReadOnly();
 
 if(!class_exists('\\sammo\\DB')){

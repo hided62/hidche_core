@@ -17,7 +17,6 @@ use sammo\Enums\InheritanceKey;
 
 use function sammo\DeleteConflict;
 use function sammo\refreshNationStaticInfo;
-use function sammo\tryRollbackInheritUniqueItem;
 
 class che_방랑 extends Command\GeneralCommand{
     static protected $actionName = '방랑';
@@ -125,7 +124,6 @@ class che_방랑 extends Command\GeneralCommand{
         refreshNationStaticInfo();
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        tryRollbackInheritUniqueItem($rng, $general);
         $general->applyDB($db);
 
         return true;

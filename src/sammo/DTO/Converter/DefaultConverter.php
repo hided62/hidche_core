@@ -78,10 +78,17 @@ class DefaultConverter implements Converter
       return $raw;
     }
 
-    if($type === 'bool' && is_bool($raw)){
-      $success = true;
-      return $raw;
+    if($type === 'bool'){
+      if(is_bool($raw)){
+        $success = true;
+        return $raw;
+      }
+      if($raw === 0 || $raw === 1){
+        $success = true;
+        return $raw !== 0;
+      }
     }
+
 
     return null;
   }
@@ -100,7 +107,7 @@ class DefaultConverter implements Converter
       }
     }
 
-    throw new \Exception('DefaultConverter can not convert');
+    throw new \Exception('DefaultConverter can not convert '.gettype($raw));
   }
 
   public function convertTo(mixed $data): string|array|int|float|bool|null
