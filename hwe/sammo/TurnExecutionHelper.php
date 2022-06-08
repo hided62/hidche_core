@@ -236,6 +236,7 @@ class TurnExecutionHelper
             }
 
             $general = General::createGeneralObjFromDB($rawGeneral['no']);
+            $nationStor = KVStorage::getStorage($db, $general->getNationID(), 'nation_env');
             $turnObj = new static($general);
 
             $env = $gameStor->getAll(); //NOTE: 매번 재 갱신하도록 유지할 것.
@@ -243,7 +244,6 @@ class TurnExecutionHelper
 
             $hasNationTurn = false;
             if ($general->getVar('nation') != 0 && $general->getVar('officer_level') >= 5) {
-                $nationStor = KVStorage::getStorage($db, $general->getNationID(), 'nation_env');
                 $lastNationTurnKey = "turn_last_{$general->getVar('officer_level')}";
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
                 $rawNationTurn = $db->queryFirstRow(
