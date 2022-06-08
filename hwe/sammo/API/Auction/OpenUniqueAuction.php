@@ -64,7 +64,7 @@ class OpenUniqueAuction extends \sammo\BaseAPI
     $initYearMonth = Util::joinYearMonth($initYear, $initMonth);
     $yearMonth = Util::joinYearMonth($year, $month);
 
-    if($yearMonth <= $initYearMonth + 3){
+    if($yearMonth < $initYearMonth + 3){
       return '시작 후 3개월이 지나야 경매를 열 수 있습니다.';
     }
 
