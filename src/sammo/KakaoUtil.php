@@ -119,7 +119,7 @@ class KakaoUtil
     {
         $restAPI = new Kakao_REST_API_Helper($accessToken);
 
-        $OTPValue = Util::randRangeInt(1000, 9999);
+        $OTPValue = random_int(1000, 9999);
         $OTPTrialUntil = TimeUtil::nowAddSeconds(180);
 
         $sendResult = $restAPI->talk_to_me_default([
