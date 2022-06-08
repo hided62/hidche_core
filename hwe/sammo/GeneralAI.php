@@ -3310,7 +3310,11 @@ class GeneralAI
         }
 
         if ($this->rng->nextBool(0.3)) {
-            if ($env['startyear'] + 3 > $env['year']) {
+            if ($general->getVar('affinity') == 999) {
+                return null;
+            }
+
+            if ($env['year'] < $env['startyear'] + 3) {
                 //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
                 $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
                 $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
@@ -3322,9 +3326,11 @@ class GeneralAI
                     return null;
                 }
             }
-
-            if ($general->getVar('affinity') == 999) {
-                return null;
+            else{
+                //임관 기간이 끝나면 고정 확률로 낮춤 0.3 * 0.5 = 0.15
+                if ($this->rng->nextBool()){
+                    return null;
+                }
             }
 
             //랜임 커맨드 입력.
