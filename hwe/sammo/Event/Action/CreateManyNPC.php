@@ -35,7 +35,7 @@ class CreateManyNPC extends \sammo\Event\Action
         )));
         $age = $rng->nextRangeInt(20, 25);
         $birthYear = $env['year'] - $age;
-        $deathYear = $env['year'] + $rng->nextRangeInt(10, 50);
+        $deathYear = $env['year'] + $rng->nextRangeInt(10, 60);
 
         $result = [];
         foreach (pickGeneralFromPool(DB::db(), $rng, 0, $cnt) as $pickedNPC) {
