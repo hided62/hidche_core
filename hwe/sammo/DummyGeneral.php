@@ -63,7 +63,7 @@ class DummyGeneral extends General{
 
     function applyDB($db):bool{
         if($this->logger){
-            $this->initLogger(1, 1);
+            $this->initLogger($this->logger->getYear(), $this->logger->getMonth());
         }
         return true;
     }
