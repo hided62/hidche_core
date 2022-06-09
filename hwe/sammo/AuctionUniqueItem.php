@@ -129,6 +129,10 @@ class AuctionUniqueItem extends Auction
   public function bid(int $amount, bool $tryExtendCloseDate): ?string
   {
 
+    if($this->info->finished){
+      return '경매가 종료되었습니다.';
+    }
+
     $db = DB::db();
     /** @var AuctionInfo[] */
     $openUniqueAuctions = array_map(fn ($raw) => AuctionInfo::fromArray($raw), $db->query(
@@ -140,18 +144,25 @@ class AuctionUniqueItem extends Auction
     foreach ($openUniqueAuctions as $auction) {
       $auctionIDList[] = $auction->id;
     }
+
     $db = DB::db();
-    $rawHighestBids = Util::convertArrayToDict($db->query(
-      'SELECT bid.* FROM `ng_auction_bid` bid INNER JOIN (
-        SELECT `auction_id`, MAX(`amount`) as `max_amount`
-        FROM `ng_auction_bid`
-        WHERE `auction_id` IN %li
-        GROUP BY `auction_id`
-        ORDER BY `amount`
-      ) AS max_bid
-      ON bid.`auction_id` = max_bid.`auction_id` AND bid.`amount` = max_bid.`max_amount`',
-      $auctionIDList,
-    ) ?? [], 'auction_id');
+    if($auctionIDList){
+      $rawHighestBids = Util::convertArrayToDict($db->query(
+        'SELECT bid.* FROM `ng_auction_bid` bid INNER JOIN (
+          SELECT `auction_id`, MAX(`amount`) as `max_amount`
+          FROM `ng_auction_bid`
+          WHERE `auction_id` IN %li
+          GROUP BY `auction_id`
+          ORDER BY `amount`
+        ) AS max_bid
+        ON bid.`auction_id` = max_bid.`auction_id` AND bid.`amount` = max_bid.`max_amount`',
+        $auctionIDList,
+      ) ?? [], 'auction_id');
+    }
+    else{
+      $rawHighestBids = [];
+    }
+
     /** @var array<int,AuctionBidItem> */
     $highestBids = Util::mapWithKey(
       fn ($auctionID, $bid) => AuctionBidItem::fromArray($bid),
