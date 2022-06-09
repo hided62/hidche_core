@@ -22,7 +22,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "./components/BottomBar.vue";
 import AuctionResource from "@/components/AuctionResource.vue";
 import AuctionUniqueItem from "@/components/AuctionUniqueItem.vue";
-import { ref, toRef } from "vue";
+import { ref } from "vue";
 
 const props = defineProps({
   isResAuction: {
@@ -34,7 +34,7 @@ const props = defineProps({
 const auctionResource = ref<InstanceType<typeof AuctionResource> | null>(null);
 const auctionUniqueItem = ref<InstanceType<typeof AuctionUniqueItem> | null>(null);
 
-const isResAuction = toRef(props, "isResAuction");
+const isResAuction = ref(props.isResAuction);
 
 async function tryReload() {
   console.log(auctionResource.value);

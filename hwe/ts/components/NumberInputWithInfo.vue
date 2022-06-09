@@ -1,7 +1,7 @@
 <template>
   <div class="row form-group number-input-with-info">
-    <label v-if="!right" class="col-6 col-form-label">{{ title }}</label>
-    <div class="col-6">
+    <label v-if="!right && title" class="col col-form-label">{{ title }}</label>
+    <div class="col">
       <input
         ref="input"
         v-model="rawValue"
@@ -23,7 +23,7 @@
         @focus="onFocusText"
       />
     </div>
-    <label v-if="right" class="col-6 col-form-label">{{ title }}</label>
+    <label v-if="right && title" class="col col-form-label">{{ title }}</label>
   </div>
   <div style="text-align: right">
     <small class="form-text text-muted"><slot /></small>

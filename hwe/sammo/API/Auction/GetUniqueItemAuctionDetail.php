@@ -9,8 +9,11 @@ use sammo\DB;
 use sammo\DTO\AuctionBidItem;
 use sammo\DTO\AuctionInfo;
 use sammo\Enums\AuctionType;
+use sammo\Enums\InheritanceKey;
+use sammo\InheritancePointManager;
 use sammo\TimeUtil;
 use sammo\Validator;
+use sammo\General;
 
 class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
 {
@@ -69,6 +72,13 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
       ];
     }
 
+    $inheritMgr = InheritancePointManager::getInstance();
+    //preveious라서 column을 최대한 비울 수 있다.
+    $remainPoint = $inheritMgr->getInheritancePoint(
+      General::createGeneralObjFromDB($generalID, ['owner'], 0),
+      InheritanceKey::previous
+    );
+
     $obfuscatedName = AuctionUniqueItem::genObfuscatedName($generalID);
 
     return [
@@ -86,6 +96,7 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
       ],
       'bidList' => $responseBid,
       'obfuscatedName' => $obfuscatedName,
+      'remainPoint' => $remainPoint,
     ];
   }
 }

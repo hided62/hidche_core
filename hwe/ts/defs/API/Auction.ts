@@ -57,6 +57,7 @@ export type UniqueItemAuctionDetail = ValidResponse & {
   auction: UniqueItemAuctionInfo;
   bidList: UniqueItemAuctionBidder[];
   obfuscatedName: string;
+  remainPoint: number;
 };
 
 export type OpenAuctionResponse = ValidResponse & {
