@@ -282,6 +282,10 @@ async function openAuction() {
   }
 }
 
+defineExpose({
+  refresh,
+})
+
 onMounted(async () => {
   void refresh();
   console.log("mounted");

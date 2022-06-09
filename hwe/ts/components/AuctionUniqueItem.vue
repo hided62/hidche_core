@@ -100,7 +100,7 @@ const obfuscatedName = ref("");
 
 const toasts = unwrap(useToast());
 
-async function refresh() {
+async function refreshList() {
   try {
     const result = await SammoAPI.Auction.GetUniqueItemAuctionList();
     obfuscatedName.value = result.obfuscatedName;
@@ -135,8 +135,7 @@ async function bidAuction() {
         title: "성공",
         body: "입찰이 완료되었습니다.",
       });
-      void refreshDetail();
-      void refresh();
+      await refresh();
     } catch (e) {
       console.error(e);
       if (isString(e)) {
@@ -149,7 +148,19 @@ async function bidAuction() {
   }
 }
 
+async function refresh(){
+  const waiters = [
+    refreshList(),
+    refreshDetail(),
+  ];
+  await Promise.all(waiters);
+}
+
+defineExpose({
+  refresh
+})
+
 onMounted(() => {
-  void refresh();
+  void refreshList();
 });
 </script>

@@ -4,8 +4,8 @@
       <BButton @click="isResAuction = true">금/쌀</BButton>
       <BButton @click="isResAuction = false">유니크</BButton>
     </TopBackBar>
-    <AuctionResource v-if="isResAuction"></AuctionResource>
-    <AuctionUniqueItem v-else></AuctionUniqueItem>
+    <AuctionResource v-if="isResAuction" ref="auctionResource"></AuctionResource>
+    <AuctionUniqueItem v-else ref="auctionUniqueItem"></AuctionUniqueItem>
     <BottomBar type="close"></BottomBar>
   </BContainer>
 </template>
@@ -22,18 +22,28 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "./components/BottomBar.vue";
 import AuctionResource from "@/components/AuctionResource.vue";
 import AuctionUniqueItem from "@/components/AuctionUniqueItem.vue";
-import { toRef } from "vue";
+import { ref, toRef } from "vue";
 
 const props = defineProps({
-    isResAuction: {
-        type: Boolean,
-        default: true,
-    },
+  isResAuction: {
+    type: Boolean,
+    default: true,
+  },
 });
 
-const isResAuction = toRef(props, 'isResAuction');
+const auctionResource = ref<InstanceType<typeof AuctionResource> | null>(null);
+const auctionUniqueItem = ref<InstanceType<typeof AuctionUniqueItem> | null>(null);
 
-function tryReload() {
-  console.log('갱신');
+const isResAuction = toRef(props, "isResAuction");
+
+async function tryReload() {
+  console.log(auctionResource.value);
+  console.log(auctionUniqueItem.value);
+  if(isResAuction.value && auctionResource.value){
+    await auctionResource.value.refresh();
+  }
+  if(!isResAuction.value && auctionUniqueItem.value){
+    await auctionUniqueItem.value.refresh();
+  }
 }
 </script>
