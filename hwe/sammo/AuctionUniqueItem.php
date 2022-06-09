@@ -52,6 +52,17 @@ class AuctionUniqueItem extends Auction
       return '아직 경매가 끝나지 않았습니다.';
     }
 
+    $availableCnt = 0;
+    foreach(GameConst::$allItems as $itemType => $itemList){
+      $availableCnt += $itemList[$itemKey] ?? 0;
+      $availableCnt -= $db->queryFirstField('SELECT count(*) FROM `general` WHERE %b = %s', $itemType, $itemKey);
+    }
+
+    if($availableCnt <= 0){
+      return '그 유니크를 더 얻을 수 없습니다.';
+    }
+
+
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $now = new DateTimeImmutable();
