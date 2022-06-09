@@ -11,6 +11,8 @@ $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
+$isResAuction = Util::getReq('type') !== 'unique';
+
 $me = $db->queryFirstRow('SELECT no, nation, officer_level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
 
 ?>
@@ -28,6 +30,7 @@ $me = $db->queryFirstRow('SELECT no, nation, officer_level, permission, con, tur
           'serverID' => UniqueConst::$serverID,
           'serverNick' => DB::prefix(),
           'turnterm' => $gameStor->turnterm,
+          'isResAuction' => $isResAuction,
       ]
     ]) ?>
     <?= WebUtil::printDist('vue', 'v_auction', true) ?>

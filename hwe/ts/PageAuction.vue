@@ -22,9 +22,16 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "./components/BottomBar.vue";
 import AuctionResource from "@/components/AuctionResource.vue";
 import AuctionUniqueItem from "@/components/AuctionUniqueItem.vue";
-import { ref } from "vue";
+import { toRef } from "vue";
 
-const isResAuction = ref(true);
+const props = defineProps({
+    isResAuction: {
+        type: Boolean,
+        default: true,
+    },
+});
+
+const isResAuction = toRef(props, 'isResAuction');
 
 function tryReload() {
   console.log('갱신');

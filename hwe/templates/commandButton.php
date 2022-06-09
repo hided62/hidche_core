@@ -16,5 +16,12 @@
 <?=$btnBegin??''?><a href='b_battleCenter.php' target='_blank' class='open-window commandButton <?=$btnClass??""?> <?= $showSecret ? '' : 'disabled' ?>'>감 찰 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_inheritPoint.php' class='commandButton <?=$btnClass??""?>'>유산 관리</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myPage.php' class='commandButton <?=$btnClass??""?>'>내 정보&amp;설정</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='v_auction.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>거 래 장</a><?=$btnEnd??''?>
+<?=$splitBtnBegin??''?>
+  <?=$splitMainBegin??''?><a href='v_auction.php' target='_blank' class='open-window commandButton <?=$btnClass??""?>'>경 매 장</a><?=$splitMainEnd??''?>
+  <?=$splitZoneSign??''?>
+  <?=$splitZoneBegin??''?>
+    <?=$splitSubBtnBegin??''?><a href='v_auction.php' target='_blank' class='open-window commandButton <?=$btnSplitClass??''?>'>금/쌀 경매장</a><?=$splitSubBtnEnd??''?>
+    <?=$splitSubBtnBegin??''?><a href='v_auction.php?type=unique' target='_blank' class='open-window commandButton <?=$btnSplitClass??''?>'>유니크 경매장</a><?=$splitSubBtnEnd??''?>
+  <?=$splitZoneEnd??''?>
+<?=$splitBtnEnd??''?>
 <?=$btnBegin??''?><a href='b_betting.php' target='_blank' class='open-window <?=$btnClassForBetting??""?>'>베 팅 장</a><?=$btnEnd??''?>

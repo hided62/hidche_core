@@ -65,7 +65,7 @@ body {
     }
 
     #navbarNationItems {
-        columns: 2;
+        columns: 3;
     }
 
     #navbarQuickItems {
@@ -320,7 +320,7 @@ body {
         font-weight: bold;
         font-size: 14px;
     }
-    
+
     .toolbarButton2 {
         @extend .btn;
         @extend .btn-sammo-base2;

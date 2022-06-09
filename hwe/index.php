@@ -114,10 +114,10 @@ if (!$otherTextInfo) {
 
 $lastVoteID = $gameStor->lastVote;
 $lastVote = null;
-if($lastVoteID){
+if ($lastVoteID) {
     $voteStor = KVStorage::getStorage($db, 'vote');
     $lastVote = VoteInfo::fromArray($voteStor->getValue("vote_{$lastVoteID}"));
-    if($lastVote->endDate && $lastVote->endDate < TimeUtil::now()){
+    if ($lastVote->endDate && $lastVote->endDate < TimeUtil::now()) {
         $lastVote = null;
     }
 }
@@ -282,7 +282,21 @@ if($lastVoteID){
                 <div id="nation-position"><?php myNationInfo($generalObj); ?></div>
                 <div id="general-position"><?php generalInfo($generalObj); ?></div>
                 <div id="generalCommandButton" class="row gx-0">
-                    <div class="buttonPlate bg2"><?= commandButton(['btnClass' => 'btn btn-sammo-nation', 'isTournamentApplicationOpen' => $isTournamentApplicationOpen, 'isBettingActive' => $isBettingActive]) ?></div>
+                    <div class="buttonPlate bg2">
+                        <?= commandButton([
+                            'splitBtnBegin' => '<div class="btn-group">',
+                            'splitBtnEnd' => '</div>',
+                            'splitZoneSign' => '<button type="button" class="btn btn-sammo-nation dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">Toggle Dropdown</span></button>',
+                            'splitZoneBegin' => '<ul class="dropdown-menu dropdown-menu-end">',
+                            'splitZoneEnd' => '</ul>',
+                            'splitSubBtnBegin' => '<li>',
+                            'splitSubBtnEnd' => '</li>',
+                            'btnClass' => 'btn btn-sammo-nation',
+                            'btnSplitClass' => 'dropdown-item',
+                            'isTournamentApplicationOpen' => $isTournamentApplicationOpen,
+                            'isBettingActive' => $isBettingActive
+                        ])
+                        ?></div>
                 </div>
             </div>
         </div>
@@ -382,7 +396,18 @@ if($lastVoteID){
                             국가 메뉴
                         </div>
                         <ul class="dropdown-menu" aria-labelledby="navbarNation" id="navbarNationItems">
-                            <?= commandButton(['btnBegin' => '<li>', 'btnEnd' => '</li>', 'btnClass' => 'dropdown-item', 'isTournamentApplicationOpen' => $isTournamentApplicationOpen, 'isBettingActive' => $isBettingActive]) ?>
+                            <?= commandButton([
+                                'btnBegin' => '<li>',
+                                'btnEnd' => '</li>',
+                                'splitMainBegin' => '<div class="d-none">',
+                                'splitMainEnd' => '</div>',
+                                'splitSubBtnBegin' => '<li>',
+                                'splitSubBtnEnd' => '</li>',
+                                'btnClass' => 'dropdown-item',
+                                'btnSplitClass' => 'dropdown-item',
+                                'isTournamentApplicationOpen' => $isTournamentApplicationOpen,
+                                'isBettingActive' => $isBettingActive
+                            ]) ?>
                         </ul>
                     </li>
                     <li class="nav-item dropup">
