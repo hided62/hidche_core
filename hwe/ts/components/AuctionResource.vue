@@ -2,89 +2,101 @@
   <div class="bg0">
     <div class="bg2">거래장</div>
     <div style="background-color: orange">쌀 구매</div>
-    <div class="row gx-0">
-      <div class="col">번호</div>
-      <div class="col">판매자</div>
-      <div class="col">물품</div>
-      <div class="col">수량</div>
-      <div class="col">시작 구매가</div>
-      <div class="col">현재 구매가</div>
-      <div class="col">즉시 구매가</div>
-      <div class="col">단가</div>
-      <div class="col">구매 예정자</div>
-      <div class="col">거래 종료</div>
+    <div class="auctionItem gx-0">
+      <div class="idx">번호</div>
+      <div class="host">판매자</div>
+      <div class="amount">수량</div>
+      <div class="highestBidder">입찰자</div>
+      <div class="highestBid">입찰가</div>
+      <div class="bidRatio">단가</div>
+      <div class="finishBid">마감가</div>
+      <div class="closeDate">거래 종료</div>
     </div>
-    <div v-for="auction of buyRice" :key="auction.id" class="row gx-0" @click="selectedBuyRiceAuction = auction">
-      <div class="col">{{ auction.id }}</div>
-      <div class="col">{{ auction.hostName }}</div>
-      <div class="col">쌀</div>
-      <div class="col">{{ auction.amount }}</div>
-      <div class="col">{{ auction.startBidAmount }}</div>
-      <div class="col">{{ auction.highestBid ? auction.highestBid.amount : "-" }}</div>
-      <div class="col">{{ auction.finishBidAmount }}</div>
-      <div class="col">{{ auction.highestBid ? (auction.highestBid.amount / auction.amount).toFixed(2) : "-" }}</div>
-      <div class="col">{{ auction.highestBid ? auction.highestBid.generalName : "-" }}</div>
-      <div class="col">{{ auction.closeDate }}</div>
+    <div
+      v-for="auction of buyRice"
+      :key="auction.id"
+      class="auctionItem gx-0"
+      @click="selectedBuyRiceAuction = auction"
+    >
+      <div class="idx f_tnum">{{ auction.id }}</div>
+      <div class="host">{{ auction.hostName }}</div>
+      <div class="amount f_tnum">쌀 {{ auction.amount.toLocaleString() }}</div>
+      <div class="highestBidder">{{ auction.highestBid?.generalName ?? "-" }}</div>
+      <div :class="['highestBid f_tnum', auction.highestBid ? '' : 'noBid']">
+        금 {{ (auction.highestBid?.amount ?? auction.startBidAmount).toLocaleString() }}
+      </div>
+      <div class="bidRatio f_tnum">
+        {{ auction.highestBid ? (auction.highestBid.amount / auction.amount).toFixed(2) : "-" }}
+      </div>
+      <div class="finishBid f_tnum">금 {{ auction.finishBidAmount.toLocaleString() }}</div>
+      <div class="closeDate f_tnum">{{ cutDateTime(auction.closeDate) }}</div>
     </div>
-    <div v-if="selectedBuyRiceAuction !== undefined" class="row">
-      <div class="col">{{ selectedBuyRiceAuction.id }}번 쌀 {{ selectedBuyRiceAuction.amount }} 경매에</div>
-      <div class="col">
+    <div v-if="selectedBuyRiceAuction !== undefined" class="row gx-1">
+      <div class="offset-1 col-4 offset-md-3 col-md-2 align-self-center f_tnum text-end">
+        {{ selectedBuyRiceAuction.id }}번 쌀 {{ selectedBuyRiceAuction.amount }} 경매에 금
+      </div>
+      <div class="col-3 col-md-2">
         <NumberInputWithInfo
           v-model="bidAmountBuyRiceAuction"
           :int="true"
           :min="selectedBuyRiceAuction.startBidAmount"
           :max="selectedBuyRiceAuction.finishBidAmount"
-          title="금"
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col"><BButton @click="bidBuyRiceAuction">입찰</BButton></div>
+      <div class="col-2 col-md-1 d-grid"><BButton @click="bidBuyRiceAuction">입찰</BButton></div>
     </div>
 
     <div style="background-color: skyblue">쌀 판매</div>
-    <div class="row gx-0">
-      <div class="col">번호</div>
-      <div class="col">판매자</div>
-      <div class="col">물품</div>
-      <div class="col">수량</div>
-      <div class="col">시작 구매가</div>
-      <div class="col">현재 구매가</div>
-      <div class="col">즉시 구매가</div>
-      <div class="col">단가</div>
-      <div class="col">구매 예정자</div>
-      <div class="col">거래 종료</div>
+    <div class="auctionItem gx-0">
+      <div class="idx">번호</div>
+      <div class="host">판매자</div>
+      <div class="amount">수량</div>
+      <div class="highestBidder">입찰자</div>
+      <div class="highestBid">입찰가</div>
+      <div class="bidRatio">단가</div>
+      <div class="finishBid">마감가</div>
+      <div class="closeDate">거래 종료</div>
     </div>
-    <div v-for="auction of sellRice" :key="auction.id" class="row gx-0" @click="selectedSellRiceAuction = auction">
-      <div class="col">{{ auction.id }}</div>
-      <div class="col">{{ auction.hostName }}</div>
-      <div class="col">금</div>
-      <div class="col">{{ auction.amount }}</div>
-      <div class="col">{{ auction.startBidAmount }}</div>
-      <div class="col">{{ auction.highestBid ? auction.highestBid.amount : "-" }}</div>
-      <div class="col">{{ auction.finishBidAmount }}</div>
-      <div class="col">{{ auction.highestBid ? (auction.highestBid.amount / auction.amount).toFixed(2) : "-" }}</div>
-      <div class="col">{{ auction.highestBid ? auction.highestBid.generalName : "-" }}</div>
-      <div class="col">{{ auction.closeDate }}</div>
+    <div
+      v-for="auction of sellRice"
+      :key="auction.id"
+      class="auctionItem gx-0"
+      @click="selectedSellRiceAuction = auction"
+    >
+      <div class="idx f_tnum">{{ auction.id }}</div>
+      <div class="host">{{ auction.hostName }}</div>
+      <div class="amount f_tnum">금{{ auction.amount.toLocaleString() }}</div>
+      <div class="highestBidder">{{ auction.highestBid?.generalName ?? "-" }}</div>
+      <div :class="['highestBid f_tnum', auction.highestBid ? '' : 'noBid']">
+        쌀 {{ (auction.highestBid?.amount ?? auction.startBidAmount).toLocaleString() }}
+      </div>
+      <div class="bidRatio f_tnum">
+        {{ auction.highestBid ? (auction.highestBid.amount / auction.amount).toFixed(2) : "-" }}
+      </div>
+      <div class="finishBid f_tnum">쌀 {{ auction.finishBidAmount.toLocaleString() }}</div>
+      <div class="closeDate f_tnum">{{ cutDateTime(auction.closeDate) }}</div>
     </div>
-    <div v-if="selectedSellRiceAuction !== undefined" class="row">
-      <div class="col">{{ selectedSellRiceAuction.id }}번 금 {{ selectedSellRiceAuction.amount }} 경매에</div>
-      <div class="col">
+    <div v-if="selectedSellRiceAuction !== undefined" class="row gx-1">
+      <div class="offset-1 col-4 offset-md-3 col-md-2 align-self-center f_tnum text-end">
+        {{ selectedSellRiceAuction.id }}번 금 {{ selectedSellRiceAuction.amount }} 경매에 쌀
+      </div>
+      <div class="col-3 col-md-2">
         <NumberInputWithInfo
           v-model="bidAmountSellRiceAuction"
           :int="true"
           :min="selectedSellRiceAuction.startBidAmount"
           :max="selectedSellRiceAuction.finishBidAmount"
-          title="쌀"
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col"><BButton @click="bidSellRiceAuction">입찰</BButton></div>
+      <div class="col-2 col-md-1 d-grid"><BButton @click="bidSellRiceAuction">입찰</BButton></div>
     </div>
 
     <div>경매 등록</div>
-    <div class="row">
-      <div class="col">
-        매물
+    <div class="row gx-1">
+      <div class="col-2 offset-md-2 col-md-1">
+        매물<br />
         <BButtonGroup>
           <BButton :pressed="openAuctionInfo.type == 'buyRice'" @click="openAuctionInfo.type = 'buyRice'"> 쌀 </BButton>
           <BButton :pressed="openAuctionInfo.type == 'sellRice'" @click="openAuctionInfo.type = 'sellRice'">
@@ -92,47 +104,48 @@
           </BButton>
         </BButtonGroup>
       </div>
-      <div class="col">
-        <NumberInputWithInfo
-          v-model="openAuctionInfo.closeTurnCnt"
-          :int="true"
-          :min="3"
-          :max="24"
-          title="기간(턴)"
-          :step="1"
-        ></NumberInputWithInfo>
-      </div>
-      <div class="col">
+
+      <div class="col col-md-2">
+        수량 ({{ openAuctionInfo.type == "buyRice" ? "쌀" : "금" }})<br />
         <NumberInputWithInfo
           v-model="openAuctionInfo.amount"
           :int="true"
           :min="100"
           :max="10000"
-          title="수량"
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col">
+      <div class="col-2 col-md-1">
+        기간(턴)
+        <NumberInputWithInfo
+          v-model="openAuctionInfo.closeTurnCnt"
+          :int="true"
+          :min="3"
+          :max="24"
+          :step="1"
+        ></NumberInputWithInfo>
+      </div>
+      <div class="col col-md-2">
+        시작가 ({{ openAuctionInfo.type == "buyRice" ? "금" : "쌀" }})
         <NumberInputWithInfo
           v-model="openAuctionInfo.startBidAmount"
           :int="true"
           :min="100"
           :max="10000"
-          title="시작구매가"
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col">
+      <div class="col col-md-2">
+        마감가 ({{ openAuctionInfo.type == "buyRice" ? "금" : "쌀" }})
         <NumberInputWithInfo
           v-model="openAuctionInfo.finishBidAmount"
           :int="true"
           :min="100"
           :max="10000"
-          title="즉시구매가"
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col">
+      <div class="col-1 d-grid">
         <BButton @click="openAuction">등록</BButton>
       </div>
     </div>
@@ -162,6 +175,12 @@ watch(selectedBuyRiceAuction, (auction) => {
   bidAmountBuyRiceAuction.value = auction.highestBid ? auction.highestBid.amount : auction.startBidAmount;
 });
 
+function cutDateTime(dateTime: string, showSecond = false) {
+  if (showSecond) {
+    return dateTime.substring(5, 19);
+  }
+  return dateTime.substring(5, 16);
+}
 
 async function bidBuyRiceAuction() {
   if (selectedBuyRiceAuction.value === undefined) {
@@ -284,10 +303,83 @@ async function openAuction() {
 
 defineExpose({
   refresh,
-})
+});
 
 onMounted(async () => {
   void refresh();
   console.log("mounted");
 });
 </script>
+
+<style lang="scss" scoped>
+@import "@scss/common/break_500px.scss";
+
+.auctionItem {
+  display: grid;
+  text-align: center;
+
+  > div {
+    align-self: center;
+  }
+
+  .noBid {
+    color: #ccc;
+  }
+
+  border-bottom: solid gray 1px;
+}
+
+@include media-500px {
+  .auctionItem {
+    grid-template-columns: 1fr 3fr 3fr 1fr 2fr 2fr;
+    grid-template-rows: 1fr 1fr;
+
+    .idx {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+    }
+
+    .host {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+    }
+
+    .amount {
+      grid-column: 2 / 3;
+      grid-row: 2/ 3;
+    }
+
+    .highestBidder {
+      grid-column: 3 / 4;
+      grid-row: 1 / 2;
+    }
+
+    .highestBid {
+      grid-column: 3 / 4;
+      grid-row: 2 / 3;
+    }
+
+    .bidRatio {
+      grid-column: 4 / 5;
+      grid-row: 1 / 3;
+    }
+
+    .finishBid {
+      grid-column: 5 / 6;
+      grid-row: 1 / 3;
+    }
+
+    .closeDate {
+      grid-column: 6 / 7;
+      grid-row: 1 / 3;
+    }
+  }
+}
+
+@include media-1000px {
+  .auctionItem {
+    grid-template-columns: 1fr 2fr 2fr 2fr 2fr 1fr 3fr 2fr;
+    grid-template-rows: 1fr;
+  }
+}
+</style>

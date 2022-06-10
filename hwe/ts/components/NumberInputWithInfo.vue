@@ -47,7 +47,8 @@ export default defineComponent({
     },
     title: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     min: {
       type: Number,
