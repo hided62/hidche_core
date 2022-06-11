@@ -25,6 +25,17 @@ if ($meLevel == 0) {
 
 $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nation where nation=%i', $nationID); //국가정보
 
+if ($meLevel >= 5) {
+    $candidateStrength = $db->query('SELECT no,name,officer_level,city,npc from general where nation=%i and officer_level!=12 and strength>=%i order by npc,binary(name)', $nationID, GameConst::$chiefStatMin);
+    $candidateIntel = $db->query('SELECT no,name,officer_level,city,npc from general where nation=%i and officer_level!=12 and intel>=%i order by npc,binary(name)', $nationID, GameConst::$chiefStatMin);
+    $candidateAny = $db->query('SELECT no,name,officer_level,city,npc,leadership,strength,intel,killturn from general where nation=%i and officer_level!=12  order by npc,binary(name)', $nationID); //추방 때문에 조금 더 김
+} else {
+    $candidateStrength = [];
+    $candidateIntel = [];
+    $candidateAny = [];
+}
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -180,61 +191,21 @@ $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nati
             <td colspan=5><?= $eaglestr ?></td>
         </tr>
     </table>
+
     <table align=center width=1000 class='tb_layout bg0'>
         <tr>
-            <td colspan=6 height=5></td>
+            <td colspan=4 height=5></td>
         </tr>
         <tr>
-            <td colspan=2 align=center bgcolor=red>추 방</td>
+            <td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td>
         </tr>
         <tr>
-            <td width=498 align=right class='bg1'>대상 장수</td>
-            <td width=498>
+            <?php $officerLevelText = getOfficerLevelText(11, $nation['level']); ?>
+            <td width=98 align=right class='bg1'><?= getOfficerLevelText(12, $nation['level']) ?></td>
+            <td width=398><?= $level[12]['name'] ?> 【<?= CityConst::byID($level[12]['city'])->name ?>】</td>
+            <td width=98 align=right class='bg1'><?= $officerLevelText ?></td>
+            <td width=398>
                 <?php
-
-                if ($meLevel >= 5) {
-                    $candidateStrength = $db->query('SELECT no,name,officer_level,city,npc from general where nation=%i and officer_level!=12 and strength>=%i order by npc,binary(name)', $nationID, GameConst::$chiefStatMin);
-                    $candidateIntel = $db->query('SELECT no,name,officer_level,city,npc from general where nation=%i and officer_level!=12 and intel>=%i order by npc,binary(name)', $nationID, GameConst::$chiefStatMin);
-                    $candidateAny = $db->query('SELECT no,name,officer_level,city,npc,leadership,strength,intel,killturn from general where nation=%i and officer_level!=12  order by npc,binary(name)', $nationID); //추방 때문에 조금 더 김
-                } else {
-                    $candidateStrength = [];
-                    $candidateIntel = [];
-                    $candidateAny = [];
-                }
-
-
-                if ($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $meLevel)) {
-                    echo "
-            <select id='genlist_kick' size=1 style=color:white;background-color:black;>";
-
-                    foreach ($candidateAny as $general) {
-                        if ($general['no'] === $me['no']) {
-                            continue;
-                        }
-                        echo "
-                <option data-officer_level='{$general['officer_level']}' data-name='{$general['name']}' value={$general['no']}>{$general['name']} <small>({$general['leadership']}/{$general['strength']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
-                    }
-
-                    echo "
-            </select>
-            <input type=$btn id='btn_kick' value=추방>";
-                }
-
-                $officerLevelText = getOfficerLevelText(11, $nation['level']);
-                echo "
-        </td>
-    </tr>
-</table>
-<table align=center width=1000 class='tb_layout bg0'>
-    <tr><td colspan=4 height=5></td></tr>
-    <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
-    <tr>
-        <td width=98  align=right class='bg1'>" . getOfficerLevelText(12, $nation['level']) . "</td>
-        <td width=398>{$level[12]['name']} 【" . CityConst::byID($level[12]['city'])->name . "】</td>
-        <td width=98  align=right class='bg1'>{$officerLevelText}</td>
-        <td width=398>
-";
-
                 if ($meLevel >= 5 && !isOfficerSet($nation['chief_set'], 11)) {
                     echo "
             <select id='genlist_11' size=1 maxlength=15 style=color:white;background-color:black;>
@@ -551,6 +522,34 @@ $nation = $db->queryFirstRow('SELECT nation,name,level,color,chief_set from nati
                     ?>
                     <tr>
                         <td colspan=5>※ <font color=orange>노란색</font>은 변경 불가능, 하얀색은 변경 가능 관직입니다.</td>
+                    </tr>
+                </table>
+                <table align=center width=1000 class='tb_layout bg0'>
+                    <tr>
+                        <td colspan=6 height=5></td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 align=center bgcolor=red>추 방</td>
+                    </tr>
+                    <tr>
+                        <td width=498 align=right class='bg1'>대상 장수</td>
+                        <td width=498>
+                            <?php
+                            if ($meLevel >= 5 && !isOfficerSet($nation['chief_set'], $meLevel)) : ?>
+
+                                <select id='genlist_kick' size=1 style=color:white;background-color:black;>";
+
+                                    <?php foreach ($candidateAny as $general) : ?>
+                                        <?php if ($general['no'] === $me['no']) {
+                                            continue;
+                                        }
+                                        ?>
+                                        <option data-officer_level='<?= $general['officer_level'] ?>' data-name='<?= $general['name'] ?>' value='<?= $general['no'] ?>'><?= $general['name'] ?> <small>(<?= $general['leadership'] ?>/<?= $general['strength'] ?>/<?= $general['intel'] ?>, <?= $general['killturn'] ?>턴)</small></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <input type=<?= $btn ?> id='btn_kick' value=추방>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 </table>
                 <br>
