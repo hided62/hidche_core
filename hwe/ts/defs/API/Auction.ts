@@ -17,7 +17,7 @@ export type BasicResourceAuctionInfo = {
   amount: number;
   startBidAmount: number;
   finishBidAmount: number;
-  highestBid: BasicResourceAuctionBidder;
+  highestBid?: BasicResourceAuctionBidder;
 };
 
 export type UniqueItemAuctionBidder = {

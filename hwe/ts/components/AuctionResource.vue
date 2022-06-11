@@ -134,7 +134,7 @@
           :max="10000"
           :step="10"
         ></NumberInputWithInfo>
-      </div>
+              </div>
       <div class="col col-md-2">
         마감가 ({{ openAuctionInfo.type == "buyRice" ? "금" : "쌀" }})
         <NumberInputWithInfo
@@ -149,6 +149,11 @@
         <BButton @click="openAuction">등록</BButton>
       </div>
     </div>
+    <div>이전 경매(최근 20건)</div>
+    <div v-for="(log, idx) in recentLogs" :key="idx">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div v-html="formatLog(log)" />
+    </div>
   </div>
 </template>
 
@@ -160,10 +165,12 @@ import { useToast, BButtonGroup, BButton } from "bootstrap-vue-3";
 import { isString } from "lodash";
 import { onMounted, reactive, ref, watch } from "vue";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
+import { formatLog } from "@/utilGame/formatLog";
 const toasts = unwrap(useToast());
 
 const buyRice = ref<BasicResourceAuctionInfo[]>([]);
 const sellRice = ref<BasicResourceAuctionInfo[]>([]);
+const recentLogs = ref<string[]>([]);
 
 const selectedBuyRiceAuction = ref<BasicResourceAuctionInfo | undefined>(undefined);
 const bidAmountBuyRiceAuction = ref<number>(0);
@@ -263,6 +270,7 @@ async function refresh() {
     const result = await SammoAPI.Auction.GetActiveResourceAuctionList();
     buyRice.value = result.buyRice;
     sellRice.value = result.sellRice;
+    recentLogs.value = result.recentLogs;
   } catch (e) {
     console.error(e);
     if (isString(e)) {

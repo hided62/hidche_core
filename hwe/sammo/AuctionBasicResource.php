@@ -124,6 +124,13 @@ abstract class AuctionBasicResource extends Auction
     $auctionHost->increaseVar($hostRes->value, $this->info->detail->amount);
     $auctionHost->applyDB(DB::db());
 
+    if($this->info->hostGeneralID != 0){
+      $josaYiHost = JosaUtil::pick($auctionHost->getName(), '이');
+      $auctionAmount = $this->info->detail->amount;
+      $auctionLog = "{$this->auctionID}번 {$hostResName} 경매 <M>유찰</> : <Y>{$auctionHost->getName()}</>{$josaYiHost} {$hostResName} <C>{$auctionAmount}</> 판매, 그러나 입찰자 부재";
+      pushAuctionLog($auctionHost->getLogger()->formatText($auctionLog, ActionLogger::EVENT_PLAIN));
+    }
+
     $staticNation = $auctionHost->getStaticNation();
     $src = new MessageTarget(0, '', 0, 'System', '#000000');
     $dest = new MessageTarget(
@@ -203,9 +210,9 @@ abstract class AuctionBasicResource extends Auction
 
 
     if ($highestBid->amount === $this->info->detail->finishBidAmount) {
-      $auctionLog[0] .= ' <M>★ 즉시구매가 거래 ★</>';
+      $auctionLog[0] .= ' <M>★ 마감가 거래 ★</>';
     } else if ($highestBid->amount === $this->info->detail->startBidAmount) {
-      $auctionLog[0] .= " <R>★ 최고가 거래 ★</>";
+      $auctionLog[0] .= " <R>★ 최저가 거래 ★</>";
     }
 
     pushAuctionLog(array_map(
