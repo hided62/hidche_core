@@ -221,4 +221,11 @@ onMounted(() => {
     }
   }
 }
+
+</style>
+<style>
+.hidden_but_copyable {
+    color: rgba(0, 0, 0, 0);
+    font-size: 0;
+}
 </style>
