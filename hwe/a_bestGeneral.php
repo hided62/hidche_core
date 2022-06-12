@@ -2,7 +2,9 @@
 
 namespace sammo;
 
+use Ds\Set;
 use sammo\Enums\RankColumn;
+use sammo\Enums\AuctionType;
 
 include "lib.php";
 include "func.php";
@@ -18,6 +20,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("명장일람", 1);
 $templates = new \League\Plates\Engine(__DIR__ . '/templates');
+
 
 ?>
 <!DOCTYPE html>
@@ -325,6 +328,32 @@ $templates = new \League\Plates\Engine(__DIR__ . '/templates');
                 }
             }
         }
+
+
+        $dummyAuctionGeneral = [
+            'nation' => 0,
+            'no' => 0,
+            'ownerName' => '',
+            'pictureFullPath' => GetImageURL(0) . "/default.jpg",
+            'name' => '경매중',
+            'bgColor' => '#00582c',
+            'fgColor' => 'white',
+            'nationName' => '-',
+        ];
+
+        foreach ($db->queryFirstColumn(
+            'SELECT `target` FROM ng_auction WHERE `finished` = 0 AND `type` = %s',
+            AuctionType::UniqueItem->value
+        ) as $itemClassName) {
+            if(key_exists($itemClassName, $itemOwners)) {
+                $itemOwners[$itemClassName][] = $dummyAuctionGeneral;
+            }
+            else{
+                $itemOwners[$itemClassName] = [$dummyAuctionGeneral];
+            }
+        }
+
+
 
         foreach (GameConst::$allItems as $itemType => $itemList) {
             $itemNameType = $itemTypes[$itemType];
