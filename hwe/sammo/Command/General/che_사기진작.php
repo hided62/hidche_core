@@ -98,6 +98,9 @@ class che_사기진작 extends Command\GeneralCommand{
 
         $general->addDex($general->getCrewTypeObj(), $score, false);
 
+        [$reqGold,] = $this->getCost();
+        $general->increaseVarWithLimit('gold', -$reqGold, 0);
+
         $general->addExperience($exp);
         $general->addDedication($ded);
         $general->increaseVar('leadership_exp', 1);
