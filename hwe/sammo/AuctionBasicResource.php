@@ -206,7 +206,8 @@ abstract class AuctionBasicResource extends Auction
     $josaYiBidder = JosaUtil::pick($bidder->getName(), '이');
 
     $auctionLog = [];
-    $auctionLog[] = "{$auctionID}번 {$hostResName} 경매 <C>성사</> : <Y>{$auctionHost->getName()}</>{$josaYiHost} {$hostResName} <C>{$auctionAmount}</> 판매, <Y>{$bidder->getName()}</>{$josaYiBidder} <C>{$bidAmount}</> 구매";
+    $josaRoBidder = JosaUtil::pick($bidAmount, '로');
+    $auctionLog[] = "{$auctionID}번 {$hostResName} 경매 <C>성사</> : <Y>{$auctionHost->getName()}</>{$josaYiHost} {$hostResName} <C>{$auctionAmount}</> 판매, <Y>{$bidder->getName()}</>{$josaYiBidder} {$bidderResName} <C>{$bidAmount}</>{$josaRoBidder} 구매";
 
 
     if ($highestBid->amount === $this->info->detail->finishBidAmount) {
