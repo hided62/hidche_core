@@ -194,11 +194,11 @@ abstract class AuctionBasicResource extends Auction
     $auctionID = $this->info->id;
 
     $auctionHost->getLogger()->pushGeneralActionLog(
-      "{$auctionID}번 거래 <C>성사</>로 {$bidderResName} <C>{$bidAmount}</>{$josaUlBidder} 지불, {$hostResName} <C>{$auctionAmount}</>{$josaUlHost} 획득!",
+      "{$auctionID}번 거래 <C>성사</>로 {$hostResName} <C>{$auctionAmount}</>{$josaUlHost} 판매, {$bidderResName} <C>{$bidAmount}</>{$josaUlBidder} 획득!",
       ActionLogger::EVENT_PLAIN
     );
     $bidder->getLogger()->pushGeneralActionLog(
-      "{$auctionID}번 거래 <C>성사</>로 {$hostResName} <C>{$auctionAmount}</>{$josaUlHost} 판매, {$bidderResName} <C>{$bidAmount}</>{$josaUlBidder} 획득!",
+      "{$auctionID}번 거래 <C>성사</>로 {$bidderResName} <C>{$bidAmount}</>{$josaUlBidder} 지불, {$hostResName} <C>{$auctionAmount}</>{$josaUlHost} 획득!",
       ActionLogger::EVENT_PLAIN
     );
 
