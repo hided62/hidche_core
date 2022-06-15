@@ -23,14 +23,31 @@
       현재 피장파장이 불가능한 국가는
       <span style="color: red">붉은색</span>으로 표시됩니다.<br />
     </div>
-    <div class="row">
-      <div class="col-6 col-md-3">
+    <div class="row gx-3">
+      <div class="col-5 col-md-3">
         국가 :
         <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
-      <div class="col-3 col-md-2">
+      <div class="col-4 col-md-2">
         <label>전략 :</label>
-        <b-form-select v-model="selectedCommandID" :options="commandTypesOption" />
+        <select
+          v-model="selectedCommandID"
+          class="form-control"
+          :style="{
+            color: availableCommandTypeList[selectedCommandID].remainTurn > 0 ? 'red' : undefined,
+          }"
+        >
+          <option
+            v-for="(command, commandRawName) in availableCommandTypeList"
+            :key="commandRawName"
+            :value="commandRawName"
+            :style="{
+              color: command.remainTurn > 0 ? 'red' : 'black',
+            }"
+          >
+            {{ command.name }} {{ command.remainTurn > 0 ? `(불가, ${command.remainTurn}턴)` : "" }}
+          </option>
+        </select>
       </div>
       <div class="col-3 col-md-2 d-grid">
         <b-button @click="submit">
@@ -56,7 +73,7 @@ declare const procRes: {
   delayCnt: number;
   postReqTurn: number;
   availableCommandTypeList: Record<
-    number,
+    string,
     {
       name: string;
       remainTurn: number;
@@ -98,7 +115,6 @@ void Promise.all([storeP]).then(() => {
   asyncReady.value = true;
 });
 
-
 const nationList = new Map<number, procNationItem>();
 for (const nationItem of procRes.nationList) {
   nationList.set(nationItem.id, nationItem);
@@ -111,19 +127,8 @@ const map = ref<MapResult>();
 const delayCnt = procRes.delayCnt;
 const postReqTurn = procRes.postReqTurn;
 
-const commandTypesOption: { html: string; value: string }[] = [];
-for (const [commandTypeID, commandTypeInfo] of Object.entries(procRes.availableCommandTypeList)) {
-  const notAvailable = commandTypeInfo.remainTurn > 0;
-  const notAvailableText = notAvailable ? " (불가)" : "";
-  const name = `${commandTypeInfo.name}${notAvailableText}`;
-  const html = notAvailable ? `<span style='color:red;'>${name}</span>` : name;
-  commandTypesOption.push({
-    html,
-    value: commandTypeID,
-  });
-}
-
-const selectedCommandID = ref(Object.keys(procRes.availableCommandTypeList)[0]);
+const availableCommandTypeList = procRes.availableCommandTypeList;
+const selectedCommandID = ref(Object.keys(availableCommandTypeList)[0]);
 
 async function submit(e: Event) {
   const event = new CustomEvent<Args>("customSubmit", {

@@ -243,30 +243,14 @@ class che_피장파장 extends Command\NationCommand
     {
         $generalObj = $this->generalObj;
         $nationID = $generalObj->getNationID();
-        $nationList = [];
-        $testTurn = new LastTurn($this->getName(), null, $this->getPreReqTurn());
-        foreach (getAllNationStaticInfo() as $destNation) {
-            $testCommand = new static($generalObj, $this->env, $testTurn, ['destNationID' => $destNation['nation']]);
 
-            $nationTarget = [
-                'id' => $destNation['nation'],
-                'name' => $destNation['name'],
-                'color' => $destNation['color'],
-                'power' => $destNation['power'],
-            ];
-            if (!$testCommand->hasFullConditionMet()) {
-                $nationTarget['notAvailable'] = true;
-            }
-            if ($destNation['nation'] == $nationID) {
-                $nationTarget['notAvailable'] = true;
-            }
-
-            $nationList[] = $nationTarget;
-        }
-
+        $testTurn = new LastTurn($this->getName(), null, null);
 
         $availableCommandTypeList = [];
         $currYearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
+
+        $oneAvailableCommandName = null;
+
         foreach (GameConst::$availableChiefCommand['전략'] as $commandType) {
             $cmd = buildNationCommandClass($commandType, $generalObj, $this->env, new LastTurn());
             $cmdName = $cmd->getName();
@@ -276,7 +260,38 @@ class che_피장파장 extends Command\NationCommand
             if ($nextAvailableTurn !== null && $currYearMonth < $nextAvailableTurn) {
                 $remainTurn = $nextAvailableTurn - $currYearMonth;
             }
+            else{
+                $oneAvailableCommandName = $cmd->getRawClassName();
+            }
             $availableCommandTypeList[$commandType] = ['name' => $cmdName, 'remainTurn' => $remainTurn];
+        }
+
+        $nationList = [];
+        foreach (getAllNationStaticInfo() as $destNation) {
+            $nationTarget = [
+                'id' => $destNation['nation'],
+                'name' => $destNation['name'],
+                'color' => $destNation['color'],
+                'power' => $destNation['power'],
+            ];
+
+            if($oneAvailableCommandName === null){
+                $nationTarget['notAvailable'] = true;
+            }
+            else if ($destNation['nation'] == $nationID) {
+                $nationTarget['notAvailable'] = true;
+            }
+            else {
+                $testCommand = new static($generalObj, $this->env, $testTurn, [
+                    'destNationID' => $destNation['nation'],
+                    'commandType' => $oneAvailableCommandName
+                ]);
+                if (!$testCommand->hasFullConditionMet()) {
+                    $nationTarget['notAvailable'] = true;
+                }
+            }
+
+            $nationList[] = $nationTarget;
         }
 
         return [
