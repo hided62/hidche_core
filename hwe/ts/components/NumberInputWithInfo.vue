@@ -30,6 +30,7 @@
   </div>
 </template>
 <script lang="ts">
+import { clamp } from "lodash";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -98,11 +99,23 @@ export default defineComponent({
         this.rawValue = Math.floor(this.rawValue);
       }
       this.printValue = this.rawValue.toLocaleString();
-      this.$emit("update:modelValue", this.rawValue);
+      if (this.min !== undefined || this.max !== undefined) {
+        const clampedValue = clamp(this.rawValue, this.min ?? this.rawValue, this.max ?? this.rawValue);
+        this.$emit("update:modelValue", clampedValue);
+      } else {
+        this.$emit("update:modelValue", this.rawValue);
+      }
     },
     onBlurNumber() {
       this.editmode = false;
       this.printValue = this.rawValue.toLocaleString();
+      if (this.min !== undefined || this.max !== undefined) {
+        const clampedValue = clamp(this.rawValue, this.min ?? this.rawValue, this.max ?? this.rawValue);
+        if (clampedValue !== this.rawValue) {
+          this.rawValue = clampedValue;
+          this.updateValue();
+        }
+      }
     },
     onFocusText() {
       if (this.readonly) {
