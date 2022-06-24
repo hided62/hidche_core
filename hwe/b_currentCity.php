@@ -13,8 +13,10 @@ $userID = Session::getUserID();
 $userGrade = Session::getUserGrade();
 
 $db = DB::db();
-
+$gameStor = KVStorage::getStorage($db, 'game_env');
 increaseRefresh("현재도시", 1);
+
+$lastExecute = substr($gameStor->turntime, 5, 14);
 
 $me = $db->queryFirstRow('SELECT no,nation,officer_level,city from general where owner=%i', $userID);
 $myNation = $db->queryFirstRow('SELECT nation,level,spy FROM nation WHERE nation=%i', $me['nation']) ?? [
@@ -446,7 +448,7 @@ $templates = new \League\Plates\Engine('templates');
                             <table align=center width=1000 class='tb_layout bg2'>
                                 <tr>
                                     <td colspan=11 align=center style='color:<?= newColor($cityNation['color']) ?>; background:<?= $cityNation['color'] ?>'>【 <?= CityConst::$regionMap[$city['region']] ?> | <?= CityConst::$levelMap[$city['level']] ?> 】 <?= $city['name'] ?></td>
-                                    <td style='color:<?= newColor($cityNation['color']) ?>; background:<?= $cityNation['color'] ?>' class='center'><?= date('m-d H:i:s') ?></td>
+                                    <td style='color:<?= newColor($cityNation['color']) ?>; background:<?= $cityNation['color'] ?>' class='center'><?= $lastExecute ?></td>
                                 </tr>
                                 <tr>
                                     <td align=center width=48 class=bg1>주민</td>
