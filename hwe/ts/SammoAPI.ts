@@ -17,7 +17,7 @@ import { APIPathGen, NumVar, StrVar } from "./util/APIPathGen.js";
 import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Betting";
 import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
-import type { inheritBuffType } from "./defs/API/InheritAction";
+import type { inheritBuffType, InheritLogResponse } from "./defs/API/InheritAction";
 import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
@@ -154,6 +154,9 @@ const apiRealPath = {
     SetNextSpecialWar: PUT as APICallT<{
       type: string;
     }>,
+    GetMoreLog: GET as APICallT<{
+      lastID: number
+    }, InheritLogResponse>
   },
   Misc: {
     UploadImage: POST as APICallT<

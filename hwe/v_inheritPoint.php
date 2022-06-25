@@ -68,7 +68,7 @@ foreach (InheritanceKey::cases() as $key) {
 $resetTurnTimeLevel = ($me->getAuxVar('inheritResetTurnTime') ?? -1) + 1;
 $resetSpecialWarLevel = ($me->getAuxVar('inheritResetSpecialWar') ?? -1) + 1;
 
-$lastInheritPointLogs = $db->query('SELECT server_id, year, month, date, text FROM user_record WHERE log_type = %s AND user_id = %i ORDER BY id desc LIMIT 30', "inheritPoint", $userID);
+$lastInheritPointLogs = $db->query('SELECT id, server_id, year, month, date, text FROM user_record WHERE log_type = %s AND user_id = %i ORDER BY id desc LIMIT 30', "inheritPoint", $userID);
 ?>
 <!DOCTYPE html>
 <html>
@@ -81,22 +81,24 @@ $lastInheritPointLogs = $db->query('SELECT server_id, year, month, date, text FR
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printDist('vue', 'v_inheritPoint', true) ?>
     <?= WebUtil::printStaticValues([
-        'items' => $items,
-        'currentInheritBuff' => $currentInheritBuff,
-        'maxInheritBuff' => TriggerInheritBuff::MAX_STEP,
-        'resetTurnTimeLevel' => $resetTurnTimeLevel,
-        'resetSpecialWarLevel' => $resetSpecialWarLevel,
-        'inheritActionCost' => [
-            'buff' => GameConst::$inheritBuffPoints,
-            'resetTurnTime' => calcResetAttrPoint($resetTurnTimeLevel),
-            'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel),
-            'randomUnique' => GameConst::$inheritItemRandomPoint,
-            'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
-            'minSpecificUnique' => GameConst::$inheritItemUniqueMinPoint,
-        ],
-        'availableSpecialWar' => $avilableSpecialWar,
-        'availableUnique' => $availableUnique,
-        'lastInheritPointLogs' => $lastInheritPointLogs,
+        'staticValues' => [
+            'items' => $items,
+            'currentInheritBuff' => $currentInheritBuff,
+            'maxInheritBuff' => TriggerInheritBuff::MAX_STEP,
+            'resetTurnTimeLevel' => $resetTurnTimeLevel,
+            'resetSpecialWarLevel' => $resetSpecialWarLevel,
+            'inheritActionCost' => [
+                'buff' => GameConst::$inheritBuffPoints,
+                'resetTurnTime' => calcResetAttrPoint($resetTurnTimeLevel),
+                'resetSpecialWar' => calcResetAttrPoint($resetSpecialWarLevel),
+                'randomUnique' => GameConst::$inheritItemRandomPoint,
+                'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
+                'minSpecificUnique' => GameConst::$inheritItemUniqueMinPoint,
+            ],
+            'availableSpecialWar' => $avilableSpecialWar,
+            'availableUnique' => $availableUnique,
+            'lastInheritPointLogs' => $lastInheritPointLogs,
+        ]
     ]) ?>
 </head>
 

@@ -70,7 +70,7 @@
             <div class="a-right col-6 align-self-center">유니크 경매</div>
             <div class="col-6">
               <select v-model="specificUnique" class="form-select col-6">
-                <option disabled selected :value="null"> 유니크 선택 </option>
+                <option disabled selected :value="null">유니크 선택</option>
                 <option v-for="(info, key) in availableUnique" :key="key" :value="key">
                   {{ info.title }}
                 </option>
@@ -91,7 +91,7 @@
             <small class="form-text text-muted"
               >얻고자 하는 유니크 아이템으로 경매를 시작합니다. 24턴 동안 진행됩니다.<br />
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <span style="color: white" v-html="specificUnique == null?'':availableUnique[specificUnique].info" />
+              <span style="color: white" v-html="specificUnique == null ? '' : availableUnique[specificUnique].info" />
             </small>
           </div>
 
@@ -185,10 +185,10 @@
     </div>
     <div class="row">
       <div class="col">
-        <div class="bg1 a-center">유산 포인트 변경 내역(최근 30건)</div>
+        <div class="bg1 a-center">유산 포인트 변경 내역</div>
       </div>
     </div>
-    <div v-for="(log, idx) in lastInheritPointLogs" :key="idx" class="row">
+    <div v-for="[idx, log] of inheritPointLogs" :key="idx" class="row">
       <div class="col a-right" style="max-width: 20ch">
         <small class="text-muted tnum">[{{ log.date }}]</small>
       </div>
@@ -196,21 +196,11 @@
         {{ log.text }}
       </div>
     </div>
+    <div class="d-grid"><BButton @click="getMoreLog()">더 가져오기</BButton></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import "@scss/common/bootstrap5.scss";
-import "@scss/game_bg.scss";
-import TopBackBar from "@/components/TopBackBar.vue";
-import _ from "lodash";
-import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
-import { SammoAPI } from "./SammoAPI";
-import type { inheritBuffType } from "./defs/API/InheritAction";
-import * as JosaUtil from '@/util/JosaUtil';
-import { BButton } from "bootstrap-vue-3";
-
 type InheritanceType =
   | "previous"
   | "lived_month"
@@ -227,15 +217,53 @@ type InheritanceType =
 
 type InheritanceViewType = InheritanceType | "sum" | "new";
 
-declare const lastInheritPointLogs: {
-  server_id: string;
-  year: number;
-  month: number;
-  date: string;
-  text: string;
-}[];
+declare const staticValues: {
+  lastInheritPointLogs: InheritPointLogItem[];
+  items: Record<InheritanceType, number>;
+  currentInheritBuff: {
+    [v in inheritBuffType]: number | undefined;
+  };
+  maxInheritBuff: number;
+  inheritActionCost: {
+    buff: number[];
+    resetTurnTime: number;
+    resetSpecialWar: number;
+    randomUnique: number;
+    nextSpecial: number;
+    minSpecificUnique: number;
+  };
+  resetTurnTimeLevel: number;
+  resetSpecialWarLevel: number;
 
-declare const items: Record<InheritanceType, number>;
+  availableSpecialWar: Record<
+    string,
+    {
+      title: string;
+      info: string;
+    }
+  >;
+  availableUnique: Record<
+    string,
+    {
+      title: string;
+      rawName: string;
+      info: string;
+    }
+  >;
+};
+</script>
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
+import "@scss/common/bootstrap5.scss";
+import "@scss/game_bg.scss";
+import TopBackBar from "@/components/TopBackBar.vue";
+import _ from "lodash";
+import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
+import { SammoAPI } from "./SammoAPI";
+import type { inheritBuffType, InheritPointLogItem } from "./defs/API/InheritAction";
+import * as JosaUtil from "@/util/JosaUtil";
+import { BButton } from "bootstrap-vue-3";
+import { unwrap } from "./util/unwrap";
 
 const inheritanceViewText: Record<InheritanceViewType, { title: string; info: string }> = {
   sum: {
@@ -296,11 +324,6 @@ const inheritanceViewText: Record<InheritanceViewType, { title: string; info: st
   },
 };
 
-
-declare const currentInheritBuff: {
-  [v in inheritBuffType]: number | undefined;
-};
-
 const inheritBuffHelpText: Record<
   inheritBuffType,
   {
@@ -342,226 +365,213 @@ const inheritBuffHelpText: Record<
   },
 };
 
-declare const maxInheritBuff: number;
-declare const inheritActionCost: {
-  buff: number[];
-  resetTurnTime: number;
-  resetSpecialWar: number;
-  randomUnique: number;
-  nextSpecial: number;
-  minSpecificUnique: number;
-};
+const inheritBuff = reactive({} as Record<inheritBuffType, number>);
+for (const buffKey of Object.keys(inheritBuffHelpText) as inheritBuffType[]) {
+  inheritBuff[buffKey] = staticValues.currentInheritBuff[buffKey] ?? 0;
+}
 
-declare const resetTurnTimeLevel: number;
-declare const resetSpecialWarLevel: number;
+const title = "유산 관리";
 
-declare const availableSpecialWar: Record<
-  string,
-  {
-    title: string;
-    info: string;
-  }
->;
-
-declare const availableUnique: Record<
-  string,
-  {
-    title: string;
-    rawName: string;
-    info: string;
-  }
->;
-
-export default defineComponent({
-  name: "PageInheritPoint",
-  components: {
-    TopBackBar,
-    NumberInputWithInfo,
-    BButton,
-  },
-  data() {
-    const inheritBuff = {} as Record<inheritBuffType, number>;
-    for (const buffKey of Object.keys(inheritBuffHelpText) as inheritBuffType[]) {
-      inheritBuff[buffKey] = currentInheritBuff[buffKey] ?? 0;
-    }
-    return {
-      title: "유산 관리",
-      inheritanceViewText,
-      items: (() => {
-        const totalPoint = Math.floor(_.sum(Object.values(items)));
-        const previousPoint = Math.floor(items["previous"]);
-        const newPoint = Math.floor(totalPoint - previousPoint);
-        const result: Record<InheritanceViewType, number> = {
-          ...items,
-          sum: totalPoint,
-          new: newPoint,
-        };
-        return result;
-      })(),
-      inheritBuffHelpText,
-      inheritBuff,
-      prevInheritBuff: currentInheritBuff,
-      maxInheritBuff,
-      inheritActionCost,
-      resetTurnTimeLevel,
-      resetSpecialWarLevel,
-      nextSpecialWar: Object.keys(availableSpecialWar)[0],
-      specificUnique: null,
-      availableSpecialWar,
-      availableUnique,
-      specificUniqueAmount: inheritActionCost.minSpecificUnique,
-      lastInheritPointLogs,
+const items = ref(
+  (() => {
+    const totalPoint = Math.floor(_.sum(Object.values(staticValues.items)));
+    const previousPoint = Math.floor(staticValues.items["previous"]);
+    const newPoint = Math.floor(totalPoint - previousPoint);
+    const result: Record<InheritanceViewType, number> = {
+      ...staticValues.items,
+      sum: totalPoint,
+      new: newPoint,
     };
-  },
-  methods: {
-    async buyInheritBuff(buffKey: inheritBuffType) {
-      const level = Math.floor(this.inheritBuff[buffKey]);
-      const prevLevel = this.prevInheritBuff[buffKey] ?? 0;
-      if (level == prevLevel) {
-        return;
-      }
-      if (level < prevLevel) {
-        alert("낮출 수 없습니다.");
-        return;
-      }
-      const cost = this.inheritActionCost.buff[level] - this.inheritActionCost.buff[prevLevel];
-      if (this.items.previous < cost) {
-        alert("유산 포인트가 부족합니다.");
-        return;
-      }
+    return result;
+  })()
+);
 
-      const name = inheritBuffHelpText[buffKey].title;
-      const josaUl = JosaUtil.pick(name, '을');
-      if (!confirm(`${name}${josaUl} ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`)) {
-        return;
-      }
+const {
+  maxInheritBuff,
+  inheritActionCost,
+  currentInheritBuff: prevInheritBuff,
+  availableSpecialWar,
+  availableUnique,
+} = staticValues;
 
-      try {
-        await SammoAPI.InheritAction.BuyHiddenBuff({
-          type: buffKey,
-          level,
-        });
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
+const nextSpecialWar = ref(Object.keys(availableSpecialWar)[0]);
+const specificUnique = ref<string | null>(null);
+const specificUniqueAmount = ref(inheritActionCost.minSpecificUnique);
 
-      alert("성공했습니다.");
-      //TODO: 페이지 새로고침 필요없이 하도록
-      location.reload();
-    },
-    async buySimple(type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpecialWar") {
-      const costMap: Record<typeof type, number> = {
-        ResetTurnTime: inheritActionCost.resetTurnTime,
-        ResetSpecialWar: inheritActionCost.resetSpecialWar,
-        BuyRandomUnique: inheritActionCost.randomUnique,
-      };
+const lastLogID = ref(Math.min(...staticValues.lastInheritPointLogs.map((v) => v.id)));
+const inheritPointLogs = ref(
+  (() => {
+    const logs = new Map<number, InheritPointLogItem>();
+    for (const log of staticValues.lastInheritPointLogs) {
+      logs.set(log.id, log);
+    }
+    return logs;
+  })()
+);
 
-      const cost = costMap[type];
-      if (cost === undefined) {
-        alert(`올바르지 않은 타입:${type}`);
-        return;
-      }
+staticValues.lastInheritPointLogs;
+async function buyInheritBuff(buffKey: inheritBuffType) {
+  const level = Math.floor(unwrap(inheritBuff[buffKey]));
+  const prevLevel = prevInheritBuff[buffKey] ?? 0;
+  if (level == prevLevel) {
+    return;
+  }
+  if (level < prevLevel) {
+    alert("낮출 수 없습니다.");
+    return;
+  }
+  const cost = inheritActionCost.buff[level] - inheritActionCost.buff[prevLevel];
+  if (items.value.previous < cost) {
+    alert("유산 포인트가 부족합니다.");
+    return;
+  }
 
-      const messageMap: Record<typeof type, string> = {
-        ResetTurnTime: `${cost} 포인트로 턴을 초기화 하시겠습니까?`,
-        ResetSpecialWar: `${cost} 포인트로 전투 특기를 초기화 하시겠습니까?`,
-        BuyRandomUnique: `${cost} 포인트로 랜덤 유니크를 구입하시겠습니까?`,
-      };
-      if (this.items.previous < cost) {
-        alert("유산 포인트가 부족합니다.");
-        return;
-      }
-      if (!confirm(messageMap[type])) {
-        return;
-      }
+  const name = inheritBuffHelpText[buffKey].title;
+  const josaUl = JosaUtil.pick(name, "을");
+  if (!confirm(`${name}${josaUl} ${level}등급으로 올릴까요? ${cost} 포인트가 소모됩니다.`)) {
+    return;
+  }
 
-      try {
-        await SammoAPI.InheritAction[type]();
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
+  try {
+    await SammoAPI.InheritAction.BuyHiddenBuff({
+      type: buffKey,
+      level,
+    });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
 
-      alert("성공했습니다.");
-      //TODO: 페이지 새로고침 필요없이 하도록
-      location.reload();
-    },
-    async setNextSpecialWar() {
-      const specialWarName = this.availableSpecialWar[this.nextSpecialWar].title ?? undefined;
-      if (specialWarName === undefined) {
-        alert(`잘못된 타입: ${this.nextSpecialWar}`);
-        return;
-      }
+  alert("성공했습니다.");
+  //TODO: 페이지 새로고침 필요없이 하도록
+  location.reload();
+}
+async function buySimple(type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpecialWar") {
+  const costMap: Record<typeof type, number> = {
+    ResetTurnTime: inheritActionCost.resetTurnTime,
+    ResetSpecialWar: inheritActionCost.resetSpecialWar,
+    BuyRandomUnique: inheritActionCost.randomUnique,
+  };
 
-      const cost = inheritActionCost.nextSpecial;
-      if (this.items.previous < cost) {
-        alert("유산 포인트가 부족합니다.");
-        return;
-      }
+  const cost = costMap[type];
+  if (cost === undefined) {
+    alert(`올바르지 않은 타입:${type}`);
+    return;
+  }
 
-      const josaRo = JosaUtil.pick(specialWarName, '로');
-      if (!confirm(`${cost} 포인트로 다음 전특을 ${specialWarName}${josaRo} 고정하겠습니까?`)) {
-        return;
-      }
+  const messageMap: Record<typeof type, string> = {
+    ResetTurnTime: `${cost} 포인트로 턴을 초기화 하시겠습니까?`,
+    ResetSpecialWar: `${cost} 포인트로 전투 특기를 초기화 하시겠습니까?`,
+    BuyRandomUnique: `${cost} 포인트로 랜덤 유니크를 구입하시겠습니까?`,
+  };
+  if (items.value.previous < cost) {
+    alert("유산 포인트가 부족합니다.");
+    return;
+  }
+  if (!confirm(messageMap[type])) {
+    return;
+  }
 
-      try {
-        await SammoAPI.InheritAction.SetNextSpecialWar({
-          type: this.nextSpecialWar,
-        });
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
+  try {
+    await SammoAPI.InheritAction[type]();
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
 
-      alert("성공했습니다.");
-      //TODO: 페이지 새로고침 필요없이 하도록
-      location.reload();
-    },
-    async openUniqueItemAuction() {
-      if(this.specificUnique === null){
-        alert("유니크를 선택해주세요.");
-        return;
-      }
+  alert("성공했습니다.");
+  //TODO: 페이지 새로고침 필요없이 하도록
+  location.reload();
+}
+async function setNextSpecialWar() {
+  const specialWarName = availableSpecialWar[nextSpecialWar.value].title ?? undefined;
+  if (specialWarName === undefined) {
+    alert(`잘못된 타입: ${nextSpecialWar.value}`);
+    return;
+  }
 
-      const uniqueName = this.availableUnique[this.specificUnique].title ?? undefined;
-      if (uniqueName === undefined) {
-        alert(`잘못된 타입: ${this.specificUnique}`);
-        return;
-      }
-      const uniqueRawName = this.availableUnique[this.specificUnique].rawName ?? undefined;
+  const cost = inheritActionCost.nextSpecial;
+  if (items.value.previous < cost) {
+    alert("유산 포인트가 부족합니다.");
+    return;
+  }
 
-      const amount = this.specificUniqueAmount;
-      if (this.items.previous < amount) {
-        alert("유산 포인트가 부족합니다.");
-        return;
-      }
+  const josaRo = JosaUtil.pick(specialWarName, "로");
+  if (!confirm(`${cost} 포인트로 다음 전특을 ${specialWarName}${josaRo} 고정하겠습니까?`)) {
+    return;
+  }
 
-      const josaUl = JosaUtil.pick(uniqueRawName, '을');
-      if (!confirm(`${amount} 포인트로 ${uniqueName}${josaUl} 입찰하겠습니까?`)) {
-        return;
-      }
+  try {
+    await SammoAPI.InheritAction.SetNextSpecialWar({
+      type: nextSpecialWar.value,
+    });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
 
-      try {
-        await SammoAPI.Auction.OpenUniqueAuction({
-          itemID: this.specificUnique,
-          amount,
-        });
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-      }
+  alert("성공했습니다.");
+  //TODO: 페이지 새로고침 필요없이 하도록
+  location.reload();
+}
+async function openUniqueItemAuction() {
+  if (specificUnique.value === null) {
+    alert("유니크를 선택해주세요.");
+    return;
+  }
 
-      alert("성공했습니다. 경매장을 확인해주세요.");
-      //TODO: 페이지 새로고침 필요없이 하도록
-      location.reload();
-    },
-  },
-});
+  const uniqueName = availableUnique[specificUnique.value].title ?? undefined;
+  if (uniqueName === undefined) {
+    alert(`잘못된 타입: ${specificUnique.value}`);
+    return;
+  }
+  const uniqueRawName = availableUnique[specificUnique.value].rawName ?? undefined;
+
+  const amount = specificUniqueAmount.value;
+  if (items.value.previous < amount) {
+    alert("유산 포인트가 부족합니다.");
+    return;
+  }
+
+  const josaUl = JosaUtil.pick(uniqueRawName, "을");
+  if (!confirm(`${amount} 포인트로 ${uniqueName}${josaUl} 입찰하겠습니까?`)) {
+    return;
+  }
+
+  try {
+    await SammoAPI.Auction.OpenUniqueAuction({
+      itemID: specificUnique.value,
+      amount,
+    });
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+
+  alert("성공했습니다. 경매장을 확인해주세요.");
+  //TODO: 페이지 새로고침 필요없이 하도록
+  location.reload();
+}
+
+async function getMoreLog(): Promise<void>{
+  try{
+    const result = await SammoAPI.InheritAction.GetMoreLog({
+      lastID: lastLogID.value
+    });
+    for(const log of result.log){
+      inheritPointLogs.value.set(log.id, log);
+      lastLogID.value = Math.min(lastLogID.value, log.id);
+    }
+  }catch(e){
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+}
 </script>
 
 <style>
