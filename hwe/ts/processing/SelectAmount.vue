@@ -27,7 +27,7 @@
     <b-button v-if="maxAmount > 2000" class="btn-sm" @click="amount = Math.min(amount + 1000, maxAmount)">
       +천
     </b-button>
-    <b-button v-if="maxAmount > 20000" class="btn-sm" @click="amount = Math.min(amount + 10000, maxAmount)">
+    <b-button v-if="maxAmount >= 10000" class="btn-sm" @click="amount = Math.min(amount + 10000, maxAmount)">
       +만
     </b-button>
   </div>
