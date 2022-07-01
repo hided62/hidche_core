@@ -83,7 +83,6 @@ return [
         'hwe/j_board_article_add.php',
         'hwe/j_board_comment_add.php',
         'hwe/j_board_get_articles.php',
-        'hwe/j_die_immediately.php',
         'hwe/j_diplomacy_destroy_letter.php',
         'hwe/j_diplomacy_get_letter.php',
         'hwe/j_diplomacy_respond_letter.php',

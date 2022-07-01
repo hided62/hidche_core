@@ -125,6 +125,7 @@ const apiRealPath = {
     DropItem: PUT as APICallT<{
       itemType: ItemTypeKey;
     }>,
+    DieOnPrestart: POST as APICallT<undefined>,
   },
   Global: {
     GeneralList: GET as APICallT<undefined, GeneralListResponse>,

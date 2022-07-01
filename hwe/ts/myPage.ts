@@ -130,32 +130,19 @@ $(function ($) {
     });
 
 
-    $('#die_immediately').on('click', async function (e) {
+    $('#dieOnPrestart').on('click', async function (e) {
         e.preventDefault();
 
         if (!confirm('정말로 삭제하시겠습니까?')) {
             return false;
         }
 
-        let result: InvalidResponse;
-
         try {
-            const response = await axios({
-                url: 'j_die_immediately.php',
-                method: 'post',
-                responseType: 'json',
-            });
-            result = response.data;
+            await SammoAPI.General.DieOnPrestart();
         }
         catch (e) {
             console.log(e);
             alert(`실패했습니다: ${e}`);
-            location.reload();
-            return;
-        }
-
-        if (!result.result) {
-            alert(`실패했습니다: ${result.reason}`);
             location.reload();
             return;
         }

@@ -5,8 +5,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$showDieImmediatelyBtn = false;
-$availableDieImmediately = false;
+$showDieOnPrestart = false;
+$availableDieOnPrestart = false;
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -32,9 +32,9 @@ $targetTime = addTurn($me->getVar('lastrefresh'), $gameStor->turnterm, 2);
 if ($gameStor->turntime <= $gameStor->opentime) {
     //서버 가오픈시 할 수 있는 행동
     if ($me->getNPCType() == 0) {
-        $showDieImmediatelyBtn = true;
+        $showDieOnPrestartBtn = true;
         if ($targetTime <= TimeUtil::now()) {
-            $availableDieImmediately = true;
+            $availableDieOnPrestart = true;
         }
     }
 }
@@ -51,7 +51,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
     <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 내정보</title>
     <?= WebUtil::printStaticValues([
-        'availableDieImmediately' => $availableDieImmediately,
+        'availableDieOnPrestart' => $availableDieOnPrestart,
         'staticValues' => [
             'items' => Util::mapWithKey(fn (string $key, BaseItem $item) => [
                 'name' => $item->getName(),
@@ -122,9 +122,9 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                         <!--빙의 해제용 삭턴 조절<br>
             <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>빙의 해체 요청</button></a>-->
 
-                        <?php if ($showDieImmediatelyBtn) : ?>
+                        <?php if ($showDieOnPrestartBtn) : ?>
                             가오픈 기간 내 장수 삭제 (<?= substr($targetTime, 0, 19) ?> 부터)<br>
-                            <a href="c_die_immediately.php" id='die_immediately'><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>장수 삭제</button></a><br><br>
+                            <button type="button" id='dieOnPrestart' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>장수 삭제</button><br><br>
                         <?php endif; ?>
 
                         <?php if ($gameStor->npcmode == 2 && $me->getNPCType() == 0) : ?>
