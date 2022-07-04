@@ -53,32 +53,6 @@ if($action == '부대창설'){
     ]);
 }
 
-if($action == '부대변경'){
-    $name = StringUtil::neutralize($name);
-    if(!$name){
-        Json::die([
-            'result'=>false,
-            'reason'=>'부대 이름이 없습니다.'
-        ]);
-    }
-
-    $db->update('troop', [
-        'name'=>$name
-    ], 'troop_leader=%i',$generalID);
-
-    if($db->affectedRows() == 0){
-        Json::die([
-            'result'=>false,
-            'reason'=>'부대장이 아닙니다.'
-        ]);
-    }
-
-    Json::die([
-        'result'=>true,
-        'reason'=>'success'
-    ]);
-}
-
 if($action == '부대추방'){
     if (!$gen){
         Json::die([

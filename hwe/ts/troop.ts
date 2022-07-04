@@ -3,6 +3,8 @@ import "@scss/troop.scss";
 import { errUnknown } from "@/common_legacy";
 import { launchTroopPlugin } from "@/extPluginTroop";
 import jQuery from "jquery";
+import { SammoAPI } from "./SammoAPI";
+import { isString } from "lodash";
 
 jQuery(function($){
     //btnJoinTroop, btnLeaveTroop, btnKickTroop, btnCreateTroop, btnChangeTroopName
@@ -35,7 +37,7 @@ jQuery(function($){
             dataType:'json',
             data:{
                 action:'부대창설',
-                name:$('#nameplate').val()
+                name:$('#newTroopName').val()
             }
         }).then(function(data){
             console.log(data);
@@ -50,24 +52,24 @@ jQuery(function($){
         return false;
     });
 
-    $('#btnChangeTroopName').click(function(){
-        $.post({
-            url:'j_troop.php',
-            dataType:'json',
-            data:{
-                action:'부대변경',
-                name:$('#nameplate').val()
-            }
-        }).then(function(data){
-            console.log(data);
-            if(!data.result){
-                alert(data.reason);
-                location.reload();
-            }
-
+    $('#btnChangeTroopName').on('click', async ()=>{
+        try{
+            await SammoAPI.Nation.SetTroopName({
+                troopID: parseInt($('#changeNameTroopID').val() as string),
+                troopName: $('#changeTroopName').val() as string,
+            });
             location.reload();
-
-        }, errUnknown);
+        }
+        catch(e){
+            console.error(e);
+            if(isString(e)){
+                alert(e);
+            }
+            else{
+                errUnknown();
+            }
+            location.reload();
+        }
         return false;
     });
 

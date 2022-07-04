@@ -12,7 +12,8 @@ $db = DB::db();
 
 increaseRefresh("부대편성", 1);
 
-$me = $db->queryFirstRow('SELECT no,nation,troop FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,nation,troop,`officer_level`,permission,penalty FROM general WHERE owner=%i', $userID);
+$permission = checkSecretPermission($me, false);
 
 $troops = [];
 foreach ($db->query('SELECT troop_leader,name FROM troop WHERE nation = %i', $me['nation']) as $rawTroop) {
@@ -204,17 +205,37 @@ uasort($troops, function ($lhs, $rhs) {
 
         </table>
         <br>
-        <table width=1000 class='tb_layout bg0'>
-            <tr>
-                <td width=80 class='bg1'>부 대 명</td>
-                <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=18 id='nameplate'></td>
-                <?php if ($me['troop'] == 0) : ?>
-                    <td><input type=button id='btnCreateTroop' value='부 대 창 설'></td>
-                <?php else : ?>
-                    <td><input type=button id='btnChangeTroopName' value='부 대 변 경'></td>
-                <?php endif; ?>
-            </tr>
-        </table>
+        <div class="row">
+            <?php if($me['troop'] == 0): ?>
+                <div class="col-6"><?php /*TODO: 모바일 */ ?>
+                    <div class="row gx-0 bg0">
+                        <div class="bg1 col d-grid"><span class="align-self-center center">부대명</span></div>
+                        <div class="col d-grid"><input type=text style=color:white;background-color:black; size=18 maxlength=18 id='newTroopName'></div>
+                        <div class="col d-grid"><button type='button' id="btnCreateTroop" class='btn btn-sm btn-secondary'>부대 창설</button></div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <?php if($troops && ($me['troop'] == $me['no'] || $permission == 4)): ?>
+                <div class="col-6">
+                    <div class="row gx-0 bg0">
+                        <div class="bg1 col d-grid"><span class="align-self-center center">부대명</span></div>
+                        <div class="col d-grid"><select class="form-select" id="changeNameTroopID">
+                            <?php if($permission != 4): ?>
+                                <option value="<?=$me['troop']?>"><?=$troops[$me['troop']]['name']?></option>
+                            <?php else: ?>
+                                <?php foreach ($troops as $troopNo => $troop): ?>
+                                    <option value="<?=$troopNo?>"><?=$troop['name']?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                        </div>
+                        <div class="col d-grid"><input type=text style=color:white;background-color:black; size=18 maxlength=18 id='changeTroopName'></div>
+                        <div class="col d-grid"><button type='button' id="btnChangeTroopName" class='btn btn-sm btn-secondary'>이름 변경</button></div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+
 
         <table width=1000 class='tb_layout bg0'>
             <tr>
