@@ -113,11 +113,11 @@ if($session->userGrade < 5) {
 }
 
 if($btn == "자동개최설정") {
-    $gameStor->tnmt_trig = $trig;
+    $gameStor->tnmt_trig = !!$trig;
 } elseif($btn == "개최") {
     startTournament($auto, $type);
 } elseif($btn == "중단") {
-    $gameStor->tnmt_auto = 0;
+    $gameStor->tnmt_auto = false;
     $gameStor->tournament = 0;
     $gameStor->phase = 0;
 } elseif($btn == "랜덤투입") {

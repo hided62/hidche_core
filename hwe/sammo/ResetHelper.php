@@ -163,7 +163,7 @@ class ResetHelper{
         bool $block_general_create,
         int $npcmode,
         int $show_img_level,
-        int $tournament_trig,
+        bool $tournament_trig,
         string $join_mode,
         string $turntime,
         ?array $autorun_user
@@ -173,13 +173,6 @@ class ResetHelper{
             return [
                 'result'=>false,
                 'reason'=>'turnterm은 120의 약수여야 합니다.'
-            ];
-        }
-
-        if($tournament_trig < 0 || $tournament_trig > 7){
-            return [
-                'result'=>false,
-                'reason'=>'올바르지 않은 토너먼트 주기입니다.'
             ];
         }
 

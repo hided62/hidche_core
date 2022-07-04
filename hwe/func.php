@@ -1358,7 +1358,7 @@ function triggerTournament(RandUtil $rng)
     if ($tournament != 0) {
         return;
     }
-    if ($tnmt_trig == 0) {
+    if (!$tnmt_trig) {
         return;
     }
     if (!$rng->nextBool(0.4)) {
@@ -1374,7 +1374,7 @@ function triggerTournament(RandUtil $rng)
 
     $tnmt_type = array_pop($tnmt_pattern);
     $gameStor->setValue('tnmt_pattern', $tnmt_pattern);
-    startTournament($tnmt_trig, $tnmt_type);
+    startTournament($tnmt_type);
 }
 
 function CheckHall($no)

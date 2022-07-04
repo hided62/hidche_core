@@ -190,7 +190,7 @@ if ($lastVoteID) {
                     NPC선택 : <?= $npcmode ?>
                 </div>
                 <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
-                    토너먼트 : <?= getTournamentTermText() ?>
+                    토너먼트 : <?= getTournamentTermText($gameStor->turnterm) ?>
                 </div>
                 <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
                     기타 설정: <?= $otherTextInfo ?>

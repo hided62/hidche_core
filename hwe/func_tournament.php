@@ -5,17 +5,25 @@ namespace sammo;
 use sammo\DTO\BettingInfo;
 use sammo\Enums\InheritanceKey;
 
+/**
+ * @param int $turnTerm 서버 턴 단위
+ * @return int 토너먼트 초 단위
+ */
+function calcTournamentTerm(int $turnTerm): int{
+    return Util::valueFit($turnTerm, 5, 120);
+}
+
 function processTournament()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time', 'last_tournament_betting_id']);
+    $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time', 'turnterm', 'last_tournament_betting_id']);
     $now = new \DateTime();
     $offset = $now->getTimestamp() - (new \DateTime($admin['tnmt_time']))->getTimestamp();
 
     //수동일땐 무시
-    if ($admin['tnmt_auto'] == 0) {
+    if (!$admin['tnmt_auto']) {
         return;
     }
 
@@ -28,18 +36,7 @@ function processTournament()
     }
 
     //현시간이 스탬프 지나친경우
-    $unit = [
-        1 => 720,
-        2 => 420,
-        3 => 180,
-        4 => 60,
-        5 => 30,
-        6 => 15,
-        7 => 5,
-    ][$admin['tnmt_auto']] ?? null;
-    if($unit === null){
-        throw new MustNotBeReachedException();
-    }
+    $unit = calcTournamentTerm($admin['turnterm']);
 
     //업데이트 횟수
     $iter = intdiv($offset, $unit) + 1;
@@ -123,30 +120,13 @@ function processTournament()
 
         //베팅은 무조건 60페이즈후 진행(최대 1시간)
         if ($tnmt == 6) {
-            $betTerm = $unit * 60;
-            if ($betTerm > 3600) {
-                $betTerm = 3600;
-            }
+            $betTerm = Util::valueFit($unit * 60, null, 3600);
             //처리 초 더한 날짜
             $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
             $gameStor->tournament = $tnmt;
             $gameStor->phase = $phase;
             $gameStor->tnmt_time = $dt;
             return;
-        }
-
-        if ($admin['tnmt_auto'] == 1) {
-            //처리 초 더한 날짜
-            $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i);
-            $hr = substr($dt, 11, 2);
-            //지정시간대 넘어가면 중단 20~24시
-            if ($hr < 20) {
-                $dt = substr($dt, 0, 11) . "20:00:00";
-                $gameStor->tournament = $tnmt;
-                $gameStor->phase = $phase;
-                $gameStor->tnmt_time = $dt;
-                return;
-            }
         }
     }
 
@@ -156,35 +136,9 @@ function processTournament()
     $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
 }
 
-function getTournamentTerm(): ?int
+function getTournamentTermText(int $turnTerm)
 {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-
-    $tnmt_auto = $gameStor->tnmt_auto;
-    if ($tnmt_auto === null) {
-        $tnmt_auto = $gameStor->tnmt_trig;
-    }
-
-    return [
-        0 => null,
-        1 => 12 * 60,
-        2 => 7 * 60,
-        3 => 3 * 60,
-        4 => 1 * 60,
-        5 => 30,
-        6 => 15,
-        7 => 5,
-    ][$tnmt_auto] ?? null;
-}
-
-function getTournamentTermText()
-{
-    $term = getTournamentTerm();
-
-    if ($term === null) {
-        return '수동';
-    }
+    $term = calcTournamentTerm($turnTerm);
 
     if ($term % 60 === 0) {
         $termMin = intdiv($term, 60);
@@ -320,26 +274,18 @@ function printFighting($tournament, $phase)
     }
 }
 
-function startTournament($auto, $type)
+function startTournament($type)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     eraseTnmtFightLogAll();
 
-    $unit = [
-        1 => 60,
-        2 => 60,
-        3 => 60,
-        4 => 60,
-        5 => 30,
-        6 => 15,
-        7 => 5,
-    ][$auto] ?? 60;
+    $admin = $gameStor->getValues(['year', 'month', 'turnterm']);
+    $turnTerm = $admin['turnterm'];
+    $unit = calcTournamentTerm($turnTerm);
 
-    $admin = $gameStor->getValues(['year', 'month']);
-
-    $gameStor->tnmt_auto = $auto;
+    $gameStor->tnmt_auto = true;
     $gameStor->tnmt_time = (new \DateTimeImmutable())->add(new \DateInterval("PT{$unit}M"))->format('Y-m-d H:i:s');
     $gameStor->tournament = 1;
     $gameStor->tnmt_type = $type;
@@ -392,7 +338,7 @@ function getDummyBettingInfo(string $tnmt_type): BettingInfo
     );
 }
 
-function startBetting($type, $unit)
+function startBetting($type)
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -431,7 +377,6 @@ function startBetting($type, $unit)
             aux: $general
         );
     }
-    $candidateCnt = count($candidates);
 
     Betting::openBetting(new BettingInfo(
         id: $bettingID,
@@ -982,7 +927,7 @@ function setGift($tnmt_type, $tnmt, $phase)
     }
 
     //자동진행 끝
-    $gameStor->tnmt_auto = 0;
+    $gameStor->tnmt_auto = false;
 
     //장수열전 기록
     /** @var ActionLogger */
@@ -1041,7 +986,7 @@ function setRefund()
     }
 
     //자동진행 끝
-    $gameStor->tnmt_auto = 0;
+    $gameStor->tnmt_auto = false;
 }
 
 //10차이 1.1, 50 차이 1.17, 100차이 1.2

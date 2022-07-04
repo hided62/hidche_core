@@ -17,7 +17,8 @@ TurnExecutionHelper::executeAllCommand();
 $me = $db->queryFirstRow('select no,tournament,con,turntime from general where owner=%i', $userID);
 $generalID = $session->generalID;
 
-$admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_msg', 'tnmt_type', 'develcost', 'tnmt_trig']);
+$admin = $gameStor->getValues(['tournament', 'phase', 'turnterm', 'tnmt_msg', 'tnmt_type', 'develcost', 'tnmt_trig']);
+$turnTerm = $admin['turnterm'];
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -120,128 +121,80 @@ $globalBetTotal = array_sum($globalBet);
         </tr>
     </table>
     <table align=center class='tb_layout bg0'>
-        <?php
-        if ($session->userGrade >= 5) {
-            $sel = [];
-            echo "
-<form method=post action=c_tournament.php>
-    <tr><td colspan=8><input type=textarea size=150 style=color:white;background-color:black; name=msg><input type=submit name=btn value='메시지'></td></tr>
-    <tr><td colspan=8>
-        <input type=button value='갱신' onclick='location.reload()'>";
+        <?php if ($session->userGrade >= 5) : ?>
+            <form method=post action=c_tournament.php>
+                <tr>
+                    <td colspan=8><input type=textarea size=150 style=color:white;background-color:black; name=msg><input type=submit name=btn value='메시지'></td>
+                </tr>
+                <tr>
+                    <td colspan=8>
+                        <input type=button value='갱신' onclick='location.reload()'>
+                        <?php if ($admin['tournament'] == 0) : ?>
+                            <select name=auto size=1 style=color:white;background-color:black;>
+                                <option style=color:white; value=0 <?= !$admin['tnmt_trig'] ? 'selected' : '' ?>>수동진행</option>
+                                <option style=color:white; value=1 <?= $admin['tnmt_trig'] ? 'selected' : '' ?>>자동진행</option>
+                            </select>
+                            <input type=submit name=btn value='자동개최설정'>
+                        <?php else : ?>
+                            <input type=submit name=btn value='중단' onclick='return confirm("진짜 중단하시겠습니까?")'>
+                        <?php endif; ?>
 
-            switch ($admin['tnmt_trig']) {
-                case 0:
-                    $sel[0] = "selected";
-                    break;
-                case 1:
-                    $sel[1] = "selected";
-                    break;
-                case 2:
-                    $sel[2] = "selected";
-                    break;
-                case 3:
-                    $sel[3] = "selected";
-                    break;
-                case 4:
-                    $sel[4] = "selected";
-                    break;
-                case 5:
-                    $sel[5] = "selected";
-                    break;
-                case 6:
-                    $sel[6] = "selected";
-                    break;
-                case 7:
-                    $sel[7] = "selected";
-                    break;
-            }
 
-            if ($admin['tournament'] == 0) {
-        ?>
-                <select name=auto size=1 style=color:white;background-color:black;>
-                    <option style=color:white; value=0>수동진행</option>
-                    <option style=color:white; value=1>12분 05일</option>
-                    <option style=color:white; value=2>07분 10시</option>
-                    <option style=color:white; value=3>03분 04시</option>
-                    <option style=color:white; value=4>01분 82분</option>
-                    <option style=color:white; value=5>30초 41분</option>
-                    <option style=color:white; value=6>15초 21분</option>
-                    <option style=color:white; value=7>05초 07분</option>
-                </select>
-                <select name=type size=1 style=color:white;background-color:black;>
-                    <option style=color:white; value=0>전력전</option>
-                    <option style=color:white; value=1>통솔전</option>
-                    <option style=color:white; value=2>일기토</option>
-                    <option style=color:white; value=3>설전</option>
-                </select>
-                <input type=submit name=btn value='개최'>
-                <select name=trig size=1 style=color:white;background-color:black;>
-                    <option style=color:white; value=0 <?= $sel[0] ?? '' ?>>수동진행</option>
-                    <option style=color:white; value=1 <?= $sel[1] ?? '' ?>>12분 05일</option>
-                    <option style=color:white; value=2 <?= $sel[2] ?? '' ?>>07분 10시</option>
-                    <option style=color:white; value=3 <?= $sel[3] ?? '' ?>>03분 04시</option>
-                    <option style=color:white; value=4 <?= $sel[4] ?? '' ?>>01분 82분</option>
-                    <option style=color:white; value=5 <?= $sel[5] ?? '' ?>>30초 41분</option>
-                    <option style=color:white; value=6 <?= $sel[6] ?? '' ?>>15초 21분</option>
-                    <option style=color:white; value=7 <?= $sel[7] ?? '' ?>>05초 07분</option>
-                </select>
-                <input type=submit name=btn value='자동개최설정'>
-                <input type=submit name=btn value='포상'>
-                <input type=submit name=btn value='회수'>
-        <?php
-            } else {
-                echo "<input type=submit name=btn value='중단' onclick='return confirm(\"진짜 중단하시겠습니까?\")'>";
-            }
+                        <?php switch ($admin['tournament']) {
+                            case 1:
+                                echo "<input type=submit name=btn value='랜덤투입'>";
+                                echo "<input type=submit name=btn value='랜덤전부투입'>";
+                                break;
+                            case 2:
+                                echo "<input type=submit name=btn value='예선'><input type=submit name=btn value='예선전부'>";
+                                break;
+                            case 3:
+                                echo "<input type=submit name=btn value='추첨'><input type=submit name=btn value='추첨전부'>";
+                                break;
+                            case 4:
+                                echo "<input type=submit name=btn value='본선'><input type=submit name=btn value='본선전부'>";
+                                break;
+                            case 5:
+                                echo "<input type=submit name=btn value='배정'>";
+                                break;
+                            case 6:
+                                echo "<input type=submit name=btn value='베팅마감'>";
+                                break;
+                            case 7:
+                                echo "<input type=submit name=btn value='16강'>";
+                                break;
+                            case 8:
+                                echo "<input type=submit name=btn value='8강'>";
+                                break;
+                            case 9:
+                                echo "<input type=submit name=btn value='4강'>";
+                                break;
+                            case 10:
+                                echo "<input type=submit name=btn value='결승'>";
+                                break;
+                        } ?>
 
-            switch ($admin['tournament']) {
-                case 1:
-                    echo "<input type=submit name=btn value='랜덤투입'>";
-                    echo "<input type=submit name=btn value='랜덤전부투입'>";
-                    break;
-                case 2:
-                    echo "<input type=submit name=btn value='예선'><input type=submit name=btn value='예선전부'>";
-                    break;
-                case 3:
-                    echo "<input type=submit name=btn value='추첨'><input type=submit name=btn value='추첨전부'>";
-                    break;
-                case 4:
-                    echo "<input type=submit name=btn value='본선'><input type=submit name=btn value='본선전부'>";
-                    break;
-                case 5:
-                    echo "<input type=submit name=btn value='배정'>";
-                    break;
-                case 6:
-                    echo "<input type=submit name=btn value='베팅마감'>";
-                    break;
-                case 7:
-                    echo "<input type=submit name=btn value='16강'>";
-                    break;
-                case 8:
-                    echo "<input type=submit name=btn value='8강'>";
-                    break;
-                case 9:
-                    echo "<input type=submit name=btn value='4강'>";
-                    break;
-                case 10:
-                    echo "<input type=submit name=btn value='결승'>";
-                    break;
-            }
-
-            echo "
-    </td></tr>
-</form>";
-        } elseif ($me['no'] > 0 && $me['tournament'] == 0 && $admin['tournament'] == 1) {
-            echo "<form method=post action=c_tournament.php><tr><td colspan=8><input type=button value='갱신' onclick='location.reload()'><input type=submit name=btn value='참가' onclick='return confirm(\"참가비 금{$admin['develcost']}이 필요합니다. 참가하시겠습니까?\")'></td></tr></form>";
-        } else {
-            echo "<tr><td colspan=8><input type=button value='갱신' onclick='location.reload()'></td></tr>";
-        }
+                    </td>
+                </tr>
+            </form>
+        <?php elseif ($me['no'] > 0 && $me['tournament'] == 0 && $admin['tournament'] == 1) : ?>
+            <form method=post action=c_tournament.php>
+                <tr>
+                    <td colspan=8><input type=button value='갱신' onclick='location.reload()'><input type=submit name=btn value='참가' onclick='return confirm("참가비 금<?= $admin['develcost'] ?>이 필요합니다. 참가하시겠습니까?")'></td>
+                </tr>
+            </form>
+        <?php else : ?>
+            <tr>
+                <td colspan=8><input type=button value='갱신' onclick='location.reload()'></td>
+            </tr>
+        <?php endif;
 
         $str1 = getTournament($admin['tournament']);
         $str2 = getTournamentTime();
         if ($str2) {
             $str2 = ', ' . $str2;
         }
-        $str3 = getTournamentTermText();
+        $str3 = getTournamentTermText($turnTerm);
         if ($str3) {
             $str3 = ', ' . $str3;
         }

@@ -56,7 +56,7 @@ else if(
     $status = 'closed';
 }
 else if(
-    $isUnited > 0 && 
+    $isUnited > 0 &&
     $now->getTimestamp() - $lastTurn->getTimestamp() > ($reservedDate->getTimestamp() - $now->getTimestamp()) * 2
 ){
     //천통 & 비정지 상태 & 2/3 넘음
@@ -88,7 +88,7 @@ $result = ResetHelper::buildScenario(
     $options['block_general_create'],
     $options['npcmode'],
     $options['show_img_level'],
-    $options['tournament_trig'],
+    !!$options['tournament_trig'],
     $options['join_mode'],
     $options['starttime'],
     $options['autorun_user']?:null

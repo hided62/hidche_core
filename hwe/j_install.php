@@ -111,7 +111,7 @@ $extend = (int)$_POST['extend'];
 $npcmode = (int)$_POST['npcmode'];
 $block_general_create = (bool)$_POST['block_general_create'];
 $show_img_level = (int)$_POST['show_img_level'];
-$tournament_trig = (int)$_POST['tournament_trig'];
+$tournament_trig = !!(int)$_POST['tournament_trig'];
 $join_mode = $_POST['join_mode'];
 $autorun_user_minutes = (int)$_POST['autorun_user_minutes'];
 $autorun_user_options = [];
@@ -208,7 +208,7 @@ Json::die(ResetHelper::buildScenario(
     $block_general_create,
     $npcmode,
     $show_img_level,
-    $tournament_trig,
+    !!$tournament_trig,
     $join_mode,
     TimeUtil::now(),
     $autorun_user

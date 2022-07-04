@@ -23,8 +23,8 @@ $generalID = $session->generalID;
 
 $me = $db->queryFirstRow('SELECT no,tournament,con,turntime from general where owner=%i', $userID);
 
-$admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'develcost']);
-
+$admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'turnterm', 'develcost']);
+$turnTerm = $admin['turnterm'];
 $con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
@@ -99,7 +99,7 @@ $str2 = getTournamentTime();
 if ($str2) {
     $str2 = ', ' . $str2;
 }
-$str3 = getTournamentTermText();
+$str3 = getTournamentTermText($turnTerm);
 if ($str3) {
     $str3 = ', ' . $str3;
 }

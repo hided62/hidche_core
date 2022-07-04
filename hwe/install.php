@@ -194,17 +194,11 @@ if ($session->userGrade < 5 && !$allowReset) {
                             </div>
 
                             <div class="form-group row">
-                                <label for="tournament_trig" class="col-sm-3 col-form-label"><span class="text-nowrap">토너먼트 자동 시작</span> <span class="text-nowrap">경기 단위</span></label>
+                                <label for="tournament_trig" class="col-sm-3 col-form-label"><span class="text-nowrap">토너먼트 자동 시작</span></label>
                                 <div class="col-sm-9" id="tournament_trig">
                                     <div id="tournament_trig" class="btn-group-toggle btn-group flex-wrap" data-bs-toggle="buttons">
-                                        <input type="radio" class="btn-check" id="tournament_trig_0" name="tournament_trig" value="0"><label for="tournament_trig_0" class="btn btn-secondary w-25">안함</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_1" name="tournament_trig" value="1"><label for="tournament_trig_1" class="btn btn-secondary w-25">12분(총 5일)</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_2" name="tournament_trig" value="2"><label for="tournament_trig_2" class="btn btn-secondary w-25">7분(총 10시간)</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_3" name="tournament_trig" value="3"><label for="tournament_trig_3" class="btn btn-secondary w-25">3분(총 4시간)</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_4" name="tournament_trig" value="4" checked><label for="tournament_trig_4" class="btn btn-secondary w-25">1분(총 82분)</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_5" name="tournament_trig" value="5"><label for="tournament_trig_5" class="btn btn-secondary w-25">30초(총 41분)</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_6" name="tournament_trig" value="6"><label for="tournament_trig_6" class="btn btn-secondary w-25">15초(총 21분)</label>
-                                        <input type="radio" class="btn-check" id="tournament_trig_7" name="tournament_trig" value="7"><label for="tournament_trig_7" class="btn btn-secondary w-25">5초(총 7분)</label>
+                                        <input type="radio" class="btn-check" id="tournament_trig_0" name="tournament_trig" value="0"><label for="tournament_trig_0" class="btn btn-secondary w-25">수동</label>
+                                        <input type="radio" class="btn-check" id="tournament_trig_1" name="tournament_trig" checked value="1"><label for="tournament_trig_1" class="btn btn-secondary w-25">자동</label>
                                     </div>
                                 </div>
                             </div>
