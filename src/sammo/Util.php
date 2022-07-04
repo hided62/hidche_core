@@ -487,6 +487,14 @@ class Util extends \utilphp\util
      */
     public static function valueFit($value, $min = null, $max = null)
     {
+        return static::clamp($value, $min, $max);
+    }
+
+    /**
+     * $min과 $max 사이의 값으로 교정
+     */
+    public static function clamp($value, $min = null, $max = null)
+    {
         if($max !== null && $min !== null && $max < $min){
             return $min;
         }
