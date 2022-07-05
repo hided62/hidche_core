@@ -2,6 +2,7 @@
 
 namespace sammo\Event\Action;
 
+use DateTime;
 use sammo\Betting;
 use \sammo\GameConst;
 use \sammo\Util;
@@ -10,8 +11,12 @@ use sammo\DTO\BettingInfo;
 use sammo\DTO\SelectItem;
 use sammo\Json;
 use sammo\KVStorage;
+use sammo\Message;
+use sammo\MessageTarget;
 
 use function sammo\getAllNationStaticInfo;
+use function sammo\GetImageURL;
+use function sammo\getNationStaticInfo;
 
 class OpenNationBetting extends \sammo\Event\Action
 {
@@ -50,8 +55,8 @@ class OpenNationBetting extends \sammo\Event\Action
         $candidates = [];
 
         $nations = getAllNationStaticInfo();
-        uasort($nations, function($lhs, $rhs){
-            return -($lhs['power'] <=> $rhs['power']);
+        uasort($nations, function ($lhs, $rhs) {
+            return - ($lhs['power'] <=> $rhs['power']);
         });
 
         foreach ($nations as $nationRaw) {
@@ -117,6 +122,32 @@ class OpenNationBetting extends \sammo\Event\Action
         }
 
         $logger->flush();
+        $now = new DateTime();
+        $text = "새로운 {$name} 내기가 열렸습니다. 천통국 베팅란을 확인해주세요.";
+
+        $src = new MessageTarget(0, '', 0, 'System', '#000000');
+        foreach ($db->query('SELECT `no`, `name`, `nation`, `imgsvr`, `picture` FROM `general` WHERE `npc` <= 1') as $general) {
+            $generalID = $general['no'];
+            $staticNation = getNationStaticInfo($general['nation']);
+            $dest = new MessageTarget(
+                $generalID,
+                $general['name'],
+                $general['nation'],
+                $staticNation['name'],
+                $staticNation['color'],
+                GetImageURL($general['imgsvr'], $general['picture'])
+            );
+            $msg = new Message(
+                Message::MSGTYPE_PRIVATE,
+                $src,
+                $dest,
+                $text,
+                $now,
+                new DateTime('9999-12-31'),
+                []
+            );
+            $msg->send(true);
+        }
 
         return [__CLASS__, true];
     }
