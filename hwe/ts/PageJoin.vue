@@ -174,7 +174,7 @@
           <div class="row">
             <div class="col col-6 a-right align-self-center">도시</div>
             <div class="col col-6 align-self-center">
-              <select v-model.number="args.inheritCity" class="form-select form-inline" style="max-width: 20ch">
+              <select v-model.number="inheritCity" class="form-select form-inline" style="max-width: 20ch">
                 <option :value="undefined">사용안함</option>
                 <option v-for="city in availableInheritCity" :key="city.id" :value="city.id">
                   {{ `[${city.region}] ${city.name}` }}
@@ -216,13 +216,25 @@
           <div class="a-center">추가 능력치 고정</div>
           <div class="row">
             <div class="col">
-              <NumberInputWithInfo v-model="(args.inheritBonusStat ?? [0, 0, 0])[0]" :max="stats.bonusMax" title="통솔" />
+              <NumberInputWithInfo
+                v-model="(args.inheritBonusStat ?? [0, 0, 0])[0]"
+                :max="stats.bonusMax"
+                title="통솔"
+              />
             </div>
             <div class="col">
-              <NumberInputWithInfo v-model="(args.inheritBonusStat ?? [0, 0, 0])[1]" :max="stats.bonusMax" title="무력" />
+              <NumberInputWithInfo
+                v-model="(args.inheritBonusStat ?? [0, 0, 0])[1]"
+                :max="stats.bonusMax"
+                title="무력"
+              />
             </div>
             <div class="col">
-              <NumberInputWithInfo v-model="(args.inheritBonusStat ?? [0, 0, 0])[2]" :max="stats.bonusMax" title="지력" />
+              <NumberInputWithInfo
+                v-model="(args.inheritBonusStat ?? [0, 0, 0])[2]"
+                :max="stats.bonusMax"
+                title="지력"
+              />
             </div>
           </div>
         </div>
@@ -346,7 +358,7 @@ watch(gameConstStore, (gameConst) => {
     total: gameConst.gameConst.defaultStatTotal,
     bonusMin: gameConst.gameConst.defaultStatMin,
     bonusMax: gameConst.gameConst.defaultStatMax,
-  }
+  };
 
   args.value = {
     name: member.name,
@@ -361,8 +373,6 @@ watch(gameConstStore, (gameConst) => {
     inheritSpecial: undefined,
     inheritTurntime: undefined,
   };
-
-
 });
 
 onMounted(async () => {
@@ -466,6 +476,17 @@ watch(displayInherit, (newValue: boolean) => {
   localStorage.setItem(`conf.${serverID}.join.displayInherit`, JSON.stringify(newValue));
 });
 
+const inheritCity = ref<number>();
+watch(inheritCity, (newValue: undefined | number) => {
+  if (!args.value) throw "nyc";
+
+  if (!newValue) {
+    args.value.inheritCity = undefined;
+    return;
+  }
+  args.value.inheritCity = inheritCity.value;
+});
+
 const inheritTurnTimeSet = ref(false);
 watch(inheritTurnTimeSet, (newValue: boolean) => {
   if (!args.value) throw "nyc";
@@ -476,6 +497,24 @@ watch(inheritTurnTimeSet, (newValue: boolean) => {
   }
   args.value.inheritTurntime = inheritTurnTimeMinute.value * 60 + inheritTurnTimeSecond.value;
 });
+
+watch(
+  [inheritCity, inheritTurnTimeSet],
+  ([newInheritCity, newInheritTurnTimeSet], [oldInheritCity, oldInheritTurnTimeSet]) => {
+    if (newInheritCity === undefined || newInheritTurnTimeSet === false) {
+      return;
+    }
+    alert("도시와 턴 시간을 동시에 설정할 수 없습니다.");
+
+    if (newInheritCity !== oldInheritCity) {
+      inheritCity.value = undefined;
+    }
+    if (newInheritTurnTimeSet !== oldInheritTurnTimeSet) {
+      inheritTurnTimeSet.value = false;
+    }
+  },
+  { immediate: true }
+);
 
 const inheritTurnTimeMinute = ref(0);
 watch(inheritTurnTimeMinute, (newValue: number) => {

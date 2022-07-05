@@ -75,6 +75,7 @@ class Join extends \sammo\BaseAPI
         if (!$v->validate()) {
             return $v->errorStr();
         }
+
         return null;
     }
 
@@ -103,6 +104,10 @@ class Join extends \sammo\BaseAPI
         $inheritTurntime = $this->args['inheritTurntime'] ?? null;
         $inheritCity = $this->args['inheritCity'] ?? null;
         $inheritBonusStat = $this->args['inheritBonusStat'] ?? null;
+
+        if($inheritTurntime !== null && $inheritCity !== null){
+            return '턴과 도시를 동시에 지정할 수 없습니다.';
+        }
 
         $rootDB = RootDB::db();
         //회원 테이블에서 정보확인
