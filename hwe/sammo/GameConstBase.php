@@ -334,7 +334,6 @@ class GameConstBase
             'che_건국',
             'che_선양',
             'che_해산',
-            'che_모반시도',
         ]
     ];
 
