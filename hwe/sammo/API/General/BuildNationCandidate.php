@@ -60,6 +60,18 @@ class BuildNationCandidate extends \sammo\BaseAPI
 
     $generalObj = General::createGeneralObjFromDB($general['no']);
 
+    $validCmd = false;
+    foreach(GameConst::$availableGeneralCommand as $cmdList){
+      if(in_array('che_거병', $cmdList)){
+        $validCmd = true;
+        break;
+      }
+    }
+
+    if(!$validCmd){
+      return '거병할 수 없는 모드입니다.';
+    }
+
     $cmd = new che_거병($generalObj, $env);
     $failReason = $cmd->testFullConditionMet();
     if ($failReason !== null) {
