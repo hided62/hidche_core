@@ -5,7 +5,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$showDieOnPrestart = false;
+$showDieOnPrestartBtn = false;
 $availableDieOnPrestart = false;
 
 //로그인 검사
