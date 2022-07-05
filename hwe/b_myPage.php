@@ -6,6 +6,7 @@ include "lib.php";
 include "func.php";
 
 $showDieOnPrestartBtn = false;
+$showBuildNationCandidateBtn = false;
 $availableDieOnPrestart = false;
 
 //로그인 검사
@@ -31,11 +32,15 @@ if ($myset > 0) {
 $targetTime = addTurn($me->getVar('lastrefresh'), $gameStor->turnterm, 2);
 if ($gameStor->turntime <= $gameStor->opentime) {
     //서버 가오픈시 할 수 있는 행동
-    if ($me->getNPCType() == 0) {
+    if ($me->getNPCType() == 0 && $me->getNationID() == 0) {
         $showDieOnPrestartBtn = true;
         if ($targetTime <= TimeUtil::now()) {
             $availableDieOnPrestart = true;
         }
+    }
+
+    if($me->getNationID() == 0){
+        $showBuildNationCandidateBtn = true;
     }
 }
 
@@ -125,6 +130,11 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                         <?php if ($showDieOnPrestartBtn) : ?>
                             가오픈 기간 내 장수 삭제 (<?= substr($targetTime, 0, 19) ?> 부터)<br>
                             <button type="button" id='dieOnPrestart' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>장수 삭제</button><br><br>
+                        <?php endif; ?>
+
+                        <?php if ($showBuildNationCandidateBtn) : ?>
+                            서버 개시 이전 거병(2턴부터 건국 가능)<br>
+                            <button type="button" id='buildNationCandidate' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>사전 거병</button><br><br>
                         <?php endif; ?>
 
                         <?php if ($gameStor->npcmode == 2 && $me->getNPCType() == 0) : ?>

@@ -150,6 +150,26 @@ $(function ($) {
         location.replace('..');
     });
 
+    $('#buildNationCandidate').on('click', async function (e) {
+        e.preventDefault();
+
+        if(!confirm('거병 이후 장수를 삭제할 수 없게됩니다. 거병하시겠습니까?')){
+            return false;
+        }
+
+        try {
+            await SammoAPI.General.BuildNationCandidate();
+        }
+        catch (e) {
+            console.log(e);
+            alert(`실패했습니다: ${e}`);
+            location.reload();
+            return;
+        }
+
+        location.reload();
+    });
+
     $('#vacation').on('click', async function (e) {
         e.preventDefault();
         if (!confirm('휴가 기능을 신청할까요?')) {

@@ -126,6 +126,7 @@ const apiRealPath = {
       itemType: ItemTypeKey;
     }>,
     DieOnPrestart: POST as APICallT<undefined>,
+    BuildNationCandidate: POST as APICallT<undefined>,
   },
   Global: {
     GeneralList: GET as APICallT<undefined, GeneralListResponse>,
