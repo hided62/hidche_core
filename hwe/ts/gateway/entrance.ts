@@ -60,7 +60,7 @@ const serverCreateTemplate = "\
 </div></td>";
 
 const serverLoginTemplate = "\
-<td style='background:url(\"<%picture%>\");background-size: 64px 64px;'></td>\
+<td style='background:url(\"<%picture%>\");background-size: 64px 64px;background-repeat: no-repeat;background-position: center center;'></td>\
 <td><%name%></td>\
 <td class='ignore_border'>\
 <div class='d-grid'>\
