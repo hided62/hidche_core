@@ -21,7 +21,7 @@ class che_능력치_지력_이강주 extends \sammo\BaseItem{
             $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
             [$year, $startYear] = $gameStor->getValuesAsArray(['year', 'startyear']);
             $relYear = $year - $startYear;
-            return $value + 5 + Util::valueFit(intdiv($relYear, 5), 0, GameConst::$maxTechLevel);
+            return $value + 5 + Util::valueFit(intdiv($relYear, 4), 0, GameConst::$maxTechLevel);
         }
         return $value;
     }
