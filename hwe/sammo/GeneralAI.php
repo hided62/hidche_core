@@ -200,7 +200,12 @@ class GeneralAI
 
         $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
 
-        if ($yearMonth <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
+        $warTarget = $db->queryAllLists(
+            'SELECT you, state, term FROM diplomacy WHERE me = %i AND state IN (0, 1)',
+            $nationID
+        );
+
+        if (!$warTarget && $yearMonth <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
             $this->dipState = self::d평화;
             $this->attackable = false;
             return;
@@ -209,11 +214,6 @@ class GeneralAI
         $frontStatus = $db->queryFirstField('SELECT max(front) FROM city WHERE nation=%i AND supply=1', $nationID);
         // 공격가능도시 있으면
         $this->attackable = !!$frontStatus;
-
-        $warTarget = $db->queryAllLists(
-            'SELECT you, state, term FROM diplomacy WHERE me = %i AND state IN (0, 1)',
-            $nationID
-        );
 
         $onWar = 0;
         $onWarReady = 0;
