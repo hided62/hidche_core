@@ -20,7 +20,7 @@ class che_회피발동 extends BaseWarUnitTrigger{
         $oppose->getLogger()->pushGeneralBattleDetailLog("상대가 <R>회피</>했다!</>", ActionLogger::PLAIN);
         $self->getLogger()->pushGeneralBattleDetailLog("<C>회피</>했다!</>", ActionLogger::PLAIN);
 
-        $oppose->multiplyWarPowerMultiply(0.2);
+        $oppose->multiplyWarPowerMultiply(1/6);
 
         return true;
     }
