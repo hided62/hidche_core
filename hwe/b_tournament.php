@@ -128,7 +128,7 @@ $globalBetTotal = array_sum($globalBet);
                 </tr>
                 <tr>
                     <td colspan=8>
-                        <input type=button value='갱신' onclick='location.reload()'>
+                        <button type="button" class="btn btn-secondary" onclick='location.reload()'>갱신</button>
                         <?php if ($admin['tournament'] == 0) : ?>
                             <select name=auto size=1 style=color:white;background-color:black;>
                                 <option style=color:white; value=0 <?= !$admin['tnmt_trig'] ? 'selected' : '' ?>>수동진행</option>
@@ -180,12 +180,12 @@ $globalBetTotal = array_sum($globalBet);
         <?php elseif ($me['no'] > 0 && $me['tournament'] == 0 && $admin['tournament'] == 1) : ?>
             <form method=post action=c_tournament.php>
                 <tr>
-                    <td colspan=8><input type=button value='갱신' onclick='location.reload()'><input type=submit name=btn value='참가' onclick='return confirm("참가비 금<?= $admin['develcost'] ?>이 필요합니다. 참가하시겠습니까?")'></td>
+                    <td colspan=8><button type="button" class="btn btn-secondary" onclick='location.reload()'>갱신</button><button type="submit" class="btn btn-sammo-base2" onclick='return confirm("참가비 금<?= $admin['develcost'] ?>이 필요합니다. 참가하시겠습니까?")'>참가</button><input type='hidden' name='btn' value='참가'/></td>
                 </tr>
             </form>
         <?php else : ?>
             <tr>
-                <td colspan=8><input type=button value='갱신' onclick='location.reload()'></td>
+                <td colspan=8><button type="button" class="btn btn-secondary" onclick='location.reload()'>갱신</button></td>
             </tr>
         <?php endif;
 

@@ -135,7 +135,7 @@ if ($str3) {
     </table>
     <table align=center width=1120 class='tb_layout bg0'>
         <tr>
-            <td colspan=16><input type=button value='갱신' onclick='location.reload()'></td>
+            <td colspan=16><button type="button" class="btn btn-secondary" onclick='location.reload()'>갱신</button></td>
         </tr>
         <tr>
             <td colspan=16 align=center>
@@ -441,13 +441,13 @@ if ($str3) {
 
             if ($admin['tournament'] == 6) {
                 echo "
-    <tr align=center>";
+    <tr align=center style='height:2.5em;'>";
 
                 foreach (range(0, 15) as  $i) {
                     $key = $keyMap[$i] ?? -1;
                     echo "
         <td>
-            <select size=1 id='target_{$key}' style=color:white;background-color:black;>
+            <select size=1 id='target_{$key}' style='color:white;background-color:black;padding:0.2rem 0.1rem;'>
                 <option style=color:white; value=10>금10</option>
                 <option style=color:white; value=20>금20</option>
                 <option style=color:white; value=50>금50</option>
@@ -461,12 +461,12 @@ if ($str3) {
 
                 echo "
     </tr>
-    <tr align=center>";
+    <tr align=center style='height:2.2em;'>";
 
                 foreach (range(0, 15) as  $i) {
                     $key = $keyMap[$i] ?? -1;
                     echo "
-        <td><input type=button class='submitBtn' data-target='{$key}' value=베팅! style=width:100%;color:white;background-color:black;></td>";
+        <td><input type=button class='submitBtn' data-target='{$key}' value=베팅! style='width:100%;color:white;padding:0.2rem 0.1rem;background-color:black;'></td>";
                 }
 
                 echo "</tr>";
