@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\DTO\AuctionInfo;
+use sammo\Enums\AuctionType;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 
@@ -1052,6 +1054,16 @@ function checkEmperior()
 
     $nationLogger = new ActionLogger(0, $nationID, $admin['year'], $admin['month']);
     $nationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaYi} 전토를 통일");
+
+    /** @var int[] */
+    $auctionList = $db->queryFirstColumn(
+        'SELECT `id` FROM `ng_auction` WHERE `type` = %s AND `finished` = 0 ORDER BY `close_date` ASC',
+        AuctionType::UniqueItem->value
+    );
+    foreach($auctionList as $auctionID){
+        $auction = new AuctionUniqueItem($auctionID, new DummyGeneral(true));
+        $auction->closeAuction(true);
+    }
 
     $inheritPointManager = InheritancePointManager::getInstance();
     $allUserGenerals = General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2'));
