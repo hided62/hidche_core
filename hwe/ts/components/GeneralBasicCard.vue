@@ -117,7 +117,7 @@
     <div>부대</div>
     <div v-if="!troopInfo" class="general-troop">-</div>
     <div v-else class="general-troop">
-      <s v-if="troopInfo.leader.reservedCommand[0]?.action != 'che_집합'" style="color: gray">
+      <s v-if="troopInfo.leader.reservedCommand && troopInfo.leader.reservedCommand[0].action != 'che_집합'" style="color: gray">
         {{ troopInfo.name }}
       </s>
       <span v-else style="color: orange">

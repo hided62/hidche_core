@@ -32,7 +32,7 @@
         <div :class="['city_filler', props.isMyCity ? 'my_city' : '']"></div>
 
         <div v-if="city.nationID && city.nationID > 0" class="city_flag">
-          <img :src="`${imagePath}/${city.supply ? 'f' : 'd'}${city.color.substring(1).toUpperCase()}.gif`" />
+          <img :src="`${imagePath}/${city.supply ? 'f' : 'd'}${unwrap(city.color).substring(1).toUpperCase()}.gif`" />
           <div v-if="city.isCapital" class="city_capital">
             <img :src="`${imagePath}/event51.gif`" />
           </div>
@@ -49,6 +49,7 @@
 <script lang="ts" setup>
 import type { MapCityParsed } from "@/map";
 import { ref, toRef, watch, type PropType } from "vue";
+import { unwrap } from "@/util/unwrap";
 const emit = defineEmits<{
   (event: "click", e: MouseEvent | TouchEvent): void;
   (event: "mouseenter", e: MouseEvent): void;
