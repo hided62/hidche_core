@@ -205,9 +205,15 @@ class GeneralAI
             $nationID
         );
 
-        if (!$warTarget && $yearMonth <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
-            $this->dipState = self::d평화;
-            $this->attackable = false;
+        if ($yearMonth <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
+            if(!$warTarget){
+                $this->dipState = self::d평화;
+                $this->attackable = false;
+            }
+            else{
+                $this->dipState = self::d선포;
+                $this->attackable = false;
+            }
             return;
         }
 
@@ -236,8 +242,6 @@ class GeneralAI
         }
 
         $this->warTargetNation = $warTargetNation;
-
-
 
         $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
         $minWarTerm = $db->queryFirstField('SELECT min(term) FROM diplomacy WHERE me = %i AND state=1', $nationID);
