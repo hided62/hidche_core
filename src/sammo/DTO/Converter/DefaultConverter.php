@@ -107,7 +107,7 @@ class DefaultConverter implements Converter
       }
     }
 
-    throw new \Exception('DefaultConverter can not convert '.gettype($raw).": $name");
+    throw new \Exception('DefaultConverter can not convert '.gettype($raw).": $name as ".join('|', $this->types));
   }
 
   public function convertTo(mixed $data): string|array|int|float|bool|null
