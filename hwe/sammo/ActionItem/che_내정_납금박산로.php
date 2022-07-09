@@ -12,7 +12,7 @@ class che_내정_납금박산로 extends \sammo\BaseItem{
     protected $cost = 200;
     protected $consumable = false;
 
-    public function onCalcStrategic(string $turnType, string $varType, $value){
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null): float{
         if(in_array($turnType, ['상업', '농업', '기술', '성벽', '수비', '치안', '민심', '인구'])){
             if($varType == 'success') return $value + 0.15;
         }

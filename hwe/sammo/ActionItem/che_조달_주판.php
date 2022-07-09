@@ -12,7 +12,7 @@ class che_조달_주판 extends \sammo\BaseItem{
     protected $cost = 200;
     protected $consumable = false;
 
-    public function onCalcStrategic(string $turnType, string $varType, $value){
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null): float{
         if($turnType === '조달'){
             if($varType == 'success') return $value + 0.2;
             if($varType == 'score') return $value * 2;
