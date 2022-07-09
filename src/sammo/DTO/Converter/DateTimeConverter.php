@@ -50,13 +50,13 @@ class DateTimeConverter implements Converter
     return  new \DateTimeZone($timezone);
   }
 
-  public function convertFrom(string|array|int|float|bool|null $raw): mixed
+  public function convertFrom(string|array|int|float|bool|null $raw, string $name): mixed
   {
     if ($raw === null && array_search('null', $this->types, true) !== false) {
       return null;
     }
     if (!is_string($raw)) {
-      throw new \InvalidArgumentException('DateTimeConverter can not convert non-string');
+      throw new \InvalidArgumentException("DateTimeConverter can not convert non-string: {$name}");
     }
     if (array_search('DateTimeImmutable', $this->types, true) !== false) {
       $objDateTime = new \DateTimeImmutable($raw, $this->timeZoneOffset);

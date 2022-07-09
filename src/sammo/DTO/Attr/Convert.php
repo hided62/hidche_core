@@ -27,12 +27,12 @@ class Convert
     return $this;
   }
 
-  public function convertFrom(string|array|int|float|bool|null $raw): mixed
+  public function convertFrom(string|array|int|float|bool|null $raw, string $name): mixed
   {
     if($this->converter === null){
-      throw new \Exception('converter is not set');
+      throw new \Exception("converter[{$name}] is not set");
     }
-    return $this->converter->convertFrom($raw);
+    return $this->converter->convertFrom($raw, $name);
   }
 
   public function convertTo(mixed $target): string|array|int|float|bool|null {

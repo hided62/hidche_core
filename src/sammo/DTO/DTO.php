@@ -94,7 +94,7 @@ abstract class DTO
       } else {
         $converter = new Convert(DefaultConverter::class);
       }
-      $value = $converter->setType($propTypes)->convertFrom($value);
+      $value = $converter->setType($propTypes)->convertFrom($value, $name);
 
       if($param !== null){
         $args[$name] = $value;

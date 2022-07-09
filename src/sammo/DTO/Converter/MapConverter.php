@@ -20,18 +20,18 @@ class MapConverter implements Converter
     $this->itemConverter = new $itemConverterClass($itemTypes, ...$args);
   }
 
-  public function convertFrom(string|array|int|float|bool|null $raw): mixed
+  public function convertFrom(string|array|int|float|bool|null $raw, string $name): mixed
   {
     if ($raw === null && array_search('null', $this->types, true) !== false) {
       return null;
     }
     if (!is_array($raw)) {
-      throw new \Exception('value is not a array');
+      throw new \Exception("value is not a array: $name");
     }
 
     $result = [];
     foreach ($raw as $key => $value) {
-      $result[$key] = $this->itemConverter->convertFrom($value);
+      $result[$key] = $this->itemConverter->convertFrom($value, $name);
     }
     return $result;
   }

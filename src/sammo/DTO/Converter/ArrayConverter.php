@@ -19,15 +19,15 @@ class ArrayConverter implements Converter
     $this->itemConverter = new $itemConverterClass($itemTypes, ...$args);
   }
 
-  public function convertFrom(string|array|int|float|bool|null $raw): mixed
+  public function convertFrom(string|array|int|float|bool|null $raw, string $name): mixed
   {
     if ($raw === null && array_search('null', $this->types, true) !== false) {
       return null;
     }
     if (!is_array($raw) || !array_is_list($raw)) {
-      throw new \Exception('value is not a array');
+      throw new \Exception("value is not a array: $name");
     }
-    return array_map(fn ($v) => $this->itemConverter->convertFrom($v), $raw);
+    return array_map(fn ($v) => $this->itemConverter->convertFrom($v, $name), $raw);
   }
 
   public function convertTo(mixed $data): string|array|int|float|bool|null

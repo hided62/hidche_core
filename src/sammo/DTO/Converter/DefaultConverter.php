@@ -10,7 +10,7 @@ class DefaultConverter implements Converter
   {
   }
 
-  public static function convertFromItem(string $type, $raw, bool &$success): mixed
+  public static function convertFromItem(string $type, $raw, string $name, bool &$success): mixed
   {
     $success = false;
     if (is_subclass_of($type, \UnitEnum::class)) {
@@ -48,7 +48,7 @@ class DefaultConverter implements Converter
         return null;
       }
       if (!array_is_list($raw)) {
-        throw new \Exception('value is not a array');
+        throw new \Exception("value is not a array: $name");
       }
       foreach ($raw as $value) {
         if (is_int($value) || is_float($value) || is_string($value)) {
@@ -57,7 +57,7 @@ class DefaultConverter implements Converter
         if (is_bool($value) || is_null($value)) {
           continue;
         }
-        throw new \Exception('DefaultConverter can not convert array');
+        throw new \Exception("DefaultConverter can not convert array: $name");
       }
       $success = true;
       return $raw;
@@ -93,7 +93,7 @@ class DefaultConverter implements Converter
     return null;
   }
 
-  public function convertFrom(string|array|int|float|bool|null $raw): mixed
+  public function convertFrom(string|array|int|float|bool|null $raw, string $name): mixed
   {
     if ($raw === null && array_search('null', $this->types, true) !== false) {
       return null;
@@ -101,13 +101,13 @@ class DefaultConverter implements Converter
 
     foreach ($this->types as $type) {
       $success = false;
-      $value = self::convertFromItem($type, $raw, $success);
+      $value = self::convertFromItem($type, $raw, $name, $success);
       if ($success) {
         return $value;
       }
     }
 
-    throw new \Exception('DefaultConverter can not convert '.gettype($raw));
+    throw new \Exception('DefaultConverter can not convert '.gettype($raw).": $name");
   }
 
   public function convertTo(mixed $data): string|array|int|float|bool|null
