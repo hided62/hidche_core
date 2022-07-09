@@ -18,7 +18,7 @@ function registerAuction(RandUtil $rng)
         [AuctionType::BuyRice->value, AuctionType::SellRice->value],
     ));
 
-    $neutralbuyRiceCnt = $neutralAuctionCnt[AuctionType::BuyRice->value];
+    $neutralbuyRiceCnt = $neutralAuctionCnt[AuctionType::BuyRice->value] ?? 0;
 
     // 판매건 등록
     if ($rng->nextBool(1 / ($neutralbuyRiceCnt + 5))) {
@@ -38,7 +38,7 @@ function registerAuction(RandUtil $rng)
         AuctionBuyRice::openResourceAuction($dummyGeneral, $amount, $term, $cost, $topv);
     }
 
-    $neutralSellRiceCnt = $neutralAuctionCnt[AuctionType::SellRice->value];
+    $neutralSellRiceCnt = $neutralAuctionCnt[AuctionType::SellRice->value] ?? 0;
     // 구매건 등록
     if ($rng->nextBool(1 / ($neutralSellRiceCnt + 5))) {
         //평균 쌀의 5% ~ 25%
