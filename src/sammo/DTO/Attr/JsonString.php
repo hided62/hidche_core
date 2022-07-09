@@ -7,7 +7,7 @@ class JsonString
 {
   public function __construct(
     public readonly bool $emptyItemIsArray = false,
-    public readonly int $jsonFlag = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK
+    public readonly int $jsonFlag = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
   ) {
   }
 }
