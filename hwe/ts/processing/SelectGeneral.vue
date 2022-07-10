@@ -19,32 +19,32 @@
     :maxHeight="400"
     :searchable="searchable"
   >
-    <template #option="props">
+    <template #option="prop">
       <!-- eslint-disable-next-line vue/no-v-html -->
-      <div v-if="props.option.title" v-html="props.option.title" />
+      <div v-if="prop.option.title" v-html="prop.option.title" />
       <div
-        v-if="props.option.$groupLabel !== undefined"
+        v-if="prop.option.$groupLabel !== undefined"
         class="margin-filler"
         :style="{
-          backgroundColor: groupByNation?.get(props.option.$groupLabel)?.color,
-          color: isBrightColor(groupByNation?.get(props.option.$groupLabel)?.color ?? '#ffffff') ? 'black' : 'white',
+          backgroundColor: groupByNation?.get(prop.option.$groupLabel)?.color,
+          color: isBrightColor(groupByNation?.get(prop.option.$groupLabel)?.color ?? '#ffffff') ? 'black' : 'white',
         }"
       >
-        {{ groupByNation?.get(props.option.$groupLabel)?.name }}
+        {{ groupByNation?.get(prop.option.$groupLabel)?.name }}
       </div>
     </template>
-    <template #singleLabel="props">
-      {{ props.option.simpleName }}
-      {{ groupByNation ? `[${groupByNation.get(props.option.obj.nationID)?.name}]` : undefined }}
+    <template #singleLabel="prop">
+      {{ prop.option.simpleName }}
+      {{ groupByNation ? `[${groupByNation.get(prop.option.obj.nationID)?.name}]` : undefined }}
     </template>
   </v-multiselect>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { getNpcColor } from "@/common_legacy";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 import { isBrightColor } from "@/util/isBrightColor";
 import { unwrap } from "@/util/unwrap";
-import { defineComponent, type PropType } from "vue";
+import { ref, watch, type PropType } from "vue";
 import VueTypes from "vue-types";
 import type { procGeneralItem, procGeneralList, procNationItem } from "./processingRes";
 
@@ -56,95 +56,122 @@ type SelectedGeneral = {
   obj: procGeneralItem;
 };
 
-export default defineComponent({
-  props: {
-    modelValue: VueTypes.number.isRequired,
-    generals: {
-      type: Array as PropType<procGeneralList>,
-      required: true,
-    },
-    textHelper: {
-      type: Function as PropType<(item: procGeneralItem) => string>,
-      required: false,
-      default: undefined,
-    },
-    groupByNation: {
-      type: Map as PropType<Map<number, procNationItem>>,
-      required: false,
-      default: undefined,
-    },
-    searchable: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+const props = defineProps({
+  modelValue: VueTypes.number.isRequired,
+  generals: {
+    type: Array as PropType<procGeneralList>,
+    required: true,
   },
-  emits: ["update:modelValue"],
-  data() {
-    const forFind: (
-      | SelectedGeneral
-      | {
-          values: SelectedGeneral[];
-          nationID: number;
-        }
-    )[] = [];
-    const forFindGroup = new Map<number, SelectedGeneral[]>();
-    const targets = new Map<number, SelectedGeneral>();
+  textHelper: {
+    type: Function as PropType<(item: procGeneralItem) => string>,
+    required: false,
+    default: undefined,
+  },
+  groupByNation: {
+    type: Map as PropType<Map<number, procNationItem>>,
+    required: false,
+    default: undefined,
+  },
+  searchable: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+  troops: {
+    type: Object as PropType<Record<number, { troop_leader: number; nation: number; name: string }>>,
+    required: false,
+    default: undefined,
+  },
+});
 
-    let selectedGeneral;
+const emit = defineEmits<{
+  (event: "update:modelValue", value: number): void;
+}>();
 
-    for (const gen of this.generals) {
-      let groupArray = forFind;
-      if (this.groupByNation) {
+const selectedGeneral = ref<SelectedGeneral>();
+const targets = new Map<number, SelectedGeneral>();
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    const target = targets.get(val);
+    selectedGeneral.value = target;
+  }
+);
+
+watch(selectedGeneral, (val) => {
+  if (val === undefined) {
+    return;
+  }
+  emit("update:modelValue", val.value);
+});
+
+const forFind = ref<
+  (
+    | SelectedGeneral
+    | {
+        values: SelectedGeneral[];
+        nationID: number;
+      }
+  )[]
+>([]);
+
+const forFindGroup = ref(new Map<number, SelectedGeneral[]>());
+
+watch(
+  () => props.generals,
+  (generals) => {
+    const tmpFind: typeof forFind["value"] = [];
+    const tmpFindGroup = new Map<number, SelectedGeneral[]>();
+
+    for (const gen of generals) {
+      let groupArray = tmpFind;
+      if (props.groupByNation) {
         const nationID = gen.nationID ?? 0;
-        if (!forFindGroup.has(nationID)) {
-          const nationItem = unwrap(this.groupByNation.get(nationID));
+        if (!tmpFindGroup.has(nationID)) {
+          const nationItem = unwrap(props.groupByNation.get(nationID));
           let tmpArr: SelectedGeneral[] = [];
-          forFindGroup.set(nationID, tmpArr);
+          tmpFindGroup.set(nationID, tmpArr);
           groupArray = tmpArr;
 
-          forFind.push({
+          tmpFind.push({
             nationID: nationItem.id,
             values: tmpArr,
           });
         } else {
-          groupArray = unwrap(forFindGroup.get(nationID));
+          groupArray = unwrap(tmpFindGroup.get(nationID));
         }
       }
 
       const nameColor = getNpcColor(gen.npc);
       const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
 
+      const searchText = convertSearch초성(gen.name);
+      if (gen.no == gen.troopID && props.troops !== undefined && gen.no in props.troops) {
+        const troopName = props.troops[gen.no].name;
+        console.log(troopName);
+        searchText.push(...convertSearch초성(troopName));
+      }
+
       const obj: SelectedGeneral = {
         value: gen.no,
-        title: this.textHelper ? this.textHelper(gen) : `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`,
+        title: props.textHelper ? props.textHelper(gen) : `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`,
         simpleName: gen.name,
-        searchText: convertSearch초성(gen.name).join("|"),
+        searchText: searchText.join("|"),
         obj: gen,
       };
-      if (gen.no == this.modelValue) {
-        selectedGeneral = obj;
+      if (gen.no == props.modelValue) {
+        selectedGeneral.value = obj;
       }
       groupArray.push(obj);
       targets.set(gen.no, obj);
     }
-    return {
-      selectedGeneral,
-      forFind,
-      targets,
-      isBrightColor,
-    };
+
+    forFindGroup.value = tmpFindGroup;
+    forFind.value = tmpFind;
   },
-  watch: {
-    modelValue(val: number) {
-      const target = this.targets.get(val);
-      this.selectedGeneral = target;
-    },
-    selectedGeneral(val: SelectedGeneral) {
-      this.$emit("update:modelValue", val.value);
-    },
-  },
-});
+  { immediate: true }
+);
 </script>
 <style lang="scss">
 @import "@scss/common/break_500px.scss";
