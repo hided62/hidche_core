@@ -1,7 +1,5 @@
 <template>
   <div
-    v-for="(officer, _idx) in [chiefList[chiefLevel]]"
-    :key="_idx"
     :class="[`chiefBox${chiefLevel}`, 'subRows']"
     :style="style"
     @click="$emit('click', this)"
@@ -37,15 +35,19 @@
 </template>
 <script lang="ts">
 import { getNpcColor } from "@/common_legacy";
+import type { ChiefResponse } from "@/defs/API/NationCommand";
 import { mb_strwidth } from "@/util/mb_strwidth";
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import VueTypes from "vue-types";
 
 export default defineComponent({
   props: {
     chiefLevel: VueTypes.integer.isRequired,
     style: VueTypes.object.isRequired,
-    chiefList: VueTypes.object.isRequired,
+    officer: {
+      type: Object as PropType<ChiefResponse['chiefList'][0]>,
+      default: undefined,
+    },
     isMe: VueTypes.bool.isRequired,
   },
   emits: ["click"],

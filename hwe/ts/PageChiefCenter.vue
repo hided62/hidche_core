@@ -2,7 +2,11 @@
   <div id="container" class="pageChiefCenter">
     <TopBackBar title="사령부" reloadable @reload="reloadTable" />
 
-    <div v-if="asyncReady && chiefList !== undefined" id="mainTable" :class="`${targetIsMe ? 'targetIsMe' : 'targetIsNotMe'}`">
+    <div
+      v-if="asyncReady && chiefList !== undefined"
+      id="mainTable"
+      :class="`${targetIsMe ? 'targetIsMe' : 'targetIsNotMe'}`"
+    >
       <template v-for="(chiefLevel, vidx) in [12, 10, 8, 6, 11, 9, 7, 5]" :key="chiefLevel">
         <div v-if="vidx % 4 == 0" :class="['turnIdx', vidx == 0 && !targetIsMe ? undefined : 'only1000px']">
           <div :class="['subRows', 'bg0']" :style="mainTableGridRows">
@@ -20,7 +24,7 @@
           <TopItem
             v-if="officerLevel != chiefLevel"
             :style="mainTableGridRows"
-            :officer="officer"
+            :officer="postFilterOfficer(chiefList[chiefLevel])"
             :maxTurn="maxChiefTurn"
             :turnTerm="turnTerm"
           />
@@ -64,7 +68,7 @@
         </div>
         <BottomItem
           :chiefLevel="chiefLevel"
-          :chiefList="chiefList"
+          :officer="postFilterOfficer(chiefList[chiefLevel])"
           :style="subTableGridRows"
           :isMe="chiefLevel == officerLevel"
           @click="viewTarget = chiefLevel"
@@ -103,12 +107,13 @@ import { isString } from "lodash";
 import { entriesWithType } from "./util/entriesWithType";
 import TopItem from "@/ChiefCenter/TopItem.vue";
 import BottomItem from "@/ChiefCenter/BottomItem.vue";
-import type { OptionalFull } from "./defs";
+import type { OptionalFull, TurnObj } from "./defs";
 import { SammoAPI } from "./SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
+import { postFilterNationCommandGen } from "./utilGame/postFilterNationCommandGen";
 
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
@@ -142,6 +147,32 @@ const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
 });
 
 const { year, month, turnTerm, date, chiefList, troopList, officerLevel, commandList } = toRefs(tableObj);
+
+let postFilterNationCommand = function (turnObj: TurnObj): TurnObj {
+  return turnObj;
+};
+
+watch([tableObj, gameConstStore], ([tableObj, gameConstStore]) => {
+  if (tableObj.troopList === undefined) {
+    return;
+  }
+  if (gameConstStore === undefined) {
+    return;
+  }
+
+  postFilterNationCommand = postFilterNationCommandGen(tableObj.troopList, gameConstStore);
+});
+
+type OfficerObj = ChiefResponse["chiefList"][0];
+function postFilterOfficer(officer: OfficerObj|undefined): OfficerObj|undefined {
+  if(officer === undefined) {
+    return undefined;
+  }
+  return {
+    ...officer,
+    turn: officer.turn.map(postFilterNationCommand),
+  };
+}
 
 const viewTarget = ref<number | undefined>();
 

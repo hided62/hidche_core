@@ -3,7 +3,7 @@ import { clone, isString, range } from "lodash";
 import { ref, type Ref } from "vue";
 import { unwrap } from "./unwrap";
 
-type TurnObjWithTime = TurnObj & {
+export type TurnObjWithTime = TurnObj & {
     time: string;
     year?: number;
     month?: number;

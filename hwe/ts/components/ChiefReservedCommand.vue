@@ -268,7 +268,7 @@ import DragSelect from "@/components/DragSelect.vue";
 import { isString, range, trim } from "lodash";
 import { SammoAPI } from "@/SammoAPI";
 import type { CommandItem, TurnObj } from "@/defs";
-import { QueryActionHelper } from "@/util/QueryActionHelper";
+import { QueryActionHelper, type TurnObjWithTime } from "@/util/QueryActionHelper";
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import { getNpcColor } from "@/common_legacy";
@@ -276,18 +276,9 @@ import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, 
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
-import { unwrap } from "@/util/unwrap";
 import { unwrap_err } from "@/util/unwrap_err";
 import type { GameConstStore } from "@/GameConstStore";
-import { pick as josaPick } from "@/util/JosaUtil";
-
-type TurnObjWithTime = TurnObj & {
-  time: string;
-  year?: number;
-  month?: number;
-  tooltip?: string;
-  style?: Record<string, unknown>;
-};
+import { postFilterNationCommandGen } from "@/utilGame/postFilterNationCommandGen";
 
 const props = defineProps({
   maxTurn: VueTypes.integer.isRequired,
@@ -451,28 +442,7 @@ const gameConstStore = unwrap_err(
   "gameConstStore가 주입되지 않았습니다."
 );
 
-function postFilterTurnBrief(turnObj: TurnObjWithTime): TurnObjWithTime{
-  if(turnObj.action != 'che_발령'){
-    return turnObj;
-  }
-  const destGeneralID = unwrap(turnObj.arg.destGeneralID);
-  if(!(destGeneralID in props.troopList)){
-    return turnObj;
-  }
-
-  const troopName = props.troopList[destGeneralID];
-  const destCityID = unwrap(turnObj.arg.destCityID);
-  const destCityName = gameConstStore.value.cityConst[destCityID].name;
-  const josaRo = josaPick(destCityName, "로");
-  const brief = `《${troopName}》【${destCityName}】${josaRo} 발령`;
-  const tooltip = `《${troopName}》${turnObj.brief}`;
-
-  return {
-    ...turnObj,
-    brief,
-    tooltip,
-  }
-}
+const postFilterTurnBrief = postFilterNationCommandGen<TurnObjWithTime>(props.troopList, gameConstStore.value);
 
 const queryActionHelper = new QueryActionHelper(props.maxTurn);
 const reservedCommandList = queryActionHelper.reservedCommandList;
