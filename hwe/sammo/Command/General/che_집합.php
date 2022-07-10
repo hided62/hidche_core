@@ -91,7 +91,7 @@ class che_집합 extends Command\GeneralCommand{
         }
         foreach($generalList as $targetGeneralID){
             $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
-            $targetLogger->pushGeneralActionLog("{$troopName}의 부대원들은 <G><b>{$cityName}</b></>{$josaRo} 집합되었습니다.", ActionLogger::PLAIN);
+            $targetLogger->pushGeneralActionLog("{$troopName} 부대원들은 <G><b>{$cityName}</b></>{$josaRo} 집합되었습니다.", ActionLogger::PLAIN);
             $targetLogger->flush();
         }
 
