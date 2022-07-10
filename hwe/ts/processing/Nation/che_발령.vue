@@ -142,7 +142,23 @@ const troops = procRes.troops;
 const selectedGeneralID = ref(generalList[0].no);
 
 function textHelpGeneral(gen: procGeneralItem): string {
-  const troops = !gen.troopID ? "" : `,${procRes.troops[gen.troopID].name}`;
+  const troops = (()=>{
+    if(!gen.troopID){
+      return "";
+    }
+
+    const troopInfo = procRes.troops[gen.troopID];
+    if(!troopInfo){
+      return "";
+    }
+    const troopName = troopInfo.name;
+
+    if(gen.no !== gen.troopID){
+      return `,${troopName}`;
+    }
+
+    return `,<span style="text-decoration: underline;">${troopName}</span>`;
+  })();
   const nameColor = getNpcColor(gen.npc);
   const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
   return `${name} [${citiesMap.value.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${
