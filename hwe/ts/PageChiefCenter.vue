@@ -2,7 +2,7 @@
   <div id="container" class="pageChiefCenter">
     <TopBackBar title="사령부" reloadable @reload="reloadTable" />
 
-    <div v-if="chiefList !== undefined" id="mainTable" :class="`${targetIsMe ? 'targetIsMe' : 'targetIsNotMe'}`">
+    <div v-if="asyncReady && chiefList !== undefined" id="mainTable" :class="`${targetIsMe ? 'targetIsMe' : 'targetIsNotMe'}`">
       <template v-for="(chiefLevel, vidx) in [12, 10, 8, 6, 11, 9, 7, 5]" :key="chiefLevel">
         <div v-if="vidx % 4 == 0" :class="['turnIdx', vidx == 0 && !targetIsMe ? undefined : 'only1000px']">
           <div :class="['subRows', 'bg0']" :style="mainTableGridRows">
@@ -33,6 +33,7 @@
             :turn="officer.turn"
             :turnTerm="turnTerm"
             :commandList="unwrap(commandList)"
+            :troopList="unwrap(troopList)"
             :turnTime="officer.turnTime"
             :maxTurn="maxChiefTurn"
             :maxPushTurn="Math.floor(maxChiefTurn / 2)"
@@ -107,9 +108,21 @@ import { SammoAPI } from "./SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { ChiefResponse } from "./defs/API/NationCommand";
+import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
+});
+
+const asyncReady = ref<boolean>(false);
+const gameConstStore = ref<GameConstStore>();
+provide("gameConstStore", gameConstStore);
+const storeP = getGameConstStore().then((store) => {
+  gameConstStore.value = store;
+});
+
+void Promise.all([storeP]).then(() => {
+  asyncReady.value = true;
 });
 
 const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
@@ -118,6 +131,7 @@ const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
   month: undefined,
   turnTerm: undefined,
   date: undefined,
+  troopList: undefined,
   chiefList: undefined,
   isChief: undefined,
   autorun_limit: undefined,
@@ -127,7 +141,7 @@ const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
   unitSet: undefined,
 });
 
-const { year, month, turnTerm, date, chiefList, officerLevel, commandList } = toRefs(tableObj);
+const { year, month, turnTerm, date, chiefList, troopList, officerLevel, commandList } = toRefs(tableObj);
 
 const viewTarget = ref<number | undefined>();
 

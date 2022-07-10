@@ -63,9 +63,9 @@ class GetReservedCommand extends \sammo\BaseAPI
 
         $nationTurnList = [];
         foreach ($db->queryAllLists(
-                'SELECT officer_level, turn_idx, action, arg, brief FROM nation_turn WHERE nation_id = %i ORDER BY officer_level DESC, turn_idx ASC',
-                $me['nation']
-            ) as [$officer_level, $turn_idx, $action, $arg, $brief]) {
+            'SELECT officer_level, turn_idx, action, arg, brief FROM nation_turn WHERE nation_id = %i ORDER BY officer_level DESC, turn_idx ASC',
+            $me['nation']
+        ) as [$officer_level, $turn_idx, $action, $arg, $brief]) {
             if (!key_exists($officer_level, $nationTurnList)) {
                 $nationTurnList[$officer_level] = [];
             }
@@ -74,6 +74,14 @@ class GetReservedCommand extends \sammo\BaseAPI
                 'brief' => $brief,
                 'arg' => Json::decode($arg)
             ];
+        }
+
+        $troopList = [];
+        foreach ($db->queryAllLists(
+            'SELECT troop_leader, `name` FROM troop WHERE `nation` = %i',
+            $nationID
+        ) as [$troopID, $troopName]) {
+            $troopList[$troopID] = $troopName;
         }
 
 
@@ -111,7 +119,8 @@ class GetReservedCommand extends \sammo\BaseAPI
             'turnTerm' => $turnTerm,
             'date' => TimeUtil::now(true),
             'chiefList' => $nationChiefList,
-            'isChief'=>($me['officer_level'] > 4),
+            'troopList' => $troopList,
+            'isChief' => ($me['officer_level'] > 4),
             'autorun_limit' => $generalObj->getAuxVar('autorun_limit'),
             'officerLevel' => $me['officer_level'],
             'commandList' => getChiefCommandTable($generalObj),

@@ -18,6 +18,7 @@ export type ChiefResponse = {
             turn: TurnObj[];
         }
     >;
+    troopList: Record<number, string>;
     isChief: boolean;
     autorun_limit: number;
     officerLevel: number;

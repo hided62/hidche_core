@@ -187,7 +187,7 @@
               </div>
             </DragSelect>
             <div :style="rowGridStyle">
-              <div v-for="(turnObj, turnIdx) in reservedCommandList" :key="turnIdx" class="turn_pad center">
+              <div v-for="(turnObj, turnIdx) in reservedCommandList.map(postFilterTurnBrief)" :key="turnIdx" class="turn_pad center">
                 <span v-b-tooltip.hover class="turn_text" :style="turnObj.style" :title="turnObj.tooltip">
                   <!-- eslint-disable-next-line vue/no-v-html -->
                   <span v-html="turnObj.brief" />
@@ -256,7 +256,7 @@
 <script lang="ts" setup>
 import addMinutes from "date-fns/esm/addMinutes";
 import { stringifyUrl } from "query-string";
-import { onMounted, ref, watch, type PropType, inject } from "vue";
+import { onMounted, ref, watch, type PropType, inject, type Ref } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
@@ -276,6 +276,10 @@ import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, 
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
+import { unwrap } from "@/util/unwrap";
+import { unwrap_err } from "@/util/unwrap_err";
+import type { GameConstStore } from "@/GameConstStore";
+import { pick as josaPick } from "@/util/JosaUtil";
 
 type TurnObjWithTime = TurnObj & {
   time: string;
@@ -308,13 +312,15 @@ const props = defineProps({
     type: Object as PropType<ChiefResponse["commandList"]>,
     required: true,
   },
-
+  troopList: {
+    type: Object as PropType<ChiefResponse["troopList"]>,
+    required: true,
+  },
   officer: {
     type: Object as PropType<ChiefResponse["chiefList"][0]>,
     required: true,
   },
 });
-
 const basicModeRowHeight = 30;
 
 const listReqArgCommand = new Set<string>();
@@ -437,6 +443,35 @@ async function pushNationCommand(amount: number) {
     return;
   }
   emit("raise-reload");
+}
+
+const gameConstStore = unwrap_err(
+  inject<Ref<GameConstStore>>("gameConstStore"),
+  Error,
+  "gameConstStore가 주입되지 않았습니다."
+);
+
+function postFilterTurnBrief(turnObj: TurnObjWithTime): TurnObjWithTime{
+  if(turnObj.action != 'che_발령'){
+    return turnObj;
+  }
+  const destGeneralID = unwrap(turnObj.arg.destGeneralID);
+  if(!(destGeneralID in props.troopList)){
+    return turnObj;
+  }
+
+  const troopName = props.troopList[destGeneralID];
+  const destCityID = unwrap(turnObj.arg.destCityID);
+  const destCityName = gameConstStore.value.cityConst[destCityID].name;
+  const josaRo = josaPick(destCityName, "로");
+  const brief = `《${troopName}》【${destCityName}】${josaRo} 발령`;
+  const tooltip = `《${troopName}》${turnObj.brief}`;
+
+  return {
+    ...turnObj,
+    brief,
+    tooltip,
+  }
 }
 
 const queryActionHelper = new QueryActionHelper(props.maxTurn);
