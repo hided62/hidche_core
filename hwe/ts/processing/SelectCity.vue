@@ -1,5 +1,5 @@
 <template>
-  <v-multiselect
+  <Multiselect
     v-model="selectedCity"
     :allow-empty="false"
     :options="citiesForFind"
@@ -16,30 +16,31 @@
     :maxHeight="400"
     :searchable="searchable"
   >
-    <template #option="props"
+    <template #option="prop"
       ><span
         :style="{
-          color: props.option.notAvailable ? 'red' : undefined,
+          color: prop.option.notAvailable ? 'red' : undefined,
         }"
       >
-        {{ props.option.title }}
-        <span v-if="props.option.info">({{ props.option.info }})</span>
-        {{ props.option.notAvailable ? "(불가)" : undefined }}</span
+        {{ prop.option.title }}
+        <span v-if="prop.option.info">({{ prop.option.info }})</span>
+        {{ prop.option.notAvailable ? "(불가)" : undefined }}</span
       >
     </template>
-    <template #singleLabel="props">
+    <template #singleLabel="prop">
       <span
         :style="{
-          color: props.option.notAvailable ? 'red' : undefined,
+          color: prop.option.notAvailable ? 'red' : undefined,
         }"
-        >{{ props.option.simpleName }} {{ props.option.notAvailable ? "(불가)" : undefined }}</span
+        >{{ prop.option.simpleName }} {{ prop.option.notAvailable ? "(불가)" : undefined }}</span
       >
     </template>
-  </v-multiselect>
+  </Multiselect>
 </template>
-<script lang="ts">
+<script setup lang="ts">
+import { Multiselect } from "vue-multiselect";
 import { convertSearch초성 } from "@/util/convertSearch초성";
-import { defineComponent, type PropType } from "vue";
+import { onMounted, ref, watch, type PropType } from "vue";
 
 type SelectedCity = {
   value: number;
@@ -50,55 +51,63 @@ type SelectedCity = {
   notAvailable?: boolean;
 };
 
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: Number,
-      required: true,
-    },
-    cities: {
-      type: Map as PropType<Map<number, { name: string; info?: string }>>,
-      required: true,
-    },
-    searchable: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+const props = defineProps({
+  modelValue: {
+    type: Number,
+    required: true,
   },
-  emits: ["update:modelValue"],
-  data() {
-    const citiesForFind = [];
-    const targets = new Map<number, SelectedCity>();
-    let selectedCity;
-    for (const [value, { name, info }] of this.cities.entries()) {
-      const obj: SelectedCity = {
-        value,
-        title: name,
-        info: info,
-        simpleName: name,
-        searchText: convertSearch초성(name).join("|"),
-      };
-      if (value == this.modelValue) {
-        selectedCity = obj;
-      }
-      citiesForFind.push(obj);
-      targets.set(value, obj);
-    }
-    return {
-      selectedCity,
-      citiesForFind,
-      targets,
+  cities: {
+    type: Map as PropType<Map<number, { name: string; info?: string }>>,
+    required: true,
+  },
+  searchable: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+});
+
+const emit = defineEmits<{
+  (event: "update:modelValue", value: number): void;
+}>();
+
+const citiesForFind = ref<SelectedCity[]>([]);
+const targets = new Map<number, SelectedCity>();
+const selectedCity = ref<SelectedCity>();
+
+onMounted(() => {
+  citiesForFind.value = [];
+  targets.clear();
+
+  for (const [value, { name, info }] of props.cities.entries()) {
+    const obj: SelectedCity = {
+      value,
+      title: name,
+      info: info,
+      simpleName: name,
+      searchText: convertSearch초성(name).join("|"),
     };
-  },
-  watch: {
-    modelValue(val: number) {
-      const target = this.targets.get(val);
-      this.selectedCity = target;
-    },
-    selectedCity(val: SelectedCity) {
-      this.$emit("update:modelValue", val.value);
-    },
-  },
+    if (value == props.modelValue) {
+      selectedCity.value = obj;
+    }
+    citiesForFind.value.push(obj);
+    targets.set(value, obj);
+  }
+});
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (targets.has(value)) {
+      selectedCity.value = targets.get(value);
+    }
+  }
+);
+
+watch(selectedCity, (value) => {
+  if (!value) {
+    return;
+  }
+  emit("update:modelValue", value.value);
 });
 </script>

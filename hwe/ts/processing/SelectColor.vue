@@ -1,5 +1,5 @@
 <template>
-  <v-multiselect
+  <Multiselect
     v-model="selectedColor"
     :allow-empty="false"
     :options="forFind"
@@ -16,9 +16,9 @@
     :maxHeight="400"
     :searchable="false"
   >
-    <template #option="props">
+    <template #option="prop">
       <div
-        :class="`sam-color-${props.option.title.slice(1)}`"
+        :class="`sam-color-${prop.option.title.slice(1)}`"
         :style="{
           margin: '-0.375rem -0.75rem',
         }"
@@ -29,13 +29,13 @@
             padding: '0.545rem 0.75rem',
           }"
         >
-          {{ props.option.title }}
+          {{ prop.option.title }}
         </div>
       </div>
     </template>
-    <template #singleLabel="props">
+    <template #singleLabel="prop">
       <div
-        :class="`sam-color-${props.option.title.slice(1)}`"
+        :class="`sam-color-${prop.option.title.slice(1)}`"
         :style="{
           margin: '-0.25rem -0.75rem',
         }"
@@ -47,61 +47,67 @@
             borderRadius: '0.25rem',
           }"
         >
-          {{ props.option.title }}
+          {{ prop.option.title }}
         </div>
       </div>
     </template>
-  </v-multiselect>
+  </Multiselect>
 </template>
-<script lang="ts">
-import { unwrap } from "@/util/unwrap";
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { Multiselect } from "vue-multiselect";
+import { onMounted, ref, watch, type PropType } from "vue";
 
 type SelectedColor = {
   value: number;
   title: string;
 };
 
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: Number,
-      required: true,
-    },
-    colors: {
-      type: Array as PropType<string[]>,
-      required: true,
-    },
+const props = defineProps({
+  modelValue: {
+    type: Number,
+    required: true,
   },
-  emits: ["update:modelValue"],
-  data() {
-    const forFind = [];
-    const targets = new Map<number, SelectedColor>();
-    for (const [value, title] of this.colors.entries()) {
-      const obj: SelectedColor = {
-        value,
-        title,
-      };
-      forFind.push(obj);
-      targets.set(value, obj);
-    }
-    let selectedColor = forFind[0];
-
-    return {
-      selectedColor,
-      searchMode: false,
-      forFind,
-      targets,
-    };
-  },
-  watch: {
-    modelValue(val: number) {
-      const target = unwrap(this.targets.get(val));
-      this.selectedColor = target;
-    },
-    selectedColor(val: SelectedColor) {
-      this.$emit("update:modelValue", val.value);
-    },
+  colors: {
+    type: Array as PropType<string[]>,
+    required: true,
   },
 });
+
+const emit = defineEmits<{
+  (event: "update:modelValue", value: number): void;
+}>();
+
+const forFind = ref<SelectedColor[]>([]);
+const targets = ref(new Map<number, SelectedColor>());
+const selectedColor = ref<SelectedColor>();
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    selectedColor.value = targets.value.get(value);
+  }
+);
+
+watch(selectedColor, (value) => {
+  if (!value) {
+    return;
+  }
+  emit("update:modelValue", value.value);
+});
+
+
+onMounted(() => {
+  forFind.value = [];
+  targets.value = new Map();
+  for (const [value, title] of props.colors.entries()) {
+    const obj: SelectedColor = {
+      value,
+      title,
+    };
+    forFind.value.push(obj);
+    targets.value.set(value, obj);
+  }
+  selectedColor.value = forFind.value[0];
+});
+
 </script>
