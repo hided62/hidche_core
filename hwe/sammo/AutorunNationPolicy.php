@@ -146,6 +146,8 @@ class AutorunNationPolicy {
     public $safeRecruitCityPopulationRatio = 0.5;
     public $properWarTrainAtmos = 90;
 
+    public $cureThreshold = 10;
+
     ///이쪽의 값이 실제 초기화 값임
     public static $defaultPolicy = [
         'reqNationGold'=>10000,
@@ -173,6 +175,8 @@ class AutorunNationPolicy {
         'minNPCRecruitCityPopulation'=>50000,
         'safeRecruitCityPopulationRatio'=>0.5,
         'properWarTrainAtmos'=>90,
+
+        'cureThreshold'=>10,
     ];
 
     function __construct(General $general, $aiOptions, ?array $nationPolicy, ?array $serverPolicy, array $nation, array $env)

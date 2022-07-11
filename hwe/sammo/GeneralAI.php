@@ -3718,7 +3718,7 @@ class GeneralAI
             return $reservedCommand;
         }
 
-        if ($general->getVar('injury') > 10) {
+        if ($general->getVar('injury') > $this->nationPolicy->cureThreshold) {
             $result = buildGeneralCommandClass('che_요양', $general, $this->env);
             $result->reason = 'do요양';
             return $result;

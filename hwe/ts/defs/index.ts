@@ -158,6 +158,7 @@ export type NationPolicy = {
     minNPCRecruitCityPopulation: number,
     safeRecruitCityPopulationRatio: number,
     properWarTrainAtmos: number,
+    cureThreshold: number,
 }
 
 export type ItemTypeKey = 'horse' | 'weapon' | 'book' | 'item';

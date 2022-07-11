@@ -163,6 +163,17 @@
           훈련/사기진작 기준치입니다. 이보다 같거나 높으면 출병합니다.
         </NumberInputWithInfo>
       </div>
+      <div class="col">
+        <NumberInputWithInfo
+          v-model="nationPolicy.cureThreshold"
+          :step="5"
+          :min="10"
+          :max="100"
+          title="요양 기준"
+        >
+          요양 기준 %입니다. 이보다 많이 부상을 입으면 요양합니다.
+        </NumberInputWithInfo>
+      </div>
       <!--allowNpcAttackCity는 현재 게임 내 비활성-->
     </div>
     <div style="padding: 0 8pt">
