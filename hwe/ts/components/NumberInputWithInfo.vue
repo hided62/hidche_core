@@ -4,7 +4,7 @@
     <div class="col">
       <input
         ref="input"
-        v-model="rawValue"
+        v-model.number="rawValue"
         type="number"
         :step="step ?? undefined"
         class="form-control f_tnum"
@@ -29,103 +29,102 @@
     <small class="form-text text-muted"><slot /></small>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { clamp } from "lodash";
-import { defineComponent } from "vue";
+import { ref, watch } from "vue";
 
-export default defineComponent({
-  name: "NumberInputWithInfo",
-  props: {
-    readonly: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    int: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    title: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    min: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    max: {
-      type: Number,
-      default: undefined,
-      required: false,
-    },
-    step: {
-      type: Number,
-      default: undefined,
-      required: false,
-    },
-    modelValue: {
-      type: Number,
-      default: 0,
-    },
-    right: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+const props = defineProps({
+  readonly: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
-  emits: ["update:modelValue"],
-  data() {
-    return {
-      editmode: false,
-      rawValue: this.modelValue,
-      printValue: this.modelValue.toLocaleString(),
-    };
+  int: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
-  watch: {
-    modelValue: function (newVal: number) {
-      this.rawValue = newVal;
-      this.printValue = newVal.toLocaleString();
-    },
+  title: {
+    type: String,
+    required: false,
+    default: null,
   },
-  methods: {
-    updateValue() {
-      if (this.readonly) {
-        return;
-      }
-      if (this.int) {
-        this.rawValue = Math.floor(this.rawValue);
-      }
-      this.printValue = this.rawValue.toLocaleString();
-      if (this.min !== undefined || this.max !== undefined) {
-        const clampedValue = clamp(this.rawValue, this.min ?? this.rawValue, this.max ?? this.rawValue);
-        this.$emit("update:modelValue", clampedValue);
-      } else {
-        this.$emit("update:modelValue", this.rawValue);
-      }
-    },
-    onBlurNumber() {
-      this.editmode = false;
-      this.printValue = this.rawValue.toLocaleString();
-      if (this.min !== undefined || this.max !== undefined) {
-        const clampedValue = clamp(this.rawValue, this.min ?? this.rawValue, this.max ?? this.rawValue);
-        if (clampedValue !== this.rawValue) {
-          this.rawValue = clampedValue;
-          this.updateValue();
-        }
-      }
-    },
-    onFocusText() {
-      if (this.readonly) {
-        return;
-      }
-      this.editmode = true;
-      setTimeout(() => {
-        (this.$refs.input as HTMLInputElement).focus();
-      }, 0);
-    },
+  min: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  max: {
+    type: Number,
+    default: undefined,
+    required: false,
+  },
+  step: {
+    type: Number,
+    default: undefined,
+    required: false,
+  },
+  modelValue: {
+    type: Number,
+    default: 0,
+  },
+  right: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
+
+const emit = defineEmits<{
+  (event: "update:modelValue", value: number): void;
+}>();
+
+const editmode = ref(false);
+const rawValue = ref(props.modelValue);
+const printValue = ref(props.modelValue.toLocaleString());
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    rawValue.value = value;
+    printValue.value = value.toLocaleString();
+  }
+);
+
+function updateValue() {
+  if (props.readonly) {
+    return;
+  }
+  let value = rawValue.value;
+  if (props.int) {
+    value = Math.round(value);
+  }
+
+  rawValue.value = value;
+
+  printValue.value = value.toLocaleString();
+  emit("update:modelValue", value);
+}
+const input = ref<HTMLInputElement>();
+function onBlurNumber() {
+  editmode.value = false;
+  printValue.value = rawValue.value.toLocaleString();
+  if (props.min !== undefined || props.max !== undefined) {
+    const clampedValue = clamp(rawValue.value, props.min ?? rawValue.value, props.max ?? rawValue.value);
+    if (clampedValue !== rawValue.value) {
+      rawValue.value = clampedValue;
+      updateValue();
+    }
+  }
+}
+
+function onFocusText() {
+  if (props.readonly) {
+    return;
+  }
+  editmode.value = true;
+  setTimeout(() => {
+    input.value?.focus();
+  }, 0);
+}
 </script>
