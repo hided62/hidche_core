@@ -32,29 +32,33 @@
     </b-button>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, watch } from "vue";
 import VueTypes from "vue-types";
 
-export default defineComponent({
-  props: {
+const props = defineProps({
     modelValue: VueTypes.number.isRequired,
     minAmount: VueTypes.number.isRequired,
     maxAmount: VueTypes.number.isRequired,
     amountGuide: VueTypes.arrayOf(Number).def([1000, 2000, 5000, 10000]),
     step: VueTypes.number.def(1),
-  },
-  emits: ["update:modelValue"],
-  data() {
-    return {
-      amount: this.modelValue,
-    };
-  },
-  watch: {
-    amount(val: number) {
-      this.$emit("update:modelValue", val);
-    },
-  },
+  });
+
+const emit = defineEmits<{
+  (event: "update:modelValue", value: number): void;
+}>();
+
+const amount = ref(props.modelValue);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    amount.value = value;
+  }
+);
+
+watch(amount, (value) => {
+  emit("update:modelValue", value);
 });
 </script>
 

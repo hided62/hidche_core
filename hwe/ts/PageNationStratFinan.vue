@@ -234,19 +234,8 @@
     <BottomBar title="내무부" />
   </BContainer>
 </template>
-<script lang="ts">
-import TipTap from "./components/TipTap.vue";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-import { computed, defineComponent, reactive, ref, toRefs } from "vue";
-import { isString } from "lodash";
-import { type diplomacyState, diplomacyStateInfo, type NationStaticItem } from "./defs";
-import { SammoAPI } from "./SammoAPI";
-import { joinYearMonth } from "@/util/joinYearMonth";
-import { parseYearMonth } from "@/util/parseYearMonth";
-import { useToast, BContainer } from "bootstrap-vue-3";
-import { unwrap } from "./util/unwrap";
 
+<script lang="ts">
 type NationItem = NationStaticItem & {
   cityCnt: number;
   diplomacy: {
@@ -292,285 +281,267 @@ declare const staticValues: {
     max: number;
   };
 };
+</script>
+<script setup lang="ts">
+import TipTap from "./components/TipTap.vue";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+import { computed, reactive, ref, toRefs } from "vue";
+import { isString } from "lodash";
+import { type diplomacyState, diplomacyStateInfo, type NationStaticItem } from "./defs";
+import { SammoAPI } from "./SammoAPI";
+import { joinYearMonth } from "@/util/joinYearMonth";
+import { parseYearMonth } from "@/util/parseYearMonth";
+import { useToast, BContainer } from "bootstrap-vue-3";
+import { unwrap } from "./util/unwrap";
 
-export default defineComponent({
-  components: {
-    TopBackBar,
-    BottomBar,
-    TipTap,
-    BContainer,
-  },
-  setup() {
-    const toasts = unwrap(useToast());
-    const self = reactive(staticValues);
+const toasts = unwrap(useToast());
+const self = reactive(staticValues);
+const {
+  editable,
+  nationMsg,
+  scoutMsg,
+  nationID,
+  year,
+  month,
+  nationsList,
+  gold,
+  rice,
+  income,
+  policy,
+  warSettingCnt,
+} = toRefs(self);
 
-    let oldNationMsg = staticValues.nationMsg;
-    const inEditNationMsg = ref(false);
+let oldNationMsg = staticValues.nationMsg;
+const inEditNationMsg = ref(false);
 
-    function enableEditNationMsg() {
-      inEditNationMsg.value = true;
-    }
+function enableEditNationMsg() {
+  inEditNationMsg.value = true;
+}
 
-    function rollbackNationMsg() {
-      inEditNationMsg.value = false;
-      self.nationMsg = oldNationMsg;
-    }
+function rollbackNationMsg() {
+  inEditNationMsg.value = false;
+  self.nationMsg = oldNationMsg;
+}
 
-    async function saveNationMsg() {
-      const msg = self.nationMsg;
-      try {
-        await SammoAPI.Nation.SetNotice({
-          msg,
-        });
-        oldNationMsg = msg;
-        inEditNationMsg.value = false;
-        toasts.info({
-          title: "변경",
-          body: "국가 방침을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        console.error(e);
-      }
-    }
-
-    let oldScoutMsg = staticValues.scoutMsg;
-    const inEditScoutMsg = ref(false);
-
-    function enableEditScoutMsg() {
-      inEditScoutMsg.value = true;
-    }
-    function rollbackScoutMsg() {
-      inEditScoutMsg.value = false;
-      self.scoutMsg = oldScoutMsg;
-    }
-    async function saveScoutMsg() {
-      const msg = self.scoutMsg;
-      try {
-        await SammoAPI.Nation.SetScoutMsg({
-          msg,
-        });
-        oldScoutMsg = msg;
-        inEditScoutMsg.value = false;
-        toasts.info({
-          title: "변경",
-          body: "임관 권유문을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        console.error(e);
-      }
-    }
-
-    const trackTiptapFormHeight = (target: string) => {
-      let form: HTMLElement | null = null;
-      let outerForm: HTMLElement | null = null;
-      function handler() {
-        if (!form) {
-          form = document.querySelector(`${target} .ProseMirror`);
-        }
-        if (!outerForm) {
-          outerForm = document.querySelector(`${target} .tiptap-editor`);
-        }
-        if (!form || !outerForm) {
-          return;
-        }
-
-        const { height: clientHeight } = form.getBoundingClientRect();
-        const { height: parentHeight } = outerForm.getBoundingClientRect();
-
-        if (parentHeight != clientHeight) {
-          outerForm.style.height = `${clientHeight}px`;
-        }
-      }
-      window.addEventListener("orientationchange", handler, true);
-
-      return handler;
-    };
-
-    const incomeGoldCity = computed(() => {
-      return (self.income.gold.city * self.policy.rate) / 100;
+async function saveNationMsg() {
+  const msg = self.nationMsg;
+  try {
+    await SammoAPI.Nation.SetNotice({
+      msg,
     });
-
-    const incomeGold = computed(() => {
-      return incomeGoldCity.value + self.income.gold.war;
+    oldNationMsg = msg;
+    inEditNationMsg.value = false;
+    toasts.info({
+      title: "변경",
+      body: "국가 방침을 변경했습니다.",
     });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+}
 
-    const incomeRiceCity = computed(() => {
-      return (self.income.rice.city * self.policy.rate) / 100;
+let oldScoutMsg = staticValues.scoutMsg;
+const inEditScoutMsg = ref(false);
+
+function enableEditScoutMsg() {
+  inEditScoutMsg.value = true;
+}
+function rollbackScoutMsg() {
+  inEditScoutMsg.value = false;
+  self.scoutMsg = oldScoutMsg;
+}
+async function saveScoutMsg() {
+  const msg = self.scoutMsg;
+  try {
+    await SammoAPI.Nation.SetScoutMsg({
+      msg,
     });
-
-    const incomeRiceWall = computed(() => {
-      return (self.income.rice.wall * self.policy.rate) / 100;
+    oldScoutMsg = msg;
+    inEditScoutMsg.value = false;
+    toasts.info({
+      title: "변경",
+      body: "임관 권유문을 변경했습니다.",
     });
-
-    const incomeRice = computed(() => {
-      return incomeRiceCity.value + incomeRiceWall.value;
-    });
-
-    const outcomeByBill = computed(() => {
-      return (self.outcome * self.policy.bill) / 100;
-    });
-
-    let oldRate = staticValues.policy.rate;
-    async function setRate() {
-      const rate = self.policy.rate;
-      try {
-        await SammoAPI.Nation.SetRate({ amount: rate });
-        oldRate = rate;
-        toasts.info({
-          title: "변경",
-          body: "세율을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        console.error(e);
-      }
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
     }
-    function rollbackRate() {
-      self.policy.rate = oldRate;
+    console.error(e);
+  }
+}
+
+const trackTiptapFormHeight = (target: string) => {
+  let form: HTMLElement | null = null;
+  let outerForm: HTMLElement | null = null;
+  function handler() {
+    if (!form) {
+      form = document.querySelector(`${target} .ProseMirror`);
+    }
+    if (!outerForm) {
+      outerForm = document.querySelector(`${target} .tiptap-editor`);
+    }
+    if (!form || !outerForm) {
+      return;
     }
 
-    let oldBill = staticValues.policy.bill;
-    async function setBill() {
-      const bill = self.policy.bill;
-      try {
-        await SammoAPI.Nation.SetBill({ amount: bill });
-        oldBill = bill;
-        toasts.info({
-          title: "변경",
-          body: "지급률을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        console.error(e);
-      }
+    const { height: clientHeight } = form.getBoundingClientRect();
+    const { height: parentHeight } = outerForm.getBoundingClientRect();
+
+    if (parentHeight != clientHeight) {
+      outerForm.style.height = `${clientHeight}px`;
     }
-    function rollbackBill() {
-      self.policy.bill = oldBill;
-    }
+  }
+  window.addEventListener("orientationchange", handler, true);
 
-    let oldSecretLimit = staticValues.policy.secretLimit;
-    async function setSecretLimit() {
-      const secretLimit = self.policy.secretLimit;
-      try {
-        await SammoAPI.Nation.SetSecretLimit({ amount: secretLimit });
-        oldSecretLimit = secretLimit;
-        toasts.info({
-          title: "변경",
-          body: "기밀 권한을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        self.policy.secretLimit = oldSecretLimit;
-        console.error(e);
-      }
-    }
-    function rollbackSecretLimit() {
-      self.policy.secretLimit = oldSecretLimit;
-    }
+  return handler;
+};
+const trackNationMsgHeight = trackTiptapFormHeight("#noticeForm");
+const trackScoutMsgHeight = trackTiptapFormHeight("#scoutMsgForm");
 
-    async function setBlockWar() {
-      try {
-        const result = await SammoAPI.Nation.SetBlockWar({ value: self.policy.blockWar });
-        self.warSettingCnt.remain = result.availableCnt;
-        toasts.info({
-          title: "변경",
-          body: "전쟁 금지 설정을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        self.policy.blockWar = !self.policy.blockWar;
-        console.error(e);
-      }
-    }
-
-    async function setBlockScout() {
-      try {
-        await SammoAPI.Nation.SetBlockScout({ value: self.policy.blockScout });
-        toasts.info({
-          title: "변경",
-          body: "임관 설정을 변경했습니다.",
-        });
-      } catch (e) {
-        if (isString(e)) {
-          toasts.danger({
-            title: "에러",
-            body: e,
-          });
-        }
-        self.policy.blockScout = !self.policy.blockScout;
-        console.error(e);
-      }
-    }
-
-    return {
-      toasts,
-
-      ...toRefs(self),
-      inEditNationMsg,
-      inEditScoutMsg,
-      enableEditNationMsg,
-      rollbackNationMsg,
-      saveNationMsg,
-      enableEditScoutMsg,
-      rollbackScoutMsg,
-      saveScoutMsg,
-      diplomacyStateInfo,
-      joinYearMonth,
-      parseYearMonth,
-
-      trackNationMsgHeight: trackTiptapFormHeight("#noticeForm"),
-      trackScoutMsgHeight: trackTiptapFormHeight("#scoutMsgForm"),
-
-      incomeGoldCity,
-      incomeGold,
-      incomeRiceCity,
-      incomeRiceWall,
-      incomeRice,
-      outcomeByBill,
-
-      setRate,
-      rollbackRate,
-      setBill,
-      rollbackBill,
-      setSecretLimit,
-      rollbackSecretLimit,
-
-      setBlockWar,
-      setBlockScout,
-    };
-  },
-  methods: {},
+const incomeGoldCity = computed(() => {
+  return (self.income.gold.city * self.policy.rate) / 100;
 });
+
+const incomeGold = computed(() => {
+  return incomeGoldCity.value + self.income.gold.war;
+});
+
+const incomeRiceCity = computed(() => {
+  return (self.income.rice.city * self.policy.rate) / 100;
+});
+
+const incomeRiceWall = computed(() => {
+  return (self.income.rice.wall * self.policy.rate) / 100;
+});
+
+const incomeRice = computed(() => {
+  return incomeRiceCity.value + incomeRiceWall.value;
+});
+
+const outcomeByBill = computed(() => {
+  return (self.outcome * self.policy.bill) / 100;
+});
+
+let oldRate = staticValues.policy.rate;
+async function setRate() {
+  const rate = self.policy.rate;
+  try {
+    await SammoAPI.Nation.SetRate({ amount: rate });
+    oldRate = rate;
+    toasts.info({
+      title: "변경",
+      body: "세율을 변경했습니다.",
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+}
+function rollbackRate() {
+  self.policy.rate = oldRate;
+}
+
+let oldBill = staticValues.policy.bill;
+async function setBill() {
+  const bill = self.policy.bill;
+  try {
+    await SammoAPI.Nation.SetBill({ amount: bill });
+    oldBill = bill;
+    toasts.info({
+      title: "변경",
+      body: "지급률을 변경했습니다.",
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+}
+function rollbackBill() {
+  self.policy.bill = oldBill;
+}
+
+let oldSecretLimit = staticValues.policy.secretLimit;
+async function setSecretLimit() {
+  const secretLimit = self.policy.secretLimit;
+  try {
+    await SammoAPI.Nation.SetSecretLimit({ amount: secretLimit });
+    oldSecretLimit = secretLimit;
+    toasts.info({
+      title: "변경",
+      body: "기밀 권한을 변경했습니다.",
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
+    self.policy.secretLimit = oldSecretLimit;
+    console.error(e);
+  }
+}
+function rollbackSecretLimit() {
+  self.policy.secretLimit = oldSecretLimit;
+}
+
+async function setBlockWar() {
+  try {
+    const result = await SammoAPI.Nation.SetBlockWar({ value: self.policy.blockWar });
+    self.warSettingCnt.remain = result.availableCnt;
+    toasts.info({
+      title: "변경",
+      body: "전쟁 금지 설정을 변경했습니다.",
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
+    self.policy.blockWar = !self.policy.blockWar;
+    console.error(e);
+  }
+}
+
+async function setBlockScout() {
+  try {
+    await SammoAPI.Nation.SetBlockScout({ value: self.policy.blockScout });
+    toasts.info({
+      title: "변경",
+      body: "임관 설정을 변경했습니다.",
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
+    self.policy.blockScout = !self.policy.blockScout;
+    console.error(e);
+  }
+}
+
 </script>

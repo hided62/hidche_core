@@ -56,57 +56,53 @@
     <div class="crewTypeInfo text-start" v-html="crewType.info.join('<br>')" />
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script setup lang="ts">
+import { onMounted, ref, watch } from "vue";
 import VueTypes from "vue-types";
 
-export default defineComponent({
-  props: {
-    crewType: VueTypes.object.isRequired,
-    leadership: VueTypes.number.isRequired,
-    commandName: VueTypes.string.isRequired,
-    currentCrewType: VueTypes.number.def(-1),
-    crew: VueTypes.number.def(0),
-    goldCoeff: VueTypes.number.isRequired,
-  },
-  emits: ["submitOutput", "update:amount"],
-  setup(props, { emit }) {
-    const amount = ref(0);
-
-    function beHalf() {
-      amount.value = Math.ceil(props.leadership * 0.5);
-    }
-
-    function beFilled() {
-      if (props.crewType.id == props.currentCrewType) {
-        amount.value = Math.max(1, props.leadership - Math.floor(props.crew / 100));
-      } else {
-        amount.value = props.leadership;
-      }
-    }
-
-    function beFull() {
-      amount.value = Math.floor(props.leadership * 1.2);
-    }
-
-    function doSubmit(e: Event) {
-      emit("submitOutput", e, amount.value, props.crewType.id);
-    }
-
-    beFilled();
-
-    return {
-      amount,
-      beHalf,
-      beFilled,
-      beFull,
-      doSubmit,
-    };
-  },
-  watch: {
-    amount(val: number) {
-      this.$emit("update:amount", val);
-    },
-  },
+const props = defineProps({
+  crewType: VueTypes.object.isRequired,
+  leadership: VueTypes.number.isRequired,
+  commandName: VueTypes.string.isRequired,
+  currentCrewType: VueTypes.number.def(-1),
+  crew: VueTypes.number.def(0),
+  goldCoeff: VueTypes.number.isRequired,
 });
+
+const emit = defineEmits<{
+  (event: "submitOutput", e: Event, amount: number, crewtypeID: number): void;
+  (event: "update:amount", value: number): void;
+}>();
+
+const amount = ref(0);
+
+function beHalf() {
+  amount.value = Math.ceil(props.leadership * 0.5);
+}
+
+function beFilled() {
+  if (props.crewType.id == props.currentCrewType) {
+    amount.value = Math.max(1, props.leadership - Math.floor(props.crew / 100));
+  } else {
+    amount.value = props.leadership;
+  }
+}
+
+function beFull() {
+  amount.value = Math.floor(props.leadership * 1.2);
+}
+
+function doSubmit(e: Event) {
+  emit("submitOutput", e, amount.value, props.crewType.id);
+}
+
+onMounted(() => {
+  beFilled();
+});
+
+
+watch(amount, (value) => {
+  emit("update:amount", value);
+});
+
 </script>

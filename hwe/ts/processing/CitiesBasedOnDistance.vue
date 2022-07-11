@@ -5,35 +5,33 @@
       <template v-if="key !== 0"> , </template>
       <a
         :style="{ color: colorMap[distance as keyof typeof colorMap] ?? undefined, textDecoration:'underline' }"
-        @click="$emit('selected', cityID)"
+        @click="emit('selected', cityID)"
         >{{ citiesMap.get(cityID)?.name }}</a
       >
     </template>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import type { PropType } from "vue";
 
-export default defineComponent({
-  props: {
-    distanceList: {
-      type: Object as PropType<Record<number, number[]>>,
-      required: true,
-    },
-    citiesMap: {
-      type: Object as PropType<Map<number, { name: string }>>,
-      required: true,
-    },
+defineProps({
+  distanceList: {
+    type: Object as PropType<Record<number, number[]>>,
+    required: true,
   },
-  emits: ["selected"],
-  data() {
-    return {
-      colorMap: {
-        1: "magenta",
-        2: "orange",
-        3: "yellow",
-      },
-    };
+  citiesMap: {
+    type: Object as PropType<Map<number, { name: string }>>,
+    required: true,
   },
 });
+
+const emit = defineEmits<{
+  (event: "selected", value: number): void;
+}>();
+
+const colorMap = {
+  1: "magenta",
+  2: "orange",
+  3: "yellow",
+};
 </script>

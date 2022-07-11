@@ -1,9 +1,5 @@
 <template>
-  <div
-    :class="[`chiefBox${chiefLevel}`, 'subRows']"
-    :style="style"
-    @click="$emit('click', this)"
-  >
+  <div :class="[`chiefBox${chiefLevel}`, 'subRows']" :style="style" @click="onClick">
     <div
       class="bg1 nameHeader"
       :style="{
@@ -33,15 +29,14 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { getNpcColor } from "@/common_legacy";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
 import { mb_strwidth } from "@/util/mb_strwidth";
-import { defineComponent, type PropType } from "vue";
+import type { PropType } from "vue";
 import VueTypes from "vue-types";
 
-export default defineComponent({
-  props: {
+defineProps({
     chiefLevel: VueTypes.integer.isRequired,
     style: VueTypes.object.isRequired,
     officer: {
@@ -49,11 +44,17 @@ export default defineComponent({
       default: undefined,
     },
     isMe: VueTypes.bool.isRequired,
-  },
-  emits: ["click"],
-  methods: {
-    mb_strwidth,
-    getNpcColor,
-  },
-});
+  });
+
+const emit = defineEmits<{
+  (event: "click", value: HTMLElement): void,
+}>();
+
+function onClick(event: MouseEvent){
+  if(!event.target){
+    return;
+  }
+  const elem = event.target as HTMLElement;
+  emit("click", elem);
+}
 </script>
