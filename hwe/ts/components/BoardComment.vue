@@ -15,17 +15,14 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import type { BoardCommentItem } from "@/PageBoard.vue";
-import { defineComponent, type PropType } from "vue";
+import type { PropType } from "vue";
 
-export default defineComponent({
-  name: "BoardComment",
-  props: {
-    comment: {
-      type: Object as PropType<BoardCommentItem>,
-      required: true,
-    },
+defineProps({
+  comment: {
+    type: Object as PropType<BoardCommentItem>,
+    required: true,
   },
 });
 </script>

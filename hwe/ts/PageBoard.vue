@@ -32,7 +32,7 @@
     </div>
     <div id="board">
       <template v-if="articles && articles.length">
-        <board-article
+        <BoardArticle
           v-for="article in articles"
           :key="article.no"
           :article="article"
@@ -46,8 +46,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from "vue";
+<script setup lang="ts">
+import { onMounted, reactive, ref } from "vue";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import BoardArticle from "@/components/BoardArticle.vue";
@@ -55,7 +55,6 @@ import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
 import type { InvalidResponse } from "@/defs";
 import { autoResizeTextarea } from "@util/autoResizeTextarea";
-import { unwrap } from "@util/unwrap";
 export type BoardResponse = {
   result: true;
   articles: Record<number, BoardArticleItem>;
@@ -85,108 +84,88 @@ export type BoardCommentItem = {
   text: string;
 };
 
-export default defineComponent({
-  name: "PageBoard",
-  components: {
-    TopBackBar,
-    BottomBar,
-    BoardArticle,
-  },
-  props: {
-    isSecretBoard: {
-      type: Boolean,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    const newArticleTextForm = ref<HTMLInputElement>();
-    const articles = reactive<BoardArticleItem[]>([]);
-
-    const reloadArticles = async () => {
-      let boardResponse: BoardResponse;
-
-      try {
-        const response = await axios({
-          url: "j_board_get_articles.php",
-          responseType: "json",
-          method: "post",
-          data: convertFormData({
-            isSecret: props.isSecretBoard,
-          }),
-        });
-        const result: InvalidResponse | BoardResponse = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
-        boardResponse = result;
-      } catch (e) {
-        console.error(e);
-        alert(`에러: ${e}`);
-        return;
-      }
-
-      articles.length = 0;
-      articles.push(...Object.values(boardResponse.articles));
-      articles.reverse();
-    };
-
-    onMounted(async () => {
-      await reloadArticles();
-    });
-
-    return {
-      newArticleTextForm,
-      articles,
-      reloadArticles,
-    };
-  },
-  data() {
-    return {
-      title: this.isSecretBoard ? "기밀실" : "회의실",
-      newArticle: {
-        title: "",
-        text: "",
-      },
-    };
-  },
-  methods: {
-    autoResizeTextarea,
-    async submitArticle() {
-      const { title, text } = this.newArticle;
-      if (!title && !text) {
-        return;
-      }
-
-      let result: InvalidResponse;
-
-      try {
-        const response = await axios({
-          url: "j_board_article_add.php",
-          method: "post",
-          responseType: "json",
-          data: convertFormData({
-            isSecret: this.isSecretBoard,
-            title,
-            text,
-          }),
-        });
-        result = response.data;
-        if (!result.result) {
-          throw result.reason;
-        }
-      } catch (e) {
-        console.error(e);
-        alert(`실패했습니다. :${e}`);
-        return;
-      }
-
-      this.newArticle = { title: "", text: "" };
-      const newArticleTextForm = unwrap(this.newArticleTextForm);
-      newArticleTextForm.style.height = "auto";
-
-      await this.reloadArticles();
-    },
+const props = defineProps({
+  isSecretBoard: {
+    type: Boolean,
+    required: true,
   },
 });
+
+const newArticleTextForm = ref<HTMLInputElement>();
+const articles = reactive<BoardArticleItem[]>([]);
+
+const reloadArticles = async () => {
+  let boardResponse: BoardResponse;
+
+  try {
+    const response = await axios({
+      url: "j_board_get_articles.php",
+      responseType: "json",
+      method: "post",
+      data: convertFormData({
+        isSecret: props.isSecretBoard,
+      }),
+    });
+    const result: InvalidResponse | BoardResponse = response.data;
+    if (!result.result) {
+      throw result.reason;
+    }
+    boardResponse = result;
+  } catch (e) {
+    console.error(e);
+    alert(`에러: ${e}`);
+    return;
+  }
+
+  articles.length = 0;
+  articles.push(...Object.values(boardResponse.articles));
+  articles.reverse();
+};
+
+onMounted(async () => {
+  await reloadArticles();
+});
+
+const title = ref(props.isSecretBoard ? "기밀실" : "회의실");
+const newArticle = ref({
+  title: "",
+  text: "",
+});
+
+async function submitArticle() {
+  const { title, text } = newArticle.value;
+  if (!title && !text) {
+    return;
+  }
+
+  let result: InvalidResponse;
+
+  try {
+    const response = await axios({
+      url: "j_board_article_add.php",
+      method: "post",
+      responseType: "json",
+      data: convertFormData({
+        isSecret: props.isSecretBoard,
+        title,
+        text,
+      }),
+    });
+    result = response.data;
+    if (!result.result) {
+      throw result.reason;
+    }
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다. :${e}`);
+    return;
+  }
+
+  newArticle.value = { title: "", text: "" };
+  if (newArticleTextForm.value !== undefined) {
+    newArticleTextForm.value.style.height = "auto";
+  }
+
+  await reloadArticles();
+}
 </script>

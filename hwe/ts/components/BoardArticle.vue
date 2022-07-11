@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="commentList">
-      <board-comment v-for="comment in article.comment" :key="comment.no" :comment="comment" />
+      <BoardComment v-for="comment in article.comment" :key="comment.no" :comment="comment" />
     </div>
     <div class="row gx-0">
       <div class="bg2 inputCommentHeader center d-grid">
@@ -98,8 +98,8 @@ async function submitComment() {
 }
 </script>
 
-<style>
-td.text {
+<style scoped>
+.text {
   white-space: pre;
 }
 </style>
