@@ -212,7 +212,7 @@ onMounted(() => {
 @import "@scss/common/break_500px.scss";
 
 @include media-500px {
-  .optionMenu::v-deep .dropdown-toggle {
+  .optionMenu:deep(.dropdown-toggle) {
     height: 32px;
   }
   .isNationRankingBottom {

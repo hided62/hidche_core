@@ -2,7 +2,7 @@ import axios from 'axios';
 import $ from 'jquery';
 import { isNumber, merge } from 'lodash';
 import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
-import type { InvalidResponse, MapResult } from '@/defs';
+import type { CachedMapResult, InvalidResponse, MapResult } from '@/defs';
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
@@ -188,8 +188,8 @@ export async function reloadWorldMap(option: loadMapOption, drawTarget = '.world
 
     async function setMapBackground(obj: MapResult): Promise<MapResult> {
         function setTheme() {
-            const oldTheme = $world_map.data('currentTheme');
-            const newTheme = obj.theme;
+            const oldTheme = $world_map.data('currentTheme') as string|null;
+            const newTheme = (obj as CachedMapResult).theme;
             if (oldTheme === newTheme) {
                 return;
             }

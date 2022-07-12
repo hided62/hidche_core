@@ -457,7 +457,7 @@ async function reloadCommandList() {
   for (const obj of result.turn) {
     const [year, month] = parseYearMonth(yearMonth);
     let tooltip: string[] = [];
-    let style: Record<string, unknown> = {};
+    let style: Record<string, string> = {};
 
     const brief = obj.brief;
 

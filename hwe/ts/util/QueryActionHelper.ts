@@ -8,7 +8,7 @@ export type TurnObjWithTime = TurnObj & {
     year?: number;
     month?: number;
     tooltip?: string;
-    style?: Record<string, unknown>;
+    style?: Record<string, string>;
 };
 
 export const getEmptyTurn = (maxTurn: number): TurnObjWithTime[] => Array.from<TurnObjWithTime>({

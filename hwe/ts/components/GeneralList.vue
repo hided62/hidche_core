@@ -95,7 +95,12 @@ import type {
 } from "ag-grid-community";
 import { ProvidedColumnGroup } from "ag-grid-community";
 import { getNpcColor } from "@/common_legacy";
-import type { BaseWithValueColDefParams, ValueGetterParams } from "ag-grid-community/dist/lib/entities/colDef";
+import type {
+  ValueGetterParams,
+  ValueFormatterFunc,
+  ValueGetterFunc,
+  ValueFormatterParams,
+} from "ag-grid-community/dist/lib/entities/colDef";
 import type { GameConstStore } from "@/GameConstStore";
 import { unwrap } from "@/util/unwrap";
 import SimpleTooltipCell from "@/gridCellRenderer/SimpleTooltipCell.vue";
@@ -350,31 +355,26 @@ type headerType =
   | "killturnAndConnect"
   | "years"
   | "warResults";
-interface GenValueParams extends BaseWithValueColDefParams {
-  data: GeneralListItem;
-}
-interface GenValueGetterParams extends ValueGetterParams {
-  data: GeneralListItem;
-}
-interface GenRowNode extends RowNode {
-  data: GeneralListItem;
-}
-interface GenColDef extends ColDef {
+
+type GenValueParams<T = unknown> = ValueFormatterParams<GeneralListItem, T>;
+type GenValueGetterParams = ValueGetterParams<GeneralListItem>;
+
+type GenRowNode = RowNode<GeneralListItem>;
+
+interface GenColDef extends ColDef<GeneralListItem> {
   colId: headerType;
   field?: headerType;
   headerName: string;
-  valueFormatter?: string | ((params: GenValueParams) => string);
-  filterValueGetter?: string | ((params: GenValueGetterParams) => unknown);
-  valueGetter?: string | ((params: GenValueGetterParams) => unknown);
+  valueFormatter?: string | ValueFormatterFunc;
+  filterValueGetter?: string | ValueGetterFunc;
+  valueGetter?: string | ValueGetterFunc;
 }
 interface GenColGroupDef extends ColGroupDef {
   headerName: string;
   children: GenColDef[]; //1단만 할꺼다!
   groupId: headerType;
 }
-interface GenCellClassParams extends CellClassParams {
-  data: GeneralListItem;
-}
+
 function getColumnList(): [headerType, ProvidedColumnGroup | Column, number?][] {
   const result: [headerType, ProvidedColumnGroup | Column, number?][] = [];
   if (!columnApi.value) {
@@ -418,19 +418,19 @@ function naiveCheClassNameFilter(value: string): string {
 }
 function numberFormatter(unit?: string) {
   if (unit) {
-    return (value: GenValueParams): string => {
-      if (value.value == null) {
-        return "?";
-      }
-      const valueText = (value.value as number).toLocaleString();
+    return (value: ValueFormatterParams<GeneralListItem, number>): string => {
+      const valueText = value.value.toLocaleString();
       return `${valueText} ${unit}`;
     };
   }
-  return (value: GenValueParams): string => {
-    return (value.value as number).toLocaleString();
+  return (value: ValueFormatterParams<number>): string => {
+    return value.value.toLocaleString();
   };
 }
-function extractTroopInfo(value: GeneralListItem): [string, GeneralListItemP1] | undefined {
+function extractTroopInfo(value: GeneralListItem | undefined): [string, GeneralListItemP1] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
   if (!value.st1) {
     return undefined;
   }
@@ -502,6 +502,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     resizable: false,
     cellRenderer: (obj: GenValueParams) => {
       const { data: gen } = obj;
+      if (gen === undefined) {
+        return "";
+      }
       return `<img src="${getIconPath(gen.imgsvr, gen.picture)}" width="64">`;
     },
     pinned: "left",
@@ -517,14 +520,20 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     width: 120,
     sortingOrder: ["asc", "desc", null],
     lockPosition: true,
-    cellStyle: (val: GenCellClassParams) => {
-      const gen = val.data;
+    cellStyle: (val: CellClassParams<GeneralListItem>) => {
+      const gen = unwrap(val.data);
       const style: StyleValue = {
         color: getNpcColor(gen.npc),
       };
       return style as CellStyle;
     },
     comparator: (_lhs, _rhs, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode) => {
+      if (lhs === undefined) {
+        return 1;
+      }
+      if (rhs === undefined) {
+        return -1;
+      }
       const npcDiff = lhs.npc - rhs.npc;
       if (npcDiff != 0) {
         return npcDiff;
@@ -532,7 +541,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       return lhs.name.localeCompare(rhs.name);
     },
 
-    filterValueGetter: ({ data }) => convertSearch초성(data.name),
+    filterValueGetter: (data: GenValueGetterParams) => convertSearch초성(unwrap(data.data).name).join(''),
     cellClass: [props.availableGeneralClick ? "clickable-cell" : "", ...defaultCellClass],
     filter: true,
     hide: false,
@@ -549,7 +558,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "통|무|지",
         width: 88,
         cellRenderer: (obj: GenValueParams) => {
-          const gen = obj.data;
+          const gen = unwrap(obj.data);
           return `${gen.leadership}|${gen.strength}|${gen.intel}`;
         },
         columnGroupShow: "closed",
@@ -581,13 +590,17 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       },
     ],
   },
+
   officerLevel: {
     headerName: "관직",
     colId: "officerLevel",
     field: "officerLevelText",
     sortable: true,
-    comparator: (a, b, c, d) => c.data.officerLevel - d.data.officerLevel,
+    comparator: (a, b, c, d) => unwrap(c.data).officerLevel - unwrap(d.data).officerLevel,
     cellRenderer: ({ data }: GenValueParams) => {
+      if (data === undefined) {
+        return "";
+      }
       if (data.officerLevel >= 5) {
         return `<span style="color:cyan;">${data.officerLevelText}</span>`;
       }
@@ -619,6 +632,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         columnGroupShow: "closed",
         width: 60,
         cellRenderer: ({ data }: GenValueParams) => {
+          if (data === undefined) {
+            return "";
+          }
           return `Lv ${data.explevel}<br>${data.dedLevelText}`;
         },
       },
@@ -628,6 +644,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "explevel",
         width: 60,
         cellRenderer: ({ data }: GenValueParams) => {
+          if (data === undefined) {
+            return "";
+          }
           return `Lv ${data.explevel}<br>(${data.honorText})`;
         },
         ...sortableNumber,
@@ -640,6 +659,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "dedLevelText",
         width: 70,
         cellRenderer: ({ data }: GenValueParams) => {
+          if (data === undefined) {
+            return "";
+          }
           return `${data.dedLevelText}<br>(${data.bill.toLocaleString()})`;
         },
         ...sortableNumber,
@@ -656,6 +678,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         colId: "goldRice",
         headerName: "금/쌀",
         cellRenderer: ({ data }: GenValueParams) => {
+          if (data === undefined) {
+            return "";
+          }
           return `${data.gold.toLocaleString()} 금<br>${data.rice.toLocaleString()} 쌀`;
         },
         width: 80,
@@ -664,6 +689,12 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         sortable: true,
         sortingOrder: ["desc", "asc", null],
         comparator(_a, _b, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode) {
+          if (lhs === undefined) {
+            return -1;
+          }
+          if (rhs === undefined) {
+            return 1;
+          }
           const lhsAmount = lhs.gold + lhs.rice;
           const rhsAmount = rhs.gold + rhs.rice;
           return lhsAmount - rhsAmount;
@@ -714,7 +745,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     headerName: "부대",
     field: "troop",
     valueGetter: ({ data }: GenValueGetterParams) => {
-      if (!data.st1) {
+      if (data === undefined || !data.st1) {
         return "?";
       }
       const troopInfo = extractTroopInfo(data);
@@ -817,7 +848,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "훈/사",
         width: 60,
         cellRenderer: ({ data }: GenValueParams) => {
-          if (!data.st1) {
+          if (data === undefined || !data.st1) {
             return "?";
           }
           return `${data.train}<br>${data.atmos}`;
@@ -848,7 +879,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "defence_train",
         sortable: true,
         sortingOrder: ["desc", "asc", null],
-        valueFormatter: ({ value }) => formatDefenceTrain(value as number),
+        valueFormatter: (value: GenValueParams<number>) => formatDefenceTrain(value.value),
         width: 50,
       },
     ],
@@ -937,6 +968,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "단축",
         width: 70,
         cellRenderer: ({ data }: GenValueParams) => {
+          if(data === undefined){
+            return "?";
+          }
           if (data.npc >= 2) {
             return "NPC 장수";
           }
@@ -974,6 +1008,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "전체",
         width: 120,
         cellRenderer: ({ data }: GenValueParams) => {
+          if(data === undefined){
+            return "?";
+          }
           if (data.npc >= 2) {
             return "NPC 장수";
           }
@@ -1025,8 +1062,8 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     headerName: "최근전투",
     field: "recent_war",
     width: 60,
-    valueFormatter: ({ value, data }) => {
-      if (!data.st1) {
+    valueFormatter: ({ value, data }: GenValueParams<string>) => {
+      if (data === undefined || !data.st1) {
         return "?";
       }
       const turntime = value as string;
@@ -1044,6 +1081,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "요약",
         width: 60,
         cellRenderer: ({ data }: GenValueParams) => {
+          if(data === undefined){
+            return '?';
+          }
           return `${data.age}세<br>${data.belong}년`;
         },
         cellClass: centerCellClass,
@@ -1054,7 +1094,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "연령",
         field: "age",
         ...sortableNumber,
-        valueFormatter: (v: GenValueParams) => `${v.value}세`,
+        valueFormatter: (v: GenValueParams<number>) => `${v.value}세`,
         width: 60,
         cellClass: centerCellClass,
         columnGroupShow: "open",
@@ -1064,7 +1104,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "사관",
         field: "belong",
         ...sortableNumber,
-        valueFormatter: (v: GenValueParams) => `${v.value}년`,
+        valueFormatter: (v: GenValueParams<number>) => `${v.value}년`,
         width: 60,
         cellClass: centerCellClass,
         columnGroupShow: "open",
@@ -1079,6 +1119,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         colId: "killturnAndConnect",
         headerName: "삭/벌",
         cellRenderer: ({ data }: GenValueParams) => {
+          if(data === undefined){
+            return '?';
+          }
           return `${data.killturn.toLocaleString()}턴<br>${data.connect.toLocaleString()}점`;
         },
         cellClass: rightAlignClass,
@@ -1090,6 +1133,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "삭턴",
         field: "killturn",
         cellRenderer: ({ data }: GenValueParams) => {
+          if(data === undefined){
+            return '?';
+          }
           return `${data.killturn.toLocaleString()}턴`;
         },
         ...sortableNumber,
@@ -1101,6 +1147,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "벌점",
         field: "connect",
         cellRenderer: ({ data }: GenValueParams) => {
+          if(data === undefined){
+            return '?';
+          }
           return `${data.connect.toLocaleString()}점<br>(${formatConnectScore(data.connect)})`;
         },
         ...sortableNumber,
@@ -1117,7 +1166,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         colId: "warResults",
         headerName: "요약",
         cellRenderer: ({ data }: GenValueParams) => {
-          if (!data.st1) {
+          if (data === undefined || !data.st1) {
             return "?";
           }
           const killRatePercent = Math.round((data.killcrew / Math.max(1, data.deathcrew)) * 100);
