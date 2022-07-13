@@ -65,7 +65,16 @@ class che_해산 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
+        $logger = $general->getLogger();
         $date = $general->getTurnTime($general::TURNTIME_HM);
+
+        $initYearMonth = Util::joinYearMonth($env['init_year'], $env['init_month']);
+        $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
+        if($yearMonth <= $initYearMonth){
+            $logger->pushGeneralActionLog("다음 턴부터 해산할 수 있습니다. <1>$date</>");
+            $this->alternative = new che_인재탐색($general, $this->env, null);
+            return false;
+        }
 
         $generalName = $general->getName();
         $josaYi = JosaUtil::pick($generalName, '이');
@@ -87,7 +96,7 @@ class che_해산 extends Command\GeneralCommand{
 
         refreshNationStaticInfo();
 
-        $logger = $general->getLogger();
+
         $logger->pushGeneralActionLog("세력을 해산했습니다. <1>$date</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 세력을 해산했습니다.");
         $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 해산");
