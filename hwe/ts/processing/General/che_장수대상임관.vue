@@ -1,14 +1,11 @@
 <template>
-  <TopBackBar
-    v-model:searchable="searchable"
-    :title="commandName"
-  />
+  <TopBackBar v-model:searchable="searchable" :title="commandName" />
   <div class="bg0">
     <div>
-      장수를 따라 임관합니다.<br>
-      이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
-      바로 군주의 위치로 이동합니다.<br>
-      임관할 국가를 목록에서 선택하세요.<br>
+      장수를 따라 임관합니다.<br />
+      이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br />
+      바로 군주의 위치로 이동합니다.<br />
+      임관할 국가를 목록에서 선택하세요.<br />
     </div>
     <div class="row">
       <div class="col-8 col-md-4">
@@ -22,10 +19,7 @@
         />
       </div>
       <div class="col-4 col-md-2 d-grid">
-        <b-button
-          variant="primary"
-          @click="submit"
-        >
+        <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>
       </div>
@@ -73,8 +67,20 @@
 </template>
 
 <script lang="ts">
+declare const staticValues: {
+  commandName: string;
+};
+
+declare const procRes: {
+  generals: procGeneralRawItemList;
+  generalsKey: procGeneralKey[];
+  nationList: procNationList;
+};
+</script>
+
+<script lang="ts" setup>
 import SelectGeneral from "@/processing/SelectGeneral.vue";
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
@@ -90,64 +96,34 @@ import {
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
 import { isBrightColor } from "@/util/isBrightColor";
-declare const commandName: string;
 
-declare const procRes: {
-  generals: procGeneralRawItemList;
-  generalsKey: procGeneralKey[];
-  nationList: procNationList;
-};
+const commandName = staticValues.commandName;
+const searchable = getProcSearchable();
 
-export default defineComponent({
-  components: {
-    SelectGeneral,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const generalList = convertGeneralList(
-      procRes.generalsKey,
-      procRes.generals
-    );
+const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
 
-    const toggleZoom = ref(true);
-    const selectedGeneralID = ref(generalList[0].no);
+const toggleZoom = ref(true);
+const selectedGeneralID = ref(generalList[0].no);
 
-    function textHelpGeneral(gen: procGeneralItem): string {
-      const nameColor = getNpcColor(gen.npc);
-      const name = nameColor
-        ? `<span style="color:${nameColor}">${gen.name}</span>`
-        : gen.name;
-      return name;
-    }
+function textHelpGeneral(gen: procGeneralItem): string {
+  const nameColor = getNpcColor(gen.npc);
+  const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
+  return name;
+}
 
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
+const nationList = new Map<number, procNationItem>();
+for (const nationItem of procRes.nationList) {
+  nationList.set(nationItem.id, nationItem);
+}
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destGeneralID: selectedGeneralID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
-
-    return {
-      searchable: getProcSearchable(),
-      nationList: ref(nationList),
-      selectedGeneralID,
-      generalList,
-      commandName,
-      toggleZoom,
-      isBrightColor,
-      textHelpGeneral,
-      submit,
-    };
-  },
-});
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destGeneralID: selectedGeneralID.value,
+    },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
 </script>
 
 <style lang="scss" scoped>

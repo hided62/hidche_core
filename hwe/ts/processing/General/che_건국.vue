@@ -34,64 +34,49 @@
 </template>
 
 <script lang="ts">
-import ColorSelect from "@/processing/SelectColor.vue";
-import { defineComponent, ref } from "vue";
-import { unwrap } from "@/util/unwrap";
-import type { Args } from "@/processing/args";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-import type { procNationTypeList } from "../processingRes";
-
-declare const commandName: string;
+declare const staticValues: {
+  commandName: string;
+};
 
 declare const procRes: {
   available건국: boolean;
   colors: string[];
   nationTypes: procNationTypeList;
 };
+</script>
+<script setup lang="ts">
+import ColorSelect from "@/processing/SelectColor.vue";
+import { ref } from "vue";
+import { unwrap } from "@/util/unwrap";
+import type { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+import type { procNationTypeList } from "../processingRes";
 
-export default defineComponent({
-  components: {
-    ColorSelect,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const destNationName = ref("");
-    const selectedColorID = ref(0);
+const commandName = staticValues.commandName;
+const { nationTypes, available건국, colors } = procRes;
 
-    const selectedNationType = ref(Object.values(procRes.nationTypes)[0].type);
+const destNationName = ref("");
+const selectedColorID = ref(0);
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          colorType: selectedColorID.value,
-          nationName: destNationName.value,
-          nationType: selectedNationType.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
+const selectedNationType = ref(Object.values(procRes.nationTypes)[0].type);
 
-    const nationTypesOption: { html: string; value: string }[] = [];
-    for (const nationType of Object.values(procRes.nationTypes)) {
-      nationTypesOption.push({
-        html: nationType.name,
-        value: nationType.type,
-      });
-    }
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      colorType: selectedColorID.value,
+      nationName: destNationName.value,
+      nationType: selectedNationType.value,
+    },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
 
-    return {
-      available건국: procRes.available건국,
-      selectedColorID,
-      selectedNationType,
-      colors: procRes.colors,
-      nationTypes: procRes.nationTypes,
-      nationTypesOption,
-      destNationName,
-      commandName,
-      submit,
-    };
-  },
-});
+const nationTypesOption: { html: string; value: string }[] = [];
+for (const nationType of Object.values(procRes.nationTypes)) {
+  nationTypesOption.push({
+    html: nationType.name,
+    value: nationType.type,
+  });
+}
 </script>

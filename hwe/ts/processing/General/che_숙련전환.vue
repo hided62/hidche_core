@@ -92,143 +92,119 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { unwrap } from "@/util/unwrap";
-import type { Args } from "@/processing/args";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-
-declare const commandName: string;
-
-type dexInfo = {
+type DexInfo = {
   amount: number;
   color: string;
   name: string;
 };
-
+declare const staticValues: {
+  commandName: string;
+};
 declare const procRes: {
   ownDexList: {
     armType: number;
     name: string;
     amount: number;
   }[];
-  dexLevelList: dexInfo[];
+  dexLevelList: DexInfo[];
   decreaseCoeff: number;
   convertCoeff: number;
 };
+</script>
 
-export default defineComponent({
-  components: {
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const srcArmTypeID = ref(procRes.ownDexList[0].armType);
-    const destArmTypeID = ref(procRes.ownDexList[0].armType);
+<script lang="ts" setup>
+import { ref } from "vue";
+import { unwrap } from "@/util/unwrap";
+import type { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          srcArmType: srcArmTypeID.value,
-          destArmType: destArmTypeID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
+const commandName = staticValues.commandName;
+
+const srcArmTypeID = ref(procRes.ownDexList[0].armType);
+const destArmTypeID = ref(procRes.ownDexList[0].armType);
+
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      srcArmType: srcArmTypeID.value,
+      destArmType: destArmTypeID.value,
+    },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
+
+function getDexCall(dex: number): { color: string; name: string } {
+  if (dex < 0) {
+    throw `올바르지 않은 수치: ${dex}`;
+  }
+
+  let color = "";
+  let name = "";
+  for (const nextDexLevel of procRes.dexLevelList) {
+    if (dex < nextDexLevel.amount) {
+      break;
+    }
+    color = nextDexLevel.color;
+    name = nextDexLevel.name;
+  }
+
+  return {
+    color,
+    name,
+  };
+}
+
+const dexFullInfo = new Map<
+  number,
+  {
+    armType: number;
+    name: string;
+    amount: number;
+    decresedAmount: number;
+    currentInfo: DexInfo;
+    decreasedInfo: DexInfo;
+    afterInfo: Map<number, DexInfo>;
+  }
+>();
+
+for (const dexItem of procRes.ownDexList) {
+  const amount = dexItem.amount;
+  const currentInfo = { ...getDexCall(amount), amount };
+
+  const decresedAmount = amount * procRes.decreaseCoeff;
+  const decresedAfterAmount = amount - decresedAmount;
+  const decreasedInfo = {
+    ...getDexCall(decresedAfterAmount),
+    amount: decresedAfterAmount,
+  };
+
+  dexFullInfo.set(dexItem.armType, {
+    ...dexItem,
+    decresedAmount,
+    currentInfo,
+    decreasedInfo,
+    afterInfo: new Map(),
+  });
+}
+
+for (const [armType, dexItem] of dexFullInfo.entries()) {
+  for (const [fromArmType, fromDexItem] of dexFullInfo.entries()) {
+    let afterAmount = fromDexItem.decresedAmount * procRes.convertCoeff;
+    if (armType != fromArmType) {
+      afterAmount += dexItem.amount;
+    } else {
+      afterAmount += dexItem.decresedAmount;
     }
 
-    function getDexCall(dex: number): { color: string; name: string } {
-      if (dex < 0) {
-        throw `올바르지 않은 수치: ${dex}`;
-      }
+    dexItem.afterInfo.set(fromArmType, {
+      amount: afterAmount,
+      ...getDexCall(afterAmount),
+    });
+  }
+}
 
-      let color = "";
-      let name = "";
-      for (const nextDexLevel of procRes.dexLevelList) {
-        if (dex < nextDexLevel.amount) {
-          break;
-        }
-        color = nextDexLevel.color;
-        name = nextDexLevel.name;
-      }
-
-      return {
-        color,
-        name,
-      };
-    }
-
-    const dexFullInfo = new Map<
-      number,
-      {
-        armType: number;
-        name: string;
-        amount: number;
-        decresedAmount: number;
-        currentInfo: dexInfo;
-        decreasedInfo: dexInfo;
-        afterInfo: Map<number, dexInfo>;
-      }
-    >();
-
-    for (const dexItem of procRes.ownDexList) {
-      const amount = dexItem.amount;
-      const currentInfo = { ...getDexCall(amount), amount };
-
-      const decresedAmount = amount * procRes.decreaseCoeff;
-      const decresedAfterAmount = amount - decresedAmount;
-      const decreasedInfo = {
-        ...getDexCall(decresedAfterAmount),
-        amount: decresedAfterAmount,
-      };
-
-      dexFullInfo.set(dexItem.armType, {
-        ...dexItem,
-        decresedAmount,
-        currentInfo,
-        decreasedInfo,
-        afterInfo: new Map(),
-      });
-    }
-
-    for (const [armType, dexItem] of dexFullInfo.entries()) {
-      for (const [fromArmType, fromDexItem] of dexFullInfo.entries()) {
-        let afterAmount = fromDexItem.decresedAmount * procRes.convertCoeff;
-        if (armType != fromArmType) {
-          afterAmount += dexItem.amount;
-        } else {
-          afterAmount += dexItem.decresedAmount;
-        }
-
-        dexItem.afterInfo.set(fromArmType, {
-          amount: afterAmount,
-          ...getDexCall(afterAmount),
-        });
-      }
-    }
-
-    function convDexFormat(value: dexInfo): string {
-      const amount = convNumberFormat(value.amount);
-      return `<span class="f_tnum" style="color:${value.color}">${value.name}</span>,${"\xa0".repeat(
-        Math.max(0, 3 - value.name.length)
-      )} ${amount}`;
-    }
-
-    function convNumberFormat(value: number): string {
-      return Math.floor(value).toLocaleString();
-    }
-
-    return {
-      unwrap,
-      ...procRes,
-      srcArmTypeID,
-      destArmTypeID,
-      dexFullInfo,
-      getDexCall,
-      commandName,
-      submit,
-      convDexFormat,
-      convNumberFormat,
-    };
-  },
-});
+function convNumberFormat(value: number): string {
+  return Math.floor(value).toLocaleString();
+}
 </script>

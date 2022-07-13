@@ -16,32 +16,32 @@
     :maxHeight="400"
     :searchable="searchable"
   >
-    <template #option="props">
+    <template #option="prop">
       <span
         :style="{
-          color: props.option.notAvailable ? 'red' : undefined,
+          color: prop.option.notAvailable ? 'red' : undefined,
         }"
       >
-        {{ props.option.title }}
-        <span v-if="props.option.info">({{ props.option.info }})</span>
-        {{ props.option.notAvailable ? "(불가)" : undefined }}
+        {{ prop.option.title }}
+        <span v-if="prop.option.info">({{ prop.option.info }})</span>
+        {{ prop.option.notAvailable ? "(불가)" : undefined }}
       </span>
     </template>
-    <template #singleLabel="props">
+    <template #singleLabel="prop">
       <span
         :style="{
-          color: props.option.notAvailable ? 'red' : undefined,
+          color: prop.option.notAvailable ? 'red' : undefined,
         }"
       >
-        {{ props.option.simpleName }}
-        {{ props.option.notAvailable ? "(불가)" : undefined }}</span
+        {{ prop.option.simpleName }}
+        {{ prop.option.notAvailable ? "(불가)" : undefined }}</span
       >
     </template>
   </v-multiselect>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { convertSearch초성 } from "@/util/convertSearch초성";
-import { defineComponent, type PropType } from "vue";
+import { onMounted, ref, watch, toRef, type PropType } from "vue";
 import type { procNationItem } from "./processingRes";
 
 type SelectedNation = {
@@ -53,56 +53,64 @@ type SelectedNation = {
   notAvailable?: boolean;
 };
 
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: Number,
-      required: true,
-    },
-    nations: {
-      type: Map as PropType<Map<number, procNationItem>>,
-      required: true,
-    },
-    searchable: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+const props = defineProps({
+  modelValue: {
+    type: Number,
+    required: true,
   },
-  emits: ["update:modelValue"],
-  data() {
-    const forFind = [];
-    const targets = new Map<number, SelectedNation>();
-    let selectedNation;
-    for (const nationItem of this.nations.values()) {
-      const obj: SelectedNation = {
-        value: nationItem.id,
-        title: nationItem.name,
-        info: nationItem.info,
-        simpleName: nationItem.name,
-        notAvailable: nationItem.notAvailable,
-        searchText: convertSearch초성(nationItem.name).join("|"),
-      };
-      if (nationItem.id == this.modelValue) {
-        selectedNation = obj;
-      }
-      forFind.push(obj);
-      targets.set(nationItem.id, obj);
-    }
-    return {
-      selectedNation,
-      forFind,
-      targets,
-    };
+  nations: {
+    type: Map as PropType<Map<number, procNationItem>>,
+    required: true,
   },
-  watch: {
-    modelValue(val: number) {
-      const target = this.targets.get(val);
-      this.selectedNation = target;
-    },
-    selectedNation(val: SelectedNation) {
-      this.$emit("update:modelValue", val.value);
-    },
+  searchable: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
 });
+
+const modelValue = toRef(props, 'modelValue');
+watch(
+  modelValue,
+  (val: number) => {
+    const target = targets.value.get(val);
+    selectedNation.value = target;
+  }
+);
+
+const emit = defineEmits<{
+  (event: "update:modelValue", value: number): void;
+}>();
+
+const forFind = ref<SelectedNation[]>([]);
+const targets = ref(new Map<number, SelectedNation>());
+
+const selectedNation = ref<SelectedNation>();
+watch(selectedNation, (val) => {
+  if (val === undefined) {
+    return;
+  }
+  emit("update:modelValue", val.value);
+});
+
+onMounted(() => {
+  forFind.value = [];
+  targets.value.clear();
+  for (const nationItem of props.nations.values()) {
+    const obj: SelectedNation = {
+      value: nationItem.id,
+      title: nationItem.name,
+      info: nationItem.info,
+      simpleName: nationItem.name,
+      notAvailable: nationItem.notAvailable,
+      searchText: convertSearch초성(nationItem.name).join("|"),
+    };
+    if (nationItem.id == props.modelValue) {
+      selectedNation.value = obj;
+    }
+    forFind.value.push(obj);
+    targets.value.set(nationItem.id, obj);
+  }
+});
+
 </script>

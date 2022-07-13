@@ -230,14 +230,9 @@
 </template>
 
 <script lang="ts">
-import CrewTypeItem from "@/processing/CrewTypeItem.vue";
-import { defineComponent, ref } from "vue";
-import { unwrap } from "@/util/unwrap";
-import type { Args } from "@/processing/args";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-import type { procArmTypeItem, procCrewTypeItem } from "../processingRes";
-declare const commandName: string;
+declare const staticValues: {
+  commandName: string;
+};
 
 declare const procRes: {
   relYear: number;
@@ -253,15 +248,30 @@ declare const procRes: {
   crew: number;
   gold: number;
 };
+</script>
 
-export default defineComponent({
-  components: {
-    CrewTypeItem,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const amount = ref(procRes.fullLeadership - Math.floor(procRes.crew / 100));
+<script lang="ts" setup>
+import CrewTypeItem from "@/processing/CrewTypeItem.vue";
+import { ref } from "vue";
+import { unwrap } from "@/util/unwrap";
+import type { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
+import type { procArmTypeItem, procCrewTypeItem } from "../processingRes";
+
+const commandName = staticValues.commandName;
+const {
+  techLevel,
+  goldCoeff,
+  leadership,
+  fullLeadership,
+  armCrewTypes,
+  currentCrewType,
+  crew,
+  gold,
+} = procRes;
+
+const amount = ref(procRes.fullLeadership - Math.floor(procRes.crew / 100));
 
     async function submit(e: Event) {
       const event = new CustomEvent<Args>("customSubmit", {
@@ -317,24 +327,6 @@ export default defineComponent({
         !(showNotAvailable.value.get(armType) ?? 0)
       );
     }
-
-    return {
-      destCrewType,
-      amount,
-      showNotAvailable,
-      ...procRes,
-      crewTypeMap,
-      commandName,
-      beHalf,
-      beFilled,
-      beFull,
-      submit,
-      toggleShowNotAvailable,
-      trySubmit,
-      unwrap,
-    };
-  },
-});
 </script>
 
 <style lang="scss">

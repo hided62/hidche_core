@@ -25,49 +25,39 @@
 </template>
 
 <script lang="ts">
-import SelectAmount from "@/processing/SelectAmount.vue";
-import { defineComponent, ref } from "vue";
-import { unwrap } from "@/util/unwrap";
-import type { Args } from "@/processing/args";
-import TopBackBar from "@/components/TopBackBar.vue";
-import BottomBar from "@/components/BottomBar.vue";
-declare const commandName: string;
+declare const staticValues: {
+  commandName: string;
+};
 
 declare const procRes: {
   minAmount: number;
   maxAmount: number;
   amountGuide: number[];
 };
+</script>
+<script setup lang="ts">
+import SelectAmount from "@/processing/SelectAmount.vue";
+import { ref } from "vue";
+import type { Args } from "@/processing/args";
+import TopBackBar from "@/components/TopBackBar.vue";
+import BottomBar from "@/components/BottomBar.vue";
 
-export default defineComponent({
-  components: {
-    SelectAmount,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const amount = ref(1000);
-    const buyRice = ref(true);
+const commandName = staticValues.commandName;
+const { minAmount, maxAmount, amountGuide } = procRes;
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          amount: amount.value,
-          buyRice: buyRice.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
+const amount = ref(1000);
+const buyRice = ref(true);
 
-    return {
-      buyRice,
-      amount,
-      minAmount: ref(procRes.minAmount),
-      maxAmount: ref(procRes.maxAmount),
-      amountGuide: procRes.amountGuide,
-      commandName,
-      submit,
-    };
-  },
-});
+async function submit(e: SubmitEvent) {
+  if(!e.target){
+    return;
+  }
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      amount: amount.value,
+      buyRice: buyRice.value,
+    },
+  });
+  e.target.dispatchEvent(event);
+}
 </script>

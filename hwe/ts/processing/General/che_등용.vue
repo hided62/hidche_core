@@ -28,8 +28,19 @@
 </template>
 
 <script lang="ts">
+declare const staticValues: {
+  commandName: string;
+};
+
+declare const procRes: {
+  generals: procGeneralRawItemList;
+  generalsKey: procGeneralKey[];
+  nationList: procNationList;
+};
+</script>
+<script setup lang="ts">
 import SelectGeneral from "@/processing/SelectGeneral.vue";
-import { defineComponent, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
@@ -44,54 +55,33 @@ import {
   type procNationList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
-declare const commandName: string;
 
-declare const procRes: {
-  generals: procGeneralRawItemList;
-  generalsKey: procGeneralKey[];
-  nationList: procNationList;
-};
+const commandName = staticValues.commandName;
+const searchable = getProcSearchable();
+const generalList = ref(convertGeneralList(procRes.generalsKey, procRes.generals));
 
-export default defineComponent({
-  components: {
-    SelectGeneral,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
+const selectedGeneralID = ref(generalList.value[0].no);
 
-    const selectedGeneralID = ref(generalList[0].no);
+function textHelpGeneral(gen: procGeneralItem): string {
+  const nameColor = getNpcColor(gen.npc);
+  const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
+  return name;
+}
 
-    function textHelpGeneral(gen: procGeneralItem): string {
-      const nameColor = getNpcColor(gen.npc);
-      const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
-      return name;
-    }
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destGeneralID: selectedGeneralID.value,
+    },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
 
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destGeneralID: selectedGeneralID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
+const nationList = ref(new Map<number, procNationItem>());
 
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
-
-    return {
-      searchable: getProcSearchable(),
-      selectedGeneralID,
-      generalList,
-      nationList,
-      commandName,
-      textHelpGeneral,
-      submit,
-    };
-  },
+onMounted(() => {
+  for (const nationItem of procRes.nationList) {
+    nationList.value.set(nationItem.id, nationItem);
+  }
 });
 </script>

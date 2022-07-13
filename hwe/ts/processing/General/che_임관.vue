@@ -3,13 +3,13 @@
   <div class="bg0">
     <div>
       국가에 임관합니다.
-      <br>
+      <br />
       이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.
-      <br>
+      <br />
       바로 군주의 위치로 이동합니다.
-      <br>
+      <br />
       임관할 국가를 목록에서 선택하세요.
-      <br>
+      <br />
     </div>
     <div class="row">
       <div class="col-6 col-md-3">
@@ -64,60 +64,43 @@
 </template>
 
 <script lang="ts">
+declare const staticValues: {
+  commandName: string;
+};
+declare const procRes: {
+  nationList: procNationList;
+};
+</script>
+
+<script lang="ts" setup>
 import SelectNation from "@/processing/SelectNation.vue";
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { type procNationItem, type procNationList, getProcSearchable } from "../processingRes";
 import { isBrightColor } from "@/util/isBrightColor";
-declare const commandName: string;
 
-declare const procRes: {
-  nationList: procNationList;
-};
+const commandName = staticValues.commandName;
+const searchable = getProcSearchable();
 
-export default defineComponent({
-  components: {
-    SelectNation,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const nationList = new Map<number, procNationItem>();
-    for (const nationItem of procRes.nationList) {
-      nationList.set(nationItem.id, nationItem);
-    }
+const nationList = new Map<number, procNationItem>();
+for (const nationItem of procRes.nationList) {
+  nationList.set(nationItem.id, nationItem);
+}
 
-    const toggleZoom = ref(true);
-    const selectedNationID = ref(procRes.nationList[0].id);
+const toggleZoom = ref(true);
+const selectedNationID = ref(procRes.nationList[0].id);
 
-    function selectedNation(nationID: number) {
-      selectedNationID.value = nationID;
-    }
-
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destNationID: selectedNationID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
-
-    return {
-      searchable: getProcSearchable(),
-      nationList: ref(nationList),
-      selectedNationID,
-      commandName,
-      toggleZoom,
-      isBrightColor,
-      selectedNation,
-      submit,
-    };
-  },
-});
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destNationID: selectedNationID.value,
+    },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
 </script>
 
 <style lang="scss" scoped>

@@ -31,8 +31,19 @@
 </template>
 
 <script lang="ts">
+declare const staticValues: {
+  commandName: string;
+};
+
+declare const procRes: {
+  generals: procGeneralRawItemList;
+  generalsKey: procGeneralKey[];
+};
+</script>
+
+<script lang="ts" setup>
 import SelectGeneral from "@/processing/SelectGeneral.vue";
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
@@ -45,47 +56,25 @@ import {
   type procGeneralRawItemList,
 } from "../processingRes";
 import { getNpcColor } from "@/common_legacy";
-declare const commandName: string;
 
-declare const procRes: {
-  generals: procGeneralRawItemList;
-  generalsKey: procGeneralKey[];
-};
+const commandName = staticValues.commandName;
+const searchable = getProcSearchable();
+const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
 
-export default defineComponent({
-  components: {
-    SelectGeneral,
-    TopBackBar,
-    BottomBar,
-  },
-  setup() {
-    const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
+const selectedGeneralID = ref(generalList[0].no);
 
-    const selectedGeneralID = ref(generalList[0].no);
+function textHelpGeneral(gen: procGeneralItem): string {
+  const nameColor = getNpcColor(gen.npc);
+  const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
+  return `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`;
+}
 
-    function textHelpGeneral(gen: procGeneralItem): string {
-      const nameColor = getNpcColor(gen.npc);
-      const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
-      return `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`;
-    }
-
-    async function submit(e: Event) {
-      const event = new CustomEvent<Args>("customSubmit", {
-        detail: {
-          destGeneralID: selectedGeneralID.value,
-        },
-      });
-      unwrap(e.target).dispatchEvent(event);
-    }
-
-    return {
-      searchable: getProcSearchable(),
-      selectedGeneralID,
-      generalList,
-      commandName,
-      textHelpGeneral,
-      submit,
-    };
-  },
-});
+async function submit(e: Event) {
+  const event = new CustomEvent<Args>("customSubmit", {
+    detail: {
+      destGeneralID: selectedGeneralID.value,
+    },
+  });
+  unwrap(e.target).dispatchEvent(event);
+}
 </script>
