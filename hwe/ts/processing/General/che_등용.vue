@@ -50,6 +50,7 @@ import {
   getProcSearchable,
   type procGeneralItem,
   type procGeneralKey,
+  type procGeneralList,
   type procGeneralRawItemList,
   type procNationItem,
   type procNationList,
@@ -58,9 +59,8 @@ import { getNpcColor } from "@/common_legacy";
 
 const commandName = staticValues.commandName;
 const searchable = getProcSearchable();
-const generalList = ref(convertGeneralList(procRes.generalsKey, procRes.generals));
-
-const selectedGeneralID = ref(generalList.value[0].no);
+const generalList = ref<procGeneralList>([]);
+const selectedGeneralID = ref(0);
 
 function textHelpGeneral(gen: procGeneralItem): string {
   const nameColor = getNpcColor(gen.npc);
@@ -80,6 +80,9 @@ async function submit(e: Event) {
 const nationList = ref(new Map<number, procNationItem>());
 
 onMounted(() => {
+  generalList.value = convertGeneralList(procRes.generalsKey, procRes.generals);
+  selectedGeneralID.value = generalList.value[0].no;
+  nationList.value.clear();
   for (const nationItem of procRes.nationList) {
     nationList.value.set(nationItem.id, nationItem);
   }
