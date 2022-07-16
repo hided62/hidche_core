@@ -45,7 +45,6 @@ return [
         'hwe/api.php',
         'hwe/a_traffic.php',
         'hwe/battle_simulator.php',
-        'hwe/b_battleCenter.php',
         'hwe/b_betting.php',
         'hwe/v_chiefCenter.php',
         'hwe/b_currentCity.php',
