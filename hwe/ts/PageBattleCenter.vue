@@ -21,7 +21,7 @@
               :style="{
                 color: getNpcColor(general.npc),
               }"
-              >{{ general.officerLevel > 5 ? `*${general.name}*` : general.name }}({{ general.turntime.slice(-5) }}){{
+              >{{ general.officerLevel > 4 ? `*${general.name}*` : general.name }}({{ general.turntime.slice(-5) }}){{
                 textMap[orderBy][3](general)
               }}</span
             >
@@ -96,7 +96,7 @@ const textMap = {
   ],
   warnum: ["전투 횟수", (gen: GeneralListItemP1) => gen.warnum, false, (gen: GeneralListItemP1) => `[${gen.warnum}회]`],
   turntime: ["최근 턴", (gen: GeneralListItemP1) => gen.turntime, false, (gen: GeneralListItemP1) => ""],
-  name: ["이름", (gen: GeneralListItemP1) => `${gen.npc} ${gen.name}`, false, (gen: GeneralListItemP1) => ""],
+  name: ["이름", (gen: GeneralListItemP1) => `${gen.npc} ${gen.name}`, true, (gen: GeneralListItemP1) => ""],
 } as const;
 
 const orderedGeneralList = ref<GeneralListItemP1[]>([]);
