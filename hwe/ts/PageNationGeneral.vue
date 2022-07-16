@@ -83,8 +83,8 @@ async function reload() {
         return { permission, st0: true, st1: true, st2: true, ...v };
       });
 
-      for (const [troopLeader, troopName] of troops) {
-        troopList.value[troopLeader] = troopName;
+      for (const {id: troopID, name:troopName} of troops) {
+        troopList.value[troopID] = troopName;
       }
     } else {
       throw `?? ${permission}`;

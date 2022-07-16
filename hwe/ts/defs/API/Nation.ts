@@ -39,6 +39,8 @@ export type GeneralListItemP0 = {
   reservedCommand: TurnObj[] | null,
 
   autorun_limit: number,
+
+  troop: number,
 }
 
 export type GeneralListItemP1 = {
@@ -61,7 +63,6 @@ export type GeneralListItemP1 = {
   officer_level: number,
   officer_city: number,
   defence_train: number,
-  troop: number,
   crewtype: GameObjClassKey,
   crew: number,
   train: number,
@@ -106,7 +107,7 @@ export type RawGeneralListP0 = ValidResponse & {
   permission: 0,
   column: (keyof GeneralListItemP0)[],
   list: ValuesOf<GeneralListItemP0>[][],
-  troops?: null,
+  troops: {id: number, name: string, turntime: string}[],
   env: ResponseEnv,
 }
 
@@ -114,7 +115,7 @@ export type RawGeneralListP1 = ValidResponse & {
   permission: 1,
   column: (keyof GeneralListItemP1)[],
   list: ValuesOf<GeneralListItemP1>[][],
-  troops?: null,
+  troops: {id: number, name: string, turntime: string}[],
   env: ResponseEnv,
 }
 
@@ -122,7 +123,7 @@ export type RawGeneralListP2 = ValidResponse & {
   permission: 2 | 3 | 4,
   column: (keyof GeneralListItemP2)[],
   list: ValuesOf<GeneralListItemP2>[][],
-  troops: [number, string][],
+  troops: {id: number, name: string, turntime: string}[],
   env: ResponseEnv,
 }
 

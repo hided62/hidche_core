@@ -44,6 +44,8 @@ class GeneralList extends \sammo\BaseAPI
         'belong' => 0,
         'connect' => 0,
 
+        'troop' => 0,
+
         'con' => 1,
         'specage' => 1,
         'specage2' => 1,
@@ -63,7 +65,6 @@ class GeneralList extends \sammo\BaseAPI
         'officer_level' => 1,
         'officer_city' => 1,
         'defence_train' => 1,
-        'troop' => 1,
         'crewtype' => 1,
         'crew' => 1,
         'train' => 1,
@@ -271,13 +272,18 @@ class GeneralList extends \sammo\BaseAPI
             $generalList[] = $item;
         }
 
-        if ($this->permission >= 1) {
-            $troops = $db->queryAllLists('SELECT troop_leader,name FROM troop WHERE nation = %i', $nationID);
-        } else {
-            $troops = null;
+        $troops = [];
+        foreach ($db->queryAllLists('SELECT troop_leader,name FROM troop WHERE nation = %i', $nationID) as [$troopLeaderID, $troopName]) {
+            if (!key_exists($troopLeaderID, $rawGeneralList)) {
+                continue;
+            }
+            $troopTurnTime = $rawGeneralList[$troopLeaderID]['turntime'];
+            $troops[] = [
+                'id' => $troopLeaderID,
+                'name' => $troopName,
+                'turntime' => $troopTurnTime
+            ];
         }
-
-
         $result = [
             'result' => true,
             'permission' => $this->permission,
