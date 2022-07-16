@@ -97,7 +97,7 @@ async function reload() {
 }
 
 function openBattleCenter(generalID: number){
-  window.open(`b_battleCenter.php?gen=${generalID}`)
+  window.open(`v_battleCenter.php?gen=${generalID}`)
 }
 
 onMounted(async () => {

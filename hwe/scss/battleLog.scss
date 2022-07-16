@@ -1,0 +1,33 @@
+.small_war_log {
+  display: inline-block;
+}
+
+.small_war_log .war_type_attack {
+  color: cyan;
+}
+
+.small_war_log .war_type_defense {
+  color: magenta;
+}
+
+.small_war_log .war_type_siege {
+  color: white;
+}
+
+.small_war_log .name_plate {
+  font-size: 0.75em;
+}
+
+.small_war_log .name_plate_cover {
+  color: yellow;
+}
+
+.small_war_log .crew_plate {
+  color: orangered;
+  font-size: 90%;
+}
+
+.hidden_but_copyable {
+  color: rgba(0, 0, 0, 0);
+  font-size: 0;
+}

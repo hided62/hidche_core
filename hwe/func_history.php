@@ -254,6 +254,7 @@ function pushGeneralHistoryLog(int $generalID, ?array $history, $year=null, $mon
 
 }
 
+/** @deprecated */
 function getGeneralHistoryLogAll(int $generalID):array {
     $db = DB::db();
 
@@ -261,6 +262,15 @@ function getGeneralHistoryLogAll(int $generalID):array {
         'SELECT `text` from general_record WHERE general_id = %i AND log_type = "history" order by id desc',
         $generalID
     );
+}
+
+function getGeneralHistoryLogWithLogID(int $generalID):array {
+    $db = DB::db();
+
+    return Util::convertPairArrayToDict($db->queryAllLists(
+        'SELECT `id`, `text` from general_record WHERE general_id = %i AND log_type = "history" order by id desc',
+        $generalID
+    ));
 }
 
 

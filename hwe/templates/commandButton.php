@@ -13,7 +13,7 @@
 <?=$btnBegin??''?><a href='v_nationGeneral.php' class='commandButton <?=$btnClass??""?> <?= $meLevel >= 1 ? '' : 'disabled' ?>'>세력 장수</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_globalDiplomacy.php' class='commandButton <?=$btnClass??""?>'>중원 정보</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_currentCity.php' class='commandButton <?=$btnClass??""?>'>현재 도시</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='b_battleCenter.php' target='_blank' class='open-window commandButton <?=$btnClass??""?> <?= $showSecret ? '' : 'disabled' ?>'>감 찰 부</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href='v_battleCenter.php' target='_blank' class='open-window commandButton <?=$btnClass??""?> <?= $showSecret ? '' : 'disabled' ?>'>감 찰 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_inheritPoint.php' class='commandButton <?=$btnClass??""?>'>유산 관리</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myPage.php' class='commandButton <?=$btnClass??""?>'>내 정보&amp;설정</a><?=$btnEnd??''?>
 <?=$splitBtnBegin??''?>

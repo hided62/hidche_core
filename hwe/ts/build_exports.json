@@ -23,6 +23,7 @@
     },
     "ingame_vue": {
         "v_auction": "v_auction.ts",
+        "v_battleCenter": "v_battleCenter.ts",
         "v_inheritPoint": "v_inheritPoint.ts",
         "v_board": "v_board.ts",
         "v_cachedMap": "v_cachedMap",

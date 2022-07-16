@@ -1,4 +1,4 @@
-import type { ValuesOf, TurnObj } from "@/defs";
+import type { ValuesOf, TurnObj, NationStaticItem } from "@/defs";
 import type { GameObjClassKey } from "@/defs/GameObj";
 import type { ValidResponse } from "@/SammoAPI";
 
@@ -127,3 +127,29 @@ export type RawGeneralListP2 = ValidResponse & {
 }
 
 export type GeneralListResponse = RawGeneralListP0 | RawGeneralListP1 | RawGeneralListP2;
+
+export type NationItem = NationStaticItem & {
+  gold: number;
+  rice: number;
+  bill: number;
+  rate: number;
+  secretlimit: number;
+  chief_set: number;
+  scout: number;
+  war: number;
+  strategic_cmd_limit: number;
+  surlimit: number;
+  tech: number;
+}
+
+export type LiteNationInfoResponse = ValidResponse & {
+  nation: NationStaticItem;
+}
+
+export type NationInfoResponse = (ValidResponse & {
+  nation: NationStaticItem;
+}) | (ValidResponse &{
+  nation: NationItem;
+  impossibleStrategicCommandLists: [string, number][];
+  troops: Record<number, string>;
+})

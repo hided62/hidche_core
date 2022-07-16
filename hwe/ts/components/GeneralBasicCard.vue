@@ -1,5 +1,5 @@
 <template>
-  <div class="general-card-basic">
+  <div class="general-card-basic bg2">
     <div
       class="general-icon"
       :style="{
@@ -19,7 +19,7 @@
       】 {{ general.turntime.substring(11, 19) }}
     </div>
 
-    <div>통솔</div>
+    <div class="bg1">통솔</div>
     <div>
       <div class="row gx-0">
         <div class="col">
@@ -27,46 +27,46 @@
           <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
         </div>
-        <div class="col">
-          <SammoBar :height="10" :percent="general.leadership_exp / 20" />
+        <div class="col align-self-center">
+          <SammoBar :height="10" :percent="(general.leadership_exp / 20) * 100" />
         </div>
       </div>
     </div>
-    <div>무력</div>
+    <div class="bg1">무력</div>
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
           {{ general.strength }}
         </div>
-        <div class="col">
-          <SammoBar :height="10" :percent="general.strength_exp / 20" />
+        <div class="col align-self-center">
+          <SammoBar :height="10" :percent="(general.strength_exp / 20) * 100" />
         </div>
       </div>
     </div>
-    <div>지력</div>
+    <div class="bg1">지력</div>
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
           {{ general.intel }}
         </div>
-        <div class="col">
-          <SammoBar :height="10" :percent="general.intel_exp / 20" />
+        <div class="col align-self-center">
+          <SammoBar :height="10" :percent="(general.intel_exp / 20) * 100" />
         </div>
       </div>
     </div>
 
-    <div>명마</div>
+    <div class="bg1">명마</div>
     <div v-b-tooltip.hover :title="horse.info ?? undefined">{{ horse.name }}</div>
-    <div>무기</div>
+    <div class="bg1">무기</div>
     <div v-b-tooltip.hover :title="weapon.info ?? undefined">{{ weapon.name }}</div>
-    <div>서적</div>
+    <div class="bg1">서적</div>
     <div v-b-tooltip.hover :title="book.info ?? undefined">{{ book.name }}</div>
 
-    <div>자금</div>
+    <div class="bg1">자금</div>
     <div>{{ general.gold.toLocaleString() }}</div>
-    <div>군량</div>
+    <div class="bg1">군량</div>
     <div>{{ general.rice.toLocaleString() }}</div>
-    <div>도구</div>
+    <div class="bg1">도구</div>
     <div v-b-tooltip.hover :title="item.info ?? undefined">{{ item.name }}</div>
 
     <!-- TODO: show_img_level을 고려 -->
@@ -77,55 +77,65 @@
       }"
     ></div>
 
-    <div>병종</div>
+    <div class="bg1">병종</div>
     <div v-b-tooltip.hover :title="crewtype.info ?? undefined">{{ crewtype.name }}</div>
-    <div>병사</div>
+    <div class="bg1">병사</div>
     <div>{{ general.crew.toLocaleString() }}</div>
-    <div>성격</div>
+    <div class="bg1">성격</div>
     <div v-b-tooltip.hover :title="personal.info ?? undefined">{{ personal.name }}</div>
 
     <!-- TODO: bonusTrain 같은 개념이 필요 -->
-    <div>훈련</div>
+    <div class="bg1">훈련</div>
     <div>{{ general.train }}</div>
-    <div>사기</div>
+    <div class="bg1">사기</div>
     <div>{{ general.atmos }}</div>
-    <div>특기</div>
+    <div class="bg1">특기</div>
     <div>
       <span v-b-tooltip.hover :title="specialDomestic.info ?? undefined"> {{ specialDomestic.name }}</span> /
       <span v-b-tooltip.hover :title="specialWar.info ?? undefined"> {{ specialWar.name }}</span>
     </div>
 
-    <div>Lv</div>
+    <div class="bg1">Lv</div>
     <!-- TODO: 경험치 막대가 필요 -->
     <div class="general-exp-level">
       {{ general.explevel }}
     </div>
-    <div class="general-exp-level-bar">{{ nextExpLevelRemain(general.experience, general.explevel) }}</div>
-    <div>연령</div>
+    <div class="general-exp-level-bar d-grid">
+      <div class="align-self-center">
+        <SammoBar
+          :height="10"
+          :percent="(([a, b]) => (a / b) * 100)(nextExpLevelRemain(general.experience, general.explevel))"
+        />
+      </div>
+    </div>
+    <div class="bg1">연령</div>
     <div :style="{ color: ageColor }">{{ general.age }}세</div>
 
-    <div>수비</div>
+    <div class="bg1">수비</div>
     <div class="general-defence-train">
       <span v-if="general.defence_train === 999" style="color: red">수비 안함</span>
       <span v-else style="color: limegreen">수비 함(훈사{{ general.defence_train }})</span>
     </div>
-    <div>삭턴</div>
+    <div class="bg1">삭턴</div>
     <div>{{ general.killturn }} 턴</div>
-    <div>실행</div>
+    <div class="bg1">실행</div>
     <div>{{ nextExecuteMinute }}분 남음</div>
 
-    <div>부대</div>
+    <div class="bg1">부대</div>
     <div v-if="!troopInfo" class="general-troop">-</div>
     <div v-else class="general-troop">
-      <s v-if="troopInfo.leader.reservedCommand && troopInfo.leader.reservedCommand[0].action != 'che_집합'" style="color: gray">
+      <s
+        v-if="troopInfo.leader.reservedCommand && troopInfo.leader.reservedCommand[0].action != 'che_집합'"
+        style="color: gray"
+      >
         {{ troopInfo.name }}
       </s>
       <span v-else style="color: orange">
         {{ troopInfo.name }}({{ gameConstStore.cityConst[troopInfo.leader.city].name }})
       </span>
     </div>
-    <div>벌점</div>
-    <div class="general-v">
+    <div class="bg1">벌점</div>
+    <div class="general-connect-score">
       {{ formatConnectScore(general.connect) }} {{ general.connect.toLocaleString() }}점({{ general.con }})
     </div>
   </div>
@@ -233,7 +243,18 @@ onMounted(() => {
   grid-template-rows: repeat(9, calc(64px / 3));
   text-align: center;
   font-size: 14px;
+
+  border-bottom: 1px solid gray;
+  border-right: 1px solid gray;
+
+  > div.bg1, > .general-crew-type-icon, > .general-icon {
+    border-left: 1px solid gray;
+  }
+  > div {
+    border-top: 1px solid gray;
+  }
 }
+
 .general-icon {
   width: 64px;
   height: 64px;
@@ -262,5 +283,13 @@ onMounted(() => {
 
 .general-defence-train {
   grid-column: 2 / 4;
+}
+
+.general-troop {
+  grid-column: 2 / 4;
+}
+
+.general-connect-score {
+  grid-column: 5 / 8;
 }
 </style>

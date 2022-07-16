@@ -1,29 +1,29 @@
 <template>
-  <div class="general-card-supplement row gx-0">
+  <div class="general-card-supplement row gx-0 bg2">
     <div class="col-12 general-card-info">
-      <div class="part-title">추가 정보</div>
-      <div>명성</div>
+      <div class="part-title bg1">추가 정보</div>
+      <div class="bg1">명성</div>
       <div>{{ formatHonor(general.experience) }} ({{ general.experience.toLocaleString() }})</div>
-      <div>계급</div>
-      <div>{{ general.dedLevelText }} ({{ general.dedication.toLocaleString() }}</div>
-      <div>봉급</div>
+      <div class="bg1">계급</div>
+      <div>{{ general.dedLevelText }} ({{ general.dedication.toLocaleString() }})</div>
+      <div class="bg1">봉급</div>
       <div>{{ general.bill.toLocaleString() }}</div>
 
-      <div>전투</div>
+      <div class="bg1">전투</div>
       <div>{{ general.warnum.toLocaleString() }}</div>
-      <div>계략</div>
+      <div class="bg1">계략</div>
       <div>{{ general.firenum.toLocaleString() }}</div>
-      <div>사관</div>
+      <div class="bg1">사관</div>
       <div>{{ general.belong }}년차</div>
 
-      <div>승률</div>
+      <div class="bg1">승률</div>
       <div>{{ ((general.killnum / Math.max(general.warnum, 1)) * 100).toFixed(2) }} %</div>
-      <div>승리</div>
+      <div class="bg1">승리</div>
       <div>{{ general.killnum.toLocaleString() }}</div>
-      <div>패배</div>
+      <div class="bg1">패배</div>
       <div>{{ general.deathnum.toPrecision() }}</div>
 
-      <div>살상률</div>
+      <div class="bg1">살상률</div>
       <div>
         {{
           ((general.killcrew / Math.max(general.deathcrew, 1)) * 100).toLocaleString(undefined, {
@@ -33,30 +33,30 @@
         }}
         %
       </div>
-      <div>사살</div>
+      <div class="bg1">사살</div>
       <div>{{ general.killcrew.toLocaleString() }}</div>
-      <div>피살</div>
+      <div class="bg1">피살</div>
       <div>{{ general.deathcrew.toLocaleString() }}</div>
     </div>
-    <div class="col-7 general-card-dex">
-      <div class="part-title">숙련도</div>
+    <div :class="[props.showCommandList ? 'col-7' : 'col', 'general-card-dex']">
+      <div class="part-title bg1">숙련도</div>
       <template v-for="[dexType, dex, dexInfo] of dexList" :key="dexType">
-        <div>{{ dexType }}</div>
+        <div class="bg1">{{ dexType }}</div>
         <div :style="{ color: dexInfo.color }">{{ dexInfo.name }}</div>
         <div>{{ (dex / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) }}K</div>
-        <div>
-          <SammoBar :height="10" :percent="dex / 1_000_000" />
+        <div class="d-grid">
+          <div class="align-self-center"><SammoBar :height="10" :percent="dex / 1_000_000 * 100" /></div>
         </div>
       </template>
     </div>
-    <div class="col-5 general-card-turn">
+    <div
+      v-if="props.showCommandList && general.reservedCommand && general.reservedCommand.length > 0"
+      class="col-5 general-card-turn"
+    >
       <div class="part-title">예약턴</div>
-      <template v-if="general.reservedCommand">
-        <div v-for="(turn, idx) in general.reservedCommand.slice(0, 5)" :key="idx">
-          {{ turn.brief }}
-        </div>
-      </template>
-      <div v-else style="grid-row: 2 / 7">NPC</div>
+      <div v-for="(turn, idx) in general.reservedCommand.slice(0, 5)" :key="idx">
+        {{ turn.brief }}
+      </div>
     </div>
   </div>
 </template>
@@ -69,6 +69,7 @@ import { formatDexLevel, type DexInfo } from "@/utilGame/formatDexLevel";
 import { formatHonor } from "@/utilGame/formatHonor";
 const props = defineProps<{
   general: GeneralListItemP1;
+  showCommandList?: boolean;
 }>();
 
 const dexList = computed((): [string, number, DexInfo][] => {
@@ -83,12 +84,13 @@ const dexList = computed((): [string, number, DexInfo][] => {
 </script>
 
 <style lang="scss" scoped>
-.general-card-basic {
-  display: grid;
-  grid-template-columns: 64px repeat(3, 2fr 5fr);
-  grid-template-rows: repeat(9, calc(64px / 3));
+.general-card-supplement {
   text-align: center;
   font-size: 14px;
+}
+
+.part-title {
+  grid-column: 1 / 7;
 }
 .general-icon {
   width: 64px;
@@ -124,9 +126,18 @@ const dexList = computed((): [string, number, DexInfo][] => {
   display: grid;
   grid-template-columns: repeat(3, 64px 1fr);
   grid-template-rows: repeat(5, calc(64px / 3));
+  border-right: solid 1px gray;
 
   .part-title {
-    grid-column: 1 / 4;
+    grid-column: 1 / 7;
+  }
+
+  .bg1 {
+    border-left: solid 1px gray;
+  }
+
+  > div {
+    border-bottom: solid 1px gray;
   }
 }
 
@@ -134,15 +145,28 @@ const dexList = computed((): [string, number, DexInfo][] => {
   display: grid;
   grid-template-columns: 64px 40px 60px 1fr;
   grid-template-rows: repeat(6, calc(64px / 3));
+  border-right: solid 1px gray;
 
   .part-title {
     grid-column: 1 / 5;
   }
+
+  .bg1 {
+    border-left: solid 1px gray;
+  }
+
+  > div {
+    border-bottom: solid 1px gray;
+  }
 }
 
 .general-card-turn {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(6, calc(64px / 3));
+  .bg1 {
+    border-left: solid 1px gray;
+  }
+
+  > div {
+    border-bottom: solid 1px gray;
+  }
 }
 </style>

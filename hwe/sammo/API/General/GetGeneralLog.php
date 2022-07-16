@@ -18,12 +18,12 @@ class GetGeneralLog extends GetNationGeneralLog
         $v = new Validator($this->args);
         $v
             ->rule('required', [
-                'type',
+                'reqType',
             ])
             ->rule('int', [
                 'reqTo',
             ])
-            ->rule('in', 'type', [
+            ->rule('in', 'reqType', [
                 self::GENERAL_HISTORY,
                 self::GENERAL_ACTION,
                 self::BATTLE_RESULT,

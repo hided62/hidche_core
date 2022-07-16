@@ -18,7 +18,7 @@ import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Bett
 import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import type { inheritBuffType, InheritLogResponse } from "./defs/API/InheritAction";
-import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse } from "./defs/API/Nation";
+import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse, NationInfoResponse } from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type {
@@ -231,6 +231,7 @@ const apiRealPath = {
       troopID: number;
       troopName: string;
     }>,
+    GetNationInfo: GET as APICallT<{full?: boolean}, NationInfoResponse>,
   },
   Vote: {
     AddComment: POST as APICallT<{

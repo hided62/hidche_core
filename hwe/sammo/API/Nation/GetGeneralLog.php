@@ -9,11 +9,12 @@ use sammo\Validator;
 use function sammo\checkLimit;
 use function sammo\checkSecretPermission;
 use function sammo\getBattleDetailLogMore;
+use function sammo\getBattleDetailLogRecent;
 use function sammo\getBattleResultMore;
 use function sammo\getBattleResultRecent;
 use function sammo\getGeneralActionLogMore;
 use function sammo\getGeneralActionLogRecent;
-use function sammo\getGeneralHistoryLogAll;
+use function sammo\getGeneralHistoryLogWithLogID;
 
 class GetGeneralLog extends \sammo\BaseAPI
 {
@@ -28,13 +29,13 @@ class GetGeneralLog extends \sammo\BaseAPI
         $v
             ->rule('required', [
                 'generalID',
-                'type',
+                'reqType',
             ])
             ->rule('integer', [
                 'generalID',
                 'reqTo',
             ])
-            ->rule('in', 'type', [
+            ->rule('in', 'reqType', [
                 self::GENERAL_HISTORY,
                 self::GENERAL_ACTION,
                 self::BATTLE_RESULT,
@@ -76,7 +77,7 @@ class GetGeneralLog extends \sammo\BaseAPI
             return '같은 나라의 장수가 아닙니다.';
         }
 
-        $reqType = $this->args['type'];
+        $reqType = $this->args['reqType'];
         if (
             $reqType === self::GENERAL_ACTION &&
             $testGeneralNPCType < 2 &&
@@ -103,7 +104,7 @@ class GetGeneralLog extends \sammo\BaseAPI
         $userID = $session->userID;
 
         $targetGeneralID = $this->getTargetGeneralID($session);
-        $reqType = $this->args['type'];
+        $reqType = $this->args['reqType'];
         $reqTo = $this->args['reqTo'] ?? null;
 
         $db = DB::db();
@@ -124,7 +125,7 @@ class GetGeneralLog extends \sammo\BaseAPI
                 'result' => true,
                 'reqType' => $reqType,
                 'generalID' => $targetGeneralID,
-                'log' => getGeneralHistoryLogAll($targetGeneralID)
+                'log' => getGeneralHistoryLogWithLogID($targetGeneralID)
             ];
         }
 
@@ -156,7 +157,7 @@ class GetGeneralLog extends \sammo\BaseAPI
                 'reqType' => $reqType,
                 'generalID' => $targetGeneralID,
                 'log' => $reqTo === null
-                    ? getBattleResultRecent($targetGeneralID, 30)
+                    ? getBattleDetailLogRecent($targetGeneralID, 30)
                     : getBattleDetailLogMore($targetGeneralID, $reqTo, 30)
             ];
         }
