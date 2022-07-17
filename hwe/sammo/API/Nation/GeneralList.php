@@ -46,10 +46,11 @@ class GeneralList extends \sammo\BaseAPI
         'connect' => 0,
 
         'troop' => 0,
+        'city' => 0,
 
         'con' => 1,
-        'specage' => 1,
-        'specage2' => 1,
+        'specage' => 0,
+        'specage2' => 0,
         'leadership_exp' => 1,
         'strength_exp' => 1,
         'intel_exp' => 1,
@@ -59,7 +60,6 @@ class GeneralList extends \sammo\BaseAPI
         'dex4' => 1,
         'dex5' => 1,
 
-        'city' => 1,
         'experience' => 1,
         'dedication' => 1,
 
@@ -315,6 +315,7 @@ class GeneralList extends \sammo\BaseAPI
             'list' => $generalList,
             'troops' => array_values($troops),
             'env' => $env,
+            'myGeneralID' => $session->generalID,
         ];
 
         return $result;
