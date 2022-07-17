@@ -130,6 +130,7 @@
       >
         {{ troopInfo.name }}
       </s>
+      <span v-else-if="troopInfo.leader.city == general.city">{{ troopInfo.name }}</span>
       <span v-else style="color: orange">
         {{ troopInfo.name }}({{ gameConstStore.cityConst[troopInfo.leader.city].name }})
       </span>
