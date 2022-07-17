@@ -53,12 +53,19 @@ class AuctionUniqueItem extends Auction
     }
 
     $availableCnt = 0;
-    foreach(GameConst::$allItems as $itemType => $itemList){
-      $availableCnt += $itemList[$itemKey] ?? 0;
+    foreach (GameConst::$allItems as $itemType => $itemList) {
+      if (!key_exists($itemKey, $itemList)) {
+        continue;
+      }
+      $ownItem = $general->getItem($itemKey);
+      if ($ownItem !== null && !$ownItem->isBuyable()) {
+        return '이미 가진 아이템이 있습니다.';
+      }
+      $availableCnt += $itemList[$itemKey];
       $availableCnt -= $db->queryFirstField('SELECT count(*) FROM `general` WHERE %b = %s', $itemType, $itemKey);
     }
 
-    if($availableCnt <= 0){
+    if ($availableCnt <= 0) {
       return '그 유니크를 더 얻을 수 없습니다.';
     }
 
@@ -129,7 +136,7 @@ class AuctionUniqueItem extends Auction
   public function bid(int $amount, bool $tryExtendCloseDate): ?string
   {
 
-    if($this->info->finished){
+    if ($this->info->finished) {
       return '경매가 종료되었습니다.';
     }
 
@@ -146,7 +153,7 @@ class AuctionUniqueItem extends Auction
     }
 
     $db = DB::db();
-    if($auctionIDList){
+    if ($auctionIDList) {
       $rawHighestBids = Util::convertArrayToDict($db->query(
         'SELECT bid.* FROM `ng_auction_bid` bid INNER JOIN (
           SELECT `auction_id`, MAX(`amount`) as `max_amount`
@@ -158,8 +165,7 @@ class AuctionUniqueItem extends Auction
         ON bid.`auction_id` = max_bid.`auction_id` AND bid.`amount` = max_bid.`max_amount`',
         $auctionIDList,
       ) ?? [], 'auction_id');
-    }
-    else{
+    } else {
       $rawHighestBids = [];
     }
 
@@ -177,7 +183,14 @@ class AuctionUniqueItem extends Auction
 
     $bidItemTypes = new Set();
     foreach (GameConst::$allItems as $itemType => $itemList) {
-      if (($itemList[$itemCode] ?? 0) <= 0) {
+      if (!key_exists($itemCode, $itemList)) {
+        continue;
+      }
+      $ownItem = $this->general->getItem($itemCode);
+      if ($ownItem !== null && !$ownItem->isBuyable()) {
+        return '이미 가진 아이템이 있습니다.';
+      }
+      if ($itemList[$itemCode] <= 0) {
         continue;
       }
       $bidItemTypes->add($itemType);
