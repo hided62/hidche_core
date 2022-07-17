@@ -227,11 +227,21 @@ const apiRealPath = {
       },
       GetGeneralLogResponse
     >,
+    /** @deprecated */
     SetTroopName: PATCH as APICallT<{
       troopID: number;
       troopName: string;
     }>,
     GetNationInfo: GET as APICallT<{full?: boolean}, NationInfoResponse>,
+  },
+  Troop: {
+    NewTroop: POST as APICallT<{
+      name: string;
+    }>,
+    SetTroopName: PATCH as APICallT<{
+      troopID: number;
+      troopName: string;
+    }>,
   },
   Vote: {
     AddComment: POST as APICallT<{
