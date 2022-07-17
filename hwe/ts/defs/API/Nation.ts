@@ -107,7 +107,7 @@ export type RawGeneralListP0 = ValidResponse & {
   permission: 0,
   column: (keyof GeneralListItemP0)[],
   list: ValuesOf<GeneralListItemP0>[][],
-  troops: {id: number, name: string, turntime: string}[],
+  troops: {id: number, name: string, turntime: string, reservedCommand: string[]}[],
   env: ResponseEnv,
 }
 
@@ -115,7 +115,7 @@ export type RawGeneralListP1 = ValidResponse & {
   permission: 1,
   column: (keyof GeneralListItemP1)[],
   list: ValuesOf<GeneralListItemP1>[][],
-  troops: {id: number, name: string, turntime: string}[],
+  troops: {id: number, name: string, turntime: string, reservedCommand: string[]}[],
   env: ResponseEnv,
 }
 
@@ -123,7 +123,7 @@ export type RawGeneralListP2 = ValidResponse & {
   permission: 2 | 3 | 4,
   column: (keyof GeneralListItemP2)[],
   list: ValuesOf<GeneralListItemP2>[][],
-  troops: {id: number, name: string, turntime: string}[],
+  troops: {id: number, name: string, turntime: string, reservedCommand: string[]}[],
   env: ResponseEnv,
 }
 
