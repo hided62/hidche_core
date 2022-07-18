@@ -1,5 +1,5 @@
 <template>
-  <div id="container" ref="container">
+  <BContainer id="container" ref="container" :toast="{ root: true }">
     <TopBackBar :reloadable="true" title="부대 편성" @reload="refresh" />
     <div v-if="asyncReady && gameConstStore && me" id="troopList" class="bg0">
       <div v-for="[troopID, troop] of troopList" :key="troopID" class="troopItem">
@@ -42,12 +42,51 @@
           </div>
         </div>
         <div class="troopAction">
-          <BButton v-if="!me.troop">부대 탑승</BButton>
-          <BButton v-if="me.troop == troop.troopID">부대 탈퇴</BButton>
+          <div v-if="tryChangeTroopTarget != troop.troopID" class="d-grid">
+            <BButton v-if="!me.troop" variant="primary" @click="joinTroop(troop.troopID)">부대 탑승</BButton>
+            <BButton
+              v-if="me.troop == troop.troopID"
+              :variant="me.troop == me.no ? 'danger' : 'primary'"
+              @click="exitTroop()"
+              >{{ me.no == me.troop ? "부대 해산" : "부대 탈퇴" }}</BButton
+            >
+            <BButton v-if="me.troop == troop.troopID && me.no == me.troop">부대원 추방...</BButton>
+          </div>
+          <div class="row gx-0">
+            <template v-if="tryChangeTroopTarget == troop.troopID">
+              <div class="col-12 bg1 center" style="padding:0.2em;">부대명 변경</div>
+              <div class="col-12 d-grid">
+                <BFormInput v-model="newTroopName" :trim="true" type="text" />
+              </div>
+            </template>
+            <div v-if="tryChangeTroopTarget != troop.troopID" class="col-12 d-grid">
+              <BButton variant="info" @click="tryChangeTroopTarget = troop.troopID">부대명 변경</BButton>
+            </div>
+            <template v-else>
+              <div class="col-6 d-grid">
+                <BButton variant="secondary" @click="tryChangeTroopTarget = 0">취소</BButton>
+              </div>
+              <div class="col-6 d-grid">
+                <BButton variant="primary" @click="changeTroopName()">변경</BButton>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
     </div>
-
+    <div v-if="asyncReady && gameConstStore && me" class="row additionalTroopOptions">
+      <div v-if="me.troop == 0" class="col-6 col-md-3">
+        <div class="row gx-0 makeNewTroop">
+          <div class="bg1 col-12 center" style="font-size: 1.2em">부대 창설</div>
+          <div class="troopNameField col-8 d-grid">
+            <BFormInput v-model="newTroopName" :trim="true" type="text" />
+          </div>
+          <div class="col-4 d-grid">
+            <BButton @click="makeTroop">부대 창설</BButton>
+          </div>
+        </div>
+      </div>
+    </div>
     <BottomBar />
     <div
       v-if="asyncReady && gameConstStore"
@@ -66,15 +105,15 @@
 
       <GeneralLiteCard v-else :general="popupGeneralTarget" :nation="nationInfo" />
     </div>
-  </div>
+  </BContainer>
 </template>
 
 <script setup lang="ts">
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { onMounted, provide, ref, toRef } from "vue";
+import { onMounted, provide, ref } from "vue";
 import { SammoAPI } from "./SammoAPI";
-import { BButton, useToast } from "bootstrap-vue-3";
+import { BContainer, BButton, useToast, BFormInput } from "bootstrap-vue-3";
 import { unwrap } from "./util/unwrap";
 import { isString } from "lodash";
 import type { GeneralListItem, GeneralListItemP1 } from "./defs/API/Nation";
@@ -86,6 +125,7 @@ import GeneralBasicCard from "./components/GeneralBasicCard.vue";
 import type { NationStaticItem } from "./defs";
 import GeneralLiteCard from "./components/GeneralLiteCard.vue";
 import GeneralSupplementCard from "./components/GeneralSupplementCard.vue";
+import { pick } from "./util/JosaUtil";
 const toasts = unwrap(useToast());
 
 const asyncReady = ref(false);
@@ -160,6 +200,9 @@ const me = ref<GeneralListItem>({} as GeneralListItem);
 const troopList = ref(new Map<number, TroopInfo>());
 const generalList = ref(new Map<number, GeneralListItem>());
 const nationInfo = ref<NationStaticItem>();
+
+const tryChangeTroopTarget = ref(0);
+const newTroopName = ref("");
 
 async function refresh() {
   try {
@@ -248,6 +291,119 @@ async function refresh() {
 onMounted(() => {
   void refresh();
 });
+
+async function makeTroop() {
+  const troopName = newTroopName.value;
+  try {
+    await SammoAPI.Troop.NewTroop({
+      troopName,
+    });
+    newTroopName.value = "";
+    toasts.info({
+      title: "완료",
+      body: `${troopName} 부대가 생성되었습니다.`,
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "오류",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+  await refresh();
+}
+
+async function joinTroop(troopID: number) {
+  try {
+    await SammoAPI.Troop.JoinTroop({
+      troopID,
+    });
+    toasts.info({
+      title: "완료",
+      body: ` ${troopList.value.get(troopID)?.troopName} 부대에 가입했습니다.`,
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "오류",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+  await refresh();
+}
+
+async function exitTroop() {
+  const isTroopLeader = me.value.troop == me.value.no;
+  const troopName = troopList.value.get(me.value.troop)?.troopName ?? "??";
+
+  if (isTroopLeader) {
+    if (!confirm(`${troopName} 부대를 해산하겠습니까?`)) {
+      return;
+    }
+  } else {
+    if (!confirm(`${troopName} 부대에서 탈퇴하겠습니까?`)) {
+      return;
+    }
+  }
+  try {
+    await SammoAPI.Troop.ExitTroop();
+
+    if (isTroopLeader) {
+      toasts.info({
+        title: "완료",
+        body: `부대를 해산했습니다.`,
+      });
+    } else {
+      toasts.info({
+        title: "완료",
+        body: `부대에서 탈퇴했습니다.`,
+      });
+    }
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "오류",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+  await refresh();
+}
+
+async function changeTroopName() {
+  const troopID = tryChangeTroopTarget.value;
+  const troopName = newTroopName.value;
+  const oldTroopName = troopList.value.get(troopID)?.troopName ?? "??";
+  const josaRo = pick(troopName, "로");
+  if (!confirm(`${oldTroopName} 부대의 이름을 ${troopName}${josaRo} 바꾸시겠습니까?`)) {
+    return;
+  }
+  try {
+    await SammoAPI.Troop.SetTroopName({
+      troopID,
+      troopName,
+    });
+
+    toasts.info({
+      title: "완료",
+      body: `부대명을 변경했습니다.`,
+    });
+  } catch (e) {
+    if (isString(e)) {
+      toasts.danger({
+        title: "오류",
+        body: e,
+      });
+    }
+    console.error(e);
+  }
+  await refresh();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -260,6 +416,14 @@ onMounted(() => {
 #generalPopup {
   position: absolute;
   width: 500px;
+}
+
+.additionalTroopOptions {
+  margin-top: 1em;
+}
+
+.makeNewTroop {
+  border: solid 1px gray;
 }
 
 .troopItem {
@@ -313,6 +477,11 @@ onMounted(() => {
   .troopAction {
     grid-column: 5/6;
     grid-row: 1/3;
+
+    .btn {
+      padding-top: 0.2em;
+      padding-bottom: 0.2em;
+    }
   }
 
   .troopMembers {
@@ -334,7 +503,7 @@ onMounted(() => {
 
   .troopItem {
     grid-template-rows: 65px 28px;
-    grid-template-columns: 130px 130px 1fr 110px 130px;
+    grid-template-columns: 130px 130px 1fr 100px 140px;
 
     .troopMembers {
       grid-column: 3/4;
@@ -360,7 +529,7 @@ onMounted(() => {
 
   .troopItem {
     grid-template-rows: 65px 28px auto;
-    grid-template-columns: 130px 130px 0px 110px 130px;
+    grid-template-columns: 130px 130px 0px 100px 140px;
 
     .troopMembers {
       grid-column: 2/6;
