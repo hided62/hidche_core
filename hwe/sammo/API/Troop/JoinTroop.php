@@ -8,7 +8,7 @@ use sammo\DB;
 use sammo\StringUtil;
 use sammo\Validator;
 
-class SetTroopName extends \sammo\BaseAPI
+class JoinTroop extends \sammo\BaseAPI
 {
   public function validateArgs(): ?string
   {
@@ -32,10 +32,7 @@ class SetTroopName extends \sammo\BaseAPI
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
   {
     $userID = $session->userID;
-    $troopName = StringUtil::neutralize($this->args['troopName']);
-    if (!$troopName) {
-      return '부대 이름이 없습니다.';
-    }
+    $troopID = $this->args['troopID'];
 
     $db = DB::db();
     $me = $db->queryFirstRow('SELECT `no`,nation,`troop`,`officer_level`,permission,penalty FROM general WHERE `owner`=%i', $userID);
@@ -47,17 +44,15 @@ class SetTroopName extends \sammo\BaseAPI
       return '국가에 소속되어 있지 않습니다.';
     }
 
+    $troopExists = $db->queryFirstField('SELECT `troop_leader` FROM `troop` WHERE `troop_leader` = %i AND `nation` = %i', $troopID, $nationID);
+    if (!$troopExists) {
+      return '부대가 올바르지 않습니다.';
+    }
     $generalID = $me['no'];
 
-    $db->insert('troop', [
-      'name' => $troopName,
-      'troop_leader' => $generalID,
-      'nation' => $nationID,
-    ]);
-
-    if ($db->affectedRows() == 0) {
-      return '부대가 생성되지 않았습니다.';
-    }
+    $db->update('general', [
+      'troop' => $troopID,
+    ], '`no` = %i AND `troop` = %i', $generalID, 0);
 
     return null;
   }

@@ -8,7 +8,7 @@ use sammo\DB;
 use sammo\StringUtil;
 use sammo\Validator;
 
-class SetTroopName extends \sammo\BaseAPI
+class NewTroop extends \sammo\BaseAPI
 {
   public function validateArgs(): ?string
   {
@@ -48,7 +48,7 @@ class SetTroopName extends \sammo\BaseAPI
     }
 
     $generalID = $me['no'];
-    
+
     $db->insert('troop', [
       'name'=>$troopName,
       'troop_leader'=>$generalID,
@@ -56,8 +56,12 @@ class SetTroopName extends \sammo\BaseAPI
     ]);
 
     if($db->affectedRows() == 0){
-      return '부대가 생성되지 않았습니다.';
+      return '부대가 생성되지 않았습니다. 버그일 수 있습니다.';
     }
+
+    $db->update('general', [
+      'troop'=>$generalID
+    ], '`no` = %i', $generalID);
 
     return null;
   }
