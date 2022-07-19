@@ -57,7 +57,7 @@ class AuctionUniqueItem extends Auction
       if (!key_exists($itemKey, $itemList)) {
         continue;
       }
-      $ownItem = $general->getItem($itemKey);
+      $ownItem = $general->getItem($itemType);
       if ($ownItem !== null && !$ownItem->isBuyable()) {
         return '이미 가진 아이템이 있습니다.';
       }
@@ -186,7 +186,7 @@ class AuctionUniqueItem extends Auction
       if (!key_exists($itemCode, $itemList)) {
         continue;
       }
-      $ownItem = $this->general->getItem($itemCode);
+      $ownItem = $this->general->getItem($itemType);
       if ($ownItem !== null && !$ownItem->isBuyable()) {
         return '이미 가진 아이템이 있습니다.';
       }
