@@ -14,7 +14,10 @@
         backgroundColor: nation.color,
       }"
     >
-      {{ general.name }} 【{{ general.officerLevelText }} | {{ generalTypeCall }} |
+      {{ general.name }} 【 <template v-if="2 <= general.officerLevel && general.officerLevel <= 4 && general.officer_city">
+        {{ formatCityName(general.officer_city, gameConstStore) }}
+      </template>
+        {{ general.officerLevelText }} | {{ generalTypeCall }} |
       <span :style="{ color: injuryInfo.color }">{{ injuryInfo.text }}</span>
       】 {{ general.turntime.substring(11, 19) }}
     </div>
@@ -132,7 +135,7 @@
       </s>
       <span v-else-if="troopInfo.leader.city == general.city">{{ troopInfo.name }}</span>
       <span v-else style="color: orange">
-        {{ troopInfo.name }}({{ gameConstStore.cityConst[troopInfo.leader.city].name }})
+        {{ troopInfo.name }}({{ formatCityName(troopInfo.leader, gameConstStore) }})
       </span>
     </div>
     <div class="bg1">벌점</div>
@@ -157,6 +160,7 @@ import { formatConnectScore } from "@/utilGame/formatConnectScore";
 import SammoBar from "@/components/SammoBar.vue";
 import { parseTime } from "@/util/parseTime";
 import { clamp } from "lodash";
+import { formatCityName } from "@/utilGame/formatCityName";
 const imagePath = window.pathConfig.gameImage;
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{
