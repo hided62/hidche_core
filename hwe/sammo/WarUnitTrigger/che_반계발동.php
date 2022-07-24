@@ -10,7 +10,7 @@ use sammo\ObjectTrigger;
 use sammo\ActionLogger;
 
 class che_반계발동 extends BaseWarUnitTrigger{
-    protected $priority = ObjectTrigger::PRIORITY_POST + 150;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 250;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('반계')){
@@ -20,7 +20,7 @@ class che_반계발동 extends BaseWarUnitTrigger{
         $general = $self->getGeneral();
 
         [$opposeMagic, $damage] = $opposeEnv['magic'];
-        
+
 
         $josaUl = \sammo\JosaUtil::pick($opposeMagic, '을');
 

@@ -25,7 +25,7 @@ class che_격노발동 extends BaseWarUnitTrigger{
 
         $self->getLogger()->pushGeneralBattleDetailLog("상대의 {$targetAct}에 <C>{$reaction}</>했다!</>", ActionLogger::PLAIN);
         $oppose->getLogger()->pushGeneralBattleDetailLog("{$targetAct}에 상대가 <R>{$reaction}</>했다!</>", ActionLogger::PLAIN);
-         
+
         if($is진노){
             $self->addBonusPhase(1);
         }

@@ -14,7 +14,7 @@ use sammo\ObjectTrigger;
 
 class che_궁병선제사격 extends BaseWarUnitTrigger
 {
-    protected $priority = ObjectTrigger::PRIORITY_BEGIN;
+    protected $priority = ObjectTrigger::PRIORITY_BEGIN + 50;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv): bool
     {

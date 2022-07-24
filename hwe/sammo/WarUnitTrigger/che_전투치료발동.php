@@ -10,7 +10,7 @@ use sammo\ObjectTrigger;
 use sammo\ActionLogger;
 
 class che_전투치료발동 extends BaseWarUnitTrigger{
-    protected $priority = ObjectTrigger::PRIORITY_POST + 300;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 550;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('치료')){

@@ -8,7 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
 class 전투력보정 extends BaseWarUnitTrigger{
-    protected $priority = ObjectTrigger::PRIORITY_BEGIN;
+    protected $priority = ObjectTrigger::PRIORITY_BEGIN + 20;
 
     public function __construct(WarUnit $unit, protected int|float $attackerWarPowerMultiplier, protected int|float $defenderWarPowerMultiplier = 1){
         $this->object = $unit;

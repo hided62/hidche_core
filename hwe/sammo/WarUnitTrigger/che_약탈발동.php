@@ -14,7 +14,7 @@ use sammo\GameConst;
 
 class che_약탈발동 extends BaseWarUnitTrigger
 {
-    protected $priority = ObjectTrigger::PRIORITY_POST + 400;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 350;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv): bool
     {

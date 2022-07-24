@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_기병병종전투 extends BaseWarUnitTrigger{
-    protected $priority = ObjectTrigger::PRIORITY_FINAL; //최후미
+    protected $priority = ObjectTrigger::PRIORITY_FINAL + 100; //최후미
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->isAttacker()){

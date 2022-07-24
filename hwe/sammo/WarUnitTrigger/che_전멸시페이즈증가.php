@@ -10,7 +10,7 @@ use sammo\ObjectTrigger;
 use sammo\ActionLogger;
 
 class che_전멸시페이즈증가 extends BaseWarUnitTrigger{
-    protected $priority = ObjectTrigger::PRIORITY_POST + 700;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 800;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         /** @var WarUnitGeneral $self */
