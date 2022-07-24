@@ -126,7 +126,7 @@ class GeneralList extends \sammo\BaseAPI
         if ($level >= 5) {
             return $level;
         }
-        if ($this->permission > 1) {
+        if ($this->permission >= 1) {
             return $level;
         }
         return 1;
