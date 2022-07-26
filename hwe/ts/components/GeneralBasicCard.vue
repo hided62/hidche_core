@@ -14,10 +14,11 @@
         backgroundColor: nation.color,
       }"
     >
-      {{ general.name }} 【 <template v-if="2 <= general.officerLevel && general.officerLevel <= 4 && general.officer_city">
+      {{ general.name }} 【
+      <template v-if="2 <= general.officerLevel && general.officerLevel <= 4 && general.officer_city">
         {{ formatCityName(general.officer_city, gameConstStore) }}
       </template>
-        {{ general.officerLevelText }} | {{ generalTypeCall }} |
+      {{ general.officerLevelText }} | {{ generalTypeCall }} |
       <span :style="{ color: injuryInfo.color }">{{ injuryInfo.text }}</span>
       】 {{ general.turntime.substring(11, 19) }}
     </div>
@@ -59,18 +60,18 @@
     </div>
 
     <div class="bg1">명마</div>
-    <div v-b-tooltip.hover :title="horse.info ?? undefined">{{ horse.name }}</div>
+    <div v-b-tooltip.hover :title="horse.info ?? '-'">{{ horse.name }}</div>
     <div class="bg1">무기</div>
-    <div v-b-tooltip.hover :title="weapon.info ?? undefined">{{ weapon.name }}</div>
+    <div v-b-tooltip.hover :title="weapon.info ?? '-'">{{ weapon.name }}</div>
     <div class="bg1">서적</div>
-    <div v-b-tooltip.hover :title="book.info ?? undefined">{{ book.name }}</div>
+    <div v-b-tooltip.hover :title="book.info ?? '-'">{{ book.name }}</div>
 
     <div class="bg1">자금</div>
     <div>{{ general.gold.toLocaleString() }}</div>
     <div class="bg1">군량</div>
     <div>{{ general.rice.toLocaleString() }}</div>
     <div class="bg1">도구</div>
-    <div v-b-tooltip.hover :title="item.info ?? undefined">{{ item.name }}</div>
+    <div v-b-tooltip.hover :title="item.info ?? '-'">{{ item.name }}</div>
 
     <!-- TODO: show_img_level을 고려 -->
     <div
@@ -81,11 +82,11 @@
     ></div>
 
     <div class="bg1">병종</div>
-    <div v-b-tooltip.hover :title="crewtype.info ?? undefined">{{ crewtype.name }}</div>
+    <div v-b-tooltip.hover :title="crewtype.info ?? '-'">{{ crewtype.name }}</div>
     <div class="bg1">병사</div>
     <div>{{ general.crew.toLocaleString() }}</div>
     <div class="bg1">성격</div>
-    <div v-b-tooltip.hover :title="personal.info ?? undefined">{{ personal.name }}</div>
+    <div v-b-tooltip.hover :title="personal.info ?? '-'">{{ personal.name }}</div>
 
     <!-- TODO: bonusTrain 같은 개념이 필요 -->
     <div class="bg1">훈련</div>
@@ -94,8 +95,8 @@
     <div>{{ general.atmos }}</div>
     <div class="bg1">특기</div>
     <div>
-      <span v-b-tooltip.hover :title="specialDomestic.info ?? undefined"> {{ specialDomestic.name }}</span> /
-      <span v-b-tooltip.hover :title="specialWar.info ?? undefined"> {{ specialWar.name }}</span>
+      <span v-b-tooltip.hover :title="specialDomestic.info ?? '-'"> {{ specialDomestic.name }}</span> /
+      <span v-b-tooltip.hover :title="specialWar.info ?? '-'"> {{ specialWar.name }}</span>
     </div>
 
     <div class="bg1">Lv</div>
@@ -161,6 +162,7 @@ import SammoBar from "@/components/SammoBar.vue";
 import { parseTime } from "@/util/parseTime";
 import { clamp } from "lodash";
 import { formatCityName } from "@/utilGame/formatCityName";
+import { isValidObjKey } from "@/utilGame/isValidObjKey";
 const imagePath = window.pathConfig.gameImage;
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{
@@ -190,35 +192,55 @@ const generalTypeCall = computed(() =>
   )
 );
 
-const horse = computed(
-  () => gameConstStore.value.iActionInfo.item[general.value.horse] ?? { value: "None", name: "-" }
+const horse = computed(() =>
+  isValidObjKey(general.value.horse)
+    ? gameConstStore.value.iActionInfo.item[general.value.horse]
+    : { value: "None", name: "-", info: "" }
 );
-const weapon = computed(
-  () => gameConstStore.value.iActionInfo.item[general.value.weapon] ?? { value: "None", name: "-" }
+const weapon = computed(() =>
+  isValidObjKey(general.value.weapon)
+    ? gameConstStore.value.iActionInfo.item[general.value.weapon]
+    : { value: "None", name: "-", info: "" }
 );
-const book = computed(() => gameConstStore.value.iActionInfo.item[general.value.book] ?? { value: "None", name: "-" });
-const item = computed(() => gameConstStore.value.iActionInfo.item[general.value.item] ?? { value: "None", name: "-" });
+const book = computed(() =>
+  isValidObjKey(general.value.book)
+    ? gameConstStore.value.iActionInfo.item[general.value.book]
+    : { value: "None", name: "-", info: "" }
+);
+const item = computed(() =>
+  isValidObjKey(general.value.item)
+    ? gameConstStore.value.iActionInfo.item[general.value.item]
+    : { value: "None", name: "-", info: "" }
+);
 
-const crewtype = computed(
-  () => gameConstStore.value.iActionInfo.crewtype[general.value.crewtype] ?? { value: "None", name: "-" }
+const crewtype = computed(() =>
+  isValidObjKey(general.value.crewtype)
+    ? gameConstStore.value.iActionInfo.crewtype[general.value.crewtype]
+    : { value: "None", name: "-", info: "-" }
 );
 
-const personal = computed(
-  () => gameConstStore.value.iActionInfo.personality[general.value.personal] ?? { value: "None", name: "-" }
+const personal = computed(() =>
+  isValidObjKey(general.value.personal)
+    ? gameConstStore.value.iActionInfo.personality[general.value.personal]
+    : { value: "None", name: "-", info: "-" }
 );
-const specialDomestic = computed(
-  () =>
-    gameConstStore.value.iActionInfo.specialDomestic[general.value.specialDomestic] ?? {
-      value: "None",
-      name: `${general.value.specage}세`,
-    }
+const specialDomestic = computed(() =>
+  isValidObjKey(general.value.specialDomestic)
+    ? gameConstStore.value.iActionInfo.specialDomestic[general.value.specialDomestic]
+    : {
+        value: "None",
+        name: `${Math.max(general.value.age + 1, general.value.specage)}세`,
+        info: '-',
+      }
 );
-const specialWar = computed(
-  () =>
-    gameConstStore.value.iActionInfo.specialWar[general.value.specialWar] ?? {
-      value: "None",
-      name: `${general.value.specage2}세`,
-    }
+const specialWar = computed(() =>
+  isValidObjKey(general.value.specialWar)
+    ? gameConstStore.value.iActionInfo.specialWar[general.value.specialWar]
+    : {
+        value: "None",
+        name: `${Math.max(general.value.age + 1, general.value.specage2)}세`,
+        info: '-',
+      }
 );
 
 const ageColor = computed(() => {
@@ -252,7 +274,9 @@ onMounted(() => {
   border-bottom: 1px solid gray;
   border-right: 1px solid gray;
 
-  > div.bg1, > .general-crew-type-icon, > .general-icon {
+  > div.bg1,
+  > .general-crew-type-icon,
+  > .general-icon {
     border-left: 1px solid gray;
   }
   > div {
