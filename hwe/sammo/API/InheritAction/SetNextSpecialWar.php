@@ -65,6 +65,10 @@ class SetNextSpecialWar extends \sammo\BaseAPI
         $reqAmount = GameConst::$inheritSpecificSpecialPoint;
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        if($gameStor->isunited){
+            return '이미 천하가 통일되었습니다.';
+        }
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
         $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
         if ($previousPoint < $reqAmount) {
