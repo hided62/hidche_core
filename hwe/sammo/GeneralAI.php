@@ -2574,7 +2574,7 @@ class GeneralAI
         $gold = $general->getVar('gold');
         $gold -= $this->fullLeadership * 3;
         $rice = $general->getVar('rice');
-        $rice -= $this->fullLeadership * 4 + 500;
+        $rice -= $this->fullLeadership * 4;
 
         if ($gold <= 0 || $rice <= 0) {
             return null;
