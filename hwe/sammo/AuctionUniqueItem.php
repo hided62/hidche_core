@@ -225,6 +225,11 @@ class AuctionUniqueItem extends Auction
     return $this->_bid($amount, $tryExtendCloseDate);
   }
 
+  protected function setHostAsNeutral(){
+    $this->info->hostGeneralID = 0;
+    $this->info->detail->hostName = '(상인)';
+  }
+
   protected function finishAuction(AuctionBidItem $highestBid, General $bidder): ?string
   {
     $itemKey = $this->info->target;
@@ -263,6 +268,9 @@ class AuctionUniqueItem extends Auction
         max(static::MIN_EXTENSION_MINUTES_BY_EXTENSION_QUERY, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_UNIQUE_CNT) * 60
       ));
 
+      if($bidder->getID() != $this->info->hostGeneralID){
+        $this->setHostAsNeutral();
+      }
       $this->extendCloseDate($extendedCloseDate, true);
       $this->extendLatestBidCloseDate(null);
       $this->applyDB();
@@ -308,6 +316,9 @@ class AuctionUniqueItem extends Auction
           max(static::MIN_EXTENSION_MINUTES_LIMIT_BY_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_BY_BID) * 60
         ));
 
+        if($bidder->getID() != $this->info->hostGeneralID){
+          $this->setHostAsNeutral();
+        }
         $this->extendCloseDate($extendedCloseDate, true);
         $this->extendLatestBidCloseDate(null);
       }
