@@ -7,7 +7,9 @@
       <div class="bg2">경매 {{ currentAuction.auction.id }}번 상세</div>
       <div class="row gx-0 text-center">
         <div class="col-2 col-md-1 bg1">경매명</div>
-        <div class="col-4 col-md-2">{{ currentAuction.auction.title }}</div>
+        <div v-b-tooltip.hover class="col-4 col-md-2" :title="getItemTooltipText(currentAuction.auction.target)">
+          {{ currentAuction.auction.title }}
+        </div>
 
         <div class="col-2 col-md-1 bg1">주최자(익명)</div>
         <div :class="['col-4 col-md-2', currentAuction.auction.isCallerHost ? 'isMe' : '']">
@@ -34,13 +36,17 @@
         <div class="col-4 col-md-3">시각</div>
       </div>
       <div v-for="bidder of currentAuction.bidList" :key="bidder.amount" class="row gx-0 px-md-5 text-center">
-        <div :class="['col-4 offset-md-2 col-md-3', bidder.isCallerHighestBidder ? 'isMe' : '']">{{ bidder.generalName }}</div>
+        <div :class="['col-4 offset-md-2 col-md-3', bidder.isCallerHighestBidder ? 'isMe' : '']">
+          {{ bidder.generalName }}
+        </div>
         <div class="col-4 col-md-2 text-end px-5 f_tnum">{{ bidder.amount.toLocaleString() }}</div>
         <div class="col-4 col-md-3 f_tnum">{{ cutDateTime(bidder.date) }}</div>
       </div>
       <div class="bg1">입찰하기</div>
       <div class="row">
-        <label class="col-5 offset-md-3 col-md-3 col-form-label text-center">유산포인트 (잔여: {{ currentAuction.remainPoint.toLocaleString() }}포인트)</label>
+        <label class="col-5 offset-md-3 col-md-3 col-form-label text-center"
+          >유산포인트 (잔여: {{ currentAuction.remainPoint.toLocaleString() }}포인트)</label
+        >
         <div class="col-4 col-md-2">
           <NumberInputWithInfo
             v-model="bidAmount"
@@ -77,7 +83,7 @@
       @click="currentAuctionID = auctionID"
     >
       <div class="col-1">{{ auction.id }}</div>
-      <div class="col-4">{{ auction.title }}</div>
+      <div v-b-tooltip.hover class="col-4" :title="getItemTooltipText(auction.target)">{{ auction.title }}</div>
       <div :class="['col-1', auction.isCallerHost ? 'isMe' : '']">{{ auction.hostName }}</div>
       <div class="col-2 f_tnum">{{ cutDateTime(auction.closeDate) }}</div>
       <div class="col-1">{{ auction.remainCloseDateExtensionCnt > 0 ? "남음" : "소진" }}</div>
@@ -126,8 +132,10 @@ import { SammoAPI } from "@/SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { useToast, BButton } from "bootstrap-vue-3";
 import { isString } from "lodash";
-import { onMounted, ref, watch } from "vue";
+import { inject, onMounted, ref, watch, type Ref } from "vue";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
+import type { GameConstStore } from "@/GameConstStore";
+import { unwrap_err } from "@/util/unwrap_err";
 
 type AuctionItemInfo = UniqueItemAuctionList["list"][0];
 
@@ -160,6 +168,12 @@ const finishedAuctionList = ref(new Map<number, AuctionItemInfo>());
 const obfuscatedName = ref("");
 
 const toasts = unwrap(useToast());
+
+const gameConstStore = unwrap_err(
+  inject<Ref<GameConstStore>>("gameConstStore"),
+  Error,
+  "gameConstStore가 주입되지 않았습니다."
+);
 
 function cutDateTime(dateTime: string, showSecond = false) {
   if (showSecond) {
@@ -236,6 +250,16 @@ defineExpose({
 onMounted(() => {
   void refreshList();
 });
+
+function getItemTooltipText(itemKey: string): string | undefined {
+  const gameConst = gameConstStore.value;
+  const item = gameConst.iActionInfo.item[itemKey];
+  console.log(item);
+  if (item === undefined) {
+    return undefined;
+  }
+  return item.info ?? undefined;
+}
 </script>
 
 <style>
@@ -244,11 +268,11 @@ onMounted(() => {
   color: aquamarine;
 }
 
-.clickableRow{
+.clickableRow {
   cursor: pointer;
 }
 
-.clickableRow:hover{
+.clickableRow:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 </style>
