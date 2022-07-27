@@ -152,6 +152,8 @@ class che_강행 extends Command\GeneralCommand
 
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
+        $general->increaseVarWithLimit('train', -5, 20);
+        $general->increaseVarWithLimit('atmos', -5, 20);
         $general->addExperience($exp);
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
