@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\Nation;
+namespace sammo\API\Troop;
 
 use sammo\Session;
 use DateTimeInterface;
@@ -10,7 +10,6 @@ use sammo\Validator;
 
 use function sammo\checkSecretPermission;
 
-/** @deprecated */
 class SetTroopName extends \sammo\BaseAPI
 {
   public function validateArgs(): ?string

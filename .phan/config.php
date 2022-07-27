@@ -57,7 +57,6 @@ return [
         'hwe/b_myPage.php',
         'hwe/v_processing.php',
         'hwe/b_tournament.php',
-        'hwe/b_troop.php',
         'hwe/c_tournament.php',
         'hwe/func_auction.php',
         'hwe/func_command.php',

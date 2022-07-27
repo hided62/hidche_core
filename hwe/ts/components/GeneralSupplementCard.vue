@@ -38,24 +38,24 @@
       <div class="bg1">피살</div>
       <div>{{ general.deathcrew.toLocaleString() }}</div>
     </div>
-    <div :class="[props.showCommandList ? 'col-7' : 'col', 'general-card-dex']">
+    <div :class="[(props.showCommandList && general.reservedCommand) ? 'col-8' : 'col', 'general-card-dex']">
       <div class="part-title bg1">숙련도</div>
       <template v-for="[dexType, dex, dexInfo] of dexList" :key="dexType">
         <div class="bg1">{{ dexType }}</div>
         <div :style="{ color: dexInfo.color }">{{ dexInfo.name }}</div>
         <div>{{ (dex / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) }}K</div>
         <div class="d-grid">
-          <div class="align-self-center"><SammoBar :height="10" :percent="dex / 1_000_000 * 100" /></div>
+          <div class="align-self-center"><SammoBar :height="10" :percent="(dex / 1_000_000) * 100" /></div>
         </div>
       </template>
     </div>
     <div
       v-if="props.showCommandList && general.reservedCommand && general.reservedCommand.length > 0"
-      class="col-5 general-card-turn"
+      class="col-4 general-card-turn"
     >
-      <div class="part-title">예약턴</div>
-      <div v-for="(turn, idx) in general.reservedCommand.slice(0, 5)" :key="idx">
-        {{ turn.brief }}
+      <div class="part-title bg1">예약턴</div>
+      <div v-for="(turn, idx) in general.reservedCommand.slice(0, 5)" :key="idx" class="command">
+        <span>{{ turn.brief }}</span>
       </div>
     </div>
   </div>
@@ -161,12 +161,16 @@ const dexList = computed((): [string, number, DexInfo][] => {
 }
 
 .general-card-turn {
-  .bg1 {
-    border-left: solid 1px gray;
+  > div {
+    height: calc(64px / 3);
+    border-bottom: solid 1px gray;
+    border-right: solid 1px gray;
   }
 
-  > div {
-    border-bottom: solid 1px gray;
+  > .command{
+    font-size: 90%;
+    display: grid;
+    align-content: center;
   }
 }
 </style>

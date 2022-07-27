@@ -1,6 +1,6 @@
 <?=$btnBegin??''?><a href='v_board.php' class='commandButton <?=$btnClass??""?> <?= $meLevel >= 1 ? '' : 'disabled' ?>'>회 의 실</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_board.php?isSecret=true' class='commandButton <?= $permission >= 2 ? '' : 'disabled' ?> <?=$btnClass??""?>'>기 밀 실</a><?=$btnEnd??''?>
-<?=$btnBegin??''?><a href='b_troop.php' class='commandButton <?= ($meLevel >= 1 && $nationLevel >= 1) ? '' : 'disabled' ?> <?=$btnClass??""?>'>부대 편성</a><?=$btnEnd??''?>
+<?=$btnBegin??''?><a href='v_troop.php' class='commandButton <?= ($meLevel >= 1 && $nationLevel >= 1) ? '' : 'disabled' ?> <?=$btnClass??""?>'>부대 편성</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='t_diplomacy.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>외 교 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='b_myBossInfo.php' class='commandButton <?= $meLevel >= 1 ? '' : 'disabled' ?> <?=$btnClass??""?>'>인 사 부</a><?=$btnEnd??''?>
 <?=$btnBegin??''?><a href='v_nationStratFinan.php' class='commandButton <?= $showSecret ? '' : 'disabled' ?> <?=$btnClass??""?>'>내 무 부</a><?=$btnEnd??''?>

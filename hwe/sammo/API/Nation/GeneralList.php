@@ -2,6 +2,7 @@
 
 namespace sammo\API\Nation;
 
+use ArrayObject;
 use sammo\DB;
 use sammo\General;
 use sammo\Session;
@@ -45,10 +46,11 @@ class GeneralList extends \sammo\BaseAPI
         'connect' => 0,
 
         'troop' => 0,
+        'city' => 0,
 
         'con' => 1,
-        'specage' => 1,
-        'specage2' => 1,
+        'specage' => 0,
+        'specage2' => 0,
         'leadership_exp' => 1,
         'strength_exp' => 1,
         'intel_exp' => 1,
@@ -58,7 +60,6 @@ class GeneralList extends \sammo\BaseAPI
         'dex4' => 1,
         'dex5' => 1,
 
-        'city' => 1,
         'experience' => 1,
         'dedication' => 1,
 
@@ -158,35 +159,59 @@ class GeneralList extends \sammo\BaseAPI
 
         $rawGeneralList = Util::convertArrayToDict($db->query('SELECT %l from general WHERE nation = %i ORDER BY turntime ASC', Util::formatListOfBackticks($queryColumns), $nationID), 'no');
 
+        /** @var ArrayObject[] */
+        $troops = [];
+        foreach ($db->queryAllLists('SELECT troop_leader,name FROM troop WHERE nation = %i', $nationID) as [$troopLeaderID, $troopName]) {
+            if (!key_exists($troopLeaderID, $rawGeneralList)) {
+                continue;
+            }
+            $troopTurnTime = $rawGeneralList[$troopLeaderID]['turntime'];
+            $troops[$troopLeaderID] = new ArrayObject([
+                'id' => $troopLeaderID,
+                'name' => $troopName,
+                'turntime' => $troopTurnTime,
+                'reservedCommand' => [],
+            ]);
+        }
+
         $reservedCommand = [];
-        if ($this->permission >= 1) {
-            $nonNPCGeneralIDList = [];
-            foreach ($rawGeneralList as $rawGeneral) {
-                if ($rawGeneral['npc'] < 2) {
-                    $nonNPCGeneralIDList[] = $rawGeneral['no'];
+        if ($this->permission >= 1 || count($troops)) {
+            $reservedCommandTargetGeneralIDList = [];
+
+            if($this->permission >= 1){
+                foreach ($rawGeneralList as $rawGeneral) {
+                    if ($rawGeneral['npc'] < 2) {
+                        $reservedCommandTargetGeneralIDList[$rawGeneral['no']] = $rawGeneral['no'];
+                    }
                 }
             }
+            foreach($troops as $troop){
+                $reservedCommandTargetGeneralIDList[$troop['id']] = $troop['id'];
+            }
+            
 
-            $rawTurnList = $db->query(
-                'SELECT general_id, turn_idx, action, arg, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id asc, turn_idx asc',
-                $nonNPCGeneralIDList
-            );
-
-            foreach ($rawTurnList as $rawTurn) {
-                [
-                    'general_id' => $generalID,
-                    'action' => $action,
-                    'arg' => $arg,
-                    'brief' => $brief,
-                ] = $rawTurn;
-                if (!key_exists($generalID, $reservedCommand)) {
-                    $reservedCommand[$generalID] = [];
+            if($reservedCommandTargetGeneralIDList){
+                $rawTurnList = $db->query(
+                    'SELECT general_id, turn_idx, action, arg, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id asc, turn_idx asc',
+                    array_values($reservedCommandTargetGeneralIDList)
+                );
+    
+                foreach ($rawTurnList as $rawTurn) {
+                    [
+                        'general_id' => $generalID,
+                        'action' => $action,
+                        'arg' => $arg,
+                        'brief' => $brief,
+                    ] = $rawTurn;
+                    if (!key_exists($generalID, $reservedCommand)) {
+                        $reservedCommand[$generalID] = [];
+                    }
+                    $reservedCommand[$generalID][] = [
+                        'action' => $action,
+                        'arg' => $arg,
+                        'brief' => $brief
+                    ];
                 }
-                $reservedCommand[$generalID][] = [
-                    'action' => $action,
-                    'arg' => $arg,
-                    'brief' => $brief
-                ];
             }
         }
 
@@ -252,6 +277,17 @@ class GeneralList extends \sammo\BaseAPI
             $resultColumns[$column] = $column;
         }
 
+        foreach ($troops as $troop){
+            $troopLeaderID = $troop['id'];
+            $troop['reservedCommand'] = array_map(function($turnObj){
+                $brief = $turnObj['brief'];
+                if($brief == '집합'){
+                    return $brief;
+                }
+                return '-';
+            }, $specialViewFilter['reservedCommand']($rawGeneralList[$troopLeaderID]));
+        }
+
         $generalList = [];
         foreach ($rawGeneralList as $rawGeneral) {
             //General 생성?
@@ -272,25 +308,14 @@ class GeneralList extends \sammo\BaseAPI
             $generalList[] = $item;
         }
 
-        $troops = [];
-        foreach ($db->queryAllLists('SELECT troop_leader,name FROM troop WHERE nation = %i', $nationID) as [$troopLeaderID, $troopName]) {
-            if (!key_exists($troopLeaderID, $rawGeneralList)) {
-                continue;
-            }
-            $troopTurnTime = $rawGeneralList[$troopLeaderID]['turntime'];
-            $troops[] = [
-                'id' => $troopLeaderID,
-                'name' => $troopName,
-                'turntime' => $troopTurnTime
-            ];
-        }
         $result = [
             'result' => true,
             'permission' => $this->permission,
             'column' => array_keys($resultColumns),
             'list' => $generalList,
-            'troops' => $troops,
+            'troops' => array_values($troops),
             'env' => $env,
+            'myGeneralID' => $session->generalID,
         ];
 
         return $result;
