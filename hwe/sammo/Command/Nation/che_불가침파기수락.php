@@ -165,7 +165,7 @@ class che_불가침파기수락 extends Command\NationCommand
         $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaWa}의 불가침 파기 수락");
 
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYiGeneral} <D><b>{$destNationName}</b></>{$josaWa}의 불가침 조약을 <M>파기</> 하였습니다.");
-        $logger->pushGlobalHistoryLog("<Y><b>【종전】</b></><D><b>{$nationName}</b></>{$josaYiNation} <D><b>{$destNationName}</b></>{$josaWa}의 불가침 조약을 <M>파기</> 하였습니다.");
+        $logger->pushGlobalHistoryLog("<Y><b>【파기】</b></><D><b>{$nationName}</b></>{$josaYiNation} <D><b>{$destNationName}</b></>{$josaWa}의 불가침 조약을 <M>파기</> 하였습니다.");
 
 
         $josaWa = JosaUtil::pick($nationName, '와');
