@@ -385,7 +385,6 @@ declare const staticValues: {
 };
 </script>
 <script setup lang="ts">
-import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 
 import { ref } from "vue";

@@ -254,7 +254,6 @@ declare const staticValues: {
 </script>
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 import TopBackBar from "@/components/TopBackBar.vue";
 import _ from "lodash";

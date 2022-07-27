@@ -55,6 +55,7 @@ $templates = new \League\Plates\Engine('templates');
             font-size: x-small;
         }
     </style>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['common', 'currentCity']) ?>
 </head>
 

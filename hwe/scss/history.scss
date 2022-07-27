@@ -1,4 +1,4 @@
-@import "./common/bootstrap5.scss";
+@import "./common/base.scss";
 @import "./editor_component.scss";
 @import "./util.scss";
 
@@ -15,12 +15,12 @@
 
   .map_position {
     flex: 0 0 auto;
-    width: 700px;
+    width: 700px !important;
   }
 
   .nation_position {
     flex: 0 0 auto;
-    width: 300px;
+    width: 300px !important;
   }
 }
 

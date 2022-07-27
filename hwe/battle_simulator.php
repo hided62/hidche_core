@@ -54,6 +54,7 @@ if ($nationID) {
         var city = <?= Json::encode($city) ?>;
         var nation = <?= Json::encode($nation) ?>;
     </script>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['common', 'battle_simulator']) ?>
 </head>
 

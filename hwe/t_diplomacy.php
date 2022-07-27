@@ -47,6 +47,7 @@ if ($permission < 1) {
         var permissionLevel = <?= $permission ?>; //
     </script>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['common', 'diplomacy']) ?>
 
 </head>

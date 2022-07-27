@@ -70,6 +70,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['myPage']) ?>
 </head>
 

@@ -70,3 +70,36 @@ $color in $sammoColors {
     }
   }
 }
+
+
+.buttonPlate {
+  .toolbarButton {
+      @extend .btn;
+      @extend .btn-sammo-base2;
+      width: 100%;
+      font-weight: bold;
+      font-size: 14px;
+  }
+
+  .toolbarButton2 {
+      @extend .btn;
+      @extend .btn-sammo-base2;
+      color: magenta;
+      width: 100%;
+      font-weight: bold;
+      font-size: 14px;
+
+      &:hover,
+      &:focus,
+      &:active {
+          color: magenta;
+      }
+  }
+
+  .commandButton {
+      width: 100%;
+      font-weight: bold;
+      font-size: 14px;
+      display: block;
+  }
+}

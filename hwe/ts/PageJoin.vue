@@ -272,7 +272,6 @@ declare const staticValues: {
 };
 </script>
 <script lang="ts" setup>
-import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 
 import TopBackBar from "@/components/TopBackBar.vue";
@@ -538,7 +537,7 @@ watch(inheritTurnTimeSecond, (newValue: number) => {
 });
 </script>
 <style lang="scss">
-@import "@scss/common/bootstrap5.scss";
+@import "@scss/common/base.scss";
 @import "@scss/editor_component.scss";
 
 #container {

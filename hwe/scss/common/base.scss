@@ -1,4 +1,5 @@
 @import "./variables.scss";
+@import "break_500px.scss";
 
 $body-bg:  #000;
 
@@ -6,5 +7,5 @@ $input-bg: #ddd;
 $input-color: #303030;
 
 @import "./bootswatch_custom_variables.scss";
-@import "bootstrap/scss/bootstrap-utilities.scss";
-@import "break_500px.scss";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";

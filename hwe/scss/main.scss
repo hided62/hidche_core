@@ -1,6 +1,7 @@
-@import "./common/bootstrap5.scss";
+@import "./common/base.scss";
 @import "./editor_component.scss";
 @import "./util.scss";
+
 body {
     color: white;
     background-color: black;
@@ -311,38 +312,6 @@ body {
         .nationNamePanel {
             grid-column: 1 / 4;
         }
-    }
-}
-
-.buttonPlate {
-    .toolbarButton {
-        @extend .btn;
-        @extend .btn-sammo-base2;
-        width: 100%;
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    .toolbarButton2 {
-        @extend .btn;
-        @extend .btn-sammo-base2;
-        color: magenta;
-        width: 100%;
-        font-weight: bold;
-        font-size: 14px;
-
-        &:hover,
-        &:focus,
-        &:active {
-            color: magenta;
-        }
-    }
-
-    .commandButton {
-        width: 100%;
-        font-weight: bold;
-        font-size: 14px;
-        display: block;
     }
 }
 

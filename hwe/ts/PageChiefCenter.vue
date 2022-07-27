@@ -94,7 +94,6 @@ declare const staticValues: {
 };
 </script>
 <script lang="ts" setup>
-import "@scss/common/bootstrap5.scss";
 import "@scss/game_bg.scss";
 import "../../css/config.css";
 

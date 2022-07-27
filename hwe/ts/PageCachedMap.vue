@@ -75,7 +75,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
-@import "@/../scss/common/bootstrap5.scss";
+@import "@scss/common/base.scss";
 @include media-1000px {
   #container {
     width: 700px;

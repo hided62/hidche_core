@@ -326,7 +326,6 @@
 </template>
 
 <script lang="ts" setup>
-//import "@scss/common/bootstrap5.scss";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Editor, EditorContent, BubbleMenu } from "@tiptap/vue-3";
 import { FontSize } from "@/tiptap-ext/FontSize";

@@ -205,7 +205,7 @@ class WebUtil
 
         $outputs = ["\n"];
 
-        foreach (["vendors", "common_ts", ...$entryName] as $moduleName) {
+        foreach (["vendors", "common_ts", "bootstrap", ...$entryName] as $moduleName) {
             foreach (['js', 'css'] as $ext) {
                 $checkPath = $basePath . "/{$moduleName}.{$ext}";
                 if (!file_exists($checkPath)) {
