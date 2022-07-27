@@ -1,13 +1,19 @@
 <template>
   <div class="general-card-basic bg2">
-    <div class="general-icon" :style="{
-      backgroundImage: `url(${iconPath})`,
-    }"></div>
+    <div
+      class="general-icon"
+      :style="{
+        backgroundImage: `url(${iconPath})`,
+      }"
+    ></div>
 
-    <div class="general-name" :style="{
-      color: isBrightColor(nation.color) ? '#000' : '#fff',
-      backgroundColor: nation.color,
-    }">
+    <div
+      class="general-name"
+      :style="{
+        color: isBrightColor(nation.color) ? '#000' : '#fff',
+        backgroundColor: nation.color,
+      }"
+    >
       {{ general.name }} 【{{ general.officerLevelText }} | {{ generalTypeCall }} |
       <span :style="{ color: injuryInfo.color }">{{ injuryInfo.text }}</span>
       】
@@ -47,12 +53,7 @@
     <div class="bg1">성격</div>
     <div v-b-tooltip.hover :title="personal.info ?? undefined">{{ personal.name }}</div>
 
-    <div class="bg1">특기</div>
-    <div>
-      <span v-b-tooltip.hover :title="specialDomestic.info ?? undefined"> {{ specialDomestic.name }}</span> /
-      <span v-b-tooltip.hover :title="specialWar.info ?? undefined"> {{ specialWar.name }}</span>
-    </div>
-
+    <div class="filler"></div>
     <div class="bg1">Lv</div>
     <div class="general-exp-level">
       {{ general.explevel }}
@@ -60,6 +61,14 @@
 
     <div class="bg1">연령</div>
     <div :style="{ color: ageColor }">{{ general.age }}세</div>
+
+    <div class="bg1">특기</div>
+    <div>
+      <span v-b-tooltip.hover :title="specialDomestic.info ?? undefined"> {{ specialDomestic.name }}</span> /
+      <span v-b-tooltip.hover :title="specialWar.info ?? undefined"> {{ specialWar.name }}</span>
+    </div>
+
+    <div class="filler"></div>
 
     <div class="bg1">삭턴</div>
     <div>{{ general.killturn }} 턴</div>
@@ -135,27 +144,27 @@ const ageColor = computed(() => {
   }
   return "red";
 });
-
 </script>
 
 <style lang="scss" scoped>
 .general-card-basic {
   display: grid;
   grid-template-columns: 64px repeat(3, 2fr 5fr);
-  grid-template-rows: repeat(9, calc(64px / 3));
+  grid-template-rows: repeat(5, calc(64px / 3));
   text-align: center;
   font-size: 14px;
 
   border-bottom: 1px solid gray;
   border-right: 1px solid gray;
 
-  >div.bg1,
-  >.general-crew-type-icon,
-  >.general-icon {
+  > div.bg1,
+  > .general-crew-type-icon,
+  > .general-icon,
+  > .filler {
     border-left: 1px solid gray;
   }
 
-  >div {
+  > div {
     border-top: 1px solid gray;
   }
 }
