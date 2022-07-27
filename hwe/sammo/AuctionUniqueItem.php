@@ -321,6 +321,7 @@ class AuctionUniqueItem extends Auction
         }
         $this->extendCloseDate($extendedCloseDate, true);
         $this->extendLatestBidCloseDate(null);
+        $this->applyDB();
       }
       return join(' ', $reasons);
     }
