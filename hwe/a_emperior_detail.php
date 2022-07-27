@@ -28,6 +28,7 @@ $serverID = $emperior['server_id'] ?? ($emperior['serverID'] ?? null);
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 왕조일람</title>
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', 'common', true) ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 

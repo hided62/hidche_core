@@ -54,6 +54,7 @@ if ($meLevel >= 5) {
         var chiefStatMin = <?= GameConst::$chiefStatMin ?>;
         var myLevel = <?= $meLevel ?>;
     </script>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['common', 'bossInfo']) ?>
 
     <?php

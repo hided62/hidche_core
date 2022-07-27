@@ -48,6 +48,7 @@ if ($gameStor->isunited) {
     <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['common']) ?>
 </head>
 

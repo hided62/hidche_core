@@ -83,6 +83,7 @@ if ($admin['maxonline'] < $curonline) {
         }
     </style>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
+    <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', ['common']) ?>
 </head>
 
