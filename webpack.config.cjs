@@ -12,6 +12,7 @@ module.exports = (env, argv) => {
     const target = (rawTarget == 'gateway') ? 'hwe' : rawTarget;
     const mode = argv.mode ?? 'production';
     const tsDir = resolve(__dirname, `${target}/ts/`);
+    const scssDir = resolve(__dirname, `${target}/scss/`);
     const build_exports = require(`${tsDir}/build_exports.json`);
 
     const versionGitPath = resolve(__dirname, target, 'd_setting', 'VersionGit.json');
@@ -59,6 +60,7 @@ module.exports = (env, argv) => {
     for (const [entry, filePath] of Object.entries(build_exports.ingame) ?? []) {
         entryIngame[entry] = `${tsDir}/${filePath}`;
     }
+    entryIngameVue['bootstrap'] = `${scssDir}/bootstrap.scss`;
     const cacheDirectory = path.resolve(__dirname, 'node_modules/.cache/webpack');
 
     const devtool = mode != 'production' ? 'eval-source-map' : (env.WEBPACK_WATCH ? 'source-map' : undefined);
