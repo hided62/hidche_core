@@ -11,6 +11,9 @@ use \sammo\GameConst;
 use sammo\RandUtil;
 use \sammo\SpecialityHelper;
 use sammo\TimeUtil;
+
+use function sammo\getPersonalityClass;
+
 class GeneralBuilder{
 
     protected $generalID = null;
@@ -161,7 +164,11 @@ class GeneralBuilder{
     }
 
     public function setEgo(?string $ego):self{
-        $this->ego = $ego;
+        if($ego === null){
+            $this->ego = null;
+            return $this;
+        }
+        $this->ego = Util::getClassName(getPersonalityClass($ego));
         return $this;
     }
 
