@@ -1,4 +1,5 @@
 import bs from 'binary-search';
+import { clamp } from 'lodash';
 
 export const DexLevelMap: [number, string, string][] = [
   [0, 'navy', 'F-'],
@@ -38,7 +39,7 @@ export type DexInfo = {
 
 export function formatDexLevel(dex: number): DexInfo {
   const rawIdx = bs(DexLevelMap, dex, ([dexKey], needle) => dexKey - needle);
-  const level = rawIdx >= 0 ? rawIdx : -(rawIdx + 1);
+  const level = rawIdx >= 0 ? rawIdx : clamp(-(rawIdx + 1), 0, DexLevelMap.length - 1);
 
   const [, color, name] = DexLevelMap[level];
 

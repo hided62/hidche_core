@@ -1,4 +1,5 @@
 import bs from 'binary-search';
+import { clamp } from 'lodash';
 
 const connectMap: [number, string][] = [
   [0, '안함'],
@@ -18,5 +19,6 @@ export function formatConnectScore(connect: number) {
   if (idx >= 0) {
     return connectMap[idx][1] ?? '?';
   }
-  return connectMap[-(idx + 1)][1] ?? '?';
+  const uidx = clamp(-idx - 1, 0, connectMap.length - 1);
+  return connectMap[uidx][1] ?? '?';
 }

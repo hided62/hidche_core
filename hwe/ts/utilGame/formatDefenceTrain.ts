@@ -1,4 +1,5 @@
 import bs from 'binary-search';
+import { clamp } from 'lodash';
 
 const defenceMap: [number,string][] = [
   [0, "△"],
@@ -13,5 +14,6 @@ export function formatDefenceTrain(defenceTrain: number): string {
   if(idx >= 0){
     return defenceMap[idx][1]??'?';
   }
-  return defenceMap[-(idx + 1)][1]??'?';
+  const uidx = clamp(-idx - 1, 0, defenceMap.length - 1);
+  return defenceMap[uidx][1]??'?';
 }

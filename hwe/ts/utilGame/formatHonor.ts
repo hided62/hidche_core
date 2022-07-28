@@ -1,4 +1,5 @@
 import bs from 'binary-search';
+import { clamp } from 'lodash';
 
 const hornorMap: [number, string][] = [
   [0, '전무'],
@@ -22,5 +23,6 @@ export function formatHonor(experience: number): string {
   if (idx >= 0) {
     return hornorMap[idx][1] ?? '?';
   }
-  return hornorMap[-(idx + 1)][1] ?? '?';
+  const uidx = clamp(-idx - 1, 0, hornorMap.length - 1);
+  return hornorMap[uidx][1] ?? '?';
 }
