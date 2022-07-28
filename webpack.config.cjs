@@ -63,7 +63,8 @@ module.exports = (env, argv) => {
     entryIngameVue['bootstrap'] = `${scssDir}/bootstrap.scss`;
     const cacheDirectory = path.resolve(__dirname, 'node_modules/.cache/webpack');
 
-    const devtool = mode != 'production' ? 'eval-source-map' : (env.WEBPACK_WATCH ? 'source-map' : undefined);
+    //const devtool = mode != 'production' ? 'eval-source-map' : (env.WEBPACK_WATCH ? 'source-map' : undefined);
+    const devtool = mode != 'production' ? 'eval-source-map' : 'source-map';
 
     const optimization = {
         splitChunks: {
