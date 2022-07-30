@@ -26,7 +26,7 @@ class Bet extends \sammo\BaseAPI
             ->rule('int', 'bettingID')
             ->rule('integerArray', 'bettingType')
             ->rule('int', 'amount')
-            ->rule('min', 'amount', 1);
+            ->rule('min', 'amount', 10);
 
         if (!$v->validate()) {
             return $v->errorStr();
