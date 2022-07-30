@@ -27,7 +27,7 @@
     <div>
       <div class="row gx-0">
         <div class="col">
-          <span :style="{ color: injuryInfo.color }">{{ general.leadership }}</span>
+          <span :style="{ color: injuryInfo.color }">{{ calcInjury('leadership', general) }}</span>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
         </div>
@@ -40,7 +40,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ general.strength }}
+          {{ calcInjury('strength', general) }}
         </div>
         <div class="col align-self-center">
           <SammoBar :height="10" :percent="(general.strength_exp / 20) * 100" />
@@ -51,7 +51,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ general.intel }}
+          {{ calcInjury('intel', general) }}
         </div>
         <div class="col align-self-center">
           <SammoBar :height="10" :percent="(general.intel_exp / 20) * 100" />
@@ -163,6 +163,8 @@ import { parseTime } from "@/util/parseTime";
 import { clamp } from "lodash";
 import { formatCityName } from "@/utilGame/formatCityName";
 import { isValidObjKey } from "@/utilGame/isValidObjKey";
+import { calcInjury } from "@/utilGame/calcInjury";
+
 const imagePath = window.pathConfig.gameImage;
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{

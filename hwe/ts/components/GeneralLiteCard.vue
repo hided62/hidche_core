@@ -23,7 +23,7 @@
     <div>
       <div class="row gx-0">
         <div class="col">
-          <span :style="{ color: injuryInfo.color }">{{ general.leadership }}</span>
+          <span :style="{ color: injuryInfo.color }">{{ calcInjury('leadership', general) }}</span>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
         </div>
@@ -33,7 +33,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ general.strength }}
+          {{ calcInjury('strength', general) }}
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ general.intel }}
+          {{ calcInjury('intel', general) }}
         </div>
       </div>
     </div>
@@ -91,6 +91,8 @@ import { unwrap } from "@/util/unwrap";
 import type { GameConstStore } from "@/GameConstStore";
 import { formatGeneralTypeCall } from "@/utilGame/formatGeneralTypeCall";
 import { formatConnectScore } from "@/utilGame/formatConnectScore";
+import { calcInjury } from "@/utilGame/calcInjury";
+
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{
   general: GeneralListItemP0;
