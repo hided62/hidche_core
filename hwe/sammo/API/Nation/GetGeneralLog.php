@@ -81,7 +81,7 @@ class GetGeneralLog extends \sammo\BaseAPI
         if (
             $reqType === self::GENERAL_ACTION &&
             $testGeneralNPCType < 2 &&
-            $generalID !== $me['generalID'] &&
+            $generalID !== $me['no'] &&
             $permission < 2
         ) {
             return '권한이 부족합니다. 유저 장수의 개인 기록은 수뇌만 열람 가능합니다.';
