@@ -121,7 +121,7 @@ class InheritancePointManager
     $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
     if ($storeType === true || ($gameStor->isunited != 0 && !$forceCalc)) {
       $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
-      [$value, $aux] = $inheritStor->getValue($key);
+      [$value, $aux] = $inheritStor->getValue($key) ?? [0, null];
       return $value;
     }
 
