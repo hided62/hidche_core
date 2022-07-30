@@ -127,6 +127,8 @@
           :general="popupGeneralTarget"
           :troopInfo="convBasicCardTroopInfo(popupGeneralTarget)"
           :nation="nationInfo"
+          :turnTerm="turnTerm"
+          :lastExecuted="lastExecuted"
         />
         <GeneralSupplementCard :general="popupGeneralTarget" :showCommandList="true" />
       </template>
@@ -154,6 +156,7 @@ import type { NationStaticItem } from "./defs";
 import GeneralLiteCard from "./components/GeneralLiteCard.vue";
 import GeneralSupplementCard from "./components/GeneralSupplementCard.vue";
 import { pick } from "./util/JosaUtil";
+import { parseTime } from "./util/parseTime";
 const toasts = unwrap(useToast());
 
 const asyncReady = ref(false);
@@ -225,6 +228,8 @@ type TroopInfo = {
 
 const me = ref<GeneralListItem>({} as GeneralListItem);
 const myPermission = ref<0 | 1 | 2 | 3 | 4>(0);
+const turnTerm = ref<number>(1);
+const lastExecuted = ref<Date>(new Date());
 
 const troopList = ref(new Map<number, TroopInfo>());
 const generalList = ref(new Map<number, GeneralListItem>());
@@ -249,6 +254,8 @@ async function refresh() {
     const nationP = SammoAPI.Nation.GetNationInfo({});
     nationInfo.value = (await nationP).nation;
     const { column, list, permission, troops, env, myGeneralID } = await generalListP;
+    turnTerm.value = env.turnterm;
+    lastExecuted.value = parseTime(env.turntime);
 
     //빠른 턴 순서로 정렬되어있다.
 

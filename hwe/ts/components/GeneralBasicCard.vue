@@ -148,7 +148,7 @@
 
 <script lang="ts" setup>
 import type { GeneralListItemP1 } from "@/defs/API/Nation";
-import { computed, inject, onMounted, ref, toRefs, type Ref } from "vue";
+import { computed, inject, onMounted, ref, toRefs, watch, type Ref } from "vue";
 import { getIconPath } from "@/util/getIconPath";
 import { isBrightColor } from "@/util/isBrightColor";
 import { formatInjury } from "@/utilGame/formatInjury";
@@ -164,6 +164,7 @@ import { clamp } from "lodash";
 import { formatCityName } from "@/utilGame/formatCityName";
 import { isValidObjKey } from "@/utilGame/isValidObjKey";
 import { calcInjury } from "@/utilGame/calcInjury";
+import { addMinutes } from "date-fns/esm";
 
 const imagePath = window.pathConfig.gameImage;
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
@@ -174,6 +175,8 @@ const props = defineProps<{
     name: string;
   };
   nation: NationStaticItem;
+  turnTerm: number;
+  lastExecuted: Date;
 }>();
 
 const { general, troopInfo, nation } = toRefs(props);
@@ -258,11 +261,13 @@ const ageColor = computed(() => {
 });
 
 const nextExecuteMinute = ref(999);
-onMounted(() => {
-  const now = new Date();
-  const turnTime = parseTime(general.value.turntime);
-  nextExecuteMinute.value = Math.floor(clamp(turnTime.getSeconds() - now.getSeconds() / 60, 0));
-});
+watch(general, () => {
+  let turnTime = parseTime(general.value.turntime);
+  if(turnTime.getTime() < props.lastExecuted.getTime()){
+    turnTime = addMinutes(turnTime, props.turnTerm);
+  }
+  nextExecuteMinute.value = Math.floor(clamp((turnTime.getTime() - props.lastExecuted.getTime()) / 60000, 0, 999));
+}, { immediate: true });
 </script>
 
 <style lang="scss" scoped>

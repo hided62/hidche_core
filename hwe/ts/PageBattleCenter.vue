@@ -38,7 +38,12 @@
     <div v-if="targetGeneral && nationInfo && targetGeneralLogs" class="row gx-0 bg0">
       <div class="col-12 col-md-6">
         <div class="bg1 header-cell" style="color: skyblue">장수 정보</div>
-        <GeneralBasicCard :general="targetGeneral" :nation="nationInfo" />
+        <GeneralBasicCard
+          :general="targetGeneral"
+          :nation="nationInfo"
+          :turnTerm="turnTerm"
+          :lastExecuted="lastExecuted"
+        />
         <GeneralSupplementCard :general="targetGeneral" />
       </div>
       <div class="col-12 col-md-6">
@@ -89,6 +94,7 @@ import type { NationStaticItem } from "./defs";
 import type { GeneralLogType } from "./defs/API/General";
 import { isString } from "lodash";
 import { formatLog } from "./utilGame/formatLog";
+import { parseTime } from "./util/parseTime";
 
 const toasts = unwrap(useToast());
 
@@ -104,6 +110,8 @@ const textMap = {
   turntime: ["최근 턴", (gen: GeneralListItemP1) => gen.turntime, false, (gen: GeneralListItemP1) => ""],
   name: ["이름", (gen: GeneralListItemP1) => `${gen.npc} ${gen.name}`, true, (gen: GeneralListItemP1) => ""],
 } as const;
+const turnTerm = ref<number>(1);
+const lastExecuted = ref<Date>(new Date());
 
 const orderedGeneralList = ref<GeneralListItemP1[]>([]);
 const orderedInvGeneralKeyIndex = ref(new Map<number, number>());
@@ -239,6 +247,9 @@ async function reload(): Promise<void> {
     if (permission === 0) {
       throw "권한이 부족합니다.";
     }
+
+    turnTerm.value = env.turnterm;
+    lastExecuted.value = parseTime(env.turntime);
 
     console.log(list);
     const rawGeneralList = merge2DArrToObjectArr(column, list);
