@@ -528,7 +528,7 @@ function checkWander(RandUtil $rng)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['year', 'month']);
+    $admin = $gameStor->getValues(['year', 'month', 'init_year', 'init_month']);
 
     $wanderers = $db->queryFirstColumn('SELECT general.`no` FROM general LEFT JOIN nation ON general.nation = nation.nation WHERE nation.`level` = 0 AND general.`officer_level` = 12');
 
