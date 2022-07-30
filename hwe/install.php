@@ -32,6 +32,7 @@ if ($session->userGrade < 5 && !$allowReset) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printCSS('css/install.css') ?>
+    <?= WebUtil::printDist('vue', []) ?>
     <?= WebUtil::printDist('ts', ['common', 'install']) ?>
 </head>
 
