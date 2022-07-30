@@ -58,7 +58,10 @@
               @click="openKickTroopMemberDialog(troop)"
               >부대원 추방...</BButton
             >
-            <BButton variant="info" @click="openChangeTroopNameDialog(troop)"
+            <BButton
+              v-if="myPermission >= 4"
+              variant="info"
+              @click="openChangeTroopNameDialog(troop)"
               >부대명 변경...</BButton
             >
           </div>
@@ -221,6 +224,7 @@ type TroopInfo = {
 };
 
 const me = ref<GeneralListItem>({} as GeneralListItem);
+const myPermission = ref<0 | 1 | 2 | 3 | 4>(0);
 
 const troopList = ref(new Map<number, TroopInfo>());
 const generalList = ref(new Map<number, GeneralListItem>());
@@ -276,6 +280,8 @@ async function refresh() {
     } else {
       throw `?? ${permission}`;
     }
+
+    myPermission.value = permission;
 
     me.value = unwrap(generalList.value.get(myGeneralID));
 
