@@ -27,7 +27,7 @@
     <div>
       <div class="row gx-0">
         <div class="col">
-          <span :style="{ color: injuryInfo.color }">{{ calcInjury('leadership', general) }}</span>
+          <span :style="{ color: injuryInfo.color }">{{ calcInjury("leadership", general) }}</span>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
         </div>
@@ -40,7 +40,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ calcInjury('strength', general) }}
+          {{ calcInjury("strength", general) }}
         </div>
         <div class="col align-self-center">
           <SammoBar :height="10" :percent="(general.strength_exp / 20) * 100" />
@@ -51,7 +51,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ calcInjury('intel', general) }}
+          {{ calcInjury("intel", general) }}
         </div>
         <div class="col align-self-center">
           <SammoBar :height="10" :percent="(general.intel_exp / 20) * 100" />
@@ -60,18 +60,24 @@
     </div>
 
     <div class="bg1">명마</div>
-    <div v-b-tooltip.hover :title="horse.info ?? '-'">{{ horse.name }}</div>
+    <div v-if="!horse.info">{{ horse.name }}</div>
+    <div v-else v-b-tooltip.hover :title="horse.info">{{ horse.name }}</div>
+
     <div class="bg1">무기</div>
-    <div v-b-tooltip.hover :title="weapon.info ?? '-'">{{ weapon.name }}</div>
+    <div v-if="!weapon.info">{{ weapon.name }}</div>
+    <div v-else v-b-tooltip.hover :title="weapon.info">{{ weapon.name }}</div>
+
     <div class="bg1">서적</div>
-    <div v-b-tooltip.hover :title="book.info ?? '-'">{{ book.name }}</div>
+    <div v-if="!book.info">{{ book.name }}</div>
+    <div v-else v-b-tooltip.hover :title="book.info">{{ book.name }}</div>
 
     <div class="bg1">자금</div>
     <div>{{ general.gold.toLocaleString() }}</div>
     <div class="bg1">군량</div>
     <div>{{ general.rice.toLocaleString() }}</div>
     <div class="bg1">도구</div>
-    <div v-b-tooltip.hover :title="item.info ?? '-'">{{ item.name }}</div>
+    <div v-if="!item.info">{{ item.name }}</div>
+    <div v-else v-b-tooltip.hover :title="item.info">{{ item.name }}</div>
 
     <!-- TODO: show_img_level을 고려 -->
     <div
@@ -82,11 +88,13 @@
     ></div>
 
     <div class="bg1">병종</div>
-    <div v-b-tooltip.hover :title="crewtype.info ?? '-'">{{ crewtype.name }}</div>
+    <div v-if="!crewtype.info">{{ crewtype.name }}</div>
+    <div v-else v-b-tooltip.hover :title="crewtype.info">{{ crewtype.name }}</div>
     <div class="bg1">병사</div>
     <div>{{ general.crew.toLocaleString() }}</div>
     <div class="bg1">성격</div>
-    <div v-b-tooltip.hover :title="personal.info ?? '-'">{{ personal.name }}</div>
+    <div v-if="!personal.info">{{ personal.name }}</div>
+    <div v-else v-b-tooltip.hover :title="personal.info">{{ personal.name }}</div>
 
     <!-- TODO: bonusTrain 같은 개념이 필요 -->
     <div class="bg1">훈련</div>
@@ -95,8 +103,11 @@
     <div>{{ general.atmos }}</div>
     <div class="bg1">특기</div>
     <div>
-      <span v-b-tooltip.hover :title="specialDomestic.info ?? '-'"> {{ specialDomestic.name }}</span> /
-      <span v-b-tooltip.hover :title="specialWar.info ?? '-'"> {{ specialWar.name }}</span>
+      <span v-if="!specialDomestic.info"> {{ specialDomestic.name }}</span
+      ><span v-else v-b-tooltip.hover :title="specialDomestic.info"> {{ specialDomestic.name }}</span>
+      /
+      <span v-if="!specialWar.info"> {{ specialWar.name }}</span
+      ><span v-else v-b-tooltip.hover :title="specialWar.info"> {{ specialWar.name }}</span>
     </div>
 
     <div class="bg1">Lv</div>
@@ -148,7 +159,7 @@
 
 <script lang="ts" setup>
 import type { GeneralListItemP1 } from "@/defs/API/Nation";
-import { computed, inject, onMounted, ref, toRefs, watch, type Ref } from "vue";
+import { inject, ref, toRefs, watch, type Ref } from "vue";
 import { getIconPath } from "@/util/getIconPath";
 import { isBrightColor } from "@/util/isBrightColor";
 import { formatInjury } from "@/utilGame/formatInjury";
@@ -165,6 +176,7 @@ import { formatCityName } from "@/utilGame/formatCityName";
 import { isValidObjKey } from "@/utilGame/isValidObjKey";
 import { calcInjury } from "@/utilGame/calcInjury";
 import { addMinutes } from "date-fns/esm";
+import type { GameIActionInfo } from "@/defs/GameObj";
 
 const imagePath = window.pathConfig.gameImage;
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
@@ -180,94 +192,94 @@ const props = defineProps<{
 }>();
 
 const { general, troopInfo, nation } = toRefs(props);
-const iconPath = computed(() => getIconPath(general.value.imgsvr, general.value.picture));
-const injuryInfo = computed(() => {
-  const [text, color] = formatInjury(general.value.injury);
-  return {
-    text,
-    color,
-  };
-});
-const generalTypeCall = computed(() =>
-  formatGeneralTypeCall(
-    general.value.leadership,
-    general.value.strength,
-    general.value.intel,
-    gameConstStore.value.gameConst
-  )
-);
+const iconPath = ref("");
 
-const horse = computed(() =>
-  isValidObjKey(general.value.horse)
-    ? gameConstStore.value.iActionInfo.item[general.value.horse]
-    : { value: "None", name: "-", info: "" }
-);
-const weapon = computed(() =>
-  isValidObjKey(general.value.weapon)
-    ? gameConstStore.value.iActionInfo.item[general.value.weapon]
-    : { value: "None", name: "-", info: "" }
-);
-const book = computed(() =>
-  isValidObjKey(general.value.book)
-    ? gameConstStore.value.iActionInfo.item[general.value.book]
-    : { value: "None", name: "-", info: "" }
-);
-const item = computed(() =>
-  isValidObjKey(general.value.item)
-    ? gameConstStore.value.iActionInfo.item[general.value.item]
-    : { value: "None", name: "-", info: "" }
-);
+const injuryInfo = ref<{ text: string; color: string }>({ text: "-", color: "white" });
+const generalTypeCall = ref<string>("-");
 
-const crewtype = computed(() =>
-  isValidObjKey(general.value.crewtype)
-    ? gameConstStore.value.iActionInfo.crewtype[general.value.crewtype]
-    : { value: "None", name: "-", info: "-" }
-);
+const ageColor = ref<string>("limegreen");
 
-const personal = computed(() =>
-  isValidObjKey(general.value.personal)
-    ? gameConstStore.value.iActionInfo.personality[general.value.personal]
-    : { value: "None", name: "-", info: "-" }
-);
-const specialDomestic = computed(() =>
-  isValidObjKey(general.value.specialDomestic)
-    ? gameConstStore.value.iActionInfo.specialDomestic[general.value.specialDomestic]
-    : {
-        value: "None",
-        name: `${Math.max(general.value.age + 1, general.value.specage)}세`,
-        info: '-',
+watch(
+  general,
+  (general) => {
+    iconPath.value = getIconPath(general.imgsvr, general.picture);
+
+    const [text, color] = formatInjury(general.injury);
+    injuryInfo.value = { text, color };
+
+    generalTypeCall.value = formatGeneralTypeCall(
+      general.leadership,
+      general.strength,
+      general.intel,
+      gameConstStore.value.gameConst
+    );
+
+    ageColor.value = (() => {
+      const age = general.age;
+      const retirementYear = gameConstStore.value.gameConst.retirementYear;
+      if (age < retirementYear * 0.75) {
+        return "limegreen";
       }
-);
-const specialWar = computed(() =>
-  isValidObjKey(general.value.specialWar)
-    ? gameConstStore.value.iActionInfo.specialWar[general.value.specialWar]
-    : {
-        value: "None",
-        name: `${Math.max(general.value.age + 1, general.value.specage2)}세`,
-        info: '-',
+      if (age < retirementYear) {
+        return "yellow";
       }
+      return "red";
+    })();
+  },
+  { immediate: true }
 );
 
-const ageColor = computed(() => {
-  const age = general.value.age;
-  const retirementYear = gameConstStore.value.gameConst.retirementYear;
-  if (age < retirementYear * 0.75) {
-    return "limegreen";
-  }
-  if (age < retirementYear) {
-    return "yellow";
-  }
-  return "red";
-});
+const dummyInfo: GameIActionInfo = { value: "None", name: "-", info: "" };
+
+const horse = ref<GameIActionInfo>(dummyInfo);
+const weapon = ref<GameIActionInfo>(dummyInfo);
+const book = ref<GameIActionInfo>(dummyInfo);
+const item = ref<GameIActionInfo>(dummyInfo);
+
+const crewtype = ref<GameIActionInfo>(dummyInfo);
+
+const personal = ref<GameIActionInfo>(dummyInfo);
+const specialDomestic = ref<GameIActionInfo>(dummyInfo);
+const specialWar = ref<GameIActionInfo>(dummyInfo);
+
+watch(
+  general,
+  (general) => {
+    horse.value = !isValidObjKey(general.horse) ? dummyInfo : gameConstStore.value.iActionInfo.item[general.horse];
+    weapon.value = !isValidObjKey(general.weapon) ? dummyInfo : gameConstStore.value.iActionInfo.item[general.weapon];
+    book.value = !isValidObjKey(general.book) ? dummyInfo : gameConstStore.value.iActionInfo.item[general.book];
+    item.value = !isValidObjKey(general.item) ? dummyInfo : gameConstStore.value.iActionInfo.item[general.item];
+
+    crewtype.value = !isValidObjKey(general.crewtype)
+      ? dummyInfo
+      : gameConstStore.value.iActionInfo.crewtype[general.crewtype];
+
+    personal.value = !isValidObjKey(general.personal)
+      ? dummyInfo
+      : gameConstStore.value.iActionInfo.personality[general.personal];
+
+    specialDomestic.value = !isValidObjKey(general.specialDomestic)
+      ? { value: "None", name: `${Math.max(general.age + 1, general.specage)}세`, info: "-" }
+      : gameConstStore.value.iActionInfo.specialDomestic[general.specialDomestic];
+    specialWar.value = !isValidObjKey(general.specialWar)
+      ? { value: "None", name: `${Math.max(general.age + 1, general.specage2)}세`, info: "-" }
+      : gameConstStore.value.iActionInfo.specialWar[general.specialWar];
+  },
+  { immediate: true }
+);
 
 const nextExecuteMinute = ref(999);
-watch(general, () => {
-  let turnTime = parseTime(general.value.turntime);
-  if(turnTime.getTime() < props.lastExecuted.getTime()){
-    turnTime = addMinutes(turnTime, props.turnTerm);
-  }
-  nextExecuteMinute.value = Math.floor(clamp((turnTime.getTime() - props.lastExecuted.getTime()) / 60000, 0, 999));
-}, { immediate: true });
+watch(
+  general,
+  () => {
+    let turnTime = parseTime(general.value.turntime);
+    if (turnTime.getTime() < props.lastExecuted.getTime()) {
+      turnTime = addMinutes(turnTime, props.turnTerm);
+    }
+    nextExecuteMinute.value = Math.floor(clamp((turnTime.getTime() - props.lastExecuted.getTime()) / 60000, 0, 999));
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

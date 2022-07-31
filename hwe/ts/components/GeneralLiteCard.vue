@@ -23,7 +23,7 @@
     <div>
       <div class="row gx-0">
         <div class="col">
-          <span :style="{ color: injuryInfo.color }">{{ calcInjury('leadership', general) }}</span>
+          <span :style="{ color: injuryInfo.color }">{{ calcInjury("leadership", general) }}</span>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
         </div>
@@ -33,7 +33,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ calcInjury('strength', general) }}
+          {{ calcInjury("strength", general) }}
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <div>
       <div class="row gx-0">
         <div class="col" :style="{ color: injuryInfo.color }">
-          {{ calcInjury('intel', general) }}
+          {{ calcInjury("intel", general) }}
         </div>
       </div>
     </div>
@@ -51,7 +51,8 @@
     <div class="bg1">군량</div>
     <div>{{ general.rice.toLocaleString() }}</div>
     <div class="bg1">성격</div>
-    <div v-b-tooltip.hover :title="personal.info ?? undefined">{{ personal.name }}</div>
+    <div v-if="!personal.info">{{ personal.name }}</div>
+    <div v-else v-b-tooltip.hover :title="personal.info">{{ personal.name }}</div>
 
     <div class="filler"></div>
     <div class="bg1">Lv</div>
@@ -64,8 +65,11 @@
 
     <div class="bg1">특기</div>
     <div>
-      <span v-b-tooltip.hover :title="specialDomestic.info ?? undefined"> {{ specialDomestic.name }}</span> /
-      <span v-b-tooltip.hover :title="specialWar.info ?? undefined"> {{ specialWar.name }}</span>
+      <span v-if="!specialDomestic.info"> {{ specialDomestic.name }}</span
+      ><span v-else v-b-tooltip.hover :title="specialDomestic.info"> {{ specialDomestic.name }}</span>
+      /
+      <span v-if="!specialWar.info"> {{ specialWar.name }}</span
+      ><span v-else v-b-tooltip.hover :title="specialWar.info"> {{ specialWar.name }}</span>
     </div>
 
     <div class="filler"></div>
@@ -82,7 +86,7 @@
 
 <script lang="ts" setup>
 import type { GeneralListItemP0 } from "@/defs/API/Nation";
-import { computed, inject, toRefs, type Ref } from "vue";
+import { computed, inject, ref, toRefs, watch, type Ref } from "vue";
 import { getIconPath } from "@/util/getIconPath";
 import { isBrightColor } from "@/util/isBrightColor";
 import { formatInjury } from "@/utilGame/formatInjury";
@@ -92,6 +96,8 @@ import type { GameConstStore } from "@/GameConstStore";
 import { formatGeneralTypeCall } from "@/utilGame/formatGeneralTypeCall";
 import { formatConnectScore } from "@/utilGame/formatConnectScore";
 import { calcInjury } from "@/utilGame/calcInjury";
+import type { GameIActionInfo } from "@/defs/GameObj";
+import { isValidObjKey } from "@/utilGame/isValidObjKey";
 
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{
@@ -100,52 +106,65 @@ const props = defineProps<{
 }>();
 
 const { general, nation } = toRefs(props);
-const iconPath = computed(() => getIconPath(general.value.imgsvr, general.value.picture));
-const injuryInfo = computed(() => {
-  const [text, color] = formatInjury(general.value.injury);
-  return {
-    text,
-    color,
-  };
-});
-const generalTypeCall = computed(() =>
-  formatGeneralTypeCall(
-    general.value.leadership,
-    general.value.strength,
-    general.value.intel,
-    gameConstStore.value.gameConst
-  )
+const iconPath = ref("");
+
+const injuryInfo = ref<{ text: string; color: string }>({ text: "-", color: "white" });
+const generalTypeCall = ref<string>("-");
+
+const ageColor = ref<string>("limegreen");
+
+watch(
+  general,
+  (general) => {
+    iconPath.value = getIconPath(general.imgsvr, general.picture);
+
+    const [text, color] = formatInjury(general.injury);
+    injuryInfo.value = { text, color };
+
+    generalTypeCall.value = formatGeneralTypeCall(
+      general.leadership,
+      general.strength,
+      general.intel,
+      gameConstStore.value.gameConst
+    );
+
+    ageColor.value = (() => {
+      const age = general.age;
+      const retirementYear = gameConstStore.value.gameConst.retirementYear;
+      if (age < retirementYear * 0.75) {
+        return "limegreen";
+      }
+      if (age < retirementYear) {
+        return "yellow";
+      }
+      return "red";
+    })();
+  },
+  { immediate: true }
 );
 
-const personal = computed(
-  () => gameConstStore.value.iActionInfo.personality[general.value.personal] ?? { value: "None", name: "-" }
-);
-const specialDomestic = computed(
-  () =>
-    gameConstStore.value.iActionInfo.specialDomestic[general.value.specialDomestic] ?? {
-      value: "None",
-      name: `-`,
-    }
-);
-const specialWar = computed(
-  () =>
-    gameConstStore.value.iActionInfo.specialWar[general.value.specialWar] ?? {
-      value: "None",
-      name: `-`,
-    }
-);
+const dummyInfo: GameIActionInfo = { value: "None", name: "-", info: "" };
 
-const ageColor = computed(() => {
-  const age = general.value.age;
-  const retirementYear = gameConstStore.value.gameConst.retirementYear;
-  if (age < retirementYear * 0.75) {
-    return "limegreen";
-  }
-  if (age < retirementYear) {
-    return "yellow";
-  }
-  return "red";
-});
+const personal = ref<GameIActionInfo>(dummyInfo);
+const specialDomestic = ref<GameIActionInfo>(dummyInfo);
+const specialWar = ref<GameIActionInfo>(dummyInfo);
+
+watch(
+  general,
+  (general) => {
+    personal.value = !isValidObjKey(general.personal)
+      ? dummyInfo
+      : gameConstStore.value.iActionInfo.personality[general.personal];
+
+    specialDomestic.value = !isValidObjKey(general.specialDomestic)
+      ? dummyInfo
+      : gameConstStore.value.iActionInfo.specialDomestic[general.specialDomestic];
+    specialWar.value = !isValidObjKey(general.specialWar)
+      ? dummyInfo
+      : gameConstStore.value.iActionInfo.specialWar[general.specialWar];
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>
