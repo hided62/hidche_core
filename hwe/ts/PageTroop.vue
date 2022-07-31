@@ -14,6 +14,11 @@
         <div class="troopLeaderName">
           {{ troop.troopLeader.name }}
         </div>
+        <div class="troopReservedCommand">
+          <div v-for="(brief, idx) in troop.reservedCommandBrief" :key="idx">
+            {{ `${idx + 1}: ${brief}` }}
+          </div>
+        </div>
         <div class="troopMembers">
           <template v-for="(member, idx) in troop.members" :key="member.no">
             <template v-if="idx != 0">, </template>
@@ -44,15 +49,11 @@
           </template>
           ({{ troop.members.length }}명)
         </div>
-        <div class="troopReservedCommand">
-          <div v-for="(brief, idx) in troop.reservedCommandBrief" :key="idx">
-            {{ `${idx + 1}: ${brief}` }}
-          </div>
-        </div>
+
         <div class="troopAction">
           <div
             v-if="tryTroopActionTarget.type === undefined || tryTroopActionTarget.targetTroop !== troop.troopID"
-            class="d-grid"
+            class="actionButtons"
           >
             <BButton v-if="!me.troop" variant="primary" @click="joinTroop(troop.troopID)">부대 탑승</BButton>
             <BButton
@@ -61,35 +62,30 @@
               @click="exitTroop()"
               >{{ me.no == me.troop ? "부대 해산" : "부대 탈퇴" }}</BButton
             >
-            <BButton
-              v-if="me.troop == troop.troopID && me.no == me.troop"
-              @click="openKickTroopMemberDialog(troop)"
+            <BButton v-if="me.troop == troop.troopID && me.no == me.troop" @click="openKickTroopMemberDialog(troop)"
               >부대원 추방...</BButton
             >
-            <BButton
-              v-if="myPermission >= 4"
-              variant="info"
-              @click="openChangeTroopNameDialog(troop)"
+            <BButton v-if="myPermission >= 4" variant="info" @click="openChangeTroopNameDialog(troop)"
               >부대명 변경...</BButton
             >
           </div>
-          <div v-else-if="tryTroopActionTarget.type === 'changeName'" class="row gx-0">
-            <div class="col-12 bg1 center" style="padding: 0.2em">부대명 변경</div>
-            <div class="col-12 d-grid">
+          <div v-else-if="tryTroopActionTarget.type === 'changeName'" class="subDialog">
+            <div class="subTitle bg1 center"><span>부대명 변경</span></div>
+            <div class="subForm d-grid">
               <BFormInput v-model="newTroopName" :trim="true" type="text" />
             </div>
-            <div class="col-6 d-grid">
+            <div class="subBtnCancel d-grid">
               <BButton variant="secondary" @click="tryTroopActionTarget = { type: undefined, targetTroop: 0 }"
                 >취소</BButton
               >
             </div>
-            <div class="col-6 d-grid">
+            <div class="subBtnOK d-grid">
               <BButton variant="primary" @click="changeTroopName(troop)">변경</BButton>
             </div>
           </div>
-          <div v-else-if="tryTroopActionTarget.type === 'kickMember'" class="row gx-0">
-            <div class="col-12 bg1 center" style="padding: 0.2em">부대명 추방</div>
-            <div class="col-12 d-grid">
+          <div v-else-if="tryTroopActionTarget.type === 'kickMember'" class="subDialog">
+            <div class="subTitle bg1 center" style="padding: 0.2em">부대명 추방</div>
+            <div class="subForm d-grid">
               <BFormSelect v-model="kickTroopMemberID">
                 <template v-for="member of troop.members" :key="member.no">
                   <BFormSelectOption v-if="member.no != troop.troopID" :value="member.no">
@@ -98,16 +94,17 @@
                 </template>
               </BFormSelect>
             </div>
-            <div class="col-6 d-grid">
+            <div class="subBtnCancel d-grid">
               <BButton variant="secondary" @click="tryTroopActionTarget = { type: undefined, targetTroop: 0 }"
                 >취소</BButton
               >
             </div>
-            <div class="col-6 d-grid">
+            <div class="subBtnOK d-grid">
               <BButton variant="primary" @click="kickTroopMember(troop)">추방</BButton>
             </div>
           </div>
         </div>
+        <div class="filler"></div>
       </div>
     </div>
     <div v-if="asyncReady && gameConstStore && me" class="row additionalTroopOptions">
@@ -302,11 +299,11 @@ async function refresh() {
 
     troopList.value = new Map();
 
-    const sortedTroops= troops.sort((lhs, rhs) => {
-      if(lhs.turntime < rhs.turntime) {
+    const sortedTroops = troops.sort((lhs, rhs) => {
+      if (lhs.turntime < rhs.turntime) {
         return -1;
       }
-      if(lhs.turntime > rhs.turntime) {
+      if (lhs.turntime > rhs.turntime) {
         return 1;
       }
       return lhs.id - rhs.id;
@@ -441,11 +438,11 @@ async function exitTroop() {
   await refresh();
 }
 
-function openChangeTroopNameDialog(troop: TroopInfo){
+function openChangeTroopNameDialog(troop: TroopInfo) {
   tryTroopActionTarget.value = {
-    type: 'changeName',
-    targetTroop: troop.troopID
-  }
+    type: "changeName",
+    targetTroop: troop.troopID,
+  };
   newTroopName.value = troop.troopName;
 }
 
@@ -479,14 +476,13 @@ async function changeTroopName(troop: TroopInfo) {
   await refresh();
 }
 
-
-function openKickTroopMemberDialog(troop: TroopInfo){
+function openKickTroopMemberDialog(troop: TroopInfo) {
   tryTroopActionTarget.value = {
-    type: 'kickMember',
-    targetTroop: troop.troopID
-  }
-  for(const member of troop.members){
-    if(member.no == troop.troopID){
+    type: "kickMember",
+    targetTroop: troop.troopID,
+  };
+  for (const member of troop.members) {
+    if (member.no == troop.troopID) {
       continue;
     }
     kickTroopMemberID.value = member.no;
@@ -496,7 +492,7 @@ function openKickTroopMemberDialog(troop: TroopInfo){
 
 async function kickTroopMember(troop: TroopInfo) {
   const kickMember = generalList.value.get(kickTroopMemberID.value);
-  if(kickMember === undefined){
+  if (kickMember === undefined) {
     toasts.danger({
       title: "오류",
       body: "잘못된 접근입니다.",
@@ -555,7 +551,7 @@ async function kickTroopMember(troop: TroopInfo) {
   border: solid 1px gray;
 }
 
-.troopDiffCityMemeber{
+.troopDiffCityMemeber {
   color: red;
 }
 
@@ -569,7 +565,7 @@ async function kickTroopMember(troop: TroopInfo) {
   }
 
   .troopInfo {
-    grid-column: 1/2;
+    grid-column: 1/3;
     grid-row: 1/2;
     display: grid;
     align-content: center;
@@ -577,7 +573,7 @@ async function kickTroopMember(troop: TroopInfo) {
   }
 
   .troopTurn {
-    grid-column: 1/2;
+    grid-column: 1/3;
     grid-row: 2/3;
     display: grid;
     align-content: center;
@@ -585,7 +581,7 @@ async function kickTroopMember(troop: TroopInfo) {
   }
 
   .troopLeaderIcon {
-    grid-column: 2/3;
+    grid-column: 3/4;
     grid-row: 1/2;
     display: grid;
     align-content: center;
@@ -593,7 +589,7 @@ async function kickTroopMember(troop: TroopInfo) {
   }
 
   .troopLeaderName {
-    grid-column: 2/3;
+    grid-column: 3/4;
     grid-row: 2/3;
     display: grid;
     align-items: center;
@@ -608,7 +604,7 @@ async function kickTroopMember(troop: TroopInfo) {
   }
 
   .troopAction {
-    grid-column: 5/6;
+    grid-column: 6/7;
     grid-row: 1/3;
 
     .btn {
@@ -635,16 +631,41 @@ async function kickTroopMember(troop: TroopInfo) {
   }
 
   .troopItem {
-    grid-template-rows: 65px 28px;
-    grid-template-columns: 130px 130px 1fr 100px 140px;
+    grid-template-rows: 65px 28px 34.5px;
+    grid-template-columns: 65px 65px 130px 100px 1fr;
 
     .troopMembers {
-      grid-column: 3/4;
+      grid-column: 5/6;
       grid-row: 1/3;
     }
 
     &:last-of-type {
       border-bottom: solid 1px gray;
+    }
+
+    .filler {
+      grid-column: 1/2;
+      grid-row: 3/4;
+    }
+
+    .troopAction {
+      grid-column: 2/7;
+      grid-row: 3/4;
+      .actionButtons {
+        display: grid;
+        grid-template-columns: 110px 110px 110px;
+        grid-template-rows: 33.5px;
+      }
+    }
+  }
+
+  .subDialog {
+    display: grid;
+    grid-template-columns: 90px 140px 50px 50px;
+
+    .subTitle {
+      display: grid;
+      align-content: center;
     }
   }
 }
@@ -662,18 +683,41 @@ async function kickTroopMember(troop: TroopInfo) {
 
   .troopItem {
     grid-template-rows: 65px 28px auto;
-    grid-template-columns: 130px 130px 0px 100px 140px;
+    grid-template-columns: 65px 65px 130px 100px 0px 140px;
 
     .troopMembers {
-      grid-column: 2/6;
+      grid-column: 3/7;
       grid-row: 3/4;
     }
 
     &:last-of-type {
-      .troopMembers,
-      .troopTurn {
+      .troopMembers {
         border-bottom: solid 1px gray;
       }
+    }
+
+    .filler {
+      border-top: solid 1px gray;
+      grid-column: 1/3;
+      grid-row: 3/4;
+    }
+  }
+
+  .actionButtons {
+    display: grid;
+  }
+
+  .subDialog {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+
+    .subTitle,
+    .subForm {
+      display: grid;
+      align-content: center;
+      grid-column: 1/3;
     }
   }
 }
