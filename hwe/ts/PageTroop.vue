@@ -26,12 +26,20 @@
               {{ member.name }}
             </span>
             <span
-              v-else
+              v-else-if="troop.troopLeader.city == member.city"
               class="troopMember"
               @mouseover="setPopup($event, member)"
               @mouseout="setPopup($event, undefined)"
             >
               {{ member.name }}
+            </span>
+            <span
+              v-else
+              class="troopMember troopDiffCityMemeber"
+              @mouseover="setPopup($event, member)"
+              @mouseout="setPopup($event, undefined)"
+            >
+              {{ member.name }} ({{ gameConstStore.cityConst[member.city].name }})
             </span>
           </template>
           ({{ troop.members.length }}명)
@@ -535,6 +543,10 @@ async function kickTroopMember(troop: TroopInfo) {
 
 .makeNewTroop {
   border: solid 1px gray;
+}
+
+.troopDiffCityMemeber{
+  color: red;
 }
 
 .troopItem {
