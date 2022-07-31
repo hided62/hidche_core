@@ -302,7 +302,17 @@ async function refresh() {
 
     troopList.value = new Map();
 
-    for (const { id: troopLeaderID, name: troopName, turntime: troopTurntime, reservedCommand } of troops) {
+    const sortedTroops= troops.sort((lhs, rhs) => {
+      if(lhs.turntime < rhs.turntime) {
+        return -1;
+      }
+      if(lhs.turntime > rhs.turntime) {
+        return 1;
+      }
+      return lhs.id - rhs.id;
+    });
+
+    for (const { id: troopLeaderID, name: troopName, turntime: troopTurntime, reservedCommand } of sortedTroops) {
       if (!generalList.value.has(troopLeaderID)) {
         toasts.warning({
           title: "경고",
