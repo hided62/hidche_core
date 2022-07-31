@@ -104,7 +104,7 @@
             </div>
           </div>
         </div>
-        <div class="filler"></div>
+        <div class="filler"><span class="dummy"></span></div>
       </div>
     </div>
     <div v-if="asyncReady && gameConstStore && me" class="row additionalTroopOptions">
@@ -646,11 +646,20 @@ async function kickTroopMember(troop: TroopInfo) {
     .filler {
       grid-column: 1/2;
       grid-row: 3/4;
+      display: grid;
+      align-content: center;
+      justify-content: right;
+
+      .dummy::after {
+        content: "└";
+        padding-right: 1.5ch;
+      }
     }
 
     .troopAction {
       grid-column: 2/7;
       grid-row: 3/4;
+      border-left: transparent;
       .actionButtons {
         display: grid;
         grid-template-columns: 110px 110px 110px;
