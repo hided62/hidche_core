@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import xlrd
+import openpyxl
 import os
 import sys
 import json
-
+from openpyxl.worksheet.worksheet import Worksheet
 
 #TODO: 시나리오마다 바뀔 수 있음
 nationLevelMap = {
@@ -19,21 +19,22 @@ nationLevelMap = {
 
 xlsxpath = sys.argv[1]
 print(xlsxpath)
-wb = xlrd.open_workbook(xlsxpath)
+wb = openpyxl.load_workbook(xlsxpath, read_only=True)
 
-def parseConfig(configSheet):
+def parseConfig(configSheet: Worksheet):
     result = {}
-    for i in range(1, configSheet.nrows):
-        row = configSheet.row_values(i)
+    for row in configSheet.iter_rows(min_row=2, values_only=True):
+        print(row)
         if len(row) < 4:
             continue
         varName = row[0]
         value = row[3]
 
+        if value is None:
+            continue
+
         if isinstance(value, float) and float(int(value)) == value:
             value = int(value)
-        elif value == '':
-            continue
 
         if isinstance(value, str):
             values = value.split('\n')
@@ -49,7 +50,7 @@ def parseConfig(configSheet):
             if not name in target:
                 target[name] = {}
             target = target[name]
-    
+
     if 'useCharSetting' in result:
         if result['useCharSetting'] > 0:
             result['fiction'] = 0
@@ -58,15 +59,14 @@ def parseConfig(configSheet):
         del result['useCharSetting']
     return result
 
-def extractNationList(nationSheet):
+def extractNationList(nationSheet: Worksheet):
     jsonNationList = []
     nationChiefInfo = {}
 
-    for i in range(1, nationSheet.nrows):
-        row = nationSheet.row_values(i)
+    for row in nationSheet.iter_rows(min_row=2, values_only=True):
         if len(row) < 8:
             continue
-        
+
         if len(row) == 8:
             name, color, gold, rice, desc, tech, nationType, nationLevel = row
             cities = ''
@@ -82,13 +82,13 @@ def extractNationList(nationSheet):
             chief1 = str(row[10])
             if chief1:
                 nationChiefInfo[name][chief1] = 11
-        
-        
+
+
         cities = list(map(str.strip, row[8].split(',')))
-        
+
         if not cities:
             nationLevel = '방랑군'
-        
+
         if nationLevel.isdigit():
             nationLevel = int(nationLevel)
         elif nationLevel in nationLevelMap:
@@ -99,130 +99,160 @@ def extractNationList(nationSheet):
         gold = int(gold)
         rice = int(rice)
         tech = int(tech)
-        
+
         jsonNationList.append([name, color, gold, rice, desc, tech, nationType, nationLevel, cities])
 
     return jsonNationList, nationChiefInfo
-    
 
-def extractGeneralList(generalSheet, nationList={}, nationChiefInfo={}):
+
+def extractGeneralList(generalSheet: Worksheet, nationList={}, nationChiefInfo={}):
     nationInv = {'재야':0}
     for idx, nation in enumerate(nationList, 1):
         nationInv[nation[0]] = idx
 
     json_general_list = []
     names = {}
-    for i in range(1, generalSheet.nrows):
-        row = generalSheet.row_values(i)
+    for row_idx, row in enumerate(generalSheet.iter_rows(min_row=2, values_only= True)):
         if len(row) < 10:
             continue
 
-        row = row[:13]
-        
-        #상성
-        if row[0] == '':
-            row[0] = 0
+
+        if len(row) < 13:
+            row = list(row) + [None] * (13 - len(row))
         else:
-            row[0] = int(row[0])
+            row = list(row[:13])
+
+        #상성, 장수명, 전콘, 국가명, 도시, 통솔, 무력, 지력, 생년, 몰년, 성격, 고유특기, 고유대사
+        declrow = [0, '', ('', str, int), ('', str, int), '', 10, 10, 10, 0, 0, '', '', '']
+        for i, (raw_value, decl_type) in enumerate(zip(row, declrow)):
+            if decl_type is None:
+                continue
+            if type(decl_type) is str:
+                row[i] = str(raw_value or decl_type).strip()
+                continue
+            if type(decl_type) is int:
+                if raw_value is None:
+                    row[i] = 0
+                elif type(raw_value) is int:
+                    row[i] = raw_value
+                elif type(raw_value) is str and raw_value.isdigit():
+                    row[i] = int(raw_value)
+                else:
+                    raise RuntimeError('%d행 %d열 값이 숫자가 아닙니다: %s'%(row_idx+1, i+1, raw_value))
+                continue
+
+            if type(decl_type) is not tuple:
+                raise RuntimeError('%d행 %d열 값이 잘못되었습니다: %s'%(row_idx+1, i+1, raw_value))
+
+            if raw_value is not None and type(raw_value) not in decl_type:
+                raise RuntimeError('%d행 %d열 값 타입이 이상합니다: %s'%(row_idx+1, i+1, raw_value))
+            if raw_value is None:
+                row[i] = decl_type[0]
+
+            #상세 타입을 지정해야하지만... 귀찮다...
+            if type(raw_value) is str:
+                row[i] = raw_value.strip()
+                continue
+
+        상성: int
+        장수명: str
+        전콘: int or str
+        국가명: int or str
+        도시: str
+        통솔: int
+        무력: int
+        지력: int
+        생년: int
+        몰년: int
+        성격: str
+        고유특기: str
+        고유대사: str
+        상성, 장수명, 전콘, 국가명, 도시, 통솔, 무력, 지력, 생년, 몰년, 성격, 고유특기, 고유대사 = row
 
         #이름
-        row[1] = str(row[1]).strip()
-        if row[1] == '':
+        장수명 = 장수명.strip()
+        if 장수명 == '':
             continue
-        print(row[1])
+        print(장수명)
         #전콘
-        row[2] = str(row[2]).strip()
-        if row[2].isdigit():
-            row[2] = int(row[2])
-        elif row[2] == '':
-            row[2] = None
-        
+        if 전콘 == '':
+            전콘 = None
+
         level = 0
 
         #국가
-        
-        row[3] = str(row[3]).strip()
-        if row[3] in nationInv:
-            pass
+        국가명 = 국가명
+        국가코드 = 0
+        if 국가명 in nationInv:
             level = 1
-        elif row[3].isdigit() and 0 < int(row[3]) < len(nationList):
-            row[3] = nationList[row[3]][0]
-            level = 1
+            국가코드 = nationInv[국가명]
         else:
-            row[3] = 0
+            국가코드 = 0
+            if type(국가명) is str:
+                if 국가명.isdigit():
+                    국가코드 = int(국가명)
+            elif type(국가명) is int:
+                국가코드 = 국가명
 
-        #도시
-        if row[4] == '':
-            row[4] = None
+            if 1 <= 국가코드 <= len(nationList):
+                국가명 = nationList[국가코드 - 1][0]
+                level = 1
+            else:
+                국가명 = ''
+                level = 0
 
-        #통무지, 생몰
-        row[5] = int(row[5])
-        row[6] = int(row[6])
-        row[7] = int(row[7])
-        row[8] = int(row[8])
-        row[9] = int(row[9])
+        if 도시 == '':
+            도시 = None
 
-        #성격
-        if len(row) < 11:
-            row.append('')
+        if level and 국가명 in nationChiefInfo:
+            nationChiefDetail = nationChiefInfo[국가명]
+            if 장수명 in nationChiefDetail:
+                level = int(nationChiefDetail[장수명])
 
-        row[10] = str(row[10]).strip()
-        if row[10] == '':
-            row[10] = None
+        if 성격 == '':
+            성격 = None
+
+        if 고유특기 == '':
+            고유특기 = None
+
+        if 고유대사 == '':
+            고유대사 = None
+
+        if 고유대사 is None:
+            json_output = [상성, 장수명, 전콘, 국가코드, 도시, 통솔, 무력, 지력, level, 생년, 몰년, 성격, 고유특기]
         else:
-            row[10] = row[10].strip()
-        
-        #특기
-        if len(row) < 12:
-            row.append('')
-        row[11] = row[11].strip()
-        if row[11] == '':
-            row[11] = None
-        else:
-            row[11] = row[11].strip()
+            json_output = [상성, 장수명, 전콘, 국가코드, 도시, 통솔, 무력, 지력, level, 생년, 몰년, 성격, 고유특기, 고유대사]
 
-        if len(row) < 13:
-            row.append('')
-        row[12] = row[12].strip()
-        if len(row[12]) > 99:
-            row[12] = row[12][:99]
-        if row[12] == '':
-            row.pop()
 
-        if level and row[3] in nationChiefInfo:
-            nationChiefDetail = nationChiefInfo[row[3]]
-            if row[1] in nationChiefDetail:
-                level = nationChiefDetail[row[1]]
-        
-        row.insert(8, level)
-        json_general_list.append(row)
 
-        if row[1] in names:
-            raise RuntimeError('%s가 이미 있습니다!'%row[1])
-        names[row[1]] = 1
+        json_general_list.append(json_output)
+
+        if 장수명 in names:
+            raise RuntimeError('%s가 이미 있습니다!'%장수명)
+        names[장수명] = 1
     return json_general_list, names
 
 
-if '환경 변수' in wb.sheet_names():
-    config = parseConfig(wb.sheet_by_name('환경 변수'))
+if '환경 변수' in wb:
+    config = parseConfig(wb['환경 변수'])
     config['startYear'] -= 3
 else:
     config = {
         'title':'타이틀'
     }
 
-if '국가' in wb.sheet_names():
-    nationInfo, nationChiefInfo = extractNationList(wb.sheet_by_name('국가'))
+if '국가' in wb:
+    nationInfo, nationChiefInfo = extractNationList(wb['국가'])
 else:
     nationInfo = []
     nationChiefInfo = {}
 
-generalList, names = extractGeneralList(wb.sheet_by_name('장수 목록'), nationInfo, nationChiefInfo)
+generalList, names = extractGeneralList(wb['장수 목록'], nationInfo, nationChiefInfo)
 
 with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
     fp.write(json.dumps(config, ensure_ascii=False, indent='    ')[:-2])
     fp.write(',\n')
-        
+
     fp.write('    "nation":[\n        ')
     fp.write(',\n        '.join([json.dumps(nation, ensure_ascii=False) for nation in nationInfo]))
     fp.write('\n    ],\n')
@@ -235,8 +265,8 @@ with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
 
     names2 = []
     names3 = []
-    if '확장 장수 목록' in wb.sheet_names():
-        generalExList, names2 = extractGeneralList(wb.sheet_by_name('확장 장수 목록'), nationInfo, nationChiefInfo)
+    if '확장 장수 목록' in wb.sheetnames:
+        generalExList, names2 = extractGeneralList(wb['확장 장수 목록'], nationInfo, nationChiefInfo)
 
         for name in names2:
             if name in names:
@@ -246,8 +276,8 @@ with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
         fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalExList]))
         fp.write('\n    ]')
 
-    if '빙의 불가 장수 목록' in wb.sheet_names():
-        generalNeutralList, names3 = extractGeneralList(wb.sheet_by_name('빙의 불가 장수 목록'), nationInfo, nationChiefInfo)
+    if '빙의 불가 장수 목록' in wb.sheetnames:
+        generalNeutralList, names3 = extractGeneralList(wb['빙의 불가 장수 목록'], nationInfo, nationChiefInfo)
 
         for name in names3:
             if name in names:
