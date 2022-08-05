@@ -18,7 +18,7 @@ return [
     "target_php_version" => '8.1',
     "minimum_target_php_version" => '8.1',
     'backward_compatibility_checks ' => true,
-    'minimum_severity' => \Phan\Issue::SEVERITY_CRITICAL,
+    'minimum_severity' => \Phan\Issue::SEVERITY_NORMAL,
 
     'file_list' => [
         'f_config/config.php',
