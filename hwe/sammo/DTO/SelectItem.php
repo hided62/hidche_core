@@ -2,10 +2,10 @@
 
 namespace sammo\DTO;
 
-use sammo\DTO\Attr\Convert;
-use sammo\DTO\Converter\MapConverter;
+use LDTO\Attr\Convert;
+use LDTO\Converter\MapConverter;
 
-class SelectItem extends DTO
+class SelectItem extends \LDTO\DTO
 {
 	public function __construct(
 		public string $title,

@@ -2,10 +2,10 @@
 
 namespace sammo\DTO;
 
-use sammo\DTO\Attr\NullIsUndefined;
-use sammo\DTO\Attr\RawName;
+use LDTO\Attr\NullIsUndefined;
+use LDTO\Attr\RawName;
 
-class VoteComment extends DTO
+class VoteComment extends \LDTO\DTO
 {
   public function __construct(
     #[NullIsUndefined]

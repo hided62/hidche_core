@@ -2,15 +2,15 @@
 
 namespace sammo\DTO;
 
-use sammo\DTO\Attr\Convert;
-use sammo\DTO\Attr\JsonString;
-use sammo\DTO\Attr\NullIsUndefined;
-use sammo\DTO\Attr\RawName;
-use sammo\DTO\Converter\DateTimeConverter;
+use LDTO\Attr\Convert;
+use LDTO\Attr\JsonString;
+use LDTO\Attr\NullIsUndefined;
+use LDTO\Attr\RawName;
+use LDTO\Converter\DateTimeConverter;
 use sammo\Enums\AuctionType;
 use sammo\Enums\ResourceType;
 
-class AuctionInfo extends DTO
+class AuctionInfo extends \LDTO\DTO
 {
 	public function __construct(
 		#[NullIsUndefined]

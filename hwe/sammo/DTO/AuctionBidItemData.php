@@ -2,9 +2,9 @@
 
 namespace sammo\DTO;
 
-use sammo\DTO\Attr\NullIsUndefined;
+use LDTO\Attr\NullIsUndefined;
 
-class AuctionBidItemData extends DTO
+class AuctionBidItemData extends \LDTO\DTO
 {
   public function __construct(
     #[NullIsUndefined]

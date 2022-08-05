@@ -2,13 +2,13 @@
 
 namespace sammo\DTO;
 
-use sammo\DTO\Attr\Convert;
-use sammo\DTO\Converter\MapConverter;
+use LDTO\Attr\Convert;
+use LDTO\Converter\MapConverter;
 use sammo\DTO\SelectItem;
 
 //https://json2dto.atymic.dev/
 
-class BettingInfo extends DTO
+class BettingInfo extends \LDTO\DTO
 {
   public function __construct(
     public int $id,

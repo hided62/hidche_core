@@ -26,8 +26,8 @@
         "nette/caching": "^3.0",
         "illuminate/database": "^9.12",
         "illuminate/events": "^9.12",
-        "spatie/data-transfer-object": "^3.7",
-        "php-ds/php-ds": "^1.4"
+        "php-ds/php-ds": "^1.4",
+        "hided62/ldto": "^1.0"
     },
     "autoload": {
         "psr-4": {

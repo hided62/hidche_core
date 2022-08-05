@@ -2,13 +2,13 @@
 
 namespace sammo\DTO;
 
-use sammo\DTO\Attr\Convert;
-use sammo\DTO\Attr\JsonString;
-use sammo\DTO\Attr\NullIsUndefined;
-use sammo\DTO\Attr\RawName;
-use sammo\DTO\Converter\DateTimeConverter;
+use LDTO\Attr\Convert;
+use LDTO\Attr\JsonString;
+use LDTO\Attr\NullIsUndefined;
+use LDTO\Attr\RawName;
+use LDTO\Converter\DateTimeConverter;
 
-class AuctionBidItem extends DTO
+class AuctionBidItem extends \LDTO\DTO
 {
   public function __construct(
     #[NullIsUndefined]

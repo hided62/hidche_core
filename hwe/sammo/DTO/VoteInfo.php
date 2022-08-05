@@ -2,7 +2,7 @@
 
 namespace sammo\DTO;
 
-class VoteInfo extends DTO
+class VoteInfo extends \LDTO\DTO
 {
   public function __construct(
     public int $id,
