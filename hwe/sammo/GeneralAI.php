@@ -3513,7 +3513,7 @@ class GeneralAI
 
             if ($officerLevel > 4) {
                 $chiefGenerals[$officerLevel] = $nationGeneral;
-            } else if ($officerLevel > 2) {
+            } else if ($officerLevel >= 2) {
                 $nationCities[$officerCity]['important'] += 1;
             }
 
