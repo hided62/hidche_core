@@ -340,8 +340,8 @@ class GameUnitConstBase{
             1503, self::T_SIEGE, '목우',
             50, 200, 5,  0, 0,  15,  5,
             3000, ['성도'], null,     0,
-            [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8],
-            [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
+            [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
+            [self::T_FOOTMAN=>0.833, self::T_ARCHER=>0.833, self::T_CAVALRY=>0.833, self::T_WIZARD=>0.833, 1106=>0.909],
             ['상대를 저지하는 특수병기입니다.'],
             ['che_성벽부상무효'], ['che_저지시도', 'che_저지발동']
         ]
