@@ -156,6 +156,7 @@ class che_의병모집 extends Command\NationCommand
             $newNPC->setNPCType(4);
             $newNPC->setMoney(1000, 1000);
             $newNPC->setSpecYear(19, 19);
+            $newNPC->setExpDed($avgGen['exp'], $avgGen['ded']);
             $newNPC->fillRemainSpecAsRandom($pickTypeList, $avgGen, $env);
 
             $newNPC->build($this->env);
