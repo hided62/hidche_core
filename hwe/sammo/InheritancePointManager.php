@@ -306,7 +306,7 @@ class InheritancePointManager
       }
       [$startYear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
 
-      if (($year - $pickYearMonth) * 2 <= ($year - $startYear)) {
+      if (($year - Util::parseYearMonth($pickYearMonth)[0]) * 2 <= ($year - $startYear)) {
         return;
       }
     }
