@@ -803,7 +803,7 @@ class General implements iAction
                 $db->update('rank_data', [
                     'value' => $rankVal
                 ], 'general_id = %i AND type = %s', $generalID, $rankKey->value);
-                $this->rankVarRead[$rankKey->value] = $rankVal;
+                $this->rankVarRead[$rankKey] = $rankVal;
             }
             $result = true;
         }
