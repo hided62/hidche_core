@@ -71,6 +71,7 @@
     "css-loader": "^6.7.1",
     "cssnano": "^5.1.12",
     "date-fns": "^2.29.1",
+    "denque": "^2.1.0",
     "detect-it": "^4.0.1",
     "downloadjs": "^1.4.7",
     "esbuild-loader": "^2.19.0",
