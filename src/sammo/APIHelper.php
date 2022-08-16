@@ -49,9 +49,9 @@ class APIHelper
                 $session = new DummySession();
             } else {
                 if ($sessionMode & BaseAPI::REQ_GAME_LOGIN) {
-                    $session = Session::requireGameLogin();
+                    $session = Session::requireGameLogin(null);
                 } else if ($sessionMode & BaseAPI::REQ_LOGIN) {
-                    $session = Session::requireLogin();
+                    $session = Session::requireLogin(null);
                 } else {
                     $session = Session::getInstance();
                 }
