@@ -77,3 +77,13 @@ export type GetDiplomacyResponse = {
     diplomacyList: Record<number, Record<number, diplomacyState>>;
     myNationID: number;
 }
+
+export type GetRecentRecordResponse = {
+    result: true;
+    history: [number, string][];
+    global: [number, string][];
+    general: [number, string][];
+    flushHistory: 1 | 0;
+    flushGlobal: 1 | 0;
+    flushGeneral: 1 | 0;
+}

@@ -26,6 +26,7 @@ import type {
   GetCurrentHistoryResponse,
   GetDiplomacyResponse,
   GetHistoryResponse,
+GetRecentRecordResponse,
 } from "./defs/API/Global";
 import type { CachedMapResult, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
@@ -144,6 +145,10 @@ const apiRealPath = {
     GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
     GetDiplomacy: GET as APICallT<undefined, GetDiplomacyResponse>,
     ExecuteEngine: POST as APICallT<undefined, ValidResponse & { updated: boolean }>,
+    GetRecentRecord: GET as APICallT<{
+      lastGeneralRecordID: number;
+      lastWorldHistoryID: number;
+    } | undefined, GetRecentRecordResponse>,
   },
   InheritAction: {
     BuyHiddenBuff: PUT as APICallT<{
