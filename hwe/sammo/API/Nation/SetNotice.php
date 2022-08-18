@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\KVStorage;
+use sammo\TimeUtil;
 use sammo\Validator;
 use sammo\WebUtil;
 
@@ -36,7 +37,7 @@ class SetNotice extends \sammo\BaseAPI
         $msg = $this->args['msg'];
         $userID = $session->userID;
         $db = DB::db();
-        $me = $db->queryFirstRow('SELECT `no`,nation,`officer_level`,permission,penalty FROM general WHERE `owner`=%i', $userID);
+        $me = $db->queryFirstRow('SELECT `no`,`name`,nation,`officer_level`,permission,penalty FROM general WHERE `owner`=%i', $userID);
 
         $permission = checkSecretPermission($me, false);
         if($permission < 0){
@@ -49,7 +50,12 @@ class SetNotice extends \sammo\BaseAPI
         $nationID = $me['nation'];
 
         $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-        $nationStor->notice = WebUtil::htmlPurify($msg);
+        $nationStor->nationNotice = [
+            'date'=>TimeUtil::now(),
+            'msg'=>WebUtil::htmlPurify($msg),
+            'author'=>$me['name'],
+            'authorID'=>$me['no'],
+        ];
 
         return [
             'result' => true

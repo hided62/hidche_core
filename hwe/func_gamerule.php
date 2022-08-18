@@ -1142,7 +1142,7 @@ function checkEmperior()
     $nation = $nation;
     $nation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
     $nation['aux'] = Json::decode($nation['aux']);
-    $nation['msg'] = $nationStor->notice;
+    $nation['msg'] = $nationStor->nationNotice['msg'] ?? '';;
     $nation['scout_msg'] = $nationStor->scout_msg;
     $nation['aux'] += $nationStor->max_power;
     $nation['history'] = getNationHistoryLogAll($nation['nation']);

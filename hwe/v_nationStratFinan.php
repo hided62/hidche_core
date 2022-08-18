@@ -122,7 +122,7 @@ $outcome = getOutcome(100, $dedicationList);
     <?= WebUtil::printStaticValues([
         'staticValues' => [
             'editable' => ($me['officer_level'] >= 5 || $permission == 4),
-            'nationMsg' => $nationStor->notice ?? '',
+            'nationMsg' => $nationStor->nationNotice['msg'] ?? '',
             'scoutMsg' => $nationStor->scout_msg ?? '',
             'nationID' => $nationID,
             'officerLevel' => $me['officer_level'],

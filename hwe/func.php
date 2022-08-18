@@ -906,7 +906,7 @@ function nationMsg(General $general)
     $nationID = $general->getNationID();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
-    return $nationStor->notice ?? '';
+    return $nationStor->nationNotice['msg'] ?? '';
 }
 
 function banner()
@@ -1812,7 +1812,7 @@ function deleteNation(General $lord, bool $applyDB): array
 
     $nation['generals'] = array_keys($nationGeneralList);
     $nation['aux'] = Json::decode($nation['aux']);
-    $nation['msg'] = $nationStor->notice;
+    $nation['msg'] = $nationStor->nationNotice['msg'] ?? '';
     $nation['scout_msg'] = $nationStor->scout_msg;
     $nation['aux'] += $nationStor->max_power;
     $nation['history'] = getNationHistoryLogAll($nationID);
