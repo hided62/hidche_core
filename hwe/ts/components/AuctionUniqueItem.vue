@@ -51,7 +51,7 @@
           <NumberInputWithInfo
             v-model="bidAmount"
             :int="true"
-            :min="currentAuction.bidList[0].amount"
+            :min="Math.ceil(currentAuction.bidList[0].amount * 1.01)"
             :max="currentAuction.remainPoint"
             title=""
             :step="1"
@@ -150,6 +150,9 @@ async function refreshDetail() {
   const auctionID = currentAuctionID.value;
   try {
     currentAuction.value = await SammoAPI.Auction.GetUniqueItemAuctionDetail({ auctionID });
+    const bidList = currentAuction.value.bidList;
+    const highestBidAmount = Math.max(bidList[0].amount, bidList[bidList.length-1].amount);
+    bidAmount.value = Math.max(bidAmount.value, Math.ceil(highestBidAmount * 1.01));
   } catch (e) {
     console.error(e);
     if (isString(e)) {
@@ -196,7 +199,7 @@ async function refreshList() {
       const auctionIterator = ongoingAuctionList.value.values().next();
       if (!auctionIterator.done) {
         currentAuctionID.value = auctionIterator.value.id;
-        bidAmount.value = auctionIterator.value.highestBid.amount;
+        bidAmount.value = Math.max(bidAmount.value, Math.ceil(auctionIterator.value.highestBid.amount * 1.01));
       }
     }
   } catch (e) {

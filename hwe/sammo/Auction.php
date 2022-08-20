@@ -281,6 +281,9 @@ abstract class Auction
     $general = $this->general;
 
     $highestBid = $this->getHighestBid();
+    if ($highestBid !== null && $amount < $highestBid->amount * 1.01) {
+      return '현재입찰가보다 1% 높게 입찰해야 합니다.';
+    }
     if ($highestBid !== null && $amount < $highestBid->amount + 10) {
       return '현재입찰가보다 10 포인트 높게 입찰해야 합니다.';
     }
