@@ -29,11 +29,11 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    [$startYear, $year, $month, $cityRate, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate', 'join_mode']);
+    [$startYear, $year, $month, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'join_mode']);
 
     $attacker = new WarUnitGeneral($rng, $attackerGeneral,$rawAttackerNation, true);
 
-    $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
+    $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $startYear);
 
     $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
     $defenderList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
@@ -90,7 +90,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
             $rice = $city->getKilled() / 100 * 0.8;
             $rice *= $city->getCrewType()->rice;
             $rice *= getTechCost($rawDefenderNation['tech']);
-            $rice *= $cityRate / 100 - 0.2;
+            $rice *= $city->getCityTrainAtmos() / 100 - 0.2;
             Util::setRound($rice);
 
             $updateDefenderNation['rice'] = max(0, $rawDefenderNation['rice'] - $rice);
@@ -175,7 +175,6 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
         'startyear' => $startYear,
         'year' => $year,
         'month' => $month,
-        'city_rate' => $cityRate,
         'join_mode' => $joinMode,
     ], $attacker->getGeneral(), $city->getRaw());
 }

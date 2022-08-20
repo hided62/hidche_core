@@ -6,9 +6,9 @@ class WarUnitCity extends WarUnit{
 
     protected $hp;
 
-    protected $cityRate;
+    protected $cityTrainAtmos;
 
-    function __construct(public readonly RandUtil $rng, $raw, $rawNation, int $year, int $month, $cityRate){
+    function __construct(public readonly RandUtil $rng, $raw, $rawNation, int $year, int $month, int $startYear){
         $general = new DummyGeneral(false);
         $general->setVar('city', $raw['city']);
         $general->setVar('nation', $raw['nation']);
@@ -18,7 +18,9 @@ class WarUnitCity extends WarUnit{
         $this->rawNation = $rawNation;
 
         $this->isAttacker = false;
-        $this->cityRate = $cityRate;
+
+        //도시 훈사. 181년 60, 201년 80, 221년 100, 231년 110(최대)
+        $this->cityTrainAtmos = Util::clamp($year - $startYear + 59, 60, 110);
 
         $this->logger = $general->getLogger();
         $this->crewType = GameUnitConst::byID(GameUnitConst::CREWTYPE_CASTLE);
@@ -32,6 +34,10 @@ class WarUnitCity extends WarUnit{
         else if($this->getCityVar('level') == 3){
             $this->trainBonus += 5;
         }
+    }
+
+    function getCityTrainAtmos(): int{
+        return $this->cityTrainAtmos;
     }
 
     function getName():string{
@@ -57,11 +63,11 @@ class WarUnitCity extends WarUnit{
     }
 
     function getComputedTrain(){
-        return $this->cityRate + $this->trainBonus;
+        return $this->cityTrainAtmos + $this->trainBonus;
     }
 
     function getComputedAtmos(){
-        return $this->cityRate + $this->atmosBonus;
+        return $this->cityTrainAtmos + $this->atmosBonus;
     }
 
     function getHP():int{
@@ -69,7 +75,7 @@ class WarUnitCity extends WarUnit{
     }
 
     function getDex(GameUnitDetail $crewType){
-        return ($this->cityRate - 60) * 7200;
+        return ($this->cityTrainAtmos - 60) * 7200;
     }
 
     function decreaseHP(int $damage):int{

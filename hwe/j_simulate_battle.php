@@ -281,7 +281,6 @@ unset($defenderList);
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $startYear = $gameStor->startyear;
-$cityRate = Util::round(($year - $startYear) / 1.5) + 60;
 
 function extractRankVar(array $rawVal):Map{
     $rankVars = new Map;
@@ -298,7 +297,7 @@ function extractRankVar(array $rawVal):Map{
 function simulateBattle(
     $rawAttacker, $rawAttackerCity, $rawAttackerNation,
     $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
-    $startYear, $year, $month, $cityRate
+    $startYear, $year, $month
 ){
 
     $warSeed = bin2hex(random_bytes(16));
@@ -310,7 +309,7 @@ function simulateBattle(
         $rawAttackerNation,
         true
     );
-    $city = new WarUnitCity($warRng, $rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
+    $city = new WarUnitCity($warRng, $rawDefenderCity, $rawDefenderNation, $year, $month, $startYear);
 
     $iterDefender = new \ArrayIterator($rawDefenderList);
     $iterDefender->rewind();
@@ -367,7 +366,7 @@ function simulateBattle(
         $rice = $city->getKilled() / 100 * 0.8;
         $rice *= $city->getCrewType()->rice;
         $rice *= getTechCost($rawDefenderNation['tech']);
-        $rice *= $cityRate / 100 - 0.2;
+        $rice *= $city->getCityTrainAtmos() / 100 - 0.2;
         Util::setRound($rice);
 
         $defenderRice += $rice;
@@ -406,7 +405,7 @@ foreach(Util::range($repeatCnt) as $repeatIdx){
     [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
         $rawAttacker, $rawAttackerCity, $rawAttackerNation,
         $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
-        $startYear, $year, $month, $cityRate
+        $startYear, $year, $month
     );
     $lastWarLog = Util::mapWithKey(function($key, $values){
         return ConvertLog(join('<br>', $values));
