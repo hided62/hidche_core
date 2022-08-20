@@ -27,7 +27,7 @@ class GameUnitDetail implements iAction{
     public function __construct(
         int $id,
         int $armType,
-        string $name, 
+        string $name,
         int $attack,
         int $defence,
         int $speed,
@@ -110,7 +110,7 @@ class GameUnitDetail implements iAction{
         }
         else if($this->armType == GameUnitConst::T_MISC){
             $ratio = $general->getIntel(true, true, true) +
-                $general->getLeadership(true, true, true) + 
+                $general->getLeadership(true, true, true) +
                 $general->getStrength(true, true, true);
             $ratio = $ratio*2/3 - 40;
         }
@@ -174,7 +174,7 @@ class GameUnitDetail implements iAction{
         $defaultWar *= 1 + $this->speed / 2;
         $defaultWar /= Util::valueFit(1 - $this->avoid / 100, 0.1);
         $defaultWar *= 1 + $this->magicCoef / 2;
-        return sqrt($defaultWar);
+        return $defaultWar;
     }
 
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
@@ -256,6 +256,6 @@ class GameUnitDetail implements iAction{
             }
         }
         return new WarUnitTriggerCaller(...$triggerList);
-        
+
     }
 }
