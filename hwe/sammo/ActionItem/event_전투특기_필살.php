@@ -11,7 +11,7 @@ class event_전투특기_필살 extends \sammo\BaseItem{
 
     protected $rawName = '비급';
     protected $name = '비급(필살)';
-    protected $info = '[전투] 필살 확률 +30%p, 필살 발동시 대상 회피 불가, 필살 계수 항상 최대';
+    protected $info = '[전투] 필살 확률 +30%p, 필살 발동시 대상 회피 불가, 필살 계수 향상';
     protected $cost = 100;
     protected $buyable = true;
     protected $consumable = false;
@@ -22,8 +22,8 @@ class event_전투특기_필살 extends \sammo\BaseItem{
             return $value + 0.3;
         }
         if($statName === 'criticalDamageRange'){
-            [, $rangeMax] = $value;
-            return [$rangeMax, $rangeMax];
+            [$rangeMin, $rangeMax] = $value;
+            return [($rangeMin + $rangeMax) / 2, $rangeMax];
         }
 
         return $value;
