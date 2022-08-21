@@ -25,7 +25,7 @@ class CreateManyNPC extends \sammo\Event\Action
 
     protected function generateNPC($env, int $cnt)
     {
-        $pickTypeList = ['무' => 1, '지' => 1];
+        $pickTypeList = ['무' => 0.333, '지' => 0.333, '무지' => 0.334];
 
         $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
             UniqueConst::$hiddenSeed,
