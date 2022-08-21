@@ -271,6 +271,9 @@ class WarUnitGeneral extends WarUnit
         if (!$this->isAttacker) {
             $rice *= 0.8;
         }
+        if ($this->oppose instanceof WarUnitCity){
+            $rice *= 0.8;
+        }
 
         $rice *= $this->crewType->rice;
         $rice *= getTechCost($this->getNationVar('tech'));
