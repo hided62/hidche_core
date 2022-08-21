@@ -1,5 +1,5 @@
 import ky from "ky";
-import { isArray, isEmpty } from "lodash";
+import { isArray, isEmpty } from "lodash-es";
 
 export type ValidResponse = {
   result: true;

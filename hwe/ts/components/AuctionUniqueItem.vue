@@ -131,7 +131,7 @@ import type { UniqueItemAuctionDetail, UniqueItemAuctionList } from "@/defs/API/
 import { SammoAPI } from "@/SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { useToast, BButton } from "bootstrap-vue-3";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { inject, onMounted, ref, watch, type Ref } from "vue";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import type { GameConstStore } from "@/GameConstStore";

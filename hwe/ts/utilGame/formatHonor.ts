@@ -1,5 +1,5 @@
 import bs from 'binary-search';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 
 const hornorMap: [number, string][] = [
   [0, '전무'],

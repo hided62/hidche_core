@@ -390,7 +390,7 @@ import "@scss/game_bg.scss";
 import { ref } from "vue";
 import type { IDItem, InvalidResponse, NationPolicy, NPCChiefActions, NPCGeneralActions } from "@/defs";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
-import { cloneDeep, isEqual, isNumber, last } from "lodash";
+import { cloneDeep, isEqual, isNumber, last } from "lodash-es";
 import { unwrap } from "@util/unwrap";
 import { convertFormData } from "@util/convertFormData";
 import axios from "axios";

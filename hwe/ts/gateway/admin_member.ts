@@ -1,6 +1,6 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { TemplateEngine } from '@util/TemplateEngine';
 import type { InvalidResponse } from '@/defs';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';

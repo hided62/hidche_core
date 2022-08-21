@@ -4,7 +4,7 @@ import { bufferByteSize, LiteHashDRBG } from '../ts/util/LiteHashDRBG';
 import { RandUtil } from '../ts/util/RandUtil';
 import { convertBytesLikeToArrayBuffer } from '../ts/util/convertBytesLikeToArrayBuffer';
 import { convertBytesLikeToUint8Array as toBytes } from '../ts/util/convertBytesLikeToUint8Array';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 chai.use(chaiBytes);
 

@@ -1,5 +1,5 @@
 import Schema, { type Rule, type Values } from "async-validator";
-import { isArray } from "lodash";
+import { isArray } from "lodash-es";
 import { mergeKVArray } from "@util/mergeKVArray";
 import $ from 'jquery';
 

@@ -1,5 +1,5 @@
 import bs from 'binary-search';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 
 export const DexLevelMap: [number, string, string][] = [
   [0, 'navy', 'F-'],

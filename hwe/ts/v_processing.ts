@@ -7,7 +7,7 @@ import { commandMap as GeneralActions } from "@/processing/General";
 import { commandMap as NationActions } from '@/processing/Nation';
 import { type App, createApp } from 'vue';
 import { auto500px } from './util/auto500px';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { type Args, testSubmitArgs } from './processing/args';
 import { SammoAPI } from './SammoAPI';
 import { StoredActionsHelper } from './util/StoredActionsHelper';

@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { clamp } from "lodash";
+import { clamp } from "lodash-es";
 const imagePath = window.pathConfig.gameImage;
 const props = defineProps<{
   height: 7 | 10;

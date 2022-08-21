@@ -256,7 +256,7 @@ declare const staticValues: {
 import { reactive, ref } from "vue";
 import "@scss/game_bg.scss";
 import TopBackBar from "@/components/TopBackBar.vue";
-import _ from "lodash";
+import _ from "lodash-es";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { inheritBuffType, InheritPointLogItem } from "./defs/API/InheritAction";

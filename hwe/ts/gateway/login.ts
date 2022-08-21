@@ -11,7 +11,7 @@ import { unwrap } from '@util/unwrap';
 import { delay } from '@util/delay';
 import { Modal } from 'bootstrap';
 import '@/gateway/common';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { SammoRootAPI, type InvalidResponse } from '@/SammoRootAPI';
 import type { LoginFailed, LoginResponse, LoginResponseWithKakao, OTPResponse } from '@/defs/API/Login';
 declare global {

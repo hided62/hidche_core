@@ -1,6 +1,6 @@
 import axios from 'axios';
 import $ from 'jquery';
-import { isNumber, merge } from 'lodash';
+import { isNumber, merge } from 'lodash-es';
 import { convColorValue, convertDictById, stringFormat } from '@/common_legacy';
 import type { CachedMapResult, InvalidResponse, MapResult } from '@/defs';
 import { unwrap } from "@util/unwrap";

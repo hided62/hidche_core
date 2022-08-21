@@ -2,7 +2,7 @@ import $ from 'jquery';
 import 'bootstrap';
 import download from 'downloadjs';
 import { unwrap } from "@util/unwrap";
-import { isInteger } from 'lodash';
+import { isInteger } from 'lodash-es';
 import { errUnknown, getNpcColor } from '@/common_legacy';
 import { combineArray } from "@util/combineArray";
 import { isBrightColor } from "@util/isBrightColor";

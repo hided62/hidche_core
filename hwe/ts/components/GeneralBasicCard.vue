@@ -171,7 +171,7 @@ import { nextExpLevelRemain } from "@/utilGame/nextExpLevelRemain";
 import { formatConnectScore } from "@/utilGame/formatConnectScore";
 import SammoBar from "@/components/SammoBar.vue";
 import { parseTime } from "@/util/parseTime";
-import { clamp } from "lodash";
+import { clamp } from "lodash-es";
 import { formatCityName } from "@/utilGame/formatCityName";
 import { isValidObjKey } from "@/utilGame/isValidObjKey";
 import { calcInjury } from "@/utilGame/calcInjury";

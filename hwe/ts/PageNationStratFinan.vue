@@ -287,7 +287,7 @@ import TipTap from "./components/TipTap.vue";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { computed, reactive, ref, toRefs } from "vue";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { type diplomacyState, diplomacyStateInfo, type NationStaticItem } from "./defs";
 import { SammoAPI } from "./SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";

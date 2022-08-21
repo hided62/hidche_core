@@ -1,6 +1,6 @@
 
 import type { ValuesOf } from "@/defs";
-import { zip } from "lodash";
+import { zip } from "lodash-es";
 
 export function merge2DArrToObjectArr<T extends Record<string, unknown>>(column: (keyof T)[], list: ValuesOf<T>[][]): T[]{
     const result: T[] = [];

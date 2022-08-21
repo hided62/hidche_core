@@ -1,5 +1,5 @@
 import bs from 'binary-search';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 
 const defenceMap: [number,string][] = [
   [0, "△"],

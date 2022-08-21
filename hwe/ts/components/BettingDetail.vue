@@ -135,7 +135,7 @@ import type { BettingDetailResponse, BettingInfo } from "@/defs/API/Betting";
 import { SammoAPI } from "@/SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
-import { isString, range, sum } from "lodash";
+import { isString, range, sum } from "lodash-es";
 import { ref, type PropType, watch } from "vue";
 
 const props = defineProps({

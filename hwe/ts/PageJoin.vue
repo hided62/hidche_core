@@ -278,7 +278,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import { getIconPath } from "@util/getIconPath";
 import { isBrightColor } from "@util/isBrightColor";
 import { abilityLeadint, abilityLeadpow, abilityPowint, abilityRand } from "@util/generalStats";
-import { shuffle, sum } from "lodash";
+import { shuffle, sum } from "lodash-es";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { JoinArgs } from "./defs/API/General";

@@ -102,7 +102,7 @@ import ChiefReservedCommand from "@/components/ChiefReservedCommand.vue";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import VueTypes from "vue-types";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { entriesWithType } from "./util/entriesWithType";
 import TopItem from "@/ChiefCenter/TopItem.vue";
 import BottomItem from "@/ChiefCenter/BottomItem.vue";

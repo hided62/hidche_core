@@ -30,7 +30,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { clamp } from "lodash";
+import { clamp } from "lodash-es";
 import { ref, watch } from "vue";
 
 const props = defineProps({

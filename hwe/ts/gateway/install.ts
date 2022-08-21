@@ -7,7 +7,7 @@ import { JQValidateForm, type NamedRules } from '@util/jqValidateForm';
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
 import { mb_strwidth } from '@util/mb_strwidth';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { sha512 } from 'js-sha512';
 import '@/gateway/common';
 

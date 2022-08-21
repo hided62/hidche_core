@@ -6,7 +6,7 @@ import type { InvalidResponse } from '@/defs';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '@util/unwrap_any';
 import { sha512 } from 'js-sha512';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { mb_strwidth } from '@util/mb_strwidth';
 import '@/gateway/common';
 

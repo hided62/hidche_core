@@ -3,7 +3,7 @@ import { unwrap_any } from '@util/unwrap_any';
 import axios from 'axios';
 import { isBrightColor } from "@util/isBrightColor";
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { convertFormData } from '@util/convertFormData';
 import type { InvalidResponse, NationStaticItem } from '@/defs';
 import { escapeHtml } from '@/legacy/escapeHtml';

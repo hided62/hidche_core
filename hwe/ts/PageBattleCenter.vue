@@ -92,7 +92,7 @@ import GeneralBasicCard from "./components/GeneralBasicCard.vue";
 import GeneralSupplementCard from "@/components/GeneralSupplementCard.vue";
 import type { NationStaticItem } from "./defs";
 import type { GeneralLogType } from "./defs/API/General";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { formatLog } from "./utilGame/formatLog";
 import { parseTime } from "./util/parseTime";
 

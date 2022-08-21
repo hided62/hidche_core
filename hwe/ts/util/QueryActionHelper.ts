@@ -1,5 +1,5 @@
 import type { TurnObj } from "@/defs";
-import { clone, isString, range } from "lodash";
+import { clone, isString, range } from "lodash-es";
 import { ref, type Ref } from "vue";
 import { unwrap } from "./unwrap";
 

@@ -107,7 +107,7 @@ import SimpleTooltipCell from "@/gridCellRenderer/SimpleTooltipCell.vue";
 import GridTooltipCell, { type GridCellInfo } from "@/gridCellRenderer/GridTooltipCell.vue";
 import { formatConnectScore } from "@/utilGame/formatConnectScore";
 import { convertSearch초성 } from "@/util/convertSearch초성";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { formatDefenceTrain } from "@/utilGame/formatDefenceTrain";
 import { BDropdownItem, BDropdownDivider, BButtonGroup, BDropdown, BButton } from "bootstrap-vue-3";
 import { unwrap_err } from "@/util/unwrap_err";

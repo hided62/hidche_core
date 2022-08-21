@@ -278,7 +278,7 @@ declare const staticValues: {
 
 <script lang="ts" setup>
 import addMinutes from "date-fns/esm/addMinutes";
-import { range, trim } from "lodash";
+import { range, trim } from "lodash-es";
 import { stringifyUrl } from "query-string";
 import { onMounted, ref, watch } from "vue";
 import { formatTime } from "@util/formatTime";

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { convertFormData } from '@util/convertFormData';
 import { isBrightColor } from "@util/isBrightColor";
 import { unwrap } from '@util/unwrap';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { addMinutes } from 'date-fns';
 import { parseTime } from '@util/parseTime';
 import { formatTime } from '@util/formatTime';

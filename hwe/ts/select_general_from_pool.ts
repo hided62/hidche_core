@@ -9,7 +9,7 @@ import { unwrap_any } from '@util/unwrap_any';
 import { unwrap } from '@util/unwrap';
 import { TemplateEngine } from '@util/TemplateEngine';
 import { Tooltip } from 'bootstrap';
-import { trim } from 'lodash';
+import { trim } from 'lodash-es';
 type CardItem = {
     uniqueName: string,
 

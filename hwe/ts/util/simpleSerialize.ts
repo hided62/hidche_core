@@ -1,4 +1,4 @@
-import { isInteger, isString } from "lodash";
+import { isInteger, isString } from "lodash-es";
 
 export function simpleSerialize(...values : (string|number)[]): string{
   const result = [];

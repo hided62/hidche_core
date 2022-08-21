@@ -70,7 +70,7 @@ import { mb_strwidth } from "@/util/mb_strwidth";
 import { parseTime } from "@/util/parseTime";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import addMinutes from "date-fns/esm/addMinutes/index";
-import { range } from "lodash";
+import { range } from "lodash-es";
 import { inject, onMounted, ref, type PropType } from "vue";
 import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";

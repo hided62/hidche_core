@@ -1,4 +1,4 @@
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 
 interface NameValuePair {
     name: string,

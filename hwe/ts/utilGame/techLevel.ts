@@ -1,5 +1,5 @@
 
-import { clamp } from "lodash";
+import { clamp } from "lodash-es";
 
 export const TECH_LEVEL_YEAR_GAP = 5;
 export const TECH_LEVEL_STEP = 1000;

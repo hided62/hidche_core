@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import type { GameIActionInfo } from "@/defs/GameObj";
 import type { ValueFormatterParams } from "ag-grid-community";
-import { isNumber, isString } from "lodash";
+import { isNumber, isString } from "lodash-es";
 import { ref, watch, type PropType } from "vue";
 
 const props = defineProps({

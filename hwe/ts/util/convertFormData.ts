@@ -1,4 +1,4 @@
-import { isArray, isString, isNumber, isBoolean } from "lodash";
+import { isArray, isString, isNumber, isBoolean } from "lodash-es";
 
 export function convertFormData(values: Record<string, null | number[] | string[] | boolean[] | number | string | boolean>): FormData {
     const formData = new FormData();

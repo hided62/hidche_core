@@ -156,7 +156,7 @@ import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import { unwrap } from "@/util/unwrap";
 import type { SimpleNationObj, diplomacyState, MapResult } from "./defs";
 import type { GetDiplomacyResponse } from "./defs/API/Global";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { isBrightColor } from "@/util/isBrightColor";
 
 const serverID = staticValues.serverID;

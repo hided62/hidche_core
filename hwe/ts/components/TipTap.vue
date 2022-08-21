@@ -352,7 +352,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { unwrap } from "@/util/unwrap";
 import { getBase64FromFileObject } from "@/util/getBase64FromFileObject";
-import { isObject, isString } from "lodash";
+import { isObject, isString } from "lodash-es";
 import type { AxiosError } from "axios";
 import { SammoAPI } from "@/SammoAPI";
 

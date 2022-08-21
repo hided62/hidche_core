@@ -1,7 +1,7 @@
 import Tooltip from "bootstrap/js/dist/tooltip";
 //HACK: 이유는 잘 모르겠지만 bootstrap-vue3에서 bootstrap 호출하는 것과 충돌하여 우회 중
 import $ from "jquery";
-import { trim } from "lodash";
+import { trim } from "lodash-es";
 
 export function initTooltip($obj?: JQuery<HTMLElement>): void {
     if ($obj === undefined) {

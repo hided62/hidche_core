@@ -30,7 +30,7 @@ import BottomBar from "@/components/BottomBar.vue";
 import type { ToastType } from "@/defs";
 import { onMounted, ref } from "vue";
 import { SammoAPI } from "./SammoAPI";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { joinYearMonth } from "./util/joinYearMonth";
 import BettingDetail from "@/components/BettingDetail.vue";

@@ -8,7 +8,7 @@ import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { Tooltip } from 'bootstrap';
-import { trim } from 'lodash';
+import { trim } from 'lodash-es';
 import { SammoAPI } from './SammoAPI';
 import { unwrap } from './util/unwrap';
 

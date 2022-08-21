@@ -150,7 +150,7 @@ import { onMounted, provide, ref } from "vue";
 import { SammoAPI } from "./SammoAPI";
 import { BContainer, BButton, useToast, BFormInput, BFormSelect, BFormSelectOption } from "bootstrap-vue-3";
 import { unwrap } from "./util/unwrap";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import type { GeneralListItem, GeneralListItemP1 } from "./defs/API/Nation";
 import { merge2DArrToObjectArr } from "./util/merge2DArrToObjectArr";
 import { convertIterableToMap } from "@/util/convertIterableToMap";

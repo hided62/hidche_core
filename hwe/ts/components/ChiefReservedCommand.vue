@@ -265,7 +265,7 @@ import { parseYearMonth } from "@util/parseYearMonth";
 import { convertSearch초성 } from "@util/convertSearch초성";
 import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
-import { isString, range, trim } from "lodash";
+import { isString, range, trim } from "lodash-es";
 import { SammoAPI } from "@/SammoAPI";
 import type { CommandItem, TurnObj } from "@/defs";
 import { QueryActionHelper, type TurnObjWithTime } from "@/util/QueryActionHelper";

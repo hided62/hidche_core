@@ -1,5 +1,5 @@
 import { mb_strwidth } from "@/util/mb_strwidth";
-import { isArray, isBoolean, isInteger, isString } from "lodash";
+import { isArray, isBoolean, isInteger, isString } from "lodash-es";
 
 
 const stringArgs = [

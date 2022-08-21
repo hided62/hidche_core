@@ -190,7 +190,7 @@ import { unwrap } from "@/util/unwrap";
 import { onMounted, reactive, ref, watch, computed } from "vue";
 import type { VoteInfo, VoteDetailResult } from "@/defs/API/Vote";
 import { SammoAPI } from "@/SammoAPI";
-import { isString, range, sum } from "lodash";
+import { isString, range, sum } from "lodash-es";
 import { formatTime } from "@/util/formatTime";
 import { isBrightColor } from "@/util/isBrightColor";
 import { formatVoteColor } from "@/utilGame/formatVoteColor";
