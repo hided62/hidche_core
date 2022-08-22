@@ -183,7 +183,10 @@ const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{
   general: GeneralListItemP1;
   troopInfo?: {
-    leader: GeneralListItemP1;
+    leader: {
+      city: number;
+      reservedCommand?: GeneralListItemP1['reservedCommand'];
+    };
     name: string;
   };
   nation: NationStaticItem;
