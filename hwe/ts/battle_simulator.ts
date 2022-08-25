@@ -3,7 +3,8 @@ import 'bootstrap';
 import download from 'downloadjs';
 import { unwrap } from "@util/unwrap";
 import { isInteger } from 'lodash-es';
-import { errUnknown, getNpcColor } from '@/common_legacy';
+import { errUnknown } from '@/common_legacy';
+import { getNPCColor } from './utilGame';
 import { combineArray } from "@util/combineArray";
 import { isBrightColor } from "@util/isBrightColor";
 import { numberWithCommas } from "@util/numberWithCommas";
@@ -999,7 +1000,7 @@ $(function ($) {
                 for (const general of generalList) {
                     const $item = $(`<option value="${general.no}">${general.name}</option>`);
                     if (general.npc) {
-                        $item.css('color', unwrap(getNpcColor(general.npc)));
+                        $item.css('color', unwrap(getNPCColor(general.npc)));
                     } else {
                         $item.css('color', 'white');
                     }

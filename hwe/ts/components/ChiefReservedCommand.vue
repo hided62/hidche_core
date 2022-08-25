@@ -5,7 +5,7 @@
       <div
         class="col-7 align-self-center"
         :style="{
-          color: getNpcColor(officer.npcType ?? 0),
+          color: getNPCColor(officer.npcType ?? 0),
         }"
       >
         {{ officer.name }}
@@ -16,7 +16,7 @@
         <div class="d-grid mb-1 py-1 only500px bg1 center">
           <div
             :style="{
-              color: getNpcColor(officer.npcType ?? 0),
+              color: getNPCColor(officer.npcType ?? 0),
               fontSize: '1.2em',
             }"
           >
@@ -271,7 +271,7 @@ import type { CommandItem, TurnObj } from "@/defs";
 import { QueryActionHelper, type TurnObjWithTime } from "@/util/QueryActionHelper";
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown } from "bootstrap-vue-3";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";

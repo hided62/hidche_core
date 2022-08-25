@@ -16,7 +16,7 @@
         <div
           class="col-7 align-self-center"
           :style="{
-            color: getNpcColor(officer?.npcType ?? 0),
+            color: getNPCColor(officer?.npcType ?? 0),
           }"
         >
           {{ officer?.name }}
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import { formatTime } from "@/util/formatTime";
 import { mb_strwidth } from "@/util/mb_strwidth";
 import { parseTime } from "@/util/parseTime";

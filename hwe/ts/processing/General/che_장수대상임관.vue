@@ -94,7 +94,7 @@ import {
   type procNationItem,
   type procNationList,
 } from "../processingRes";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import { isBrightColor } from "@/util/isBrightColor";
 
 const commandName = staticValues.commandName;
@@ -106,7 +106,7 @@ const toggleZoom = ref(true);
 const selectedGeneralID = ref(generalList[0].no);
 
 function textHelpGeneral(gen: procGeneralItem): string {
-  const nameColor = getNpcColor(gen.npc);
+  const nameColor = getNPCColor(gen.npc);
   const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
   return name;
 }

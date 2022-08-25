@@ -70,7 +70,7 @@ import {
   type procGeneralKey,
   type procGeneralRawItemList,
 } from "./processingRes";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 
 const citiesMap = ref(new Map<
   number,
@@ -90,7 +90,7 @@ const isGold = ref(true);
 const selectedGeneralID = ref(generalList[0].no);
 
 function textHelpGeneral(gen: procGeneralItem): string {
-  const nameColor = getNpcColor(gen.npc);
+  const nameColor = getNPCColor(gen.npc);
   const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
   return `${name} (금${unwrap(gen.gold).toLocaleString()}/쌀${unwrap(gen.rice).toLocaleString()}) (${gen.leadership}/${
     gen.strength

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { errUnknown } from '@/common_legacy';
 import { getIconPath } from "@util/getIconPath";
 import { TemplateEngine } from "@util/TemplateEngine";
-import { getNpcColor } from '@/common_legacy';
+import { getNPCColor } from "@/utilGame";
 import type { GeneralListResponse, InvalidResponse, PublicGeneralItem } from '@/defs';
 import { convertFormData } from '@util/convertFormData';
 import { unwrap_any } from '@util/unwrap_any';
@@ -289,7 +289,7 @@ function printGeneralList(value: GeneralListResponse) {
         if (general.reserved == 1) {
             general.userCSS = 'color:violet';
         } else if (general.npc > 0) {
-            general.userCSS = `color:${getNpcColor(general.npc)}`;
+            general.userCSS = `color:${getNPCColor(general.npc)}`;
         }
 
         if (general.ownerName) {

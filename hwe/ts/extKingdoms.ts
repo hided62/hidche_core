@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { unwrap } from '@util/unwrap';
 import axios from 'axios';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
-import { getNpcColor } from './common_legacy';
+import { getNPCColor } from '@/utilGame';
 
 declare const killturn: number;
 declare const autorun_user: undefined|null|{
@@ -230,7 +230,7 @@ $(function () {
                             $obj.css('text-decoration', 'line-through');
                             삭턴장수 += 1;
                         }
-                        const colorNPC = getNpcColor(val.NPC);
+                        const colorNPC = getNPCColor(val.NPC);
                         if (colorNPC !== undefined) {
                             $obj.css('color', colorNPC);
                         }

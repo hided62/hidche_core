@@ -3,7 +3,7 @@
     <div
       class="bg1 nameHeader"
       :style="{
-        color: getNpcColor(officer?.npcType ?? 0),
+        color: getNPCColor(officer?.npcType ?? 0),
         textDecoration: isMe ? 'underline' : undefined,
       }"
     >
@@ -30,7 +30,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
 import { mb_strwidth } from "@/util/mb_strwidth";
 import type { PropType } from "vue";

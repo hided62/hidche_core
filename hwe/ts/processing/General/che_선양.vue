@@ -55,7 +55,7 @@ import {
   type procGeneralKey,
   type procGeneralRawItemList,
 } from "../processingRes";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 
 const commandName = staticValues.commandName;
 const searchable = getProcSearchable();
@@ -64,7 +64,7 @@ const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
 const selectedGeneralID = ref(generalList[0].no);
 
 function textHelpGeneral(gen: procGeneralItem): string {
-  const nameColor = getNpcColor(gen.npc);
+  const nameColor = getNPCColor(gen.npc);
   const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
   return `${name} (${gen.leadership}/${gen.strength}/${gen.intel})`;
 }

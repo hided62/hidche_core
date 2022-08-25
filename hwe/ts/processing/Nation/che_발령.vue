@@ -80,7 +80,7 @@ import {
   type procGeneralRawItemList,
   type procTroopList,
 } from "../processingRes";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import type { MapResult } from '@/defs';
 import { SammoAPI } from '@/SammoAPI';
 import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
@@ -159,7 +159,7 @@ function textHelpGeneral(gen: procGeneralItem): string {
 
     return `,<span style="text-decoration: underline;">${troopName}</span>`;
   })();
-  const nameColor = getNpcColor(gen.npc);
+  const nameColor = getNPCColor(gen.npc);
   const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
   return `${name} [${citiesMap.value.get(unwrap(gen.cityID))?.name}${troops}] (${gen.leadership}/${gen.strength}/${
     gen.intel

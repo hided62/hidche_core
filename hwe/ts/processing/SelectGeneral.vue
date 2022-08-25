@@ -40,7 +40,7 @@
   </v-multiselect>
 </template>
 <script setup lang="ts">
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 import { isBrightColor } from "@/util/isBrightColor";
 import { unwrap } from "@/util/unwrap";
@@ -143,7 +143,7 @@ watch(
         }
       }
 
-      const nameColor = getNpcColor(gen.npc);
+      const nameColor = getNPCColor(gen.npc);
       const name = nameColor ? `<span style="color:${nameColor}">${gen.name}</span>` : gen.name;
 
       const searchText = convertSearch초성(gen.name);

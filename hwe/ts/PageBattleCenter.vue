@@ -22,7 +22,7 @@
           <BFormSelectOption v-for="general of orderedGeneralList" :key="general.no" :value="general.no">
             <span
               :style="{
-                color: getNpcColor(general.npc),
+                color: getNPCColor(general.npc),
               }"
               >{{ general.officerLevel > 4 ? `*${general.name}*` : general.name }}({{ general.turntime.slice(-5) }}){{
                 textMap[orderBy][3](general)
@@ -87,7 +87,7 @@ import type { GeneralListItemP1 } from "./defs/API/Nation";
 import { SammoAPI } from "./SammoAPI";
 import { unwrap } from "@/util/unwrap";
 import { merge2DArrToObjectArr } from "@/util/merge2DArrToObjectArr";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import GeneralBasicCard from "./components/GeneralBasicCard.vue";
 import GeneralSupplementCard from "@/components/GeneralSupplementCard.vue";
 import type { NationStaticItem } from "./defs";

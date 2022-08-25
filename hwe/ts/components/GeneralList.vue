@@ -94,7 +94,7 @@ import type {
   CellClickedEvent,
 } from "ag-grid-community";
 import { ProvidedColumnGroup } from "ag-grid-community";
-import { getNpcColor } from "@/common_legacy";
+import { getNPCColor } from "@/utilGame";
 import type {
   ValueGetterParams,
   ValueFormatterFunc,
@@ -523,7 +523,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     cellStyle: (val: CellClassParams<GeneralListItem>) => {
       const gen = unwrap(val.data);
       const style: StyleValue = {
-        color: getNpcColor(gen.npc),
+        color: getNPCColor(gen.npc),
       };
       return style as CellStyle;
     },

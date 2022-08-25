@@ -9,6 +9,7 @@ export { formatInjury } from './formatInjury';
 export { formatLog } from './formatLog';
 export { formatOfficerLevelText } from './formatOfficerLevelText';
 export { formatVoteColor } from "./formatVoteColor";
+export { getNPCColor } from "./getNPCColor";
 export { isValidObjKey } from "./isValidObjKey";
 export { nextExpLevelRemain } from "./nextExpLevelRemain";
 export { postFilterNationCommandGen } from "./postFilterNationCommandGen";
