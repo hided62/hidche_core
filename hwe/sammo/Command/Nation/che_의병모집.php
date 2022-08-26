@@ -131,7 +131,7 @@ class che_의병모집 extends Command\NationCommand
         $gameStor = KVStorage::getStorage($db, 'game_env'); //TODO: 차라리 env가 이거여야..?
 
         $avgGenCnt = $db->queryFirstField('SELECT avg(gennum) FROM nation WHERE level > 0');
-        $createGenCnt = 5 + Util::round($avgGenCnt / 10);
+        $createGenCnt = 3 + Util::round($avgGenCnt / 8);
         $createGenIdx = $gameStor->npccount + 1;
         $lastCreatGenIdx = $createGenIdx + $createGenCnt;
 
