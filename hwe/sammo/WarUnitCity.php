@@ -44,10 +44,7 @@ class WarUnitCity extends WarUnit{
         return $this->getVar('name');
     }
 
-    function getCityVar(string|\BackedEnum $key){
-        if($key instanceof \BackedEnum){
-            $key = $key->value;
-        }
+    function getCityVar(string $key){
         return $this->raw[$key];
     }
 
