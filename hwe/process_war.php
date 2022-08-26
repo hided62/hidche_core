@@ -113,8 +113,8 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.6)
     ], 'city=%i', $rawDefenderCity['city']);
 
-    $attackerIncTech = buildNationTypeClass($rawAttackerNation['type'])->onCalcDomestic('기술', 'score', $attacker->getDead() * 0.01);
-    $defenderIncTech = buildNationTypeClass($rawDefenderNation['type'])->onCalcDomestic('기술', 'score', $attacker->getKilled() * 0.01);
+    $attackerIncTech = buildNationTypeClass($rawAttackerNation['type'])->onCalcDomestic('기술', 'score', $attacker->getDead() * 0.012);
+    $defenderIncTech = buildNationTypeClass($rawDefenderNation['type'])->onCalcDomestic('기술', 'score', $attacker->getKilled() * 0.009);
 
     $attackerGenCnt = $rawAttackerNation['gennum'];
     $defenderGenCnt = $rawDefenderNation['gennum'];
