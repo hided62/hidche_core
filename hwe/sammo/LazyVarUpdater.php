@@ -15,15 +15,21 @@ trait LazyVarUpdater{
         return $this->raw;
     }
 
-    function getVar(string $key){
+    function getVar(string|\BackedEnum $key){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         return $this->raw[$key];
     }
 
-    function getVars(string ...$keys){
+    function getVars(string|\BackedEnum ...$keys){
         return array_map([$this, 'getVar'], $keys);
     }
 
-    function touchVar(string $key):bool{
+    function touchVar(string|\BackedEnum $key):bool{
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         if(key_exists($key, $this->raw)){
             return false;
         }
@@ -41,16 +47,25 @@ trait LazyVarUpdater{
         }
     }
 
-    function setVar(string $key, $value){
+    function setVar(string|\BackedEnum $key, $value){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         return $this->updateVar($key, $value);
     }
 
-    function getAuxVar(string $key){
+    function getAuxVar(string|\BackedEnum $key){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         $this->unpackAux();
         return $this->raw['auxVar'][$key]??null;
     }
 
-    function setAuxVar(string $key, $var){
+    function setAuxVar(string|\BackedEnum $key, $var){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         $oldVar = $this->getAuxVar($key);
 
         if($oldVar === $var){
@@ -66,7 +81,10 @@ trait LazyVarUpdater{
         $this->auxUpdated = true;
     }
 
-    function updateVar(string $key, $value){
+    function updateVar(string|\BackedEnum $key, $value){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         if(($this->raw[$key]??null) === $value){
             return;
         }
@@ -76,7 +94,10 @@ trait LazyVarUpdater{
         $this->raw[$key] = $value;
     }
 
-    function updateVarWithLimit(string $key, $value, $min = null, $max = null){
+    function updateVarWithLimit(string|\BackedEnum $key, $value, $min = null, $max = null){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         if($min !== null && $value < $min){
             $value = $min;
         }
@@ -86,8 +107,11 @@ trait LazyVarUpdater{
         $this->updateVar($key, $value);
     }
 
-    function increaseVar(string $key, $value)
+    function increaseVar(string|\BackedEnum $key, $value)
     {
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         if($value === 0){
             return;
         }
@@ -95,7 +119,10 @@ trait LazyVarUpdater{
         $this->updateVar($key, $targetValue);
     }
 
-    function increaseVarWithLimit(string $key, $value, $min = null, $max = null){
+    function increaseVarWithLimit(string|\BackedEnum $key, $value, $min = null, $max = null){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         $targetValue = $this->raw[$key] + $value;
         if($min !== null && $targetValue < $min){
             $targetValue = $min;
@@ -106,8 +133,11 @@ trait LazyVarUpdater{
         $this->updateVar($key, $targetValue);
     }
 
-    function multiplyVar(string $key, $value)
+    function multiplyVar(string|\BackedEnum $key, $value)
     {
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         if($value === 1){
             return;
         }
@@ -115,7 +145,10 @@ trait LazyVarUpdater{
         $this->updateVar($key, $targetValue);
     }
 
-    function multiplyVarWithLimit(string $key, $value, $min = null, $max = null){
+    function multiplyVarWithLimit(string|\BackedEnum $key, $value, $min = null, $max = null){
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         $targetValue = $this->raw[$key] * $value;
         if($min !== null && $targetValue < $min){
             $targetValue = $min;
