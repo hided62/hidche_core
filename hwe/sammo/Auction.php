@@ -22,7 +22,7 @@ abstract class Auction
 
   public const COEFF_AUCTION_CLOSE_MINUTES = 24;
   public const COEFF_EXTENSION_MINUTES_PER_BID = (1 / 6);
-  public const COEFF_EXTENSION_MINUTES_LIMIT_BY_BID = 1;
+  public const COEFF_EXTENSION_MINUTES_LIMIT_BY_BID = 0.5;
   public const COEFF_EXTENSION_MINUTES_BY_EXTENSION_QUERY = 1;
   public const MIN_AUCTION_CLOSE_MINUTES = 30;
   public const MIN_EXTENSION_MINUTES_PER_BID = 1;
