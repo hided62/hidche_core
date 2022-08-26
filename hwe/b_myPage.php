@@ -116,7 +116,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                             <?php foreach ([90, 80, 60, 40] as $targetDefenceTrain) : ?>
                                 <option value='<?= $targetDefenceTrain ?>' <?= $me->getVar('defence_train') == $targetDefenceTrain ? "selected" : ""; ?>><?= formatDefenceTrain($targetDefenceTrain) ?>(훈사<?= $targetDefenceTrain ?>)</option>
                             <?php endforeach; ?>
-                            <option value=999 <?= $me->getVar('defence_train') == 999 ? "selected" : ""; ?>><?= formatDefenceTrain(999) ?>[훈련, 사기 -3]</option>
+                            <option value=999 <?= $me->getVar('defence_train') == 999 ? "selected" : ""; ?>><?= formatDefenceTrain(999) ?>[훈련 -3, 사기 -6]</option>
                         </select>
                         】<br><br>
                         <input type=<?= $submit ?> id='set_my_setting' name=btn style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px; value=설정저장><br>
