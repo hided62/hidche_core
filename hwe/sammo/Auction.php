@@ -40,6 +40,7 @@ abstract class Auction
     if ($namePool === null) {
       $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
         UniqueConst::$hiddenSeed,
+        'obfuscatedNamePool',
       )));
       $namePool = [];
       foreach (GameConst::$randGenFirstName as $ch0) {
