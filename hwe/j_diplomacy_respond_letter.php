@@ -85,7 +85,7 @@ if($isAgree){
         ], 'no=%i', $prevLetterNo);
         $prevLetterNo = $db->queryFirstField('SELECT prev_no FROM ng_diplomacy WHERE state != \'cancelled\' AND no = %i', $prevLetterNo);
     }
-    $msgText = "외교 서신 #{$letterNo}가 승인되었습니다.";
+    $msgText = "외교 서신( #{$letterNo})이 승인되었습니다.";
 }
 else{
     $aux['reason'] = [
@@ -97,7 +97,7 @@ else{
         'state'=>'cancelled',
         'aux'=>Json::encode($aux)
     ], 'no=%i', $letterNo);
-    $msgText = "외교 서신 #{$letterNo}가 거부되었습니다.";
+    $msgText = "외교 서신(#{$letterNo})이 거부되었습니다.";
     if($reason){
         $msgText .= ' 이유 : '.$reason;
     }

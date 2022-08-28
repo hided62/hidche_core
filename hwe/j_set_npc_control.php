@@ -82,7 +82,7 @@ function applyNationPolicy($policy, $nationID, $generalName): ?string
                     return "{$troopID}는 국가의 부대가 아닙니다.";
                 }
                 if ($troopCache[$troopID] != 'Neutral') {
-                    return "부대({$troopID}는 하나의 역할만 지정할 수 있습니다.";
+                    return "부대({$troopID})는 하나의 역할만 지정할 수 있습니다.";
                 }
                 if (!is_array($troopTarget) || count($troopTarget) != 2) {
                     return "{$troopID}의 입력양식이 올바르지 않습니다.";

@@ -500,7 +500,7 @@ async function submitPolicy() {
 
 function calcPolicyValue(title: keyof NationPolicy): number {
   if (!(title in nationPolicy.value)) {
-    throw `${title}이 NationPolicy key가 아님`;
+    throw `${title} 값이 NationPolicy key가 아님`;
   }
   const policyValue = nationPolicy.value[title];
   if (!isNumber(policyValue)) {

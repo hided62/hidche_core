@@ -70,7 +70,7 @@ $db->update('ng_diplomacy', [
     'state'=>'cancelled',
     'aux'=>Json::encode($aux)
 ], 'no=%i', $letterNo);
-$msgText = "외교 서신 #{$letterNo}가 회수되었습니다.";
+$msgText = "외교 서신(#{$letterNo})이 회수되었습니다.";
 
 $msg = new Message(
     Message::MSGTYPE_DIPLOMACY,

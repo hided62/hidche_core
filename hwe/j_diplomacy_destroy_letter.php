@@ -100,7 +100,7 @@ if(in_array($stateOpt, ['try_destroy_src', 'try_destroy_dest'])){
             'reason'=>'파기'
         ];
     }
-    $msgText = "외교 서신 #{$letterNo}를 파기했습니다.";
+    $msgText = "외교 서신(#{$letterNo})을 파기했습니다.";
     $lastState = 'cancelled';
 }
 else{
@@ -114,7 +114,7 @@ else{
         'aux'=>Json::encode($aux)
     ], 'no=%i', $letterNo);
 
-    $msgText = "외교 서신 #{$letterNo}를 파기 요청합니다.";
+    $msgText = "외교 서신(#{$letterNo})을 파기 요청합니다.";
     $lastState = 'activated';
 }
 
