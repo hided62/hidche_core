@@ -72,11 +72,26 @@ class Kakao_REST_API_Helper
     private $access_token;
     private $admin_key;
 
-    public function __construct($access_token = '')
+    private string $REST_KEY;  // 디벨로퍼스의 앱 설정에서 확인할 수 있습니다.
+    private string $REDIRECT_URI; // 설정에 등록한 사이트 도메인 + redirect uri
+    private $AUTHORIZATION_CODE = ''; // 동의를 한 후 발급되는 code
+    private $REFRESH_TOKEN = '';
+
+    public function __construct($access_token = '', bool $changeRedirectDomain = true)
     {
         if ($access_token) {
             $this->access_token = $access_token;
         }
+
+        if($changeRedirectDomain && key_exists('HTTP_HOST', $_SERVER)){
+            $uriObj = \phpUri::parse(KakaoKey::REDIRECT_URI);
+            $uriObj->authority = $_SERVER['HTTP_HOST'];
+            $this->REDIRECT_URI = $uriObj->join('');
+        }
+        else{
+            $this->REDIRECT_URI = KakaoKey::REDIRECT_URI;
+        }
+        $this->REST_KEY = KakaoKey::REST_KEY;
 
         self::$admin_apis = array(
             User_Management_Path::$USER_IDS,
@@ -268,10 +283,4 @@ class Kakao_REST_API_Helper
     ///////////////////////////////////////////////////////////////
     // API Test
     ///////////////////////////////////////////////////////////////
-
-
-    private $REST_KEY = KakaoKey::REST_KEY;  // 디벨로퍼스의 앱 설정에서 확인할 수 있습니다.
-    private $REDIRECT_URI = KakaoKey::REDIRECT_URI; // 설정에 등록한 사이트 도메인 + redirect uri
-    private $AUTHORIZATION_CODE = ''; // 동의를 한 후 발급되는 code
-    private $REFRESH_TOKEN = '';
 }

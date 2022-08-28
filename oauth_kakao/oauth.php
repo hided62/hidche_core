@@ -16,7 +16,7 @@ if(!$auth_code){
 
 //TODO: /oauth/token
 
-$restAPI = new Kakao_REST_API_Helper();
+$restAPI = new Kakao_REST_API_Helper('');
 $result = $restAPI->create_access_token($auth_code);
 
 //항상 scope = account_email profile임
