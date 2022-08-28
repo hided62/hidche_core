@@ -44,7 +44,13 @@ class che_계략시도 extends BaseWarUnitTrigger{
             return true;
         }
 
-        if($self->getPhase() == 0){
+        $rawIntel = $general->getIntel(false, false, false, false);
+        $allStat =
+            $general->getLeadership(false, false, false, false) +
+            $general->getStrength(false, false, false, false) +
+            $rawIntel;
+
+        if($self->getPhase() == 0 && $rawIntel * 3 >= $allStat){
             $magicTrialProb *= 3;
         }
 
