@@ -335,4 +335,10 @@ class WebUtil
 
         return join("\n", $result);
     }
+
+    public static function replaceDomain(string $origPath, string $newDomain): string{
+        $upath = \phpUri::parse($origPath);
+        $upath->authority = $newDomain;
+        return $upath->join('');
+    }
 }
