@@ -5,8 +5,8 @@ use \sammo\General;
 
 class che_계략_향낭 extends \sammo\BaseItem{
 
-    protected $rawName = '항냥';
-    protected $name = '항냥(계략)';
+    protected $rawName = '향낭';
+    protected $name = '향낭(계략)';
     protected $info = '[계략] 화계·탈취·파괴·선동 : 성공률 +50%p';
     protected $cost = 3000;
     protected $consumable = true;
