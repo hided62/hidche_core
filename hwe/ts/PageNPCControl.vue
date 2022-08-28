@@ -188,7 +188,7 @@
     </div>
     <div class="control_bar" data-type="nationPolicy">
       <div class="btn-group" role="group">
-        <button type="button" class="btn btn-dark reset_btn" @click="resetPolicy">초기값으로</button>
+        <button type="button" class="btn btn-dark reset_btn" @click="resetPolicy">초깃값으로</button>
         <button type="button" class="btn btn-secondary revert_btn" @click="rollbackPolicy">이전값으로</button>
       </div>
       <button type="button" class="btn btn-primary submit_btn" @click="submitPolicy">설정</button>
@@ -263,7 +263,7 @@
           </div>
           <div class="control_bar" data-type="nationPriority">
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-dark reset_btn" @click="resetNationPriority">초기값으로</button>
+              <button type="button" class="btn btn-dark reset_btn" @click="resetNationPriority">초깃값으로</button>
               <button type="button" class="btn btn-secondary revert_btn" @click="rollbackNationPriority">
                 이전값으로
               </button>
@@ -341,7 +341,7 @@
           </div>
           <div class="control_bar" data-type="generalPriority">
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-dark reset_btn" @click="resetGeneralPriority">초기값으로</button>
+              <button type="button" class="btn btn-dark reset_btn" @click="resetGeneralPriority">초깃값으로</button>
               <button type="button" class="btn btn-secondary revert_btn" @click="rollbackGeneralPriority">
                 이전값으로
               </button>
@@ -436,7 +436,7 @@ function resetPolicy() {
   nationPolicy.value = cloneDeep(staticValues.defaultNationPolicy);
   toasts.info({
     title: "초기화 완료",
-    body: "서버 초기값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
+    body: "서버 초깃값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
   });
 }
 
@@ -522,7 +522,7 @@ function resetNationPriority() {
   });
   toasts.info({
     title: "초기화 완료",
-    body: "서버 초기값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
+    body: "서버 초깃값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
   });
 }
 
@@ -602,7 +602,7 @@ function resetGeneralPriority() {
   });
   toasts.info({
     title: "초기화 완료",
-    body: "서버 초기값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
+    body: "서버 초깃값을 적용했습니다.설정 버튼을 누르면 반영됩니다.",
   });
 }
 

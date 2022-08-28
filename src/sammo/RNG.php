@@ -5,7 +5,7 @@ interface RNG
 {
 
     /**
-     * @return int nextInt()가 반환 가능한 최대값
+     * @return int nextInt()가 반환 가능한 최댓값
      */
     public static function getMaxInt(): int;
 

@@ -1,7 +1,7 @@
 export interface RNG {
 
     /**
-     * nextInt()가 반환 가능한 최대값
+     * nextInt()가 반환 가능한 최댓값
      */
     getMaxInt(): number;
 
