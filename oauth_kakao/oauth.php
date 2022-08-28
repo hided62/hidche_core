@@ -9,7 +9,7 @@ WebUtil::setHeaderNoCache();
 
 $auth_code = Util::getReq('code');
 if(!$auth_code){
-    
+
     header('Location:oauth_fail.html');
 }
 
@@ -27,7 +27,12 @@ $result = $restAPI->create_access_token($auth_code);
 
 
 if (Util::array_get($result['expires_in'], -1) <= 0) {
-    die('알 수 없는 에러:'.Util::array_get($result['msg'], ''));
+    $errCode = $result['error_code'] ?? '(NoCode)';
+    $error = $result['error'] ?? '(NoError)';
+    $errorDesc = $result['error_description'] ?? '(NoDesc)';
+    $msg = $result['msg'] ?? '(NoMsg)';
+
+    die("알 수 없는 에러: {$errCode},{$error},{$errorDesc},{$msg}");
 }
 
 $session = Session::getInstance();
