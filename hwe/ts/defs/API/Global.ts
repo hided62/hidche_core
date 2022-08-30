@@ -78,6 +78,13 @@ export type GetDiplomacyResponse = {
     myNationID: number;
 }
 
+export type ExecuteResponse = {
+    result: true;
+    updated: boolean;
+    locked: boolean;
+    lastExecuted: string;
+};
+
 export type GetRecentRecordResponse = {
     result: true;
     history: [number, string][];

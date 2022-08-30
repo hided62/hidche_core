@@ -3,8 +3,10 @@
 namespace sammo\API\Global;
 
 use sammo\Session;
+use sammo\DB;
 use DateTimeInterface;
 use sammo\TurnExecutionHelper;
+use sammo\UniqueConst;
 
 class ExecuteEngine extends \sammo\BaseAPI
 {
@@ -20,10 +22,23 @@ class ExecuteEngine extends \sammo\BaseAPI
 
     public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
     {
-      $updated = TurnExecutionHelper::executeAllCommand();
+      $reqServerID = $this->args['serverID'] ?? null;
+      if($reqServerID && $reqServerID !== UniqueConst::$serverID){
+        return [
+          'result' => false,
+          'reason' => '서버 아이디가 다릅니다',
+          'reqRefresh' => true,
+        ];
+      }
+
+      $updated = false;
+      $locked = false;
+      $lastExecuted = TurnExecutionHelper::executeAllCommand($updated, $locked);
       return [
         'result' => true,
         'updated' => $updated,
+        'locked' => $locked,
+        'lastExecuted' => $lastExecuted,
       ];
     }
 }

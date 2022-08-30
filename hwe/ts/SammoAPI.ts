@@ -22,6 +22,7 @@ import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListRespo
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type {
+ExecuteResponse,
   GetConstResponse,
   GetCurrentHistoryResponse,
   GetDiplomacyResponse,
@@ -144,7 +145,11 @@ const apiRealPath = {
     >,
     GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
     GetDiplomacy: GET as APICallT<undefined, GetDiplomacyResponse>,
-    ExecuteEngine: POST as APICallT<undefined, ValidResponse & { updated: boolean }>,
+    ExecuteEngine: POST as APICallT<{
+      serverID: string | undefined
+    }, ExecuteResponse, InvalidResponse & {
+      reqRefresh?: boolean
+    }>,
     GetRecentRecord: GET as APICallT<{
       lastGeneralRecordID: number;
       lastWorldHistoryID: number;

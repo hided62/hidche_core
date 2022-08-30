@@ -353,26 +353,26 @@ class TurnExecutionHelper
         return [false, $currentTurn];
     }
 
-    static public function executeAllCommand(): bool
+    static public function executeAllCommand(&$executed = false, &$locked = false): string
     {
-        //if(!timeover()) { return; }
-
         $db = DB::db();
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         if (TimeUtil::now(true) < $gameStor->turntime) {
             //턴 시각 이전이면 아무것도 하지 않음
-            return false;
+            return $gameStor->turntime;
         }
 
         if (!tryLock()) {
-            return false;
+            $locked = true;
+            return $gameStor->turntime;
         }
 
         if ($gameStor->isunited == 2 || $gameStor->isunited == 3) {
             //천통시에는 동결
-            return false;
+            $locked = true;
+            return $gameStor->turntime;
         }
 
         $gameStor->cacheAll();
@@ -414,10 +414,14 @@ class TurnExecutionHelper
 
             if ($executionOver) {
                 if ($currentTurn !== null) {
+                    $executed = true;
                     $gameStor->turntime = $currentTurn;
                 }
                 unlock();
-                return $currentTurn !== null && $lastExecuted !== $currentTurn;
+                if($lastExecuted !== $currentTurn){
+                    $executed = true;
+                }
+                return $gameStor->turntime;
             }
 
             $monthlyRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
@@ -505,6 +509,7 @@ class TurnExecutionHelper
         );
 
         if ($currentTurn !== null) {
+            $executed = true;
             $gameStor->turntime = $currentTurn;
         }
 
@@ -512,10 +517,17 @@ class TurnExecutionHelper
         processTournament();
         //거래 처리
         processAuction();
-        // 잡금 해제
+        // 잠금 해제
+
+        $turntime = $gameStor->turntime;
+
         $gameStor->resetCache();
         unlock();
 
-        return $currentTurn !== null && $lastExecuted !== $currentTurn;
+        if($lastExecuted !== $currentTurn){
+            $executed = true;
+        }
+
+        return $turntime;
     }
 }
