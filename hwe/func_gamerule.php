@@ -554,32 +554,39 @@ function updateNationState()
     $startYear = $admin['startyear'];
 
     $assemblerCnts = [];
+
+    $nationCityCounts = [];
+    foreach($db->queryAllLists('SELECT nation, count(*) FROM city WHERE LEVEL>=4 GROUP BY nation') as [$nationID, $cityCnt]){
+        $nationCityCounts[$nationID] = $cityCnt;
+    }
+
     foreach ($db->queryAllLists('SELECT nation,count(no) FROM general WHERE npc = 5 GROUP BY nation') as [$nationID, $assemblerCnt]) {
         $assemblerCnts[$nationID] = $assemblerCnt;
     };
 
+    $nationLevelByCityCnt = [
+        0, //방랑군
+        1, //호족
+        2, //군벌
+        5, //주자사
+        8, //주목
+        11, //공
+        16, //왕
+        21, //황제
+    ];
+
     foreach ($db->query('SELECT nation,name,level,tech,aux FROM nation') as $nation) {
         //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
         $nationID = $nation['nation'];
-        $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nationID);
+        $cityCnt = $nationCityCounts[$nationID] ?? 0;
 
-
-        if ($citycount == 0) {
-            $nationlevel = 0;   // 방랑군
-        } elseif ($citycount == 1) {
-            $nationlevel = 1;   // 호족
-        } elseif ($citycount <= 4) {
-            $nationlevel = 2;   // 군벌
-        } elseif ($citycount <= 7) {
-            $nationlevel = 3;   // 주자사
-        } elseif ($citycount <= 10) {
-            $nationlevel = 4;   // 주목
-        } elseif ($citycount <= 15) {
-            $nationlevel = 5;   // 공
-        } elseif ($citycount <= 20) {
-            $nationlevel = 6;   // 왕
-        } else {
-            $nationlevel = 7;   // 황제
+        /** @var int */
+        $nationlevel = 0;
+        foreach($nationLevelByCityCnt as $cmpNationLevel => $cmpCityCnt){
+            if($cityCnt < $cmpCityCnt){
+                break;
+            }
+            $nationlevel = $cmpNationLevel;
         }
 
         if ($nationlevel > $nation['level']) {
@@ -593,33 +600,47 @@ function updateNationState()
                 'rice' => $db->sqleval('rice + %i', $nationlevel * 1000),
             ];
 
+            $nationName = $nation['name'];
+            $lordName = $db->queryFirstField('SELECT name FROM general WHERE nation = %i AND officer_level = 12', $nationID);
+
+            $oldNationLevelText = getNationLevel($oldLevel);
+            $nationLevelText = getNationLevel($nationlevel);
+
+            $logger = new ActionLogger(0, $nationID, $year, $month, false);
+            $josaYi = JosaUtil::pick($lordName, '이');
+
             switch ($nationlevel) {
-                case 7:
-                    $josaUl = JosaUtil::pick(getNationLevel($nationlevel), '을');
-                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭하였습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>{$josaUl} 자칭"]);
+                case 7: //황제
+                    $josaRo = JosaUtil::pick($nationLevelText, '로');
+                    $logger->pushGlobalHistoryLog("<Y><b>【작위】</b></><D><b>{$nationName}</b></> {$oldNationLevelText} <Y>{$lordName}</>{$josaYi} <C>{$nationLevelText}</>{$josaRo} 옹립되었습니다.");
+                    $logger->pushNationalHistoryLog("<D><b>{$nationName}</b></> {$oldNationLevelText} <Y>{$lordName}</>{$josaYi} <C>{$nationLevelText}</>{$josaRo} 옹립");
                     $auxVal = Json::decode($nation['aux']);
                     $auxVal['can_국기변경'] = 1;
                     $auxVal['can_국호변경'] = 1;
                     $updateVals['aux'] = Json::encode($auxVal);
                     break;
-                case 6:
-                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극하였습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 등극"]);
+                case 6: //왕
+                    $josaRo = JosaUtil::pick($nationLevelText, '로');
+                    $logger->pushGlobalHistoryLog("<Y><b>【작위】</b></><D><b>{$nationName}</b></>의 <Y>{$lordName}</>{$josaYi} <C>$nationLevelText</>{$josaRo} 책봉되었습니다.");
+                    $logger->pushNationalHistoryLog("<D><b>{$nationName}</b></>의 <Y>{$lordName}</>{$josaYi} <C>$nationLevelText</>{$josaRo} 책봉");
                     break;
-                case 5:
-                case 4:
-                case 3:
-                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명되었습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>에 임명됨"]);
+                case 5: //공
+                case 4: //주목
+                case 3: //주자사
+                    $josaRo = JosaUtil::pick($nationLevelText, '로');
+                    $logger->pushGlobalHistoryLog("<Y><b>【작위】</b></><D><b>{$nationName}</b></>의 <Y>{$lordName}</>{$josaYi} <C>$nationLevelText</>{$josaRo} 임명되었습니다.");
+                    $logger->pushNationalHistoryLog("<D><b>{$nationName}</b></>의 <Y>{$lordName}</>{$josaYi} <C>$nationLevelText</>{$josaRo} 임명됨");
                     break;
-                case 2:
-                    $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 독립하여 <Y>" . getNationLevel($nationlevel) . "</>로 나섰습니다.";
-                    pushNationHistoryLog($nation['nation'], ["<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>" . getNationLevel($nationlevel) . "</>로 나서다"]);
+                case 2: //군벌
+                    $josaRa = JosaUtil::pick($nationName, '라');
+                    $josaRo = JosaUtil::pick($nationLevelText, '로');
+                    $logger->pushGlobalHistoryLog("<Y><b>【작위】</b></><Y>{$lordName}</>{$josaYi} 독립하여 <D><b>{$nationName}</b></>{$josaRa}는 <C>$nationLevelText</>{$josaRo} 나섰습니다.");
+                    $logger->pushNationalHistoryLog("<Y>{$lordName}</>{$josaYi} 독립하여 <D><b>{$nationName}</b></>{$josaRa}는 <C>$nationLevelText</>{$josaRo} 나서다");
                     break;
             }
 
             $db->update('nation', $updateVals, 'nation=%i', $nation['nation']);
+            $logger->flush();
 
             $turnRows = [];
             foreach (Util::range(getNationChiefLevel($nation['level']), 12) as $chiefLevel) {
