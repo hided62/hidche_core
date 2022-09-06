@@ -184,10 +184,13 @@ class che_징병 extends Command\GeneralCommand
 
         $logger = $general->getLogger();
 
+        $setTrain = $general->onCalcDomestic(static::$actionName, 'train', static::$defaultTrain);
+        $setAtmos = $general->onCalcDomestic(static::$actionName, 'atmos', static::$defaultAtmos);
+
         if ($reqCrewType->id == $currCrewType->id && $currCrew > 0) {
             $logger->pushGeneralActionLog("{$crewTypeName} <C>{$reqCrewText}</>명을 추가{$this->getName()}했습니다. <1>$date</>");
-            $train = ($currCrew * $general->getVar('train') + $reqCrew * static::$defaultTrain) / ($currCrew + $reqCrew);
-            $atmos = ($currCrew * $general->getVar('atmos') + $reqCrew * static::$defaultAtmos) / ($currCrew + $reqCrew);
+            $train = ($currCrew * $general->getVar('train') + $reqCrew * $setTrain) / ($currCrew + $reqCrew);
+            $atmos = ($currCrew * $general->getVar('atmos') + $reqCrew * $setAtmos) / ($currCrew + $reqCrew);
 
             $general->increaseVar('crew', $reqCrew);
             $general->setVar('train', $train);
@@ -196,15 +199,17 @@ class che_징병 extends Command\GeneralCommand
             $logger->pushGeneralActionLog("{$crewTypeName} <C>{$reqCrewText}</>명을 {$this->getName()}했습니다. <1>$date</>");
             $general->setVar('crewtype', $reqCrewType->id);
             $general->setVar('crew', $reqCrew);
-            $general->setVar('train', static::$defaultTrain);
-            $general->setVar('atmos', static::$defaultAtmos);
+            $general->setVar('train', $setTrain);
+            $general->setVar('atmos', $setAtmos);
         }
 
-        $newTrust = Util::valueFit($this->city['trust'] - ($reqCrew / $this->city['pop']) / static::$costOffset * 100, 0);
+        $reqCrewDown = $general->onCalcDomestic('징집인구', 'score', $reqCrew);
+
+        $newTrust = Util::valueFit($this->city['trust'] - ($reqCrewDown / $this->city['pop']) / static::$costOffset * 100, 0);
 
         $db->update('city', [
             'trust' => $newTrust,
-            'pop' => $this->city['pop'] - $reqCrew
+            'pop' => $this->city['pop'] - $reqCrewDown
         ], 'city=%i', $general->getCityID());
 
         $exp = Util::round($reqCrew / 100);

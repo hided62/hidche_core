@@ -62,8 +62,6 @@ class che_소집해제 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $crew = $general->getVar('crew');
-
         $logger = $general->getLogger();
 
         $logger->pushGeneralActionLog("병사들을 <R>소집해제</>하였습니다. <1>$date</>");
@@ -71,8 +69,10 @@ class che_소집해제 extends Command\GeneralCommand{
         $exp = 70;
         $ded = 100;
 
+        $crewUp = $general->onCalcDomestic('징집인구', 'score', $general->getVar('crew'));
+
         $db->update('city', [
-            'pop'=>$db->sqleval('pop + %i', $crew)
+            'pop'=>$db->sqleval('pop + %i', $crewUp)
         ], 'city=%i', $general->getCityID());
 
         $general->setVar('crew', 0);

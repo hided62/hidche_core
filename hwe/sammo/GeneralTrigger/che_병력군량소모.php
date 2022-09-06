@@ -23,8 +23,9 @@ class che_병력군량소모 extends BaseGeneralTrigger{
             }
             else{
                 $db = DB::db();
+                $crewUp = $general->onCalcDomestic('징집인구', 'score', $general->getVar('crew'));
                 $db->update('city', [
-                    'pop'=>$db->sqleval('pop + %i', $general->getVar('crew'))
+                    'pop'=>$db->sqleval('pop + %i', $crewUp)
                 ], 'city=%i', $general->getCityID());
 
                 $general->setVar('crew', 0);
