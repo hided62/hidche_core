@@ -78,6 +78,7 @@ if ($expires < $now) {
 }
 
 
+$oauthID = null;
 if (!$email) {
     $me = $restAPI->meWithEmail();
     $me['code'] = Util::array_get($me['code'], 0);
@@ -88,6 +89,7 @@ if (!$email) {
             'reason' => '카카오로그인이 정상적으로 수행되지 않았습니다.'
         ]);
     }
+    $oauthID = $me['id'];
 
     $kakao_account = $me['kakao_account'] ?? null;
     if (!$kakao_account) {
@@ -129,7 +131,17 @@ $userInfo = $RootDB->queryFirstRow(
 );
 
 if (!$userInfo) {
-    $oauthID = $me['id'];
+    if(!$oauthID){
+        $me = $restAPI->meWithEmail();
+        if ($me['code']??0 < 0) {
+            Json::die([
+                'result' => false,
+                'reqOTP' => false,
+                'reason' => '카카오로그인이 정상적으로 수행되지 않았습니다.'
+            ]);
+        }
+        $oauthID = $me['id'];
+    }
     //이메일 계정이 바뀐 것인가?
     $userInfo = $RootDB->queryFirstRow(
         'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_info, token_valid_until from member where oauth_id=%i',
