@@ -129,6 +129,21 @@ $userInfo = $RootDB->queryFirstRow(
 );
 
 if (!$userInfo) {
+    $oauthID = $me['id'];
+    //이메일 계정이 바뀐 것인가?
+    $userInfo = $RootDB->queryFirstRow(
+        'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_info, token_valid_until from member where oauth_id=%i',
+        $oauthID
+    );
+    if($userInfo){
+        //이메일 계정이 바뀐 것이므로, 이메일 계정을 업데이트한다.
+        $RootDB->update('member', [
+            'email' => $email,
+        ], 'oauth_id=%i', $oauthID);
+    }
+}
+
+if (!$userInfo) {
     $restAPI->unlink();
     $session->access_token = null;
     Json::die([
