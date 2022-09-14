@@ -67,7 +67,7 @@ class DieOnPrestart extends \sammo\BaseAPI
 
     $generalName = $generalObj->getName();
     $josaYi = JosaUtil::pick($generalName, '이');
-    $generalObj->kill($db, true, "<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>");
+    $generalObj->kill($db, true, "<Y>{$generalName}</>{$josaYi} 홀연히 모습을 <R>감추었습니다</>");
 
     $session->logoutGame();
     return null;
