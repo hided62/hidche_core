@@ -113,6 +113,13 @@ class che_하야 extends Command\GeneralCommand{
         $general->setVar('troop', 0);
 
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
+        $general->setInheritancePoint(
+            InheritanceKey::max_belong,
+            max(
+                $general->getVar('belong'),
+                $general->getInheritancePoint(InheritanceKey::max_belong) ?? 0
+            )
+        );
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();

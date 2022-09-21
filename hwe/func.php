@@ -1823,11 +1823,11 @@ function deleteNation(General $lord, bool $applyDB): array
 
     // 전 장수 재야로
     foreach ($nationGeneralList as $general) {
-        $general->setAuxVar(
-            InheritanceKey::max_belong->value,
+        $general->setInheritancePoint(
+            InheritanceKey::max_belong,
             max(
                 $general->getVar('belong'),
-                $general->getAuxVar(InheritanceKey::max_belong->value) ?? 0
+                $general->getInheritancePoint(InheritanceKey::max_belong) ?? 0
             )
         );
         $general->setVar('belong', 0);
