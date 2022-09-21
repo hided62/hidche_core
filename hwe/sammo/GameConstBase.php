@@ -79,7 +79,7 @@ class GameConstBase
     /** @var int 최대 기술 레벨 */
     public static $maxTechLevel = 12;
     /** @var int 최대 하야 패널티 수 */
-    public static $maxBetrayCnt = 9;
+    public static $maxBetrayCnt = 6;
 
     /** @var int 최소 인구 증가량 */
     public static $basePopIncreaseAmount = 5000;
@@ -429,6 +429,12 @@ class GameConstBase
             "month", 2000,
             ["DateRelative", "==", 3, 1],
             ["NoticeToHistoryLog", "<S>출병 제한이 풀렸습니다.</>", ActionLogger::EVENT_YEAR_MONTH],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 2000,
+            ["DateRelative", "==", 4, 1],
+            ["AddGlobalBetray"],
             ["DeleteEvent"]
         ],
     ];

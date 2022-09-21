@@ -337,6 +337,11 @@ class Join extends \sammo\BaseAPI
         //상성 랜덤
         $affinity = $rng->nextRangeInt(1, 150);
 
+        $betray = 0;
+        if($relYear >= 4){
+            $betray += 1;
+        }
+
         ########## 회원정보 테이블에 입력값을 등록한다. ##########
         $db->insert('general', [
             'owner' => $userID,
@@ -365,6 +370,7 @@ class Join extends \sammo\BaseAPI
             'lastrefresh' => $now,
             'crewtype' => GameUnitConst::DEFAULT_CREWTYPE,
             'makelimit' => 0,
+            'betray' => $betray,
             'age' => $age,
             'startage' => $age,
             'personal' => $character,

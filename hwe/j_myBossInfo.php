@@ -226,8 +226,8 @@ function do추방(General $general, int $myOfficerLevel):?string{
     }
     else{
         $betrayCnt = $general->getVar('betray');
-        $general->addExperience(-$general->getVar('experience')*0.1*$betrayCnt);
-        $general->addDedication(-$general->getVar('dedication')*0.1*$betrayCnt);
+        $general->addExperience(-$general->getVar('experience')*0.15*$betrayCnt);
+        $general->addDedication(-$general->getVar('dedication')*0.15*$betrayCnt);
         $general->increaseVarWithLimit('betray', 1, null, GameConst::$maxBetrayCnt);
     }
 
