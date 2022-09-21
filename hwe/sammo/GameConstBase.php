@@ -434,7 +434,8 @@ class GameConstBase
         [
             "month", 2000,
             ["DateRelative", "==", 4, 1],
-            ["AddGlobalBetray"],
+            ["AddGlobalBetray", 1, 0],
+            ["AddGlobalBetray", 1, 1],
             ["DeleteEvent"]
         ],
     ];

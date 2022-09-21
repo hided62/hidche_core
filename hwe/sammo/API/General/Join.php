@@ -339,7 +339,7 @@ class Join extends \sammo\BaseAPI
 
         $betray = 0;
         if($relYear >= 4){
-            $betray += 1;
+            $betray += 2;
         }
 
         ########## 회원정보 테이블에 입력값을 등록한다. ##########
