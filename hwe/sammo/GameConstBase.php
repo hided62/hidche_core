@@ -79,7 +79,7 @@ class GameConstBase
     /** @var int 최대 기술 레벨 */
     public static $maxTechLevel = 12;
     /** @var int 최대 하야 패널티 수 */
-    public static $maxBetrayCnt = 6;
+    public static $maxBetrayCnt = 9;
 
     /** @var int 최소 인구 증가량 */
     public static $basePopIncreaseAmount = 5000;
@@ -434,6 +434,7 @@ class GameConstBase
         [
             "month", 2000,
             ["DateRelative", "==", 4, 1],
+            ["NoticeToHistoryLog", "<S>이제부터 하야, 망명시 패널티가 적용됩니다.</>", ActionLogger::EVENT_YEAR_MONTH],
             ["AddGlobalBetray", 1, 0],
             ["AddGlobalBetray", 1, 1],
             ["DeleteEvent"]
