@@ -1823,13 +1823,16 @@ function deleteNation(General $lord, bool $applyDB): array
 
     // 전 장수 재야로
     foreach ($nationGeneralList as $general) {
-        $general->setInheritancePoint(
-            InheritanceKey::max_belong,
-            max(
-                $general->getVar('belong'),
-                $general->getInheritancePoint(InheritanceKey::max_belong) ?? 0
-            )
-        );
+        if($general->getNPCType() < 2){
+            $general->setAuxVar(
+                InheritanceKey::max_belong->value,
+                max(
+                    $general->getVar('belong'),
+                    $general->getInheritancePoint(InheritanceKey::max_belong) ?? 0
+                )
+            );
+        }
+        
         $general->setVar('belong', 0);
         $general->setVar('troop', 0);
         $general->setVar('officer_level', 0);
