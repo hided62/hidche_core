@@ -94,6 +94,7 @@ class che_화계 extends Command\GeneralCommand
 
         $prob = $maxGenScore / GameConst::$sabotageProbCoefByStat;
         $prob += $probCorrection;
+        $prob += sqrt(count($destCityGeneralList)) * GameConst::$sabotageDefenceCoefByGeneralCnt;
 
         $prob += $destCity['secu'] / $destCity['secu_max'] / 5; //최대 20%p
         $prob += $destCity['supply'] ? 0.1 : 0;

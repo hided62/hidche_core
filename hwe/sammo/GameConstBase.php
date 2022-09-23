@@ -46,6 +46,8 @@ class GameConstBase
     public static $sabotageDefaultProb = 0.35;
     /** @var int 계략시 확률 가중치(수치가 클수록 변화가 적음 : (지력차/$firing + $basefiring)*/
     public static $sabotageProbCoefByStat = 300;
+    /** @var float 인원수 별 계략 방어 가중치 */
+    public static $sabotageDefenceCoefByGeneralCnt = 0.05;
     /** @var int 계략시 최소 수치 감소량*/
     public static $sabotageDamageMin = 100;
     /** @var int 계략시 최대 수치 감소량*/
