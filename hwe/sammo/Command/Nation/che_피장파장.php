@@ -75,7 +75,7 @@ class che_피장파장 extends Command\NationCommand
         $env = $this->env;
 
         $this->setCity();
-        $this->setNation();
+        $this->setNation(['strategic_cmd_limit']);
 
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
@@ -113,6 +113,7 @@ class che_피장파장 extends Command\NationCommand
                 [0, 1],
                 '선포, 전쟁중인 상대국에게만 가능합니다.'
             ),
+            ConstraintHelper::AvailableStrategicCommand(),
         ];
     }
 
@@ -120,8 +121,9 @@ class che_피장파장 extends Command\NationCommand
     {
         $name = $this->getName();
         $reqTurn = $this->getPreReqTurn() + 1;
+        $postReqTurn = $this->getPostReqTurn();
 
-        return "{$name}/{$reqTurn}턴(대상 재사용 대기 {$this->getTargetPostReqTurn()})";
+        return "{$name}/{$reqTurn}턴(재사용 대기 $postReqTurn, 대상 재사용 대기 {$this->getTargetPostReqTurn()})";
     }
 
     public function getCost(): array
@@ -136,7 +138,7 @@ class che_피장파장 extends Command\NationCommand
 
     public function getPostReqTurn(): int
     {
-        return 0;
+        return 8;
     }
 
     public function getTargetPostReqTurn(): int
@@ -224,6 +226,10 @@ class che_피장파장 extends Command\NationCommand
         $destNationLogger->flush();
 
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <G><b>{$cmd->getName()}</b></> <M>{$commandName}</>{$josaUl} 발동");
+
+        $db->update('nation', [
+            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 1)
+        ], 'nation=%i', $nationID);
 
         $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
         $destNationStor = KVStorage::getStorage($db, $destNationID, 'nation_env');

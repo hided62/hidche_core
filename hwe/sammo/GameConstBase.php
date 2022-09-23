@@ -368,9 +368,9 @@ class GameConstBase
             'che_의병모집',
             'che_이호경식',
             'che_급습',
+            'che_피장파장',
         ],
         '기타' => [
-            'che_피장파장',
             'che_국기변경',
             'che_국호변경',
         ]
