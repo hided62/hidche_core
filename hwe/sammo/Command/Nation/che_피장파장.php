@@ -227,10 +227,6 @@ class che_피장파장 extends Command\NationCommand
 
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <G><b>{$cmd->getName()}</b></> <M>{$commandName}</>{$josaUl} 발동");
 
-        $db->update('nation', [
-            'strategic_cmd_limit' => $this->generalObj->onCalcStrategic($this->getName(), 'globalDelay', 1)
-        ], 'nation=%i', $nationID);
-
         $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
         $destNationStor = KVStorage::getStorage($db, $destNationID, 'nation_env');
 
