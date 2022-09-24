@@ -2972,6 +2972,9 @@ class GeneralAI
         }
 
         foreach ($this->frontCities as $frontCity) {
+            if(!$frontCity['supply']){
+                continue;
+            }
             $candidateCities[$frontCity['city']] = $frontCity['important'];
         }
 
@@ -3454,7 +3457,7 @@ class GeneralAI
             }
             if ($nationCity['front']) {
                 $frontCities[$cityID] = $nationCity;
-            } else {
+            } else if($nationCity['supply']) {
                 $backupCities[$cityID] = $nationCity;
             }
 
