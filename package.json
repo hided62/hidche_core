@@ -118,9 +118,6 @@
     "webpack-bundle-analyzer": "^4.6.1",
     "webpack-cli": "^4.10.0"
   },
-  "pre-commit": [
-    "lint"
-  ],
   "browserslist": [
     "last 3 versions",
     "> 0.4%",
