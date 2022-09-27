@@ -10,6 +10,7 @@ use \sammo\{
 use \sammo\Constraint\ConstraintHelper;
 
 use function sammo\tryUniqueItemLottery;
+use function sammo\CheckHall;
 
 class che_은퇴 extends Command\GeneralCommand{
     static protected $actionName = '은퇴';
@@ -59,11 +60,16 @@ class che_은퇴 extends Command\GeneralCommand{
         }
 
         $db = DB::db();
+        $env = $this->env;
 
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $logger = $general->getLogger();
+
+        if ($env['isunited'] == 0) {
+            CheckHall($general->getID());
+        }
 
         $general->rebirth();
         $logger->pushGeneralActionLog("은퇴하였습니다. <1>$date</>");
