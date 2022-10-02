@@ -117,8 +117,8 @@ class GeneralAI
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
         $nationStor->cacheValues(['npc_nation_policy', 'npc_general_policy', 'prev_income_gold', 'prev_income_rice']);
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_nation_policy'), $this->env['npc_nation_policy'], $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_general_policy'), $this->env['npc_general_policy'], $this->nation, $this->env);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_nation_policy'), $this->env['npc_nation_policy'] ?? null, $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_general_policy'), $this->env['npc_general_policy'] ?? null, $this->nation, $this->env);
 
         $prevIncomeGold = $nationStor->prev_income_gold ?? 1000;
         $prevIncomeRice = $nationStor->prev_income_rice ?? 1000;
