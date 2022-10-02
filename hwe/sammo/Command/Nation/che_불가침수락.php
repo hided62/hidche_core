@@ -112,7 +112,7 @@ class che_불가침수락 extends Command\NationCommand
         $month = $this->arg['month'];
 
         $currentMonth = $env['year'] * 12 + $env['month'] - 1;
-        $reqMonth = $year * 12 + $month - 1;
+        $reqMonth = $year * 12 + $month;
 
         $nationID = $this->nation['nation'];
 
@@ -199,7 +199,7 @@ class che_불가침수락 extends Command\NationCommand
         $destLogger = $this->destGeneralObj->getLogger();
 
         $currentMonth = $env['year'] * 12 + $env['month'] - 1;
-        $reqMonth = $year * 12 + $month - 1;
+        $reqMonth = $year * 12 + $month;
 
         $db->update(
             'diplomacy',
