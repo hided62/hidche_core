@@ -28,7 +28,7 @@ class InheritancePointManager
     $inheritanceKey->put(InheritanceKey::unifier, new InheritancePointType(true, 1, '천통 기여', null));
     $inheritanceKey->put(InheritanceKey::dex, new InheritancePointType(false, 0.001, '숙련도', 0.5));
     $inheritanceKey->put(InheritanceKey::tournament, new InheritancePointType(true, 1, '토너먼트', 1));
-    $inheritanceKey->put(InheritanceKey::betting, new InheritancePointType(false, 10, '베팅 당첨', null));
+    $inheritanceKey->put(InheritanceKey::betting, new InheritancePointType(false, 10, '베팅 당첨', 1));
     $this->inheritanceKey = $inheritanceKey;
   }
 
