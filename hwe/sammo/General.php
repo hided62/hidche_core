@@ -626,7 +626,6 @@ class General implements iAction
             $inheritPointManager = InheritancePointManager::getInstance();
             $inheritPointManager->mergeTotalInheritancePoint($this);
             $inheritPointManager->applyInheritanceUser($this->getVar('owner'));
-            $inheritPointManager->clearInheritancePoint($this);
         }
 
 
@@ -686,9 +685,8 @@ class General implements iAction
 
         $ownerID = $this->getVar('owner');
         if ($ownerID) {
-            $inheritPointManager->mergeTotalInheritancePoint($this);
+            $inheritPointManager->mergeTotalInheritancePoint($this, true);
             $inheritPointManager->applyInheritanceUser($ownerID, true);
-            $inheritPointManager->clearInheritancePoint($this);
         }
 
         $this->multiplyVarWithLimit('leadership', 0.85, 10);
@@ -1331,8 +1329,8 @@ class General implements iAction
         return InheritancePointManager::getInstance()->increaseInheritancePoint($this, $key, $value, $aux);
     }
 
-    public function mergeTotalInheritancePoint(bool $isEnd = false)
+    public function mergeTotalInheritancePoint(bool $isRebirth = false)
     {
-        InheritancePointManager::getInstance()->mergeTotalInheritancePoint($this, $isEnd);
+        InheritancePointManager::getInstance()->mergeTotalInheritancePoint($this, $isRebirth);
     }
 }

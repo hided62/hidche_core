@@ -1092,9 +1092,8 @@ function checkEmperior()
     }
     processSumInheritPointRank();
     foreach ($allUserGenerals as $genObj) {
-        $inheritPointManager->mergeTotalInheritancePoint($genObj, true);
+        $inheritPointManager->mergeTotalInheritancePoint($genObj);
         $inheritPointManager->applyInheritanceUser($genObj->getVar('owner'));
-        $inheritPointManager->clearInheritancePoint($genObj);
     }
 
     $gameStor->isunited = 2;

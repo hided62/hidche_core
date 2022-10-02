@@ -17,18 +17,18 @@ class InheritancePointManager
   private function __construct()
   {
     $inheritanceKey = new Map();
-    $inheritanceKey->put(InheritanceKey::previous, new InheritancePointType(true, 1, '기존 포인트'));
-    $inheritanceKey->put(InheritanceKey::lived_month, new InheritancePointType(true, 1, '생존'));
-    $inheritanceKey->put(InheritanceKey::max_belong, new InheritancePointType(false, 10, '최대 임관년 수'));
-    $inheritanceKey->put(InheritanceKey::max_domestic_critical, new InheritancePointType(true, 1, '최대 연속 내정 성공'));
-    $inheritanceKey->put(InheritanceKey::active_action, new InheritancePointType(true, 3, '능동 행동 수'));
+    $inheritanceKey->put(InheritanceKey::previous, new InheritancePointType(true, 1, '기존 포인트', 1));
+    $inheritanceKey->put(InheritanceKey::lived_month, new InheritancePointType(true, 1, '생존', 1));
+    $inheritanceKey->put(InheritanceKey::max_belong, new InheritancePointType(false, 10, '최대 임관년 수', null));
+    $inheritanceKey->put(InheritanceKey::max_domestic_critical, new InheritancePointType(true, 1, '최대 연속 내정 성공', null));
+    $inheritanceKey->put(InheritanceKey::active_action, new InheritancePointType(true, 3, '능동 행동 수', 1));
     //$inheritanceKey->put(InheritanceKey::snipe_combat, new InheritancePointType(true, 10, '병종 상성 우위 횟수'));
-    $inheritanceKey->put(InheritanceKey::combat, new InheritancePointType(['rank', RankColumn::warnum], 5, '전투 횟수'));
-    $inheritanceKey->put(InheritanceKey::sabotage, new InheritancePointType(['rank', RankColumn::firenum], 20, '계략 성공 횟수'));
-    $inheritanceKey->put(InheritanceKey::unifier, new InheritancePointType(true, 1, '천통 기여'));
-    $inheritanceKey->put(InheritanceKey::dex, new InheritancePointType(false, 0.001, '숙련도'));
-    $inheritanceKey->put(InheritanceKey::tournament, new InheritancePointType(true, 1, '토너먼트'));
-    $inheritanceKey->put(InheritanceKey::betting, new InheritancePointType(false, 10, '베팅 당첨'));
+    $inheritanceKey->put(InheritanceKey::combat, new InheritancePointType(['rank', RankColumn::warnum], 5, '전투 횟수', 1));
+    $inheritanceKey->put(InheritanceKey::sabotage, new InheritancePointType(['rank', RankColumn::firenum], 20, '계략 성공 횟수', 1));
+    $inheritanceKey->put(InheritanceKey::unifier, new InheritancePointType(true, 1, '천통 기여', null));
+    $inheritanceKey->put(InheritanceKey::dex, new InheritancePointType(false, 0.001, '숙련도', 0.5));
+    $inheritanceKey->put(InheritanceKey::tournament, new InheritancePointType(true, 1, '토너먼트', 0.5));
+    $inheritanceKey->put(InheritanceKey::betting, new InheritancePointType(false, 10, '베팅 당첨', null));
     $this->inheritanceKey = $inheritanceKey;
   }
 
@@ -258,9 +258,8 @@ class InheritancePointManager
     $inheritStor->setValue($key->value, [$newValue, $aux]);
   }
 
-  public function clearInheritancePoint(General $general)
+  public function clearInheritancePoint(?int $ownerID)
   {
-    $ownerID = $general->getVar('owner');
     if (!$ownerID) {
       return;
     }
@@ -281,7 +280,7 @@ class InheritancePointManager
     $inheritStor->setValue(InheritanceKey::previous->value, $previousPointInfo);
   }
 
-  public function mergeTotalInheritancePoint(General $general, bool $isEnd = false)
+  public function mergeTotalInheritancePoint(General $general, bool $isRebirth = false)
   {
     $ownerID = $general->getVar('owner');
     if (!$ownerID) {
@@ -296,7 +295,7 @@ class InheritancePointManager
     $gameStor->cacheValues(['year', 'startyear', 'month']);
 
     if ($general->getVar('npc') == 1) {
-      if (!$isEnd) {
+      if ($isRebirth) {
         return;
       }
 
@@ -331,18 +330,14 @@ class InheritancePointManager
   }
 
 
-  function applyInheritanceUser(int $userID, bool $isRebirth = false): float
+  function applyInheritanceUser(int $ownerID, bool $isRebirth = false): float
   {
-    if ($userID === 0) {
+    if ($ownerID === 0) {
       return 0;
     }
 
     //FIXME: 굳이 merge, apply, clean 3단계를 거쳐야 할 이유가 없음
-    /** @var Map<InheritanceKey,float> */
-    $rebirthDegraded = new Map();
-    $rebirthDegraded[InheritanceKey::dex] = 0.5;
-
-    $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
+    $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
     $totalPoint = 0;
     /** @var array<string,array{0:float,1:string|float}> */
     $allPoints = $inheritStor->getAll();
@@ -355,15 +350,27 @@ class InheritancePointManager
       return $allPoints[InheritanceKey::previous->value][0];
     }
 
-    $userLogger = new UserLogger($userID);
+    $userLogger = new UserLogger($ownerID);
 
     $previousPoint = ($allPoints[InheritanceKey::previous->value] ?? [0, 0])[0];
 
-    foreach ($allPoints as $rKey => [$value,]) {
+    $keepValues = [];
+
+    foreach ($allPoints as $rKey => [$value, $auxV]) {
       $key = InheritanceKey::from($rKey);
-      if ($isRebirth && $rebirthDegraded->hasKey($key)) {
-        $value *= $rebirthDegraded[$key];
+
+      /** @var InheritancePointType */
+      $keyTypeObj = $this->inheritanceKey->get($key);
+
+      if($isRebirth){
+        if($keyTypeObj->rebirthStoreCoeff === null){
+          $keepValues[$rKey] = [$value, $auxV];
+          continue;
+        }
+
+        $value *= $keyTypeObj->rebirthStoreCoeff;
       }
+      
       $keyText = $this->getInheritancePointType($key)->info;
       $userLogger->push("{$keyText} 포인트 {$value} 증가", "inheritPoint");
       $totalPoint += $value;
@@ -373,6 +380,10 @@ class InheritancePointManager
     $userLogger->flush();
 
     $inheritStor->resetValues();
+
+    foreach($keepValues as $rKey => $pointPair){
+      $inheritStor->setValue($rKey, $pointPair);
+    }
     $inheritStor->setValue(InheritanceKey::previous->value, [$totalPoint, null]);
     return $totalPoint;
   }

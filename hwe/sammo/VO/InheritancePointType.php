@@ -5,6 +5,7 @@ class InheritancePointType{
     public bool|array $storeType,
     public int|float $pointCoeff,
     public string $info,
+    public ?float $rebirthStoreCoeff,
   )
   {
 
