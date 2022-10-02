@@ -137,6 +137,8 @@ class GeneralAI
         $this->nation['aux'] = Json::decode($this->nation['aux'] ?? '{}');
 
         $this->calcDiplomacyState();
+
+        $this->genType = $this->calcGenType($general);
     }
 
     public function __construct(protected General $general)
@@ -160,8 +162,6 @@ class GeneralAI
         $this->fullLeadership = $general->getLeadership(false);
         $this->fullStrength = $general->getStrength(false);
         $this->fullIntel = $general->getIntel(false);
-
-        $this->genType = $this->calcGenType($general);
     }
 
     public function getGeneralObj(): General
