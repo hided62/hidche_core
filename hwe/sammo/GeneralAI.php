@@ -89,8 +89,6 @@ class GeneralAI
         $this->reqUpdateInstance = false;
 
         $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $this->env = $gameStor->getAll(true);
         $this->baseDevelCost = $this->env['develcost'] * 12;
         $general = $this->general;
         $city = $general->getRawCity();
@@ -119,8 +117,8 @@ class GeneralAI
         $nationStor = KVStorage::getStorage($db, $this->nation['nation'], 'nation_env');
         $nationStor->cacheValues(['npc_nation_policy', 'npc_general_policy', 'prev_income_gold', 'prev_income_rice']);
 
-        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_nation_policy'), $gameStor->getValue('npc_nation_policy'), $this->nation, $this->env);
-        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_general_policy'), $gameStor->getValue('npc_general_policy'), $this->nation, $this->env);
+        $this->nationPolicy = new AutorunNationPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_nation_policy'), $this->env['npc_nation_policy'], $this->nation, $this->env);
+        $this->generalPolicy = new AutorunGeneralPolicy($general, $this->env['autorun_user']['options'] ?? null, $nationStor->getValue('npc_general_policy'), $this->env['npc_general_policy'], $this->nation, $this->env);
 
         $prevIncomeGold = $nationStor->prev_income_gold ?? 1000;
         $prevIncomeRice = $nationStor->prev_income_rice ?? 1000;
@@ -143,6 +141,10 @@ class GeneralAI
 
     public function __construct(protected General $general)
     {
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $this->env = $gameStor->getAll(true);
+
         $this->rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
             UniqueConst::$hiddenSeed,
             'GeneralAI',
