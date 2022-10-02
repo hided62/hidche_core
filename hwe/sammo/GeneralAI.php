@@ -11,8 +11,6 @@ class GeneralAI
 {
     protected RandUtil $rng;
 
-    /** @var General */
-    protected $general;
     protected array $city;
     protected array $nation;
     protected int $genType;
@@ -65,6 +63,9 @@ class GeneralAI
     /** @var General[] */
     protected $chiefGenerals;
 
+    /** @var bool */
+    protected $reqUpdateInstance = true;
+
     /** @var General[] */
     protected $lostGenerals;
     /** @var General[] 이번 턴에 '집합'하는 부대장 목록 */
@@ -80,29 +81,24 @@ class GeneralAI
     const d직전 = 3;
     const d전쟁 = 4;
 
-    //수뇌용
+    protected function updateInstance(): void{
+        if(!$this->reqUpdateInstance){
+            return;
+        }
 
-    public function __construct(General $general)
-    {
+        $this->reqUpdateInstance = false;
+
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $this->env = $gameStor->getAll(true);
         $this->baseDevelCost = $this->env['develcost'] * 12;
-        $this->general = $general;
+        $general = $this->general;
         $city = $general->getRawCity();
         if ($city === null) {
             $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
             $general->setRawCity($city);
         }
         $this->city = $city;
-
-        $this->rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
-            UniqueConst::$hiddenSeed,
-            'GeneralAI',
-            $this->env['year'],
-            $this->env['month'],
-            $general->getID(),
-        )));
 
         $this->nation = $db->queryFirstRow(
             'SELECT nation,name,color,capital,capset,gennum,gold,rice,bill,rate,rate_tmp,scout,war,strategic_cmd_limit,surlimit,tech,power,level,chief_set,type,aux FROM nation WHERE nation = %i',
@@ -142,6 +138,19 @@ class GeneralAI
 
         $this->nation['aux'] = Json::decode($this->nation['aux'] ?? '{}');
 
+        $this->calcDiplomacyState();
+    }
+
+    public function __construct(protected General $general)
+    {
+        $this->rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'GeneralAI',
+            $this->env['year'],
+            $this->env['month'],
+            $general->getID(),
+        )));
+
         $this->leadership = $general->getLeadership();
         $this->strength = $general->getStrength();
         $this->intel = $general->getIntel();
@@ -150,10 +159,7 @@ class GeneralAI
         $this->fullStrength = $general->getStrength(false);
         $this->fullIntel = $general->getIntel(false);
 
-
         $this->genType = $this->calcGenType($general);
-
-        $this->calcDiplomacyState();
     }
 
     public function getGeneralObj(): General
@@ -2653,7 +2659,7 @@ class GeneralAI
         return $this->rng->choiceUsingWeightPair($cmdList);
     }
 
-    public function do소집해제(): ?GeneralCommand
+    protected function do소집해제(): ?GeneralCommand
     {
         if ($this->attackable) {
             return null;
@@ -3573,6 +3579,8 @@ class GeneralAI
 
     public function chooseNationTurn(NationCommand $reservedCommand): NationCommand
     {
+        $this->updateInstance();
+
         //TODO: NationTurn과 InstantNationTurn 구분 필요
         $lastTurn = $reservedCommand->getLastTurn();
         $general = $this->general;
@@ -3644,6 +3652,8 @@ class GeneralAI
             return $reservedCommand;
         }
 
+        $this->updateInstance();
+
         foreach ($this->nationPolicy->priority as $actionName) {
             /** @var ?NationCommand */
             if (!key_exists($actionName, $this->nationPolicy::$availableInstantTurn)) {
@@ -3665,6 +3675,8 @@ class GeneralAI
         $general = $this->general;
         $npcType = $general->getNPCType();
         $nationID = $general->getNationID();
+
+        $this->updateInstance();
 
         //특별 메세지 있는 경우 출력
         $term = $this->env['turnterm'];
