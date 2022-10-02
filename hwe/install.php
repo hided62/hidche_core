@@ -93,8 +93,8 @@ if ($session->userGrade < 5 && !$allowReset) {
                                 <label for="fiction" class="col-sm-3 col-form-label">NPC 상성</label>
                                 <div class="col-sm-9">
                                     <div id="fiction" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
-                                        <input type="radio" id="fiction_0" class="btn-check" name="fiction" value="0" checked><label for="fiction_0" class="btn btn-secondary"> 연의 </label>
-                                        <input type="radio" id="fiction_1" class="btn-check" name="fiction" value="1"><label for="fiction_1" class="btn btn-secondary"> 가상 </label>
+                                        <input type="radio" id="fiction_0" class="btn-check" name="fiction" value="0"><label for="fiction_0" class="btn btn-secondary"> 연의 </label>
+                                        <input type="radio" id="fiction_1" class="btn-check" name="fiction" value="1" checked><label for="fiction_1" class="btn btn-secondary"> 가상 </label>
                                     </div>
                                 </div>
                             </div>
@@ -135,13 +135,13 @@ if ($session->userGrade < 5 && !$allowReset) {
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
-                                            <input type="checkbox" id="autorun_develop" class="autorun_user_chk btn-check" data-key="develop" name="autorun_user[]" value="develop"><label class="btn btn-secondary" for="autorun_develop">내정</label>
-                                            <input type="checkbox" id="autorun_warp" class="autorun_user_chk btn-check" data-key="warp" name="autorun_user[]" value="warp"><label class="btn btn-secondary" for="autorun_warp">순간이동</label>
-                                            <input type="checkbox" id="autorun_recruit" class="autorun_user_chk btn-check" data-key="recruit" name="autorun_user[]" value="recruit"><label class="btn btn-secondary" for="autorun_recruit">징병</label>
-                                            <input type="checkbox" id="autorun_recruit_high" class="autorun_user_chk btn-check" data-key="recruit_high" name="autorun_user[]" value="recruit_high"><label class="btn btn-secondary" for="autorun_recruit_high">모병</label>
-                                            <input type="checkbox" id="autorun_train" class="autorun_user_chk btn-check" data-key="train" name="autorun_user[]" value="train"><label class="btn btn-secondary" for="autorun_train">훈사</label>
-                                            <input type="checkbox" id="autorun_battle" class="autorun_user_chk btn-check" data-key="battle" name="autorun_user[]" value="battle"><label class="btn btn-secondary" for="autorun_battle">출병</label>
-                                            <input type="checkbox" id="autorun_chief" class="autorun_user_chk btn-check" data-key="chief" name="autorun_user[]" value="chief"><label class="btn btn-secondary" for="autorun_chief">기본 사령턴</label>
+                                            <input type="checkbox" id="autorun_develop" class="autorun_user_chk btn-check" data-key="develop" name="autorun_user[]" value="develop" checked><label class="btn btn-secondary" for="autorun_develop">내정</label>
+                                            <input type="checkbox" id="autorun_warp" class="autorun_user_chk btn-check" data-key="warp" name="autorun_user[]" value="warp" checked><label class="btn btn-secondary" for="autorun_warp">순간이동</label>
+                                            <input type="checkbox" id="autorun_recruit" class="autorun_user_chk btn-check" data-key="recruit" name="autorun_user[]" value="recruit" checked><label class="btn btn-secondary" for="autorun_recruit">징병</label>
+                                            <input type="checkbox" id="autorun_recruit_high" class="autorun_user_chk btn-check" data-key="recruit_high" name="autorun_user[]" value="recruit_high" checked><label class="btn btn-secondary" for="autorun_recruit_high">모병</label>
+                                            <input type="checkbox" id="autorun_train" class="autorun_user_chk btn-check" data-key="train" name="autorun_user[]" value="train" checked><label class="btn btn-secondary" for="autorun_train">훈사</label>
+                                            <input type="checkbox" id="autorun_battle" class="autorun_user_chk btn-check" data-key="battle" name="autorun_user[]" value="battle" checked><label class="btn btn-secondary" for="autorun_battle">출병</label>
+                                            <input type="checkbox" id="autorun_chief" class="autorun_user_chk btn-check" data-key="chief" name="autorun_user[]" value="chief" checked><label class="btn btn-secondary" for="autorun_chief">기본 사령턴</label>
                                         </div>
                                     </div>
                                 </div>
@@ -163,7 +163,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                                             <option value="480">8시간</option>
                                             <option value="600">10시간</option>
                                             <option value="720">12시간</option>
-                                            <option value="1440">24시간</option>
+                                            <option value="1440" selected>24시간</option>
                                             <option value="2160">36시간</option>
                                             <option value="2880">48시간</option>
                                             <option value="3600">60시간</option>
