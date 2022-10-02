@@ -1295,6 +1295,7 @@ class GeneralAI
             return null;
         }
 
+        $this->reqUpdateInstance = true;
         return $cmd;
     }
 
@@ -1495,6 +1496,7 @@ class GeneralAI
             return null;
         }
 
+        $this->reqUpdateInstance = true;
         return $cmd;
     }
 
@@ -1957,6 +1959,7 @@ class GeneralAI
             return null;
         }
 
+        $this->reqUpdateInstance = true;
         return $cmd;
     }
 
@@ -1974,6 +1977,7 @@ class GeneralAI
             $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
             if ($cmd->hasFullConditionMet()) {
                 $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
+                $this->reqUpdateInstance = true;
                 return $cmd;
             }
         }
@@ -2096,6 +2100,7 @@ class GeneralAI
 
 
         $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
+        $this->reqUpdateInstance = true;
         return $cmd;
     }
 
