@@ -580,6 +580,9 @@ class GeneralAI
             if ($userGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew) {
                 continue;
             }
+            if ($userGeneral->onCalcDomestic('징집인구', 'score', 100) <= 1) {
+                continue;
+            }
 
             $generalTurnTime = $userGeneral->getTurnTime();
             $troopTurnTime =  $troopLeader->getTurnTime();
@@ -691,9 +694,6 @@ class GeneralAI
         $pickedGeneral = $this->rng->choice($generalCadidates);
         $pickedGeneralLeadership = $pickedGeneral->getLeadership(false, true, true, true);
         $minRecruitPop = $pickedGeneralLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if($pickedGeneral->getNPCType() >= 2) {
-            $minRecruitPop = max($minRecruitPop, $pickedGeneralLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
-        }
 
         $recruitableCityList = [];
 
@@ -994,9 +994,7 @@ class GeneralAI
         $pickedGeneral = $this->rng->choice($generalCadidates);
         $pickedGeneralLeadership = $pickedGeneral->getLeadership(false, true, true, true);
         $minRecruitPop = $pickedGeneralLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if($pickedGeneral->getNPCType() >= 2) {
-            $minRecruitPop = max($minRecruitPop, $pickedGeneralLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
-        }
+        $minRecruitPop = max($minRecruitPop, $pickedGeneralLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
 
         $recruitableCityList = [];
 
