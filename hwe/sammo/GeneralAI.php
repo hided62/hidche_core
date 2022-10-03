@@ -3554,7 +3554,7 @@ class GeneralAI
             } else if ($nationGeneral->getVar('troop') === $generalID && $nationGeneral->getReservedTurn(0, $this->env)->getName() === 'che_집합') {
                 //비 NPC부대장임
                 $troopLeaders[$generalID] = $nationGeneral;
-            } else if ($nationGeneral->getVar('killturn') < 5) {
+            } else if ($nationGeneral->getVar('killturn') <= 5) {
                 //삭턴이 몇 안남은 장수는 '내정장 npc'로 처리
                 $npcCivilGenerals[$generalID] = $nationGeneral;
             } else if ($npcType < 2) {
