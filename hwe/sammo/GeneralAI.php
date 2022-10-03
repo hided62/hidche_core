@@ -673,6 +673,9 @@ class GeneralAI
             if ($userGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew) {
                 continue;
             }
+            if ($userGeneral->onCalcDomestic('징집인구', 'score', 100) <= 1) {
+                continue;
+            }
             $generalCadidates[$generalID] = $userGeneral;
         }
 
@@ -686,9 +689,10 @@ class GeneralAI
 
         /** @var General */
         $pickedGeneral = $this->rng->choice($generalCadidates);
-        $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if (!$this->generalPolicy->can한계징병) {
-            $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
+        $pickedGeneralLeadership = $pickedGeneral->getLeadership(false, true, true, true);
+        $minRecruitPop = $pickedGeneralLeadership * 100 + GameConst::$minAvailableRecruitPop;
+        if($pickedGeneral->getNPCType() >= 2) {
+            $minRecruitPop = max($minRecruitPop, $pickedGeneralLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
         }
 
         $recruitableCityList = [];
@@ -972,6 +976,9 @@ class GeneralAI
             if ($npcGeneral->getVar('crew') >= $this->nationPolicy->minWarCrew) {
                 continue;
             }
+            if ($npcGeneral->onCalcDomestic('징집인구', 'score', 100) <= 1) {
+                continue;
+            }
             $generalCadidates[$generalID] = $npcGeneral;
         }
 
@@ -985,9 +992,10 @@ class GeneralAI
 
         /** @var General */
         $pickedGeneral = $this->rng->choice($generalCadidates);
-        $minRecruitPop = $this->fullLeadership * 100 + GameConst::$minAvailableRecruitPop;
-        if (!$this->generalPolicy->can한계징병) {
-            $minRecruitPop = max($minRecruitPop, $this->fullLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
+        $pickedGeneralLeadership = $pickedGeneral->getLeadership(false, true, true, true);
+        $minRecruitPop = $pickedGeneralLeadership * 100 + GameConst::$minAvailableRecruitPop;
+        if($pickedGeneral->getNPCType() >= 2) {
+            $minRecruitPop = max($minRecruitPop, $pickedGeneralLeadership * 100 + $this->nationPolicy->minNPCRecruitCityPopulation);
         }
 
         $recruitableCityList = [];
