@@ -1828,7 +1828,7 @@ function deleteNation(General $lord, bool $applyDB): array
                 InheritanceKey::max_belong->value,
                 max(
                     $general->getVar('belong'),
-                    $general->getInheritancePoint(InheritanceKey::max_belong) ?? 0
+                    ($general->getInheritancePoint(InheritanceKey::max_belong) ?? 0) / 10
                 )
             );
         }

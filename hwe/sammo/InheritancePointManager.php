@@ -172,7 +172,7 @@ class InheritancePointManager
         break;
       case InheritanceKey::max_belong:
         $extractFn = function () use ($general, $multiplier) {
-          $maxBelong = max($general->getVar('belong'), $general->getAuxVar(InheritanceKey::max_belong->value) ?? 0);
+          $maxBelong = max($general->getVar('belong'), ($general->getAuxVar(InheritanceKey::max_belong->value) ?? 0) / 10);
           return [$maxBelong * $multiplier, null];
         };
         break;
@@ -362,15 +362,15 @@ class InheritancePointManager
       /** @var InheritancePointType */
       $keyTypeObj = $this->inheritanceKey->get($key);
 
-      if($isRebirth){
-        if($keyTypeObj->rebirthStoreCoeff === null){
+      if ($isRebirth) {
+        if ($keyTypeObj->rebirthStoreCoeff === null) {
           $keepValues[$rKey] = [$value, $auxV];
           continue;
         }
 
         $value *= $keyTypeObj->rebirthStoreCoeff;
       }
-      
+
       $keyText = $this->getInheritancePointType($key)->info;
       $userLogger->push("{$keyText} 포인트 {$value} 증가", "inheritPoint");
       $totalPoint += $value;
@@ -381,7 +381,7 @@ class InheritancePointManager
 
     $inheritStor->resetValues();
 
-    foreach($keepValues as $rKey => $pointPair){
+    foreach ($keepValues as $rKey => $pointPair) {
       $inheritStor->setValue($rKey, $pointPair);
     }
     $inheritStor->setValue(InheritanceKey::previous->value, [$totalPoint, null]);
