@@ -1805,7 +1805,7 @@ function deleteNation(General $lord, bool $applyDB): array
             $nationID,
             $lordID
         ),
-        ['npc', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'],
+        ['npc', 'owner', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'],
         1
     );
     $nationGeneralList[$lordID] = $lord;
@@ -1832,7 +1832,7 @@ function deleteNation(General $lord, bool $applyDB): array
                 )
             );
         }
-        
+
         $general->setVar('belong', 0);
         $general->setVar('troop', 0);
         $general->setVar('officer_level', 0);
