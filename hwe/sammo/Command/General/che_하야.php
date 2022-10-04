@@ -118,7 +118,7 @@ class che_하야 extends Command\GeneralCommand{
                 InheritanceKey::max_belong->value,
                 max(
                     $general->getVar('belong'),
-                    ($general->getInheritancePoint(InheritanceKey::max_belong) ?? 0) / 10
+                    $general->getAuxVar(InheritanceKey::max_belong->value) ?? 0
                 )
             );
         }

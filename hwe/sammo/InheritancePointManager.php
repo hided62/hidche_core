@@ -172,7 +172,7 @@ class InheritancePointManager
         break;
       case InheritanceKey::max_belong:
         $extractFn = function () use ($general, $multiplier) {
-          $maxBelong = max($general->getVar('belong'), ($general->getAuxVar(InheritanceKey::max_belong->value) ?? 0) / 10);
+          $maxBelong = max($general->getVar('belong'), $general->getAuxVar(InheritanceKey::max_belong->value) ?? 0);
           return [$maxBelong * $multiplier, null];
         };
         break;
