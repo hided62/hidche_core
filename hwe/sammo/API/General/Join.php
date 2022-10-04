@@ -88,7 +88,7 @@ class Join extends \sammo\BaseAPI
     {
         $db = DB::db();
 
-        if (UniqueConst::$seasonIdx < 1) {
+        if (Util::toInt(UniqueConst::$seasonIdx) < 1) {
             //이벤트 시즌은 카운트하지 않음
             return 0;
         }
@@ -111,7 +111,7 @@ class Join extends \sammo\BaseAPI
             }
             $targetBonusPointCnt += 1;
         }
-        return 0;
+        return $targetBonusPointCnt;
     }
 
     public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
