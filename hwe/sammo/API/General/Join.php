@@ -84,6 +84,36 @@ class Join extends \sammo\BaseAPI
         return static::REQ_LOGIN | static::REQ_READ_ONLY;
     }
 
+    public function calcRestInheritPoint(int $userID): int
+    {
+        $db = DB::db();
+
+        if (UniqueConst::$seasonIdx < 1) {
+            //이벤트 시즌은 카운트하지 않음
+            return 0;
+        }
+
+        $gameID = UniqueConst::$serverID;
+        $alreadyJoined = $db->queryFirstField('SELECT count(*) FROM `storage` WHERE `namespace` = %s AND `key` LIKE %s', 'inheritance_result', "{$gameID}_{$userID}_%");
+        if ($alreadyJoined) {
+            //이미 받았음
+            return 0;
+        }
+
+        $targetBonusPointCnt = 0;
+        $oldGames = $db->queryFirstColumn('SELECT server_id FROM ng_games WHERE `winner_nation` IS NOT NULL AND `server_id` != %s ORDER BY `date` DESC LIMIT 8', $gameID);
+        //정상적으로 끝난 깃수만 제공
+        foreach ($oldGames as $oldGameID) {
+            //이전에 장수를 생성한 적이 있는지
+            $gameCnt = $db->queryFirstField('SELECT count(*) FROM `storage` WHERE `namespace` = %s AND `key` LIKE %s', 'inheritance_result', "{$oldGameID}_{$userID}_%");
+            if ($gameCnt) {
+                break;
+            }
+            $targetBonusPointCnt += 1;
+        }
+        return 0;
+    }
+
     public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
     {
         $userID = $session->userID;
@@ -105,7 +135,7 @@ class Join extends \sammo\BaseAPI
         $inheritCity = $this->args['inheritCity'] ?? null;
         $inheritBonusStat = $this->args['inheritBonusStat'] ?? null;
 
-        if($inheritTurntime !== null && $inheritCity !== null){
+        if ($inheritTurntime !== null && $inheritCity !== null) {
             return '턴과 도시를 동시에 지정할 수 없습니다.';
         }
 
@@ -305,7 +335,7 @@ class Join extends \sammo\BaseAPI
         if ($inheritTurntime !== null) {
             $inheritTurntime = $inheritTurntime % ($admin['turnterm'] * 60);
 
-            $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime%60), "inheritPoint");
+            $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime % 60), "inheritPoint");
 
             $inheritTurntime += $rng->nextRangeInt(0, 999999) / 1000000;
             $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
@@ -338,7 +368,7 @@ class Join extends \sammo\BaseAPI
         $affinity = $rng->nextRangeInt(1, 150);
 
         $betray = 0;
-        if($relYear >= 4){
+        if ($relYear >= 4) {
             $betray += 2;
         }
 
@@ -408,19 +438,25 @@ class Join extends \sammo\BaseAPI
         if ($inheritRequiredPoint > 0) {
             $userLogger->push("장수 생성으로 포인트 {$inheritRequiredPoint} 소모", "inheritPoint");
             $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
-            $inheritStor->setValue('previous', [$inheritTotalPoint - $inheritRequiredPoint, null]);
+            $inheritTotalPoint -= $inheritRequiredPoint;
+            $inheritStor->setValue('previous', [$inheritTotalPoint, null]);
             $userLogger->flush();
             $db->update('rank_data', [
-                'value'=>$db->sqleval('value + %i', $inheritRequiredPoint)
+                'value' => $db->sqleval('value + %i', $inheritRequiredPoint)
             ], 'general_id = %i AND type = %s', $generalID, RankColumn::inherit_point_spent_dynamic->value);
         }
 
-        $me = [
-            'no' => $generalID
-        ];
 
-        $log = [];
-        $mylog = [];
+        $restInheritPoint = $this->calcRestInheritPoint($userID) * 500;
+        if($restInheritPoint > 0){
+            $userLogger->push("신규/복귀 생성으로 포인트 {$restInheritPoint} 지급", "inheritPoint");
+            $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$userID}");
+            $inheritTotalPoint += $restInheritPoint;
+            $inheritStor->setValue('previous', [$inheritTotalPoint, null]);
+            $userLogger->flush();
+        }
+
+
 
         $logger = new ActionLogger($generalID, 0, $gameStor->year, $gameStor->month);
 
