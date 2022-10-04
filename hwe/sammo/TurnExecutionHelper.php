@@ -195,7 +195,6 @@ class TurnExecutionHelper
                 $general->setVar('owner_name', null);
             } else {
                 $general->applyDB($db);
-                storeOldGeneral($generalID, $gameStor->year, $gameStor->month);
                 $general->kill($db);
                 return;
             }

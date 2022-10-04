@@ -665,6 +665,8 @@ class General implements iAction
             'reserved_until' => null,
         ], 'general_id=%i', $generalID);
 
+        storeOldGeneral($generalID, $logger->getYear(), $logger->getMonth());
+
         $db->delete('general', 'no=%i', $generalID);
         $db->delete('general_turn', 'general_id=%i', $generalID);
         $db->delete('rank_data', 'general_id=%i', $generalID);
