@@ -2,6 +2,7 @@
 
 namespace sammo\API\General;
 
+use Ds\Set;
 use sammo\ActionLogger;
 use sammo\CityConst;
 use sammo\DB;
@@ -101,12 +102,16 @@ class Join extends \sammo\BaseAPI
         }
 
         $targetBonusPointCnt = 0;
-        $oldGames = $db->queryFirstColumn('SELECT server_id FROM ng_games WHERE `winner_nation` IS NOT NULL AND `server_id` != %s ORDER BY `date` DESC LIMIT 8', $gameID);
         //정상적으로 끝난 깃수만 제공
+        $oldGames = $db->queryFirstColumn('SELECT server_id FROM ng_games WHERE `winner_nation` IS NOT NULL AND `server_id` != %s ORDER BY `date` DESC LIMIT 8', $gameID);
+
+        if(!$oldGames){
+            return 0;
+        }
+        //이전에 장수를 생성한 적이 있는지
+        $oldGamesCnt = new Set($db->queryFirstColumn('SELECT `server_id` FROM ng_old_generals WHERE server_id IN %ls AND `owner` = %i GROUP BY `server_id`', $oldGames, $userID));
         foreach ($oldGames as $oldGameID) {
-            //이전에 장수를 생성한 적이 있는지
-            $gameCnt = $db->queryFirstField('SELECT count(*) FROM `storage` WHERE `namespace` = %s AND `key` LIKE %s', 'inheritance_result', "{$oldGameID}_{$userID}_%");
-            if ($gameCnt) {
+            if($oldGamesCnt->contains($oldGameID)) {
                 break;
             }
             $targetBonusPointCnt += 1;
