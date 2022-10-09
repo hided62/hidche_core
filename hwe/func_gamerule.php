@@ -1241,7 +1241,7 @@ function checkEmperior()
     ]);
 
     $hiddenSeed = UniqueConst::$hiddenSeed;
-    $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다. <span class='hidden_but_copyable'>(서버시드: $hiddenSeed})</span>"];
+    $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다. <span class='hidden_but_copyable'>(서버시드: {$hiddenSeed})</span>"];
     pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 
     //연감 월결산
