@@ -23,8 +23,8 @@
         [
             "month", 999,
             ["Date", "==", 181, 1],
-            ["OpenNationBetting", 4, 1000],
-            ["OpenNationBetting", 1, 1000],
+            ["OpenNationBetting", 4, 5000],
+            ["OpenNationBetting", 1, 2000],
             ["DeleteEvent"]
         ],
         [
