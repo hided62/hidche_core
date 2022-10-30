@@ -98,7 +98,7 @@ type ReservedGameInfo = {
     scenarioName: string,
     turnterm: number,
     fictionMode: '가상' | '사실',
-    block_general_create: boolean,
+    block_general_create: number,
     npcMode: '불가' | '가능' | '선택 생성',
     openDatetime: string,
     starttime: string,
@@ -119,7 +119,7 @@ type GameInfo = {
     turntime: string,
     join_mode: string,
     fictionMode: '가상' | '사실',
-    block_general_create: boolean,
+    block_general_create: number,
     autorun_user: string,
     userCnt: number,
     npcCnt: number,
@@ -271,7 +271,7 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
             $serverHtml.append(
                 TemplateEngine(serverCreateTemplate, {
                     serverPath: serverPath,
-                    canCreate: !game.block_general_create,
+                    canCreate: !(game.block_general_create & 1),
                     canSelectNPC: game.npcMode == '가능',
                     canSelectPool: game.npcMode == '선택 생성'
                 })

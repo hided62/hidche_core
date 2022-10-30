@@ -24,7 +24,7 @@ $db = DB::db();
 
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $admin = $gameStor->getValues(['block_general_create', 'show_img_level', 'maxgeneral', 'turnterm']);
-if ($admin['block_general_create']) {
+if ($admin['block_general_create'] & 1) {
     die(WebUtil::errorBackMsg("잘못된 접근입니다!!!"));
 }
 
@@ -65,7 +65,8 @@ foreach ($scoutMsgs as $destNationID => $scoutMsg) {
             'serverID' => UniqueConst::$serverID,
             'nationList' => array_values($nationList),
             'config' => [
-                'show_img_level' => $admin['show_img_level']
+                'show_img_level' => $admin['show_img_level'],
+                'blockCustomGeneralName' => ($admin['block_general_create'] & 2),
             ],
             'member' => [
                 'name' => $member['name'],

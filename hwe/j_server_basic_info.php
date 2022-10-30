@@ -56,7 +56,7 @@ if(file_exists(__DIR__.'/.htaccess')){
             'scenarioName'=>$options['scenarioName'],
             'turnterm'=>$options['turnterm'],
             'fictionMode'=>($options['fiction']?'가상':'사실'),
-            'block_general_create'=>(!!$options['block_general_create']),
+            'block_general_create'=>Util::toInt($options['block_general_create']),
             'npcMode'=>([0=>'불가',1=>'가능',2=>'선택 생성'][$options['npcmode']]),
             'openDatetime'=>$reserved['date'],
             'starttime'=>$options['starttime'],
@@ -90,7 +90,7 @@ $admin['scenario'] = $admin['scenario_text'];
 $admin['userCnt'] = $genCnt;
 $admin['npcCnt'] = $npcCnt;
 $admin['nationCnt'] = $nationCnt;
-$admin['block_general_create'] = !!$admin['block_general_create'];
+$admin['block_general_create'] = $admin['block_general_create'];
 $admin['npcMode'] = [0=>'불가',1=>'가능',2=>'선택 생성'][$admin['npcMode']];
 $admin['fictionMode'] = $admin['fiction']?'가상':'사실';
 

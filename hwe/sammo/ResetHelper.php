@@ -160,7 +160,7 @@ class ResetHelper{
         int $scenario,
         int $fiction,
         int $extend,
-        bool $block_general_create,
+        int $block_general_create,
         int $npcmode,
         int $show_img_level,
         bool $tournament_trig,

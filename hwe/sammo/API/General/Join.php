@@ -4,6 +4,7 @@ namespace sammo\API\General;
 
 use Ds\Set;
 use sammo\ActionLogger;
+use sammo\Auction;
 use sammo\CityConst;
 use sammo\DB;
 use sammo\Enums\RankColumn;
@@ -154,8 +155,15 @@ class Join extends \sammo\BaseAPI
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $gameStor->cacheValues(['year', 'month', 'maxgeneral', 'scenario', 'show_img_level', 'turnterm', 'turntime', 'genius', 'npcmode']);
+        $gameStor->cacheValues(['year', 'month', 'maxgeneral', 'scenario', 'show_img_level', 'block_general_create', 'turnterm', 'turntime', 'genius', 'npcmode']);
         ########## 동일 정보 존재여부 확인. ##########
+
+        $block_general_create = $gameStor->getValue('block_general_create');
+        if($block_general_create & 1){
+            return '장수 직접 생성이 불가능한 모드입니다.';
+        }
+
+        $blockCustomGeneralName = $gameStor->getValue('block_general_create') & 2;
 
         $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
         $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
@@ -377,6 +385,10 @@ class Join extends \sammo\BaseAPI
             $betray += 2;
         }
 
+        if($blockCustomGeneralName){
+            $name = bin2hex(random_bytes(5));
+        }
+
         ########## 회원정보 테이블에 입력값을 등록한다. ##########
         $db->insert('general', [
             'owner' => $userID,
@@ -415,6 +427,12 @@ class Join extends \sammo\BaseAPI
             'special2' => $special2
         ]);
         $generalID = $db->insertId();
+
+        if($blockCustomGeneralName){
+            //XXX: 클래스가 이게 맞나?
+            $name = Auction::genObfuscatedName($generalID);
+        }
+
         $turnRows = [];
         foreach (Util::range(GameConst::$maxTurn) as $turnIdx) {
             $turnRows[] = [

@@ -114,6 +114,7 @@ if ($session->userGrade < 5 && !$allowReset) {
                                 <div class="col-sm-9">
                                     <div id="block_general_create" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                                         <input type="radio" class="btn-check" id="block_general_create_0" name="block_general_create" value="0" checked><label for="block_general_create_0" class="btn btn-secondary">가능</label>
+                                        <input type="radio" class="btn-check" id="block_general_create_2" name="block_general_create" value="2"><label for="block_general_create_2" class="btn btn-secondary">장수명무작위</label>
                                         <input type="radio" class="btn-check" id="block_general_create_1" name="block_general_create" value="1"><label for="block_general_create_1" class="btn btn-secondary">불가</label>
                                     </div>
                                 </div>

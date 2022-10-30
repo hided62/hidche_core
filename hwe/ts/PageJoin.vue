@@ -62,7 +62,8 @@
       <div class="row">
         <div class="col col-md-4 col-3 a-right align-self-center">장수명</div>
         <div class="col col-md-3 col-9 align-self-center">
-          <input v-model="args.name" class="form-control" />
+          <input v-if="!blockCustomGeneralName" v-model="args.name" class="form-control" />
+          <span v-else>무작위</span>
         </div>
         <div class="col col-md-1 col-3 a-right align-self-center">전콘 사용</div>
         <div class="col col-md-4 col-9 align-self-center">
@@ -267,6 +268,11 @@ declare const staticValues: {
     imgsvr: 0 | 1;
   };
 
+  config: {
+    show_img_level: number;
+    blockCustomGeneralName: boolean;
+  }
+
   serverID: string;
   inheritTotalPoint: number;
 };
@@ -293,6 +299,8 @@ const { serverID, member, turnterm } = staticValues;
 
 const nationList = ref(shuffle(staticValues.nationList));
 const args = ref<JoinArgs>();
+
+const blockCustomGeneralName = staticValues.config.blockCustomGeneralName;
 
 const stats = ref({
   min: 50,
