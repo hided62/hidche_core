@@ -204,6 +204,9 @@ class GameConstBase
         [20, 4]
     ];
 
+    public static $uniqueTrialCoef = 1;
+    public static $maxUniqueTrialProb = 0.25;
+
     public static $maxAvailableWarSettingCnt = 10;
     public static $incAvailableWarSettingCnt = 2;
 
