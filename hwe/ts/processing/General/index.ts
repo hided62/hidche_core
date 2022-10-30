@@ -1,4 +1,5 @@
 import { default as che_건국 } from "./che_건국.vue";
+import { default as che_무작위건국 } from "./che_무작위건국.vue";
 import { default as che_군량매매 } from "./che_군량매매.vue";
 import { default as che_등용 } from "./che_등용.vue";
 import { default as che_선양 } from "./che_선양.vue";
@@ -19,6 +20,7 @@ export const commandMap: Record<string, typeof ProcessCity> = {
     che_강행: ProcessCity,
     che_군량매매,
     che_건국,
+    che_무작위건국,
     che_등용,
     che_모병: che_징병,
     che_선동: ProcessCity,
