@@ -431,6 +431,9 @@ class Join extends \sammo\BaseAPI
         if($blockCustomGeneralName){
             //XXX: 클래스가 이게 맞나?
             $name = Auction::genObfuscatedName($generalID);
+            $db->update('general', [
+                'name' => $name
+            ], 'no=%i', $generalID);
         }
 
         $turnRows = [];
