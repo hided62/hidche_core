@@ -17,6 +17,7 @@
         "maxUniqueItemLimit": [
             [-1, 4]
         ],
+        "minTurnDieOnPrestart": 1,
         "availableGeneralCommand": {
             "개인": [
                 "휴식",
