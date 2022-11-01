@@ -29,7 +29,7 @@ if ($myset > 0) {
     $submit = 'hidden';
 }
 
-$targetTime = addTurn($me->getVar('lastrefresh'), $gameStor->turnterm, 2);
+$targetTime = addTurn($me->getVar('lastrefresh'), $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
 if ($gameStor->turntime <= $gameStor->opentime) {
     //서버 가오픈시 할 수 있는 행동
     if ($me->getNPCType() == 0 && $me->getNationID() == 0) {

@@ -4,7 +4,7 @@ namespace sammo\API\General;
 
 use sammo\DB;
 use sammo\DummyGeneral;
-
+use sammo\GameConst;
 use sammo\Session;
 use sammo\General;
 use sammo\JosaUtil;
@@ -54,7 +54,7 @@ class DieOnPrestart extends \sammo\BaseAPI
     }
 
     //서버 가오픈시 할 수 있는 행동
-    $targetTime = addTurn($general['lastrefresh'], $gameStor->turnterm, 2);
+    $targetTime = addTurn($general['lastrefresh'], $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
     if ($targetTime > TimeUtil::now()) {
       $targetTimeShort = substr($targetTime, 0, 19);
       return "아직 삭제할 수 없습니다. {$targetTimeShort} 부터 가능합니다.";

@@ -204,6 +204,8 @@ class GameConstBase
         [20, 4]
     ];
 
+    public static $minTurnDieOnPrestart = 2;
+
     public static $uniqueTrialCoef = 1;
     public static $maxUniqueTrialProb = 0.25;
 
