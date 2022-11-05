@@ -79,7 +79,7 @@ class DummySession extends Session
 
     private function get(string $name)
     {
-        return Util::array_get($_SESSION[$name]);
+        return $this->sessionInfo[$name] ?? null;
     }
 
     public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, ?int $tokenID, array $acl): Session
