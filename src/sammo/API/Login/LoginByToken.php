@@ -14,6 +14,7 @@ use sammo\Validator;
 
 class LoginByToken extends LoginByID
 {
+    static array $sensitiveArgs = ['hashedToken'];
 
     public function getRequiredSessionMode(): int
     {

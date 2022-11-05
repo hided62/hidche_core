@@ -15,6 +15,8 @@ use sammo\Validator;
 
 class LoginByID extends \sammo\BaseAPI
 {
+    static array $sensitiveArgs = ['password'];
+
     public function validateArgs(): ?string
     {
         $v = new Validator($this->args);

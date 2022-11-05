@@ -10,6 +10,18 @@ abstract class BaseAPI
     const REQ_GAME_LOGIN = 2;
     const REQ_READ_ONLY = 4;
 
+    static array $sensitiveArgs = [];
+
+    public function getFilteredArgs(): array {
+        $filteredArgs = $this->args;
+        foreach (static::$sensitiveArgs as $argName) {
+            if (isset($filteredArgs[$argName])) {
+                $filteredArgs[$argName] = '***';
+            }
+        }
+        return $filteredArgs;
+    }
+
     protected array $args;
     protected string $rootPath;
     public function __construct(string $rootPath, array $args)
