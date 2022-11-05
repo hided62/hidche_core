@@ -10,8 +10,10 @@
 *.log
 
 logs/*.txt
+api_log.db
 d_log/*.txt
 d_log/*.zip
+d_log/*.db
 sess_*
 */logs/*.txt
 */logs/*/*.txt
