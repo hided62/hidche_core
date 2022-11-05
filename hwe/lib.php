@@ -63,8 +63,8 @@ function prepareDir(string $dirPath, bool $forceCreate=true):bool{
         if(!unlink($dirPath)){
             return false;
         }
-        return mkdir($dirPath);
+        return mkdir($dirPath, 0775);
     }
 
-    return mkdir($dirPath, 0777, true);
+    return mkdir($dirPath, 0775, true);
 }

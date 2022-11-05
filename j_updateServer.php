@@ -267,7 +267,7 @@ if (!file_exists($server)) {
             'reason' => $server . ' 디렉토리가 없지만 생성할 권한이 없습니다.'
         ]);
     }
-    mkdir($server, 0755);
+    mkdir($server, 0775);
 }
 
 

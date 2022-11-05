@@ -18,8 +18,8 @@ class ResetHelper{
                     'reason'=>'logs, data 디렉토리를 생성할 권한이 없습니다.'
                 ];
             }
-            mkdir($servRoot.'/logs', 0755);
-            mkdir($servRoot.'/data', 0755);
+            mkdir($servRoot.'/logs', 0775);
+            mkdir($servRoot.'/data', 0775);
         }
 
         if(!is_writable($servRoot.'/logs')){
@@ -44,7 +44,7 @@ class ResetHelper{
         }
 
         if(!file_exists($servRoot.'/logs/preserved')){
-            mkdir($servRoot.'/logs/preserved', 0755);
+            mkdir($servRoot.'/logs/preserved', 0775);
         }
 
         if(!file_exists($servRoot.'/logs/.htaccess')){
@@ -80,8 +80,8 @@ class ResetHelper{
 
         $serverID = DB::prefix().'_'.date("ymd").'_'.Util::randomStr(4);
 
-        mkdir($servRoot.'/logs/'.$serverID, 0755);
-        mkdir($servRoot.'/data/'.$serverID, 0755);
+        mkdir($servRoot.'/logs/'.$serverID, 0775);
+        mkdir($servRoot.'/data/'.$serverID, 0775);
 
         $seasonIdx = 1;
         if($db->queryFirstField('SHOW TABLES LIKE %s', 'storage') !== null){

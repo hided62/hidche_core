@@ -90,19 +90,19 @@ if (
 
     //기본 파일 생성
     if (!file_exists(AppConf::getUserIconPathFS())) {
-        mkdir(AppConf::getUserIconPathFS());
+        mkdir(AppConf::getUserIconPathFS(), 0775);
     }
 
     if (!file_exists(ROOT . '/d_log')) {
-        mkdir(ROOT . '/d_log');
+        mkdir(ROOT . '/d_log', 0775);
     }
 
     if (!file_exists(ROOT . '/d_setting')) {
-        mkdir(ROOT . '/d_setting');
+        mkdir(ROOT . '/d_setting', 0775);
     }
 
     if (!file_exists(ROOT . '/d_shared')) {
-        mkdir(ROOT . '/d_shared');
+        mkdir(ROOT . '/d_shared', 0775);
     }
 }
 
