@@ -94,7 +94,7 @@ class APIHelper
             $result = $obj->launch($session, $modifiedSince, $reqEtags);
             if (is_string($result)) {
                 $logDB->insert('api_log', [
-                    'user_id' => $session->userID,
+                    'user_id' => $session->userID ?? 0,
                     'ip' => $ip,
                     'date' => $date,
                     'path' => $actionPath,
@@ -122,7 +122,7 @@ class APIHelper
                     $modifiedSinceUnixTime = Util::toInt(TimeUtil::DateTimeToSeconds($modifiedSince));
                     if($lastModifiedUnixTime === $modifiedSinceUnixTime){
                         $logDB->insert('api_log', [
-                            'user_id' => $session->userID,
+                            'user_id' => $session->userID ?? 0,
                             'ip' => $ip,
                             'date' => $date,
                             'path' => $actionPath,
@@ -137,7 +137,7 @@ class APIHelper
                 }
                 if ($reqEtags !== null && $reqEtags === $cache->etag) {
                     $logDB->insert('api_log', [
-                        'user_id' => $session->userID,
+                        'user_id' => $session->userID ?? 0,
                         'ip' => $ip,
                         'date' => $date,
                         'path' => $actionPath,
@@ -153,7 +153,7 @@ class APIHelper
 
             if ($result === null) {
                 $logDB->insert('api_log', [
-                    'user_id' => $session->userID,
+                    'user_id' => $session->userID ?? 0,
                     'ip' => $ip,
                     'date' => $date,
                     'path' => $actionPath,
@@ -170,7 +170,7 @@ class APIHelper
                 ], $setCache ? 0 : Json::NO_CACHE);
             }
             $logDB->insert('api_log', [
-                'user_id' => $session->userID,
+                'user_id' => $session->userID ?? 0,
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
@@ -186,7 +186,7 @@ class APIHelper
             $errMsg = $e->getMessage();
             $errTrace = $e->getTraceAsString();
             $logDB->insert('api_log', [
-                'user_id' => $session->userID,
+                'user_id' => $session->userID ?? 0,
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
@@ -204,7 +204,7 @@ class APIHelper
             $errMsg = $e->getMessage();
             $errTrace = $e->getTraceAsString();
             $logDB->insert('api_log', [
-                'user_id' => $session->userID,
+                'user_id' => $session->userID ?? 0,
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
@@ -220,7 +220,7 @@ class APIHelper
         } catch (mixed $e) {
             $errStr = strval($e);
             $logDB->insert('api_log', [
-                'user_id' => $session->userID,
+                'user_id' => $session->userID ?? 0,
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
