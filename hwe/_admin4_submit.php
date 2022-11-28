@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -18,7 +20,7 @@ $msg = Util::getPost('msg', 'string', '메시지');
 
 $db = DB::db();
 
-//NOTE: 왜 기능이 admin2와 admin4가 같이 있는가? 
+//NOTE: 왜 기능이 admin2와 admin4가 같이 있는가?
 //NOTE: 왜 블럭 시 admin4에선 금쌀을 없애지 않는가?
 switch ($btn) {
     case "블럭 해제":
@@ -66,7 +68,7 @@ switch ($btn) {
         $src = MessageTarget::buildQuick($session->generalID);
         foreach($genlist as $generalID){
             $msgObj = new Message(
-                Message::MSGTYPE_PRIVATE,
+                MessageType::private,
                 $src,
                 MessageTarget::buildQuick($generalID),
                 $msg,

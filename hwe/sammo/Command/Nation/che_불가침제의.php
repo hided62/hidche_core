@@ -22,6 +22,7 @@ use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\MessageType;
 
 class che_불가침제의 extends Command\NationCommand
 {
@@ -202,7 +203,7 @@ class che_불가침제의 extends Command\NationCommand
         $josaWa = JosaUtil::pick($nationName, '와');
 
         $msg = new DiplomaticMessage(
-            Message::MSGTYPE_DIPLOMACY,
+            MessageType::diplomacy,
             $src,
             $dest,
             "{$nationName}{$josaWa} {$year}년 {$month}월까지 불가침 제의 서신",

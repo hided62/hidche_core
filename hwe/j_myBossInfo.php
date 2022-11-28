@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 include "lib.php";
 include "func.php";
 
@@ -268,7 +270,7 @@ function do추방(General $general, int $myOfficerLevel):?string{
                 GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
             );
             $msg = new Message(
-                Message::MSGTYPE_PUBLIC,
+                MessageType::public,
                 $src,
                 $src,
                 $str,

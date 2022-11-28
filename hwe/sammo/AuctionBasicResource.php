@@ -7,6 +7,7 @@ use sammo\DTO\AuctionBidItem;
 use sammo\DTO\AuctionInfo;
 use sammo\DTO\AuctionInfoDetail;
 use sammo\Enums\AuctionType;
+use sammo\Enums\MessageType;
 use sammo\Enums\ResourceType;
 
 abstract class AuctionBasicResource extends Auction
@@ -145,7 +146,7 @@ abstract class AuctionBasicResource extends Auction
     //TODO: 전역 알림이 나타나야한다. 일반 메시지보다는 중요하고, 메시지보단 약하게..
     //TODO: 바로가기를 제공하는 편이 좋을 것 같다.
     $msg = new Message(
-      Message::MSGTYPE_PRIVATE,
+      MessageType::private,
       $src,
       $dest,
       "{$this->auctionID}번 {$hostResName} 경매에 입찰이 없어 취소되었습니다.",

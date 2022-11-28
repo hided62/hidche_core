@@ -1,15 +1,12 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 class Message
 {
     const MAILBOX_PUBLIC = 9999;
     const MAILBOX_NATIONAL = 9000;
-
-    const MSGTYPE_PUBLIC = 'public';
-    const MSGTYPE_PRIVATE = 'private';
-    const MSGTYPE_NATIONAL = 'national';
-    const MSGTYPE_DIPLOMACY = 'diplomacy';
 
     //기본 정보
     public $mailbox = null;
@@ -18,39 +15,15 @@ class Message
 
     protected $sendCnt = 0;
 
-    public $msgType;
-    /** @var \sammo\MessageTarget */
-    public $src;
-    /** @var \sammo\MessageTarget */
-    public $dest;
-    public $msg;
-    /** @var \DateTime */
-    public $date;
-    /** @var \DateTime */
-    public $validUntil;
-
-    public $msgOption;
-
     public function __construct(
-        string $msgType,
-        MessageTarget $src,
-        MessageTarget $dest,
-        string $msg,
-        \DateTime $date,
-        \DateTime $validUntil,
-        array $msgOption
+        public MessageType $msgType,
+        public MessageTarget $src,
+        public MessageTarget $dest,
+        public string $msg,
+        public \DateTime $date,
+        public \DateTime $validUntil,
+        public array $msgOption
     ) {
-        if (!static::isValidMsgType($msgType)) {
-            throw new \InvalidArgumentException('올바르지 않은 msgType');
-        }
-
-        $this->msgType = $msgType;
-        $this->src = $src;
-        $this->dest = $dest;
-        $this->msg = $msg;
-        $this->date = $date;
-        $this->validUntil = $validUntil;
-        $this->msgOption = $msgOption;
     }
 
     public function setSentInfo(int $mailbox, int $messageID) : self
@@ -61,19 +34,19 @@ class Message
 
         do{
             if($mailbox === Message::MAILBOX_PUBLIC){
-                if($this->msgType !== Message::MSGTYPE_PUBLIC){
-                    throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType !== MSGTYPE_PUBLIC');
+                if($this->msgType !== MessageType::public){
+                    throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType !== MessageType::public');
                 }
                 $this->isInboxMail = true;
                 break;
             }
             if($mailbox >= Message::MAILBOX_NATIONAL){
-                if($this->msgType === Message::MSGTYPE_DIPLOMACY){
+                if($this->msgType === MessageType::diplomacy){
                     $this->isInboxMail = true;
                     break;
                 }
-                if ($this->msgType !== Message::MSGTYPE_NATIONAL) {
-                    throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType not in (MSGTYPE_DIPLOMACY, MSGTYPE_NATIONAL)');
+                if ($this->msgType !== MessageType::national) {
+                    throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType not in (MessageType::diplomacy, MessageType::national)');
                 }
                 if($this->dest->nationID + Message::MAILBOX_NATIONAL === $mailbox){
                     $this->isInboxMail = true;
@@ -85,7 +58,7 @@ class Message
                 }
                 throw new \InvalidArgumentException('송신, 수신국 둘 중의 어느 메일함도 아닙니다');
             }
-            if($this->msgType !== Message::MSGTYPE_PRIVATE){
+            if($this->msgType !== MessageType::private){
                 throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType !== MSGTYPE_PRIVATE');
             }
             if($this->dest->generalID === $mailbox){
@@ -105,11 +78,11 @@ class Message
     }
 
     public function toArray():array{
-        if($this->msgType === Message::MSGTYPE_PUBLIC){
+        if($this->msgType === MessageType::public){
             $src = $this->src->toArray();
             $dest = null;
         }
-        else if($this->msgType === Message::MSGTYPE_NATIONAL || $this->msgType === Message::MSGTYPE_DIPLOMACY){
+        else if($this->msgType === MessageType::national || $this->msgType === MessageType::diplomacy){
             $src = $this->src->toArray();
             $dest = $this->dest->toArray();
         }
@@ -120,7 +93,7 @@ class Message
 
         return [
             'id'=>$this->id,
-            'msgType'=>$this->msgType,
+            'msgType'=>$this->msgType->value,
             'src'=>$src,
             'dest'=>$dest,
             'text'=>$this->msg,
@@ -133,7 +106,7 @@ class Message
     {
         $dbMessage = Json::decode($row['message']);
 
-        $msgType = $row['type'];
+        $msgType = MessageType::from($row['type']);
         $src = MessageTarget::buildFromArray($dbMessage['src']);
         $dest = MessageTarget::buildFromArray($dbMessage['dest']);
         $option = Util::array_get($dbMessage['option'], []);
@@ -149,7 +122,7 @@ class Message
         ];
 
         $action = Util::array_get($option['action'], null);
-        if ($msgType === self::MSGTYPE_DIPLOMACY && $action !== null) {
+        if ($msgType === MessageType::diplomacy && $action !== null) {
             $objMessage = new DiplomaticMessage(...$args);
         } elseif ($action === 'scout') {
             $objMessage = new ScoutMessage(...$args);
@@ -164,24 +137,13 @@ class Message
 
     protected static function isValidMailBox(int $mailbox): bool
     {
-        if ($mailbox > self::MAILBOX_PUBLIC) {
+        if ($mailbox > MessageType::public) {
             return false;
         }
         if ($mailbox <= 0) {
             return false;
         }
         return true;
-    }
-
-    protected static function isValidMsgType(string $msgType): bool
-    {
-        switch ($msgType) {
-            case static::MSGTYPE_PUBLIC: return true;
-            case static::MSGTYPE_PRIVATE: return true;
-            case static::MSGTYPE_NATIONAL: return true;
-            case static::MSGTYPE_DIPLOMACY: return true;
-        }
-        return false;
     }
 
     public static function getMessageByID(int $messageID) : ?Message
@@ -197,24 +159,20 @@ class Message
 
     /**
      * @param int $mailbox 메일 사서함.
-     * @param string $msgType 메일 타입. MSGTYPE 중 하나.
+     * @param MessageType $msgType 메일 타입.
      * @param int $limit 가져오고자 하는 수. 0 이하의 값이면 모두.
      * @param int $fromSeq 가져오고자 하는 위치. $fromSeq보다 '큰' seq만 가져온다. 따라서 0 이하이면 모두 가져옴.
      * @return Message[]
      */
-    public static function getMessagesFromMailBox(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
+    public static function getMessagesFromMailBox(int $mailbox, MessageType $msgType, int $limit=30, int $fromSeq = 0)
     {
         $db = DB::db();
-
-        if (!static::isValidMsgType($msgType)) {
-            throw new \InvalidArgumentException('올바르지 않은 $msgType');
-        }
 
         $date = (new \DateTime())->format('Y-m-d H:i:s');
 
         $where = new \WhereClause('and');
         $where->add('mailbox = %i', $mailbox);
-        $where->add('type = %s', $msgType);
+        $where->add('type = %s', $msgType->value);
         $where->add('valid_until > %s', $date);
         if ($fromSeq > 0) {
             $where->add('id >= %i', $fromSeq);
@@ -233,24 +191,20 @@ class Message
 
     /**
      * @param int $mailbox 메일 사서함.
-     * @param string $msgType 메일 타입. MSGTYPE 중 하나.
+     * @param MessageType $msgType 메일 타입.
      * @param int $toSeq 가져오고자 하는 위치. $toSeq보다 '작은' seq만 가져온다.
      * @param int $limit 가져오고자 하는 수.
      * @return Message[]
      */
-    public static function getMessagesFromMailBoxOld(int $mailbox, string $msgType, int $toSeq, int $limit = 20)
+    public static function getMessagesFromMailBoxOld(int $mailbox, MessageType $msgType, int $toSeq, int $limit = 20)
     {
         $db = DB::db();
-
-        if (!static::isValidMsgType($msgType)) {
-            throw new \InvalidArgumentException('올바르지 않은 $msgType');
-        }
 
         $date = (new \DateTime())->format('Y-m-d H:i:s');
 
         $where = new \WhereClause('and');
         $where->add('mailbox = %i', $mailbox);
-        $where->add('type = %s', $msgType);
+        $where->add('type = %s', $msgType->value);
         $where->add('valid_until > %s', $date);
         $where->add('id < %i', $toSeq);
 
@@ -296,7 +250,7 @@ class Message
             'overwrite'=>[$msgObj->id]
         ];
 
-        if($msgObj->msgType == Message::MSGTYPE_PRIVATE || $msgObj->msgType == Message::MSGTYPE_NATIONAL){
+        if($msgObj->msgType === MessageType::private || $msgObj->msgType === MessageType::national){
             $receiveID = $msgObj->msgOption['receiverMessageID']??null;
             if($receiveID !== null){
                 $msgObj2 = static::getMessageByID($receiveID);
@@ -345,7 +299,7 @@ class Message
         $db = DB::db();
         $db->insert('message', [
             'mailbox' => $mailbox,
-            'type' => $this->msgType,
+            'type' => $this->msgType->value,
             'src' => $src_id,
             'dest' => $dest_id,
             'time' => $this->date->format('Y-m-d H:i:s'),
@@ -364,13 +318,13 @@ class Message
         if($this->sendCnt > 1){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
-        if($this->msgType === self::MSGTYPE_PRIVATE && $this->src->generalID !== $this->dest->generalID){
+        if($this->msgType === MessageType::private && $this->src->generalID !== $this->dest->generalID){
             return $this->sendRaw($this->src->generalID);
         }
-        if($this->msgType === self::MSGTYPE_NATIONAL && $this->src->nationID !== $this->dest->nationID){
+        if($this->msgType === MessageType::national && $this->src->nationID !== $this->dest->nationID){
             return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
         }
-        if($this->msgType === self::MSGTYPE_DIPLOMACY){
+        if($this->msgType === MessageType::diplomacy){
             if(key_exists('action', $this->msgOption)){
                 $tmp = $this->msgOption;
                 $this->msgOption = null;
@@ -391,7 +345,7 @@ class Message
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
 
-        if($this->msgType === self::MSGTYPE_PRIVATE){
+        if($this->msgType === MessageType::private){
             if(!($this->msgOption['silence']??false)){
                 //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
                 DB::db()->update('general', [
@@ -401,11 +355,11 @@ class Message
             return $this->sendRaw($this->dest->generalID);
         }
 
-        if($this->msgType === self::MSGTYPE_NATIONAL){
+        if($this->msgType === MessageType::national){
             return $this->sendRaw($this->dest->nationID + self::MAILBOX_NATIONAL);
         }
 
-        if($this->msgType === self::MSGTYPE_DIPLOMACY){
+        if($this->msgType === MessageType::diplomacy){
             if(!($this->msgOption['silence']??false)){
                 //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
                 DB::db()->update('general', [
@@ -415,7 +369,7 @@ class Message
             return $this->sendRaw($this->dest->nationID + self::MAILBOX_NATIONAL);
         }
 
-        if($this->msgType === self::MSGTYPE_PUBLIC){
+        if($this->msgType === MessageType::public){
             return $this->sendRaw(self::MAILBOX_PUBLIC);
         }
 

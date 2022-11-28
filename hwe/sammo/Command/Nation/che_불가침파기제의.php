@@ -20,6 +20,7 @@ use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\MessageType;
 
 class che_불가침파기제의 extends Command\NationCommand{
     static protected $actionName = '불가침 파기 제의';
@@ -150,7 +151,7 @@ class che_불가침파기제의 extends Command\NationCommand{
         $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
         $msg = new DiplomaticMessage(
-            Message::MSGTYPE_DIPLOMACY,
+            MessageType::diplomacy,
             $src,
             $dest,
             "{$nationName}의 불가침 파기 제의 서신",

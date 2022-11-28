@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 include "lib.php";
 include "func.php";
 
@@ -73,7 +75,7 @@ $db->update('ng_diplomacy', [
 $msgText = "외교 서신(#{$letterNo})이 회수되었습니다.";
 
 $msg = new Message(
-    Message::MSGTYPE_DIPLOMACY,
+    MessageType::diplomacy,
     $src,
     $dest,
     $msgText,

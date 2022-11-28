@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 class DiplomaticMessage extends Message{
 
     const ACCEPTED = 1;
@@ -18,7 +20,7 @@ class DiplomaticMessage extends Message{
     protected $validDiplomacy = true;
 
     public function __construct(
-        string $msgType,
+        MessageType $msgType,
         MessageTarget $src,
         MessageTarget $dest,
         string $msg,
@@ -27,7 +29,7 @@ class DiplomaticMessage extends Message{
         array $msgOption
     )
     {
-        if ($msgType !== self::MSGTYPE_DIPLOMACY){
+        if ($msgType !== MessageType::diplomacy){
             throw new \InvalidArgumentException('DiplomaticMessage msgType');
         }
 
@@ -208,7 +210,7 @@ class DiplomaticMessage extends Message{
 
         $josaYi = JosaUtil::pick($this->src->nationName, '이');
         $newMsg = new Message(
-            self::MSGTYPE_NATIONAL,
+            MessageType::national,
             $this->dest,
             $this->src,
             "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}",
@@ -224,7 +226,7 @@ class DiplomaticMessage extends Message{
         $newMsg->send();
 
         $newMsg = new Message(
-            self::MSGTYPE_DIPLOMACY,
+            MessageType::diplomacy,
             $this->dest,
             $this->src,
             "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}",

@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 include('lib.php');
 include('func.php');
 
@@ -83,7 +85,7 @@ if($reqType == 'private'){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld($generalID, Message::MSGTYPE_PRIVATE, $reqTo, 15));
+    }, Message::getMessagesFromMailBoxOld($generalID, MessageType::private, $reqTo, 15));
 }
 else if($reqType == 'public'){
     $result['public'] = array_map(function(Message $msg)use (&$nextSequence){
@@ -91,7 +93,7 @@ else if($reqType == 'public'){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, $reqTo, 15));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_PUBLIC, MessageType::public, $reqTo, 15));
 }
 else if($reqType == 'national'){
     $result['national'] = array_map(function(Message $msg)use (&$nextSequence){
@@ -99,7 +101,7 @@ else if($reqType == 'national'){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, $reqTo, 15));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, MessageType::national, $reqTo, 15));
 }
 else{
     $result['diplomacy'] = array_map(function(Message $msg)use (&$nextSequence, $permission){
@@ -112,7 +114,7 @@ else{
             $values['option']['invalid'] = true;
         }
         return $values;
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, $reqTo, 15));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, MessageType::diplomacy, $reqTo, 15));
 }
 
 Json::die($result);

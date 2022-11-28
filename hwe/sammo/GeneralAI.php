@@ -4,6 +4,7 @@ namespace sammo;
 
 use sammo\Command\GeneralCommand;
 use sammo\Command\NationCommand;
+use sammo\Enums\MessageType;
 use sammo\Enums\RankColumn;
 use sammo\Scenario\NPC;
 
@@ -3703,7 +3704,7 @@ class GeneralAI
                 GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
             );
             $msg = new Message(
-                Message::MSGTYPE_PUBLIC,
+                MessageType::public,
                 $src,
                 $src,
                 $general->getVar('npcmsg'),

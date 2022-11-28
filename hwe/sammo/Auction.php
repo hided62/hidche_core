@@ -10,6 +10,7 @@ use sammo\DTO\AuctionBidItemData;
 use sammo\DTO\AuctionInfo;
 use sammo\Enums\AuctionType;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\MessageType;
 use sammo\Enums\RankColumn;
 use sammo\Enums\ResourceType;
 
@@ -245,7 +246,7 @@ abstract class Auction
     //TODO: 전역 알림이 나타나야한다. 일반 메시지보다는 중요하고, 메시지보단 약하게..
     //TODO: 바로가기를 제공하는 편이 좋을 것 같다.
     $msg = new Message(
-      Message::MSGTYPE_PRIVATE,
+      MessageType::private,
       $src,
       $dest,
       $reason,
@@ -509,7 +510,7 @@ abstract class Auction
     //TODO: 전역 알림이 나타나야한다. 일반 메시지보다는 중요하고, 메시지보단 약하게..
     //TODO: 바로가기를 제공하는 편이 좋을 것 같다.
     $msg = new Message(
-      Message::MSGTYPE_PRIVATE,
+      MessageType::private,
       $src,
       $dest,
       $failReason,

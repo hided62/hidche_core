@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 class ScoutMessage extends Message{
 
     const ACCEPTED = 1;
@@ -9,7 +11,7 @@ class ScoutMessage extends Message{
     protected $validScout = true;
 
     public function __construct(
-        string $msgType,
+        MessageType $msgType,
         MessageTarget $src,
         MessageTarget $dest,
         string $msg,
@@ -18,7 +20,7 @@ class ScoutMessage extends Message{
         array $msgOption
     )
     {
-        if ($msgType !== self::MSGTYPE_PRIVATE){
+        if ($msgType !== MessageType::private){
             throw new \InvalidArgumentException('DiplomaticMessage msgType');
         }
 
@@ -98,7 +100,7 @@ class ScoutMessage extends Message{
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $newMsg = new Message(
-            self::MSGTYPE_PRIVATE,
+            MessageType::private,
             $this->src,
             $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 수락",
@@ -120,7 +122,7 @@ class ScoutMessage extends Message{
 
         $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $newMsg = new Message(
-            self::MSGTYPE_PRIVATE,
+            MessageType::private,
             $this->src,
             $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 거부",
@@ -223,6 +225,6 @@ class ScoutMessage extends Message{
             'action'=>'scout'
         ];
 
-        return new ScoutMessage(Message::MSGTYPE_PRIVATE, $src, $dest, $msg, $date, $validUntil, $msgOption);
+        return new ScoutMessage(MessageType::private, $src, $dest, $msg, $date, $validUntil, $msgOption);
     }
 }

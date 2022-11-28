@@ -9,6 +9,7 @@ use \sammo\Util;
 use \sammo\DB;
 use sammo\DTO\BettingInfo;
 use sammo\DTO\SelectItem;
+use sammo\Enums\MessageType;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\Message;
@@ -138,7 +139,7 @@ class OpenNationBetting extends \sammo\Event\Action
                 GetImageURL($general['imgsvr'], $general['picture'])
             );
             $msg = new Message(
-                Message::MSGTYPE_PRIVATE,
+                MessageType::private,
                 $src,
                 $dest,
                 $text,

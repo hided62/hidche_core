@@ -21,6 +21,7 @@ use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\MessageType;
 
 class che_선전포고 extends Command\NationCommand
 {
@@ -175,7 +176,7 @@ class che_선전포고 extends Command\NationCommand
             $destNation['color']
         );
         $msg = new Message(
-            Message::MSGTYPE_NATIONAL,
+            MessageType::national,
             $src,
             $dest,
             $text,

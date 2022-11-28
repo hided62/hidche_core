@@ -19,6 +19,7 @@ use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\MessageType;
 
 class che_몰수 extends Command\NationCommand
 {
@@ -186,7 +187,7 @@ class che_몰수 extends Command\NationCommand
                 GetImageURL($destGeneral->getVar('imgsvr'), $destGeneral->getVar('picture'))
             );
             $msg = new Message(
-                Message::MSGTYPE_PUBLIC,
+                MessageType::public,
                 $src,
                 $src,
                 $text,

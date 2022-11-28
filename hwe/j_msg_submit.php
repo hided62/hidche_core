@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 include 'lib.php';
 include 'func.php';
 
@@ -27,7 +29,7 @@ $text = trim(StringUtil::cutStringForWidth($post['text'], 199, ''));
 
 $session = Session::requireGameLogin([
     'msgID'=>null
-]); 
+]);
 $userID = Session::getUserID();
 //NOTE: 전송 메시지 시간 계산을 위해 Session을 쓰기 가능 상태로 열어둠.
 
@@ -43,7 +45,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
 
 /**
  * 메시지 전송 코드.
- * 
+ *
  * TODO: 장기적으로 ajax는 한곳에 모을 필요가 있을 듯.
  */
 
@@ -63,7 +65,7 @@ if(!$me){
 }
 
 $con = checkLimit($me['con']);
-if($con >= 2) { 
+if($con >= 2) {
     Json::die([
         'result' => false,
         'reason' => '접속 제한입니다.',
@@ -80,12 +82,12 @@ $src = new MessageTarget($me['no'], $me['name'], $srcNation['nation'], $srcNatio
 // 전체 메세지
 if($mailbox == Message::MAILBOX_PUBLIC) {
     $msg = new Message(
-        Message::MSGTYPE_PUBLIC, 
-        $src, 
+        MessageType::public,
         $src,
-        $text, 
-        $now, 
-        $unlimited, 
+        $src,
+        $text,
+        $now,
+        $unlimited,
         []
     );
     $msgID = $msg->send();
@@ -96,7 +98,7 @@ if($mailbox == Message::MAILBOX_PUBLIC) {
     ]);
 
 
-} 
+}
 
 // 국가 메세지
 if($mailbox >= Message::MAILBOX_NATIONAL) {
@@ -109,10 +111,10 @@ if($mailbox >= Message::MAILBOX_NATIONAL) {
     }
 
     if($destNationID == $me['nation']){
-        $msgType = Message::MSGTYPE_NATIONAL;
+        $msgType = MessageType::national;
     }
     else{
-        $msgType = Message::MSGTYPE_DIPLOMACY;
+        $msgType = MessageType::diplomacy;
     }
 
     $destNation = getNationStaticInfo($destNationID);
@@ -149,11 +151,11 @@ if($mailbox > 0) {
             'msgID' => null
         ]);
     }
-    
+
     $session->lastMsg = $now->format('Y-m-d H:i:s');
 
     $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,permission,penalty FROM general WHERE `no`=%i',$mailbox);
-    
+
     if(!$destUser){
         Json::die([
             'result' => false,
@@ -183,7 +185,7 @@ if($mailbox > 0) {
     );
 
     $msg = new Message(
-        Message::MSGTYPE_PRIVATE,
+        MessageType::private,
         $src,
         $dest,
         $text,

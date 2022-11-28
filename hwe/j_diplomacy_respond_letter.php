@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\MessageType;
+
 include "lib.php";
 include "func.php";
 
@@ -104,7 +106,7 @@ else{
 }
 
 $msg = new Message(
-    Message::MSGTYPE_DIPLOMACY,
+    MessageType::diplomacy,
     $src,
     $dest,
     $msgText,
@@ -115,7 +117,7 @@ $msg = new Message(
 $msgID = $msg->send();
 
 $msg = new Message(
-    Message::MSGTYPE_NATIONAL,
+    MessageType::national,
     $src,
     $dest,
     $msgText,
