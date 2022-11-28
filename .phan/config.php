@@ -112,7 +112,6 @@ return [
         'hwe/j_set_my_setting.php',
         'hwe/j_set_npc_control.php',
         'hwe/j_simulate_battle.php',
-        'hwe/j_troop.php',
         'hwe/j_update_picked_general.php',
         'hwe/j_vacation.php',
         'hwe/lib.php',
