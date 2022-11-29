@@ -32,7 +32,7 @@ GetRecentRecordResponse,
 import type { CachedMapResult, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
 import type { ActiveResourceAuctionList, OpenAuctionResponse, UniqueItemAuctionDetail, UniqueItemAuctionList } from "./defs/API/Auction";
-import type { MsgResponse } from "./defs/API/Message";
+import type { MsgResponse, MsgType } from "./defs/API/Message";
 
 const apiRealPath = {
   Auction: {
@@ -174,6 +174,10 @@ const apiRealPath = {
   Message: {
     GetRecentMessage: GET as APICallT<{
       sequence?: number;
+    }, MsgResponse>,
+    GetOldMessage: GET as APICallT<{
+      to: number;
+      type: MsgType;
     }, MsgResponse>,
   },
   Misc: {

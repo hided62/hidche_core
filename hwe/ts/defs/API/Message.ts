@@ -1,5 +1,3 @@
-import type { ValidResponse } from "@/util/callSammoAPI";
-
 export type MsgType = "private" | "public" | "national" | "diplomacy";
 
 export const minMsgSeq: Record<MsgType, number> = {
