@@ -121,9 +121,9 @@ class GameUnitConstBase{
             1201, self::T_ARCHER, '궁기병',
             100, 100, 8, 20, 0,  11, 12,
             1000, null,     ['동이'], 0,
-            [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
-            [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
-            ['말을 타고 잘 피합니다.'],
+            [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.9999, self::T_SIEGE=>1.2],
+            [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.0, self::T_SIEGE=>0.8],
+            ['말을 타고 잘 피합니다. 특히 보병에 조금 더 강합니다.'],
             null, ['che_궁병선제사격']
         ],
         [
