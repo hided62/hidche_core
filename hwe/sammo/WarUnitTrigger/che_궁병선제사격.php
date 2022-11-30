@@ -39,8 +39,8 @@ class che_궁병선제사격 extends BaseWarUnitTrigger
         if ($oppose->getCrewType()->armType == GameUnitConst::T_ARCHER) {
             $oppose->activateSkill('특수', '선제');
 
-            $self->multiplyWarPowerMultiply(0.5);
-            $oppose->multiplyWarPowerMultiply(0.5);
+            $self->multiplyWarPowerMultiply(2/3);
+            $oppose->multiplyWarPowerMultiply(2/3);
             $oppose->getLogger()->pushGeneralBattleDetailLog('서로 <C>선제 사격</>을 주고 받았다!</>', ActionLogger::PLAIN);
             $self->getLogger()->pushGeneralBattleDetailLog('서로 <C>선제 사격</>을 주고 받았다!</>', ActionLogger::PLAIN);
             return true;
