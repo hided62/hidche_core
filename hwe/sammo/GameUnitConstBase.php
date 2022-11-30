@@ -337,15 +337,6 @@ class GameUnitConstBase{
             ['che_성벽부상무효'], ['che_궁병선제사격']
         ],
         [
-            1599, self::T_SIEGE, '벽력거2',
-            200, 100, 6,  5, 0,  20,  5,
-            3000, ['업'],   null,     0,
-            [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
-            [self::T_FOOTMAN=>0.833, self::T_ARCHER=>0.833, self::T_CAVALRY=>0.833, self::T_WIZARD=>0.833, 1106=>0.909],
-            ['상대에게 돌덩이를 날립니다.'],
-            ['che_성벽부상무효'], null
-        ],
-        [
             1503, self::T_SIEGE, '목우',
             50, 200, 5,  0, 0,  15,  5,
             3000, ['성도'], null,     0,
