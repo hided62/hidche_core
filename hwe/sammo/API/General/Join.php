@@ -104,7 +104,7 @@ class Join extends \sammo\BaseAPI
 
         $targetBonusPointCnt = 0;
         //정상적으로 끝난 깃수만 제공
-        $oldGames = $db->queryFirstColumn('SELECT server_id FROM ng_games WHERE `winner_nation` IS NOT NULL AND `season` != 0  AND `server_id` != %s ORDER BY `date` DESC LIMIT 8', $gameID);
+        $oldGames = $db->queryFirstColumn('SELECT server_id FROM ng_games WHERE `winner_nation` IS NOT NULL AND `season` >= 1  AND `server_id` != %s ORDER BY `date` DESC LIMIT 8', $gameID);
 
         if(!$oldGames){
             return 0;
