@@ -22,7 +22,7 @@ class Message
         public string $msg,
         public \DateTime $date,
         public \DateTime $validUntil,
-        public array $msgOption
+        public ?array $msgOption
     ) {
     }
 
