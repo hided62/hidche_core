@@ -363,8 +363,8 @@ watch(gameConstStore, (gameConst) => {
     min: gameConst.gameConst.defaultStatMin,
     max: gameConst.gameConst.defaultStatMax,
     total: gameConst.gameConst.defaultStatTotal,
-    bonusMin: gameConst.gameConst.defaultStatMin,
-    bonusMax: gameConst.gameConst.defaultStatMax,
+    bonusMin: gameConst.gameConst.bornMinStatBonus,
+    bonusMax: gameConst.gameConst.bornMaxStatBonus,
   };
 
   args.value = {
