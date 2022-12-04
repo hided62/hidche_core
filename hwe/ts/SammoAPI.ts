@@ -175,6 +175,10 @@ const apiRealPath = {
     DeleteMessage: PATCH as APICallT<{
       msgID: number,
     }>,
+    DecideMessageResponse: POST as APICallT<{
+      msgID: number,
+      response: boolean,
+    }>,
     GetContactList: GET as APICallT<undefined, MabilboxListResponse>,
     GetRecentMessage: GET as APICallT<{
       sequence?: number;
