@@ -172,6 +172,9 @@ const apiRealPath = {
     }, InheritLogResponse>
   },
   Message: {
+    DeleteMessage: PATCH as APICallT<{
+      msgID: number,
+    }>,
     GetContactList: GET as APICallT<undefined, MabilboxListResponse>,
     GetRecentMessage: GET as APICallT<{
       sequence?: number;
