@@ -179,6 +179,10 @@ const apiRealPath = {
       to: number;
       type: MsgType;
     }, MsgResponse>,
+    SendMessage: POST as APICallT<{
+      mailbox: number;
+      text: string;
+    }, ValidResponse & {msgID: number}>
   },
   Misc: {
     UploadImage: POST as APICallT<
