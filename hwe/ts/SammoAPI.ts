@@ -32,7 +32,7 @@ GetRecentRecordResponse,
 import type { CachedMapResult, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
 import type { ActiveResourceAuctionList, OpenAuctionResponse, UniqueItemAuctionDetail, UniqueItemAuctionList } from "./defs/API/Auction";
-import type { MsgResponse, MsgType } from "./defs/API/Message";
+import type { MabilboxListResponse, MsgResponse, MsgType } from "./defs/API/Message";
 
 const apiRealPath = {
   Auction: {
@@ -172,6 +172,7 @@ const apiRealPath = {
     }, InheritLogResponse>
   },
   Message: {
+    GetContactList: GET as APICallT<undefined, MabilboxListResponse>,
     GetRecentMessage: GET as APICallT<{
       sequence?: number;
     }, MsgResponse>,

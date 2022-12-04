@@ -50,3 +50,18 @@ export type MsgResponse = {
   generalName: string;
   sequence: number;
 };
+
+export type MailboxItem = {
+  id: number,
+  mailbox: number,
+  color: string,
+  name: string,
+  nationID: number,
+  //nation: string,
+  general: [number, string, number][]
+}
+
+export type MabilboxListResponse = {
+  result: true,
+  nation: MailboxItem[]
+}
