@@ -4,11 +4,8 @@ namespace sammo\API\Message;
 
 use sammo\Session;
 use DateTimeInterface;
-use sammo\DB;
 use sammo\Message;
 use sammo\Validator;
-
-use function sammo\getMailboxList;
 
 class DeleteMessage extends \sammo\BaseAPI
 {
