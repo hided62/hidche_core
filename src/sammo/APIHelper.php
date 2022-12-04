@@ -181,6 +181,7 @@ class APIHelper
                     'set_cache'=>$setCache,
                 ]),
             ]);
+            $result['result'] = $result['result'] ?? true;
             Json::die($result, $setCache ? 0 : Json::NO_CACHE);
         } catch (\Exception $e) {
             $errMsg = $e->getMessage();
