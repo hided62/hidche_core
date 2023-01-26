@@ -110,7 +110,11 @@ class AuctionUniqueItem extends Auction
     }
     $auction = new static($auctionID, $general);
     try {
-      $auction->bid($startAmount, false);
+      $failReason = $auction->bid($startAmount, false);
+      if($failReason){
+        $auction->closeAuction();
+        return "경매를 시작했지만, 첫 입찰에 실패했습니다: {$failReason}";
+      }
     } catch (\Exception $e) {
       //실패해선 안된다.
       $msg = $e->getMessage();
