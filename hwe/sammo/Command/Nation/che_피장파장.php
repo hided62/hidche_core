@@ -59,6 +59,9 @@ class che_피장파장 extends Command\NationCommand
         if (!in_array($commandType, GameConst::$availableChiefCommand['전략'])) {
             return false;
         }
+        if($commandType == Util::getClassNameFromObj($this)){
+            return false;
+        }
 
 
         $this->arg = [
@@ -253,7 +256,13 @@ class che_피장파장 extends Command\NationCommand
 
         $oneAvailableCommandName = null;
 
+        $thisClassName = Util::getClassNameFromObj($this);
+
         foreach (GameConst::$availableChiefCommand['전략'] as $commandType) {
+            if($commandType == $thisClassName){
+                continue;
+            }
+
             $cmd = buildNationCommandClass($commandType, $generalObj, $this->env, new LastTurn());
             $cmdName = $cmd->getName();
             $remainTurn = 0;
