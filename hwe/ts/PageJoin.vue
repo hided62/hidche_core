@@ -195,7 +195,7 @@
                 v-model="inheritTurnTimeMinute"
                 :readonly="!inheritTurnTimeSet"
                 :min="0"
-                :max="1 - turnterm"
+                :max="turnterm - 1"
                 :right="true"
                 title="분"
               />
