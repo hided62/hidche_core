@@ -115,7 +115,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['표준적인 궁병입니다.','궁병은 선제사격을 하는 병종입니다.'],
-            null, ['che_궁병선제사격']
+            null, ['che_선제사격시도', 'che_선제사격발동']
         ],
         [
             1201, self::T_ARCHER, '궁기병',
@@ -124,7 +124,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.9, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.1, self::T_SIEGE=>0.8],
             ['말을 타고 잘 피합니다. 특히 다른 궁병보다 보병에게 조금 더 강합니다.'],
-            null, ['che_궁병선제사격']
+            null, ['che_선제사격시도', 'che_선제사격발동']
         ],
         [
             1202, self::T_ARCHER, '연노병',
@@ -133,7 +133,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['화살을 연사합니다.'],
-            null, ['che_궁병선제사격']
+            null, ['che_선제사격시도', 'che_선제사격발동']
         ],
         [
             1203, self::T_ARCHER, '강궁병',
@@ -142,7 +142,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['강건한 궁병입니다.'],
-            null, ['che_궁병선제사격']
+            null, ['che_선제사격시도', 'che_선제사격발동']
         ],
         [
             1204, self::T_ARCHER, '석궁병',
@@ -151,7 +151,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['강력한 화살을 쏩니다.'],
-            null, ['che_궁병선제사격']
+            null, ['che_선제사격시도', 'che_선제사격발동']
         ],
 
         [
@@ -316,7 +316,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
             ['높은 구조물 위에서 공격합니다.'],
-            ['che_성벽부상무효'], ['che_궁병선제사격']
+            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동']
         ],
         [
             1501, self::T_SIEGE, '충차',
@@ -334,7 +334,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
             [self::T_FOOTMAN=>0.833, self::T_ARCHER=>0.833, self::T_CAVALRY=>0.833, self::T_WIZARD=>0.833, 1106=>0.909],
             ['상대에게 돌덩이를 날립니다.'],
-            ['che_성벽부상무효'], ['che_궁병선제사격']
+            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동']
         ],
         [
             1503, self::T_SIEGE, '목우',
