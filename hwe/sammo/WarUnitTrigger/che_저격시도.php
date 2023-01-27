@@ -30,6 +30,9 @@ class che_저격시도 extends BaseWarUnitTrigger{
         if($self->getPhase() !== 0 && $oppose->getPhase() !== 0){
             return true;
         }
+        if($oppose->getPhase() < 0){
+            return true;
+        }
         if($self->hasActivatedSkill('저격')){
             return true;
         }
