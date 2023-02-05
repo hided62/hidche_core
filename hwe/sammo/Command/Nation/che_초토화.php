@@ -171,6 +171,9 @@ class che_초토화 extends Command\NationCommand{
             'pop'=>$db->sqleval('greatest(pop_max*0.1, pop*0.2)'),
             'agri'=>$db->sqleval('greatest(agri_max*0.1, agri*0.2)'),
             'comm'=>$db->sqleval('greatest(comm_max*0.1, comm*0.2)'),
+            'secu'=>$db->sqleval('greatest(secu_max*0.1, secu*0.2)'),
+            'def'=>$db->sqleval('greatest(def_max*0.1, def*0.2)'),
+            'wall'=>$db->sqleval('greatest(wall_max*0.1, wall*0.5)'),
             'nation'=>0,
             'front'=>0,
             'conflict'=>'{}'
