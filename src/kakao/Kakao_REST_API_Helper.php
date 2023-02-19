@@ -1,6 +1,7 @@
 <?php
 
 namespace kakao;
+use League\Uri\Uri;
 
 class KakaoKeyNull
 {
@@ -84,9 +85,8 @@ class Kakao_REST_API_Helper
         }
 
         if($changeRedirectDomain && key_exists('HTTP_HOST', $_SERVER)){
-            $uriObj = \phpUri::parse(KakaoKey::REDIRECT_URI);
-            $uriObj->authority = $_SERVER['HTTP_HOST'];
-            $this->REDIRECT_URI = $uriObj->join('');
+            $uriObj = Uri::createFromBaseUri(KakaoKey::REDIRECT_URI, $_SERVER['HTTP_HOST']);
+            $this->REDIRECT_URI = (string)$uriObj;
         }
         else{
             $this->REDIRECT_URI = KakaoKey::REDIRECT_URI;

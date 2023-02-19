@@ -3,6 +3,7 @@
 namespace sammo;
 
 use phpDocumentor\Reflection\Types\Boolean;
+use league\Uri\Uri;
 
 class WebUtil
 {
@@ -17,7 +18,7 @@ class WebUtil
 
     public static function resolveRelativePath(string $path, string $basepath): string
     {
-        return \phpUri::parse($basepath)->join($path);
+        return (string)Uri::createFromBaseUri($path, $basepath);
     }
 
     public static function setHeaderNoCache()
@@ -153,15 +154,15 @@ class WebUtil
 
     public static function preloadAsset(string $path, string $type)
     {
-        $upath = \phpUri::parse($path);
-        $path = $upath->join('');
-        if (!$upath->scheme) {
-            if (!file_exists($upath->path)) {
+        $upath = Uri::createFromString($path);
+        $path = (string)$upath;
+        if (!$upath->getScheme()) {
+            if (!file_exists($upath->getPath())) {
                 return "<!-- preload:{$type} '{$path}' -->\n";
             }
 
-            $mtime = filemtime($upath->path);
-            if ($upath->query) {
+            $mtime = filemtime($upath->getPath());
+            if ($upath->getQuery()) {
                 $tail = '&' . $mtime;
             } else {
                 $tail = '?' . $mtime;
@@ -188,7 +189,7 @@ class WebUtil
             $entryName = [$entryName];
         }
 
-        $serverBasePath = \phpUri::parse(ServConfig::$serverWebPath)->path;
+        $serverBasePath = Uri::createFromString(ServConfig::$serverWebPath)->getPath();
 
         if ($type == 'gateway') {
             $serverBasePath .= "/dist_js/{$type}";
@@ -227,14 +228,14 @@ class WebUtil
     public static function printJS(string $path, bool $isDefer = false)
     {
         //async 옵션 고려?
-        $upath = \phpUri::parse($path);
-        $path = $upath->join('');
-        if (!$upath->scheme) {
-            if (!file_exists($upath->path)) {
+        $upath = Uri::createFromString($path);
+        $path = (string)$upath;
+        if (!$upath->getScheme()) {
+            if (!file_exists($upath->getPath())) {
                 return "<!-- JS '{$path}' -->\n";
             }
-            $mtime = filemtime($upath->path);
-            if ($upath->query) {
+            $mtime = filemtime($upath->getPath());
+            if ($upath->getQuery()) {
                 $tail = '&' . $mtime;
             } else {
                 $tail = '?' . $mtime;
@@ -249,14 +250,14 @@ class WebUtil
 
     public static function printCSS(string $path)
     {
-        $upath = \phpUri::parse($path);
-        $path = $upath->join('');
-        if (!$upath->scheme) {
-            if (!file_exists($upath->path)) {
+        $upath = Uri::createFromString($path);
+        $path = (string)$upath;
+        if (!$upath->getScheme()) {
+            if (!file_exists($upath->getPath())) {
                 return "<!-- CSS '{$path}' -->\n";
             }
-            $mtime = filemtime($upath->path);
-            if ($upath->query) {
+            $mtime = filemtime($upath->getPath());
+            if ($upath->getQuery()) {
                 $tail = '&' . $mtime;
             } else {
                 $tail = '?' . $mtime;
@@ -337,8 +338,7 @@ class WebUtil
     }
 
     public static function replaceDomain(string $origPath, string $newDomain): string{
-        $upath = \phpUri::parse($origPath);
-        $upath->authority = $newDomain;
-        return $upath->join('');
+        $upath = Uri::createFromBaseUri($origPath, $newDomain);
+        return (string)$upath;
     }
 }

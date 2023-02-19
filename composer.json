@@ -17,7 +17,6 @@
         "league/plates": "^3.3",
         "vlucas/valitron": "^1.4",
         "php-extended/php-tail": "^2.1",
-        "pguardiario/phpuri": "^1.0",
         "symfony/lock": "^6.0",
         "ezyang/htmlpurifier": "^4.10",
         "xemlock/htmlpurifier-html5": "^0.1.7",
@@ -27,7 +26,8 @@
         "illuminate/database": "^9.12",
         "illuminate/events": "^9.12",
         "php-ds/php-ds": "^1.4",
-        "hided62/ldto": "^1.0"
+        "hided62/ldto": "^1.0",
+        "league/uri": "^6.8"
     },
     "autoload": {
         "psr-4": {
