@@ -85,7 +85,10 @@ class Kakao_REST_API_Helper
         }
 
         if($changeRedirectDomain && key_exists('HTTP_HOST', $_SERVER)){
-            $uriObj = Uri::createFromBaseUri(KakaoKey::REDIRECT_URI, $_SERVER['HTTP_HOST']);
+            $uriObj = Uri::createFromBaseUri(
+                KakaoKey::REDIRECT_URI,
+                Uri::createFromServer($_SERVER)
+            );
             $this->REDIRECT_URI = (string)$uriObj;
         }
         else{

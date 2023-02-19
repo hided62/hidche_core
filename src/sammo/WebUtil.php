@@ -337,8 +337,11 @@ class WebUtil
         return join("\n", $result);
     }
 
-    public static function replaceDomain(string $origPath, string $newDomain): string{
-        $upath = Uri::createFromBaseUri($origPath, $newDomain);
+    public static function replaceDomain(string $origPath): string{
+        $upath = Uri::createFromBaseUri(
+            $origPath,
+            Uri::createFromServer($_SERVER)
+        );
         return (string)$upath;
     }
 }

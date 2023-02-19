@@ -53,7 +53,7 @@ foreach (ServConfig::getServerList() as $setting) {
     <title>삼국지 모의전투 HiDCHe</title>
     <script>
         var kakao_oauth_client_id = '<?= KakaoKey::REST_KEY ?>';
-        var kakao_oauth_redirect_uri = '<?= WebUtil::replaceDomain(KakaoKey::REDIRECT_URI, $_SERVER['HTTP_HOST']) ?>';
+        var kakao_oauth_redirect_uri = '<?= WebUtil::replaceDomain(KakaoKey::REDIRECT_URI) ?>';
     </script>
     <?= WebUtil::printJS('d_shared/common_path.js') ?>
     <?= WebUtil::printCSS('d_shared/common.css') ?>
