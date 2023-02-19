@@ -3,7 +3,7 @@
 namespace sammo;
 
 use phpDocumentor\Reflection\Types\Boolean;
-use league\Uri\Uri;
+use League\Uri\Uri;
 
 class WebUtil
 {
