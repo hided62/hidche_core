@@ -168,8 +168,13 @@ function tryCopy() {
 const removeTagRegEx = /<[^>]*>?/g;
 
 function tryTextCopy() {
-  const actions = queryActionHelper.extractQueryActions();
+  const rawActions = queryActionHelper.extractQueryActions();
   isCopyButtonShown.value = false;
+
+  const actions = queryActionHelper.amplifyQueryActions(rawActions, queryActionHelper.getSelectedTurnList());
+  if (actions.length === 0) {
+    return;
+  }
 
   const turnBriefs: [number, string][] = [];
   for (const action of actions) {
