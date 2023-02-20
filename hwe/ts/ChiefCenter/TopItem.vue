@@ -56,7 +56,7 @@
         top: `${btnPos * 30 + 25}px`,
         right: '10px',
       }"
-      @blur="isCopyButtonShown = false"
+      @blur="hideCopyButton()"
       @click="tryCopy()"
     >
       복사하기
@@ -115,6 +115,12 @@ onMounted(() => {
 
 function dragStart() {
   isDragToggle.value = true;
+}
+
+function hideCopyButton(){
+  setTimeout(() => {
+    isCopyButtonShown.value = false;
+  }, 1);
 }
 
 function eqSet<T>(as: Set<T>, bs: Set<T>) {
