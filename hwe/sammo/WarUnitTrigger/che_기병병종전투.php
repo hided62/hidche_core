@@ -13,8 +13,8 @@ class che_기병병종전투 extends BaseWarUnitTrigger{
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->isAttacker()){
-            $oppose->multiplyWarPowerMultiply(1/0.95);
-            $self->multiplyWarPowerMultiply(0.95);
+            $oppose->multiplyWarPowerMultiply(1.02);
+            $self->multiplyWarPowerMultiply(0.97);
         }
         else if($oppose instanceof WarUnitCity){
             $self->multiplyWarPowerMultiply(0.9);
