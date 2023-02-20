@@ -631,8 +631,13 @@ function clipboardTextCopy(releaseSelect = true) {
     return;
   }
 
+  const actions = queryActionHelper.amplifyQueryActions(rawActions, queryActionHelper.getSelectedTurnList());
+  if (actions.length === 0) {
+    return;
+  }
+
   const turnBriefs: [number, string][] = [];
-  for (const action of rawActions) {
+  for (const action of actions) {
     const [turnIdxList, turnObj] = action;
     for (const turnIdx of turnIdxList) {
       turnBriefs.push([turnIdx, `${turnIdx + 1}턴 ${turnObj.brief.replace(removeTagRegEx, "")}`]);
