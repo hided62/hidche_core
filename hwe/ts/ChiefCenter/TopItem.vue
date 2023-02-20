@@ -48,19 +48,18 @@
         </div>
       </div>
     </DragSelect>
-    <BButton
-      ref="btnCopy"
+    <div
+      class="hoverPanel d-grid"
       :style="{
         position: 'absolute',
-        display: isCopyButtonShown ? 'block' : 'none',
+        display: isCopyButtonShown ? 'grid !important' : 'none !important',
         top: `${btnPos * 30 + 25}px`,
         right: '10px',
       }"
-      @blur="hideCopyButton()"
-      @click="tryCopy()"
     >
-      복사하기
-    </BButton>
+      <BButton ref="btnCopy" variant="primary" @blur="hideCopyButton()" @click="tryCopy()"> 복사하기 </BButton>
+      <BButton ref="btnCopy" @blur="hideCopyButton()" @click="tryTextCopy()"> 텍스트 복사</BButton>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -117,7 +116,7 @@ function dragStart() {
   isDragToggle.value = true;
 }
 
-function hideCopyButton(){
+function hideCopyButton() {
   setTimeout(() => {
     isCopyButtonShown.value = false;
   }, 1);
@@ -164,6 +163,25 @@ function tryCopy() {
     return;
   }
   storedActionsHelper.clipboard.value = [...actions];
+}
+
+const removeTagRegEx = /<[^>]*>?/g;
+
+function tryTextCopy() {
+  const actions = queryActionHelper.extractQueryActions();
+  isCopyButtonShown.value = false;
+
+  const turnBriefs: [number, string][] = [];
+  for (const action of actions) {
+    const [turnIdxList, turnObj] = action;
+    for (const turnIdx of turnIdxList) {
+      turnBriefs.push([turnIdx, `${turnIdx + 1}턴 ${turnObj.brief.replace(removeTagRegEx, "")}`]);
+    }
+  }
+  turnBriefs.sort((a, b) => a[0] - b[0]);
+
+  const text = turnBriefs.map(([, brief]) => brief).join("\n");
+  void navigator.clipboard.writeText(text);
 }
 
 const turnTimes = ref<string[]>([]);

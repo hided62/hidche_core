@@ -225,6 +225,8 @@
                   <i class="bi bi-clipboard-fill" />&nbsp;붙여넣기
                 </BDropdownItem>
                 <BDropdownDivider />
+                <BDropdownItem @click="clipboardTextCopy"> <i class="bi bi-files" />&nbsp;텍스트 복사 </BDropdownItem>
+                <BDropdownDivider />
                 <BDropdownItem @click="setStoredActions">
                   <i class="bi bi-bookmark-plus-fill" />&nbsp;보관하기
                 </BDropdownItem>
@@ -620,6 +622,32 @@ async function clipboardPaste(releaseSelect = true) {
   }
   return result;
 }
+
+const removeTagRegEx = /<[^>]*>?/g;
+
+function clipboardTextCopy(releaseSelect = true) {
+  const rawActions = queryActionHelper.extractQueryActions();
+  if (rawActions.length === 0) {
+    return;
+  }
+
+  const turnBriefs: [number, string][] = [];
+  for (const action of rawActions) {
+    const [turnIdxList, turnObj] = action;
+    for (const turnIdx of turnIdxList) {
+      turnBriefs.push([turnIdx, `${turnIdx + 1}턴 ${turnObj.brief.replace(removeTagRegEx, "")}`]);
+    }
+  }
+  turnBriefs.sort((a, b) => a[0] - b[0]);
+
+  const text = turnBriefs.map(([, brief]) => brief).join("\n");
+  void navigator.clipboard.writeText(text);
+
+  if (releaseSelect) {
+    queryActionHelper.releaseSelectedTurnList();
+  }
+}
+
 
 async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
   const reqTurnList = queryActionHelper.getSelectedTurnList();
