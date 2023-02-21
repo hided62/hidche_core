@@ -20,10 +20,10 @@ class GetOldMessage extends \sammo\BaseAPI
   {
     $v = new Validator($this->args);
     $v->rule('required', [
-      'sequence',
+      'to',
       'type',
-    ])->rule('int', 'to')
-      ->rule('string', 'type');
+    ])->rule('integer', 'to')
+      ->rule('in', 'type', ['private', 'public', 'national', 'diplomacy']);
     if (!$v->validate()) {
       return $v->errorStr();
     }
@@ -82,7 +82,7 @@ class GetOldMessage extends \sammo\BaseAPI
 
     [$generalID, $nationID, $generalName] = [$me['no'], $me['nation'], $me['name']];
     $permission = checkSecretPermission($me, false);
-    $reqTo = $this->args['reqTo'];
+    $reqTo = $this->args['to'];
 
     $result = [
       MessageType::private->value => [],

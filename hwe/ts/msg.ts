@@ -6,7 +6,7 @@ import axios from 'axios';
 import { convertFormData } from '@util/convertFormData';
 import { isBrightColor } from "@util/isBrightColor";
 import { unwrap } from '@util/unwrap';
-import _ from 'lodash-es';
+import _, { isError, isString } from 'lodash-es';
 import { addMinutes } from 'date-fns';
 import { parseTime } from '@util/parseTime';
 import { formatTime } from '@util/formatTime';
@@ -15,6 +15,7 @@ import { isNotNull } from '@util/isNotNull';
 import { unwrap_any } from '@util/unwrap_any';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { exportWindow } from '@util/exportWindow';
+import { SammoAPI } from './SammoAPI';
 
 const messageTemplate = `<div
     class="msg_plate msg_plate_<%msgType%> msg_plate_<%nationType%>"
@@ -164,37 +165,33 @@ type BasicInfoResponse = {
 let generalList: Record<number, BasicGeneralTarget> = {};
 
 async function responseMessage(msgID: number, responseAct: boolean): Promise<void> {
-    const response = await axios({
-        url: 'j_msg_decide_opt.php',
-        method: 'post',
-        responseType: 'json',
-        data: convertFormData({
-            data: JSON.stringify({
-                msgID: msgID,
-                response: responseAct
-            })
-        })
-    });
-
-    const result: InvalidResponse = response.data;
-    if (!result.result) {
-        alert(result.reason);
+    try{
+        await SammoAPI.Message.DecideMessageResponse({msgID, response: responseAct});
+        location.reload();
     }
-    location.reload();
+    catch(e){
+        if(isString(e)){
+            alert(e);
+        }
+        if(isError(e)){
+            alert(e.message);
+        }
+        console.error(e);
+    }
 }
 
 async function deleteMessage(msgID: number): Promise<MsgResponse> {
-    const response = await axios({
-        url: 'j_msg_delete.php',
-        method: 'post',
-        responseType: 'json',
-        data: convertFormData({
-            msgID: msgID,
-        })
-    });
-    const result: InvalidResponse | MsgResponse = response.data;
-    if (!result.result) {
-        throw result.reason;
+    try{
+        await SammoAPI.Message.DeleteMessage({msgID});
+    }
+    catch(e){
+        if(isString(e)){
+            alert(e);
+        }
+        if(isError(e)){
+            alert(e.message);
+        }
+        console.error(e);
     }
     return await refreshMsg();
 }
@@ -206,37 +203,34 @@ export async function refreshMsg(): Promise<MsgResponse> {
 exportWindow(refreshMsg, 'refreshMsg');
 
 async function fetchRecentMsg(): Promise<MsgResponse> {
-    const response = await axios({
-        url: 'j_msg_get_recent.php',
-        method: 'post',
-        responseType: 'json',
-        data: convertFormData({
-            sequence: lastSequence ?? 0
-        })
-    });
-    const result: InvalidResponse | MsgResponse = response.data;
-    if (!result.result) {
-        throw result.reason;
+    try {
+        console.log(lastSequence);
+        return await SammoAPI.Message.GetRecentMessage({sequence: lastSequence ?? -1});
     }
-    return result;
+    catch (e) {
+        console.error(e);
+        throw e;
+    }
 }
 
 async function showOldMsg(msgType: MsgType): Promise<MsgResponse> {
-    const response = await axios({
-        url: 'j_msg_get_old.php',
-        responseType: 'json',
-        method: 'post',
-        data: convertFormData({
-            to: minMsgSeq[msgType],
+    try{
+        const response = await SammoAPI.Message.GetOldMessage({
             type: msgType,
-        })
-    });
-    const result: InvalidResponse | MsgResponse = response.data;
-    if (!result.result) {
-        throw result.reason;
+            to: minMsgSeq[msgType],
+        });
+        return redrawMsg(response, false);
     }
-
-    return redrawMsg(result, false);
+    catch(e){
+        if(isString(e)){
+            alert(e);
+        }
+        if(isError(e)){
+            alert(e.message);
+        }
+        console.error(e);
+        throw e;
+    }
 }
 
 function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
@@ -419,26 +413,26 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
                     return null;
                 }
 
-                $msg.find('.btn-delete-msg').click(function () {
+                $msg.find('.btn-delete-msg').on('click', async function () {
                     if (!confirm("삭제하시겠습니까?")) {
                         return false;
                     }
-                    void deleteMessage(msg.id);
+                    await deleteMessage(msg.id);
                 });
 
-                $msg.find('button.prompt_yes').click(function () {
+                $msg.find('button.prompt_yes').on('click', async function () {
                     if (!confirm("수락하시겠습니까?")) {
                         return false;
                     }
-                    void responseMessage(msg.id, true);
+                    await responseMessage(msg.id, true);
 
                 });
 
-                $msg.find('button.prompt_no').click(function () {
+                $msg.find('button.prompt_no').on('click', async function () {
                     if (!confirm("거절하시겠습니까?")) {
                         return false;
                     }
-                    void responseMessage(msg.id, false);
+                    await responseMessage(msg.id, false);
                 });
 
                 if ($existMsg.length) {
@@ -641,30 +635,26 @@ function activateMessageForm() {
         }
     });
 
-    $msgSubmit.click(async function () {
+    $msgSubmit.on('click', async function () {
 
-        const text = $.trim(unwrap_any<string>($msgInput.val()));
-        $msgInput.val('').focus();
+        const text = _.trim(unwrap_any<string>($msgInput.val()));
+        $msgInput.val('').trigger('focus');
 
         const targetMailbox = unwrap_any<string>($mailboxList.val());
         console.log(targetMailbox, text);
 
-        const response = await axios({
-            url: 'j_msg_submit.php',
-            method: 'post',
-            responseType: 'json',
-            data: convertFormData({
-                data: JSON.stringify({
-                    mailbox: parseInt(targetMailbox),
-                    text: text
-                })
-            })
-        })
-        const result: InvalidResponse = response.data;
-        if (!result.result) {
-            alert(result.reason);
+        try{
+            await SammoAPI.Message.SendMessage({
+                mailbox: parseInt(targetMailbox),
+                text,
+            });
+            await refreshMsg();
         }
-        await refreshMsg();
+        catch(e){
+            alert(e);
+            await refreshMsg();
+            return;
+        }
     });
 }
 
@@ -679,11 +669,7 @@ $(async function ($) {
     }).then((v) => registerGlobal(v.data));
 
     //sender_list.json 은 서버측에선 캐시 가능한 데이터임.
-    const senderListP = axios({
-        url: 'j_msg_contact_list.php',
-        method: 'post',
-        responseType: 'json'
-    }).then(v => v.data);
+    const senderListP = SammoAPI.Message.GetContactList();
 
     const messageListP = fetchRecentMsg();
 

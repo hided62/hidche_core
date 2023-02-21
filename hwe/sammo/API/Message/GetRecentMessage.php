@@ -19,7 +19,7 @@ class GetRecentMessage extends \sammo\BaseAPI
   public function validateArgs(): ?string
   {
     $v = new Validator($this->args);
-    $v->rule('int', 'sequence');
+    $v->rule('integer', 'sequence');
     if (!$v->validate()) {
       return $v->errorStr();
     }
