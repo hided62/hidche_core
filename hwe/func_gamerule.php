@@ -1164,7 +1164,7 @@ function checkEmperior()
     $nation['aux'] = Json::decode($nation['aux']);
     $nation['msg'] = $nationStor->nationNotice['msg'] ?? '';;
     $nation['scout_msg'] = $nationStor->scout_msg;
-    $nation['aux'] += $nationStor->max_power;
+    $nation['aux'] += $nationStor->max_power ?? [];
     $nation['history'] = getNationHistoryLogAll($nation['nation']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
