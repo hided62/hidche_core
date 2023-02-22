@@ -8,7 +8,7 @@ include "func.php";
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-increaseRefresh("갱신정보", 2);
+increaseRefresh("갱신정보", 1);
 
 $admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxrefresh', 'maxonline']);
 

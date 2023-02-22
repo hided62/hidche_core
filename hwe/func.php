@@ -886,7 +886,7 @@ function generalInfo2(General $generalObj)
 
 function getOnlineNum(): int
 {
-    return KVStorage::getStorage(DB::db(), 'game_env')->getValue('online') ?? 0;
+    return KVStorage::getStorage(DB::db(), 'game_env')->getValue('online_user_cnt') ?? 0;
 }
 
 function onlinegen(General $general)
@@ -1003,19 +1003,31 @@ function increaseRefresh($type = "", $cnt = 1)
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $gameStor->refresh = $gameStor->refresh + $cnt; //TODO: +로 증가하는 값은 별도로 분리
     $isunited = $gameStor->isunited;
     $opentime = $gameStor->opentime;
 
-    if ($isunited != 2 && $generalID && $userGrade < 6 && $opentime <= TimeUtil::now()) {
-        $db->update('general', [
-            'lastrefresh' => $date,
-            'con' => $db->sqleval('con + %i', $cnt),
-            'connect' => $db->sqleval('connect + %i', $cnt),
-            'refcnt' => $db->sqleval('refcnt + %i', $cnt),
-            'refresh' => $db->sqleval('refresh + %i', $cnt)
-        ], 'owner=%i', $userID);
+    if($userGrade == 6){
+        return;
     }
+    if($isunited == 2){
+        return;
+    }
+    if(!$generalID){
+        return;
+    }
+    if($opentime > $date){
+        return;
+    }
+
+    $gameStor->refresh = $gameStor->refresh + $cnt; //TODO: +로 증가하는 값은 별도로 분리
+
+    $db->update('general', [
+        'lastrefresh' => $date,
+        'con' => $db->sqleval('con + %i', $cnt),
+        'connect' => $db->sqleval('connect + %i', $cnt),
+        'refcnt' => $db->sqleval('refcnt + %i', $cnt),
+        'refresh' => $db->sqleval('refresh + %i', $cnt)
+    ], 'owner=%i', $userID);
 
     $date = date('Y_m_d H:i:s');
     $date2 = substr($date, 0, 10);
@@ -1033,42 +1045,6 @@ function increaseRefresh($type = "", $cnt = 1)
         ),
         FILE_APPEND
     );
-
-    $proxy_headers = array(
-        'HTTP_VIA',
-        'HTTP_X_FORWARDED_FOR',
-        'HTTP_FORWARDED_FOR',
-        'HTTP_X_FORWARDED',
-        'HTTP_FORWARDED',
-        'HTTP_CLIENT_IP',
-        'HTTP_FORWARDED_FOR_IP',
-        'VIA',
-        'X_FORWARDED_FOR',
-        'FORWARDED_FOR',
-        'X_FORWARDED',
-        'FORWARDED',
-        'CLIENT_IP',
-        'FORWARDED_FOR_IP',
-        'HTTP_PROXY_CONNECTION'
-    );
-
-    $str = "";
-    foreach ($proxy_headers as $x) {
-        if (isset($_SERVER[$x])) $str .= "//{$x}:{$_SERVER[$x]}";
-    }
-    if ($str != "") {
-        file_put_contents(
-            __DIR__ . "/logs/" . UniqueConst::$serverID . "/_{$date2}_ipcheck.txt",
-            sprintf(
-                "%s, %s, %s%s\n",
-                $session->userName,
-                $session->generalName,
-                $_SERVER['REMOTE_ADDR'],
-                $str
-            ),
-            FILE_APPEND
-        );
-    }
 }
 
 function updateTraffic()
@@ -1223,10 +1199,9 @@ function updateOnline()
         $nationname[$nation['nation']] = $nation['name'];
     }
 
-
     //동접수
-    $before5Min = TimeUtil::nowAddMinutes(-5);
-    $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh > %s AND npc < 2', $before5Min);
+    $startTurn = cutTurn($gameStor->turntime, $gameStor->turnterm, false);
+    $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh >= %s AND npc < 2', $startTurn);
     $onlineNum = count($onlineUser);
     $onlineNationUsers = Util::arrayGroupBy($onlineUser, 'nation');
 
