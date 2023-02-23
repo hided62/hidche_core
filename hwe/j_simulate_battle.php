@@ -84,6 +84,7 @@ $rawDefenderList = $query['defenderGenerals'];
 $rawDefenderCity = $query['defenderCity'];
 $rawDefenderNation = $query['defenderNation'];
 
+$warSeed = $query['seed'] ?? '';
 
 $generalCheck = [
     'required'=>[
@@ -297,10 +298,13 @@ function extractRankVar(array $rawVal):Map{
 function simulateBattle(
     $rawAttacker, $rawAttackerCity, $rawAttackerNation,
     $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
-    $startYear, $year, $month
+    $startYear, $year, $month, $warSeed
 ){
 
-    $warSeed = bin2hex(random_bytes(16));
+    if(!$warSeed){
+        $warSeed = bin2hex(random_bytes(16));
+    }
+
     $warRng = new RandUtil(new LiteHashDRBG($warSeed));
 
     $attacker = new WarUnitGeneral(
@@ -400,12 +404,16 @@ $avgWar = 0;
 $attackerActivatedSkills = [];
 $defendersActivatedSkills = [];
 
+if($warSeed){
+    $repeatCnt = 1;
+}
+
 foreach(Util::range($repeatCnt) as $repeatIdx){
     /** @var WarUnit $attacker */
     [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
         $rawAttacker, $rawAttackerCity, $rawAttackerNation,
         $rawDefenderList, $rawDefenderCity, $rawDefenderNation,
-        $startYear, $year, $month
+        $startYear, $year, $month, $warSeed
     );
     $lastWarLog = Util::mapWithKey(function($key, $values){
         return ConvertLog(join('<br>', $values));

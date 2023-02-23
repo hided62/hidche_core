@@ -84,6 +84,7 @@ type BattleInfo = {
     year: number,
     month: number,
     repeatCnt: number,
+    seed?: string,
 };
 
 type ExportedGeneralInfo = {
@@ -638,6 +639,12 @@ $(function ($) {
         const defenderCity = battleData.defenderCity;
         const defenderNation = battleData.defenderNation;
 
+        const seed = battleData.seed;
+
+        if(seed){
+            $('#seed').val(seed);
+        }
+
         $('#year').val(battleData.year);
         $('#month').val(battleData.month);
         $('#repeat_cnt').val(battleData.repeatCnt);
@@ -712,6 +719,8 @@ $(function ($) {
         const month = parseInt(unwrap_any<string>($('#month').val()));
         const repeatCnt = parseInt(unwrap_any<string>($('#repeat_cnt').val()));
 
+        const seed = unwrap_any<string>($('#seed').val());
+
         return {
             attackerGeneral: attackerGeneral,
             attackerCity: attackerCity,
@@ -724,6 +733,8 @@ $(function ($) {
             year: year,
             month: month,
             repeatCnt: repeatCnt,
+
+            seed,
         };
     }
 

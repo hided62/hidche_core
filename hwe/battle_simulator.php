@@ -65,8 +65,8 @@ if ($nationID) {
                 전역 설정
             </div>
             <div class="card-body dragpad_battle">
-                <div class="row">
-                    <div class="col-sm-6">
+                <div class="row gx-0">
+                    <div class="col-sm-4">
                         <div class="input-group">
                             <input type="number" class="form-control" aria-describedby="text_year" value="<?= $startYear ?>" disabled>
                             <div class="input-group-text"> 년 시작 </div>
@@ -76,9 +76,13 @@ if ($nationID) {
                             <div class="input-group-text"> 월 </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-5 px-2">
                         <div class="btn-toolbar" role="toolbar">
                             <div class="input-group me-2" role="group">
+                                <div class="input-group-text">
+                                    시드
+                                </div>
+                                <input type="text" class="form-control" id="seed" aria-describedby="text_seed">
                                 <div class="input-group-text">
                                     반복 횟수
                                 </div>
@@ -87,6 +91,10 @@ if ($nationID) {
                                     <option value="1000">1000회 (요약 표기)</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="btn-toolbar" role="toolbar">
                             <div class="btn-group me-2" role="group">
                                 <button type="button" class="btn btn-danger btn-begin_battle">전투</button>
                             </div>
