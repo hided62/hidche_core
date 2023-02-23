@@ -133,6 +133,19 @@ $generalCheck = [
         ['weapon', array_merge(array_keys(GameConst::$allItems['weapon']), ['None'])],
         ['book', array_merge(array_keys(GameConst::$allItems['book']), ['None'])],
         ['item', array_merge(array_keys(GameConst::$allItems['item']), ['None'])],
+    ],
+    'array'=>['inheritBuff'],
+];
+
+$inheritBuffCheck = [
+    'between'=>[
+        [TriggerInheritBuff::WAR_AVOID_RATIO, [0, 5]],
+        [TriggerInheritBuff::WAR_CRITICAL_RATIO, [0, 5]],
+        [TriggerInheritBuff::WAR_MAGIC_TRIAL_PROB, [0, 5]],
+
+        [TriggerInheritBuff::OPPOSE_WAR_AVOID_RATIO, [0, 5]],
+        [TriggerInheritBuff::OPPOSE_WAR_CRITICAL_RATIO, [0, 5]],
+        [TriggerInheritBuff::OPPOSE_WAR_MAGIC_TRIAL_PROB, [0, 5]],
     ]
 ];
 
@@ -144,6 +157,19 @@ if(!$v->validate()){
         'reason'=>'[출병자]'.$v->errorStr()
     ]);
 }
+$rawAttacker['aux'] = [];
+if(key_exists('inheritBuff', $rawAttacker)){
+    $v = new Validator($rawAttacker['inheritBuff']);
+    $v->rules($inheritBuffCheck);
+    if(!$v->validate()){
+        Json::die([
+            'result'=>false,
+            'reason'=>'[출병자]'.$v->errorStr()
+        ]);
+    }
+    $rawAttacker['aux']['inheritBuff'] = $rawAttacker['inheritBuff'];
+}
+$rawAttacker['aux'] = Json::encode($rawAttacker['aux']);
 $rawAttacker['owner'] = 0;
 
 $defenderList = [];
@@ -157,6 +183,20 @@ foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
             'reason'=>"[수비자{$idx}]".$v->errorStr()
         ]);
     }
+    $rawDefenderGeneral['aux'] = [];
+    if(key_exists('inheritBuff', $rawDefenderGeneral)){
+        $v = new Validator($rawDefenderGeneral['inheritBuff']);
+        $v->rules($inheritBuffCheck);
+        if(!$v->validate()){
+            $idx+=1;
+            Json::die([
+                'result'=>false,
+                'reason'=>"[수비자{$idx}]".$v->errorStr()
+            ]);
+        }
+        $rawDefenderGeneral['aux']['inheritBuff'] = $rawDefenderGeneral['inheritBuff'];
+    }
+    $rawDefenderGeneral['aux'] = Json::encode($rawDefenderGeneral['aux']);
     $rawDefenderGeneral['owner'] = 0;
 
     $defenderList[] = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), $rawDefenderCity, $rawAttackerNation, $year, $month, true);

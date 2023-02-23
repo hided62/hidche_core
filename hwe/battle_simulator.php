@@ -434,6 +434,25 @@ if ($nationID) {
                             </div>
                             <input type="number" class="form-control form_killcrew" value="0" step="1">
                         </div>
+
+                        <div class="input-group mb-0">
+                            <div class="input-group-text">자신</div>
+                            <div class="input-group-text">회피 확률</div>
+                            <input type="number" class="form-control form_war_avoid_ratio" value="0" step="1" min="0" max="5">
+                            <div class="input-group-text">필살 확률</div>
+                            <input type="number" class="form-control form_war_critical_ratio" value="0" step="1" min="0" max="5">
+                            <div class="input-group-text">계략 시도 확률</div>
+                            <input type="number" class="form-control form_war_magic_trial_prob" value="0" step="1" min="0" max="5">
+                        </div>
+                        <div class="input-group mb-1">
+                            <div class="input-group-text">상대</div>
+                            <div class="input-group-text">회피 확률</div>
+                            <input type="number" class="form-control form_oppose_war_avoid_ratio" value="0" step="1" min="0" max="5">
+                            <div class="input-group-text">필살 확률</div>
+                            <input type="number" class="form-control form_oppose_war_critical_ratio" value="0" step="1" min="0" max="5">
+                            <div class="input-group-text">계략 시도 확률</div>
+                            <input type="number" class="form-control form_oppose_war_magic_trial_prob" value="0" step="1" min="0" max="5">
+                        </div>
                     </div>
                 </div>
 
