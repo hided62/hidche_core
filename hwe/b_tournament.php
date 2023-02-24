@@ -131,7 +131,7 @@ $globalBetTotal = array_sum($globalBet);
                     <td colspan=8>
                         <button type="button" class="btn btn-secondary" onclick='location.reload()'>갱신</button>
                         <?php if ($admin['tournament'] == 0) : ?>
-                            <select name=auto size=1 style=color:white;background-color:black;>
+                            <select name=trig size=1 style=color:white;background-color:black;>
                                 <option style=color:white; value=0 <?= !$admin['tnmt_trig'] ? 'selected' : '' ?>>수동진행</option>
                                 <option style=color:white; value=1 <?= $admin['tnmt_trig'] ? 'selected' : '' ?>>자동진행</option>
                             </select>
