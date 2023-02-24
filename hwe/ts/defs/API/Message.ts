@@ -16,13 +16,22 @@ export type MsgTarget = {
   icon: string;
 };
 
+export type MsgActionType = 'scout' | 'noAggression' | 'cancelNA' | 'stopWar';
+
 export type MsgItem = {
   id: number;
   msgType: MsgType;
   src: MsgTarget;
   dest?: MsgTarget;
   text: string;
-  option: Record<string, string | number>;
+  option: {
+    action?: MsgActionType;
+    invalid?: boolean;
+    deletable?: boolean;
+    overwrite?: number[];
+    hide?: boolean;
+    silence?: boolean;
+  };
   time: string;
 };
 
