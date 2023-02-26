@@ -31,6 +31,7 @@ export type MsgItem = {
     overwrite?: number[];
     hide?: boolean;
     silence?: boolean;
+    delete?: number;
   };
   time: string;
 };

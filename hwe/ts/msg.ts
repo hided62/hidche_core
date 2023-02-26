@@ -16,6 +16,7 @@ import { unwrap_any } from '@util/unwrap_any';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { exportWindow } from '@util/exportWindow';
 import { SammoAPI } from './SammoAPI';
+import type { MsgItem, MsgResponse } from './defs/API/Message';
 
 const messageTemplate = `<div
     class="msg_plate msg_plate_<%msgType%> msg_plate_<%nationType%>"
@@ -94,16 +95,6 @@ type MsgTarget = {
     icon: string;
 }
 
-type MsgItem = {
-    id: number,
-    msgType: MsgType;
-    src: MsgTarget;
-    dest?: MsgTarget;
-    text: string,
-    option: Record<string, string | number>;
-    time: string;
-}
-
 type MsgPrintItem = MsgItem & {
     generalName: string;
     nationID: number;
@@ -118,16 +109,6 @@ type MsgPrintItem = MsgItem & {
     dest: MsgTarget & { colorType: 'bright' | 'dark' },
     defaultIcon: string,
 }
-
-type MsgResponse = {
-    [v in MsgType]: MsgItem[];
-} & {
-    result: true;
-    keepRecent: boolean;
-    nationID: number;
-    generalName: string;
-    sequence: number;
-};
 
 type BasicGeneralTarget = {
     id: number,
