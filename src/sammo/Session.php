@@ -38,19 +38,20 @@ class Session
     const GAME_KEY_EXPECTED_DEADTIME = '_g_deadtime';
 
 
-    private $writeClosed = false;
+    protected $writeClosed = false;
     private $sessionID = null;
 
-    public static function getInstance(): Session
+    protected static $instance = null;
+
+    public static function getInstance(): static
     {
-        static $inst = null;
-        if ($inst === null) {
-            $inst = new Session();
+        if (static::$instance === null) {
+            static::$instance = new static();
         }
-        return $inst;
+        return static::$instance;
     }
 
-    public function restart(): Session
+    public function restart(): static
     {
         //NOTE: logout 프로세스는 아예 세션을 날려버리기도 하므로, 항상 안전하게 session_restart가 가능함을 보장하지 않음.
         ini_set('session.use_only_cookies', 'false');
@@ -82,7 +83,7 @@ class Session
         Json::die($result + $jsonResult);
     }
 
-    public static function requireLogin($actionOnError = '..'): Session
+    public static function requireLogin($actionOnError = '..'): static
     {
         $session = static::getInstance();
         if ($session->isLoggedIn()) {
@@ -92,7 +93,7 @@ class Session
         static::die($actionOnError);
     }
 
-    public static function requireGameLogin($actionOnError = '..'): Session
+    public static function requireGameLogin($actionOnError = '..'): static
     {
         $session = static::requireLogin($actionOnError)->loginGame();
 
@@ -121,7 +122,7 @@ class Session
         }
     }
 
-    public function setReadOnly(): Session
+    public function setReadOnly(): static
     {
         if (!$this->writeClosed) {
             session_write_close();
@@ -132,7 +133,7 @@ class Session
 
     public function __set(string $name, $value)
     {
-        if (key_exists($name, self::PROTECTED_NAMES)) {
+        if (key_exists($name, static::PROTECTED_NAMES)) {
             trigger_error("{$name}은 외부에서 쓰기 금지된 Session 변수입니다.", E_USER_NOTICE);
             return;
         }
@@ -140,7 +141,7 @@ class Session
         $this->set($name, $value);
     }
 
-    private function set(string $name, $value)
+    protected function set(string $name, $value)
     {
         if ($value === null) {
             unset($_SESSION[$name]);
@@ -166,12 +167,12 @@ class Session
         return $this->get($name);
     }
 
-    private function get(string $name)
+    protected function get(string $name)
     {
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, ?int $tokenID, array $acl): Session
+    public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, ?int $tokenID, array $acl): static
     {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
@@ -191,7 +192,7 @@ class Session
     }
 
 
-    public function logout(): Session
+    public function logout(): static
     {
         if ($this->writeClosed) {
             $this->restart();
@@ -214,7 +215,7 @@ class Session
         return $this;
     }
 
-    public function loginGame(&$result = null): Session
+    public function loginGame(&$result = null): static
     {
         $userID = $this->userID;
         if (!$userID) {
@@ -300,7 +301,7 @@ class Session
         return $this;
     }
 
-    public function logoutGame(): Session
+    public function logoutGame(): static
     {
         if ($this->writeClosed) {
             $this->restart();
@@ -321,9 +322,9 @@ class Session
     public static function getUserGrade(bool $requireLogin = false, string $exitPath = '..')
     {
         if ($requireLogin) {
-            $obj = self::requireLogin($exitPath);
+            $obj = static::requireLogin($exitPath);
         } else {
-            $obj = self::getInstance();
+            $obj = static::getInstance();
         }
 
         return $obj->userGrade;
@@ -337,9 +338,9 @@ class Session
     public static function getUserID(bool $requireLogin = false, string $exitPath = '..')
     {
         if ($requireLogin) {
-            $obj = self::requireLogin($exitPath);
+            $obj = static::requireLogin($exitPath);
         } else {
-            $obj = self::getInstance();
+            $obj = static::getInstance();
         }
 
         return $obj->userID;
@@ -351,9 +352,9 @@ class Session
     public static function getGeneralID(bool $requireLogin = false, string $exitPath = '..')
     {
         if ($requireLogin) {
-            $obj = self::requireLogin($exitPath);
+            $obj = static::requireLogin($exitPath);
         } else {
-            $obj = self::getInstance();
+            $obj = static::getInstance();
         }
 
         return $obj->generalID??0;
