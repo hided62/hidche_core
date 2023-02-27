@@ -119,6 +119,8 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
         headers: {
           "content-type": "application/json",
         },
+        timeout: 30000,
+        retry: 0,
       });
     }
     return ky("api.php", {
@@ -131,6 +133,8 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
       headers: {
         "content-type": "application/json",
       },
+      timeout: 30000,
+      retry: 0,
     });
   })().json()) as ErrorType | ResultType;
 
