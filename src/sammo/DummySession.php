@@ -26,7 +26,7 @@ class DummySession extends Session
     }
 
 
-    public function __construct()
+    protected function __construct()
     {
         $this->set('userID', -1);
         $this->set('userName', 'Dummy');

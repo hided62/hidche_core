@@ -104,7 +104,7 @@ class Session
         static::die($actionOnError);
     }
 
-    public function __construct()
+    protected function __construct()
     {
         //session_cache_limiter('nocache, must_revalidate');
 
