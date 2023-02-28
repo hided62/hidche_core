@@ -300,6 +300,7 @@ import { unwrap } from "./util/unwrap";
 
 defineExpose({
   updateCommandTable,
+  reloadCommandList,
 })
 
 const { maxTurn, maxPushTurn } = staticValues;
