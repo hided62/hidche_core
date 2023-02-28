@@ -35,7 +35,7 @@ class DummySession extends Session
         $this->set('userGrade', '-1');
         $this->set('acl', '[]');
         $this->set('reqOTP', false);
-        $this->set('tokenValidUntil', null);
+        $this->set('tokenValidUntil', '2999-12-31 23:59:59');
 
     }
 
