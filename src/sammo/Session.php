@@ -109,7 +109,7 @@ class Session
         //session_cache_limiter('nocache, must_revalidate');
 
         // 세션 변수의 등록
-        if (session_id() == "") {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
             $this->sessionID = session_id();
         }
