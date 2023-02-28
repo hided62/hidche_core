@@ -156,7 +156,6 @@ if ($lastVoteID) {
             'serverID' => UniqueConst::$serverID,
             'maxTurn' => GameConst::$maxTurn,
             'maxPushTurn' => 12,
-            'commandList' => getCommandTable($generalObj),
             'serverNow' => TimeUtil::now(false),
             'lastExecuted' => $gameStor->turntime,
             'isLocked' => $plock,

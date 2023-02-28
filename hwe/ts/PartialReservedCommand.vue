@@ -98,7 +98,7 @@
       </div>
 
       <div class="col-7 d-grid">
-        <BButton variant="info" @click="toggleForm($event)"> 명령 선택 ▾ </BButton>
+        <BButton variant="info" :disabled="!commandList.length" @click="toggleForm($event)"> 명령 선택 ▾ </BButton>
       </div>
     </div>
     <CommandSelectForm
@@ -234,6 +234,7 @@
             :variant="turnIdx % 2 == 0 ? 'secondary' : 'dark'"
             size="sm"
             class="simple_action_btn bi bi-pencil"
+            :disabled="!commandList.length"
             @click="toggleQuickReserveForm(turnIdx)"
           />
         </div>
@@ -267,10 +268,6 @@
 declare const staticValues: {
   maxTurn: number;
   maxPushTurn: number;
-  commandList: {
-    category: string;
-    values: CommandItem[];
-  }[];
   serverNow: string;
   serverNick: string;
   mapName: string;
@@ -280,7 +277,7 @@ declare const staticValues: {
 
 <script lang="ts" setup>
 import addMinutes from "date-fns/esm/addMinutes";
-import { range, trim } from "lodash-es";
+import { isString, range, trim } from "lodash-es";
 import { stringifyUrl } from "query-string";
 import { onMounted, ref, watch } from "vue";
 import { formatTime } from "@util/formatTime";
@@ -290,7 +287,7 @@ import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
 import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI } from "./SammoAPI";
-import type { CommandItem } from "@/defs";
+import type { CommandItem, CommandTableResponse } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider } from "bootstrap-vue-3";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
@@ -299,24 +296,74 @@ import type { Args } from "./processing/args";
 import { QueryActionHelper } from "./util/QueryActionHelper";
 import SimpleClock from "./components/SimpleClock.vue";
 import type { ReservedCommandResponse } from "./defs/API/Command";
+import { unwrap } from "./util/unwrap";
 
-const { maxTurn, maxPushTurn, commandList } = staticValues;
+defineExpose({
+  updateCommandTable,
+})
 
+const { maxTurn, maxPushTurn } = staticValues;
+
+const commandList = ref<CommandTableResponse['commandTable']>([]);
 const listReqArgCommand = new Set<string>();
-const selectedCommand = ref(staticValues.commandList[0].values[0]);
-const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
 
-for (const commandCategories of commandList) {
-  if (!commandCategories.values) {
-    continue;
+const nullCommand: CommandItem = {
+  'value': '휴식',
+  'compensation': 0,
+  'simpleName': '휴식',
+  'possible': true,
+  'info': '휴식',
+  'title': '휴식',
+  'reqArg': false,
+}
+
+const selectedCommand = ref<CommandItem>(nullCommand);
+const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
+const invCommandMap = new Map<string, CommandItem>();
+
+async function updateCommandTable(){
+  try{
+    const response = await SammoAPI.General.GetCommandTable();
+    console.log(response);
+    commandList.value = response.commandTable;
   }
-  for (const commandObj of commandCategories.values) {
-    if (!commandObj.reqArg) {
-      continue;
-    }
-    listReqArgCommand.add(commandObj.value);
+  catch(e){
+    console.error(e);
   }
 }
+
+watch(commandList, (commandList)=>{
+  if(!commandList){
+    return;
+  }
+
+  for (const commandCategories of commandList) {
+    if (!commandCategories.values) {
+      continue;
+    }
+    for (const commandObj of commandCategories.values) {
+      if (!commandObj.reqArg) {
+        continue;
+      }
+      listReqArgCommand.add(commandObj.value);
+    }
+  }
+
+  invCommandMap.clear();
+  for (const category of commandList) {
+    for (const command of category.values) {
+      invCommandMap.set(command.value, command);
+    }
+  }
+
+  if(selectedCommand.value === nullCommand || !invCommandMap.has(selectedCommand.value.value)){
+    selectedCommand.value = commandList[0].values[0];
+  }
+});
+
+onMounted(() => {
+  void updateCommandTable();
+});
 
 function toggleForm($event: Event): void {
   $event.preventDefault();
@@ -375,13 +422,6 @@ watch([isEditMode, viewMaxTurn], ([isEditMode, maxTurn]) => {
 
 const isDragSingle = ref(false);
 const isDragToggle = ref(false);
-
-const invCommandMap: Record<string, CommandItem> = {};
-for (const category of commandList) {
-  for (const command of category.values) {
-    invCommandMap[command.value] = command;
-  }
-}
 
 function toggleViewMaxTurn() {
   if (viewMaxTurn.value == flippedMaxTurn) {
@@ -562,7 +602,7 @@ function chooseCommand(val?: string) {
   if (!val) {
     return;
   }
-  selectedCommand.value = invCommandMap[val];
+  selectedCommand.value = unwrap(invCommandMap.get(val));
   void reserveCommand();
 }
 
@@ -573,7 +613,7 @@ function chooseQuickReserveCommand(val?: string) {
   if (!val) {
     return;
   }
-  selectedCommand.value = invCommandMap[val];
+  selectedCommand.value = unwrap(invCommandMap.get(val));
   selectedTurnList.value.clear();
   selectedTurnList.value.add(currentQuickReserveTarget.value);
   void reserveCommand();

@@ -219,6 +219,13 @@ export type CommandItem = {
     searchText?: string;
 };
 
+export type CommandTableResponse = ValidResponse & {
+    commandTable: {
+        category: string;
+        values: CommandItem[];
+    }[];
+}
+
 type diplomacyInfo = {
     name: string,
     color?: string,

@@ -29,7 +29,7 @@ ExecuteResponse,
   GetHistoryResponse,
 GetRecentRecordResponse,
 } from "./defs/API/Global";
-import type { CachedMapResult, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
+import type { CachedMapResult, CommandTableResponse, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
 import type { ActiveResourceAuctionList, OpenAuctionResponse, UniqueItemAuctionDetail, UniqueItemAuctionList } from "./defs/API/Auction";
 import type { MabilboxListResponse, MsgResponse, MsgType } from "./defs/API/Message";
@@ -130,6 +130,7 @@ const apiRealPath = {
     }>,
     DieOnPrestart: POST as APICallT<undefined>,
     BuildNationCandidate: POST as APICallT<undefined>,
+    GetCommandTable: GET as APICallT<undefined, CommandTableResponse>,
   },
   Global: {
     GeneralList: GET as APICallT<undefined, GeneralListResponse>,

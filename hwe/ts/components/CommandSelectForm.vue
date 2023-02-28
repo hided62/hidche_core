@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import type { CommandItem } from "@/defs";
 import { BButton } from "bootstrap-vue-3";
-import { ref, type PropType, watch, onMounted } from "vue";
+import { ref, type PropType, watch } from "vue";
 
 interface CategoryDecoration {
   name: string;
@@ -106,7 +106,7 @@ const props = defineProps({
 const chosenCategory = ref<string>("-");
 const chosenSubList = ref<CommandItem[]>([]);
 
-const categories = new Set(props.commandList.map(({ category }) => category));
+const categories = ref();
 
 watch(
   () => props.activatedCategory,
@@ -142,11 +142,23 @@ const commandList = ref(
 
 function updateCommandList(rawCommandList: typeof props.commandList) {
   commandList.value.clear();
+  const newCategories = new Set<string>();
   for (const { category, values } of rawCommandList) {
+    newCategories.add(category);
     commandList.value.set(category, {
       deco: convCategoryDeco(category),
       values,
     });
+  }
+  categories.value = newCategories;
+
+  if(categories.value.size === 0) {
+    chosenCategory.value = "";
+  }
+  else if (!categories.value.has(props.activatedCategory)) {
+    chosenCategory.value = rawCommandList[0].category;
+  } else {
+    chosenCategory.value = props.activatedCategory;
   }
 }
 
@@ -162,14 +174,6 @@ watch(chosenCategory, (category) => {
   chosenSubList.value = itemInfo.values;
   if (props.activatedCategory !== category) {
     emits("update:activatedCategory", category);
-  }
-});
-
-onMounted(() => {
-  if (!categories.has(props.activatedCategory)) {
-    chosenCategory.value = props.commandList[0].category;
-  } else {
-    chosenCategory.value = props.activatedCategory;
   }
 });
 
