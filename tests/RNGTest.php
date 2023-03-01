@@ -3,6 +3,8 @@
 use sammo\LiteHashDRBG;
 use sammo\RandUtil;
 
+use \PHPUnit\Framework\TestCase;
+
 const BLOCK_SIZE = LiteHashDRBG::BUFFER_BYTE_SIZE;
 
 function fillBlock(string $src, string $filler = '\0', int $length = BLOCK_SIZE)
@@ -41,8 +43,9 @@ class DummyBlockRNG extends LiteHashDRBG
     public function __construct(protected array $repeatBlock, protected int $stateIdx = 0)
     {
         foreach ($repeatBlock as $block) {
+            $blockLen = strlen($block);
             if (strlen($block) != BLOCK_SIZE) {
-                throw new RuntimeException('Invalid repeat block');
+                throw new RuntimeException("Invalid repeat block {$blockLen} != " . BLOCK_SIZE);
             }
         }
         $this->repeatBlockCnt = count($this->repeatBlock);
@@ -70,17 +73,48 @@ def hash(key, idx):
 for idx in range(5):
     print(hash(fixedKey, idx).hex())
 */
-$rngTestVector = hex2bin(join('', [
-    '24d9ccd648556255fd0ee9f5b29918de90617341958b3b354d572167e4dee02b757816a2bbe0b502c52413ffd384381a9d7b4e193df6f4345d6a95e111d661c4',
-    '2e9264512f6f4b080cf1376b74fab6878ecf4a6e185942d2e5b22cf923885b9952d40601a414225d6901417fd4ce9368ac77e4a63d3fc9b58ab952bb8c33f165',
-    '8e2ebf5af6283a1b18f4c044c86c20d02be3890613c4cc8b7c6b7b35581263b972a82630df69a9289988422d7c3a9be5edf78d5de16fabd01e5dd4e458068d8a',
-    '398596047ba547bfe371ec863a3e019ab0dbc4bb3b27e9077685aae4283ff6bbccfd981d92f9358f7efffbb72a940414802d98466d132e2ad0a16a12946d5f47',
-    'b3606fe9b18c4aa7315e78bb9e47cb51cc4e203fcc2e631f0405c1b872c8e1cb5b6415ea74bbb77fffaaadb002b47cb4f4628dc0709634365b187667f5c708cb',
-]));
-class RNGTest extends PHPUnit\Framework\TestCase
-{
+function getRngTestVector(){
+    static $v = null;
+    if($v === null){
+        $v = hex2bin(join('', [
+            '24d9ccd648556255fd0ee9f5b29918de90617341958b3b354d572167e4dee02b757816a2bbe0b502c52413ffd384381a9d7b4e193df6f4345d6a95e111d661c4',
+            '2e9264512f6f4b080cf1376b74fab6878ecf4a6e185942d2e5b22cf923885b9952d40601a414225d6901417fd4ce9368ac77e4a63d3fc9b58ab952bb8c33f165',
+            '8e2ebf5af6283a1b18f4c044c86c20d02be3890613c4cc8b7c6b7b35581263b972a82630df69a9289988422d7c3a9be5edf78d5de16fabd01e5dd4e458068d8a',
+            '398596047ba547bfe371ec863a3e019ab0dbc4bb3b27e9077685aae4283ff6bbccfd981d92f9358f7efffbb72a940414802d98466d132e2ad0a16a12946d5f47',
+            'b3606fe9b18c4aa7315e78bb9e47cb51cc4e203fcc2e631f0405c1b872c8e1cb5b6415ea74bbb77fffaaadb002b47cb4f4628dc0709634365b187667f5c708cb',
+        ]));
+    }
+    if($v === false){
+        throw new RuntimeException('Invalid Test Vector');
+    }
 
+    return $v;
+}
+final class RNGTest extends TestCase
+{
     const FIXED_KEY = 'HelloWorld';
+
+    public function testConvTestVector(){
+        $tmp = [
+            '24d9ccd648556255fd0ee9f5b29918de90617341958b3b354d572167e4dee02b757816a2bbe0b502c52413ffd384381a9d7b4e193df6f4345d6a95e111d661c4',
+            '2e9264512f6f4b080cf1376b74fab6878ecf4a6e185942d2e5b22cf923885b9952d40601a414225d6901417fd4ce9368ac77e4a63d3fc9b58ab952bb8c33f165',
+            '8e2ebf5af6283a1b18f4c044c86c20d02be3890613c4cc8b7c6b7b35581263b972a82630df69a9289988422d7c3a9be5edf78d5de16fabd01e5dd4e458068d8a',
+            '398596047ba547bfe371ec863a3e019ab0dbc4bb3b27e9077685aae4283ff6bbccfd981d92f9358f7efffbb72a940414802d98466d132e2ad0a16a12946d5f47',
+            'b3606fe9b18c4aa7315e78bb9e47cb51cc4e203fcc2e631f0405c1b872c8e1cb5b6415ea74bbb77fffaaadb002b47cb4f4628dc0709634365b187667f5c708cb',
+        ];
+        $this->assertEquals(BLOCK_SIZE * 2, strlen($tmp[0]));
+        $tmp = join('', $tmp);
+        $this->assertEquals(true, is_string($tmp));
+
+        $this->assertEquals(BLOCK_SIZE * 5 * 2, strlen($tmp));
+        echo $tmp;
+
+        $tmp = hex2bin($tmp);
+        $this->assertEquals(BLOCK_SIZE * 5, strlen($tmp));
+
+        global $rngTestVector;
+        $this->assertEquals(true, is_string(getRngTestVector()));
+    }
 
     public function testDummyRNG()
     {
@@ -89,13 +123,13 @@ class RNGTest extends PHPUnit\Framework\TestCase
             fillBlock('', "\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff")
         ]);
 
-        $this->setName('DummyRNG-SimpleByte');
+        //$this->setName('DummyRNG-SimpleByte');
         $this->assertEquals("\x00", $rng->nextBytes(1));
         $this->assertEquals("\x11\x22", $rng->nextBytes(2));
         $this->assertEquals("\x33\x44\x55", $rng->nextBytes(3));
         $this->assertEquals("\x66\x77\x88\x99", $rng->nextBytes(4));
 
-        $this->setName('DummyRNG-OverflowBlock');
+        //$this->setName('DummyRNG-OverflowBlock');
         foreach (range(1, 16) as $_i) {
             $this->assertEquals(
                 "\xaa\xbb\xcc\xdd\xee\xff\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99",
@@ -103,13 +137,13 @@ class RNGTest extends PHPUnit\Framework\TestCase
             );
         }
 
-        $this->setName('DummyRNG-MultiBlock');
+        //$this->setName('DummyRNG-MultiBlock');
         $this->assertEquals(
             fillBlock('', "\xaa\xbb\xcc\xdd\xee\xff\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99", BLOCK_SIZE * 2),
             $rng->nextBytes(BLOCK_SIZE * 2)
         );
 
-        $this->setName('DummyRNG-BitTest');
+        //$this->setName('DummyRNG-BitTest');
         $this->assertEquals("\x00", $rng->nextBits(1)); //aa
         $this->assertEquals("\x01", $rng->nextBits(1)); //bb
         $this->assertEquals("\xcc", $rng->nextBits(8)); //cc
@@ -117,7 +151,7 @@ class RNGTest extends PHPUnit\Framework\TestCase
         $this->assertEquals("\x7f", $rng->nextBits(7)); //ff
         $this->assertEquals("\x00\x11\x22\x33\x44\x55\x06", $rng->nextBits(53));
 
-        $this->setName('DummyRNG-Int');
+        //$this->setName('DummyRNG-Int');
         $this->assertEquals(0x77, $rng->nextInt(0xff));
         $this->assertEquals(0x9988, $rng->nextInt((1 << 16) - 1));
         $this->assertEquals(0xddccbbaa, $rng->nextInt((1 << 32) - 1));
@@ -129,7 +163,7 @@ class RNGTest extends PHPUnit\Framework\TestCase
         $this->assertEquals(0xaa, $rng->nextInt(0xaa)); //aa (fit Max)
 
         $floatMax = 1 << 53;
-        $this->setName('DummyRNG-Float'); //7개씩
+        //$this->setName('DummyRNG-Float'); //7개씩
         $fa = $rng->nextFloat1();
         $this->assertEquals(0x1100ffeeddccbb / $floatMax, $fa, 'float1-1');
         $this->assertIsFloat($fa);
@@ -349,8 +383,7 @@ class RNGTest extends PHPUnit\Framework\TestCase
 
     public function testRNGBytes()
     {
-        global $rngTestVector;
-        $testVector = $rngTestVector;
+        $testVector = getRngTestVector();
 
         $rng = new LiteHashDRBG(static::FIXED_KEY);
 
@@ -371,8 +404,7 @@ class RNGTest extends PHPUnit\Framework\TestCase
 
     public function testRNGBits()
     {
-        global $rngTestVector;
-        $testVector = $rngTestVector;
+        $testVector = getRngTestVector();
 
         $rng = new LiteHashDRBG(static::FIXED_KEY);
 
@@ -396,8 +428,7 @@ class RNGTest extends PHPUnit\Framework\TestCase
 
     public function testRNGFloat()
     {
-        global $rngTestVector;
-        $testVector = $rngTestVector;
+        $testVector = getRngTestVector();
 
         $rng = new LiteHashDRBG(static::FIXED_KEY);
         $rng2 = new DummyBlockRNG([

@@ -94,12 +94,18 @@ class RandUtil
     public function choice(array $items)
     {
         $keys = array_keys($items);
+        if(!$keys){
+            throw new \InvalidArgumentException();
+        }
         $keyIdx = $this->rng->nextInt(count($keys) - 1);
         return $items[$keys[$keyIdx]];
     }
 
     public function choiceUsingWeight(array $items)
     {
+        if(!$items){
+            throw new \InvalidArgumentException();
+        }
         $sum = 0;
         foreach ($items as $value) {
             if ($value <= 0) {
@@ -126,6 +132,10 @@ class RandUtil
 
     public function choiceUsingWeightPair(array $items)
     {
+        if(!$items){
+            throw new \InvalidArgumentException();
+        }
+
         $sum = 0;
         foreach ($items as [$item, $value]) {
             if ($value <= 0) {
