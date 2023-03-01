@@ -191,6 +191,13 @@ class che_불가침파기제의 extends Command\NationCommand{
                 'power' => $destNation['power'],
             ];
 
+            if(!key_exists($destNation['nation'], $diplomacyStatus)){
+                //FIXME: DB에 당연히 있어야하지 않나? 왜 없는지 확인 필요
+                $nationTarget['notAvailable'] = true;
+                $nationList[] = $nationTarget;
+                continue;
+            }
+
             if($diplomacyStatus[$destNation['nation']]['state'] != 7){
                 $nationTarget['notAvailable'] = true;
             }
