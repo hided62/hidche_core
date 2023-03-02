@@ -1,3 +1,6 @@
+@import "bootstrap/scss/vendor/rfs";
+@import 'bootstrap/scss/mixins/grid';
+
 $container-max-widths: (
     md: 500px,
     lg: 1020px,
@@ -14,9 +17,21 @@ $grid-breakpoints: (
   xxl: 1400px
 );
 
+@for $i from 1 through 10 {
+  .col10-#{$i} {
+    @include make-col($i, 10);
+  }
+}
+
 @mixin media-1000px{
   @media (min-width: map-get($grid-breakpoints, 'md')) {
     @content;
+  }
+
+  @for $i from 1 through 10 {
+    .col10d-#{$i} {
+      @include make-col($i, 10);
+    }
   }
 }
 
