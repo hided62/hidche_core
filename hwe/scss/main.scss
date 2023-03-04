@@ -220,6 +220,10 @@ body {
 
 #nation-msg{
     word-break: break-all;
+
+    p {
+        min-height: 1em;
+    }
 }
 
 #nation-msg-box {
