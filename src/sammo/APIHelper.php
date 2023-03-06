@@ -53,6 +53,9 @@ class APIHelper
 
         try {
             $obj = buildAPIExecutorClass($actionPath, $rootPath, $actionArgs);
+            if(!$obj::$allowExternalAPI){
+                Json::dieWithReason('외부에서는 호출할 수 없습니다.');
+            }
             $validateResult = $obj->validateArgs();
             if ($validateResult !== null) {
                 $logDB->insert('api_log', [

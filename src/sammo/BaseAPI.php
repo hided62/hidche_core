@@ -11,6 +11,7 @@ abstract class BaseAPI
     const REQ_READ_ONLY = 4;
 
     static array $sensitiveArgs = [];
+    static bool $allowExternalAPI = true;
 
     public function getFilteredArgs(): array {
         $filteredArgs = $this->args;
