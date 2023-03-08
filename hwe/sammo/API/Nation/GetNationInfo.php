@@ -27,7 +27,7 @@ class GetNationInfo extends \sammo\BaseAPI
   public function validateArgs(): ?string
   {
     $v = new Validator($this->args);
-        $v->rule('boolean', 'full');
+        $v->rule('in', 'full', ['true', 'false']);
 
         if (!$v->validate()) {
             return $v->errorStr();
@@ -70,7 +70,7 @@ class GetNationInfo extends \sammo\BaseAPI
     $gameEnv = $gameStor->getValues(['year', 'month', 'startyear']);
 
     $nation = $db->queryFirstRow(
-      'SELECT nation, `name`, color, capital, gennum, gold, rice, bill, rate, secretlimit, chief_set, scout, war, strategic_cmd_limit, surlimit, tech, `power`, `level`, `type` FROM nation WHERE id = %i',
+      'SELECT nation, `name`, color, capital, gennum, gold, rice, bill, rate, secretlimit, chief_set, scout, war, strategic_cmd_limit, surlimit, tech, `power`, `level`, `type` FROM nation WHERE nation = %i',
       $nationID
     );
     $nationStor = \sammo\KVStorage::getStorage($db, $nationID, 'nation_env');
@@ -94,11 +94,14 @@ class GetNationInfo extends \sammo\BaseAPI
         $troopName[$troopID] = $tName;
     }
 
-    return [
+    $result = [
       'result' => true,
+      'isFull' => $isFull,
       'nation' => $nation,
       'impossibleStrategicCommandLists' => $impossibleStrategicCommandLists,
       'troops' => $troopName,
     ];
+
+    return $result;
   }
 }

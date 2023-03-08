@@ -185,6 +185,7 @@ class SendMessage extends \sammo\BaseAPI
     if ($mailbox === Message::MAILBOX_PUBLIC) {
       $msgID = $this->genPublicMessage($src, $text)->send();
       return [
+        'msgType' => 'public',
         'msgID' => $msgID
       ];
     }
@@ -201,6 +202,7 @@ class SendMessage extends \sammo\BaseAPI
       if ($destNationID === $nationID) {
         $msgID = $this->genNationalMessage($src, $text)->send();
         return [
+          'msgType' => 'national',
           'msgID' => $msgID
         ];
       }
@@ -211,6 +213,7 @@ class SendMessage extends \sammo\BaseAPI
       }
       $msgID = $msgObjOrError->send();
       return [
+        'msgType' => 'diplomacy',
         'msgID' => $msgID
       ];
     }
@@ -231,6 +234,7 @@ class SendMessage extends \sammo\BaseAPI
       $msgID = $msgObjOrError->send();
 
       return [
+        'msgType' => 'private',
         'msgID' => $msgID
       ];
     }

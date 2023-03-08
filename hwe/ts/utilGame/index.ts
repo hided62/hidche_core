@@ -14,3 +14,4 @@ export { isValidObjKey } from "./isValidObjKey";
 export { nextExpLevelRemain } from "./nextExpLevelRemain";
 export { postFilterNationCommandGen } from "./postFilterNationCommandGen";
 export { isTechLimited, convTechLevel, getMaxRelativeTechLevel } from "./techLevel";
+export { calcTournamentTerm } from "./tournament";

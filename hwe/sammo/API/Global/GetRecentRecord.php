@@ -5,24 +5,26 @@ namespace sammo\API\Global;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\KVStorage;
 use sammo\Util;
 use sammo\Validator;
 
 class GetRecentRecord extends \sammo\BaseAPI
 {
+  static bool $allowExternalAPI = false;
 
   const ROW_LIMIT = 15;
 
   public function validateArgs(): ?string
   {
     $v = new Validator($this->args);
-    $v->rule('int', 'lastGeneralRecordID')
-      ->rule('int', 'lastWorldHistoryID');
+    $v->rule('integer', 'lastGeneralRecordID')
+      ->rule('integer', 'lastWorldHistoryID');
     if (!$v->validate()) {
       return $v->errorStr();
     }
-    $this->args['lastGeneralRecordID'] = (int)($this->args['lastGeneralRecordID']??0);
-    $this->args['lastWorldHistoryID'] = (int)($this->args['lastWorldHistoryID']??0);
+    $this->args['lastGeneralRecordID'] = (int)($this->args['lastGeneralRecordID'] ?? 0);
+    $this->args['lastWorldHistoryID'] = (int)($this->args['lastWorldHistoryID'] ?? 0);
     return null;
   }
 
@@ -74,6 +76,9 @@ class GetRecentRecord extends \sammo\BaseAPI
   {
     $db = DB::db();
 
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $gameStor->cacheValues(['isunited', 'opentime', 'refresh']);
+
     $lastHistoryID = $this->args['lastWorldHistoryID'];
     $lastRecordID = $this->args['lastGeneralRecordID'];
 
@@ -81,38 +86,35 @@ class GetRecentRecord extends \sammo\BaseAPI
     $globalRecord = $this->getGlobalRecord($lastRecordID);
     $generalRecord = $this->getGeneralRecord($session->generalID, $lastRecordID);
 
-    $flushHistory = true;
-    $flushGlobalRecord = true;
-    $flushGeneralRecord = true;
+    $flushHistory = false;
+    $flushGlobalRecord = false;
+    $flushGeneralRecord = false;
 
-    if($history){
-      if(Util::array_last($history)[0] == $lastHistoryID){
-        $flushHistory = false;
-        array_pop($history);
-      }
-      else if(count($history) > static::ROW_LIMIT){
-        array_pop($history);
-      }
+    if (!$history) {
+      $flushHistory = false;
+    } else if (Util::array_last($history)[0] <= $lastHistoryID) {
+      $flushHistory = false;
+      array_pop($history);
+    } else if (count($history) > static::ROW_LIMIT) {
+      array_pop($history);
     }
 
-    if($globalRecord){
-      if(Util::array_last($globalRecord)[0] == $lastRecordID){
-        $flushGlobalRecord = false;
-        array_pop($globalRecord);
-      }
-      else if(count($globalRecord) > static::ROW_LIMIT){
-        array_pop($globalRecord);
-      }
+    if (!$globalRecord) {
+      $flushGlobalRecord = false;
+    } else if (Util::array_last($globalRecord)[0] == $lastRecordID) {
+      $flushGlobalRecord = false;
+      array_pop($globalRecord);
+    } else if (count($globalRecord) > static::ROW_LIMIT) {
+      array_pop($globalRecord);
     }
 
-    if($generalRecord){
-      if(Util::array_last($generalRecord)[0] == $lastRecordID){
-        $flushGeneralRecord = false;
-        array_pop($generalRecord);
-      }
-      else if(count($generalRecord) > static::ROW_LIMIT){
-        array_pop($generalRecord);
-      }
+    if (!$generalRecord) {
+      $flushGeneralRecord = false;
+    } else if (Util::array_last($generalRecord)[0] == $lastRecordID) {
+      $flushGeneralRecord = false;
+      array_pop($generalRecord);
+    } else if (count($generalRecord) > static::ROW_LIMIT) {
+      array_pop($generalRecord);
     }
 
     return [
@@ -120,9 +122,9 @@ class GetRecentRecord extends \sammo\BaseAPI
       'history' => $history,
       'global' => $globalRecord,
       'general' => $generalRecord,
-      'flushHistory' => $flushHistory?1:0,
-      'flushGlobal' => $flushGlobalRecord?1:0,
-      'flushGeneral' => $flushGeneralRecord?1:0,
+      'flushHistory' => $flushHistory ? 1 : 0,
+      'flushGlobal' => $flushGlobalRecord ? 1 : 0,
+      'flushGeneral' => $flushGeneralRecord ? 1 : 0,
     ];
   }
 }

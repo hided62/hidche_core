@@ -22,11 +22,13 @@ import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListRespo
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type {
-ExecuteResponse,
+  ExecuteResponse,
   GetConstResponse,
   GetCurrentHistoryResponse,
   GetDiplomacyResponse,
+  GetFrontInfoResponse,
   GetHistoryResponse,
+  GetMenuResponse,
 GetRecentRecordResponse,
 } from "./defs/API/Global";
 import type { CachedMapResult, CommandTableResponse, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
@@ -131,6 +133,11 @@ const apiRealPath = {
     DieOnPrestart: POST as APICallT<undefined>,
     BuildNationCandidate: POST as APICallT<undefined>,
     GetCommandTable: GET as APICallT<undefined, CommandTableResponse>,
+    GetFrontInfo: GET as APICallT<{
+      lastNationNoticeDate?: string,
+      lastGeneralRecordID?: number,
+      lastWorldHistoryID?: number,
+    }, GetFrontInfoResponse>,
   },
   Global: {
     GeneralList: GET as APICallT<undefined, GeneralListResponse>,
@@ -152,10 +159,11 @@ const apiRealPath = {
     }, ExecuteResponse, InvalidResponse & {
       reqRefresh?: boolean
     }>,
-    GetRecentRecord: GET as APICallT<{
+    /*GetRecentRecord: GET as APICallT<{
       lastGeneralRecordID: number;
       lastWorldHistoryID: number;
-    } | undefined, GetRecentRecordResponse>,
+    } | undefined, GetRecentRecordResponse>,*/
+    GetGlobalMenu: GET as APICallT<undefined, GetMenuResponse>,
   },
   InheritAction: {
     BuyHiddenBuff: PUT as APICallT<{
@@ -191,7 +199,7 @@ const apiRealPath = {
     SendMessage: POST as APICallT<{
       mailbox: number;
       text: string;
-    }, ValidResponse & {msgID: number}>
+    }, ValidResponse & {msgID: number, msgType: MsgType}>
   },
   Misc: {
     UploadImage: POST as APICallT<

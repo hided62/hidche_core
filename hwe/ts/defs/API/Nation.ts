@@ -150,12 +150,23 @@ export type LiteNationInfoResponse = ValidResponse & {
   nation: NationStaticItem;
 };
 
+export type NationInfoFull = ValidResponse & {
+  nation: NationItem;
+  isFull: true,
+  impossibleStrategicCommandLists: [string, number][];
+  troops: Record<number, string>;
+}
+
+export type NationNotice = {
+  date: string,
+  msg: string,
+  author: string,
+  authorID: number,
+}
+
 export type NationInfoResponse =
   | (ValidResponse & {
       nation: NationStaticItem;
+      isFull?: false;
     })
-  | (ValidResponse & {
-      nation: NationItem;
-      impossibleStrategicCommandLists: [string, number][];
-      troops: Record<number, string>;
-    });
+  | NationInfoFull;
