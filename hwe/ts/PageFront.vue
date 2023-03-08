@@ -24,7 +24,7 @@
           <div class="s-border-t py-2 nationNotice">
             <div class="px-2">【 국가방침 】</div>
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-if="nationInfo" class="nationNoticeBody" v-html="nationInfo.notice.msg" />
+            <div v-if="nationInfo" class="nationNoticeBody" v-html="nationInfo.notice?.msg ?? ''" />
           </div>
           <div id="ingameBoard">
             <!-- TODO: 운영자 툴바는 어디에?-->

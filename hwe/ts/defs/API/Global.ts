@@ -178,7 +178,7 @@ export type GetFrontInfoResponse = {
     bill: number;
     taxRate: number;
     onlineGen: string;
-    notice: NationNotice;
+    notice: NationNotice | null;
     topChiefs: Record<
       11 | 12,
       {
