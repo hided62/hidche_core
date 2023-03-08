@@ -26,7 +26,7 @@
       현재: {{ globalInfo.year }}年 {{ globalInfo.month }}月 ({{ globalInfo.turnterm }}분 턴 서버)
     </div>
     <div class="s-border-t col py-2 col-4 col-md-2 subOnlineUserCnt">
-      전체 접속자 수: {{ globalInfo.onlineUserCnt.toLocaleString() }}명
+      전체 접속자 수: {{ (globalInfo.onlineUserCnt ?? 0).toLocaleString() }}명
     </div>
     <div class="s-border-t col py-2 col-4 col-md-2 subAPILimit">
       턴당 갱신횟수: {{ globalInfo.apiLimit.toLocaleString() }}회
@@ -110,7 +110,7 @@ const tournamentStep = ref<TournamentStepType>({
 });
 const tournamentTime = ref<Date>(new Date());
 
-function updateFrontInfo(frontInfo: GetFrontInfoResponse){
+function updateFrontInfo(frontInfo: GetFrontInfoResponse) {
   const global = frontInfo.global;
   globalInfo.value = global;
 
@@ -133,8 +133,7 @@ function updateFrontInfo(frontInfo: GetFrontInfoResponse){
   tournamentTime.value = parseTime(global.tournamentTime);
 }
 
-watch(frontInfo, updateFrontInfo, {immediate: true});
-
+watch(frontInfo, updateFrontInfo, { immediate: true });
 </script>
 
 <style lang="scss" scoped>
@@ -151,5 +150,4 @@ watch(frontInfo, updateFrontInfo, {immediate: true});
     text-decoration: gray underline;
   }
 }
-
 </style>

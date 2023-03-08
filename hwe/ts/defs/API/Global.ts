@@ -122,8 +122,8 @@ export type GetFrontInfoResponse = {
     lastVoteID: number;
     develCost: number;
     noticeMsg: number;
-    onlineNations: string; //TODO: string[]으로 변경
-    onlineUserCnt: number;
+    onlineNations: string | null; //TODO: string[]으로 변경
+    onlineUserCnt: number | null;
     apiLimit: number;
     auctionCount: number;
     isTournamentActive: boolean;
