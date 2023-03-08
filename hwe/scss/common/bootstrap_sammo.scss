@@ -103,3 +103,8 @@ $color in $sammoColors {
       display: block;
   }
 }
+
+//FIXME: toast의 scss가 바뀌면 삭제해야함
+#app .b-toast .toast .toast-body{
+  color: black !important;
+}
