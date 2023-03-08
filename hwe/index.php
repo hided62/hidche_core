@@ -4,7 +4,7 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-DummySession::getInstance();
+Session::requireGameLogin()->setReadOnly();
 
 $mapName = GameConst::$mapName;
 
