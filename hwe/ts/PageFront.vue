@@ -407,7 +407,10 @@ watch(refreshCounter, async () => {
         recordRef.value.unshift([id, formatLog(record)]);
       }
     }
-    if (haveNewRecord) {
+    if (refreshCounter.value <= 1){
+      console.log('초기화 완료');
+    }
+    else if (haveNewRecord) {
       toasts.info(
         {
           title: "갱신 완료",
