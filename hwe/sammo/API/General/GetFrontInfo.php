@@ -468,7 +468,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       'SELECT action, arg, brief FROM general_turn WHERE general_id = %i AND turn_idx < 5 ORDER BY turn_idx asc',
       $troopID
     );
-    if ($troopReservedCommand) {
+    if (!$troopReservedCommand) {
       return $result;
     }
 
