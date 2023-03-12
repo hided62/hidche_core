@@ -29,7 +29,9 @@
       <div class="gHead bg1">민심</div>
       <div class="gBody">
         <SammoBar :height="7" :percent="city.trust" />
-        <div class="cellText">{{ city.trust.toLocaleString() }}</div>
+        <div class="cellText">{{ city.trust.toLocaleString(undefined, {
+          maximumFractionDigits: 1,
+        }) }}</div>
       </div>
     </div>
     <div class="gPanel agriPanel">
