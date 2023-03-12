@@ -23,6 +23,9 @@ $online = [];
 $curonline = getOnlineNum();
 foreach ($log as $i => $value) {
     $parse = Json::decode($value);
+    if(count($parse) < 5){
+        continue;
+    }
     $date[$i]    = $parse[0];
     $year[$i]    = $parse[1];
     $month[$i]   = $parse[2];
