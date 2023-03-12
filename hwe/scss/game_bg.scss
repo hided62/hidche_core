@@ -7,6 +7,13 @@ html {
     color: white;
 }
 
+@media (prefers-color-scheme: dark) {
+    html {
+        background: black;
+        color: white;
+    }
+}
+
 //TODO: 삭제!!
 table.tb_layout {
     border-collapse: collapse;

@@ -52,6 +52,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
 
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 내정보</title>

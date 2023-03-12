@@ -116,6 +116,7 @@ $outcome = getOutcome(100, $dedicationList);
 
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 내무부</title>

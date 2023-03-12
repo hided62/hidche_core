@@ -42,6 +42,7 @@ if ($gameStor->isunited) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <title><?= UniqueConst::$serverName ?>: 세력장수</title>

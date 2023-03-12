@@ -41,6 +41,7 @@ $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $
 <head>
   <title><?= UniqueConst::$serverName ?>:연감</title>
   <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=500" />
   <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>

@@ -14,6 +14,7 @@ $generalObj = General::createGeneralObjFromDB($session->generalID);
 
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 사령부</title>

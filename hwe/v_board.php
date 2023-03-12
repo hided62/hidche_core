@@ -42,6 +42,7 @@ $boardName = $isSecretBoard ? '기밀실' : '회의실';
 <head>
     <title><?= UniqueConst::$serverName ?>: <?= $boardName ?></title>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>

@@ -21,6 +21,7 @@ if ($session->userGrade == 5) {
 <head>
     <title>설치</title>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>

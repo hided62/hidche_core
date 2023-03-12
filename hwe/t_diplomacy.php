@@ -35,6 +35,7 @@ if ($permission < 1) {
 <head>
     <title><?= UniqueConst::$serverName ?>: 외교부</title>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <?= WebUtil::printCSS('../e_lib/select2/select2.min.css') ?>

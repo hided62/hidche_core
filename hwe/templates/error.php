@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
     <title>에러</title>
@@ -11,7 +12,7 @@
 </head>
 <body>
 
-<div class="bg0 legacy_layout" 
+<div class="bg0 legacy_layout"
     style="width:1000px;color:white;position:absolute;left:50%;top:50%;transform:translateX(-50%) translateY(-50%) ;">
     <h2 class="with_border bg1" style="color:orange;text-align:center;">서 버 에 러</h2>
     <main class="with_border" >
@@ -25,13 +26,12 @@
     </div>
     <div class="with_border">
         <?=$message?>
-    </div>  
+    </div>
     <div class="with_border">
         <pre>
         <?php debug_print_backtrace(); ?>
 </pre>
-    </div>  
+    </div>
 </div>
 </body>
 </html>
-

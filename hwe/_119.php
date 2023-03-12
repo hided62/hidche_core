@@ -21,6 +21,7 @@ $plock = $db->queryFirstField('SELECT plock FROM plock WHERE `type` ="GAME"');
 <head>
 <title>삼국지 모의전투 HiDCHe</title>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
