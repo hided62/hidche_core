@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use sammo\Enums\EventTarget;
 use sammo\Enums\InheritanceKey;
 use \Symfony\Component\Lock;
 
@@ -352,6 +353,29 @@ class TurnExecutionHelper
         return [false, $currentTurn];
     }
 
+    static public function runEventHandler(\MeekroDB $db, ?KVStorage $gameStor, EventTarget $eventTarget): bool{
+        if($gameStor === null){
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+        }
+        $e_env = null;
+        foreach ($db->query('SELECT * FROM event WHERE target = %s ORDER BY `priority` DESC, `id` ASC', $eventTarget->value) as $rawEvent) {
+            if ($e_env === null) {
+                $e_env = $gameStor->getAll(false);
+            }
+            $eventID = $rawEvent['id'];
+            $cond = Json::decode($rawEvent['condition']);
+            $action = Json::decode($rawEvent['action']);
+            $event = new Event\EventHandler($cond, $action);
+            $e_env['currentEventID'] = $eventID;
+
+            $event->tryRunEvent($e_env);
+        }
+        if ($e_env === null) {
+            return false;
+        }
+        return true;
+    }
+
     static public function executeAllCommand(&$executed = false, &$locked = false): string
     {
         $db = DB::db();
@@ -431,63 +455,18 @@ class TurnExecutionHelper
             )));
 
             // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
+            static::runEventHandler($db, $gameStor, EventTarget::PreMonth);
             if (!preUpdateMonthly()) {
-                $gameStor->resetCache();
                 unlock();
                 throw new \RuntimeException('preUpdateMonthly() 처리 에러');
             }
-
             turnDate($nextTurn);
-
-            $logger = new ActionLogger(0, 0, $gameStor->year, $gameStor->month, false);
 
             // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
             if ($gameStor->month == 1) {
-                processSumInheritPointRank();
-                processSpring();
-                processGoldIncome();
-                updateYearly();
-                updateQuaterly();
-                disaster($monthlyRng);
-                tradeRate($monthlyRng);
-                addAge($monthlyRng);
-                // 새해 알림
-                $logger->pushGlobalActionLog("<C>{$gameStor->year}</>년이 되었습니다.");
-                $logger->flush(); //TODO: globalAction류는 전역에서 관리하는것이 좋을 듯.
-            } elseif ($gameStor->month == 4) {
-                updateQuaterly();
-                disaster($monthlyRng);
-            } elseif ($gameStor->month == 7) {
-                processSumInheritPointRank();
-                processFall();
-                processRiceIncome();
-                updateQuaterly();
-                disaster($monthlyRng);
-                tradeRate($monthlyRng);
-            } elseif ($gameStor->month == 10) {
-                updateQuaterly();
-                disaster($monthlyRng);
+                checkStatistic();
             }
-
-            // 이벤트 핸들러 동작
-            $e_env = null;
-            foreach (DB::db()->query('SELECT * FROM event WHERE target = "MONTH" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
-                if ($e_env === null) {
-                    $e_env = $gameStor->getAll(false);
-                }
-                $eventID = $rawEvent['id'];
-                $cond = Json::decode($rawEvent['condition']);
-                $action = Json::decode($rawEvent['action']);
-                $event = new Event\EventHandler($cond, $action);
-                $e_env['currentEventID'] = $eventID;
-
-                $event->tryRunEvent($e_env);
-            }
-
-            if ($e_env !== null) {
-                $gameStor->resetCache();
-            }
-
+            static::runEventHandler($db, $gameStor, EventTarget::Month);
             postUpdateMonthly($monthlyRng);
 
             // 다음달로 넘김

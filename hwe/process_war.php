@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use sammo\Enums\EventTarget;
 
 function processWar(string $warSeed, General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity)
 {
@@ -549,23 +550,10 @@ function ConquerCity(array $admin, General $general, array $city)
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     // 이벤트 핸들러 동작
-    $e_env = null;
-    foreach (DB::db()->query('SELECT * FROM event WHERE target = "OCCUPY_CITY" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
-        if ($e_env === null) {
-            $e_env = $gameStor->getAll(false);
-        }
-        $eventID = $rawEvent['id'];
-        $cond = Json::decode($rawEvent['condition']);
-        $action = Json::decode($rawEvent['action']);
-        $event = new Event\EventHandler($cond, $action);
-        $e_env['currentEventID'] = $eventID;
-
-        $event->tryRunEvent($e_env);
+    if(TurnExecutionHelper::runEventHandler($db, $gameStor, EventTarget::OccupyCity)){
+        $gameStor->cacheAll();
     }
 
-    if ($e_env !== null) {
-        $gameStor->resetCache();
-    }
 
     // 국가 멸망시
     if ($defenderNationID && $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $defenderNationID) === 1) {
@@ -661,27 +649,11 @@ function ConquerCity(array $admin, General $general, array $city)
         }
 
         // 이벤트 핸들러 동작
-        $e_env = null;
-        foreach (DB::db()->query('SELECT * FROM event WHERE target = "DESTROY_NATION" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
-            if ($e_env === null) {
-                $e_env = $gameStor->getAll(false);
-            }
-            $eventID = $rawEvent['id'];
-            $cond = Json::decode($rawEvent['condition']);
-            $action = Json::decode($rawEvent['action']);
-            $event = new Event\EventHandler($cond, $action);
-            $e_env['currentEventID'] = $eventID;
-
-            $event->tryRunEvent($e_env);
-        }
-
-        if ($e_env !== null) {
-            $gameStor->resetCache();
-        }
+        TurnExecutionHelper::runEventHandler($db, $gameStor, EventTarget::DestroyNation);
 
         // 멸망이 아니면
     } else {
-        // 태수,군사,종사은 일반으로...
+        // 태수,군사,종사는 일반으로...
         $db->update('general', [
             'officer_level' => 1,
             'officer_city' => 0,

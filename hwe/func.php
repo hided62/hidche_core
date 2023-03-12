@@ -7,7 +7,6 @@ use Ds\Set;
 use sammo\Enums\AuctionType;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
-use sammo\Event\Action;
 
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
@@ -1222,76 +1221,6 @@ function updateOnline()
     //접속중인 국가
     $gameStor->online_user_cnt = $onlineNum;
     $gameStor->online_nation = join(', ', $onlineNation);
-}
-
-function addAge(RandUtil $rng)
-{
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-
-
-    //나이와 호봉 증가
-    $db->update('general', [
-        'age' => $db->sqleval('age+1'),
-    ], true);
-
-    $db->update('general', [
-        'belong' => $db->sqleval('belong+1')
-    ], 'nation != 0');
-
-    [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
-
-    if ($year >= $startYear + 3) {
-        foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,aux from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general) {
-            $generalID = $general['no'];
-            $special = SpecialityHelper::pickSpecialDomestic(
-                $rng,
-                $general,
-                (Json::decode($general['aux'])['prev_types_special']) ?? []
-            );
-            $specialClass = buildGeneralSpecialDomesticClass($special);
-            $specialText = $specialClass->getName();
-            $db->update('general', [
-                'special' => $special
-            ], 'no=%i', $generalID);
-
-            $logger = new ActionLogger($generalID, $general['nation'], $year, $month);
-
-            $josaUl = JosaUtil::pick($specialText, '을');
-            $logger->pushGeneralActionLog("특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!", ActionLogger::PLAIN);
-            $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
-        }
-
-        foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5,aux from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general) {
-            $generalID = $general['no'];
-            $generalAux = Json::decode($general['aux']);
-
-            $updateVars = [];
-            if (key_exists('inheritSpecificSpecialWar', $generalAux)) {
-                $special2 = $generalAux['inheritSpecificSpecialWar'];
-                unset($generalAux['inheritSpecificSpecialWar']);
-                $updateVars['aux'] = Json::encode($generalAux);
-            } else {
-                $special2 = SpecialityHelper::pickSpecialWar(
-                    $rng,
-                    $general,
-                    ($generalAux['prev_types_special2']) ?? []
-                );
-            }
-
-            $specialClass = buildGeneralSpecialWarClass($special2);
-            $specialText = $specialClass->getName();
-
-            $updateVars['special2'] = $special2;
-            $db->update('general', $updateVars, 'no=%i', $general['no']);
-
-            $logger = new ActionLogger($generalID, $general['nation'], $year, $month);
-
-            $josaUl = JosaUtil::pick($specialText, '을');
-            $logger->pushGeneralActionLog("특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!", ActionLogger::PLAIN);
-            $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
-        }
-    }
 }
 
 function turnDate($curtime)

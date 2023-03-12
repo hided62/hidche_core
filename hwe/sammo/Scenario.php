@@ -41,6 +41,8 @@ class Scenario{
     private $initialEvents;
     private $events;
 
+    private $ignoreDefaultEvents;
+
     private $initBasic = false;
     private $initOK = false;
 
@@ -208,11 +210,22 @@ class Scenario{
             return $this->generateGeneral($rawGeneral, true, 6);
         }, Util::array_get($data['general_neutral'], []));
 
+
+        if($this->ignoreDefaultEvents){
+            $rawInitialEvents = Util::array_get($data['initialEvents'], []);
+            $rawEvents = Util::array_get($data['events'], []);
+        }
+        else{
+            $rawInitialEvents = array_merge(GameConst::$defaultInitialEvents, Util::array_get($data['initialEvents'], []));
+            $rawEvents = array_merge(GameConst::$defaultEvents, Util::array_get($data['events'], []));
+        }
+
         $this->initialEvents = array_map(function($rawEvent){
             $cond = $rawEvent[0];
             $action = array_slice($rawEvent, 1);
             return new \sammo\Event\EventHandler($cond, $action);
-        }, array_merge(GameConst::$defaultInitialEvents, Util::array_get($data['initialEvents'], [])));
+        }, $rawInitialEvents);
+
 
         $this->events = array_map(function($rawEvent){
             //event는 여기서 풀지 않는다. 평가만 한다.
@@ -235,7 +248,7 @@ class Scenario{
                 'cond' => $cond,
                 'action' => $action
             ];
-        }, array_merge(GameConst::$defaultEvents, Util::array_get($data['events'], [])));
+        }, $rawEvents);
     }
 
     public function getGameConf(){
@@ -277,13 +290,14 @@ class Scenario{
 
         $data = Json::decode(file_get_contents($scenarioPath));
         $this->data = $data;
+        $this->ignoreDefaultEvents = $data['ignoreDefaultEvents'] ?? false;
 
         $this->getGameConf();
 
-        $this->year = Util::array_get($data['startYear']);
-        $this->title = Util::array_get($data['title'] , '');
+        $this->year = $data['startYear'] ?? null;
+        $this->title = $data['title'] ?? '';
 
-        $this->history = Util::array_get($data['history'], []);
+        $this->history = $data['history'] ?? [];
 
         if(!$lazyInit){
             $this->initFull();

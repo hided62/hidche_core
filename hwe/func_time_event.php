@@ -4,173 +4,32 @@ namespace sammo;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 use Ds\Map;
+use sammo\Enums\ResourceType;
+use sammo\Event\Action;
+
 /**
  * 시간 단위로 일어나는 이벤트들에 대한 함수 모음
  */
 
-
+/** @deprecated */
 function processSumInheritPointRank(){
-    $db = DB::db();
-
-    $generals = General::createGeneralObjListFromDB(null, null, 2);
-
-    $points = new Map();
-    $points->allocate(count($generals));
-    foreach($generals as $general){
-        $generalID = $general->getID();
-        $points[$generalID] = 0;
-    }
-
-    foreach(InheritanceKey::cases() as $key){
-        if($key === InheritanceKey::previous){
-            continue;
-        }
-        $subPoints = InheritancePointManager::getInstance()->getInheritancePointFromAll($generals, $key);
-        foreach($generals as $general){
-            $generalID = $general->getID();
-            $points[$generalID] += $subPoints[$generalID] ?? 0;
-        }
-    }
-
-    $pointsPairs = [];
-    foreach($points as $generalID => $point){
-        $pointsPairs[] = [
-            'nation_id' => $generals[$generalID]->getNationID(),
-            'general_id' => $generalID,
-            'type' => RankColumn::inherit_point_earned_by_merge->value,
-            'value' => $point,
-        ];
-    }
-    //XXX: multiple batch update가 제공되지 않으므로..
-    $db->delete('rank_data', '`type` = %s', RankColumn::inherit_point_earned_by_merge->value);
-    $db->insert('rank_data', $pointsPairs);
-
-    $db->query(
-        'UPDATE `rank_data` D SET `value` = (SELECT SUM(`value`) FROM `rank_data` S WHERE S.general_id = D.general_id AND S.`type` IN %ls) WHERE D.`type` = %s',
-        [RankColumn::inherit_point_earned_by_action->value, RankColumn::inherit_point_earned_by_merge->value],
-        RankColumn::inherit_point_earned->value
-    );
-
-    $db->query(
-        'UPDATE `rank_data` D SET `value` = (SELECT `value` FROM `rank_data` S WHERE S.general_id = D.general_id AND S.`type` = %s) WHERE D.`type` = %s',
-        RankColumn::inherit_point_spent_dynamic->value,
-        RankColumn::inherit_point_spent->value
-    );
-}
-
-//1월마다 실행
-function processSpring() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    // 1월엔 무조건 내정 1% 감소
-    $db->update('city',[
-        'dead'=>0,
-        'agri'=>$db->sqleval('agri * 0.99'),
-        'comm'=>$db->sqleval('comm * 0.99'),
-        'secu'=>$db->sqleval('secu * 0.99'),
-        'def'=>$db->sqleval('def * 0.99'),
-        'wall'=>$db->sqleval('wall * 0.99'),
-    ],true);
-
-    //인구 증가
-    popIncrease();
-
-    // > 10000 유지비 3%, > 1000 유지비 1%
-    // 유지비 1%
-    $db->update('general', [
-        'gold'=>$db->sqleval('IF(gold > 10000, gold * 0.97, gold * 0.99)')
-    ], 'gold > 1000');
-
-    // > 100000 유지비 5%, > 100000 유지비 3%, > 1000 유지비 1%
-    $db->update('nation', [
-        'gold'=>$db->sqleval('IF(gold > 100000, gold * 0.95, IF(gold > 10000, gold * 0.97, gold * 0.99))')
-    ], 'gold > 1000');
-
-    $admin = $gameStor->getValues(['year', 'month']);
-
-    pushGlobalHistoryLog(["<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>매너 있는 플레이</> 부탁드리고, <M>지나친 훼접</>은 삼가주세요~</>"], $admin['year'], $admin['month']);
+    $e_env = $gameStor->getValues(['startyear', 'year', 'month']);
+    $e_env['currentEventID'] = 0;
+    Action::build(["ProcessIncome", ResourceType::rice->value])->run($e_env);
 }
 
+
+/** @deprecated */
 function processGoldIncome() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-    $adminLog = [];
-
-
-    $nationList = $db->query('SELECT name,nation,capital,gold,level,rate_tmp,bill,type from nation');
-    $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,gold,officer_level,dedication,city FROM general WHERE npc != 5'), 'nation');
-
-    //국가별 처리
-    foreach($nationList as $nation) {
-        $nationID = $nation['nation'];
-
-        $generalRawList = $generalRawListByNation[$nationID];
-        $income = getGoldIncome($nationID, $nation['level'], $nation['rate_tmp'], $nation['capital'], $nation['type'], $cityListByNation[$nationID]??[]);
-        $originoutcome = getOutcome(100, $generalRawList);
-        $outcome= Util::round($nation['bill'] / 100 * $originoutcome);
-
-        // 실제 지급량 계산
-        $nation['gold'] += $income;
-        // 기본량도 안될경우
-        if($nation['gold'] < GameConst::$basegold) {
-            $realoutcome = 0;
-            // 실지급률
-            $ratio = 0;
-        //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation['gold'] - GameConst::$basegold < $outcome) {
-            $realoutcome = $nation['gold'] - GameConst::$basegold;
-            $nation['gold'] = GameConst::$basegold;
-            // 실지급률
-            $ratio = $realoutcome / $originoutcome;
-        } else {
-            $realoutcome = $outcome;
-            $nation['gold'] -= $realoutcome;
-            // 실지급률
-            $ratio = $realoutcome / $originoutcome;
-        }
-        $nation['gold'] = Util::valueFit($nation['gold'], GameConst::$basegold);
-        $adminLog[] = StringUtil::padStringAlignRight((string)$nation['name'],12," ")
-            ." // 세금 : ".StringUtil::padStringAlignRight((string)$income,6," ")
-            ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
-            ." // 실제 : ".tab2((string)$realoutcome,6," ")
-            ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
-            ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
-
-        $incomeText = number_format($income);
-        $incomeLog = "이번 수입은 금 <C>$incomeText</>입니다.";
-        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-        $nationStor->prev_income_gold = $income;
-
-        $db->update('nation', [
-            'gold'=>$nation['gold']
-        ], 'nation=%i', $nationID);
-
-        // 각 장수들에게 지급
-        foreach ($generalRawList as $rawGeneral) {
-            $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
-            $gold = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
-            $generalObj->increaseVar('gold', $gold);
-
-            $logger = $generalObj->getLogger();
-            if($generalObj->getVar('officer_level') > 4){
-                $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
-            }
-
-            $goldText = number_format($gold);
-            $logger->pushGeneralActionLog("봉급으로 금 <C>$goldText</>을 받았습니다.", $logger::PLAIN);
-            $generalObj->applyDB($db);
-        }
-    }
-
-    $logger = new ActionLogger(0, 0, $year, $month);
-    $logger->pushGlobalHistoryLog('<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.');
-    $logger->flush();
-
-    pushAdminLog($adminLog);
+    $e_env = $gameStor->getValues(['startyear', 'year', 'month']);
+    $e_env['currentEventID'] = 0;
+    Action::build(["ProcessIncome", ResourceType::gold->value])->run($e_env);
 }
 
 function popIncrease() {
@@ -304,29 +163,6 @@ function getGoldIncome(int $nationID, int $nationLevel, float $taxRate, int $cap
     return $cityIncome;
 }
 
-function processWarIncome() {
-    $db = DB::db();
-
-    $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-
-    foreach(getAllNationStaticInfo() as $nation){
-        if($nation['level'] <= 0){
-            continue;
-        }
-        $nationID = $nation['nation'];
-        $income = getWarGoldIncome($nation['type'], $cityListByNation[$nationID]??[]);
-        $db->update('nation', [
-            'gold'=>$db->sqleval('gold + %i', $income)
-        ], 'nation=%i', $nationID);
-    }
-
-    // 10%수입, 20%부상병
-    $db->update('city', [
-        'pop'=>$db->sqleval('pop + dead * %d', 0.2),
-        'dead'=>0
-    ], true);
-}
-
 function getWarGoldIncome(string $nationType, array $cityList){
     $nationTypeObj = buildNationTypeClass($nationType);
 
@@ -338,115 +174,14 @@ function getWarGoldIncome(string $nationType, array $cityList){
     return $cityIncome;
 }
 
-
-
-//7월마다 실행
-function processFall() {
-    $db = DB::db();
-
-    // 7월엔 무조건 내정 1% 감소
-    $db->update('city',[
-        'dead'=>0,
-        'agri'=>$db->sqleval('agri * 0.99'),
-        'comm'=>$db->sqleval('comm * 0.99'),
-        'secu'=>$db->sqleval('secu * 0.99'),
-        'def'=>$db->sqleval('def * 0.99'),
-        'wall'=>$db->sqleval('wall * 0.99'),
-    ],true);
-
-    //인구 증가
-    popIncrease();
-
-    // > 10000 유지비 3%, > 1000 유지비 1%
-    // 유지비 1%
-    $db->update('general', [
-        'rice'=>$db->sqleval('IF(rice > 10000, rice * 0.97, rice * 0.99)')
-    ], 'rice > 1000');
-
-    // > 100000 유지비 5%, > 100000 유지비 3%, > 1000 유지비 1%
-    $db->update('nation', [
-        'rice'=>$db->sqleval('IF(rice > 100000, rice * 0.95, IF(rice > 10000, rice * 0.97, rice * 0.99))')
-    ], 'rice > 1000');
-}
-
+/** @deprecated */
 function processRiceIncome() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-    $adminLog = [];
-
-    $nationList = $db->query('SELECT name,level,nation,capital,rice,rate_tmp,bill,type from nation');
-    $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,officer_level,dedication,city FROM general WHERE npc != 5'), 'nation');
-
-    //국가별 처리
-    foreach($nationList as $nation) {
-        $nationID = $nation['nation'];
-
-        $generalRawList = $generalRawListByNation[$nationID];
-        $income = getRiceIncome($nation['nation'], $nation['level'], $nation['rate_tmp'], $nation['capital'], $nation['type'], $cityListByNation[$nationID]??[]);
-        $income += getWallIncome($nation['nation'], $nation['level'], $nation['rate_tmp'], $nation['capital'], $nation['type'], $cityListByNation[$nationID]??[]);
-        $originoutcome = getOutcome(100, $generalRawList);
-        $outcome= Util::round($nation['bill'] / 100 * $originoutcome);
-
-        // 실제 지급량 계산
-        $nation['rice'] += $income;
-        // 기본량도 안될경우
-        if($nation['rice'] < GameConst::$baserice) {
-            $realoutcome = 0;
-            // 실지급률
-            $ratio = 0;
-        //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation['rice'] - GameConst::$baserice < $outcome) {
-            $realoutcome = $nation['rice'] - GameConst::$baserice;
-            $nation['rice'] = GameConst::$baserice;
-            // 실지급률
-            $ratio = $realoutcome / $originoutcome;
-        } else {
-            $realoutcome = $outcome;
-            $nation['rice'] -= $realoutcome;
-            // 실지급률
-            $ratio = $realoutcome / $originoutcome;
-        }
-        $nation['rice'] = Util::valueFit($nation['rice'], GameConst::$baserice);
-        $adminLog[] = StringUtil::padStringAlignRight($nation['name'],12," ")
-            ." // 세곡 : ".StringUtil::padStringAlignRight((string)$income,6," ")
-            ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
-            ." // 실제 : ".tab2((string)$realoutcome,6," ")
-            ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
-            ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
-
-        $incomeText = number_format($income);
-        $incomeLog = "이번 수입은 쌀 <C>$incomeText</>입니다.";
-        $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
-        $nationStor->prev_income_rice = $income;
-
-        $db->update('nation', [
-            'rice'=>$nation['rice']
-        ], 'nation=%i', $nationID);
-
-        // 각 장수들에게 지급
-        foreach ($generalRawList as $rawGeneral) {
-            $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
-            $rice = Util::round(getBill($generalObj->getVar('dedication'))*$ratio);
-            $generalObj->increaseVar('rice', $rice);
-
-            $logger = $generalObj->getLogger();
-            if($generalObj->getVar('officer_level') > 4){
-                $logger->pushGeneralActionLog($incomeLog, $logger::PLAIN);
-            }
-            $riceText = number_format($rice);
-            $logger->pushGeneralActionLog("봉급으로 쌀 <C>$riceText</>을 받았습니다.", $logger::PLAIN);
-            $generalObj->applyDB($db);
-        }
-    }
-
-    $logger = new ActionLogger(0, 0, $year, $month);
-    $logger->pushGlobalHistoryLog('<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.');
-    $logger->flush();
-
-    pushAdminLog($adminLog);
+    $e_env = $gameStor->getValues(['startyear', 'year', 'month']);
+    $e_env['currentEventID'] = 0;
+    Action::build(["ProcessIncome", ResourceType::rice->value])->run($e_env);
 }
 
 function getRiceIncome(int $nationID, int $nationLevel, float $taxRate, int $capitalID, string $nationType, ?array $cityList) {

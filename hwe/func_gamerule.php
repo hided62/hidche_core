@@ -4,6 +4,7 @@ namespace sammo;
 
 use sammo\DTO\AuctionInfo;
 use sammo\Enums\AuctionType;
+use sammo\Enums\EventTarget;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 
@@ -184,27 +185,6 @@ function updateGeneralNumber()
     refreshNationStaticInfo();
 }
 
-function updateYearly()
-{
-    //통계
-    checkStatistic();
-}
-
-//관직 변경 해제
-function updateQuaterly()
-{
-    $db = DB::db();
-
-    //천도 제한 해제, 관직 변경 제한 해제
-    $db->update('nation', [
-        'chief_set' => 0,
-    ], true);
-    //관직 변경 제한 해제
-    $db->update('city', [
-        'officer_set' => 0,
-    ], true);
-}
-
 // 벌점 감소와 건국제한-1 전턴제한-1 외교제한-1, 1달마다 실행, 병사 있는 장수의 군량 감소, 수입비율 조정
 function preUpdateMonthly()
 {
@@ -220,58 +200,6 @@ function preUpdateMonthly()
 
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
-    $logger = new ActionLogger(0, 0, $admin['year'], $admin['month']);
-
-    //보급선 체크
-    checkSupply();
-    //미보급도시 10% 감소
-    $db->update('city', [
-        'pop' => $db->sqleval('pop * 0.9'),
-        'trust' => $db->sqleval('trust * 0.9'),
-        'agri' => $db->sqleval('agri * 0.9'),
-        'comm' => $db->sqleval('comm * 0.9'),
-        'secu' => $db->sqleval('secu * 0.9'),
-        'def' => $db->sqleval('def * 0.9'),
-        'wall' => $db->sqleval('wall * 0.9'),
-    ], 'supply = 0');
-    //미보급도시 장수 병 훈 사 5%감소
-    //NOTE: update inner join도 가능하지만, meekrodb 기준으로 깔끔하게.
-    $unsuppliedCities = $db->query('SELECT city, nation, trust, name FROM city WHERE supply = 0');
-    foreach (Util::arrayGroupBy($unsuppliedCities, 'nation') as $nationID => $cityList) {
-        $cityIDList = Util::squeezeFromArray($cityList, 'city');
-        $db->update('general', [
-            'crew' => $db->sqleval('crew*0.95'),
-            'atmos' => $db->sqleval('atmos*0.95'),
-            'train' => $db->sqleval('train*0.95'),
-        ], 'city IN %li AND nation = %i', $cityIDList, $nationID);
-    }
-
-    //민심30이하 공백지 처리
-    $lostCities = [];
-    foreach ($unsuppliedCities as $unsuppliedCity) {
-        if ($unsuppliedCity['trust'] >= 30) {
-            continue;
-        }
-        $lostCities[$unsuppliedCity['city']] = $unsuppliedCity;
-    }
-
-    if ($lostCities) {
-        foreach ($lostCities as $lostCity) {
-            $josaYi = JosaUtil::pick($lostCity['name'], '이');
-            $logger->pushGlobalHistoryLog("<R><b>【고립】</b></><G><b>{$lostCity['name']}</b></>{$josaYi} 보급이 끊겨 <R>미지배</> 도시가 되었습니다.");
-        }
-        $db->update('general', [
-            'officer_level' => 1,
-            'officer_city' => 0
-        ], 'officer_city IN %li', array_keys($lostCities));
-        $db->update('city', [
-            'nation' => 0,
-            'officer_set' => 0,
-            'conflict' => '{}',
-            'term' => 0,
-            'front' => 0
-        ], 'city IN %li', array_keys($lostCities));
-    }
 
     //접률감소, 건국제한-1
     $db->update('general', [
@@ -288,9 +216,6 @@ function preUpdateMonthly()
     // 20 ~ 140원
     $develcost = ($admin['year'] - $admin['startyear'] + 10) * 2;
     $gameStor->develcost = $develcost;
-
-    //매달 사망자 수입 결산
-    processWarIncome();
 
     //계략, 전쟁표시 해제
     $db->update('city', [
@@ -547,22 +472,17 @@ function updateNationState()
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $history = array();
     $admin = $gameStor->getValues(['killturn', 'year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm', 'turntime']);
     $year = $admin['year'];
     $month = $admin['month'];
     $startYear = $admin['startyear'];
 
-    $assemblerCnts = [];
 
     $nationCityCounts = [];
     foreach($db->queryAllLists('SELECT nation, count(*) FROM city WHERE LEVEL>=4 GROUP BY nation') as [$nationID, $cityCnt]){
         $nationCityCounts[$nationID] = $cityCnt;
     }
 
-    foreach ($db->queryAllLists('SELECT nation,count(no) FROM general WHERE npc = 5 GROUP BY nation') as [$nationID, $assemblerCnt]) {
-        $assemblerCnts[$nationID] = $assemblerCnt;
-    };
 
     $nationLevelByCityCnt = [
         0, //방랑군
@@ -747,62 +667,7 @@ function updateNationState()
                 }
             }
         }
-
-        $assemblerCnt = $assemblerCnts[$nation['nation']] ?? 0;
-        $maxAssemblerCnt = [
-            1 => 0,
-            2 => 1,
-            3 => 3,
-            4 => 4,
-            5 => 6,
-            6 => 7,
-            7 => 9
-        ][$nationlevel] ?? 0;
-
-        if ($assemblerCnt < $maxAssemblerCnt) {
-            $lastAssemblerID = $gameStor->assembler_id ?? 0;
-
-            $troopLeaderRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
-                UniqueConst::$hiddenSeed,
-                'troopLeader',
-                $year,
-                $month,
-                $nationID
-            )));
-
-            while ($assemblerCnt < $maxAssemblerCnt) {
-                $lastAssemblerID += 1;
-                $npcObj = new Scenario\GeneralBuilder(
-                    $troopLeaderRng,
-                    sprintf('부대장%4d', $lastAssemblerID),
-                    false,
-                    null,
-                    $nation['nation']
-                );
-                $npcObj->setAffinity(999)->setStat(10, 10, 10)
-                    ->setSpecialSingle('척사')->setEgo('che_은둔')
-                    ->setKillturn(70)->setGoldRice(0, 0)
-                    ->setNPCType(5)->fillRemainSpecAsZero($admin);
-                $npcObj->build($admin);
-                $npcID = $npcObj->getGeneralID();
-
-                $db->insert('troop', [
-                    'troop_leader' => $npcID,
-                    'name' => $npcObj->getGeneralName(),
-                    'nation' => $nation['nation'],
-                ]);
-                $db->update('general', [
-                    'troop' => $npcID
-                ], 'no=%i', $npcID);
-
-                $cmd = buildGeneralCommandClass('che_집합', General::createGeneralObjFromDB($npcID), $admin);
-                _setGeneralCommand($cmd, iterator_to_array(Util::range(GameConst::$maxTurn)));
-                $assemblerCnt += 1;
-                $gameStor->assembler_id = $lastAssemblerID;
-            }
-        }
     }
-    pushGlobalHistoryLog($history, $admin['year'], $admin['month']);
 }
 
 function checkStatistic()
@@ -1090,7 +955,9 @@ function checkEmperior()
             };
         }
     }
-    processSumInheritPointRank();
+
+    TurnExecutionHelper::runEventHandler($db, $gameStor, EventTarget::United);
+
     foreach ($allUserGenerals as $genObj) {
         $inheritPointManager->mergeTotalInheritancePoint($genObj);
         $inheritPointManager->applyInheritanceUser($genObj->getVar('owner'));

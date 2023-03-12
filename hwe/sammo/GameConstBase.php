@@ -415,6 +415,46 @@ class GameConstBase
     ];
     public static $defaultEvents = [
         [
+            "pre_month", 9000,
+            true,
+            ["UpdateCitySupply"],
+            ["ProcessWarIncome"]
+        ],
+        [
+            "month", 9000,
+            ["Date", "==", null, 1],
+            ["MergeInheritPointRank"],
+            ["ProcessSemiAnnual", "gold"],
+            ["ProcessIncome", "gold"],
+            ["ResetOfficerLock"],
+            ["RaiseDisaster"],
+            ["RandomizeCityTradeRate"],
+            ["NewYear"],
+            ["AssignGeneralSpeciality"],
+        ],
+        [
+            "month", 9000,
+            ["Date", "==", null, 4],
+            ["ResetOfficerLock"],
+            ["RaiseDisaster"],
+        ],
+        [
+            "month", 9000,
+            ["Date", "==", null, 7],
+            ["MergeInheritPointRank"],
+            ["ProcessSemiAnnual", "rice"],
+            ["ProcessIncome", "rice"],
+            ["ResetOfficerLock"],
+            ["RaiseDisaster"],
+            ["RandomizeCityTradeRate"],
+        ],
+        [
+            "month", 9000,
+            ["Date", "==", null, 10],
+            ["ResetOfficerLock"],
+            ["RaiseDisaster"],
+        ],
+        [
             "month", 2000,
             ["DateRelative", "==", 1, 1],
             ["NoticeToHistoryLog", "<S>2년 뒤 출병 제한이 풀립니다.</>", ActionLogger::EVENT_YEAR_MONTH],
@@ -446,5 +486,15 @@ class GameConstBase
             ["AddGlobalBetray", 1, 1],
             ["DeleteEvent"]
         ],
+        [
+            "month", 1000,
+            true,
+            ["ProvideNPCTroopLeader"]
+        ],
+        [
+            "united", 5000,
+            true,
+            ["MergeInheritPointRank"],
+        ]
     ];
 }

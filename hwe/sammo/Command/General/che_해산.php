@@ -9,13 +9,15 @@ use \sammo\{
     LastTurn,
     Command,
     Json,
-    KVStorage
+    KVStorage,
+    TurnExecutionHelper
 };
 
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
+use sammo\Enums\EventTarget;
 use sammo\Event\EventHandler;
 
 use function sammo\refreshNationStaticInfo;
@@ -110,24 +112,7 @@ class che_해산 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         // 이벤트 핸들러 동작
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $e_env = null;
-        foreach (DB::db()->query('SELECT * FROM event WHERE target = "DESTROY_NATION" ORDER BY `priority` DESC, `id` ASC') as $rawEvent) {
-            if ($e_env === null) {
-                $e_env = $gameStor->getAll(false);
-            }
-            $eventID = $rawEvent['id'];
-            $cond = Json::decode($rawEvent['condition']);
-            $action = Json::decode($rawEvent['action']);
-            $event = new EventHandler($cond, $action);
-            $e_env['currentEventID'] = $eventID;
-
-            $event->tryRunEvent($e_env);
-        }
-
-        if ($e_env !== null) {
-            $gameStor->resetCache();
-        }
+        TurnExecutionHelper::runEventHandler($db, null, EventTarget::OccupyCity);
 
         return true;
     }
