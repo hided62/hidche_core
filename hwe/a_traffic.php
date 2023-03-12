@@ -23,6 +23,9 @@ $online = [];
 $curonline = getOnlineNum();
 foreach ($log as $i => $value) {
     $parse = Json::decode($value);
+    if(is_array($parse) === false){
+        continue;
+    }
     if(count($parse) < 5){
         continue;
     }
