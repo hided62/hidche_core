@@ -245,6 +245,14 @@ class GetFrontInfo extends \sammo\BaseAPI
       $nationID
     );
 
+    if($nationPopulation['cityCnt'] == 0){
+      $nationPopulation = [
+        'cityCnt' => 0,
+        'now' => 0,
+        'max' => 0
+      ];
+    }
+
     //XXX: 매번 더하는가?
     $nationCrew = $db->queryFirstRow(
       'SELECT COUNT(*) as generalCnt, CAST(SUM(crew) AS INTEGER) as `now`,CAST(SUM(leadership)*100 AS INTEGER) as `max` from general where nation=%i AND npc != 5',
