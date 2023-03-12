@@ -32,7 +32,7 @@
           <span v-if="general.lbonus > 0" style="color: cyan">+{{ general.lbonus }}</span>
         </div>
         <div class="col align-self-center">
-          <SammoBar :height="10" :percent="(general.leadership_exp / 20) * 100" />
+          <SammoBar :height="10" :percent="(general.leadership_exp / statUpThreshold) * 100" />
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
           {{ calcInjury("strength", general) }}
         </div>
         <div class="col align-self-center">
-          <SammoBar :height="10" :percent="(general.strength_exp / 20) * 100" />
+          <SammoBar :height="10" :percent="(general.strength_exp / statUpThreshold) * 100" />
         </div>
       </div>
     </div>
@@ -54,7 +54,7 @@
           {{ calcInjury("intel", general) }}
         </div>
         <div class="col align-self-center">
-          <SammoBar :height="10" :percent="(general.intel_exp / 20) * 100" />
+          <SammoBar :height="10" :percent="(general.intel_exp / statUpThreshold) * 100" />
         </div>
       </div>
     </div>
@@ -201,6 +201,8 @@ const injuryInfo = ref<{ text: string; color: string }>({ text: "-", color: "whi
 const generalTypeCall = ref<string>("-");
 
 const ageColor = ref<string>("limegreen");
+
+const statUpThreshold = gameConstStore.value.gameConst.upgradeLimit;
 
 watch(
   general,
