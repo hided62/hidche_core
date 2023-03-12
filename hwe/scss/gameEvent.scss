@@ -1,3 +1,7 @@
+@import "./common/variables.scss";
+@import "./common/bootswatch_custom_variables.scss";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
 .ev_warning {
   color: orangered;
 }
@@ -25,4 +29,71 @@
 .hidden_but_copyable {
   color: rgba(0, 0, 0, 0);
   font-size: 0;
+}
+
+
+.compensatePositive {
+  color: $cyan;
+  display: inline-block;
+  width: 1rem;
+}
+
+.compensateNegative {
+  color: $red;
+  display: inline-block;
+  width: 1rem;
+}
+
+.compensateNeutral{
+  display: inline-block;
+  width: 1rem;
+}
+
+.commandImpossible {
+  color: $red;
+  text-decoration: line-through $red;
+}
+
+.t_date {
+  font-size: 0.75em;
+}
+
+.t_red {
+  color: red;
+}
+
+.t_blue {
+  color: blue;
+}
+
+.t_green {
+  color: green;
+}
+
+.t_magenta {
+  color: magenta;
+}
+
+.t_cyan {
+  color: cyan;
+}
+
+.t_limegreen {
+  color: limegreen;
+}
+
+.t_skyblue {
+  color: skyblue;
+}
+
+.t_orangered {
+  color: orangered;
+}
+
+.t_yellow {
+  color: yellow;
+}
+
+.t_white {
+  color: white;
 }
