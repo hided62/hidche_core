@@ -1,7 +1,7 @@
 <template>
   <div
     v-b-tooltip.hover.top
-    :title="`${props.percent.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`"
+    :title="tooltipText"
     class="sammo-bar"
     :style="{
       height: `${props.height + 2}px`,
@@ -42,10 +42,19 @@
 
 <script lang="ts" setup>
 import { clamp } from "lodash-es";
+import { computed } from "vue";
 const imagePath = window.pathConfig.gameImage;
 const props = defineProps<{
   height: 7 | 10;
   width?: string;
   percent: number;
+  altText?: string;
 }>();
+
+const tooltipText = computed(() => {
+  if(props.altText){
+    return props.altText;
+  }
+  return `${props.percent.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+});
 </script>

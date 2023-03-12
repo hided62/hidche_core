@@ -92,8 +92,8 @@
     <div class="gPanel tradePanel">
       <div class="gHead bg1">시세</div>
       <div class="gBody">
-        <SammoBar :height="7" :percent="city.trade ?? 100" />
-        <div class="cellText">{{ city.trade ? `${city.trade}%` : "상인 없음" }}</div>
+        <SammoBar :height="7" :percent="tradeBarPercent" :altText="tradeAltText" />
+        <div class="cellText">{{ tradeAltText }}</div>
       </div>
     </div>
     <div class="gPanel officer4Panel">
@@ -135,12 +135,23 @@ const city = toRef(props, "city");
 
 const cityRegionText = ref("");
 const cityLevelText = ref("");
+const tradeAltText = ref("-");
+const tradeBarPercent = ref(0);
 watch(
   city,
   (city) => {
     const cityInfo = gameConstStore.value.cityConst[city.id];
     cityRegionText.value = gameConstStore.value.cityConstMap.region[cityInfo.region] as string;
     cityLevelText.value = gameConstStore.value.cityConstMap.level[city.level] as string;
+
+    if(city.trade) {
+      tradeAltText.value = `${city.trade}%`;
+      // FIXME: 수치가 고정이라는 가정임
+      tradeBarPercent.value = (city.trade - 95) * 10;
+    } else {
+      tradeAltText.value = "상인 없음";
+      tradeBarPercent.value = 0;
+    }
   },
   { immediate: true }
 );
