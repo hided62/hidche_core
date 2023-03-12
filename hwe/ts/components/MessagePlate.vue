@@ -92,7 +92,7 @@ import { differenceInMilliseconds, addMinutes } from "date-fns/esm";
 import { computed, ref, toRef, watch, type ComputedRef, type Ref } from "vue";
 import linkifyStr from "linkifyjs/string";
 import { SammoAPI } from "@/SammoAPI";
-import { isError, isString } from "lodash";
+import { isError, isString } from "lodash-es";
 import { isBrightColor } from "@/util/isBrightColor";
 
 const props = defineProps<{

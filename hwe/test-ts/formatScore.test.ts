@@ -1,5 +1,5 @@
 import chai, { assert } from "chai";
-import _ from "lodash";
+import _ from "lodash-es";
 import { formatConnectScore } from "../ts/utilGame/formatConnectScore";
 import { formatDexLevel } from "../ts/utilGame/formatDexLevel";
 import { formatDefenceTrain } from "../ts/utilGame/formatDefenceTrain";

@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import type { GetFrontInfoResponse, GetMenuResponse, MenuItem, MenuMulti, MenuSplit } from "@/defs/API/Global";
 import { BButton, BDropdown, BDropdownItem, type ButtonVariant } from "bootstrap-vue-3";
-import { isArray } from "lodash";
+import { isArray } from "lodash-es";
 import { computed, toRef } from "vue";
 
 const props = defineProps<{

@@ -167,7 +167,7 @@ declare const staticValues: {
 import { onMounted, ref, toRef, watch, type Ref } from "vue";
 import { delay } from "@/util/delay";
 import { SammoAPI } from "@/SammoAPI";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import type { MabilboxListResponse, MsgItem, MsgResponse, MsgType } from "@/defs/API/Message";
 import MessagePlate from "@/components/MessagePlate.vue";
 import { useToast, BFormSelect } from "bootstrap-vue-3";

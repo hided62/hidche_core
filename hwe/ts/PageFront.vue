@@ -178,7 +178,7 @@ declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 <script lang="ts" setup>
 import { BContainer, BButton, useToast } from "bootstrap-vue-3";
-import { isString } from "lodash";
+import { isString } from "lodash-es";
 import { computed, onMounted, provide, ref, watch } from "vue";
 import { GameConstStore, getGameConstStore } from "./GameConstStore";
 import { SammoAPI } from "./SammoAPI";

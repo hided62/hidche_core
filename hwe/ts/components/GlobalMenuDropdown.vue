@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import type { GetFrontInfoResponse, GetMenuResponse, MenuItem, MenuMulti, MenuSplit } from "@/defs/API/Global";
-import { isArray } from "lodash";
+import { isArray } from "lodash-es";
 import { computed, toRef } from "vue";
 
 const props = defineProps<{
