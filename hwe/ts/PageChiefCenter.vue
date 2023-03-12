@@ -1,5 +1,5 @@
 <template>
-  <div id="container" class="pageChiefCenter">
+  <BContainer id="container" class="pageChiefCenter" :toast="{ root: true }">
     <TopBackBar title="사령부" reloadable @reload="reloadTable" />
 
     <div
@@ -56,7 +56,7 @@
         </div>
       </template>
     </div>
-  </div>
+  </BContainer>
   <div v-if="chiefList" id="bottomChiefBox">
     <div id="bottomChiefList" class="c-bg2">
       <template v-for="(chiefLevel, vidx) in [12, 10, 8, 6, 11, 9, 7, 5]" :key="chiefLevel">
@@ -113,10 +113,14 @@ import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import { postFilterNationCommandGen } from "./utilGame/postFilterNationCommandGen";
+import { useToast } from "bootstrap-vue-3";
 
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
 });
+
+
+const toasts = unwrap(useToast());
 
 const asyncReady = ref<boolean>(false);
 const gameConstStore = ref<GameConstStore>();

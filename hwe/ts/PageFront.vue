@@ -301,9 +301,13 @@ async function tryRefresh() {
     //TODO: 서버와 클라이언트 버전이 다르다면 갱신 필요
   } catch (e) {
     responseLock = false;
-    //매우 심각한 버그
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`서버 갱신 실패: ${e}`);
     throw e;
   }
 }

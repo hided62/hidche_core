@@ -289,7 +289,7 @@ import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { CommandItem, CommandTableResponse } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
-import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider } from "bootstrap-vue-3";
+import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider, useToast } from "bootstrap-vue-3";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { TurnObj } from "@/defs";
 import type { Args } from "./processing/args";
@@ -302,6 +302,8 @@ defineExpose({
   updateCommandTable,
   reloadCommandList,
 })
+
+const toasts = unwrap(useToast());
 
 const { maxTurn, maxPushTurn } = staticValues;
 
@@ -436,8 +438,13 @@ async function repeatGeneralCommand(amount: number) {
   try {
     await SammoAPI.Command.RepeatCommand({ amount });
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
   await reloadCommandList();
@@ -447,8 +454,13 @@ async function pushGeneralCommand(amount: number) {
   try {
     await SammoAPI.Command.PushCommand({ amount });
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
   await reloadCommandList();
@@ -483,8 +495,13 @@ async function reloadCommandList() {
   try {
     result = await SammoAPI.Command.GetReservedCommand();
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
 
@@ -551,8 +568,13 @@ async function reserveCommandDirect(args: [number[], TurnObj][], reload = true):
     await SammoAPI.Command.ReserveBulkCommand(query);
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return false;
   }
 
@@ -592,8 +614,13 @@ async function reserveCommand() {
 
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
   await reloadCommandList();

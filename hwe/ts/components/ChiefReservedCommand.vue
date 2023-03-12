@@ -274,13 +274,16 @@ import { QueryActionHelper, type TurnObjWithTime } from "@/util/QueryActionHelpe
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import { getNPCColor } from "@/utilGame";
-import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown } from "bootstrap-vue-3";
+import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown, useToast } from "bootstrap-vue-3";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
 import { unwrap_err } from "@/util/unwrap_err";
 import type { GameConstStore } from "@/GameConstStore";
 import { postFilterNationCommandGen } from "@/utilGame/postFilterNationCommandGen";
+import { unwrap } from "@/util/unwrap";
+
+const toasts = unwrap(useToast());
 
 const props = defineProps({
   maxTurn: VueTypes.integer.isRequired,
@@ -404,8 +407,13 @@ async function repeatNationCommand(amount: number) {
   try {
     await SammoAPI.NationCommand.RepeatCommand({ amount });
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
   emit("raise-reload");
@@ -431,8 +439,13 @@ async function pushNationCommand(amount: number) {
   try {
     await SammoAPI.NationCommand.PushCommand({ amount });
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
   emit("raise-reload");
@@ -469,8 +482,13 @@ async function reserveCommandDirect(args: [number[], TurnObj][], reload = true):
     await SammoAPI.NationCommand.ReserveBulkCommand(query);
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return false;
   }
 
@@ -560,8 +578,13 @@ async function reserveCommand() {
 
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
+    if(isString(e)){
+      toasts.danger({
+        title: "에러",
+        body: e,
+      });
+    }
     console.error(e);
-    alert(`실패했습니다: ${e}`);
     return;
   }
   emit("raise-reload");
