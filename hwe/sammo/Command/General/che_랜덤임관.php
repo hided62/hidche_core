@@ -173,11 +173,8 @@ class che_랜덤임관 extends Command\GeneralCommand
                 }
             }
         } else {
-            $onlyRandom = $env['join_mode'] == 'onlyRandom';
             $genLimit = GameConst::$defaultMaxGeneral;
-            if ($onlyRandom && TimeUtil::IsRangeMonth($env['init_year'], $env['init_month'], 1, $env['year'], $env['month'])) {
-                $genLimit = GameConst::$initialNationGenLimitForRandInit;
-            } else if ($relYear < 3) {
+            if ($relYear < 3) {
                 $genLimit = GameConst::$initialNationGenLimit;
             }
 
