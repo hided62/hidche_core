@@ -76,6 +76,7 @@ if (!$commandObj->hasPermissionToReserve()) {
     <meta name="viewport" content="width=500" />
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>
     <?= WebUtil::printJS('d_shared/base_map.js') ?>
+    <?= WebUtil::printCSS('../d_shared/common.css') ?>
     <?= WebUtil::printStaticValues([
         'staticValues' => [
             'serverNick' => DB::prefix(),
