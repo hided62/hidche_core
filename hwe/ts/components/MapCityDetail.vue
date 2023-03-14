@@ -7,7 +7,7 @@
   >
     <div
       v-if="city.color"
-      class="city_bg"
+      :class="`city_bg b${city.color.substring(1)}`"
       :style="{
         backgroundImage: `url(${imagePath}/b${city.color.substring(1).toUpperCase()}.png)`,
       }"
