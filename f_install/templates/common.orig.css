@@ -165,3 +165,52 @@
     background: url('_tK_gameImagePath_/map/pokemon_v1/back_pal8.png') no-repeat;
     background-size: 700px 500px;
 }
+
+/*CR 지도*/
+.map_theme_cr .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/cr/bg-fs8.png') no-repeat;
+    background-size: 700px 500px;
+}
+
+.map_theme_cr.map_detail .city_base .city_bg {
+    background-image: none !important;
+    width: 39.5px !important;
+    height: 39.5px !important;
+    left: 1px !important;
+    top: -4px !important;
+    opacity: 0.5;
+}
+
+.map_theme_cr.map_detail .city_bg.bFF0000 { background-color: #FF0000; }
+.map_theme_cr.map_detail .city_bg.b800000 { background-color: #800000; }
+.map_theme_cr.map_detail .city_bg.bA0522D { background-color: #A0522D; }
+.map_theme_cr.map_detail .city_bg.bFF6347 { background-color: #FF6347; }
+.map_theme_cr.map_detail .city_bg.bFFA500 { background-color: #FFA500; }
+.map_theme_cr.map_detail .city_bg.bFFDAB9 { background-color: #FFDAB9; }
+.map_theme_cr.map_detail .city_bg.bFFD700 { background-color: #FFD700; }
+.map_theme_cr.map_detail .city_bg.bFFFF00 { background-color: #FFFF00; }
+.map_theme_cr.map_detail .city_bg.b7CFC00 { background-color: #7CFC00; }
+.map_theme_cr.map_detail .city_bg.b00FF00 { background-color: #00FF00; }
+.map_theme_cr.map_detail .city_bg.b808000 { background-color: #808000; }
+.map_theme_cr.map_detail .city_bg.b008000 { background-color: #008000; }
+.map_theme_cr.map_detail .city_bg.b2E8B57 { background-color: #2E8B57; }
+.map_theme_cr.map_detail .city_bg.b008080 { background-color: #008080; }
+.map_theme_cr.map_detail .city_bg.b20B2AA { background-color: #20B2AA; }
+.map_theme_cr.map_detail .city_bg.b6495ED { background-color: #6495ED; }
+.map_theme_cr.map_detail .city_bg.b7FFFD4 { background-color: #7FFFD4; }
+.map_theme_cr.map_detail .city_bg.bAFEEEE { background-color: #AFEEEE; }
+.map_theme_cr.map_detail .city_bg.b87CEEB { background-color: #87CEEB; }
+.map_theme_cr.map_detail .city_bg.b00FFFF { background-color: #00FFFF; }
+.map_theme_cr.map_detail .city_bg.b00BFFF { background-color: #00BFFF; }
+.map_theme_cr.map_detail .city_bg.b0000FF { background-color: #0000FF; }
+.map_theme_cr.map_detail .city_bg.b000080 { background-color: #000080; }
+.map_theme_cr.map_detail .city_bg.b483D8B { background-color: #483D8B; }
+.map_theme_cr.map_detail .city_bg.b7B68EE { background-color: #7B68EE; }
+.map_theme_cr.map_detail .city_bg.bBA55D3 { background-color: #BA55D3; }
+.map_theme_cr.map_detail .city_bg.b800080 { background-color: #800080; }
+.map_theme_cr.map_detail .city_bg.bFF00FF { background-color: #FF00FF; }
+.map_theme_cr.map_detail .city_bg.bFFC0CB { background-color: #FFC0CB; }
+.map_theme_cr.map_detail .city_bg.bF5F5DC { background-color: #F5F5DC; }
+.map_theme_cr.map_detail .city_bg.bE0FFFF { background-color: #E0FFFF; }
+.map_theme_cr.map_detail .city_bg.bFFFFFF { background-color: #FFFFFF; }
+.map_theme_cr.map_detail .city_bg.bA9A9A9 { background-color: #A9A9A9; }
