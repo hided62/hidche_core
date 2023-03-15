@@ -35,6 +35,9 @@ class ProvideNPCTroopLeader extends \sammo\Event\Action
     foreach ($db->queryAllLists('SELECT nation,count(no) FROM general WHERE npc = 5 GROUP BY nation') as [$nationID, $NPCTroopLeaderCnt]) {
       $NPCTroopLeaderCntByNation[$nationID] = $NPCTroopLeaderCnt;
     };
+    if(!$NPCTroopLeaderCntByNation){
+      return;
+    }
 
     $year = $env['year'];
     $month = $env['month'];
