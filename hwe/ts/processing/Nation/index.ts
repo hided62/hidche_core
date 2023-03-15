@@ -4,6 +4,8 @@ import { default as che_물자원조 } from "./che_물자원조.vue";
 import { default as che_불가침제의 } from "./che_불가침제의.vue";
 import { default as che_피장파장 } from "./che_피장파장.vue";
 
+import { default as cr_인구이동 } from "./cr_인구이동.vue";
+
 import { default as ProcessNation } from "../ProcessNation.vue";
 import { default as ProcessGeneralAmount } from "../ProcessGeneralAmount.vue";
 import { default as ProcessGeneralCity } from "./che_발령.vue";
@@ -28,6 +30,7 @@ export const commandMap: Record<string, typeof ProcessNation | typeof ProcessCit
     che_포상: ProcessGeneralAmount,
     che_피장파장,
     che_허보: ProcessCity,
+    cr_인구이동,
 }
 
 /*

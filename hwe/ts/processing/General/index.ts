@@ -9,6 +9,7 @@ import { default as che_장비매매 } from "./che_장비매매.vue";
 import { default as che_장수대상임관 } from "./che_장수대상임관.vue";
 import { default as che_징병 } from "./che_징병.vue";
 import { default as che_헌납 } from "./che_헌납.vue";
+import { default as cr_건국 } from "./cr_건국.vue";
 
 import { default as ProcessCity } from "../ProcessCity.vue";
 import { default as ProcessGeneralAmount } from "../ProcessGeneralAmount.vue";
@@ -38,6 +39,7 @@ export const commandMap: Record<string, typeof ProcessCity> = {
     che_파괴: ProcessCity,
     che_화계: ProcessCity,
     che_헌납,
+    cr_건국,
 }
 
 /*
