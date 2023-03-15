@@ -3,7 +3,7 @@
 namespace sammo\Constraint;
 
 class ConstraintHelper{
-    
+
     static function AdhocCallback(callable $callback):array{
         return [__FUNCTION__, $callback];
     }
@@ -19,7 +19,7 @@ class ConstraintHelper{
     static function AllowDiplomacyWithTerm(int $allowDipCode, int $allowMinTerm, string $errMsg):array{
         return [__FUNCTION__, [$allowDipCode, $allowMinTerm, $errMsg]];
     }
-    
+
     static function AllowJoinAction():array{
         return [__FUNCTION__];
     }
@@ -67,11 +67,11 @@ class ConstraintHelper{
     static function BeOpeningPart(int $relYear):array{
         return [__FUNCTION__, $relYear];
     }
-    
+
     static function CheckNationNameDuplicate(string $nationName):array{
         return [__FUNCTION__, $nationName];
     }
-    
+
     static function ConstructableCity():array{
         return [__FUNCTION__];
     }
@@ -99,11 +99,11 @@ class ConstraintHelper{
     static function ExistsDestGeneral():array{
         return [__FUNCTION__];
     }
-    
+
     static function ExistsDestNation():array{
         return [__FUNCTION__];
     }
-    
+
     static function FriendlyDestGeneral():array{
         return [__FUNCTION__];
     }
@@ -123,12 +123,16 @@ class ConstraintHelper{
     static function MustBeTroopLeader():array{
         return [__FUNCTION__];
     }
-    
+
     static function NearCity(int $distance):array{
         return [__FUNCTION__, $distance];
     }
 
     static function NearNation():array{
+        return [__FUNCTION__];
+    }
+
+    static function NeutralCity():array{
         return [__FUNCTION__];
     }
 
@@ -175,11 +179,11 @@ class ConstraintHelper{
     static function OccupiedDestCity():array{
         return [__FUNCTION__];
     }
-    
+
     static function RemainCityCapacity($key, string $actionName):array{
         return [__FUNCTION__, [$key, $actionName]];
     }
-    
+
     static function RemainCityTrust(string $actionName):array{
         return [__FUNCTION__, $actionName];
     }
@@ -187,7 +191,7 @@ class ConstraintHelper{
     static function ReqCityCapacity($key, string $keyNick, $reqVal):array{
         return [__FUNCTION__, [$key, $keyNick, $reqVal]];
     }
-    
+
     static function ReqCityTrust(float $minTrust):array{
         return [__FUNCTION__, $minTrust];
     }
@@ -267,7 +271,7 @@ class ConstraintHelper{
     static function SuppliedDestCity():array{
         return [__FUNCTION__];
     }
-    
+
     static function WanderingNation():array{
         return [__FUNCTION__];
     }
