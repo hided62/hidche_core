@@ -111,6 +111,12 @@
                 "che_국호변경"
             ]
         },
+        "availableSpecialWar": [
+            "che_귀병", "che_신산", "che_환술", "che_집중", "che_신중", "che_반계",
+            "che_보병", "che_궁병", "che_기병", "che_공성",
+            "che_돌격", "che_무쌍", "che_견고", "che_위압",
+            "che_저격", "che_필살", "che_징병", "che_의술", "che_격노"
+        ],
         "allItems":{
             "horse": {
                 "che_명마_01_노기": 0,
@@ -220,7 +226,6 @@
                 "event_전투특기_저격": 0,
                 "event_전투특기_집중": 0,
                 "event_전투특기_징병": 0,
-                "event_전투특기_척사": 0,
                 "event_전투특기_필살": 0,
                 "event_전투특기_환술": 0
             }
