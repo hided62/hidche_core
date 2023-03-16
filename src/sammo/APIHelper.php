@@ -2,16 +2,48 @@
 
 namespace sammo;
 
+use sammo\Enums\APIRecoveryType;
+
 class APIHelper
 {
+
     private function __construct()
     {
         //static only
     }
 
+    public static function getSession(int $sessionMode): Session | APIRecoveryType
+    {
+        if ($sessionMode === BaseAPI::NO_SESSION) {
+            return DummySession::getInstance();
+        }
+
+        $session = Session::getInstance();
+        if($sessionMode & BaseAPI::REQ_LOGIN || $sessionMode & BaseAPI::REQ_GAME_LOGIN){
+            if(!$session->isLoggedIn()){
+                return APIRecoveryType::Login;
+            }
+        }
+
+        if($sessionMode & BaseAPI::REQ_GAME_LOGIN){
+            if(!$session->isGameLoggedIn()){
+                $tmpResult = false;
+                $session->loginGame($tmpResult);
+                if(!$tmpResult){
+                    return APIRecoveryType::Gateway;
+                }
+            }
+        }
+
+        if ($sessionMode & BaseAPI::REQ_READ_ONLY) {
+            $session->setReadOnly();
+        }
+        return $session;
+    }
+
     public static function launch(string $rootPath, string $actionPath, array $eParams = [], bool $loadRawInput = true)
     {
-        if($loadRawInput){
+        if ($loadRawInput) {
             try {
                 $rawInput = file_get_contents('php://input');
                 $input = Json::decode($rawInput);
@@ -19,12 +51,11 @@ class APIHelper
                 Json::dieWithReason($e->getMessage());
                 $input = null;
             }
-        }
-        else{
+        } else {
             $input = null;
         }
 
-        if(!$actionPath){
+        if (!$actionPath) {
             Json::dieWithReason('path가 지정되지 않았습니다.');
         }
         if ($input && !is_array($input)) {
@@ -34,15 +65,14 @@ class APIHelper
             $input = [];
         }
 
-        if(class_exists('\\sammo\\UniqueConst')){
+        if (class_exists('\\sammo\\UniqueConst')) {
             $serverID = UniqueConst::$serverID;
             $logPath = "{$rootPath}/logs/{$serverID}/api_log.db";
-        }
-        else{
+        } else {
             $realYearMonth = date('Y_m');
             $logPath = "{$rootPath}/d_log/{$realYearMonth}_api_log.db";
         }
-        $logDB = FileDB::db($logPath, __DIR__.'/../../f_install/sql/api_log.sql');
+        $logDB = FileDB::db($logPath, __DIR__ . '/../../f_install/sql/api_log.sql');
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'local';
         $date = date('Y-m-d H:i:s');
 
@@ -53,7 +83,7 @@ class APIHelper
 
         try {
             $obj = buildAPIExecutorClass($actionPath, $rootPath, $actionArgs);
-            if(!$obj::$allowExternalAPI){
+            if (!$obj::$allowExternalAPI) {
                 Json::dieWithReason('외부에서는 호출할 수 없습니다.');
             }
             $validateResult = $obj->validateArgs();
@@ -65,9 +95,9 @@ class APIHelper
                     'path' => $actionPath,
                     'arg' => JSON::encode($filteredArgs),
                     'aux' => JSON::encode([
-                        'result'=>false,
-                        'state'=>'validate',
-                        'reason'=>$validateResult
+                        'result' => false,
+                        'state' => 'validate',
+                        'reason' => $validateResult
                     ]),
                 ]);
                 Json::dieWithReason($validateResult);
@@ -75,21 +105,13 @@ class APIHelper
             $filteredArgs = $obj->getFilteredArgs();
 
             $sessionMode = $obj->getRequiredSessionMode();
-            if ($sessionMode === BaseAPI::NO_SESSION) {
-                $session = DummySession::getInstance();
-            } else {
-                if ($sessionMode & BaseAPI::REQ_GAME_LOGIN) {
-                    $session = Session::requireGameLogin(null);
-                } else if ($sessionMode & BaseAPI::REQ_LOGIN) {
-                    $session = Session::requireLogin(null);
-                } else {
-                    $session = Session::getInstance();
-                }
+            $sessionOrFail = static::getSession($sessionMode);
 
-                if ($sessionMode & BaseAPI::REQ_READ_ONLY) {
-                    $session->setReadOnly();
-                }
+            if(!($sessionOrFail instanceof Session)){
+                $recoveryType = $sessionOrFail;
+                Json::dieWithReason($recoveryType->info(), $recoveryType);
             }
+            $session = $sessionOrFail;
 
             $modifiedSince = WebUtil::parseLastModified();
             $reqEtags = WebUtil::parseETag();
@@ -103,27 +125,44 @@ class APIHelper
                     'path' => $actionPath,
                     'arg' => JSON::encode($filteredArgs),
                     'aux' => JSON::encode([
-                        'result'=>false,
-                        'state'=>'launch',
-                        'reason'=>$validateResult
+                        'result' => false,
+                        'state' => 'launch',
+                        'reason' => $result
                     ]),
                 ]);
                 Json::dieWithReason($result);
+            }
+            else if($result instanceof APIRecoveryType){
+                $recoveryType = $result;
+                $logDB->insert('api_log', [
+                    'user_id' => $session->userID ?? 0,
+                    'ip' => $ip,
+                    'date' => $date,
+                    'path' => $actionPath,
+                    'arg' => JSON::encode($filteredArgs),
+                    'aux' => JSON::encode([
+                        'result' => false,
+                        'state' => 'launch',
+                        'reason' => $recoveryType->info(),
+                        'recovery' => $recoveryType->value,
+                    ]),
+                ]);
+                Json::dieWithReason($recoveryType->info(), $recoveryType);
             }
 
             $cache = $obj->tryCache();
             $setCache = false;
             if ($cache !== null) {
-                if($cache->lastModified !== null || $cache->etag !== null){
+                if ($cache->lastModified !== null || $cache->etag !== null) {
                     $setCache = true;
                     WebUtil::setCacheHeader($cache);
                 }
 
 
-                if ($modifiedSince !== null && $cache->lastModified !== null){
+                if ($modifiedSince !== null && $cache->lastModified !== null) {
                     $lastModifiedUnixTime = Util::toInt(TimeUtil::DateTimeToSeconds($cache->lastModified, true));
                     $modifiedSinceUnixTime = Util::toInt(TimeUtil::DateTimeToSeconds($modifiedSince));
-                    if($lastModifiedUnixTime === $modifiedSinceUnixTime){
+                    if ($lastModifiedUnixTime === $modifiedSinceUnixTime) {
                         $logDB->insert('api_log', [
                             'user_id' => $session->userID ?? 0,
                             'ip' => $ip,
@@ -131,8 +170,8 @@ class APIHelper
                             'path' => $actionPath,
                             'arg' => JSON::encode($filteredArgs),
                             'aux' => JSON::encode([
-                                'result'=>true,
-                                'state'=>'cache_not_modified',
+                                'result' => true,
+                                'state' => 'cache_not_modified',
                             ]),
                         ]);
                         WebUtil::dieWithNotModified();
@@ -146,8 +185,8 @@ class APIHelper
                         'path' => $actionPath,
                         'arg' => JSON::encode($filteredArgs),
                         'aux' => JSON::encode([
-                            'result'=>true,
-                            'state'=>'cache_not_modified',
+                            'result' => true,
+                            'state' => 'cache_not_modified',
                         ]),
                     ]);
                     WebUtil::dieWithNotModified();
@@ -162,9 +201,9 @@ class APIHelper
                     'path' => $actionPath,
                     'arg' => JSON::encode($filteredArgs),
                     'aux' => JSON::encode([
-                        'result'=>true,
-                        'state'=>'success_simple',
-                        'set_cache'=>$setCache,
+                        'result' => true,
+                        'state' => 'success_simple',
+                        'set_cache' => $setCache,
                     ]),
                 ]);
                 Json::die([
@@ -179,9 +218,9 @@ class APIHelper
                 'path' => $actionPath,
                 'arg' => JSON::encode($filteredArgs),
                 'aux' => JSON::encode([
-                    'result'=>true,
-                    'state'=>'success_complex',
-                    'set_cache'=>$setCache,
+                    'result' => true,
+                    'state' => 'success_complex',
+                    'set_cache' => $setCache,
                 ]),
             ]);
             $result['result'] = $result['result'] ?? true;
@@ -196,10 +235,10 @@ class APIHelper
                 'path' => $actionPath,
                 'arg' => JSON::encode($filteredArgs),
                 'aux' => JSON::encode([
-                    'result'=>false,
-                    'state'=>'error_exception',
-                    'errMsg'=>$errMsg,
-                    'errTrace'=>$errTrace,
+                    'result' => false,
+                    'state' => 'error_exception',
+                    'errMsg' => $errMsg,
+                    'errTrace' => $errTrace,
                 ]),
             ]);
             Json::dieWithReason("{$errMsg}\n{$errTrace}");
@@ -214,10 +253,10 @@ class APIHelper
                 'path' => $actionPath,
                 'arg' => JSON::encode($filteredArgs),
                 'aux' => JSON::encode([
-                    'result'=>false,
-                    'state'=>'error_throwable',
-                    'errMsg'=>$errMsg,
-                    'errTrace'=>$errTrace,
+                    'result' => false,
+                    'state' => 'error_throwable',
+                    'errMsg' => $errMsg,
+                    'errTrace' => $errTrace,
                 ]),
             ]);
             Json::dieWithReason("{$errMsg}\n{$errTrace}");
@@ -230,9 +269,9 @@ class APIHelper
                 'path' => $actionPath,
                 'arg' => JSON::encode($filteredArgs),
                 'aux' => JSON::encode([
-                    'result'=>false,
-                    'state'=>'error_mixed',
-                    'errMsg'=>$errStr,
+                    'result' => false,
+                    'state' => 'error_mixed',
+                    'errMsg' => $errStr,
                 ]),
             ]);
             Json::dieWithReason($errStr);
