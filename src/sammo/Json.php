@@ -63,7 +63,7 @@ class Json
             static::die([
                 'result'=>false,
                 'reason'=>$reason,
-                'recoveryType'=>$recoveryType->value
+                'recovery'=>$recoveryType->value
             ]);
         }
         static::die([
