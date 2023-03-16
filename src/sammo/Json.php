@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\APIRecoveryType;
+
 class Json
 {
     const PRETTY = 1 << 0;
@@ -56,7 +58,14 @@ class Json
     }
 
     /** @return never */
-    public static function dieWithReason(string $reason){
+    public static function dieWithReason(string $reason, APIRecoveryType $recoveryType = null){
+        if($recoveryType){
+            static::die([
+                'result'=>false,
+                'reason'=>$reason,
+                'recoveryType'=>$recoveryType->value
+            ]);
+        }
         static::die([
             'result'=>false,
             'reason'=>$reason
