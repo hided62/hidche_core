@@ -5,6 +5,7 @@ namespace sammo\API\Message;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Enums\MessageType;
 use sammo\Message;
 use sammo\MessageTarget;
@@ -145,7 +146,7 @@ class SendMessage extends \sammo\BaseAPI
     return $msg;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $userID = $session->userID;
     $mailbox = $this->args['mailbox'];

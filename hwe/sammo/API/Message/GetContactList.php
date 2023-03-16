@@ -4,6 +4,7 @@ namespace sammo\API\Message;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\Enums\APIRecoveryType;
 
 use function sammo\getMailboxList;
 
@@ -18,7 +19,7 @@ class GetContactList extends \sammo\BaseAPI{
     return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     if(!$session->generalID){
       return [

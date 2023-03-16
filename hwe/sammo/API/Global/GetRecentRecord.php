@@ -5,6 +5,7 @@ namespace sammo\API\Global;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
 use sammo\Util;
 use sammo\Validator;
@@ -72,7 +73,7 @@ class GetRecentRecord extends \sammo\BaseAPI
     return $history;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
 

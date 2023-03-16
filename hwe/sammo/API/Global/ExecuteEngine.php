@@ -5,6 +5,7 @@ namespace sammo\API\Global;
 use sammo\Session;
 use sammo\DB;
 use DateTimeInterface;
+use sammo\Enums\APIRecoveryType;
 use sammo\TurnExecutionHelper;
 use sammo\UniqueConst;
 
@@ -20,7 +21,7 @@ class ExecuteEngine extends \sammo\BaseAPI
         return static::NO_SESSION;
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
       $reqServerID = $this->args['serverID'] ?? null;
       if($reqServerID && $reqServerID !== UniqueConst::$serverID){

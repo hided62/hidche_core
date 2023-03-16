@@ -1,6 +1,7 @@
 <?php
 namespace sammo\API\General;
 
+use sammo\Enums\APIRecoveryType;
 use sammo\General;
 use sammo\Session;
 
@@ -17,7 +18,8 @@ class GetCommandTable extends \sammo\BaseAPI{
         return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
     }
 
-    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag){
+    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
+    {
         $generalID = $session->generalID;
         $me = General::createGeneralObjFromDB($generalID);
         $commandTable = getCommandTable($me);

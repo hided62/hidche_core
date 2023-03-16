@@ -4,6 +4,7 @@ namespace sammo\API\Nation;
 
 use ArrayObject;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\General;
 use sammo\Session;
 use sammo\Util;
@@ -133,7 +134,7 @@ class GeneralList extends \sammo\BaseAPI
         return 1;
     }
 
-    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         increaseRefresh("세력장수", 1);
 
@@ -188,14 +189,14 @@ class GeneralList extends \sammo\BaseAPI
             foreach($troops as $troop){
                 $reservedCommandTargetGeneralIDList[$troop['id']] = $troop['id'];
             }
-            
+
 
             if($reservedCommandTargetGeneralIDList){
                 $rawTurnList = $db->query(
                     'SELECT general_id, turn_idx, action, arg, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id asc, turn_idx asc',
                     array_values($reservedCommandTargetGeneralIDList)
                 );
-    
+
                 foreach ($rawTurnList as $rawTurn) {
                     [
                         'general_id' => $generalID,

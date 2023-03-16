@@ -4,6 +4,7 @@ namespace sammo\API\InheritAction;
 
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Session;
 use sammo\Validator;
 use sammo\Util;
@@ -25,7 +26,7 @@ class GetMoreLog extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
   }
 
-  function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $userID = $session->userID;
     $lastID = $this->args['lastID'];

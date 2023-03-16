@@ -4,6 +4,7 @@ namespace sammo\API\Global;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\Enums\APIRecoveryType;
 
 use function sammo\getCurrentHistory;
 
@@ -19,7 +20,7 @@ class GetCurrentHistory extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $history = getCurrentHistory();
 

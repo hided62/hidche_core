@@ -7,6 +7,7 @@ use sammo\ActionLogger;
 use sammo\Auction;
 use sammo\CityConst;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\GameUnitConst;
@@ -120,7 +121,7 @@ class Join extends \sammo\BaseAPI
         return $targetBonusPointCnt;
     }
 
-    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $userID = $session->userID;
 

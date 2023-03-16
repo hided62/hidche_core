@@ -4,6 +4,7 @@ namespace sammo\API\General;
 
 use sammo\Command\General\che_거병;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 
 use sammo\Session;
@@ -30,7 +31,7 @@ class BuildNationCandidate extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $userID = $session->userID;
 

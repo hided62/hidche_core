@@ -5,6 +5,7 @@ namespace sammo\API\Vote;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteInfo;
+use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
 use sammo\Session;
 use sammo\TimeUtil;
@@ -52,7 +53,7 @@ class NewVote extends \sammo\BaseAPI
         $voteStor->setValue("vote_{$voteID}", $lastVoteInfo->toArray());
     }
 
-    function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $isVoteAdmin = in_array('vote', $session->acl[DB::prefix()] ?? []);
         $isVoteAdmin = $isVoteAdmin || $session->userGrade >= 5;

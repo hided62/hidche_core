@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use Nette\Caching\Cache;
 use sammo\APICacheResult;
+use sammo\Enums\APIRecoveryType;
 use sammo\GameConst;
 use sammo\MapRequest;
 use sammo\TimeUtil;
@@ -44,7 +45,7 @@ class GetCachedMap extends \sammo\BaseAPI
     return static::NO_SESSION;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     if (!class_exists('\\sammo\\UniqueConst')) {
       return '서버 초기화되지 않음';

@@ -7,6 +7,7 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteComment;
 use sammo\DTO\VoteInfo;
+use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\Validator;
@@ -30,7 +31,7 @@ class GetVoteDetail extends \sammo\BaseAPI
     return static::REQ_LOGIN | static::REQ_READ_ONLY;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $voteID = $this->args['voteID'];
     $db = DB::db();

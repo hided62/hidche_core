@@ -5,6 +5,7 @@ namespace sammo\API\Vote;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteComment;
+use sammo\Enums\APIRecoveryType;
 use sammo\General;
 use sammo\Session;
 use sammo\TimeUtil;
@@ -33,7 +34,7 @@ class AddComment extends \sammo\BaseAPI
     return null;
   }
 
-  function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $voteID = $this->args['voteID'];
     $text = mb_substr($this->args['text'], 0, 200);

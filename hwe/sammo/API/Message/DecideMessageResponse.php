@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\DiplomaticMessage;
+use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
 use sammo\Message;
 use sammo\Validator;
@@ -31,7 +32,7 @@ class DecideMessageResponse extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $msgID = $this->args['msgID'];
     $msgResponse = $this->args['response'];

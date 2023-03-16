@@ -527,7 +527,7 @@ class GetFrontInfo extends \sammo\BaseAPI
     return $result;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $generalID = $session->generalID;
     //NOTE: 이 경우 staticNation 정보를 조회한다.

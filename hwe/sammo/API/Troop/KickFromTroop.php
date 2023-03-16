@@ -5,6 +5,7 @@ namespace sammo\API\Troop;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 
 class KickFromTroop extends \sammo\BaseAPI
@@ -31,7 +32,7 @@ class KickFromTroop extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $generalID = $this->args['generalID'];
     $db = DB::db();

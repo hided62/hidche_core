@@ -5,6 +5,7 @@ namespace sammo\API\Login;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\BaseAPI;
+use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\KakaoUtil;
 use sammo\RootDB;
@@ -36,7 +37,7 @@ class LoginByToken extends LoginByID
         return null;
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $loginNonce = $session->loginNonce ?? null;
         $loginNonceExpired = $session->loginNonceExpired ?? null;

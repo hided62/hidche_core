@@ -5,6 +5,7 @@ namespace sammo\API\Misc;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\AppConf;
+use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
 use sammo\RootDB;
 use sammo\TimeUtil;
@@ -31,7 +32,7 @@ class UploadImage extends \sammo\BaseAPI
         return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $imageData = base64_decode($this->args['imageData'], true);
         if ($imageData === false) {

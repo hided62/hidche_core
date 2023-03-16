@@ -5,6 +5,7 @@ namespace sammo\API\NationCommand;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 
 use function sammo\repeatNationCommand;
@@ -32,7 +33,7 @@ class RepeatCommand extends \sammo\BaseAPI
         return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
 
         $amount = $this->args['amount'];

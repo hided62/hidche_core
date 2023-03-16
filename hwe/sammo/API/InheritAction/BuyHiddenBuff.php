@@ -5,6 +5,7 @@ namespace sammo\API\InheritAction;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
@@ -40,7 +41,7 @@ class BuyHiddenBuff extends \sammo\BaseAPI
         return static::REQ_GAME_LOGIN;
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $userID = $session->userID;
         $generalID = $session->generalID;

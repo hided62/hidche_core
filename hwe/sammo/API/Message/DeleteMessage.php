@@ -4,6 +4,7 @@ namespace sammo\API\Message;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\Enums\APIRecoveryType;
 use sammo\Message;
 use sammo\Validator;
 
@@ -27,7 +28,7 @@ class DeleteMessage extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $msgID = $this->args['msgID'];
 

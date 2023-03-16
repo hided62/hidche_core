@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\AuctionSellRice;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 use sammo\GameConst;
 use sammo\General;
@@ -52,7 +53,7 @@ class OpenSellRiceAuction extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     /** @var int */
     $amount = $this->args['amount'];

@@ -4,6 +4,7 @@ namespace sammo\API\General;
 
 use sammo\DB;
 use sammo\DummyGeneral;
+use sammo\Enums\APIRecoveryType;
 use sammo\GameConst;
 use sammo\Session;
 use sammo\General;
@@ -26,7 +27,7 @@ class DieOnPrestart extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     //로그인 검사
     $userID = $session->userID;

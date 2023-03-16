@@ -5,6 +5,7 @@ namespace sammo\API\Login;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\BaseAPI;
+use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\KakaoUtil;
 use sammo\RootDB;
@@ -12,9 +13,11 @@ use sammo\TimeUtil;
 use sammo\Util;
 use sammo\Validator;
 
-class ReqNonce extends BaseAPI{
+class ReqNonce extends BaseAPI
+{
 
-    public function getRequiredSessionMode(): int {
+    public function getRequiredSessionMode(): int
+    {
         return \sammo\BaseAPI::NO_LOGIN;
     }
 
@@ -23,15 +26,15 @@ class ReqNonce extends BaseAPI{
         return null;
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag) {
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
+    {
         $loginNonce = Util::randomStr(16);
         $loginNonceExpired = TimeUtil::nowAddSeconds(2);
         $session->loginNonce = $loginNonce;
         $session->loginNonceExpired = $loginNonceExpired;
         return [
-            'result'=>true,
-            'loginNonce'=>$loginNonce,
+            'result' => true,
+            'loginNonce' => $loginNonce,
         ];
     }
-
 }

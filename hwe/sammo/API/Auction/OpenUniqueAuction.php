@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\AuctionUniqueItem;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 use sammo\GameConst;
 use sammo\General;
@@ -49,7 +50,7 @@ class OpenUniqueAuction extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $itemID = $this->args['itemID'];
     $amount = $this->args['amount'];

@@ -5,6 +5,7 @@ namespace sammo\API\Global;
 use LDTO\DTO;
 use sammo\APICacheResult;
 use sammo\BaseAPI;
+use sammo\Enums\APIRecoveryType;
 use sammo\GlobalMenu;
 use sammo\Session;
 
@@ -19,7 +20,7 @@ class GetGlobalMenu extends BaseAPI
     return null;
   }
 
-  function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+  function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     if ($reqEtag !== null) {
       $version = GlobalMenu::version;

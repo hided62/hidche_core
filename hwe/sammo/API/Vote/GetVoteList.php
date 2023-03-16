@@ -5,6 +5,7 @@ namespace sammo\API\Vote;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteInfo;
+use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
 use sammo\Session;
 
@@ -21,7 +22,7 @@ class GetVoteList extends \sammo\BaseAPI
     return static::REQ_LOGIN | static::REQ_READ_ONLY;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
 

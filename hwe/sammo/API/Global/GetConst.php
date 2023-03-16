@@ -9,6 +9,7 @@ use Nette\Caching\Cache;
 use RuntimeException;
 use sammo\APICacheResult;
 use sammo\CityConst;
+use sammo\Enums\APIRecoveryType;
 use sammo\GameConst;
 use sammo\GameUnitConst;
 use sammo\Json;
@@ -279,7 +280,7 @@ class GetConst extends \sammo\BaseAPI
         ];
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $cacheDir = $this->rootPath . '/data/file_cache';
 

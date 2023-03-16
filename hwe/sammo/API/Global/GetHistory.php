@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\APICacheResult;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\UniqueConst;
 use sammo\Util;
@@ -127,7 +128,7 @@ class GetHistory extends \sammo\BaseAPI
     return $cachedHash;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $checkCache = $this->checkCached($reqEtag);
     if ($checkCache) {

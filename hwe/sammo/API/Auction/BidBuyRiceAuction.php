@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\AuctionBuyRice;
 use sammo\AuctionUniqueItem;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 use sammo\General;
 
@@ -32,7 +33,7 @@ class BidBuyRiceAuction extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $auctionID = $this->args['auctionID'];
     $amount = $this->args['amount'];

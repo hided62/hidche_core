@@ -5,6 +5,7 @@ namespace sammo\API\Vote;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteInfo;
+use sammo\Enums\APIRecoveryType;
 use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
@@ -42,7 +43,7 @@ class Vote extends \sammo\BaseAPI
         return null;
     }
 
-    function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
 
         $voteID = $this->args['voteID'];

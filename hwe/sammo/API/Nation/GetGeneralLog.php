@@ -3,6 +3,7 @@
 namespace sammo\API\Nation;
 
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Session;
 use sammo\Validator;
 
@@ -99,7 +100,7 @@ class GetGeneralLog extends \sammo\BaseAPI
         return $this->args['generalID'];
     }
 
-    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $userID = $session->userID;
 

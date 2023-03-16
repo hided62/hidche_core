@@ -5,6 +5,7 @@ namespace sammo\API\Auction;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\AuctionSellRice;
+use sammo\Enums\APIRecoveryType;
 use sammo\Validator;
 use sammo\General;
 
@@ -31,7 +32,7 @@ class BidSellRiceAuction extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $auctionID = $this->args['auctionID'];
     $amount = $this->args['amount'];

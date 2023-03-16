@@ -3,6 +3,7 @@
 namespace sammo\API\Global;
 
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\RootDB;
@@ -33,7 +34,7 @@ class GeneralList extends \sammo\BaseAPI
         return static::REQ_LOGIN;
     }
 
-    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');

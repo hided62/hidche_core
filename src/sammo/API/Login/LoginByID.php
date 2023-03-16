@@ -5,7 +5,9 @@ namespace sammo\API\Login;
 use DateTime;
 use sammo\Session;
 use DateTimeInterface;
+use sammo\APIHelper;
 use sammo\BaseAPI;
+use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\KakaoUtil;
 use sammo\RootDB;
@@ -78,7 +80,7 @@ class LoginByID extends \sammo\BaseAPI
         return [$tokenID, $token];
     }
 
-    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+    public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $RootDB = RootDB::db();
         if ($session->isLoggedIn()) {
@@ -143,7 +145,7 @@ class LoginByID extends \sammo\BaseAPI
                 return [
                     'result' => false,
                     'reqOTP' => $oauthReqOTP,
-                    'reason' => $oauthFailReason
+                    'reason' => $oauthFailReason,
                 ];
             }
         }

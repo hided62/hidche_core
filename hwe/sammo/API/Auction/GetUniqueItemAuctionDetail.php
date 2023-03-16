@@ -8,6 +8,7 @@ use sammo\AuctionUniqueItem;
 use sammo\DB;
 use sammo\DTO\AuctionBidItem;
 use sammo\DTO\AuctionInfo;
+use sammo\Enums\APIRecoveryType;
 use sammo\Enums\AuctionType;
 use sammo\Enums\InheritanceKey;
 use sammo\InheritancePointManager;
@@ -37,7 +38,7 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
 

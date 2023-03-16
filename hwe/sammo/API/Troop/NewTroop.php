@@ -5,6 +5,7 @@ namespace sammo\API\Troop;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\StringUtil;
 use sammo\Validator;
 
@@ -29,7 +30,7 @@ class NewTroop extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN;
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $userID = $session->userID;
     $troopName = StringUtil::neutralize($this->args['troopName']);

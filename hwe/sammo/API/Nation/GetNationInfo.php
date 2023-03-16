@@ -3,6 +3,7 @@
 namespace sammo\API\Nation;
 
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
@@ -40,7 +41,7 @@ class GetNationInfo extends \sammo\BaseAPI
     return static::REQ_GAME_LOGIN | static::REQ_READ_ONLY;
   }
 
-  public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $userID = $session->userID;
 

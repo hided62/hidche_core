@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\APIRecoveryType;
+
 abstract class BaseAPI
 {
     const NO_SESSION = -1;
@@ -13,7 +15,8 @@ abstract class BaseAPI
     static array $sensitiveArgs = [];
     static bool $allowExternalAPI = true;
 
-    public function getFilteredArgs(): array {
+    public function getFilteredArgs(): array
+    {
         $filteredArgs = $this->args;
         foreach (static::$sensitiveArgs as $argName) {
             if (isset($filteredArgs[$argName])) {
@@ -33,10 +36,10 @@ abstract class BaseAPI
     abstract public function getRequiredSessionMode(): int;
     abstract function validateArgs(): ?string;
 
-    /** @return null|string|array */
-    abstract function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag);
+    abstract function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType;
 
-    public function tryCache():?APICacheResult{
+    public function tryCache(): ?APICacheResult
+    {
         return null;
     }
 }

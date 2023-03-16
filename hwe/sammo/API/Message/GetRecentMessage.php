@@ -5,6 +5,7 @@ namespace sammo\API\Message;
 use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
+use sammo\Enums\APIRecoveryType;
 use sammo\Enums\MessageType;
 use sammo\Json;
 use sammo\Message;
@@ -61,7 +62,7 @@ class GetRecentMessage extends \sammo\BaseAPI
     }
   }
 
-  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag)
+  public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $this->delayFrequentCall($session);
     $session->setReadOnly();
