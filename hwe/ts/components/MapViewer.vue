@@ -65,8 +65,9 @@
           :isFullWidth="isFullWidth"
           :href="props.genHref?.call(city, city.id)"
           @click="cityClick(city, $event)"
+          @touchleave="pointerleave(city, $event)"
           @mouseenter="mouseenter(city, $event)"
-          @mouseleave="mouseleave(city, $event)"
+          @mouseleave="pointerleave(city, $event)"
         />
       </template>
       <template v-else
@@ -78,8 +79,9 @@
           :isFullWidth="isFullWidth"
           :href="props.genHref?.call(city, city.id)"
           @click="cityClick(city, $event)"
+          @touchleave="pointerleave(city, $event)"
           @mouseenter="mouseenter(city, $event)"
-          @mouseleave="mouseleave(city, $event)"
+          @mouseleave="pointerleave(city, $event)"
       /></template>
     </div>
     <div
@@ -484,8 +486,12 @@ function mouseenter(city: MapCityParsed, $event: MouseEvent): void {
   }
 }
 
-function mouseleave(city: MapCityParsed, $event: MouseEvent): void {
-  if (cursorType.value == "mouse") {
+function pointerleave(city: MapCityParsed, $event: MouseEvent|TouchEvent): void {
+  if (cursorType.value == "touch") {
+    activatedCity.value = undefined;
+    touchState.value = 0;
+  }
+  else if (cursorType.value == "mouse") {
     activatedCity.value = undefined;
     touchState.value = 0;
   }

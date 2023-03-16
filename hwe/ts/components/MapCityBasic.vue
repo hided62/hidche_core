@@ -15,6 +15,8 @@
         cursor: city.clickable ? 'pointer' : 'default',
       }"
       @click="clicked"
+      @touchstart="touchstart"
+      @touchmove="touchmove"
       @touchend="touchend"
       @mouseenter="mouseenter"
       @mouseleave="mouseleave"
@@ -43,6 +45,7 @@ const emit = defineEmits<{
   (event: "click", evnet: MouseEvent | TouchEvent): void;
   (event: "mouseenter", e: MouseEvent): void;
   (event: "mouseleave", e: MouseEvent): void;
+  (event: "touchleave", e: TouchEvent): void;
 }>();
 const props = defineProps({
   city: {
@@ -117,11 +120,25 @@ function mouseleave(event: MouseEvent) {
   emit("mouseleave", event);
 }
 
-function touchend(event: TouchEvent) {
-  event.stopPropagation();
-  emit("click", event);
+let touchOnTrack = false;
+
+function touchstart() {
+  touchOnTrack = true;
 }
 
+function touchmove() {
+  touchOnTrack = false;
+}
+
+function touchend(event: TouchEvent) {
+  if (touchOnTrack) {
+    event.stopPropagation();
+    emit("click", event);
+  }
+  else{
+    emit("touchleave", event);
+  }
+}
 function silent(event: MouseEvent) {
   event.stopPropagation();
 }

@@ -23,6 +23,8 @@
         cursor: city.clickable ? 'pointer' : 'default',
       }"
       @click="clicked"
+      @touchstart="touchstart"
+      @touchmove="touchmove"
       @touchend="touchend"
       @mouseenter="mouseenter"
       @mouseleave="mouseleave"
@@ -54,6 +56,7 @@ const emit = defineEmits<{
   (event: "click", e: MouseEvent | TouchEvent): void;
   (event: "mouseenter", e: MouseEvent): void;
   (event: "mouseleave", e: MouseEvent): void;
+  (event: "touchleave", e: TouchEvent): void;
 }>();
 const props = defineProps({
   city: {
@@ -119,9 +122,24 @@ function mouseleave(event: MouseEvent) {
   emit("mouseleave", event);
 }
 
+let touchOnTrack = false;
+
+function touchstart() {
+  touchOnTrack = true;
+}
+
+function touchmove() {
+  touchOnTrack = false;
+}
+
 function touchend(event: TouchEvent) {
-  event.stopPropagation();
-  emit("click", event);
+  if (touchOnTrack) {
+    event.stopPropagation();
+    emit("click", event);
+  }
+  else{
+    emit("touchleave", event);
+  }
 }
 
 function silent(event: MouseEvent) {
@@ -130,7 +148,7 @@ function silent(event: MouseEvent) {
 </script>
 
 <style lang="scss" scoped>
-.full_width_map{
+.full_width_map {
   a,
   div,
   img,
@@ -148,7 +166,7 @@ function silent(event: MouseEvent) {
   }
 
   span {
-    line-height: 1.0;
+    line-height: 1;
     font-size: 11px;
   }
 }
