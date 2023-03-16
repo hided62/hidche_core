@@ -181,6 +181,15 @@
     opacity: 0.5;
 }
 
+.map_theme_cr.map_detail.small_width_map .city_base .city_bg {
+    background-image: none !important;
+    width: 28.5px !important;
+    height: 28.5px !important;
+    left: 6px !important;
+    top: 4px !important;
+    opacity: 0.5;
+}
+
 .map_theme_cr.map_detail .city_bg.bFF0000 { background-color: #FF0000; }
 .map_theme_cr.map_detail .city_bg.b800000 { background-color: #800000; }
 .map_theme_cr.map_detail .city_bg.bA0522D { background-color: #A0522D; }
