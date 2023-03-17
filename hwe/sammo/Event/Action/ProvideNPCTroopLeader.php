@@ -68,7 +68,8 @@ class ProvideNPCTroopLeader extends \sammo\Event\Action
           $nation['nation']
         );
         $npcObj->setAffinity(999)->setStat(10, 10, 10)
-          ->setSpecialSingle('척사')->setEgo('che_은둔')
+          ->setSpecialSingle(null)->setEgo('che_은둔')
+          ->setSpecYear(999, 999)
           ->setKillturn(70)->setGoldRice(0, 0)
           ->setNPCType(5)->fillRemainSpecAsZero($env);
         $npcObj->build($env);
