@@ -30,7 +30,7 @@
       :class="`open-window commandButton btn btn-sammo-nation ${showSecret ? '' : 'disabled'}`"
       >암 행 부</a
     >
-    <a href="b_tournament.php" target="_blank" class="commandButton btn btn-sammo-nation">토 너 먼 트</a>
+    <a href="b_tournament.php" target="_blank" :class="['commandButton btn', isTournamentApplicationOpen?'btn-sammo-base2':'btn-sammo-nation']">토 너 먼 트</a>
     <a href="b_myKingdomInfo.php" :class="`commandButton btn btn-sammo-nation ${myLevel >= 1 ? '' : 'disabled'}`"
       >세력 정보</a
     >
@@ -73,7 +73,12 @@
         </li>
       </ul>
     </div>
-    <a href="b_betting.php" target="_blank" class="commandButton btn btn-sammo-nation">베 팅 장</a>
+    <a
+      href="b_betting.php"
+      target="_blank"
+      :class="['commandButton btn', props.isBettingActive ? 'btn-sammo-base2' : 'btn-sammo-nation']"
+      >베 팅 장</a
+    >
   </div>
 </template>
 <script setup lang="ts">
@@ -84,6 +89,8 @@ const props = defineProps<{
   permission: number;
   myLevel: number;
   nationLevel: number;
+  isTournamentApplicationOpen: boolean;
+  isBettingActive: boolean;
 }>();
 
 const { showSecret, permission, myLevel, nationLevel } = toRefs(props);

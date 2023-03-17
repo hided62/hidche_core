@@ -83,6 +83,8 @@
                 :myLevel="generalInfo.officerLevel"
                 :nationLevel="nationStaticInfo?.level ?? 0"
                 :nationColor="nationStaticInfo?.color.substring(1, 7) ?? '000000'"
+                :isTournamentApplicationOpen="globalInfo.isTournamentApplicationOpen"
+                :isBettingActive="globalInfo.isBettingActive"
               />
             </div>
             <div id="actionMiniPlateSub" class="gx-0 row">
