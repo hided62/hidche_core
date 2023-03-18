@@ -523,6 +523,8 @@ watch(refreshCounter, async () => {
 }
 
 .nationNoticeBody {
+  word-break: break-all;
+
   :deep(p) {
     min-height: 1em;
   }

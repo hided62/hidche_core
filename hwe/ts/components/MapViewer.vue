@@ -180,7 +180,7 @@ import MapCityDetail from "./MapCityDetail.vue";
 import { convertDictById } from "@/common_legacy";
 import { useElementSize, useMouse, useMouseInElement } from "@vueuse/core";
 import { hideMapCityName, toggleSingleTap } from "@/state/mapViewer";
-import { is1000pxMode } from "@/state/is1000pxMode";
+import { isFullWidth } from "@/state/is1000pxMode";
 const uuid = uuidv4();
 const gameConstStore = unwrap_err(
   inject<Ref<GameConstStore>>("gameConstStore"),
@@ -209,19 +209,6 @@ const emit = defineEmits<{
   (event: "parsed", drawable: MapCityDrawable): void;
   (event: "update:modelValue", value: MapCityParsed): void;
 }>();
-
-const isFullWidth = ref(true);
-
-function setWidthMode([widthMode, is1000pxMode]: ["auto" | "full" | "small" | undefined, boolean]): void {
-  if (widthMode == "full") {
-    isFullWidth.value = true;
-  }
-  if (widthMode == "small") {
-    isFullWidth.value = false;
-  }
-  isFullWidth.value = is1000pxMode;
-}
-watch([() => props.width, is1000pxMode], setWidthMode, { immediate: true });
 
 const props = defineProps({
   width: {
