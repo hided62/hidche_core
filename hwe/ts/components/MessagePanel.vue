@@ -276,7 +276,8 @@ function _updateLatestMsg(msg: MsgItem) {
         "새로운 개인 메시지가 도착했습니다.",
         (type, e)=>{
           if(type === 'goto'){
-            scrollToSelector('.PrivateTalk > .stickyAnchor')
+            readLatestMsg('private');
+            scrollToSelector('.PrivateTalk > .stickyAnchor');
             return;
           }
           if(type === 'ignore'){
@@ -309,6 +310,7 @@ function _updateLatestMsg(msg: MsgItem) {
         "새로운 외교 메시지가 도착했습니다.",
         (type, e)=>{
           if(type === 'goto'){
+            readLatestMsg('diplomacy');
             scrollToSelector('.DiplomacyTalk > .stickyAnchor')
             return;
           }
