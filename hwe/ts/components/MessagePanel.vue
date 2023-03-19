@@ -107,6 +107,7 @@
           :generalName="generalName"
           :nationID="nationID"
           :permissionLevel="permissionLevel"
+          @response="()=>{readLatestMsg('private')}"
         ></MessagePlate>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'private')">접기</button>
@@ -142,6 +143,7 @@
           :generalName="generalName"
           :nationID="nationID"
           :permissionLevel="permissionLevel"
+          @response="()=>{readLatestMsg('diplomacy')}"
         ></MessagePlate>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'diplomacy')">접기</button>

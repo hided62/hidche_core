@@ -105,6 +105,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+  (event: "response"): void;
   (event: "request-refresh"): void;
 }>();
 
@@ -204,6 +205,7 @@ function testValidMsg(msg: MsgItem): boolean {
 }
 
 async function tryDelete() {
+  emit("response");
   if (!confirm("삭제하시겠습니까?")) {
     return false;
   }
@@ -222,6 +224,7 @@ async function tryDelete() {
 }
 
 async function tryAccept() {
+  emit("response");
   if (!confirm("수락하시겠습니까?")) {
     return false;
   }
@@ -240,6 +243,7 @@ async function tryAccept() {
 }
 
 async function tryDecline() {
+  emit("response");
   if (!confirm("거절하시겠습니까?")) {
     return false;
   }
