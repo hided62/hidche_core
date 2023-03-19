@@ -173,6 +173,8 @@ import MessagePlate from "@/components/MessagePlate.vue";
 import { useToast, BFormSelect } from "bootstrap-vue-3";
 import { unwrap } from "@/util/unwrap";
 import { isBrightColor } from "@/util/isBrightColor";
+import { getNewMsgToast } from "@/utilGame/getNewMsgToast";
+import { scrollToSelector } from "@/util/scrollToSelector";
 
 const serverID = staticValues.serverID;
 const toasts = unwrap(useToast());
@@ -269,10 +271,20 @@ function _updateLatestMsg(msg: MsgItem) {
       toasts.remove(toastID);
     }
     const newToastID = toasts.show(
-      {
-        title: "새로운 개인 메시지",
-        body: "새로운 개인 메시지가 도착했습니다.",
-      },
+      getNewMsgToast(
+        "새로운 개인 메시지",
+        "새로운 개인 메시지가 도착했습니다.",
+        (type, e)=>{
+          if(type === 'goto'){
+            scrollToSelector('.PrivateTalk > .stickyAnchor')
+            return;
+          }
+          if(type === 'ignore'){
+            readLatestMsg('private');
+            return;
+          }
+        }
+      ),
       {
         delay: 1000 * 60 * 10,
         variant: 'warning'
@@ -292,10 +304,20 @@ function _updateLatestMsg(msg: MsgItem) {
       toasts.remove(toastID);
     }
     const newToastID = toasts.show(
-      {
-        title: "새로운 외교 메시지",
-        body: "새로운 외교 메시지가 도착했습니다.",
-      },
+      getNewMsgToast(
+        "새로운 외교 메시지",
+        "새로운 외교 메시지가 도착했습니다.",
+        (type, e)=>{
+          if(type === 'goto'){
+            scrollToSelector('.DiplomacyTalk > .stickyAnchor')
+            return;
+          }
+          if(type === 'ignore'){
+            readLatestMsg('diplomacy');
+            return;
+          }
+        }
+      ),
       {
         delay: 1000 * 60 * 10,
         variant: 'warning'
