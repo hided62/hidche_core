@@ -257,7 +257,7 @@
 
 <script lang="ts" setup>
 import addMinutes from "date-fns/esm/addMinutes";
-import { stringifyUrl } from "query-string";
+import queryString from "query-string";
 import { onMounted, ref, watch, type PropType, inject, type Ref } from "vue";
 import { formatTime } from "@util/formatTime";
 import { joinYearMonth } from "@util/joinYearMonth";
@@ -553,7 +553,7 @@ async function reserveCommand() {
   const commandName = selectedCommand.value.value;
 
   if (listReqArgCommand.has(commandName)) {
-    document.location.href = stringifyUrl({
+    document.location.href = queryString.stringifyUrl({
       url: "v_processing.php",
       query: {
         command: commandName,

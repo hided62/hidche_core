@@ -90,8 +90,8 @@ import type {
   GetRowIdParams,
   GridApi,
   GridReadyEvent,
-  RowNode,
   CellClickedEvent,
+  IRowNode,
 } from "ag-grid-community";
 import { ProvidedColumnGroup } from "ag-grid-community";
 import { getNPCColor } from "@/utilGame";
@@ -359,7 +359,7 @@ type headerType =
 type GenValueParams<T = unknown> = ValueFormatterParams<GeneralListItem, T>;
 type GenValueGetterParams = ValueGetterParams<GeneralListItem>;
 
-type GenRowNode = RowNode<GeneralListItem>;
+type GenRowNode = IRowNode<GeneralListItem>;
 
 interface GenColDef extends ColDef<GeneralListItem> {
   colId: headerType;
@@ -481,7 +481,7 @@ const centerCellClass = [...defaultCellClass, "cell-center"];
 const rightAlignClass = [...defaultCellClass, "cell-right"];
 const sortableNumber: Omit<GenColDef, "colId" | "headerName"> = {
   sortable: true,
-  comparator: (a, b) => a - b,
+  comparator: (a, b, _a, _b, _desc) => a - b,
   sortingOrder: ["desc", "asc", null],
   filter: "number",
   cellClass: rightAlignClass,
@@ -527,7 +527,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       };
       return style as CellStyle;
     },
-    comparator: (_lhs, _rhs, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode) => {
+    comparator: (_lhs, _rhs, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode, _desc) => {
       if (lhs === undefined) {
         return 1;
       }
@@ -541,7 +541,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       return lhs.name.localeCompare(rhs.name);
     },
 
-    filterValueGetter: (data: GenValueGetterParams) => convertSearch초성(unwrap(data.data).name).join(''),
+    filterValueGetter: (data: GenValueGetterParams) => convertSearch초성(unwrap(data.data).name).join(""),
     cellClass: [props.availableGeneralClick ? "clickable-cell" : "", ...defaultCellClass],
     filter: true,
     hide: false,
@@ -596,7 +596,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     colId: "officerLevel",
     field: "officerLevelText",
     sortable: true,
-    comparator: (a, b, c, d) => unwrap(c.data).officerLevel - unwrap(d.data).officerLevel,
+    comparator: (a, b, c, d, _desc) => unwrap(c.data).officerLevel - unwrap(d.data).officerLevel,
     cellRenderer: ({ data }: GenValueParams) => {
       if (data === undefined) {
         return "";
@@ -664,7 +664,12 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           }
           return `${data.dedLevelText}<br>(${data.bill.toLocaleString()})`;
         },
-        ...sortableNumber,
+        sortable: true,
+        comparator: (a, b, _a, _b, _desc) => {
+          return (_a.data?.dedlevel??0) - (_b.data?.dedlevel??0);
+        },
+        sortingOrder: ["desc", "asc", null],
+        filter: "text",
         cellClass: centerCellClass,
         columnGroupShow: "open",
       },
@@ -688,7 +693,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         columnGroupShow: "closed",
         sortable: true,
         sortingOrder: ["desc", "asc", null],
-        comparator(_a, _b, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode) {
+        comparator(_a, _b, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode, _desc) {
           if (lhs === undefined) {
             return -1;
           }
@@ -765,7 +770,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     },
     width: 90,
     sortable: true,
-    comparator: (valX, valB, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode) => {
+    comparator: (valX, valB, { data: lhs }: GenRowNode, { data: rhs }: GenRowNode, _desc) => {
       const troopInfoLhs = extractTroopInfo(lhs);
       const troopInfoRhs = extractTroopInfo(rhs);
       console.log(troopInfoLhs, troopInfoRhs);
@@ -968,7 +973,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "단축",
         width: 70,
         cellRenderer: ({ data }: GenValueParams) => {
-          if(data === undefined){
+          if (data === undefined) {
             return "?";
           }
           if (data.npc >= 2) {
@@ -1008,7 +1013,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "전체",
         width: 120,
         cellRenderer: ({ data }: GenValueParams) => {
-          if(data === undefined){
+          if (data === undefined) {
             return "?";
           }
           if (data.npc >= 2) {
@@ -1081,8 +1086,8 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "요약",
         width: 60,
         cellRenderer: ({ data }: GenValueParams) => {
-          if(data === undefined){
-            return '?';
+          if (data === undefined) {
+            return "?";
           }
           return `${data.age}세<br>${data.belong}년`;
         },
@@ -1119,8 +1124,8 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         colId: "killturnAndConnect",
         headerName: "삭/벌",
         cellRenderer: ({ data }: GenValueParams) => {
-          if(data === undefined){
-            return '?';
+          if (data === undefined) {
+            return "?";
           }
           return `${data.killturn.toLocaleString()}턴<br>${data.connect.toLocaleString()}점`;
         },
@@ -1133,8 +1138,8 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "삭턴",
         field: "killturn",
         cellRenderer: ({ data }: GenValueParams) => {
-          if(data === undefined){
-            return '?';
+          if (data === undefined) {
+            return "?";
           }
           return `${data.killturn.toLocaleString()}턴`;
         },
@@ -1147,8 +1152,8 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         headerName: "벌점",
         field: "connect",
         cellRenderer: ({ data }: GenValueParams) => {
-          if(data === undefined){
-            return '?';
+          if (data === undefined) {
+            return "?";
           }
           return `${data.connect.toLocaleString()}점<br>(${formatConnectScore(data.connect)})`;
         },

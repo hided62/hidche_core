@@ -1,7 +1,7 @@
 import "@scss/hallOfFame.scss";
 
 import $ from 'jquery';
-import { stringifyUrl } from 'query-string';
+import queryString from 'query-string';
 import { initTooltip } from "@/legacy/initTooltip";
 import { auto500px } from './util/auto500px';
 import { htmlReady } from './util/htmlReady';
@@ -17,7 +17,7 @@ htmlReady(() => {
         const scenarioIdx = $this.val();
         const seasonIdx = $(this).find('option:selected').data('season');
 
-        document.location.href = stringifyUrl({
+        document.location.href = queryString.stringifyUrl({
             url: 'a_hallOfFame.php',
             query: {
                 scenarioIdx: scenarioIdx, seasonIdx: seasonIdx

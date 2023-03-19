@@ -1,6 +1,6 @@
 import "@scss/nationGeneral.scss";
-import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-balham-dark.css";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-balham.css";
 
 import { createApp } from 'vue'
 import PageNationGeneral from '@/PageNationGeneral.vue';
