@@ -7,7 +7,7 @@
       <div class="bg2">경매 {{ currentAuction.auction.id }}번 상세</div>
       <div class="row gx-0 text-center">
         <div class="col-2 col-md-1 bg1">경매명</div>
-        <div v-b-tooltip.hover class="col-4 col-md-2" :title="getItemTooltipText(currentAuction.auction.target)">
+        <div v-b-tooltip.hover="getItemTooltipText(currentAuction.auction.target)" class="col-4 col-md-2">
           {{ currentAuction.auction.title }}
         </div>
 
@@ -83,7 +83,7 @@
       @click="currentAuctionID = auctionID"
     >
       <div class="col-1">{{ auction.id }}</div>
-      <div v-b-tooltip.hover class="col-4" :title="getItemTooltipText(auction.target)">{{ auction.title }}</div>
+      <div v-b-tooltip.hover="getItemTooltipText(auction.target)" class="col-4">{{ auction.title }}</div>
       <div :class="['col-1', auction.isCallerHost ? 'isMe' : '']">{{ auction.hostName }}</div>
       <div class="col-2 f_tnum">{{ cutDateTime(auction.closeDate) }}</div>
       <div class="col-1">{{ auction.remainCloseDateExtensionCnt > 0 ? "남음" : "소진" }}</div>

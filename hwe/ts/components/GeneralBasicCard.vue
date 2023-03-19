@@ -61,15 +61,15 @@
 
     <div class="bg1">명마</div>
     <div v-if="!horse.info">{{ horse.name }}</div>
-    <div v-else v-b-tooltip.hover :title="horse.info">{{ horse.name }}</div>
+    <div v-else v-b-tooltip.hover="horse.info">{{ horse.name }}</div>
 
     <div class="bg1">무기</div>
     <div v-if="!weapon.info">{{ weapon.name }}</div>
-    <div v-else v-b-tooltip.hover :title="weapon.info">{{ weapon.name }}</div>
+    <div v-else v-b-tooltip.hover="weapon.info">{{ weapon.name }}</div>
 
     <div class="bg1">서적</div>
     <div v-if="!book.info">{{ book.name }}</div>
-    <div v-else v-b-tooltip.hover :title="book.info">{{ book.name }}</div>
+    <div v-else v-b-tooltip.hover="book.info">{{ book.name }}</div>
 
     <div class="bg1">자금</div>
     <div>{{ general.gold.toLocaleString() }}</div>
@@ -77,7 +77,7 @@
     <div>{{ general.rice.toLocaleString() }}</div>
     <div class="bg1">도구</div>
     <div v-if="!item.info">{{ item.name }}</div>
-    <div v-else v-b-tooltip.hover :title="item.info">{{ item.name }}</div>
+    <div v-else v-b-tooltip.hover="item.info">{{ item.name }}</div>
 
     <!-- TODO: show_img_level을 고려 -->
     <div
@@ -89,12 +89,12 @@
 
     <div class="bg1">병종</div>
     <div v-if="!crewtype.info">{{ crewtype.name }}</div>
-    <div v-else v-b-tooltip.hover :title="crewtype.info">{{ crewtype.name }}</div>
+    <div v-else v-b-tooltip.hover="crewtype.info">{{ crewtype.name }}</div>
     <div class="bg1">병사</div>
     <div>{{ general.crew.toLocaleString() }}</div>
     <div class="bg1">성격</div>
     <div v-if="!personal.info">{{ personal.name }}</div>
-    <div v-else v-b-tooltip.hover :title="personal.info">{{ personal.name }}</div>
+    <div v-else v-b-tooltip.hover="personal.info">{{ personal.name }}</div>
 
     <!-- TODO: bonusTrain 같은 개념이 필요 -->
     <div class="bg1">훈련</div>
@@ -104,10 +104,10 @@
     <div class="bg1">특기</div>
     <div>
       <span v-if="!specialDomestic.info"> {{ specialDomestic.name }}</span
-      ><span v-else v-b-tooltip.hover :title="specialDomestic.info"> {{ specialDomestic.name }}</span>
+      ><span v-else v-b-tooltip.hover="specialDomestic.info"> {{ specialDomestic.name }}</span>
       /
       <span v-if="!specialWar.info"> {{ specialWar.name }}</span
-      ><span v-else v-b-tooltip.hover :title="specialWar.info"> {{ specialWar.name }}</span>
+      ><span v-else v-b-tooltip.hover="specialWar.info"> {{ specialWar.name }}</span>
     </div>
 
     <div class="bg1">Lv</div>
@@ -177,7 +177,6 @@ import { isValidObjKey } from "@/utilGame/isValidObjKey";
 import { calcInjury } from "@/utilGame/calcInjury";
 import { addMinutes } from "date-fns/esm";
 import type { GameIActionInfo } from "@/defs/GameObj";
-
 const imagePath = window.pathConfig.gameImage;
 const gameConstStore = unwrap(inject<Ref<GameConstStore>>("gameConstStore"));
 const props = defineProps<{
@@ -185,7 +184,7 @@ const props = defineProps<{
   troopInfo?: {
     leader: {
       city: number;
-      reservedCommand?: GeneralListItemP1['reservedCommand'];
+      reservedCommand?: GeneralListItemP1["reservedCommand"];
     };
     name: string;
   };

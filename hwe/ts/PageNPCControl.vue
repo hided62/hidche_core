@@ -227,9 +227,8 @@
                     <i class="bi bi-list" />
                     &nbsp;&nbsp;{{ element.id }}
                     <button
-                      v-b-tooltip.hover
+                      v-b-tooltip.hover="actionHelpText[element.id]"
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg" />
                     </button>
@@ -250,9 +249,8 @@
                     <i class="bi bi-list" />
                     &nbsp;&nbsp;{{ element.id }}
                     <button
-                      v-b-tooltip.hover
+                      v-b-tooltip.hover="actionHelpText[element.id]"
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg" />
                     </button>
@@ -305,9 +303,8 @@
                     <i class="bi bi-list" />
                     &nbsp;&nbsp;{{ element.id }}
                     <button
-                      v-b-tooltip.hover
+                      v-b-tooltip.hover="actionHelpText[element.id]"
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg" />
                     </button>
@@ -328,9 +325,8 @@
                     <i class="bi bi-list" />
                     &nbsp;&nbsp;{{ element.id }}
                     <button
-                      v-b-tooltip.hover
+                      v-b-tooltip.hover="actionHelpText[element.id]"
                       class="btn btn-sm float-right btn-secondary py-0 px-1"
-                      :title="actionHelpText[element.id]"
                     >
                       <i class="bi bi-question-lg" />
                     </button>

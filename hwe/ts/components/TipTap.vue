@@ -1,34 +1,31 @@
 <template>
   <BButtonToolbar v-if="editable && editor" key-nav class="bg-dark">
     <BButtonGroup class="mx-1">
-      <BButton v-b-tooltip.hover title="되돌리기" @click="editor?.commands.undo()">
+      <BButton v-b-tooltip.hover="'되돌리기'" @click="editor?.commands.undo()">
         <i class="bi bi-arrow-90deg-left" />
       </BButton>
-      <BButton v-b-tooltip.hover title="재실행" @click="editor?.commands.redo()">
+      <BButton v-b-tooltip.hover="'재실행'" @click="editor?.commands.redo()">
         <i class="bi bi-arrow-90deg-right" />
       </BButton>
     </BButtonGroup>
     <BButtonGroup class="mx-1">
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'진하게'"
         :class="{ 'is-active': editor.isActive('bold') }"
-        title="진하게"
         @click="editor?.chain().focus().toggleBold().run()"
       >
         <i class="bi bi-type-bold" />
       </BButton>
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'기울이기'"
         :class="{ 'is-active': editor.isActive('italic') }"
-        title="기울이기"
         @click="editor?.chain().focus().toggleItalic().run()"
       >
         <i class="bi bi-type-italic" />
       </BButton>
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'밑줄'"
         :class="{ 'is-active': editor.isActive('underline') }"
-        title="밑줄"
         @click="editor?.chain().focus().toggleUnderline().run()"
       >
         <i class="bi bi-type-underline" />
@@ -66,9 +63,8 @@
 
     <BButtonGroup class="mx-1">
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'가로선'"
         :class="{ 'is-active': editor.isActive('strike') }"
-        title="가로선"
         @click="editor?.chain().focus().toggleStrike().run()"
       >
         <i class="bi bi-type-strikethrough" />
@@ -78,26 +74,24 @@
 
     <BButtonGroup class="mx-1">
       <BButton
-        v-b-tooltip.hover
-        title="색상 취소"
+        v-b-tooltip.hover="'색상 취소'"
+
         @click="editor?.chain().focus().unsetColor().unsetBackgroundColor().run()"
       >
         <i class="bi bi-droplet" />
       </BButton>
       <input
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'글자색'"
         type="color"
         class="form-control form-control-color"
         :value="colorConvert(editor.getAttributes('textStyle').color, '#ffffff')"
-        title="글자색"
         @input="editor?.chain().focus().setColor(($event.target as HTMLInputElement).value).run()"
       />
       <input
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'배경색'"
         type="color"
         class="form-control form-control-color"
         :value="colorConvert(editor.getAttributes('textStyle').backgroundColor, '#000000')"
-        title="배경색"
         @input="
           editor?.chain().focus().setBackgroundColor(($event.target as HTMLInputElement).value).run()
         "
@@ -105,7 +99,7 @@
     </BButtonGroup>
 
     <BButtonGroup class="mx-1">
-      <BButton v-b-tooltip.hover title="이미지 추가" @click="showImageModal = true">
+      <BButton v-b-tooltip.hover="'이미지 추가'" @click="showImageModal = true">
         <i class="bi bi-image" />
       </BButton>
       <!-- 이미지추가 -->
@@ -113,7 +107,7 @@
       <!-- 영상링크 -->
       <!-- 표 -->
       <!-- 구분선 삽입 -->
-      <BButton v-b-tooltip.hover title="구분선" @click="editor?.chain().focus().setHorizontalRule().run()">
+      <BButton v-b-tooltip.hover="'구분선'" @click="editor?.chain().focus().setHorizontalRule().run()">
         <i class="bi bi-hr" />
       </BButton>
     </BButtonGroup>
@@ -122,25 +116,22 @@
       <!-- 글머리 기호 -->
       <!-- 번호 매기기 -->
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'왼쪽 정렬'"
         :class="{ 'is-active': editor.isActive({ textAlign: 'left' }) }"
-        title="왼쪽 정렬"
         @click="editor?.chain().focus().setTextAlign('left').run()"
       >
         <i class="bi bi-text-left" />
       </BButton>
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'가운데 정렬'"
         :class="{ 'is-active': editor.isActive({ textAlign: 'center' }) }"
-        title="가운데 정렬"
         @click="editor?.chain().focus().setTextAlign('center').run()"
       >
         <i class="bi bi-text-center" />
       </BButton>
       <BButton
-        v-b-tooltip.hover
+        v-b-tooltip.hover="'오른쪽 정렬'"
         :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }"
-        title="오른쪽 정렬"
         @click="editor?.chain().focus().setTextAlign('right').run()"
       >
         <i class="bi bi-text-right" />
@@ -167,40 +158,37 @@
     <BButtonToolbar>
       <BButtonGroup class="mx-1">
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'1/4 너비로 채우기'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'small',
             }),
             f_frac: true,
           }"
-          title="1/4 너비로 채우기"
           @click="editor?.chain().focus().setImageEx({ size: 'small' }).run()"
         >
           1/4
         </BButton>
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'1/2 너비로 채우기'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'medium',
             }),
             f_frac: true,
           }"
-          title="1/2 너비로 채우기"
           @click="editor?.chain().focus().setImageEx({ size: 'medium' }).run()"
         >
           1/2
         </BButton>
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'가득 채우기'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               size: 'large',
             }),
             f_frac: true,
           }"
-          title="가득 채우기"
           @click="editor?.chain().focus().setImageEx({ size: 'large' }).run()"
         >
           1
@@ -218,61 +206,56 @@
       </BButtonGroup>
       <BButtonGroup class="mx-1">
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'왼쪽으로 붙이기'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'float-left',
             }),
           }"
-          title="왼쪽으로 붙이기"
           @click="editor?.chain().focus().setImageEx({ align: 'float-left' }).run()"
         >
           <i class="bi bi-chevron-bar-left" />
         </BButton>
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'왼쪽으로'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'left',
             }),
           }"
-          title="왼쪽으로"
           @click="editor?.chain().focus().setImageEx({ align: 'left' }).run()"
         >
           <i class="bi bi-align-start" />
         </BButton>
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'가운데로'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'center',
             }),
           }"
-          title="가운데로"
           @click="editor?.chain().focus().setImageEx({ align: 'center' }).run()"
         >
           <i class="bi bi-align-center" />
         </BButton>
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'오른쪽으로 붙이기'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'right',
             }),
           }"
-          title="오른쪽으로 붙이기"
           @click="editor?.chain().focus().setImageEx({ align: 'right' }).run()"
         >
           <i class="bi bi-align-end" />
         </BButton>
         <BButton
-          v-b-tooltip.hover
+          v-b-tooltip.hover="'오른쪽으로 붙이기'"
           :class="{
             'is-active': editor.isActive('custom-image', {
               float: 'float-right',
             }),
           }"
-          title="오른쪽으로 붙이기"
           @click="editor?.chain().focus().setImageEx({ align: 'float-right' }).run()"
         >
           <i class="bi bi-chevron-bar-right" />

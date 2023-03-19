@@ -5,21 +5,19 @@
         <div v-if="params.data[colValue.target] == null">?</div>
         <div
           v-else-if="colValue.iActionMap"
-          v-b-tooltip.hover
+          v-b-tooltip.hover="colValue.iActionMap[params.data[colValue.target] as string ].info??''"
           class="col"
-          :title="colValue.iActionMap[params.data[colValue.target] as string ].info??''"
         >
           {{ colValue.iActionMap[params.data[colValue.target] as string ].name }}
         </div>
         <div
           v-else-if="colValue.converter"
-          v-b-tooltip.hover
+          v-b-tooltip.hover="colValue.converter(params.data)[1] ?? ''"
           class="col"
-          :title="colValue.converter(params.data)[1] ?? ''"
         >
           {{ colValue.converter(params.data)[0] }}
         </div>
-        <div v-else v-b-tooltip.hover class="col" :title="colValue.info ?? ''">
+        <div v-else v-b-tooltip.hover="colValue.info ?? ''" class="col" >
           {{params.data[colValue.target] as string}}
         </div>
       </template>

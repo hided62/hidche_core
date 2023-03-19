@@ -21,7 +21,7 @@
         </td>
         <td style="text-align: right">{{ nation.power.toLocaleString() }}</td>
         <td style="text-align: right">{{ nation.gennum.toLocaleString() }}</td>
-        <td v-b-tooltip.hover style="text-align: right" :title="(nation.cities ?? []).join(', ')">
+        <td v-b-tooltip.hover="(nation.cities ?? []).join(', ')" style="text-align: right">
           {{ (nation.cities ?? []).length }}
         </td>
       </tr>

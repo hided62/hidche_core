@@ -1,5 +1,5 @@
 <template>
-  <span v-if="autorunMode.limit_minutes > 0" v-b-tooltip.hover :title="tooltipText" style="text-decoration: underline;">자율행동</span>
+  <span v-if="autorunMode.limit_minutes > 0" v-b-tooltip.hover="tooltipText" style="text-decoration: underline;">자율행동</span>
 </template>
 <script setup lang="ts">
 import type { AutorunUserMode } from '@/defs/API/Global';

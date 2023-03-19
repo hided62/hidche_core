@@ -6,6 +6,7 @@ import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { auto500px } from "./util/auto500px";
 import { insertCustomCSS } from "./util/customCSS";
 import { htmlReady } from "./util/htmlReady";
+import { installVue3Components } from "./util/installVue3Components";
 
 declare const isSecretBoard: boolean;
 
@@ -17,6 +18,6 @@ auto500px();
 htmlReady(() => {
     insertCustomCSS();
   });
-createApp(PageBoard, {
+installVue3Components(createApp(PageBoard, {
     isSecretBoard
-}).use(BootstrapVueNext).mount('#app')
+})).mount('#app')

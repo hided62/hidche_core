@@ -1,9 +1,9 @@
 <template>
   <span v-if="props.params.value == null">?</span>
-  <span v-else-if="params.iActionMap" v-b-tooltip.hover :title="params.iActionMap[props.params.value].info ?? ''">{{
+  <span v-else-if="params.iActionMap" v-b-tooltip.hover="params.iActionMap[props.params.value].info ?? ''">{{
     params.iActionMap[props.params.value].name
   }}</span>
-  <span v-else-if="params.info" v-b-tooltip.hover :title="params.info">{{ displayValue }}</span>
+  <span v-else-if="params.info" v-b-tooltip.hover="params.info">{{ displayValue }}</span>
   <span v-else>{{ displayValue }}</span>
 </template>
 

@@ -1,7 +1,6 @@
 <template>
   <div
-    v-b-tooltip.hover.top
-    :title="tooltipText"
+    v-b-tooltip.hover.top="tooltipText"
     class="sammo-bar"
     :style="{
       height: `${props.height + 2}px`,

@@ -188,7 +188,7 @@
             </DragSelect>
             <div :style="rowGridStyle">
               <div v-for="(turnObj, turnIdx) in reservedCommandList.map(postFilterTurnBrief)" :key="turnIdx" class="turn_pad center">
-                <span v-b-tooltip.hover class="turn_text" :style="turnObj.style" :title="turnObj.tooltip">
+                <span v-b-tooltip.hover="turnObj.tooltip" class="turn_text" :style="turnObj.style">
                   <!-- eslint-disable-next-line vue/no-v-html -->
                   <span v-html="turnObj.brief" />
                 </span>

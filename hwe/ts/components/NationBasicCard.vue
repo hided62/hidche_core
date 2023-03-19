@@ -67,9 +67,8 @@
     <div v-if="!nation.id" class="strategicCmd-body tb-body">해당 없음</div>
     <div
       v-else-if="impossibleStrategicCommandText"
-      v-b-tooltip.hover
+      v-b-tooltip.hover="impossibleStrategicCommandText"
       class="strategicCmd-body tb-body"
-      :title="impossibleStrategicCommandText"
       style="text-decoration: underline dashed red"
     >
       <span v-if="nation.strategicCmdLimit" style="color: red">{{ nation.strategicCmdLimit.toLocaleString() }}턴</span>
