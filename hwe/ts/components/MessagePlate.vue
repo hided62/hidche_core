@@ -90,7 +90,7 @@ import type { MsgItem, MsgTarget } from "@/defs/API/Message";
 import { parseTime } from "@/util/parseTime";
 import { differenceInMilliseconds, addMinutes } from "date-fns/esm";
 import { computed, ref, toRef, watch, type ComputedRef, type Ref } from "vue";
-import linkifyStr from "linkifyjs/string";
+import linkifyStr from "linkify-string";
 import { SammoAPI } from "@/SammoAPI";
 import { isError, isString } from "lodash-es";
 import { isBrightColor } from "@/util/isBrightColor";
