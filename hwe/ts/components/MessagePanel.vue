@@ -170,7 +170,7 @@ import { SammoAPI } from "@/SammoAPI";
 import { isString } from "lodash-es";
 import type { MabilboxListResponse, MsgItem, MsgResponse, MsgType } from "@/defs/API/Message";
 import MessagePlate from "@/components/MessagePlate.vue";
-import { useToast, BFormSelect } from "bootstrap-vue-3";
+import { useToast, BFormSelect } from "bootstrap-vue-next";
 import { unwrap } from "@/util/unwrap";
 import { isBrightColor } from "@/util/isBrightColor";
 import { getNewMsgToast } from "@/utilGame/getNewMsgToast";

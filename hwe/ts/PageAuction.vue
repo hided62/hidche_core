@@ -17,7 +17,7 @@
 };*/
 </script>
 <script lang="ts" setup>
-import { BButton, BContainer } from "bootstrap-vue-3";
+import { BButton, BContainer } from "bootstrap-vue-next";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "./components/BottomBar.vue";
 import AuctionResource from "@/components/AuctionResource.vue";

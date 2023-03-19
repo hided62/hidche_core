@@ -148,7 +148,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { onMounted, provide, ref } from "vue";
 import { SammoAPI } from "./SammoAPI";
-import { BContainer, BButton, useToast, BFormInput, BFormSelect, BFormSelectOption } from "bootstrap-vue-3";
+import { BContainer, BButton, useToast, BFormInput, BFormSelect, BFormSelectOption } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
 import { isString } from "lodash-es";
 import type { GeneralListItem, GeneralListItemP1 } from "./defs/API/Nation";

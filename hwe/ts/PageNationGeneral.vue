@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import TopBackBar from "@/components/TopBackBar.vue";
 //import BottomBar from "@/components/BottomBar.vue";
-import { BContainer } from "bootstrap-vue-3";
+import { BContainer } from "bootstrap-vue-next";
 import { onMounted, provide, ref } from "vue";
 import { SammoAPI } from "./SammoAPI";
 import { merge2DArrToObjectArr } from "./util/merge2DArrToObjectArr";

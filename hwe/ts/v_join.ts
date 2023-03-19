@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import PageJoin from '@/PageJoin.vue';
-import BootstrapVue3 from 'bootstrap-vue-3'
+import BootstrapVueNext from 'bootstrap-vue-next'
 import { auto500px } from './util/auto500px';
 
 auto500px();
 
-createApp(PageJoin).use(BootstrapVue3).mount('#app')
+createApp(PageJoin).use(BootstrapVueNext).mount('#app')

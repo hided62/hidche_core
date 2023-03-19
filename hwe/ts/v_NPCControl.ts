@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import NPCControl from '@/PageNPCControl.vue';
-import { BootstrapVue3, BToastPlugin } from 'bootstrap-vue-3'
+import { BootstrapVueNext, BToastPlugin } from 'bootstrap-vue-next'
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { auto500px } from "./util/auto500px";
 import { htmlReady } from "./util/htmlReady";
@@ -12,4 +12,4 @@ auto500px();
 htmlReady(() => {
   insertCustomCSS();
 });
-createApp(NPCControl).use(BootstrapVue3).use(BToastPlugin).mount('#app')
+createApp(NPCControl).use(BootstrapVueNext).use(BToastPlugin).mount('#app')

@@ -34,7 +34,7 @@ import { isString } from "lodash-es";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import { joinYearMonth } from "./util/joinYearMonth";
 import BettingDetail from "@/components/BettingDetail.vue";
-import { BContainer, useToast } from "bootstrap-vue-3";
+import { BContainer, useToast } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
 import type { BettingListResponse } from "./defs/API/Betting";
 

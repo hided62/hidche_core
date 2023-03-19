@@ -58,7 +58,7 @@
 </template>
 <script setup lang="ts">
 import type { CommandItem } from "@/defs";
-import { BButton } from "bootstrap-vue-3";
+import { BButton } from "bootstrap-vue-next";
 import { ref, type PropType, watch } from "vue";
 
 interface CategoryDecoration {

@@ -7,7 +7,7 @@ import { exportWindow } from '@util/exportWindow';
 import { scrollHardTo } from '@util/scrollHardTo';
 import { createApp } from 'vue'
 import PartialReservedCommand from '@/PartialReservedCommand.vue';
-import BootstrapVue3 from 'bootstrap-vue-3'
+import BootstrapVueNext from 'bootstrap-vue-next'
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import Multiselect from 'vue-multiselect';
 import "@/legacy/main";
@@ -21,4 +21,4 @@ auto500px();
 htmlReady(() => {
   insertCustomCSS();
 });
-createApp(PartialReservedCommand).use(BootstrapVue3).component('v-multiselect', Multiselect).mount('#reservedCommandList');
+createApp(PartialReservedCommand).use(BootstrapVueNext).component('v-multiselect', Multiselect).mount('#reservedCommandList');

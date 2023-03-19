@@ -1,7 +1,7 @@
 import '@scss/processing.scss';
 
 import { unwrap } from "@util/unwrap";
-import BootstrapVue3 from 'bootstrap-vue-3'
+import BootstrapVueNext from 'bootstrap-vue-next'
 import Multiselect from 'vue-multiselect';
 import { commandMap as GeneralActions } from "@/processing/General";
 import { commandMap as NationActions } from '@/processing/Nation';
@@ -106,7 +106,7 @@ else {
         void submitCommand(entryInfo[0] == 'Nation', turnList, entryInfo[1], detail);
     }, true);
 
-    app.use(BootstrapVue3).component('v-multiselect', Multiselect).mount('#container');
+    app.use(BootstrapVueNext).component('v-multiselect', Multiselect).mount('#container');
 }
 
 

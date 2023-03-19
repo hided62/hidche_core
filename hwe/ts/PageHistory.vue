@@ -75,7 +75,7 @@ declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 <script lang="ts" setup>
 import { onMounted, provide, ref, watch } from "vue";
-import { BContainer, BButton, BFormSelect, BDropdown, BDropdownItem } from "bootstrap-vue-3";
+import { BContainer, BButton, BFormSelect, BDropdown, BDropdownItem } from "bootstrap-vue-next";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import type { HistoryObj } from "./defs/API/Global";

@@ -292,7 +292,7 @@ import { type diplomacyState, diplomacyStateInfo, type NationStaticItem } from "
 import { SammoAPI } from "./SammoAPI";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
-import { useToast, BContainer } from "bootstrap-vue-3";
+import { useToast, BContainer } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
 
 const toasts = unwrap(useToast());

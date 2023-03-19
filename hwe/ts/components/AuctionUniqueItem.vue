@@ -130,7 +130,7 @@
 import type { UniqueItemAuctionDetail, UniqueItemAuctionList } from "@/defs/API/Auction";
 import { SammoAPI } from "@/SammoAPI";
 import { unwrap } from "@/util/unwrap";
-import { useToast, BButton } from "bootstrap-vue-3";
+import { useToast, BButton } from "bootstrap-vue-next";
 import { isString } from "lodash-es";
 import { inject, onMounted, ref, watch, type Ref } from "vue";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";

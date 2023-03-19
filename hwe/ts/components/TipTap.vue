@@ -348,7 +348,7 @@ import {
   BModal,
   BFormGroup,
   BFormInput,
-} from "bootstrap-vue-3";
+} from "bootstrap-vue-next";
 import { v4 as uuidv4 } from "uuid";
 import { unwrap } from "@/util/unwrap";
 import { getBase64FromFileObject } from "@/util/getBase64FromFileObject";

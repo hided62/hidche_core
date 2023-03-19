@@ -185,7 +185,7 @@ declare const staticValues: {
 <script lang="ts" setup>
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import { BContainer, useToast, BButton, BFormInput } from "bootstrap-vue-3";
+import { BContainer, useToast, BButton, BFormInput } from "bootstrap-vue-next";
 import { unwrap } from "@/util/unwrap";
 import { onMounted, reactive, ref, watch, computed } from "vue";
 import type { VoteInfo, VoteDetailResult } from "@/defs/API/Vote";

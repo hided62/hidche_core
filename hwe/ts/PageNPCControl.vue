@@ -398,7 +398,7 @@ import { NPCPriorityBtnHelpMessage } from "@/helpTexts";
 import draggable from "vuedraggable";
 import TopBackBar from "@/components/TopBackBar.vue";
 import { convertIDArray } from "@util/convertIDArray";
-import { useToast, BContainer } from "bootstrap-vue-3";
+import { useToast, BContainer } from "bootstrap-vue-next";
 
 const chiefActionPriority = ref<IDItem<NPCChiefActions>[]>([]);
 const chiefActionKeys = ref(new Set(staticValues.availableNationPriorityItems));

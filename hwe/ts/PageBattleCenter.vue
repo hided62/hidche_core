@@ -78,7 +78,7 @@ declare const queryValues: {
 };
 </script>
 <script lang="ts" setup>
-import { BContainer, useToast, BFormSelect, BFormSelectOption, BButton } from "bootstrap-vue-3";
+import { BContainer, useToast, BFormSelect, BFormSelectOption, BButton } from "bootstrap-vue-next";
 import { onMounted, provide, ref, watch } from "vue";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import TopBackBar from "@/components/TopBackBar.vue";

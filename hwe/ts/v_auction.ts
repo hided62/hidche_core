@@ -1,7 +1,7 @@
 import "@scss/auction.scss";
 import { createApp } from 'vue'
 import PageAuction from '@/PageAuction.vue';
-import BootstrapVue3, { BToastPlugin } from 'bootstrap-vue-3'
+import BootstrapVueNext, { BToastPlugin } from 'bootstrap-vue-next'
 import { auto500px } from "./util/auto500px";
 import { insertCustomCSS } from "./util/customCSS";
 import { htmlReady } from "./util/htmlReady";
@@ -20,4 +20,4 @@ htmlReady(() => {
   });
 createApp(PageAuction, {
   isResAuction: staticValues.isResAuction,
-}).use(BootstrapVue3).use(BToastPlugin).mount('#app')
+}).use(BootstrapVueNext).use(BToastPlugin).mount('#app')

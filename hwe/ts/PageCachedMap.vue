@@ -36,7 +36,7 @@ declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 <script lang="ts" setup>
 import { onMounted, provide, ref } from "vue";
-import { BContainer } from "bootstrap-vue-3";
+import { BContainer } from "bootstrap-vue-next";
 import { SammoAPI } from "./SammoAPI";
 import { formatLog } from "./utilGame/formatLog";
 import MapViewer, { type CityPositionMap, type MapCityParsedRaw, type MapCityParsed } from "./components/MapViewer.vue";

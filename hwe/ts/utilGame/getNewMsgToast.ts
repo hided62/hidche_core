@@ -1,5 +1,5 @@
-import { BButton } from "bootstrap-vue-3";
-import type { ToastContent } from "bootstrap-vue-3/dist/components/BToast/plugin";
+import { BButton } from "bootstrap-vue-next";
+import type { ToastContent } from "bootstrap-vue-next/dist/components/BToast/plugin";
 import { h } from "vue";
 
 type CallbackType = (type: "goto" | "ignore", e: MouseEvent) => void;

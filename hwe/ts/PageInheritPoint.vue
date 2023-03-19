@@ -261,7 +261,7 @@ import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { inheritBuffType, InheritPointLogItem } from "./defs/API/InheritAction";
 import * as JosaUtil from "@/util/JosaUtil";
-import { BButton } from "bootstrap-vue-3";
+import { BButton } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
 
 const inheritanceViewText: Record<InheritanceViewType, { title: string; info: string }> = {

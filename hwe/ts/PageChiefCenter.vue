@@ -113,7 +113,7 @@ import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import { postFilterNationCommandGen } from "./utilGame/postFilterNationCommandGen";
-import { useToast } from "bootstrap-vue-3";
+import { useToast } from "bootstrap-vue-next";
 
 const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,

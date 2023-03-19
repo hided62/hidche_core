@@ -109,7 +109,7 @@ import { formatConnectScore } from "@/utilGame/formatConnectScore";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 import { isString } from "lodash-es";
 import { formatDefenceTrain } from "@/utilGame/formatDefenceTrain";
-import { BDropdownItem, BDropdownDivider, BButtonGroup, BDropdown, BButton } from "bootstrap-vue-3";
+import { BDropdownItem, BDropdownDivider, BButtonGroup, BDropdown, BButton } from "bootstrap-vue-next";
 import { unwrap_err } from "@/util/unwrap_err";
 import { RuntimeError } from "@/util/RuntimeError";
 import { defaultDisplaySetting, type GridDisplaySetting } from "@/defs/gridDefs";

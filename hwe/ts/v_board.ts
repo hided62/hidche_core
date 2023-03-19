@@ -1,7 +1,7 @@
 import "@scss/board.scss";
 import { createApp } from 'vue'
 import PageBoard from '@/PageBoard.vue';
-import BootstrapVue3 from 'bootstrap-vue-3'
+import BootstrapVueNext from 'bootstrap-vue-next'
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { auto500px } from "./util/auto500px";
 import { insertCustomCSS } from "./util/customCSS";
@@ -19,4 +19,4 @@ htmlReady(() => {
   });
 createApp(PageBoard, {
     isSecretBoard
-}).use(BootstrapVue3).mount('#app')
+}).use(BootstrapVueNext).mount('#app')

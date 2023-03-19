@@ -1,7 +1,7 @@
 import "@scss/history.scss";
 import { createApp } from 'vue'
 import PageGlobalDiplomacy from '@/PageGlobalDiplomacy.vue';
-import { BootstrapVue3, BToastPlugin } from 'bootstrap-vue-3'
+import { BootstrapVueNext, BToastPlugin } from 'bootstrap-vue-next'
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { auto500px } from "./util/auto500px";
 import { htmlReady } from "./util/htmlReady";
@@ -13,4 +13,4 @@ auto500px();
 htmlReady(() => {
   insertCustomCSS();
 });
-createApp(PageGlobalDiplomacy).use(BootstrapVue3).use(BToastPlugin).mount('#app');
+createApp(PageGlobalDiplomacy).use(BootstrapVueNext).use(BToastPlugin).mount('#app');

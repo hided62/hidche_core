@@ -274,7 +274,7 @@ import { QueryActionHelper, type TurnObjWithTime } from "@/util/QueryActionHelpe
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import { getNPCColor } from "@/utilGame";
-import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown, useToast } from "bootstrap-vue-3";
+import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown, useToast } from "bootstrap-vue-next";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";
 import type { ChiefResponse } from "@/defs/API/NationCommand";

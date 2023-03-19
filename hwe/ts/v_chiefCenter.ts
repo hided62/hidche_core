@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import PageChiefCenter from '@/PageChiefCenter.vue';
-import BootstrapVue3, { BToastPlugin } from 'bootstrap-vue-3'
-import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
+import BootstrapVueNext, { BToastPlugin } from 'bootstrap-vue-next'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import Multiselect from 'vue-multiselect';
 import { auto500px } from './util/auto500px';
@@ -20,4 +20,4 @@ htmlReady(() => {
 createApp(PageChiefCenter, {
     maxChiefTurn,
 
-}).use(BootstrapVue3).use(BToastPlugin).component('v-multiselect', Multiselect).mount('#app')
+}).use(BootstrapVueNext).use(BToastPlugin).component('v-multiselect', Multiselect).mount('#app')

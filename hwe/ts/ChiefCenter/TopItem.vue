@@ -73,7 +73,7 @@ import { range } from "lodash-es";
 import { inject, onMounted, ref, type PropType } from "vue";
 import VueTypes from "vue-types";
 import DragSelect from "@/components/DragSelect.vue";
-import { BButton } from "bootstrap-vue-3";
+import { BButton } from "bootstrap-vue-next";
 import { QueryActionHelper } from "@/util/QueryActionHelper";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
 

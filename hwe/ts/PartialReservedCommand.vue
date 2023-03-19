@@ -289,7 +289,7 @@ import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { CommandItem, CommandTableResponse } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
-import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider, useToast } from "bootstrap-vue-3";
+import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider, useToast } from "bootstrap-vue-next";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { TurnObj } from "@/defs";
 import type { Args } from "./processing/args";

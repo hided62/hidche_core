@@ -161,7 +161,7 @@
 import type { BasicResourceAuctionInfo } from "@/defs/API/Auction";
 import { SammoAPI } from "@/SammoAPI";
 import { unwrap } from "@/util/unwrap";
-import { useToast, BButtonGroup, BButton } from "bootstrap-vue-3";
+import { useToast, BButtonGroup, BButton } from "bootstrap-vue-next";
 import { isString } from "lodash-es";
 import { onMounted, reactive, ref, watch } from "vue";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
