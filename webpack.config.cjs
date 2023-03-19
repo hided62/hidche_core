@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { resolve } = require('path');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
-const { ESBuildMinifyPlugin } = require('esbuild-loader')
+const { EsbuildPlugin } = require('esbuild-loader')
 const webpack = require('webpack');
 const fs = require('fs');
 module.exports = (env, argv) => {
@@ -86,7 +86,7 @@ module.exports = (env, argv) => {
             },
         },
         minimizer: [
-            new ESBuildMinifyPlugin({
+            new EsbuildPlugin({
                 css: true
             }),
         ],
