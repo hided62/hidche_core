@@ -530,6 +530,10 @@ watch(refreshCounter, async () => {
   }
 }
 
+.generalCommandToolbar{
+  white-space: nowrap;
+}
+
 @include media-500px {
   #outBlock {
     position: absolute;

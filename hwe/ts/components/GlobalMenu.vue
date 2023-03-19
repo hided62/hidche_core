@@ -139,6 +139,7 @@ function splitClick(menu: MenuItem) {
 .global-menu {
   display: grid;
   gap: 0.1rem;
+  white-space: nowrap;
 }
 
 @include media-1000px {
