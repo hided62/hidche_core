@@ -545,3 +545,8 @@ async function setBlockScout() {
 }
 
 </script>
+<style lang="scss" scoped>
+:deep(.ProseMirror){
+  min-height: 3em;
+}
+</style>
