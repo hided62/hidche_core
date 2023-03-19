@@ -296,7 +296,11 @@ function _updateLatestMsg(msg: MsgItem) {
   }
 
   if (msgType == "diplomacy") {
+    if (permissionLevel.value < 4){
+      return;
+    }
     const [toastID, latestMsgID] = latestDiplomacyMsgToastInfo.value;
+
     if (msg.id <= latestMsgID) {
       return;
     }
