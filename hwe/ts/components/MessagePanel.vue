@@ -35,7 +35,14 @@
     </div>
     <div class="PublicTalk">
       <div class="stickyAnchor"></div>
-      <div class="BoardHeader bg0">전체 메시지</div>
+      <div class="BoardHeader bg0 d-flex">
+        <div class="flex-grow-1 align-self-center">전체 메시지</div>
+        <div>
+          <BButton size="sm" class="btn-more-small" variant="primary" @click="targetMailbox = 9999"
+            ><i class="bi bi-reply-fill" />여기로</BButton
+          >
+        </div>
+      </div>
       <template v-if="messagePublic.length == 0">
         <div>메시지가 없습니다.</div>
       </template>
@@ -48,6 +55,7 @@
           :generalName="generalName"
           :nationID="nationID"
           :permissionLevel="permissionLevel"
+          @setTarget="setTarget"
         ></MessagePlate>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'public')">접기</button>
@@ -59,7 +67,14 @@
     </div>
     <div class="NationalTalk">
       <div class="stickyAnchor"></div>
-      <div class="BoardHeader bg0">국가 메시지</div>
+      <div class="BoardHeader bg0 d-flex">
+        <div class="flex-grow-1 align-self-center">국가 메시지</div>
+        <div>
+          <BButton size="sm" class="btn-more-small" variant="primary" @click="targetMailbox = 9000 + props.nationID"
+            ><i class="bi bi-reply-fill" />여기로</BButton
+          >
+        </div>
+      </div>
       <template v-if="messageNational.length == 0">
         <div>메시지가 없습니다.</div>
       </template>
@@ -72,6 +87,7 @@
           :generalName="generalName"
           :nationID="nationID"
           :permissionLevel="permissionLevel"
+          @setTarget="setTarget"
         ></MessagePlate>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'national')">접기</button>
@@ -87,9 +103,10 @@
         <div class="flex-grow-1 align-self-center">개인 메시지</div>
         <div>
           <BButton
-            v-if="messagePrivate.length > 0 && latestPrivateMsgToastInfo[2] > latestPrivateMsgToastInfo[1]"
             size="sm"
+            class="btn-more-small"
             variant="secondary"
+            :disabled="!(messagePrivate.length > 0 && latestPrivateMsgToastInfo[2] > latestPrivateMsgToastInfo[1])"
             @click="readLatestMsg('private')"
             >모두 읽음</BButton
           >
@@ -107,7 +124,12 @@
           :generalName="generalName"
           :nationID="nationID"
           :permissionLevel="permissionLevel"
-          @response="()=>{readLatestMsg('private')}"
+          @response="
+            () => {
+              readLatestMsg('private');
+            }
+          "
+          @setTarget="setTarget"
         ></MessagePlate>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'private')">접기</button>
@@ -123,9 +145,10 @@
         <div class="flex-grow-1 align-self-center">외교 메시지</div>
         <div>
           <BButton
-            v-if="messageDiplomacy.length > 0 && latestDiplomacyMsgToastInfo[2] > latestDiplomacyMsgToastInfo[1]"
-            ize="sm"
+            size="sm"
+            class="btn-more-small"
             variant="secondary"
+            :disabled="!(messagePrivate.length > 0 && latestPrivateMsgToastInfo[2] > latestPrivateMsgToastInfo[1])"
             @click="readLatestMsg('diplomacy')"
             >모두 읽음</BButton
           >
@@ -143,7 +166,12 @@
           :generalName="generalName"
           :nationID="nationID"
           :permissionLevel="permissionLevel"
-          @response="()=>{readLatestMsg('diplomacy')}"
+          @response="
+            () => {
+              readLatestMsg('diplomacy');
+            }
+          "
+          @setTarget="setTarget"
         ></MessagePlate>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'diplomacy')">접기</button>
@@ -170,7 +198,7 @@ import { onMounted, ref, toRef, watch, type Ref } from "vue";
 import { delay } from "@/util/delay";
 import { SammoAPI } from "@/SammoAPI";
 import { isString } from "lodash-es";
-import type { MabilboxListResponse, MsgItem, MsgResponse, MsgType } from "@/defs/API/Message";
+import type { MabilboxListResponse, MsgItem, MsgResponse, MsgTarget, MsgType } from "@/defs/API/Message";
 import MessagePlate from "@/components/MessagePlate.vue";
 import { useToast, BFormSelect } from "bootstrap-vue-next";
 import { unwrap } from "@/util/unwrap";
@@ -273,24 +301,20 @@ function _updateLatestMsg(msg: MsgItem) {
       toasts.remove(toastID);
     }
     const newToastID = toasts.show(
-      getNewMsgToast(
-        "새로운 개인 메시지",
-        "새로운 개인 메시지가 도착했습니다.",
-        (type, e)=>{
-          if(type === 'goto'){
-            readLatestMsg('private');
-            scrollToSelector('.PrivateTalk > .stickyAnchor');
-            return;
-          }
-          if(type === 'ignore'){
-            readLatestMsg('private');
-            return;
-          }
+      getNewMsgToast("새로운 개인 메시지", "새로운 개인 메시지가 도착했습니다.", (type, e) => {
+        if (type === "goto") {
+          readLatestMsg("private");
+          scrollToSelector(".PrivateTalk > .stickyAnchor");
+          return;
         }
-      ),
+        if (type === "ignore") {
+          readLatestMsg("private");
+          return;
+        }
+      }),
       {
         delay: 1000 * 60 * 10,
-        variant: 'warning'
+        variant: "warning",
       }
     ).options.id;
     latestPrivateMsgToastInfo.value = [newToastID, latestMsgID, msg.id];
@@ -298,7 +322,7 @@ function _updateLatestMsg(msg: MsgItem) {
   }
 
   if (msgType == "diplomacy") {
-    if (permissionLevel.value < 4){
+    if (permissionLevel.value < 4) {
       return;
     }
     const [toastID, latestMsgID] = latestDiplomacyMsgToastInfo.value;
@@ -311,24 +335,20 @@ function _updateLatestMsg(msg: MsgItem) {
       toasts.remove(toastID);
     }
     const newToastID = toasts.show(
-      getNewMsgToast(
-        "새로운 외교 메시지",
-        "새로운 외교 메시지가 도착했습니다.",
-        (type, e)=>{
-          if(type === 'goto'){
-            readLatestMsg('diplomacy');
-            scrollToSelector('.DiplomacyTalk > .stickyAnchor')
-            return;
-          }
-          if(type === 'ignore'){
-            readLatestMsg('diplomacy');
-            return;
-          }
+      getNewMsgToast("새로운 외교 메시지", "새로운 외교 메시지가 도착했습니다.", (type, e) => {
+        if (type === "goto") {
+          readLatestMsg("diplomacy");
+          scrollToSelector(".DiplomacyTalk > .stickyAnchor");
+          return;
         }
-      ),
+        if (type === "ignore") {
+          readLatestMsg("diplomacy");
+          return;
+        }
+      }),
       {
         delay: 1000 * 60 * 10,
-        variant: 'warning'
+        variant: "warning",
       }
     ).options.id;
     latestDiplomacyMsgToastInfo.value = [newToastID, latestMsgID, msg.id];
@@ -522,10 +542,31 @@ type MailboxTarget = {
   disabled?: true;
   color?: string;
 };
+const mailboxMap = ref(new Map<number, MailboxTarget>());
 const mailboxList = ref<MailboxGroup[]>([]);
 const newMessageText = ref<string>("");
 
+function setTarget(type: MsgType, target: MsgTarget): void {
+  const item = mailboxMap.value.get(
+    (() => {
+      if (type == "diplomacy" || type == "national") {
+        if (target.nation_id == nationID.value) {
+          return target.id;
+        }
+        return target.nation_id + 9000;
+      }
+      return target.id;
+    })()
+  );
+  if (!item) {
+    return;
+  }
+  targetMailbox.value = item.value;
+}
+
 function refreshMailboxList(obj: MabilboxListResponse) {
+  const newMailboxMap = new Map<number, MailboxTarget>();
+
   let myNationColor = "#000000";
   const diplomacyMailboxList: MailboxGroup = {
     label: "외교메시지",
@@ -590,6 +631,7 @@ function refreshMailboxList(obj: MabilboxListResponse) {
         target.disabled = true;
       }
       nationBox.options.push(target);
+      newMailboxMap.set(destGeneralID, target);
     }
     nationMailboxList.push(nationBox);
 
@@ -597,12 +639,14 @@ function refreshMailboxList(obj: MabilboxListResponse) {
       continue;
     }
 
-    diplomacyMailboxList.options.push({
+    const target: MailboxTarget = {
       value: nation.mailbox,
       text: nation.name,
       nationID: nation.nationID,
       color: nation.color,
-    });
+    };
+    newMailboxMap.set(nation.mailbox, target);
+    diplomacyMailboxList.options.push(target);
   }
 
   const favoriteBox: MailboxGroup = {
@@ -624,6 +668,7 @@ function refreshMailboxList(obj: MabilboxListResponse) {
   };
 
   mailboxList.value = [favoriteBox, diplomacyMailboxList, ...nationMailboxList];
+  mailboxMap.value = newMailboxMap;
 }
 
 function foldMessage($event: MouseEvent, type: MsgType) {
@@ -721,6 +766,11 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 @import "@scss/common/break_500px.scss";
+
+.btn-more-small {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.4rem;
+}
 
 .BoardHeader {
   color: white;
