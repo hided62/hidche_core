@@ -94,7 +94,7 @@ if ($gencount >= $maxgeneral) {
 
 <body>
     <div class="container">
-        <div class="bg0 with_border legacy_layout">장 수 선 택<br><?= backButton() ?></div>
+        <div class="bg0 with_border legacy_layout">장 수 선 택<br><?= gatewayButton() ?></div>
         <table style="width:100%;" class="bg0 with_border">
             <tr>
                 <td><?= info(0) ?></td>
@@ -142,7 +142,7 @@ if ($gencount >= $maxgeneral) {
                     </tr>
                 </tfoot>
             </table>
-            <div class="with_border legacy_layout"><?= backButton() ?></div>
+            <div class="with_border legacy_layout"><?= gatewayButton() ?></div>
             <div class="with_border legacy_layout"><?= banner() ?></div>
         </div>
     </div>

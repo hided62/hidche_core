@@ -1,5 +1,5 @@
 <template>
-  <TopBackBar title="장수 생성" />
+  <TopBackBar title="장수 생성" type="gateway" />
 
   <div v-if="gameConstStore && args" id="container" class="bg0">
     <div class="nation-list">

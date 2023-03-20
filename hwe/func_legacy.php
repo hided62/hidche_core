@@ -119,6 +119,11 @@ function backButton()
     return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('./')>돌아가기</button><br>";
 }
 
+function gatewayButton()
+{
+    return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('../')>돌아가기</button><br>";
+}
+
 function CoreBackButton()
 {
     return "<button type='button' class='btn btn-primary back_btn' onclick=location.replace('v_chiefCenter.php')>돌아가기</button><br>";

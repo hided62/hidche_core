@@ -34,7 +34,7 @@ import VueTypes from "vue-types";
 const props = defineProps({
   title: VueTypes.string.isRequired,
   type: {
-    type: String as PropType<"normal" | "chief" | "close">,
+    type: String as PropType<"normal" | "chief" | "close" | "gateway">,
     default: "normal",
     required: false,
   },
@@ -70,6 +70,8 @@ watch(toggleSearch, (val) => {
 function back() {
   if (props.type === "normal") {
     location.href = "./";
+  } else if (props.type === "gateway") {
+    location.href = "..";
   } else if (props.type == "chief") {
     location.href = "v_chiefCenter.php";
   } else {

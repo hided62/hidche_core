@@ -13,7 +13,7 @@ import "@scss/game_bg.scss";
 
 const props = defineProps({
   type: {
-    type: String as PropType<"normal" | "chief" | "close">,
+    type: String as PropType<"normal" | "chief" | "close" | "gateway">,
     default: "normal",
     required: false,
   },
@@ -22,6 +22,8 @@ const props = defineProps({
 function back() {
   if (props.type === "normal") {
     location.href = "./";
+  } else if (props.type === "gateway") {
+    location.href = "..";
   } else if (props.type == "chief") {
     location.href = "v_chiefCenter.php";
   } else {
