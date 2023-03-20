@@ -67,3 +67,5 @@ ingame/js/*
 ingame/css/*
 gateway/js/*
 gateway/css/*
+
+*.db-journal
