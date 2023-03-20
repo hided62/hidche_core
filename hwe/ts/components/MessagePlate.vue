@@ -128,7 +128,7 @@
 import type { MsgItem, MsgTarget, MsgType } from "@/defs/API/Message";
 import { parseTime } from "@/util/parseTime";
 import { differenceInMilliseconds, addMinutes } from "date-fns/esm";
-import { computed, ref, toRef, watch, type ComputedRef, type Ref } from "vue";
+import { computed, onMounted, ref, toRef, watch, type ComputedRef, type Ref } from "vue";
 import linkifyStr from "linkify-string";
 import { SammoAPI } from "@/SammoAPI";
 import { isError, isString } from "lodash-es";
@@ -203,11 +203,10 @@ function testDeletable(msg: MsgItem): boolean {
   if (msg.option.action) return false;
   if (msg.src.id != props.generalID) return false;
   if (msg.option.invalid) return false;
-  if (!msg.option.deletable) return false;
+  if (!(msg.option.deletable ?? true)) return false;
 
   const now = new Date();
   const last5min = addMinutes(parseTime(msg.time), 5);
-
   const timeDiff = differenceInMilliseconds(last5min, now);
 
   if (timeDiff <= 0) return false;
@@ -218,6 +217,11 @@ function testDeletable(msg: MsgItem): boolean {
 
   return true;
 }
+
+onMounted(() => {
+  isValidMsg.value = testValidMsg(msg.value);
+  deletable.value = testDeletable(msg.value);
+});
 
 const nationType: ComputedRef<"local" | "src" | "dest"> = computed(() => {
   if (msg.value.src.nation_id === msg.value.dest?.nation_id) {

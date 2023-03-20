@@ -55,7 +55,6 @@ export type MsgResponse = {
   [v in MsgType]: MsgItem[];
 } & {
   result: true;
-  keepRecent: boolean;
   nationID: number;
   generalName: string;
   sequence: number;

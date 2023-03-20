@@ -47,16 +47,19 @@
         <div>메시지가 없습니다.</div>
       </template>
       <div v-else class="MessageList">
-        <MessagePlate
-          v-for="msg of messagePublic"
-          :key="msg.id"
-          :modelValue="msg"
-          :generalID="generalID"
-          :generalName="generalName"
-          :nationID="nationID"
-          :permissionLevel="permissionLevel"
-          @setTarget="setTarget"
-        ></MessagePlate>
+        <template v-for="msg of messagePublic" :key="msg.id">
+          <MessagePlate
+            v-if="!msg.option.hide"
+            :modelValue="msg"
+            :generalID="generalID"
+            :generalName="generalName"
+            :nationID="nationID"
+            :permissionLevel="permissionLevel"
+            :deleted="deletedMessage.has(msg.id)"
+            @setTarget="setTarget"
+            @request-refresh="tryRefresh"
+          ></MessagePlate>
+        </template>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'public')">접기</button>
           <button type="button" class="btn btn-secondary" @click="loadOldMessage($event, 'public')">
@@ -79,16 +82,19 @@
         <div>메시지가 없습니다.</div>
       </template>
       <div v-else class="MessageList">
-        <MessagePlate
-          v-for="msg of messageNational"
-          :key="msg.id"
-          :modelValue="msg"
-          :generalID="generalID"
-          :generalName="generalName"
-          :nationID="nationID"
-          :permissionLevel="permissionLevel"
-          @setTarget="setTarget"
-        ></MessagePlate>
+        <template v-for="msg of messageNational" :key="msg.id">
+          <MessagePlate
+            v-if="!msg.option.hide"
+            :modelValue="msg"
+            :generalID="generalID"
+            :generalName="generalName"
+            :nationID="nationID"
+            :permissionLevel="permissionLevel"
+            :deleted="deletedMessage.has(msg.id)"
+            @setTarget="setTarget"
+            @request-refresh="tryRefresh"
+          ></MessagePlate>
+        </template>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'national')">접기</button>
           <button type="button" class="btn btn-secondary" @click="loadOldMessage($event, 'national')">
@@ -116,21 +122,19 @@
         <div>메시지가 없습니다.</div>
       </template>
       <div v-else class="MessageList">
-        <MessagePlate
-          v-for="msg of messagePrivate"
-          :key="msg.id"
-          :modelValue="msg"
-          :generalID="generalID"
-          :generalName="generalName"
-          :nationID="nationID"
-          :permissionLevel="permissionLevel"
-          @response="
-            () => {
-              readLatestMsg('private');
-            }
-          "
-          @setTarget="setTarget"
-        ></MessagePlate>
+        <template v-for="msg of messagePrivate" :key="msg.id">
+          <MessagePlate
+            v-if="!msg.option.hide"
+            :modelValue="msg"
+            :generalID="generalID"
+            :generalName="generalName"
+            :nationID="nationID"
+            :permissionLevel="permissionLevel"
+            :deleted="deletedMessage.has(msg.id)"
+            @setTarget="setTarget"
+            @request-refresh="tryRefresh"
+          ></MessagePlate>
+        </template>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'private')">접기</button>
           <button type="button" class="btn btn-secondary" @click="loadOldMessage($event, 'private')">
@@ -158,21 +162,19 @@
         <div>메시지가 없습니다.</div>
       </template>
       <div v-else class="MessageList">
-        <MessagePlate
-          v-for="msg of messageDiplomacy"
-          :key="msg.id"
-          :modelValue="msg"
-          :generalID="generalID"
-          :generalName="generalName"
-          :nationID="nationID"
-          :permissionLevel="permissionLevel"
-          @response="
-            () => {
-              readLatestMsg('diplomacy');
-            }
-          "
-          @setTarget="setTarget"
-        ></MessagePlate>
+        <template v-for="msg of messageDiplomacy" :key="msg.id">
+          <MessagePlate
+            v-if="!msg.option.hide"
+            :modelValue="msg"
+            :generalID="generalID"
+            :generalName="generalName"
+            :nationID="nationID"
+            :permissionLevel="permissionLevel"
+            :deleted="deletedMessage.has(msg.id)"
+            @setTarget="setTarget"
+            @request-refresh="tryRefresh"
+          ></MessagePlate>
+        </template>
         <div class="d-grid Actions">
           <button type="button" class="btn btn-dark only-mobile" @click="foldMessage($event, 'diplomacy')">접기</button>
           <button type="button" class="btn btn-secondary" @click="loadOldMessage($event, 'diplomacy')">
@@ -243,6 +245,8 @@ const messagePublic = ref<MsgItem[]>([]);
 const messageNational = ref<MsgItem[]>([]);
 const messagePrivate = ref<MsgItem[]>([]);
 const messageDiplomacy = ref<MsgItem[]>([]);
+
+const deletedMessage = ref(new Set<number>());
 
 const messageIndexedList: Record<MsgType, Ref<MsgItem[]>> = {
   public: messagePublic,
@@ -375,16 +379,21 @@ function processMsg(msg: MsgItem) {
       targetMsg.option.invalid = true;
     })();
   }
+  if (msg.option.overwrite) {
+    (() => {
+      for(const targetID of msg.option.overwrite) {
+        const targetMsg = messageStorage.get(targetID);
+        if (!targetMsg) {
+          continue;
+        }
+        deletedMessage.value.add(targetID);
+        targetMsg.option.invalid = true;
+      }
+    })();
+  }
 }
 
 function updateMsgResponse(response: MsgResponse) {
-  if (!response.keepRecent) {
-    messageStorage.clear();
-    for (const msgList of Object.values(messageIndexedList)) {
-      msgList.value.length = 0;
-    }
-  }
-
   if (response.generalName != generalName.value) {
     emit("request-refresh");
     return;

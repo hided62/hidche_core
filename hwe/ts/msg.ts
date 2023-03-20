@@ -227,18 +227,6 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
         })
         return obj;
     }
-    function checkClear(obj: MsgResponse): MsgResponse {
-        if (!obj.keepRecent) {
-            $('.msg_plate').detach();
-            lastSequence = undefined;
-            console.log('refresh!');
-            void fetchRecentMsg().then(async (data) => {
-                redrawMsg(data, true);
-            })
-            throw true;
-        }
-        return obj;
-    }
     function registerSequence(obj: MsgResponse): MsgResponse {
         lastSequence = Math.max(lastSequence ?? 0, obj.sequence);
         for (const msgType of ['public', 'private', 'national', 'diplomacy'] as MsgType[]) {
@@ -438,7 +426,6 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
 
 
     msgResponse = checkErasable(msgResponse);
-    msgResponse = checkClear(msgResponse);
     msgResponse = registerSequence(msgResponse);
     printTemplate(msgResponse);
     return msgResponse;

@@ -83,7 +83,6 @@ class GetRecentMessage extends \sammo\BaseAPI
 
     $result = [];
     $result['result'] = true;
-    $result['keepRecent'] = false;
     $nextSequence = $reqSequence;
     $minSequence = $reqSequence;
     $lastType = null;
@@ -139,9 +138,6 @@ class GetRecentMessage extends \sammo\BaseAPI
 
     if ($lastType !== null) {
       array_pop($result[$lastType]);
-      $result['keepRecent'] = true;
-    } else if ($reqSequence <= 0) {
-      $result['keepRecent'] = true;
     }
 
     $result['sequence'] = $nextSequence;
