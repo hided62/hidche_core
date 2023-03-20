@@ -28,12 +28,12 @@ class GameUnitConst extends GameUnitConstBase
     ],
     [
       1200, self::T_ARCHER, '궁병',
-      100, 100, 7, 20, 0,  10, 10,
+      100, 100, 7, 10, 0,  10, 10,
       0, null,     null,     0,
       [self::T_CAVALRY => 1.2, self::T_FOOTMAN => 0.8, self::T_SIEGE => 1.2],
       [self::T_CAVALRY => 0.8, self::T_FOOTMAN => 1.2, self::T_SIEGE => 0.8],
-      ['표준적인 궁병입니다.', '궁병은 회피특화입니다.'],
-      null, null
+      ['표준적인 궁병입니다.', '궁병은 선제사격을 하는 병종입니다.'],
+      null, ['che_선제사격시도', 'che_선제사격발동']
     ],
     [
       1300, self::T_CAVALRY, '기병',
@@ -145,12 +145,12 @@ class GameUnitConst extends GameUnitConstBase
     ],
     [
       1500, self::T_SIEGE, '정란',
-      100, 100, 6,  0, 0,  15,  5,
+      100, 100, 6,  0, 0,  14,  5,
       0, null,     null,     3,
-      [self::T_FOOTMAN => 0.8, self::T_ARCHER => 0.8, self::T_CAVALRY => 0.8, self::T_WIZARD => 0.8, self::T_CASTLE => 1.8],
+      [self::T_FOOTMAN => 1.25, self::T_ARCHER => 1.25, self::T_CAVALRY => 1.25, self::T_WIZARD => 1.25, self::T_CASTLE => 1.8, 1106 => 1.112],
       [self::T_FOOTMAN => 1.2, self::T_ARCHER => 1.2, self::T_CAVALRY => 1.2, self::T_WIZARD => 1.2],
       ['높은 구조물 위에서 공격합니다.'],
-      ['che_성벽부상무효'], null
+      ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동']
     ],
     [
       1501, self::T_SIEGE, '충차',
