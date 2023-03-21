@@ -69,6 +69,23 @@ $color in $sammoColors {
       border-color: shade-color($color, 10%);
     }
   }
+
+  .btn-sammo-#{$colorType}.highlight {
+    @include button-variant($color, $color, magenta, $hover-color: magenta, $active-color: magenta);
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $color;
+    }
+
+    &,
+    &:not(.disabled):hover,
+    &:not(.disabled):active,
+    &:focus {
+      border-color: shade-color($color, 10%);
+    }
+  }
 }
 
 

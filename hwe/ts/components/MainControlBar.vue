@@ -18,7 +18,7 @@
     <a
       href="b_tournament.php"
       target="_blank"
-      :class="['btn', isTournamentApplicationOpen ? 'btn-sammo-base2' : 'btn-sammo-nation']"
+      :class="['btn', isTournamentApplicationOpen ? 'btn-sammo-base2 highlight' : 'btn-sammo-nation']"
       >토 너 먼 트</a
     >
     <a href="b_myKingdomInfo.php" :class="`btn btn-sammo-nation ${myLevel >= 1 ? '' : 'disabled'}`">세력 정보</a>
@@ -58,7 +58,7 @@
     <a
       href="b_betting.php"
       target="_blank"
-      :class="['btn', props.isBettingActive ? 'btn-sammo-base2' : 'btn-sammo-nation']"
+      :class="['btn', props.isBettingActive ? 'btn-sammo-base2 highlight' : 'btn-sammo-nation']"
       >베 팅 장</a
     >
   </div>
