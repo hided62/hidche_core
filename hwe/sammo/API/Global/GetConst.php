@@ -86,10 +86,10 @@ class GetConst extends \sammo\BaseAPI
             if ($lastModified !== null) {
                 $versionHash = "lt{$lastModified}";
             } else {
-                $versionHash = VersionGit::getHash();
+                $versionHash = VersionGit::getVersion();
             }
         } else {
-            $versionHash = VersionGit::getHash();
+            $versionHash = VersionGit::getVersion();
         }
 
         $apiVersion = static::CONST_API_VERSION;
