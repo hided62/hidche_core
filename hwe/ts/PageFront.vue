@@ -165,6 +165,12 @@
       :globalMenu="globalMenu"
       @refresh="tryRefresh"
     />
+    <BModal v-model="showVersionInfo" title="게임 정보">
+      {{ gameConstStore?.gameConst.title }}<br>
+      {{ gameConstStore?.version }}<br>
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <span v-html="gameConstStore?.gameConst.banner"></span>
+    </BModal>
   </div>
 </template>
 <script lang="ts">
@@ -180,7 +186,7 @@ declare const getCityPosition: () => CityPositionMap;
 declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 <script lang="ts" setup>
-import { BContainer, BButton, useToast } from "bootstrap-vue-next";
+import { BContainer, BModal, useToast } from "bootstrap-vue-next";
 import { isString } from "lodash-es";
 import { computed, onMounted, provide, ref, watch } from "vue";
 import { GameConstStore, getGameConstStore } from "./GameConstStore";
@@ -217,13 +223,16 @@ const lastExecuted = ref<Date>(parseTime("2022-08-15 00:00:00"));
 const serverLocked = ref(true);
 const refreshCounter = ref(0);
 
+const showVersionInfo = ref(false);
+
 const storeP = getGameConstStore().then((store) => {
   gameConstStore.value = store;
 });
 
 const menuCallList: Record<string, ()=>unknown> = {
   showVersion:()=>{
-    console.log('TODO version 출력');
+    console.log('version');
+    showVersionInfo.value = !showVersionInfo.value;
   },
 }
 

@@ -18,6 +18,7 @@ export class GameConstStore {
         >
     >;
     public readonly iActionKeyMap: Record<string, GameIActionCategory>;
+    public readonly version: string;
 
     constructor(response: GetConstResponse) {
         const data = response.data;
@@ -27,6 +28,7 @@ export class GameConstStore {
         this.cityConstMap = Object.freeze(data.cityConstMap);
         this.iActionInfo = Object.freeze(data.iActionInfo);
         this.iActionKeyMap = Object.freeze(data.iActionKeyMap);
+        this.version = Object.freeze(data.version);
     }
 }
 
