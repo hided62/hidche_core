@@ -10,6 +10,7 @@
               :globalInfo="globalInfo"
               :modelValue="globalMenu"
               variant="sammo-base2"
+              @reqCall="reqMenuCall"
             />
           </div>
           <GameInfo
@@ -219,6 +220,21 @@ const refreshCounter = ref(0);
 const storeP = getGameConstStore().then((store) => {
   gameConstStore.value = store;
 });
+
+const menuCallList: Record<string, ()=>unknown> = {
+  showVersion:()=>{
+    console.log('TODO version 출력');
+  },
+}
+
+function reqMenuCall(key:string){
+  if(!(key in menuCallList)){
+    console.error(`메뉴 호출 실패: ${key}`);
+    return;
+  }
+  const func = menuCallList[key];
+  void func();
+}
 
 const showSecret = computed(() => {
   if (!frontInfo.value) {

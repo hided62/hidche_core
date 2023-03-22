@@ -3,6 +3,7 @@
 namespace sammo;
 
 use sammo\DTO\MenuItem;
+use sammo\DTO\MenuLine;
 use sammo\DTO\MenuMulti;
 use sammo\DTO\MenuSplit;
 
@@ -11,7 +12,7 @@ use sammo\DTO\MenuSplit;
 class GlobalMenu {
   /** @var (MenuItem|MenuMulti|MenuSplit)[] */
 
-  const version = 1;
+  const version = 2;
   static ?array $menu = null;
   public static function getMenu(): array{
     if(static::$menu !== null){
@@ -23,6 +24,7 @@ class GlobalMenu {
         new MenuItem('세력일람', 'a_kingdomList.php', newTab: true),
         new MenuItem('장수일람', 'a_genList.php', newTab: true),
         new MenuItem('명장일람', 'a_bestGeneral.php', newTab: true),
+        new MenuLine(),
         new MenuItem('명예의전당', 'a_hallOfFame.php', newTab: true),
         new MenuItem('왕조일람', 'a_emperior.php', newTab: true),
       ]),
@@ -32,6 +34,7 @@ class GlobalMenu {
         [
           new MenuItem('건의/제안', '/board/request', newTab: true),
           new MenuItem('팁/강좌', '/board/tip', newTab: true),
+          new MenuLine(),
           new MenuItem('패치 내역', '/board/patch', newTab: true),
         ]
       ),

@@ -13,6 +13,9 @@ class MenuItem extends DTO{
     public readonly string $url,
 
     #[NullIsUndefined]
+    public ?string $funcCall = null,
+
+    #[NullIsUndefined]
     public ?string $icon = null,
     #[NullIsUndefined]
     public ?bool $newTab = false,

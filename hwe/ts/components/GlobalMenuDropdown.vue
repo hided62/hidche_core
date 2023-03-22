@@ -2,7 +2,12 @@
   <ul class="dropdown-menu dropdown-menu-start">
     <template v-for="(item, idx) in filteredMenu" :key="idx">
       <li v-if="item.type === 'item'">
-        <a class="dropdown-item" :href="item.url" :target="item.newTab ? '_blank' : undefined">
+        <a
+          class="dropdown-item"
+          :href="item.url"
+          :target="item.newTab ? '_blank' : undefined"
+          @click="menuClick($event, item)"
+        >
           {{ item.name }}
         </a>
       </li>
@@ -10,30 +15,57 @@
         <li :style="{ orphans: item.subMenu.length + 1 }">
           <span class="dropdown-item disabled">{{ item.name }}</span>
         </li>
-        <li v-for="(subItem, subIdx) in item.subMenu" :key="subIdx">
-          <a class="dropdown-item subItem" :href="subItem.url" :target="subItem.newTab ? '_blank' : undefined">{{
-            subItem.name
-          }}</a>
-        </li>
+        <template v-for="(subItem, subIdx) in item.subMenu" :key="subIdx">
+          <li v-if="subItem.type === 'item'">
+            <a
+              class="dropdown-item subItem"
+              :href="subItem.url"
+              :target="subItem.newTab ? '_blank' : undefined"
+              @click="menuClick($event, subItem)"
+              >{{ subItem.name }}</a
+            >
+          </li>
+          <hr v-else class="dropdown-divider" />
+        </template>
+        <hr class="dropdown-divider" />
       </template>
       <template v-else-if="item.type === 'split'">
         <li :style="{ orphans: item.subMenu.length + 1 }">
-          <a class="dropdown-item" :href="item.main.url" :target="item.main.newTab ? '_blank' : undefined">{{
-            item.main.name
-          }}</a>
+          <a
+            class="dropdown-item"
+            :href="item.main.url"
+            :target="item.main.newTab ? '_blank' : undefined"
+            @click="menuClick($event, item.main)"
+            >{{ item.main.name }}</a
+          >
         </li>
-        <li v-for="(subItem, subIdx) in item.subMenu" :key="subIdx">
-          <a class="dropdown-item subItem" :href="subItem.url" :target="subItem.newTab ? '_blank' : undefined">{{
-            subItem.name
-          }}</a>
-        </li>
+        <template v-for="(subItem, subIdx) in item.subMenu" :key="subIdx">
+          <li v-if="subItem.type === 'item'">
+            <a
+              class="dropdown-item subItem"
+              :href="subItem.url"
+              :target="subItem.newTab ? '_blank' : undefined"
+              @click="menuClick($event, subItem)"
+              >{{ subItem.name }}</a
+            >
+          </li>
+          <hr v-else class="dropdown-divider" />
+        </template>
+        <hr class="dropdown-divider" />
       </template>
     </template>
   </ul>
 </template>
 
 <script setup lang="ts">
-import type { GetFrontInfoResponse, GetMenuResponse, MenuItem, MenuMulti, MenuSplit } from "@/defs/API/Global";
+import type {
+  GetFrontInfoResponse,
+  GetMenuResponse,
+  MenuItem,
+  MenuLine,
+  MenuMulti,
+  MenuSplit,
+} from "@/defs/API/Global";
 import { isArray } from "lodash-es";
 import { computed, toRef } from "vue";
 
@@ -45,6 +77,10 @@ const props = defineProps<{
   columns?: number;
 }>();
 
+const emit = defineEmits<{
+  (event: "reqCall", value: string): void;
+}>();
+
 const columns = computed(() => {
   return props.columns ?? 3;
 });
@@ -52,7 +88,7 @@ const columns = computed(() => {
 const modelValue = toRef(props, "modelValue");
 const globalInfo = toRef(props, "globalInfo");
 
-type MenuVariant = MenuItem | MenuSplit | MenuMulti;
+type MenuVariant = MenuItem | MenuSplit | MenuMulti | MenuLine;
 
 function filterMenu(menu: MenuVariant | MenuVariant[]): MenuVariant | MenuVariant[] | undefined {
   if (isArray(menu)) {
@@ -101,6 +137,25 @@ function filterMenu(menu: MenuVariant | MenuVariant[]): MenuVariant | MenuVarian
 }
 
 const filteredMenu = computed(() => filterMenu(modelValue.value) as GetMenuResponse["menu"]);
+
+function menuClick(e: Event, menu: MenuItem) {
+  if (menu.funcCall) {
+    //TODO: CTRL+클릭도 대응해야하는지 고민이 필요함
+    e.preventDefault();
+    emit("reqCall", menu.url);
+    return;
+  }
+  if (!menu.url) {
+    e.preventDefault();
+    return;
+  }
+  if (!menu.newTab) {
+    //자동 핸들러를 따름
+    return;
+  }
+  e.preventDefault();
+  window.open(menu.url);
+}
 </script>
 
 <style lang="scss" scoped>

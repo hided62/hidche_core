@@ -7,54 +7,71 @@
         :variant="variant"
         :href="item.url"
         :target="item.newTab ? '_blank' : undefined"
+        @click="menuClick($event, item)"
         >{{ item.name }}</BButton
       >
-      <template v-else-if="item.type === 'multi'">
-        <BDropdown :variant="variant" :text="item.name" class="col">
+      <BDropdown v-else-if="item.type === 'multi'" :variant="variant" :text="item.name" class="col">
+        <template v-for="(subItem, subIdx) in item.subMenu" :key="subIdx">
+          <template v-if="subItem.type === 'item'">
+            <BDropdownItem
+              :variant="variant"
+              :href="subItem.url"
+              :target="subItem.newTab ? '_blank' : undefined"
+              @click="menuClick($event, subItem)"
+              >{{ subItem.name }}</BDropdownItem
+            >
+          </template>
+          <BDropdownDivider v-else />
+        </template>
+      </BDropdown>
+      <BDropdown
+        v-else-if="item.type === 'split'"
+        split
+        class="col"
+        :variant="variant"
+        :text="item.main.name"
+        :splitHref="item.main.url"
+        @click="menuClick($event, item.main)"
+      >
+        <template v-for="(subItem, subIdx) in item.subMenu" :key="subIdx">
           <BDropdownItem
-            v-for="(subItem, subIdx) in item.subMenu"
-            :key="subIdx"
+            v-if="subItem.type === 'item'"
             :variant="variant"
             :href="subItem.url"
             :target="subItem.newTab ? '_blank' : undefined"
+            @click="menuClick($event, subItem)"
             >{{ subItem.name }}</BDropdownItem
           >
-        </BDropdown>
-      </template>
-      <template v-else-if="item.type === 'split'">
-        <BDropdown
-          split
-          class="col"
-          :variant="variant"
-          :text="item.main.name"
-          :splitHref="item.main.url"
-          @click="splitClick(item.main)($event)"
-        >
-          <BDropdownItem
-            v-for="(subItem, subIdx) in item.subMenu"
-            :key="subIdx"
-            :href="subItem.url"
-            :target="subItem.newTab ? '_blank' : undefined"
-            >{{ subItem.name }}</BDropdownItem
-          >
-        </BDropdown>
-      </template>
+          <BDropdownDivider v-else />
+        </template>
+      </BDropdown>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { GetFrontInfoResponse, GetMenuResponse, MenuItem, MenuMulti, MenuSplit } from "@/defs/API/Global";
-import { BButton, BDropdown, BDropdownItem, type ButtonVariant } from "bootstrap-vue-next";
+import type {
+  GetFrontInfoResponse,
+  GetMenuResponse,
+  MenuItem,
+  MenuLine,
+  MenuMulti,
+  MenuSplit,
+} from "@/defs/API/Global";
+import { BButton, BDropdown, BDropdownItem, BDropdownDivider, type ButtonVariant } from "bootstrap-vue-next";
 import { isArray } from "lodash-es";
 import { computed, toRef } from "vue";
 
 const props = defineProps<{
   modelValue: GetMenuResponse["menu"];
   globalInfo: GetFrontInfoResponse["global"];
-  variant: ButtonVariant | 'sammo-base2',
-  mobileRowSize?: number,
-  desktopRowSize?: number,
+  variant: ButtonVariant | "sammo-base2";
+  mobileRowSize?: number;
+  desktopRowSize?: number;
+}>();
+
+const emit = defineEmits<{
+  (event: "reqCall", value: string): void;
 }>();
 
 const mobileRowSize = computed(() => {
@@ -72,7 +89,7 @@ const variant = computed(() => {
 const modelValue = toRef(props, "modelValue");
 const globalInfo = toRef(props, "globalInfo");
 
-type MenuVariant = MenuItem | MenuSplit | MenuMulti;
+type MenuVariant = MenuItem | MenuSplit | MenuMulti | MenuLine;
 
 function filterMenu(menu: MenuVariant | MenuVariant[]): MenuVariant | MenuVariant[] | undefined {
   if (isArray(menu)) {
@@ -122,15 +139,23 @@ function filterMenu(menu: MenuVariant | MenuVariant[]): MenuVariant | MenuVarian
 
 const filteredMenu = computed(() => filterMenu(modelValue.value) as GetMenuResponse["menu"]);
 
-function splitClick(menu: MenuItem) {
-  return (e: Event) => {
-    if (!menu.newTab) {
-      return;
-    }
+function menuClick(e: Event, menu: MenuItem) {
+  if (menu.funcCall) {
+    //TODO: CTRL+클릭도 대응해야하는지 고민이 필요함
     e.preventDefault();
-    e.stopPropagation();
-    window.open(menu.url);
-  };
+    emit("reqCall", menu.url);
+    return;
+  }
+  if (!menu.url) {
+    e.preventDefault();
+    return;
+  }
+  if (!menu.newTab) {
+    //자동 핸들러를 따름
+    return;
+  }
+  e.preventDefault();
+  window.open(menu.url);
 }
 </script>
 
