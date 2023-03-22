@@ -511,6 +511,7 @@ watch(refreshCounter, async () => {
 const reservedCommandPanel = ref<InstanceType<typeof PartialReservedCommand> | null>(null);
 watch(refreshCounter, async () => {
   reservedCommandPanel.value?.reloadCommandList();
+  reservedCommandPanel.value?.updateCommandTable();
 });
 </script>
 <style lang="scss" scoped>
