@@ -9,6 +9,9 @@ $loader->addClassMap((function () {
     $d_settingMap = [];
     foreach (glob(__DIR__.'/d_setting/*.orig.php') as $filepath) {
         $filepath = str_replace('.orig.php', '.php', $filepath);
+        if(!file_exists($filepath)) {
+            continue;
+        }
         $filename = basename($filepath);
         $classname = explode('.', $filename)[0];
         $d_settingMap['sammo\\'.$classname] = $filepath;
