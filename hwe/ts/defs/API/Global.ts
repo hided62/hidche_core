@@ -38,6 +38,7 @@ export interface GetConstResponse {
       optionalPersonality: "personality";
       allItems: "item";
     };
+    version: string;
   };
 }
 

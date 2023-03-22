@@ -21,7 +21,7 @@ use function sammo\prepareDir;
 class GetConst extends \sammo\BaseAPI
 {
     /** 반환하는 StaticValues 타입이 달라지면 +1 */
-    const CONST_API_VERSION = 2;
+    const CONST_API_VERSION = 3;
     const CACHE_KEY = 'JSConst';
 
     private ?string $cacheKey = null;
@@ -277,6 +277,7 @@ class GetConst extends \sammo\BaseAPI
             ],
             'iActionInfo' => $iActionInfo,
             'iActionKeyMap' => $iActionKeyMap,
+            'version' => VersionGit::getVersion(),
         ];
     }
 
