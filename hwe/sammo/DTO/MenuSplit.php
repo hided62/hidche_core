@@ -9,7 +9,7 @@ use LDTO\DTO;
 class MenuSplit extends DTO{
   public readonly string $type;
 
-  /** @param MenuItem[] $subMenu */
+  /** @param (MenuItem|MenuLine)[] $subMenu */
   public function __construct(
     public MenuItem $main,
     #[Convert(ArrayConverter::class, [DTO::class])]

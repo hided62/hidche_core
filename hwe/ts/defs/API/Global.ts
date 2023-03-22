@@ -222,6 +222,11 @@ export type GetFrontInfoResponse = {
   };
 };
 
+
+export type MenuLine = {
+  type: 'line';
+}
+
 export type MenuItem = {
   type: 'item';
   name: string;
@@ -235,14 +240,15 @@ export type MenuItem = {
 export type MenuSplit = {
   type: 'split';
   main: MenuItem;
-  subMenu: MenuItem[];
+  subMenu: (MenuItem | MenuLine)[];
 }
 
 export type MenuMulti = {
   type: 'multi';
   name: string;
-  subMenu: MenuItem[];
+  subMenu: (MenuItem | MenuLine)[];
 }
+
 
 export type GetMenuResponse = {
   result: true;

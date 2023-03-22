@@ -9,7 +9,7 @@ use LDTO\Converter\ArrayConverter;
 class MenuMulti extends DTO{
   public readonly string $type;
 
-  /** @param MenuItem[] $subMenu */
+  /** @param (MenuItem|MenuLine)[] $subMenu */
   public function __construct(
     public string $name,
     #[Convert(ArrayConverter::class, [DTO::class])]
