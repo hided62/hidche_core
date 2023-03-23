@@ -447,14 +447,14 @@ watch(refreshCounter, async () => {
           title: "갱신 완료",
           body: `동향 변경이 있습니다.`,
         },
-        { delay: 1000 * 3 }
+        { delay: 100 * 15 }
       );
     } else {
       toasts.success(
         {
           title: "갱신 완료",
         },
-        { delay: 1000 * 3 }
+        { delay: 100 * 5 }
       );
     }
 
