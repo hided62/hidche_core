@@ -486,6 +486,7 @@ class GameConstBase
         [
             "month", 1000,
             true,
+            ["UpdateNationLevel"]
             ["ProvideNPCTroopLeader"]
         ],
         [
