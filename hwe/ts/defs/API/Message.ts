@@ -58,6 +58,10 @@ export type MsgResponse = {
   nationID: number;
   generalName: string;
   sequence: number;
+  latestRead?: {
+    private: number;
+    diplomacy: number;
+  }
 };
 
 export type MailboxItem = {

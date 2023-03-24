@@ -29,7 +29,7 @@ import type {
   GetFrontInfoResponse,
   GetHistoryResponse,
   GetMenuResponse,
-GetRecentRecordResponse,
+  GetRecentRecordResponse,
 } from "./defs/API/Global";
 import type { CachedMapResult, CommandTableResponse, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
@@ -71,12 +71,12 @@ const apiRealPath = {
       amount: number;
     }>,
     GetUniqueItemAuctionDetail: GET as APICallT<{
-        auctionID: number;
+      auctionID: number;
     }, UniqueItemAuctionDetail>,
     GetUniqueItemAuctionList: GET as APICallT<undefined, UniqueItemAuctionList>,
     OpenUniqueAuction: POST as APICallT<{
-        itemID: string,
-        amount: number,
+      itemID: string,
+      amount: number,
     }, OpenAuctionResponse>,
   },
   Betting: {
@@ -199,7 +199,11 @@ const apiRealPath = {
     SendMessage: POST as APICallT<{
       mailbox: number;
       text: string;
-    }, ValidResponse & {msgID: number, msgType: MsgType}>
+    }, ValidResponse & { msgID: number, msgType: MsgType }>,
+    ReadLatestMessage: PATCH as APICallT<{
+      type: 'diplomacy' | 'private';
+      msgID: number;
+    }>
   },
   Misc: {
     UploadImage: POST as APICallT<
@@ -273,7 +277,7 @@ const apiRealPath = {
       troopID: number;
       troopName: string;
     }>,
-    GetNationInfo: GET as APICallT<{full?: boolean}, NationInfoResponse>,
+    GetNationInfo: GET as APICallT<{ full?: boolean }, NationInfoResponse>,
   },
   Troop: {
     NewTroop: POST as APICallT<{

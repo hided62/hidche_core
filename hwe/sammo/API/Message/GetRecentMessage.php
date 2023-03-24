@@ -6,8 +6,10 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralStorKey;
 use sammo\Enums\MessageType;
 use sammo\Json;
+use sammo\KVStorage;
 use sammo\Message;
 use sammo\TimeUtil;
 use sammo\Util;
@@ -140,9 +142,19 @@ class GetRecentMessage extends \sammo\BaseAPI
       array_pop($result[$lastType]);
     }
 
+    $generalStor = KVStorage::getStorage($db, "general_{$generalID}");
+    [$latestReadDiplomacyMsg, $latestReadPrivateMsg] = $generalStor->getValuesAsArray([
+      GeneralStorKey::latestReadDiplomacyMsg,
+      GeneralStorKey::latestReadPrivateMsg
+    ]);
+
     $result['sequence'] = $nextSequence;
     $result['nationID'] = $nationID;
     $result['generalName'] = $generalName;
+    $result['latestRead'] = [
+      'diplomacy' => $latestReadDiplomacyMsg ?? 0,
+      'private' => $latestReadPrivateMsg ?? 0,
+    ];
 
     return $result;
   }

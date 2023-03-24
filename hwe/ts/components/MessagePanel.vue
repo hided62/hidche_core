@@ -255,21 +255,8 @@ const messageIndexedList: Record<MsgType, Ref<MsgItem[]>> = {
   diplomacy: messageDiplomacy,
 };
 
-function generateLatestMsgState(msgType: MsgType) {
-  const storageKey = `state.${serverID}.latestReadMsg.${msgType}`;
-  const latestReadMsgID = parseInt(localStorage.getItem(storageKey) ?? "0");
-  const obj = ref<[string | undefined, number, number]>([undefined, latestReadMsgID, latestReadMsgID]);
-  watch(obj, ([, newMsgID], [, oldMsgID]) => {
-    if (newMsgID == oldMsgID) {
-      return;
-    }
-    localStorage.setItem(storageKey, newMsgID.toString());
-  });
-  return obj;
-}
-
-const latestPrivateMsgToastInfo = generateLatestMsgState("private");
-const latestDiplomacyMsgToastInfo = generateLatestMsgState("diplomacy");
+const latestPrivateMsgToastInfo = ref<[string | undefined, number, number]>([undefined, 0, 0]);
+const latestDiplomacyMsgToastInfo = ref<[string | undefined, number, number]>([undefined, 0, 0]);
 
 function readLatestMsg(msgType: MsgType) {
   const targetMap = {
@@ -287,6 +274,13 @@ function readLatestMsg(msgType: MsgType) {
   const [toastID, , lastestReceivedID] = target.value;
   if (toastID) {
     toasts.remove(toastID);
+  }
+
+  if(msgType == "private" || msgType == "diplomacy"){
+    void SammoAPI.Message.ReadLatestMessage({
+      type: msgType,
+      msgID: lastestReceivedID,
+    });
   }
   target.value = [undefined, lastestReceivedID, lastestReceivedID];
 }
@@ -402,6 +396,27 @@ function updateMsgResponse(response: MsgResponse) {
     emit("request-refresh");
     return;
   }
+
+  if(response.latestRead){
+    const newDiplomacyIdx = response.latestRead.diplomacy;
+    const [diplomacyToastID, diplomacyLatestMsgID] = latestDiplomacyMsgToastInfo.value;
+    if(diplomacyLatestMsgID < newDiplomacyIdx){
+      if(diplomacyToastID){
+        toasts.remove(diplomacyToastID);
+      }
+      latestDiplomacyMsgToastInfo.value = [undefined, newDiplomacyIdx, newDiplomacyIdx];
+    }
+
+    const newPrivateIdx = response.latestRead.private;
+    const [privateToastID, privateLatestMsgID] = latestPrivateMsgToastInfo.value;
+    if(privateLatestMsgID < newPrivateIdx){
+      if(privateToastID){
+        toasts.remove(privateToastID);
+      }
+      latestPrivateMsgToastInfo.value = [undefined, newPrivateIdx, newPrivateIdx];
+    }
+  }
+
 
   lastSequence.value = Math.max(lastSequence.value, response.sequence);
 
