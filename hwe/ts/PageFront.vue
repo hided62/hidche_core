@@ -459,7 +459,7 @@ watch(refreshCounter, async () => {
     }
 
     const lastVoteID = response.global.lastVoteID;
-    if (lastVoteID > lastVoteState.value) {
+    if (lastVoteID > lastVoteState.value && lastVoteID > (response.aux.myLastVote ?? 0)) {
       lastVoteState.value = lastVoteID;
       toasts.warning(
         {

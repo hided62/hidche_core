@@ -569,6 +569,14 @@ class GetFrontInfo extends \sammo\BaseAPI
 
     //TODO: 마지막 투표, 토너먼트, 베팅을 했는지 정보를 별도로 가져와야 함. aux?
 
+    $auxInfo = [];
+
+    if ($globalInfo['lastVote']) {
+      $myLastVoteID = $db->queryFirstField('SELECT vote_id FROM vote WHERE general_id = %i ORDER BY vote_id DESC LIMIT 1', $generalID);
+      if($myLastVoteID) {
+        $auxInfo['myLastVote'] = $myLastVoteID;
+      }
+    }
 
     return [
       'result' => true,
@@ -577,6 +585,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       'nation' => $nationInfo,
       'general' => $generalInfo,
       'city' => $cityInfo,
+      'aux' => $auxInfo,
     ];
   }
 }

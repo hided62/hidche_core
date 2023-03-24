@@ -221,6 +221,9 @@ export type GetFrontInfoResponse = {
       } | null
     >;
   };
+  aux: {
+    myLastVote?: number;
+  };
 };
 
 
