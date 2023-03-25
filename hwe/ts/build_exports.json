@@ -27,6 +27,7 @@
         "v_board": "v_board.ts",
         "v_cachedMap": "v_cachedMap",
         "v_chiefCenter": "v_chiefCenter.ts",
+        "v_cityInfo": "v_cityInfo.ts",
         "v_NPCControl": "v_NPCControl.ts",
         "v_join": "v_join.ts",
         "v_main": "v_main.ts",
