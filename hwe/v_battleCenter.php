@@ -27,7 +27,7 @@ $gen = Util::getReq('gen', 'int');
             'mapName' => GameConst::$mapName,
             'unitSet' => GameConst::$unitSet,
         ],
-        'queryValues' => [
+        'query' => [
             'generalID' => $gen,
         ]
     ], false) ?>

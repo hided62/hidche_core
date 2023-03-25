@@ -17,7 +17,7 @@
 
 
 @include media-1000px{
-    #container {
+    #app {
         width: 1000px;
         margin: 0 auto;
     }
@@ -28,7 +28,7 @@
         overflow-x: hidden;
     }
 
-    #container {
+    #app {
         width: 500px;
         margin: 0 auto;
     }

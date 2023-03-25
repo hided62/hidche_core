@@ -1,8 +1,6 @@
 import '@scss/processing.scss';
 
 import { unwrap } from "@util/unwrap";
-import BootstrapVueNext from 'bootstrap-vue-next'
-import Multiselect from 'vue-multiselect';
 import { commandMap as GeneralActions } from "@/processing/General";
 import { commandMap as NationActions } from '@/processing/Nation';
 import { type App, createApp } from 'vue';
@@ -14,6 +12,7 @@ import { StoredActionsHelper } from './util/StoredActionsHelper';
 import type { ReserveCommandResponse } from './defs/API/Command';
 import { htmlReady } from './util/htmlReady';
 import { insertCustomCSS } from './util/customCSS';
+import { installVue3Components } from './util/installVue3Components';
 
 declare const staticValues: {
     serverNick: string,
@@ -100,13 +99,13 @@ if (app === undefined) {
     console.error(`모듈이 지정되지 않음`, entryInfo);
 }
 else {
-    const div = unwrap(document.querySelector('#container'));
+    const div = unwrap(document.querySelector('#app'));
     div.addEventListener('customSubmit', (e: Event) => {
         const { detail } = e as unknown as CustomEvent<Args>;
         void submitCommand(entryInfo[0] == 'Nation', turnList, entryInfo[1], detail);
     }, true);
 
-    app.use(BootstrapVueNext).component('v-multiselect', Multiselect).mount('#container');
+    installVue3Components(app).mount('#app');
 }
 
 

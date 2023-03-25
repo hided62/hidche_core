@@ -72,14 +72,9 @@
   </BContainer>
 </template>
 
-<script lang="ts">
-declare const queryValues: {
-  generalID: number | null;
-};
-</script>
 <script lang="ts" setup>
 import { BContainer, useToast, BFormSelect, BFormSelectOption, BButton } from "bootstrap-vue-next";
-import { onMounted, provide, ref, watch } from "vue";
+import { onMounted, provide, ref, toRef, watch } from "vue";
 import { getGameConstStore, type GameConstStore } from "./GameConstStore";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
@@ -97,6 +92,10 @@ import { formatLog } from "./utilGame/formatLog";
 import { parseTime } from "./util/parseTime";
 
 const toasts = unwrap(useToast());
+
+const props = defineProps<{
+  generalID?: number;
+}>();
 
 const generalList = ref(new Map<number, GeneralListItemP1>());
 const textMap = {
@@ -118,7 +117,7 @@ const orderedInvGeneralKeyIndex = ref(new Map<number, number>());
 
 const orderBy = ref<keyof typeof textMap>("turntime");
 const targetGeneral = ref<GeneralListItemP1>();
-const targetGeneralID = ref(queryValues.generalID ?? undefined);
+const targetGeneralID = toRef(props, "generalID");
 
 type GeneralLogs = {
   [key in GeneralLogType]: Map<number, string>;

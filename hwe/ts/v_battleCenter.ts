@@ -10,11 +10,13 @@ import { insertCustomCSS } from "./util/customCSS";
 import { installVue3Components } from "./util/installVue3Components";
 
 
-
+declare const query:{
+  generalID?: number;
+};
 
 auto500px();
 
 htmlReady(() => {
   insertCustomCSS();
 });
-installVue3Components(createApp(PageBattleCenter)).mount('#app');
+installVue3Components(createApp(PageBattleCenter, query)).mount('#app');

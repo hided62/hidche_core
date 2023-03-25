@@ -101,7 +101,7 @@ if (!$commandObj->hasPermissionToReserve()) {
 </head>
 
 <body class="img_back">
-    <div id="container"></div>
+    <div id="app"></div>
 </body>
 
 </html>

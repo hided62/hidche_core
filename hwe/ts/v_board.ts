@@ -1,7 +1,6 @@
 import "@scss/board.scss";
 import { createApp } from 'vue'
 import PageBoard from '@/PageBoard.vue';
-import BootstrapVueNext from 'bootstrap-vue-next'
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { auto500px } from "./util/auto500px";
 import { insertCustomCSS } from "./util/customCSS";
