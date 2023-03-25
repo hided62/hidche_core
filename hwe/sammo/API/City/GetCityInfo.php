@@ -143,7 +143,7 @@ class GetCityInfo extends \sammo\BaseAPI
 
     $nationStaticList = getAllNationStaticInfo();
 
-    $rawGeneralList = Util::convertArrayToDict($db->query('SELECT %l from general WHERE city = %i ORDER BY turntime ASC', Util::formatListOfBackticks(array_keys(static::$viewColumns)), $cityID), 'city');
+    $rawGeneralList = Util::convertArrayToDict($db->query('SELECT %l from general WHERE city = %i ORDER BY turntime ASC', Util::formatListOfBackticks(array_keys(static::$viewColumns)), $cityID), 'no');
     $ourNationGeneralIDList = new Set();
     foreach ($rawGeneralList as $rawGeneral) {
       if ($rawGeneral['nation'] == $nationID) {
@@ -307,12 +307,12 @@ class GetCityInfo extends \sammo\BaseAPI
     $currentCityID = $me['city'];
     //TODO: 조건 조사
 
-    $cityList = new Set($db->queryFirstField('SELECT city FROM city WHERE nation=%i', $nationID));
+    $cityList = new Set($db->queryFirstColumn('SELECT city FROM city WHERE nation=%i', $nationID));
 
     $spyList = JSON::decode($db->queryFirstField('SELECT spy FROM nation WHERE nation=%i', $nationID));
     $showLevel = $this->calcShowLevel($cityID, $currentCityID, $nationID, $cityList, key_exists($cityID, $spyList));
 
-    $rawCity = $db->queryFirstRow('SELECT * FROM city WHERE no=%i', $cityID);
+    $rawCity = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $cityID);
     $filteredCity = $this->filterCity($rawCity, $showLevel);
 
     $result = [
@@ -323,6 +323,7 @@ class GetCityInfo extends \sammo\BaseAPI
       'nationCityList' => $cityList->toArray(),
       'myGeneralID' => $session->generalID,
       'currentCityID' => $currentCityID,
+      'showLevel' => $showLevel,
       'cityGeneralList' => $this->getGeneralList($cityID, $nationID, $showLevel)
     ];
 
