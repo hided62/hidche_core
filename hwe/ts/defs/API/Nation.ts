@@ -40,6 +40,7 @@ export type GeneralListItemP0 = {
 
   autorun_limit: number;
 
+  nationID?: number;
   city: number;
   troop: number;
 };
