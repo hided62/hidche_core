@@ -117,7 +117,10 @@ const orderedInvGeneralKeyIndex = ref(new Map<number, number>());
 
 const orderBy = ref<keyof typeof textMap>("turntime");
 const targetGeneral = ref<GeneralListItemP1>();
-const targetGeneralID = toRef(props, "generalID");
+const targetGeneralID = ref(props.generalID);
+watch(()=>props.generalID, (generalID)=>{
+  targetGeneralID.value = generalID;
+})
 
 type GeneralLogs = {
   [key in GeneralLogType]: Map<number, string>;
