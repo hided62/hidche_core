@@ -37,7 +37,7 @@
       <span style="color: cyan">NPC {{ createdNPCCnt.toLocaleString() }} 명</span>
     </div>
     <div class="s-border-t py-2 col col-6 col-md-4 subTournamentState">
-      <span v-if="frontInfo.global.tournamentType">
+      <span v-if="frontInfo.global.isTournamentActive">
         <a v-if="tournamentStep.availableJoin" href="b_tournament.php" target="_blank">
           ↑<span style="color: cyan"
             >{{ formatTournamentType(frontInfo.global.tournamentType) }}
