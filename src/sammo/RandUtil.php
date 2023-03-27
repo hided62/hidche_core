@@ -104,8 +104,7 @@ class RandUtil
     public function choiceUsingWeight(array $items)
     {
         if(!$items){
-	    return 2; // 내특 줄 수 있는게 하나도 없을시 일단 강제로 상재로 주는걸로 긴급 버그 수정	
-	    //throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
         $sum = 0;
         foreach ($items as $value) {
