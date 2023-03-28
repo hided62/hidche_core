@@ -87,6 +87,12 @@ class che_전투특기초기화 extends Command\GeneralCommand{
         $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
         $oldSpecialList = $general->getAuxVar($oldTypeKey)??[];
         $oldSpecialList[] = $general->getVar(static::$specialType);
+        if(static::$specialType == 'special' && count($oldSpecialList) == count(GameConst::$availableSpecialDomestic)){
+            $oldSpecialList = [$general->getVar(static::$specialType)];
+        }
+        else if(static::$specialType == 'special2' && count($oldSpecialList) == count(GameConst::$availableSpecialWar)){
+            $oldSpecialList = [$general->getVar(static::$specialType)];
+        }
         $general->setAuxVar($oldTypeKey, $oldSpecialList);
 
         $general->setVar(static::$specialType, 'None');
