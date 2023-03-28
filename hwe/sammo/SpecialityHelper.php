@@ -198,6 +198,7 @@ class SpecialityHelper{
     public static function pickSpecialDomestic(RandUtil $rng, array $general, array $prevSpecials=[]) : string{
         $pAbs = [];
         $pRel = [];
+        $id = null;
 
         $myCond = static::calcCondGeneric($general);
 
@@ -240,7 +241,10 @@ class SpecialityHelper{
             }
         }
 
-        $id = $rng->choiceUsingWeight($pRel);
+        if($pRel){
+            $id = $rng->choiceUsingWeight($pRel);
+        }
+
         if($id){
             return $id;
         }
@@ -256,6 +260,7 @@ class SpecialityHelper{
         $reqDex = [];
         $pAbs = [];
         $pRel = [];
+        $id = null;
 
         $myCond = static::calcCondGeneric($general);
         $myCond |= static::calcCondDexterity($rng, $general);
@@ -307,7 +312,10 @@ class SpecialityHelper{
             }
         }
 
-        $id = $rng->choiceUsingWeight($pRel);
+        if($pRel){
+            $id = $rng->choiceUsingWeight($pRel);
+        }
+
         if($id){
             return $id;
         }
