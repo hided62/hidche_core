@@ -243,7 +243,7 @@ class Betting
             return $this->_calcRewardExclusive($winnerType);
         }
 
-        if ($this->info->isExlusive) {
+        if ($this->info->isExclusive) {
             return $this->_calcRewardExclusive($winnerType);
         }
         //아래는 2개 이상, 복합 보상 옵션
