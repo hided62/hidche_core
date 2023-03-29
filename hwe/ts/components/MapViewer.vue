@@ -13,11 +13,9 @@
     ]"
   >
     <div
-      v-my-tooltip.hover.top="{
-        class: 'map_title_tooltiptext',
-      }"
+      v-b-tooltip.hover.top="titleTooltip"
+      :title="titleTooltip"
       class="map_title"
-      :title="getTitleTooltip()"
     >
       <!-- eslint-disable-next-line vue/max-attributes-per-line -->
       <span class="map_title_text" :style="{ color: getTitleColor() }"
@@ -165,12 +163,11 @@ export type CityPositionMap = {
 </script>
 <script lang="ts" setup>
 import "@/../scss/map.scss";
-import { type PropType, toRef, inject, type Ref, ref, watch, type ComponentPublicInstance } from "vue";
+import { type PropType, toRef, inject, type Ref, ref, watch, type ComponentPublicInstance, computed } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import { CURRENT_MAP_VERSION, type MapResult } from "@/defs";
 import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
-import vMyTooltip from "@/directives/vMyTooltip";
 import type { GameConstStore } from "@/GameConstStore";
 import { unwrap_err } from "@/util/unwrap_err";
 import { getMaxRelativeTechLevel, TECH_LEVEL_YEAR_GAP } from "@/utilGame/techLevel";
@@ -282,7 +279,7 @@ function getBeginGameLimitTooltip(): string | undefined {
   return `초반제한 기간 : ${remainYear}년${remainMonth > 0 ? ` ${remainMonth}개월` : ""} (${startYear + 3}년)`;
 }
 
-function getTitleTooltip(): string {
+const titleTooltip = computed(()=>{
   const result: string[] = [];
   const beginLimit = getBeginGameLimitTooltip();
   if (beginLimit) {
@@ -302,7 +299,7 @@ function getTitleTooltip(): string {
   }
 
   return result.join("<br>");
-}
+});
 
 function getMapSeasonClassName(): string {
   const { month } = mapData.value;
