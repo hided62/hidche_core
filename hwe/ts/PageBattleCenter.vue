@@ -130,12 +130,12 @@ const targetGeneralLogs = ref<GeneralLogs>();
 
 const nationInfo = ref<NationStaticItem>();
 
-watch([generalList, targetGeneralID], async ([generalList, targetGeneralID]) => {
-  if (targetGeneralID === undefined) {
+watch([generalList, targetGeneralID], async ([generalList, generalID]) => {
+  if (!generalID) {
     targetGeneral.value = undefined;
     return;
   }
-  targetGeneral.value = generalList.get(targetGeneralID);
+  targetGeneral.value = generalList.get(generalID);
 
   const logs: GeneralLogs = {
     generalHistory: new Map(),
@@ -148,8 +148,12 @@ watch([generalList, targetGeneralID], async ([generalList, targetGeneralID]) => 
 
   for (const reqType of ["generalHistory", "battleResult", "battleDetail", "generalAction"] as const) {
     waiter.push(
-      SammoAPI.Nation.GetGeneralLog({ generalID: targetGeneralID, reqType }).then(
+      SammoAPI.Nation.GetGeneralLog({ generalID: generalID, reqType }).then(
         (res) => {
+          if(res.generalID !== targetGeneralID.value){
+            return;
+          }
+
           const rawLogs: [number, string][] = Object.entries(res.log).map(([key, value]) => [
             Number(key),
             formatLog(value),
