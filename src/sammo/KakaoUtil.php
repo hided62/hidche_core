@@ -193,7 +193,7 @@ class KakaoUtil
                 $refreshTokenValidUntil = TimeUtil::nowAddSeconds($refreshResult['refresh_token_expires_in']);
 
                 $oauthInfo['refreshToken'] = $refreshToken;
-                $oauthInfo['refresh_token_expires_in'] = $refreshTokenValidUntil;
+                $oauthInfo['refreshTokenValidUntil'] = $refreshTokenValidUntil;
             }
 
             RootDB::db()->update('member', [
