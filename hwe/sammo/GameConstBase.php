@@ -84,7 +84,7 @@ class GameConstBase
     public static $maxBetrayCnt = 9;
 
     /** @var int 최대 레벨 */
-    public static $maxLevel = 300;
+    public static $maxLevel = 255;
 
     /** @var int 최소 인구 증가량 */
     public static $basePopIncreaseAmount = 5000;
