@@ -185,8 +185,21 @@ class che_상업투자 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
 
-        if(in_array($this->city['front'], [1, 3]) && $this->nation['capital'] != $this->city['city']){
-            $score *= static::$debuffFront;
+        if(in_array($this->city['front'], [1, 3])){
+            $debuffFront = static::$debuffFront;
+
+            if($this->nation['capital'] == $this->city['city']){
+                $gameStor = \sammo\KVStorage::getStorage($db, 'game_env');
+                [$year, $startYear] = $gameStor->getValuesAsArray(['year', 'startyear']);
+                $relYear = $year - $startYear;
+
+                if($relYear < 25){
+                    $debuffScale = Util::clamp($relYear - 5, 0, 20) * 0.05;
+                    $debuffFront = ($debuffScale * $debuffFront) + (1 - $debuffScale);
+                }
+            }
+
+            $score *= $debuffFront;
         }
 
         //NOTE: 내정량 상승시 초과 가능?
