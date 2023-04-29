@@ -468,8 +468,6 @@ class General implements iAction
 
         $this->calcCache[$cKey] = $statValue;
 
-        $statValue = Util::clamp($statValue, 0, GameConst::$maxLevel);
-
         if ($useFloor) {
             return Util::toInt($statValue);
         }
