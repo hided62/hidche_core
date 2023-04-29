@@ -443,6 +443,8 @@ class General implements iAction
             }
         }
 
+        $statValue = Util::clamp($statValue, 0, GameConst::$maxLevel);
+
         if ($withIActionObj) {
             foreach ([
                 $this->nationType,
