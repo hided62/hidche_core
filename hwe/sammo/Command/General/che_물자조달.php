@@ -21,6 +21,7 @@ use \sammo\Constraint\ConstraintHelper;
 
 class che_물자조달 extends Command\GeneralCommand{
     static protected $actionName = '물자조달';
+    static protected $debuffFront = 0.5;
 
     protected function argTest():bool{
         $this->arg = null;
@@ -95,9 +96,31 @@ class che_물자조달 extends Command\GeneralCommand{
         $score = $general->onCalcDomestic('조달', 'score', $score);
 
         $score = Util::round($score);
-        $scoreText = number_format($score, 0);
+
+        $exp = $score * 0.7 / 3;
+        $ded = $score * 1.0 / 3;
 
         $logger = $general->getLogger();
+
+        if(in_array($this->city['front'], [1, 3])){
+            $debuffFront = static::$debuffFront;
+
+            if($this->nation['capital'] == $this->city['city']){
+                $gameStor = \sammo\KVStorage::getStorage($db, 'game_env');
+                [$year, $startYear] = $gameStor->getValuesAsArray(['year', 'startyear']);
+                $relYear = $year - $startYear;
+
+                if($relYear < 25){
+                    $debuffScale = Util::clamp($relYear - 5, 0, 20) * 0.05;
+                    $debuffFront = ($debuffScale * $debuffFront) + (1 - $debuffScale);
+                }
+            }
+
+            $score *= $debuffFront;
+        }
+
+        $scoreText = number_format($score, 0);
+
 
         if($pick == 'fail'){
             $logger->pushGeneralActionLog("조달을 <span class='ev_failed'>실패</span>하여 {$resName}을 <C>$scoreText</> 조달했습니다. <1>$date</>");
@@ -108,9 +131,6 @@ class che_물자조달 extends Command\GeneralCommand{
         else{
             $logger->pushGeneralActionLog("{$resName}을 <C>$scoreText</> 조달했습니다. <1>$date</>");
         }
-
-        $exp = $score * 0.7 / 3;
-        $ded = $score * 1.0 / 3;
 
         $incStat = $rng->choiceUsingWeight([
             'leadership_exp'=>$general->getLeadership(false, false, false, false),
