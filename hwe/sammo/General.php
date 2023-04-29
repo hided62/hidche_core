@@ -841,9 +841,11 @@ class General implements iAction
                 $this->increaseVar($statName, -1);
                 $result = true;
             } else if ($this->getVar($statExpName) >= $limit) {
-                $logger->pushGeneralActionLog("<S>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
+                if($this->getVar($statName) < GameConst::$maxLevel) {
+                    $logger->pushGeneralActionLog("<S>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
+                    $this->increaseVar($statName, 1);
+                }
                 $this->increaseVar($statExpName, -$limit);
-                $this->increaseVar($statName, 1);
                 $result = true;
             }
         }
