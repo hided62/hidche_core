@@ -542,6 +542,8 @@ function getExpLevel($experience) {
         $level = Util::toInt(sqrt($experience/10));
     }
 
+    $level = Util::clamp($level, 0, GameConst::$maxLevel);
+
     return $level;
 }
 

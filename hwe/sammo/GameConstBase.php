@@ -83,6 +83,9 @@ class GameConstBase
     /** @var int 최대 하야 패널티 수 */
     public static $maxBetrayCnt = 9;
 
+    /** @var int 최대 레벨 */
+    public static $maxLevel = 300;
+
     /** @var int 최소 인구 증가량 */
     public static $basePopIncreaseAmount = 5000;
     /** @var int 증축시 인구 증가량 */
