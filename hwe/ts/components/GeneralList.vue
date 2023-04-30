@@ -80,7 +80,7 @@ import type { GeneralListItem, GeneralListItemP1, GeneralListItemP2, GeneralList
 import { getIconPath } from "@/util/getIconPath";
 import { inject, ref, watch, type PropType, type Ref, type StyleValue } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
-import type {
+import {
   Column,
   CellClassParams,
   CellStyle,
@@ -92,6 +92,7 @@ import type {
   GridReadyEvent,
   CellClickedEvent,
   IRowNode,
+  NumberFilter,
 } from "ag-grid-community";
 import { ProvidedColumnGroup } from "ag-grid-community";
 import { getNPCColor } from "@/utilGame";
@@ -483,7 +484,7 @@ const sortableNumber: Omit<GenColDef, "colId" | "headerName"> = {
   sortable: true,
   comparator: (a, b, _a, _b, _desc) => a - b,
   sortingOrder: ["desc", "asc", null],
-  filter: "number",
+  filter: NumberFilter,
   cellClass: rightAlignClass,
 };
 const defaultColDef = ref<ColDef>({
@@ -669,7 +670,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           return (_a.data?.dedlevel??0) - (_b.data?.dedlevel??0);
         },
         sortingOrder: ["desc", "asc", null],
-        filter: "text",
+        filter: true,
         cellClass: centerCellClass,
         columnGroupShow: "open",
       },
