@@ -37,16 +37,24 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $startYear);
 
     $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
-    $defenderList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
+    $defenderGeneralList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
 
-    usort($defenderList, function (General $lhs, General $rhs) use ($attackerGeneral) {
-        return - (extractBattleOrder($lhs, $attackerGeneral) <=> extractBattleOrder($rhs, $attackerGeneral));
+    /** @var WarUnit[] */
+    $defenderList = [];
+    foreach($defenderGeneralList as $defenderGeneral){
+        $defenderList[] = new WarUnitGeneral($rng, $defenderGeneral, $rawDefenderNation, false);
+    }
+
+    $defenderList[] = $city;
+
+    usort($defenderList, function (WarUnit $lhs, WarUnit $rhs) use ($attacker) {
+        return - (extractBattleOrder($lhs, $attacker) <=> extractBattleOrder($rhs, $attacker));
     });
 
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
 
-    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($rng, $iterDefender, $rawDefenderNation, $rawDefenderCity, $db, $attackerGeneral) {
+    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $db, $attacker) {
         if ($prevDefender !== null) {
             $prevDefender->applyDB($db);
         }
@@ -59,24 +67,16 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
             return null;
         }
 
+        /** @var WarUnit */
         $nextDefender = $iterDefender->current();
-        $nextDefender->setRawCity($rawDefenderCity);
-        if (extractBattleOrder($nextDefender, $attackerGeneral) <= 0) {
+        if (extractBattleOrder($nextDefender, $attacker) <= 0) {
             return null;
         }
-
-
-        $retVal = new WarUnitGeneral(
-            $rng,
-            $nextDefender,
-            $rawDefenderNation,
-            false
-        );
         $iterDefender->next();
-        return $retVal;
+        return $nextDefender;
     };
 
-    $conquerCity = processWar_NG($warSeed, $attacker, $getNextDefender, $city, $year - $startYear);
+    $conquerCity = processWar_NG($warSeed, $attacker, $getNextDefender, $city);
 
     $attacker->applyDB($db);
 
@@ -180,8 +180,13 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     ], $attacker->getGeneral(), $city->getRaw());
 }
 
-function extractBattleOrder(General $general, General $attackerGeneral)
+function extractBattleOrder(WarUnit $defender, WarUnit $attacker)
 {
+    if($defender instanceof WarUnitCity){
+        return -1;
+    }
+
+    $general = $defender->getGeneral();
     if ($general->getVar('crew') == 0) {
         return 0;
     }
@@ -212,7 +217,6 @@ function processWar_NG(
     WarUnitGeneral $attacker,
     callable $getNextDefender,
     WarUnitCity $city,
-    int $relYear
 ): bool {
     $templates = new \League\Plates\Engine(__DIR__ . '/templates');
 
