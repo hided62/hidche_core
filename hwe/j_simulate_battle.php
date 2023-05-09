@@ -293,9 +293,12 @@ if(!$v->validate()){
     ]);
 }
 
+$attackerGeneral = new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month);
+
 if($action == 'reorder'){
-    usort($defenderList, function(General $lhs, General $rhs){
-        return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+
+    usort($defenderList, function(General $lhs, General $rhs) use ($attackerGeneral){
+        return -(extractBattleOrder($lhs, $attackerGeneral) <=> extractBattleOrder($rhs, $attackerGeneral));
     });
 
     $order = [];
@@ -310,8 +313,8 @@ if($action == 'reorder'){
     ]);
 }
 
-usort($defenderList, function(General $lhs, General $rhs){
-    return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+usort($defenderList, function(General $lhs, General $rhs) use ($attackerGeneral){
+    return -(extractBattleOrder($lhs, $attackerGeneral) <=> extractBattleOrder($rhs, $attackerGeneral));
 });
 
 $rawDefenderList = array_map(function(General $general){
@@ -347,9 +350,10 @@ function simulateBattle(
 
     $warRng = new RandUtil(new LiteHashDRBG($warSeed));
 
+    $attackerGeneral = new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month);
     $attacker = new WarUnitGeneral(
         $warRng,
-        new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month),
+        $attackerGeneral,
         $rawAttackerNation,
         true
     );
@@ -364,7 +368,7 @@ function simulateBattle(
     $defenderRice = 0;
 
     $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext)
-        use ($warRng, $iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, &$battleResult, &$defenderRice) {
+        use ($warRng, $iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, &$battleResult, &$defenderRice, $attackerGeneral) {
         if($prevDefender !== null){
             $prevDefender->getLogger()->rollback();
             $battleResult[] = $prevDefender;
@@ -382,7 +386,7 @@ function simulateBattle(
         }
 
         $defenderObj = new General($iterDefender->current(), extractRankVar($iterDefender->current()), $rawDefenderCity, $rawDefenderNation, $year, $month);
-        if(extractBattleOrder($defenderObj) <= 0){
+        if(extractBattleOrder($defenderObj, $attackerGeneral) <= 0){
             return null;
         }
 

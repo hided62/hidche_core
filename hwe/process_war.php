@@ -39,14 +39,14 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
     $defenderList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
 
-    usort($defenderList, function (General $lhs, General $rhs) {
-        return - (extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+    usort($defenderList, function (General $lhs, General $rhs) use ($attackerGeneral) {
+        return - (extractBattleOrder($lhs, $attackerGeneral) <=> extractBattleOrder($rhs, $attackerGeneral));
     });
 
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
 
-    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($rng, $iterDefender, $rawDefenderNation, $rawDefenderCity, $db) {
+    $getNextDefender = function (?WarUnit $prevDefender, bool $reqNext) use ($rng, $iterDefender, $rawDefenderNation, $rawDefenderCity, $db, $attackerGeneral) {
         if ($prevDefender !== null) {
             $prevDefender->applyDB($db);
         }
@@ -61,7 +61,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
 
         $nextDefender = $iterDefender->current();
         $nextDefender->setRawCity($rawDefenderCity);
-        if (extractBattleOrder($nextDefender) <= 0) {
+        if (extractBattleOrder($nextDefender, $attackerGeneral) <= 0) {
             return null;
         }
 
@@ -180,7 +180,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     ], $attacker->getGeneral(), $city->getRaw());
 }
 
-function extractBattleOrder(General $general)
+function extractBattleOrder(General $general, General $attackerGeneral)
 {
     if ($general->getVar('crew') == 0) {
         return 0;
