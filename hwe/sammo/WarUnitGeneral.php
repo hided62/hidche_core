@@ -262,11 +262,8 @@ class WarUnitGeneral extends WarUnit
         return $general->getVar('crew');
     }
 
-    function increaseKilled(int $damage): int
+    function calcRiceConsumption(int $damage): float
     {
-        $general = $this->general;
-        $this->addLevelExp($damage / 50);
-
         $rice = $damage / 100;
         if (!$this->isAttacker) {
             $rice *= 0.8;
@@ -278,6 +275,16 @@ class WarUnitGeneral extends WarUnit
         $rice *= $this->crewType->rice;
         $rice *= getTechCost($this->getNationVar('tech'));
         $rice = $this->general->onCalcStat($this->general, 'killRice', $rice);
+
+        return $rice;
+    }
+
+    function increaseKilled(int $damage): int
+    {
+        $general = $this->general;
+        $this->addLevelExp($damage / 50);
+
+        $rice = $this->calcRiceConsumption($damage);
 
         $general->increaseVarWithLimit('rice', -$rice, 0);
 
