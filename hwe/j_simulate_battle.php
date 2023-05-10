@@ -409,7 +409,7 @@ function simulateBattle(
         );
     }
 
-    if(count($defenderList) == 0 && extractBattleOrder($city, $attacker) > 0){
+    if(count($defenderList) && extractBattleOrder($city, $attacker) > 0){
         $defenderList[] = $city;
     }
 

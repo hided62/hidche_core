@@ -328,7 +328,7 @@ function buildGeneralSpecialWarClass(?string $type):BaseSpecial{
 
 function getActionCrewTypeClass(?string $type){
     if($type === null || $type === ''){
-        $type = GameConst::$defaultSpecialWar;
+        $type = 'None';
     }
 
     static $basePath = __NAMESPACE__.'\\ActionCrewType\\';

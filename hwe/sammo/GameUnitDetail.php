@@ -70,7 +70,7 @@ class GameUnitDetail implements iAction
         $this->initSkillTrigger = $initSkillTrigger;
         $this->phaseSkillTrigger = $phaseSkillTrigger;
         $this->iActionList = [];
-        foreach($iActionList as $rawAction){
+        foreach($iActionList ?? [] as $rawAction){
             $action = buildActionCrewTypeClass($rawAction);
             if(!$action){
                 continue;

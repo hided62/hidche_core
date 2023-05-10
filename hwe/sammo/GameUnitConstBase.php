@@ -334,7 +334,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2, 1106=>1.067],
             ['상대에게 돌덩이를 날립니다.'],
-            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동'], null
+            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동'], ['che_성벽선제']
         ],
         [
             1503, self::T_SIEGE, '목우',
@@ -343,7 +343,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1, self::T_ARCHER=>1, self::T_CAVALRY=>1, self::T_WIZARD=>1, self::T_CASTLE=>1.8],
             [self::T_FOOTMAN=>1, self::T_ARCHER=>1, self::T_CAVALRY=>1, self::T_WIZARD=>1, 1106=>1],
             ['상대를 저지하는 특수병기입니다.'],
-            ['che_성벽부상무효'], ['che_저지시도', 'che_저지발동'], ['che_성벽선제']
+            ['che_성벽부상무효'], ['che_저지시도', 'che_저지발동'], null
         ]
     ];
 
