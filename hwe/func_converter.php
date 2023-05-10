@@ -326,6 +326,41 @@ function buildGeneralSpecialWarClass(?string $type):BaseSpecial{
     return $obj;
 }
 
+function getActionCrewTypeClass(?string $type){
+    if($type === null || $type === ''){
+        $type = GameConst::$defaultSpecialWar;
+    }
+
+    static $basePath = __NAMESPACE__.'\\ActionCrewType\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 올바른 병종 효과가 아님");
+}
+
+function buildActionCrewTypeClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getActionCrewTypeClass($type);
+
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
+}
+
 function getGeneralCommandClass(?string $type){
     if($type === null || $type === ''){
         $type = '휴식';

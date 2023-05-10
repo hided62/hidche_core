@@ -21,7 +21,7 @@ class GameUnitConst extends GameUnitConstBase
             [],//성벽은 공격할 수 없다.
             [self::T_FOOTMAN=>1.2],
             ['성벽입니다.','생성할 수 없습니다.'],
-            null, null
+            null, null, null
         ],
 
         [
@@ -31,7 +31,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["표준적인 보병입니다. 보병은 방어특화입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217101, self::T_FOOTMAN, '마물병',
@@ -40,7 +40,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["마군 지역 기본병종입니다. 조금더 강하지만 쌀을 많이 소비합니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217102, self::T_FOOTMAN, '중장보병',
@@ -49,7 +49,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["헬만 특유의 견고한 보병입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217103, self::T_FOOTMAN, '흑의 군 보병',
@@ -58,7 +58,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["흑의 군 전통의 체계적인 훈련으로 공격력을 보완했습니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217104, self::T_FOOTMAN, '용병',
@@ -67,7 +67,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["일반 보병보다 비싸지만 받은 만큼은 일해줍니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217105, self::T_FOOTMAN, '사메라이',
@@ -76,7 +76,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["검으로 난무를 가하는 몬스터 보병입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217106, self::T_FOOTMAN, '템플나이트병',
@@ -85,7 +85,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["공격을 포기하고 오직 방어에만 집중합니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217107, self::T_FOOTMAN, '메이드병',
@@ -94,7 +94,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["켓셀링크 휘하의 날렵한 전투메이드입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217108, self::T_FOOTMAN, '요괴병',
@@ -103,7 +103,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["단단한 육체를 믿고 적진을 돌파합니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217109, self::T_FOOTMAN, '리자스 친위병',
@@ -112,7 +112,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["여왕을 수호하는 리자스 최강의 보병 정예보병입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217110, self::T_FOOTMAN, '케이브리스 마물병',
@@ -121,7 +121,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["케이브리스 직속의 마물 정예 전투보병입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             217111, self::T_FOOTMAN, '투신',
@@ -130,7 +130,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["성마교단 유적에서 발굴된 사상 최강의 보병입니다."],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
 
         [
@@ -140,7 +140,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["표준적인 궁병입니다. 궁병은 회피특화입니다."],
-            null, null
+            null, null, null
         ],
         [
             217201, self::T_ARCHER, '투척마물병',
@@ -149,7 +149,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["날렵함을 포기하고 도끼를 투척합니다."],
-            null, null
+            null, null, null
         ],
         [
             217202, self::T_ARCHER, '백의 군 궁병',
@@ -158,7 +158,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["전략을 활용하여 치고 빠지기에 능합니다."],
-            null, null
+            null, null, null
         ],
         [
             217203, self::T_ARCHER, '벌레술사병',
@@ -167,7 +167,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["벌레들을 부려 몸을 보호하는 궁병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217204, self::T_ARCHER, '저격암살병',
@@ -176,7 +176,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["독을 바른 탄환으로 적의 목숨을 앗아갑니다."],
-            null, null
+            null, null, null
         ],
         [
             217205, self::T_ARCHER, '호루스병',
@@ -185,7 +185,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["민첩하게 파고드는 호루스족 궁병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217206, self::T_ARCHER, '튤립병',
@@ -194,7 +194,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["최첨단병기 튤립으로 적을 폭격합니다."],
-            null, null
+            null, null, null
         ],
         [
             217207, self::T_ARCHER, '아이스플레임 궁병',
@@ -203,7 +203,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["혁명을 성공으로 이끈 정예 게릴라 궁병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217208, self::T_ARCHER, '카라 궁병',
@@ -212,7 +212,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>0.8, 217502=>1],
             ["선조의 힘을 이어받은 최강의 카라 정예 궁병입니다."],
-            null, null
+            null, null, null
         ],
 
         [
@@ -222,7 +222,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["표준적인 기동병입니다. 기동병은 공격특화입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217301, self::T_CAVALRY, '하치온나',
@@ -231,7 +231,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["작은 몸으로 회피하며 따끔한 일격을 먹이는 몬스터 기동병입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217302, self::T_CAVALRY, '적의 군 기동병',
@@ -240,7 +240,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["리자스군의 자랑인 기동부대입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217303, self::T_CAVALRY, '안드로이드 기동병',
@@ -249,7 +249,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["파이아르가 개발한 최첨단 안드로이드 기동병입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217304, self::T_CAVALRY, '파란쵸 기동병',
@@ -258,7 +258,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["적진을 일점돌파하는 파란쵸왕국의 돌격 기동병입니다. "],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217305, self::T_CAVALRY, '비행마물병',
@@ -267,7 +267,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["비행마물에 올라탄 기동마물병입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217306, self::T_CAVALRY, '마물조련사병',
@@ -276,7 +276,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["무시무시한 몬스터에 올라타서 싸우는 극강의 기동병입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217307, self::T_CAVALRY, '기마병',
@@ -285,7 +285,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["JAPAN 특유의 기마에 올라타 적을 짓밟는 기동병입니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             217308, self::T_CAVALRY, '엔젤나이트',
@@ -294,7 +294,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2, 217502=>1],
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8, 217502=>1],
             ["신의 명령으로 파멸을 내리기 위해 강림했습니다."],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
 
         [
@@ -304,7 +304,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["마법을 사용하는 병종입니다."],
-            null, null
+            null, null, null
         ],
         [
             217401, self::T_WIZARD, '마물 마법병',
@@ -313,7 +313,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["마군 지역 기본병종입니다. 조금더 강하지만 금을 많이 소비합니다."],
-            null, null
+            null, null, null
         ],
         [
             217402, self::T_WIZARD, '카라 마법병',
@@ -322,7 +322,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["신속히 움직이며 카라의 저주로 적을 공격합니다."],
-            null, null
+            null, null, null
         ],
         [
             217403, self::T_WIZARD, '제스 마법병',
@@ -331,7 +331,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["마법국가 제스의 전통있는 마법병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217404, self::T_WIZARD, '무녀',
@@ -340,7 +340,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["신마법과 함께 신통한 춤으로 활력을 불어넣는 마법병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217405, self::T_WIZARD, '프로즌',
@@ -349,7 +349,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["백병전에 불리한 연약한 몸으로 마법 사용에 집중하는 몬스터입니다."],
-            null, null
+            null, null, null
         ],
         [
             217406, self::T_WIZARD, '마소한 마법병',
@@ -358,7 +358,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["로브를 여러겹 둘러입은 마물마법병입니다. 직접 전투보단 마법에 집중합니다."],
-            null, null
+            null, null, null
         ],
         [
             217407, self::T_WIZARD, '신관병',
@@ -367,7 +367,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["AL교의 전투신관입니다. 몸을 보호하는 성스러운 마법을 사용합니다."],
-            null, null
+            null, null, null
         ],
         [
             217408, self::T_WIZARD, '중장마법병',
@@ -376,7 +376,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["두터운 로브를 입고 불길한 주문을 읊습니다."],
-            null, null
+            null, null, null
         ],
         [
             217409, self::T_WIZARD, '악마병',
@@ -385,7 +385,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["고대 제스 왕가의 계약에 따라 소환된 흑마법병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217410, self::T_WIZARD, '호넷 마물병',
@@ -394,7 +394,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["호넷 직속의 최강 마물 마법병입니다."],
-            null, null
+            null, null, null
         ],
         [
             217411, self::T_WIZARD, 'Z가디언',
@@ -403,7 +403,7 @@ class GameUnitConst extends GameUnitConstBase
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ["제스의 기술력이 집약된 최고의 마법병기입니다."],
-            null, null
+            null, null, null
         ],
 
         [
@@ -413,7 +413,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>1.8],
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
             ["높은 구조물 위에서 공격합니다."],
-            ['che_성벽부상무효'], null
+            ['che_성벽부상무효'], null, null
         ],
         [
             217501, self::T_SIEGE, '충차',
@@ -422,7 +422,7 @@ class GameUnitConst extends GameUnitConstBase
             [ self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>2.4],
             [ self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
             ["엄청난 위력으로 성벽을 부수어버립니다."],
-            ['che_성벽부상무효'], null
+            ['che_성벽부상무효'], null, null
         ],
         [
             217502, self::T_SIEGE, '튤립3호',
@@ -431,7 +431,7 @@ class GameUnitConst extends GameUnitConstBase
             [ ],
             [ ],
             ["파괴적인 위력과 정말 파괴적인 비용을 자랑하는 전차입니다. "],
-            ['che_성벽부상무효'], null
+            ['che_성벽부상무효'], null, null
         ],
 
 
