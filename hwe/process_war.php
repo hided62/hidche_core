@@ -42,10 +42,18 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     /** @var WarUnit[] */
     $defenderList = [];
     foreach($defenderGeneralList as $defenderGeneral){
-        $defenderList[] = new WarUnitGeneral($rng, $defenderGeneral, $rawDefenderNation, false);
+
+        $defenderCandidate = new WarUnitGeneral($rng, $defenderGeneral, $rawDefenderNation, false);
+        if(extractBattleOrder($defenderCandidate, $attacker) <= 0){
+            continue;
+        }
+
+        $defenderList[] = $defenderCandidate;
     }
 
-    $defenderList[] = $city;
+    if(count($defenderList) == 0 && extractBattleOrder($city, $attacker) > 0){
+        $defenderList[] = $city;
+    }
 
     usort($defenderList, function (WarUnit $lhs, WarUnit $rhs) use ($attacker) {
         return - (extractBattleOrder($lhs, $attacker) <=> extractBattleOrder($rhs, $attacker));
@@ -183,7 +191,11 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
 function extractBattleOrder(WarUnit $defender, WarUnit $attacker)
 {
     if($defender instanceof WarUnitCity){
-        return -1;
+        if(!($attacker instanceof WarUnitGeneral)){
+            return 0;
+        }
+        $attackerGeneral = $attacker->getGeneral();
+        return $attackerGeneral->onCalcOpposeStat($defender->getGeneral(), 'cityBattleOrder', -1);
     }
 
     $general = $defender->getGeneral();
@@ -229,6 +241,7 @@ function processWar_NG(
     $attackerNationUpdate = [];
     $defenderNationUpdate = [];
 
+    /** @var WarUnit */
     $defender = ($getNextDefender)(null, true);
     $conquerCity = false;
 
@@ -244,6 +257,7 @@ function processWar_NG(
         $logWritten = false;
         if ($defender === null) {
             $defender = $city;
+            $defender->setSiege();
 
             if ($city->getNationVar('rice') <= 0 && $city->getVar('supply')) {
                 //병량 패퇴
@@ -458,6 +472,11 @@ function processWar_NG(
 
     $attacker->finishBattle();
     $defender->finishBattle();
+
+    if($city->getDead()){
+        $city->setSiege();
+        $city->finishBattle();
+    }
 
     if ($defender instanceof WarUnitCity) {
         $newConflict = $defender->addConflict();
