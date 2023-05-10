@@ -69,7 +69,9 @@ class GameUnitDetail implements iAction
         $this->info = $info;
         $this->initSkillTrigger = $initSkillTrigger;
         $this->phaseSkillTrigger = $phaseSkillTrigger;
-        $this->iActionList = array_map('buildActionCrewTypeClass', $iActionList ?? []);
+        $this->iActionList = array_map(function($rawAction){
+            return buildActionCrewTypeClass($rawAction);
+        }, $iActionList ?? []);
     }
 
     public function getInfo(): string

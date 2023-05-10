@@ -346,7 +346,7 @@ function getActionCrewTypeClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 병종 효과가 아님");
 }
 
-function buildActionCrewTypeClass(?string $type):BaseSpecial{
+function buildActionCrewTypeClass(?string $type):iAction{
     static $cache = [];
     if($type === null){
         $type = 'None';
