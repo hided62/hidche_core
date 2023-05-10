@@ -37,7 +37,7 @@ class DummyGeneral extends General
         }
     }
 
-    public function setCrewType(GameUnitDetail $crewType){
+    public function setCrewType(?GameUnitDetail $crewType){
         $this->crewType = $crewType;
     }
 
