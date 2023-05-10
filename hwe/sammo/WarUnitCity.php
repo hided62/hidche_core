@@ -7,6 +7,7 @@ class WarUnitCity extends WarUnit{
     protected $hp;
 
     protected $cityTrainAtmos;
+    protected $onSiege = false;
 
     function __construct(public readonly RandUtil $rng, $raw, $rawNation, int $year, int $month, int $startYear){
         $general = new DummyGeneral(false);
@@ -77,6 +78,10 @@ class WarUnitCity extends WarUnit{
         return $this->hp;
     }
 
+    function setSiege(){
+        $this->onSiege = true;
+    }
+
     function getDex(GameUnitDetail $crewType){
         return ($this->cityTrainAtmos - 60) * 7200;
     }
@@ -109,7 +114,7 @@ class WarUnitCity extends WarUnit{
     }
 
     function finishBattle(){
-        if($this->isFinished){
+        if($this->isFinished || !$this->onSiege){
             return;
         }
         $this->clearActivatedSkill();

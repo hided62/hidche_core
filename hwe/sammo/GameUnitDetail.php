@@ -69,9 +69,14 @@ class GameUnitDetail implements iAction
         $this->info = $info;
         $this->initSkillTrigger = $initSkillTrigger;
         $this->phaseSkillTrigger = $phaseSkillTrigger;
-        $this->iActionList = array_map(function($rawAction){
-            return buildActionCrewTypeClass($rawAction);
-        }, $iActionList ?? []);
+        $this->iActionList = [];
+        foreach($iActionList as $rawAction){
+            $action = buildActionCrewTypeClass($rawAction);
+            if(!$action){
+                continue;
+            }
+            $this->iActionList[] = $action;
+        }
     }
 
     public function getInfo(): string
@@ -285,7 +290,7 @@ class GameUnitDetail implements iAction
     public function onCalcStat(General $general, string $statName, $value, $aux = null)
     {
         if (!$this->iActionList) {
-            return;
+            return $value;
         }
 
         foreach ($this->iActionList as $iAction) {
@@ -297,7 +302,7 @@ class GameUnitDetail implements iAction
     public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
     {
         if (!$this->iActionList) {
-            return;
+            return $value;
         }
 
         foreach ($this->iActionList as $iAction) {
@@ -308,7 +313,7 @@ class GameUnitDetail implements iAction
     public function onCalcStrategic(string $turnType, string $varType, $value)
     {
         if (!$this->iActionList) {
-            return;
+            return $value;
         }
 
         foreach ($this->iActionList as $iAction) {
@@ -319,7 +324,7 @@ class GameUnitDetail implements iAction
     public function onCalcNationalIncome(string $type, $amount)
     {
         if (!$this->iActionList) {
-            return;
+            return $amount;
         }
 
         foreach ($this->iActionList as $iAction) {
@@ -346,7 +351,7 @@ class GameUnitDetail implements iAction
     public function onArbitraryAction(General $general, RandUtil $rng, string $actionType, ?string $phase = null, ?array $aux = null): null|array
     {
         if (!$this->iActionList) {
-            return null;
+            return $aux;
         }
 
         foreach ($this->iActionList as $iAction) {

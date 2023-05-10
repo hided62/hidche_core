@@ -341,9 +341,13 @@ usort($defenderList, function (WarUnit $lhs, WarUnit $rhs) use ($attacker) {
     return - (extractBattleOrder($lhs, $attacker) <=> extractBattleOrder($rhs, $attacker));
 });
 
-$rawDefenderList = array_map(function (WarUnit $unit) {
-    return $unit->getRaw();
-}, $defenderList);
+$rawDefenderList = [];
+foreach($defenderList as $unit){
+    if(extractBattleOrder($unit, $attacker) <= 0){
+        continue;
+    }
+    $rawDefenderList[] = $unit->getRaw();
+}
 unset($defenderList);
 
 $db = DB::db();
@@ -405,7 +409,9 @@ function simulateBattle(
         );
     }
 
-    $defenderList[] = $city;
+    if(count($defenderList) == 0 && extractBattleOrder($city, $attacker) > 0){
+        $defenderList[] = $city;
+    }
 
 
     $iterDefender = new \ArrayIterator($defenderList);

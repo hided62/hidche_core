@@ -124,7 +124,7 @@ class General implements iAction
 
         $this->personalityObj = buildPersonalityClass($raw['personal']);
 
-        $this->crewType = GameUnitConst::byID($this->getVar('crewtype'));
+        $this->crewType = GameUnitConst::byID($raw['crewtype'] ?? 'None');
 
         $this->itemObjs['horse'] = buildItemClass($raw['horse']);
         $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
