@@ -82,6 +82,10 @@ class WarUnitCity extends WarUnit{
         $this->onSiege = true;
     }
 
+    function isSiege(): bool{
+        return $this->onSiege;
+    }
+
     function getDex(GameUnitDetail $crewType){
         return ($this->cityTrainAtmos - 60) * 7200;
     }
@@ -99,6 +103,12 @@ class WarUnitCity extends WarUnit{
     function continueWar(&$noRice):bool{
         //전투가 가능하면 true
         $noRice = false;
+
+        //본 공성이 아닌 경우에는 한대만 맞아줌
+        if(!$this->onSiege){
+            return false;
+        }
+
         if($this->getHP() <= 0){
             return false;
         }

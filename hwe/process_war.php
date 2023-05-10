@@ -424,21 +424,28 @@ function processWar_NG(
             $attacker->logBattleResult();
             $defender->logBattleResult();
 
-            $attacker->addWin();
-            $defender->addLose();
+            if (!($defender instanceof WarUnitCity) || $defender->isSiege()){
+                $attacker->addWin();
+                $defender->addLose();
 
-            $attacker->tryWound();
-            $defender->tryWound();
+                $attacker->tryWound();
+                $defender->tryWound();
 
-            if ($defender === $city) {
-                $attacker->addLevelExp(1000);
-                $conquerCity = true;
-                break;
+                if ($defender === $city) {
+                    $attacker->addLevelExp(1000);
+                    $conquerCity = true;
+                    break;
+                }
             }
+
 
             $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
 
-            if ($noRice) {
+            if ($defender instanceof WarUnitCity && !$defender->isSiege()){
+                //실제 공성을 위해 다시 초기화
+                $defender->setOppose(null);
+            }
+            else if ($noRice) {
                 $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.");
                 $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.", ActionLogger::PLAIN);
                 $defender->getLogger()->pushGeneralActionLog("군량 부족으로 패퇴합니다.", ActionLogger::PLAIN);
