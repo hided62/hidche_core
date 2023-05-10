@@ -37,13 +37,25 @@ class DummyGeneral extends General
         }
     }
 
+    public function setCrewType(GameUnitDetail $crewType){
+        $this->crewType = $crewType;
+    }
+
     public function getBattleInitSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
+        //crewType에만 반응하자
+        if($this->crewType !== null){
+            return $this->crewType->getBattleInitSkillTriggerList($unit);
+        }
         return new WarUnitTriggerCaller();
     }
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
+        //crewType에만 반응하자
+        if($this->crewType !== null){
+            return $this->crewType->getBattlePhaseSkillTriggerList($unit);
+        }
         return new WarUnitTriggerCaller();
     }
 

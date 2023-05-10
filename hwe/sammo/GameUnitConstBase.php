@@ -41,7 +41,7 @@ class GameUnitConstBase{
             [],//성벽은 공격할 수 없다.
             [self::T_FOOTMAN=>1.2],
             ['성벽입니다.','생성할 수 없습니다.'],
-            null, null, null
+            null, ['che_선제사격시도', 'che_선제사격발동'], null
         ],
 
         [

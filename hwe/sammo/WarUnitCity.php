@@ -25,6 +25,7 @@ class WarUnitCity extends WarUnit{
 
         $this->logger = $general->getLogger();
         $this->crewType = GameUnitConst::byID(GameUnitConst::CREWTYPE_CASTLE);
+        $general->setCrewType($this->crewType);
 
         $this->hp = $this->getCityVar('def') * 10;
 
