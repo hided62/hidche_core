@@ -80,6 +80,9 @@ class WarUnitCity extends WarUnit{
 
     function setSiege(){
         $this->onSiege = true;
+        $this->currPhase = 0;
+        $this->prePhase = 0;
+        $this->bonusPhase = 0;
     }
 
     function isSiege(): bool{

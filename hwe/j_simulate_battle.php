@@ -443,14 +443,12 @@ function simulateBattle(
         $defender = $iterDefender->current();
 
         if (extractBattleOrder($defender, $attacker) <= 0) {
-            logError('noDefence', TVarDumper::dump($defender, 2), '', []);
             return null;
         }
 
         $defenderRice += $defender->getVar('rice');
 
         $iterDefender->next();
-        logError('nextDefender', TVarDumper::dump($defender, 2), '', []);
         return $defender;
     };
 
