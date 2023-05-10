@@ -30,20 +30,22 @@ class General implements iAction
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
-    /** @var iAction */
+    /** @var ?iAction */
     protected $nationType = null;
-    /** @var iAction */
+    /** @var ?iAction */
     protected $officerLevelObj = null;
-    /** @var iAction */
+    /** @var ?iAction */
     protected $specialDomesticObj = null;
-    /** @var iAction */
+    /** @var ?iAction */
     protected $specialWarObj = null;
-    /** @var iAction */
+    /** @var ?iAction */
     protected $personalityObj = null;
-    /** @var iAction[] */
+    /** @var ?iAction[] */
     protected $itemObjs = [];
-    /** @var iAction */
+    /** @var ?iAction */
     protected $inheritBuffObj = null;
+    /** @var ?GameUnitDetail */
+    protected $crewType = null;
 
     protected $lastTurn = null;
     protected $resultTurn = null;
@@ -121,6 +123,8 @@ class General implements iAction
         $this->specialWarObj = buildGeneralSpecialWarClass($raw['special2']);
 
         $this->personalityObj = buildPersonalityClass($raw['personal']);
+
+        $this->crewType = GameUnitConst::byID($this->getVar('crewtype'));
 
         $this->itemObjs['horse'] = buildItemClass($raw['horse']);
         $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
@@ -325,11 +329,10 @@ class General implements iAction
 
     function getCrewTypeObj(): GameUnitDetail
     {
-        $crewType = GameUnitConst::byID($this->getVar('crewtype'));
-        if ($crewType === null) {
+        if($this->crewType === null) {
             throw new \InvalidArgumentException('Invalid CrewType:' . $this->getVar('crewtype'));
         }
-        return $crewType;
+        return $this->crewType;
     }
 
     function calcRecentWarTurn(int $turnTerm): int
@@ -853,18 +856,22 @@ class General implements iAction
         return $result;
     }
 
-    public function getPreTurnExecuteTriggerList(General $general): ?GeneralTriggerCaller
-    {
-        $caller = new GeneralTriggerCaller();
-        foreach (array_merge([
+    protected function getActionList(): array{
+        return array_merge([
             $this->nationType,
             $this->officerLevelObj,
             $this->specialDomesticObj,
             $this->specialWarObj,
             $this->personalityObj,
-            $this->getCrewTypeObj(),
+            $this->crewType,
             $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        ], $this->itemObjs);
+    }
+
+    public function getPreTurnExecuteTriggerList(General $general): ?GeneralTriggerCaller
+    {
+        $caller = new GeneralTriggerCaller();
+        foreach ($this->getActionList() as $iObj) {
 
             if (!$iObj) {
                 continue;
@@ -877,15 +884,7 @@ class General implements iAction
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux = null): float
     {
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -898,15 +897,7 @@ class General implements iAction
     public function onCalcStat(General $general, string $statName, $value, $aux = null)
     {
         //xxx: $general?
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -919,15 +910,7 @@ class General implements iAction
     public function onCalcOpposeStat(General $general, string $statName, $value, $aux = null)
     {
         //xxx: $general?
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -939,15 +922,7 @@ class General implements iAction
 
     public function onCalcStrategic(string $turnType, string $varType, $value)
     {
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -959,15 +934,7 @@ class General implements iAction
 
     public function onCalcNationalIncome(string $type, $amount)
     {
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -979,15 +946,7 @@ class General implements iAction
 
     public function onArbitraryAction(General $general, RandUtil $rng, string $actionType, ?string $phase = null, $aux = null): null|array
     {
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -1002,15 +961,7 @@ class General implements iAction
         //xxx:$unit
         $att = 1;
         $def = 1;
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -1024,15 +975,7 @@ class General implements iAction
     public function getBattleInitSkillTriggerList(WarUnit $unit): ?WarUnitTriggerCaller
     {
         $caller = new WarUnitTriggerCaller();
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }
@@ -1053,15 +996,7 @@ class General implements iAction
             new WarUnitTrigger\che_계략발동($unit),
             new WarUnitTrigger\che_계략실패($unit)
         );
-        foreach (array_merge([
-            $this->nationType,
-            $this->officerLevelObj,
-            $this->specialDomesticObj,
-            $this->specialWarObj,
-            $this->personalityObj,
-            $this->getCrewTypeObj(),
-            $this->inheritBuffObj,
-        ], $this->itemObjs) as $iObj) {
+        foreach ($this->getActionList() as $iObj) {
             if (!$iObj) {
                 continue;
             }

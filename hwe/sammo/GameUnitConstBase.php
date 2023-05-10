@@ -41,7 +41,7 @@ class GameUnitConstBase{
             [],//성벽은 공격할 수 없다.
             [self::T_FOOTMAN=>1.2],
             ['성벽입니다.','생성할 수 없습니다.'],
-            null, null
+            null, null, null
         ],
 
         [
@@ -51,7 +51,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
             ['표준적인 보병입니다.','보병은 방어특화이며,','상대가 회피하기 어렵습니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             1101, self::T_FOOTMAN, '청주병',
@@ -60,7 +60,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
             ['저렴하고 튼튼합니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             1102, self::T_FOOTMAN, '수병',
@@ -69,7 +69,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
             ['저렴하고 강력합니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             1103, self::T_FOOTMAN, '자객병',
@@ -78,7 +78,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
             ['은밀하고 날쌥니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             1104, self::T_FOOTMAN, '근위병',
@@ -87,7 +87,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
             ['최강의 보병입니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             1105, self::T_FOOTMAN, '등갑병',
@@ -96,7 +96,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
             ['등갑을 두른 보병입니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
         [
             1106, self::T_FOOTMAN, '백이병',
@@ -105,7 +105,7 @@ class GameUnitConstBase{
             [self::T_ARCHER=>1.1, self::T_CAVALRY=>0.9, self::T_SIEGE=>1.1],
             [self::T_ARCHER=>0.9, self::T_CAVALRY=>1.1, self::T_SIEGE=>0.9],
             ['정예 보병입니다. 불리한 싸움도 버텨냅니다.'],
-            null, ['che_방어력증가5p']
+            null, ['che_방어력증가5p'], null
         ],
 
         [
@@ -115,7 +115,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['표준적인 궁병입니다.','궁병은 선제사격을 하는 병종입니다.'],
-            null, ['che_선제사격시도', 'che_선제사격발동']
+            null, ['che_선제사격시도', 'che_선제사격발동'], null
         ],
         [
             1201, self::T_ARCHER, '궁기병',
@@ -124,7 +124,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.9, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.1, self::T_SIEGE=>0.8],
             ['말을 타고 잘 피합니다. 특히 다른 궁병보다 보병에게 조금 더 강합니다.'],
-            null, ['che_선제사격시도', 'che_선제사격발동']
+            null, ['che_선제사격시도', 'che_선제사격발동'], null
         ],
         [
             1202, self::T_ARCHER, '연노병',
@@ -133,7 +133,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['화살을 연사합니다.'],
-            null, ['che_선제사격시도', 'che_선제사격발동']
+            null, ['che_선제사격시도', 'che_선제사격발동'], null
         ],
         [
             1203, self::T_ARCHER, '강궁병',
@@ -142,7 +142,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['강건한 궁병입니다.'],
-            null, ['che_선제사격시도', 'che_선제사격발동']
+            null, ['che_선제사격시도', 'che_선제사격발동'], null
         ],
         [
             1204, self::T_ARCHER, '석궁병',
@@ -151,7 +151,7 @@ class GameUnitConstBase{
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
             ['강력한 화살을 쏩니다.'],
-            null, ['che_선제사격시도', 'che_선제사격발동']
+            null, ['che_선제사격시도', 'che_선제사격발동'], null
         ],
 
         [
@@ -161,7 +161,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['표준적인 기병입니다.','기병은 공격특화입니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1301, self::T_CAVALRY, '백마병',
@@ -170,7 +170,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['백마의 위용을 보여줍니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1302, self::T_CAVALRY, '중장기병',
@@ -179,7 +179,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['갑주를 두른 기병입니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1303, self::T_CAVALRY, '돌격기병',
@@ -188,7 +188,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['저돌적으로 공격합니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1304, self::T_CAVALRY, '철기병',
@@ -197,7 +197,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['철갑을 두른 기병입니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1305, self::T_CAVALRY, '수렵기병',
@@ -206,7 +206,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['날쎄고 빠른 기병입니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1306, self::T_CAVALRY, '맹수병',
@@ -215,7 +215,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['어느 누구보다 강력합니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
         [
             1307, self::T_CAVALRY, '호표기병',
@@ -224,7 +224,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
             ['정예 기병입니다.'],
-            null, ['che_기병병종전투']
+            null, ['che_기병병종전투'], null
         ],
 
         [
@@ -234,7 +234,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['계략을 사용하는 병종입니다.'],
-            null, null
+            null, null, null
         ],
         [
             1401, self::T_WIZARD, '신귀병',
@@ -243,7 +243,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['신출귀몰한 귀병입니다.'],
-            null, null
+            null, null, null
         ],
         [
             1402, self::T_WIZARD, '백귀병',
@@ -252,7 +252,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['저렴하고 튼튼합니다.'],
-            null, null
+            null, null, null
         ],
         [
             1403, self::T_WIZARD, '흑귀병',
@@ -261,7 +261,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['저렴하고 강력합니다.'],
-            null, null
+            null, null, null
         ],
         [
             1404, self::T_WIZARD, '악귀병',
@@ -270,7 +270,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['백병전에도 능숙합니다.'],
-            null, null
+            null, null, null
         ],
         [
             1405, self::T_WIZARD, '남귀병',
@@ -279,7 +279,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['전투를 포기하고 계략에 몰두합니다.'],
-            null, null
+            null, null, null
         ],
         [
             1406, self::T_WIZARD, '황귀병',
@@ -288,7 +288,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['고도로 훈련된 귀병입니다.'],
-            null, null
+            null, null, null
         ],
         [
             1407, self::T_WIZARD, '천귀병',
@@ -297,7 +297,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['갑주를 두른 귀병입니다.'],
-            null, null
+            null, null, null
         ],
         [
             1408, self::T_WIZARD, '마귀병',
@@ -306,7 +306,7 @@ class GameUnitConstBase{
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
             ['날카로운 무기를 가진 귀병입니다.'],
-            null, null
+            null, null, null
         ],
 
         [
@@ -316,7 +316,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2, 1106=>1.067],
             ['높은 구조물 위에서 공격합니다.'],
-            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동']
+            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동'], ['che_성벽선제']
         ],
         [
             1501, self::T_SIEGE, '충차',
@@ -325,7 +325,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>2.4],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
             ['엄청난 위력으로 성벽을 부수어버립니다.'],
-            ['che_성벽부상무효'], null
+            ['che_성벽부상무효'], null, null
         ],
         [
             1502, self::T_SIEGE, '벽력거',
@@ -334,7 +334,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.8, 1106=>1.112],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2, 1106=>1.067],
             ['상대에게 돌덩이를 날립니다.'],
-            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동']
+            ['che_성벽부상무효'], ['che_선제사격시도', 'che_선제사격발동'], null
         ],
         [
             1503, self::T_SIEGE, '목우',
@@ -343,7 +343,7 @@ class GameUnitConstBase{
             [self::T_FOOTMAN=>1, self::T_ARCHER=>1, self::T_CAVALRY=>1, self::T_WIZARD=>1, self::T_CASTLE=>1.8],
             [self::T_FOOTMAN=>1, self::T_ARCHER=>1, self::T_CAVALRY=>1, self::T_WIZARD=>1, 1106=>1],
             ['상대를 저지하는 특수병기입니다.'],
-            ['che_성벽부상무효'], ['che_저지시도', 'che_저지발동']
+            ['che_성벽부상무효'], ['che_저지시도', 'che_저지발동'], ['che_성벽선제']
         ]
     ];
 
@@ -466,6 +466,7 @@ class GameUnitConstBase{
                 $info,
                 $initSkillTrigger,
                 $phaseSkillTrigger,
+                $iActionList,
              ] = $rawUnit;
 
             if($reqYear > 0){
@@ -509,7 +510,8 @@ class GameUnitConstBase{
                 $defenceCoef,
                 $info,
                 $initSkillTrigger,
-                $phaseSkillTrigger
+                $phaseSkillTrigger,
+                $iActionList,
             );
 
             $constID[$id] = $unit;
