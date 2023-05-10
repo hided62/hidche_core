@@ -80,6 +80,13 @@ class WarUnitCity extends WarUnit{
 
     function setSiege(){
         $this->onSiege = true;
+        $this->currPhase = 0;
+        $this->prePhase = 0;
+        $this->bonusPhase = 0;
+    }
+
+    function isSiege(): bool{
+        return $this->onSiege;
     }
 
     function getDex(GameUnitDetail $crewType){
@@ -99,6 +106,12 @@ class WarUnitCity extends WarUnit{
     function continueWar(&$noRice):bool{
         //전투가 가능하면 true
         $noRice = false;
+
+        //본 공성이 아닌 경우에는 한대만 맞아줌
+        if(!$this->onSiege){
+            return false;
+        }
+
         if($this->getHP() <= 0){
             return false;
         }

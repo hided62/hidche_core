@@ -337,10 +337,6 @@ if ($action == 'reorder') {
     ]);
 }
 
-usort($defenderList, function (WarUnit $lhs, WarUnit $rhs) use ($attacker) {
-    return - (extractBattleOrder($lhs, $attacker) <=> extractBattleOrder($rhs, $attacker));
-});
-
 $rawDefenderList = [];
 foreach($defenderList as $unit){
     if(extractBattleOrder($unit, $attacker) <= 0){
@@ -409,10 +405,13 @@ function simulateBattle(
         );
     }
 
-    if(count($defenderList) == 0 && extractBattleOrder($city, $attacker) > 0){
+    if(count($defenderList) && extractBattleOrder($city, $attacker) > 0){
         $defenderList[] = $city;
     }
 
+    usort($defenderList, function (WarUnit $lhs, WarUnit $rhs) use ($attacker) {
+        return - (extractBattleOrder($lhs, $attacker) <=> extractBattleOrder($rhs, $attacker));
+    });
 
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
@@ -447,7 +446,9 @@ function simulateBattle(
             return null;
         }
 
-        $defenderRice += $defender->getVar('rice');
+        if($defender instanceof WarUnitGeneral){
+            $defenderRice += $defender->getVar('rice');
+        }
 
         $iterDefender->next();
         return $defender;
