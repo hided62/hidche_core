@@ -84,6 +84,9 @@ class WarUnitCity extends WarUnit{
         $this->currPhase = 0;
         $this->prePhase = 0;
         $this->bonusPhase = 0;
+        /** @var DummyGeneral $general */
+        $general = $this->general;
+        $general->setCrewType(null);
     }
 
     function isSiege(): bool{
