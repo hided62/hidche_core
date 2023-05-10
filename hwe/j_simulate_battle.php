@@ -446,7 +446,9 @@ function simulateBattle(
             return null;
         }
 
-        $defenderRice += $defender->getVar('rice');
+        if($defender instanceof WarUnitGeneral){
+            $defenderRice += $defender->getVar('rice');
+        }
 
         $iterDefender->next();
         return $defender;
