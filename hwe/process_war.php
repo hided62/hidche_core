@@ -280,8 +280,6 @@ function processWar_NG(
             }
         }
 
-        logError('defender', TVarDumper::dump($defender, 2, false), '', getExceptionTraceAsString(new \Exception()));
-
         if ($defender->getPhase() == 0 && $defender->getOppose() == null) {
             $defender->setPrePhase($attacker->getPhase());
 
