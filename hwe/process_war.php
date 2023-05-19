@@ -42,7 +42,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     /** @var WarUnit[] */
     $defenderList = [];
     foreach($defenderGeneralList as $defenderGeneral){
-
+        $defenderGeneral->setRawCity($rawDefenderCity);
         $defenderCandidate = new WarUnitGeneral($rng, $defenderGeneral, $rawDefenderNation, false);
         if(extractBattleOrder($defenderCandidate, $attacker) <= 0){
             continue;
