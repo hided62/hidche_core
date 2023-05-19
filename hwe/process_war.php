@@ -480,13 +480,13 @@ function processWar_NG(
     $attacker->finishBattle();
     $defender->finishBattle();
 
-    if($city->getDead()){
-        $city->setSiege();
-        $city->finishBattle();
-    }
+    if($city->getDead() || $defender instanceof WarUnitCity){
+        if($city !== $defender){
+            $city->finishBattle();
+            $city->setSiege();
+        }
 
-    if ($defender instanceof WarUnitCity) {
-        $newConflict = $defender->addConflict();
+        $newConflict = $city->addConflict();
         if ($newConflict) {
             $nationName = $attacker->getNationVar('name');
             $josaYi = JosaUtil::pick($nationName, '이');
