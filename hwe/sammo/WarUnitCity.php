@@ -84,6 +84,7 @@ class WarUnitCity extends WarUnit{
         $this->currPhase = 0;
         $this->prePhase = 0;
         $this->bonusPhase = 0;
+        $this->isFinished = false;
         /** @var DummyGeneral $general */
         $general = $this->general;
         $general->setCrewType(null);
@@ -131,15 +132,15 @@ class WarUnitCity extends WarUnit{
     }
 
     function finishBattle(){
-        if($this->isFinished || !$this->onSiege){
-            return;
-        }
         $this->clearActivatedSkill();
         $this->isFinished = true;
 
         $this->updateVar('def', Util::round($this->getHP() / 10));
         $this->updateVar('wall', Util::round($this->getVar('wall')));
 
+        if($this->isFinished || !$this->onSiege){
+            return;
+        }
         //NOTE: 전투로 인한 사망자는 여기서 처리하지 않음
 
         $decWealth = $this->getKilled() / 20;
