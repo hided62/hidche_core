@@ -23,14 +23,6 @@ $ipGroupList = Util::arrayGroupBy(
     'ip_c'
 );
 
-function colorBlockedName($general)
-{
-    if (!$general['blocked']) {
-        return $general['name'];
-    }
-    return "<span style='color:magenta;'>{$general['name']}</span>";
-}
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -109,7 +101,7 @@ function colorBlockedName($general)
             </tr>
             <?php foreach ($ipGroupList as $ipGroupC => $users) : ?>
                 <tr>
-                    <td><?= join('<br>', array_map('\sammo\colorBlockedName', $users)) ?></td>
+                    <td><?= join('<br>', array_column($users, 'name')) ?></td>
                     <td><?= join('<br>', array_column($users, 'lastconnect')) ?></td>
                     <td><?= join('<br>', array_column($users, 'ip')) ?></td>
                     <td><?= join('<br>', array_column($users, 'owner')) ?></td>
