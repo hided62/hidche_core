@@ -482,6 +482,7 @@ function processWar_NG(
 
     if($city->getDead() || $defender instanceof WarUnitCity){
         if($city !== $defender){
+            $city->setOppose($attacker);
             $city->setSiege();
             $city->finishBattle();
         }
