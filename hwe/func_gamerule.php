@@ -908,6 +908,11 @@ function checkEmperior()
 
     //연감 월결산
     LogHistory();
+
+    $invaderMsgs = RaiseInvaderMessage::buildRaiseInvaderMessage($chiefs[12]['no']);
+    foreach($invaderMsgs as $invaderMsg){
+        $invaderMsg->send();
+    }
 }
 
 function updateMaxDomesticCritical(General $general, $score)
