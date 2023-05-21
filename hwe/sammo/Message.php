@@ -126,6 +126,8 @@ class Message
             $objMessage = new DiplomaticMessage(...$args);
         } elseif ($action === 'scout') {
             $objMessage = new ScoutMessage(...$args);
+        } elseif ($action === 'raiseInvader') {
+            $objMessage = new RaiseInvaderMessage(...$args);
         } else {
             $objMessage = new Message(...$args);
         }
