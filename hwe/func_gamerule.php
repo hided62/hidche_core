@@ -909,9 +909,19 @@ function checkEmperior()
     //연감 월결산
     LogHistory();
 
-    $invaderMsgs = RaiseInvaderMessage::buildRaiseInvaderMessage($chiefs[12]['no']);
-    foreach($invaderMsgs as $invaderMsg){
-        $invaderMsg->send();
+    foreach(range(12, 5, -1) as $chiefLevel){
+        if(!key_exists($chiefLevel, $chiefs)){
+            continue;
+        }
+        $targetChief = $chiefs[$chiefLevel];
+        if($targetChief['npc'] >= 2){
+            continue;
+        }
+        $invaderMsgs = RaiseInvaderMessage::buildRaiseInvaderMessage($targetChief['no']);
+        foreach($invaderMsgs as $invaderMsg){
+            $invaderMsg->send();
+        }
+        break;
     }
 }
 
