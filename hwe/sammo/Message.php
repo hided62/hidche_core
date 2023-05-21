@@ -377,12 +377,15 @@ class Message
     }
 
     /**
-     * @param int[]|MessageTarget[]|int $targets
+     * @param int[]|MessageTarget[]|int|MessageTarget $targets
      * @param string $msg
      */
-    public static function sendPrivateMsgAsNotice(array|int $targets, string $msg): void{
+    public static function sendPrivateMsgAsNotice(array|int|MessageTarget $targets, string $msg): void{
         $src = new MessageTarget(0, '', 0, 'System', '#000000');
         if(is_int($targets)){
+            $targets = [$targets];
+        }
+        else if($targets instanceof MessageTarget){
             $targets = [$targets];
         }
 
