@@ -41,7 +41,7 @@ class ProvideNPCTroopLeader extends \sammo\Event\Action
 
     foreach ($db->query('SELECT nation,name,level,tech,aux FROM nation') as $nation) {
       $nationID = $nation['nation'];
-      $maxNPCTroopLeaderCnt = self::MaxNPCTroopLeaderCnt[$nation['level']];
+      $maxNPCTroopLeaderCnt = self::MaxNPCTroopLeaderCnt[$nation['level']] ?? 0;
       $NPCTroopLeaderCnt = $NPCTroopLeaderCntByNation[$nationID] ?? 0;
 
       if ($NPCTroopLeaderCnt >= $maxNPCTroopLeaderCnt) {
