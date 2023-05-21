@@ -381,7 +381,7 @@ class Message
      * @param string $msg
      */
     public static function sendPrivateMsgAsNotice(array|int|MessageTarget $targets, string $msg): void{
-        $src = new MessageTarget(0, '', 0, 'System', '#000000');
+        $src = MessageTarget::buildSystemTarget();
         if(is_int($targets)){
             $targets = [$targets];
         }

@@ -10,7 +10,7 @@ class MessageTarget extends Target {
     public $color;
     /** @var string */
     public $icon;
-    
+
     public function __construct(
         int $generalID,
         string $generalName,
@@ -19,13 +19,13 @@ class MessageTarget extends Target {
         string $color,
         string $icon=''
     ){
-        
+
         parent::__construct($generalID, $nationID);
 
         if(!$icon){
             $icon = ServConfig::getSharedIconPath().'/default.jpg';
         }
-        
+
         $this->generalName = $generalName;
         $this->nationName = $nationName;
         $this->color = $color;
@@ -47,28 +47,28 @@ class MessageTarget extends Target {
         }
 
         return new MessageTarget(
-            $arr['id'], 
-            $arr['name'], 
-            $arr['nation_id'], 
-            $arr['nation'], 
-            $arr['color'], 
+            $arr['id'],
+            $arr['name'],
+            $arr['nation_id'],
+            $arr['nation'],
+            $arr['color'],
             $arr['icon']??''
         );
     }
 
     /**
-     * DB 부하 감수하고 일일히 찾아줌. 
+     * DB 부하 감수하고 일일히 찾아줌.
      * 게임 로직과 크게 연관이 없는 곳에서 메시지를 생성해야 할 경우에만 사용할 것을 권함.
      * @return MessageTarget
      */
     public static function buildQuick(int $generalID){
        $db = DB::db();
        list(
-           $generalName, 
-           $nationID, 
-           $imgsvr, 
+           $generalName,
+           $nationID,
+           $imgsvr,
            $picture
-        ) = $db->queryFirstList('SELECT `name`, nation, imgsvr, picture FROM general WHERE `no`=%i', $generalID); 
+        ) = $db->queryFirstList('SELECT `name`, nation, imgsvr, picture FROM general WHERE `no`=%i', $generalID);
 
         if($generalName === null){
             throw new \RuntimeException('장수가 없음:'.$generalID);
@@ -77,6 +77,10 @@ class MessageTarget extends Target {
         $icon = GetImageURL($imgsvr, $picture);
         $nation = getNationStaticInfo($nationID);
         return new MessageTarget($generalID, $generalName, $nationID, $nation['name'], $nation['color'], $icon);
+    }
+
+    public static function buildSystemTarget(): MessageTarget{
+        return new MessageTarget(0, '', 0, 'System', '#000000');
     }
 
     public function toArray() : array{
