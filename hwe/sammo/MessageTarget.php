@@ -79,6 +79,18 @@ class MessageTarget extends Target {
         return new MessageTarget($generalID, $generalName, $nationID, $nation['name'], $nation['color'], $icon);
     }
 
+    public static function buildFromGeneralObj(General $general): MessageTarget{
+        $nation = getNationStaticInfo($general->getNationID());
+        return new MessageTarget(
+            $general->getID(),
+            $general->getName(),
+            $general->getNationID(),
+            $nation['name'],
+            $nation['color'],
+            GetImageURL($general->getVar('imgsvr'), $general->getVar('picture')),
+        );
+    }
+
     public static function buildSystemTarget(): MessageTarget{
         return new MessageTarget(0, '', 0, 'System', '#000000');
     }
