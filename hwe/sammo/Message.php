@@ -376,6 +376,62 @@ class Message
         throw new \RuntimeException('이곳에 올 수 없습니다.');
     }
 
+    /**
+     * @param int[]|MessageTarget[]|int $targets
+     * @param string $msg
+     */
+    public static function sendPrivateMsgAsNotice(array|int $targets, string $msg): void{
+        $src = new MessageTarget(0, '', 0, 'System', '#000000');
+        if(is_int($targets)){
+            $targets = [$targets];
+        }
+
+        $reqTargetGeneralIDList = [];
+        $objTargets = [];
+
+        foreach($targets as $target){
+            if($target instanceof MessageTarget){
+                $objTargets[] = $target;
+                continue;
+            }
+            if(!is_int($target)){
+                throw new \InvalidArgumentException('올바르지 않은 타입');
+            }
+
+            $reqTargetGeneralIDList[] = $target;
+        }
+
+        if($reqTargetGeneralIDList){
+            $db = DB::db();
+            $rawGenerals = $db->query('SELECT no, name, nation, imgsvr, picture FROM general WHERE no in %li', $reqTargetGeneralIDList);
+            foreach($rawGenerals as $rawGeneral){
+                $staticNation = getNationStaticInfo($rawGeneral['nation']);
+                $objTarget = new MessageTarget(
+                    $rawGeneral['no'],
+                    $rawGeneral['name'],
+                    $rawGeneral['nation'],
+                    $staticNation['name'],
+                    $staticNation['color'],
+                    GetImageURL($rawGeneral['imgsvr'], $rawGeneral['picture'])
+                );
+                $objTargets[] = $objTarget;
+            }
+        }
+
+        foreach($objTargets as $dest){
+            $msg = new Message(
+                MessageType::private,
+                $src,
+                $dest,
+                $msg,
+                new \DateTime(),
+                new \DateTime('9999-12-31'),
+                []
+              );
+            $msg->send(true);
+        }
+    }
+
     public function send(bool $sendDestOnly=false):int{
         [$receiverMailbox, $receiveID] = $this->sendToReceiver();
         if(!$receiveID && !$sendDestOnly){
