@@ -93,6 +93,9 @@ class RaiseInvader extends \sammo\Event\Action
     public function run(array $env)
     {
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $gameStor->setValue('isunited', 1);
+
         $npcEachCount = $this->npcEachCount;
 
         /** @var \sammo\CityInitDetail[] */
@@ -260,8 +263,6 @@ class RaiseInvader extends \sammo\Event\Action
             'secu' => $db->sqleval('secu_max'),
         ], true);
 
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $gameStor->setValue('isunited', 1);
         refreshNationStaticInfo();
 
         $logger = new ActionLogger(0, 0, $year, $env['month']);
