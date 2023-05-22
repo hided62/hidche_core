@@ -771,7 +771,7 @@ function checkEmperior()
 
     $chiefs = Util::convertArrayToDict(
         $db->query(
-            'SELECT no,name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
+            'SELECT no,npc,name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
             $nationID
         ),
         'officer_level'
