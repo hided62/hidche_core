@@ -909,6 +909,7 @@ function checkEmperior()
     //연감 월결산
     LogHistory();
 
+    $invaderMsgCnt = 2;
     foreach(range(12, 5, -1) as $chiefLevel){
         if(!key_exists($chiefLevel, $chiefs)){
             continue;
@@ -921,7 +922,10 @@ function checkEmperior()
         foreach($invaderMsgs as $invaderMsg){
             $invaderMsg->send();
         }
-        break;
+        $invaderMsgCnt--;
+        if($invaderMsgCnt <= 0){
+            break;
+        }
     }
 }
 
