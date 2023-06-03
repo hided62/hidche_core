@@ -143,6 +143,9 @@ class ResetHelper{
         $voteStor = KVStorage::getStorage($db, 'vote');
         $voteStor->resetValues();
 
+        //삭제하는 타입은 enum GeneralStorKey 참고
+        $db->delete('storage', 'namespace LIKE "general_%"');
+
         $lastExecuteStor = KVStorage::getStorage($db, 'next_execute');
         $lastExecuteStor->resetValues();
 
