@@ -143,6 +143,11 @@ class RaiseInvader extends \sammo\Event\Action
             $month,
         )));
 
+        $db->update('nation', [
+            'war' => 0,
+            'scout' => 0,
+        ], '1');
+
         $disabledInvaderCity = $this->moveCapital($rng);
         $serverID = UniqueConst::$serverID;
         $existNations = $db->queryFirstColumn("SELECT nation FROM `nation`");
