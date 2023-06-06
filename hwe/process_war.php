@@ -695,11 +695,12 @@ function ConquerCity(array $admin, General $general, array $city)
             $minCity = findNextCapital($cityID, $defenderNationID);
 
             $minCityName = CityConst::byID($minCity)->name;
+            $josaRo = JosaUtil::pick($minCityName, '로');
 
             $josaYi = JosaUtil::pick($defenderNationName, '이');
-            $attackerLogger->pushGlobalHistoryLog("<M><b>【긴급천도】</b></><D><b>{$defenderNationName}</b></>{$josaYi} 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.");
+            $attackerLogger->pushGlobalHistoryLog("<M><b>【긴급천도】</b></><D><b>{$defenderNationName}</b></>{$josaYi} 수도가 함락되어 <G><b>$minCityName</b></>{$josaRo} 긴급천도하였습니다.");
 
-            $moveLog = "수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다.";
+            $moveLog = "수도가 함락되어 <G><b>$minCityName</b></>{$josaRo} <M>긴급천도</>합니다.";
             //아국 수뇌부에게 로그 전달
             foreach ($db->queryFirstColumn(
                 'SELECT no FROM general WHERE nation=%i AND officer_level>=5',

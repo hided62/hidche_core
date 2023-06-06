@@ -120,11 +120,12 @@ class che_종전제의 extends Command\NationCommand{
         $destNation = $this->destNation;
         $destNationID = $destNation['nation'];
         $destNationName = $destNation['name'];
+        $josaRo = JosaUtil::pick($destNationName, '로');
 
         $logger = $general->getLogger();
         $destLogger = new ActionLogger(0, $destNationID, $env['year'], $env['month']);
 
-        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>으로 종전 제의 서신을 보냈습니다.<1>$date</>");
+        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaRo} 종전 제의 서신을 보냈습니다.<1>$date</>");
 
         // 상대에게 발송
         $src = new MessageTarget(

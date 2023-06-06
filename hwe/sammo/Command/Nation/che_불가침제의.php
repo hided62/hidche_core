@@ -165,6 +165,7 @@ class che_불가침제의 extends Command\NationCommand
         $nation = $this->nation;
         $nationID = $nation['nation'];
         $nationName = $nation['name'];
+        $josaRo = JosaUtil::pick($nationName, '로');
 
         $destNation = $this->destNation;
         $destNationID = $destNation['nation'];
@@ -176,7 +177,7 @@ class che_불가침제의 extends Command\NationCommand
         $logger = $general->getLogger();
         $destLogger = new ActionLogger(0, $destNationID, $env['year'], $env['month']);
 
-        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>");
+        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaRo} 불가침 제의 서신을 보냈습니다.<1>$date</>");
 
         // 상대에게 발송
         $src = new MessageTarget(

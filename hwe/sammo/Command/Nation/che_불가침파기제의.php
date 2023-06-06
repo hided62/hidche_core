@@ -122,11 +122,12 @@ class che_불가침파기제의 extends Command\NationCommand{
         $destNation = $this->destNation;
         $destNationID = $destNation['nation'];
         $destNationName = $destNation['name'];
+        $josaRo = JosaUtil::pick($destNationName, '로');
 
         $logger = $general->getLogger();
         $destLogger = new ActionLogger(0, $destNationID, $env['year'], $env['month']);
 
-        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>으로 불가침 파기 제의 서신을 보냈습니다.<1>$date</>");
+        $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaRo} 불가침 파기 제의 서신을 보냈습니다.<1>$date</>");
 
         // 상대에게 발송
         $src = new MessageTarget(
