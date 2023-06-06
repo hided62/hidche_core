@@ -491,7 +491,7 @@ function processWar_NG(
         if ($newConflict) {
             $nationName = $attacker->getNationVar('name');
             $josaYi = JosaUtil::pick($nationName, '이');
-            $logger->pushGlobalHistoryLog("<M><b>【분쟁】</b></><D><b>{$nationName}</b></>{$josaYi} <G><b>{$defender->getName()}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.");
+            $logger->pushGlobalHistoryLog("<M><b>【분쟁】</b></><D><b>{$nationName}</b></>{$josaYi} <G><b>{$city->getName()}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.");
         }
     }
 
