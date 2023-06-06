@@ -165,7 +165,8 @@ class InheritancePointManager
       case InheritanceKey::betting:
         $extractFn = function () use ($general, $multiplier) {
           $betWin = $general->getRankVar(RankColumn::betwin);
-          $betWinRate = $general->getRankVar(RankColumn::betwingold) / max(1, $general->getRankVar(RankColumn::betgold));
+          //FIXME: 올바른 위치에서 은퇴 전후 베팅 기록을 처리해야함.
+          $betWinRate = $general->getRankVar(RankColumn::betwingold) / max(1000, $general->getRankVar(RankColumn::betgold));
 
           return [$betWin * $multiplier * pow($betWinRate, 2), null];
         };
