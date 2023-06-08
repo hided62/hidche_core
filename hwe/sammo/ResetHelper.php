@@ -272,6 +272,7 @@ class ResetHelper{
             'startyear'=>$startyear,
             'year'=> $year,
             'month'=> $month,
+            'isunited' => 0,
             'init_year'=> $year,
             'init_month'=>$month,
             'map_theme' => $scenarioObj->getMapTheme(), //@deprecated
