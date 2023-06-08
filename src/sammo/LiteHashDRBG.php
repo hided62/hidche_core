@@ -2,12 +2,6 @@
 
 namespace sammo;
 
-//NOTE: JavaScript 버전과 일치
-const MAX_RNG_SUPPORT_BIT = 53;
-if (PHP_INT_SIZE * 8 < MAX_RNG_SUPPORT_BIT) {
-    throw new \RangeException('PHP not support '.MAX_RNG_SUPPORT_BIT.' bit integer');
-}
-
 /**
  * Reseed를 하지 않는 단순한 형태의 sha512 drbg
  * float: bit를 강제로 채움
@@ -16,7 +10,9 @@ if (PHP_INT_SIZE * 8 < MAX_RNG_SUPPORT_BIT) {
 
 class LiteHashDRBG implements RNG
 {
-    const MAX_INT = (1 << MAX_RNG_SUPPORT_BIT) - 1;
+    //NOTE: JavaScript 버전과 일치
+    const MAX_RNG_SUPPORT_BIT = 53;
+    const MAX_INT = (1 << self::MAX_RNG_SUPPORT_BIT) - 1;
     const BUFFER_BYTE_SIZE = 512 / 8; //SHA512
 
     protected string $buffer;
@@ -182,7 +178,7 @@ class LiteHashDRBG implements RNG
     public function nextInt(?int $max = null): int
     {
         if ($max === null || $max === self::MAX_INT) {
-            $buffer = $this->nextBits(MAX_RNG_SUPPORT_BIT) . "\x00";
+            $buffer = $this->nextBits(self::MAX_RNG_SUPPORT_BIT) . "\x00";
             return self::parseU64($buffer);
         }
 
@@ -207,9 +203,9 @@ class LiteHashDRBG implements RNG
 
     public function nextFloat1(): float
     {
-        $max = 1 << MAX_RNG_SUPPORT_BIT;
+        $max = 1 << self::MAX_RNG_SUPPORT_BIT;
         while (true) {
-            $buffer = $this->nextBits(MAX_RNG_SUPPORT_BIT + 1) . "\x00";
+            $buffer = $this->nextBits(self::MAX_RNG_SUPPORT_BIT + 1) . "\x00";
             $nInt = self::parseU64($buffer);
             if ($nInt <= $max) {
                 break;
@@ -222,4 +218,8 @@ class LiteHashDRBG implements RNG
     {
         return new LiteHashDRBG($seed, $idx);
     }
+}
+
+if (PHP_INT_SIZE * 8 < LiteHashDRBG::MAX_RNG_SUPPORT_BIT) {
+    throw new \RangeException('PHP not support '.LiteHashDRBG::MAX_RNG_SUPPORT_BIT.' bit integer');
 }
