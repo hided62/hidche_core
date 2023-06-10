@@ -93,8 +93,6 @@ class RaiseInvader extends \sammo\Event\Action
     public function run(array $env)
     {
         $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        $gameStor->setValue('isunited', 1);
 
         $npcEachCount = $this->npcEachCount;
 
@@ -106,6 +104,13 @@ class RaiseInvader extends \sammo\Event\Action
             }
             $cities[] = $cityObj;
         }
+
+        if(!$cities){
+            return [__CLASS__, 0];
+        }
+
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $gameStor->setValue('isunited', 1);
 
         if ($npcEachCount < 0) {
             $npcEachCount =

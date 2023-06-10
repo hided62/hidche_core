@@ -909,22 +909,31 @@ function checkEmperior()
     //연감 월결산
     LogHistory();
 
-    $invaderMsgCnt = 2;
-    foreach(range(12, 5, -1) as $chiefLevel){
-        if(!key_exists($chiefLevel, $chiefs)){
-            continue;
-        }
-        $targetChief = $chiefs[$chiefLevel];
-        if($targetChief['npc'] >= 2){
-            continue;
-        }
-        $invaderMsgs = RaiseInvaderMessage::buildRaiseInvaderMessage($targetChief['no']);
-        foreach($invaderMsgs as $invaderMsg){
-            $invaderMsg->send();
-        }
-        $invaderMsgCnt--;
-        if($invaderMsgCnt <= 0){
+    $availableInvaderGame = false;
+    foreach(CityConst::all() as $city){
+        if($city->level == 4){
+            $availableInvaderGame = true;
             break;
+        }
+    }
+    if($availableInvaderGame){
+        $invaderMsgCnt = 2;
+        foreach(range(12, 5, -1) as $chiefLevel){
+            if(!key_exists($chiefLevel, $chiefs)){
+                continue;
+            }
+            $targetChief = $chiefs[$chiefLevel];
+            if($targetChief['npc'] >= 2){
+                continue;
+            }
+            $invaderMsgs = RaiseInvaderMessage::buildRaiseInvaderMessage($targetChief['no']);
+            foreach($invaderMsgs as $invaderMsg){
+                $invaderMsg->send();
+            }
+            $invaderMsgCnt--;
+            if($invaderMsgCnt <= 0){
+                break;
+            }
         }
     }
 }
