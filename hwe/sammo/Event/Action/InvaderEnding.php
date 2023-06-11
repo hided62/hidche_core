@@ -31,19 +31,34 @@ class InvaderEnding extends \sammo\Event\Action{
 
         $logger = new ActionLogger(0, 0, $env['year'], $env['month']);
 
+        $needStop = false;
+        $userWin = false;
         $cityCnt = $db->queryFirstField('SELECT count(*) FROM city WHERE nation = 0');
         if($cityCnt == 0){
+            $needStop = true;
+            $nationName = $db->queryFirstField('SELECT name FROM nation LIMIT 1');
+            if(!\str_starts_with($nationName, 'ⓞ')){
+                $userWin = true;
+            }
+        }
+        else if($cityCnt == count(CityConst::all())){
+            $needStop = true;
+            $userWin = false;
+        }
+
+        if(!$needStop){
+            return [__CLASS__, "On Event"];
+        }
+
+        if($userWin){
             //천통 엔딩
             $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>이민족을 모두 소탕했습니다!");
             $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>중원은 당분간 태평성대를 누릴 것입니다.");
         }
-        else if($cityCnt == count(CityConst::all())){
+        else {
             //이민족 엔딩
             $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>중원은 이민족에 의해 혼란에 빠졌습니다.");
             $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>백성은 언젠가 영웅이 나타나길 기다립니다.");
-        }
-        else{
-            return [__CLASS__, "On Event"];
         }
         $gameStor->setValue('isunited', 3);
         $logger->flush();
@@ -53,7 +68,7 @@ class InvaderEnding extends \sammo\Event\Action{
         $eventID = Util::array_get($env['currentEventID']);
         $db->delete('event', 'id = %i', $eventID);
 
-        return [__CLASS__, 'Deleted'];   
+        return [__CLASS__, 'Deleted'];
     }
 
 }
