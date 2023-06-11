@@ -74,28 +74,7 @@ switch ($btn) {
         case "120분턴": $turnterm = 120; break;
         default: throw new \Exception("알 수 없는 턴 기간");
         }
-        $oldunit = $admin['turnterm'] * 60;
-        $unit = $turnterm * 60;
-
-        $unitDiff = $unit / $oldunit;
-
-        $servTurnTime = new \DateTimeImmutable($admin['turntime']);
-        foreach ($db->query('SELECT no,turntime FROM general') as $gen) {
-            $genTurnTime = new \DateTimeImmutable($gen['turntime']);
-            $timeDiff = TimeUtil::DateIntervalToSeconds($genTurnTime->diff($servTurnTime));
-            $timeDiff *= $unitDiff;
-            $newGenTurnTime = $servTurnTime->add(TimeUtil::secondsToDateInterval($timeDiff));
-
-            $db->update('general', [
-                'turntime'=>$newGenTurnTime->format('Y-m-d H:i:s.u')
-            ], 'no=%i', $gen['no']);
-        }
-        $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
-        $starttime = $servTurnTime->sub(TimeUtil::secondsToDateInterval($turn * $unit))->format('Y-m-d H:i:s');
-        $starttime = cutTurn($starttime, $turnterm, false);
-        $gameStor->turnterm = $turnterm;
-        $gameStor->starttime = $starttime;
-        pushGlobalHistoryLog(["<R>★</>턴시간이 <C>$btn</>으로 변경됩니다."]);
+        ServerTool::changeServerTerm($turnterm);
         break;
 }
 
