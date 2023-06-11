@@ -8,7 +8,7 @@ final class ServerTool
     {
     }
 
-    public static function changeServerTerm(int $turnterm): ?string
+    public static function changeServerTerm(int $turnterm, ?bool $ignoreLock = null): ?string
     {
         // 하루에 연 단위로 게임 시간이 흘러야 함.
         if ((120 % $turnterm) != 0) {
@@ -20,7 +20,7 @@ final class ServerTool
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $admin = $gameStor->getValues(['turntime', 'turnterm', 'year', 'startyear', 'month', 'isunited']);
 
-        $reqGameLock = $admin['isunited'] != 2;
+        $reqGameLock = $admin['isunited'] != 2 && !$ignoreLock;
 
         $locked = false;
         if($reqGameLock){
