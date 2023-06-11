@@ -12,6 +12,8 @@ use sammo\LiteHashDRBG;
 use sammo\RandUtil;
 use sammo\Scenario\GeneralBuilder;
 use sammo\Scenario\Nation;
+use sammo\ServerEnv;
+use sammo\ServerTool;
 use sammo\UniqueConst;
 use sammo\Util;
 
@@ -112,12 +114,28 @@ class RaiseInvader extends \sammo\Event\Action
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->setValue('isunited', 1);
 
+        $turnterm = $gameStor->turnterm;
+        $generalCnt = $db->queryFirstField('SELECT count(*) FROM general');
+
         if ($npcEachCount < 0) {
             $npcEachCount =
                 $db->queryFirstField('SELECT count(no) from general where npc < 4') / count($cities);
             $npcEachCount *= -1 * $this->npcEachCount;
         }
         $npcEachCount = max(10, Util::toInt($npcEachCount));
+
+
+        $totalGenerals = $npcEachCount * count($cities) + $generalCnt;
+        if ($totalGenerals > ServerEnv::$maxGeneralsPerMinute * $turnterm) {
+            foreach ([1, 2, 5, 10, 20, 30, 60, 120] as $nextTurnterm) {
+                if ($totalGenerals > ServerEnv::$maxGeneralsPerMinute * $nextTurnterm) {
+                    continue;
+                }
+
+                ServerTool::changeServerTerm($nextTurnterm);
+                break;
+            }
+        }
 
         $specAvg = $this->specAvg;
         if ($specAvg < 0) {
