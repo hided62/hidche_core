@@ -25,15 +25,15 @@ class che_병가 extends \sammo\BaseNation{
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
-        
+
         return $value;
     }
 
     public function onCalcNationalIncome(string $type, $amount):int{
         if($type == 'pop' && $amount > 0){
-            return Util::toInt($amount * 0.8);
+            return $amount * 0.8;
         }
-        
+
         return $amount;
     }
 }
