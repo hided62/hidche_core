@@ -132,7 +132,7 @@ class RaiseInvader extends \sammo\Event\Action
                     continue;
                 }
 
-                ServerTool::changeServerTerm($nextTurnterm);
+                ServerTool::changeServerTerm($nextTurnterm, true);
                 break;
             }
         }
