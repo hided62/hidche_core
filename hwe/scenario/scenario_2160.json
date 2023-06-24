@@ -12,7 +12,8 @@
         "max": 90
     },
     "const":{
-        "defaultMaxGeneral":1000
+        "defaultMaxGeneral":1000,
+        "npcMessageFreqByDay":1
     },
     "iconPath": ".",
     "fiction": 1,
