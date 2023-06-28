@@ -224,14 +224,16 @@
                 </template>
                 <template #item="{ element }">
                   <div class="list-group-item">
-                    <i class="bi bi-list" />
-                    &nbsp;&nbsp;{{ element.id }}
-                    <button
+                    <div class="priority_info">
+                      <i class="bi bi-list" />
+                      <span>{{ element.id }}</span>
+                      <button
                       v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      class="btn btn-sm btn-secondary py-0 px-1"
                     >
-                      <i class="bi bi-question-lg" />
-                    </button>
+                        <i class="bi bi-question-lg" />
+                      </button>
+                    </div>
                   </div>
                 </template>
               </draggable>
@@ -246,14 +248,16 @@
               >
                 <template #item="{ element }">
                   <div class="list-group-item">
-                    <i class="bi bi-list" />
-                    &nbsp;&nbsp;{{ element.id }}
-                    <button
+                    <div class="priority_info">
+                      <i class="bi bi-list" />
+                      <span>{{ element.id }}</span>
+                      <button
                       v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      class="btn btn-sm btn-secondary py-0 px-1"
                     >
-                      <i class="bi bi-question-lg" />
-                    </button>
+                        <i class="bi bi-question-lg" />
+                      </button>
+                    </div>
                   </div>
                 </template>
               </draggable>
@@ -300,14 +304,16 @@
                 </template>
                 <template #item="{ element }">
                   <div class="list-group-item">
-                    <i class="bi bi-list" />
-                    &nbsp;&nbsp;{{ element.id }}
-                    <button
+                    <div class="priority_info">
+                      <i class="bi bi-list" />
+                      <span>{{ element.id }}</span>
+                      <button
                       v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      class="btn btn-sm btn-secondary py-0 px-1"
                     >
-                      <i class="bi bi-question-lg" />
-                    </button>
+                        <i class="bi bi-question-lg" />
+                      </button>
+                    </div>
                   </div>
                 </template>
               </draggable>
@@ -322,14 +328,16 @@
               >
                 <template #item="{ element }">
                   <div class="list-group-item">
-                    <i class="bi bi-list" />
-                    &nbsp;&nbsp;{{ element.id }}
-                    <button
+                    <div class="priority_info">
+                      <i class="bi bi-list" />
+                      <span>{{ element.id }}</span>
+                      <button
                       v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm float-right btn-secondary py-0 px-1"
+                      class="btn btn-sm btn-secondary py-0 px-1"
                     >
-                      <i class="bi bi-question-lg" />
-                    </button>
+                        <i class="bi bi-question-lg" />
+                      </button>
+                    </div>
                   </div>
                 </template>
               </draggable>
@@ -391,7 +399,7 @@ import { unwrap } from "@util/unwrap";
 import { convertFormData } from "@util/convertFormData";
 import axios from "axios";
 import { NPCPriorityBtnHelpMessage } from "@/helpTexts";
-import draggable from "vuedraggable";
+import draggable from "vuedraggable-es";
 import TopBackBar from "@/components/TopBackBar.vue";
 import { convertIDArray } from "@util/convertIDArray";
 import { useToast, BContainer } from "bootstrap-vue-next";
@@ -721,5 +729,10 @@ async function submitGeneralPriority() {
   border: 0.5px solid #aaa;
   padding-right: 0;
   padding-left: 0;
+}
+
+.priority_info{
+  display:grid;
+  grid-template-columns: 24px 1fr 24px;
 }
 </style>
