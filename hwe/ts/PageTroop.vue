@@ -108,7 +108,7 @@
       </div>
     </div>
     <div v-if="asyncReady && gameConstStore && me" class="row additionalTroopOptions">
-      <div v-if="me.troop == 0" class="col-6 col-md-3">
+      <div v-if="me.troop == 0" class="col-6 col-lg-3">
         <div class="row gx-0 makeNewTroop">
           <div class="bg1 col-12 center" style="font-size: 1.2em">부대 창설</div>
           <div class="troopNameField col-8 d-grid">

@@ -63,24 +63,24 @@
         Math.floor(nation.tech).toLocaleString()
       }}</span>
     </div>
-    <div class="strategicCmd-head tb-head bg1">전략</div>
-    <div v-if="!nation.id" class="strategicCmd-body tb-body">해당 없음</div>
+    <div class="strategicClg-head tb-head bg1">전략</div>
+    <div v-if="!nation.id" class="strategicClg-body tb-body">해당 없음</div>
     <div
       v-else-if="impossibleStrategicCommandText"
       v-b-tooltip.hover="impossibleStrategicCommandText"
-      class="strategicCmd-body tb-body"
+      class="strategicClg-body tb-body"
       style="text-decoration: underline dashed red"
     >
       <span v-if="nation.strategicCmdLimit" style="color: red">{{ nation.strategicCmdLimit.toLocaleString() }}턴</span>
       <span v-else style="color: yellow">가능</span>
     </div>
-    <div v-else class="strategicCmd-body tb-body">
+    <div v-else class="strategicClg-body tb-body">
       <span v-if="nation.strategicCmdLimit" style="color: red">{{ nation.strategicCmdLimit.toLocaleString() }}턴</span>
       <span v-else style="color: limegreen">가능</span>
     </div>
-    <div class="diplomaticCmd-head tb-head bg1">외교</div>
-    <div v-if="!nation.id" class="diplomaticCmd-body tb-body">해당 없음</div>
-    <div v-else class="diplomaticCmd-body tb-body">
+    <div class="diplomaticClg-head tb-head bg1">외교</div>
+    <div v-if="!nation.id" class="diplomaticClg-body tb-body">해당 없음</div>
+    <div v-else class="diplomaticClg-body tb-body">
       <span v-if="nation.diplomaticLimit" style="color: red">{{ nation.diplomaticLimit.toLocaleString() }}턴</span>
       <span v-else style="color: limegreen">가능</span>
     </div>

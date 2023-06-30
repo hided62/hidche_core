@@ -9,10 +9,10 @@
       <template v-for="(text, key) in inheritanceViewText" :key="key">
         <div :id="`inherit_${key}`" class="col col-sm-4 col-12 inherit_item inherit_template_item">
           <div class="row">
-            <label :id="`inherit_${key}_head`" class="inherit_head col col-md-6 col-sm-7 col-6 col-form-label">{{
+            <label :id="`inherit_${key}_head`" class="inherit_head col col-lg-6 col-sm-7 col-6 col-form-label">{{
               text.title
             }}</label>
-            <div class="col col-md-6 col-sm-5 col-6">
+            <div class="col col-lg-6 col-sm-5 col-6">
               <input
                 :id="`inherit_${key}_value`"
                 type="text"
@@ -41,7 +41,7 @@
       </div>
 
       <div class="row">
-        <div class="col offset-md-4 col-md-4 col-sm-6 col-12 py-2">
+        <div class="col offset-lg-4 col-lg-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">다음 전투 특기 선택</div>
             <div class="col-6">
@@ -65,7 +65,7 @@
             <BButton class="col-6 offset-6" variant="primary" @click="setNextSpecialWar"> 구입 </BButton>
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6 col-12 py-2">
+        <div class="col col-lg-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">유니크 경매</div>
             <div class="col-6">
@@ -104,7 +104,7 @@
         <hr :style="{ opacity: 0.5 }" />
       </div>
       <div class="row py-sm-2">
-        <div class="col col-md-4 col-sm-6 col-12 py-2">
+        <div class="col col-lg-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
             <BButton class="col-6" variant="primary" @click="buySimple('ResetTurnTime')"> 구입 </BButton>
@@ -117,7 +117,7 @@
             >
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6 col-12 py-2">
+        <div class="col col-lg-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 유니크 획득</div>
             <BButton class="col-6" variant="primary" @click="buySimple('BuyRandomUnique')"> 구입 </BButton>
@@ -130,7 +130,7 @@
             >
           </div>
         </div>
-        <div class="col col-md-4 col-sm-6 col-12 py-2">
+        <div class="col col-lg-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">즉시 전투 특기 초기화</div>
             <BButton class="col-6" variant="primary" @click="buySimple('ResetSpecialWar')"> 구입 </BButton>
@@ -149,7 +149,7 @@
       <hr :style="{ opacity: 0.5 }" />
     </div>
     <div class="row">
-      <div v-for="(info, buffKey) in inheritBuffHelpText" :key="buffKey" class="col col-md-4 col-sm-6 col-12">
+      <div v-for="(info, buffKey) in inheritBuffHelpText" :key="buffKey" class="col col-lg-4 col-sm-6 col-12">
         <div class="row">
           <label class="col col-sm-6 col-form-label" :for="`buff-${buffKey}`">{{ info.title }}</label>
           <div class="col col-sm-6 f_tnum">
@@ -175,11 +175,11 @@
         <div class="row px-4" style="margin-bottom: 1em">
           <BButton
             variant="secondary"
-            class="col col-md-6 col-4 offset-md-0 offset-4"
+            class="col col-lg-6 col-4 offset-lg-0 offset-4"
             @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
           >
             리셋 </BButton
-          ><BButton variant="primary" class="col col-md-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </BButton>
+          ><BButton variant="primary" class="col col-lg-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </BButton>
         </div>
       </div>
     </div>

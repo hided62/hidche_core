@@ -32,10 +32,10 @@
       <div class="closeDate f_tnum">{{ cutDateTime(auction.closeDate) }}</div>
     </div>
     <div v-if="selectedBuyRiceAuction !== undefined" class="row gx-1">
-      <div class="offset-1 col-4 offset-md-3 col-md-2 align-self-center f_tnum text-end">
+      <div class="offset-1 col-4 offset-lg-3 col-lg-2 align-self-center f_tnum text-end">
         {{ selectedBuyRiceAuction.id }}번 쌀 {{ selectedBuyRiceAuction.amount }} 경매에 금
       </div>
-      <div class="col-3 col-md-2">
+      <div class="col-3 col-lg-2">
         <NumberInputWithInfo
           v-model="bidAmountBuyRiceAuction"
           :int="true"
@@ -44,7 +44,7 @@
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col-2 col-md-1 d-grid"><BButton @click="bidBuyRiceAuction">입찰</BButton></div>
+      <div class="col-2 col-lg-1 d-grid"><BButton @click="bidBuyRiceAuction">입찰</BButton></div>
     </div>
 
     <div style="background-color: skyblue">쌀 판매</div>
@@ -78,10 +78,10 @@
       <div class="closeDate f_tnum">{{ cutDateTime(auction.closeDate) }}</div>
     </div>
     <div v-if="selectedSellRiceAuction !== undefined" class="row gx-1">
-      <div class="offset-1 col-4 offset-md-3 col-md-2 align-self-center f_tnum text-end">
+      <div class="offset-1 col-4 offset-lg-3 col-lg-2 align-self-center f_tnum text-end">
         {{ selectedSellRiceAuction.id }}번 금 {{ selectedSellRiceAuction.amount }} 경매에 쌀
       </div>
-      <div class="col-3 col-md-2">
+      <div class="col-3 col-lg-2">
         <NumberInputWithInfo
           v-model="bidAmountSellRiceAuction"
           :int="true"
@@ -90,12 +90,12 @@
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col-2 col-md-1 d-grid"><BButton @click="bidSellRiceAuction">입찰</BButton></div>
+      <div class="col-2 col-lg-1 d-grid"><BButton @click="bidSellRiceAuction">입찰</BButton></div>
     </div>
 
     <div>경매 등록</div>
     <div class="row gx-1">
-      <div class="col-2 offset-md-2 col-md-1">
+      <div class="col-2 offset-lg-2 col-lg-1">
         매물<br />
         <BButtonGroup>
           <BButton :pressed="openAuctionInfo.type == 'buyRice'" @click="openAuctionInfo.type = 'buyRice'"> 쌀 </BButton>
@@ -105,7 +105,7 @@
         </BButtonGroup>
       </div>
 
-      <div class="col col-md-2">
+      <div class="col col-lg-2">
         수량 ({{ openAuctionInfo.type == "buyRice" ? "쌀" : "금" }})<br />
         <NumberInputWithInfo
           v-model="openAuctionInfo.amount"
@@ -115,7 +115,7 @@
           :step="10"
         ></NumberInputWithInfo>
       </div>
-      <div class="col-2 col-md-1">
+      <div class="col-2 col-lg-1">
         기간(턴)
         <NumberInputWithInfo
           v-model="openAuctionInfo.closeTurnCnt"
@@ -125,7 +125,7 @@
           :step="1"
         ></NumberInputWithInfo>
       </div>
-      <div class="col col-md-2">
+      <div class="col col-lg-2">
         시작가 ({{ openAuctionInfo.type == "buyRice" ? "금" : "쌀" }})
         <NumberInputWithInfo
           v-model="openAuctionInfo.startBidAmount"
@@ -135,7 +135,7 @@
           :step="10"
         ></NumberInputWithInfo>
               </div>
-      <div class="col col-md-2">
+      <div class="col col-lg-2">
         마감가 ({{ openAuctionInfo.type == "buyRice" ? "금" : "쌀" }})
         <NumberInputWithInfo
           v-model="openAuctionInfo.finishBidAmount"

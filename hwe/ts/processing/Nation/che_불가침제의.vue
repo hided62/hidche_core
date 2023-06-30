@@ -22,11 +22,11 @@
       <span style="color: red">붉은색</span>으로 표시됩니다.<br />
     </div>
     <div class="row">
-      <div class="col-4 col-md-3">
+      <div class="col-4 col-lg-3">
         국가 :
         <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
-      <div class="col-5 col-md-3">
+      <div class="col-5 col-lg-3">
         기간 :
         <div class="input-group">
           <b-form-select v-model="selectedYear" class="text-end selectedYear">
@@ -43,7 +43,7 @@
           <span class="input-group-text px-2">월</span>
         </div>
       </div>
-      <div class="col-3 col-md-2 d-grid">
+      <div class="col-3 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

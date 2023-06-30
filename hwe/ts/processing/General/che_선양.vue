@@ -11,7 +11,7 @@
       장수를 선택하세요.<br />
     </div>
     <div class="row">
-      <div class="col-9 col-md-4">
+      <div class="col-9 col-lg-4">
         장수 :
         <SelectGeneral
           v-model="selectedGeneralID"
@@ -20,7 +20,7 @@
           :searchable="searchable"
         />
       </div>
-      <div class="col-3 col-md-2 d-grid">
+      <div class="col-3 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

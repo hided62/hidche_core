@@ -8,7 +8,7 @@
       임관할 국가를 목록에서 선택하세요.<br />
     </div>
     <div class="row">
-      <div class="col-8 col-md-4">
+      <div class="col-8 col-lg-4">
         장수 :
         <SelectGeneral
           v-model="selectedGeneralID"
@@ -18,7 +18,7 @@
           :searchable="searchable"
         />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

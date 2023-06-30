@@ -24,11 +24,11 @@
       <span style="color: red">붉은색</span>으로 표시됩니다.<br />
     </div>
     <div class="row gx-3">
-      <div class="col-5 col-md-3">
+      <div class="col-5 col-lg-3">
         국가 :
         <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
-      <div class="col-4 col-md-2">
+      <div class="col-4 col-lg-2">
         <label>전략 :</label>
         <select
           v-model="selectedCommandID"
@@ -49,7 +49,7 @@
           </option>
         </select>
       </div>
-      <div class="col-3 col-md-2 d-grid">
+      <div class="col-3 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

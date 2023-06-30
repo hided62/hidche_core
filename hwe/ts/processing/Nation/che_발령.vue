@@ -20,7 +20,7 @@
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
     <div class="row">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         장수 :
         <SelectGeneral
           v-model="selectedGeneralID"
@@ -31,11 +31,11 @@
           :searchable="searchable"
         />
       </div>
-      <div class="col-6 col-md-4">
+      <div class="col-6 col-lg-4">
         도시 :
         <SelectCity v-model="selectedCityID" :cities="citiesMap" :searchable="searchable" />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

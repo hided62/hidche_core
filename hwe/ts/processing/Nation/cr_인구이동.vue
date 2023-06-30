@@ -18,11 +18,11 @@
       현재 도시의 인구를 인접 도시로 이동합니다.<br />
     </div>
     <div class="row">
-      <div class="col-6 col-md-4">
+      <div class="col-6 col-lg-4">
         도시 :
         <SelectCity v-model="selectedCityID" :cities="citiesMap" :searchable="searchable" />
       </div>
-      <div class="col-6 col-md-4">
+      <div class="col-6 col-lg-4">
         금 :
         <SelectAmount
           v-model="amount"
@@ -32,7 +32,7 @@
           :minAmount="minAmount"
         />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

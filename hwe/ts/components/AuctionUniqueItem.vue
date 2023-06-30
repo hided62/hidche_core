@@ -6,48 +6,48 @@
     <template v-if="currentAuction !== undefined">
       <div class="bg2">경매 {{ currentAuction.auction.id }}번 상세</div>
       <div class="row gx-0 text-center">
-        <div class="col-2 col-md-1 bg1">경매명</div>
-        <div v-b-tooltip.hover="getItemTooltipText(currentAuction.auction.target)" class="col-4 col-md-2">
+        <div class="col-2 col-lg-1 bg1">경매명</div>
+        <div v-b-tooltip.hover="getItemTooltipText(currentAuction.auction.target)" class="col-4 col-lg-2">
           {{ currentAuction.auction.title }}
         </div>
 
-        <div class="col-2 col-md-1 bg1">주최자(익명)</div>
-        <div :class="['col-4 col-md-2', currentAuction.auction.isCallerHost ? 'isMe' : '']">
+        <div class="col-2 col-lg-1 bg1">주최자(익명)</div>
+        <div :class="['col-4 col-lg-2', currentAuction.auction.isCallerHost ? 'isMe' : '']">
           {{ currentAuction.auction.hostName }}
         </div>
 
-        <div class="col-2 col-md-1 bg1">종료일시</div>
-        <div class="col-4 col-md-2 f_tnum">{{ cutDateTime(currentAuction.auction.closeDate, true) }}</div>
+        <div class="col-2 col-lg-1 bg1">종료일시</div>
+        <div class="col-4 col-lg-2 f_tnum">{{ cutDateTime(currentAuction.auction.closeDate, true) }}</div>
 
-        <div class="col-2 col-md-1 bg1">최대지연</div>
-        <div class="col-4 col-md-2 f_tnum">
+        <div class="col-2 col-lg-1 bg1">최대지연</div>
+        <div class="col-4 col-lg-2 f_tnum">
           {{ cutDateTime(currentAuction.auction.availableLatestBidCloseDate, true) }}
         </div>
       </div>
       <div class="bg1">입찰자 목록</div>
       <div
-        class="row gx-0 px-md-5 text-center"
+        class="row gx-0 px-lg-5 text-center"
         :style="{
           borderBottom: 'solid 1px white',
         }"
       >
-        <div class="col-4 offset-md-2 col-md-3">입찰자</div>
-        <div class="col-4 col-md-2 text-end px-5">입찰포인트</div>
-        <div class="col-4 col-md-3">시각</div>
+        <div class="col-4 offset-lg-2 col-lg-3">입찰자</div>
+        <div class="col-4 col-lg-2 text-end px-5">입찰포인트</div>
+        <div class="col-4 col-lg-3">시각</div>
       </div>
-      <div v-for="bidder of currentAuction.bidList" :key="bidder.amount" class="row gx-0 px-md-5 text-center">
-        <div :class="['col-4 offset-md-2 col-md-3', bidder.isCallerHighestBidder ? 'isMe' : '']">
+      <div v-for="bidder of currentAuction.bidList" :key="bidder.amount" class="row gx-0 px-lg-5 text-center">
+        <div :class="['col-4 offset-lg-2 col-lg-3', bidder.isCallerHighestBidder ? 'isMe' : '']">
           {{ bidder.generalName }}
         </div>
-        <div class="col-4 col-md-2 text-end px-5 f_tnum">{{ bidder.amount.toLocaleString() }}</div>
-        <div class="col-4 col-md-3 f_tnum">{{ cutDateTime(bidder.date) }}</div>
+        <div class="col-4 col-lg-2 text-end px-5 f_tnum">{{ bidder.amount.toLocaleString() }}</div>
+        <div class="col-4 col-lg-3 f_tnum">{{ cutDateTime(bidder.date) }}</div>
       </div>
       <div class="bg1">입찰하기</div>
       <div class="row">
-        <label class="col-5 offset-md-3 col-md-3 col-form-label text-center"
+        <label class="col-5 offset-lg-3 col-lg-3 col-form-label text-center"
           >유산포인트 (잔여: {{ currentAuction.remainPoint.toLocaleString() }}포인트)</label
         >
-        <div class="col-4 col-md-2">
+        <div class="col-4 col-lg-2">
           <NumberInputWithInfo
             v-model="bidAmount"
             :int="true"
@@ -57,7 +57,7 @@
             :step="1"
           ></NumberInputWithInfo>
         </div>
-        <div class="col-3 col-md-1 d-grid"><BButton @click="bidAuction">입찰</BButton></div>
+        <div class="col-3 col-lg-1 d-grid"><BButton @click="bidAuction">입찰</BButton></div>
       </div>
     </template>
 

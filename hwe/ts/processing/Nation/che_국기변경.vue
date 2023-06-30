@@ -3,11 +3,11 @@
   <div class="bg0">
     <div>국기를 변경합니다. 단 1회 가능합니다.<br /></div>
     <div class="row">
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-lg-3">
         색상 :
         <ColorSelect v-model="selectedColorID" :colors="colors" />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

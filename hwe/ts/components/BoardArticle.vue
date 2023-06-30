@@ -7,12 +7,12 @@
       <div class="col articleTitle center">
         {{ article.title }}
       </div>
-      <div class="col-2 col-md-1 date center">
+      <div class="col-2 col-lg-1 date center">
         {{ article.date.slice(5, 16) }}
       </div>
     </div>
     <div class="row gx-0 s-border-b">
-      <div class="col-2 col-md-1 authorIcon center">
+      <div class="col-2 col-lg-1 authorIcon center">
         <img class="generalIcon" width="64" height="64" :src="article.author_icon" />
       </div>
       <div class="col text">
@@ -36,7 +36,7 @@
           @keyup.enter="submitComment"
         />
       </div>
-      <div class="col-2 col-md-1 d-grid">
+      <div class="col-2 col-lg-1 d-grid">
         <b-button class="submitComment" size="sm" @click="submitComment"> 등록 </b-button>
       </div>
     </div>

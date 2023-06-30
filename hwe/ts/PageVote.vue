@@ -95,8 +95,8 @@
             <th>#</th>
             <th>
               <div class="row gx-0">
-                <div class="col-12 col-md-6">국가명</div>
-                <div class="col-12 col-md-6">장수명</div>
+                <div class="col-12 col-lg-6">국가명</div>
+                <div class="col-12 col-lg-6">장수명</div>
               </div>
             </th>
             <th>댓글</th>
@@ -108,8 +108,8 @@
             <td class="comment-idx f_tnum">{{ idx + 1 }}.</td>
             <td class="comment-name">
               <div class="row gx-0">
-                <div class="col-12 col-md-6">{{ comment.nationName }}</div>
-                <div class="col-12 col-md-6">{{ comment.generalName }}</div>
+                <div class="col-12 col-lg-6">{{ comment.nationName }}</div>
+                <div class="col-12 col-lg-6">{{ comment.generalName }}</div>
               </div>
             </td>
             <td>{{ comment.text }}</td>
@@ -121,7 +121,7 @@
           <tr>
             <td></td>
             <td>
-              <div class="offset-md-6 d-grid"><BButton type="submit">댓글 달기</BButton></div>
+              <div class="offset-lg-6 d-grid"><BButton type="submit">댓글 달기</BButton></div>
             </td>
             <td colspan="2"><BFormInput v-model="myComment" /></td>
           </tr>
@@ -142,18 +142,18 @@
       <div class="row"><a href="#" @click.prevent="showNewVote = !showNewVote">새 설문 조사 열기</a></div>
       <template v-if="showNewVote">
         <div class="row gx-0">
-          <div class="col-md-3">설문 제목</div>
-          <div class="col-md-9"><BFormInput v-model="newVoteInfo.title" type="text" /></div>
+          <div class="col-lg-3">설문 제목</div>
+          <div class="col-lg-9"><BFormInput v-model="newVoteInfo.title" type="text" /></div>
         </div>
         <div class="row gx-0">
-          <div class="col-md-3">설문 대상(엔터로 구분) ({{ newVoteInfo.options.length }}건)</div>
-          <div class="col-md-9">
+          <div class="col-lg-3">설문 대상(엔터로 구분) ({{ newVoteInfo.options.length }}건)</div>
+          <div class="col-lg-9">
             <textarea v-model="newVoteOptionsText" class="form-control" :rows="newVoteOptionsLength + 1"></textarea>
           </div>
         </div>
         <div class="row gx-0">
-          <div class="col-md-3">동시 응답 수(0=모두)</div>
-          <div class="col-md-9">
+          <div class="col-lg-3">동시 응답 수(0=모두)</div>
+          <div class="col-lg-9">
             <BFormInput
               v-model.number="newVoteInfo.multipleOptions"
               type="number"
@@ -163,7 +163,7 @@
           </div>
         </div>
         <div class="row gx-0">
-          <div class="offset-8 col-4 offset-md-10 col-md-2 d-grid">
+          <div class="offset-8 col-4 offset-lg-10 col-lg-2 d-grid">
             <BButton @click="submitNewVote">제출</BButton>
           </div>
         </div>

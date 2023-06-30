@@ -23,7 +23,7 @@
     >
       <div class="listFront">
         <div class="row gx-0 bg0">
-          <div class="col-12 col-md-12 d-flex align-items-center">
+          <div class="col-12 col-lg-12 d-flex align-items-center">
             <div
               v-if="commandName == '모병'"
               class="text-center w-100"
@@ -33,10 +33,10 @@
           </div>
         </div>
         <div class="row text-center bg2 gx-0">
-          <div class="col-4 col-md-2">
+          <div class="col-4 col-lg-2">
             현재 기술력 : {{ techLevel }}등급
           </div>
-          <div class="col-4 col-md-2">
+          <div class="col-4 col-lg-2">
             현재 통솔 :
             <span
               :style="{
@@ -44,16 +44,16 @@
               }"
             >{{ leadership }}</span>
           </div>
-          <div class="col-4 col-md-2">
+          <div class="col-4 col-lg-2">
             최대 통솔 : {{ fullLeadership }}
           </div>
-          <div class="col-4 col-md-2">
+          <div class="col-4 col-lg-2">
             현재 병종 : {{ crewTypeMap?.get(currentCrewType)?.name }}
           </div>
-          <div class="col-4 col-md-2">
+          <div class="col-4 col-lg-2">
             현재 병사 : {{ crew.toLocaleString() }}
           </div>
-          <div class="col-4 col-md-2">
+          <div class="col-4 col-lg-2">
             현재 자금 : {{ gold.toLocaleString() }}
           </div>
         </div>
@@ -178,12 +178,12 @@
         >
           <div class="s-border-b row gx-0">
             <div
-              class="col-7 col-md-10 align-self-center px-3"
+              class="col-7 col-lg-10 align-self-center px-3"
               style="font-size: 1.3em"
             >
               {{ armCrewType.armName }} 계열
             </div>
-            <div class="col-5 col-md-2 d-grid">
+            <div class="col-5 col-lg-2 d-grid">
               <b-button
                 :variant="
                   showNotAvailable.get(armCrewType.armType) ? 'warning' : 'dark'

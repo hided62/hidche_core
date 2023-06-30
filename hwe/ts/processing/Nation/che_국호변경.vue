@@ -3,11 +3,11 @@
   <div class="bg0">
     <div>나라의 이름을 바꿉니다. 황제가 된 후 1회 가능합니다.<br /></div>
     <div class="row">
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-lg-3">
         국명 :
         <b-form-input v-model="destNationName" maxlength="18" />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

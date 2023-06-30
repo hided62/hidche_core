@@ -144,7 +144,7 @@
             <div class="align-self-center">세율 <span class="avoid-wrap">(5 ~ 30%)</span></div>
           </div>
           <div class="col-8 row gx-0">
-            <div class="col-md-6 offset-md-3 align-self-center">
+            <div class="col-lg-6 offset-lg-3 align-self-center">
               <div class="input-group my-0">
                 <input
                   v-model="policy.rate"
@@ -166,7 +166,7 @@
             <div class="align-self-center">지급률 <span class="avoid-wrap">(20 ~ 200%)</span></div>
           </div>
           <div class="col-8 row gx-0">
-            <div class="col-md-6 offset-md-3 align-self-center">
+            <div class="col-lg-6 offset-lg-3 align-self-center">
               <div class="input-group my-0">
                 <input
                   v-model="policy.bill"
@@ -188,7 +188,7 @@
             <div class="align-self-center">기밀 권한 <span class="avoid-wrap">(1 ~ 99년)</span></div>
           </div>
           <div class="col-8 row gx-0">
-            <div class="col-md-6 offset-md-3 align-self-center">
+            <div class="col-lg-6 offset-lg-3 align-self-center">
               <div class="input-group my-0">
                 <input
                   v-model="policy.secretLimit"
@@ -216,16 +216,16 @@
           </div>
         </div>
       </div>
-      <div class="col-3 col-md-4" />
-      <div class="col-3 col-md-2 row gx-0">
-        <div class="col-9 col-md-8 text-end p-2">전쟁 금지</div>
-        <div class="col-3 col-md-4 py-2">
+      <div class="col-3 col-lg-4" />
+      <div class="col-3 col-lg-2 row gx-0">
+        <div class="col-9 col-lg-8 text-end p-2">전쟁 금지</div>
+        <div class="col-3 col-lg-4 py-2">
           <b-form-checkbox v-model="policy.blockWar" switch @change="setBlockWar" />
         </div>
       </div>
-      <div class="col-3 col-md-2 row gx-0">
-        <div class="col-9 col-md-8 text-end p-2">임관 금지</div>
-        <div class="col-3 col-md-4 py-2">
+      <div class="col-3 col-lg-2 row gx-0">
+        <div class="col-9 col-lg-8 text-end p-2">임관 금지</div>
+        <div class="col-3 col-lg-4 py-2">
           <b-form-checkbox v-model="policy.blockScout" switch @change="setBlockScout" />
         </div>
       </div>

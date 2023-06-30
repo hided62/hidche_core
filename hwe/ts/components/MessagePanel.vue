@@ -1,7 +1,7 @@
 <template>
   <div class="MessagePanel">
     <div class="MessageInputForm bg0 row gx-0">
-      <div id="mailbox_list-col" class="col-6 col-md-2 d-grid">
+      <div id="mailbox_list-col" class="col-6 col-lg-2 d-grid">
         <BFormSelect v-model="targetMailbox" class="bg-dark text-white">
           <optgroup
             v-for="group of mailboxList"
@@ -26,10 +26,10 @@
           </optgroup>
         </BFormSelect>
       </div>
-      <div id="msg_input-col" class="col-12 col-md-8 d-grid">
+      <div id="msg_input-col" class="col-12 col-lg-8 d-grid">
         <input v-model="newMessageText" type="text" maxlength="99" class="form-control" @keydown.enter="sendMessage" />
       </div>
-      <div id="msg_submit-col" class="col-6 col-md-2 d-grid">
+      <div id="msg_submit-col" class="col-6 col-lg-2 d-grid">
         <BButton variant="primary" @click="sendMessage">서신전달&amp;갱신</BButton>
       </div>
     </div>

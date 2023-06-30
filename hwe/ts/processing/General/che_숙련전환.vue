@@ -3,7 +3,7 @@
   <div class="bg0">
     <div>본인의 특정 병종 숙련을 40% 줄이고, 줄어든 숙련 중 9/10(90%p)를 다른 병종 숙련으로 전환합니다.</div>
     <div class="row">
-      <div class="col-4 col-md-2">
+      <div class="col-4 col-lg-2">
         감소 대상 숙련 :
         <b-form-select v-model="srcArmTypeID">
           <b-form-select-option v-for="[armType, dexInfo] in dexFullInfo" :key="armType" :value="armType">
@@ -12,7 +12,7 @@
           </b-form-select-option>
         </b-form-select>
       </div>
-      <div class="col-4 col-md-2">
+      <div class="col-4 col-lg-2">
         전환 대상 숙련 :
         <b-form-select v-model="destArmTypeID">
           <b-form-select-option v-for="[armType, dexInfo] in dexFullInfo" :key="armType" :value="armType">
@@ -21,7 +21,7 @@
           </b-form-select-option>
         </b-form-select>
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

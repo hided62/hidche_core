@@ -65,11 +65,11 @@
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
     <div class="row">
-      <div class="col-4 col-md-2">
+      <div class="col-4 col-lg-2">
         도시:
         <SelectCity v-model="selectedCityID" :cities="citiesMap" :searchable="searchable" />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

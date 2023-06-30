@@ -12,11 +12,11 @@
       <br />
     </div>
     <div class="row">
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-lg-3">
         국가 :
         <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

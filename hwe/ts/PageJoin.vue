@@ -60,28 +60,28 @@
     </div>
     <div class="forms">
       <div class="row">
-        <div class="col col-md-4 col-3 a-right align-self-center">장수명</div>
-        <div class="col col-md-3 col-9 align-self-center">
+        <div class="col col-lg-4 col-3 a-right align-self-center">장수명</div>
+        <div class="col col-lg-3 col-9 align-self-center">
           <input v-if="!blockCustomGeneralName" v-model="args.name" class="form-control" />
           <span v-else>무작위</span>
         </div>
-        <div class="col col-md-1 col-3 a-right align-self-center">전콘 사용</div>
-        <div class="col col-md-4 col-9 align-self-center">
+        <div class="col col-lg-1 col-3 a-right align-self-center">전콘 사용</div>
+        <div class="col col-lg-4 col-9 align-self-center">
           <img style="height: 64px; width: 64px" :src="iconPath" />
           <label> <input v-model="args.pic" type="checkbox" /> 사용 </label>
         </div>
-        <div class="col col-md-4 col-3 align-self-center a-right">성격</div>
+        <div class="col col-lg-4 col-3 align-self-center a-right">성격</div>
 
-        <div class="col col-md-8 col-9 align-self-center">
+        <div class="col col-lg-8 col-9 align-self-center">
           <div class="row">
-            <div class="col col-md-3 col-4 align-self-center">
+            <div class="col col-lg-3 col-4 align-self-center">
               <select v-model="args.character" class="form-select form-inline" style="max-width: 20ch">
                 <option v-for="(personalityObj, key) in availablePersonality" :key="key" :value="key">
                   {{ personalityObj.name }}
                 </option>
               </select>
             </div>
-            <div class="col col-md-9 col-8 align-self-center">
+            <div class="col col-lg-9 col-8 align-self-center">
               <small class="text-muted">
                 {{ availablePersonality[args.character].info }}
               </small>
@@ -95,24 +95,24 @@
       </div>
       </div>-->
       <div class="row" style="margin-top: 1em">
-        <div class="col col-md-4 col-3 a-right align-self-center">
+        <div class="col col-lg-4 col-3 a-right align-self-center">
           능력치
           <br />
           <small class="text-muted">통/무/지</small>
         </div>
-        <div class="col col-md-2 col-3 align-self-center">
+        <div class="col col-lg-2 col-3 align-self-center">
           <input v-model.number="args.leadership" type="number" class="form-control" />
         </div>
-        <div class="col col-md-2 col-3 align-self-center">
+        <div class="col col-lg-2 col-3 align-self-center">
           <input v-model.number="args.strength" type="number" class="form-control" />
         </div>
-        <div class="col col-md-2 col-3 align-self-center">
+        <div class="col col-lg-2 col-3 align-self-center">
           <input v-model.number="args.intel" type="number" class="form-control" />
         </div>
       </div>
       <div class="row" style="margin-top: 1em">
-        <div class="col col-md-4 col-3 a-right align-self-center">능력치 조절</div>
-        <div class="col col-md-8 col-9">
+        <div class="col col-lg-4 col-3 a-right align-self-center">능력치 조절</div>
+        <div class="col col-lg-8 col-9">
           <b-button variant="secondary" class="stat-btn" @click="randStatRandom"> 랜덤형 </b-button>
           <b-button variant="secondary" class="stat-btn" @click="randStatLeadPow"> 통솔무력형 </b-button>
           <b-button variant="secondary" class="stat-btn" @click="randStatLeadInt"> 통솔지력형 </b-button>
@@ -134,8 +134,8 @@
     </div>
 
     <div class="row bg1">
-      <div class="col col-md-11 col-9 center align-self-center">유산 포인트 사용</div>
-      <div class="col col-md-1 col-3">
+      <div class="col col-lg-11 col-9 center align-self-center">유산 포인트 사용</div>
+      <div class="col col-lg-1 col-3">
         <label>
           <input v-model="displayInherit" type="checkbox" />
           {{ displayInherit ? "숨기기" : "보이기" }}
@@ -153,7 +153,7 @@
       </div>
       <hr />
       <div class="row">
-        <div class="col col-md-6 col-sm-6 col-12 p-2 align-self-center">
+        <div class="col col-lg-6 col-sm-6 col-12 p-2 align-self-center">
           <div class="row">
             <div class="col col-6 a-right align-self-center">천재로 생성</div>
             <div class="col col-6 align-self-center">
@@ -171,7 +171,7 @@
           </div>
         </div>
 
-        <div class="col col-md-6 col-sm-6 col-12 p-2 align-self-center">
+        <div class="col col-lg-6 col-sm-6 col-12 p-2 align-self-center">
           <div class="row">
             <div class="col col-6 a-right align-self-center">도시</div>
             <div class="col col-6 align-self-center">
@@ -185,12 +185,12 @@
           </div>
         </div>
 
-        <div class="col col-md-6 col-sm-6 col-12 p-2 align-self-center">
+        <div class="col col-lg-6 col-sm-6 col-12 p-2 align-self-center">
           <div class="a-center">
             <label> <input v-model="inheritTurnTimeSet" type="checkbox" />턴 시간 고정 </label>
           </div>
           <div class="row turn_time_pad">
-            <div class="col col-md-4 offset-md-3 col-4 offset-3">
+            <div class="col col-lg-4 offset-lg-3 col-4 offset-3">
               <NumberInputWithInfo
                 v-model="inheritTurnTimeMinute"
                 :readonly="!inheritTurnTimeSet"
@@ -200,7 +200,7 @@
                 title="분"
               />
             </div>
-            <div class="col col-md-4 col-4">
+            <div class="col col-lg-4 col-4">
               <NumberInputWithInfo
                 v-model="inheritTurnTimeSecond"
                 :readonly="!inheritTurnTimeSet"
@@ -213,7 +213,7 @@
           </div>
         </div>
 
-        <div class="col col-md-6 col-12 p-2">
+        <div class="col col-lg-6 col-12 p-2">
           <div class="a-center">추가 능력치 고정</div>
           <div class="row">
             <div class="col">

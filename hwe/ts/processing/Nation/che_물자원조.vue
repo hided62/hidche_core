@@ -39,12 +39,12 @@
       원조할 국가를 목록에서 선택하세요.<br /><br />
     </div>
     <div class="row">
-      <div class="col-6 col-md-3">
+      <div class="col-6 col-lg-3">
         국가 :
         <SelectNation v-model="selectedNationID" :nations="nationList" :searchable="searchable" />
       </div>
-      <div class="col-6 col-md-0" />
-      <div class="col-8 col-md-4">
+      <div class="col-6 col-lg-0" />
+      <div class="col-8 col-lg-4">
         금 :
         <SelectAmount
           v-model="goldAmount"
@@ -54,7 +54,7 @@
           :minAmount="minAmount"
         />
       </div>
-      <div class="col-8 col-md-4">
+      <div class="col-8 col-lg-4">
         쌀 :
         <SelectAmount
           v-model="riceAmount"
@@ -64,7 +64,7 @@
           :minAmount="minAmount"
         />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

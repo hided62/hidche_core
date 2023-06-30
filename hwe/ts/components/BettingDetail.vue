@@ -11,7 +11,7 @@
     </div>
 
     <div class="row bettingCandidates gx-1 gy-1">
-      <div v-for="(candidate, idx) in info.candidates" :key="idx" class="col-4 col-md-2" @click="toggleCandidate(parseInt(idx))">
+      <div v-for="(candidate, idx) in info.candidates" :key="idx" class="col-4 col-lg-2" @click="toggleCandidate(parseInt(idx))">
         <div
           :class="[
             'bettingCandidate',
@@ -30,18 +30,18 @@
       </div>
     </div>
     <div v-if="!info.finished && (yearMonth ?? 0) <= info.closeYearMonth" class="row gx-0">
-      <div class="col-6 col-md-3 align-self-center">
+      <div class="col-6 col-lg-3 align-self-center">
         잔여 {{ info.reqInheritancePoint ? "포인트" : "금" }} : {{ bettingDetailInfo.remainPoint.toLocaleString() }}
       </div>
-      <div class="col-6 col-md-3 align-self-center">
+      <div class="col-6 col-lg-3 align-self-center">
         사용 포인트: {{ sum(Array.from(myBettings.values())).toLocaleString() }}
       </div>
-      <div class="col-6 col-md-3 align-self-center">대상: {{ getTypeStr(pickedBetTypeKey) }}</div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-6 col-lg-3 align-self-center">대상: {{ getTypeStr(pickedBetTypeKey) }}</div>
+      <div class="col-4 col-lg-2 d-grid">
         <!-- eslint-disable-next-line vue/max-attributes-per-line -->
         <b-form-input v-model.number="betPoint" class="d-grid" type="number" :min="10" :max="1000" :step="10" />
       </div>
-      <div class="col-2 col-md-1 d-grid">
+      <div class="col-2 col-lg-1 d-grid">
         <b-button class="d-grid" @click="submitBet"> 베팅 </b-button>
       </div>
     </div>

@@ -11,12 +11,12 @@
       </BDropdown>
     </TopBackBar>
     <div class="center row mx-0 s-border-tb">
-      <div class="col-md-1 col-2 year-selector text-end align-self-center">연월 선택:</div>
-      <BButton class="col-md-1 col-2" @click="queryYearMonth = unwrap(queryYearMonth) - 1">◀ 이전달</BButton>
-      <div class="col-md-3 col-5 d-grid">
+      <div class="col-lg-1 col-2 year-selector text-end align-self-center">연월 선택:</div>
+      <BButton class="col-lg-1 col-2" @click="queryYearMonth = unwrap(queryYearMonth) - 1">◀ 이전달</BButton>
+      <div class="col-lg-3 col-5 d-grid">
         <BFormSelect v-model="queryYearMonth" :options="generateYearMonthList()" />
       </div>
-      <BButton class="col-md-1 col-2" @click="queryYearMonth = unwrap(queryYearMonth) + 1">다음달 ▶</BButton>
+      <BButton class="col-lg-1 col-2" @click="queryYearMonth = unwrap(queryYearMonth) + 1">다음달 ▶</BButton>
     </div>
     <div v-if="history" id="map_holder" :class="['row', 'gx-0', isNationRankingBottom ? 'isNationRankingBottom' : '']">
       <div class="map_position">

@@ -107,14 +107,14 @@
             </div>
           </div>
           <div class="RecordZone row gx-0">
-            <div class="PublicRecord col col-12 col-md-6">
+            <div class="PublicRecord col col-12 col-lg-6">
               <div class="bg1 center s-border-tb title">장수 동향</div>
               <template v-for="[idx, rawText] of globalRecords.toArray()" :key="idx">
                 <!-- eslint-disable-next-line vue/no-v-html -->
                 <div :v-data-idx="idx" v-html="formatLog(rawText)" />
               </template>
             </div>
-            <div class="GeneralLog col col-12 col-md-6">
+            <div class="GeneralLog col col-12 col-lg-6">
               <div class="bg1 center s-border-tb title">개인 기록</div>
               <template v-for="[idx, rawText] of generalRecords.toArray()" :key="idx">
                 <!-- eslint-disable-next-line vue/no-v-html -->

@@ -8,7 +8,7 @@
     <div class="col text">
       {{ comment.text }}
     </div>
-    <div class="col-2 col-md-1 date center d-grid">
+    <div class="col-2 col-lg-1 date center d-grid">
       <div class="align-self-center">
         {{ comment.date.slice(5, 16) }}
       </div>

@@ -12,7 +12,7 @@
       </div>
     </div>
     <div :class="['row', 'controlPad', props.targetIsMe ? 'targetIsMe' : 'targetIsNotMe']">
-      <div class="col-3 col-md-12 order-md-last">
+      <div class="col-3 col-lg-12 order-lg-last">
         <div class="d-grid mb-1 py-1 only500px bg1 center">
           <div
             :style="{
@@ -25,26 +25,26 @@
           <div>{{ officer.officerLevelText }}</div>
         </div>
         <div class="row gx-1 gy-1 py-1">
-          <div class="col-md-4 mx-0 mb-0 mt-1 d-grid">
+          <div class="col-lg-4 mx-0 mb-0 mt-1 d-grid">
             <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0">
               <SimpleClock :serverTime="parseTime(props.date)" />
             </div>
           </div>
 
-          <div class="col-md-4 d-grid">
+          <div class="col-lg-4 d-grid">
             <BButton variant="secondary" @click="isEditMode = !isEditMode">
               {{ isEditMode ? "일반 모드" : "고급 모드" }}
             </BButton>
           </div>
 
-          <BDropdown class="col-md-4" text="반복">
+          <BDropdown class="col-lg-4" text="반복">
             <BDropdownItem v-for="turnIdx in maxPushTurn" :key="turnIdx" @click="repeatNationCommand(turnIdx)">
               {{ turnIdx }}턴
             </BDropdownItem>
           </BDropdown>
 
           <template v-if="isEditMode">
-            <BDropdown class="col-md-4" left text="범위">
+            <BDropdown class="col-lg-4" left text="범위">
               <BDropdownItem @click="queryActionHelper.selectTurn()"> 해제 </BDropdownItem>
               <BDropdownItem @click="queryActionHelper.selectAll()"> 모든턴 </BDropdownItem>
               <BDropdownItem @click="queryActionHelper.selectStep(0, 2)"> 홀수턴 </BDropdownItem>
@@ -67,7 +67,7 @@
               </BDropdownText>
             </BDropdown>
 
-            <BDropdown class="col-md-4" left text="보관함">
+            <BDropdown class="col-lg-4" left text="보관함">
               <BDropdownItem
                 v-for="[actionKey, actions] of storedActions"
                 :key="actionKey"
@@ -78,7 +78,7 @@
               </BDropdownItem>
             </BDropdown>
 
-            <div class="col-md-4 d-grid">
+            <div class="col-lg-4 d-grid">
               <BDropdown right text="최근">
                 <BDropdownItem
                   v-for="(action, idx) in Array.from(recentActions.values()).reverse()"
@@ -91,12 +91,12 @@
             </div>
           </template>
 
-          <BDropdown class="col-md-6" split text="당기기" @click="pullNationCommandSingle">
+          <BDropdown class="col-lg-6" split text="당기기" @click="pullNationCommandSingle">
             <BDropdownItem v-for="turnIdx in maxPushTurn" :key="turnIdx" @click="pushNationCommand(-turnIdx)">
               {{ turnIdx }}턴
             </BDropdownItem>
           </BDropdown>
-          <BDropdown class="col-md-6" split text="미루기" @click="pushNationCommandSingle">
+          <BDropdown class="col-lg-6" split text="미루기" @click="pushNationCommandSingle">
             <BDropdownItem v-for="turnIdx in maxPushTurn" :key="turnIdx" @click="pushNationCommand(turnIdx)">
               {{ turnIdx }}턴
             </BDropdownItem>
@@ -217,7 +217,7 @@
           </div>
 
           <div v-if="isEditMode" class="row gx-0">
-            <div class="col-5 col-md-6 d-grid">
+            <div class="col-5 col-lg-6 d-grid">
               <BDropdown left variant="light" :style="{ color: 'black' }" text="선택한 턴을">
                 <BDropdownItem @click="clipboardCut"> <i class="bi bi-scissors" />&nbsp;잘라내기 </BDropdownItem>
                 <BDropdownItem @click="clipboardCopy"> <i class="bi bi-files" />&nbsp;복사하기 </BDropdownItem>
@@ -245,7 +245,7 @@
               </BDropdown>
             </div>
 
-            <div class="col-7 col-md-6 d-grid">
+            <div class="col-7 col-lg-6 d-grid">
               <BButton variant="info" @click="toggleForm($event)"> 명령 선택 ▾ </BButton>
             </div>
           </div>

@@ -3,18 +3,18 @@
   <div class="bg0">
     <div>자신의 자금이나 군량을 국가 재산으로 헌납합니다.</div>
     <div class="row">
-      <div class="col-2 col-md-1">
+      <div class="col-2 col-lg-1">
         자원 :
         <b-button-group>
           <b-button :pressed="isGold" @click="isGold = true"> 금 </b-button>
           <b-button :pressed="!isGold" @click="isGold = false"> 쌀 </b-button>
         </b-button-group>
       </div>
-      <div class="col-7 col-md-4">
+      <div class="col-7 col-lg-4">
         금액 :
         <SelectAmount v-model="amount" :amountGuide="amountGuide" :maxAmount="maxAmount" :minAmount="minAmount" />
       </div>
-      <div class="col-3 col-md-2 d-grid">
+      <div class="col-3 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

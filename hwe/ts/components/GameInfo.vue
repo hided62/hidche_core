@@ -4,39 +4,39 @@
     <span class="avoid-wrap" style="color: cyan">{{ frontInfo?.global.scenarioText }}</span>
   </h3>
   <div v-if="frontInfo" class="gameInfo row gx-0">
-    <div class="s-border-t col py-2 col-8 col-md-4 subScenarioName" style="color: cyan">
+    <div class="s-border-t col py-2 col-8 col-lg-4 subScenarioName" style="color: cyan">
       {{ globalInfo.scenarioText }}
     </div>
-    <div class="s-border-t col py-2 col-4 col-md-2 subNPCType" style="color: cyan">
+    <div class="s-border-t col py-2 col-4 col-lg-2 subNPCType" style="color: cyan">
       NPC 수, 상성:
       {{ globalInfo.extendedGeneral ? "확장" : "표준" }}
       {{ globalInfo.isFiction ? "가상" : "사실" }}
     </div>
-    <div class="s-border-t col py-2 col-4 col-md-2 subNPCMode" style="color: cyan">
+    <div class="s-border-t col py-2 col-4 col-lg-2 subNPCMode" style="color: cyan">
       NPC선택: {{ ["불가능", "가능", "선택 생성"][globalInfo.npcMode] }}
     </div>
-    <div class="s-border-t col py-2 col-4 col-md-2 subTournamentMode" style="color: cyan">
+    <div class="s-border-t col py-2 col-4 col-lg-2 subTournamentMode" style="color: cyan">
       토너먼트: 경기당 {{ calcTournamentTerm(globalInfo.turnterm) }}분
     </div>
-    <div class="s-border-t col py-2 col-4 col-md-2 subOtherSetting" style="color: cyan">
+    <div class="s-border-t col py-2 col-4 col-lg-2 subOtherSetting" style="color: cyan">
       기타 설정:
       <AutorunInfo :autorunMode="globalInfo.autorunUser" />
     </div>
-    <div class="s-border-t col py-2 col-8 col-md-4 subYearMonth">
+    <div class="s-border-t col py-2 col-8 col-lg-4 subYearMonth">
       현재: {{ globalInfo.year }}年 {{ globalInfo.month }}月 ({{ globalInfo.turnterm }}분 턴 서버)
     </div>
-    <div class="s-border-t col py-2 col-4 col-md-2 subOnlineUserCnt">
+    <div class="s-border-t col py-2 col-4 col-lg-2 subOnlineUserCnt">
       전체 접속자 수: {{ (globalInfo.onlineUserCnt ?? 0).toLocaleString() }}명
     </div>
-    <div class="s-border-t col py-2 col-4 col-md-2 subAPILimit">
+    <div class="s-border-t col py-2 col-4 col-lg-2 subAPILimit">
       턴당 갱신횟수: {{ globalInfo.apiLimit.toLocaleString() }}회
     </div>
-    <div class="s-border-t col py-2 col-8 col-md-4 subGeneralCnt">
+    <div class="s-border-t col py-2 col-8 col-lg-4 subGeneralCnt">
       등록 장수: 유저
       {{ createdUserCnt.toLocaleString() }} / {{ globalInfo.generalCntLimit.toLocaleString() }} +
       <span style="color: cyan">NPC {{ createdNPCCnt.toLocaleString() }} 명</span>
     </div>
-    <div class="s-border-t py-2 col col-6 col-md-4 subTournamentState">
+    <div class="s-border-t py-2 col col-6 col-lg-4 subTournamentState">
       <span v-if="frontInfo.global.isTournamentActive">
         <a v-if="tournamentStep.availableJoin" href="b_tournament.php" target="_blank">
           ↑<span style="color: cyan"
@@ -56,18 +56,18 @@
       <span v-else style="color: magenta"> 현재 토너먼트 경기 없음 </span>
     </div>
     <div
-      class="s-border-t py-2 col col-6 col-md-2 subLastExecuted"
+      class="s-border-t py-2 col col-6 col-lg-2 subLastExecuted"
       :style="{ color: serverLocked ? 'magenta' : 'cyan' }"
     >
       동작 시각: {{ formatTime(lastExecuted).substring(5) }}
     </div>
-    <div class="s-border-t py-2 col col-6 col-md-2 subAuctionState">
+    <div class="s-border-t py-2 col col-6 col-lg-2 subAuctionState">
       <a v-if="globalInfo.auctionCount" href="v_auction.php" target="_blank" style="color: cyan">
         {{ globalInfo.auctionCount.toLocaleString() }}건 거래 진행중
       </a>
       <span v-else style="color: magenta">진행중인 거래 없음</span>
     </div>
-    <div class="s-border-t py-2 col col-6 col-md-4 subVoteState">
+    <div class="s-border-t py-2 col col-6 col-lg-4 subVoteState">
       <a v-if="globalInfo.lastVote" href="v_vote.php" target="_blank">
         <span style="color: cyan">설문 진행 중: </span><span>{{ globalInfo.lastVote.title }}</span>
       </a>

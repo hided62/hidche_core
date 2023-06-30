@@ -11,7 +11,7 @@
       <br />
     </div>
     <div v-if="selectedItemObj" class="row">
-      <div class="col-8 col-md-4">
+      <div class="col-8 col-lg-4">
         장비:
         <Multiselect
           v-model="selectedItemObj"
@@ -57,14 +57,14 @@
           </template>
         </Multiselect>
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>
       </div>
     </div>
     <div v-if="selectedItemObj && selectedItemObj.obj.id != NoneValue" class="row">
-      <div class="col-4 col-md-2 align-self-center text-center">
+      <div class="col-4 col-lg-2 align-self-center text-center">
         {{ selectedItemObj.obj.name }}
       </div>
       <div class="col" v-html="selectedItemObj.obj.info" />

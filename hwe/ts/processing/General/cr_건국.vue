@@ -5,25 +5,25 @@
     <div>현재 도시에서 나라를 세웁니다. 도시 규모의 제한이 없습니다.</div>
     <ul>
       <li v-for="nationType in nationTypes" :key="nationType.type" class="row">
-        <div class="col-2 col-md-1">- {{ nationType.name }}</div>
-        <div class="col-4 col-md-2">
+        <div class="col-2 col-lg-1">- {{ nationType.name }}</div>
+        <div class="col-4 col-lg-2">
           : <span style="color: cyan">{{ nationType.pros }}</span
           >,
         </div>
-        <div class="col-4 col-md-2">
+        <div class="col-4 col-lg-2">
           <span style="color: magenta">{{ nationType.cons }}</span>
         </div>
       </li>
     </ul>
     <div class="row">
-      <div class="col-4 col-md-2">국명 : <b-form-input v-model="destNationName" maxlength="18" /></div>
-      <div class="col-3 col-md-2">색상 : <ColorSelect v-model="selectedColorID" :colors="colors" /></div>
-      <div class="col-3 col-md-2">
+      <div class="col-4 col-lg-2">국명 : <b-form-input v-model="destNationName" maxlength="18" /></div>
+      <div class="col-3 col-lg-2">색상 : <ColorSelect v-model="selectedColorID" :colors="colors" /></div>
+      <div class="col-3 col-lg-2">
         <label>성향 :</label>
         <b-form-select v-model="selectedNationType" :options="nationTypesOption" />
       </div>
 
-      <div class="col-2 col-md-2 d-grid">
+      <div class="col-2 col-lg-2 d-grid">
         <b-button @click="submit">
           {{ commandName }}
         </b-button>

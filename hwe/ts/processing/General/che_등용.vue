@@ -7,7 +7,7 @@
       등용할 장수를 목록에서 선택하세요.<br />
     </div>
     <div class="row">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         장수 :
         <SelectGeneral
           v-model="selectedGeneralID"
@@ -17,7 +17,7 @@
           :searchable="searchable"
         />
       </div>
-      <div class="col-4 col-md-2 d-grid">
+      <div class="col-4 col-lg-2 d-grid">
         <b-button variant="primary" @click="submit">
           {{ commandName }}
         </b-button>

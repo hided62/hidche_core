@@ -3,10 +3,10 @@
     <TopBackBar title="감찰부" :reloadable="true" type="close" @reload="reload" />
 
     <div class="row gx-0">
-      <div class="col-2 col-md-1 d-grid">
+      <div class="col-2 col-lg-1 d-grid">
         <BButton @click="changeTargetByOffset(-1)">◀ 이전</BButton>
       </div>
-      <div class="col-3 col-md-4">
+      <div class="col-3 col-lg-4">
         <BFormSelect v-model="orderBy">
           <BFormSelectOption
             v-for="[orderKey, [orderName]] of Object.entries(textMap)"
@@ -17,7 +17,7 @@
           </BFormSelectOption>
         </BFormSelect>
       </div>
-      <div class="col-5 col-md-6">
+      <div class="col-5 col-lg-6">
         <BFormSelect v-model="targetGeneralID">
           <BFormSelectOption v-for="general of orderedGeneralList" :key="general.no" :value="general.no">
             <span
@@ -31,12 +31,12 @@
           </BFormSelectOption>
         </BFormSelect>
       </div>
-      <div class="col-2 col-md-1 d-grid">
+      <div class="col-2 col-lg-1 d-grid">
         <BButton @click="changeTargetByOffset(1)">다음 ▶</BButton>
       </div>
     </div>
     <div v-if="targetGeneral && nationInfo && targetGeneralLogs" class="row gx-0 bg0">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         <div class="bg1 header-cell" style="color: skyblue">장수 정보</div>
         <GeneralBasicCard
           :general="targetGeneral"
@@ -46,22 +46,22 @@
         />
         <GeneralSupplementCard :general="targetGeneral" />
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         <div class="bg1 header-cell">장수 열전</div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-for="[id, log] of targetGeneralLogs.generalHistory" :key="id" v-html="log" />
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         <div class="bg1 header-cell">전투 기록</div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-for="[id, log] of targetGeneralLogs.battleDetail" :key="id" v-html="log" />
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         <div class="bg1 header-cell">전투 결과</div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-for="[id, log] of targetGeneralLogs.battleResult" :key="id" v-html="log" />
       </div>
-      <div v-if="targetGeneralLogs.generalAction.size > 0" class="col-12 col-md-6">
+      <div v-if="targetGeneralLogs.generalAction.size > 0" class="col-12 col-lg-6">
         <div class="bg1 header-cell">개인 기록</div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-for="[id, log] of targetGeneralLogs.generalAction" :key="id" v-html="log" />

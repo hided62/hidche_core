@@ -1,5 +1,5 @@
 <template>
-  <nav class="gameBottomBar navbar-expand navbar-dark bg-dark d-sm-block d-md-none p-0">
+  <nav class="gameBottomBar navbar-expand navbar-dark bg-dark d-sm-block d-lg-none p-0">
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mx-auto">
         <li class="nav-item dropup">

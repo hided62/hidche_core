@@ -14,7 +14,7 @@
         ({{ lastSetters.policy.date ?? "설정 기록 없음" }})
       </small>
     </div>
-    <div class="form_list row row-cols-md-2 row-cols-1">
+    <div class="form_list row row-cols-lg-2 row-cols-1">
       <div class="col">
         <NumberInputWithInfo v-model="nationPolicy.reqNationGold" :step="100" title="국가 권장 금">
           이보다 많으면 포상, 적으면 몰수/헌납합니다.(긴급포상 제외)
@@ -193,7 +193,7 @@
       </div>
       <button type="button" class="btn btn-primary submit_btn" @click="submitPolicy">설정</button>
     </div>
-    <div class="row row-cols-md-2 row-cols-1 g-0">
+    <div class="row row-cols-lg-2 row-cols-1 g-0">
       <div class="col half_section_left">
         <div class="bg1 section_bar">NPC 사령턴 우선순위</div>
         <div class="float-right px-3">

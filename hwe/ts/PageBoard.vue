@@ -5,15 +5,15 @@
     <div id="newArticle" class="bg0">
       <div class="newArticleHeader bg2 center">새 게시물 작성</div>
       <div class="row gx-0">
-        <div class="col-2 col-md-1 articleTitle bg1 center">제목</div>
-        <div class="col-10 col-md-11">
+        <div class="col-2 col-lg-1 articleTitle bg1 center">제목</div>
+        <div class="col-10 col-lg-11">
           <!-- eslint-disable-next-line vue/max-attributes-per-line -->
           <input v-model="newArticle.title" class="titleInput" type="text" maxlength="250" placeholder="제목" />
         </div>
       </div>
       <div class="row gx-0">
-        <div class="col-2 col-md-1 bg1 center">내용</div>
-        <div class="col-10 col-md-11">
+        <div class="col-2 col-lg-1 bg1 center">내용</div>
+        <div class="col-10 col-lg-11">
           <textarea
             ref="newArticleTextForm"
             v-model="newArticle.text"
@@ -24,8 +24,8 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-8 col-md-10" />
-        <div class="col-4 col-md-2 d-grid">
+        <div class="col-8 col-lg-10" />
+        <div class="col-4 col-lg-2 d-grid">
           <b-button id="submitArticle" @click="submitArticle"> 등록 </b-button>
         </div>
       </div>
