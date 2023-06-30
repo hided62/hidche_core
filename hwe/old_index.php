@@ -180,44 +180,44 @@ if ($lastVoteID) {
             </div>
 
             <div class="row center gx-0">
-                <div class="s-border-t col py-2 col-8 col-md-4" style="color:<?= $color ?>;">
+                <div class="s-border-t col py-2 col-8 col-lg-4" style="color:<?= $color ?>;">
                     <?= $scenario ?>
                 </div>
-                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                <div class="s-border-t col py-2 col-4 col-lg-2" style="color:<?= $color ?>;">
                     NPC 수, 상성 : <?= $extend ?>,<?= $fiction ?>
                 </div>
-                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                <div class="s-border-t col py-2 col-4 col-lg-2" style="color:<?= $color ?>;">
                     NPC선택 : <?= $npcmode ?>
                 </div>
-                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                <div class="s-border-t col py-2 col-4 col-lg-2" style="color:<?= $color ?>;">
                     토너먼트 : <?= getTournamentTermText($gameStor->turnterm) ?>
                 </div>
-                <div class="s-border-t col py-2 col-4 col-md-2" style="color:<?= $color ?>;">
+                <div class="s-border-t col py-2 col-4 col-lg-2" style="color:<?= $color ?>;">
                     기타 설정: <?= $otherTextInfo ?>
                 </div>
 
-                <div class="s-border-t col py-2 col-8 col-md-4"><?= info(2) ?></div>
-                <div class="s-border-t col py-2 col-4 col-md-2">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
-                <div class="s-border-t col py-2 col-4 col-md-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
-                <div class="s-border-t col py-2 col-8 col-md-4"><?= info(3) ?></div>
-                <div class="s-border-t py-2 col col-6 col-md-4">
+                <div class="s-border-t col py-2 col-8 col-lg-4"><?= info(2) ?></div>
+                <div class="s-border-t col py-2 col-4 col-lg-2">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
+                <div class="s-border-t col py-2 col-4 col-lg-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
+                <div class="s-border-t col py-2 col-8 col-lg-4"><?= info(3) ?></div>
+                <div class="s-border-t py-2 col col-6 col-lg-4">
                     <?php if ($isTournamentActive) : ?>
                         ↑<span style='color:cyan'><?= (['전력전', '통솔전', '일기토', '설전',])[$gameStor->tnmt_type] ?? '' ?> <?= getTournament($gameStor->tournament) ?> <?= getTournamentTime() ?></span>↑
                     <?php else : ?>
                         <span style='color:magenta'>현재 토너먼트 경기 없음</span>
                     <?php endif; ?>
                 </div>
-                <div class="s-border-t py-2 col col-6 col-md-2">
+                <div class="s-border-t py-2 col col-6 col-lg-2">
                     <div style="display:inline-block;"><?= $plock ? ("<span style='color:magenta;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") : ("<span style='color:cyan;'>동작 시각: " . substr($gameStor->turntime, 5, 14) . "</span>") ?></div>
                 </div>
-                <div class="s-border-t py-2 col col-6 col-md-2">
+                <div class="s-border-t py-2 col col-6 col-lg-2">
                     <?php if ($auctionCount > 0) : ?>
                         <span style='color:cyan'><?= $auctionCount ?>건</span> 거래 진행중
                     <?php else : ?>
                         <span style='color:magenta'>진행중 거래 없음</span>
                     <?php endif; ?>
                 </div>
-                <div class="s-border-t py-2 col col-6 col-md-4 vote-cell">
+                <div class="s-border-t py-2 col col-6 col-lg-4 vote-cell">
                     <?php
                     ?>
                     <?php if ($lastVote === null) : ?>
@@ -310,11 +310,11 @@ if ($lastVoteID) {
             </div>
         </div>
         <div class="row gx-0">
-            <div class="col-md-6" id="general_public_record-position">
+            <div class="col-lg-6" id="general_public_record-position">
                 <div class="bg1 center s-border-tb"><b>장수 동향</b></div>
                 <div id="general_public_record" style="text-align:left;"><?= formatHistoryToHTML(getGlobalActionLogRecent(15)) ?></div>
             </div>
-            <div class="col-md-6" id="general_log-position">
+            <div class="col-lg-6" id="general_log-position">
                 <div class="bg1 center s-border-tb"><b>개인 기록</b></div>
                 <div id="general_log" style="text-align:left;"><?= formatHistoryToHTML(getGeneralActionLogRecent($me['no'], 15)) ?></div>
             </div>
@@ -328,34 +328,34 @@ if ($lastVoteID) {
 
             <div id="message_board" class="row gx-0">
                 <div class="message_input_form bg0 gx-0 row">
-                    <div id="mailbox_list-col" class="col-6 col-md-2 d-grid">
+                    <div id="mailbox_list-col" class="col-6 col-lg-2 d-grid">
                         <select id="mailbox_list" size="1" class="form-control bg-dark text-white">
                         </select>
                     </div>
-                    <div id="msg_input-col" class="col-12 col-md-8 d-grid">
+                    <div id="msg_input-col" class="col-12 col-lg-8 d-grid">
                         <input type="text" id="msg_input" maxlength="99" class="form-control">
                     </div>
-                    <div id="msg_submit-col" class="col-6 col-md-2 d-grid"><button id="msg_submit" class="btn btn-primary">서신전달&amp;갱신</button></div>
+                    <div id="msg_submit-col" class="col-6 col-lg-2 d-grid"><button id="msg_submit" class="btn btn-primary">서신전달&amp;갱신</button></div>
                 </div>
-                <div class="col-md-6 board_side bg0"><a id="public_talk_position"></a>
+                <div class="col-lg-6 board_side bg0"><a id="public_talk_position"></a>
                     <div class="board_header bg0">전체 메시지(최고99자)</div>
                     <section class="public_message">
                         <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="public">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
-                <div class="col-md-6 board_side bg0"><a id="national_talk_position"></a>
+                <div class="col-lg-6 board_side bg0"><a id="national_talk_position"></a>
                     <div class="board_header bg0">국가 메시지(최고99자)</div>
                     <section class="national_message">
                         <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="national">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
-                <div class="col-md-6 board_side bg0"><a id="private_talk_position"></a>
+                <div class="col-lg-6 board_side bg0"><a id="private_talk_position"></a>
                     <div class="board_header bg0">개인 메시지(최고99자)</div>
                     <section class="private_message">
                         <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="private">이전 메시지 불러오기</button></div>
                     </section>
                 </div>
-                <div class="col-md-6 board_side bg0"><a id="diplomacy_talk_position"></a>
+                <div class="col-lg-6 board_side bg0"><a id="diplomacy_talk_position"></a>
                     <div class="board_header bg0">외교 메시지(최고99자)</div>
                     <section class="diplomacy_message">
                         <div class="d-grid"><button type="button" class="load_old_message btn btn-secondary" data-msg_type="diplomacy">이전 메시지 불러오기</button></div>
@@ -379,7 +379,7 @@ if ($lastVoteID) {
         }
         ?>
     </div>
-    <nav class="navbar navbar-expand fixed-bottom navbar-dark bg-dark d-sm-block d-md-none p-0" id="navbar500">
+    <nav class="navbar navbar-expand fixed-bottom navbar-dark bg-dark d-sm-block d-lg-none p-0" id="navbar500">
         <div class="container-fluid px-0">
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mx-auto">

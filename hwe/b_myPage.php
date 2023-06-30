@@ -81,13 +81,13 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
             <div class="col">내 정 보<br><?= backButton() ?></div>
         </div>
         <div class="row gx-0">
-            <div class="col col-12 col-md-6">
+            <div class="col col-12 col-lg-6">
                 <div class="row">
                     <div class="col"><?php generalInfo($me); ?><?php generalInfo2($me); ?></div>
                 </div>
             </div>
 
-            <div class="col col-12 col-md-6">
+            <div class="col col-12 col-lg-6">
                 <div class="row mx-0 gx-0">
                     <div class="col" style='padding-left:2ch;'>
                         토너먼트 【
@@ -178,7 +178,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                     </div>
                 </div>
             </div>
-            <div class="col col-12 col-md-6">
+            <div class="col col-12 col-lg-6">
                 <div class="row gx-0">
                     <div class="col bg1 text-center">
                         <h4 style='color:skyblue'>개인 기록</h4>
@@ -191,7 +191,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                     <button type="button" class="load_old_log btn btn-secondary" data-log_type="generalAction">이전 로그 불러오기</button>
                 </div>
             </div>
-            <div class="col col-12 col-md-6">
+            <div class="col col-12 col-lg-6">
                 <div class="row gx-0">
                     <div class="col bg1 text-center">
                         <h4 style='color:orange'>전투 기록</h4>
@@ -205,7 +205,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                 </div>
             </div>
 
-            <div class="col col-12 col-md-6">
+            <div class="col col-12 col-lg-6">
                 <div class="row gx-0">
                     <div class="col bg1 text-center">
                         <h4 style='color:skyblue'>장수 열전</h4>
@@ -215,7 +215,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                     <?= formatHistoryToHTML(getGeneralHistoryLogAll($generalID)) ?>
                 </div>
             </div>
-            <div class="col col-12 col-md-6">
+            <div class="col col-12 col-lg-6">
                 <div class="row gx-0">
                     <div class="col bg1 text-center">
                         <h4 style='color:orange'>전투 결과</h4>

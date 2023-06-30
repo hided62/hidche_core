@@ -32,8 +32,8 @@ if ($session->userGrade == 5) {
 
 <body>
     <div class="container" style="min-width:720px;">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe 리셋</h1>
-        <div class="row justify-content-md-center">
+        <h1 class="row justify-content-lg-center">삼국지 모의전투 HiDCHe 리셋</h1>
+        <div class="row justify-content-lg-center">
 
             <div class="col col-lg-8">
                 <div class="card" id="db_form_card">

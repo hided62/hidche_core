@@ -30,10 +30,10 @@ require(__DIR__ . '/../vendor/autoload.php');
 
 <body>
     <div class="container">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe 설치</h1>
-        <div class="row justify-content-md-center">
+        <h1 class="row justify-content-lg-center">삼국지 모의전투 HiDCHe 설치</h1>
+        <div class="row justify-content-lg-center">
 
-            <div class="col col-12 col-md-10 col-lg-7">
+            <div class="col col-12 col-lg-10 col-lg-7">
                 <div class="card" id="db_form_card" style="display:none">
                     <h3 class="card-header">
                         설치(DB 설정)

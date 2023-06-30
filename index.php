@@ -93,24 +93,24 @@ foreach (ServConfig::getServerList() as $setting) {
 
                         <form id="main_form" method="post" action="#">
                             <div class="form-group row">
-                                <label for="username" class="col-5 col-md-4 col-form-label">계정명</label>
-                                <div class="col-7 col-md-8">
+                                <label for="username" class="col-5 col-lg-4 col-form-label">계정명</label>
+                                <div class="col-7 col-lg-8">
                                     <input autocomplete="username" type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="계정명" />
                                 </div>
                             </div>
 
 
                             <div class="form-group row">
-                                <label for="password" class="col-5 col-md-4 col-form-label">비밀번호</label>
-                                <div class="col-7 col-md-8">
+                                <label for="password" class="col-5 col-lg-4 col-form-label">비밀번호</label>
+                                <div class="col-7 col-lg-8">
                                     <input autocomplete="current-password" type="password" class="form-control" name="password" id="password" placeholder="비밀번호" />
                                 </div>
                             </div>
 
                             <input type="hidden" id="global_salt" name="global_salt" value="<?= RootDB::getGlobalSalt() ?>">
                             <div class="form-group row">
-                                <div class="col-5 col-md-4 " style="position:relative;"><button type="button" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
-                                <div class="col-7 col-md-8">
+                                <div class="col-5 col-lg-4 " style="position:relative;"><button type="button" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
+                                <div class="col-7 col-lg-8">
                                     <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
                                         <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
                                         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">

@@ -39,8 +39,8 @@ if ($session->userGrade < 5 && !$allowReset) {
 
 <body>
     <div class="container">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe 리셋</h1>
-        <div class="row justify-content-md-center">
+        <h1 class="row justify-content-lg-center">삼국지 모의전투 HiDCHe 리셋</h1>
+        <div class="row justify-content-lg-center">
 
             <div class="col col-lg-8">
                 <div class="card" id="game_form_card">

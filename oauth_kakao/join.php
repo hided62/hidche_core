@@ -37,9 +37,9 @@ if ($canJoin != 'Y') {
 
 <body>
     <div class="container">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
-        <div class="row justify-content-md-center">
-            <div class="col col-12 col-md-12 col-lg-12">
+        <h1 class="row justify-content-lg-center">삼국지 모의전투 HiDCHe</h1>
+        <div class="row justify-content-lg-center">
+            <div class="col col-12 col-lg-12 col-lg-12">
                 <div class="card">
                     <h3 class="card-header">
                         회원가입
