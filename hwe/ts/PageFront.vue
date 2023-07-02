@@ -1,177 +1,180 @@
 <template>
-  <div id="outBlock" :class="`sam-color-${nationStaticInfo?.color.substring(1, 7) ?? '000000'}`">
-    <div id="outBlock2">
-      <!-- eslint-disable-next-line vue/max-attributes-per-line -->
-      <BContainer v-if="asyncReady" id="container" :position="'position-relative'" :toast="{ root: true }" class="bg0">
-        <main class="gx-0">
-          <div class="commonToolbar">
-            <GlobalMenu
-              v-if="globalMenu && globalInfo"
-              :globalInfo="globalInfo"
-              :modelValue="globalMenu"
-              variant="sammo-base2"
-              @reqCall="reqMenuCall"
-            />
+  <!-- eslint-disable-next-line vue/max-attributes-per-line -->
+  <BContainer
+    v-if="asyncReady"
+    id="container"
+    :position="'position-relative'"
+    :toast="{ root: true }"
+    :class="['bg0', nationColorClass]"
+  >
+    <main class="gx-0">
+      <div class="commonToolbar">
+        <GlobalMenu
+          v-if="globalMenu && globalInfo"
+          :globalInfo="globalInfo"
+          :modelValue="globalMenu"
+          variant="sammo-base2"
+          @reqCall="reqMenuCall"
+        />
+      </div>
+      <GameInfo
+        v-if="frontInfo"
+        :frontInfo="frontInfo"
+        :serverLocked="serverLocked"
+        :serverName="serverName"
+        :lastExecuted="lastExecuted"
+      />
+      <div class="s-border-t px-2 py-2 onlineNations">접속중인 국가: {{ globalInfo.onlineNations }}</div>
+      <div class="s-border-t px-2 py-2 onlineUsers">【 접속자 】 {{ nationInfo?.onlineGen }}</div>
+      <div class="s-border-t py-2 nationNotice">
+        <div class="px-2">【 국가방침 】</div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div v-if="nationInfo" class="nationNoticeBody" v-html="nationInfo.notice?.msg ?? ''" />
+      </div>
+      <div id="ingameBoard">
+        <!-- TODO: 운영자 툴바는 어디에?-->
+        <div class="mapView">
+          <MapViewer
+            v-if="map"
+            :serverNick="serverNick"
+            :serverID="serverID"
+            :mapName="unwrap(gameConstStore?.gameConst.mapName)"
+            :isDetailMap="true"
+            :cityPosition="cityPosition"
+            :imagePath="imagePath"
+            :formatCityInfo="formatCityInfoText"
+            :mapData="map"
+            :disallowClick="false"
+            :genHref="genMapCityHref"
+            @city-click="onCityClick"
+          />
+        </div>
+        <div class="reservedCommandZone">
+          <PartialReservedCommand id="reservedCommandPanel" ref="reservedCommandPanel" />
+        </div>
+        <div id="actionMiniPlate" class="gx-0 row">
+          <div class="col">
+            <div class="gx-1 row">
+              <div class="col-8 d-grid">
+                <button type="button" class="btn btn-sammo-base2" @click="tryRefresh">갱 신</button>
+              </div>
+              <div class="col-4 d-grid">
+                <button type="button" class="btn btn-sammo-base2" @click="moveLobby">로비로</button>
+              </div>
+            </div>
           </div>
-          <GameInfo
-            v-if="frontInfo"
-            :frontInfo="frontInfo"
-            :serverLocked="serverLocked"
-            :serverName="serverName"
+        </div>
+        <div v-if="frontInfo" class="cityInfo">
+          <CityBasicCard :city="frontInfo.city" />
+        </div>
+        <div v-if="frontInfo" class="nationInfo">
+          <NationBasicCard :nation="frontInfo.nation" :global="globalInfo" />
+        </div>
+        <div v-if="frontInfo && generalInfo && nationStaticInfo" class="generalInfo">
+          <GeneralBasicCard
+            :general="generalInfo"
+            :nation="nationStaticInfo"
+            :troopInfo="frontInfo.general.troopInfo"
+            :turnTerm="globalInfo.turnterm"
             :lastExecuted="lastExecuted"
           />
-          <div class="s-border-t px-2 py-2 onlineNations">접속중인 국가: {{ globalInfo.onlineNations }}</div>
-          <div class="s-border-t px-2 py-2 onlineUsers">【 접속자 】 {{ nationInfo?.onlineGen }}</div>
-          <div class="s-border-t py-2 nationNotice">
-            <div class="px-2">【 국가방침 】</div>
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-if="nationInfo" class="nationNoticeBody" v-html="nationInfo.notice?.msg ?? ''" />
-          </div>
-          <div id="ingameBoard">
-            <!-- TODO: 운영자 툴바는 어디에?-->
-            <div class="mapView">
-              <MapViewer
-                v-if="map"
-                :serverNick="serverNick"
-                :serverID="serverID"
-                :mapName="unwrap(gameConstStore?.gameConst.mapName)"
-                :isDetailMap="true"
-                :cityPosition="cityPosition"
-                :imagePath="imagePath"
-                :formatCityInfo="formatCityInfoText"
-                :mapData="map"
-                :disallowClick="false"
-                :genHref="genMapCityHref"
-                @city-click="onCityClick"
-              />
-            </div>
-            <div class="reservedCommandZone">
-              <PartialReservedCommand id="reservedCommandPanel" ref="reservedCommandPanel" />
-            </div>
-            <div id="actionMiniPlate" class="gx-0 row">
-              <div class="col">
-                <div class="gx-1 row">
-                  <div class="col-8 d-grid">
-                    <button type="button" class="btn btn-sammo-base2" @click="tryRefresh">갱 신</button>
-                  </div>
-                  <div class="col-4 d-grid">
-                    <button type="button" class="btn btn-sammo-base2" @click="moveLobby">로비로</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div v-if="frontInfo" class="cityInfo">
-              <CityBasicCard :city="frontInfo.city" />
-            </div>
-            <div v-if="frontInfo" class="nationInfo">
-              <NationBasicCard :nation="frontInfo.nation" :global="globalInfo" />
-            </div>
-            <div v-if="frontInfo && generalInfo && nationStaticInfo" class="generalInfo">
-              <GeneralBasicCard
-                :general="generalInfo"
-                :nation="nationStaticInfo"
-                :troopInfo="frontInfo.general.troopInfo"
-                :turnTerm="globalInfo.turnterm"
-                :lastExecuted="lastExecuted"
-              />
-            </div>
+        </div>
 
-            <div class="generalCommandToolbar">
-              <MainControlBar
-                v-if="generalInfo"
-                :permission="generalInfo.permission"
-                :showSecret="showSecret"
-                :myLevel="generalInfo.officerLevel"
-                :nationLevel="nationStaticInfo?.level ?? 0"
-                :nationColor="nationStaticInfo?.color.substring(1, 7) ?? '000000'"
-                :isTournamentApplicationOpen="globalInfo.isTournamentApplicationOpen"
-                :isBettingActive="globalInfo.isBettingActive"
-              />
-            </div>
-            <div id="actionMiniPlateSub" class="gx-0 row">
-              <div class="col">
-                <div class="gx-1 row">
-                  <div class="col-3 d-grid">
-                    <button type="button" class="btn btn-dark" @click="scrollToSelector('#reservedCommandPanel')">
-                      명령으로
-                    </button>
-                  </div>
-                  <div class="col-5 d-grid">
-                    <button type="button" class="btn btn-sammo-base2" @click="tryRefresh">갱 신</button>
-                  </div>
-                  <div class="col-4 d-grid">
-                    <button type="button" class="btn btn-sammo-base2" @click="moveLobby">로비로</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="RecordZone row gx-0">
-            <div class="PublicRecord col col-12 col-lg-6">
-              <div class="bg1 center s-border-tb title">장수 동향</div>
-              <template v-for="[idx, rawText] of globalRecords.toArray()" :key="idx">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <div :v-data-idx="idx" v-html="formatLog(rawText)" />
-              </template>
-            </div>
-            <div class="GeneralLog col col-12 col-lg-6">
-              <div class="bg1 center s-border-tb title">개인 기록</div>
-              <template v-for="[idx, rawText] of generalRecords.toArray()" :key="idx">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <div :v-data-idx="idx" v-html="formatLog(rawText)" />
-              </template>
-            </div>
-            <div class="WorldHistory col col-12">
-              <div class="bg1 center s-border-tb title">중원 정세</div>
-              <template v-for="[idx, rawText] of worldHistory.toArray()" :key="idx">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <div :v-data-idx="idx" v-html="formatLog(rawText)" />
-              </template>
-            </div>
-          </div>
-
-          <div class="commonToolbar">
-            <GlobalMenu
-              v-if="globalMenu && globalInfo"
-              :globalInfo="globalInfo"
-              :modelValue="globalMenu"
-              variant="sammo-base2"
-            />
-          </div>
-          <MessagePanel
+        <div class="generalCommandToolbar">
+          <MainControlBar
             v-if="generalInfo"
-            ref="msgPanel"
-            :generalID="generalInfo.no"
-            :generalName="generalInfo.name"
-            :nationID="generalInfo.nation"
-            :permissionLevel="generalInfo.permission"
+            :permission="generalInfo.permission"
+            :showSecret="showSecret"
+            :myLevel="generalInfo.officerLevel"
+            :nationLevel="nationStaticInfo?.level ?? 0"
+            :nationColor="nationStaticInfo?.color.substring(1, 7) ?? '000000'"
+            :isTournamentApplicationOpen="globalInfo.isTournamentApplicationOpen"
+            :isBettingActive="globalInfo.isBettingActive"
           />
-          <div class="commonToolbar">
-            <GlobalMenu
-              v-if="globalMenu && globalInfo"
-              :globalInfo="globalInfo"
-              :modelValue="globalMenu"
-              variant="sammo-base2"
-            />
+        </div>
+        <div id="actionMiniPlateSub" class="gx-0 row">
+          <div class="col">
+            <div class="gx-1 row">
+              <div class="col-3 d-grid">
+                <button type="button" class="btn btn-dark" @click="scrollToSelector('#reservedCommandPanel')">
+                  명령으로
+                </button>
+              </div>
+              <div class="col-5 d-grid">
+                <button type="button" class="btn btn-sammo-base2" @click="tryRefresh">갱 신</button>
+              </div>
+              <div class="col-4 d-grid">
+                <button type="button" class="btn btn-sammo-base2" @click="moveLobby">로비로</button>
+              </div>
+            </div>
           </div>
-        </main>
-      </BContainer>
-      <div v-else>서버 갱신 중입니다.</div>
-    </div>
-    <GameBottomBar
-      v-if="frontInfo && globalMenu"
-      id="mobileBottomBar"
-      :frontInfo="frontInfo"
-      :globalMenu="globalMenu"
-      @refresh="tryRefresh"
-    />
-    <BModal v-model="showVersionInfo" title="게임 정보">
-      {{ gameConstStore?.gameConst.title }}<br>
-      {{ gameConstStore?.version }}<br>
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <span v-html="gameConstStore?.gameConst.banner"></span>
-    </BModal>
-  </div>
+        </div>
+      </div>
+      <div class="RecordZone row gx-0">
+        <div class="PublicRecord col col-12 col-lg-6">
+          <div class="bg1 center s-border-tb title">장수 동향</div>
+          <template v-for="[idx, rawText] of globalRecords.toArray()" :key="idx">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div :v-data-idx="idx" v-html="formatLog(rawText)" />
+          </template>
+        </div>
+        <div class="GeneralLog col col-12 col-lg-6">
+          <div class="bg1 center s-border-tb title">개인 기록</div>
+          <template v-for="[idx, rawText] of generalRecords.toArray()" :key="idx">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div :v-data-idx="idx" v-html="formatLog(rawText)" />
+          </template>
+        </div>
+        <div class="WorldHistory col col-12">
+          <div class="bg1 center s-border-tb title">중원 정세</div>
+          <template v-for="[idx, rawText] of worldHistory.toArray()" :key="idx">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div :v-data-idx="idx" v-html="formatLog(rawText)" />
+          </template>
+        </div>
+      </div>
+
+      <div class="commonToolbar">
+        <GlobalMenu
+          v-if="globalMenu && globalInfo"
+          :globalInfo="globalInfo"
+          :modelValue="globalMenu"
+          variant="sammo-base2"
+        />
+      </div>
+      <MessagePanel
+        v-if="generalInfo"
+        ref="msgPanel"
+        :generalID="generalInfo.no"
+        :generalName="generalInfo.name"
+        :nationID="generalInfo.nation"
+        :permissionLevel="generalInfo.permission"
+      />
+      <div class="commonToolbar">
+        <GlobalMenu
+          v-if="globalMenu && globalInfo"
+          :globalInfo="globalInfo"
+          :modelValue="globalMenu"
+          variant="sammo-base2"
+        />
+      </div>
+    </main>
+  </BContainer>
+  <div v-else>서버 갱신 중입니다.</div>
+  <GameBottomBar
+    v-if="frontInfo && globalMenu"
+    id="mobileBottomBar"
+    :class="nationColorClass"
+    :frontInfo="frontInfo"
+    :globalMenu="globalMenu"
+    @refresh="tryRefresh"
+  />
+  <BModal v-model="showVersionInfo" title="게임 정보">
+    {{ gameConstStore?.gameConst.title }}<br />
+    {{ gameConstStore?.version }}<br />
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <span v-html="gameConstStore?.gameConst.banner"></span>
+  </BModal>
 </template>
 <script lang="ts">
 declare const staticValues: {
@@ -229,15 +232,15 @@ const storeP = getGameConstStore().then((store) => {
   gameConstStore.value = store;
 });
 
-const menuCallList: Record<string, ()=>unknown> = {
-  showVersion:()=>{
-    console.log('version');
+const menuCallList: Record<string, () => unknown> = {
+  showVersion: () => {
+    console.log("version");
     showVersionInfo.value = !showVersionInfo.value;
-  },
-}
+  }
+};
 
-function reqMenuCall(key:string){
-  if(!(key in menuCallList)){
+function reqMenuCall(key: string) {
+  if (!(key in menuCallList)) {
     console.error(`메뉴 호출 실패: ${key}`);
     return;
   }
@@ -318,7 +321,7 @@ async function tryRefresh() {
       }
       toasts.danger({
         title: "갱신 실패",
-        body: response.reason,
+        body: response.reason
       });
       return;
     }
@@ -328,10 +331,10 @@ async function tryRefresh() {
     //TODO: 서버와 클라이언트 버전이 다르다면 갱신 필요
   } catch (e) {
     responseLock = false;
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
-        body: e,
+        body: e
       });
     }
     console.error(e);
@@ -352,7 +355,7 @@ onMounted(async () => {
     if (isString(e)) {
       toasts.danger({
         title: "메뉴 갱신 실패",
-        body: `${e}`,
+        body: `${e}`
       });
     }
     console.error(e);
@@ -372,6 +375,15 @@ const generalRecords = ref(new Denque<[number, string]>());
 const globalRecords = ref(new Denque<[number, string]>());
 const worldHistory = ref(new Denque<[number, string]>());
 
+const nationColorClass = ref('sam-color-000000');
+watch(nationStaticInfo, (newNation)=>{
+  if(!newNation){
+    nationColorClass.value = 'sam-color-000000';
+    return;
+  }
+  nationColorClass.value = `sam-color-${newNation.color.substring(1, 7)}`;
+});
+
 let generalInfoLock = false;
 
 watch(refreshCounter, async () => {
@@ -382,7 +394,7 @@ watch(refreshCounter, async () => {
     generalInfoLock = true;
     const response = await SammoAPI.General.GetFrontInfo({
       lastGeneralRecordID: lastGeneralRecordID.value,
-      lastWorldHistoryID: lastWorldHistoryID.value,
+      lastWorldHistoryID: lastWorldHistoryID.value
     });
     generalInfoLock = false;
 
@@ -405,14 +417,14 @@ watch(refreshCounter, async () => {
       level: rawNation.level,
       capital: rawNation.capital,
       gennum: rawNation.gennum,
-      power: rawNation.power,
+      power: rawNation.power
     };
 
     const recentRecord = response.recentRecord;
     const recordIter = [
       ["flushGeneral", generalRecords, "general", lastGeneralRecordID],
       ["flushGlobal", globalRecords, "global", lastGeneralRecordID],
-      ["flushHistory", worldHistory, "history", lastWorldHistoryID],
+      ["flushHistory", worldHistory, "history", lastWorldHistoryID]
     ] as const;
 
     let haveNewRecord = false;
@@ -438,21 +450,20 @@ watch(refreshCounter, async () => {
         recordRef.value.unshift([id, formatLog(record)]);
       }
     }
-    if (refreshCounter.value <= 1){
-      console.log('초기화 완료');
-    }
-    else if (haveNewRecord) {
+    if (refreshCounter.value <= 1) {
+      console.log("초기화 완료");
+    } else if (haveNewRecord) {
       toasts.info(
         {
           title: "갱신 완료",
-          body: `동향 변경이 있습니다.`,
+          body: `동향 변경이 있습니다.`
         },
         { delay: 100 * 15 }
       );
     } else {
       toasts.success(
         {
-          title: "갱신 완료",
+          title: "갱신 완료"
         },
         { delay: 100 * 5 }
       );
@@ -464,10 +475,10 @@ watch(refreshCounter, async () => {
       toasts.warning(
         {
           title: "설문조사 안내",
-          body: `새로운 설문조사가 있습니다.`,
+          body: `새로운 설문조사가 있습니다.`
         },
         {
-          delay: 1000 * 60,
+          delay: 1000 * 60
         }
       );
     }
@@ -476,7 +487,7 @@ watch(refreshCounter, async () => {
     console.error(e);
     toasts.danger({
       title: "최근 정보 갱신 실패",
-      body: `${e}`,
+      body: `${e}`
     });
   }
 });
@@ -506,13 +517,13 @@ watch(refreshCounter, async () => {
   try {
     map.value = await SammoAPI.Global.GetMap({
       neutralView: 0,
-      showMe: 1,
+      showMe: 1
     });
   } catch (e) {
     console.error(e);
     toasts.danger({
       title: "지도 갱신 실패",
-      body: `${e}`,
+      body: `${e}`
     });
   }
 });
@@ -525,6 +536,7 @@ watch(refreshCounter, async () => {
 </script>
 <style lang="scss" scoped>
 @import "@scss/common/break_500px.scss";
+
 :deep() {
   @import "@scss/gameEvent.scss";
   @import "@scss/battleLog.scss";
@@ -532,12 +544,6 @@ watch(refreshCounter, async () => {
 
 #mobileBottomBar {
   display: none;
-}
-
-#outBlock {
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
 }
 
 .generalInfo {
@@ -556,30 +562,23 @@ watch(refreshCounter, async () => {
   }
 }
 
-.generalCommandToolbar{
+.generalCommandToolbar {
   white-space: nowrap;
 }
 
 @include media-500px {
-  #outBlock {
-    position: absolute;
-    top: 0;
-    left: 0;
+  #mobileBottomBar {
+    display: block;
+    position: fixed;
+    z-index: 99;
+    bottom: 0;
     width: 100%;
-    height: 100%;
-
-    #mobileBottomBar {
-      display: block;
-    }
-  }
-
-  #outBlock2 {
-    flex-grow: 1;
-    overflow-y: scroll;
+    left: 0;
   }
 
   #container {
     width: 500px;
+    margin-bottom: 45px;
   }
 
   #ingameBoard {
