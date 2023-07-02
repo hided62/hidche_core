@@ -69,3 +69,5 @@ gateway/js/*
 gateway/css/*
 
 *.db-journal
+
+d_log/cachegrind.*
