@@ -6,11 +6,6 @@
     padding: 0;
 }
 
-#app {
-    width: 100%;
-}
-
-
 @include media-1000px {
     #container {
         width: 1000px;
