@@ -100,8 +100,7 @@ CREATE TABLE `general_turn` (
 	`arg` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`),
-	INDEX `action` (`action`, `turn_idx`, `general_id`)
+	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`)
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
 ##############################
 ## 국가 테이블
@@ -143,13 +142,7 @@ CREATE TABLE `nation_turn` (
 	`arg` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	`brief` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE INDEX `nation` (`nation_id`, `officer_level`, `turn_idx`),
-	INDEX `action` (
-		`action`,
-		`turn_idx`,
-		`nation_id`,
-		`officer_level`
-	),
+	UNIQUE INDEX `nation` (`nation_id`, `officer_level`, `turn_idx`)
 	CONSTRAINT `json` CHECK (json_valid(`arg`))
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
 ##############################
