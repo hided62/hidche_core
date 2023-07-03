@@ -215,14 +215,16 @@ class che_물자원조 extends Command\NationCommand
             $chiefLogger->flush();
         }
 
-        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원");
-        $logger->pushNationalHistoryLog("<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원");
+        $josaUlRiceAmount = JosaUtil::pick($riceAmountText, '을');
+        
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>{$josaUl} 지원");
+        $logger->pushNationalHistoryLog("<D><b>{$destNationName}</b></>{$josaRo} 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>{$josaUl} 지원");
         $logger->pushGlobalHistoryLog("<Y><b>【원조】</b></><D><b>{$nationName}</b></>에서 <D><b>{$destNationName}</b></>{$josaRo} 물자를 지원합니다");
 
         $logger->pushGeneralActionLog($broadcastMessage);
         $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>{$josaRo} 물자를 지원합니다. <1>$date</>", ActionLogger::PLAIN);
 
-        $destBroadcastMessage = $broadcastMessage = "<D><b>{$nationName}</b></>에서 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 원조했습니다.";
+        $destBroadcastMessage = $broadcastMessage = "<D><b>{$nationName}</b></>에서 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>{$josaUl} 원조했습니다.";
         $destChiefList = $db->queryFirstColumn('SELECT no FROM general WHERE officer_level >= 5 AND nation = %i', $destNationID);
         foreach ($destChiefList as $destChiefID) {
             $destChiefLogger = new ActionLogger($destChiefID, $nationID, $year, $month);
@@ -232,7 +234,7 @@ class che_물자원조 extends Command\NationCommand
 
         $josaRoSrc = JosaUtil::pick($nationName, '로');
         $destNationLogger = new ActionLogger(0, $destNationID, $year, $month);
-        $destNationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaRoSrc}부터 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>을 지원 받음");
+        $destNationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaRoSrc}부터 금<C>{$goldAmountText}</> 쌀<C>{$riceAmountText}</>{$josaUl} 지원 받음");
 
         $destNationStor = KVStorage::getStorage(DB::db(), $destNationID, 'nation_env');
         $destRecvAssist = $destNationStor->getValue('recv_assist') ?? [];

@@ -17,7 +17,7 @@ class InheritancePointManager
   private function __construct()
   {
     $inheritanceKey = new Map();
-    $inheritanceKey->put(InheritanceKey::previous, new InheritancePointType(true, 1, '기존 포인트', 1));
+    $inheritanceKey->put(InheritanceKey::previous, new InheritancePointType(true, 1, '기존 보유', 1));
     $inheritanceKey->put(InheritanceKey::lived_month, new InheritancePointType(true, 1, '생존', 1));
     $inheritanceKey->put(InheritanceKey::max_belong, new InheritancePointType(false, 10, '최대 임관년 수', null));
     $inheritanceKey->put(InheritanceKey::max_domestic_critical, new InheritancePointType(true, 1, '최대 연속 내정 성공', null));
