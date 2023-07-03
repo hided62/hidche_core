@@ -173,7 +173,7 @@ class che_몰수 extends Command\NationCommand
             $npcTexts = [
                 '몰수를 하다니... 이것이 윗사람이 할 짓이란 말입니까...',
                 '사유재산까지 몰수해가면서 이 나라가 잘 될거라 믿습니까? 정말 이해할 수가 없군요...',
-                '내 돈 내놔라! 내 돈! 몰수가 왠 말이냐!',
+                '내 돈 내놔라! 내 돈! 몰수가 웬 말이냐!',
                 '몰수해간 내 자금... 언젠가 몰래 다시 빼내올 것이다...',
                 '몰수로 인한 사기 저하는 몰수로 얻은 물자보다 더 손해란걸 모른단 말인가!'
             ];
@@ -205,8 +205,10 @@ class che_몰수 extends Command\NationCommand
             $resKey => $db->sqleval('%b + %i', $resKey, $amount)
         ], 'nation=%i', $nationID);
 
-        $destGeneral->getLogger()->pushGeneralActionLog("{$resName} {$amountText}을 몰수 당했습니다.", ActionLogger::PLAIN);
-        $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게서 {$resName} <C>$amountText</>을 몰수했습니다. <1>$date</>");
+        $josaUl = JosaUtil::pick($amountText, '을');
+        
+        $destGeneral->getLogger()->pushGeneralActionLog("{$resName} {$amountText}{$josaUl} 몰수 당했습니다.", ActionLogger::PLAIN);
+        $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게서 {$resName} <C>$amountText</>{$josaUl} 몰수했습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
