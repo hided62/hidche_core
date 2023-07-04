@@ -102,6 +102,23 @@ CREATE TABLE `general_turn` (
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`)
 ) COLLATE = 'utf8mb4_general_ci' ENGINE = Aria;
+CREATE TABLE `general_access_log` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`general_id` INT(11) NOT NULL,
+	`user_id` INT(11) NULL DEFAULT NULL,
+	`nation_id` INT(11) NOT NULL,
+	`last_refresh` DATETIME NOT NULL,
+	`last_connect` DATETIME NOT NULL,
+	`login_total` INT(11) NOT NULL,
+	`refresh` INT(11) NOT NULL,
+	`refresh_total` INT(11) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `general_id` (`general_id`),
+	INDEX `nation_id` (`nation_id`)
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria
+;
 ##############################
 ## 국가 테이블
 ##############################

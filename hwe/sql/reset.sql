@@ -1,6 +1,7 @@
 # 장수 테이블 삭제
 DROP TABLE IF EXISTS general;
 DROP TABLE IF EXISTS `general_turn`;
+DROP TABLE IF EXISTS `general_acess_log`;
 # 국가 테이블 삭제
 DROP TABLE IF EXISTS nation;
 DROP TABLE IF EXISTS `nation_turn`;
