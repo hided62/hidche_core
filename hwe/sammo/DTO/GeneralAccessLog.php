@@ -27,6 +27,12 @@ class GeneralAccessLog extends \LDTO\DTO
 
     #[RawName('refresh_total')]
     public int $refreshTotal,
+
+    #[RawName('refresh_score')]
+    public int $refreshScore,
+
+    #[RawName('refresh_score_total')]
+    public int $refreshScoreTotal,
   ) {
   }
 }

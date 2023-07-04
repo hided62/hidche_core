@@ -102,6 +102,8 @@ CREATE TABLE `general_access_log` (
 	`last_refresh` DATETIME NULL DEFAULT NULL,
 	`refresh` INT(11) NOT NULL DEFAULT '0',
 	`refresh_total` INT(11) NOT NULL DEFAULT '0',
+	`refresh_score` INT(11) NOT NULL DEFAULT '0',
+	`refresh_score_total` INT(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `general_id` (`general_id`),
 )
