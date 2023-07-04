@@ -430,7 +430,6 @@ class Join extends \sammo\BaseAPI
         $db->insert('general_access_log', [
             GeneralAccessLogColumn::generalID->value => $generalID,
             GeneralAccessLogColumn::userID->value => $userID,
-            GeneralAccessLogColumn::nationID->value => 1,
             GeneralAccessLogColumn::lastRefresh->value => $now,
         ]);
 

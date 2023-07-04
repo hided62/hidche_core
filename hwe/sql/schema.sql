@@ -13,9 +13,6 @@ CREATE TABLE `general` (
 	`newmsg` INT(1) NULL DEFAULT '0',
 	`con` INT(6) NOT NULL DEFAULT '0',
 	`connect` INT(6) NOT NULL DEFAULT '0',
-	`refresh` INT(6) NOT NULL DEFAULT '0',
-	`logcnt` INT(6) NULL DEFAULT '1',
-	`refcnt` INT(6) NULL DEFAULT '1',
 	`picture` VARCHAR(40) NOT NULL,
 	`imgsvr` INT(1) NOT NULL DEFAULT '0',
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
@@ -54,7 +51,6 @@ CREATE TABLE `general` (
 	`recent_war` DATETIME(6) NULL DEFAULT NULL,
 	`makelimit` INT(2) NULL DEFAULT '0',
 	`killturn` INT(3) NULL DEFAULT NULL,
-	`ip` VARCHAR(40) NULL DEFAULT '',
 	`block` INT(1) NULL DEFAULT '0',
 	`dedlevel` INT(2) NULL DEFAULT '0',
 	`explevel` INT(2) NULL DEFAULT '0',
@@ -103,15 +99,11 @@ CREATE TABLE `general_access_log` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`general_id` INT(11) NOT NULL,
 	`user_id` INT(11) NULL DEFAULT NULL,
-	`nation_id` INT(11) NULL DEFAULT NULL,
 	`last_refresh` DATETIME NULL DEFAULT NULL,
-	`last_connect` DATETIME NULL DEFAULT NULL,
-	`login_total` INT(11) NOT NULL DEFAULT '0',
 	`refresh` INT(11) NOT NULL DEFAULT '0',
 	`refresh_total` INT(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `general_id` (`general_id`),
-	INDEX `nation_id` (`nation_id`)
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=Aria

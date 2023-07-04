@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\GeneralAccessLogColumn;
+
 include "lib.php";
 include "func.php";
 
@@ -193,12 +195,19 @@ if ($admin['maxonline'] < $curonline) {
             </td>
         </tr>
         <?php
-        $max_refresh = $db->queryFirstRow('SELECT sum(refresh) as refresh, sum(`connect`) as `connect` from general');
-        $max_refresh['name'] = '접속자 총합';
+        $totalRefresh = [
+            'connect' => $db->queryFirstField('SELECT sum(`connect`) as `connect` from general'),
+            'refresh' => $db->queryFirstField('SELECT sum(`refresh`) as `refresh` from general_access_log'),
+            'name' => '접속자 총합'
+        ];
 
-        $refresh_result = array_merge([$max_refresh], $db->query('SELECT `name`,refresh,`connect` FROM general ORDER BY refresh DESC LIMIT 5'));
+        $top5Refresh = $db->query(
+            'SELECT `name`, `log`.`refresh`, `connect` FROM `general_access_log` AS `log`
+            INNER JOIN `general` ON `log`.`general_id` = `general`.`no` ORDER BY `log`.`refresh` DESC LIMIT 5');
 
-        foreach ($refresh_result as $i => $user) {
+        $refresh_result = array_merge([$max_refresh], $db->query('SELECT `no`,`name`,refresh,`connect` FROM general ORDER BY refresh DESC LIMIT 5'));
+
+        foreach (array_merge([$totalRefresh], $top5Refresh) as $i => $user) {
             $w = round($user['refresh'] / max(1, $max_refresh['refresh']) * 100, 1);
             $w2 = round(100 - $w, 1);
             $color = getTrafficColor($w);

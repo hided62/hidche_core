@@ -1069,9 +1069,6 @@ function updateTraffic()
     $admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxonline', 'maxrefresh']);
     /** @var array{year:int,month:int,refresh:int,maxonline:int,maxrefresh:int} $admin */
 
-    //최다갱신자
-    $user = $db->queryFirstRow('select name,refresh from general order by refresh desc limit 1');
-
     if ($admin['maxrefresh'] < $admin['refresh']) {
         $admin['maxrefresh'] = $admin['refresh'];
     }
@@ -1082,22 +1079,7 @@ function updateTraffic()
     $gameStor->maxrefresh = $admin['maxrefresh'];
     $gameStor->maxonline = $admin['maxonline'];
 
-    $db->update('general', ['refresh' => 0], true);
-
-    $date = TimeUtil::now();
-    //일시|년|월|총갱신|접속자|최다갱신자
-    file_put_contents(
-        __DIR__ . "/logs/" . UniqueConst::$serverID . "/_traffic.txt",
-        Json::encode([
-            $date,
-            $admin['year'],
-            $admin['month'],
-            $admin['refresh'],
-            $online,
-            $user['name'] . "(" . $user['refresh'] . ")"
-        ]) . "\n",
-        FILE_APPEND
-    );
+    $db->update('general_access_log', ['refresh' => 0], true);
 }
 
 function CheckOverhead()

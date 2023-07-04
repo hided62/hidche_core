@@ -17,9 +17,6 @@ enum GeneralColumn: string{
 	case newmsg = 'newmsg';
 	case con = 'con';
 	case connect = 'connect';
-	case refresh = 'refresh';
-	case logcnt = 'logcnt';
-	case refcnt = 'refcnt';
 	case picture = 'picture';
 	case imgsvr = 'imgsvr';
 	case name = 'name';
