@@ -54,7 +54,6 @@ CREATE TABLE `general` (
 	`recent_war` DATETIME(6) NULL DEFAULT NULL,
 	`makelimit` INT(2) NULL DEFAULT '0',
 	`killturn` INT(3) NULL DEFAULT NULL,
-	`lastconnect` DATETIME NULL DEFAULT NULL,
 	`lastrefresh` DATETIME NULL DEFAULT NULL,
 	`ip` VARCHAR(40) NULL DEFAULT '',
 	`block` INT(1) NULL DEFAULT '0',

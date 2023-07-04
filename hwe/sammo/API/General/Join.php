@@ -414,7 +414,6 @@ class Join extends \sammo\BaseAPI
             'officer_level' => 0,
             'turntime' => $turntime,
             'killturn' => 6,
-            'lastconnect' => $now,
             'lastrefresh' => $now,
             'crewtype' => GameUnitConst::DEFAULT_CREWTYPE,
             'makelimit' => 0,
