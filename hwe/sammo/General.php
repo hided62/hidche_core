@@ -4,6 +4,7 @@ namespace sammo;
 
 use Ds\Map;
 use sammo\Command\GeneralCommand;
+use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 use sammo\WarUnitTrigger as WarUnitTrigger;
@@ -792,6 +793,12 @@ class General implements iAction
                     'nation_id' => $updateVals['nation']
                 ], 'general_id = %i', $generalID);
                 $result = true;
+
+                if($this->getNPCType() < 2){
+                    $db->update('general_access_log', [
+                        GeneralAccessLogColumn::nationID->value => $updateVals['nation']
+                    ], '%b = %i', GeneralAccessLogColumn::generalID->value, $generalID);
+                }
             }
             $this->flushUpdateValues();
         }

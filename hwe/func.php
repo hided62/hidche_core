@@ -5,6 +5,7 @@ namespace sammo;
 use DateTime;
 use Ds\Set;
 use sammo\Enums\AuctionType;
+use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 
@@ -998,7 +999,8 @@ function increaseRefresh($type = "", $cnt = 1)
     $generalID = $session->generalID;
     $userGrade = $session->userGrade;
 
-    $date = TimeUtil::now();
+    $dateObj = new \DateTimeImmutable();
+    $date = TimeUtil::format($dateObj, false);
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -1020,13 +1022,17 @@ function increaseRefresh($type = "", $cnt = 1)
 
     $gameStor->refresh = $gameStor->refresh + $cnt; //TODO: +로 증가하는 값은 별도로 분리
 
-    $db->update('general', [
-        'lastrefresh' => $date,
-        'con' => $db->sqleval('con + %i', $cnt),
-        'connect' => $db->sqleval('connect + %i', $cnt),
-        'refcnt' => $db->sqleval('refcnt + %i', $cnt),
-        'refresh' => $db->sqleval('refresh + %i', $cnt)
-    ], 'owner=%i', $userID);
+    $db->insertUpdate('general_access_log', [
+        GeneralAccessLogColumn::generalID->value => $generalID,
+        GeneralAccessLogColumn::userID->value => $userID,
+        GeneralAccessLogColumn::lastRefresh->value => $date,
+        GeneralAccessLogColumn::refreshTotal->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refreshTotal->value, $cnt),
+        GeneralAccessLogColumn::refresh->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refresh->value, $cnt),
+    ], [
+        GeneralAccessLogColumn::lastRefresh->value => $date,
+        GeneralAccessLogColumn::refreshTotal->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refreshTotal->value, $cnt),
+        GeneralAccessLogColumn::refresh->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refresh->value, $cnt),
+    ]);
 
     $serverPath = __DIR__;
 
