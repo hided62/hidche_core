@@ -708,7 +708,6 @@ class GeneralBuilder{
             'dex4'=>$this->dex4,
             'dex5'=>$this->dex5,
             'aux'=>\sammo\Json::encode($this->aux),
-            'lastrefresh'=>TimeUtil::now(),
         ]);
         $this->generalID = $db->insertId();
         $turnRows = [];

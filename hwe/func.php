@@ -6,6 +6,7 @@ use DateTime;
 use Ds\Set;
 use sammo\Enums\AuctionType;
 use sammo\Enums\GeneralAccessLogColumn;
+use sammo\Enums\GeneralColumn;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 
@@ -1007,16 +1008,16 @@ function increaseRefresh($type = "", $cnt = 1)
     $isunited = $gameStor->isunited;
     $opentime = $gameStor->opentime;
 
-    if($userGrade == 6){
+    if ($userGrade == 6) {
         return;
     }
-    if($isunited == 2){
+    if ($isunited == 2) {
         return;
     }
-    if(!$generalID){
+    if (!$generalID) {
         return;
     }
-    if($opentime > $date){
+    if ($opentime > $date) {
         return;
     }
 
@@ -1039,7 +1040,7 @@ function increaseRefresh($type = "", $cnt = 1)
     $serverID = UniqueConst::$serverID;
     $logPath = "{$serverPath}/logs/{$serverID}/api_log.db";
 
-    $logDB = FileDB::db($logPath, $serverPath. '/../f_install/sql/api_log.sql');
+    $logDB = FileDB::db($logPath, $serverPath . '/../f_install/sql/api_log.sql');
 
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'local';
     $date = date('Y-m-d H:i:s');
@@ -1214,7 +1215,16 @@ function updateOnline()
 
     //동접수
     $startTurn = cutTurn($gameStor->turntime, $gameStor->turnterm, false);
-    $onlineUser = $db->query('SELECT no,name,nation FROM general WHERE lastrefresh >= %s AND npc < 2', $startTurn);
+    $onlineUser = $db->query(
+        'SELECT %b, %b, %b FROM `general_access_log` as `log` INNER JOIN `general` ON `log`.%b = `general`.%b WHERE %b >= %s',
+        GeneralColumn::no->value,
+        GeneralColumn::name->value,
+        GeneralColumn::nation->value,
+        GeneralAccessLogColumn::generalID->value,
+        GeneralColumn::no->value,
+        GeneralAccessLogColumn::lastRefresh->value,
+        $startTurn
+    );
     $onlineNum = count($onlineUser);
     $onlineNationUsers = Util::arrayGroupBy($onlineUser, 'nation');
 
@@ -1742,7 +1752,7 @@ function deleteNation(General $lord, bool $applyDB): array
 
     // 전 장수 재야로
     foreach ($nationGeneralList as $general) {
-        if($general->getNPCType() < 2){
+        if ($general->getNPCType() < 2) {
             $general->setAuxVar(
                 InheritanceKey::max_belong->value,
                 max(

@@ -5,6 +5,7 @@ namespace sammo\API\General;
 use sammo\DB;
 use sammo\DummyGeneral;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralAccessLogColumn;
 use sammo\GameConst;
 use sammo\Session;
 use sammo\General;
@@ -37,7 +38,13 @@ class DieOnPrestart extends \sammo\BaseAPI
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->cacheValues(['turnterm', 'opentime', 'turntime', 'year', 'month']);
 
-    $general = $db->queryFirstRow('SELECT no,name,nation,owner_name,npc,lastrefresh FROM general WHERE owner=%i AND npc = 0', $userID);
+    $general = $db->queryFirstRow('SELECT no,name,nation,owner_name,npc FROM general WHERE owner=%i AND npc = 0', $userID);
+    $lastRefresh = $db->queryFirstField(
+      'SELECT %b FROM general_access_log WHERE %b = %i',
+      GeneralAccessLogColumn::lastRefresh->value,
+      GeneralAccessLogColumn::generalID,
+      $general['no']
+    );
 
     if (!$general) {
       return '장수가 없습니다';
@@ -55,7 +62,7 @@ class DieOnPrestart extends \sammo\BaseAPI
     }
 
     //서버 가오픈시 할 수 있는 행동
-    $targetTime = addTurn($general['lastrefresh'], $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
+    $targetTime = addTurn($lastRefresh, $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
     if ($targetTime > TimeUtil::now()) {
       $targetTimeShort = substr($targetTime, 0, 19);
       return "아직 삭제할 수 없습니다. {$targetTimeShort} 부터 가능합니다.";

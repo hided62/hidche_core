@@ -2,6 +2,9 @@
 
 namespace sammo;
 
+use sammo\Enums\GeneralAccessLogColumn;
+use sammo\Enums\TableName;
+
 include "lib.php";
 include "func.php";
 
@@ -29,7 +32,14 @@ if ($myset > 0) {
     $submit = 'hidden';
 }
 
-$targetTime = addTurn($me->getVar('lastrefresh'), $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
+$lastRefresh = $db->queryFirstField(
+    'SELECT %b FROM %b WHERE %b = %i',
+    GeneralAccessLogColumn::lastRefresh->value,
+    TableName::generalAccessLog->value,
+    GeneralAccessLogColumn::generalID->value, $generalID
+);
+
+$targetTime = addTurn($lastRefresh, $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
 if ($gameStor->turntime <= $gameStor->opentime) {
     //서버 가오픈시 할 수 있는 행동
     if ($me->getNPCType() == 0 && $me->getNationID() == 0) {

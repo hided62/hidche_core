@@ -1030,7 +1030,7 @@ class General implements iAction
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'betray',
             'recent_war', 'last_turn', 'myset',
-            'specage', 'specage2', 'con', 'connect', 'aux', 'lastrefresh', 'permission', 'penalty',
+            'specage', 'specage2', 'con', 'connect', 'aux', 'permission', 'penalty',
         ];
 
         if ($reqColumns === null) {

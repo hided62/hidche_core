@@ -39,7 +39,7 @@ class BuildNationCandidate extends \sammo\BaseAPI
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->cacheValues(['opentime', 'turntime']);
 
-    $general = $db->queryFirstRow('SELECT no,name,nation,owner_name,npc,lastrefresh FROM general WHERE owner=%i', $userID);
+    $general = $db->queryFirstRow('SELECT no,name,nation,owner_name,npc FROM general WHERE owner=%i', $userID);
 
     if (!$general) {
       return '장수가 없습니다';

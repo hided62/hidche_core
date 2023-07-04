@@ -58,7 +58,6 @@ enum GeneralColumn: string{
 	case recent_war = 'recent_war';
 	case makelimit = 'makelimit';
 	case killturn = 'killturn';
-	case lastrefresh = 'lastrefresh';
 	case ip = 'ip';
 	case block = 'block';
 	case dedlevel = 'dedlevel';

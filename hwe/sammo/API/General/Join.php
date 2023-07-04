@@ -8,6 +8,7 @@ use sammo\Auction;
 use sammo\CityConst;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\GameUnitConst;
@@ -414,7 +415,6 @@ class Join extends \sammo\BaseAPI
             'officer_level' => 0,
             'turntime' => $turntime,
             'killturn' => 6,
-            'lastrefresh' => $now,
             'crewtype' => GameUnitConst::DEFAULT_CREWTYPE,
             'makelimit' => 0,
             'betray' => $betray,
@@ -427,6 +427,12 @@ class Join extends \sammo\BaseAPI
             'special2' => $special2
         ]);
         $generalID = $db->insertId();
+        $db->insert('general_access_log', [
+            GeneralAccessLogColumn::generalID->value => $generalID,
+            GeneralAccessLogColumn::userID->value => $userID,
+            GeneralAccessLogColumn::nationID->value => 1,
+            GeneralAccessLogColumn::lastRefresh->value => $now,
+        ]);
 
         if($blockCustomGeneralName){
             //XXX: 클래스가 이게 맞나?

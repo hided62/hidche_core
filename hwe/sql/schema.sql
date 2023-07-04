@@ -54,7 +54,6 @@ CREATE TABLE `general` (
 	`recent_war` DATETIME(6) NULL DEFAULT NULL,
 	`makelimit` INT(2) NULL DEFAULT '0',
 	`killturn` INT(3) NULL DEFAULT NULL,
-	`lastrefresh` DATETIME NULL DEFAULT NULL,
 	`ip` VARCHAR(40) NULL DEFAULT '',
 	`block` INT(1) NULL DEFAULT '0',
 	`dedlevel` INT(2) NULL DEFAULT '0',
@@ -86,7 +85,6 @@ CREATE TABLE `general` (
 	INDEX `officer_level` (`nation`, `officer_level`),
 	INDEX `officer_city` (`officer_city`, `officer_level`),
 	INDEX `name` (`name`),
-	INDEX `last_refresh` (`lastrefresh`),
 	CONSTRAINT `json1` CHECK (json_valid(`last_turn`)),
 	CONSTRAINT `json2` CHECK (json_valid(`aux`)),
 	CONSTRAINT `json3` CHECK (json_valid(`penalty`))
