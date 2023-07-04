@@ -20,7 +20,8 @@ class GeneralAccessLog extends \LDTO\DTO
     public ?int $userID,
 
     #[RawName('nation_id')]
-    public int $nationID,
+    #[NullIsUndefined]
+    public ?int $nationID,
 
     #[RawName('last_refresh')]
     #[Convert(DateTimeConverter::class)]
@@ -28,7 +29,7 @@ class GeneralAccessLog extends \LDTO\DTO
 
     #[RawName('last_connect')]
     #[Convert(DateTimeConverter::class)]
-    public \DateTimeImmutable $lastConnect,
+    public ?\DateTimeImmutable $lastConnect,
 
     #[RawName('login_total')]
     public int $loginTotal,
