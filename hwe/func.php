@@ -1028,22 +1028,30 @@ function increaseRefresh($type = "", $cnt = 1)
         'refresh' => $db->sqleval('refresh + %i', $cnt)
     ], 'owner=%i', $userID);
 
-    $date = date('Y_m_d H:i:s');
-    $date2 = substr($date, 0, 10);
-    $online = getOnlineNum();
-    file_put_contents(
-        __DIR__ . "/logs/" . UniqueConst::$serverID . "/_{$date2}_refresh.txt",
-        sprintf(
-            "%s, %s, %s, %s, %s, %d\n",
-            $date,
-            $session->userName,
-            $session->generalName,
-            $session->ip,
-            $type,
-            $online
-        ),
-        FILE_APPEND
-    );
+    $serverPath = __DIR__;
+
+    $serverID = UniqueConst::$serverID;
+    $logPath = "{$serverPath}/logs/{$serverID}/api_log.db";
+
+    $logDB = FileDB::db($logPath, $serverPath. '/../f_install/sql/api_log.sql');
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'local';
+    $date = date('Y-m-d H:i:s');
+
+    $logDB->insert('api_log', [
+        'user_id' => $session->userID,
+        'ip' => $ip,
+        'date' => $date,
+        'path' => "refresh",
+        'arg' => JSON::encode([
+            'type' => $type,
+        ]),
+        'aux' => JSON::encode([
+            'generalID' => $generalID,
+            'generalName' => $session->generalName,
+            'userName' => $session->userName,
+        ]),
+    ]);
 }
 
 function updateTraffic()
