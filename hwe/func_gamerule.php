@@ -301,7 +301,6 @@ function postUpdateMonthly(RandUtil $rng)
                 WHERE g.nation = A.nation)
         +(select round(sum(dex1+dex2+dex3+dex4+dex5)/1000) from general where nation=A.nation)
         +(select round(sum(experience+dedication)/100) from general where nation=A.nation)
-        +(select round(avg(connect)) from general where nation=A.nation)
     )/10)
     as power,
     (select sum(crew) from general where nation=A.nation) as totalCrew
