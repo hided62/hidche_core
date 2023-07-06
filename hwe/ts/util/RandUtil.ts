@@ -24,7 +24,7 @@ export class RandUtil {
     }
 
     public nextBit(): boolean {
-        const view = new DataView(this.rng.nextBits(1));
+        const view = new DataView(this.rng.nextBits(1) as ArrayBufferLike);
         return view.getUint8(0) != 0;
     }
 
