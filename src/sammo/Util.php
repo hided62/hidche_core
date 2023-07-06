@@ -694,6 +694,9 @@ class Util extends \utilphp\util
         }
         //.이 들어간 경우에는 분리해서 묶어야함.
         return join(',', array_map(function($value){
+            if($value instanceof \BackedEnum){
+                $value = $value->value;
+            }
             $value = preg_replace('/\s/', '', $value);
             if(strpos($value, '.') !== false){
                 $value = explode('.', $value);
