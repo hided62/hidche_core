@@ -66,8 +66,6 @@ $sel2[$type2] = "selected";
                         <option <?= $sel[8] ?? '' ?> value=8>평무</option>
                         <option <?= $sel[9] ?? '' ?> value=9>평지</option>
                         <option <?= $sel[10] ?? '' ?> value=10>평Lv</option>
-                        <option <?= $sel[11] ?? '' ?> value=11>접속률</option>
-                        <option <?= $sel[12] ?? '' ?> value=12>단기접</option>
                         <option <?= $sel[13] ?? '' ?> value=13>보숙</option>
                         <option <?= $sel[14] ?? '' ?> value=14>궁숙</option>
                         <option <?= $sel[15] ?? '' ?> value=15>기숙</option>
@@ -105,8 +103,6 @@ $sel2[$type2] = "selected";
     <table align=center width=1600 class="tb_layout bg0">
         <tr class='bg1'>
             <td align=center>국명</td>
-            <td align=center>접률</td>
-            <td align=center>단접</td>
             <td align=center>국력</td>
             <td align=center>장수</td>
             <td align=center>속령</td>
@@ -147,8 +143,6 @@ SELECT
     A.gold,
     A.rice,
     COUNT(B.nation) AS gennum,
-    ROUND(AVG(B.connect), 1) AS connect,
-    ROUND(AVG(B.con), 1) AS con,
     ROUND(AVG(B.dex1)) AS dex1,
     ROUND(AVG(B.dex2)) AS dex2,
     ROUND(AVG(B.dex3)) AS dex3,
@@ -193,12 +187,6 @@ GROUP BY B.nation
             case 10:
                 $query .= " order by avg(B.explevel) desc";
                 break;
-            case 11:
-                $query .= " order by avg(B.connect) desc";
-                break;
-            case 12:
-                $query .= " order by avg(B.con) desc";
-                break;
             case 13:
                 $query .= " order by avg(B.dex1) desc";
                 break;
@@ -240,8 +228,6 @@ from city where nation=%i', $nation['nation']);
             echo "
     <tr>
         <td align=center style=background-color:{$nation['color']};color:" . newColor($nation['color']) . ";>{$nation['name']}</td>
-        <td align=center>&nbsp;{$nation['connect']}&nbsp;</td>
-        <td align=center>&nbsp;{$nation['con']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['power']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
