@@ -31,9 +31,6 @@ else{
   [$currentYear, $currentMonth] = [$l_year, $l_month];
 }
 
-
-$me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $userID);
-
 ?>
 <!DOCTYPE html>
 <html>

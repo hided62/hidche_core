@@ -108,7 +108,7 @@ class SendMessage extends \sammo\BaseAPI
     $unlimited = new \DateTime('9999-12-31');
 
     $db = DB::db();
-    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,permission,penalty FROM general WHERE `no`=%i', $destGeneralID);
+    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`picture`,`imgsvr`,permission,penalty FROM general WHERE `no`=%i', $destGeneralID);
 
     if (!$destUser) {
       return '존재하지 않는 유저입니다.';
@@ -160,15 +160,18 @@ class SendMessage extends \sammo\BaseAPI
     }
 
     $db = DB::db();
-    $me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,penalty,permission,belong FROM general WHERE `owner`=%i', $userID);
+    $me = $db->queryFirstRow(
+      'SELECT `no`,`name`,`nation`,`officer_level`,`refresh_score`,`picture`,`imgsvr`,penalty,permission,belong FROM `general`
+      LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE `owner`=%i', $userID
+    );
 
     if (!$me) {
       $session->logoutGame();
       return '장수가 없습니다.';
     }
 
-    $con = checkLimit($me['con']);
-    if ($con >= 2) {
+    $limitState = checkLimit($me['refresh_score']);
+    if ($limitState >= 2) {
       return '접속 제한입니다.';
     }
 

@@ -33,12 +33,15 @@ if($generalID <= 0 || $reqTo <= 0){
 
 $db = DB::db();
 
-$me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,permission,penalty from general where owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no,nation,officer_level,refresh_score,turntime,belong,permission,penalty FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 $nationID = $me['nation'];
 
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     Json::die([
         'result'=>false,
         'reason'=>'접속 제한입니다.'
@@ -61,7 +64,7 @@ if($generalID !== $targetID){
             'reason'=>'권한이 부족합니다. 수뇌부가 아니거나 사관년도가 부족합니다.'
         ]);
     }
-    
+
     if($testGeneralNationID !== $nationID){
         Json::die([
             'result'=>false,

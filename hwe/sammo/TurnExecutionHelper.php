@@ -175,7 +175,9 @@ class TurnExecutionHelper
         $general = $this->getGeneral();
         $generalID = $general->getID();
         $logger = $general->getLogger();
-        $general->setVar('con', 0);
+        $db->update('general_access_log', [
+            'refresh_score' => 0,
+        ], 'general_id=%i', $generalID);
 
         $generalName = $general->getName();
 

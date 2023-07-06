@@ -133,19 +133,19 @@ function getNationType(?string $type) {
 }
 
 
-function getRefreshScoreText($con) {
-    if($con < 50)        $conname = '안함';
-    elseif($con <   100) $conname = '무관심';
-    elseif($con <   200) $conname = '가끔';
-    elseif($con <   400) $conname = '보통';
-    elseif($con <   800) $conname = '자주';
-    elseif($con <  1600) $conname = '열심';
-    elseif($con <  3200) $conname = '중독';
-    elseif($con <  6400) $conname = '폐인';
-    elseif($con < 12800) $conname = '경고';
-    else $conname = '헐...';
+function getRefreshScoreText($score) {
+    if($score < 50)        $scoreName = '안함';
+    elseif($score <   100) $scoreName = '무관심';
+    elseif($score <   200) $scoreName = '가끔';
+    elseif($score <   400) $scoreName = '보통';
+    elseif($score <   800) $scoreName = '자주';
+    elseif($score <  1600) $scoreName = '열심';
+    elseif($score <  3200) $scoreName = '중독';
+    elseif($score <  6400) $scoreName = '폐인';
+    elseif($score < 12800) $scoreName = '경고';
+    else $scoreName = '헐...';
 
-    return $conname;
+    return $scoreName;
 }
 
 function getNationType2(?string $type) {

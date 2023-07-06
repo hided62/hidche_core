@@ -63,7 +63,7 @@ class InvaderEnding extends \sammo\Event\Action{
         $gameStor->setValue('isunited', 3);
         $logger->flush();
 
-        $gameStor->conlimit = $gameStor->conlimit * 100;
+        $gameStor->refreshLimit = $gameStor->refreshLimit * 100;
 
         $eventID = Util::array_get($env['currentEventID']);
         $db->delete('event', 'id = %i', $eventID);

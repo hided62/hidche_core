@@ -73,7 +73,7 @@ class GetRecentMessage extends \sammo\BaseAPI
 
 
     $db = DB::db();
-    $me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
+    $me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`officer_level`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
 
     if ($me === null) {
       return '장수가 사망했습니다.';

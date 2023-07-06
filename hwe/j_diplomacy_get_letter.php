@@ -16,11 +16,14 @@ $isSecretBoard = Util::getPost('isSecret', 'bool', false);
 
 increaseRefresh("외교부", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, officer_level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no, nation, officer_level, permission, refresh_score, turntime, belong, penalty FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     Json::die([
         'result'=>false,
         'reason'=>'접속 제한입니다.'
@@ -33,7 +36,7 @@ if($permission < 0){
         'result'=>false,
         'reason'=>'국가에 소속되어있지 않습니다.'
     ]);
-    
+
 }
 
 $letters = [];
@@ -83,4 +86,3 @@ Json::die([
     'myNationID'=>$me['nation'],
     'reason'=>'success'
 ]);
-

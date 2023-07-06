@@ -39,7 +39,10 @@ if (!$data || !is_array($data)) {
 
 $db = DB::db();
 
-$me = $db->queryFirstRow('SELECT no, name, npc, nation, city, officer_level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no, name, npc, nation, city, officer_level, refresh_score, turntime, belong, permission, penalty FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 
 
 $nationID = $me['nation'];

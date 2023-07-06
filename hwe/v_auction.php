@@ -12,9 +12,6 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $isResAuction = Util::getReq('type') !== 'unique';
-
-$me = $db->queryFirstRow('SELECT no, nation, officer_level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
-
 ?>
 <!DOCTYPE html>
 <html>

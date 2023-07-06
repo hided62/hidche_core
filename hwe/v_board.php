@@ -15,14 +15,7 @@ $isSecretBoard = Util::getReq('isSecret', 'bool', false);
 
 //increaseRefresh("회의실", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, officer_level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
-
-
-$con = checkLimit($me['con']);
-if ($con >= 2) {
-    printLimitMsg($me['turntime']);
-    exit();
-}
+$me = $db->queryFirstRow('SELECT no, nation, officer_level, permission, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
 
 $permission = checkSecretPermission($me);
 if ($permission < 0) {

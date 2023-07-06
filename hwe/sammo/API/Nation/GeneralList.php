@@ -146,9 +146,12 @@ class GeneralList extends \sammo\BaseAPI
         $gameStor = \sammo\KVStorage::getStorage($db, 'game_env');
         $env = $gameStor->getValues(['year', 'month', 'turntime', 'turnterm', 'autorun_user', 'killturn']);
 
-        $me = $db->queryFirstRow('SELECT con, turntime, belong, nation, officer_level, permission, penalty FROM general WHERE owner=%i', $session->getUserID());
-        $con = checkLimit($me['con']);
-        if ($con >= 2) {
+        $me = $db->queryFirstRow(
+            'SELECT refresh_score, turntime, belong, nation, officer_level, permission, penalty FROM `general`
+            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $session->getUserID()
+        );
+        $limitState = checkLimit($me['refresh_score']);
+        if ($limitState >= 2) {
             return '접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다.';
         }
 

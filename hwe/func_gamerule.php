@@ -698,7 +698,7 @@ function checkEmperior()
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $admin = $gameStor->getValues(['year', 'month', 'isunited', 'conlimit']);
+    $admin = $gameStor->getValues(['year', 'month', 'isunited', 'refreshLimit']);
     if ($admin['isunited'] != 0) {
         return;
     }
@@ -760,7 +760,7 @@ function checkEmperior()
     }
 
     $gameStor->isunited = 2;
-    $gameStor->conlimit = $gameStor->conlimit * 100;
+    $gameStor->refreshLimit = $gameStor->refreshLimit * 100;
 
     foreach ($db->queryFirstColumn('SELECT no FROM general WHERE npc<2 AND age>=%i', GameConst::$minPushHallAge) as $hallGeneralNo) {
         CheckHall($hallGeneralNo);

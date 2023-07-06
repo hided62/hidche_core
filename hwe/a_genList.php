@@ -16,10 +16,13 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("장수일람", 2);
 
-$me = $db->queryFirstRow('SELECT con,turntime FROM general WHERE owner = %i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT refresh_score,turntime FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner = %i', $userID
+);
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }

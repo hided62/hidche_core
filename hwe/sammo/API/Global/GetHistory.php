@@ -148,13 +148,16 @@ class GetHistory extends \sammo\BaseAPI
       }
       increaseRefresh("연감", 1);
 
-      $me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $session->userID);
+      $me = $db->queryFirstRow(
+        'SELECT refresh_score, turntime FROM `general`
+        LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner = %i', $session->userID
+      );
       if (!$me) {
         return '장수가 사망했습니다.';
       }
 
-      $con = checkLimit($me['con']);
-      if ($con >= 2) {
+      $limitState = checkLimit($me['refresh_score']);
+      if ($limitState >= 2) {
         return templateLimitMsg($me['turntime']);
       }
     }

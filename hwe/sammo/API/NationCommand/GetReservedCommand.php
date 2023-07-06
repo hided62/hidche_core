@@ -39,12 +39,15 @@ class GetReservedCommand extends \sammo\BaseAPI
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $userID = $session->userID;
 
-        $me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
+        $me = $db->queryFirstRow(
+            'SELECT no,nation,officer_level,refresh_score,turntime,belong,penalty,permission FROM `general`
+            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+        );
 
         $nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation = %i', $me['nation']);
         $nationID = $me['nation'];
-        $con = checkLimit($me['con']);
-        if ($con >= 2) {
+        $limitState = checkLimit($me['refresh_score']);
+        if ($limitState >= 2) {
             return "접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 갱신 가능 시각 : {$me['turntime']})";
         }
 

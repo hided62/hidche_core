@@ -38,13 +38,13 @@ if ($genlist) {
 }
 switch ($btn) {
     case "전체 접속허용":
-        $db->update('general', [
-            'con' => 0
+        $db->update('general_access_log', [
+            'refresh_score' => 0
         ], true);
         break;
     case "전체 접속제한":
-        $db->update('general', [
-            'con' => 1000
+        $db->update('general_access_log', [
+            'refresh_score' => 1000
         ], true);
         break;
     case "블럭 해제":
@@ -186,14 +186,14 @@ switch ($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "접속 허용":
-        $db->update('general', [
-            'con' => 0
-        ], '`no` IN %li', $genlist);
+        $db->update('general_access_log', [
+            'refresh_score' => 0
+        ], '`general_id` IN %li', $genlist);
         break;
     case "접속 제한":
-        $db->update('general', [
-            'con' => 1000
-        ], '`no` IN %li', $genlist);
+        $db->update('general_access_log', [
+            'refresh_score' => 1000
+        ], '`general_id` IN %li', $genlist);
         break;
     case "메세지 전달":
         $text = $msg ?? '';

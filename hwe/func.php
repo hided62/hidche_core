@@ -105,10 +105,9 @@ function GetImageURL($imgsvr, $filepath = '')
 }
 
 /**
- * @param null|int $con 장수의 벌점
- * @param null|int $conlimit 최대 벌점
+ * @param null|int $refreshScore 장수의 벌점
  */
-function checkLimit($con = null)
+function checkLimit($refreshScore = null)
 {
     $session = Session::getInstance();
     if ($session->userGrade >= 4) {
@@ -118,15 +117,15 @@ function checkLimit($con = null)
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    if ($con === null) {
-        $con = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', Session::getUserID());
+    if ($refreshScore === null) {
+        $refreshScore = $db->queryFirstField('SELECT refresh_score FROM general_access_log WHERE `general_id`=%i', Session::getGeneralID());
     }
-    $conlimit = $gameStor->conlimit;
+    $refreshLimit = $gameStor->refreshLimit;
 
-    if ($con > $conlimit) {
+    if ($refreshScore > $refreshLimit) {
         return 2;
         //접속제한 90%이면 경고문구
-    } elseif ($con > $conlimit * 0.9) {
+    } elseif ($refreshScore > $refreshLimit * 0.9) {
         return 1;
     } else {
         return 0;
@@ -753,7 +752,7 @@ function generalInfo(General $generalObj)
         <td style='text-align:center;' class='bg1'><b>부대</b></td>
         <td style='text-align:center;' colspan=3>{$troopInfo}</td>
         <td style='text-align:center;' class='bg1'><b>벌점</b></td>
-        <td style='text-align:center;' colspan=5>" . getRefreshScoreText($refreshScoreTotal) . " {$refreshScoreTotal}({$generalObj->getVar('con')})</td>
+        <td style='text-align:center;' colspan=5>" . getRefreshScoreText($refreshScoreTotal) . " {$refreshScoreTotal}({$generalObj->getVar('refresh_score')})</td>
     </tr>
 </table>";
 }
@@ -1087,13 +1086,13 @@ function CheckOverhead()
     //서버정보
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    list($turnterm, $conlimit) = $gameStor->getValuesAsArray(['turnterm', 'conlimit']);
+    [$turnterm, $refreshLimit] = $gameStor->getValuesAsArray(['turnterm', 'refreshLimit']);
 
-    $con = Util::round(pow($turnterm, 0.6) * 3) * 10;
+    $nextRefreshLimit = Util::round(pow($turnterm, 0.6) * 3) * 10;
 
 
-    if ($con != $conlimit) {
-        $gameStor->conlimit = $con;
+    if ($nextRefreshLimit != $refreshLimit) {
+        $gameStor->refreshLimit = $nextRefreshLimit;
     }
 }
 

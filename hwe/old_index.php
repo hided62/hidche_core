@@ -29,7 +29,8 @@ if (!$session->isGameLoggedIn()) {
 }
 
 $me = $db->queryFirstRow(
-    'SELECT no,con,turntime,newmsg,newvote,`officer_level` from general where owner = %i',
+    'SELECT no,refresh_score,turntime,newmsg,newvote,`officer_level` FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner = %i',
     $userID
 );
 
@@ -51,8 +52,8 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
 
 $plock = boolval($db->queryFirstField('SELECT plock FROM plock WHERE `type`="GAME" LIMIT 1'));
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }
@@ -198,7 +199,7 @@ if ($lastVoteID) {
 
                 <div class="s-border-t col py-2 col-8 col-lg-4"><?= info(2) ?></div>
                 <div class="s-border-t col py-2 col-4 col-lg-2">전체 접속자 수 : <?= $gameStor->online_user_cnt ?> 명</div>
-                <div class="s-border-t col py-2 col-4 col-lg-2">턴당 갱신횟수 : <?= $gameStor->conlimit ?>회</div>
+                <div class="s-border-t col py-2 col-4 col-lg-2">턴당 갱신횟수 : <?= $gameStor->refreshLimit ?>회</div>
                 <div class="s-border-t col py-2 col-8 col-lg-4"><?= info(3) ?></div>
                 <div class="s-border-t py-2 col col-6 col-lg-4">
                     <?php if ($isTournamentActive) : ?>
@@ -367,7 +368,7 @@ if ($lastVoteID) {
             </div>
         </div>
         <?php
-        if ($con == 1) {
+        if ($limitState == 1) {
             MessageBox("접속제한이 얼마 남지 않았습니다!");
         }
         if ($me['newmsg'] == 1) {

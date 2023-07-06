@@ -109,10 +109,12 @@ class GetGeneralLog extends \sammo\BaseAPI
         $reqTo = $this->args['reqTo'] ?? null;
 
         $db = DB::db();
-        $me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,permission,penalty from general where owner=%i', $userID);
+        $me = $db->queryFirstRow(
+            'SELECT no,nation,officer_level,refresh_score,turntime,belong,permission,penalty FROM `general`
+            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID);
 
-        $con = checkLimit($me['con']);
-        if ($con >= 2) {
+        $limitState = checkLimit($me['refresh_score']);
+        if ($limitState >= 2) {
             return '접속 제한입니다.';
         }
 

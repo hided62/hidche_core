@@ -42,9 +42,12 @@ class GetBettingList extends \sammo\BaseAPI
         $bettingStor = KVStorage::getStorage($db, 'betting');
         $userID = $session->userID;
 
-        $me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
-        $con = checkLimit($me['con']);
-        if ($con >= 2) {
+        $me = $db->queryFirstRow(
+            'SELECT no,nation,officer_level,refresh_score,turntime,belong,penalty,permission FROM `general`
+            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+        );
+        $limitState = checkLimit($me['refresh_score']);
+        if ($limitState >= 2) {
             return "접속 제한중입니다.";
         }
 

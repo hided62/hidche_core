@@ -22,10 +22,13 @@ $reason = Util::getPost('reason', 'string', '');
 
 increaseRefresh("외교부", 1);
 
-$me = $db->queryFirstRow('SELECT no, name, nation, officer_level, permission, con, turntime, belong, penalty, picture, imgsvr FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no, name, nation, officer_level, permission, refresh_score, turntime, belong, penalty, picture, imgsvr FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     Json::die([
         'result'=>false,
         'reason'=>'접속 제한입니다.'

@@ -19,12 +19,15 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("암행부", 1);
 
-$me = $db->queryFirstRow('SELECT no,nation,officer_level,con,turntime,belong,permission,penalty from general where owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no,nation,officer_level,refresh_score,turntime,belong,permission,penalty FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 
 $nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation=%i', $me['nation']);
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }
@@ -45,7 +48,7 @@ $templates = new \League\Plates\Engine('templates');
 ?>
 <!DOCTYPE html>
 <html>
-<?php if ($con == 1) {
+<?php if ($limitState == 1) {
     MessageBox("접속제한이 얼마 남지 않았습니다!");
 } ?>
 

@@ -21,12 +21,15 @@ $generalID = $session->generalID;
 
 
 
-$me = $db->queryFirstRow('SELECT no,tournament,con,turntime from general where owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no,tournament,refresh_score,turntime FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id where owner=%i', $userID
+);
 
 $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'turnterm', 'develcost']);
 $turnTerm = $admin['turnterm'];
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }
@@ -107,7 +110,7 @@ if ($str3) {
 ?>
 <!DOCTYPE html>
 <html>
-<?php if ($con == 1) {
+<?php if ($limitState == 1) {
     MessageBox("접속제한이 얼마 남지 않았습니다!");
 } ?>
 

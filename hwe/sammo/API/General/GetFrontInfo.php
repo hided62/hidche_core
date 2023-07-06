@@ -174,7 +174,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       'online_nation', 'online_user_cnt',
       'year', 'month', 'startyear',
       'maxgeneral',
-      'conlimit',
+      'refreshLimit',
       'server_cnt',
     ]);
 
@@ -537,8 +537,8 @@ class GetFrontInfo extends \sammo\BaseAPI
     $nationID = $general->getNationID();
     $cityID = $general->getCityID();
 
-    $con = checkLimit($general->getVar('con'));
-    if ($con >= 2) {
+    $limitState = checkLimit($general->getVar('refresh_score') ?? 0);
+    if ($limitState >= 2) {
       return [
         'result' => false,
         'reason' => '접속 제한중입니다.',

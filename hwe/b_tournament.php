@@ -14,14 +14,16 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 increaseRefresh("토너먼트", 1);
 TurnExecutionHelper::executeAllCommand();
 
-$me = $db->queryFirstRow('select no,tournament,con,turntime from general where owner=%i', $userID);
-$generalID = $session->generalID;
+$me = $db->queryFirstRow(
+    'SELECT no,tournament,refresh_score,turntime from `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id where owner=%i', $userID
+);
 
 $admin = $gameStor->getValues(['tournament', 'phase', 'turnterm', 'tnmt_msg', 'tnmt_type', 'develcost', 'tnmt_trig']);
 $turnTerm = $admin['turnterm'];
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }
@@ -100,7 +102,7 @@ $globalBetTotal = array_sum($globalBet);
 ?>
 <!DOCTYPE html>
 <html>
-<?php if ($con == 1) {
+<?php if ($limitState == 1) {
     MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^");
 } ?>
 

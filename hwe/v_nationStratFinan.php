@@ -13,10 +13,13 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("내무부", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, officer_level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no, nation, officer_level, refresh_score, turntime, belong, permission, penalty FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }

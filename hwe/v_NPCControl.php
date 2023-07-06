@@ -15,13 +15,16 @@ $gameStor->cacheValues(['autorun_user', 'develcost']);
 increaseRefresh("NPC 정책", 1);
 
 
-$me = $db->queryFirstRow('SELECT no, npc, nation, city, officer_level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no, npc, nation, city, officer_level, refresh_score, turntime, belong, permission, penalty FROM `general`
+    LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+);
 
 $nationID = $me['nation'];
 $nation = $db->queryFirstRow('SELECT nation,level,name,color,type,gold,rice,bill,tech,rate,scout,war,secretlimit,capital FROM nation WHERE nation = %i', $nationID);
 
-$con = checkLimit($me['con']);
-if ($con >= 2) {
+$limitState = checkLimit($me['refresh_score']);
+if ($limitState >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }
