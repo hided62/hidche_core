@@ -151,8 +151,8 @@
       </span>
     </div>
     <div class="bg1">벌점</div>
-    <div class="general-connect-score">
-      {{ formatConnectScore(general.connect) }} {{ general.connect.toLocaleString() }}점({{ general.con }})
+    <div class="general-refresh-score-total">
+      {{ formatRefreshScore(general.refreshScoreTotal) }} {{ general.refreshScoreTotal.toLocaleString() }}점({{ general.refreshScore }})
     </div>
   </div>
 </template>
@@ -168,7 +168,7 @@ import { unwrap } from "@/util/unwrap";
 import type { GameConstStore } from "@/GameConstStore";
 import { formatGeneralTypeCall } from "@/utilGame/formatGeneralTypeCall";
 import { nextExpLevelRemain } from "@/utilGame/nextExpLevelRemain";
-import { formatConnectScore } from "@/utilGame/formatConnectScore";
+import { formatRefreshScore } from "@/utilGame/formatRefreshScore";
 import SammoBar from "@/components/SammoBar.vue";
 import { parseTime } from "@/util/parseTime";
 import { clamp } from "lodash-es";
@@ -341,7 +341,7 @@ watch(
   grid-column: 2 / 4;
 }
 
-.general-connect-score {
+.general-refresh-score-total {
   grid-column: 5 / 8;
 }
 </style>

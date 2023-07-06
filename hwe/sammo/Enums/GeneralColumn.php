@@ -15,8 +15,6 @@ enum GeneralColumn: string{
 	case bornyear = 'bornyear';
 	case deadyear = 'deadyear';
 	case newmsg = 'newmsg';
-	case con = 'con';
-	case connect = 'connect';
 	case picture = 'picture';
 	case imgsvr = 'imgsvr';
 	case name = 'name';

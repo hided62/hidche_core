@@ -39,7 +39,7 @@ export type PublicGeneralItem = {
     dedicationStr: string,
     officerLevelStr: string,
     killturn: number,
-    connect: number,
+    refreshScoreTotal: number,
 }
 
 
@@ -55,7 +55,7 @@ export type GeneralListResponse = {
         PublicGeneralItem['leadership'], PublicGeneralItem['lbonus'], PublicGeneralItem['strength'], PublicGeneralItem['intel'],
         PublicGeneralItem['explevel'],
         PublicGeneralItem['experienceStr'], PublicGeneralItem['dedicationStr'], PublicGeneralItem['officerLevelStr'],
-        PublicGeneralItem['killturn'], PublicGeneralItem['connect']
+        PublicGeneralItem['killturn'], PublicGeneralItem['refreshScoreTotal']
     ][],
     token?: Record<number, number>,
 }

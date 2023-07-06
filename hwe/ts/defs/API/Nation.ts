@@ -27,7 +27,7 @@ export type GeneralListItemP0 = {
   specialWar: GameObjClassKey;
   personal: GameObjClassKey;
   belong: number;
-  connect: number;
+  refreshScoreTotal: number;
 
   officerLevel: number; //권한에따라 태수,군사,시종 노출 여부가 다름
   officerLevelText: string;
@@ -46,7 +46,7 @@ export type GeneralListItemP0 = {
 };
 
 export type GeneralListItemP1 = {
-  con: number;
+  refreshScore: number;
   specage: number;
   specage2: number;
   leadership_exp: number;

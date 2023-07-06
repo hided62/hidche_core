@@ -210,7 +210,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         sort: null,
       },
       {
-        colId: "killturnAndConnect_1",
+        colId: "killturnAndRefresh_1",
         width: 70,
         hide: false,
         sort: null,
@@ -222,7 +222,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         sort: null,
       },
       {
-        colId: "connect",
+        colId: "refreshScoreTotal",
         width: 70,
         hide: true,
         sort: null,
@@ -310,7 +310,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         open: false,
       },
       {
-        groupId: "killturnAndConnect",
+        groupId: "killturnAndRefresh",
         open: true,
       },
       {
@@ -522,7 +522,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         sort: null,
       },
       {
-        colId: "killturnAndConnect_1",
+        colId: "killturnAndRefresh_1",
         width: 70,
         hide: false,
         sort: null,
@@ -534,7 +534,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         sort: null,
       },
       {
-        colId: "connect",
+        colId: "refreshScoreTotal",
         width: 70,
         hide: false,
         sort: "desc",
@@ -623,7 +623,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         open: false
       },
       {
-        groupId: "killturnAndConnect",
+        groupId: "killturnAndRefresh",
         open: true
       },
       {

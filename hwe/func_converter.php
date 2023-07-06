@@ -133,7 +133,7 @@ function getNationType(?string $type) {
 }
 
 
-function getConnect($con) {
+function getRefreshScoreText($con) {
     if($con < 50)        $conname = '안함';
     elseif($con <   100) $conname = '무관심';
     elseif($con <   200) $conname = '가끔';

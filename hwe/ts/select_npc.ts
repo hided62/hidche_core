@@ -273,7 +273,7 @@ function printGeneralList(value: GeneralListResponse) {
             dedicationStr: rawGeneral[18],
             officerLevelStr: rawGeneral[19],
             killturn: rawGeneral[20],
-            connect: rawGeneral[21],
+            refreshScoreTotal: rawGeneral[21],
             reserved: 0
         };
         if (general.npc < 2) {

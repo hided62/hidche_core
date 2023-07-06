@@ -62,7 +62,8 @@ class GeneralList extends \sammo\BaseAPI
         $session->setReadOnly();
 
 
-        $rawGeneralList = $db->queryAllLists('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,owner_name as ownerName,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,connect from general');
+        $rawGeneralList = $db->queryAllLists(
+            'SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,owner_name as ownerName,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,refresh_score_total from `general` LEFT JOIN `general_access_log` ON general.no = general_access_log.general_id');
 
         $ownerNameList = [];
         if ($gameStor->isunited) {
@@ -73,7 +74,7 @@ class GeneralList extends \sammo\BaseAPI
 
         $generalList = [];
         foreach ($rawGeneralList as $rawGeneral) {
-            [$owner, $no, $picture, $imgsvr, $npc, $age, $nation, $special, $special2, $personal, $name, $ownerName, $injury, $leadership, $strength, $intel, $experience, $dedication, $officerLevel, $killturn, $connectCnt] = $rawGeneral;
+            [$owner, $no, $picture, $imgsvr, $npc, $age, $nation, $special, $special2, $personal, $name, $ownerName, $injury, $leadership, $strength, $intel, $experience, $dedication, $officerLevel, $killturn, $refreshScoreTotal] = $rawGeneral;
 
             if (key_exists($owner, $ownerNameList)) {
                 $ownerName = $ownerNameList[$owner];
@@ -104,7 +105,7 @@ class GeneralList extends \sammo\BaseAPI
                 getDed($dedication),
                 getOfficerLevelText($officerLevel, $nationArr['level']),
                 $killturn,
-                $connectCnt
+                $refreshScoreTotal
             ];
         }
 
@@ -129,6 +130,8 @@ class GeneralList extends \sammo\BaseAPI
             'honorText',
             'dedLevelText',
             'officerLevelText',
+            'killturn',
+            'refreshScoreTotal',
         ];
 
         $result = [

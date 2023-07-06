@@ -106,7 +106,7 @@ import type { GameConstStore } from "@/GameConstStore";
 import { unwrap } from "@/util/unwrap";
 import SimpleTooltipCell from "@/gridCellRenderer/SimpleTooltipCell.vue";
 import GridTooltipCell, { type GridCellInfo } from "@/gridCellRenderer/GridTooltipCell.vue";
-import { formatConnectScore } from "@/utilGame/formatConnectScore";
+import { formatRefreshScore } from "@/utilGame/formatRefreshScore";
 import { convertSearch초성 } from "@/util/convertSearch초성";
 import { isString } from "lodash-es";
 import { formatDefenceTrain } from "@/utilGame/formatDefenceTrain";
@@ -353,7 +353,7 @@ type headerType =
   | "trainAtmos"
   | "specials"
   | "reservedCommandShort"
-  | "killturnAndConnect"
+  | "killturnAndRefresh"
   | "years"
   | "warResults";
 
@@ -1117,18 +1117,18 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       },
     ],
   },
-  killturnAndConnect: {
-    groupId: "killturnAndConnect",
+  killturnAndRefresh: {
+    groupId: "killturnAndRefresh",
     headerName: "기타",
     children: [
       {
-        colId: "killturnAndConnect",
+        colId: "killturnAndRefresh",
         headerName: "삭/벌",
         cellRenderer: ({ data }: GenValueParams) => {
           if (data === undefined) {
             return "?";
           }
-          return `${data.killturn.toLocaleString()}턴<br>${data.connect.toLocaleString()}점`;
+          return `${data.killturn.toLocaleString()}턴<br>${data.refreshScoreTotal.toLocaleString()}점`;
         },
         cellClass: rightAlignClass,
         columnGroupShow: "closed",
@@ -1149,14 +1149,14 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         columnGroupShow: "open",
       },
       {
-        colId: "connect",
+        colId: "refreshScoreTotal",
         headerName: "벌점",
-        field: "connect",
+        field: "refreshScoreTotal",
         cellRenderer: ({ data }: GenValueParams) => {
           if (data === undefined) {
             return "?";
           }
-          return `${data.connect.toLocaleString()}점<br>(${formatConnectScore(data.connect)})`;
+          return `${data.refreshScoreTotal.toLocaleString()}점<br>(${formatRefreshScore(data.refreshScoreTotal)})`;
         },
         ...sortableNumber,
         width: 70,

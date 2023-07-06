@@ -9,6 +9,7 @@ use sammo\DB;
 use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\CityColumn;
+use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\GeneralColumn;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
@@ -383,7 +384,8 @@ class GetFrontInfo extends \sammo\BaseAPI
       'specialWar' => $general->getVar(GeneralColumn::special2), // GameObjClassKey;
       'personal' => $general->getVar(GeneralColumn::personal), // GameObjClassKey;
       'belong' => $general->getVar(GeneralColumn::belong), // number;
-      'connect' => $general->getVar(GeneralColumn::connect), // number;
+
+      'refreshScoreTotal' => $general->getVar(GeneralAccessLogColumn::refreshScoreTotal), // number;
 
       'officerLevel' => $general->getVar(GeneralColumn::officer_level), // number;
       'officerLevelText' => getOfficerLevelText($general->getVar(GeneralColumn::officer_level), $rawNation['level']), // string;
@@ -400,7 +402,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       'troop' => $general->getVar(GeneralColumn::troop), // number;
       //P0 End
 
-      'con' => $general->getVar(GeneralColumn::con), // number;
+      'refreshScore' => $general->getVar(GeneralAccessLogColumn::refreshScore), // number;
       'specage' => $general->getVar(GeneralColumn::specage), // number;
       'specage2' => $general->getVar(GeneralColumn::specage2), // number;
       'leadership_exp' => $general->getVar(GeneralColumn::leadership_exp), // number;

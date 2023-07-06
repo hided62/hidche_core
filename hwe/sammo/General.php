@@ -330,7 +330,7 @@ class General implements iAction
 
     function getCrewTypeObj(): GameUnitDetail
     {
-        if($this->crewType === null) {
+        if ($this->crewType === null) {
             throw new \InvalidArgumentException('Invalid CrewType:' . $this->getVar('crewtype'));
         }
         return $this->crewType;
@@ -845,7 +845,7 @@ class General implements iAction
                 $this->increaseVar($statName, -1);
                 $result = true;
             } else if ($this->getVar($statExpName) >= $limit) {
-                if($this->getVar($statName) < GameConst::$maxLevel) {
+                if ($this->getVar($statName) < GameConst::$maxLevel) {
                     $logger->pushGeneralActionLog("<S>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
                     $this->increaseVar($statName, 1);
                 }
@@ -857,7 +857,8 @@ class General implements iAction
         return $result;
     }
 
-    protected function getActionList(): array{
+    protected function getActionList(): array
+    {
         return array_merge([
             $this->nationType,
             $this->officerLevelObj,
@@ -1024,7 +1025,7 @@ class General implements iAction
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'betray',
             'recent_war', 'last_turn', 'myset',
-            'specage', 'specage2', 'con', 'connect', 'aux', 'permission', 'penalty',
+            'specage', 'specage2', 'refresh_score', 'refresh_score_total', 'aux', 'permission', 'penalty',
         ];
 
         if ($reqColumns === null) {
@@ -1034,25 +1035,36 @@ class General implements iAction
         /** @var RankColumn[] */
         $rankColumn = [];
         $subColumn = [];
+        $accessLogColumn = [];
         foreach ($reqColumns as $column) {
             if ($column instanceof RankColumn) {
                 $rankColumn[] = $column;
                 continue;
             }
-
-            $rankKey = RankColumn::tryFrom($column);
-            if ($rankKey !== null) {
-                $rankColumn[] = $rankKey;
-            } else {
-                $subColumn[] = $column;
+            if ($column instanceof GeneralAccessLogColumn) {
+                $accessLogColumn[] = $column;
+                continue;
             }
+
+
+            $enumKey = RankColumn::tryFrom($column);
+            if ($enumKey !== null) {
+                $rankColumn[] = $enumKey;
+                continue;
+            }
+            $enumKey = GeneralAccessLogColumn::tryFrom($column);
+            if ($enumKey !== null) {
+                $accessLogColumn[] = $enumKey;
+                continue;
+            }
+            $subColumn[] = $column;
         }
 
         if ($constructMode > 1) {
-            return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn];
+            return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn, $accessLogColumn];
         }
 
-        return [array_unique(array_merge($minimumColumn, $subColumn)), $rankColumn];
+        return [array_unique(array_merge($minimumColumn, $subColumn)), $rankColumn, $accessLogColumn];
     }
 
     /**
@@ -1080,20 +1092,49 @@ class General implements iAction
         /**
          * @var string[] $column
          * @var RankColumn[] $rankColumn
+         * @var GeneralAccessLogColumn[] $accessLogColumn
          */
-        [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
+        [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $constructMode);
 
         if ($generalIDList === null) {
-            $rawGenerals = Util::convertArrayToDict(
-                $db->query('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
-                'no'
-            );
+            if (!$accessLogColumn) {
+                $rawGenerals = Util::convertArrayToDict(
+                    $db->query('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
+                    'no'
+                );
+            } else {
+                $rawGenerals = Util::convertArrayToDict(
+                    $db->query(
+                        'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
+                        ON general.no = general_access_log.general_id WHERE 1',
+                        Util::formatListOfBackticks($column),
+                        Util::formatListOfBackticks($accessLogColumn)
+                    ),
+                    'no'
+                );
+            }
+
             $generalIDList = array_keys($rawGenerals);
         } else {
-            $rawGenerals = Util::convertArrayToDict(
-                $db->query('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
-                'no'
-            );
+            if(!$accessLogColumn){
+                $rawGenerals = Util::convertArrayToDict(
+                    $db->query('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
+                    'no'
+                );
+            }
+            else{
+                $rawGenerals = Util::convertArrayToDict(
+                    $db->query(
+                        'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
+                        ON general.no = general_access_log.general_id WHERE no IN %li',
+                        Util::formatListOfBackticks($column),
+                        Util::formatListOfBackticks($accessLogColumn),
+                        $generalIDList
+                    ),
+                    'no'
+                );
+            }
+
         }
 
 

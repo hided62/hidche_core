@@ -1,6 +1,6 @@
 export { calcInjury } from './calcInjury';
 export { formatCityName } from './formatCityName';
-export { formatConnectScore } from './formatConnectScore';
+export { formatRefreshScore } from './formatRefreshScore';
 export { formatDefenceTrain } from './formatDefenceTrain';
 export { formatDexLevel } from './formatDexLevel';
 export { formatGeneralTypeCall } from './formatGeneralTypeCall';

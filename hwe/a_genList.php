@@ -102,7 +102,7 @@ if ($gameStor->isunited) {
         6 => ['dedication', true],
         7 => ['officer_level', true],
         8 => ['killturn', false],
-        9 => ['connect', true],
+        9 => ['refresh_score_total', true],
         10 => ['experience', true],
         11 => ['personal', true],
         12 => ['special', true],
@@ -111,7 +111,12 @@ if ($gameStor->isunited) {
         15 => ['npc', true],
     ][$type];
 
-    $generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,connect from general order by %b %l', $orderKey, $orderDesc ? 'desc' : '');
+    $generalList = $db->query(
+        'SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,refresh_score_total
+        FROM `general` LEFT JOIN `general_access_log` ON general.no = general_access_log.general_id order by %b %l',
+        $orderKey,
+        $orderDesc ? 'desc' : ''
+    );
 
     echo "
 <table align=center width=1000 class='tb_layout bg0'>
@@ -163,7 +168,7 @@ if ($gameStor->isunited) {
             $name = $name . '<br><small>(' . $ownerNameList[$general['owner']] . ')</small>';
         }
 
-        $general['connect'] = Util::round($general['connect'], -1);
+        $general['refresh_score_total'] = Util::round($general['refresh_score_total'], -1);
 
         $imageTemp = GetImageURL($general['imgsvr']);
         echo "
@@ -192,8 +197,8 @@ if ($gameStor->isunited) {
         <td align=center>$strength</td>
         <td align=center>$intel</td>
         <td align=center>{$general['killturn']}</td>
-        <td align=center>{$general['connect']}";
-        echo "<br>【" . getConnect($general['connect']) . "】</td>
+        <td align=center>" . $general['refresh_score_total'] ?? 0;
+        echo "<br>【" . getRefreshScoreText($general['refresh_score_total'] ?? 0) . "】</td>
     </tr>";
     }
     echo "

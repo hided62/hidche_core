@@ -25,10 +25,10 @@ $online = [];
 $curonline = getOnlineNum();
 foreach ($log as $i => $value) {
     $parse = Json::decode($value);
-    if(is_array($parse) === false){
+    if (is_array($parse) === false) {
         continue;
     }
-    if(count($parse) < 5){
+    if (count($parse) < 5) {
         continue;
     }
     $date[$i]    = $parse[0];
@@ -196,16 +196,14 @@ if ($admin['maxonline'] < $curonline) {
         </tr>
         <?php
         $totalRefresh = [
-            'connect' => $db->queryFirstField('SELECT sum(`connect`) as `connect` from general'),
-            'refresh' => $db->queryFirstField('SELECT sum(`refresh`) as `refresh` from general_access_log'),
+            ...$db->queryFirstRow('SELECT sum(`refresh`) as `refresh`, sum(`refresh_score_total`) as `refresh_score_total` from general_access_log'),
             'name' => '접속자 총합'
         ];
 
         $top5Refresh = $db->query(
-            'SELECT `name`, `log`.`refresh`, `connect` FROM `general_access_log` AS `log`
-            INNER JOIN `general` ON `log`.`general_id` = `general`.`no` ORDER BY `log`.`refresh` DESC LIMIT 5');
-
-        $refresh_result = array_merge([$max_refresh], $db->query('SELECT `no`,`name`,refresh,`connect` FROM general ORDER BY refresh DESC LIMIT 5'));
+            'SELECT `name`, `log`.`refresh`, `refresh_score_total` FROM `general_access_log` AS `log`
+            INNER JOIN `general` ON `log`.`general_id` = `general`.`no` ORDER BY `log`.`refresh` DESC LIMIT 5'
+        );
 
         foreach (array_merge([$totalRefresh], $top5Refresh) as $i => $user) {
             $w = round($user['refresh'] / max(1, $max_refresh['refresh']) * 100, 1);
@@ -214,7 +212,7 @@ if ($admin['maxonline'] < $curonline) {
         ?>
             <tr>
                 <td width=98 align=center><?= $user['name'] ?></td>
-                <td width=98 align=center><?= $user['connect'] ?>(<?= $user['refresh'] ?>)</td>
+                <td width=98 align=center><?= $user['refresh_score_total'] ?>(<?= $user['refresh'] ?>)</td>
                 <td width=798>
                     <?php if ($w == 0) : ?>
                     <?php elseif ($w < 10) : ?>

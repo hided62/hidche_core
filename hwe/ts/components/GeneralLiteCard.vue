@@ -78,8 +78,8 @@
     <div>{{ general.killturn }} 턴</div>
 
     <div class="bg1">벌점</div>
-    <div class="general-connect-score">
-      {{ formatConnectScore(general.connect) }} {{ general.connect.toLocaleString() }}점
+    <div class="general-refresh-score-total">
+      {{ formatRefreshScore(general.refreshScoreTotal) }} {{ general.refreshScoreTotal.toLocaleString() }}점
     </div>
   </div>
 </template>
@@ -94,7 +94,7 @@ import type { NationStaticItem } from "@/defs";
 import { unwrap } from "@/util/unwrap";
 import type { GameConstStore } from "@/GameConstStore";
 import { formatGeneralTypeCall } from "@/utilGame/formatGeneralTypeCall";
-import { formatConnectScore } from "@/utilGame/formatConnectScore";
+import { formatRefreshScore } from "@/utilGame/formatRefreshScore";
 import { calcInjury } from "@/utilGame/calcInjury";
 import type { GameIActionInfo } from "@/defs/GameObj";
 import { isValidObjKey } from "@/utilGame/isValidObjKey";
@@ -204,7 +204,7 @@ watch(
   font-weight: bold;
 }
 
-.general-connect-score {
+.general-refresh-score-total {
   grid-column: 5 / 8;
 }
 </style>

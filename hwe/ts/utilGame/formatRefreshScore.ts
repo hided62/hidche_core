@@ -1,6 +1,6 @@
 import bs from "binary-search";
 
-const connectMap: [number, string][] = [
+const refreshScoreMap: [number, string][] = [
   [0, "안함"],
   [50, "무관심"],
   [100, "보통"],
@@ -13,11 +13,11 @@ const connectMap: [number, string][] = [
   [12800, "헐..."],
 ];
 
-export function formatConnectScore(connect: number) {
-  const idx = bs(connectMap, connect, ([key], needle) => key - needle);
+export function formatRefreshScore(refreshScore: number) {
+  const idx = bs(refreshScoreMap, refreshScore, ([key], needle) => key - needle);
   if (idx >= 0) {
-    return connectMap[idx][1] ?? "?";
+    return refreshScoreMap[idx][1] ?? "?";
   }
   const uidx = (~idx) - 1;
-  return connectMap[uidx][1];
+  return refreshScoreMap[uidx][1];
 }

@@ -97,7 +97,7 @@ if ($gameStor->isunited) {
         7 => ['gold', true],
         8 => ['rice', true],
         9 => ['crew', true],
-        10 => ['connect', true],
+        10 => ['refresh_score_total', true],
         11 => ['personal', true],
         12 => ['special', true],
         13 => ['special2', true],
@@ -105,7 +105,9 @@ if ($gameStor->isunited) {
         15 => ['npc', true],
     ][$type];
 
-    $generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc ? 'desc' : '');
+    $generalList = $db->query(
+        'SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leadership,strength,intel,experience,dedication,officer_level,killturn,refresh_score_total,gold,rice,crew,belong
+        FROM `general` LEFT JOIN `general_access_log` ON general.no = general_access_log.general_id where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc ? 'desc' : '');
 
     echo "
 <table align=center class='tb_layout bg0'>
@@ -173,8 +175,8 @@ if ($gameStor->isunited) {
         <td align=center>" . displayCharInfo($general['personal']) . "</td>
         <td align=center>" . displaySpecialDomesticInfo($general['special']) . " / " . displaySpecialWarInfo($general['special2']) . "</td>
         <td align=center>{$general['belong']}</td>
-        <td align=center>{$general['connect']}";
-        echo "<br>(" . getConnect($general['connect']) . ")</td>
+        <td align=center>". $general['refresh_score_total'] ?? 0;
+        echo "<br>(" . getRefreshScoreText($general['refresh_score_total'] ?? 0) . ")</td>
     </tr>";
     }
     echo "

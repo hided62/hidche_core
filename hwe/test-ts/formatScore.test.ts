@@ -1,48 +1,48 @@
 import chai, { assert } from "chai";
 import _ from "lodash-es";
-import { formatConnectScore } from "../ts/utilGame/formatConnectScore";
+import { formatRefreshScore } from "../ts/utilGame/formatRefreshScore";
 import { formatDexLevel } from "../ts/utilGame/formatDexLevel";
 import { formatDefenceTrain } from "../ts/utilGame/formatDefenceTrain";
 import { formatHonor } from "../ts/utilGame/formatHonor";
 
-describe("formatConnectScore", () => {
-  it("connectScoreEqual", () => {
-    assert.equal(formatConnectScore(0), "안함");
-    assert.equal(formatConnectScore(50), "무관심");
-    assert.equal(formatConnectScore(100), "보통");
-    assert.equal(formatConnectScore(200), "가끔");
-    assert.equal(formatConnectScore(400), "자주");
-    assert.equal(formatConnectScore(800), "열심");
-    assert.equal(formatConnectScore(1600), "중독");
-    assert.equal(formatConnectScore(3200), "폐인");
-    assert.equal(formatConnectScore(6400), "경고");
-    assert.equal(formatConnectScore(12800), "헐...");
+describe("formatRefreshScore", () => {
+  it("refreshScoreEqual", () => {
+    assert.equal(formatRefreshScore(0), "안함");
+    assert.equal(formatRefreshScore(50), "무관심");
+    assert.equal(formatRefreshScore(100), "보통");
+    assert.equal(formatRefreshScore(200), "가끔");
+    assert.equal(formatRefreshScore(400), "자주");
+    assert.equal(formatRefreshScore(800), "열심");
+    assert.equal(formatRefreshScore(1600), "중독");
+    assert.equal(formatRefreshScore(3200), "폐인");
+    assert.equal(formatRefreshScore(6400), "경고");
+    assert.equal(formatRefreshScore(12800), "헐...");
   });
 
-  it("connectScore+1", () => {
-    assert.equal(formatConnectScore(1), "안함");
-    assert.equal(formatConnectScore(51), "무관심");
-    assert.equal(formatConnectScore(101), "보통");
-    assert.equal(formatConnectScore(201), "가끔");
-    assert.equal(formatConnectScore(401), "자주");
-    assert.equal(formatConnectScore(801), "열심");
-    assert.equal(formatConnectScore(1601), "중독");
-    assert.equal(formatConnectScore(3201), "폐인");
-    assert.equal(formatConnectScore(6401), "경고");
-    assert.equal(formatConnectScore(12801), "헐...");
+  it("refreshScore+1", () => {
+    assert.equal(formatRefreshScore(1), "안함");
+    assert.equal(formatRefreshScore(51), "무관심");
+    assert.equal(formatRefreshScore(101), "보통");
+    assert.equal(formatRefreshScore(201), "가끔");
+    assert.equal(formatRefreshScore(401), "자주");
+    assert.equal(formatRefreshScore(801), "열심");
+    assert.equal(formatRefreshScore(1601), "중독");
+    assert.equal(formatRefreshScore(3201), "폐인");
+    assert.equal(formatRefreshScore(6401), "경고");
+    assert.equal(formatRefreshScore(12801), "헐...");
   });
 
-  it("connectScoreF-1", () => {
-    assert.equal(formatConnectScore(49), "안함");
-    assert.equal(formatConnectScore(99), "무관심");
-    assert.equal(formatConnectScore(199), "보통");
-    assert.equal(formatConnectScore(399), "가끔");
-    assert.equal(formatConnectScore(799), "자주");
-    assert.equal(formatConnectScore(1599), "열심");
-    assert.equal(formatConnectScore(3199), "중독");
-    assert.equal(formatConnectScore(6399), "폐인");
-    assert.equal(formatConnectScore(11799), "경고");
-    assert.equal(formatConnectScore(20000), "헐...");
+  it("refreshScoreF-1", () => {
+    assert.equal(formatRefreshScore(49), "안함");
+    assert.equal(formatRefreshScore(99), "무관심");
+    assert.equal(formatRefreshScore(199), "보통");
+    assert.equal(formatRefreshScore(399), "가끔");
+    assert.equal(formatRefreshScore(799), "자주");
+    assert.equal(formatRefreshScore(1599), "열심");
+    assert.equal(formatRefreshScore(3199), "중독");
+    assert.equal(formatRefreshScore(6399), "폐인");
+    assert.equal(formatRefreshScore(11799), "경고");
+    assert.equal(formatRefreshScore(20000), "헐...");
   });
 });
 

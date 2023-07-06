@@ -202,8 +202,10 @@ function preUpdateMonthly()
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     //접률감소, 건국제한-1
+    $db->update('general_access_log', [
+        'refresh_score_total' => $db->sqleval('floor(refresh_score_total*0.99)'),
+    ], true);
     $db->update('general', [
-        'connect' => $db->sqleval('floor(connect*0.99)'),
         'makelimit' => $db->sqleval('greatest(0, makelimit - 1)'),
     ], true);
     //전략제한-1, 외교제한-1, 세율동기화

@@ -44,12 +44,10 @@ class GeneralList extends \sammo\BaseAPI
         'special2' => 0,
         'personal' => 0,
         'belong' => 0,
-        'connect' => 0,
 
         'troop' => 0,
         'city' => 0,
 
-        'con' => 1,
         'specage' => 0,
         'specage2' => 0,
         'leadership_exp' => 1,
@@ -82,6 +80,11 @@ class GeneralList extends \sammo\BaseAPI
 
 
         'owner_name' => 9, //안씀.
+
+
+        //acessLog
+        'refresh_score_total' => 0,
+        'refresh_score' => 1,
 
         //RANK
         'warnum' => 1,
@@ -156,9 +159,18 @@ class GeneralList extends \sammo\BaseAPI
 
 
 
-        [$queryColumns, $rankColumns] = General::mergeQueryColumn(array_keys(static::$viewColumns), 1);
+        [$queryColumns, $rankColumns, $accessLogColumns] = General::mergeQueryColumn(array_keys(static::$viewColumns), 1);
 
-        $rawGeneralList = Util::convertArrayToDict($db->query('SELECT %l from general WHERE nation = %i ORDER BY turntime ASC', Util::formatListOfBackticks($queryColumns), $nationID), 'no');
+        $rawGeneralList = Util::convertArrayToDict(
+            $db->query(
+                'SELECT %l, %l from `general` LEFT JOIN general_access_log
+                ON `general`.`no` = general_access_log.general_id WHERE nation = %i ORDER BY turntime ASC',
+                Util::formatListOfBackticks($queryColumns),
+                Util::formatListOfBackticks($accessLogColumns),
+                $nationID
+            ),
+            'no'
+        );
 
         /** @var ArrayObject[] */
         $troops = [];
@@ -179,19 +191,19 @@ class GeneralList extends \sammo\BaseAPI
         if ($this->permission >= 1 || count($troops)) {
             $reservedCommandTargetGeneralIDList = [];
 
-            if($this->permission >= 1){
+            if ($this->permission >= 1) {
                 foreach ($rawGeneralList as $rawGeneral) {
                     if ($rawGeneral['npc'] < 2) {
                         $reservedCommandTargetGeneralIDList[$rawGeneral['no']] = $rawGeneral['no'];
                     }
                 }
             }
-            foreach($troops as $troop){
+            foreach ($troops as $troop) {
                 $reservedCommandTargetGeneralIDList[$troop['id']] = $troop['id'];
             }
 
 
-            if($reservedCommandTargetGeneralIDList){
+            if ($reservedCommandTargetGeneralIDList) {
                 $rawTurnList = $db->query(
                     'SELECT general_id, turn_idx, action, arg, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id asc, turn_idx asc',
                     array_values($reservedCommandTargetGeneralIDList)
@@ -278,11 +290,11 @@ class GeneralList extends \sammo\BaseAPI
             $resultColumns[$column] = $column;
         }
 
-        foreach ($troops as $troop){
+        foreach ($troops as $troop) {
             $troopLeaderID = $troop['id'];
-            $troop['reservedCommand'] = array_map(function($turnObj){
+            $troop['reservedCommand'] = array_map(function ($turnObj) {
                 $brief = $turnObj['brief'];
-                if($brief == '집합'){
+                if ($brief == '집합') {
                     return $brief;
                 }
                 return '-';
