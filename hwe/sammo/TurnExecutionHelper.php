@@ -196,6 +196,8 @@ class TurnExecutionHelper
                 $general->setVar('owner', 0);
                 $general->setVar('defence_train', 80);
                 $general->setVar('owner_name', null);
+
+                $db->delete('general_access_log', 'general_id=%i', $generalID);
             } else {
                 $general->applyDB($db);
                 $general->kill($db);

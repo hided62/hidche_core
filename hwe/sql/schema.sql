@@ -11,8 +11,6 @@ CREATE TABLE `general` (
 	`bornyear` INT(3) NULL DEFAULT '180',
 	`deadyear` INT(3) NULL DEFAULT '300',
 	`newmsg` INT(1) NULL DEFAULT '0',
-	`con` INT(6) NOT NULL DEFAULT '0',
-	`connect` INT(6) NOT NULL DEFAULT '0',
 	`picture` VARCHAR(40) NOT NULL,
 	`imgsvr` INT(1) NOT NULL DEFAULT '0',
 	`name` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
