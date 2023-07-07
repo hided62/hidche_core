@@ -17,6 +17,7 @@ use function \sammo\tryUniqueItemLottery;
 use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 
 class che_장수대상임관 extends Command\GeneralCommand{
@@ -83,7 +84,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
     protected function initWithArg()
     {
         $destGeneralID = $this->arg['destGeneralID'];
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], GeneralQueryMode::Core);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->destGeneralObj->getVar('nation'), ['gennum', 'scout']);
 

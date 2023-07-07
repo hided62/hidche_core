@@ -21,6 +21,7 @@ use function \sammo\cutTurn;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 
 class che_발령 extends Command\NationCommand
 {
@@ -71,7 +72,7 @@ class che_발령 extends Command\NationCommand
     {
         $this->setDestCity($this->arg['destCityID']);
 
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
 
         if ($this->arg['destGeneralID'] == $this->getGeneral()->getID()) {

@@ -15,6 +15,7 @@ use \sammo\{
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Event\Action;
 
 class che_필사즉생 extends Command\NationCommand{
@@ -94,7 +95,7 @@ class che_필사즉생 extends Command\NationCommand{
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동하였습니다.";
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach(General::createGeneralObjListFromDB($targetGeneralList, ['train', 'atmos'], 1) as $targetGeneral){
+        foreach(General::createGeneralObjListFromDB($targetGeneralList, ['train', 'atmos'], GeneralQueryMode::Lite) as $targetGeneral){
             $targetGeneral->getLogger()->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             if($targetGeneral->getVar('train') < 100){
                 $targetGeneral->setVar('train', 100);

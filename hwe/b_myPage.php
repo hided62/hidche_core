@@ -3,6 +3,7 @@
 namespace sammo;
 
 use sammo\Enums\GeneralAccessLogColumn;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\TableName;
 
 include "lib.php";
@@ -23,7 +24,7 @@ $gameStor->cacheValues(['turntime', 'opentime', 'autorun_user', 'npcmode']);
 
 increaseRefresh("내정보", 1);
 
-$me = General::createGeneralObjFromDB($generalID);
+$me = General::createGeneralObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
 
 $myset = $me->getVar('myset');
 if ($myset > 0) {

@@ -10,6 +10,7 @@ use sammo\DTO\AuctionBidItem;
 use sammo\DTO\AuctionInfo;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\AuctionType;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 use sammo\InheritancePointManager;
 use sammo\TimeUtil;
@@ -76,7 +77,7 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
     $inheritMgr = InheritancePointManager::getInstance();
     //preveious라서 column을 최대한 비울 수 있다.
     $remainPoint = $inheritMgr->getInheritancePoint(
-      General::createGeneralObjFromDB($generalID, ['owner'], 0),
+      General::createGeneralObjFromDB($generalID, ['owner'], GeneralQueryMode::Core),
       InheritanceKey::previous
     );
 

@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralQueryMode;
 use sammo\GameConst;
 use sammo\General;
 use sammo\Json;
@@ -112,7 +113,7 @@ class GetReservedCommand extends \sammo\BaseAPI
             ];
         }
 
-        $generalObj = General::createGeneralObjFromDB($session->generalID);
+        $generalObj = General::createGeneralObjFromDB($session->generalID, null, GeneralQueryMode::FullWithoutIAction);
 
 
         return [

@@ -7,6 +7,7 @@ use Ds\Set;
 use sammo\Enums\AuctionType;
 use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\GeneralColumn;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 
@@ -1323,7 +1324,7 @@ function CheckHall($no)
         ["betrate", 'calc'],
     ];
 
-    $generalObj = General::createGeneralObjFromDB($no, null, 2);
+    $generalObj = General::createGeneralObjFromDB($no);
 
     $ttw = $generalObj->getRankVar(RankColumn::ttw);
     $ttd = $generalObj->getRankVar(RankColumn::ttd);
@@ -1720,7 +1721,7 @@ function deleteNation(General $lord, bool $applyDB): array
             $lordID
         ),
         ['npc', 'owner', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'],
-        1
+        GeneralQueryMode::Lite,
     );
     $nationGeneralList[$lordID] = $lord;
 

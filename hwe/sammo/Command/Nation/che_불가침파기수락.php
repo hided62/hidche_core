@@ -20,6 +20,7 @@ use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 use sammo\RandUtil;
 
 class che_불가침파기수락 extends Command\NationCommand
@@ -77,7 +78,7 @@ class che_불가침파기수락 extends Command\NationCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], [], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID']);
 

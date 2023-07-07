@@ -5,6 +5,7 @@ namespace sammo\API\Nation;
 use ArrayObject;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralQueryMode;
 use sammo\General;
 use sammo\Session;
 use sammo\Util;
@@ -164,7 +165,7 @@ class GeneralList extends \sammo\BaseAPI
 
 
 
-        [$queryColumns, $rankColumns, $accessLogColumns] = General::mergeQueryColumn(array_keys(static::$viewColumns), 1);
+        [$queryColumns, $rankColumns, $accessLogColumns] = General::mergeQueryColumn(array_keys(static::$viewColumns), GeneralQueryMode::Lite);
 
         $rawGeneralList = Util::convertArrayToDict(
             $db->query(

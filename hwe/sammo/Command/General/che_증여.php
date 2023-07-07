@@ -15,6 +15,7 @@ use \sammo\Command;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 
 use function sammo\tryUniqueItemLottery;
 
@@ -86,7 +87,7 @@ class che_증여 extends Command\GeneralCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'nation'], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'nation'], GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
 
         $this->fullConditionConstraints = [

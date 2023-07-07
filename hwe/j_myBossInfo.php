@@ -1,6 +1,7 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\MessageType;
 
 include "lib.php";
@@ -50,7 +51,7 @@ else{
         'troop','officer_level','npc','picture','imgsvr',
         'permission','penalty','belong', 'crewtype',
         'experience', 'dedication', 'betray', 'dedlevel', 'explevel', 'makelimit', 'aux',
-    ], 1);
+    ], GeneralQueryMode::Lite);
 
     if($general instanceof DummyGeneral){
         Json::die([

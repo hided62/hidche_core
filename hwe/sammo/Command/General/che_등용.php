@@ -21,7 +21,7 @@ use function \sammo\getNationStaticInfo;
 use function sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\ConstraintHelper;
-
+use sammo\Enums\GeneralQueryMode;
 
 class che_등용 extends Command\GeneralCommand
 {
@@ -77,7 +77,7 @@ class che_등용 extends Command\GeneralCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation', 'experience', 'dedication'], 0);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation', 'experience', 'dedication'], GeneralQueryMode::Core);
         $this->setDestGeneral($destGeneral);
 
         [$reqGold, $reqRice] = $this->getCost();

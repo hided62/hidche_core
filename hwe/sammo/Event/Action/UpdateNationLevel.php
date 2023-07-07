@@ -5,6 +5,7 @@ namespace sammo\Event\Action;
 use sammo\ActionLogger;
 use sammo\CityConst;
 use sammo\DB;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 use sammo\GameConst;
 use sammo\General;
@@ -139,7 +140,7 @@ class UpdateNationLevel extends \sammo\Event\Action
             $nation['nation'],
             $targetKillTurn
           );
-          $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong', 'npc', 'aux'], 2);
+          $nationGenList = General::createGeneralObjListFromDB($nationGenIDList, ['belong', 'npc', 'aux']);
           $chiefID = null;
 
           $uniqueLotteryWeightList = [];
@@ -214,7 +215,7 @@ class UpdateNationLevel extends \sammo\Event\Action
           }
 
           if ($chiefID) {
-            $chiefObj = General::createGeneralObjFromDB($chiefID, ['belong', 'npc', 'aux'], 2);
+            $chiefObj = General::createGeneralObjFromDB($chiefID, ['belong', 'npc', 'aux'], GeneralQueryMode::Lite);
             $chiefObj->increaseInheritancePoint(InheritanceKey::unifier, 250 * $levelDiff);
             $chiefObj->applyDB($db);
           }

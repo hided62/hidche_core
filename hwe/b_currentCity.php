@@ -211,7 +211,7 @@ $templates = new \League\Plates\Engine('templates');
                                 $city['trade'] = "- ";
                             }
 
-                            $dbColumns = General::mergeQueryColumn(['npc', 'defence_train', 'no', 'picture', 'imgsvr', 'name', 'injury', 'leadership', 'strength', 'intel', 'officer_level', 'nation', 'crewtype', 'crew', 'train', 'atmos'], 2)[0];
+                            $dbColumns = General::mergeQueryColumn(['npc', 'defence_train', 'no', 'picture', 'imgsvr', 'name', 'injury', 'leadership', 'strength', 'intel', 'officer_level', 'nation', 'crewtype', 'crew', 'train', 'atmos'])[0];
                             if ($showDetailedInfo) {
                                 $generals = $db->query(
                                     'SELECT %l from general where city=%i order by turntime',

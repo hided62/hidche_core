@@ -15,6 +15,7 @@ use \sammo\Command;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 
 class che_포상 extends Command\NationCommand
 {
@@ -81,7 +82,7 @@ class che_포상 extends Command\NationCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'nation'], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'nation'], GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
 
         if($this->arg['destGeneralID'] == $this->getGeneral()->getID()){
@@ -168,7 +169,7 @@ class che_포상 extends Command\NationCommand
         ], 'nation=%i', $nationID);
 
         $josaUl = JosaUtil::pick($amountText, '을');
-        
+
         $destGeneral->getLogger()->pushGeneralActionLog("{$resName} <C>{$amountText}</>{$josaUl} 포상으로 받았습니다.", ActionLogger::PLAIN);
         $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게 {$resName} <C>$amountText</>{$josaUl} 수여했습니다. <1>$date</>");
 

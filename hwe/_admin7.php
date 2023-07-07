@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\Enums\GeneralQueryMode;
+
 include "lib.php";
 include "func.php";
 
@@ -74,7 +76,7 @@ if (!$gen) {
     $gen = $generalBasicList[0]['no'];
 }
 
-$generalObj = General::createGeneralObjFromDB($gen);
+$generalObj = General::createGeneralObjFromDB($gen, null, GeneralQueryMode::FullWithAccessLog);
 
 ?>
 <!DOCTYPE html>

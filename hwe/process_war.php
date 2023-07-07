@@ -3,6 +3,7 @@
 namespace sammo;
 
 use sammo\Enums\EventTarget;
+use sammo\Enums\GeneralQueryMode;
 
 function processWar(string $warSeed, General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity)
 {
@@ -37,7 +38,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
     $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $startYear);
 
     $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
-    $defenderGeneralList = General::createGeneralObjListFromDB($defenderIDList, null, 2);
+    $defenderGeneralList = General::createGeneralObjListFromDB($defenderIDList, null);
 
     /** @var WarUnit[] */
     $defenderList = [];
@@ -595,7 +596,7 @@ function ConquerCity(array $admin, General $general, array $city)
 
         $lord = new General($db->queryFirstRow(
             'SELECT %l FROM general WHERE nation = %i AND officer_level = %i LIMIT 1',
-            Util::formatListOfBackticks(General::mergeQueryColumn(['npc', 'gold', 'rice', 'experience', 'explevel', 'belong', 'dedication', 'dedlevel', 'aux'], 1)[0]),
+            Util::formatListOfBackticks(General::mergeQueryColumn(['npc', 'gold', 'rice', 'experience', 'explevel', 'belong', 'dedication', 'dedlevel', 'aux'], GeneralQueryMode::Lite)[0]),
             $defenderNationID,
             12
         ), null, null, $city, $loseNation, $year, $month, false);

@@ -19,6 +19,7 @@ use function \sammo\GetImageURL;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\MessageType;
 
 class che_몰수 extends Command\NationCommand
@@ -91,7 +92,7 @@ class che_몰수 extends Command\NationCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'npc', 'nation', 'imgsvr', 'picture'], 1);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'npc', 'nation', 'imgsvr', 'picture'], GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
 
         $env = $this->env;
@@ -206,7 +207,7 @@ class che_몰수 extends Command\NationCommand
         ], 'nation=%i', $nationID);
 
         $josaUl = JosaUtil::pick($amountText, '을');
-        
+
         $destGeneral->getLogger()->pushGeneralActionLog("{$resName} {$amountText}{$josaUl} 몰수 당했습니다.", ActionLogger::PLAIN);
         $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게서 {$resName} <C>$amountText</>{$josaUl} 몰수했습니다. <1>$date</>");
 

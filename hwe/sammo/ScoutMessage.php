@@ -65,7 +65,7 @@ class ScoutMessage extends Message{
         }
 
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        $general = \sammo\General::createGeneralObjFromDB($receiverID, null, 2);
+        $general = \sammo\General::createGeneralObjFromDB($receiverID);
 
         $logger = $general->getLogger();
 

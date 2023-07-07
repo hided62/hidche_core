@@ -3514,7 +3514,7 @@ class GeneralAI
         $db = DB::db();
         $generalIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation = %i AND no != %i', $nationID, $this->general->getID());
 
-        $nationGenerals = General::createGeneralObjListFromDB($generalIDList, null, 2);
+        $nationGenerals = General::createGeneralObjListFromDB($generalIDList);
 
         $lastWar = \PHP_INT_MAX;
         foreach ($nationGenerals as $nationGeneral) {

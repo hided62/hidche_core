@@ -5,6 +5,7 @@ namespace sammo;
 use Ds\Map;
 use sammo\DTO\BettingInfo;
 use sammo\DTO\BettingItem;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\RankColumn;
 
 class Betting
@@ -401,7 +402,7 @@ class Betting
                 $userLogger->flush();
             }
         } else {
-            $generalList = General::createGeneralObjListFromDB(array_unique(Util::squeezeFromArray($rewardList, 'generalID')), ['gold', 'npc', 'betgold'], 1);
+            $generalList = General::createGeneralObjListFromDB(array_unique(Util::squeezeFromArray($rewardList, 'generalID')), ['gold', 'npc', 'betgold'], GeneralQueryMode::Core);
             foreach ($rewardList as $rewardItem) {
                 $gambler = $generalList[$rewardItem['generalID']];
                 $reward = Util::round($rewardItem['amount']);

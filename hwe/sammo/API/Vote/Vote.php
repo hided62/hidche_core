@@ -6,6 +6,7 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralQueryMode;
 use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
@@ -105,7 +106,7 @@ class Vote extends \sammo\BaseAPI
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $voteReward = $gameStor->getValue('develcost') * 5;
 
-        $general = General::createGeneralObjFromDB($generalID, ['gold', 'horse', 'weapon', 'book', 'item', 'npc', 'imgsvr', 'picture', 'aux'], 2);
+        $general = General::createGeneralObjFromDB($generalID, ['gold', 'horse', 'weapon', 'book', 'item', 'npc', 'imgsvr', 'picture', 'aux'], GeneralQueryMode::Lite);
         $general->increaseVar('gold', $voteReward);
         $uniqueRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
             UniqueConst::$hiddenSeed,

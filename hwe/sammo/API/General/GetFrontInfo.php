@@ -11,6 +11,7 @@ use sammo\Enums\APIRecoveryType;
 use sammo\Enums\CityColumn;
 use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\GeneralColumn;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
@@ -533,7 +534,7 @@ class GetFrontInfo extends \sammo\BaseAPI
   {
     $generalID = $session->generalID;
     //NOTE: 이 경우 staticNation 정보를 조회한다.
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createGeneralObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
     $nationID = $general->getNationID();
     $cityID = $general->getCityID();
 

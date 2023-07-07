@@ -1,6 +1,7 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\MessageType;
 
 class DiplomaticMessage extends Message{
@@ -75,7 +76,7 @@ class DiplomaticMessage extends Message{
 
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
-        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Core);
 
         $commandObj = buildNationCommandClass('che_불가침수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
@@ -99,7 +100,7 @@ class DiplomaticMessage extends Message{
     protected function cancelNA(){
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
-        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Core);
 
         $commandObj = buildNationCommandClass('che_불가침파기수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
@@ -121,7 +122,7 @@ class DiplomaticMessage extends Message{
     protected function stopWar(){
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
-        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], 1);
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Core);
 
         $commandObj = buildNationCommandClass('che_종전수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,

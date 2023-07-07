@@ -5,6 +5,7 @@ namespace sammo;
 use Ds\Map;
 use sammo\Command\GeneralCommand;
 use sammo\Enums\GeneralAccessLogColumn;
+use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 use sammo\WarUnitTrigger as WarUnitTrigger;
@@ -1031,7 +1032,7 @@ class General implements iAction
         return $caller;
     }
 
-    static public function mergeQueryColumn(?array $reqColumns = null, int $constructMode = 2): array
+    static public function mergeQueryColumn(?array $reqColumns = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): array
     {
         $minimumColumn = ['no', 'name', 'npc', 'city', 'nation', 'officer_level', 'officer_city'];
         $defaultEventColumn = [
@@ -1055,7 +1056,17 @@ class General implements iAction
         ];
 
         if ($reqColumns === null) {
-            return [$fullColumn, RankColumn::cases(), $fullAcessLogColumn];
+            switch ($queryMode) {
+                case GeneralQueryMode::Core:
+                    return [$minimumColumn, [], []];
+                case GeneralQueryMode::Lite:
+                    return [$defaultEventColumn, [], []];
+                case GeneralQueryMode::FullWithoutIAction:
+                case GeneralQueryMode::Full:
+                    return [$fullColumn, RankColumn::cases(), []];
+                case GeneralQueryMode::FullWithAccessLog:
+                    return [$fullColumn, RankColumn::cases(), $fullAcessLogColumn];
+            }
         }
 
         /** @var RankColumn[] */
@@ -1086,28 +1097,35 @@ class General implements iAction
             $subColumn[] = $column;
         }
 
-        if ($constructMode > 1) {
-            return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn, $accessLogColumn];
+        switch ($queryMode) {
+            case GeneralQueryMode::Core:
+            case GeneralQueryMode::Lite:
+                return [array_unique(array_merge($minimumColumn, $subColumn)), $rankColumn, $accessLogColumn];
+            case GeneralQueryMode::FullWithoutIAction:
+            case GeneralQueryMode::Full:
+                return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn, $accessLogColumn];
+            case GeneralQueryMode::FullWithAccessLog:
+                return [array_unique(array_merge($fullColumn, $subColumn)), $rankColumn, array_unique(array_merge($fullAcessLogColumn, $accessLogColumn))];
+            default:
+                 throw new \RuntimeException('invalid query mode');
         }
-
-        return [array_unique(array_merge($minimumColumn, $subColumn)), $rankColumn, $accessLogColumn];
     }
 
     /**
      * @param ?int[] $generalIDList
      * @param null|array<string|RankColumn> $column
-     * @param int $constructMode
+     * @param GeneralQueryMode $queryMode
      * @return \sammo\General[]
      * @throws MustNotBeReachedException
      */
-    static public function createGeneralObjListFromDB(?array $generalIDList, ?array $column = null, int $constructMode = 2): array
+    static public function createGeneralObjListFromDB(?array $generalIDList, ?array $column = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): array
     {
         if ($generalIDList === []) {
             return [];
         }
 
         $db = DB::db();
-        if ($constructMode > 0) {
+        if ($queryMode->value > 0) {
             $gameStor = KVStorage::getStorage($db, 'game_env');
             [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
         } else {
@@ -1120,7 +1138,7 @@ class General implements iAction
          * @var RankColumn[] $rankColumn
          * @var GeneralAccessLogColumn[] $accessLogColumn
          */
-        [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $constructMode);
+        [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $queryMode);
 
         if ($generalIDList === null) {
             $rawGenerals = Util::convertArrayToDict(
@@ -1175,22 +1193,22 @@ class General implements iAction
         $result = [];
         foreach ($generalIDList as $generalID) {
             if (!key_exists($generalID, $rawGenerals)) {
-                $result[$generalID] = new DummyGeneral($constructMode > 0);
+                $result[$generalID] = new DummyGeneral($queryMode->value > 0);
                 continue;
             }
             if ($rawRanks->hasKey($generalID) && $rawRanks[$generalID]->count() !== count($rankColumn)) {
                 throw new \RuntimeException('column의 수가 일치하지 않음 : ' . $generalID);
             }
-            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID] ?? null, $rawAccessLogs[$generalID] ?? null, null, null, $year, $month, $constructMode > 1);
+            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID] ?? null, $rawAccessLogs[$generalID] ?? null, null, null, $year, $month, $queryMode->value >= GeneralQueryMode::Full);
         }
 
         return $result;
     }
 
-    static public function createGeneralObjFromDB(int $generalID, ?array $column = null, int $constructMode = 2): self
+    static public function createGeneralObjFromDB(int $generalID, ?array $column = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): self
     {
         $db = DB::db();
-        if ($constructMode > 0) {
+        if ($queryMode->value > 0) {
             $gameStor = KVStorage::getStorage($db, 'game_env');
             [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
         } else {
@@ -1203,7 +1221,7 @@ class General implements iAction
          * @var RankColumn[] $rankColumn
          * @var GeneralAccessLogCoumn[] $accessLogColumn
          */
-        [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $constructMode);
+        [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $queryMode);
 
         /** @var Map<GeneralAccessLog,int>|null */
         $rawAccessLog = null;
@@ -1220,20 +1238,20 @@ class General implements iAction
             );
 
             $rawAccessLog = new Map();
-            foreach($accessLogColumn as $accessLogKey) {
-                if(!key_exists($accessLogKey->value, $rawGeneral)){
+            foreach ($accessLogColumn as $accessLogKey) {
+                if (!key_exists($accessLogKey->value, $rawGeneral)) {
                     continue;
                 }
                 $rawAccessLog[$accessLogKey] = $rawGeneral[$accessLogKey->value];
                 unset($rawGeneral[$accessLogKey->value]);
             }
-            if($rawAccessLog->count() === 0){
+            if ($rawAccessLog->count() === 0) {
                 $rawAccessLog = null;
             }
         }
 
         if (!$rawGeneral) {
-            return new DummyGeneral($constructMode > 0);
+            return new DummyGeneral($queryMode->value > 0);
         }
 
         $rawRankValues = new Map();
@@ -1250,7 +1268,7 @@ class General implements iAction
         }
 
 
-        $general = new static($rawGeneral, $rawRankValues, $rawAccessLog, null, null, $year, $month, $constructMode > 1);
+        $general = new static($rawGeneral, $rawRankValues, $rawAccessLog, null, null, $year, $month, $queryMode->value >= GeneralQueryMode::Full);
 
         return $general;
     }
