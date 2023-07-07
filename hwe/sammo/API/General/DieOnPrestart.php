@@ -42,7 +42,7 @@ class DieOnPrestart extends \sammo\BaseAPI
     $lastRefresh = $db->queryFirstField(
       'SELECT %b FROM general_access_log WHERE %b = %i',
       GeneralAccessLogColumn::lastRefresh->value,
-      GeneralAccessLogColumn::generalID,
+      GeneralAccessLogColumn::generalID->value,
       $general['no']
     );
 
