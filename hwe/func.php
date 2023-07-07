@@ -643,7 +643,7 @@ function generalInfo(General $generalObj)
         $age = "<font color=red>{$age} 세</font>";
     }
 
-    $refreshScoreTotal = round($generalObj->getVar(GeneralAccessLogColumn::refreshScoreTotal) ?? 0, -1);
+    $refreshScoreTotal = round($generalObj->getAccessLogVar(GeneralAccessLogColumn::refreshScoreTotal) ?? 0, -1);
     $specialDomestic = $generalObj->getVar('special') === GameConst::$defaultSpecialDomestic
         ? "{$generalObj->getVar('specage')}세"
         : "<font color=limegreen>" . displayiActionObjInfo($generalObj->getSpecialDomestic()) . "</font>";
@@ -752,7 +752,7 @@ function generalInfo(General $generalObj)
         <td style='text-align:center;' class='bg1'><b>부대</b></td>
         <td style='text-align:center;' colspan=3>{$troopInfo}</td>
         <td style='text-align:center;' class='bg1'><b>벌점</b></td>
-        <td style='text-align:center;' colspan=5>" . getRefreshScoreText($refreshScoreTotal) . " {$refreshScoreTotal}({$generalObj->getVar('refresh_score')})</td>
+        <td style='text-align:center;' colspan=5>" . getRefreshScoreText($refreshScoreTotal) . " {$refreshScoreTotal}({$generalObj->getAccessLogVar(GeneralAccessLogColumn::refreshScore)})</td>
     </tr>
 </table>";
 }
