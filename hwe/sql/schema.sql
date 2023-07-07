@@ -103,11 +103,11 @@ CREATE TABLE `general_access_log` (
 	`refresh_score` INT(11) NOT NULL DEFAULT '0',
 	`refresh_score_total` INT(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
-	UNIQUE INDEX `general_id` (`general_id`),
+	UNIQUE INDEX `general_id` (`general_id`)
 )
 COLLATE='utf8mb4_general_ci'
-ENGINE=Aria
-;
+ENGINE=Aria;
+
 ##############################
 ## 국가 테이블
 ##############################
