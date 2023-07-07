@@ -206,7 +206,7 @@ if ($admin['maxonline'] < $curonline) {
         );
 
         foreach (array_merge([$totalRefresh], $top5Refresh) as $i => $user) {
-            $w = round($user['refresh'] / max(1, $max_refresh['refresh']) * 100, 1);
+            $w = round($user['refresh'] / max(1, $totalRefresh['refresh']) * 100, 1);
             $w2 = round(100 - $w, 1);
             $color = getTrafficColor($w);
         ?>
