@@ -62,7 +62,7 @@ class GetReservedCommand extends \sammo\BaseAPI
 
         $generals = [];
         foreach ($db->query('SELECT no,name,turntime,npc,city,nation,officer_level FROM general WHERE nation = %i AND officer_level >= 5', $nationID) as $rawGeneral) {
-            $generals[$rawGeneral['officer_level']] = new General($rawGeneral, null, null, null, $year, $month, false);
+            $generals[$rawGeneral['officer_level']] = new General($rawGeneral, null, null, null, null, $year, $month, false);
         }
 
         $nationTurnList = [];

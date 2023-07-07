@@ -108,7 +108,7 @@ class GeneralList extends \sammo\BaseAPI
                 getDed($dedication),
                 getOfficerLevelText($officerLevel, $nationArr['level']),
                 $killturn,
-                $refreshScoreTotal
+                $refreshScoreTotal ?: 0,
             ];
         }
 

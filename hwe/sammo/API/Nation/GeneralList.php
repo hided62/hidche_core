@@ -82,7 +82,7 @@ class GeneralList extends \sammo\BaseAPI
         'owner_name' => 9, //안씀.
 
 
-        //acessLog
+        //accessLog
         'refresh_score_total' => 0,
         'refresh_score' => 1,
 
@@ -98,6 +98,8 @@ class GeneralList extends \sammo\BaseAPI
     static $columnRemap = [
         'special' => 'specialDomestic',
         'special2' => 'specialWar',
+        'refresh_score_total' => 'refreshScoreTotal',
+        'refresh_score' => 'refreshScore',
         'aux' => null,
     ];
 

@@ -42,7 +42,7 @@
                 class="form-check-label"
                 :for="`column-type-${colID}`"
                 :style="{
-                  textDecoration: validColumns.has(colID) ? undefined : 'line-through',
+                  textDecoration: validColumns.has(colID) ? undefined : 'line-through'
                 }"
               >
                 {{ col.getColDef().headerName }}
@@ -57,7 +57,7 @@
   <div
     class="component-general-list"
     :style="{
-      height: props.height === 'fill' ? '100%' : props.height === 'static' ? undefined : `${props.height}px`,
+      height: props.height === 'fill' ? '100%' : props.height === 'static' ? undefined : `${props.height}px`
     }"
   >
     <AgGridVue
@@ -92,7 +92,7 @@ import {
   GridReadyEvent,
   CellClickedEvent,
   IRowNode,
-  NumberFilter,
+  NumberFilter
 } from "ag-grid-community";
 import { ProvidedColumnGroup } from "ag-grid-community";
 import { getNPCColor } from "@/utilGame";
@@ -100,7 +100,7 @@ import type {
   ValueGetterParams,
   ValueFormatterFunc,
   ValueGetterFunc,
-  ValueFormatterParams,
+  ValueFormatterParams
 } from "ag-grid-community/dist/lib/entities/colDef";
 import type { GameConstStore } from "@/GameConstStore";
 import { unwrap } from "@/util/unwrap";
@@ -117,36 +117,36 @@ import { defaultDisplaySetting, type GridDisplaySetting } from "@/defs/gridDefs"
 const props = defineProps({
   list: {
     type: Array as PropType<GeneralListItem[]>,
-    required: true,
+    required: true
   },
   troops: {
     type: Object as PropType<Record<number, string>>,
-    required: true,
+    required: true
   },
   height: {
     type: String as PropType<"static" | "fill" | number | `${number}px` | `${number}%`>,
     required: false,
-    default: "static",
+    default: "static"
   },
   env: {
     type: Object as PropType<GeneralListResponse["env"]>,
-    required: true,
+    required: true
   },
   toolbarID: {
     type: String,
     required: false,
-    default: undefined,
+    default: undefined
   },
   role: {
     type: String,
     required: false,
-    default: "generic",
+    default: "generic"
   },
   availableGeneralClick: {
     type: Boolean,
     required: false,
-    default: true,
-  },
+    default: true
+  }
 });
 
 const emit = defineEmits<{
@@ -271,7 +271,7 @@ watch(
       displaySettingsKey,
       JSON.stringify({
         version: displaySettingVersion,
-        settings,
+        settings
       })
     );
     console.log("저장!", Array.from(newSettings.keys()));
@@ -305,7 +305,7 @@ function storeDisplaySetting() {
 
   const setting: GridDisplaySetting = {
     column: columnApi.value.getColumnState(),
-    columnGroup: columnApi.value.getColumnGroupState(),
+    columnGroup: columnApi.value.getColumnGroupState()
   };
 
   displaySettings.value.set(nickName, setting);
@@ -485,14 +485,14 @@ const sortableNumber: Omit<GenColDef, "colId" | "headerName"> = {
   comparator: (a, b, _a, _b, _desc) => a - b,
   sortingOrder: ["desc", "asc", null],
   filter: NumberFilter,
-  cellClass: rightAlignClass,
+  cellClass: rightAlignClass
 };
 const defaultColDef = ref<ColDef>({
   resizable: true,
   headerClass: "default-cell-header",
   cellClass: centerCellClass,
   floatingFilter: true,
-  width: 80,
+  width: 80
 });
 const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>>>({
   icon: {
@@ -510,7 +510,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     },
     pinned: "left",
     cellClass: [props.availableGeneralClick ? "clickable-cell" : "", ...defaultCellClass],
-    lockPosition: true,
+    lockPosition: true
   },
   name: {
     headerName: "장수명",
@@ -524,7 +524,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     cellStyle: (val: CellClassParams<GeneralListItem>) => {
       const gen = unwrap(val.data);
       const style: StyleValue = {
-        color: getNPCColor(gen.npc),
+        color: getNPCColor(gen.npc)
       };
       return style as CellStyle;
     },
@@ -546,7 +546,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     cellClass: [props.availableGeneralClick ? "clickable-cell" : "", ...defaultCellClass],
     filter: true,
     hide: false,
-    lockVisible: true,
+    lockVisible: true
   },
   //npc: { headerName: "NPC", colId: "npc", field: "npc" },
   stat: {
@@ -562,7 +562,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           const gen = unwrap(obj.data);
           return `${gen.leadership}|${gen.strength}|${gen.intel}`;
         },
-        columnGroupShow: "closed",
+        columnGroupShow: "closed"
       },
       {
         colId: "leadership",
@@ -571,7 +571,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         columnGroupShow: "open",
         width: 60,
-        type: "numericColumn",
+        type: "numericColumn"
       },
       {
         colId: "strength",
@@ -579,7 +579,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "strength",
         ...sortableNumber,
         columnGroupShow: "open",
-        width: 60,
+        width: 60
       },
       {
         colId: "intel",
@@ -587,9 +587,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "intel",
         ...sortableNumber,
         columnGroupShow: "open",
-        width: 60,
-      },
-    ],
+        width: 60
+      }
+    ]
   },
 
   officerLevel: {
@@ -620,7 +620,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
     },
     filter: true,
     cellClass: centerCellClass,
-    width: 70,
+    width: 70
   },
   expDedLv: {
     headerName: "명성/계급",
@@ -637,7 +637,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
             return "";
           }
           return `Lv ${data.explevel}<br>${data.dedLevelText}`;
-        },
+        }
       },
       {
         colId: "explevel",
@@ -652,7 +652,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         ...sortableNumber,
         cellClass: centerCellClass,
-        columnGroupShow: "open",
+        columnGroupShow: "open"
       },
       {
         colId: "dedlevel",
@@ -667,14 +667,14 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         sortable: true,
         comparator: (a, b, _a, _b, _desc) => {
-          return (_a.data?.dedlevel??0) - (_b.data?.dedlevel??0);
+          return (_a.data?.dedlevel ?? 0) - (_b.data?.dedlevel ?? 0);
         },
         sortingOrder: ["desc", "asc", null],
         filter: true,
         cellClass: centerCellClass,
-        columnGroupShow: "open",
-      },
-    ],
+        columnGroupShow: "open"
+      }
+    ]
   },
   goldRice: {
     headerName: "자금",
@@ -704,7 +704,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           const lhsAmount = lhs.gold + lhs.rice;
           const rhsAmount = rhs.gold + rhs.rice;
           return lhsAmount - rhsAmount;
-        },
+        }
       },
       {
         colId: "gold",
@@ -713,7 +713,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter("금"),
         width: 70,
-        columnGroupShow: "open",
+        columnGroupShow: "open"
       },
       {
         colId: "rice",
@@ -722,9 +722,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter("쌀"),
         width: 70,
-        columnGroupShow: "open",
-      },
-    ],
+        columnGroupShow: "open"
+      }
+    ]
   },
   city: {
     colId: "city",
@@ -744,7 +744,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         return "";
       }
       return convertSearch초성(gameConstStore.value.cityConst[data.city].name);
-    },
+    }
   },
   troop: {
     colId: "troop",
@@ -795,7 +795,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       const [troopName, troopLeader] = troopInfo;
       const cityName = gameConstStore.value.cityConst[troopLeader.city].name;
       return convertSearch초성(`${troopName}$${cityName}`);
-    },
+    }
   },
   crewtypeAndCrew: {
     groupId: "crewtypeAndCrew",
@@ -809,11 +809,11 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           cells: ((): GridCellInfo[][] => {
             return [
               [{ target: "crewtype", iActionMap: gameConstStore.value.iActionInfo.crewtype }],
-              [{ target: "crew", converter: (value) => [`${value.crew.toLocaleString()}명`, undefined] }],
+              [{ target: "crew", converter: (value) => [`${value.crew.toLocaleString()}명`, undefined] }]
             ];
-          })(),
+          })()
         },
-        columnGroupShow: "closed",
+        columnGroupShow: "closed"
       },
       {
         colId: "crewtype",
@@ -821,7 +821,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "crewtype",
         cellRenderer: SimpleTooltipCell,
         cellRendererParams: {
-          iActionMap: gameConstStore.value.iActionInfo.crewtype,
+          iActionMap: gameConstStore.value.iActionInfo.crewtype
         },
         sortable: true,
         columnGroupShow: "open",
@@ -832,7 +832,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           }
           const name = gameConstStore.value.iActionInfo.crewtype[data.crewtype].name;
           return convertSearch초성(name);
-        },
+        }
       },
       {
         colId: "crew",
@@ -841,9 +841,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter("명"),
         width: 70,
-        columnGroupShow: "open",
-      },
-    ],
+        columnGroupShow: "open"
+      }
+    ]
   },
   trainAtmos: {
     groupId: "trainAtmos",
@@ -859,7 +859,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           }
           return `${data.train}<br>${data.atmos}`;
         },
-        columnGroupShow: "closed",
+        columnGroupShow: "closed"
       },
       {
         colId: "train",
@@ -868,7 +868,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter(),
         width: 70,
-        columnGroupShow: "open",
+        columnGroupShow: "open"
       },
       {
         colId: "atmos",
@@ -877,7 +877,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter(),
         width: 70,
-        columnGroupShow: "open",
+        columnGroupShow: "open"
       },
       {
         colId: "defence_train",
@@ -886,9 +886,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         sortable: true,
         sortingOrder: ["desc", "asc", null],
         valueFormatter: (value: GenValueParams<number>) => formatDefenceTrain(value.value),
-        width: 50,
-      },
-    ],
+        width: 50
+      }
+    ]
   },
   specials: {
     groupId: "specials",
@@ -904,13 +904,13 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
               [{ target: "personal", iActionMap: gameConstStore.value.iActionInfo.personality }],
               [
                 { target: "specialDomestic", iActionMap: gameConstStore.value.iActionInfo.specialDomestic },
-                { target: "specialWar", iActionMap: gameConstStore.value.iActionInfo.specialWar },
-              ],
+                { target: "specialWar", iActionMap: gameConstStore.value.iActionInfo.specialWar }
+              ]
             ];
-          })(),
+          })()
         },
         width: 80,
-        columnGroupShow: "closed",
+        columnGroupShow: "closed"
       },
       {
         colId: "personal",
@@ -918,7 +918,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "personal",
         cellRenderer: SimpleTooltipCell,
         cellRendererParams: {
-          iActionMap: gameConstStore.value.iActionInfo.personality,
+          iActionMap: gameConstStore.value.iActionInfo.personality
         },
         width: 60,
         sortable: true,
@@ -927,7 +927,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         filterValueGetter: ({ data }) => {
           const name = gameConstStore.value.iActionInfo.personality[data.personal].name;
           return convertSearch초성(name);
-        },
+        }
       },
       {
         colId: "specialDomestic",
@@ -935,7 +935,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "specialDomestic",
         cellRenderer: SimpleTooltipCell,
         cellRendererParams: {
-          iActionMap: gameConstStore.value.iActionInfo.specialDomestic,
+          iActionMap: gameConstStore.value.iActionInfo.specialDomestic
         },
         width: 60,
         sortable: true,
@@ -944,7 +944,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         filterValueGetter: ({ data }) => {
           const name = gameConstStore.value.iActionInfo.specialDomestic[data.specialDomestic].name;
           return convertSearch초성(name);
-        },
+        }
       },
       {
         colId: "specialWar",
@@ -952,7 +952,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         field: "specialWar",
         cellRenderer: SimpleTooltipCell,
         cellRendererParams: {
-          iActionMap: gameConstStore.value.iActionInfo.specialWar,
+          iActionMap: gameConstStore.value.iActionInfo.specialWar
         },
         width: 60,
         sortable: true,
@@ -961,9 +961,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         filterValueGetter: ({ data }) => {
           const name = gameConstStore.value.iActionInfo.specialWar[data.specialWar].name;
           return convertSearch초성(name);
-        },
-      },
-    ],
+        }
+      }
+    ]
   },
   reservedCommandShort: {
     groupId: "reservedCommandShort",
@@ -1005,9 +1005,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         cellStyle: {
           lineHeight: "1em",
-          fontSize: "0.85em",
+          fontSize: "0.85em"
         },
-        columnGroupShow: "closed",
+        columnGroupShow: "closed"
       },
       {
         colId: "reservedCommand",
@@ -1042,11 +1042,11 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         cellStyle: {
           lineHeight: "1em",
-          fontSize: "0.85em",
+          fontSize: "0.85em"
         },
-        columnGroupShow: "open",
-      },
-    ],
+        columnGroupShow: "open"
+      }
+    ]
   },
   turntime: {
     colId: "turntime",
@@ -1061,7 +1061,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       return turntime.substring(14, 19);
     },
     sortable: true,
-    cellClass: centerCellClass,
+    cellClass: centerCellClass
   },
   recent_war: {
     colId: "recent_war",
@@ -1076,7 +1076,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       return turntime.substring(14, 19);
     },
     sortable: true,
-    cellClass: centerCellClass,
+    cellClass: centerCellClass
   },
   years: {
     groupId: "years",
@@ -1093,7 +1093,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           return `${data.age}세<br>${data.belong}년`;
         },
         cellClass: centerCellClass,
-        columnGroupShow: "closed",
+        columnGroupShow: "closed"
       },
       {
         colId: "age",
@@ -1103,7 +1103,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         valueFormatter: (v: GenValueParams<number>) => `${v.value}세`,
         width: 60,
         cellClass: centerCellClass,
-        columnGroupShow: "open",
+        columnGroupShow: "open"
       },
       {
         colId: "belong",
@@ -1113,9 +1113,9 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         valueFormatter: (v: GenValueParams<number>) => `${v.value}년`,
         width: 60,
         cellClass: centerCellClass,
-        columnGroupShow: "open",
-      },
-    ],
+        columnGroupShow: "open"
+      }
+    ]
   },
   killturnAndRefresh: {
     groupId: "killturnAndRefresh",
@@ -1128,11 +1128,11 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           if (data === undefined) {
             return "?";
           }
-          return `${data.killturn.toLocaleString()}턴<br>${data.refreshScoreTotal.toLocaleString()}점`;
+          return `${data.killturn.toLocaleString()}턴<br>${(data.refreshScoreTotal ?? 0).toLocaleString()}점`;
         },
         cellClass: rightAlignClass,
         columnGroupShow: "closed",
-        width: 70,
+        width: 70
       },
       {
         colId: "killturn",
@@ -1146,7 +1146,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         ...sortableNumber,
         width: 70,
-        columnGroupShow: "open",
+        columnGroupShow: "open"
       },
       {
         colId: "refreshScoreTotal",
@@ -1156,13 +1156,15 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
           if (data === undefined) {
             return "?";
           }
-          return `${data.refreshScoreTotal.toLocaleString()}점<br>(${formatRefreshScore(data.refreshScoreTotal)})`;
+          return `${(data.refreshScoreTotal ?? 0).toLocaleString()}점<br>(${formatRefreshScore(
+            data.refreshScoreTotal
+          )})`;
         },
         ...sortableNumber,
         width: 70,
-        columnGroupShow: "open",
-      },
-    ],
+        columnGroupShow: "open"
+      }
+    ]
   },
   warResults: {
     groupId: "warResults",
@@ -1180,7 +1182,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         cellClass: centerCellClass,
         columnGroupShow: "closed",
-        width: 90,
+        width: 90
       },
       {
         colId: "warnum",
@@ -1189,7 +1191,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter("전"),
         columnGroupShow: "open",
-        width: 60,
+        width: 60
       },
       {
         colId: "killnum",
@@ -1198,7 +1200,7 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         ...sortableNumber,
         valueFormatter: numberFormatter("승"),
         columnGroupShow: "open",
-        width: 60,
+        width: 60
       },
       {
         colId: "killcrew",
@@ -1214,10 +1216,10 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
         },
         valueFormatter: numberFormatter("%"),
         columnGroupShow: "open",
-        width: 60,
-      },
-    ],
-  },
+        width: 60
+      }
+    ]
+  }
 });
 const columnDefs = ref([...Object.values(columnRawDefs.value)]);
 watch(columnRawDefs, (val) => {

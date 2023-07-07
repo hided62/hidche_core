@@ -270,7 +270,7 @@ if (key_exists('inheritBuff', $rawAttacker)) {
 }
 $rawAttacker['aux'] = Json::encode($rawAttacker['aux']);
 $rawAttacker['owner'] = 0;
-$attackerGeneral = new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month);
+$attackerGeneral = new General($rawAttacker, extractRankVar($rawAttacker), null, $rawAttackerCity, $rawAttackerNation, $year, $month);
 $attacker = new WarUnitGeneral(
     $tmpRNG,
     $attackerGeneral,
@@ -308,7 +308,7 @@ foreach ($rawDefenderList as $idx => $rawDefenderGeneral) {
     $rawDefenderGeneral['aux'] = Json::encode($rawDefenderGeneral['aux']);
     $rawDefenderGeneral['owner'] = 0;
 
-    $defenderGeneral = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), $rawDefenderCity, $rawAttackerNation, $year, $month, true);
+    $defenderGeneral = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), null, $rawDefenderCity, $rawAttackerNation, $year, $month, true);
 
     $defenderList[] = new WarUnitGeneral(
         $tmpRNG,
@@ -382,7 +382,7 @@ function simulateBattle(
 
     $warRng = new RandUtil(new LiteHashDRBG($warSeed));
 
-    $attackerGeneral = new General($rawAttacker, extractRankVar($rawAttacker), $rawAttackerCity, $rawAttackerNation, $year, $month);
+    $attackerGeneral = new General($rawAttacker, extractRankVar($rawAttacker), null, $rawAttackerCity, $rawAttackerNation, $year, $month);
     $attacker = new WarUnitGeneral(
         $warRng,
         $attackerGeneral,
@@ -395,7 +395,7 @@ function simulateBattle(
     $defenderList = [];
 
     foreach ($rawDefenderList as $rawDefenderGeneral) {
-        $defenderGeneral = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), $rawDefenderCity, $rawAttackerNation, $year, $month, true);
+        $defenderGeneral = new General($rawDefenderGeneral, extractRankVar($rawDefenderGeneral), null, $rawDefenderCity, $rawAttackerNation, $year, $month, true);
 
         $defenderList[] = new WarUnitGeneral(
             $warRng,

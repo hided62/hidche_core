@@ -88,7 +88,7 @@ class ProcessIncome extends \sammo\Event\Action
 
       // 각 장수들에게 지급
       foreach ($generalRawList as $rawGeneral) {
-        $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
+        $generalObj = new General($rawGeneral, null, null, null, null, $year, $month, false);
         $gold = Util::round(getBill($generalObj->getVar('dedication')) * $ratio);
         $generalObj->increaseVar('gold', $gold);
 
@@ -169,7 +169,7 @@ class ProcessIncome extends \sammo\Event\Action
 
       // 각 장수들에게 지급
       foreach ($generalRawList as $rawGeneral) {
-        $generalObj = new General($rawGeneral, null, null, null, $year, $month, false);
+        $generalObj = new General($rawGeneral, null, null, null, null, $year, $month, false);
         $rice = Util::round(getBill($generalObj->getVar('dedication')) * $ratio);
         $generalObj->increaseVar('rice', $rice);
 

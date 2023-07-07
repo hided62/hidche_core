@@ -1026,12 +1026,16 @@ function increaseRefresh($type = "", $cnt = 1)
         GeneralAccessLogColumn::generalID->value => $generalID,
         GeneralAccessLogColumn::userID->value => $userID,
         GeneralAccessLogColumn::lastRefresh->value => $date,
-        GeneralAccessLogColumn::refreshTotal->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refreshTotal->value, $cnt),
-        GeneralAccessLogColumn::refresh->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refresh->value, $cnt),
+        GeneralAccessLogColumn::refreshTotal->value => $cnt,
+        GeneralAccessLogColumn::refresh->value => $cnt,
+        GeneralAccessLogColumn::refreshScore->value => $cnt,
+        GeneralAccessLogColumn::refreshScoreTotal->value => $cnt,
     ], [
         GeneralAccessLogColumn::lastRefresh->value => $date,
         GeneralAccessLogColumn::refreshTotal->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refreshTotal->value, $cnt),
         GeneralAccessLogColumn::refresh->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refresh->value, $cnt),
+        GeneralAccessLogColumn::refreshScore->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refreshScore->value, $cnt),
+        GeneralAccessLogColumn::refreshScoreTotal->value => $db->sqleval('%b + %i', GeneralAccessLogColumn::refreshScoreTotal->value, $cnt),
     ]);
 
     $serverPath = __DIR__;

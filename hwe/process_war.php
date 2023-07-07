@@ -598,7 +598,7 @@ function ConquerCity(array $admin, General $general, array $city)
             Util::formatListOfBackticks(General::mergeQueryColumn(['npc', 'gold', 'rice', 'experience', 'explevel', 'belong', 'dedication', 'dedlevel', 'aux'], 1)[0]),
             $defenderNationID,
             12
-        ), null, $city, $loseNation, $year, $month, false);
+        ), null, null, $city, $loseNation, $year, $month, false);
 
         $josaUl = JosaUtil::pick($defenderNationName, '을');
         $attackerLogger->pushNationalHistoryLog("<D><b>{$defenderNationName}</b></>{$josaUl} 정복");

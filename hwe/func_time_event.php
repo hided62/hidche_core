@@ -383,7 +383,7 @@ function disaster(RandUtil $rng) {
 
             $generalList = array_map(
                 function($rawGeneral) use ($city, $year, $month){
-                    return new General($rawGeneral, null, $city, null, $year, $month, false);
+                    return new General($rawGeneral, null, null, $city, null, $year, $month, false);
                 },
                 $generalListByCity[$city['city']]??[]
             );

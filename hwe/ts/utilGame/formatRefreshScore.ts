@@ -13,7 +13,8 @@ const refreshScoreMap: [number, string][] = [
   [12800, "헐..."],
 ];
 
-export function formatRefreshScore(refreshScore: number) {
+export function formatRefreshScore(refreshScore: number | null) {
+  if (!refreshScore) refreshScore = 0;
   const idx = bs(refreshScoreMap, refreshScore, ([key], needle) => key - needle);
   if (idx >= 0) {
     return refreshScoreMap[idx][1] ?? "?";

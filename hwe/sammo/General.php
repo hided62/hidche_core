@@ -24,6 +24,9 @@ class General implements iAction
     /** @var Map<RankColumn,int|float> */
     protected Map $rankVarSet;
 
+    /** @var Map<GeneralAccessLogColumn,int|float> */
+    protected ?Map $accessLogRead;
+
     /** @var \sammo\ActionLogger */
     protected $logger;
 
@@ -79,12 +82,13 @@ class General implements iAction
     /**
      * @param array $raw DB row값.
      * @param null|Map<RankColumn,int|float> $rawRank
+     * @param null|Map<GeneralAccessLogColumn,int> $rawAccessLog
      * @param null|array $city DB city 테이블의 row값
      * @param int|null $year 게임 연도
      * @param int|null $month 게임 월
      * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, officer_level 정도로 초기화 가능
      */
-    public function __construct(array $raw, ?Map $rawRank, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct = true)
+    public function __construct(array $raw, ?Map $rawRank, ?Map $rawAccessLog, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct = true)
     {
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
@@ -110,6 +114,10 @@ class General implements iAction
         } else {
             $this->rankVarRead = new Map();
         }
+
+        $this->accessLogRead = $rawAccessLog;
+
+
         $this->rankVarIncrease = new Map();
         $this->rankVarSet = new Map();
 
@@ -772,6 +780,19 @@ class General implements iAction
         return $this->rankVarRead[$key];
     }
 
+    function getAccessLogVar(GeneralAccessLogColumn $key, $defaultValue = null): int | string | null
+    {
+        if (!$this->accessLogRead) {
+            return $defaultValue;
+        }
+
+        if (!$this->accessLogRead->hasKey($key)) {
+            return $defaultValue;
+        }
+
+        return $this->accessLogRead[$key];
+    }
+
     /**
      * @param \MeekroDB $db
      */
@@ -1026,11 +1047,15 @@ class General implements iAction
             'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'betray',
             'recent_war', 'last_turn', 'myset',
-            'specage', 'specage2', 'refresh_score', 'refresh_score_total', 'aux', 'permission', 'penalty',
+            'specage', 'specage2', 'aux', 'permission', 'penalty',
+        ];
+        $fullAcessLogColumn = [
+            GeneralAccessLogColumn::refreshScore,
+            GeneralAccessLogColumn::refreshScoreTotal,
         ];
 
         if ($reqColumns === null) {
-            return [$fullColumn, RankColumn::cases()];
+            return [$fullColumn, RankColumn::cases(), $fullAcessLogColumn];
         }
 
         /** @var RankColumn[] */
@@ -1098,44 +1123,17 @@ class General implements iAction
         [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $constructMode);
 
         if ($generalIDList === null) {
-            if (!$accessLogColumn) {
-                $rawGenerals = Util::convertArrayToDict(
-                    $db->query('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
-                    'no'
-                );
-            } else {
-                $rawGenerals = Util::convertArrayToDict(
-                    $db->query(
-                        'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
-                        ON general.no = general_access_log.general_id WHERE 1',
-                        Util::formatListOfBackticks($column),
-                        Util::formatListOfBackticks($accessLogColumn)
-                    ),
-                    'no'
-                );
-            }
+            $rawGenerals = Util::convertArrayToDict(
+                $db->query('SELECT %l FROM general WHERE 1', Util::formatListOfBackticks($column)),
+                'no'
+            );
 
             $generalIDList = array_keys($rawGenerals);
         } else {
-            if(!$accessLogColumn){
-                $rawGenerals = Util::convertArrayToDict(
-                    $db->query('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
-                    'no'
-                );
-            }
-            else{
-                $rawGenerals = Util::convertArrayToDict(
-                    $db->query(
-                        'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
-                        ON general.no = general_access_log.general_id WHERE no IN %li',
-                        Util::formatListOfBackticks($column),
-                        Util::formatListOfBackticks($accessLogColumn),
-                        $generalIDList
-                    ),
-                    'no'
-                );
-            }
-
+            $rawGenerals = Util::convertArrayToDict(
+                $db->query('SELECT %l FROM general WHERE no IN %li', Util::formatListOfBackticks($column), $generalIDList),
+                'no'
+            );
         }
 
 
@@ -1157,6 +1155,23 @@ class General implements iAction
             }
         }
 
+        $rawAccessLogs = new Map();
+        if ($accessLogColumn) {
+            $rawValue = $db->query(
+                'SELECT `general_id`, %l FROM general_access_log WHERE general_id IN %li',
+                Util::formatListOfBackticks($accessLogColumn),
+                $generalIDList
+            );
+            foreach ($rawValue as $rawLog) {
+                $generalID = $rawLog['general_id'];
+                $logValue = new Map();
+                foreach ($rawLog as $key => $value) {
+                    $logValue[GeneralAccessLogColumn::from($key)] = $value;
+                }
+                $rawAccessLogs[$generalID] = $logValue;
+            }
+        }
+
         $result = [];
         foreach ($generalIDList as $generalID) {
             if (!key_exists($generalID, $rawGenerals)) {
@@ -1166,7 +1181,7 @@ class General implements iAction
             if ($rawRanks->hasKey($generalID) && $rawRanks[$generalID]->count() !== count($rankColumn)) {
                 throw new \RuntimeException('column의 수가 일치하지 않음 : ' . $generalID);
             }
-            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID] ?? null, null, null, $year, $month, $constructMode > 1);
+            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID] ?? null, $rawAccessLogs[$generalID] ?? null, null, null, $year, $month, $constructMode > 1);
         }
 
         return $result;
@@ -1186,10 +1201,37 @@ class General implements iAction
         /**
          * @var string[] $column
          * @var RankColumn[] $rankColumn
+         * @var GeneralAccessLogCoumn[] $accessLogColumn
          */
-        [$column, $rankColumn] = static::mergeQueryColumn($column, $constructMode);
+        [$column, $rankColumn, $accessLogColumn] = static::mergeQueryColumn($column, $constructMode);
 
-        $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
+        /** @var Map<GeneralAccessLog,int>|null */
+        $rawAccessLog = null;
+
+        if (!$accessLogColumn) {
+            $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
+        } else {
+            $rawGeneral = $db->queryFirstRow(
+                'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
+                    ON general.no = general_access_log.general_id WHERE no = %i',
+                Util::formatListOfBackticks($column),
+                Util::formatListOfBackticks($accessLogColumn),
+                $generalID
+            );
+
+            $rawAccessLog = new Map();
+            foreach($accessLogColumn as $accessLogKey) {
+                if(!key_exists($accessLogKey->value, $rawGeneral)){
+                    continue;
+                }
+                $rawAccessLog[$accessLogKey] = $rawGeneral[$accessLogKey->value];
+                unset($rawGeneral[$accessLogKey->value]);
+            }
+            if($rawAccessLog->count() === 0){
+                $rawAccessLog = null;
+            }
+        }
+
         if (!$rawGeneral) {
             return new DummyGeneral($constructMode > 0);
         }
@@ -1208,7 +1250,7 @@ class General implements iAction
         }
 
 
-        $general = new static($rawGeneral, $rawRankValues, null, null, $year, $month, $constructMode > 1);
+        $general = new static($rawGeneral, $rawRankValues, $rawAccessLog, null, null, $year, $month, $constructMode > 1);
 
         return $general;
     }

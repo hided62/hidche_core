@@ -79,7 +79,7 @@
 
     <div class="bg1">벌점</div>
     <div class="general-refresh-score-total">
-      {{ formatRefreshScore(general.refreshScoreTotal) }} {{ general.refreshScoreTotal.toLocaleString() }}점
+      {{ formatRefreshScore(general.refreshScoreTotal) }} {{ (general.refreshScoreTotal ?? 0).toLocaleString() }}점
     </div>
   </div>
 </template>

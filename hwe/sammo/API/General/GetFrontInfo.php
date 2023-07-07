@@ -385,7 +385,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       'personal' => $general->getVar(GeneralColumn::personal), // GameObjClassKey;
       'belong' => $general->getVar(GeneralColumn::belong), // number;
 
-      'refreshScoreTotal' => $general->getVar(GeneralAccessLogColumn::refreshScoreTotal), // number;
+      'refreshScoreTotal' => $general->getAccessLogVar(GeneralAccessLogColumn::refreshScoreTotal, 0), // number;
 
       'officerLevel' => $general->getVar(GeneralColumn::officer_level), // number;
       'officerLevelText' => getOfficerLevelText($general->getVar(GeneralColumn::officer_level), $rawNation['level']), // string;
@@ -402,7 +402,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       'troop' => $general->getVar(GeneralColumn::troop), // number;
       //P0 End
 
-      'refreshScore' => $general->getVar(GeneralAccessLogColumn::refreshScore), // number;
+      'refreshScore' => $general->getAccessLogVar(GeneralAccessLogColumn::refreshScore, 0), // number;
       'specage' => $general->getVar(GeneralColumn::specage), // number;
       'specage2' => $general->getVar(GeneralColumn::specage2), // number;
       'leadership_exp' => $general->getVar(GeneralColumn::leadership_exp), // number;
@@ -537,7 +537,7 @@ class GetFrontInfo extends \sammo\BaseAPI
     $nationID = $general->getNationID();
     $cityID = $general->getCityID();
 
-    $limitState = checkLimit($general->getVar('refresh_score') ?? 0);
+    $limitState = checkLimit($general->getAccessLogVar(GeneralAccessLogColumn::refreshScore, 0));
     if ($limitState >= 2) {
       return [
         'result' => false,
