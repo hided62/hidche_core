@@ -77,7 +77,7 @@ class che_등용 extends Command\GeneralCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation', 'experience', 'dedication'], GeneralQueryMode::Core);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation', 'experience', 'dedication'], GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
 
         [$reqGold, $reqRice] = $this->getCost();

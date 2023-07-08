@@ -76,7 +76,7 @@ class DiplomaticMessage extends Message{
 
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
-        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Core);
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Lite);
 
         $commandObj = buildNationCommandClass('che_불가침수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
@@ -100,7 +100,7 @@ class DiplomaticMessage extends Message{
     protected function cancelNA(){
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
-        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Core);
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Lite);
 
         $commandObj = buildNationCommandClass('che_불가침파기수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,
@@ -122,7 +122,7 @@ class DiplomaticMessage extends Message{
     protected function stopWar(){
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
 
-        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Core);
+        $destGeneralObj = General::createGeneralObjFromDB($this->dest->generalID, ['picture', 'imgsvr', 'aux'], GeneralQueryMode::Lite);
 
         $commandObj = buildNationCommandClass('che_종전수락', $destGeneralObj, $gameStor->getAll(true), new LastTurn(), [
             'destNationID'=>$this->src->nationID,

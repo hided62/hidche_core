@@ -84,7 +84,7 @@ class che_장수대상임관 extends Command\GeneralCommand{
     protected function initWithArg()
     {
         $destGeneralID = $this->arg['destGeneralID'];
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], GeneralQueryMode::Core);
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], GeneralQueryMode::Lite);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->destGeneralObj->getVar('nation'), ['gennum', 'scout']);
 
