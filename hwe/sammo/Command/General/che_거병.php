@@ -7,7 +7,8 @@ use \sammo\{
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    ScoutMessage
 };
 
 
@@ -177,6 +178,8 @@ class che_거병 extends Command\GeneralCommand{
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
 
         $general->applyDB($db);
+
+        ScoutMessage::invalidateAll($general->getID());
 
         return true;
     }

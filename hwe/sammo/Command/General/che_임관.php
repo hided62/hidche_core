@@ -9,7 +9,8 @@ use \sammo\{
     GameConst,
     LastTurn,
     Command,
-    KVStorage
+    KVStorage,
+    ScoutMessage
 };
 
 use function \sammo\tryUniqueItemLottery;
@@ -174,6 +175,8 @@ class che_임관 extends Command\GeneralCommand
         $general->checkStatChange();
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
+
+        ScoutMessage::invalidateAll($general->getID());
 
         return true;
     }
