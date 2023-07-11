@@ -153,6 +153,7 @@ class Message
         $db = DB::db();
         $now = new \DateTime();
         $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i AND valid_until', $messageID);
+        //FIXME: $now가 들어가야 하는데 안 들어가있는데?
         if (!$row) {
             return null;
         }
