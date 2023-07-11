@@ -77,6 +77,7 @@ class che_등용수락 extends Command\GeneralCommand{
         $this->fullConditionConstraints=[
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::ExistsDestNation(),
+            ConstraintHelper::BeNeutral(),
             ConstraintHelper::AllowJoinDestNation($relYear),
             ConstraintHelper::ReqDestNationValue('level', '국가규모', '>', 0, '방랑군에는 임관할 수 없습니다.'),
             ConstraintHelper::DifferentDestNation(),
