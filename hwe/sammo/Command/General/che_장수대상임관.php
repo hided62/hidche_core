@@ -9,8 +9,7 @@ use \sammo\{
     LastTurn,
     Command,
     Json,
-    KVStorage,
-    ScoutMessage
+    KVStorage
 };
 
 use function sammo\getAllNationStaticInfo;
@@ -173,8 +172,6 @@ class che_장수대상임관 extends Command\GeneralCommand{
         $general->checkStatChange();
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
         $general->applyDB($db);
-
-        ScoutMessage::invalidateAll($general->getID());
 
         return true;
     }

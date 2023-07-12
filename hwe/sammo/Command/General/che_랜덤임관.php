@@ -22,7 +22,8 @@ use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
 use sammo\MustNotBeReachedException;
-use sammo\ScoutMessage;
+
+
 
 class che_랜덤임관 extends Command\GeneralCommand
 {
@@ -282,8 +283,6 @@ class che_랜덤임관 extends Command\GeneralCommand
         $general->checkStatChange();
         tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general), $general, '랜덤 임관');
         $general->applyDB($db);
-
-        ScoutMessage::invalidateAll($general->getID());
 
         return true;
     }
