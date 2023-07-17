@@ -1034,7 +1034,7 @@ class General implements iAction
 
     static public function mergeQueryColumn(?array $reqColumns = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): array
     {
-        $minimumColumn = ['no', 'name', 'npc', 'city', 'nation', 'officer_level', 'officer_city'];
+        $minimumColumn = ['no', 'name', 'owner', 'npc', 'city', 'nation', 'officer_level', 'officer_city'];
         $defaultEventColumn = [
             'no', 'name', 'npc', 'owner', 'city', 'nation', 'officer_level', 'officer_city',
             'special', 'special2', 'personal',
