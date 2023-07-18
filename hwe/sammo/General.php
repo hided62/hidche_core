@@ -1099,11 +1099,12 @@ class General implements iAction
 
         switch ($queryMode) {
             case GeneralQueryMode::Core:
-            case GeneralQueryMode::Lite:
                 return [array_unique(array_merge($minimumColumn, $subColumn)), $rankColumn, $accessLogColumn];
+            case GeneralQueryMode::Lite:
+                return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn, $accessLogColumn];
             case GeneralQueryMode::FullWithoutIAction:
             case GeneralQueryMode::Full:
-                return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn, $accessLogColumn];
+                return [array_unique(array_merge($fullColumn, $subColumn)), $rankColumn, $accessLogColumn];
             case GeneralQueryMode::FullWithAccessLog:
                 return [array_unique(array_merge($fullColumn, $subColumn)), $rankColumn, array_unique(array_merge($fullAcessLogColumn, $accessLogColumn))];
             default:
