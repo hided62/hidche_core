@@ -18,7 +18,7 @@ $me = $db->queryFirstRow(
     'SELECT no,tournament,refresh_score,turntime from `general`
     LEFT JOIN general_access_log AS l ON `general`.no = l.general_id where owner=%i', $userID
 );
-
+$generalID = $me['no'];
 $admin = $gameStor->getValues(['tournament', 'phase', 'turnterm', 'tnmt_msg', 'tnmt_type', 'develcost', 'tnmt_trig']);
 $turnTerm = $admin['turnterm'];
 
