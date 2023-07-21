@@ -89,7 +89,7 @@ $db->update('general', [
     'aux'=>Json::encode($genAux)
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);
 $db->insertIgnore('general_access_log', [
-    GeneralAccessLogColumn::generalID->value => $generalID,
+    GeneralAccessLogColumn::generalID->value => $pick,
     GeneralAccessLogColumn::userID->value => $userID,
     GeneralAccessLogColumn::lastRefresh->value => $now,
 ]);
