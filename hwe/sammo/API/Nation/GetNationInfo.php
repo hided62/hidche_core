@@ -14,14 +14,6 @@ use sammo\Util;
 use sammo\Validator;
 
 use function sammo\buildNationCommandClass;
-use function sammo\checkLimit;
-use function sammo\checkSecretPermission;
-use function sammo\getBattleDetailLogMore;
-use function sammo\getBattleResultMore;
-use function sammo\getBattleResultRecent;
-use function sammo\getGeneralActionLogMore;
-use function sammo\getGeneralActionLogRecent;
-use function sammo\getGeneralHistoryLogAll;
 use function sammo\getNationStaticInfo;
 
 class GetNationInfo extends \sammo\BaseAPI
