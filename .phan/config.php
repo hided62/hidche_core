@@ -29,8 +29,6 @@ return [
         'hwe/_admin1_submit.php',
         'hwe/_admin2.php',
         'hwe/_admin2_submit.php',
-        'hwe/_admin4.php',
-        'hwe/_admin4_submit.php',
         'hwe/_admin5.php',
         'hwe/_admin5_submit.php',
         'hwe/_admin7.php',
