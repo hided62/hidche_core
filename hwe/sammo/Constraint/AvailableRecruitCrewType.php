@@ -53,7 +53,7 @@ class AvailableRecruitCrewType extends Constraint{
         }
 
         $crewType = GameUnitConst::byID($this->arg);
-        if($crewType->isValid($ownCities, $ownRegions, $year = $startyear, $tech)){
+        if($crewType->isValid($ownCities, $ownRegions, $year - $startyear, $tech)){
             return true;
         }
 
