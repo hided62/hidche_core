@@ -6,6 +6,7 @@ use Ds\Map;
 use sammo\DTO\BettingInfo;
 use sammo\DTO\BettingItem;
 use sammo\Enums\GeneralQueryMode;
+use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 
 class Betting
@@ -351,6 +352,8 @@ class Betting
 
         $db = DB::db();
 
+        $pointManager = InheritancePointManager::getInstance();
+
         if ($this->info->reqInheritancePoint) {
             /** @var Map<int,UserLogger> */
             $loggers = new Map();
@@ -362,11 +365,8 @@ class Betting
                 $userID = $rewardItem['userID'];
                 $amount = $rewardItem['amount'];
 
-                $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
-                $previousPoint = ($inheritStor->getValue('previous') ?? [0, 0])[0];
-                $nextPoint = $previousPoint + $amount;
-                $inheritStor->setValue('previous', [$nextPoint, 0]);
-                $inheritStor->invalidateCacheValue('previous'); //XXX: 실제로는 previous 값을 사용할 수 없도록 락을 걸어야 한다.
+                $nextPoint = $pointManager->increaseInheritancePointRaw($userID, InheritanceKey::previous, $amount);
+                $previousPoint = $nextPoint - $amount;//역산
 
                 $generalID = $rewardItem['generalID'];
                 $db->update('rank_data', [
