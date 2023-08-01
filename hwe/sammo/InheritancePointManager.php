@@ -220,7 +220,7 @@ class InheritancePointManager
     $inheritStor->setValue($key, [$value, $aux]);
   }
 
-  public function increaseInheritancePointRaw(int $ownerID, InheritanceKey $key, $value, $aux = null)
+  public function increaseInheritancePointRaw(int $ownerID, InheritanceKey $key, $value, $aux = null): int|float|null
   {
     if (!is_int($value) && !is_float($value)) {
       throw new \InvalidArgumentException("{$value}는 숫자가 아님");
@@ -236,7 +236,7 @@ class InheritancePointManager
 
     $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
     if ($gameStor->isunited != 0) {
-      return;
+      return null;
     }
 
     $inheritStor = KVStorage::getStorage(DB::db(), "inheritance_{$ownerID}");
@@ -248,6 +248,7 @@ class InheritancePointManager
 
     $newValue = $oldValue + $value * $multiplier;
     $inheritStor->setValue($key->value, [$newValue, $aux]);
+    return $newValue;
   }
 
   public function increaseInheritancePoint(General $general, InheritanceKey $key, $value, $aux = null)
@@ -262,7 +263,7 @@ class InheritancePointManager
       return;
     }
 
-    $this->increaseInheritancePointRaw($ownerID, $key, $value, $aux);
+    return $this->increaseInheritancePointRaw($ownerID, $key, $value, $aux);
   }
 
   public function clearInheritancePoint(?int $ownerID)
@@ -359,7 +360,7 @@ class InheritancePointManager
 
     $userLogger = new UserLogger($ownerID);
 
-    $previousPoint = ($allPoints[InheritanceKey::previous->value] ?? [0, 0])[0];
+    $previousPoint = ($allPoints[InheritanceKey::previous->value] ?? [0, null])[0];
 
     $keepValues = [];
 
