@@ -220,7 +220,7 @@ class InheritancePointManager
     $inheritStor->setValue($key, [$value, $aux]);
   }
 
-  public function increaseInheritancePoint(General $general, InheritanceKey $key, $value, $aux = null)
+  public function increaseInheritancePointRaw(int $ownerID, InheritanceKey $key, $value, $aux = null)
   {
     if (!is_int($value) && !is_float($value)) {
       throw new \InvalidArgumentException("{$value}는 숫자가 아님");
@@ -232,15 +232,6 @@ class InheritancePointManager
     $multiplier = $inheritType->pointCoeff;
     if ($storeType !== true) {
       throw new \InvalidArgumentException("{$key->value}는 직접 저장형 유산 포인트가 아님");
-    }
-
-    $ownerID = $general->getVar('owner');
-    if (!$ownerID) {
-      return;
-    }
-
-    if ($general->getVar('npc') >= 2) {
-      return;
     }
 
     $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
@@ -257,6 +248,21 @@ class InheritancePointManager
 
     $newValue = $oldValue + $value * $multiplier;
     $inheritStor->setValue($key->value, [$newValue, $aux]);
+  }
+
+  public function increaseInheritancePoint(General $general, InheritanceKey $key, $value, $aux = null)
+  {
+
+    $ownerID = $general->getVar('owner');
+    if (!$ownerID) {
+      return;
+    }
+
+    if ($general->getVar('npc') >= 2) {
+      return;
+    }
+
+    $this->increaseInheritancePointRaw($ownerID, $key, $value, $aux);
   }
 
   public function clearInheritancePoint(?int $ownerID)
