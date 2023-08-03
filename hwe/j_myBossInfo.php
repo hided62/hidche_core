@@ -47,14 +47,9 @@ if($destGeneralID==0){
     $general->setVar('nation', $nationID);
 }
 else{
-    $general = GeneralLite::createObjFromDB($destGeneralID, [
-        'name', 'leadership', 'strength', 'intel', 'gold','rice',
-        'troop','officer_level','npc','picture','imgsvr',
-        'permission','penalty','belong', 'crewtype',
-        'experience', 'dedication', 'betray', 'dedlevel', 'explevel', 'makelimit', 'aux',
-    ], GeneralLiteQueryMode::Lite);
+    $general = General::createObjFromDB($destGeneralID);
 
-    if($general instanceof DummyGeneralLite){
+    if($general instanceof DummyGeneral){
         Json::die([
             'result'=>false,
             'reason'=>'올바르지 않은 장수입니다.'
@@ -76,7 +71,7 @@ if($officerLevel == 12){
     ]);
 }
 
-function do수뇌임명(GeneralLite $general, int $targetOfficerLevel):?string{
+function do수뇌임명(General $general, int $targetOfficerLevel):?string{
     $generalID = $general->getID();
     $nationID = $general->getNationID();
 
