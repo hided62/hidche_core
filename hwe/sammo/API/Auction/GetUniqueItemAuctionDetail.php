@@ -77,7 +77,7 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
     $inheritMgr = InheritancePointManager::getInstance();
     //preveious라서 column을 최대한 비울 수 있다.
     $remainPoint = $inheritMgr->getInheritancePoint(
-      General::createGeneralObjFromDB($generalID, ['owner'], GeneralQueryMode::Core),
+      General::createObjFromDB($generalID),
       InheritanceKey::previous
     );
 

@@ -24,7 +24,7 @@ $gameStor->cacheValues(['turntime', 'opentime', 'autorun_user', 'npcmode']);
 
 increaseRefresh("내정보", 1);
 
-$me = General::createGeneralObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
+$me = General::createObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
 
 $myset = $me->getVar('myset');
 if ($myset > 0) {

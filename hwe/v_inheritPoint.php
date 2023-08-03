@@ -14,7 +14,7 @@ $generalID = $session->generalID;
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$me = General::createGeneralObjFromDB($generalID);
+$me = General::createObjFromDB($generalID);
 
 
 

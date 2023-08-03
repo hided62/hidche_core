@@ -350,7 +350,7 @@ function setGeneralCommand(int $generalID, array $rawTurnList, string $command, 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $env = $gameStor->getAll();
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createObjFromDB($generalID);
 
     try{
         $commandObj = buildGeneralCommandClass($command, $general, $env, $arg);
@@ -425,7 +425,7 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $env = $gameStor->getAll();
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createObjFromDB($generalID);
 
     if($general->getVar('officer_level') < 5){
         return [

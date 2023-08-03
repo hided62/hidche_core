@@ -49,7 +49,7 @@ class BuyHiddenBuff extends \sammo\BaseAPI
         $type = $this->args['type'];
         $level = $this->args['level'];
 
-        $general = General::createGeneralObjFromDB($generalID);
+        $general = General::createObjFromDB($generalID);
         if ($userID != $general->getVar('owner')) {
             return '로그인 상태가 이상합니다. 다시 로그인해 주세요.';
         }

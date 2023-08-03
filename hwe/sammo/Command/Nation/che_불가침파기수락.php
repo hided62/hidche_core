@@ -78,7 +78,7 @@ class che_불가침파기수락 extends Command\NationCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, GeneralQueryMode::Lite);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID']);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID']);
 

@@ -149,7 +149,7 @@ function getRandGenName(RandUtil $rng)
 
 
 
-function cityInfo(General $generalObj)
+function cityInfo(GeneralLite $generalObj)
 {
     $db = DB::db();
 
@@ -1324,7 +1324,7 @@ function CheckHall($no)
         ["betrate", 'calc'],
     ];
 
-    $generalObj = General::createGeneralObjFromDB($no);
+    $generalObj = General::createObjFromDB($no);
 
     $ttw = $generalObj->getRankVar(RankColumn::ttw);
     $ttd = $generalObj->getRankVar(RankColumn::ttd);
@@ -1714,14 +1714,13 @@ function deleteNation(General $lord, bool $applyDB): array
     $logger->pushGlobalHistoryLog("<R><b>【멸망】</b></><D><b>{$nationName}</b></>{$josaUn} <R>멸망</>했습니다.");
 
 
-    $nationGeneralList = General::createGeneralObjListFromDB(
+    $nationGeneralList = General::createObjListFromDB(
         $db->queryFirstColumn(
             'SELECT `no` FROM general WHERE nation=%i AND no != %i',
             $nationID,
             $lordID
         ),
         ['npc', 'owner', 'gold', 'rice', 'experience', 'explevel', 'dedication', 'dedlevel', 'belong', 'aux'],
-        GeneralQueryMode::Lite,
     );
     $nationGeneralList[$lordID] = $lord;
 

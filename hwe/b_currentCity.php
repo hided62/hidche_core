@@ -327,8 +327,7 @@ $templates = new \League\Plates\Engine('templates');
 
                                 if ($ourGeneral && !$isNPC) {
                                     $turnText = [];
-                                    $generalObj = new General($general, null, null, null, null, null, null, false);
-                                    foreach ($generalTurnList[$generalObj->getID()] as $turnRawIdx => $turn) {
+                                    foreach ($generalTurnList[$general['no']] as $turnRawIdx => $turn) {
                                         $turnIdx = $turnRawIdx + 1;
                                         $turnText[] = "{$turnIdx} : $turn";
                                     }

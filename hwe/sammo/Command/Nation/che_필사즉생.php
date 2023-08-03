@@ -95,7 +95,7 @@ class che_필사즉생 extends Command\NationCommand{
         $broadcastMessage = "<Y>{$generalName}</>{$josaYi} <M>필사즉생</>을 발동하였습니다.";
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no != %i', $nationID, $generalID);
-        foreach(General::createGeneralObjListFromDB($targetGeneralList, ['train', 'atmos'], GeneralQueryMode::Lite) as $targetGeneral){
+        foreach(General::createObjListFromDB($targetGeneralList) as $targetGeneral){
             $targetGeneral->getLogger()->pushGeneralActionLog($broadcastMessage, ActionLogger::PLAIN);
             if($targetGeneral->getVar('train') < 100){
                 $targetGeneral->setVar('train', 100);

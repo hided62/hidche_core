@@ -451,7 +451,7 @@ function checkWander(RandUtil $rng)
 
     $wanderers = $db->queryFirstColumn('SELECT general.`no` FROM general LEFT JOIN nation ON general.nation = nation.nation WHERE nation.`level` = 0 AND general.`officer_level` = 12');
 
-    foreach (General::createGeneralObjListFromDB($wanderers) as $wanderer) {
+    foreach (General::createObjListFromDB($wanderers) as $wanderer) {
         $wanderCmd = buildGeneralCommandClass('che_해산', $wanderer, $admin);
         if ($wanderCmd->hasFullConditionMet()) {
             $logger = $wanderer->getLogger();
@@ -743,7 +743,7 @@ function checkEmperior()
     }
 
     $inheritPointManager = InheritancePointManager::getInstance();
-    $allUserGenerals = General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2'));
+    $allUserGenerals = General::createObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc < 2'));
     foreach ($allUserGenerals as $genObj) {
         if ($genObj->getNationID() == $nationID) {
             if ($genObj->getVar('officer_level') > 4) {

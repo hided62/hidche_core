@@ -59,7 +59,7 @@ if ($limitState >= 2) {
     exit();
 }
 
-$generalObj = General::createGeneralObjFromDB($me['no'], null, GeneralQueryMode::FullWithAccessLog);
+$generalObj = General::createObjFromDB($me['no'], null, GeneralQueryMode::FullWithAccessLog);
 $generalObj->setRawCity($db->queryFirstRow('SELECT * FROM city WHERE city = %i', $generalObj->getCityID()));
 $scenario = $gameStor->scenario_text;
 

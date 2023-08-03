@@ -15,9 +15,8 @@ return [
     // Note that the **only** effect of choosing `'5.6'` is to infer
     // that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
-    "target_php_version" => '8.1',
-    "minimum_target_php_version" => '8.1',
-    'backward_compatibility_checks ' => true,
+    "target_php_version" => '8.2',
+    "minimum_target_php_version" => '8.2',
     'minimum_severity' => \Phan\Issue::SEVERITY_NORMAL,
 
     'file_list' => [

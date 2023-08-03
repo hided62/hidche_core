@@ -38,7 +38,7 @@ class BidSellRiceAuction extends \sammo\BaseAPI
     $amount = $this->args['amount'];
 
     $generalID = $session->generalID;
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createObjFromDB($generalID);
     $auction = new AuctionSellRice($auctionID, $general);
     $result = $auction->bid($amount, true);
 

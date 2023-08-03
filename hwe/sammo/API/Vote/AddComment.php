@@ -6,8 +6,10 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteComment;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
 use sammo\General;
+use sammo\GeneralLite;
 use sammo\Session;
 use sammo\TimeUtil;
 use sammo\Validator;
@@ -41,7 +43,7 @@ class AddComment extends \sammo\BaseAPI
     $text = mb_substr($this->args['text'], 0, 200);
 
     $generalID = $session->generalID;
-    $general = General::createGeneralObjFromDB($generalID, null, GeneralQueryMode::Core);
+    $general = GeneralLite::createObjFromDB($generalID, null, GeneralLiteQueryMode::Core);
     $generalName = $general->getName();
     $nationID = $general->getNationID();
     $nationName = $general->getStaticNation()['name'];

@@ -7,7 +7,7 @@ include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
-$generalObj = General::createGeneralObjFromDB($session->generalID);
+$generalObj = General::createObjFromDB($session->generalID);
 ?>
 <!DOCTYPE html>
 <html>

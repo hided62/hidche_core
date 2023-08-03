@@ -41,7 +41,7 @@ class BidUniqueAuction extends \sammo\BaseAPI
     $tryExtendCloseDate = $this->args['extendCloseDate'] ?? false;
 
     $generalID = $session->generalID;
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createObjFromDB($generalID);
     $auction = new AuctionUniqueItem($auctionID, $general);
     $result = $auction->bid($amount, $tryExtendCloseDate);
 

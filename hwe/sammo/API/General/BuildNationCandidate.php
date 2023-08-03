@@ -59,7 +59,7 @@ class BuildNationCandidate extends \sammo\BaseAPI
 
     $env = $gameStor->getAll();
 
-    $generalObj = General::createGeneralObjFromDB($general['no']);
+    $generalObj = General::createObjFromDB($general['no']);
 
     $validCmd = false;
     foreach(GameConst::$availableGeneralCommand as $cmdList){

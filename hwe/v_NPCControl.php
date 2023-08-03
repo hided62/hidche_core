@@ -43,7 +43,7 @@ $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 $nationStor->cacheValues(['npc_nation_policy', 'npc_general_policy']);
 $gameStor->cacheAll();
 
-$general = new General($me, null, null, null, $nation, $gameStor->year, $gameStor->month, false);
+$general = General::createObjFromDB($me['no']);
 
 $rawServerPolicy = $gameStor->getValue('npc_nation_policy') ?? [];
 $rawNationPolicy = $nationStor->getValue('npc_nation_policy') ?? [];

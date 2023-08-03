@@ -68,7 +68,7 @@ class che_등용수락 extends Command\GeneralCommand{
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID'], null);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID'], ['gennum', 'scout']);
 

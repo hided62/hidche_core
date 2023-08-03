@@ -84,7 +84,7 @@ class ProvideNPCTroopLeader extends \sammo\Event\Action
           'troop' => $npcID
         ], 'no=%i', $npcID);
 
-        $cmd = buildGeneralCommandClass('che_집합', General::createGeneralObjFromDB($npcID), $env);
+        $cmd = buildGeneralCommandClass('che_집합', General::createObjFromDB($npcID), $env);
         _setGeneralCommand($cmd, iterator_to_array(Util::range(GameConst::$maxTurn)));
         $NPCTroopLeaderCnt += 1;
         $gameStor->lastNPCTroopLeaderID = $lastNPCTroopLeaderID;

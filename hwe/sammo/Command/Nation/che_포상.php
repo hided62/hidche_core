@@ -82,7 +82,7 @@ class che_포상 extends Command\NationCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'nation'], GeneralQueryMode::Lite);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID']);
         $this->setDestGeneral($destGeneral);
 
         if($this->arg['destGeneralID'] == $this->getGeneral()->getID()){

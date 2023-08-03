@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\RankColumn;
 
@@ -564,12 +565,12 @@ if ($str3) {
                         $winColumn = RankColumn::from("{$rankColumn}w");
                         $drawColumn = RankColumn::from("{$rankColumn}d");
                         $loseColumn = RankColumn::from("{$rankColumn}l");
-                        $tournamentRankerList = General::createGeneralObjListFromDB(
+                        $tournamentRankerList = GeneralLite::createObjListFromDB(
                             $db->queryFirstColumn('SELECT general_id FROM rank_data WHERE `type`= %s ORDER BY value DESC LIMIT 40', $gameColumn->value),
                             [$prizeColumn->value, $gameColumn->value, $winColumn->value, $drawColumn->value, $loseColumn->value, 'leadership', 'strength', 'intel', 'no', 'npc', 'name'],
-                            GeneralQueryMode::Core
+                            GeneralLiteQueryMode::Core
                         );
-                        usort($tournamentRankerList, function (General $lhs, General $rhs) use ($gameColumn, $winColumn, $drawColumn, $loseColumn) {
+                        usort($tournamentRankerList, function (GeneralLite $lhs, GeneralLite $rhs) use ($gameColumn, $winColumn, $drawColumn, $loseColumn) {
                             $result = - ($lhs->getRankVar($gameColumn) <=> $rhs->getRankVar($gameColumn));
                             if ($result !== 0) return $result;
                             $result = - (

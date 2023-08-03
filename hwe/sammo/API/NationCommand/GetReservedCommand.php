@@ -113,7 +113,7 @@ class GetReservedCommand extends \sammo\BaseAPI
             ];
         }
 
-        $generalObj = General::createGeneralObjFromDB($session->generalID, null, GeneralQueryMode::FullWithoutIAction);
+        $generalObj = General::createObjFromDB($session->generalID);
 
 
         return [

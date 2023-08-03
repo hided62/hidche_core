@@ -218,7 +218,7 @@ abstract class Auction
     if ($bidItem->generalID === $this->general->getID()) {
       $oldBidder = $this->general;
     } else {
-      $oldBidder = General::createGeneralObjFromDB($bidItem->generalID);
+      $oldBidder = General::createObjFromDB($bidItem->generalID);
     }
 
     if ($this->info->reqResource === ResourceType::inheritancePoint) {
@@ -485,7 +485,7 @@ abstract class Auction
       }
     }
 
-    $bidder =  General::createGeneralObjFromDB($highestBid->generalID);
+    $bidder =  General::createObjFromDB($highestBid->generalID);
     $failReason = $this->finishAuction($highestBid, $bidder);
     if ($failReason === null) {
       $this->closeAuction();

@@ -68,7 +68,7 @@ class DieOnPrestart extends \sammo\BaseAPI
       return "아직 삭제할 수 없습니다. {$targetTimeShort} 부터 가능합니다.";
     }
 
-    $generalObj = General::createGeneralObjFromDB($general['no']);
+    $generalObj = General::createObjFromDB($general['no']);
     if ($generalObj instanceof DummyGeneral) {
       trigger_error("올바르지 않은 삭제 프로세스 $userID", E_USER_WARNING);
     }

@@ -21,7 +21,7 @@ class GetCommandTable extends \sammo\BaseAPI{
     public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $generalID = $session->generalID;
-        $me = General::createGeneralObjFromDB($generalID);
+        $me = General::createObjFromDB($generalID);
         $commandTable = getCommandTable($me);
 
         return [

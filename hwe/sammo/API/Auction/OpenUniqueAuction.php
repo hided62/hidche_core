@@ -57,7 +57,7 @@ class OpenUniqueAuction extends \sammo\BaseAPI
     $generalID = $session->generalID;
 
     $itemObj = buildItemClass($itemID);
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createObjFromDB($generalID);
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

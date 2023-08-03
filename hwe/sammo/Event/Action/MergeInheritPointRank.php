@@ -18,7 +18,7 @@ class MergeInheritPointRank extends \sammo\Event\Action
   {
     $db = DB::db();
 
-    $generals = General::createGeneralObjListFromDB(null, null);
+    $generals = General::createObjListFromDB(null, null);
 
     $points = new Map();
     $points->allocate(count($generals));

@@ -39,7 +39,11 @@ class ProcessIncome extends \sammo\Event\Action
 
     $nationList = $db->query('SELECT name,nation,capital,gold,level,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,gold,officer_level,dedication,city FROM general WHERE npc != 5'), 'nation');
+    //FIXME: factory 형태로 바꿔야함
+    $generalRawListByNation = Util::arrayGroupBy($db->query(
+      'SELECT %l FROM general WHERE npc != 5',
+      Util::formatListOfBackticks(General::mergeQueryColumn()[0])
+    ), 'nation');
 
     //국가별 처리
     foreach ($nationList as $nation) {
@@ -119,7 +123,11 @@ class ProcessIncome extends \sammo\Event\Action
 
     $nationList = $db->query('SELECT name,level,nation,capital,rice,rate_tmp,bill,type from nation');
     $cityListByNation = Util::arrayGroupBy($db->query('SELECT * FROM city'), 'nation');
-    $generalRawListByNation = Util::arrayGroupBy($db->query('SELECT no,name,nation,rice,officer_level,dedication,city FROM general WHERE npc != 5'), 'nation');
+    //FIXME: factory 형태로 바꿔야함
+    $generalRawListByNation = Util::arrayGroupBy($db->query(
+      'SELECT %l FROM general WHERE npc != 5',
+      Util::formatListOfBackticks(General::mergeQueryColumn()[0])
+    ), 'nation');
 
     //국가별 처리
     foreach ($nationList as $nation) {

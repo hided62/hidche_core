@@ -882,7 +882,7 @@ function setGift($tnmt_type, $tnmt, $phase)
         //포상 장수 이름, 금액
         $resultHelper[$generalID]['reward'] += $cost;
         $resultHelper[$generalID]['msg'] = "<span class='ev_highlight'>4강 진출</span>";
-        General::createGeneralObjFromDB($generalID)->increaseInheritancePoint(InheritanceKey::tournament, 10);
+        General::createObjFromDB($generalID)->increaseInheritancePoint(InheritanceKey::tournament, 10);
     }
     //결승자 명성 돈
     $cost = $admin['develcost'] * 6;
@@ -946,7 +946,7 @@ function setGift($tnmt_type, $tnmt, $phase)
     $winnerLogger->pushGlobalHistoryLog("<B><b>【대회】</b></><C>{$tp}</> 대회에서 <Y>{$winner['name']}</>{$josaYiWinner} <C>우승</>, <Y>{$runnerUp['name']}</>{$josaYiRunnerUp} <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!", ActionLogger::EVENT_YEAR_MONTH);
     $winnerLogger->pushGlobalHistoryLog("<B><b>【대회】</b></><C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$winnerRewardText}</>, <S>준우승자</>에겐 <C>{$runnerUpRewardText}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!", ActionLogger::EVENT_YEAR_MONTH);
 
-    $generalObjList = General::createGeneralObjListFromDB(array_keys($resultHelper));
+    $generalObjList = General::createObjListFromDB(array_keys($resultHelper));
 
     foreach ($resultHelper as $generalID => $general) {
         $rewardText = number_format($general['reward']);

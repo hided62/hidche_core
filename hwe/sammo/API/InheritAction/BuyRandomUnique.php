@@ -31,7 +31,7 @@ class BuyRandomUnique extends \sammo\BaseAPI
         $userID = $session->userID;
         $generalID = $session->generalID;
 
-        $general = General::createGeneralObjFromDB($generalID);
+        $general = General::createObjFromDB($generalID);
         if($userID != $general->getVar('owner')){
             return '로그인 상태가 이상합니다. 다시 로그인해 주세요.';
         }

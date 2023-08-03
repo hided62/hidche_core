@@ -67,7 +67,7 @@ class che_모반시도 extends Command\GeneralCommand{
 
         $lordID = $db->queryFirstField('SELECT no FROM general WHERE nation = %i AND officer_level = 12', $nationID);
 
-        $lordGeneral = General::createGeneralObjFromDB($lordID);
+        $lordGeneral = General::createObjFromDB($lordID);
 
         $generalName = $general->getName();
         $lordName = $lordGeneral->getName();

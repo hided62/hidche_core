@@ -28,7 +28,7 @@ class LostUniqueItem extends \sammo\Event\Action
     if (!$generalIDList) {
       return;
     }
-    $generals = General::createGeneralObjListFromDB($generalIDList);
+    $generals = General::createObjListFromDB($generalIDList);
 
     $lostItems = [];
     $totalLostCnt = 0;

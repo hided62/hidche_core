@@ -66,7 +66,7 @@ if(!$ownerInfo){
 $info = Json::decode($info);
 
 
-$generalObj = General::createGeneralObjFromDB($generalID);
+$generalObj = General::createObjFromDB($generalID);
 $oldGeneralName = $generalObj->getName();
 $db->update('select_pool', [
     'general_id'=>-$generalID,

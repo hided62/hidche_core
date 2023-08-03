@@ -72,7 +72,7 @@ class che_발령 extends Command\NationCommand
     {
         $this->setDestCity($this->arg['destCityID']);
 
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, GeneralQueryMode::Lite);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID']);
         $this->setDestGeneral($destGeneral);
 
         if ($this->arg['destGeneralID'] == $this->getGeneral()->getID()) {

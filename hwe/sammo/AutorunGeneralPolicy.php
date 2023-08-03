@@ -19,7 +19,7 @@ class AutorunGeneralPolicy{
     static $소집해제 = '소집해제';
 
     static $출병 = '출병';
-    
+
     //static $NPC증여 = 'NPC증여';
     static $NPC헌납 = 'NPC헌납';
     static $NPC사망대비 = 'NPC사망대비';
@@ -31,12 +31,12 @@ class AutorunGeneralPolicy{
     static $귀환 = '귀환';
     //static $전투이동 = '전투이동';
     //static $내정이동 = '내정이동';
-    
+
     static $국가선택 = '국가선택';
     static $집합 = '집합';
     static $건국 = '건국';
     static $선양 = '선양';
-    
+
 
 
     static public array $default_priority = [
@@ -74,7 +74,7 @@ class AutorunGeneralPolicy{
     public $can소집해제 = true;
 
     public $can출병 = true;
-    
+
     //public $canNPC증여 = true;
     public $canNPC헌납 = true;
 
@@ -91,7 +91,7 @@ class AutorunGeneralPolicy{
 
     public array $priority;
 
-    function doNPCState(General $general){
+    function doNPCState(GeneralBase $general){
         $npc = $general->getNPCType();
         $nationID = $general->getNationID();
 
@@ -115,7 +115,7 @@ class AutorunGeneralPolicy{
 
     }
 
-    function __construct(General $general, $aiOptions, ?array $nationPolicy, ?array $serverPolicy, array $nation, array $env){
+    function __construct(GeneralBase $general, $aiOptions, ?array $nationPolicy, ?array $serverPolicy, array $nation, array $env){
         $this->priority = static::$default_priority;
 
         if($serverPolicy && key_exists('priority', $serverPolicy)){
@@ -165,7 +165,7 @@ class AutorunGeneralPolicy{
         $this->can전투준비 = false;
 
         $this->can출병 = false;
-        
+
         //$this->canNPC증여 = false;
         $this->canNPC헌납 = false;
 
@@ -194,9 +194,9 @@ class AutorunGeneralPolicy{
                 $this->can금쌀구매 = true;
                 $this->can상인무시 = true;
                 break;
-            case 'recruit_high': 
+            case 'recruit_high':
                 $this->can모병 = true;
-            case 'recruit': 
+            case 'recruit':
                 $this->can징병 = true;
                 $this->can소집해제 = true;
                 $this->can금쌀구매 = true;

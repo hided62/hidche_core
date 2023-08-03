@@ -7,11 +7,7 @@ use \sammo\{
     Util,
     JosaUtil,
     General,
-    DummyGeneral,
-    ActionLogger,
-    GameConst,
     LastTurn,
-    GameUnitConst,
     Command,
     ScoutMessage
 };
@@ -77,7 +73,7 @@ class che_등용 extends Command\GeneralCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation', 'experience', 'dedication'], GeneralQueryMode::Lite);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID']);
         $this->setDestGeneral($destGeneral);
 
         [$reqGold, $reqRice] = $this->getCost();

@@ -92,7 +92,7 @@ class che_몰수 extends Command\NationCommand
 
     protected function initWithArg()
     {
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'rice', 'npc', 'nation', 'imgsvr', 'picture'], GeneralQueryMode::Lite);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID']);
         $this->setDestGeneral($destGeneral);
 
         $env = $this->env;

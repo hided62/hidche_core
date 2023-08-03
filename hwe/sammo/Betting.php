@@ -402,7 +402,7 @@ class Betting
                 $userLogger->flush();
             }
         } else {
-            $generalList = General::createGeneralObjListFromDB(array_unique(Util::squeezeFromArray($rewardList, 'generalID')), ['gold', 'npc', 'betgold'], GeneralQueryMode::Lite);
+            $generalList = General::createObjListFromDB(array_unique(Util::squeezeFromArray($rewardList, 'generalID')));
             foreach ($rewardList as $rewardItem) {
                 $gambler = $generalList[$rewardItem['generalID']];
                 $reward = Util::round($rewardItem['amount']);

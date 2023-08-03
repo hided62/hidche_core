@@ -534,7 +534,7 @@ class GetFrontInfo extends \sammo\BaseAPI
   {
     $generalID = $session->generalID;
     //NOTE: 이 경우 staticNation 정보를 조회한다.
-    $general = General::createGeneralObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
+    $general = General::createObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
     $nationID = $general->getNationID();
     $cityID = $general->getCityID();
 

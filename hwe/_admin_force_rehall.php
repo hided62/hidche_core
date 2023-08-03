@@ -26,7 +26,7 @@ foreach ($db->queryFirstColumn(
 }
 
 $inheritPointManager = InheritancePointManager::getInstance();
-foreach(General::createGeneralObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj){
+foreach(General::createObjListFromDB($db->queryFirstColumn('SELECT `no` FROM general WHERE npc = 0')) as $genObj){
     $inheritPointManager->mergeTotalInheritancePoint($genObj);
     $inheritPointManager->applyInheritanceUser($genObj->getVar('owner'));
 }

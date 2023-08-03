@@ -68,7 +68,7 @@ class ScoutMessage extends Message
         }
 
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        $general = \sammo\General::createGeneralObjFromDB($receiverID);
+        $general = \sammo\General::createObjFromDB($receiverID);
 
         $logger = $general->getLogger();
 
@@ -125,8 +125,8 @@ class ScoutMessage extends Message
         $now = TimeUtil::now();
         //XXX: 뭔가 기존 쿼리가 애매하다. invalid 관련해서 다른 옵션이 가능한가?
         $rawMsgList = Util::convertArrayToDict($db->query(
-            'SELECT * FROM `message` WHERE 
-            `mailbox` = %i AND `type` = "private" AND `dest` = `mailbox` AND `valid_until` > %s AND 
+            'SELECT * FROM `message` WHERE
+            `mailbox` = %i AND `type` = "private" AND `dest` = `mailbox` AND `valid_until` > %s AND
             JSON_VALUE(message, "$.option.action") = %s',
             $generalID,
             $now,

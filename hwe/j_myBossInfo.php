@@ -1,6 +1,7 @@
 <?php
 namespace sammo;
 
+use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\MessageType;
 
@@ -46,14 +47,14 @@ if($destGeneralID==0){
     $general->setVar('nation', $nationID);
 }
 else{
-    $general = General::createGeneralObjFromDB($destGeneralID, [
+    $general = GeneralLite::createObjFromDB($destGeneralID, [
         'name', 'leadership', 'strength', 'intel', 'gold','rice',
         'troop','officer_level','npc','picture','imgsvr',
         'permission','penalty','belong', 'crewtype',
         'experience', 'dedication', 'betray', 'dedlevel', 'explevel', 'makelimit', 'aux',
-    ], GeneralQueryMode::Lite);
+    ], GeneralLiteQueryMode::Lite);
 
-    if($general instanceof DummyGeneral){
+    if($general instanceof DummyGeneralLite){
         Json::die([
             'result'=>false,
             'reason'=>'올바르지 않은 장수입니다.'

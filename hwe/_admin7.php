@@ -76,7 +76,7 @@ if (!$gen) {
     $gen = $generalBasicList[0]['no'];
 }
 
-$generalObj = General::createGeneralObjFromDB($gen, null, GeneralQueryMode::FullWithAccessLog);
+$generalObj = General::createObjFromDB($gen, null, GeneralQueryMode::FullWithAccessLog);
 
 ?>
 <!DOCTYPE html>

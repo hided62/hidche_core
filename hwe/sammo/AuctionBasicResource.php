@@ -116,7 +116,7 @@ abstract class AuctionBasicResource extends Auction
     } else if ($this->info->hostGeneralID == 0) {
       $auctionHost = $this->genDummy();
     } else {
-      $auctionHost = General::createGeneralObjFromDB($this->info->hostGeneralID);
+      $auctionHost = General::createObjFromDB($this->info->hostGeneralID);
     }
 
     $hostRes = static::$hostRes;
@@ -164,7 +164,7 @@ abstract class AuctionBasicResource extends Auction
     } else if ($this->info->hostGeneralID == 0) {
       $auctionHost = $this->genDummy();
     } else {
-      $auctionHost = General::createGeneralObjFromDB($this->info->hostGeneralID);
+      $auctionHost = General::createObjFromDB($this->info->hostGeneralID);
     }
 
     $highestBid = $this->getHighestBid();
@@ -175,7 +175,7 @@ abstract class AuctionBasicResource extends Auction
     if ($this->general->getID() === $highestBid->generalID) {
       $bidder = $this->general;
     } else {
-      $bidder = General::createGeneralObjFromDB($highestBid->generalID);
+      $bidder = General::createObjFromDB($highestBid->generalID);
     }
 
     $hostRes = static::$hostRes;

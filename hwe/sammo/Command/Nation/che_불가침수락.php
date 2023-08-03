@@ -104,7 +104,7 @@ class che_불가침수락 extends Command\NationCommand
         $env = $this->env;
         $relYear = $env['year'] - $env['startyear'];
 
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], null, GeneralQueryMode::Lite);
+        $destGeneral = General::createObjFromDB($this->arg['destGeneralID']);
         $this->setDestGeneral($destGeneral);
         $this->setDestNation($this->arg['destNationID']);
 

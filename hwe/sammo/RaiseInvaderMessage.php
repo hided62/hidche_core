@@ -66,7 +66,7 @@ class RaiseInvaderMessage extends Message
         }
 
         $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
-        $general = \sammo\General::createGeneralObjFromDB($receiverID);
+        $general = \sammo\General::createObjFromDB($receiverID);
 
         $logger = $general->getLogger();
 

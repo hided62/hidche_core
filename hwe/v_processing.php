@@ -42,7 +42,7 @@ if ($isChiefTurn && !in_array($commandType, Util::array_flatten(GameConst::$avai
 
 $gameStor = KVStorage::getStorage($db, 'game_env')->turnOnCache();
 $env = $gameStor->getAll();
-$general = General::createGeneralObjFromDB($session->generalID);
+$general = General::createObjFromDB($session->generalID);
 
 if (!$isChiefTurn) {
     $commandObj = buildGeneralCommandClass($commandType, $general, $env);

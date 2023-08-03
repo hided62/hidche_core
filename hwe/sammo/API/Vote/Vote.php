@@ -106,7 +106,7 @@ class Vote extends \sammo\BaseAPI
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $voteReward = $gameStor->getValue('develcost') * 5;
 
-        $general = General::createGeneralObjFromDB($generalID, null, GeneralQueryMode::Full);
+        $general = General::createObjFromDB($generalID, null, GeneralQueryMode::Full);
         $general->increaseVar('gold', $voteReward);
         $uniqueRng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
             UniqueConst::$hiddenSeed,

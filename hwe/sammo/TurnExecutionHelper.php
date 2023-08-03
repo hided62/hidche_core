@@ -239,7 +239,7 @@ class TurnExecutionHelper
                 return [true, $currentTurn];
             }
 
-            $general = General::createGeneralObjFromDB($rawGeneral['no']);
+            $general = General::createObjFromDB($rawGeneral['no']);
             $nationStor = KVStorage::getStorage($db, $general->getNationID(), 'nation_env');
             $turnObj = new static($general);
 

@@ -66,7 +66,7 @@ class OpenSellRiceAuction extends \sammo\BaseAPI
     $finishBidAmount = $this->args['finishBidAmount'];
     $generalID = $session->generalID;
 
-    $general = General::createGeneralObjFromDB($generalID);
+    $general = General::createObjFromDB($generalID);
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

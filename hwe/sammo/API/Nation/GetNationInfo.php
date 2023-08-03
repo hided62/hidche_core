@@ -58,7 +58,7 @@ class GetNationInfo extends \sammo\BaseAPI
       ];
     }
 
-    $generalObj = General::createGeneralObjFromDB($session->generalID, null, GeneralQueryMode::FullWithoutIAction);
+    $generalObj = General::createObjFromDB($session->generalID);
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameEnv = $gameStor->getValues(['year', 'month', 'startyear']);

@@ -36,7 +36,7 @@ if($tnmt < 0 || $tnmt > 1){
 }
 
 $db = DB::db();
-$me = General::createGeneralObjFromDB($generalID);
+$me = General::createObjFromDB($generalID);
 
 
 if($defence_train !== $me->getVar('defence_train')){

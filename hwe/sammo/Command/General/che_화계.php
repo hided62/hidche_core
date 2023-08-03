@@ -269,7 +269,7 @@ class che_화계 extends Command\GeneralCommand
         $destCityGeneralList = [];
 
         $cityGeneralID = $db->queryFirstColumn('SELECT no FROM general WHERE city = %i AND nation = %i', $destCityID, $destNationID);
-        $destCityGeneralList = General::createGeneralObjListFromDB($cityGeneralID, ['name', 'city', 'nation', 'officer_level', 'leadership', 'horse', 'strength', 'weapon', 'intel', 'book', 'item', 'last_turn', 'injury', 'special', 'special2', 'injury', 'crewtype', 'crew', 'atmos', 'train']);
+        $destCityGeneralList = General::createObjListFromDB($cityGeneralID, ['name', 'city', 'nation', 'officer_level', 'leadership', 'horse', 'strength', 'weapon', 'intel', 'book', 'item', 'last_turn', 'injury', 'special', 'special2', 'injury', 'crewtype', 'crew', 'atmos', 'train']);
         foreach ($destCityGeneralList as &$destCityGeneral) {
             $destCityGeneral->setRawCity($this->destCity);
             unset($destCityGeneral);

@@ -10,26 +10,19 @@ use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
 use sammo\WarUnitTrigger as WarUnitTrigger;
 
-class General implements iAction
+class General extends GeneralBase implements iAction
 {
-    use LazyVarUpdater;
+    use LazyVarAndAuxUpdater;
 
-    protected $raw = [];
-    protected $rawCity = null;
-
-
-    /** @var Map<RankColumn,int|float> */
+    /** @var Map<RankColumn,int> */
     protected Map $rankVarRead;
-    /** @var Map<RankColumn,int|float> */
+    /** @var Map<RankColumn,int> */
     protected Map $rankVarIncrease;
-    /** @var Map<RankColumn,int|float> */
+    /** @var Map<RankColumn,int> */
     protected Map $rankVarSet;
 
-    /** @var Map<GeneralAccessLogColumn,int|float> */
+    /** @var Map<GeneralAccessLogColumn,int|float|string> */
     protected ?Map $accessLogRead;
-
-    /** @var \sammo\ActionLogger */
-    protected $logger;
 
     protected $activatedSkill = [];
     protected $logActivatedSkill = [];
@@ -55,41 +48,17 @@ class General implements iAction
     protected $lastTurn = null;
     protected $resultTurn = null;
 
-    const TURNTIME_FULL_MS = -1;
-    const TURNTIME_FULL = 0;
-    const TURNTIME_HMS = 1;
-    const TURNTIME_HM = 2;
-
     protected $calcCache = [];
-
-    protected static $prohibitedDirectUpdateVars = [
-        //Reason: iAction
-        'leadership' => 1,
-        'power' => 1,
-        'intel' => 1,
-        'nation' => 2,
-        'officer_level' => 1,
-        //NOTE: officerLevelObj로 인해 국가의 '레벨'이 바뀌는 것도 조심해야 하나, 국가 레벨의 변경은 월 초/말에만 일어남.
-        'special' => 1,
-        'special2' => 1,
-        'personal' => 1,
-        'horse' => 1,
-        'weapon' => 1,
-        'book' => 1,
-        'item' => 1
-    ];
-
 
     /**
      * @param array $raw DB row값.
      * @param null|Map<RankColumn,int|float> $rawRank
      * @param null|Map<GeneralAccessLogColumn,int> $rawAccessLog
      * @param null|array $city DB city 테이블의 row값
-     * @param int|null $year 게임 연도
-     * @param int|null $month 게임 월
-     * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, officer_level 정도로 초기화 가능
+     * @param int $year 게임 연도
+     * @param int $month 게임 월
      */
-    public function __construct(array $raw, ?Map $rawRank, ?Map $rawAccessLog, ?array $city, ?array $nation, ?int $year, ?int $month, bool $fullConstruct = true)
+    public function __construct(array $raw, ?Map $rawRank, ?Map $rawAccessLog, ?array $city, ?array $nation, int $year, int $month)
     {
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
@@ -106,9 +75,7 @@ class General implements iAction
             $this->resultTurn = $this->lastTurn->duplicate();
         }
 
-        if ($year !== null && $month !== null) {
-            $this->initLogger($year, $month);
-        }
+        $this->initLogger($year, $month);
 
         if ($rawRank) {
             $this->rankVarRead = $rawRank;
@@ -121,10 +88,6 @@ class General implements iAction
 
         $this->rankVarIncrease = new Map();
         $this->rankVarSet = new Map();
-
-        if (!$fullConstruct) {
-            return;
-        }
 
         $this->nationType = buildNationTypeClass($nation['type']);
         $this->officerLevelObj = new TriggerOfficerLevel($this->raw, $nation['level']);
@@ -141,41 +104,10 @@ class General implements iAction
         $this->itemObjs['book'] = buildItemClass($raw['book']);
         $this->itemObjs['item'] = buildItemClass($raw['item']);
 
-        if (key_exists('aux', $this->raw)) {
-            $rawInheritBuff = $this->getAuxVar('inheritBuff');
-            if ($rawInheritBuff !== null) {
-                $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
-            }
+        $rawInheritBuff = $this->getAuxVar('inheritBuff');
+        if ($rawInheritBuff !== null) {
+            $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
         }
-    }
-
-    function initLogger(int $year, int $month)
-    {
-        $this->logger = new ActionLogger(
-            $this->getVar('no'),
-            $this->getVar('nation'),
-            $year,
-            $month,
-            false
-        );
-    }
-
-    function getTurnTime(int $short = self::TURNTIME_FULL_MS)
-    {
-        return [
-            self::TURNTIME_FULL_MS => function ($turntime) {
-                return $turntime;
-            },
-            self::TURNTIME_FULL => function ($turntime) {
-                return substr($turntime, 0, 19);
-            },
-            self::TURNTIME_HMS => function ($turntime) {
-                return substr($turntime, 11, 8);
-            },
-            self::TURNTIME_HM => function ($turntime) {
-                return substr($turntime, 11, 5);
-            },
-        ][$short]($this->getVar('turntime'));
     }
 
     function setItem(string $itemKey = 'item', ?string $itemCode)
@@ -198,11 +130,6 @@ class General implements iAction
     function getItem(string $itemKey = 'item'): BaseItem
     {
         return $this->itemObjs[$itemKey];
-    }
-
-    function getNPCType(): int
-    {
-        return $this->raw['npc'];
     }
 
     /** @return BaseItem[] */
@@ -281,48 +208,13 @@ class General implements iAction
         }
     }
 
-    function getName(): string
-    {
-        return $this->raw['name'];
-    }
-
     function getInfo(): string
     {
         //iAction용 info로는 적절하지 않음
         return '';
     }
 
-    function getID(): int
-    {
-        return $this->raw['no'];
-    }
-
-    function getRawCity(): ?array
-    {
-        return $this->rawCity;
-    }
-
-    function setRawCity(?array $city)
-    {
-        $this->rawCity = $city;
-    }
-
-    function getCityID(): int
-    {
-        return $this->raw['city'];
-    }
-
-    function getNationID(): int
-    {
-        return $this->raw['nation'];
-    }
-
-    function getStaticNation(): array
-    {
-        return getNationStaticInfo($this->raw['nation']);
-    }
-
-    function getLogger(): ?ActionLogger
+    function getLogger(): ActionLogger
     {
         return $this->logger;
     }
@@ -505,17 +397,6 @@ class General implements iAction
         return $this->getStatValue('intel', $withInjury, $withIActionObj, $withStatAdjust, $useFloor);
     }
 
-    function getDex(GameUnitDetail $crewType)
-    {
-        $armType = $crewType->armType;
-
-        if ($armType == GameUnitConst::T_CASTLE) {
-            $armType = GameUnitConst::T_SIEGE;
-        }
-
-        return $this->getVar("dex{$armType}");
-    }
-
     function addDex(GameUnitDetail $crewType, float $exp, bool $affectTrainAtmos = false)
     {
         $armType = $crewType->armType;
@@ -593,8 +474,11 @@ class General implements iAction
         }
     }
 
-    function updateVar(string $key, $value)
+    function updateVar(string|\BackedEnum $key, $value)
     {
+        if($key instanceof \BackedEnum){
+            $key = $key->value;
+        }
         if (($this->raw[$key] ?? null) === $value) {
             return;
         }
@@ -1032,86 +916,6 @@ class General implements iAction
         return $caller;
     }
 
-    static public function mergeQueryColumn(?array $reqColumns = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): array
-    {
-        $minimumColumn = ['no', 'name', 'owner', 'npc', 'city', 'nation', 'officer_level', 'officer_city'];
-        $defaultEventColumn = [
-            'no', 'name', 'npc', 'owner', 'city', 'nation', 'officer_level', 'officer_city',
-            'special', 'special2', 'personal',
-            'horse', 'weapon', 'book', 'item', 'last_turn', 'aux', 'turntime',
-        ];
-        $fullColumn = [
-            'no', 'name', 'owner', 'owner_name', 'picture', 'imgsvr', 'nation', 'city', 'troop', 'injury', 'affinity',
-            'leadership', 'leadership_exp', 'strength', 'strength_exp', 'intel', 'intel_exp', 'weapon', 'book', 'horse', 'item',
-            'experience', 'dedication', 'officer_level', 'officer_city', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
-            'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
-            'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
-            'dex1', 'dex2', 'dex3', 'dex4', 'dex5', 'betray',
-            'recent_war', 'last_turn', 'myset',
-            'specage', 'specage2', 'aux', 'permission', 'penalty',
-        ];
-        $fullAcessLogColumn = [
-            GeneralAccessLogColumn::refreshScore,
-            GeneralAccessLogColumn::refreshScoreTotal,
-        ];
-
-        if ($reqColumns === null) {
-            switch ($queryMode) {
-                case GeneralQueryMode::Core:
-                    return [$minimumColumn, [], []];
-                case GeneralQueryMode::Lite:
-                    return [$defaultEventColumn, [], []];
-                case GeneralQueryMode::FullWithoutIAction:
-                case GeneralQueryMode::Full:
-                    return [$fullColumn, RankColumn::cases(), []];
-                case GeneralQueryMode::FullWithAccessLog:
-                    return [$fullColumn, RankColumn::cases(), $fullAcessLogColumn];
-            }
-        }
-
-        /** @var RankColumn[] */
-        $rankColumn = [];
-        $subColumn = [];
-        $accessLogColumn = [];
-        foreach ($reqColumns as $column) {
-            if ($column instanceof RankColumn) {
-                $rankColumn[] = $column;
-                continue;
-            }
-            if ($column instanceof GeneralAccessLogColumn) {
-                $accessLogColumn[] = $column;
-                continue;
-            }
-
-
-            $enumKey = RankColumn::tryFrom($column);
-            if ($enumKey !== null) {
-                $rankColumn[] = $enumKey;
-                continue;
-            }
-            $enumKey = GeneralAccessLogColumn::tryFrom($column);
-            if ($enumKey !== null) {
-                $accessLogColumn[] = $enumKey;
-                continue;
-            }
-            $subColumn[] = $column;
-        }
-
-        switch ($queryMode) {
-            case GeneralQueryMode::Core:
-                return [array_unique(array_merge($minimumColumn, $subColumn)), $rankColumn, $accessLogColumn];
-            case GeneralQueryMode::Lite:
-                return [array_unique(array_merge($defaultEventColumn, $subColumn)), $rankColumn, $accessLogColumn];
-            case GeneralQueryMode::FullWithoutIAction:
-            case GeneralQueryMode::Full:
-                return [array_unique(array_merge($fullColumn, $subColumn)), $rankColumn, $accessLogColumn];
-            case GeneralQueryMode::FullWithAccessLog:
-                return [array_unique(array_merge($fullColumn, $subColumn)), $rankColumn, array_unique(array_merge($fullAcessLogColumn, $accessLogColumn))];
-            default:
-                 throw new \RuntimeException('invalid query mode');
-        }
-    }
-
     /**
      * @param ?int[] $generalIDList
      * @param null|array<string|RankColumn> $column
@@ -1119,20 +923,15 @@ class General implements iAction
      * @return \sammo\General[]
      * @throws MustNotBeReachedException
      */
-    static public function createGeneralObjListFromDB(?array $generalIDList, ?array $column = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): array
+    static public function createObjListFromDB(?array $generalIDList, ?array $column = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): array
     {
         if ($generalIDList === []) {
             return [];
         }
 
         $db = DB::db();
-        if ($queryMode->value > 0) {
-            $gameStor = KVStorage::getStorage($db, 'game_env');
-            [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-        } else {
-            $year = null;
-            $month = null;
-        }
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 
         /**
          * @var string[] $column
@@ -1197,25 +996,24 @@ class General implements iAction
                 $result[$generalID] = new DummyGeneral($queryMode->value > 0);
                 continue;
             }
-            if ($rawRanks->hasKey($generalID) && $rawRanks[$generalID]->count() !== count($rankColumn)) {
+            /** @var Map<RankColumn,int|float> */
+            $generalRankValues = $rawRanks[$generalID] ?? new Map();
+            if ($generalRankValues->count() !== count($rankColumn)) {
                 throw new \RuntimeException('column의 수가 일치하지 않음 : ' . $generalID);
             }
-            $result[$generalID] = new static($rawGenerals[$generalID], $rawRanks[$generalID] ?? null, $rawAccessLogs[$generalID] ?? null, null, null, $year, $month, $queryMode->value >= GeneralQueryMode::Full->value);
+
+            $generalAccessLog = $rawAccessLogs[$generalID] ?? new Map();
+            $result[$generalID] = new static($rawGenerals[$generalID], $generalRankValues, $generalAccessLog, null, null, $year, $month);
         }
 
         return $result;
     }
 
-    static public function createGeneralObjFromDB(int $generalID, ?array $column = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): self
+    static public function createObjFromDB(int $generalID, ?array $column = null, GeneralQueryMode $queryMode = GeneralQueryMode::Full): self
     {
         $db = DB::db();
-        if ($queryMode->value > 0) {
-            $gameStor = KVStorage::getStorage($db, 'game_env');
-            [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
-        } else {
-            $year = null;
-            $month = null;
-        }
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 
         /**
          * @var string[] $column
@@ -1269,7 +1067,7 @@ class General implements iAction
         }
 
 
-        $general = new static($rawGeneral, $rawRankValues, $rawAccessLog, null, null, $year, $month, $queryMode->value >= GeneralQueryMode::Full->value);
+        $general = new static($rawGeneral, $rawRankValues, $rawAccessLog, null, null, $year, $month);
 
         return $general;
     }

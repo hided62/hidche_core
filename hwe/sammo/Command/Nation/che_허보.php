@@ -163,7 +163,7 @@ class che_허보 extends Command\NationCommand
         $destNationCityList = $db->queryFirstColumn('SELECT city FROM city WHERE nation = %i AND supply = 1', $destNationID);
 
         $targetGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i', $destNationID, $destCityID);
-        foreach (General::createGeneralObjListFromDB($targetGeneralList) as $targetGeneralID => $targetGeneral) {
+        foreach (General::createObjListFromDB($targetGeneralList) as $targetGeneralID => $targetGeneral) {
             $targetLogger = $targetGeneral->getLogger();
             $targetLogger->pushGeneralActionLog($destBroadcastMessage, ActionLogger::PLAIN);
 
