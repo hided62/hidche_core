@@ -12,6 +12,7 @@ use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\TimeUtil;
+use sammo\Util;
 
 use function sammo\checkLimit;
 use function sammo\checkSecretPermission;
@@ -42,7 +43,8 @@ class GetReservedCommand extends \sammo\BaseAPI
 
         $me = $db->queryFirstRow(
             'SELECT no,nation,officer_level,refresh_score,turntime,belong,penalty,permission FROM `general`
-            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $userID
+            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i',
+            $userID
         );
 
         $nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation = %i', $me['nation']);
@@ -62,7 +64,11 @@ class GetReservedCommand extends \sammo\BaseAPI
         [$turnTerm, $year, $month, $lastExecute] = $gameStor->getValuesAsArray(['turnterm', 'year', 'month', 'turntime']);
 
         $generals = [];
-        foreach ($db->query('SELECT no,name,turntime,npc,city,nation,officer_level FROM general WHERE nation = %i AND officer_level >= 5', $nationID) as $rawGeneral) {
+        foreach ($db->query(
+            'SELECT %l FROM general WHERE nation = %i AND officer_level >= 5',
+            Util::formatListOfBackticks(General::mergeQueryColumn())[0],
+            $nationID
+        ) as $rawGeneral) {
             $generals[$rawGeneral['officer_level']] = new General($rawGeneral, null, null, null, null, $year, $month, false);
         }
 
