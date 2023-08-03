@@ -507,28 +507,28 @@ if ($str3) {
             $tournamentType = [
                 '전 력 전' => [
                     '종합',
-                    function (General $general) {
+                    function (GeneralLite $general) {
                         return $general->getVar('leadership') + $general->getVar('strength') + $general->getVar('intel');
                     },
                     'tt',
                 ],
                 '통 솔 전' => [
                     '통솔',
-                    function (General $general) {
+                    function (GeneralLite $general) {
                         return $general->getVar('leadership');
                     },
                     'tl',
                 ],
                 '일 기 토' => [
                     '무력',
-                    function (General $general) {
+                    function (GeneralLite $general) {
                         return $general->getVar('strength');
                     },
                     'ts',
                 ],
                 '설 전' => [
                     '지력',
-                    function (General $general) {
+                    function (GeneralLite $general) {
                         return $general->getVar('intel');
                     },
                     'ti',
