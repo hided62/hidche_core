@@ -76,7 +76,7 @@ if($officerLevel == 12){
     ]);
 }
 
-function do수뇌임명(General $general, int $targetOfficerLevel):?string{
+function do수뇌임명(GeneralLite $general, int $targetOfficerLevel):?string{
     $generalID = $general->getID();
     $nationID = $general->getNationID();
 
