@@ -256,6 +256,41 @@ function buildItemClass(?string $type):BaseItem{
     return $obj;
 }
 
+function getScenarioEffectClass(?string $type){
+    if($type === null || $type === ''){
+        $type = 'None';
+    }
+
+    static $basePath = __NAMESPACE__.'\\ActionScenarioEffect\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 시나리오 효과 클래스가 아님");
+}
+
+function buildScenarioEffectClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getScenarioEffectClass($type);
+
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
+}
+
 function getGeneralSpecialDomesticClass(?string $type){
     if($type === null || $type === ''){
         $type = GameConst::$defaultSpecialDomestic;

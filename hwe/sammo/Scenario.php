@@ -508,6 +508,13 @@ class Scenario{
             throw new \RuntimeException('유닛 파일이 올바르게 지정되지 않음! : '.$unitSet);
         }
 
+        if(key_exists('scenarioEffect', $this->gameConf)){
+            $className = getScenarioEffectClass($this->gameConf['scenarioEffect']);
+            if($className === 'None'){
+                $this->gameConf['scenarioEffect'] = null;
+            }
+        }
+
         Util::generatePHPClassFile($path.'/GameConst.php', $this->gameConf, 'GameConstBase', 'sammo');
 
         copy("$mapPath/$mapName.php", $path.'/CityConst.php');

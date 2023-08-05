@@ -42,6 +42,9 @@ class General extends GeneralBase implements iAction
     protected $itemObjs = [];
     /** @var ?iAction */
     protected $inheritBuffObj = null;
+    /** @var ?iAction */
+    protected $scenarioEffect = null;
+
     /** @var ?GameUnitDetail */
     protected $crewType = null;
 
@@ -107,6 +110,10 @@ class General extends GeneralBase implements iAction
         $rawInheritBuff = $this->getAuxVar('inheritBuff');
         if ($rawInheritBuff !== null) {
             $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
+        }
+
+        if(GameConst::$scenarioEffectName){
+            $this->scenarioEffect = buildScenarioEffectClass(GameConst::$scenarioEffectName);
         }
     }
 
@@ -351,20 +358,7 @@ class General extends GeneralBase implements iAction
         $statValue = Util::clamp($statValue, 0, GameConst::$maxLevel);
 
         if ($withIActionObj) {
-            foreach ([
-                $this->nationType,
-                $this->officerLevelObj,
-                $this->specialDomesticObj,
-                $this->specialWarObj,
-                $this->personalityObj,
-                $this->inheritBuffObj,
-            ] as $actionObj) {
-                if ($actionObj !== null) {
-                    $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
-                }
-            }
-
-            foreach ($this->itemObjs as $actionObj) {
+            foreach ($this->getActionList() as $actionObj) {
                 if ($actionObj !== null) {
                     $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
                 }
@@ -774,6 +768,7 @@ class General extends GeneralBase implements iAction
             $this->personalityObj,
             $this->crewType,
             $this->inheritBuffObj,
+            $this->scenarioEffect
         ], $this->itemObjs);
     }
 

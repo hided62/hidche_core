@@ -225,6 +225,9 @@ class GameConstBase
     public static $inheritSpecificSpecialPoint = 4000;
     public static $inheritResetAttrPointBase = [1000, 1000, 2000, 3000];//필요하면 늘려서 쓰기
 
+    /** @var ?string */
+    public static $scenarioEffectName = null;
+
     public static $allItems = [
         'horse' => [
             'che_명마_01_노기' => 0, 'che_명마_02_조랑' => 0, 'che_명마_03_노새' => 0,
