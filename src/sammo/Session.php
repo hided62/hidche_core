@@ -234,6 +234,8 @@ class Session
 
         $serverID = UniqueConst::$serverID;
 
+        $globalLoginDate = $this->get('time');
+
         $loginDate = $this->get($serverID.static::GAME_KEY_DATE);
         $generalID = $this->get($serverID.static::GAME_KEY_GENERAL_ID);
         $generalName = $this->get($serverID.static::GAME_KEY_GENERAL_NAME);
@@ -241,6 +243,7 @@ class Session
 
         $now = time();
         if (
+            $globalLoginDate < $loginDate &&
             $generalID && $generalName && $loginDate && $deadTime
             && $loginDate + 1800 > $now && $deadTime > $now
         ) {
