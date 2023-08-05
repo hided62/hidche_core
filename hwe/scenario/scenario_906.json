@@ -1,0 +1,56 @@
+{
+    "title":"【공백지】 파죽지세",
+    "startYear":180,
+    "map":{
+        "mapName":"miniche"
+    },
+    "history":[
+    ],
+    "const": {
+        "joinRuinedNPCProp":0,
+        "npcBanMessageProb":1,
+        "scenarioEffect": "event_StrongAttacker",
+        "availableInstantAction": {
+            "instantRetreat": true
+        }
+    },
+    "events":[
+        [
+            "month", 1000,
+            ["or", ["Date", "==", null, 12], ["Date", "==", null, 6]],
+            ["CreateManyNPC", 10, 10],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 1000,
+            ["Date", "==", 181, 1],
+            ["RaiseNPCNation"],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["Date", "==", 181, 1],
+            ["OpenNationBetting", 4, 5000],
+            ["OpenNationBetting", 1, 2000],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "<=", 8]
+            ],
+            ["OpenNationBetting", 1, 1000],
+            ["DeleteEvent"]
+        ],
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+    ]
+}

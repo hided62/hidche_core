@@ -15,7 +15,10 @@
     "nation":[],
     "diplomacy":[],
     "const": {
-        "scenarioEffect": "event_StrongAttacker"
+        "scenarioEffect": "event_StrongAttacker",
+        "availableInstantAction": {
+            "instantRetreat": true
+        }
     },
     "general":[
         [0, "아회남", null, 0, null, 65, 74, 26, 0, 160, 300, null, null],
