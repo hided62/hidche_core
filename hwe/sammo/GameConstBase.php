@@ -228,6 +228,16 @@ class GameConstBase
     /** @var ?string */
     public static $scenarioEffect = null;
 
+    public static $defaultInstantAction = [
+        'dieOnPrestart' => true,
+        'buildNationCandidate' => true,
+    ];
+
+    public static $availableInstantAction = [
+        'dieOnPrestart' => true,
+        'buildNationCandidate' => true,
+    ];
+
     public static $allItems = [
         'horse' => [
             'che_명마_01_노기' => 0, 'che_명마_02_조랑' => 0, 'che_명마_03_노새' => 0,

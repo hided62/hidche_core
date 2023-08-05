@@ -515,6 +515,11 @@ class Scenario{
             }
         }
 
+        $this->gameConf['availableInstantAction'] = array_merge(
+            GameConstBase::$defaultInstantAction,
+            $this->gameConf['availableInstantAction']??[]
+        );
+
         Util::generatePHPClassFile($path.'/GameConst.php', $this->gameConf, 'GameConstBase', 'sammo');
 
         copy("$mapPath/$mapName.php", $path.'/CityConst.php');
