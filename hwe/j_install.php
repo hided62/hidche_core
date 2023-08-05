@@ -199,17 +199,25 @@ if($reserve_open){
     ]);
 }
 
-Json::die(ResetHelper::buildScenario(
-    $turnterm,
-    $sync,
-    $scenario,
-    $fiction,
-    $extend,
-    $block_general_create,
-    $npcmode,
-    $show_img_level,
-    !!$tournament_trig,
-    $join_mode,
-    TimeUtil::now(),
-    $autorun_user
-));
+try{
+    Json::die(ResetHelper::buildScenario(
+        $turnterm,
+        $sync,
+        $scenario,
+        $fiction,
+        $extend,
+        $block_general_create,
+        $npcmode,
+        $show_img_level,
+        !!$tournament_trig,
+        $join_mode,
+        TimeUtil::now(),
+        $autorun_user
+    ));
+}
+catch(\Exception $e){
+    Json::die([
+        'result'=>false,
+        'reason'=>$e->getMessage()
+    ]);
+}
