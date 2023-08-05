@@ -170,6 +170,26 @@ $(function ($) {
         location.reload();
     });
 
+    $('#instantRetreat').on('click', async function (e) {
+        e.preventDefault();
+
+        if(!confirm('아군 접경으로 이동할까요?')){
+            return false;
+        }
+
+        try {
+            await SammoAPI.General.InstantRetreat();
+        }
+        catch (e) {
+            console.log(e);
+            alert(`실패했습니다: ${e}`);
+            location.reload();
+            return;
+        }
+
+        location.reload();
+    });
+
     $('#vacation').on('click', async function (e) {
         e.preventDefault();
         if (!confirm('휴가 기능을 신청할까요?')) {

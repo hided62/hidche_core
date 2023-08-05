@@ -150,6 +150,11 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                             <button type="button" id='buildNationCandidate' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>사전 거병</button><br><br>
                         <?php endif; ?>
 
+                        <?php if (GameConst::$availableInstantAction['instantRetreat'] ?? false) : ?>
+                            거리 3칸 이내 아국 도시로 즉시 이동<br>
+                            <button type="button" id='instantRetreat' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>접경 귀환</button><br><br>
+                        <?php endif; ?>
+
                         <?php if ($gameStor->npcmode == 2 && $me->getNPCType() == 0) : ?>
                             다른 장수 선택 (<?= substr($me->getAuxVar('next_change') ?? TimeUtil::now(), 0, 19) ?> 부터)<br>
                             <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>다른 장수 선택</button></a><br><br>

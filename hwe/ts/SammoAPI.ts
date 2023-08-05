@@ -131,6 +131,7 @@ const apiRealPath = {
       itemType: ItemTypeKey;
     }>,
     DieOnPrestart: POST as APICallT<undefined>,
+    InstantRetreat: POST as APICallT<undefined>,
     BuildNationCandidate: POST as APICallT<undefined>,
     GetCommandTable: GET as APICallT<undefined, CommandTableResponse>,
     GetFrontInfo: GET as APICallT<{
