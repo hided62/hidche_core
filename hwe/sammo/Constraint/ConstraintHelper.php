@@ -156,6 +156,10 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
+    static function NotOccupiedCity():array{
+        return [__FUNCTION__];
+    }
+
     static function NotOccupiedDestCity():array{
         return [__FUNCTION__];
     }
