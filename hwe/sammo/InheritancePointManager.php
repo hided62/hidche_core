@@ -125,6 +125,10 @@ class InheritancePointManager
       return $value;
     }
 
+    if($gameStor->isunited != 0 && $key !== InheritanceKey::previous){
+      return 0;
+    }
+
     if (is_array($storeType)) {
       [$storSubType, $storSubKey] = $storeType;
       if ($storSubType === 'rank') {
