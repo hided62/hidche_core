@@ -20,7 +20,7 @@ class event_StrongAttacker implements iAction
         }
 
         if ($unit->isAttacker()) {
-            return [1.5, 0.667];
+            return [1.4, 0.7143];
         }
         return [1, 1];
     }
