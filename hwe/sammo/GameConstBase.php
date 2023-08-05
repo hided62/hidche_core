@@ -226,7 +226,7 @@ class GameConstBase
     public static $inheritResetAttrPointBase = [1000, 1000, 2000, 3000];//필요하면 늘려서 쓰기
 
     /** @var ?string */
-    public static $scenarioEffectName = null;
+    public static $scenarioEffect = null;
 
     public static $allItems = [
         'horse' => [

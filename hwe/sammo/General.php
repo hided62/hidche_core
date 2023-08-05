@@ -112,8 +112,8 @@ class General extends GeneralBase implements iAction
             $this->inheritBuffObj = new TriggerInheritBuff($rawInheritBuff);
         }
 
-        if(GameConst::$scenarioEffectName){
-            $this->scenarioEffect = buildScenarioEffectClass(GameConst::$scenarioEffectName);
+        if(GameConst::$scenarioEffect){
+            $this->scenarioEffect = buildScenarioEffectClass(GameConst::$scenarioEffect);
         }
     }
 
