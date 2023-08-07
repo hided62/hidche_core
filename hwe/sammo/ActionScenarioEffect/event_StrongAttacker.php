@@ -5,6 +5,8 @@ namespace sammo\ActionScenarioEffect;
 use \sammo\iAction;
 use sammo\WarUnit;
 use sammo\WarUnitCity;
+use sammo\WarUnitTrigger\che_전멸시페이즈증가;
+use sammo\WarUnitTriggerCaller;
 
 class event_StrongAttacker implements iAction
 {
@@ -31,5 +33,12 @@ class event_StrongAttacker implements iAction
             return 0;
         }
         return $value;
+    }
+
+    public function getBattlePhaseSkillTriggerList(\sammo\WarUnit $unit): ?WarUnitTriggerCaller
+    {
+        return new WarUnitTriggerCaller(
+            new che_전멸시페이즈증가($unit),
+        );
     }
 }
