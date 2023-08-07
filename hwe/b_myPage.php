@@ -37,7 +37,8 @@ $lastRefresh = $db->queryFirstField(
     'SELECT %b FROM %b WHERE %b = %i',
     GeneralAccessLogColumn::lastRefresh->value,
     TableName::generalAccessLog->value,
-    GeneralAccessLogColumn::generalID->value, $generalID
+    GeneralAccessLogColumn::generalID->value,
+    $generalID
 );
 
 $targetTime = addTurn($lastRefresh, $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
@@ -50,13 +51,19 @@ if ($gameStor->turntime <= $gameStor->opentime) {
         }
     }
 
-    if($me->getNationID() == 0){
+    if ($me->getNationID() == 0) {
         $showBuildNationCandidateBtn = true;
     }
 }
 
 $use_treatment = $me->getAuxVar('use_treatment') ?? 10;
 $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
+
+$changeDefence999Train = -3;
+$changeDefence999Atmos = -6;
+$changeDefence999Train = $me->onCalcDomestic('changeDefenceTrain', "train999", $changeDefence999Train);
+$changeDefence999Atmos = $me->onCalcDomestic('changeDefenceTrain', "atmos999", $changeDefence999Atmos);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -128,7 +135,10 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                             <?php foreach ([90, 80, 60, 40] as $targetDefenceTrain) : ?>
                                 <option value='<?= $targetDefenceTrain ?>' <?= $me->getVar('defence_train') == $targetDefenceTrain ? "selected" : ""; ?>><?= formatDefenceTrain($targetDefenceTrain) ?>(훈사<?= $targetDefenceTrain ?>)</option>
                             <?php endforeach; ?>
-                            <option value=999 <?= $me->getVar('defence_train') == 999 ? "selected" : ""; ?>><?= formatDefenceTrain(999) ?>[훈련 -3, 사기 -6]</option>
+                            <option value=999 <?= $me->getVar('defence_train') == 999 ? "selected" : ""; ?>><?= formatDefenceTrain(999) ?>
+                            <?php if($changeDefence999Train != 0 || $changeDefence999Train != 0):
+                            ?>[<?=$changeDefence999Train!=0?"훈련 {$changeDefence999Train},":''?><?=$changeDefence999Atmos!=0?"사기 {$changeDefence999Atmos}":''
+                            ?>]<?php endif?></option>
                         </select>
                         】<br><br>
                         <input type=<?= $submit ?> id='set_my_setting' name=btn style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px; value=설정저장><br>
@@ -183,7 +193,7 @@ $use_auto_nation_turn = $me->getAuxVar('use_auto_nation_turn') ?? 1;
                         <div class="row mx-1">
                             <div class="btn-group" role="group">
                                 <?php foreach ($me->getItems() as $itemKey => $item) : ?>
-                                    <button type="button" data-item-type='<?=$itemKey?>' class="drop-item-btn btn btn-primary <?= $item->getName() == '-' ? 'disabled' : '' ?>"><?= $item->getName() ?></button>
+                                    <button type="button" data-item-type='<?= $itemKey ?>' class="drop-item-btn btn btn-primary <?= $item->getName() == '-' ? 'disabled' : '' ?>"><?= $item->getName() ?></button>
                                 <?php endforeach; ?>
                             </div>
                         </div>

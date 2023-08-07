@@ -43,8 +43,12 @@ if($defence_train !== $me->getVar('defence_train')){
     if($defence_train == 999){
         $me->increaseVar('myset', -1);
         $me->setVar('defence_train', $defence_train);
-        $me->increaseVarWithLimit('train', -3, 20);
-        $me->increaseVarWithLimit('atmos', -6, 20);
+        $affectedTrain = -3;
+        $affectedAtmos = -6;
+        $affectedTrain = $me->onCalcDomestic('changeDefenceTrain', "train{$defence_train}", $affectedTrain);
+        $affectedAtmos = $me->onCalcDomestic('changeDefenceTrain', "atmos{$defence_atmos}", $affectedAtmos);
+        $me->increaseVarWithLimit('train', $affectedTrain, 20, GameConst::$maxTrainByWar);
+        $me->increaseVarWithLimit('atmos', $affectedAtmos, 20, GameConst::$maxAtmosByWar);
     }
     else{
         $me->increaseVar('myset', -1);

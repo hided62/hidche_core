@@ -24,4 +24,12 @@ class event_StrongAttacker implements iAction
         }
         return [1, 1];
     }
+
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux = null): float
+    {
+        if ($turnType == 'changeDefenceTrain') {
+            return 0;
+        }
+        return $value;
+    }
 }
