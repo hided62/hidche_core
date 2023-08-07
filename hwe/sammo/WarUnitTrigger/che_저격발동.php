@@ -22,6 +22,10 @@ class che_저격발동 extends BaseWarUnitTrigger
             return true;
         }
 
+        if(($selfEnv['저격발동자']?? -1) !== $this->raiseType){
+            return true;
+        }
+
         if ($selfEnv['저격발동'] ?? false) {
             return true;
         }

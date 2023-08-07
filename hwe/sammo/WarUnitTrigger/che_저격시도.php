@@ -44,6 +44,7 @@ class che_저격시도 extends BaseWarUnitTrigger{
         }
 
         $self->activateSkill('저격');
+        $selfEnv['저격발동자'] = $this->raiseType;
         $selfEnv['woundMin'] = $this->woundMin;
         $selfEnv['woundMax'] = $this->woundMax;
         $selfEnv['addAtmos'] = $this->addAtmos;
