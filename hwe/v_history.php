@@ -28,10 +28,10 @@ if ($serverID !== UniqueConst::$serverID) {
 if($serverID === UniqueConst::$serverID){
   [$currentYear, $currentMonth] = $gameStor->getValuesAsArray(['year', 'month']);
   if($f_year === null || $l_year === null){
-    $f_year = $currentYear - 1;
+    $f_year = $currentYear;
     $f_month = $currentMonth - 1;
 
-    $l_year = $currentYear - 1;
+    $l_year = $currentYear;
     $l_month = $currentMonth - 1;
   }
 }
