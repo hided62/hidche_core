@@ -24,11 +24,22 @@ if ($serverID !== UniqueConst::$serverID) {
 [$f_year, $f_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
 [$l_year, $l_month] = $db->queryFirstList('SELECT year, month FROM ng_history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
 
+
 if($serverID === UniqueConst::$serverID){
   [$currentYear, $currentMonth] = $gameStor->getValuesAsArray(['year', 'month']);
+  if($f_year === null || $l_year === null){
+    $f_year = $currentYear;
+    $f_month = $currentMonth;
+
+    $l_year = $currentYear;
+    $l_month = $currentMonth;
+  }
 }
 else{
   [$currentYear, $currentMonth] = [$l_year, $l_month];
+  if($f_year === null || $f_year === null){
+    die('잘못된 요청입니다.');
+  }
 }
 
 ?>
