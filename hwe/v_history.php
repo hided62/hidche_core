@@ -28,16 +28,16 @@ if ($serverID !== UniqueConst::$serverID) {
 if($serverID === UniqueConst::$serverID){
   [$currentYear, $currentMonth] = $gameStor->getValuesAsArray(['year', 'month']);
   if($f_year === null || $l_year === null){
-    $f_year = $currentYear;
-    $f_month = $currentMonth;
+    $f_year = $currentYear - 1;
+    $f_month = $currentMonth - 1;
 
-    $l_year = $currentYear;
-    $l_month = $currentMonth;
+    $l_year = $currentYear - 1;
+    $l_month = $currentMonth - 1;
   }
 }
 else{
   [$currentYear, $currentMonth] = [$l_year, $l_month];
-  if($f_year === null || $f_year === null){
+  if($f_year === null || $l_year === null){
     die('잘못된 요청입니다.');
   }
 }
