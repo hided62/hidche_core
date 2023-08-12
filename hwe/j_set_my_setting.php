@@ -46,7 +46,7 @@ if($defence_train !== $me->getVar('defence_train')){
         $affectedTrain = -3;
         $affectedAtmos = -6;
         $affectedTrain = $me->onCalcDomestic('changeDefenceTrain', "train{$defence_train}", $affectedTrain);
-        $affectedAtmos = $me->onCalcDomestic('changeDefenceTrain', "atmos{$defence_atmos}", $affectedAtmos);
+        $affectedAtmos = $me->onCalcDomestic('changeDefenceTrain', "atmos{$defence_train}", $affectedAtmos);
         $me->increaseVarWithLimit('train', $affectedTrain, 20, GameConst::$maxTrainByWar);
         $me->increaseVarWithLimit('atmos', $affectedAtmos, 20, GameConst::$maxAtmosByWar);
     }
