@@ -12,34 +12,19 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("갱신정보", 1);
 
-$admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxrefresh', 'maxonline']);
+$admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxrefresh', 'maxonline', 'recentTraffic']);
 
-$log = getRawFileLogRecent(__DIR__ . '/logs/' . UniqueConst::$serverID . '/_traffic.txt', 11, 100);
-
-$date = [];
-$year = [];
-$month = [];
-$refresh = [];
-$online = [];
+$recentTraffic = $admin['recentTraffic'] ?? [];
 
 $curonline = getOnlineNum();
-foreach ($log as $i => $value) {
-    $parse = Json::decode($value);
-    if (is_array($parse) === false) {
-        continue;
-    }
-    if (count($parse) < 5) {
-        continue;
-    }
-    $date[$i]    = $parse[0];
-    $year[$i]    = $parse[1];
-    $month[$i]   = $parse[2];
-    $refresh[$i] = $parse[3];
-    $online[$i]  = $parse[4];
-}
-$year[] = $admin['year'];
-$month[] = $admin['month'];
-$date[] = TimeUtil::now();
+
+$recentTraffic[] = [
+    'year'    => $admin['year'],
+    'month'   => $admin['month'],
+    'refresh' => $admin['refresh'],
+    'online'  => $curonline,
+    'date' => TimeUtil::now()
+];
 
 if ($admin['maxrefresh'] == 0) {
     $admin['maxrefresh'] = 1;
@@ -113,13 +98,13 @@ if ($admin['maxonline'] < $curonline) {
                         </td>
                     </tr>
                     <?php
-                    $refresh[] = $admin['refresh'];
-                    foreach ($refresh as $i => $value) {
+                    foreach ($recentTraffic as $trafficItem) {
+                        $value = $trafficItem['refresh'];
                         $w = round($value / $admin['maxrefresh'] * 100, 1);
                         $color = getTrafficColor($w);
-                        $dt = substr($date[$i], 11, 5); ?>
+                        $dt = substr($trafficItem['date'], 11, 5); ?>
                         <tr height=30>
-                            <td width=100 align=center><?= $year[$i] ?>년 <?= $month[$i] ?>월</td>
+                            <td width=100 align=center><?= $trafficItem['year'] ?>년 <?= $trafficItem['month'] ?>월</td>
                             <td width=60 align=center class='bg2'><?= $dt ?></td>
                             <td width=2 align=center class='bg1'></td>
                             <td width=320>
@@ -154,13 +139,13 @@ if ($admin['maxonline'] < $curonline) {
                         </td>
                     </tr>
                     <?php
-                    $online[] = $curonline;
-                    foreach ($online as $i => $value) {
+                    foreach ($recentTraffic as $trafficItem) {
+                        $value = $trafficItem['online'];
                         $w = round($value / $admin['maxonline'] * 100, 1);
                         $color = getTrafficColor($w);
-                        $dt = substr($date[$i], 11, 5); ?>
+                        $dt = substr($trafficItem['date'], 11, 5); ?>
                         <tr height=30>
-                            <td width=100 align=center><?= $year[$i] ?>년 <?= $month[$i] ?>월</td>
+                            <td width=100 align=center><?= $trafficItem['year'] ?>년 <?= $trafficItem['month'] ?>월</td>
                             <td width=60 align=center class='bg2'><?= $dt ?></td>
                             <td width=2 align=center class='bg1'></td>
                             <td width=320>

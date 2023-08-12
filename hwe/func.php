@@ -1070,7 +1070,7 @@ function updateTraffic()
     $online = getOnlineNum();
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxonline', 'maxrefresh']);
+    $admin = $gameStor->getValues(['year', 'month', 'refresh', 'maxonline', 'maxrefresh', 'recentTraffic']);
     /** @var array{year:int,month:int,refresh:int,maxonline:int,maxrefresh:int} $admin */
 
     if ($admin['maxrefresh'] < $admin['refresh']) {
@@ -1082,6 +1082,19 @@ function updateTraffic()
     $gameStor->refresh = 0;
     $gameStor->maxrefresh = $admin['maxrefresh'];
     $gameStor->maxonline = $admin['maxonline'];
+
+    $recentTraffic = $admin['recentTraffic'] ?? [];
+    if(count($recentTraffic) >= 5){
+        array_shift($recentTraffic);
+    }
+    $recentTraffic[] = [
+        'year'=>$admin['year'],
+        'month' => $admin['month'],
+        'refresh' => $admin['refresh'],
+        'online' => $admin['maxonline'],
+        'date' => TimeUtil::now(),
+    ];
+    $gameStor->recentTraffic = $recentTraffic;
 
     $db->update('general_access_log', ['refresh' => 0], true);
 }
