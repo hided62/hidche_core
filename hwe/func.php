@@ -1091,7 +1091,7 @@ function updateTraffic()
         'year'=>$admin['year'],
         'month' => $admin['month'],
         'refresh' => $admin['refresh'],
-        'online' => $admin['maxonline'],
+        'online' => $online,
         'date' => TimeUtil::now(),
     ];
     $gameStor->recentTraffic = $recentTraffic;
