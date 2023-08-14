@@ -37,12 +37,12 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
 
     $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $startYear);
 
-    $defenderIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city'));
-    $defenderGeneralList = General::createObjListFromDB($defenderIDList, null);
+    $defenderCityGeneralIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0', $city->getVar('nation'), $city->getVar('city'));
+    $defenderCityGeneralList = General::createObjListFromDB($defenderCityGeneralIDList, null);
 
     /** @var WarUnit[] */
     $defenderList = [];
-    foreach($defenderGeneralList as $defenderGeneral){
+    foreach($defenderCityGeneralList as $defenderGeneral){
         $defenderGeneral->setRawCity($rawDefenderCity);
         $defenderCandidate = new WarUnitGeneral($rng, $defenderGeneral, $rawDefenderNation, false);
         if(extractBattleOrder($defenderCandidate, $attacker) <= 0){
@@ -186,7 +186,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
         'year' => $year,
         'month' => $month,
         'join_mode' => $joinMode,
-    ], $attacker->getGeneral(), $city->getRaw());
+    ], $attacker->getGeneral(), $city->getRaw(), $defenderCityGeneralList);
 }
 
 function extractBattleOrder(WarUnit $defender, WarUnit $attacker)
@@ -529,8 +529,9 @@ function getConquerNation($city): int
     return Util::array_first_key($conflict);
 }
 
-function ConquerCity(array $admin, General $general, array $city)
+function ConquerCity(array $admin, General $general, array $city, array $defenderCityGeneralList)
 {
+    /** @var General[] $defenderCityGeneralList */
     $db = DB::db();
 
     $year = $admin['year'];
@@ -584,6 +585,21 @@ function ConquerCity(array $admin, General $general, array $city)
     // 이벤트 핸들러 동작
     if(TurnExecutionHelper::runEventHandler($db, $gameStor, EventTarget::OccupyCity)){
         $gameStor->cacheAll();
+    }
+    $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+        UniqueConst::$hiddenSeed,
+        'ConquerCity',
+        $year,
+        $month,
+        $attackerNationID,
+        $attackerID,
+        $cityID
+    )));
+    foreach($defenderCityGeneralList as $defenderCityGeneral){
+        $defenderCityGeneral->onArbitraryAction($defenderCityGeneral, $rng, 'ConquerCity', null, [
+            'attacker' => $general
+        ]);
+        $defenderCityGeneral->applyDB($db);
     }
 
 
