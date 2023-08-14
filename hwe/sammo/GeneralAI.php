@@ -2709,7 +2709,7 @@ class GeneralAI
         $city = $this->city;
         $nation = $this->nation;
 
-        if (($nation['rice'] < GameConst::$baserice) && $this->rng->nextBool(0.7)) {
+        if (($nation['rice'] < GameConst::$baserice) && $general->getNPCType() >= 2 && $this->rng->nextBool(0.7)) {
             return null;
         }
 
