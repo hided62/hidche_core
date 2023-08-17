@@ -21,7 +21,7 @@ class che_저격_매화수전 extends \sammo\BaseItem{
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
             new che_저격시도($unit, che_저격시도::TYPE_ITEM+BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*304, 0.5, 20, 40),
-            new che_저격발동($unit, che_저격발동::TYPE_ITEM)
+            new che_저격발동($unit, che_저격시도::TYPE_ITEM+BaseWarUnitTrigger::TYPE_DEDUP_TYPE_BASE*304)
         );
     }
 }

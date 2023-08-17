@@ -20,7 +20,7 @@ class che_무기_07_맥궁 extends \sammo\BaseStatItem{
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
             new che_저격시도($unit, che_저격시도::TYPE_ITEM + che_저격시도::TYPE_DEDUP_TYPE_BASE * 107, 0.2, 20, 40),
-            new che_저격발동($unit, che_저격발동::TYPE_ITEM)
+            new che_저격발동($unit, che_저격시도::TYPE_ITEM + che_저격시도::TYPE_DEDUP_TYPE_BASE * 107)
         );
     }
 }
