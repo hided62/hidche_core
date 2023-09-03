@@ -174,6 +174,11 @@ const apiRealPath = {
     BuyRandomUnique: PUT as APICallT<undefined>,
     ResetSpecialWar: PUT as APICallT<undefined>,
     ResetTurnTime: PUT as APICallT<undefined>,
+    CalcResetTurnTimeRange: GET as APICallT<undefined, {
+      result: true,
+      minTurnTime: string,
+      maxTurnTime: string,
+    }>,
     SetNextSpecialWar: PUT as APICallT<{
       type: string;
     }>,

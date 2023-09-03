@@ -107,11 +107,11 @@
         <div class="col col-lg-4 col-sm-6 col-12 py-2">
           <div class="row px-4">
             <div class="a-right col-6 align-self-center">랜덤 턴 초기화</div>
-            <BButton class="col-6" variant="primary" @click="buySimple('ResetTurnTime')"> 구입 </BButton>
+            <BButton class="col-6" variant="primary" @click="tryResestTurnTime()"> 구입 </BButton>
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              >다음 턴이 랜덤으로 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
+              >다음 턴 시간이 앞, 뒤 랜덤하게 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
                 >필요 포인트: {{ inheritActionCost.resetTurnTime }}</span
               ></small
             >
@@ -234,6 +234,8 @@ declare const staticValues: {
   };
   resetTurnTimeLevel: number;
   resetSpecialWarLevel: number;
+  ternTurm: number;
+  turnTime: string;
 
   availableSpecialWar: Record<
     string,
@@ -263,6 +265,7 @@ import type { inheritBuffType, InheritPointLogItem } from "./defs/API/InheritAct
 import * as JosaUtil from "@/util/JosaUtil";
 import { BButton } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
+import { add as dateAdd } from 'date-fns';
 
 const inheritanceViewText: Record<InheritanceViewType, { title: string; info: string }> = {
   sum: {
@@ -446,9 +449,42 @@ async function buyInheritBuff(buffKey: inheritBuffType) {
   //TODO: 페이지 새로고침 필요없이 하도록
   location.reload();
 }
-async function buySimple(type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpecialWar") {
+
+async function tryResestTurnTime(){
+  const cost = inheritActionCost.resetTurnTime;
+
+  if (items.value.previous < cost) {
+    alert("유산 포인트가 부족합니다.");
+    return;
+  }
+
+
+  const { minTurnTime, maxTurnTime } = await SammoAPI.InheritAction.CalcResetTurnTimeRange();
+
+  //YYYY-MM-DD hh:mm:ss 에서 hh:mm:ss 까지만 보여줄 예정
+  const textMinTurnTime = minTurnTime.substring(11, 19);
+  const textMaxTurnTime = maxTurnTime.substring(11, 19);
+
+  const msg = `${cost} 포인트로 턴을 초기화 하시겠습니까?\n${textMinTurnTime} ~ ${textMaxTurnTime} 사이의 시간으로 초기화 됩니다.`;
+  if (!confirm(msg)) {
+    return;
+  }
+
+  try {
+    await SammoAPI.InheritAction.ResetTurnTime();
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+
+  alert("성공했습니다.");
+  //TODO: 페이지 새로고침 필요없이 하도록
+  location.reload();
+}
+
+async function buySimple(type: "BuyRandomUnique" | "ResetSpecialWar") {
   const costMap: Record<typeof type, number> = {
-    ResetTurnTime: inheritActionCost.resetTurnTime,
     ResetSpecialWar: inheritActionCost.resetSpecialWar,
     BuyRandomUnique: inheritActionCost.randomUnique,
   };
@@ -459,15 +495,16 @@ async function buySimple(type: "ResetTurnTime" | "BuyRandomUnique" | "ResetSpeci
     return;
   }
 
-  const messageMap: Record<typeof type, string> = {
-    ResetTurnTime: `${cost} 포인트로 턴을 초기화 하시겠습니까?`,
-    ResetSpecialWar: `${cost} 포인트로 전투 특기를 초기화 하시겠습니까?`,
-    BuyRandomUnique: `${cost} 포인트로 랜덤 유니크를 구입하시겠습니까?`,
-  };
   if (items.value.previous < cost) {
     alert("유산 포인트가 부족합니다.");
     return;
   }
+
+  const messageMap: Record<typeof type, string> = {
+    ResetSpecialWar: `${cost} 포인트로 전투 특기를 초기화 하시겠습니까?`,
+    BuyRandomUnique: `${cost} 포인트로 랜덤 유니크를 구입하시겠습니까?`,
+  };
+
   if (!confirm(messageMap[type])) {
     return;
   }
