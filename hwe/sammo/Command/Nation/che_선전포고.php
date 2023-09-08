@@ -146,6 +146,7 @@ class che_선전포고 extends Command\NationCommand
         $destLogger = new ActionLogger(0, $destNationID, $env['year'], $env['month']);
 
         $logger->pushGeneralActionLog("<D><b>{$destNationName}</b></>에 선전 포고 했습니다.<1>$date</>");
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 선전 포고");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 선전 포고");
         $destLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국에 선전 포고");
 

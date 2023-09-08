@@ -182,6 +182,7 @@ class che_급습 extends Command\NationCommand
         $destNationLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} 아국에 <M>{$commandName}</>{$josaUl} 발동");
         $destNationLogger->flush();
 
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <M>{$commandName}</>{$josaUl} 발동");
 
         $db->update('nation', [
