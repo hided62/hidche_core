@@ -156,7 +156,7 @@ class che_백성동원 extends Command\NationCommand
             'wall' => $db->sqleval('GREATEST(wall_max * 0.8, wall)'),
         ], 'city=%i', $destCityID);
 
-        $logger->pushGeneralHistoryLog('<G><b>{$destCityName}</b></>에 <M>백성동원</>을 발동');
+        $logger->pushGeneralHistoryLog("<G><b>{$destCityName}</b></>에 <M>백성동원</>을 발동");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$destCityName}</b></>에 <M>백성동원</>을 발동");
 
         $db->update('nation', [
