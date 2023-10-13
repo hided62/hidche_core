@@ -169,7 +169,7 @@ class che_등용수락 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("<D>{$destNationName}</>{$josaRo} 망명하여 수도로 이동합니다.");
         $destLogger->pushGeneralActionLog("<Y>{$generalName}</> 등용에 성공했습니다.");
 
-        $logger->pushGeneralHistoryLog("<D>{$destNationName}</>{$josaRo} 망명");
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>{$josaRo} 망명");
         $destLogger->pushGeneralHistoryLog("<Y>{$generalName}</> 등용에 성공");
 
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>{$josaRo} <S>망명</>하였습니다.");
