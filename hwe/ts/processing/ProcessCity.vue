@@ -55,7 +55,7 @@
     </div>
     <div v-else-if="commandName == '허보'">
       선택된 도시에 허보를 발동합니다.<br />
-      전쟁중인 상대국 도시만 가능합니다.<br />
+      선포, 전쟁중인 상대국 도시만 가능합니다.<br />
       목록을 선택하거나 도시를 클릭하세요.<br />
     </div>
     <div v-else-if="commandName == '초토화'">
