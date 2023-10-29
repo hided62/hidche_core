@@ -365,14 +365,14 @@ class General extends GeneralBase implements iAction
             }
         }
 
-        $this->calcCache[$cKey] = $statValue;
-
         $statValue = Util::clamp($statValue, 0, GameConst::$maxLevel);
 
         if ($useFloor) {
             return Util::toInt($statValue);
         }
 
+        $this->calcCache[$cKey] = $statValue;
+        
         return $statValue;
     }
 
