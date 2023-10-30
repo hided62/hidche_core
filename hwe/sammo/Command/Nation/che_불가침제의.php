@@ -117,6 +117,7 @@ class che_불가침제의 extends Command\NationCommand
             ConstraintHelper::BeChief(),
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::ExistsDestNation(),
+            ConstraintHelper::DifferentDestNation(),
             ConstraintHelper::DisallowDiplomacyBetweenStatus([
                 0 => '아국과 이미 교전중입니다.',
                 1 => '아국과 이미 선포중입니다.',
