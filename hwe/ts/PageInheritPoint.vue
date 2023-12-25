@@ -111,7 +111,7 @@
           </div>
           <div class="a-right">
             <small class="form-text text-muted"
-              >다음 턴 시간이 앞, 뒤 랜덤하게 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
+              >다다음턴부터 시간이 랜덤하게 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
                 >필요 포인트: {{ inheritActionCost.resetTurnTime }}</span
               ></small
             >
@@ -458,14 +458,7 @@ async function tryResestTurnTime(){
     return;
   }
 
-
-  const { minTurnTime, maxTurnTime } = await SammoAPI.InheritAction.CalcResetTurnTimeRange();
-
-  //YYYY-MM-DD hh:mm:ss 에서 hh:mm:ss 까지만 보여줄 예정
-  const textMinTurnTime = minTurnTime.substring(11, 19);
-  const textMaxTurnTime = maxTurnTime.substring(11, 19);
-
-  const msg = `${cost} 포인트로 턴을 초기화 하시겠습니까?\n${textMinTurnTime} ~ ${textMaxTurnTime} 사이의 시간으로 초기화 됩니다.`;
+  const msg = `${cost} 포인트로 턴을 초기화 하시겠습니까?\n다다음턴부터 무작위 시간으로 초기화 됩니다.`;
   if (!confirm(msg)) {
     return;
   }

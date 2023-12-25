@@ -216,6 +216,16 @@ class TurnExecutionHelper
         }
 
         $turntime = addTurn($general->getTurnTime(), $gameStor->turnterm);
+
+        $nextTurnTimeBase = $general->getAuxVar('nextTurnTimeBase');
+        if($nextTurnTimeBase !== null){
+            $turntime = cutTurn($turntime, $gameStor->turnterm);
+            $turntimeObj = new \DateTimeImmutable($turntime);
+            $turntimeObj = $turntimeObj->add(TimeUtil::secondsToDateInterval($nextTurnTimeBase));
+            $turntime = TimeUtil::format($turntimeObj, true);
+            $general->setAuxVar('nextTurnTimeBase', null);
+        }
+
         $general->setVar('turntime', $turntime);
     }
 

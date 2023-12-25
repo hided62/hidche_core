@@ -52,7 +52,7 @@ class ResetTurnTime extends \sammo\BaseAPI
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        if($gameStor->isunited){
+        if ($gameStor->isunited) {
             return '이미 천하가 통일되었습니다.';
         }
         $inheritStor = KVStorage::getStorage($db, "inheritance_{$userID}");
@@ -62,10 +62,9 @@ class ResetTurnTime extends \sammo\BaseAPI
         }
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        [$turnTerm, $serverTurnTime] = $gameStor->getValuesAsArray(['turnterm', 'turntime']);
+        $turnTerm = $gameStor->getValue('turnterm');
 
         $currTurnTime = new DateTimeImmutable($general->getTurnTime());
-        $serverTurnTimeObj = new DateTimeImmutable($serverTurnTime);
 
         $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
             UniqueConst::$hiddenSeed,
@@ -74,24 +73,14 @@ class ResetTurnTime extends \sammo\BaseAPI
             $general->getTurnTime()
         )));
 
-        $afterTurn = $rng->nextRange($turnTerm * -60 / 2, $turnTerm * 60 / 2);
+        $afterTurn = $rng->nextFloat1() * $turnTerm * 60;
 
         $userLogger = new UserLogger($userID);
-        if($afterTurn >= 0){
-            $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾼 결과 %02d:%02d 뒤로 밀림", intdiv(Util::toInt($afterTurn), 60), $afterTurn%60), "inheritPoint");
-        }
-        else{
-            $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾼 결과 %02d:%02d 앞으로 당김", intdiv(Util::toInt(-$afterTurn), 60), (-$afterTurn)%60), "inheritPoint");
-        }
+        $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾸어 다음 턴부터 %02d:%02d 적용", intdiv(Util::toInt($afterTurn), 60), $afterTurn % 60), "inheritPoint");
         $userLogger->flush();
 
-        $turnTime = $currTurnTime->add(TimeUtil::secondsToDateInterval($afterTurn));
-        if ($turnTime <= $serverTurnTimeObj && $serverTurnTimeObj <= $currTurnTime) {
-            $turnTime = $turnTime->add(TimeUtil::secondsToDateInterval($turnTerm * 60));
-        }
-
-        $general->setVar('turntime', TimeUtil::format($turnTime, true));
         $general->setAuxVar('inheritResetTurnTime', $nextLevel);
+        $general->setAuxVar('nextTurnTimeBase', $afterTurn);
         $inheritStor->setValue('previous', [$previousPoint - $reqPoint, null]);
         $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqPoint);
         $general->applyDB($db);
