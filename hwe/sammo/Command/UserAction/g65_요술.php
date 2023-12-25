@@ -1,12 +1,12 @@
 <?php
 namespace sammo\Command\UserAction;
 
-use sammo\ActionBuff\g65_징병비용무시;
+use sammo\ActionBuff\g65_내정성공;
 use \sammo\Command;
 use sammo\Constraint\ConstraintHelper;
 
-class g65_병장기지원 extends Command\UserActionCommand{
-    static protected $actionName = '병장기지원';
+class g65_요술 extends Command\UserActionCommand{
+    static protected $actionName = '요술';
 
     protected function argTest():bool{
         return true;
@@ -14,13 +14,13 @@ class g65_병장기지원 extends Command\UserActionCommand{
 
     public function getBrief(): string
     {
-        return '병장기 지원';
+        return '요술';
     }
 
     public function getCommandDetailTitle(): string
     {
         $postReqTurn = $this->getPostReqTurn();
-        return "이번턴의 징병/모병 비용 무시(재사용 대기 {$postReqTurn})";
+        return "이번 턴의 계략 항상 성공(재사용 대기 {$postReqTurn})";
     }
 
     protected function init(){
@@ -51,12 +51,12 @@ class g65_병장기지원 extends Command\UserActionCommand{
         }
 
         $general = $this->generalObj;
-        $general->addInstantBuff(new g65_징병비용무시(), 1);
+        $general->addInstantBuff(new g65_내정성공(), 2);
 
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("상인에게 병사들의 병장기를 지원받습니다. <1>$date</>");
+        $logger->pushGeneralActionLog("이번 턴의 계략을 집중합니다. <1>$date</>");
         return true;
     }
 }

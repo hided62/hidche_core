@@ -32,6 +32,9 @@ class g65_접경귀환 extends Command\UserActionCommand
 
     protected function init()
     {
+        $this->setCity();
+        $this->setNation();
+
         $this->fullConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
@@ -94,8 +97,10 @@ class g65_접경귀환 extends Command\UserActionCommand
         $destCityID = $rng->choice($nearestCityList);
         $destCityName = CityConst::byID($destCityID)->name;
 
+        $date = $general->getTurnTime($general::TURNTIME_HM);
+
         $josaRo = JosaUtil::pick($destCityName, '로');
-        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 접경귀환했습니다.");
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 접경귀환했습니다. <1>$date</>");
         $general->setVar('city', $destCityID);
 
         $general->applyDB($db);

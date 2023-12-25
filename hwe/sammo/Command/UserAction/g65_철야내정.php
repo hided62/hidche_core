@@ -24,6 +24,9 @@ class g65_철야내정 extends Command\UserActionCommand{
     }
 
     protected function init(){
+        $this->setCity();
+        $this->setNation();
+
         $this->fullConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity()
@@ -50,8 +53,10 @@ class g65_철야내정 extends Command\UserActionCommand{
         $general = $this->generalObj;
         $general->addInstantBuff(new g65_내정성공(), 2);
 
+        $date = $general->getTurnTime($general::TURNTIME_HM);
+
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("2턴 간 내정을 철저히 지휘합니다.");
+        $logger->pushGeneralActionLog("2턴 간 내정을 철저히 지휘합니다. <1>$date</>");
         return true;
     }
 }

@@ -24,6 +24,9 @@ class g65_입대독려 extends Command\UserActionCommand{
     }
 
     protected function init(){
+        $this->setCity();
+        $this->setNation();
+
         $this->fullConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::OccupiedCity()

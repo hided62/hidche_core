@@ -27,12 +27,14 @@ class GetUserActionCommandTable extends \sammo\BaseAPI
     public function launch(Session $session, ?\DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
     {
         $generalID = $session->generalID;
-        $general = General::createObjFromDB($generalID);
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->turnOnCache();
         $env = $gameStor->getAll();
+
+
+        $general = General::createObjFromDB($generalID);
 
         $commandTable = [];
         foreach (GameConst::$availableUserActionCommand as $commandCategory => $commandList) {
