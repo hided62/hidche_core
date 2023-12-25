@@ -30,11 +30,8 @@ class che_하야 extends Command\GeneralCommand{
 
         $this->setNation();
 
-        $relYear = $env['year'] - $env['startyear'];
-
         $this->fullConditionConstraints=[
             ConstraintHelper::NotBeNeutral(),
-            ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::NotLord(),
         ];
     }
