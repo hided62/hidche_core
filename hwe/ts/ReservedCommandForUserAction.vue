@@ -17,15 +17,15 @@
     <div :class="{
       commandTable: true,
     }">
-      <DragSelect :style="rowGridStyle" :disabled="true" attribute="turnIdx">
+      <div :style="rowGridStyle">
         <div v-for="(turnObj, turnIdx) in reservedCommandList.slice(0, viewMaxTurn)" :key="turnIdx" :turnIdx="turnIdx"
           class="idx_pad center d-grid">
           <div class="plain-center">
             {{ turnIdx + 1 }}
           </div>
         </div>
-      </DragSelect>
-      <DragSelect :style="rowGridStyle" attribute="turnIdx" :disabled="true">
+      </div>
+      <div :style="rowGridStyle">
         <div v-for="(turnObj, turnIdx) in reservedCommandList.slice(0, viewMaxTurn)" :key="turnIdx" height="24"
           class="month_pad center" :turnIdx="turnIdx" :style="{
             'white-space': 'nowrap',
@@ -35,7 +35,7 @@
           {{ turnObj.year ? `${turnObj.year}年` : "" }}
           {{ turnObj.month ? `${turnObj.month}月` : "" }}
         </div>
-      </DragSelect>
+      </div>
       <div :style="rowGridStyle">
         <div v-for="(turnObj, turnIdx) in reservedCommandList.slice(0, viewMaxTurn)" :key="turnIdx"
           class="time_pad center" :style="{
@@ -56,7 +56,19 @@
         </div>
       </div>
       <div :style="rowGridStyle">
-        <div v-for="(turnObj, turnIdx) in reservedCommandList.slice(0, viewMaxTurn)" :key="turnIdx"
+        <div v-for="(turnObj, turnIdx) in reservedUserActionList.slice(0, viewMaxTurn)" :key="turnIdx"
+          class="turn_pad center">
+          <span v-if="turnObj" class="turn_text">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="turnObj.brief" />
+          </span>
+          <span v-else class="turn_text">
+            <span>휴식</span>
+          </span>
+        </div>
+      </div>
+      <div :style="rowGridStyle">
+        <div v-for="(turnObj, turnIdx) in reservedUserActionList.slice(0, viewMaxTurn)" :key="turnIdx"
           class="action_pad d-grid">
           <BButton :variant="turnIdx % 2 == 0 ? 'secondary' : 'dark'" size="sm" class="simple_action_btn bi bi-pencil"
             :disabled="!commandList.length" @click="toggleQuickReserveForm(turnIdx)" />
@@ -100,7 +112,6 @@ import { joinYearMonth } from "@util/joinYearMonth";
 import { mb_strwidth } from "@util/mb_strwidth";
 import { parseTime } from "@util/parseTime";
 import { parseYearMonth } from "@util/parseYearMonth";
-import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { CommandItem, CommandTableResponse } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
@@ -110,7 +121,7 @@ import type { TurnObj } from "@/defs";
 import type { Args } from "./processing/args";
 import { getEmptyTurn } from "./util/QueryActionHelper";
 import SimpleClock from "./components/SimpleClock.vue";
-import type { ReservedCommandResponse } from "./defs/API/Command";
+import type { ReservedCommandResponse, ReservedUserActionResponse, UserActionItem } from "./defs/API/Command";
 import { unwrap } from "./util/unwrap";
 
 defineExpose({
@@ -135,7 +146,6 @@ const nullCommand: CommandItem = {
 }
 
 const selectedCommand = ref<CommandItem>(nullCommand);
-const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
 const invCommandMap = new Map<string, CommandItem>();
 
 async function updateCommandTable() {
@@ -183,7 +193,7 @@ onMounted(() => {
 });
 
 const reservedCommandList = ref(getEmptyTurn(maxTurn));
-
+const reservedUserActionList = ref<(UserActionItem | undefined)[]>([]);
 const flippedMaxTurn = 14;
 
 const basicModeRowHeight = 34.4;
@@ -209,8 +219,13 @@ const serverNow = ref(new Date());
 
 async function reloadCommandList() {
   let result: ReservedCommandResponse;
+  let userActions: ReservedUserActionResponse;
   try {
-    result = await SammoAPI.Command.GetReservedCommand();
+    [result, userActions] = await Promise.all([
+      SammoAPI.Command.GetReservedCommand(),
+      SammoAPI.Command.GetReservedUserAction(),
+    ]);
+
   } catch (e) {
     if (isString(e)) {
       toasts.danger({
@@ -265,13 +280,20 @@ async function reloadCommandList() {
   }
 
   serverNow.value = parseTime(result.date);
+
+  const newReservedUserActionList: (UserActionItem | undefined)[] = [];
+  newReservedUserActionList.length = maxTurn;
+  for (const [idx, item] of Object.entries(userActions.userActions.reserved ?? {})) {
+    newReservedUserActionList[parseInt(idx)] = item;
+  }
+  reservedUserActionList.value = newReservedUserActionList;
 }
 
 async function reserveCommand() {
   const turnIdx = currentQuickReserveTarget.value;
 
   const commandName = selectedCommand.value.value;
-  if(turnIdx < 0) {
+  if (turnIdx < 0) {
     return;
   }
 
@@ -333,14 +355,7 @@ onMounted(() => {
   width: 100%;
   display: grid;
   grid-template-columns:
-    minmax(20px, 0.8fr) minmax(75px, 2.4fr) minmax(40px, 0.9fr) 4.8fr minmax(28px, 0.8fr);
-  //30, 70, 37.65, 160
-}
-
-.commandTable.isEditMode {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(30px, 1fr) minmax(75px, 2.5fr) minmax(40px, 1fr) 5fr;
+    minmax(20px, 0.6fr) minmax(75px, 2.0fr) minmax(40px, 0.9fr) 4.0fr 3.2fr minmax(28px, 0.8fr);
   //30, 70, 37.65, 160
 }
 
@@ -386,11 +401,6 @@ onMounted(() => {
   .turn_pad {
     padding: 6px;
   }
-}
-
-.isEditMode .month_pad:hover {
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .plain-center {

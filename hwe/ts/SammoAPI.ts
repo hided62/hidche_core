@@ -15,7 +15,7 @@ import {
 export type { ValidResponse, InvalidResponse };
 import { APIPathGen, NumVar, StrVar } from "./util/APIPathGen.js";
 import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Betting";
-import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
+import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse, ReservedUserActionResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import type { inheritBuffType, InheritLogResponse } from "./defs/API/InheritAction";
 import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse, NationInfoResponse } from "./defs/API/Nation";
@@ -109,6 +109,7 @@ const apiRealPath = {
       },
       ReserveCommandResponse
     >,
+    GetReservedUserAction: GET as APICallT<undefined, ReservedUserActionResponse>,
     ReserveBulkCommand: PUT as APICallT<
       {
         turnList: number[];

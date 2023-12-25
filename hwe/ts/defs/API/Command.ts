@@ -20,3 +20,19 @@ export type ReserveBulkCommandResponse = {
   result: true,
   briefList: string[],
 }
+
+export type UserActionItem = {
+  command: string,
+  brief: string,
+  untilYearMonth?: number,
+};
+
+type UserAction = {
+  reserved?: Record<number, UserActionItem>,
+  active?: UserActionItem[],
+}
+
+export type ReservedUserActionResponse = {
+  result: true,
+  userActions: UserAction,
+}

@@ -39,9 +39,18 @@ if ($limitState >= 2) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=500" />
     <title><?= UniqueConst::$serverName ?>: 개인 전략</title>
-    <?= WebUtil::printStaticValues(['staticValues' => [
+    <?= WebUtil::printStaticValues([
+        'staticValues' => [
+          'serverName' => UniqueConst::$serverName,
+          'serverNick' => DB::prefix(),
+          'serverID' => UniqueConst::$serverID,
+          'mapName' => GameConst::$mapName,
+          'unitSet' => GameConst::$unitSet,
 
-    ]]) ?>
+          'maxTurn' => GameConst::$maxTurn,
+          'serverNow' => TimeUtil::now(false),
+        ]
+    ], false) ?>
     <?= WebUtil::printJS('../d_shared/common_path.js', true) ?>
     <?= WebUtil::printDist('vue', ['v_userAction'], true) ?>
 </head>

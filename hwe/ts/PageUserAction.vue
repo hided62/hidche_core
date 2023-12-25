@@ -42,10 +42,22 @@ async function refresh() {
 </script>
 
 <style lang="scss" scoped>
+@import "@scss/common/break_500px.scss";
+
 //grid
-#pages {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
+@include media-1000px {
+    #pages {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10px;
+    }
+}
+
+@include media-500px {
+    #pages {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 10px;
+    }
 }
 </style>
