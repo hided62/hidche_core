@@ -1,9 +1,24 @@
 <template>
   <div class="controlBar">
-    <a href="v_board.php" :class="`btn btn-sammo-nation ${myLevel >= 1 ? '' : 'disabled'}`">회 의 실</a>
-    <a href="v_board.php?isSecret=true" :class="`${permission >= 2 ? '' : 'disabled'} btn btn-sammo-nation`"
-      >기 밀 실</a
-    >
+    <div class="btn-group">
+      <a href="v_board.php" :class="`btn btn-sammo-nation ${myLevel >= 1 ? '' : 'disabled'}`">회 의 실</a>
+      <button
+        type="button"
+        class="btn btn-sammo-nation dropdown-toggle dropdown-toggle-split"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a href="v_board.php" :class="`dropdown-item ${myLevel >= 1 ? '' : 'disabled'}`">회의실</a>
+        </li>
+        <li>
+          <a href="v_board.php?isSecret=true" :class="`dropdown-item ${permission >= 2 ? '' : 'disabled'}`">기밀실</a>
+        </li>
+      </ul>
+    </div>
     <a href="v_troop.php" :class="`${myLevel >= 1 && nationLevel >= 1 ? '' : 'disabled'} btn btn-sammo-nation`"
       >부대 편성</a
     >
@@ -12,6 +27,7 @@
     <a href="v_nationStratFinan.php" :class="`${showSecret ? '' : 'disabled'} btn btn-sammo-nation`">내 무 부</a>
     <a href="v_chiefCenter.php" :class="`${showSecret ? '' : 'disabled'} btn btn-sammo-nation`">사 령 부</a>
     <a href="v_NPCControl.php" :class="`${showSecret ? '' : 'disabled'} btn btn-sammo-nation`">NPC 정책</a>
+    <a href="v_userAction.php" class="btn btn-sammo-nation">개인 전략</a>
     <a href="b_genList.php" target="_blank" :class="`btn btn-sammo-nation ${showSecret ? '' : 'disabled'}`"
       >암 행 부</a
     >

@@ -12,6 +12,7 @@
     <li><a href="v_nationStratFinan.php" :class="`dropdown-item ${showSecret ? '' : 'disabled'} `">내무부</a></li>
     <li><a href="v_chiefCenter.php" :class="`dropdown-item ${showSecret ? '' : 'disabled'} `">사령부</a></li>
     <li><a href="v_NPCControl.php" :class="`dropdown-item ${showSecret ? '' : 'disabled'} `">NPC 정책</a></li>
+    <li><a href="v_userAction.php" class="dropdown-item">개인 전략</a></li>
     <li>
       <a href="b_genList.php" target="_blank" :class="`dropdown-item open-window ${showSecret ? '' : 'disabled'}`"
         >암행부</a

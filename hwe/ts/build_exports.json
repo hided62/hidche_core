@@ -38,6 +38,7 @@
         "v_globalDiplomacy": "v_globalDiplomacy",
         "v_troop": "v_troop.ts",
         "v_vote": "v_vote.ts",
-        "v_front": "v_front.ts"
+        "v_front": "v_front.ts",
+        "v_userAction": "v_userAction.ts"
     }
 }
