@@ -1,7 +1,7 @@
 <?php
 namespace sammo\Command\UserAction;
 
-use sammo\ActionBuff\g65_내정성공;
+use sammo\ActionBuff\g65_계략성공;
 use \sammo\Command;
 use sammo\Constraint\ConstraintHelper;
 
@@ -51,7 +51,7 @@ class g65_필중계략 extends Command\UserActionCommand{
         }
 
         $general = $this->generalObj;
-        $general->addInstantBuff(new g65_내정성공(), 2);
+        $general->addInstantBuff(new g65_계략성공(), 2);
 
         $date = $general->getTurnTime($general::TURNTIME_HM);
 

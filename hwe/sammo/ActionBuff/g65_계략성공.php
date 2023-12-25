@@ -5,7 +5,7 @@ namespace sammo\ActionBuff;
 use sammo\General;
 use \sammo\iAction;
 
-class g65_내정성공 implements iAction
+class g65_계략성공 implements iAction
 {
     use \sammo\DefaultAction;
 
