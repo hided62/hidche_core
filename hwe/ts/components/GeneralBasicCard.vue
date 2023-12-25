@@ -150,6 +150,17 @@
         {{ troopInfo.name }}({{ formatCityName(troopInfo.leader, gameConstStore) }})
       </span>
     </div>
+    <div class="bg1">전략</div>
+    <div
+      v-if="impossibleUserActionText"
+      v-b-tooltip.hover="impossibleUserActionText"
+      style="text-decoration: underline dashed red"
+    >
+      <span style="color: yellow">가능</span>
+    </div>
+    <div v-else class="strategicClg-body tb-body">
+      <span style="color: limegreen">가능</span>
+    </div>
     <div class="bg1">벌점</div>
     <div class="general-refresh-score-total">
       {{ formatRefreshScore(general.refreshScoreTotal) }} {{ (general.refreshScoreTotal ?? 0).toLocaleString() }}점({{ general.refreshScore ?? 0 }})
@@ -272,6 +283,25 @@ watch(
   { immediate: true }
 );
 
+const impossibleUserActionText = ref<string>("");
+watch(
+  general,
+  (general) => {
+    const impossibleUserAction = general.impossibleUserAction;
+    if (impossibleUserAction.length == 0) {
+      impossibleUserActionText.value = "";
+      return;
+    }
+
+    const texts = [];
+    for (const [cmdName, turnCnt] of impossibleUserAction) {
+      texts.push(`${cmdName}: ${turnCnt.toLocaleString()}턴 뒤`);
+    }
+    impossibleUserActionText.value = texts.join("<br>\n");
+  },
+  { immediate: true }
+);
+
 const nextExecuteMinute = ref(999);
 watch(
   general,
@@ -341,7 +371,4 @@ watch(
   grid-column: 2 / 4;
 }
 
-.general-refresh-score-total {
-  grid-column: 5 / 8;
-}
 </style>

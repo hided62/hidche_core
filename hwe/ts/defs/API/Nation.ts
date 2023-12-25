@@ -81,6 +81,8 @@ export type GeneralListItemP1 = {
   killcrew: number;
   deathcrew: number;
   firenum: number;
+
+  impossibleUserAction: [string, number][];
 } & GeneralListItemP0;
 
 export type GeneralListItemP2 = GeneralListItemP1;

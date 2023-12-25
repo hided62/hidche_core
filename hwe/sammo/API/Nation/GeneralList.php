@@ -3,7 +3,9 @@
 namespace sammo\API\Nation;
 
 use ArrayObject;
+use sammo\Command\UserActionCommand;
 use sammo\DB;
+use sammo\DTO\UserAction;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
@@ -117,6 +119,8 @@ class GeneralList extends \sammo\BaseAPI
         'reservedCommand' => 1,
 
         'autorun_limit' => 1,
+
+        'impossibleUserAction' => 1,
     ];
 
     public function validateArgs(): ?string
@@ -153,7 +157,8 @@ class GeneralList extends \sammo\BaseAPI
 
         $me = $db->queryFirstRow(
             'SELECT refresh_score, turntime, belong, nation, officer_level, permission, penalty FROM `general`
-            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i', $session->getUserID()
+            LEFT JOIN general_access_log AS l ON `general`.no = l.general_id WHERE owner=%i',
+            $session->getUserID()
         );
         $limitState = checkLimit($me['refresh_score']);
         if ($limitState >= 2) {
@@ -269,6 +274,21 @@ class GeneralList extends \sammo\BaseAPI
             'bill' => fn ($rawGeneral) => getBillByLevel($rawGeneral['dedlevel']),
             'reservedCommand' => fn ($rawGeneral) => $reservedCommand[$rawGeneral['no']] ?? null,
             'autorun_limit' => fn ($rawGeneral) => ($rawGeneral['aux'] ?? [])['autorun_limit'] ?? 0,
+            'impossibleUserAction' => function ($rawGeneral) use ($env) {
+                $rawUserAction = ($rawGeneral['aux'] ?? [])[UserActionCommand::USER_ACTION_KEY] ?? [];
+                $userAction = UserAction::fromArray($rawUserAction);
+                $impossibleUserAction = [];
+                $yearMonth = Util::joinYearMonth($env['year'], $env['month']);
+
+                if ($userAction->nextAvailableTurn) {
+                    foreach ($userAction->nextAvailableTurn as $command => $nextAvailableTurn) {
+                        if ($nextAvailableTurn > $yearMonth) {
+                            $impossibleUserAction[] = [$command, $nextAvailableTurn - $yearMonth];
+                        }
+                    }
+                }
+                return $impossibleUserAction;
+            }
         ];
 
         foreach ($rankColumns as $rankKey) {

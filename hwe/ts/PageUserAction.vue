@@ -1,17 +1,22 @@
 <template>
     <BContainer id="container" ref="container" :toast="{ root: true }">
         <TopBackBar :reloadable="true" title="개인 전략" @reload="refresh" />
-        <div v-if="asyncReady && gameConstStore && generalInfo && frontInfo && globalInfo && nationStaticInfo" id="pages" class="bg0">
+        <div v-if="asyncReady && gameConstStore && generalInfo && frontInfo && globalInfo && nationStaticInfo" id="pages"
+            class="bg0">
             <div id="leftPanel">
                 <GeneralBasicCard :general="generalInfo" :nation="nationStaticInfo" :troopInfo="frontInfo.general.troopInfo"
                     :turnTerm="globalInfo.turnterm" :lastExecuted="lastExecuted" />
+                <div class="bg1" style="margin-top: 10px;">
+                    대기 중인 전략
+                </div>
+                <div v-for="[command, turn] of frontInfo.general.impossibleUserAction" :key="command">
+                    <span>{{ command }}</span>: {{ turn.toLocaleString() }}턴 뒤
+                </div>
             </div>
             <div id="actionForm">
                 <ReservedCommandForUserAction ref="reservedCommandPanel" />
             </div>
         </div>
-
-
     </BContainer>
 </template>
 <script lang="ts">
@@ -91,14 +96,14 @@ async function refresh() {
 
     const rawNation = frontResponse.nation;
     nationStaticInfo.value = {
-      nation: rawNation.id,
-      name: rawNation.name,
-      color: rawNation.color,
-      type: rawNation.type.raw,
-      level: rawNation.level,
-      capital: rawNation.capital,
-      gennum: rawNation.gennum,
-      power: rawNation.power
+        nation: rawNation.id,
+        name: rawNation.name,
+        color: rawNation.color,
+        type: rawNation.type.raw,
+        level: rawNation.level,
+        capital: rawNation.capital,
+        gennum: rawNation.gennum,
+        power: rawNation.power
     };
 }
 

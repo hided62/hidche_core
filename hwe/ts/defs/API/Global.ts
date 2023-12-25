@@ -148,7 +148,6 @@ export type GetFrontInfoResponse = {
       };
       name: string;
     };
-    impossibleUserAction: [string, number][];
   };
   nation: {
     id: number;
