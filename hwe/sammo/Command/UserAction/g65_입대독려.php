@@ -1,11 +1,11 @@
 <?php
 namespace sammo\Command\UserAction;
 
-use sammo\ActionBuff\g65_내정성공;
+use sammo\ActionBuff\g65_징병인구무시;
 use \sammo\Command;
 
-class g65_철야내정 extends Command\UserActionCommand{
-    static protected $actionName = '철야내정';
+class g65_입대독려 extends Command\UserActionCommand{
+    static protected $actionName = '입대독려';
 
     protected function argTest():bool{
         return true;
@@ -13,13 +13,13 @@ class g65_철야내정 extends Command\UserActionCommand{
 
     public function getBrief(): string
     {
-        return '철야 내정';
+        return '입대 독려';
     }
 
     public function getCommandDetailTitle(): string
     {
         $postReqTurn = $this->getPostReqTurn();
-        return "2턴 간 내정 항상 성공(재사용 대기 {$postReqTurn})";
+        return "이번턴의 징병/모병 인구 무시(재사용 대기 {$postReqTurn})";
     }
 
     protected function init(){
@@ -42,10 +42,12 @@ class g65_철야내정 extends Command\UserActionCommand{
 
     public function run(\Sammo\RandUtil $rng):bool{
         $general = $this->generalObj;
-        $general->addInstantBuff(new g65_내정성공(), 2);
+        $general->addInstantBuff(new g65_징병인구무시(), 1);
+
+        $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("2턴 간 내정을 철저히 지휘합니다.");
+        $logger->pushGeneralActionLog("성 밖의 주민들에게 입대를 요청합니다. <1>$date</>");
         return true;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace sammo\Command\UserAction;
 
-use sammo\ActionBuff\g65_내정성공;
 use \sammo\Command;
 use sammo\DB;
 
