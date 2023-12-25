@@ -223,7 +223,7 @@ class GameConstBase
     public static $inheritItemRandomPoint = 3000;
     public static $inheritBuffPoints = [0, 200, 600, 1200, 2000, 3000];
     public static $inheritSpecificSpecialPoint = 4000;
-    public static $inheritResetAttrPointBase = [1000, 1000, 2000, 3000];//필요하면 늘려서 쓰기
+    public static $inheritResetAttrPointBase = [1000, 1000, 2000, 3000]; //필요하면 늘려서 쓰기
 
     /** @var ?string */
     public static $scenarioEffect = null;
@@ -246,7 +246,7 @@ class GameConstBase
             'che_명마_07_백마' => 2, 'che_명마_07_기주마' => 2, 'che_명마_07_오환마' => 2, 'che_명마_07_백상' => 2,
             'che_명마_08_양주마' => 2, 'che_명마_08_흉노마' => 2, 'che_명마_09_과하마' => 2, 'che_명마_09_의남백마' => 2,
             'che_명마_10_대완마' => 2, 'che_명마_10_옥추마' => 2, 'che_명마_11_서량마' => 2, 'che_명마_11_화종마' => 2,
-            'che_명마_12_사륜거' => 2, 'che_명마_12_옥란백용구'=> 2, 'che_명마_13_절영' => 2, 'che_명마_13_적로' => 2,
+            'che_명마_12_사륜거' => 2, 'che_명마_12_옥란백용구' => 2, 'che_명마_13_절영' => 2, 'che_명마_13_적로' => 2,
             'che_명마_14_적란마' => 2, 'che_명마_14_조황비전' => 2, 'che_명마_15_한혈마' => 2, 'che_명마_15_적토마' => 2,
         ],
         'weapon' => [
@@ -278,7 +278,7 @@ class GameConstBase
             'che_내정_납금박산로' => 1, 'che_전략_평만지장도' => 1, 'che_숙련_동작' => 1, 'che_명성_구석' => 1,
 
             'che_척사_오악진형도' => 1, 'che_격노_구정신단경' => 1, 'che_징병_낙주' => 1,
-            'che_저격_매화수전' => 1, 'che_저격_비도'=>1, 'che_위압_조목삭' => 1, 'che_공성_묵자' => 1,
+            'che_저격_매화수전' => 1, 'che_저격_비도' => 1, 'che_위압_조목삭' => 1, 'che_공성_묵자' => 1,
             'che_집중_전국책' => 1, 'che_환술_논어집해' => 1,
 
             'che_진압_박혁론' => 1, 'che_부적_태현청생부' => 1, 'che_저지_삼황내문' => 1,
@@ -395,6 +395,17 @@ class GameConstBase
             'che_국호변경',
         ]
     ];
+
+    /** @var array 개인 전략 커맨드 */
+    public static $availableUserActionCommand = [
+        '개인 전략' => [
+            '휴식',
+            /*'che_병사연회',
+            'che_내정집중',
+            'che_즉시치료',*/
+        ]
+    ];
+
     public static $retirementYear = 80;
 
     public static $targetGeneralPool = 'RandomNameGeneral';

@@ -117,6 +117,10 @@ const apiRealPath = {
       }[],
       ReserveBulkCommandResponse
     >,
+    ReserveUserAction: PUT as APICallT<{
+      turnIdx: number;
+      action: string;
+    }>
   },
   General: {
     Join: POST as APICallT<JoinArgs>,
@@ -134,6 +138,7 @@ const apiRealPath = {
     InstantRetreat: POST as APICallT<undefined>,
     BuildNationCandidate: POST as APICallT<undefined>,
     GetCommandTable: GET as APICallT<undefined, CommandTableResponse>,
+    GetUserActionCommandTable: GET as APICallT<undefined, CommandTableResponse>,
     GetFrontInfo: GET as APICallT<{
       lastNationNoticeDate?: string,
       lastGeneralRecordID?: number,

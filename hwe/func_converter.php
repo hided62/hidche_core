@@ -416,6 +416,27 @@ function buildGeneralCommandClass(?string $type, General $generalObj, array $env
     return new $class($generalObj, $env, $arg);
 }
 
+function getUserActionCommandClass(?string $type){
+    if($type === null || $type === ''){
+        $type = '휴식';
+    }
+
+    static $basePath = __NAMESPACE__.'\\Command\\UserAction\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 올바른 개변 전략 커맨드가 아님");
+}
+
+function buildUserActionCommandClass(?string $type, General $generalObj, array $env, $arg = null):Command\UserActionCommand{
+    $class = getUserActionCommandClass($type);
+    return new $class($generalObj, $env, $arg);
+}
+
+
 function getNationCommandClass(?string $type){
     if($type === null || $type === ''){
         $type = '휴식';
