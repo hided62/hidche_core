@@ -148,63 +148,6 @@ function allButton(bool $seizeNPCMode, array $opts = [])
     ], $opts));
 }
 
-
-function commandButton(array $opts = [])
-{
-    $session = Session::getInstance();
-    $userID = Session::getUserID();
-    if (!$session->isGameLoggedIn()) {
-        return '';
-    }
-
-    $db = DB::db();
-    $me = $db->queryFirstRow("select no,nation,officer_level,belong,permission,penalty from general where owner=%i", $userID);
-
-    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i", $me['nation']) ?? [
-        'nation' => 0,
-        'level' => 0,
-        'secretlimit' => 99,
-        'color' => '#000000'
-    ];
-
-    $bgColor = $nation['color'] ?? '#000000';
-    $fgColor = newColor($bgColor);
-
-    $templates = new \League\Plates\Engine(__DIR__ . '/templates');
-    $showSecret = false;
-    $permission = checkSecretPermission($me);
-    $btnClassForTournament = $opts['btnClass'];
-    if ($opts['isTournamentApplicationOpen']) {
-        if ($btnClassForTournament != 'dropdown-item') {
-            $btnClassForTournament = 'toolbarButton2';
-        }
-    }
-
-    $btnClassForBetting = $opts['btnClass'];
-    if ($opts['isBettingActive']) {
-        if ($btnClassForTournament != 'dropdown-item') {
-            $btnClassForBetting = 'toolbarButton2';
-        }
-    }
-
-    if ($permission >= 1) {
-        $showSecret = true;
-    } else if ($me['officer_level'] == 0) {
-        $showSecret = false;
-    }
-
-    return $templates->render('commandButton', array_merge([
-        'bgColor' => $bgColor,
-        'fgColor' => $fgColor,
-        'meLevel' => $me['officer_level'],
-        'nationLevel' => $nation['level'],
-        'showSecret' => $showSecret,
-        'permission' => $permission,
-        'btnClassForTournament' => $btnClassForTournament,
-        'btnClassForBetting' => $btnClassForBetting,
-    ], $opts));
-}
-
 function formatWounded(int $value, int $wound): string
 {
     if ($wound == 0) {
