@@ -6,14 +6,22 @@
 
             </div>
             <div id="actionForm">
-                <ReservedCommandForUserAction />
+                <ReservedCommandForUserAction ref="reservedCommandPanel" />
             </div>
         </div>
 
 
     </BContainer>
 </template>
-
+<script lang="ts">
+declare const staticValues: {
+  serverName: string;
+  serverNick: string;
+  serverID: string;
+  mapName: string;
+  unitSet: string;
+};
+</script>
 <script setup lang="ts">
 import ReservedCommandForUserAction from './ReservedCommandForUserAction.vue';
 import { GameConstStore, getGameConstStore } from "./GameConstStore";
@@ -21,6 +29,10 @@ import { useToast } from 'bootstrap-vue-next';
 import { unwrap } from './util/unwrap';
 import { provide, ref } from 'vue';
 import TopBackBar from './components/TopBackBar.vue';
+import { SammoAPI } from './SammoAPI';
+import { delay } from './util/delay';
+
+const { serverID } = staticValues;
 
 const toasts = unwrap(useToast());
 
@@ -35,8 +47,13 @@ void Promise.all([storeP]).then(() => {
     asyncReady.value = true;
 });
 
+const reservedCommandPanel = ref<InstanceType<typeof ReservedCommandForUserAction> | null>(null);
+
 async function refresh() {
-    console.log('갱신');
+    const serverExecuteP = SammoAPI.Global.ExecuteEngine({ serverID }, true);
+    await Promise.race([delay(1000), serverExecuteP]);
+    reservedCommandPanel.value?.reloadCommandList();
+    reservedCommandPanel.value?.updateCommandTable();
 }
 
 </script>
