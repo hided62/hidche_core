@@ -400,10 +400,12 @@ class GameConstBase
     public static $availableUserActionCommand = [
         '개인 전략' => [
             '휴식',
-            'g65_병사연회',
-            'g65_철야내정',
             'g65_의원소환',
+            'g65_철야내정',
+            'g65_접경귀환',
             'g65_병장기지원',
+            'g65_입대독려',
+            'g65_병사연회',
         ]
     ];
 

@@ -3,6 +3,7 @@ namespace sammo\Command\UserAction;
 
 use sammo\ActionBuff\g65_징병인구무시;
 use \sammo\Command;
+use sammo\Constraint\ConstraintHelper;
 
 class g65_입대독려 extends Command\UserActionCommand{
     static protected $actionName = '입대독려';
@@ -23,9 +24,10 @@ class g65_입대독려 extends Command\UserActionCommand{
     }
 
     protected function init(){
-        //아무것도 하지 않음
-        $this->fullConditionConstraints=[];
-
+        $this->fullConditionConstraints = [
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::OccupiedCity()
+        ];
     }
 
     public function getPreReqTurn():int{
@@ -41,6 +43,10 @@ class g65_입대독려 extends Command\UserActionCommand{
     }
 
     public function run(\Sammo\RandUtil $rng):bool{
+        if (!$this->hasFullConditionMet()) {
+            throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
+        }
+
         $general = $this->generalObj;
         $general->addInstantBuff(new g65_징병인구무시(), 1);
 
