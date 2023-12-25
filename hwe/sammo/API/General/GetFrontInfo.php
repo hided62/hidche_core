@@ -5,11 +5,14 @@ namespace sammo\API\General;
 use DateTimeInterface;
 use MeekroDB;
 use sammo\CityConst;
+use sammo\Command\UserActionCommand;
 use sammo\DB;
+use sammo\DTO\UserAction;
 use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\CityColumn;
 use sammo\Enums\GeneralAccessLogColumn;
+use sammo\Enums\GeneralAuxKey;
 use sammo\Enums\GeneralColumn;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\RankColumn;
@@ -27,6 +30,7 @@ use function sammo\buildNationCommandClass;
 use function sammo\checkLimit;
 use function sammo\getTournamentTermText;
 use function sammo\buildNationTypeClass;
+use function sammo\buildUserActionCommandClass;
 use function sammo\calcLeadershipBonus;
 use function sammo\checkSecretPermission;
 use function sammo\getBillByLevel;
@@ -101,7 +105,8 @@ class GetFrontInfo extends \sammo\BaseAPI
     return $history;
   }
 
-  private function generateRecentRecord(int $generalID){
+  private function generateRecentRecord(int $generalID)
+  {
     $db = DB::db();
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -247,7 +252,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       $nationID
     );
 
-    if($nationPopulation['cityCnt'] == 0){
+    if ($nationPopulation['cityCnt'] == 0) {
       $nationPopulation = [
         'cityCnt' => 0,
         'now' => 0,
@@ -361,6 +366,8 @@ class GetFrontInfo extends \sammo\BaseAPI
 
   public function generateGeneralInfo(MeekroDB $db, General $general, array $rawNation): array
   {
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $admin = $gameStor->getAll(true);
 
     $permission = checkSecretPermission($general->getRaw());
 
@@ -443,6 +450,21 @@ class GetFrontInfo extends \sammo\BaseAPI
       'permission' => $permission,
     ];
 
+    $rawUserAction = $general->getAuxVar(UserActionCommand::USER_ACTION_KEY) ?? [];
+    $userAction = UserAction::fromArray($rawUserAction);
+    $impossibleUserAction = [];
+    $yearMonth = Util::joinYearMonth($admin['year'], $admin['month']);
+
+    if ($userAction->nextAvailableTurn) {
+      foreach ($userAction->nextAvailableTurn as $command => $nextAvailableTurn) {
+        if ($nextAvailableTurn > $yearMonth) {
+          $impossibleUserAction[] = [$command, $nextAvailableTurn - $yearMonth];
+        }
+      }
+    }
+
+    $result['impossibleUserAction'] = $impossibleUserAction;
+
     $nationID = $general->getNationID();
     $troopID = $general->getVar(GeneralColumn::troop);
     if (!$troopID) {
@@ -482,6 +504,7 @@ class GetFrontInfo extends \sammo\BaseAPI
       ],
       'name' => $troopName,
     ];
+
 
     return $result;
   }
@@ -576,7 +599,7 @@ class GetFrontInfo extends \sammo\BaseAPI
 
     if ($globalInfo['lastVote']) {
       $myLastVoteID = $db->queryFirstField('SELECT vote_id FROM vote WHERE general_id = %i ORDER BY vote_id DESC LIMIT 1', $generalID);
-      if($myLastVoteID) {
+      if ($myLastVoteID) {
         $auxInfo['myLastVote'] = $myLastVoteID;
       }
     }
