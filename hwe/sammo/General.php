@@ -5,7 +5,9 @@ namespace sammo;
 use Ds\Map;
 use sammo\Command\GeneralCommand;
 use sammo\Command\UserActionCommand;
+use sammo\DTO\InstantBuff;
 use sammo\Enums\GeneralAccessLogColumn;
+use sammo\Enums\GeneralAuxKey;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 use sammo\Enums\RankColumn;
@@ -46,6 +48,9 @@ class General extends GeneralBase implements iAction
     /** @var ?iAction */
     protected $scenarioEffect = null;
 
+    /** @var iAction[] */
+    protected $instantBuffList = [];
+
     /** @var ?GameUnitDetail */
     protected $crewType = null;
 
@@ -53,6 +58,9 @@ class General extends GeneralBase implements iAction
     protected $resultTurn = null;
 
     protected $calcCache = [];
+
+    /** @var int */
+    protected $yearMonth;
 
     /**
      * @param array $raw DB row값.
@@ -72,6 +80,8 @@ class General extends GeneralBase implements iAction
 
         $this->raw = $raw;
         $this->rawCity = $city;
+
+        $this->yearMonth = Util::joinYearMonth($year, $month);
 
         $this->resultTurn = new LastTurn();
         if (key_exists('last_turn', $this->raw)) {
@@ -116,6 +126,47 @@ class General extends GeneralBase implements iAction
         if(GameConst::$scenarioEffect){
             $this->scenarioEffect = buildScenarioEffectClass(GameConst::$scenarioEffect);
         }
+
+        $this->refreshInstantBuff(Util::joinYearMonth($year, $month));
+    }
+
+    function refreshInstantBuff(){
+        $this->instantBuffList = [];
+        $rawBuffList = $this->getAuxVar(GeneralAuxKey::instantBuffList);
+        if($rawBuffList === null){
+            return;
+        }
+
+        $newRawBuffList = [];
+        $reqUpdate = false;
+
+        foreach($rawBuffList as $rawBuff){
+            $buffItem = InstantBuff::fromArray($rawBuff);
+            if($buffItem->untilYearMonth < $this->yearMonth){
+                $reqUpdate = true;
+                continue;
+            }
+
+            $newRawBuffList[] = $rawBuff;
+            $this->instantBuffList[] = buildBuffClass($buffItem->buffName);
+        }
+
+        if($reqUpdate){
+            $this->setAuxVar(GeneralAuxKey::instantBuffList, $newRawBuffList);
+        }
+    }
+
+    function addInstantBuff(iAction $buffObj, int $month){
+        $this->instantBuffList[] = $buffObj;
+
+        $untilYearMonth = $this->yearMonth + $month - 1;
+        $buffItem = new InstantBuff(Util::getClassName($buffObj::class), $untilYearMonth);
+        $rawBuffList = $this->getAuxVar(GeneralAuxKey::instantBuffList);
+        if($rawBuffList === null){
+            $rawBuffList = [];
+        }
+        $rawBuffList[] = $buffItem->toArray();
+        $this->setAuxVar(GeneralAuxKey::instantBuffList, $rawBuffList);
     }
 
     function setItem(string $itemKey = 'item', ?string $itemCode)
@@ -810,7 +861,7 @@ class General extends GeneralBase implements iAction
             $this->crewType,
             $this->inheritBuffObj,
             $this->scenarioEffect
-        ], $this->itemObjs);
+        ], $this->itemObjs, $this->instantBuffList);
     }
 
     public function getPreTurnExecuteTriggerList(General $general): ?GeneralTriggerCaller

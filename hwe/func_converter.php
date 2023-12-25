@@ -291,6 +291,40 @@ function buildScenarioEffectClass(?string $type):iAction{
     return $obj;
 }
 
+function getBuffClass(?string $type){
+    if($type === null || $type === ''){
+        $type = 'None';
+    }
+
+    static $basePath = __NAMESPACE__.'\\ActionBuff\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 버프 클래스가 아님");
+}
+function buildBuffClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getBuffClass($type);
+
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
+}
+
 function getGeneralSpecialDomesticClass(?string $type){
     if($type === null || $type === ''){
         $type = GameConst::$defaultSpecialDomestic;

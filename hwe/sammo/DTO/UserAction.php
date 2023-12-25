@@ -19,8 +19,6 @@ class UserAction extends \LDTO\DTO
 
 		#[Convert(MapConverter::class, [UserActionItem::class])]
 		public ?array $reserved,
-        #[Convert(ArrayConverter::class, [UserActionItem::class])]
-        public ?array $active,
         #[Convert(MapConverter::class, ['int'])]
         public ?array $nextAvailableTurn,
 	) {

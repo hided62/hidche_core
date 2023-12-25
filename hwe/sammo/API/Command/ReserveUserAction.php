@@ -76,7 +76,7 @@ class ReserveUserAction extends \sammo\BaseAPI
         $item = buildUserActionCommandClass($action, $general, $gameStor->getAll());
         $userActions->reserved[$turnIdx] = new UserActionItem(
             $item->getRawClassName(),
-            $item->getCommandDetailTitle(),
+            $item->getBrief(),
             null,
         );
 
