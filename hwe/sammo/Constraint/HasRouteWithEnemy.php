@@ -35,6 +35,12 @@ class HasRouteWithEnemy extends Constraint{
         $allowedNationList[] = $this->general['nation'];
         $allowedNationList[] = 0;
 
+        $destCityNation = $db->queryFirstField('SELECT nation FROM city WHERE city = %i', $this->destCity['city']);
+        if($destCityNation !== 0 && $destCityNation !== $this->general['nation'] && !in_array($destCityNation, $allowedNationList)){
+            $this->reason = "교전중인 국가가 아닙니다.";
+            return false;
+        }
+
         $distanceList = \sammo\searchDistanceListToDest($this->general['city'], $this->destCity['city'], $allowedNationList);
         if(!$distanceList){
             $this->reason = "경로에 도달할 방법이 없습니다.";
