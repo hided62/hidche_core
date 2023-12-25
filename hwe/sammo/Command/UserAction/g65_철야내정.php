@@ -1,11 +1,11 @@
 <?php
 namespace sammo\Command\UserAction;
 
-use sammo\ActionBuff\g65_사기40;
+use sammo\ActionBuff\g65_내정성공;
 use \sammo\Command;
 
-class g65_병사연회 extends Command\UserActionCommand{
-    static protected $actionName = '병사연회';
+class g65_철야내정 extends Command\UserActionCommand{
+    static protected $actionName = '철야내정';
 
     protected function argTest():bool{
         return true;
@@ -13,13 +13,13 @@ class g65_병사연회 extends Command\UserActionCommand{
 
     public function getBrief(): string
     {
-        return '병사 연회';
+        return '철야 내정';
     }
 
     public function getCommandDetailTitle(): string
     {
         $postReqTurn = $this->getPostReqTurn();
-        return "3턴 간 사기 +40(재사용 대기 {$postReqTurn})";
+        return "2턴 간 내정 항상 성공(재사용 대기 {$postReqTurn})";
     }
 
     protected function init(){
@@ -42,11 +42,10 @@ class g65_병사연회 extends Command\UserActionCommand{
 
     public function run(\Sammo\RandUtil $rng):bool{
         $general = $this->generalObj;
-        $general->addInstantBuff(new g65_사기40(), 3);
+        $general->addInstantBuff(new g65_내정성공(), 3);
 
-        $date = $general->getTurnTime($general::TURNTIME_HM);
         $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("병사에게 연회를 열어 3턴간 사기가 40 상승합니다. <1>$date</>");
+        $logger->pushGeneralActionLog("2턴 간 내정을 철저히 지휘합니다.");
         return true;
     }
 }

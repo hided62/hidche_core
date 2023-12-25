@@ -1,11 +1,12 @@
 <?php
 namespace sammo\Command\UserAction;
 
-use sammo\ActionBuff\g65_사기40;
+use sammo\ActionBuff\g65_내정성공;
 use \sammo\Command;
+use sammo\DB;
 
-class g65_병사연회 extends Command\UserActionCommand{
-    static protected $actionName = '병사연회';
+class g65_의원소환 extends Command\UserActionCommand{
+    static protected $actionName = '의원 소환';
 
     protected function argTest():bool{
         return true;
@@ -13,13 +14,13 @@ class g65_병사연회 extends Command\UserActionCommand{
 
     public function getBrief(): string
     {
-        return '병사 연회';
+        return '의원 소환';
     }
 
     public function getCommandDetailTitle(): string
     {
         $postReqTurn = $this->getPostReqTurn();
-        return "3턴 간 사기 +40(재사용 대기 {$postReqTurn})";
+        return "부상 시 치료(재사용 대기 {$postReqTurn})";
     }
 
     protected function init(){
@@ -42,11 +43,15 @@ class g65_병사연회 extends Command\UserActionCommand{
 
     public function run(\Sammo\RandUtil $rng):bool{
         $general = $this->generalObj;
-        $general->addInstantBuff(new g65_사기40(), 3);
-
+        if($general->getVar('injury') == 0){
+            return false;
+        }
+        $general->setVar('injury', 0);
         $date = $general->getTurnTime($general::TURNTIME_HM);
-        $logger = $general->getLogger();
-        $logger->pushGeneralActionLog("병사에게 연회를 열어 3턴간 사기가 40 상승합니다. <1>$date</>");
+
+        $logger = $this->generalObj->getLogger();
+        $logger->pushGeneralActionLog("의원을 불러 부상을 치료합니다. <1>$date</>");
+        $general->applyDB(DB::db());
         return true;
     }
 }
