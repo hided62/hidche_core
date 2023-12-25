@@ -164,9 +164,7 @@ class che_이호경식 extends Command\NationCommand
             $nationGeneralLogger->flush();
         }
 
-        $josaYiCommand = JosaUtil::pick($commandName, '이');
-
-        $broadcastMessage = "아국에 <M>{$commandName}</>{$josaYiCommand} 발동되었습니다.";
+        $broadcastMessage = "<D><b>{$nationName}</b></>{$josaYiNation} 아국에 <M>{$commandName}</>{$josaUl} 발동하였습니다.";
 
         $destNationGeneralList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i', $destNationID);
         foreach ($destNationGeneralList as $destNationGeneralID) {
