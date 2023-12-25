@@ -5,8 +5,8 @@ use sammo\ActionBuff\g65_내정성공;
 use \sammo\Command;
 use sammo\Constraint\ConstraintHelper;
 
-class g65_요술 extends Command\UserActionCommand{
-    static protected $actionName = '요술';
+class g65_필중계략 extends Command\UserActionCommand{
+    static protected $actionName = '필중계략';
 
     protected function argTest():bool{
         return true;
@@ -14,7 +14,7 @@ class g65_요술 extends Command\UserActionCommand{
 
     public function getBrief(): string
     {
-        return '요술';
+        return '필중계략';
     }
 
     public function getCommandDetailTitle(): string
