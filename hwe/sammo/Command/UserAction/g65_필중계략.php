@@ -51,7 +51,7 @@ class g65_필중계략 extends Command\UserActionCommand{
         }
 
         $general = $this->generalObj;
-        $general->addInstantBuff(new g65_계략성공(), 2);
+        $general->addInstantBuff(new g65_계략성공(), 1);
 
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
