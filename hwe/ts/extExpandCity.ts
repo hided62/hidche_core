@@ -551,7 +551,7 @@ $(function () {
             {
                 cityInfo.태수.$obj = $this.find('.officer-4-value');
                 cityInfo.군사.$obj = $this.find('.officer-3-value');
-                cityInfo.종사.$obj = $this.find('.officer-2-valuet');
+                cityInfo.종사.$obj = $this.find('.officer-2-value');
             }
 
             //기타
