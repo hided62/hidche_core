@@ -32,7 +32,6 @@ class 휴식 extends Command\UserActionCommand{
     }
 
     public function run(\Sammo\RandUtil $rng):bool{
-        $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         return true;
     }
 }

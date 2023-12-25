@@ -4,6 +4,7 @@ namespace sammo\API\Command;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\Command\UserActionCommand;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\Json;
@@ -30,7 +31,7 @@ class GetReservedUserAction extends \sammo\BaseAPI
         $db = DB::db();
         $generalID = $session->generalID;
 
-        $userActionKey = 'user_action';
+        $userActionKey = UserActionCommand::USER_ACTION_KEY;
 
         $rawUserActions = $db->queryFirstField('SELECT JSON_QUERY(`aux`, %s) FROM general WHERE no=%i', "$.{$userActionKey}", $generalID);
         if($rawUserActions === null){

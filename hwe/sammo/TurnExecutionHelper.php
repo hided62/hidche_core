@@ -69,6 +69,42 @@ class TurnExecutionHelper
         return true;
     }
 
+    public function processUserAction(RandUtil $rng, Command\UserActionCommand $commandObj): LastTurn{
+        $general = $this->getGeneral();
+
+        while (true) {
+            if (!$commandObj->hasFullConditionMet()) {
+                $date = $general->getTurnTime($general::TURNTIME_HM);
+                $failString = $commandObj->getFailString();
+                $text = "{$failString} <1>{$date}</>";
+                $general->getLogger()->pushGeneralActionLog($text);
+                break;
+            }
+
+            if (!$commandObj->addTermStack()) {
+                $date = $general->getTurnTime($general::TURNTIME_HM);
+                $termString = $commandObj->getTermString();
+                $text = "{$termString} <1>{$date}</>";
+                $general->getLogger()->pushGeneralActionLog($text);
+                break;
+            }
+
+            $result = $commandObj->run($rng);
+            if ($result) {
+                $commandObj->setNextAvailable();
+                break;
+            }
+
+            $alt = $commandObj->getAlternativeCommand();
+            if ($alt === null) {
+                break;
+            }
+            $commandObj = $alt;
+        }
+
+        return $commandObj->getResultTurn();
+    }
+
     public function processNationCommand(RandUtil $rng, Command\NationCommand $commandObj): LastTurn
     {
         $general = $this->getGeneral();
@@ -323,6 +359,12 @@ class TurnExecutionHelper
                     $general->setRawCity(null);
                 }
 
+                $userActionObj = $general->getReservedUserAction($env);
+                if($userActionObj){
+                    $turnObj->processUserAction($rng, $userActionObj);
+                }
+
+
                 $generalCommandObj = $general->getReservedTurn(0, $env);
                 if (!($generalCommandObj instanceof Command\General\휴식)) {
                     $hasReservedTurn = true;
@@ -348,6 +390,7 @@ class TurnExecutionHelper
                 $turnObj->processCommand($rng, $generalCommandObj, $autorunMode);
             }
             pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));
+            $general->pullUserAction();
             pullGeneralCommand($general->getID());
 
             $currentTurn = $general->getTurnTime();

@@ -4,6 +4,7 @@ namespace sammo\API\Command;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\Command\UserActionCommand;
 use sammo\DB;
 use sammo\DTO\UserAction;
 use sammo\DTO\UserActionItem;
@@ -47,7 +48,7 @@ class ReserveUserAction extends \sammo\BaseAPI
         $turnIdx = $this->args['turnIdx'];
         $action = $this->args['action'];
 
-        $userActionKey = 'user_action';
+        $userActionKey = UserActionCommand::USER_ACTION_KEY;
 
         if($turnIdx < 0 || $turnIdx >= GameConst::$maxTurn){
             return '올바르지 않은 턴입니다.';

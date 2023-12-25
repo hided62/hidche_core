@@ -4,6 +4,7 @@ namespace sammo;
 
 use Ds\Map;
 use sammo\Command\GeneralCommand;
+use sammo\Command\UserActionCommand;
 use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
@@ -267,6 +268,46 @@ class General extends GeneralBase implements iAction
         $result = intdiv(Util::toInt($secDiff), 60 * $turnTerm);
         $this->calcCache[$cacheKey] = $result;
         return $result;
+    }
+
+    function getReservedUserAction(array $env): ?UserActionCommand
+    {
+        $rawUserAction = $this->getAuxVar(UserActionCommand::USER_ACTION_KEY);
+        if(!$rawUserAction){
+            return null;
+        }
+        $userAction = \sammo\DTO\UserAction::fromArray($rawUserAction);
+        if(!$userAction->reserved){
+            return null;
+        }
+        $reservedAction = $userAction->reserved;
+        if(!key_exists(0, $reservedAction)){
+            return null;
+        }
+        $action = $reservedAction[0];
+        return buildUserActionCommandClass($action->command, $this, $env);
+    }
+
+    function pullUserAction(){
+        $rawUserAction = $this->getAuxVar(UserActionCommand::USER_ACTION_KEY);
+        if(!$rawUserAction){
+            return null;
+        }
+        $userAction = \sammo\DTO\UserAction::fromArray($rawUserAction);
+        if(!$userAction->reserved){
+            return null;
+        }
+        $reservedAction = $userAction->reserved;
+
+        $newReservedAction = [];
+        foreach($reservedAction as $idx => $action){
+            if($idx <= 0){
+                continue;
+            }
+            $newReservedAction[$idx - 1] = $action;
+        }
+        $userAction->reserved = $newReservedAction;
+        $this->setAuxVar(UserActionCommand::USER_ACTION_KEY, $userAction->toArray());
     }
 
     function getReservedTurn(int $turnIdx, array $env): GeneralCommand

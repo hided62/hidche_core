@@ -13,6 +13,7 @@ class UserAction extends \LDTO\DTO
     /**
      * @param UserActionItem[] $active
      * @param Array<int,UserActionItem> $reserved
+     * @param Array<string,int> $nextAvailableTurn
      * */
 	public function __construct(
 
@@ -20,6 +21,8 @@ class UserAction extends \LDTO\DTO
 		public ?array $reserved,
         #[Convert(ArrayConverter::class, [UserActionItem::class])]
         public ?array $active,
+        #[Convert(MapConverter::class, ['int'])]
+        public ?array $nextAvailableTurn,
 	) {
 	}
 }
