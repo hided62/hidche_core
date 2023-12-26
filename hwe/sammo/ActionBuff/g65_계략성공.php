@@ -12,7 +12,7 @@ class g65_계략성공 implements iAction
     function onCalcDomestic(string $turnType, string $varType, float $value, $aux = null): float
     {
         if($turnType == '계략'){
-            if($varType == 'success') return $value + 1;
+            if($varType == 'success') return $value + 2;
         }
         return $value;
     }
