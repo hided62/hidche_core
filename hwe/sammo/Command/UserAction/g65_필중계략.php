@@ -27,9 +27,13 @@ class g65_필중계략 extends Command\UserActionCommand{
         $this->setCity();
         $this->setNation();
 
+        $env = $this->env;
+        $relYear = $env['year'] - $env['startyear'];
+
         $this->fullConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
-            ConstraintHelper::OccupiedCity()
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::NotOpeningPart($relYear),
         ];
     }
 
