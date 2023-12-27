@@ -137,6 +137,22 @@ class General extends GeneralBase implements iAction
             return;
         }
 
+        foreach($rawBuffList as $rawBuff){
+            $buffItem = InstantBuff::fromArray($rawBuff);
+            $this->instantBuffList[] = buildBuffClass($buffItem->buffName);
+        }
+
+    }
+
+    //기한이 지난 버프를 삭제
+    function clearExpiredBuff()
+    {
+        $this->instantBuffList = [];
+        $rawBuffList = $this->getAuxVar(GeneralAuxKey::instantBuffList);
+        if($rawBuffList === null){
+            return;
+        }
+
         $newRawBuffList = [];
         $reqUpdate = false;
 

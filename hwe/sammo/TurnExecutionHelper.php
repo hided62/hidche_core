@@ -313,6 +313,8 @@ class TurnExecutionHelper
 
             $general->increaseInheritancePoint(InheritanceKey::lived_month, 1);
 
+            $general->clearExpiredBuff();
+
             $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
                 UniqueConst::$hiddenSeed,
                 'preprocess',
