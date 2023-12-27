@@ -6,7 +6,7 @@ use \sammo\Command;
 use sammo\Constraint\ConstraintHelper;
 
 class g65_필중계략 extends Command\UserActionCommand{
-    static protected $actionName = '필중계략';
+    static protected $actionName = '신산귀모';
 
     protected function argTest():bool{
         return true;
@@ -14,7 +14,7 @@ class g65_필중계략 extends Command\UserActionCommand{
 
     public function getBrief(): string
     {
-        return '필중계략';
+        return '신산귀모';
     }
 
     public function getCommandDetailTitle(): string
