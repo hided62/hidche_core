@@ -224,7 +224,7 @@ function extractBattleOrder(WarUnit $defender, WarUnit $attacker)
     $totalCrew = $general->getVar('crew') / 1000000 * (($general->getVar('train') * $general->getVar('atmos')) ** 1.5);
     $value = $totalStat + $totalCrew / 100;
     $value = $general->onCalcStat($general, 'battleOrder', $value, ['attacker' => $attacker->getGeneral()]);
-    $value = $attacker->getGeneral()->onCalcOpposeStat($general, 'battleOrder', ['attacker' => $attacker->getGeneral()]);
+    $value = $attacker->getGeneral()->onCalcOpposeStat($general, 'battleOrder', $value, ['attacker' => $attacker->getGeneral()]);
     return $value;
 }
 
