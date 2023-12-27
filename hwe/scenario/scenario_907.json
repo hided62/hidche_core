@@ -1,0 +1,67 @@
+{
+    "title":"【공백지】 개인전략",
+    "startYear":180,
+    "map":{
+        "mapName":"miniche"
+    },
+    "history":[
+        "<C>●</>180년 1월:<L><b>【공백지】</b></>별도의 전략을 사용할 수 있는 이벤트 깃수"
+    ],
+    "const": {
+        "joinRuinedNPCProp":0,
+        "npcBanMessageProb":1,
+        "availableUserActionCommand":{
+            "개인 전략": [
+                "휴식",
+                "g65_의원소환",
+                "g65_철야내정",
+                "g65_군량급매",
+                "g65_접경귀환",
+                "g65_필중계략",
+                "g65_병장기지원",
+                "g65_입대독려",
+                "g65_병사연회",
+                "g65_약점간파"
+            ]
+        }
+    },
+    "events":[
+        [
+            "month", 1000,
+            ["or", ["Date", "==", null, 12], ["Date", "==", null, 6]],
+            ["CreateManyNPC", 10, 10],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 1000,
+            ["Date", "==", 181, 1],
+            ["RaiseNPCNation"],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["Date", "==", 181, 1],
+            ["OpenNationBetting", 4, 5000],
+            ["OpenNationBetting", 1, 2000],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "<=", 8]
+            ],
+            ["OpenNationBetting", 1, 1000],
+            ["DeleteEvent"]
+        ],
+        [
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ]
+    ]
+}
