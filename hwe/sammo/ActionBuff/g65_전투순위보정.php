@@ -14,7 +14,7 @@ class g65_전투순위보정 implements iAction
     {
         //방어자 입장에서 coef가 높다면 전투순위를 높인다.
         if ($statName == 'battleOrder') {
-            if($aux === null) throw new \RuntimeException('전투순위보정에 필요한 aux가 없습니다.');
+            if ($aux === null) throw new \RuntimeException('전투순위보정에 필요한 aux가 없습니다.');
             /** @var General */
             $attacker = $aux['attacker'];
             $defenderCrewType = $defender->getCrewTypeObj();
@@ -23,10 +23,12 @@ class g65_전투순위보정 implements iAction
             $attackerCoef = $attackerCrewType->getAttackCoef($defenderCrewType) * $defenderCrewType->getDefenceCoef($attackerCrewType);
             $defenderCoef = $defenderCrewType->getAttackCoef($attackerCrewType) * $attackerCrewType->getDefenceCoef($defenderCrewType);
 
-            if($attackerCoef > $defenderCoef){
-                return $value * 3;
-            } else if($attackerCoef < $defenderCoef){
-                return $value / 3;
+            if ($attackerCoef > $defenderCoef) {
+                return $value * 4;
+            } else if ($attackerCoef < $defenderCoef) {
+                return $value / 2;
+            } else if ($attackerCrewType->armType == $defenderCrewType->armType) {
+                return $value * 2;
             }
         }
         return $value;
@@ -36,7 +38,7 @@ class g65_전투순위보정 implements iAction
     {
         //공격자 입장에서 coef가 높다면 전투순위를 높인다.
         if ($statName == 'battleOrder') {
-            if($aux === null) throw new \RuntimeException('전투순위보정에 필요한 aux가 없습니다.');
+            if ($aux === null) throw new \RuntimeException('전투순위보정에 필요한 aux가 없습니다.');
             /** @var General */
             $attacker = $aux['attacker'];
             $defenderCrewType = $defender->getCrewTypeObj();
@@ -45,10 +47,12 @@ class g65_전투순위보정 implements iAction
             $attackerCoef = $attackerCrewType->getAttackCoef($defenderCrewType) * $defenderCrewType->getDefenceCoef($attackerCrewType);
             $defenderCoef = $defenderCrewType->getAttackCoef($attackerCrewType) * $attackerCrewType->getDefenceCoef($defenderCrewType);
 
-            if($attackerCoef < $defenderCoef){
-                return $value * 3;
-            } else if($attackerCoef > $defenderCoef){
-                return $value / 3;
+            if ($attackerCoef < $defenderCoef) {
+                return $value * 4;
+            } else if ($attackerCoef > $defenderCoef) {
+                return $value / 2;
+            } else if ($attackerCrewType->armType == $defenderCrewType->armType) {
+                return $value * 2;
             }
         }
         return $value;
