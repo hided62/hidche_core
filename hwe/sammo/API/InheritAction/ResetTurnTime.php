@@ -70,13 +70,13 @@ class ResetTurnTime extends \sammo\BaseAPI
             UniqueConst::$hiddenSeed,
             'ResetTurnTime',
             $userID,
-            $general->getTurnTime()
+            $general->getAuxVar('nextTurnTimeBase') ?? $general->getTurnTime()
         )));
 
         $afterTurn = $rng->nextFloat1() * $turnTerm * 60;
 
         $userLogger = new UserLogger($userID);
-        $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾸어 다음 턴부터 %02d:%02d 적용", intdiv(Util::toInt($afterTurn), 60), $afterTurn % 60), "inheritPoint");
+        $userLogger->push(sprintf("{$reqPoint} 포인트로 턴 시간을 바꾸어 다다음 턴부터 %02d:%02d 적용", intdiv(Util::toInt($afterTurn), 60), $afterTurn % 60), "inheritPoint");
         $userLogger->flush();
 
         $general->setAuxVar('inheritResetTurnTime', $nextLevel);
