@@ -23,9 +23,9 @@ class g65_전투순위보정 implements iAction
             $attackerCoef = $attackerCrewType->getAttackCoef($defenderCrewType) * $defenderCrewType->getDefenceCoef($attackerCrewType);
             $defenderCoef = $defenderCrewType->getAttackCoef($attackerCrewType) * $attackerCrewType->getDefenceCoef($defenderCrewType);
 
-            if ($attackerCoef > $defenderCoef) {
+            if ($attackerCoef < $defenderCoef) {
                 return $value * 4;
-            } else if ($attackerCoef < $defenderCoef) {
+            } else if ($attackerCoef > $defenderCoef) {
                 return $value / 2;
             } else if ($attackerCrewType->armType == $defenderCrewType->armType) {
                 return $value * 2;
@@ -47,9 +47,9 @@ class g65_전투순위보정 implements iAction
             $attackerCoef = $attackerCrewType->getAttackCoef($defenderCrewType) * $defenderCrewType->getDefenceCoef($attackerCrewType);
             $defenderCoef = $defenderCrewType->getAttackCoef($attackerCrewType) * $attackerCrewType->getDefenceCoef($defenderCrewType);
 
-            if ($attackerCoef < $defenderCoef) {
+            if ($attackerCoef > $defenderCoef) {
                 return $value * 4;
-            } else if ($attackerCoef > $defenderCoef) {
+            } else if ($attackerCoef < $defenderCoef) {
                 return $value / 2;
             } else if ($attackerCrewType->armType == $defenderCrewType->armType) {
                 return $value * 2;
