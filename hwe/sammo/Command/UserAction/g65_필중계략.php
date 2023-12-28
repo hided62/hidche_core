@@ -20,7 +20,7 @@ class g65_필중계략 extends Command\UserActionCommand{
     public function getCommandDetailTitle(): string
     {
         $postReqTurn = $this->getPostReqTurn();
-        return "이번 턴의 계략 항상 성공(재사용 대기 {$postReqTurn})";
+        return "이번 턴의 계략 성공률 대폭 향상(재사용 대기 {$postReqTurn})";
     }
 
     protected function init(){
