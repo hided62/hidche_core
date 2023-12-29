@@ -3438,10 +3438,12 @@ class GeneralAI
 
 
         $cmd = buildGeneralCommandClass($this->rng->choice($candidate), $this->general, $this->env);
-        if (!$cmd->hasFullConditionMet()) {
-            return buildGeneralCommandClass('che_물자조달', $this->general, $this->env);
-        }
-        return $cmd;
+        if ($cmd->hasFullConditionMet()) return $cmd;
+
+        $cmd = buildGeneralCommandClass('che_물자조달', $this->general, $this->env);
+        if ($cmd->hasFullConditionMet()) return $cmd;
+
+        return buildGeneralCommandClass('che_견문', $this->general, $this->env);
     }
 
     protected function categorizeNationCities(): void
