@@ -806,7 +806,7 @@ class General extends GeneralBase implements iAction
                 continue;
             }
             /** @var iAction $iObj */
-            $value = $iObj->onCalcStat($this, $statName, $value, $aux);
+            $value = $iObj->onCalcStat($general, $statName, $value, $aux);
         }
         return $value;
     }
@@ -819,7 +819,7 @@ class General extends GeneralBase implements iAction
                 continue;
             }
             /** @var iAction $iObj */
-            $value = $iObj->onCalcOpposeStat($this, $statName, $value, $aux);
+            $value = $iObj->onCalcOpposeStat($general, $statName, $value, $aux);
         }
         return $value;
     }
