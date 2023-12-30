@@ -83,6 +83,7 @@ export type GeneralListItemP1 = {
   firenum: number;
 
   impossibleUserAction: [string, number][];
+  reservedUserAction: TurnObj[] | null;
 } & GeneralListItemP0;
 
 export type GeneralListItemP2 = GeneralListItemP1;

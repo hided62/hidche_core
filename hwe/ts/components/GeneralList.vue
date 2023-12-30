@@ -7,71 +7,50 @@
         <BDropdownDivider />
         <BDropdownItem @click="storeDisplaySetting"><i class="bi bi-bookmark-plus-fill" />&nbsp;보관하기</BDropdownItem>
         <BDropdownDivider />
-        <BDropdownItem
-          v-for="[key, setting] of displaySettings.entries()"
-          :key="key"
-          @click="setDisplaySetting([false, key], setting)"
-          ><div class="row gx-0">
+        <BDropdownItem v-for="[key, setting] of displaySettings.entries()" :key="key"
+          @click="setDisplaySetting([false, key], setting)">
+          <div class="row gx-0">
             <div class="col-9 text-wrap">
               <span class="align-middle">{{ key }}</span>
             </div>
             <div class="col-3">
-              <div class="d-grid"><BButton size="sm" @click="deleteDisplaySetting(key)">삭제</BButton></div>
+              <div class="d-grid">
+                <BButton size="sm" @click="deleteDisplaySetting(key)">삭제</BButton>
+              </div>
             </div>
-          </div></BDropdownItem
-        >
+          </div>
+        </BDropdownItem>
       </BDropdown>
       <!-- eslint-disable-next-line vue/max-attributes-per-line -->
       <BDropdown class="w-50" variant="info" text="열 선택" menuClass="column-menu" right>
         <template v-for="[colID, col, depth] of getColumnList()" :key="[colID, depth]">
           <BDropdownItem v-if="col instanceof ProvidedColumnGroup" disabled>
             <span :style="{ marginLeft: depth ? `${12 * depth}px` : undefined }">
-              {{ col.getColGroupDef()?.headerName }}</span
-            ></BDropdownItem
-          >
+              {{ col.getColGroupDef()?.headerName }}</span>
+          </BDropdownItem>
           <BDropdownItem v-else>
             <div :style="{ marginLeft: depth ? `${12 * depth}px` : undefined }" class="form-check" @click.stop="1">
-              <input
-                :id="`column-type-${colID}`"
-                class="form-check-input"
-                type="checkbox"
-                :checked="col.isVisible()"
-                @change.stop="toggleColumn(colID, col)"
-              />
-              <label
-                class="form-check-label"
-                :for="`column-type-${colID}`"
-                :style="{
-                  textDecoration: validColumns.has(colID) ? undefined : 'line-through'
-                }"
-              >
+              <input :id="`column-type-${colID}`" class="form-check-input" type="checkbox" :checked="col.isVisible()"
+                @change.stop="toggleColumn(colID, col)" />
+              <label class="form-check-label" :for="`column-type-${colID}`" :style="{
+                textDecoration: validColumns.has(colID) ? undefined : 'line-through'
+              }">
                 {{ col.getColDef().headerName }}
               </label>
-            </div></BDropdownItem
-          >
+            </div>
+          </BDropdownItem>
         </template>
         <BDropdownDivider />
       </BDropdown>
     </BButtonGroup>
   </Teleport>
-  <div
-    class="component-general-list"
-    :style="{
-      height: props.height === 'fill' ? '100%' : props.height === 'static' ? undefined : `${props.height}px`
-    }"
-  >
-    <AgGridVue
-      style="width: 100%; height: 100%"
-      class="ag-theme-balham-dark"
-      :getRowId="getRowId"
-      :getRowHeight="getRowHeight"
-      :columnDefs="columnDefs"
-      :rowData="list"
-      :defaultColDef="defaultColDef"
-      :suppressColumnMoveAnimation="suppressColumnMoveAnimation"
-      @grid-ready="onGridReady"
-      @cell-clicked="onCellClicked"
-    />
+  <div class="component-general-list" :style="{
+    height: props.height === 'fill' ? '100%' : props.height === 'static' ? undefined : `${props.height}px`
+  }">
+    <AgGridVue style="width: 100%; height: 100%" class="ag-theme-balham-dark" :getRowId="getRowId"
+      :getRowHeight="getRowHeight" :columnDefs="columnDefs" :rowData="list" :defaultColDef="defaultColDef"
+      :suppressColumnMoveAnimation="suppressColumnMoveAnimation" @grid-ready="onGridReady"
+      @cell-clicked="onCellClicked" />
   </div>
 </template>
 <script lang="ts"></script>
@@ -1048,6 +1027,34 @@ const columnRawDefs = ref<Partial<Record<headerType, GenColDef | GenColGroupDef>
       }
     ]
   },
+  reservedUserAction: {
+    colId: "reservedUserAction",
+    headerName: "개인전략",
+    field: "reservedUserAction",
+    width: 120,
+    cellRenderer: ({ data }: GenValueParams) => {
+      if (data === undefined) {
+        return "?";
+      }
+      if (data.npc >= 2) {
+        return "NPC 장수";
+      }
+      if(!data.st1){
+        return '-';
+      }
+      const commandList = data.reservedUserAction;
+      if (!commandList) {
+        return "???";
+      }
+      return commandList
+        .map(({ brief }) => brief)
+        .join("<br>");
+    },
+    cellStyle: {
+      lineHeight: "1em",
+      fontSize: "0.85em"
+    },
+  },
   turntime: {
     colId: "turntime",
     headerName: "턴",
@@ -1231,6 +1238,7 @@ watch(columnRawDefs, (val) => {
 .g-tr {
   border-bottom: solid gray 1px;
 }
+
 .g-thead-tr {
   position: sticky;
   top: 0px;
@@ -1247,51 +1255,63 @@ watch(columnRawDefs, (val) => {
     text-decoration: underline;
     cursor: pointer;
   }
+
   .ag-root-wrapper .cell-middle {
     display: flex;
     align-items: center;
   }
+
   .ag-root-wrapper {
     font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic";
     font-size: 14px;
     overflow: auto;
   }
+
   .ag-root {
     overflow: auto;
   }
+
   .ag-header {
     position: sticky;
     top: 0;
     z-index: 10;
   }
+
   .cell-center {
     justify-content: space-around;
     text-align: center;
   }
+
   .cell-right {
     justify-content: flex-end;
     text-align: right;
   }
+
   .cell-sp .col {
     min-width: 30px;
   }
+
   .ag-header-cell,
   .ag-header-group-cell,
   .ag-cell {
     padding-left: 4px;
     padding-right: 4px;
   }
+
   .ag-header-cell-label,
   .ag-header-group-cell-label {
     justify-content: center;
   }
+
   .ag-ltr .ag-floating-filter-button {
     margin-left: 2px;
   }
+
   .ag-rtl .ag-floating-filter-button {
     margin-right: 2px;
   }
 }
+
 .general-list-toolbar {
   .column-menu {
     column-count: 3;

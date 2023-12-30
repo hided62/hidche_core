@@ -121,6 +121,7 @@ class GeneralList extends \sammo\BaseAPI
         'autorun_limit' => 1,
 
         'impossibleUserAction' => 1,
+        'reservedUserAction' => 1,
     ];
 
     public function validateArgs(): ?string
@@ -288,7 +289,36 @@ class GeneralList extends \sammo\BaseAPI
                     }
                 }
                 return $impossibleUserAction;
-            }
+            },
+            'reservedUserAction' => function ($rawGeneral) use ($env) {
+                $rawUserAction = ($rawGeneral['aux'] ?? [])[UserActionCommand::USER_ACTION_KEY] ?? [];
+                $userAction = UserAction::fromArray($rawUserAction);
+                $reservedUserAction = [];
+
+                $emptyTurnObj = [
+                    'brief' => '휴식',
+                    'action' => '휴식',
+                    'arg' => [],
+                ];
+
+                for($i = 0; $i < 5; $i++){
+                    $reservedUserAction[] = $emptyTurnObj;
+                }
+
+                if ($userAction->reserved) {
+                    foreach ($userAction->reserved as $turnIdx => $reserved) {
+                        if($turnIdx >= 5){
+                            continue;
+                        }
+                        $reservedUserAction[$turnIdx] = [
+                            'brief' => $reserved->brief,
+                            'action' => $reserved->command,
+                            'arg' => [],
+                        ];
+                    }
+                }
+                return $reservedUserAction;
+            },
         ];
 
         foreach ($rankColumns as $rankKey) {
