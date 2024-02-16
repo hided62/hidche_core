@@ -267,7 +267,7 @@ abstract class Auction
     if ($isRollback) {
       $highestBid = $this->getHighestBid();
       if ($highestBid !== null) {
-        $this->refundBid($highestBid, "{$this->info->id}번 {$this->info->detail->title} 경매가 취소되었습니다.");
+        $this->refundBid($highestBid, "{$this->info->id}번 {$this->info->detail->title}가 취소되었습니다.");
       }
       $this->rollbackAuction();
     }

@@ -179,10 +179,13 @@ class che_종전수락 extends Command\NationCommand
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYiGeneral} <D><b>{$destNationName}</b></>{$josaWa} <M>종전 합의</> 하였습니다.");
         $logger->pushGlobalHistoryLog("<Y><b>【종전】</b></><D><b>{$nationName}</b></>{$josaYiNation} <D><b>{$destNationName}</b></>{$josaWa} <M>종전 합의</> 하였습니다.");
 
+        $josaWa = JosaUtil::pick($destNationName, '와');
+        $logger->pushNationalHistoryLog("<D><b>{$destNationName}</b></>{$josaWa} 종전");
 
         $josaWa = JosaUtil::pick($nationName, '와');
         $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa} 종전에 성공했습니다.", ActionLogger::PLAIN);
         $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} 종전 성공");
+        $destLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaWa} 종전");
 
         $general->applyDB($db);
         $destLogger->flush();
