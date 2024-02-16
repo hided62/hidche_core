@@ -90,6 +90,9 @@ class BuildNationCandidate extends \sammo\BaseAPI
       return '거병을 실패했습니다.';
     }
 
+    $general->setVar('killturn', $env['killturn']);
+    $general->applyDB($db);
+
     return null;
   }
 }
