@@ -27,13 +27,17 @@ $rootDB = RootDB::db();
 $oNow = new \DateTimeImmutable();
 $now = $oNow->format('Y-m-d H:i:s');
 
-$userNick = RootDB::db()->queryFirstField('SELECT `NAME` FROM member WHERE `NO`=%i',$userID);
-if(!$userNick){
+$member = $rootDB->queryFirstRow('SELECT `name`, `penalty` FROM member WHERE `NO`=%i', $userID);
+if(!$member){
     Json::die([
         'result'=>false,
         'reason'=>'멤버 정보를 가져오지 못했습니다.'
     ]);
 }
+
+$userNick = $member['name'];
+$memberPenalty = JSON::decode($member['penalty'] ?? '{}');
+$penalty = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
 
 $pickResult = $db->queryFirstField('SELECT pick_result FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%s', $userID, $now);
 if(!$pickResult){
@@ -86,7 +90,8 @@ $db->update('general', [
     'defence_train'=>80,
     'permission'=>'normal',
     'owner'=>$userID,
-    'aux'=>Json::encode($genAux)
+    'aux'=>Json::encode($genAux),
+    'penalty'=>Json::encode($penalty),
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);
 $db->insertIgnore('general_access_log', [
     GeneralAccessLogColumn::generalID->value => $pick,

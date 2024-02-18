@@ -149,11 +149,14 @@ class Join extends \sammo\BaseAPI
 
         $rootDB = RootDB::db();
         //회원 테이블에서 정보확인
-        $member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name`, imgsvr FROM member WHERE no=%i', $userID);
+        $member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name`, imgsvr, `penalty` FROM member WHERE no=%i', $userID);
 
         if (!$member) {
             return "잘못된 접근입니다!!!";
         }
+
+        $memberPenalty = JSON::decode($member['penalty'] ?? "{}");
+        $penalty = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -424,7 +427,8 @@ class Join extends \sammo\BaseAPI
             'specage' => $specage,
             'special' => $special,
             'specage2' => $specage2,
-            'special2' => $special2
+            'special2' => $special2,
+            'penalty' => Json::encode($penalty),
         ]);
         $generalID = $db->insertId();
         $db->insert('general_access_log', [
