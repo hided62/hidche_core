@@ -7,9 +7,11 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\MessageType;
+use sammo\Json;
 use sammo\Message;
 use sammo\MessageTarget;
 use sammo\Validator;
+use sammo\Util;
 
 use function sammo\checkLimit;
 use function sammo\checkSecretPermission;
@@ -170,6 +172,8 @@ class SendMessage extends \sammo\BaseAPI
       return '장수가 없습니다.';
     }
 
+    $penalty = JSON::decode($me['penalty'] ?? '{}');
+
     $limitState = checkLimit($me['refresh_score']);
     if ($limitState >= 2) {
       return '접속 제한입니다.';
@@ -226,8 +230,10 @@ class SendMessage extends \sammo\BaseAPI
       $now = new \DateTime();
       $lastMsg = new \DateTime($session->lastMsg ?? '0000-00-00');
       $msg_interval = $now->getTimestamp() - $lastMsg->getTimestamp();
-      if ($msg_interval < 2) {
-        return '개인메세지는 2초당 1건만 보낼 수 있습니다!';
+
+      $msg_min_interval = $penalty['sendPrivateMsgDelay'] ?? 2;
+      if ($msg_interval < $msg_min_interval) {
+        return "개인메세지는 {$msg_min_interval}초당 1건만 보낼 수 있습니다!";
       }
       $session->lastMsg = $now->format('Y-m-d H:i:s');
 
