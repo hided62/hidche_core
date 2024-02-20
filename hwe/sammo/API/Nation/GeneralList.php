@@ -313,7 +313,7 @@ class GeneralList extends \sammo\BaseAPI
         foreach ($rawGeneralList as $rawGeneral) {
             //General 생성?
             if (key_exists('aux', $rawGeneral)) {
-                $rawGeneral['aux'] = \sammo\JSON::decode($rawGeneral['aux']);
+                $rawGeneral['aux'] = \sammo\Json::decode($rawGeneral['aux']);
             }
 
             $item = [];

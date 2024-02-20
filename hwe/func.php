@@ -1054,10 +1054,10 @@ function increaseRefresh($type = "", $cnt = 1)
         'ip' => $ip,
         'date' => $date,
         'path' => "refresh",
-        'arg' => JSON::encode([
+        'arg' => Json::encode([
             'type' => $type,
         ]),
-        'aux' => JSON::encode([
+        'aux' => Json::encode([
             'generalID' => $generalID,
             'generalName' => $session->generalName,
             'userName' => $session->userName,

@@ -899,7 +899,7 @@ function checkEmperior()
         'tiger' => $tigerstr,
         'eagle' => $eaglestr,
         'gen' => $gen,
-        'history' => JSON::encode($nationHistory),
+        'history' => Json::encode($nationHistory),
         'aux' => $statGeneral['aux']
     ]);
 

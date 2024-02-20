@@ -213,7 +213,7 @@ function _setGeneralCommand(GeneralCommand $command, array $turnList):void {
 
     $db->update('general_turn', [
         'action'=>$commandName,
-        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT),
+        'arg'=>Json::encode($arg, Json::EMPTY_ARRAY_IS_DICT),
         'brief'=>$brief
     ], 'general_id = %i AND turn_idx IN %li', $generalID, $turnList);
 }
@@ -233,7 +233,7 @@ function _setNationCommand(NationCommand $command, array $turnList):void  {
 
     $db->update('nation_turn', [
         'action'=>$commandName,
-        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT),
+        'arg'=>Json::encode($arg, Json::EMPTY_ARRAY_IS_DICT),
         'brief'=>$brief
     ], 'nation_id = %i AND officer_level = %i AND turn_idx IN %li', $nationID, $officerLevel, $turnList);
 }

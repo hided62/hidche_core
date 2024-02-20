@@ -172,7 +172,7 @@ class SendMessage extends \sammo\BaseAPI
       return '장수가 없습니다.';
     }
 
-    $penalty = JSON::decode($me['penalty'] ?? '{}');
+    $penalty = Json::decode($me['penalty'] ?? '{}');
 
     $limitState = checkLimit($me['refresh_score']);
     if ($limitState >= 2) {

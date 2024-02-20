@@ -93,8 +93,8 @@ class APIHelper
                     'ip' => $ip,
                     'date' => $date,
                     'path' => $actionPath,
-                    'arg' => JSON::encode($filteredArgs),
-                    'aux' => JSON::encode([
+                    'arg' => Json::encode($filteredArgs),
+                    'aux' => Json::encode([
                         'result' => false,
                         'state' => 'validate',
                         'reason' => $validateResult
@@ -123,8 +123,8 @@ class APIHelper
                     'ip' => $ip,
                     'date' => $date,
                     'path' => $actionPath,
-                    'arg' => JSON::encode($filteredArgs),
-                    'aux' => JSON::encode([
+                    'arg' => Json::encode($filteredArgs),
+                    'aux' => Json::encode([
                         'result' => false,
                         'state' => 'launch',
                         'reason' => $result
@@ -139,8 +139,8 @@ class APIHelper
                     'ip' => $ip,
                     'date' => $date,
                     'path' => $actionPath,
-                    'arg' => JSON::encode($filteredArgs),
-                    'aux' => JSON::encode([
+                    'arg' => Json::encode($filteredArgs),
+                    'aux' => Json::encode([
                         'result' => false,
                         'state' => 'launch',
                         'reason' => $recoveryType->info(),
@@ -168,8 +168,8 @@ class APIHelper
                             'ip' => $ip,
                             'date' => $date,
                             'path' => $actionPath,
-                            'arg' => JSON::encode($filteredArgs),
-                            'aux' => JSON::encode([
+                            'arg' => Json::encode($filteredArgs),
+                            'aux' => Json::encode([
                                 'result' => true,
                                 'state' => 'cache_not_modified',
                             ]),
@@ -183,8 +183,8 @@ class APIHelper
                         'ip' => $ip,
                         'date' => $date,
                         'path' => $actionPath,
-                        'arg' => JSON::encode($filteredArgs),
-                        'aux' => JSON::encode([
+                        'arg' => Json::encode($filteredArgs),
+                        'aux' => Json::encode([
                             'result' => true,
                             'state' => 'cache_not_modified',
                         ]),
@@ -199,8 +199,8 @@ class APIHelper
                     'ip' => $ip,
                     'date' => $date,
                     'path' => $actionPath,
-                    'arg' => JSON::encode($filteredArgs),
-                    'aux' => JSON::encode([
+                    'arg' => Json::encode($filteredArgs),
+                    'aux' => Json::encode([
                         'result' => true,
                         'state' => 'success_simple',
                         'set_cache' => $setCache,
@@ -216,8 +216,8 @@ class APIHelper
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
-                'arg' => JSON::encode($filteredArgs),
-                'aux' => JSON::encode([
+                'arg' => Json::encode($filteredArgs),
+                'aux' => Json::encode([
                     'result' => true,
                     'state' => 'success_complex',
                     'set_cache' => $setCache,
@@ -226,6 +226,7 @@ class APIHelper
             $result['result'] = $result['result'] ?? true;
             Json::die($result, $setCache ? 0 : Json::NO_CACHE);
         } catch (\Exception $e) {
+            $session = Session::getInstance();
             $errMsg = $e->getMessage();
             $errTrace = $e->getTraceAsString();
             $logDB->insert('api_log', [
@@ -233,8 +234,8 @@ class APIHelper
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
-                'arg' => JSON::encode($filteredArgs),
-                'aux' => JSON::encode([
+                'arg' => Json::encode($filteredArgs),
+                'aux' => Json::encode([
                     'result' => false,
                     'state' => 'error_exception',
                     'errMsg' => $errMsg,
@@ -244,6 +245,7 @@ class APIHelper
             Json::dieWithReason("{$errMsg}\n{$errTrace}");
         } catch (\Throwable $e) {
             logExceptionByCustomHandler($e, false);
+            $session = Session::getInstance();
             $errMsg = $e->getMessage();
             $errTrace = $e->getTraceAsString();
             $logDB->insert('api_log', [
@@ -251,8 +253,8 @@ class APIHelper
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
-                'arg' => JSON::encode($filteredArgs),
-                'aux' => JSON::encode([
+                'arg' => Json::encode($filteredArgs),
+                'aux' => Json::encode([
                     'result' => false,
                     'state' => 'error_throwable',
                     'errMsg' => $errMsg,
@@ -261,14 +263,15 @@ class APIHelper
             ]);
             Json::dieWithReason("{$errMsg}\n{$errTrace}");
         } catch (mixed $e) {
+            $session = Session::getInstance();
             $errStr = strval($e);
             $logDB->insert('api_log', [
                 'user_id' => $session->userID ?? 0,
                 'ip' => $ip,
                 'date' => $date,
                 'path' => $actionPath,
-                'arg' => JSON::encode($filteredArgs),
-                'aux' => JSON::encode([
+                'arg' => Json::encode($filteredArgs),
+                'aux' => Json::encode([
                     'result' => false,
                     'state' => 'error_mixed',
                     'errMsg' => $errStr,

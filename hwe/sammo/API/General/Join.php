@@ -155,7 +155,7 @@ class Join extends \sammo\BaseAPI
             return "잘못된 접근입니다!!!";
         }
 
-        $memberPenalty = JSON::decode($member['penalty'] ?? "{}");
+        $memberPenalty = Json::decode($member['penalty'] ?? "{}");
         $penalty = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
 
         $db = DB::db();

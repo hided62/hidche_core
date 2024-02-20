@@ -36,7 +36,7 @@ if(!$member){
 }
 
 $userNick = $member['name'];
-$memberPenalty = JSON::decode($member['penalty'] ?? '{}');
+$memberPenalty = Json::decode($member['penalty'] ?? '{}');
 $penalty = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
 
 $pickResult = $db->queryFirstField('SELECT pick_result FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%s', $userID, $now);
