@@ -82,8 +82,9 @@ class GeneralAI
     const d직전 = 3;
     const d전쟁 = 4;
 
-    protected function updateInstance(): void{
-        if(!$this->reqUpdateInstance){
+    protected function updateInstance(): void
+    {
+        if (!$this->reqUpdateInstance) {
             return;
         }
 
@@ -215,11 +216,10 @@ class GeneralAI
         );
 
         if ($yearMonth <= Util::joinYearMonth($env['startyear'] + 2, 5)) {
-            if(!$warTarget){
+            if (!$warTarget) {
                 $this->dipState = self::d평화;
                 $this->attackable = false;
-            }
-            else{
+            } else {
                 $this->dipState = self::d선포;
                 $this->attackable = false;
             }
@@ -2992,7 +2992,7 @@ class GeneralAI
         }
 
         foreach ($this->frontCities as $frontCity) {
-            if(!$frontCity['supply']){
+            if (!$frontCity['supply']) {
                 continue;
             }
             $candidateCities[$frontCity['city']] = $frontCity['important'];
@@ -3119,6 +3119,11 @@ class GeneralAI
     protected function do방랑군이동(): ?GeneralCommand
     {
         $db = DB::db();
+
+        $dupLord = $db->queryFirstField('SELECT COUNT(*) FROM general WHERE officer_level = 12 AND city = %i', $this->general->getCityID());
+        if($dupLord <= 1) {
+            return null;
+        }
 
         $general = $this->general;
         $lordCities = $db->queryFirstColumn('SELECT city.city as city FROM general LEFT JOIN city ON general.city = city.city WHERE general.officer_level = 12 AND city.nation = 0');
@@ -3352,10 +3357,9 @@ class GeneralAI
                 if ($this->rng->nextBool(pow(1 / ($nationCnt + 1) / pow($notFullNationCnt, 3), 1 / 4))) {
                     return null;
                 }
-            }
-            else{
+            } else {
                 //임관 기간이 끝나면 고정 확률로 낮춤 0.3 * 0.5 = 0.15
-                if ($this->rng->nextBool()){
+                if ($this->rng->nextBool()) {
                     return null;
                 }
             }
@@ -3481,7 +3485,7 @@ class GeneralAI
             }
             if ($nationCity['front']) {
                 $frontCities[$cityID] = $nationCity;
-            } else if($nationCity['supply']) {
+            } else if ($nationCity['supply']) {
                 $backupCities[$cityID] = $nationCity;
             }
 
@@ -3783,21 +3787,28 @@ class GeneralAI
 
         if ($npcType >= 2 && $general->getVar('officer_level') == 12 && !$this->nation['capital']) {
             //방랑군 건국
-            $result = $this->do건국();
-            if ($result !== null) {
-                $result->reason = 'do건국';
-                return $result;
+            $relYearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']) - Util::joinYearMonth($this->env['init_year'], $this->env['init_month']);
+
+            if ($relYearMonth > 1) {
+                $result = $this->do건국();
+                if ($result !== null) {
+                    $result->reason = 'do건국';
+                    return $result;
+                }
             }
+
             $result = $this->do방랑군이동();
             if ($result !== null) {
                 $result->reason = 'do방랑군이동';
                 return $result;
             }
 
-            $result = $this->do해산();
-            if ($result !== null) {
-                $result->reason = 'do해산';
-                return $result;
+            if ($relYearMonth > 1) {
+                $result = $this->do해산();
+                if ($result !== null) {
+                    $result->reason = 'do해산';
+                    return $result;
+                }
             }
         }
 
@@ -4039,7 +4050,7 @@ class GeneralAI
             if (!key_exists($chiefLevel, $this->chiefGenerals) && !key_exists($chiefLevel, $nextChiefs)) {
                 $newChiefProb = 1;
             } else {
-                $newChiefProb = $this->rng->nextBool(0.1)?1:0;
+                $newChiefProb = $this->rng->nextBool(0.1) ? 1 : 0;
             }
 
             if ($newChiefProb < 1 && !$this->rng->nextBool($newChiefProb)) {
