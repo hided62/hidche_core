@@ -951,8 +951,19 @@ function updateMaxDomesticCritical(General $general, $score)
     }
 }
 
-function genGenericUniqueRNG(int $year, int $month, int $generalID): RandUtil
+function genGenericUniqueRNG(int $year, int $month, int $generalID, ?string $reason = null): RandUtil
 {
+    if($reason){
+        return new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+            UniqueConst::$hiddenSeed,
+            'unique',
+            $year,
+            $month,
+            $generalID,
+            $reason
+        )));
+    }
+
     return new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
         UniqueConst::$hiddenSeed,
         'unique',
@@ -962,7 +973,7 @@ function genGenericUniqueRNG(int $year, int $month, int $generalID): RandUtil
     )));
 }
 
-function genGenericUniqueRNGFromGeneral(General $general): RandUtil
+function genGenericUniqueRNGFromGeneral(General $general, string $reason): RandUtil
 {
     $logger = $general->getLogger();
     if (!$logger) {
@@ -971,5 +982,5 @@ function genGenericUniqueRNGFromGeneral(General $general): RandUtil
     $year = $logger->getYear();
     $month = $logger->getMonth();
     $generalID = $general->getID();
-    return genGenericUniqueRNG($year, $month, $generalID);
+    return genGenericUniqueRNG($year, $month, $generalID, $reason);
 }

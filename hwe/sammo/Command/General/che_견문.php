@@ -112,7 +112,7 @@ class che_견문 extends Command\GeneralCommand{
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
 
         $general->applyDB($db);
 

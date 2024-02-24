@@ -281,7 +281,7 @@ class che_랜덤임관 extends Command\GeneralCommand
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general), $general, '랜덤 임관');
+        tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general, static::$actionName), $general, '랜덤 임관');
         $general->applyDB($db);
 
         return true;

@@ -152,7 +152,7 @@ class che_인재탐색 extends Command\GeneralCommand
             $general->increaseVar($incStat, 1);
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
             $general->checkStatChange();
-            tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
+            tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
             $general->applyDB($db);
             return true;
         }
@@ -218,7 +218,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $general->increaseVar($incStat, 3);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
         return true;
     }

@@ -227,7 +227,7 @@ class che_징병 extends Command\GeneralCommand
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->setAuxVar('armType', $reqCrewType->armType);
-        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 
         return true;

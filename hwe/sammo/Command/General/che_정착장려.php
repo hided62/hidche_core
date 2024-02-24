@@ -188,7 +188,7 @@ class che_정착장려 extends Command\GeneralCommand{
         $general->increaseVar(static::$statKey.'_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 
         return true;

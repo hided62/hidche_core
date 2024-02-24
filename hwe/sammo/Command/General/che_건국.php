@@ -201,7 +201,7 @@ class che_건국 extends Command\GeneralCommand
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general), $general, '건국');
+        tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general, static::$actionName), $general, '건국');
         $general->applyDB($db);
 
         return true;

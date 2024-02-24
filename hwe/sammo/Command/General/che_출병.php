@@ -253,7 +253,7 @@ class che_출병 extends Command\GeneralCommand
 
         processWar($warRngSeed, $general, $this->nation, $this->destCity);
 
-        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general), $general);
+        tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 
         return true;
