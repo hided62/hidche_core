@@ -152,7 +152,7 @@ async function refreshDetail() {
     currentAuction.value = await SammoAPI.Auction.GetUniqueItemAuctionDetail({ auctionID });
     const bidList = currentAuction.value.bidList;
     const highestBidAmount = Math.max(bidList[0].amount, bidList[bidList.length-1].amount);
-    bidAmount.value = Math.max(bidAmount.value, Math.ceil(highestBidAmount * 1.01));
+    bidAmount.value = highestBidAmount * 1.01;
   } catch (e) {
     console.error(e);
     if (isString(e)) {
