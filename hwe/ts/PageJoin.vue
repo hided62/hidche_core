@@ -485,9 +485,9 @@ watch(inheritCity, (newValue: undefined | number) => {
 const inheritTurnTimeZone = ref<number>();
 const turnTimeZoneList: string[] = (()=>{
   const result: string[] = [];
-  const zoneSec = turnterm * (60 / 30); // 1 / 60
+  const zoneSec = turnterm; // * 60 / 60
   let zoneCur = 0;
-  for(const idx of range(30)){
+  for(const idx of range(60)){
     const zoneNext = zoneCur + zoneSec;
 
     const zoneCurMin = Math.floor(zoneCur / 60);

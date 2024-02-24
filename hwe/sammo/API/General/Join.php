@@ -73,7 +73,7 @@ class Join extends \sammo\BaseAPI
             ->rule('in', 'character', array_merge(GameConst::$availablePersonality, ['Random']))
             ->rule('in', 'inheritSpecial', GameConst::$availableSpecialWar)
             ->rule('min', 'inheritTurntimeZone', 0)
-            ->rule('max', 'inheritTurntimeZone', 29)
+            ->rule('max', 'inheritTurntimeZone', 59)
             ->rule('in', 'inheritCity', array_keys(CityConst::all()))
             ->rule('integerArray', 'inheritBonusStat');
 
@@ -352,8 +352,8 @@ class Join extends \sammo\BaseAPI
         }
 
         if ($inheritTurntimeZone !== null) {
-            $inheritTurntime = $inheritTurntimeZone * ($admin['turnterm'] * 2);
-            $inheritTurntime += $rng->nextRangeInt(0, Util::clamp($admin['turnterm'] * 2 - 1, 0));
+            $inheritTurntime = $inheritTurntimeZone * $admin['turnterm'];
+            $inheritTurntime += $rng->nextRangeInt(0, Util::clamp($admin['turnterm'] - 1, 0));
 
             $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime % 60), "inheritPoint");
 
