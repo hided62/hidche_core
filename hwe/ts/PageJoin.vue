@@ -512,25 +512,6 @@ watch(inheritTurnTimeZone, (newValue: undefined | number) => {
   args.value.inheritTurntimeZone = inheritTurnTimeZone.value;
 });
 
-watch(
-  [inheritCity, inheritTurnTimeZone],
-  ([newInheritCity, newInheritTurnTimeZone], [oldInheritCity, oldInheritTurnTimeZone]) => {
-    if (newInheritCity === undefined || newInheritTurnTimeZone === undefined) {
-      return;
-    }
-    alert("도시와 턴 시간을 동시에 설정할 수 없습니다.");
-
-    if (newInheritCity !== oldInheritCity) {
-      inheritCity.value = undefined;
-    }
-    if (newInheritTurnTimeZone !== oldInheritTurnTimeZone) {
-      inheritTurnTimeZone.value = undefined;
-    }
-  },
-  { immediate: true }
-);
-
-
 </script>
 <style lang="scss">
 @import "@scss/common/base.scss";
