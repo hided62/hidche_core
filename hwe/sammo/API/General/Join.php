@@ -54,7 +54,7 @@ class Join extends \sammo\BaseAPI
                 'leadership',
                 'strength',
                 'intel',
-                'inheritTurntime',
+                'inheritTurntimeZone',
             ])
             ->rule('boolean', [
                 'pic'
@@ -72,7 +72,8 @@ class Join extends \sammo\BaseAPI
             ], GameConst::$defaultStatMax)
             ->rule('in', 'character', array_merge(GameConst::$availablePersonality, ['Random']))
             ->rule('in', 'inheritSpecial', GameConst::$availableSpecialWar)
-            ->rule('min', 'inheritTurntime', 0)
+            ->rule('min', 'inheritTurntimeZone', 0)
+            ->rule('max', 'inheritTurntimeZone', 29)
             ->rule('in', 'inheritCity', array_keys(CityConst::all()))
             ->rule('integerArray', 'inheritBonusStat');
 
@@ -139,11 +140,11 @@ class Join extends \sammo\BaseAPI
         $intel = $this->args['intel'];
 
         $inheritSpecial = $this->args['inheritSpecial'] ?? null;
-        $inheritTurntime = $this->args['inheritTurntime'] ?? null;
+        $inheritTurntimeZone = $this->args['inheritTurntimeZone'] ?? null;
         $inheritCity = $this->args['inheritCity'] ?? null;
         $inheritBonusStat = $this->args['inheritBonusStat'] ?? null;
 
-        if ($inheritTurntime !== null && $inheritCity !== null) {
+        if ($inheritTurntimeZone !== null && $inheritCity !== null) {
             return '턴과 도시를 동시에 지정할 수 없습니다.';
         }
 
@@ -235,7 +236,7 @@ class Join extends \sammo\BaseAPI
         if ($inheritSpecial !== null) {
             $inheritRequiredPoint += GameConst::$inheritBornSpecialPoint;
         }
-        if ($inheritTurntime !== null) {
+        if ($inheritTurntimeZone !== null) {
             $inheritRequiredPoint += GameConst::$inheritBornTurntimePoint;
         }
 
@@ -350,12 +351,14 @@ class Join extends \sammo\BaseAPI
             $experience *= 0.8;
         }
 
-        if ($inheritTurntime !== null) {
-            $inheritTurntime = $inheritTurntime % ($admin['turnterm'] * 60);
+        if ($inheritTurntimeZone !== null) {
+            $inheritTurntime = $inheritTurntimeZone * ($admin['turnterm'] * 2);
+            $inheritTurntime += $rng->nextRangeInt(0, Util::clamp($admin['turnterm'] * 2 - 1, 0));
 
             $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime % 60), "inheritPoint");
 
             $inheritTurntime += $rng->nextRangeInt(0, 999999) / 1000000;
+
             $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
             $turntime = $turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime));
             $turntime = TimeUtil::format($turntime, true);

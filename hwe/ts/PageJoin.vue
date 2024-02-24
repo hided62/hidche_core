@@ -186,56 +186,43 @@
         </div>
 
         <div class="col col-lg-6 col-sm-6 col-12 p-2 align-self-center">
-          <div class="a-center">
-            <label> <input v-model="inheritTurnTimeSet" type="checkbox" />턴 시간 고정 </label>
-          </div>
-          <div class="row turn_time_pad">
-            <div class="col col-lg-4 offset-lg-3 col-4 offset-3">
-              <NumberInputWithInfo
-                v-model="inheritTurnTimeMinute"
-                :readonly="!inheritTurnTimeSet"
-                :min="0"
-                :max="turnterm - 1"
-                :right="true"
-                title="분"
-              />
-            </div>
-            <div class="col col-lg-4 col-4">
-              <NumberInputWithInfo
-                v-model="inheritTurnTimeSecond"
-                :readonly="!inheritTurnTimeSet"
-                :min="0"
-                :max="60"
-                :right="true"
-                title="초"
-              />
+          <div class="row">
+            <div class="col col-6 a-right align-self-center">턴 시간 지정</div>
+            <div class="col col-6 align-self-center">
+              <select v-model.number="inheritTurnTimeZone" class="form-select form-inline" style="max-width: 24ch">
+                <option :value="undefined">사용안함</option>
+                <option v-for="(zone, idx) in turnTimeZoneList" :key="idx" :value="idx">
+                    {{ zone }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
 
-        <div class="col col-lg-6 col-12 p-2">
-          <div class="a-center">추가 능력치 고정</div>
+        <div class="col col-lg-6 col-sm-6 col-12 p-2 align-self-center">
           <div class="row">
+            <div class="col col-6 a-right align-self-center">추가 능력치 고정(통/무/지)</div>
+            <div class="col col-6 align-self-center">
+              <div class="row g-1">
             <div class="col">
               <NumberInputWithInfo
                 v-model="(args.inheritBonusStat ?? [0, 0, 0])[0]"
                 :max="stats.bonusMax"
-                title="통솔"
               />
             </div>
             <div class="col">
               <NumberInputWithInfo
                 v-model="(args.inheritBonusStat ?? [0, 0, 0])[1]"
                 :max="stats.bonusMax"
-                title="무력"
               />
             </div>
             <div class="col">
               <NumberInputWithInfo
                 v-model="(args.inheritBonusStat ?? [0, 0, 0])[2]"
                 :max="stats.bonusMax"
-                title="지력"
               />
+            </div>
+          </div>
             </div>
           </div>
         </div>
@@ -284,7 +271,7 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import { getIconPath } from "@util/getIconPath";
 import { isBrightColor } from "@util/isBrightColor";
 import { abilityLeadint, abilityLeadpow, abilityPowint, abilityRand } from "@util/generalStats";
-import { shuffle, sum } from "lodash-es";
+import { range, shuffle, sum } from "lodash-es";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { JoinArgs } from "./defs/API/General";
@@ -378,7 +365,7 @@ watch(gameConstStore, (gameConst) => {
     inheritCity: undefined,
     inheritBonusStat: [0, 0, 0],
     inheritSpecial: undefined,
-    inheritTurntime: undefined,
+    inheritTurntimeZone: undefined,
   };
 });
 
@@ -462,7 +449,7 @@ const inheritRequiredPoint = computed(() => {
   if (args.value.inheritSpecial !== undefined) {
     inheritRequiredPoint += gameConst.inheritBornSpecialPoint;
   }
-  if (args.value.inheritTurntime !== undefined) {
+  if (args.value.inheritTurntimeZone !== undefined) {
     inheritRequiredPoint += gameConst.inheritBornTurntimePoint;
   }
   if (args.value.inheritBonusStat !== undefined && sum(args.value.inheritBonusStat) != 0) {
@@ -494,21 +481,41 @@ watch(inheritCity, (newValue: undefined | number) => {
   args.value.inheritCity = inheritCity.value;
 });
 
-const inheritTurnTimeSet = ref(false);
-watch(inheritTurnTimeSet, (newValue: boolean) => {
-  if (!args.value) throw "nyc";
 
-  if (!newValue) {
-    args.value.inheritTurntime = undefined;
-    return;
+const inheritTurnTimeZone = ref<number>();
+const turnTimeZoneList: string[] = (()=>{
+  const result: string[] = [];
+  const zoneSec = turnterm * (60 / 30); // 1 / 60
+  let zoneCur = 0;
+  for(const idx of range(30)){
+    const zoneNext = zoneCur + zoneSec;
+
+    const zoneCurMin = Math.floor(zoneCur / 60);
+    const zoneCurSec = zoneCur % 60;
+    const zoneCurText = `${zoneCurMin.toString().padStart(2, "0")}:${zoneCurSec.toString().padStart(2, "0")}.000`;
+
+    const zoneCurEnd = zoneCur + zoneSec - 1;
+    const zoneCurEndMin = Math.floor(zoneCurEnd / 60);
+    const zoneCurEndSec = zoneCurEnd % 60;
+    const zoneCurEndText = `${zoneCurEndMin.toString().padStart(2, "0")}:${zoneCurEndSec.toString().padStart(2, "0")}.999`;
+
+    // aa:bb.000 ~ cc:dd.999
+    const zoneStr = `${zoneCurText} ~ ${zoneCurEndText}`;
+    result.push(zoneStr);
+    zoneCur = zoneNext;
   }
-  args.value.inheritTurntime = inheritTurnTimeMinute.value * 60 + inheritTurnTimeSecond.value;
+  return result;
+})();
+
+watch(inheritTurnTimeZone, (newValue: undefined | number) => {
+  if (!args.value) throw "nyc";
+  args.value.inheritTurntimeZone = inheritTurnTimeZone.value;
 });
 
 watch(
-  [inheritCity, inheritTurnTimeSet],
-  ([newInheritCity, newInheritTurnTimeSet], [oldInheritCity, oldInheritTurnTimeSet]) => {
-    if (newInheritCity === undefined || newInheritTurnTimeSet === false) {
+  [inheritCity, inheritTurnTimeZone],
+  ([newInheritCity, newInheritTurnTimeZone], [oldInheritCity, oldInheritTurnTimeZone]) => {
+    if (newInheritCity === undefined || newInheritTurnTimeZone === undefined) {
       return;
     }
     alert("도시와 턴 시간을 동시에 설정할 수 없습니다.");
@@ -516,33 +523,14 @@ watch(
     if (newInheritCity !== oldInheritCity) {
       inheritCity.value = undefined;
     }
-    if (newInheritTurnTimeSet !== oldInheritTurnTimeSet) {
-      inheritTurnTimeSet.value = false;
+    if (newInheritTurnTimeZone !== oldInheritTurnTimeZone) {
+      inheritTurnTimeZone.value = undefined;
     }
   },
   { immediate: true }
 );
 
-const inheritTurnTimeMinute = ref(0);
-watch(inheritTurnTimeMinute, (newValue: number) => {
-  if (!args.value) throw "nyc";
-  if (!inheritTurnTimeSet.value) {
-    args.value.inheritTurntime = undefined;
-    return;
-  }
-  args.value.inheritTurntime = newValue * 60 + inheritTurnTimeSecond.value;
-});
 
-const inheritTurnTimeSecond = ref(0);
-watch(inheritTurnTimeSecond, (newValue: number) => {
-  if (!args.value) throw "nyc";
-
-  if (!inheritTurnTimeSet.value) {
-    args.value.inheritTurntime = undefined;
-    return;
-  }
-  args.value.inheritTurntime = inheritTurnTimeMinute.value * 60 + newValue;
-});
 </script>
 <style lang="scss">
 @import "@scss/common/base.scss";
@@ -568,10 +556,6 @@ watch(inheritTurnTimeSecond, (newValue: number) => {
 
 .col-form-label {
   text-align: right;
-}
-
-.turn_time_pad .col-form-label {
-  text-align: left;
 }
 </style>
 

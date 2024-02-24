@@ -216,7 +216,7 @@ class GameConstBase
 
     public static $minMonthToAllowInheritItem = 4;
     public static $inheritBornSpecialPoint = 6000;
-    public static $inheritBornTurntimePoint = 3000;
+    public static $inheritBornTurntimePoint = 2500;
     public static $inheritBornCityPoint = 1000;
     public static $inheritBornStatPoint = 1000;
     public static $inheritItemUniqueMinPoint = 5000;

@@ -6,7 +6,7 @@ export type JoinArgs = {
   pic: boolean;
   character: string;
   inheritSpecial?: string;
-  inheritTurntime?: number;
+  inheritTurntimeZone?: number;
   inheritCity?: number;
   inheritBonusStat?: [number, number, number];
 };
