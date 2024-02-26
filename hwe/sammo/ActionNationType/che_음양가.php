@@ -29,13 +29,13 @@ class che_음양가 extends \sammo\BaseNation{
         if($type == 'pop' && $amount > 0){
             return $amount * 1.2;
         }
-        
+
         return $amount;
     }
 
     public function onCalcStrategic(string $turnType, string $varType, $value){
         if($varType == 'delay'){
-            return $value * 2;
+            return Util::round($value * 4 / 3);
         }
         return $value;
     }
