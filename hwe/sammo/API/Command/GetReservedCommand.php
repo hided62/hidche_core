@@ -6,6 +6,7 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\GameConst;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\TimeUtil;
@@ -32,13 +33,36 @@ class GetReservedCommand extends \sammo\BaseAPI
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $generalID = $session->generalID;
 
+        $invalidTurnList = 0;
+
         $rawTurn = $db->queryAllLists('SELECT turn_idx, action, arg, brief FROM general_turn WHERE general_id = %i ORDER BY turn_idx ASC', $generalID);
         foreach ($rawTurn as [$turn_idx, $action, $arg, $brief]) {
+            if($turn_idx < 0) {
+                $invalidTurnList = -1;
+                $turn_idx += GameConst::$maxTurn;
+            }
+            else if($turn_idx >= GameConst::$maxTurn) {
+                $invalidTurnList = 1;
+                $turn_idx -= GameConst::$maxTurn;
+            }
             $commandList[$turn_idx] = [
                 'action' => $action,
                 'brief' => $brief,
                 'arg' => Json::decode($arg)
             ];
+        }
+
+        if($invalidTurnList != 0){
+            if($invalidTurnList > 0){
+                $db->update('general_turn', [
+                    'turn_idx' => $db->sqleval('turn_idx - %i', GameConst::$maxTurn)
+                ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxTurn);
+            }
+            else{
+                $db->update('general_turn', [
+                    'turn_idx' => $db->sqleval('turn_idx + %i', GameConst::$maxTurn)
+                ], 'general_id=%i AND turn_idx < 0', $generalID);
+            }
         }
 
 

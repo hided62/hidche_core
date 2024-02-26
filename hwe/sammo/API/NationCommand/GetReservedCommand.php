@@ -73,6 +73,11 @@ class GetReservedCommand extends \sammo\BaseAPI
         }
 
         $nationTurnList = [];
+
+        //혹시 정규 턴을 벗어난 턴이 있는지 체크
+        $invalidUnderTurnList = [];
+        $invalidOverTurnList = [];
+
         foreach ($db->queryAllLists(
             'SELECT officer_level, turn_idx, action, arg, brief FROM nation_turn WHERE nation_id = %i ORDER BY officer_level DESC, turn_idx ASC',
             $me['nation']
@@ -80,11 +85,34 @@ class GetReservedCommand extends \sammo\BaseAPI
             if (!key_exists($officer_level, $nationTurnList)) {
                 $nationTurnList[$officer_level] = [];
             }
+            if($turn_idx < 0){
+                $invalidUnderTurnList[$officer_level] = $turn_idx;
+                $turn_idx += GameConst::$maxChiefTurn;
+            }
+            else if($turn_idx >= GameConst::$maxChiefTurn){
+                $invalidOverTurnList[$officer_level] = $turn_idx;
+                $turn_idx -= GameConst::$maxChiefTurn;
+            }
             $nationTurnList[$officer_level][$turn_idx] = [
                 'action' => $action,
                 'brief' => $brief,
                 'arg' => Json::decode($arg)
             ];
+        }
+
+        if($invalidUnderTurnList){
+            $db->update(
+                'nation_turn', [
+                    'turn_idx' => $db->sqleval('`turn_idx` + %i', GameConst::$maxChiefTurn)
+                ], 'nation_id = %i AND officer_level IN %li AND turn_idx < 0', $me['nation'], array_keys($invalidUnderTurnList)
+            );
+        }
+        if($invalidOverTurnList){
+            $db->update(
+                'nation_turn', [
+                    'turn_idx' => $db->sqleval('`turn_idx` - %i', GameConst::$maxChiefTurn)
+                ], 'nation_id = %i AND officer_level IN %li AND turn_idx >= %i', $me['nation'], array_keys($invalidOverTurnList), GameConst::$maxChiefTurn
+            );
         }
 
         $troopList = [];
