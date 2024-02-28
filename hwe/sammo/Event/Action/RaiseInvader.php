@@ -67,12 +67,16 @@ class RaiseInvader extends \sammo\Event\Action
 
         foreach ($db->queryAllLists('SELECT capital, nation from nation WHERE capital in %li', $cities) as $row) {
             [$oldCapital, $nation] = $row;
-            $capitalCandidates = $db->queryFirstColumn('SELECT from city WHERE nation = %i AND city != %i', $nation, $oldCapital);
+            $capitalCandidates = $db->queryFirstColumn('SELECT from city city WHERE nation = %i AND city != %i', $nation, $oldCapital);
             if (!$capitalCandidates) {
                 $disabledInvaderCity->add($oldCapital);
                 continue;
             }
-            $newCapital = $rng->choice($capitalCandidates);
+            
+            do {
+                $newCapital = $rng->choice($capitalCandidates);
+            } while(in_array($newCapital, $cities);
+            
             $db->update('nation', ['capital' => $newCapital], 'nation=%i', $nation);
             $db->update('general', ['city' => $newCapital], 'nation=%i and city=%i', $nation, $oldCapital);
         }
