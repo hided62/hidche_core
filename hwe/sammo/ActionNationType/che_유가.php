@@ -8,7 +8,7 @@ class che_유가 extends \sammo\BaseNation{
 
     protected $name = '유가';
     protected $info = '';
-    static $pros = '내정↑ 민심↑';
+    static $pros = '농상↑ 민심↑';
     static $cons = '쌀수입↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

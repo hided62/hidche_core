@@ -9,7 +9,7 @@ class che_종횡가 extends \sammo\BaseNation{
     protected $name = '종횡가';
     protected $info = '';
     static $pros = '전략↑ 수성↑';
-    static $cons = '금수입↓ 내정↓';
+    static $cons = '금수입↓ 농상↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '수비' || $turnType == '성벽'){

@@ -8,7 +8,7 @@ class che_음양가 extends \sammo\BaseNation{
 
     protected $name = '음양가';
     protected $info = '';
-    static $pros = '내정↑ 인구↑';
+    static $pros = '농상↑ 인구↑';
     static $cons = '기술↓ 전략↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{

@@ -318,7 +318,6 @@ class GameConstBase
             'che_치안강화',
             'che_정착장려',
             'che_주민선정',
-            'che_물자조달',
         ],
         '군사' => [
             'che_징병',
@@ -349,6 +348,7 @@ class GameConstBase
         '국가' => [
             'che_증여',
             'che_헌납',
+            'che_물자조달',
             'che_하야',
             'che_거병',
             'che_건국',
