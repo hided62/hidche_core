@@ -75,7 +75,7 @@ class RaiseInvader extends \sammo\Event\Action
             
             do {
                 $newCapital = $rng->choice($capitalCandidates);
-            } while(in_array($newCapital, $cities);
+            } while(in_array($newCapital, $cities));
             
             $db->update('nation', ['capital' => $newCapital], 'nation=%i', $nation);
             $db->update('general', ['city' => $newCapital], 'nation=%i and city=%i', $nation, $oldCapital);

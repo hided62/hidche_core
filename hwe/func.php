@@ -408,14 +408,14 @@ function checkSecretPermission(array $me, $checkSecretLimit = true)
     }
 
     $secretMin = 0;
-    $secretMax = checkSecretMaxPermission($me, $penalty);
+    $secretMax = checkSecretMaxPermission($penalty);
 
 
     if ($me['officer_level'] == 12) {
         $secretMin = 4;
-    } else if ($me['permission'] == 'ambassador') {
+    } else if ($permission == 'ambassador') {
         $secretMin = 4;
-    } else if ($me['permission'] == 'auditor') {
+    } else if ($permission == 'auditor') {
         $secretMin = 3;
     } else if ($me['officer_level'] >= 5) {
         $secretMin = 2;
