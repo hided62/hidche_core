@@ -9,7 +9,7 @@ class che_오두미도 extends \sammo\BaseNation{
     protected $name = '오두미도';
     protected $info = '';
     static $pros = '쌀수입↑ 인구↑';
-    static $cons = '기술↓ 수성↓ 내정↓';
+    static $cons = '기술↓ 수성↓ 농상↓';
 
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
