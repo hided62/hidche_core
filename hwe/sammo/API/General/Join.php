@@ -153,7 +153,14 @@ class Join extends \sammo\BaseAPI
         }
 
         $memberPenalty = Json::decode($member['penalty'] ?? "{}");
-        $penalty = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
+        $penaltyInfo = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
+
+        $penalty = [];
+        foreach($penaltyInfo as $penaltyKey => $penaltyValue){
+            if($penaltyValue['expire'] ?? 0 > TimeUtil::now()){
+                $penalty[$penaltyKey] = $penaltyValue['value'];
+            }
+        }
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');

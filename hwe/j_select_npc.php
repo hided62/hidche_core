@@ -37,7 +37,14 @@ if(!$member){
 
 $userNick = $member['name'];
 $memberPenalty = Json::decode($member['penalty'] ?? '{}');
-$penalty = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
+$penaltyInfo = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
+
+$penalty = [];
+foreach($penaltyInfo as $penaltyKey => $penaltyValue){
+    if($penaltyValue['expire'] ?? 0 > TimeUtil::now()){
+        $penalty[$penaltyKey] = $penaltyValue['value'];
+    }
+}
 
 $pickResult = $db->queryFirstField('SELECT pick_result FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%s', $userID, $now);
 if(!$pickResult){
