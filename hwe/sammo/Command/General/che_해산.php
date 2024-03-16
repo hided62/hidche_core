@@ -105,8 +105,8 @@ class che_해산 extends Command\GeneralCommand{
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
 
         $nationGenerals = deleteNation($general, false);
+        $general->setVar('makelimit', 12);
         foreach($nationGenerals as $oldGeneral){
-            $oldGeneral->setVar('makelimit', 12);
             $oldGeneral->applyDB($db);
         }
         $general->applyDB($db);
