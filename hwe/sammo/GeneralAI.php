@@ -3121,7 +3121,7 @@ class GeneralAI
         $db = DB::db();
 
         $dupLord = $db->queryFirstField('SELECT COUNT(*) FROM general WHERE officer_level = 12 AND city = %i', $this->general->getCityID());
-        if($dupLord <= 1) {
+        if($dupLord <= 1 && !in_array($this->general->getRawCity()['level'], [5, 6])) {
             return null;
         }
 
