@@ -225,6 +225,25 @@ class APIHelper
             ]);
             $result['result'] = $result['result'] ?? true;
             Json::die($result, $setCache ? 0 : Json::NO_CACHE);
+        } catch (\MeekroDBException $e) {
+            $session = Session::getInstance();
+            $errMsg = $e->getMessage();
+            $errTrace = $e->getTraceAsString();
+            $logDB->insert('api_log', [
+                'user_id' => $session->userID ?? 0,
+                'ip' => $ip,
+                'date' => $date,
+                'path' => $actionPath,
+                'arg' => Json::encode($filteredArgs),
+                'aux' => Json::encode([
+                    'result' => false,
+                    'state' => 'error_exception',
+                    'errMsg' => $errMsg,
+                    'errTrace' => $errTrace,
+                ]),
+            ]);
+            logError('MeekroDBException', $errMsg, $actionPath, $e->getTrace());
+            Json::dieWithReason("{$errMsg}\n{$errTrace}");
         } catch (\Exception $e) {
             $session = Session::getInstance();
             $errMsg = $e->getMessage();
