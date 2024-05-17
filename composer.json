@@ -8,12 +8,12 @@
     ],
     "config": {
         "platform": {
-            "php": "8.2"
+            "php": "8.3"
         }
     },
     "require": {
         "brandonwamboldt/utilphp": "^1.1",
-        "sergeytsalkov/meekrodb": "^2.3",
+        "sergeytsalkov/meekrodb": "^2.5",
         "league/plates": "^3.5",
         "vlucas/valitron": "^1.4",
         "php-extended/php-tail": "^5.0",
@@ -22,10 +22,10 @@
         "xemlock/htmlpurifier-html5": "^0.1.7",
         "catfan/medoo": "^2.1",
         "phan/phan": "^5.4",
-        "nette/caching": "^3.2",
+        "nette/caching": "^3.3",
         "illuminate/database": "^10.0",
         "illuminate/events": "^10.0",
-        "php-ds/php-ds": "^1.4",
+        "php-ds/php-ds": "^1.5",
         "hided62/ldto": "^1.0",
         "league/uri": "^6.8"
     },
