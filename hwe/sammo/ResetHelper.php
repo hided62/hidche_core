@@ -8,7 +8,7 @@ class ResetHelper{
 
     }
 
-    static public function clearDB(){
+    static public function clearDB():array{
         $servRoot = realpath(__DIR__.'/../');
 
         if(!file_exists($servRoot.'/logs') || !file_exists($servRoot.'/data')){
@@ -73,12 +73,13 @@ class ResetHelper{
         }
 
         $prefix = DB::prefix();
+
         ServConfig::getServerList()[$prefix]->closeServer();
 
         $db = DB::db();
         $mysqli_obj = $db->get();
 
-        $serverID = DB::prefix().'_'.date("ymd").'_'.Util::randomStr(4);
+        $serverID = $prefix.'_'.date("ymd").'_'.Util::randomStr(4);
 
         mkdir($servRoot.'/logs/'.$serverID, 0775);
         mkdir($servRoot.'/data/'.$serverID, 0775);

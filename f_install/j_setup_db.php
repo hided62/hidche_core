@@ -150,20 +150,12 @@ if (!file_exists(ROOT . '/d_setting/.htaccess')) {
 $rootDB = new \MeekroDB($host, $username, $password, $dbName, $port, 'utf8mb4');
 $rootDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
 
-$rootDB->throw_exception_on_nonsql_error = false;
-$rootDB->nonsql_error_handler = function ($params) {
+$rootDB->addHook('run_failed', function ($args) {
     Json::die([
         'result' => false,
-        'reason' => 'DB 접속에 실패했습니다.'
+        'reason' => '에러.'. $args['error']
     ]);
-};
-
-$rootDB->error_handler = function ($params) {
-    Json::die([
-        'result' => false,
-        'reason' => 'SQL을 제대로 실행하지 못했습니다. DB상태를 확인해 주세요.'
-    ]);
-};
+});
 
 $mysqli_obj = $rootDB->get(); //로그인에 실패할 경우 자동으로 dbConnFail()이 실행됨.
 

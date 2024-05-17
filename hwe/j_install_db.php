@@ -53,22 +53,17 @@ if($fullReset){
     }
 }
 
-function dbConnFail($params){
+$db = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8mb4');
+$db->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
+
+$db->addHook('run_failed', function(){
     Json::die([
         'result'=>false,
         'reason'=>'DB 접속에 실패했습니다.'
     ]);
-}
+});
 
-
-$db = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8mb4');
-$db->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
-
-$db->throw_exception_on_nonsql_error = false;
-$db->nonsql_error_handler = 'dbConnFail';
-
-
-$mysqli_obj = $db->get(); //로그인에 실패할 경우 자동으로 dbConnFail()이 실행됨.
+$mysqli_obj = $db->get();
 
 $prefix = basename(__DIR__);
 
@@ -84,8 +79,6 @@ $result = Util::generateFileUsingSimpleTemplate(
     ], true
 );
 
-
-
 if($result !== true){
     Json::die([
         'result'=>false,
@@ -93,7 +86,29 @@ if($result !== true){
     ]);
 }
 
-ResetHelper::clearDB();
+//최소한의 테이블 처리를 위해 수동으로 초기화하도록 하자
+if($mysqli_obj->multi_query(file_get_contents(__DIR__.'/sql/reset.sql'))){
+    while(true){
+        if (!$mysqli_obj->more_results()) {
+            break;
+        }
+        if(!$mysqli_obj->next_result()){
+            break;
+        }
+    }
+
+}
+
+if($mysqli_obj->multi_query(file_get_contents(__DIR__.'/sql/schema.sql'))){
+    while(true){
+        if (!$mysqli_obj->more_results()) {
+            break;
+        }
+        if(!$mysqli_obj->next_result()){
+            break;
+        }
+    }
+}
 
 ServConfig::getServerList()[$prefix]->closeServer();
 
