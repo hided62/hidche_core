@@ -32,10 +32,8 @@ if ($type <= 0 || $type > 15) {
 }
 
 $ownerNameList = [];
-if ($gameStor->isunited) {
-    foreach (RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID, $ownerName]) {
-        $ownerNameList[$ownerID] = $ownerName;
-    }
+foreach (RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID, $ownerName]) {
+    $ownerNameList[$ownerID] = $ownerName;
 }
 
 ?>
@@ -54,6 +52,15 @@ if ($gameStor->isunited) {
     <?= WebUtil::printDist('vue', [], true) ?>
     <?= WebUtil::printDist('ts', 'common') ?>
 
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .generalName:hover > .hidden {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -168,7 +175,11 @@ if ($gameStor->isunited) {
         $name = formatName($general['name'], $general['npc']);
 
         if (key_exists($general['owner'], $ownerNameList)) {
-            $name = $name . '<br><small>(' . $ownerNameList[$general['owner']] . ')</small>';
+            if ($gameStor->isunited) {
+                $name = $name . '<br><small class=\'userName\'>(' . $ownerNameList[$general['owner']] . ')</small>';
+            } else {
+                $name = $name . '<br><small class=\'userName hidden\'>(' . $ownerNameList[$general['owner']] . ')</small>';
+            }
         }
 
         $general['refresh_score_total'] = Util::round($general['refresh_score_total'], -1);
@@ -185,7 +196,7 @@ if ($gameStor->isunited) {
         data-npc-type='{$general['npc']}'
     >
         <td align=center><img class='generalIcon' width='64' height='64' src='{$imageTemp}/{$general['picture']}'></img></td>
-        <td align=center>$name</td>
+        <td align=center class='generalName'>$name</td>
         <td align=center>{$general['age']}세</td>
         <td align=center>" . displayCharInfo($general['personal']) . "</td>
         <td align=center>" . displaySpecialDomesticInfo($general['special']) . " / " . displaySpecialWarInfo($general['special2']) . "</td>
