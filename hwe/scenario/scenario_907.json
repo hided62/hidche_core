@@ -8,6 +8,7 @@
         "joinRuinedNPCProp":0,
         "npcBanMessageProb":1,
         "uniqueTrialCoef": 2,
+        "maxUniqueTrialProb": 0.5,
         "defaultMaxGenius": 9999,
         "defaultMaxGeneral": 700,
         "allItems": {
