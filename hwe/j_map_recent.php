@@ -19,7 +19,15 @@ if(!prepareDir('data/file_cache')){
 	]);
 }
 
-$storage = new \Nette\Caching\Storages\FileStorage('data/file_cache');
+$absolutePath = realpath('data/file_cache');
+if(!$absolutePath){
+    Json::die([
+        'result'=>false,
+        'reason'=>'cache 불가'
+    ]);
+}
+
+$storage = new \Nette\Caching\Storages\FileStorage($absolutePath);
 $cache = new Cache($storage);
 $serverID = UniqueConst::$serverID;
 
