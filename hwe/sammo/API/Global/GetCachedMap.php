@@ -55,7 +55,11 @@ class GetCachedMap extends \sammo\BaseAPI
       return 'cache 불가';
     }
 
-    $storage = new \Nette\Caching\Storages\FileStorage('data/file_cache');
+    $absolutePath = realpath('data/file_cache');
+    if (!$absolutePath) {
+      return 'cache 불가';
+    }
+    $storage = new \Nette\Caching\Storages\FileStorage($absolutePath);
     $cache = new Cache($storage);
 
     $now = TimeUtil::nowDateTimeImmutable();

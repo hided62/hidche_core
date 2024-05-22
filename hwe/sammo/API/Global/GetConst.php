@@ -288,6 +288,10 @@ class GetConst extends \sammo\BaseAPI
         if (!prepareDir($cacheDir)) {
             throw new RuntimeException('cache 폴더 없음');
         }
+        $absolutePath = realpath($cacheDir);
+        if (!$absolutePath) {
+            throw new RuntimeException('cache 폴더 없음');
+        }
         $storage = new \Nette\Caching\Storages\FileStorage($cacheDir);
         $cache = new Cache($storage);
 
