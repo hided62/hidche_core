@@ -77,7 +77,6 @@ class ResetHelper{
         ServConfig::getServerList()[$prefix]->closeServer();
 
         $db = DB::db();
-        $mysqli_obj = $db->get();
 
         $serverID = $prefix.'_'.date("ymd").'_'.Util::randomStr(4);
 
@@ -111,6 +110,7 @@ class ResetHelper{
             $servRoot.'/d_setting/GameConst.php',
         );
 
+        $mysqli_obj = $db->get();
         if($mysqli_obj->multi_query(file_get_contents($servRoot.'/sql/reset.sql'))){
             while(true){
                 if (!$mysqli_obj->more_results()) {
