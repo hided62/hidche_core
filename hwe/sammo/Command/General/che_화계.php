@@ -74,11 +74,14 @@ class che_화계 extends Command\GeneralCommand
 
         $maxGenScore = 0;
         $probCorrection = 0;
+        $affectGeneralCount = 0;
         foreach ($destCityGeneralList as $destGeneral) {
             /** @var General $destGeneral */
             if ($destGeneral->getNationID() != $destNationID) {
                 continue;
             }
+
+            $affectGeneralCount++;
 
             if ($statType === 'leadership') {
                 $genScore = $destGeneral->getLeadership();
@@ -95,7 +98,7 @@ class che_화계 extends Command\GeneralCommand
 
         $prob = $maxGenScore / GameConst::$sabotageProbCoefByStat;
         $prob += $probCorrection;
-        $prob += (log(count($destCityGeneralList) + 1, 2) - 1.25) * GameConst::$sabotageDefenceCoefByGeneralCnt;
+        $prob += (log($affectGeneralCount + 1, 2) - 1.25) * GameConst::$sabotageDefenceCoefByGeneralCnt;
 
         $prob += $destCity['secu'] / $destCity['secu_max'] / 5; //최대 20%p
         $prob += $destCity['supply'] ? 0.1 : 0;
