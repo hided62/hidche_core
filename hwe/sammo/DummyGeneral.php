@@ -2,6 +2,7 @@
 
 namespace sammo;
 
+use Ds\Map;
 use sammo\Enums\InheritanceKey;
 
 class DummyGeneral extends General
@@ -31,6 +32,7 @@ class DummyGeneral extends General
         $this->raw = $raw;
 
         $this->resultTurn = new LastTurn();
+        $this->penaltyList = new Map();
 
         if ($initLogger) {
             $this->initLogger(1, 1);
