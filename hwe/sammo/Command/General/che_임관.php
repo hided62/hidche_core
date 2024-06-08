@@ -68,7 +68,7 @@ class che_임관 extends Command\GeneralCommand
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::AllowJoinAction(),
-            ConstraintHelper::NoPanelty(PenaltyKey::NoChosenAssignment),
+            ConstraintHelper::NoPenalty(PenaltyKey::NoChosenAssignment),
         ];
     }
 
@@ -95,7 +95,7 @@ class che_임관 extends Command\GeneralCommand
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::AllowJoinDestNation($relYear),
             ConstraintHelper::AllowJoinAction(),
-            ConstraintHelper::NoPanelty(PenaltyKey::NoChosenAssignment),
+            ConstraintHelper::NoPenalty(PenaltyKey::NoChosenAssignment),
         ];
     }
 

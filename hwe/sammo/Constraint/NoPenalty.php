@@ -5,7 +5,7 @@ namespace sammo\Constraint;
 use sammo\Enums\PenaltyKey;
 use sammo\Json;
 
-class NoPanelty extends Constraint{
+class NoPenalty extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARG|Constraint::REQ_BACKED_ENUM_ARG;
 
     public function checkInputValues(bool $throwExeception=true):bool{

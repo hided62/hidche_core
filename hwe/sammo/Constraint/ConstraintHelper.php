@@ -178,7 +178,7 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
-    static function NoPanelty(PenaltyKey $penaltyKey):array{
+    static function NoPenalty(PenaltyKey $penaltyKey):array{
         return [__FUNCTION__, $penaltyKey];
     }
 

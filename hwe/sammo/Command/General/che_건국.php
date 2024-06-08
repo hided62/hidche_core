@@ -83,7 +83,7 @@ class che_건국 extends Command\GeneralCommand
         $this->minConditionConstraints = [
             ConstraintHelper::BeOpeningPart($relYear + 1),
             ConstraintHelper::ReqNationValue('level', '국가규모', '==', 0, '정식 국가가 아니어야합니다.'),
-            ConstraintHelper::NoPanelty(PenaltyKey::NoFoundNation),
+            ConstraintHelper::NoPenalty(PenaltyKey::NoFoundNation),
         ];
     }
 
@@ -104,7 +104,7 @@ class che_건국 extends Command\GeneralCommand
             ConstraintHelper::CheckNationNameDuplicate($nationName),
             ConstraintHelper::AllowJoinAction(),
             ConstraintHelper::ConstructableCity(),
-            ConstraintHelper::NoPanelty(PenaltyKey::NoFoundNation),
+            ConstraintHelper::NoPenalty(PenaltyKey::NoFoundNation),
         ];
     }
 
