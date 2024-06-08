@@ -18,6 +18,7 @@ use function \sammo\getAllNationStaticInfo;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\PenaltyKey;
 
 use function sammo\buildNationTypeClass;
 use function sammo\genGenericUniqueRNGFromGeneral;
@@ -102,6 +103,7 @@ class che_건국 extends Command\GeneralCommand
             ConstraintHelper::CheckNationNameDuplicate($nationName),
             ConstraintHelper::AllowJoinAction(),
             ConstraintHelper::ConstructableCity(),
+            ConstraintHelper::NoPanelty(PenaltyKey::NoFoundNation),
         ];
     }
 
