@@ -3995,7 +3995,21 @@ class GeneralAI
         /** @var General[] */
         $nextChiefs = [];
 
-        if ($userChiefCnt == 0 && $this->userGenerals && !isOfficerSet($nation['chief_set'], 11)) {
+        $availableUserChiefCnt = 0;
+        foreach($this->userGenerals as $general){
+            if ($general->getVar('killturn') < $minUserKillturn) {
+                continue;
+            }
+            if ($general->getVar('belong') < $minBelong) {
+                continue;
+            }
+            if($general->hasPenalty(PenaltyKey::NoChief)){
+                continue;
+            }
+            $availableUserChiefCnt += 1;
+        }
+
+        if ($userChiefCnt == 0 && $availableUserChiefCnt && !isOfficerSet($nation['chief_set'], 11)) {
             $userGenerals = $this->userGenerals;
             uasort($userGenerals, function (General $lhs, General $rhs) {
                 if ($lhs->hasPenalty(PenaltyKey::NoChief) && !$rhs->hasPenalty(PenaltyKey::NoChief)) {
