@@ -5,6 +5,7 @@ namespace sammo;
 use sammo\Command\GeneralCommand;
 use sammo\Command\NationCommand;
 use sammo\Enums\MessageType;
+use sammo\Enums\PenaltyKey;
 use sammo\Enums\RankColumn;
 use sammo\Scenario\NPC;
 
@@ -3979,7 +3980,7 @@ class GeneralAI
                 continue;
             }
             $chief = $this->chiefGenerals[$chiefLevel];
-            if ($chief->getNPCType() < 2 && $chief->getVar('killturn') >= $minUserKillturn) {
+            if ($chief->getNPCType() < 2 && $chief->getVar('killturn') >= $minUserKillturn && !$chief->hasPenalty(PenaltyKey::NoAmbassador)) {
                 $userChiefCnt += 1;
                 $chief->setVar('permission', 'ambassador');
                 $chief->applyDB($db);
@@ -3997,9 +3998,24 @@ class GeneralAI
         if ($userChiefCnt == 0 && $this->userGenerals && !isOfficerSet($nation['chief_set'], 11)) {
             $userGenerals = $this->userGenerals;
             uasort($userGenerals, function (General $lhs, General $rhs) {
+                if ($lhs->hasPenalty(PenaltyKey::NoChief) && !$rhs->hasPenalty(PenaltyKey::NoChief)) {
+                    return 1;
+                }
+                if (!$lhs->hasPenalty(PenaltyKey::NoChief) && $rhs->hasPenalty(PenaltyKey::NoChief)) {
+                    return -1;
+                }
+                if ($lhs->hasPenalty(PenaltyKey::NoAmbassador) && !$rhs->hasPenalty(PenaltyKey::NoAmbassador)) {
+                    return 1;
+                }
+                if (!$lhs->hasPenalty(PenaltyKey::NoAmbassador) && $rhs->hasPenalty(PenaltyKey::NoAmbassador)) {
+                    return -1;
+                }
                 return - ($lhs->getVar('leadership') <=> $rhs->getVar('leadership'));
             });
             foreach ($userGenerals as $general) {
+                if ($general->hasPenalty(PenaltyKey::NoChief)) {
+                    continue;
+                }
                 if ($general->getVar('killturn') < $minUserKillturn) {
                     continue;
                 }
@@ -4012,7 +4028,9 @@ class GeneralAI
                 $nextChiefs[11] = $general;
                 $general->setVar('officer_level', 11);
                 $general->setVar('officer_city', 0);
-                $general->setVar('permission', 'ambassador');
+                if(!$general->hasPenalty(PenaltyKey::NoAmbassador)){
+                    $general->setVar('permission', 'ambassador');
+                }
                 $nation['chief_set'] |= doOfficerSet(0, 11);
                 $updatedChiefSet |= doOfficerSet(0, 11);
                 $userChiefCnt += 1;
@@ -4070,6 +4088,9 @@ class GeneralAI
                 if ($general->getNPCType() >= 2 && $general->getVar('killturn') < $minNPCKillturn) {
                     continue;
                 }
+                if($general->hasPenalty(PenaltyKey::NoChief)){
+                    continue;
+                }
 
                 if ($chiefLevel == 11) {
                 } else if ($chiefLevel % 2 == 0 && $general->getStrength(false, false, false, false) < GameConst::$chiefStatMin) {
@@ -4092,7 +4113,9 @@ class GeneralAI
 
             if ($newChief->getNPCType() < 2) {
                 $userChiefCnt += 1;
-                $newChief->setVar('permission', 'ambassador');
+                if(!$newChief->hasPenalty(PenaltyKey::NoAmbassador)){
+                    $newChief->setVar('permission', 'ambassador');
+                }
             }
 
             $nextChiefs[$chiefLevel] = $newChief;
