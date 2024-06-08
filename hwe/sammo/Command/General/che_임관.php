@@ -17,6 +17,7 @@ use function \sammo\getNationStaticInfo;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\PenaltyKey;
 
 class che_임관 extends Command\GeneralCommand
 {
@@ -66,7 +67,8 @@ class che_임관 extends Command\GeneralCommand
         $this->minConditionConstraints = [
             ConstraintHelper::ReqEnvValue('join_mode', '!=', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::BeNeutral(),
-            ConstraintHelper::AllowJoinAction()
+            ConstraintHelper::AllowJoinAction(),
+            ConstraintHelper::NoPanelty(PenaltyKey::NoChosenAssignment),
         ];
     }
 
@@ -92,7 +94,8 @@ class che_임관 extends Command\GeneralCommand
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::AllowJoinDestNation($relYear),
-            ConstraintHelper::AllowJoinAction()
+            ConstraintHelper::AllowJoinAction(),
+            ConstraintHelper::NoPanelty(PenaltyKey::NoChosenAssignment),
         ];
     }
 
