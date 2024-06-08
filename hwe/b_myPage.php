@@ -136,13 +136,21 @@ $changeDefence999Atmos = $me->onCalcDomestic('changeDefenceTrain', "atmos999", $
                                 <option value='<?= $targetDefenceTrain ?>' <?= $me->getVar('defence_train') == $targetDefenceTrain ? "selected" : ""; ?>><?= formatDefenceTrain($targetDefenceTrain) ?>(훈사<?= $targetDefenceTrain ?>)</option>
                             <?php endforeach; ?>
                             <option value=999 <?= $me->getVar('defence_train') == 999 ? "selected" : ""; ?>><?= formatDefenceTrain(999) ?>
-                            <?php if($changeDefence999Train != 0 || $changeDefence999Train != 0):
-                            ?>[<?=$changeDefence999Train!=0?"훈련 {$changeDefence999Train},":''?><?=$changeDefence999Atmos!=0?"사기 {$changeDefence999Atmos}":''
-                            ?>]<?php endif?></option>
+                                <?php if ($changeDefence999Train != 0 || $changeDefence999Train != 0) :
+                                ?>[<?= $changeDefence999Train != 0 ? "훈련 {$changeDefence999Train}," : '' ?><?= $changeDefence999Atmos != 0 ? "사기 {$changeDefence999Atmos}" : ''
+                                                                                                ?>]<?php endif ?></option>
                         </select>
                         】<br><br>
                         <input type=<?= $submit ?> id='set_my_setting' name=btn style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px; value=설정저장><br>
                         ∞<span style='color:orange'>설정저장은 이달중 <?= $myset ?>회 남았습니다.</span><br><br>
+
+                        <?php if ($me->getPenaltyList()->count()) : ?>
+                            징계 목록(저장 시 갱신)<br>
+                            <?php foreach ($me->getPenaltyList() as $penaltyKey => $penalty) : ?>
+                                <span style='color:red'><?= $penaltyKey->getHelptext() ?> : <?= $penalty ?></span><br>
+                            <?php endforeach; ?>
+                            <br />
+                        <?php endif; ?>
                         <?php if (!($gameStor->autorun_user['limit_minutes'] ?? false)) : ?>
                             휴 가 신 청<br>
                             <button type="button" id='vacation' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>휴가 신청</button><br><br>
