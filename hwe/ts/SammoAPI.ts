@@ -179,7 +179,10 @@ const apiRealPath = {
     }>,
     GetMoreLog: GET as APICallT<{
       lastID: number
-    }, InheritLogResponse>
+    }, InheritLogResponse>,
+    CheckOwner: PUT as APICallT<{
+      destGeneralID: number;
+    }>,
   },
   Message: {
     DeleteMessage: PATCH as APICallT<{

@@ -1,25 +1,17 @@
 <template>
   <TopBackBar :title="title" />
-  <div
-    id="container"
-    class="bg0 px-2"
-    style="max-width: 1000px; margin: auto; border: solid 1px #888888; overflow: hidden"
-  >
+  <div id="container" class="bg0 px-2"
+    style="max-width: 1000px; margin: auto; border: solid 1px #888888; overflow: hidden">
     <div id="inheritance_list" class="row">
       <template v-for="(text, key) in inheritanceViewText" :key="key">
         <div :id="`inherit_${key}`" class="col col-sm-4 col-12 inherit_item inherit_template_item">
           <div class="row">
             <label :id="`inherit_${key}_head`" class="inherit_head col col-lg-6 col-sm-7 col-6 col-form-label">{{
-              text.title
-            }}</label>
+    text.title
+  }}</label>
             <div class="col col-lg-6 col-sm-5 col-6">
-              <input
-                :id="`inherit_${key}_value`"
-                type="text"
-                class="form-control inherit_value f_tnum"
-                readonly
-                :value="Math.floor(items[key]).toLocaleString()"
-              />
+              <input :id="`inherit_${key}_value`" type="text" class="form-control inherit_value f_tnum" readonly
+                :value="Math.floor(items[key]).toLocaleString()" />
             </div>
           </div>
 
@@ -53,13 +45,9 @@
             </div>
           </div>
           <div class="a-right">
-            <small class="form-text text-muted"
-              ><!-- eslint-disable-next-line vue/no-v-html -->
+            <small class="form-text text-muted"><!-- eslint-disable-next-line vue/no-v-html -->
               <span style="color: white" v-html="availableSpecialWar[nextSpecialWar].info" /><br />다음에 얻을 전투
-              특기를 정합니다.<br /><span style="color: white"
-                >필요 포인트: {{ inheritActionCost.nextSpecial }}</span
-              ></small
-            >
+              특기를 정합니다.<br /><span style="color: white">필요 포인트: {{ inheritActionCost.nextSpecial }}</span></small>
           </div>
           <div class="row px-4">
             <BButton class="col-6 offset-6" variant="primary" @click="setNextSpecialWar"> 구입 </BButton>
@@ -79,17 +67,12 @@
           </div>
           <div class="row px-4">
             <div class="col f_tnum">
-              <NumberInputWithInfo
-                v-model="specificUniqueAmount"
-                title="입찰 포인트"
-                :min="inheritActionCost.minSpecificUnique"
-                :max="items.previous"
-              />
+              <NumberInputWithInfo v-model="specificUniqueAmount" title="입찰 포인트"
+                :min="inheritActionCost.minSpecificUnique" :max="items.previous" />
             </div>
           </div>
           <div class="a-right">
-            <small class="form-text text-muted"
-              >얻고자 하는 유니크 아이템으로 경매를 시작합니다. 24턴 동안 진행됩니다.<br />
+            <small class="form-text text-muted">얻고자 하는 유니크 아이템으로 경매를 시작합니다. 24턴 동안 진행됩니다.<br />
               <!-- eslint-disable-next-line vue/no-v-html -->
               <span style="color: white" v-html="specificUnique == null ? '' : availableUnique[specificUnique].info" />
             </small>
@@ -110,11 +93,8 @@
             <BButton class="col-6" variant="primary" @click="tryResestTurnTime()"> 구입 </BButton>
           </div>
           <div class="a-right">
-            <small class="form-text text-muted"
-              >다다음턴부터 시간이 랜덤하게 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
-                >필요 포인트: {{ inheritActionCost.resetTurnTime }}</span
-              ></small
-            >
+            <small class="form-text text-muted">다다음턴부터 시간이 랜덤하게 바뀝니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span
+                style="color: white">필요 포인트: {{ inheritActionCost.resetTurnTime }}</span></small>
           </div>
         </div>
         <div class="col col-lg-4 col-sm-6 col-12 py-2">
@@ -123,11 +103,8 @@
             <BButton class="col-6" variant="primary" @click="buySimple('BuyRandomUnique')"> 구입 </BButton>
           </div>
           <div class="a-right">
-            <small class="form-text text-muted"
-              >다음 턴에 랜덤 유니크를 얻습니다.<br /><span style="color: white"
-                >필요 포인트: {{ inheritActionCost.randomUnique }}</span
-              ></small
-            >
+            <small class="form-text text-muted">다음 턴에 랜덤 유니크를 얻습니다.<br /><span style="color: white">필요 포인트: {{
+    inheritActionCost.randomUnique }}</span></small>
           </div>
         </div>
         <div class="col col-lg-4 col-sm-6 col-12 py-2">
@@ -136,11 +113,9 @@
             <BButton class="col-6" variant="primary" @click="buySimple('ResetSpecialWar')"> 구입 </BButton>
           </div>
           <div class="a-right">
-            <small class="form-text text-muted"
-              >즉시 전투 특기를 초기화합니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span style="color: white"
-                >필요 포인트: {{ inheritActionCost.resetSpecialWar }}</span
-              ></small
-            >
+            <small class="form-text text-muted">즉시 전투 특기를 초기화합니다. (필요 포인트가 피보나치식으로 증가합니다)<br /><span
+                style="color: white">필요
+                포인트: {{ inheritActionCost.resetSpecialWar }}</span></small>
           </div>
         </div>
       </div>
@@ -153,33 +128,48 @@
         <div class="row">
           <label class="col col-sm-6 col-form-label" :for="`buff-${buffKey}`">{{ info.title }}</label>
           <div class="col col-sm-6 f_tnum">
-            <b-form-input
-              :id="`buff-${buffKey}`"
-              v-model.number="inheritBuff[buffKey]"
-              type="number"
-              :min="prevInheritBuff[buffKey] ?? 0"
-              :max="maxInheritBuff"
-            />
+            <b-form-input :id="`buff-${buffKey}`" v-model.number="inheritBuff[buffKey]" type="number"
+              :min="prevInheritBuff[buffKey] ?? 0" :max="maxInheritBuff" />
           </div>
         </div>
         <div style="text-align: right">
-          <small class="form-text text-muted f_tnum"
-            >{{ info.info }}<br /><span style="color: white"
-              >필요 포인트:
+          <small class="form-text text-muted f_tnum">{{ info.info }}<br /><span style="color: white">필요 포인트:
               {{
-                inheritActionCost.buff[inheritBuff[buffKey]] - inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
-              }}</span
-            ></small
-          >
+    inheritActionCost.buff[inheritBuff[buffKey]] - inheritActionCost.buff[prevInheritBuff[buffKey] ?? 0]
+  }}</span></small>
         </div>
         <div class="row px-4" style="margin-bottom: 1em">
-          <BButton
-            variant="secondary"
-            class="col col-lg-6 col-4 offset-lg-0 offset-4"
-            @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0"
-          >
-            리셋 </BButton
-          ><BButton variant="primary" class="col col-lg-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </BButton>
+          <BButton variant="secondary" class="col col-lg-6 col-4 offset-lg-0 offset-4"
+            @click="inheritBuff[buffKey] = prevInheritBuff[buffKey] ?? 0">
+            리셋 </BButton>
+          <BButton variant="primary" class="col col-lg-6 col-4" @click="buyInheritBuff(buffKey)"> 구입 </BButton>
+        </div>
+      </div>
+    </div>
+    <div style="width: 100%; padding: 0 10px">
+      <hr :style="{ opacity: 0.5 }" />
+    </div>
+    <div class="row">
+      <div class="col col-lg-4 col-sm-6 col-12 py-2">
+        <div class="row px-4">
+          <div class="a-right col-6 align-self-center">장수 소유자 확인</div>
+          <div class="col-6">
+            <select v-model="targetOwner" class="form-select col-6">
+              <option disabled selected :value="null">장수 선택</option>
+              <option v-for="(name, key) in availableTargetGeneral" :key="key" :value="key">
+                {{ name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="a-right">
+          <small class="form-text text-muted">장수의 소유자를 찾습니다.<br />
+          </small>
+          <span style="color: white">필요 포인트: {{ inheritActionCost.checkOwner }}</span>
+        </div>
+
+        <div class="row px-4">
+          <BButton class="col-6 offset-6" variant="primary" @click="checkOwner"> 소유자 찾기 </BButton>
         </div>
       </div>
     </div>
@@ -196,7 +186,9 @@
         {{ log.text }}
       </div>
     </div>
-    <div class="d-grid"><BButton @click="getMoreLog()">더 가져오기</BButton></div>
+    <div class="d-grid">
+      <BButton @click="getMoreLog()">더 가져오기</BButton>
+    </div>
   </div>
 </template>
 
@@ -231,6 +223,7 @@ declare const staticValues: {
     randomUnique: number;
     nextSpecial: number;
     minSpecificUnique: number;
+    checkOwner: number;
   };
   resetTurnTimeLevel: number;
   resetSpecialWarLevel: number;
@@ -252,6 +245,7 @@ declare const staticValues: {
       info: string;
     }
   >;
+  availableTargetGeneral: Record<number, string>;
 };
 </script>
 <script lang="ts" setup>
@@ -394,6 +388,7 @@ const {
   currentInheritBuff: prevInheritBuff,
   availableSpecialWar,
   availableUnique,
+  availableTargetGeneral,
 } = staticValues;
 
 const nextSpecialWar = ref(Object.keys(availableSpecialWar)[0]);
@@ -450,7 +445,7 @@ async function buyInheritBuff(buffKey: inheritBuffType) {
   location.reload();
 }
 
-async function tryResestTurnTime(){
+async function tryResestTurnTime() {
   const cost = inheritActionCost.resetTurnTime;
 
   if (items.value.previous < cost) {
@@ -586,16 +581,43 @@ async function openUniqueItemAuction() {
   location.reload();
 }
 
-async function getMoreLog(): Promise<void>{
-  try{
+const targetOwner = ref<string | null>(null);
+
+async function checkOwner(): Promise<void> {
+  if (targetOwner.value === null) {
+    alert("장수를 선택해주세요.");
+    return;
+  }
+
+  const targetName = availableTargetGeneral[parseInt(targetOwner.value)];
+
+  if (!confirm(`${targetName}의 소유자를 찾겠습니까? 대상에게도 알림이 전송됩니다.`)) {
+    return;
+  }
+
+  try {
+    const result = await SammoAPI.InheritAction.CheckOwner({
+      destGeneralID: parseInt(targetOwner.value)
+    });
+    alert('결과가 개인 메시지로 전송되었습니다.');
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+
+}
+
+async function getMoreLog(): Promise<void> {
+  try {
     const result = await SammoAPI.InheritAction.GetMoreLog({
       lastID: lastLogID.value
     });
-    for(const log of result.log){
+    for (const log of result.log) {
       inheritPointLogs.value.set(log.id, log);
       lastLogID.value = Math.min(lastLogID.value, log.id);
     }
-  }catch(e){
+  } catch (e) {
     console.error(e);
     alert(`실패했습니다: ${e}`);
     return;

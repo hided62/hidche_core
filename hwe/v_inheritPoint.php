@@ -16,7 +16,10 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $me = General::createObjFromDB($generalID);
 
-
+$availableTargetGeneral = [];
+foreach ($db->query('SELECT no, name FROM general WHERE npc < 2') as $row) {
+    $availableTargetGeneral[$row['no']] = $row['name'];
+}
 
 $currentInheritBuff = [];
 foreach ($me->getAuxVar('inheritBuff') ?? [] as $buff => $buffLevel) {
@@ -95,10 +98,12 @@ $lastInheritPointLogs = $db->query('SELECT id, server_id, year, month, date, tex
                 'randomUnique' => GameConst::$inheritItemRandomPoint,
                 'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
                 'minSpecificUnique' => GameConst::$inheritItemUniqueMinPoint,
+                'checkOwner' => GameConst::$inheritCheckOwnerPoint,
             ],
             'availableSpecialWar' => $avilableSpecialWar,
             'availableUnique' => $availableUnique,
             'lastInheritPointLogs' => $lastInheritPointLogs,
+            'availableTargetGeneral' => $availableTargetGeneral,
         ]
     ]) ?>
 </head>

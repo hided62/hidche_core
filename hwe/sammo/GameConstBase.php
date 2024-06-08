@@ -224,6 +224,7 @@ class GameConstBase
     public static $inheritBuffPoints = [0, 200, 600, 1200, 2000, 3000];
     public static $inheritSpecificSpecialPoint = 4000;
     public static $inheritResetAttrPointBase = [1000, 1000, 2000, 3000];//필요하면 늘려서 쓰기
+    public static $inheritCheckOwnerPoint = 1000;
 
     /** @var ?string */
     public static $scenarioEffect = null;
