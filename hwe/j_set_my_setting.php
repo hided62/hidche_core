@@ -1,4 +1,5 @@
 <?php
+
 namespace sammo;
 
 include "lib.php";
@@ -24,14 +25,13 @@ if ($defence_train <= 40) {
     $defence_train = 40;
 }
 
-if($defence_train <= 90){
+if ($defence_train <= 90) {
     $defence_train = Util::round($defence_train, -1);
-}
-else{
+} else {
     $defence_train = 999;
 }
 
-if($tnmt < 0 || $tnmt > 1){
+if ($tnmt < 0 || $tnmt > 1) {
     $tnmt = 1;
 }
 
@@ -39,8 +39,8 @@ $db = DB::db();
 $me = General::createObjFromDB($generalID);
 
 
-if($defence_train !== $me->getVar('defence_train')){
-    if($defence_train == 999){
+if ($defence_train !== $me->getVar('defence_train')) {
+    if ($defence_train == 999) {
         $me->increaseVar('myset', -1);
         $me->setVar('defence_train', $defence_train);
         $affectedTrain = -3;
@@ -49,8 +49,7 @@ if($defence_train !== $me->getVar('defence_train')){
         $affectedAtmos = $me->onCalcDomestic('changeDefenceTrain', "atmos{$defence_train}", $affectedAtmos);
         $me->increaseVarWithLimit('train', $affectedTrain, 20, GameConst::$maxTrainByWar);
         $me->increaseVarWithLimit('atmos', $affectedAtmos, 20, GameConst::$maxAtmosByWar);
-    }
-    else{
+    } else {
         $me->increaseVar('myset', -1);
         $me->setVar('defence_train', $defence_train);
     }
@@ -60,21 +59,44 @@ $me->setAuxVar('use_treatment', Util::valueFit($use_treatment, 10, 100));
 $me->setAuxVar('use_auto_nation_turn', $use_auto_nation_turn);
 $me->setVar('tnmt', $tnmt);
 
-if($me->getNPCType() == 1 && $detachNPC){
+if ($me->getNPCType() == 1 && $detachNPC) {
     $turnterm = $gameStor->turnterm;
 
-    if($turnterm < 10){
+    if ($turnterm < 10) {
         $targetKillTurn = 30 / $turnterm;
-    }
-    else{
+    } else {
         $targetKillTurn = 60 / $turnterm;
     }
     $me->setVar('killturn', $targetKillTurn);
 }
 
+$rootDB = RootDB::db();
+//회원 테이블에서 정보확인
+$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name`, imgsvr, `penalty` FROM member WHERE no=%i', $userID);
+
+if (!$member) {
+    //이런 경우가 있나?
+    //TODO: 로그 남겨둘 것
+    Json::die([
+        'result' => false,
+        'reason' => '회원 정보를 찾을 수 없습니다.'
+    ]);
+}
+
+$memberPenalty = Json::decode($member['penalty'] ?? "{}");
+$penaltyInfo = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefix()] ?? []);
+
+$penalty = [];
+foreach ($penaltyInfo as $penaltyKey => $penaltyValue) {
+    if ($penaltyValue['expire'] ?? 0 > TimeUtil::now()) {
+        $penalty[$penaltyKey] = $penaltyValue['value'];
+    }
+}
+$me->setVar('penalty', Json::encode($penalty));
+
 $me->applyDB($db);
 
 Json::die([
-    'result'=>true,
-    'reason'=>'success'
+    'result' => true,
+    'reason' => 'success'
 ]);
