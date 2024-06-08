@@ -3,6 +3,7 @@ namespace sammo;
 
 use sammo\Command\GeneralCommand;
 use sammo\Command\NationCommand;
+use sammo\Enums\PenaltyKey;
 
 function getGeneralTurnBrief(General $generalObj, array $turnList) {
     $result = [];
@@ -431,6 +432,13 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
         return [
             'result'=>false,
             'reason'=>'수뇌가 아닙니다'
+        ];
+    }
+
+    if($general->hasPenalty(PenaltyKey::NoChiefTurnInput)){
+        return [
+            'result'=>false,
+            'reason'=>'수뇌 턴 입력 불가능'
         ];
     }
 
