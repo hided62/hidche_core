@@ -2,6 +2,8 @@
 
 namespace sammo\Constraint;
 
+use sammo\Enums\PenaltyKey;
+
 class ConstraintHelper{
 
     static function AdhocCallback(callable $callback):array{
@@ -174,6 +176,10 @@ class ConstraintHelper{
 
     static function NotWanderingNation():array{
         return [__FUNCTION__];
+    }
+
+    static function NoPanelty(PenaltyKey $penaltyKey):array{
+        return [__FUNCTION__, $penaltyKey];
     }
 
     static function OccupiedCity(bool $allowNeutral=false):array{
