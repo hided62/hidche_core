@@ -26,7 +26,7 @@ enum PenaltyKey: string
             PenaltyKey::SendPrivateMsgDelay => '개인 메세지 보내기 제한 시간',
             PenaltyKey::NoSendPrivateMsg => '개인 메세지 보내기 금지',
             PenaltyKey::NoSendPublicMsg => '공개 메세지 보내기 금지',
-            PenaltyKey::NoTopSecret => '최고기밀 메세지 보내기 금지',
+            PenaltyKey::NoTopSecret => '암행부 열람 금지',
             PenaltyKey::NoChief => '수뇌 금지',
             PenaltyKey::NoAmbassador => '외교권자 금지',
             PenaltyKey::NoBanGeneral => '장수 추방 금지',
