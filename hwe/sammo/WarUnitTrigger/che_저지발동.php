@@ -24,6 +24,12 @@ class che_저지발동 extends BaseWarUnitTrigger{
         }
         $selfEnv['저지발동'] = true;
 
+        $self->addPhase(-1);
+        $oppose->addPhase(-1);
+        if($self->getPhase() < $self->getMaxPhase()){
+            $oppose->addBonusPhase(-1);
+        }
+
         $self->getLogger()->pushGeneralBattleDetailLog("상대를 <C>저지</>했다!", ActionLogger::PLAIN);
         $oppose->getLogger()->pushGeneralBattleDetailLog("저지</>당했다!", ActionLogger::PLAIN);
 
