@@ -372,7 +372,7 @@ function postUpdateMonthly(RandUtil $rng)
             continue;
         }
 
-        //양측 기간 모두 0이 되는 상황이면 휴전
+        //양측 기간 모두 0이 되는 상황이면 종전
         $nation1 = getNationStaticInfo($me);
         $name1 = $nation1['name'];
         $nation2 = getNationStaticInfo($you);
@@ -381,7 +381,7 @@ function postUpdateMonthly(RandUtil $rng)
         $josaWa = JosaUtil::pick($name1, '와');
         $josaYi = JosaUtil::pick($name2, '이');
 
-        $globalLogger->pushGlobalHistoryLog("<R><b>【휴전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <S>휴전</>합니다.");
+        $globalLogger->pushGlobalHistoryLog("<R><b>【종전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <S>종전</>합니다.");
         $db->update('diplomacy', [
             'state' => 2,
             'term' => 0,
