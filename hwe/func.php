@@ -9,6 +9,7 @@ use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\GeneralColumn;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\PenaltyKey;
 use sammo\Enums\RankColumn;
 
 require_once 'process_war.php';
@@ -376,11 +377,11 @@ function myNationInfo(General $generalObj)
 function checkSecretMaxPermission($penalty)
 {
     $secretMax = 4;
-    if ($penalty['noTopSecret'] ?? false) {
+    if ($penalty[PenaltyKey::NoTopSecret->value] ?? false) {
         $secretMax = 1;
-    } else if ($penalty['noChief'] ?? false) {
+    } else if ($penalty[PenaltyKey::NoChief->value] ?? false) {
         $secretMax = 1;
-    } else if ($penalty['noAmbassador'] ?? false) {
+    } else if ($penalty[PenaltyKey::NoAmbassador->value] ?? false) {
         $secretMax = 2;
     }
     return $secretMax;
@@ -403,7 +404,7 @@ function checkSecretPermission(array $me, $checkSecretLimit = true)
     }
 
 
-    if ($penalty['noSecret'] ?? false) {
+    if ($penalty[PenaltyKey::NoChief->value] ?? false) {
         return 0;
     }
 

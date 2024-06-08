@@ -7,6 +7,7 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\MessageType;
+use sammo\Enums\PenaltyKey;
 use sammo\Json;
 use sammo\Message;
 use sammo\MessageTarget;
@@ -231,7 +232,7 @@ class SendMessage extends \sammo\BaseAPI
       $lastMsg = new \DateTime($session->lastMsg ?? '0000-00-00');
       $msg_interval = $now->getTimestamp() - $lastMsg->getTimestamp();
 
-      $msg_min_interval = $penalty['sendPrivateMsgDelay'] ?? 2;
+      $msg_min_interval = $penalty[PenaltyKey::SendPrivateMsgDelay->value] ?? 2;
       if ($msg_interval < $msg_min_interval) {
         return "개인메세지는 {$msg_min_interval}초당 1건만 보낼 수 있습니다!";
       }
