@@ -3982,6 +3982,7 @@ class GeneralAI
             if ($chief->getNPCType() < 2 && $chief->getVar('killturn') >= $minUserKillturn) {
                 $userChiefCnt += 1;
                 $chief->setVar('permission', 'ambassador');
+                $chief->applyDB($db);
             }
         }
 
