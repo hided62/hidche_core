@@ -85,6 +85,10 @@ function do수뇌임명(General $general, int $targetOfficerLevel): ?string
     $generalID = $general->getID();
     $nationID = $general->getNationID();
 
+    if($general->hasPenalty(PenaltyKey::NoChief)){
+        return '수뇌가 될 수 없는 상태입니다.';
+    }
+
     $db = DB::db();
 
     [$chiefSet, $nationLevel] = $db->queryFirstList('SELECT chief_set,level FROM nation WHERE nation = %i', $nationID);
