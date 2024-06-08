@@ -4,6 +4,7 @@ namespace sammo;
 use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\MessageType;
+use sammo\Enums\PenaltyKey;
 
 include "lib.php";
 include "func.php";
@@ -174,7 +175,9 @@ function do추방(General $general, int $myOfficerLevel):?string{
     $generalName = $general->getVar('name');
     $nationID = $general->getNationID();
 
-
+    if($general->hasPenalty(PenaltyKey::NoBanGeneral)){
+        return '추방할 수 없는 상태입니다.';
+    }
 
     //추방할사람이 외교권자이면 불가
     $permission = checkSecretPermission($general->getRaw());

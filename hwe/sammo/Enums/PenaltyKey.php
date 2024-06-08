@@ -10,4 +10,5 @@ enum PenaltyKey: string{
     case NoTopSecret = 'noTopSecret';
     case NoChief = 'noChief';
     case NoAmbassador = 'noAmbassador';
+    case NoBanGeneral = 'noBanGeneral';
 }

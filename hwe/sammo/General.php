@@ -7,6 +7,7 @@ use sammo\Command\GeneralCommand;
 use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\PenaltyKey;
 use sammo\Enums\RankColumn;
 use sammo\WarUnitTrigger as WarUnitTrigger;
 
@@ -27,6 +28,10 @@ class General extends GeneralBase implements iAction
     protected $activatedSkill = [];
     protected $logActivatedSkill = [];
     protected $isFinished = false;
+
+
+    /** @var Map<PenaltyKey,int|float|string> */
+    protected Map $penaltyList;
 
     /** @var ?iAction */
     protected $nationType = null;
@@ -85,6 +90,16 @@ class General extends GeneralBase implements iAction
         } else {
             $this->rankVarRead = new Map();
         }
+
+        $penaltyList = new Map();
+        foreach(Json::decode($raw['penalty'] ?? '{}') as $rawPenaltyKey => $penaltyValue){
+            $penaltyKey = PenaltyKey::tryFrom($rawPenaltyKey);
+            if($penaltyKey === null){
+                throw new \InvalidArgumentException('Invalid PenaltyKey: ' . $rawPenaltyKey);
+            }
+            $penaltyList[$penaltyKey] = $penaltyValue;
+        }
+        $this->penaltyList = $penaltyList;
 
         $this->accessLogRead = $rawAccessLog;
 
@@ -244,6 +259,17 @@ class General extends GeneralBase implements iAction
         return $this->crewType;
     }
 
+    function hasPenalty(PenaltyKey $penaltyKey): bool
+    {
+        return $this->penaltyList->hasKey($penaltyKey);
+    }
+
+    /** @return Map<PenaltyKey,int|float|string> */
+    function getPenaltyList(): Map
+    {
+        return $this->penaltyList;
+    }
+
     function calcRecentWarTurn(int $turnTerm): int
     {
         $cacheKey = "recent_war_turn_{$turnTerm}";
@@ -372,7 +398,7 @@ class General extends GeneralBase implements iAction
         }
 
         $this->calcCache[$cKey] = $statValue;
-        
+
         return $statValue;
     }
 
