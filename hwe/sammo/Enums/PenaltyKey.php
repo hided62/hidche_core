@@ -7,6 +7,8 @@ namespace sammo\Enums;
  */
 enum PenaltyKey: string{
     case SendPrivateMsgDelay = 'sendPrivateMsgDelay';
+    case NoSendPrivateMsg = 'noSendPrivateMsg';
+    case NoSendPublicMsg = 'noSendPublicMsg';
     case NoTopSecret = 'noTopSecret';
     case NoChief = 'noChief';
     case NoAmbassador = 'noAmbassador';
@@ -14,4 +16,5 @@ enum PenaltyKey: string{
     case NoChiefTurnInput = 'noChiefTurnInput';
     case NoChiefChange = 'noChiefChange';
     case NoFoundNation = 'noFoundNation';
+    case NoChosenAssignment = 'noChosenAssignment';
 }

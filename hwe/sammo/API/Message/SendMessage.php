@@ -192,6 +192,9 @@ class SendMessage extends \sammo\BaseAPI
 
     // 전체 메세지
     if ($mailbox === Message::MAILBOX_PUBLIC) {
+      if($penalty[PenaltyKey::NoSendPublicMsg->value] ?? 0) {
+        return '공개 메세지를 보낼 수 없습니다.';
+      }
       $msgID = $this->genPublicMessage($src, $text)->send();
       return [
         'msgType' => 'public',
@@ -231,6 +234,10 @@ class SendMessage extends \sammo\BaseAPI
       $now = new \DateTime();
       $lastMsg = new \DateTime($session->lastMsg ?? '0000-00-00');
       $msg_interval = $now->getTimestamp() - $lastMsg->getTimestamp();
+
+      if($penalty[PenaltyKey::NoSendPrivateMsg->value] ?? 0) {
+        return '개인 메세지를 보낼 수 없습니다.';
+      }
 
       $msg_min_interval = $penalty[PenaltyKey::SendPrivateMsgDelay->value] ?? 2;
       if ($msg_interval < $msg_min_interval) {
