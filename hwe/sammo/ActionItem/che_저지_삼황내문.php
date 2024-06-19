@@ -19,10 +19,11 @@ class che_저지_삼황내문 extends \sammo\BaseItem{
         if($unit->isAttacker()){
             return null;
         }
-        if($unit->getPhase() >= 2){
+
+        if($unit->hasActivatedSkillOnLog('저지') >= 2){
             return null;
         }
-        if($unit->getPhase() == 1 && $unit->rng->nextBool(0.5)){
+        if($unit->hasActivatedSkillOnLog('저지') == 1 && $unit->getPhase() == 0 && $unit->rng->nextBool(0.5)){
             return null;
         }
 
