@@ -1669,8 +1669,6 @@ function tryUniqueItemLottery(RandUtil $rng, General $general, string $acquireTy
         $prob = 1 / ($genCount * $itemTypeCnt * 0.7 / 3); // 투표율 70%, 설문조사 한번에 2~3개 등장
     } else if ($acquireType == '랜덤 임관') {
         $prob = 1 / ($genCount * $itemTypeCnt / 10 / 2); // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
-    } else if ($acquireType == '건국') {
-        $prob = 1; // 건국시 100%
     }
 
     $prob *= GameConst::$uniqueTrialCoef;
@@ -1683,6 +1681,9 @@ function tryUniqueItemLottery(RandUtil $rng, General $general, string $acquireTy
     if ($general->getAuxVar('inheritRandomUnique') && $availableBuyUnique) {
         //포인트로 랜덤 유니크 획득
         $prob = 1;
+    }
+    else if ($acquireType == '건국') {
+        $prob = 1; // 건국시 100%
     }
 
     foreach (Util::range($maxCnt) as $_idx) {
