@@ -1670,7 +1670,7 @@ function tryUniqueItemLottery(RandUtil $rng, General $general, string $acquireTy
     } else if ($acquireType == '랜덤 임관') {
         $prob = 1 / ($genCount * $itemTypeCnt / 10 / 2); // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
     } else if ($acquireType == '건국') {
-        $prob = 1 / ($genCount * $itemTypeCnt / 10 / 4); // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
+        $prob = 1; // 건국시 100%
     }
 
     $prob *= GameConst::$uniqueTrialCoef;
