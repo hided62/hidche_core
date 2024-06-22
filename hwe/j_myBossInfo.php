@@ -24,9 +24,9 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$gameStor->cacheValues(['startyear', 'year', 'month', 'scenario']);
+$gameStor->cacheValues(['startyear', 'year', 'month', 'scenario', 'killturn']);
 
-$me = $db->queryFirstRow('SELECT no,nation,officer_level,penalty from general where owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,npc,nation,officer_level,penalty from general where owner=%i', $userID);
 $myOfficerLevel = $me['officer_level'];
 $nationID = $me['nation'];
 $myPenalty = Json::decode($me['penalty'] ?? '{}');
@@ -342,6 +342,10 @@ if ($action == "임명") {
                 'reason' => $result
             ]);
         }
+        //수뇌의 삭턴 리필
+        $db->update('general', [
+            'killturn' => $db->sqleval('GREATEST(%b, %i)', 'killturn', $gameStor->getValue('killturn')),
+        ], 'no=%i', $me['no']);
         Json::die([
             'result' => true,
             'reason' => 'success'
@@ -356,6 +360,10 @@ if ($action == "임명") {
                 'reason' => $result
             ]);
         }
+        //수뇌의 삭턴 리필
+        $db->update('general', [
+            'killturn' => $db->sqleval('GREATEST(%b, %i)', 'killturn', $gameStor->getValue('killturn')),
+        ], 'no=%i', $me['no']);
         Json::die([
             'result' => true,
             'reason' => 'success'
@@ -376,6 +384,10 @@ if ($action == "추방") {
             'reason' => $result
         ]);
     }
+    //수뇌의 삭턴 리필
+    $db->update('general', [
+        'killturn' => $db->sqleval('GREATEST(%b, %i)', 'killturn', $gameStor->getValue('killturn')),
+    ], 'no=%i', $me['no']);
     Json::die([
         'result' => true,
         'reason' => 'success'

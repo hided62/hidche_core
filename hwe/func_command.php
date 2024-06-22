@@ -481,6 +481,13 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
     }
 
     _setNationCommand($commandObj, $turnList);
+
+    if($general->getNPCType() < 2){
+        //유저장인 경우에는 턴 리필
+        $general->updateVarWithLimit('killturn', $env['killturn'], $general->getVar('killturn'));
+        $general->applyDB($db);
+    }
+    
     return [
         'result'=>true,
         'brief'=>$commandObj->getBrief(),
