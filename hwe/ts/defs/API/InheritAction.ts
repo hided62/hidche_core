@@ -22,3 +22,10 @@ export type InheritPointLogItem = {
 export type InheritLogResponse = ValidResponse & {
   log: InheritPointLogItem[];
 };
+
+export type InheritResetStat = {
+  leadership: number;
+  strength: number;
+  intel: number;
+  inheritBonusStat?: [number, number, number];
+};

@@ -99,11 +99,19 @@ $lastInheritPointLogs = $db->query('SELECT id, server_id, year, month, date, tex
                 'nextSpecial' => GameConst::$inheritSpecificSpecialPoint,
                 'minSpecificUnique' => GameConst::$inheritItemUniqueMinPoint,
                 'checkOwner' => GameConst::$inheritCheckOwnerPoint,
+                'bornStatPoint' => GameConst::$inheritBornStatPoint,
             ],
             'availableSpecialWar' => $avilableSpecialWar,
             'availableUnique' => $availableUnique,
             'lastInheritPointLogs' => $lastInheritPointLogs,
             'availableTargetGeneral' => $availableTargetGeneral,
+            'currentStat' => [
+                'leadership' => Util::clamp($me->getVar('leadership'), GameConst::$defaultStatMin, GameConst::$defaultStatMax),
+                'strength' => Util::clamp($me->getVar('strength'), GameConst::$defaultStatMin, GameConst::$defaultStatMax),
+                'intel' => Util::clamp($me->getVar('intel'), GameConst::$defaultStatMin, GameConst::$defaultStatMax),
+                'statMin' => GameConst::$defaultStatMin,
+                'statMax' => GameConst::$defaultStatMax,
+            ]
         ]
     ]) ?>
 </head>

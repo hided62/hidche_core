@@ -172,6 +172,56 @@
           <BButton class="col-6 offset-6" variant="primary" @click="checkOwner"> 소유자 찾기 </BButton>
         </div>
       </div>
+      <div class="col col-lg-4 col-sm-6 col-12 py-2">
+        <div class="row px-4">
+          <div class="a-right col-6 align-self-center">능력치 초기화</div>
+          <div class="col-6">
+            <div class="row">기본 능력치</div>
+            <div class="row">
+              <div class="col col-2 center align-self-center">통</div>
+              <div class="col col-10"><b-form-input v-model.number="resetStatArgs.leadership" type="number"
+                  :min="currentStat.statMin" :max="currentStat.statMax" /></div>
+            </div>
+            <div class="row">
+              <div class="col col-2 center align-self-center">무</div>
+              <div class="col col-10"><b-form-input v-model.number="resetStatArgs.strength" type="number"
+                  :min="currentStat.statMin" :max="currentStat.statMax" /></div>
+            </div>
+            <div class="row">
+              <div class="col col-2 center align-self-center">지</div>
+              <div class="col col-10"><b-form-input v-model.number="resetStatArgs.intel" type="number"
+                  :min="currentStat.statMin" :max="currentStat.statMax" /></div>
+            </div>
+            <div class="row">추가 능력치</div>
+            <div class="row">
+              <div class="col col-2 center align-self-center">통</div>
+              <div class="col col-10"><b-form-input v-model.number="resetStatArgs.inheritBonusStat[0]" type="number"
+                  min="0" max="5" /></div>
+            </div>
+            <div class="row">
+              <div class="col col-2 center align-self-center">무</div>
+              <div class="col col-10"><b-form-input v-model.number="resetStatArgs.inheritBonusStat[1]" type="number"
+                  min="0" max="5" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col col-2 center align-self-center">지</div>
+              <div class="col col-10"><b-form-input v-model.number="resetStatArgs.inheritBonusStat[2]" type="number"
+                  min="0" max="5" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="a-right">
+          <small class="form-text text-muted">시즌 당 1회에 한 해 능력치를 초기화합니다. <br />
+          </small>
+          <span style="color: white">필요 포인트: {{ requiredResetStatPoint }}</span>
+        </div>
+
+        <div class="row px-4">
+          <BButton class="col-6 offset-6" variant="primary" @click="resetStat"> 능력치 초기화</BButton>
+        </div>
+      </div>
     </div>
     <div class="row">
       <div class="col">
@@ -224,6 +274,7 @@ declare const staticValues: {
     nextSpecial: number;
     minSpecificUnique: number;
     checkOwner: number;
+    bornStatPoint: number;
   };
   resetTurnTimeLevel: number;
   resetSpecialWarLevel: number;
@@ -246,16 +297,23 @@ declare const staticValues: {
     }
   >;
   availableTargetGeneral: Record<number, string>;
+  currentStat: {
+    leadership: number;
+    strength: number;
+    intel: number;
+    statMax: number;
+    statMin: number;
+  };
 };
 </script>
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import "@scss/game_bg.scss";
 import TopBackBar from "@/components/TopBackBar.vue";
 import _ from "lodash-es";
 import NumberInputWithInfo from "@/components/NumberInputWithInfo.vue";
 import { SammoAPI } from "./SammoAPI";
-import type { inheritBuffType, InheritPointLogItem } from "./defs/API/InheritAction";
+import { InheritResetStat, type inheritBuffType, type InheritPointLogItem } from "./defs/API/InheritAction";
 import * as JosaUtil from "@/util/JosaUtil";
 import { BButton } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
@@ -389,11 +447,19 @@ const {
   availableSpecialWar,
   availableUnique,
   availableTargetGeneral,
+  currentStat
 } = staticValues;
 
 const nextSpecialWar = ref(Object.keys(availableSpecialWar)[0]);
 const specificUnique = ref<string | null>(null);
 const specificUniqueAmount = ref(inheritActionCost.minSpecificUnique);
+
+const resetStatArgs = reactive<Required<Pick<InheritResetStat, 'inheritBonusStat'>> & InheritResetStat>({
+  leadership: currentStat.leadership,
+  strength: currentStat.strength,
+  intel: currentStat.intel,
+  inheritBonusStat: [0, 0, 0]
+});
 
 const lastLogID = ref(Math.min(...staticValues.lastInheritPointLogs.map((v) => v.id)));
 const inheritPointLogs = ref(
@@ -600,6 +666,41 @@ async function checkOwner(): Promise<void> {
       destGeneralID: parseInt(targetOwner.value)
     });
     alert('결과가 개인 메시지로 전송되었습니다.');
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
+
+}
+
+const requiredResetStatPoint = ref(0);
+
+watch(resetStatArgs, (value) => {
+  const bonusStat = value.inheritBonusStat.reduce((acc, v) => acc + v, 0);
+  requiredResetStatPoint.value = bonusStat > 0 ? inheritActionCost.bornStatPoint : 0;
+})
+
+
+async function resetStat(): Promise<void> {
+  const statArg: InheritResetStat = {
+    leadership: resetStatArgs.leadership,
+    strength: resetStatArgs.strength,
+    intel: resetStatArgs.intel,
+  };
+
+  if (resetStatArgs.inheritBonusStat.some(v => v > 0)) {
+    statArg.inheritBonusStat = resetStatArgs.inheritBonusStat;
+  }
+
+  if (!confirm(`능력치를 초기화 하시겠습니까? 시즌마다 한번만 가능합니다. 필요 포인트: ${requiredResetStatPoint.value}`)) {
+    return;
+  }
+
+  try {
+    const result = await SammoAPI.InheritAction.ResetStat(statArg);
+    alert('초기화 되었습니다.');
+    location.reload();
   } catch (e) {
     console.error(e);
     alert(`실패했습니다: ${e}`);

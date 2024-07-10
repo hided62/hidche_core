@@ -67,24 +67,24 @@ class ResetStat extends \sammo\BaseAPI
         $intel = $this->args['intel'];
         $inheritBonusStat = $this->args['inheritBonusStat'] ?? null;
 
-        if ($leadership + $strength + $intel > GameConst::$defaultStatTotal) {
-            return "능력치가 " . GameConst::$defaultStatTotal . "을 넘어섰습니다. 다시 가입해주세요!";
+        if ($leadership + $strength + $intel != GameConst::$defaultStatTotal) {
+            return "능력치 총합이 " . GameConst::$defaultStatTotal . "이 아닙니다. 다시 입력해주세요!";
         }
 
         if ($inheritBonusStat) {
             if (count($inheritBonusStat) != 3) {
-                return "보너스 능력치가 잘못 지정되었습니다. 다시 가입해주세요!";
+                return "보너스 능력치가 잘못 지정되었습니다. 다시 입력해주세요!";
             }
             foreach ($inheritBonusStat as $stat) {
                 if ($stat < 0) {
-                    return "보너스 능력치가 음수입니다. 다시 가입해주세요!";
+                    return "보너스 능력치가 음수입니다. 다시 입력해주세요!";
                 }
             }
             $sum = array_sum($inheritBonusStat);
             if ($sum == 0) {
                 $inheritBonusStat = null;
             } else if ($sum < 3 || $sum > 5) {
-                return "보너스 능력치 합이 잘못 지정되었습니다. 다시 가입해주세요!";
+                return "보너스 능력치 합이 잘못 지정되었습니다. 다시 입력해주세요!";
             }
         }
 
@@ -131,7 +131,7 @@ class ResetStat extends \sammo\BaseAPI
             $pleadership = $inheritBonusStat[0] ?? 0;
             $pstrength = $inheritBonusStat[1] ?? 0;
             $pintel = $inheritBonusStat[2] ?? 0;
-            $userLogger->push("통솔 {$pleadership}, 무력 {$pstrength}, 지력 {$pintel} 보너스 능력치 적용", "inheritPoint");
+            $userLogger->push("{$reqAmount}로 통솔 {$pleadership}, 무력 {$pstrength}, 지력 {$pintel} 보너스 능력치 적용", "inheritPoint");
         } else {
             $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
                 UniqueConst::$hiddenSeed,
@@ -161,6 +161,8 @@ class ResetStat extends \sammo\BaseAPI
         $strength += $pstrength;
         $intel += $pintel;
 
+        $lastUserStatReset[] = $gameSeason;
+
 
         $general->setVar('leadership', $leadership);
         $general->setVar('strength', $strength);
@@ -169,6 +171,7 @@ class ResetStat extends \sammo\BaseAPI
         $userLogger->flush();
 
         $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);
+        $userStor->setValue('last_stat_reset', $lastUserStatReset);
         $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqAmount);
         $general->applyDB($db);
         return null;
