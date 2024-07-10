@@ -1,11 +1,15 @@
 <?php
+
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil,
+    DB,
+    Util,
+    JosaUtil,
     General,
     ActionLogger,
-    GameConst, GameUnitConst,
+    GameConst,
+    GameUnitConst,
     LastTurn,
     Command
 };
@@ -16,15 +20,18 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
 
-class che_사기진작 extends Command\GeneralCommand{
+class che_사기진작 extends Command\GeneralCommand
+{
     static protected $actionName = '사기진작';
 
-    protected function argTest():bool{
+    protected function argTest(): bool
+    {
         $this->arg = null;
         return true;
     }
 
-    protected function init(){
+    protected function init()
+    {
 
         $general = $this->generalObj;
 
@@ -33,13 +40,13 @@ class che_사기진작 extends Command\GeneralCommand{
 
         [$reqGold, $reqRice] = $this->getCost();
 
-        $this->minConditionConstraints=[
+        $this->minConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
         ];
 
-        $this->fullConditionConstraints=[
+        $this->fullConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::OccupiedCity(),
@@ -48,31 +55,35 @@ class che_사기진작 extends Command\GeneralCommand{
             ConstraintHelper::ReqGeneralRice($reqRice),
             ConstraintHelper::ReqGeneralAtmosMargin(GameConst::$maxAtmosByCommand),
         ];
-
     }
 
-    public function getCommandDetailTitle():string{
+    public function getCommandDetailTitle(): string
+    {
         $name = $this->getName();
         //[$reqGold, $reqRice] = $this->getCost();
 
         return "{$name}(통솔경험, 자금↓)";
     }
 
-    public function getCost():array{
+    public function getCost(): array
+    {
         $general = $this->generalObj;
-        return [Util::round($general->getVar('crew')/100), 0];
+        return [Util::round($general->getVar('crew') / 100), 0];
     }
 
-    public function getPreReqTurn():int{
+    public function getPreReqTurn(): int
+    {
         return 0;
     }
 
-    public function getPostReqTurn():int{
+    public function getPostReqTurn(): int
+    {
         return 0;
     }
 
-    public function run(\Sammo\RandUtil $rng):bool{
-        if(!$this->hasFullConditionMet()){
+    public function run(\Sammo\RandUtil $rng): bool
+    {
+        if (!$this->hasFullConditionMet()) {
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 
@@ -81,7 +92,11 @@ class che_사기진작 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
-        $score = Util::round($general->getLeadership() * 100 / $general->getVar('crew') * GameConst::$atmosDelta);
+        $score = Util::clamp(
+            Util::round($general->getLeadership() * 100 / $general->getVar('crew') * GameConst::$atmosDelta),
+            0,
+            Util::clamp(GameConst::$maxAtmosByCommand - $general->getVar('atmos'), 0),
+        );
         $scoreText = number_format($score, 0);
 
         $sideEffect = Util::valueFit(intval($general->getVar('train') * GameConst::$trainSideEffectByAtmosTurn), 0);
@@ -93,7 +108,7 @@ class che_사기진작 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 70;
 
-        $general->increaseVarWithLimit('atmos', $score, 0, GameConst::$maxAtmosByCommand);
+        $general->increaseVar('atmos', $score);
         $general->setVar('train', $sideEffect);
 
         $general->addDex($general->getCrewTypeObj(), $score, false);
@@ -111,6 +126,4 @@ class che_사기진작 extends Command\GeneralCommand{
 
         return true;
     }
-
-
 }
