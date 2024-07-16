@@ -718,14 +718,17 @@ function ConquerCity(array $admin, General $general, array $city, array $defende
             $attackerLogger->pushGlobalHistoryLog("<M><b>【긴급천도】</b></><D><b>{$defenderNationName}</b></>{$josaYi} 수도가 함락되어 <G><b>$minCityName</b></>{$josaRo} 긴급천도하였습니다.");
 
             $moveLog = "수도가 함락되어 <G><b>$minCityName</b></>{$josaRo} <M>긴급천도</>합니다.";
-            //아국 수뇌부에게 로그 전달
-            foreach ($db->queryFirstColumn(
-                'SELECT no FROM general WHERE nation=%i AND officer_level>=5',
+            foreach ($db->queryAllLists(
+                'SELECT no, officer_level FROM general WHERE nation=%i',
                 $defenderNationID
-            ) as $defenderChiefID) {
-                $chiefLogger = new ActionLogger($defenderChiefID, $defenderNationID, $year, $month);
-                $chiefLogger->pushGeneralActionLog($moveLog, ActionLogger::PLAIN);
-                $chiefLogger->flush();
+            ) as [$defenderGeneralID, $defenderGeneralChiefLevel]) {
+                $defenderLogger = new ActionLogger($defenderGeneralID, $defenderNationID, $year, $month);
+                $defenderLogger->pushGeneralActionLog($moveLog, ActionLogger::PLAIN);
+                if($defenderGeneralChiefLevel >= 5){
+                    $defenderLogger->pushGeneralActionLog("수뇌는 <G><b>{$minCityName}</b></>{$josaRo} 집합되었습니다.");
+                }
+
+                $defenderLogger->flush();
             }
 
             //천도
