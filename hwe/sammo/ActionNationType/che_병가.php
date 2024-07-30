@@ -29,7 +29,7 @@ class che_병가 extends \sammo\BaseNation{
         return $value;
     }
 
-    public function onCalcNationalIncome(string $type, $amount):int{
+    public function onCalcNationalIncome(string $type, $amount){
         if($type == 'pop' && $amount > 0){
             return $amount * 0.8;
         }
