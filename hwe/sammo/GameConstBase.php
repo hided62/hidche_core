@@ -512,4 +512,8 @@ class GameConstBase
             ["MergeInheritPointRank"],
         ]
     ];
+
+    public static $staticEventHandlers = [
+        
+    ];
 }
