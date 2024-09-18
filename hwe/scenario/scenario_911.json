@@ -21,7 +21,8 @@
             ]
         },
         "incDefSettingChange": 10,
-        "maxDefSettingChange": 30
+        "maxDefSettingChange": 30,
+        "refreshLimitCoef": 20
     },
     "events":[
         [
