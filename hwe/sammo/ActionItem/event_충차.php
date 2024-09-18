@@ -19,7 +19,7 @@ class event_충차 extends \sammo\BaseItem{
     protected $cost = 2000;
     protected $consumable = true;
     protected $buyable = true;
-    protected $reqSecu = 4000;
+    protected $reqSecu = 3000;
 
 
     const REMAIN_KEY = 'remain충차';
