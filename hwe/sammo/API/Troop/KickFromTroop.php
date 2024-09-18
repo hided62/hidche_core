@@ -6,6 +6,9 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralLiteQueryMode;
+use sammo\GeneralLite;
+use sammo\StaticEventHandler;
 use sammo\Validator;
 
 class KickFromTroop extends \sammo\BaseAPI
@@ -37,7 +40,8 @@ class KickFromTroop extends \sammo\BaseAPI
     $generalID = $this->args['generalID'];
     $db = DB::db();
 
-    $troopID = $db->queryFirstField('SELECT troop FROM general WHERE no = %i', $generalID);
+    $destGeneral = GeneralLite::createObjFromDB($generalID, ['troop'], GeneralLiteQueryMode::Lite);
+    $troopID = $destGeneral->getVar('troop');
     if($troopID == 0){
       return '부대에 소속되어 있지 않습니다.';
     }
@@ -50,9 +54,10 @@ class KickFromTroop extends \sammo\BaseAPI
       return '부대장을 추방할 수 없습니다.';
     }
 
-    $db->update('general', [
-      'troop' => 0,
-    ], '`no` = %i AND `troop` = %i', $generalID, $troopID);
+    StaticEventHandler::handleEvent($destGeneral, null, $this::class, [], $this->args);
+    $destGeneral->setVar('troop', 0);
+    $destGeneral->applyDB($db);
+    
     return null;
   }
 }

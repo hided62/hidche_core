@@ -6,6 +6,9 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralLiteQueryMode;
+use sammo\GeneralLite;
+use sammo\StaticEventHandler;
 use sammo\StringUtil;
 use sammo\Validator;
 
@@ -32,23 +35,22 @@ class NewTroop extends \sammo\BaseAPI
 
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
-    $userID = $session->userID;
+    $generalID = $session->generalID;
     $troopName = StringUtil::neutralize($this->args['troopName']);
     if(!$troopName){
       return '부대 이름이 없습니다.';
     }
 
     $db = DB::db();
-    $me = $db->queryFirstRow('SELECT `no`,nation,`troop`,`officer_level`,permission,penalty FROM general WHERE `owner`=%i', $userID);
-    if($me['troop'] != 0){
+    $me = GeneralLite::createObjFromDB($generalID, ['troop'], GeneralLiteQueryMode::Lite);
+    $troopID = $me->getVar('troop');
+    if($troopID != 0){
       return '이미 부대에 소속되어 있습니다.';
     }
-    $nationID = $me['nation'];
+    $nationID = $me->getNationID();
     if($nationID == 0){
       return '국가에 소속되어 있지 않습니다.';
     }
-
-    $generalID = $me['no'];
 
     $db->insert('troop', [
       'name'=>$troopName,
@@ -60,9 +62,9 @@ class NewTroop extends \sammo\BaseAPI
       return '부대가 생성되지 않았습니다. 버그일 수 있습니다.';
     }
 
-    $db->update('general', [
-      'troop'=>$generalID
-    ], '`no` = %i', $generalID);
+    $me->setVar('troop', $generalID);
+    StaticEventHandler::handleEvent($me, null, $this::class, [], $this->args);
+    $me->applyDB($db);
 
     return null;
   }

@@ -6,6 +6,9 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\Enums\GeneralLiteQueryMode;
+use sammo\GeneralLite;
+use sammo\StaticEventHandler;
 use sammo\StringUtil;
 use sammo\Validator;
 
@@ -36,10 +39,10 @@ class SetTroopName extends \sammo\BaseAPI
 
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
-    $userID = $session->userID;
+    $generalID = $session->generalID;
     $db = DB::db();
-    $me = $db->queryFirstRow('SELECT `no`,nation,`officer_level`,permission,penalty FROM general WHERE `owner`=%i', $userID);
-    $permission = checkSecretPermission($me, false);
+    $me = GeneralLite::createObjFromDB($generalID, ['troop', 'permission', 'penalty'], GeneralLiteQueryMode::Lite);
+    $permission = checkSecretPermission($me->getRaw(), false);
     $troopID = $this->args['troopID'];
 
     $generalID = $me['no'];
@@ -60,6 +63,7 @@ class SetTroopName extends \sammo\BaseAPI
     if($db->affectedRows() == 0){
       return '부대가 없습니다.';
     }
+    StaticEventHandler::handleEvent($me, null, $this::class, [], $this->args);
 
     return null;
   }
