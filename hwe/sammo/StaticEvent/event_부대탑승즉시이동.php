@@ -2,10 +2,13 @@
 
 namespace sammo\StaticEvent;
 
+use sammo\ActionLogger;
+use sammo\CityConst;
 use sammo\DB;
 use sammo\Enums\GeneralLiteQueryMode;
 use sammo\General;
 use sammo\GeneralLite;
+use sammo\JosaUtil;
 
 class event_부대탑승즉시이동 extends \sammo\BaseStaticEvent
 {
@@ -37,7 +40,10 @@ class event_부대탑승즉시이동 extends \sammo\BaseStaticEvent
             return true;
         }
 
+        $cityName = CityConst::byID($destGeneral->getCityID())->name;
         $general->setVar('city', $destGeneral->getCityID());
+        $josaRo = JosaUtil::pick($cityName, '로');
+        $general->getLogger()->pushGeneralActionLog("부대 주둔지인 <G><b>{$cityName}</b></>{$josaRo}로 즉시 이동합니다.", ActionLogger::PLAIN);
         $general->applyDB(DB::db());
 
         return true;
