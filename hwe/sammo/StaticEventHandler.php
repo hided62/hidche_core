@@ -10,7 +10,7 @@ class StaticEventHandler
         throw new \Exception('This is a static class');
     }
 
-    public static function handleEvent(General|GeneralLite $general, null|General|GeneralLite $destGeneral, string $eventType, array $env, array ...$params): void
+    public static function handleEvent(General|GeneralLite $general, null|General|GeneralLite $destGeneral, string $eventType, array $env, array $params): void
     {
         $handlersList = GameConst::$staticEventHandlers[$eventType] ?? null;
         if ($handlersList === null) {

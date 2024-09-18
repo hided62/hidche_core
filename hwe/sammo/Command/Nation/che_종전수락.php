@@ -189,7 +189,7 @@ class che_종전수락 extends Command\NationCommand
         $destLogger->pushNationalHistoryLog("<D><b>{$nationName}</b></>{$josaWa} 종전");
 
         $general->applyDB($db);
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $destLogger->flush();
 
         return true;

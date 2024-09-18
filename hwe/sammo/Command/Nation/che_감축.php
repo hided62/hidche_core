@@ -202,7 +202,7 @@ class che_감축 extends Command\NationCommand{
         $logger->pushGlobalHistoryLog("<M><b>【감축】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>감축</>하였습니다.");
 
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
         $general->applyDB($db);
 

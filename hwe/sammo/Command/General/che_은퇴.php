@@ -76,7 +76,7 @@ class che_은퇴 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("은퇴하였습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

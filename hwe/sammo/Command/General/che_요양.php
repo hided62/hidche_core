@@ -70,7 +70,7 @@ class che_요양 extends Command\GeneralCommand{
         $general->addDedication($ded);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB($db);
 
         return true;

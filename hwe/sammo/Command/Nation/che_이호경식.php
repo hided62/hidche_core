@@ -194,7 +194,7 @@ class che_이호경식 extends Command\NationCommand
 
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB($db);
 
         return true;

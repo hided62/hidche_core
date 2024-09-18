@@ -133,7 +133,7 @@ class che_부대탈퇴지시 extends Command\NationCommand
         $destGeneral->getLogger()->pushGeneralActionLog("<Y>{$generalName}</>에게 부대 탈퇴를 지시 받았습니다.");
         
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

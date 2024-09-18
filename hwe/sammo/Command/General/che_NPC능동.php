@@ -97,7 +97,7 @@ class che_NPC능동 extends Command\GeneralCommand{
 
             $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         }
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB($db);
 
         return true;

@@ -174,7 +174,7 @@ class che_불가침파기수락 extends Command\NationCommand
         $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa}의 불가침 파기에 성공했습니다.", ActionLogger::PLAIN);
         $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa}의 불가침 파기 성공");
 
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB($db);
         $destLogger->flush();
 

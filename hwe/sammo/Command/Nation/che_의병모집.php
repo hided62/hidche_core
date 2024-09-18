@@ -170,7 +170,7 @@ class che_의병모집 extends Command\NationCommand
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB($db);
 
         return true;

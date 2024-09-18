@@ -122,7 +122,7 @@ class che_전투태세 extends Command\GeneralCommand{
         $general->increaseVar('leadership_exp', 3);
         $this->setResultTurn($turnResult);
         $general->checkStatChange();
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

@@ -40,7 +40,7 @@ class 휴식 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn());
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->applyDB(DB::db());
         return true;
     }

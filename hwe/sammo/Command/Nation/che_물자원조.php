@@ -256,7 +256,7 @@ class che_물자원조 extends Command\NationCommand
         $general->addExperience(5);
         $general->addDedication(5);
 
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 

@@ -333,7 +333,7 @@ class che_화계 extends Command\GeneralCommand
         $general->increaseVar($statType . '_exp', 1);
         $general->increaseRankVar(RankColumn::firenum, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg ?? []);
         $general->checkStatChange();
         $general->applyDB($db);
 
