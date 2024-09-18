@@ -375,6 +375,7 @@ class GameConstBase
             'che_발령',
             'che_포상',
             'che_몰수',
+            'che_부대탈퇴지시',
         ],
         '외교' => [
             'che_물자원조',
