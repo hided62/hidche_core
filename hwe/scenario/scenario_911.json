@@ -19,7 +19,9 @@
             "sammo\\Command\\Nation\\che_발령": [
                 "event_부대발령즉시집합"
             ]
-        }
+        },
+        "incDefSettingChange": 10,
+        "maxDefSettingChange": 30
     },
     "events":[
         [
