@@ -19,7 +19,7 @@ class StaticEventHandler
 
         foreach ($handlersList as $handlerName) {
             $handler = buildStaticEventClass($handlerName);
-            $handler->run($general, $destGeneral, $env, ...$params);
+            $handler->run($general, $destGeneral, $env, $params);
         }
     }
 }
