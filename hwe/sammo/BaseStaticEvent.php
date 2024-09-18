@@ -7,5 +7,5 @@ abstract class BaseStaticEvent {
 
     }
 
-    abstract function run(General $general, array $env, array $params): bool | string;
+    abstract function run(GeneralLite|General $general, null|GeneralLite|General $destGeneral, array $env, array $params): bool | string;
 }

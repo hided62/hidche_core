@@ -21,6 +21,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
+use sammo\StaticEventHandler;
 
 class che_선양 extends Command\GeneralCommand
 {
@@ -138,6 +139,7 @@ class che_선양 extends Command\GeneralCommand
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

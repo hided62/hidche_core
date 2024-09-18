@@ -15,7 +15,8 @@ use \sammo\{
     Command,
     KVStorage,
     Message,
-    MessageTarget
+    MessageTarget,
+    StaticEventHandler
 };
 
 use function \sammo\buildNationCommandClass;
@@ -240,6 +241,7 @@ class che_피장파장 extends Command\NationCommand
         $destDelay = max($destNationStor->getValue($cmd->getNextExecuteKey()) ?? 0, $yearMonth);
         $destNationStor->setValue($cmd->getNextExecuteKey(), $destDelay + static::$delayCnt);
 
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;

@@ -10,7 +10,8 @@ use \sammo\{
     GameUnitConst,
     Command,
     MessageTarget,
-    Message
+    Message,
+    StaticEventHandler
 };
 
 use \sammo\Constraint\Constraint;
@@ -121,6 +122,7 @@ class che_필사즉생 extends Command\NationCommand{
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;

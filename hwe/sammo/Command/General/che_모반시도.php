@@ -8,7 +8,8 @@ use \sammo\{
     GameConst,
     LastTurn,
     GameUnitConst,
-    Command
+    Command,
+    StaticEventHandler
 };
 
 use \sammo\Constraint\Constraint;
@@ -97,6 +98,7 @@ class che_모반시도 extends Command\GeneralCommand{
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $lordGeneral->applyDB($db);
 

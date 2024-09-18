@@ -11,7 +11,8 @@ use \sammo\{
     GameConst,
     GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    StaticEventHandler
 };
 
 use function \sammo\tryUniqueItemLottery;
@@ -121,6 +122,7 @@ class che_사기진작 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

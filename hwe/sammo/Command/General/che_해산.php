@@ -10,6 +10,7 @@ use \sammo\{
     Command,
     Json,
     KVStorage,
+    StaticEventHandler,
     TurnExecutionHelper
 };
 
@@ -109,6 +110,7 @@ class che_해산 extends Command\GeneralCommand{
         foreach($nationGenerals as $oldGeneral){
             $oldGeneral->applyDB($db);
         }
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         // 이벤트 핸들러 동작

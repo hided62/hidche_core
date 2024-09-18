@@ -23,6 +23,7 @@ use function \sammo\getNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\MessageType;
+use sammo\StaticEventHandler;
 
 class che_불가침제의 extends Command\NationCommand
 {
@@ -220,6 +221,7 @@ class che_불가침제의 extends Command\NationCommand
         $msg->send();
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $destLogger->flush();
 

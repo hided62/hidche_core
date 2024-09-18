@@ -6,6 +6,7 @@ use \sammo\{
     General,
     GameConst,
     Command,
+    StaticEventHandler,
 };
 
 use \sammo\Constraint\ConstraintHelper;
@@ -207,6 +208,7 @@ class che_등용수락 extends Command\GeneralCommand{
         }
 
 
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

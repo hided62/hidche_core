@@ -13,8 +13,7 @@ use function sammo\getDexLevelList;
 use function \sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\ConstraintHelper;
-
-
+use sammo\StaticEventHandler;
 
 class che_숙련전환 extends Command\GeneralCommand
 {
@@ -179,6 +178,7 @@ class che_숙련전환 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 2);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

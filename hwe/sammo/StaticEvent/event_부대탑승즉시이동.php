@@ -9,7 +9,7 @@ use sammo\GeneralLite;
 
 class event_부대탑승즉시이동 extends \sammo\BaseStaticEvent
 {
-    function run(General $general, array $env, array $params): bool | string
+    function run(GeneralLite|General $general, null|GeneralLite|General $destGeneral, array $env, array $params): bool | string
     {
 
         $troopID = $params['troopID'] ?? null;

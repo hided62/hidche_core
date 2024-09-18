@@ -457,6 +457,29 @@ function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = n
     return $class->newInstanceArgs(array_merge([$unit], $args));
 }
 
+function getStaticEventClass(string $type){
+    static $basePath = __NAMESPACE__.'\\StaticEvent\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 StaticEvent가 아님");
+}
+
+function buildStaticEventClass(?string $type):BaseStaticEvent{
+    static $cache = [];
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+
+    $class = getStaticEventClass($type);
+    $obj = new $class();
+    $cache[$type] = $obj;
+    return $obj;
+}
+
 function getGeneralPoolClass(string $type){
     static $basePath = __NAMESPACE__.'\\GeneralPool\\';
     $classPath = ($basePath.$type);

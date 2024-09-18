@@ -6,6 +6,7 @@ use \sammo\Util;
 use \sammo\JosaUtil;
 use \sammo\LastTurn;
 use \sammo\DB;
+use sammo\StaticEventHandler;
 
 class 휴식 extends Command\GeneralCommand{
     static protected $actionName = '휴식';
@@ -39,6 +40,7 @@ class 휴식 extends Command\GeneralCommand{
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn());
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB(DB::db());
         return true;
     }

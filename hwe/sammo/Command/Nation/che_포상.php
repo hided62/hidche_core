@@ -16,6 +16,7 @@ use \sammo\Command;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\GeneralQueryMode;
+use sammo\StaticEventHandler;
 
 class che_포상 extends Command\NationCommand
 {
@@ -174,6 +175,7 @@ class che_포상 extends Command\NationCommand
         $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게 {$resName} <C>$amountText</>{$josaUl} 수여했습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

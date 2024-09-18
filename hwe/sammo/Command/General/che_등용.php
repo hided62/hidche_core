@@ -9,7 +9,8 @@ use \sammo\{
     General,
     LastTurn,
     Command,
-    ScoutMessage
+    ScoutMessage,
+    StaticEventHandler
 };
 
 use function \sammo\getAllNationStaticInfo;
@@ -169,6 +170,7 @@ class che_등용 extends Command\GeneralCommand
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
 
         $general->applyDB($db);

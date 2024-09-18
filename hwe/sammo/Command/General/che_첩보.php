@@ -16,6 +16,7 @@ use function \sammo\searchDistance;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
+use sammo\StaticEventHandler;
 
 class che_첩보 extends Command\GeneralCommand
 {
@@ -212,6 +213,7 @@ class che_첩보 extends Command\GeneralCommand
         $general->addDedication($ded);
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->checkStatChange();
         $general->applyDB($db);
 

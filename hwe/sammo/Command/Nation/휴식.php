@@ -5,6 +5,7 @@ use \sammo\Command;
 use \sammo\Util;
 use \sammo\JosaUtil;
 use sammo\LastTurn;
+use sammo\StaticEventHandler;
 
 class 휴식 extends Command\NationCommand{
     static protected $actionName = '휴식';
@@ -33,6 +34,7 @@ class 휴식 extends Command\NationCommand{
 
     public function run(\Sammo\RandUtil $rng):bool{
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         return true;
     }
 }

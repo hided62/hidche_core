@@ -18,6 +18,7 @@ use function \sammo\pickGeneralFromPool;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
+use sammo\StaticEventHandler;
 
 class che_인재탐색 extends Command\GeneralCommand
 {
@@ -218,6 +219,7 @@ class che_인재탐색 extends Command\GeneralCommand
         $general->increaseVar($incStat, 3);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
         return true;

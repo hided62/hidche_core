@@ -14,7 +14,8 @@ use \sammo\{
     GameUnitConst,
     LastTurn,
     Command,
-    KVStorage
+    KVStorage,
+    StaticEventHandler
 };
 
 use function \sammo\buildItemClass;
@@ -196,6 +197,7 @@ class che_장비매매 extends Command\GeneralCommand
         $general->addExperience($exp);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

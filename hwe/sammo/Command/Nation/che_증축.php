@@ -11,7 +11,8 @@ use \sammo\{
     Command,
     MessageTarget,
     Message,
-    CityConst
+    CityConst,
+    StaticEventHandler
 };
 
 use \sammo\Constraint\Constraint;
@@ -193,6 +194,7 @@ class che_증축 extends Command\NationCommand{
         $logger->pushGlobalHistoryLog("<C><b>【증축】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaUl} <M>증축</>하였습니다.");
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;

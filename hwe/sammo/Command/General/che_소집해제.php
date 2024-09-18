@@ -7,7 +7,8 @@ use \sammo\{
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    StaticEventHandler
 };
 
 use \sammo\Constraint\Constraint;
@@ -80,6 +81,7 @@ class che_소집해제 extends Command\GeneralCommand{
         $general->addDedication($ded);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;

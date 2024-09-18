@@ -21,6 +21,7 @@ use function \sammo\getNationStaticInfo;
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Event\Action;
+use sammo\StaticEventHandler;
 
 class che_허보 extends Command\NationCommand
 {
@@ -194,6 +195,7 @@ class che_허보 extends Command\NationCommand
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;

@@ -14,6 +14,7 @@ use \sammo\{
     GameUnitConst,
     CityConst,
     Command,
+    StaticEventHandler,
     TimeUtil
 };
 
@@ -167,6 +168,7 @@ class che_발령 extends Command\NationCommand
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
         $destGeneral->applyDB($db);
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
 
         return true;
     }

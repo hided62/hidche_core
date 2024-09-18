@@ -18,6 +18,7 @@ use function \sammo\getAllNationStaticInfo;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
+use sammo\StaticEventHandler;
 
 use function sammo\buildNationTypeClass;
 use function sammo\genGenericUniqueRNGFromGeneral;
@@ -216,6 +217,7 @@ class che_무작위건국 extends Command\GeneralCommand
         $general->increaseInheritancePoint(InheritanceKey::active_action, 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(genGenericUniqueRNGFromGeneral($general, static::$actionName), $general, '건국');
         $general->applyDB($db);
 

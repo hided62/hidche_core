@@ -19,6 +19,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
+use sammo\StaticEventHandler;
 
 class cr_인구이동 extends Command\NationCommand
 {
@@ -179,6 +180,7 @@ class cr_인구이동 extends Command\NationCommand
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 인구 <C>{$amount}</>명을 옮겼습니다. <1>$date</>");
 
     $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+    StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
     $general->applyDB($db);
     return true;
   }

@@ -21,6 +21,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\MessageType;
+use sammo\StaticEventHandler;
 
 class che_몰수 extends Command\NationCommand
 {
@@ -212,6 +213,7 @@ class che_몰수 extends Command\NationCommand
         $logger->pushGeneralActionLog("<Y>{$destGeneral->getName()}</>에게서 {$resName} <C>$amountText</>{$josaUl} 몰수했습니다. <1>$date</>");
 
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 

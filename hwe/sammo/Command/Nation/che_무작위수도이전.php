@@ -20,6 +20,7 @@ use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
 use sammo\Json;
+use sammo\StaticEventHandler;
 
 class che_무작위수도이전 extends Command\NationCommand
 {
@@ -159,6 +160,7 @@ class che_무작위수도이전 extends Command\NationCommand
         $logger->pushGlobalHistoryLog("<S><b>【무작위 수도 이전】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaRo} <M>수도 이전</>하였습니다.");
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         return true;
     }

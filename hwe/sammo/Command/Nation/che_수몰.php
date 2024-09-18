@@ -15,7 +15,8 @@ use \sammo\{
     Command,
     MessageTarget,
     Message,
-    CityConst
+    CityConst,
+    StaticEventHandler
 };
 
 use function \sammo\getNationStaticInfo;
@@ -191,6 +192,7 @@ class che_수몰 extends Command\NationCommand
         ], 'nation=%i', $nationID);
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;

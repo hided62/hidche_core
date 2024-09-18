@@ -9,7 +9,8 @@ use \sammo\{
     LastTurn,
     GameUnitConst,
     Command,
-    RandUtil
+    RandUtil,
+    StaticEventHandler
 };
 
 use function \sammo\getDomesticExpLevelBonus;
@@ -188,6 +189,7 @@ class che_주민선정 extends Command\GeneralCommand{
         $general->increaseVar(static::$statKey.'_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

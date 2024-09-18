@@ -16,6 +16,7 @@ use function sammo\getTechLevel;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\MustNotBeReachedException;
+use sammo\StaticEventHandler;
 
 class che_징병 extends Command\GeneralCommand
 {
@@ -226,6 +227,7 @@ class che_징병 extends Command\GeneralCommand
         $general->increaseVar('leadership_exp', 1);
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->setAuxVar('armType', $reqCrewType->armType);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);

@@ -14,6 +14,7 @@ use \sammo\Command;
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
+use sammo\StaticEventHandler;
 
 use function sammo\tryUniqueItemLottery;
 
@@ -146,6 +147,7 @@ class che_헌납 extends Command\GeneralCommand
         $this->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
 
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         tryUniqueItemLottery(\sammo\genGenericUniqueRNGFromGeneral($general, static::$actionName), $general);
         $general->applyDB($db);
 

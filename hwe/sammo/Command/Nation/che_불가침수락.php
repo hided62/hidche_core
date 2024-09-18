@@ -24,6 +24,7 @@ use sammo\Enums\GeneralQueryMode;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\RandUtil;
+use sammo\StaticEventHandler;
 
 class che_불가침수락 extends Command\NationCommand
 {
@@ -224,6 +225,7 @@ class che_불가침수락 extends Command\NationCommand
         $destLogger->pushGeneralActionLog("<D><b>{$nationName}</b></>{$josaWa} <C>$year</>년 <C>{$month}</>월까지 불가침에 성공했습니다.", ActionLogger::PLAIN);
         $destLogger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaWa} {$year}년 {$month}월까지 불가침 성공");
 
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         $destLogger->flush();
 

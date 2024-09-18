@@ -19,6 +19,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
 use sammo\Event\Action;
+use sammo\StaticEventHandler;
 
 class che_천도 extends Command\NationCommand
 {
@@ -228,6 +229,7 @@ class che_천도 extends Command\NationCommand
         $logger->pushGlobalHistoryLog("<S><b>【천도】</b></><D><b>{$nationName}</b></>{$josaYiNation} <G><b>{$destCityName}</b></>{$josaRo} <M>천도</>하였습니다.");
 
         $this->setResultTurn(new LastTurn($this->getName(), $this->arg, 0));
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
         return true;
     }

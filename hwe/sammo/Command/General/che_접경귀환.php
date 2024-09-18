@@ -7,7 +7,8 @@ use \sammo\{
     ActionLogger,
     GameConst, GameUnitConst,
     LastTurn,
-    Command
+    Command,
+    StaticEventHandler
 };
 
 use \sammo\Constraint\ConstraintHelper;
@@ -98,6 +99,7 @@ class che_접경귀환 extends Command\GeneralCommand{
         //TODO: InstantAction일때에만 설정하지 않는게 나은데..
         //$this->setResultTurn(new LastTurn(static::getName(), $this->arg));
 
+        StaticEventHandler::handleEvent($this->generalObj, $this->destGeneralObj, $this::class, $this->env, $this->arg);
         $general->applyDB($db);
 
         return true;
