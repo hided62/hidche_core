@@ -12,10 +12,10 @@
         "npcBanMessageProb":1,
         "scenarioEffect": "event_UnlimitedDefenceThresholdChange",
         "staticEventHandlers": {
-            "Command/General/che_부대탑승": [
+            "sammo\\API\\Troop\\JoinTroop": [
                 "event_부대탑승즉시이동"
             ],
-            "Command/Nation/che_발령": [
+            "sammo\\Command\\Nation\\che_발령": [
                 "event_부대발령즉시집합"
             ]
         }
