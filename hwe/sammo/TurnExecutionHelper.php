@@ -351,7 +351,7 @@ class TurnExecutionHelper
             pullGeneralCommand($general->getID());
 
             $currentTurn = $general->getTurnTime();
-            $general->increaseVarWithLimit('myset', 3, null, 9);
+            $general->increaseVarWithLimit('myset', GameConst::$incDefSettingChange, null, GameConst::$maxDefSettingChange);
 
             if (($autorun_user['limit_minutes'] ?? false) && $general->getNPCType() < 2 && $hasReservedTurn) {
                 $autorun_limit = Util::joinYearMonth($year, $month);

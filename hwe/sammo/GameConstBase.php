@@ -83,6 +83,12 @@ class GameConstBase
     /** @var int 최대 하야 패널티 수 */
     public static $maxBetrayCnt = 9;
 
+    /** @var int 매월 증가하는 수비 설정 변경 제한 수 */
+    public static $incDefSettingChange = 3;
+    /** @var int 최대로 증가하는 수비 설정 변경 제한 수*/
+    public static $maxDefSettingChange = 9;
+
+
     /** @var int 최대 레벨 */
     public static $maxLevel = 255;
 
