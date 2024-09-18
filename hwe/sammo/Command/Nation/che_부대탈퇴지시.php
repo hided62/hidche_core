@@ -152,9 +152,6 @@ class che_부대탈퇴지시 extends Command\NationCommand
                 'generals' => $destRawGenerals,
                 'generalsKey' => ['no', 'name', 'officerLevel', 'npc', 'gold', 'rice', 'leadership', 'strength', 'intel', 'cityID', 'crew', 'train', 'atmos', 'troopID'],
                 'cities' => \sammo\JSOptionsForCities(),
-                'minAmount' => 100,
-                'maxAmount' => GameConst::$maxResourceActionAmount,
-                'amountGuide' => GameConst::$resourceActionAmountGuide,
             ]
         ];
     }

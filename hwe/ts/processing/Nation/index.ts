@@ -7,8 +7,9 @@ import { default as che_피장파장 } from "./che_피장파장.vue";
 import { default as cr_인구이동 } from "./cr_인구이동.vue";
 
 import { default as ProcessNation } from "../ProcessNation.vue";
+import { default as ProcessGeneral } from "../ProcessGeneral.vue";
 import { default as ProcessGeneralAmount } from "../ProcessGeneralAmount.vue";
-import { default as ProcessGeneralCity } from "./che_발령.vue";
+import { default as che_발령 } from "./che_발령.vue";
 import { default as ProcessCity } from "../ProcessCity.vue";
 
 export const commandMap: Record<string, typeof ProcessNation | typeof ProcessCity> = {
@@ -17,7 +18,8 @@ export const commandMap: Record<string, typeof ProcessNation | typeof ProcessCit
     che_급습: ProcessNation,
     che_몰수: ProcessGeneralAmount,
     che_물자원조,
-    che_발령: ProcessGeneralCity,
+    che_발령: che_발령,
+    che_부대탈퇴지시: ProcessGeneral,
     che_백성동원: ProcessCity,
     che_불가침제의,
     che_불가침파기제의: ProcessNation,
