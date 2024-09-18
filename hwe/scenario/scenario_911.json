@@ -2,7 +2,8 @@
     "title":"【이벤트】 축지",
     "startYear":180,
     "map":{
-        "mapName":"miniche"
+        "mapName":"miniche",
+        "unitSet":"che_except_siege"
     },
     "history":[
         "<C>●</>180년 1월:<L><b>【이벤트】</b></>부대를 통해 빠르게 이동할 수 있습니다."
