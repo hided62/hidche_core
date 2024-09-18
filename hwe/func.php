@@ -1107,7 +1107,7 @@ function CheckOverhead()
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$turnterm, $refreshLimit] = $gameStor->getValuesAsArray(['turnterm', 'refreshLimit']);
 
-    $nextRefreshLimit = Util::round(pow($turnterm, 0.6) * 3) * 10;
+    $nextRefreshLimit = Util::round(pow($turnterm, 0.6) * 3) * GameConst::$refreshLimitCoef;
 
 
     if ($nextRefreshLimit != $refreshLimit) {

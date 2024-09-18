@@ -88,6 +88,8 @@ class GameConstBase
     /** @var int 최대로 증가하는 수비 설정 변경 제한 수*/
     public static $maxDefSettingChange = 9;
 
+    /** @var float 벌점 제한 계수 */
+    public static $refreshLimitCoef = 10;
 
     /** @var int 최대 레벨 */
     public static $maxLevel = 255;
