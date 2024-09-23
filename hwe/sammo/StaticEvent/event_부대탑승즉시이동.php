@@ -43,7 +43,7 @@ class event_부대탑승즉시이동 extends \sammo\BaseStaticEvent
         $cityName = CityConst::byID($destGeneral->getCityID())->name;
         $general->setVar('city', $destGeneral->getCityID());
         $josaRo = JosaUtil::pick($cityName, '로');
-        $general->getLogger()->pushGeneralActionLog("부대 주둔지인 <G><b>{$cityName}</b></>{$josaRo}로 즉시 이동합니다.", ActionLogger::PLAIN);
+        $general->getLogger()->pushGeneralActionLog("부대 주둔지인 <G><b>{$cityName}</b></>{$josaRo} 즉시 이동합니다.", ActionLogger::PLAIN);
         $general->applyDB(DB::db());
 
         return true;

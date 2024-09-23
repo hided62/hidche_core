@@ -48,6 +48,10 @@ class event_부대발령즉시집합 extends \sammo\BaseStaticEvent
                 'city'=>$destCityID
             ], 'no IN %li', $generalList);
         }
+        if($general->getVar('troop') === $troopID){
+            $general->setVar('city', $destCityID);
+        }
+
         foreach($generalList as $targetGeneralID){
             $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
             $targetLogger->pushGeneralActionLog("{$troopName} 부대원들은 <G><b>{$cityName}</b></>{$josaRo} 즉시 집합되었습니다.", ActionLogger::PLAIN);
