@@ -45,7 +45,6 @@ class SetTroopName extends \sammo\BaseAPI
     $permission = checkSecretPermission($me->getRaw(), false);
     $troopID = $this->args['troopID'];
 
-    $generalID = $me['no'];
     if($generalID != $troopID && $permission < 4){
       return "권한이 부족합니다.";
     }
@@ -55,7 +54,7 @@ class SetTroopName extends \sammo\BaseAPI
       return '부대 이름이 없습니다.';
     }
 
-    $nationID = $me['nation'];
+    $nationID = $me->getNationID();
     $db->update('troop', [
       'name'=>$troopName
     ], 'troop_leader=%i AND `nation`=%i',$troopID, $nationID);
