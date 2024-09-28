@@ -3,6 +3,7 @@ import type { ValidResponse } from "@/util/callSammoAPI";
 export type VoteInfo = {
   id: number;
   title: string;
+  opener?: string;
   multipleOptions: number;
   startDate: string;
   endDate?: string;

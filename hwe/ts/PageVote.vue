@@ -23,6 +23,10 @@
               }}개 선택 가능 )</template
             >
           </th>
+          </tr>
+        <tr>
+          <th colspan="3" class="text-end bg1">게시자</th>
+          <th id="vote-detail-opener">{{ currentVote.voteInfo.opener ?? '[SYSTEM]' }}</th>
         </tr>
       </thead>
       <tbody>
