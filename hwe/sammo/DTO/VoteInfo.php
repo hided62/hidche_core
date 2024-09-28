@@ -8,6 +8,7 @@ class VoteInfo extends \LDTO\DTO
     public int $id,
     public string $title,
     public int $multipleOptions,
+    public ?string $opener,
 
     public string $startDate,
     public ?string $endDate,

@@ -7,6 +7,7 @@ use sammo\DB;
 use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
+use sammo\RootDB;
 use sammo\Session;
 use sammo\TimeUtil;
 use sammo\Util;
@@ -93,6 +94,8 @@ class NewVote extends \sammo\BaseAPI
             }
         }
 
+        $userName = $session->userName;
+
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
@@ -108,9 +111,11 @@ class NewVote extends \sammo\BaseAPI
 
         $multipleOptions = Util::valueFit($multipleOptions, 0, count($options));
 
+
         $voteInfo = new VoteInfo(
             id: $voteID,
             title: $title,
+            opener: $userName ?? '[SYSTEM]',
             multipleOptions: $multipleOptions,
             startDate: $now,
             endDate: $endDate,
