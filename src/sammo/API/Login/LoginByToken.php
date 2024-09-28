@@ -115,7 +115,7 @@ class LoginByToken extends LoginByID
         if ($userInfo['oauth_type'] == 'KAKAO') {
             $oauthFailResult = KakaoUtil::kakaoOAuthCheck($userInfo);
             if ($oauthFailResult !== null) {
-                $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
+                $session->login($userInfo['no'], $userInfo['name'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
                 [$oauthReqOTP, $oauthFailReason] = $oauthFailResult;
                 $RootDB->delete(
                     'login_token',
@@ -125,7 +125,7 @@ class LoginByToken extends LoginByID
             }
         }
 
-        $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], false, $userInfo['token_valid_until'], $token_id, Json::decode($userInfo['acl'] ?? '{}'));
+        $session->login($userInfo['no'], $userInfo['name'], $userInfo['grade'], false, $userInfo['token_valid_until'], $token_id, Json::decode($userInfo['acl'] ?? '{}'));
         $this->scrubToken($userInfo['no']);
 
         $nextDate = TimeUtil::nowAddDays(2);

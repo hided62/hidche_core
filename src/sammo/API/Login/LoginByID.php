@@ -140,7 +140,7 @@ class LoginByID extends \sammo\BaseAPI
         if ($userInfo['oauth_type'] == 'KAKAO') {
             $oauthFailResult = KakaoUtil::kakaoOAuthCheck($userInfo);
             if ($oauthFailResult !== null) {
-                $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
+                $session->login($userInfo['no'], $userInfo['name'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
                 [$oauthReqOTP, $oauthFailReason] = $oauthFailResult;
                 return [
                     'result' => false,
@@ -153,7 +153,7 @@ class LoginByID extends \sammo\BaseAPI
         $this->scrubToken($userInfo['no']);
         $nextToken = $this->addToken($userInfo['no']);
 
-        $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], false, $userInfo['token_valid_until'], $nextToken[0], Json::decode($userInfo['acl'] ?? '{}'));
+        $session->login($userInfo['no'], $userInfo['name'], $userInfo['grade'], false, $userInfo['token_valid_until'], $nextToken[0], Json::decode($userInfo['acl'] ?? '{}'));
 
 
         return [

@@ -211,7 +211,7 @@ if (!$tokenValidUntil || $tokenValidUntil < $now) {
             'reason' => '인증 코드를 보내는데 실패했습니다.'
         ]);
     }
-    $session->login($userID, $userInfo['id'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
+    $session->login($userID, $userInfo['name'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
     Json::die([
         'result' => false,
         'reqOTP' => true,
@@ -262,7 +262,7 @@ $RootDB->insert('login_token', [
 ]);
 $tokenID = $RootDB->insertId();
 
-$session->login($userID, $userInfo['id'], $userInfo['grade'], false, $userInfo['token_valid_until'], $tokenID, Json::decode($userInfo['acl'] ?? '{}'));
+$session->login($userID, $userInfo['name'], $userInfo['grade'], false, $userInfo['token_valid_until'], $tokenID, Json::decode($userInfo['acl'] ?? '{}'));
 
 
 
