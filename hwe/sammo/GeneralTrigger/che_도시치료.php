@@ -1,5 +1,7 @@
 <?php
+
 namespace sammo\GeneralTrigger;
+
 use sammo\BaseGeneralTrigger;
 use sammo\General;
 use sammo\ActionLogger;
@@ -7,16 +9,18 @@ use sammo\DB;
 use sammo\Util;
 use sammo\JosaUtil;
 
-class che_도시치료 extends BaseGeneralTrigger{
+class che_도시치료 extends BaseGeneralTrigger
+{
     protected $priority = 10010;
 
-    public function action(\sammo\RandUtil $rng, ?array $env=null, $arg=null):?array{
+    public function action(\sammo\RandUtil $rng, ?array $env = null, $arg = null): ?array
+    {
 
         /** @var \sammo\General $general */
         $general = $this->object;
         $logger = $general->getLogger();
 
-        if($general->getVar('injury') > 0){
+        if ($general->getVar('injury') > 0) {
             $general->updateVar('injury', 0);
             $general->activateSkill('pre.부상경감', 'pre.치료');
             $logger->pushGeneralActionLog('<C>의술</>을 펼쳐 스스로 치료합니다!', ActionLogger::PLAIN);
@@ -24,14 +28,27 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         $db = DB::db();
 
-        /** @var array{int,string,string}[] $patients */
-        $patients = $db->queryAllLists(
-            'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i',
-            $general->getCityID(),
-            $general->getID()
-        );
+        if ($general->getNationID() == 0) {
+            /** @var array{int,string,string}[] $patients */
+            $patients = $db->queryAllLists(
+                'SELECT no,name,nation FROM general WHERE city=%i AND nation=%i AND injury > 10 AND no != %i',
+                $general->getCityID(),
+                0,
+                $general->getID()
+            );
+        }
+        else {
+            /** @var array{int,string,string}[] $patients */
+            $patients = $db->queryAllLists(
+                'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i',
+                $general->getCityID(),
+                $general->getID()
+            );
+        }
 
-        if(!$patients){
+
+
+        if (!$patients) {
             return $env;
         }
 
@@ -42,7 +59,7 @@ class che_도시치료 extends BaseGeneralTrigger{
 
         /** @var string|null */
         $curedPatientName = null;
-        foreach($patients as [$patientID, $patientName, $patientNationID]){
+        foreach ($patients as [$patientID, $patientName, $patientNationID]) {
             if (!$rng->nextBool(0.5)) {
                 continue;
             }
@@ -54,26 +71,25 @@ class che_도시치료 extends BaseGeneralTrigger{
             $patientLogger->flush();
         }
 
-        if(!$cureList){
+        if (!$cureList) {
             return $env;
         }
 
-        if($curedPatientName === null){
+        if ($curedPatientName === null) {
             throw new \sammo\MustNotBeReachedException();
         }
 
 
-        if(count($cureList) == 1){
+        if (count($cureList) == 1) {
             $josaUl = JosaUtil::pick($curedPatientName, "을");
             $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수 <Y>{$curedPatientName}</>{$josaUl} 치료합니다!", ActionLogger::PLAIN);
-        }
-        else{
+        } else {
             $otherCount = count($cureList) - 1;
             $logger->pushGeneralActionLog("<C>의술</>을 펼쳐 도시의 장수들 <Y>{$curedPatientName}</> 외 <C>{$otherCount}</>명을 치료합니다!", ActionLogger::PLAIN);
         }
 
         $db->update('general', [
-            'injury'=>0
+            'injury' => 0
         ], 'no IN %li', $cureList);
 
         return $env;
