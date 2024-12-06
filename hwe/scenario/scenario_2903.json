@@ -30,6 +30,9 @@
     ],
     "diplomacy":[],
     "const": {
+        "randGenFirstName": ["근거리", "원거리", "대포", "슈퍼"],
+        "randGenMiddleName": [""],
+        "randGenLastName": [" 미니언"],
         "scenarioEffect": "event_StrongAttacker",
         "availableInstantAction": {
             "instantRetreat": true

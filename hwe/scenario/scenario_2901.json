@@ -30,6 +30,9 @@
     ],
     "diplomacy":[],
     "const": {
+        "randGenFirstName": ["근거리", "원거리", "대포", "슈퍼"],
+        "randGenMiddleName": [""],
+        "randGenLastName": [" 미니언"],
         "npcBanMessageProb": 0,
         "npcSeizureMessageProb": 0,
         "npcMessageFreqByDay": 8,
