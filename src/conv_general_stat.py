@@ -4,6 +4,7 @@ import os
 import sys
 import json
 from openpyxl.worksheet.worksheet import Worksheet
+import json
 
 #TODO: 시나리오마다 바뀔 수 있음
 nationLevelMap = {
@@ -37,14 +38,19 @@ def parseConfig(configSheet: Worksheet):
             value = int(value)
 
         if isinstance(value, str):
-            values = value.split('\n')
-            if len(values) > 1:
-                value = values
+            # json으로 변환 시도
+            try:
+                value = json.loads(value)
+            except:
+                values = value.split('\n')
+                if len(values) > 1:
+                    value = values
 
         varNames = varName.split('.')
+        varNameCnt = len(varNames)
         target = result
         for idx, name in enumerate(varNames):
-            if idx + 1 == len(varNames):
+            if idx + 1 == varNameCnt:
                 target[name] = value
                 break
             if not name in target:
