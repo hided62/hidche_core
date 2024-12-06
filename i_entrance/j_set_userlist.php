@@ -90,7 +90,7 @@ if($action == 'scrub_icon'){
 
     $cnt = 0;
 
-    foreach(glob(AppConf::getUserIconPathFS().'/*.{webp,jpg,png,gif}', GLOB_BRACE) as $filepath){
+    foreach(glob(AppConf::getUserIconPathFS().'/*.{avif,webp,jpg,png,gif}', GLOB_BRACE) as $filepath){
         $filename = basename($filepath);
 
         if (array_key_exists($filename, $usedIcon)) {

@@ -279,7 +279,7 @@
         label-cols-lg="3"
         content-cols-sm
         content-cols-lg="7"
-        description="업로드할 파일을 선택해주세요. (jpg, png, gif, webp)"
+        description="업로드할 파일을 선택해주세요. (jpg, png, gif, webp, avif)"
         label="이미지 업로드"
         label-align="right"
         :label-for="`${uuid}_image_upload`"
@@ -288,7 +288,7 @@
           :id="`${uuid}_image_upload`"
           class="form-control"
           type="file"
-          accept=".jpg,.jpeg,.png,.gif,.webp"
+          accept=".jpg,.jpeg,.png,.gif,.webp,.avif"
           @change="chooseImage"
         />
       </BFormGroup>

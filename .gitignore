@@ -29,6 +29,7 @@ d_pic/*.jpg
 d_pic/*.gif
 d_pic/*.png
 d_pic/*.webp
+d_pic/*.avif
 d_pic/uploaded_image
 
 /dist_js

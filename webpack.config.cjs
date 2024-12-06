@@ -176,7 +176,7 @@ module.exports = (env, argv) => {
                     use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
                 },
                 {
-                    test: /\.(png|jpe?g|gif|webp)$/,
+                    test: /\.(png|jpe?g|gif|webp|avif)$/,
                     use: ['file-loader']
                 },
                 {

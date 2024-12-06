@@ -50,7 +50,7 @@ class UploadImage extends \sammo\BaseAPI
         }
 
         $extension = ltrim($contentType, 'image/');
-        $validExtensions = ['png', 'jpeg', 'jpg', 'gif', 'webp'];
+        $validExtensions = ['png', 'jpeg', 'jpg', 'gif', 'webp', 'avif'];
         if (!in_array(strtolower($extension), $validExtensions)) {
             return '지원하지 않는 이미지 파일입니다: ' . $contentType;
         }
