@@ -36,7 +36,8 @@
         "scenarioEffect": "event_StrongAttacker",
         "availableInstantAction": {
             "instantRetreat": true
-        }
+        },
+        "npcMessageFreqByDay": 1
     },
     "general":[
         [0, "가렌", null, 10, "성도", 101, 97, 49, 11, 2009, 2200, null, null, "내 검과 심장은 데마시아의 것이다."],
