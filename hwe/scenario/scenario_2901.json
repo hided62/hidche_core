@@ -35,7 +35,7 @@
         "randGenLastName": [" 미니언"],
         "npcBanMessageProb": 0,
         "npcSeizureMessageProb": 0,
-        "npcMessageFreqByDay": 1,
+        "npcMessageFreqByDay": 2,
         "availableSpecialWar": [
             "che_귀병",
             "che_신산",
