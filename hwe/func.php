@@ -112,7 +112,7 @@ function GetImageURL($imgsvr, $filepath = '')
 function checkLimit($refreshScore = null)
 {
     $session = Session::getInstance();
-    if ($session->userGrade >= 4) {
+    if ($session->userGrade >= 6) {
         return 0;
     }
 
@@ -1009,7 +1009,7 @@ function increaseRefresh($type = "", $cnt = 1)
     $isunited = $gameStor->isunited;
     $opentime = $gameStor->opentime;
 
-    if ($userGrade == 6) {
+    if ($userGrade >= 6) {
         return;
     }
     if ($isunited == 2) {

@@ -37,7 +37,7 @@ if ($reqQueryType === null || !key_exists($reqQueryType, $queryMap)) {
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
-if ($session->userGrade < 5) {
+if ($session->userGrade < 6) {
     die(requireAdminPermissionHTML());
 }
 

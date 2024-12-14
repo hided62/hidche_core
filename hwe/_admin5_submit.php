@@ -12,7 +12,7 @@ $nation = Util::getPost('nation', 'int');
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
-if ($session->userGrade < 5) {
+if ($session->userGrade < 6) {
     header('location:_admin5.php');
     die();
 }

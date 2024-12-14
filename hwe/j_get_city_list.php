@@ -18,7 +18,7 @@ else{
     $availableNextCall = $session->availableNextCallGetCityList??'2000-01-01 00:00:00';
     $now = new \DateTimeImmutable();
 
-    if($now <= new \DateTimeImmutable($availableNextCall) && $session->userGrade < 5){
+    if($now <= new \DateTimeImmutable($availableNextCall) && $session->userGrade < 6){
         Json::die([
             'result'=>false,
             'reason'=>"도시 목록은 10초에 한번 갱신 가능합니다.\n다음 시간 : ".$availableNextCall

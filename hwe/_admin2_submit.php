@@ -15,7 +15,7 @@ $msg = Util::getPost('msg', 'string');
 //로그인 검사
 $session = Session::requireLogin()->loginGame()->setReadOnly();
 
-if ($session->userGrade < 5) {
+if ($session->userGrade < 6) {
     header('location:_admin2.php');
 }
 

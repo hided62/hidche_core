@@ -202,7 +202,7 @@ $target = Util::getPost('target');
 $server = basename($request['server']);
 $settingBasePath = __DIR__ . "/{$server}/d_setting/";
 $allowFullUpdate = in_array('fullUpdate', $session->acl[$server] ?? []);
-$allowFullUpdate |= $session->userGrade >= 6;
+$allowFullUpdate |= $session->userGrade >= 7;
 
 $allowUpdate = in_array('update', $session->acl[$server] ?? []);
 $allowUpdate |= $session->userGrade >= 5;

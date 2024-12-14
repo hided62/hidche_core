@@ -32,10 +32,12 @@ else{
 
 $tokenValidUntil = $member['token_valid_until'];
 
-if($member['grade'] == 6) {
-    $grade = '운영자';
+if($member['grade'] == 7) {
+    $grade = '최고운영자';
+} elseif($member['grade'] == 6) {
+    $grade = '부운영자(시스템)';
 } elseif($member['grade'] == 5) {
-    $grade = '부운영자';
+    $grade = '부운영자(유저)';
 } elseif($member['grade'] > 1) {
     $grade = '특별회원';
 } elseif($member['grade'] == 1) {

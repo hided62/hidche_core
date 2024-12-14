@@ -7,7 +7,7 @@ WebUtil::requireAJAX();
 
 $session = Session::requireLogin([])->setReadOnly();
 
-if($session->userGrade < 5){
+if($session->userGrade < 6){
     Json::die([
         'result'=>false,
         'reason'=>'운영자 권한이 없습니다.'

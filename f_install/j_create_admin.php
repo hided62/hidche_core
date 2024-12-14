@@ -56,7 +56,7 @@ $rootDB->insert('member', [
     'token_valid_until' => '2999-01-01 00:00:00',
     'pw' => $finalPassword,
     'salt' => $userSalt,
-    'grade' => 6,
+    'grade' => 7,
     'name' => $nickname,
     'reg_date' => $nowDate
 ]);

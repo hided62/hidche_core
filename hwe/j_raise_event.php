@@ -8,7 +8,7 @@ include('func.php');
 
 $session = Session::requireLogin([])->setReadOnly();
 
-if(Session::getInstance()->userGrade < 5){
+if(Session::getInstance()->userGrade < 6){
     Json::die([
         'reason'=>'권한이 부족합니다.'
     ]);

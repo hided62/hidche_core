@@ -177,7 +177,7 @@ $templates = new \League\Plates\Engine('templates');
                                 $valid = 1;
                             }
 
-                            if ($userGrade >= 5) {
+                            if ($userGrade >= 6) {
                                 $valid = true;
                                 $showDetailedInfo = true;
                             }
@@ -275,7 +275,7 @@ $templates = new \League\Plates\Engine('templates');
                                     $ourGeneral = false;
                                 }
 
-                                if ($userGrade == 6) {
+                                if ($userGrade == 7) {
                                     $ourGeneral = true;
                                 }
 

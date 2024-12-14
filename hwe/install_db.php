@@ -7,10 +7,10 @@ include "func.php";
 
 $session = Session::requireLogin();
 
-if ($session->userGrade < 5) {
+if ($session->userGrade < 6) {
     die('관리자 아님');
 }
-if ($session->userGrade == 5) {
+if ($session->userGrade == 6) {
     die('DB 리셋 권한을 가지고 있지 않습니다.');
 }
 

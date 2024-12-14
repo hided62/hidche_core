@@ -54,7 +54,7 @@ class GeneralList extends \sammo\BaseAPI
             $availableNextCall = $session->availableNextCallGetGeneralList ?? '2000-01-01 00:00:00';
             $now = new \DateTimeImmutable();
 
-            if ($now <= new \DateTimeImmutable($availableNextCall) && $session->userGrade < 5) {
+            if ($now <= new \DateTimeImmutable($availableNextCall) && $session->userGrade < 6) {
                 return "장수 리스트는 10초에 한번 갱신 가능합니다.\n다음 시간 : " . $availableNextCall;
             }
 
