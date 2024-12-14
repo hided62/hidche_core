@@ -302,7 +302,7 @@ class ResetHelper{
             'server_cnt'=>$serverCnt,
         ];
 
-        foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
+        foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 6') as $admin){
             $db->insert('general', [
                 'owner'=>$admin['no'],
                 'name'=>$admin['name'],
