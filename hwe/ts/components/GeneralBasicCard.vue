@@ -3,7 +3,7 @@
     <div
       class="general-icon"
       :style="{
-        backgroundImage: `url(${iconPath})`,
+        backgroundImage: `url('${iconPath}')`,
       }"
     ></div>
 
@@ -83,7 +83,7 @@
     <div
       class="general-crew-type-icon"
       :style="{
-        backgroundImage: `url(${imagePath}/crewtype${general.crewtype}.png)`,
+        backgroundImage: `url('${imagePath}/crewtype${general.crewtype}.png')`,
       }"
     ></div>
 

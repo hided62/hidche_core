@@ -18,7 +18,7 @@
         left: '0',
         width: '100%',
         height: `${props.height}px`,
-        backgroundImage: `url(${imagePath}/pr${props.height - 2}.gif)`,
+        backgroundImage: `url('${imagePath}/pr${props.height - 2}.gif')`,
         backgroundRepeat: 'repeat-x',
         backgroundPosition: 'center',
       }"
@@ -30,7 +30,7 @@
         left: '0',
         width: `${clamp(props.percent, 0, 100)}%`,
         height: `${props.height}px`,
-        backgroundImage: `url(${imagePath}/pb${props.height - 2}.gif)`,
+        backgroundImage: `url('${imagePath}/pb${props.height - 2}.gif')`,
         backgroundRepeat: 'repeat-x',
         backgroundPosition: 'left center',
 

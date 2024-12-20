@@ -3,7 +3,7 @@
     <div
       class="general-icon"
       :style="{
-        backgroundImage: `url(${iconPath})`,
+        backgroundImage: `url('${iconPath}')`,
       }"
     ></div>
 
