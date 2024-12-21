@@ -4036,7 +4036,7 @@ class GeneralAI
                 if ($general->getVar('belong') < $minBelong) {
                     continue;
                 }
-                if ($general->getVar('officer_level') !== 1) {
+                if ($general->getVar('officer_level') > 4) {
                     continue;
                 }
                 $nextChiefs[11] = $general;
@@ -4093,7 +4093,7 @@ class GeneralAI
 
             $newChief = null;
             foreach ($generals as $general) {
-                if ($general->getVar('officer_level') !== 1) {
+                if ($general->getVar('officer_level') > 4) {
                     continue;
                 }
                 if ($general->getNPCType() < 2 && $general->getVar('killturn') < $minUserKillturn) {
