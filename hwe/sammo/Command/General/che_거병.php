@@ -16,6 +16,7 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\PenaltyKey;
 
 use function sammo\refreshNationStaticInfo;
 use function sammo\getAllNationStaticInfo;
@@ -45,6 +46,7 @@ class che_거병 extends Command\GeneralCommand{
             ConstraintHelper::BeNeutral(),
             ConstraintHelper::BeOpeningPart($relYear+1),
             ConstraintHelper::AllowJoinAction(),
+            ConstraintHelper::NoPenalty(PenaltyKey::NoFoundNation),
         ];
     }
 
