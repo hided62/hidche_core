@@ -33,12 +33,12 @@ class NoPenalty extends Constraint{
         /** @var PenaltyKey */
         $checkKey = $this->arg;
 
-        $peneltyList = JSON::decode($this->general['penalty']);
-        if(!key_exists($checkKey->value, $peneltyList)){
+        $penaltyList = JSON::decode($this->general['penalty']);
+        if(!key_exists($checkKey->value, $penaltyList)){
             return true;
         }
 
-        $this->reason = "징계 사유: {$peneltyList[$checkKey->value]}";
+        $this->reason = "징계 사유: {$penaltyList[$checkKey->value]}";
         return false;
     }
 }

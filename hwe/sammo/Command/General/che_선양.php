@@ -21,6 +21,8 @@ use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\PenaltyKey;
+use sammo\Json;
 use sammo\StaticEventHandler;
 
 class che_선양 extends Command\GeneralCommand
@@ -111,6 +113,14 @@ class che_선양 extends Command\GeneralCommand
         $date = $general->getTurnTime($general::TURNTIME_HM);
 
         $destGeneral = $this->destGeneralObj;
+        $destGeneralPenaltyList = JSON::decode($destGeneral->getVar('penalty'));
+        $penaltyKeyList = [PenaltyKey::NoChief, PenaltyKey::NoFoundNation, PenaltyKey::NoAmbassador];
+        foreach ($penaltyKeyList as $penaltyKey) {
+            if (key_exists($penaltyKey->value, $destGeneralPenaltyList)) {
+                $general->getLogger()->pushGeneralActionLog("선양할 수 없는 장수입니다.");
+                return false;
+            }
+        }
 
         $generalName = $general->getName();
         $destGeneralName = $destGeneral->getName();
