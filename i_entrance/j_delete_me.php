@@ -40,6 +40,16 @@ if($userInfo['delete_after']){
     ]);
 }
 
+$penaltyList = JSON::decode($userInfo['penalty']??'{}');
+foreach($penaltyList as $penaltyKey=>$penaltyValue){
+    if($penaltyValue['expire'] ?? 0 > TimeUtil::now()){
+        Json::die([
+            'result'=>false,
+            'reason'=>"징계가 남아있어 탈퇴할 수 없습니다."
+        ]);
+    }
+}
+
 $db->update('member',[
     'delete_after'=>TimeUtil::nowAddMinutes(60*24*30)
 ], 'no=%i', $userID);
