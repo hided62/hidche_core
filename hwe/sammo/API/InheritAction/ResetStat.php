@@ -94,6 +94,10 @@ class ResetStat extends \sammo\BaseAPI
         }
         $userLogger = new UserLogger($userID);
 
+        if($general->getNPCType() != 0){
+            return 'NPC는 능력치 초기화를 할 수 없습니다.';
+        }
+
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
