@@ -93,3 +93,13 @@ CREATE TABLE `login_token` (
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=Aria;
+
+CREATE TABLE `banned_member` (
+	`no` INT NOT NULL AUTO_INCREMENT,
+	`hashed_email` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_general_ci' COMMENT 'SHA512(salt | email | salt )',
+	`info` TEXT NULL COLLATE 'utf8mb4_general_ci' COMMENT '부가정보',
+	PRIMARY KEY (`no`),
+	UNIQUE INDEX `email` (`hashed_email`(128))
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE = Aria;
