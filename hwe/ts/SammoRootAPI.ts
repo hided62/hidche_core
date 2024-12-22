@@ -4,6 +4,11 @@ import { callSammoAPI, extractHttpMethod, GET, POST, type APICallT, type APITail
 export type { ValidResponse, InvalidResponse };
 
 const apiRealPath = {
+    Admin: {
+        BanEmailAddress: POST as APICallT<{
+            email: string,
+        }>
+    },
     Login: {
         LoginByID: POST as APICallT<{
             username: string,
