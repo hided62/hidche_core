@@ -8,6 +8,7 @@ import { unwrap_any } from '@util/unwrap_any';
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
 import '@/gateway/common';
+import { setSammoAPIPrefix } from '@/util/callSammoAPI';
 
 type UserEntry = {
     userID: string,
@@ -298,6 +299,9 @@ $(async function () {
         await changeSystem(unwrap_any<string>($this.attr('name')), unwrap_any<string>($this.val()));
     })
 });
+
+
+setSammoAPIPrefix('..');
 
 exportWindow(changeSystem, 'changeSystem');
 exportWindow(changeUserStatus, 'changeUserStatus');
