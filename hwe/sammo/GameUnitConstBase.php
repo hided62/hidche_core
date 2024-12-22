@@ -192,7 +192,7 @@ class GameUnitConstBase{
         ],
         [
             1304, self::T_CAVALRY, '철기병',
-            100, 200, 7,  5, 0,  11, 13,
+            100, 250, 7,  5, 0,  11, 13,
             2000, ['강'],   null,     0,
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
