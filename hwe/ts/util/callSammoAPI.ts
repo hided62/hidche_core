@@ -123,7 +123,7 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
         retry: 0,
       });
     }
-    return ky("api.php", {
+    return ky(apiPath, {
       searchParams: {
         ...paramArgs,
         path,
