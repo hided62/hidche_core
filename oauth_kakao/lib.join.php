@@ -48,6 +48,15 @@ function checkEmailDup($email){
         return '적절하지 않은 길이입니다.';
     }
 
+    $globalSalt = RootDB::getGlobalSalt();
+    $isBanned = RootDB::db()->queryFirstField(
+        'SELECT count(no) FROM banned_member WHERE `hashed_email` = sha2(concat(%s, %s, %s), 512) LIMIT 1',
+        $globalSalt, $email, $globalSalt
+    );
+    if($isBanned){
+        return '영구 차단된 이메일입니다.';
+    }
+
     $userInfo = RootDB::db()->queryFirstField('SELECT `no`, `delete_after` FROM member WHERE `email` = %s LIMIT 1', $email);
     if($userInfo){
         $nowDate = TimeUtil::now();
