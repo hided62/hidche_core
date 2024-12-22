@@ -55,7 +55,7 @@ function checkEmailDup($email){
             return '이미 사용중인 이메일입니다. 관리자에게 문의해주세요.';
         }
 
-        if($userInfo['delete_after'] >= $userInfo){
+        if($userInfo['delete_after'] >= $nowDate){
             return "삭제 요청된 계정입니다.[{$userInfo['delete_after']}]";
         }
 
