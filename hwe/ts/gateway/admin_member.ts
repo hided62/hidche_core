@@ -7,6 +7,7 @@ import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '@util/unwrap_any';
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
+import { SammoRootAPI } from '@/SammoRootAPI';
 import '@/gateway/common';
 
 type UserEntry = {
@@ -32,7 +33,7 @@ type UserListResponse = {
 }
 
 const userFrame = '\
-<tr id="userinfo_<%userID%>" data-username="<%userName%>" data-id="<%userID%>">\
+<tr id="userinfo_<%userID%>" data-username="<%userName%>" data-id="<%userID%>" data-email="<%email%>">\
     <th scope="row"><%userID%></th>\
     <td><%userName%></td>\
     <td class="small"><%emailFunc(email)%><br>(<%authType%>)</td>\
@@ -49,6 +50,7 @@ const userFrame = '\
             <button type="button" onclick="changeUserStatus(\'reset_pw\', this);" class="btn btn-info btn-sm">암호<br>변경</button>\
             <button type="button" onclick="changeUserStatus(\'block\', this);" class="btn btn-warning btn-sm">유저<br>차단</button>\
             <button type="button" onclick="changeUserStatus(\'unblock\', this);" class="btn btn-secondary btn-sm">차단<br>해제</button>\
+            <button type="button" onclick="banEmailAddress(this);" class="btn btn-danger btn-sm">영구<br>차단</button>\
             <button type="button" onclick="changeUserStatus(\'set_userlevel\', this);" class="btn btn-primary btn-sm">별도<br>권한</button>\
         </div>\
     </td>\
@@ -171,6 +173,25 @@ async function changeSystem(action: string, param?: string): Promise<void> {
     }
 }
 
+async function banEmailAddress(target: Element): Promise<void> {
+    const email: string = $(target).parents('tr').data('email');
+
+    if (!confirm(`${email}에 대해서 영구차단을 진행합니다.`)) {
+        return;
+    }
+
+    const result = await SammoRootAPI.Admin.BanEmailAddress({
+        email,
+    }, true);
+
+    if (!result.result) {
+        alert(result.reason);
+        return;
+    }
+
+    alert('완료되었습니다.');
+}
+
 async function changeUserStatus(action: string, userID: Element | number, param?: number): Promise<void> {
     if (userID instanceof Element) {
         userID = parseInt($(userID).parents('tr').data('id'));
@@ -179,7 +200,6 @@ async function changeUserStatus(action: string, userID: Element | number, param?
         alert('userID가 올바르게 지정되지 않았습니다!');
         return;
     }
-
 
     if (action == 'set_userlevel') {
         if (!isNumber(param)) {
@@ -282,3 +302,4 @@ $(async function () {
 
 exportWindow(changeSystem, 'changeSystem');
 exportWindow(changeUserStatus, 'changeUserStatus');
+exportWindow(banEmailAddress, 'banEmailAddress');
