@@ -50,8 +50,8 @@ function checkEmailDup($email){
 
     $globalSalt = RootDB::getGlobalSalt();
     $isBanned = RootDB::db()->queryFirstField(
-        'SELECT count(no) FROM banned_member WHERE `hashed_email` = sha2(concat(%s, %s, %s), 512) LIMIT 1',
-        $globalSalt, $email, $globalSalt
+        'SELECT count(no) FROM banned_member WHERE `hashed_email` = %s LIMIT 1',
+        hash('sha512', $globalSalt.$email.$globalSalt)
     );
     if($isBanned){
         return '영구 차단된 이메일입니다.';
