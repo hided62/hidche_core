@@ -1,13 +1,12 @@
+import { SammoRootAPI, type InvalidResponse } from '@/SammoRootAPI';
 import axios from 'axios';
 import $ from 'jquery';
 import { isNumber } from 'lodash-es';
 import { TemplateEngine } from '@util/TemplateEngine';
-import type { InvalidResponse } from '@/defs';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { unwrap_any } from '@util/unwrap_any';
 import { convertFormData } from '@util/convertFormData';
 import { exportWindow } from '@util/exportWindow';
-import { SammoRootAPI } from '@/SammoRootAPI';
 import '@/gateway/common';
 
 type UserEntry = {
