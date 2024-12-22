@@ -1,6 +1,6 @@
 <?php
 
-namespace sammo\API\Login;
+namespace sammo\API\Admin;
 
 use sammo\Session;
 use DateTimeInterface;
