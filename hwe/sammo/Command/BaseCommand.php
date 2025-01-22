@@ -119,6 +119,7 @@ abstract class BaseCommand{
         $nationID = $this->generalObj->getNationID();
         if($nationID == 0){
             $this->nation = $this->generalObj->getStaticNation();
+            $this->nation['aux'] = [];
             return;
         }
 
@@ -139,7 +140,8 @@ abstract class BaseCommand{
             'gold'=>0,
             'rice'=>2000,
             'tech'=>0,
-            'gennum'=>1
+            'gennum'=>1,
+            'aux'=>'{}',
         ];
 
         if($this->nation && $this->nation['nation'] === $nationID){
@@ -172,7 +174,7 @@ abstract class BaseCommand{
             $this->nation = $nation;
         }
 
-        if(key_exists('aux', $this->nation) && is_string($this->nation['aux'])){
+        if(is_string($this->nation['aux'] ?? null)){
             $this->nation['aux'] = Json::decode($this->nation['aux']);
         }
     }
@@ -351,12 +353,12 @@ abstract class BaseCommand{
 
         $this->generalObj->unpackAux();
         $constraintInput = [
-            'general'=>$this->generalObj->getRaw(),
+            'general'=>$this->generalObj,
             'city'=>$this->city,
             'nation'=>$this->nation,
             'cmd_arg'=>$this->arg,
 
-            'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
+            'destGeneral'=>$this->destGeneralObj??null,
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
         ];
@@ -389,12 +391,12 @@ abstract class BaseCommand{
 
         $this->generalObj->unpackAux();
         $constraintInput = [
-            'general'=>$this->generalObj->getRaw(),
+            'general'=>$this->generalObj,
             'city'=>$this->city,
             'nation'=>$this->nation,
             'cmd_arg'=>$this->arg,
 
-            'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
+            'destGeneral'=>$this->destGeneralObj??null,
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
         ];

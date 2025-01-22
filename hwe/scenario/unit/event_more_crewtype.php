@@ -2,7 +2,6 @@
 
 namespace sammo;
 
-use sammo\Constraint\ReqNationAuxValue;
 use sammo\Enums\NationAuxKey;
 use sammo\GameUnitConstraint\Impossible;
 use sammo\GameUnitConstraint\ReqChief;
@@ -13,6 +12,7 @@ use sammo\GameUnitConstraint\ReqMinRelYear;
 use sammo\GameUnitConstraint\ReqNotChief;
 use sammo\GameUnitConstraint\ReqRegions;
 use sammo\GameUnitConstraint\ReqTech;
+use sammo\GameUnitConstraint\ReqNationAux;
 
 class GameUnitConst extends GameUnitConstBase
 {
@@ -94,7 +94,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91100, self::T_FOOTMAN, '대검병',
                 150, 225, 7, 10, 0,  13, 13,
-                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '완'), new ReqNationAuxValue(NationAuxKey::can_대검병사용, '==', 1)],
+                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '완'), new ReqNationAux(NationAuxKey::can_대검병사용, '==', 1)],
                 [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
                 [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
                 ['대형 검을 사용합니다.'],
@@ -112,7 +112,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91102, self::T_FOOTMAN, '극병',
                 250, 150, 7, 0, 0,  18, 18,
-                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '저'), new ReqNationAuxValue(NationAuxKey::can_극병사용, '==', 1)],
+                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '저'), new ReqNationAux(NationAuxKey::can_극병사용, '==', 1)],
                 [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
                 [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
                 ['긴 극을 사용합니다.'],
@@ -176,7 +176,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91201, self::T_ARCHER, '화시병',
                 225, 100, 7, 10, 0,  14, 14,
-                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '위례'), new ReqNationAuxValue(NationAuxKey::can_화시병사용, '==', 1)],
+                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '위례'), new ReqNationAux(NationAuxKey::can_화시병사용, '==', 1)],
                 [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
                 [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
                 ['불이 붙은 화살을 날립니다.'],
@@ -185,7 +185,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91202, self::T_ARCHER, '원융노병',
                 250, 100, 7, 10, 0,  20, 19,
-                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '흉노'), new ReqNationAuxValue(NationAuxKey::can_원융노병사용, '==', 1)],
+                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '흉노'), new ReqNationAux(NationAuxKey::can_원융노병사용, '==', 1)],
                 [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
                 [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
                 ['먼 거리에서 적을 제압합니다.'],
@@ -276,7 +276,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91301, self::T_CAVALRY, '산저병',
                 225, 150, 7,  5, 0,  15, 15,
-                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '수춘'), new ReqNationAuxValue(NationAuxKey::can_산저병사용, '==', 1)],
+                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '수춘'), new ReqNationAux(NationAuxKey::can_산저병사용, '==', 1)],
                 [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
                 [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
                 ['무식할 정도로 전장을 누빕니다.'],
@@ -285,7 +285,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91302, self::T_CAVALRY, '상병',
                 225, 250, 5,  0, 0,  24, 24,
-                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '남만'), new ReqNationAuxValue(NationAuxKey::can_상병사용, '==', 1)],
+                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '남만'), new ReqNationAux(NationAuxKey::can_상병사용, '==', 1)],
                 [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
                 [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
                 ['거대한 코끼리와 함께합니다.'],
@@ -376,7 +376,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91400, self::T_WIZARD, '음귀병',
                 110, 110, 7, 15, 0.7, 13, 11,
-                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '강릉'), new ReqNationAuxValue(NationAuxKey::can_음귀병사용, '==', 1)],
+                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '강릉'), new ReqNationAux(NationAuxKey::can_음귀병사용, '==', 1)],
                 [self::T_SIEGE=>1.2],
                 [self::T_SIEGE=>0.8],
                 ['악기를 연주하여 적을 혼란시킵니다.'],
@@ -394,7 +394,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91402, self::T_WIZARD, '무희',
                 180, 80, 7, 10, 0.6, 18, 17,
-                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '왜'), new ReqNationAuxValue(NationAuxKey::can_무희사용, '==', 1)],
+                [new ReqTech(5000), new ReqCitiesWithCityLevel(8, '왜'), new ReqNationAux(NationAuxKey::can_무희사용, '==', 1)],
                 [self::T_SIEGE=>1.2],
                 [self::T_SIEGE=>0.8],
                 ['검무를 추는 귀병입니다.'],
@@ -440,7 +440,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91500, self::T_SIEGE, '화륜차',
                 300, 0, 5,  0, 0,  40,  5,
-                [new ReqTech(5000), new ReqNationAuxValue(NationAuxKey::did_특성초토화, '>=', 1), new ReqChief()],
+                [new ReqTech(5000), new ReqNationAux(NationAuxKey::did_특성초토화, '>=', 1), new ReqChief()],
                 [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.25, 1106=>1.112],
                 [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2, 1106=>1.067],
                 ['불타는 바퀴로 적진을 붕괴시킵니다.'],
