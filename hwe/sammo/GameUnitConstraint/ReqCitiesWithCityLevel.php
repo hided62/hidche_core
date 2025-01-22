@@ -5,6 +5,8 @@ namespace sammo\GameUnitConstraint;
 use sammo\CityConst;
 use sammo\General;
 
+use function sammo\getCityLevelList;
+
 class ReqCitiesWithCityLevel extends BaseGameUnitConstraint
 {
 
@@ -42,7 +44,8 @@ class ReqCitiesWithCityLevel extends BaseGameUnitConstraint
 
     public function getInfo(): string
     {
+        $cityLevelText = getCityLevelList()[$this->reqCityLevel];
         $cityNameText = implode(', ', $this->reqCities);
-        return "{$cityNameText} 소유시 가능";
+        return "{$cityNameText} {$cityLevelText}성 소유시 가능";
     }
 }
