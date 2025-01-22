@@ -48,8 +48,11 @@ class AvailableRecruitCrewType extends Constraint{
 
         $ownCities = [];
         $ownRegions = [];
-        foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nationID) as $ownCity){
-            $ownCities[$ownCity] = 1;
+        foreach($db->query('SELECT city, secu, level FROM city WHERE nation = %i', $nationID) as $ownCity){
+            $ownCities[$ownCity['city']] = [
+                'secu'=>$ownCity['secu'],
+                'level'=>$ownCity['level'],
+            ];
             $ownRegions[CityConst::byId($ownCity)->region] = 1;
         }
 
