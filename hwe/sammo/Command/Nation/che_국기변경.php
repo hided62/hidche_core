@@ -122,7 +122,7 @@ class che_국기변경 extends Command\NationCommand
         $josaYi = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
-        $aux = Json::decode($this->nation['aux']);
+        $aux = $this->nation['aux'];
         $aux["can_{$actionName}"] = 0;
 
         $db->update('nation', [

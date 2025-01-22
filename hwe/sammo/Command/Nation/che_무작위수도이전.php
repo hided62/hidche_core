@@ -119,7 +119,7 @@ class che_무작위수도이전 extends Command\NationCommand
         $josaYi = JosaUtil::pick($generalName, '이');
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
-        $aux = Json::decode($this->nation['aux']);
+        $aux = $this->nation['aux'];
         $aux["can_무작위수도이전"] -= 1;
 
         $db->update('city', [

@@ -194,7 +194,7 @@ class che_무작위건국 extends Command\GeneralCommand
         $general->addExperience($exp);
         $general->addDedication($ded);
 
-        $aux = Json::decode($this->nation['aux']) ?? [];
+        $aux = $this->nation['aux'];
         $aux['can_국기변경'] = 1;
         $aux['can_무작위수도이전'] = 1;
 

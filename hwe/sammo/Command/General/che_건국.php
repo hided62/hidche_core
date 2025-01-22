@@ -183,7 +183,7 @@ class che_건국 extends Command\GeneralCommand
         $general->addExperience($exp);
         $general->addDedication($ded);
 
-        $aux = Json::decode($this->nation['aux']) ?? [];
+        $aux = $this->nation['aux'];
         $aux['can_국기변경'] = 1;
 
         $db->update('city', [
