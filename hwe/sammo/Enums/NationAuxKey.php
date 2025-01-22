@@ -22,6 +22,5 @@ enum NationAuxKey: string
     case can_상병사용 = 'can_상병사용';
     case can_음귀병사용 = 'can_음귀병사용';
     case can_무희사용 = 'can_무희사용';
-    case can_흑병사용 = 'can_흑병사용';
     case can_화륜차사용 = 'can_화륜차사용';
 }

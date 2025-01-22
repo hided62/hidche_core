@@ -87,8 +87,8 @@ class ReqNationAux extends BaseGameUnitConstraint
             case NationAuxKey::can_무희사용:
                 if ($this->cmp == "==" && $this->value == 1) return "무희 연구 시 가능";
                 break;
-            case NationAuxKey::can_흑병사용:
-                if ($this->cmp == "==" && $this->value == 1) return "흑병 연구 시 가능";
+            case NationAuxKey::can_화륜차사용:
+                if ($this->cmp == "==" && $this->value == 1) return "화륜차 연구 시 가능";
                 break;
             case NationAuxKey::did_특성초토화:
                 if ($this->cmp == ">=" && $this->value == 1) return "특성 초토화 시 가능";

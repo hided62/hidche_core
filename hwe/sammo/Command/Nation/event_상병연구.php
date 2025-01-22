@@ -21,6 +21,7 @@ class event_상병연구 extends Command\NationCommand{
     }
 
     protected function init(){
+        $this->setCity();
         $this->setNation(['gold','rice','aux']);
         $this->fullConditionConstraints=[];
 
