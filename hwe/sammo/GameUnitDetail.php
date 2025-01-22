@@ -59,7 +59,12 @@ class GameUnitDetail implements iAction
         $this->reqConstraints = [];
         foreach($reqConstraints as $constraint){
             $className = Util::getClassNameFromObj($constraint);
-            $this->reqConstraints[$className] = $constraint;
+            if(!key_exists($className, $this->reqConstraints)){
+                $this->reqConstraints[$className] = $constraint;
+            }
+            else{
+                $this->reqConstraints[] = $constraint;
+            }
         }
         $this->attackCoef = $attackCoef;
         $this->defenceCoef = $defenceCoef;
