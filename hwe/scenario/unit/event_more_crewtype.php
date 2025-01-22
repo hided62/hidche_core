@@ -440,7 +440,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91500, self::T_SIEGE, '화륜차',
                 300, 0, 5,  0, 0,  40,  5,
-                [new ReqTech(5000), new ReqNationAux(NationAuxKey::did_특성초토화, '>=', 1), new ReqChief()],
+                [new ReqTech(5000), new ReqNationAux(NationAuxKey::did_특성초토화, '>=', 1), new ReqChief(), new ReqNationAux(NationAuxKey::can_화륜차사용, '==', 1)],
                 [self::T_FOOTMAN=>1.25, self::T_ARCHER=>1.25, self::T_CAVALRY=>1.25, self::T_WIZARD=>1.25, self::T_CASTLE=>1.25, 1106=>1.112],
                 [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2, 1106=>1.067],
                 ['불타는 바퀴로 적진을 붕괴시킵니다.'],
