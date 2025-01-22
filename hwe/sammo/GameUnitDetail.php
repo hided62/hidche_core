@@ -189,7 +189,7 @@ class GameUnitDetail implements iAction
         return $defaultWar;
     }
 
-    public function isValid(General $general, $ownCities, $ownRegions, $relativeYear, $tech, $nationAux = [])
+    public function isValid(General $general, $ownCities, $ownRegions, $relativeYear, $tech, $nationAux)
     {
         //음수 없음
         $relativeYear = max(0, $relativeYear);

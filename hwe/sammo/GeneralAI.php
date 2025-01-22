@@ -2570,7 +2570,7 @@ class GeneralAI
 
         $types = [];
         foreach (GameUnitConst::byType($armType) as $crewtype) {
-            if ($crewtype->isValid($general, $cities, $regions, $relYear, $tech)) {
+            if ($crewtype->isValid($general, $cities, $regions, $relYear, $tech, $this->nation['aux'])) {
                 $score = $crewtype->pickScore($tech);
                 $types[$crewtype->id] = $score;
             }
@@ -2584,7 +2584,7 @@ class GeneralAI
 
         if ($this->generalPolicy->can고급병종) {
             $currCrewType = $general->getCrewTypeObj();
-            if ($currCrewType->isValid($general, $cities, $regions, $relYear, $tech)) {
+            if ($currCrewType->isValid($general, $cities, $regions, $relYear, $tech, $this->nation['aux'])) {
                 $reqTechObj = $currCrewType->reqConstraints['reqTech'] ?? null;
                 if($reqTechObj){
                     $reqTech = $reqTechObj->getValue($tech);

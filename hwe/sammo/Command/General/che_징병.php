@@ -79,7 +79,7 @@ class che_징병 extends Command\GeneralCommand
     protected function init()
     {
         $this->setCity();
-        $this->setNation(['tech']);
+        $this->setNation(['tech', 'aux']);
 
         $this->minConditionConstraints = [
             ConstraintHelper::NotBeNeutral(),
@@ -288,7 +288,7 @@ class che_징병 extends Command\GeneralCommand
                 $reqMinRelYearObj = $unit->reqConstraints['reqMinRelYear'] ?? null;
                 $crewObj->reqYear = $reqMinRelYearObj ? $reqMinRelYearObj->reqMinRelYear : 0;
 
-                $crewObj->notAvailable = !$unit->isValid($general, $ownCities, $ownRegions, $relativeYear, $tech);
+                $crewObj->notAvailable = !$unit->isValid($general, $ownCities, $ownRegions, $relativeYear, $tech, $this->nation['aux']);
 
                 $crewObj->baseRice = $general->onCalcDomestic($this->getName(), 'rice', $unit->riceWithTech($tech), ['armType' => $unit->armType]);
                 $crewObj->baseCost = $general->onCalcDomestic($this->getName(), 'cost', $unit->costWithTech($tech), ['armType' => $unit->armType]);

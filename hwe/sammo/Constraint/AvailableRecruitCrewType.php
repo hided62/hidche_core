@@ -6,9 +6,10 @@ use \sammo\GameUnitConst;
 use \sammo\DB;
 use \sammo\KVStorage;
 use \sammo\CityConst;
+use sammo\Json;
 
 class AvailableRecruitCrewType extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION|Constraint::REQ_INT_ARG;
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_NATION|Constraint::REQ_INT_ARG;
 
     public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
@@ -52,8 +53,13 @@ class AvailableRecruitCrewType extends Constraint{
             $ownRegions[CityConst::byId($ownCity)->region] = 1;
         }
 
+        $nationAux = $this->nation['aux'] ?? null;
+        if($nationAux === null){
+            $nationAux = Json::decode($db->queryFirstField('SELECT aux FROM nation WHERE id = %i', $nationID) ?? "{}");
+        }
+
         $crewType = GameUnitConst::byID($this->arg);
-        if($crewType->isValid($ownCities, $ownRegions, $year - $startyear, $tech)){
+        if($crewType->isValid($this->generalObj, $ownCities, $ownRegions, $year - $startyear, $tech, $nationAux)){
             return true;
         }
 
