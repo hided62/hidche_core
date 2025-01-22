@@ -13,12 +13,14 @@ use \sammo\{
     Message,
     CityConst,
     CityInitialDetail,
+    Json,
     StaticEventHandler
 };
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 use sammo\Enums\InheritanceKey;
+use sammo\Enums\NationAuxKey;
 use sammo\Event\Action;
 
 class che_초토화 extends Command\NationCommand{
@@ -52,7 +54,7 @@ class che_초토화 extends Command\NationCommand{
         $env = $this->env;
 
         $this->setCity();
-        $this->setNation(['surlimit', 'gold', 'rice', 'capital']);
+        $this->setNation(['surlimit', 'gold', 'rice', 'capital', 'aux']);
 
         $this->minConditionConstraints=[
             ConstraintHelper::OccupiedCity(),
@@ -158,6 +160,9 @@ class che_초토화 extends Command\NationCommand{
 
         $amount = $this->calcReturnAmount($destCity);
 
+        $aux = $this->nation['aux'];
+        $aux[NationAuxKey::did_특성초토화->value] = $aux[NationAuxKey::did_특성초토화->value] ?? 0 + 1;
+
         $db->update('general', [
             'experience'=>$db->sqleval('experience * 0.9')
         ], 'nation = %i AND officer_level >= 5 AND no!=%i', $nationID, $generalID);
@@ -184,6 +189,7 @@ class che_초토화 extends Command\NationCommand{
             'gold' => $db->sqleval('gold + %i', $amount),
             'rice' => $db->sqleval('rice + %i', $amount),
             'surlimit' => $db->sqleval('surlimit + %i', $this->getPostReqTurn()),
+            'aux' => Json::encode($aux),
         ], 'nation=%i', $nationID);
 
         \sammo\refreshNationStaticInfo();
