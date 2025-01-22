@@ -176,10 +176,7 @@ export type GameUnitType = {
     magicCoef: number;
     cost: number;
     rice: number;
-    reqTech: number;
-    reqCities: CityID[] | null;
-    reqRegions: MapRegionID[] | null;
-    reqYear: number;
+    reqConstraints: Record<string, unknown>[];
     attackCoef: Record<CrewTypeID | ArmTypeID, number> | null | [];
     defenceCoef: Record<CrewTypeID | ArmTypeID, number> | null | [];
     info: string | string[];

@@ -256,8 +256,11 @@ class che_징병 extends Command\GeneralCommand
         $ownCities = [];
         $ownRegions = [];
 
-        foreach (DB::db()->query('SELECT city, region from city where nation = %i', $general->getNationID()) as $city) {
-            $ownCities[$city['city']] = 1;
+        foreach (DB::db()->query('SELECT city, region, secu, level from city where nation = %i', $general->getNationID()) as $city) {
+            $ownCities[$city['city']] = [
+                'secu' => $city['secu'],
+                'level' => $city['level'],
+            ];
             $ownRegions[$city['region']] = 1;
         }
 
@@ -273,23 +276,19 @@ class che_징병 extends Command\GeneralCommand
                 'values' => [],
             ];
 
-            $crewTypes = [];
             foreach (GameUnitConst::byType($armType) as $unit) {
                 $crewObj = new \stdClass;
 
                 $crewObj->id = $unit->id;
-                $crewObj->reqTech = $unit->reqTech;
-                $crewObj->reqYear = $unit->reqYear;
+                /** @var ?\sammo\GameUnitConstraints\ReqTech */
+                $reqTechObj = $unit->reqConstraints['reqTech'] ?? null;
+                $crewObj->reqTech = $reqTechObj ? $reqTechObj->reqTech : 0;
 
-                /*
-                if ($unit->reqTech == 0) {
-                    $crewObj->bgcolor = 'green';
-                } else {
-                    $crewObj->bgcolor = 'limegreen';
-                }
-                */
+                /** @var ?\sammo\GameUnitConstraint\ReqMinRelYear */
+                $reqMinRelYearObj = $unit->reqConstraints['reqMinRelYear'] ?? null;
+                $crewObj->reqYear = $reqMinRelYearObj ? $reqMinRelYearObj->reqMinRelYear : 0;
 
-                $crewObj->notAvailable = !$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech);
+                $crewObj->notAvailable = !$unit->isValid($general, $ownCities, $ownRegions, $relativeYear, $tech);
 
                 $crewObj->baseRice = $general->onCalcDomestic($this->getName(), 'rice', $unit->riceWithTech($tech), ['armType' => $unit->armType]);
                 $crewObj->baseCost = $general->onCalcDomestic($this->getName(), 'cost', $unit->costWithTech($tech), ['armType' => $unit->armType]);

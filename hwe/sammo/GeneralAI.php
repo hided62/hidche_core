@@ -2558,8 +2558,11 @@ class GeneralAI
         $cities = [];
         $regions = [];
 
-        foreach ($db->queryAllLists('SELECT city, region FROM city WHERE nation = %i', $nationID) as [$cityID, $regionID]) {
-            $cities[$cityID] = true;
+        foreach ($db->queryAllLists('SELECT city, region, secu, level FROM city WHERE nation = %i', $nationID) as [$cityID, $regionID, $secu, $level]) {
+            $cities[$cityID] = [
+                'secu' => $secu,
+                'level' => $level,
+            ];
             $regions[$regionID] = true;
         }
         $relYear = Util::valueFit($env['year'] - $env['startyear'], 0);
@@ -2567,7 +2570,7 @@ class GeneralAI
 
         $types = [];
         foreach (GameUnitConst::byType($armType) as $crewtype) {
-            if ($crewtype->isValid($cities, $regions, $relYear, $tech)) {
+            if ($crewtype->isValid($general, $cities, $regions, $relYear, $tech)) {
                 $score = $crewtype->pickScore($tech);
                 $types[$crewtype->id] = $score;
             }
@@ -2581,12 +2584,16 @@ class GeneralAI
 
         if ($this->generalPolicy->can고급병종) {
             $currCrewType = $general->getCrewTypeObj();
-            if ($currCrewType->isValid($cities, $regions, $relYear, $tech)) {
-                if ($currCrewType->reqTech >= 2000) {
-                    $type = $currCrewType->id;
-                } else if ($currCrewType->armType != $armType && $currCrewType->reqTech >= 1000) {
-                    //굳이 뽑은 이유가 있겠지
-                    $type = $currCrewType->id;
+            if ($currCrewType->isValid($general, $cities, $regions, $relYear, $tech)) {
+                $reqTechObj = $currCrewType->reqConstraints['reqTech'] ?? null;
+                if($reqTechObj){
+                    $reqTech = $reqTechObj->getValue($tech);
+                    if ($reqTech >= 2000) {
+                        $type = $currCrewType->id;
+                    } else if ($currCrewType->armType != $armType && $reqTech >= 1000) {
+                        //굳이 뽑은 이유가 있겠지
+                        $type = $currCrewType->id;
+                    }
                 }
             }
         }

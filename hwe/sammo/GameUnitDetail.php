@@ -2,6 +2,8 @@
 
 namespace sammo;
 
+use sammo\GameUnitConstraint\BaseGameUnitConstraint;
+
 class GameUnitDetail implements iAction
 {
     use DefaultAction;
@@ -16,17 +18,14 @@ class GameUnitDetail implements iAction
     public $magicCoef;
     public $cost;
     public $rice;
-    public $reqTech;
-    public $reqCities;
-    public $reqRegions;
-    public $reqYear;
     public $attackCoef;
     public $defenceCoef;
-    public $info;
     public $initSkillTrigger;
     public $phaseSkillTrigger;
     /** @var iAction[]|null iActionList */
     public $iActionList;
+    public array $reqConstraints;
+
 
     public function __construct(
         int $id,
@@ -39,13 +38,10 @@ class GameUnitDetail implements iAction
         float $magicCoef,
         int $cost,
         int $rice,
-        int $reqTech,
-        ?array $reqCities,
-        ?array $reqRegions,
-        int $reqYear,
+        array $reqConstraints,
         array $attackCoef,
         array $defenceCoef,
-        array $info,
+        public readonly array $info,
         ?array $initSkillTrigger,
         ?array $phaseSkillTrigger,
         ?array $iActionList,
@@ -60,13 +56,13 @@ class GameUnitDetail implements iAction
         $this->magicCoef = $magicCoef;
         $this->cost = $cost;
         $this->rice = $rice;
-        $this->reqTech = $reqTech;
-        $this->reqCities = $reqCities;
-        $this->reqRegions = $reqRegions;
-        $this->reqYear = $reqYear;
+        $this->reqConstraints = [];
+        foreach($reqConstraints as $constraint){
+            $className = Util::getClassNameFromObj($constraint);
+            $this->reqConstraints[$className] = $constraint;
+        }
         $this->attackCoef = $attackCoef;
         $this->defenceCoef = $defenceCoef;
-        $this->info = $info;
         $this->initSkillTrigger = $initSkillTrigger;
         $this->phaseSkillTrigger = $phaseSkillTrigger;
         $this->iActionList = [];
@@ -193,41 +189,13 @@ class GameUnitDetail implements iAction
         return $defaultWar;
     }
 
-    public function isValid($ownCities, $ownRegions, $relativeYear, $tech)
+    public function isValid(General $general, $ownCities, $ownRegions, $relativeYear, $tech, $nationAux = [])
     {
         //음수 없음
         $relativeYear = max(0, $relativeYear);
 
-        if ($relativeYear < $this->reqYear) {
-            return false;
-        }
-
-        if ($tech < $this->reqTech) {
-            return false;
-        }
-
-        if ($this->reqCities !== null) {
-            $valid = false;
-            foreach ($this->reqCities as $reqCity) {
-                if (\key_exists($reqCity, $ownCities)) {
-                    $valid = true;
-                    break;
-                }
-            }
-            if (!$valid) {
-                return false;
-            }
-        }
-
-        if ($this->reqRegions !== null) {
-            $valid = false;
-            foreach ($this->reqRegions as $reqRegion) {
-                if (\key_exists($reqRegion, $ownRegions)) {
-                    $valid = true;
-                    break;
-                }
-            }
-            if (!$valid) {
+        foreach($this->reqConstraints as $constraint){
+            if(!$constraint->test($general, $ownCities, $ownRegions, $relativeYear, $tech, $nationAux)){
                 return false;
             }
         }
