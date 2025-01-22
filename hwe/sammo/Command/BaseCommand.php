@@ -5,6 +5,7 @@ use \sammo\{
     Util, JosaUtil, DB,
     General, GameConst,
     ActionLogger,
+    Json,
     LastTurn,
     NotInheritedMethodException,
     RandUtil
@@ -170,6 +171,10 @@ abstract class BaseCommand{
         else{
             $this->nation = $nation;
         }
+
+        if(key_exists('aux', $this->nation) && is_string($this->nation['aux'])){
+            $this->nation['aux'] = Json::decode($this->nation['aux']);
+        }
     }
 
     protected function setDestGeneral(General $destGeneralObj){
@@ -312,12 +317,12 @@ abstract class BaseCommand{
 
         $this->generalObj->unpackAux();
         $constraintInput = [
-            'general'=>$this->generalObj->getRaw(),
+            'general'=>$this->generalObj,
             'city'=>$this->city,
             'nation'=>$this->nation,
             'cmd_arg'=>$this->arg,
 
-            'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
+            'destGeneral'=>$this->destGeneralObj??null,
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
         ];

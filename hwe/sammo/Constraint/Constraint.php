@@ -2,6 +2,8 @@
 
 namespace sammo\Constraint;
 
+use sammo\General;
+
 abstract class Constraint
 {
     private function __construct()
@@ -24,6 +26,8 @@ abstract class Constraint
 
     const REQ_VALUES = 0;
 
+    /** @var ?General */
+    protected $generalObj = null;
     protected $general = null;
     protected $city = null;
     protected $nation = null;
@@ -33,6 +37,8 @@ abstract class Constraint
 
     protected $cmd_arg = null;
 
+    /** @var ?General */
+    protected $destGeneralObj = null;
     protected $destGeneral = null;
     protected $destCity = null;
     protected $destNation = null;
@@ -48,9 +54,10 @@ abstract class Constraint
         return static::REQ_VALUES;
     }
 
-    public function setGeneral(array $general)
+    public function setGeneral(General $general)
     {
-        $this->general = $general;
+        $this->generalObj = $general;
+        $this->general = $general->getRaw();
         $this->tested = false;
         $this->reason = null;
     }
@@ -85,9 +92,10 @@ abstract class Constraint
         $this->reason = null;
     }
 
-    public function setDestGeneral(array $general)
+    public function setDestGeneral(General $general)
     {
-        $this->destGeneral = $general;
+        $this->destGeneralObj = $general;
+        $this->destGeneral = $general->getRaw();
         $this->tested = false;
         $this->reason = null;
     }
