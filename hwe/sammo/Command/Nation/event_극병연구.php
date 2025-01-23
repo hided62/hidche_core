@@ -32,6 +32,8 @@ class event_극병연구 extends Command\NationCommand{
             ConstraintHelper::BeChief(),
             ConstraintHelper::ReqNationAuxValue(static::$auxType->value, 0, "<", 1, "{$name}가 이미 완료되었습니다."),
         ];
+
+        $this->fullConditionConstraints = $this->minConditionConstraints;
     }
 
     public function getCommandDetailTitle():string{
