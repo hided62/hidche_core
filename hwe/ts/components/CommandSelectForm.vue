@@ -205,7 +205,10 @@ defineExpose({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "@scss/common/variables.scss";
+@import "@scss/common/bootswatch_custom_variables.scss";
+
 .commandItem {
   border: gray 1px solid;
   border-radius: 0.5em;
@@ -218,5 +221,29 @@ defineExpose({
   align-items: center;
   justify-content: center;
 }
+
+
+.compensatePositive {
+  color: $cyan;
+  display: inline-block;
+  width: 1rem;
+}
+
+.compensateNegative {
+  color: $red;
+  display: inline-block;
+  width: 1rem;
+}
+
+.compensateNeutral{
+  display: inline-block;
+  width: 1rem;
+}
+
+.commandImpossible {
+  color: $red;
+  text-decoration: line-through $red;
+}
+
 
 </style>

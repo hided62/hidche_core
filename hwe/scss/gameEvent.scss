@@ -31,29 +31,6 @@
   font-size: 0;
 }
 
-
-.compensatePositive {
-  color: $cyan;
-  display: inline-block;
-  width: 1rem;
-}
-
-.compensateNegative {
-  color: $red;
-  display: inline-block;
-  width: 1rem;
-}
-
-.compensateNeutral{
-  display: inline-block;
-  width: 1rem;
-}
-
-.commandImpossible {
-  color: $red;
-  text-decoration: line-through $red;
-}
-
 .t_date {
   font-size: 0.75em;
 }
