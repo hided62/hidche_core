@@ -2585,7 +2585,7 @@ class GeneralAI
         if ($this->generalPolicy->can고급병종) {
             $currCrewType = $general->getCrewTypeObj();
             if ($currCrewType->isValid($general, $cities, $regions, $relYear, $tech, $this->nation['aux'])) {
-                $reqTechObj = $currCrewType->reqConstraints['reqTech'] ?? null;
+                $reqTechObj = $currCrewType->reqConstraints['ReqTech'] ?? null;
                 if($reqTechObj){
                     $reqTech = $reqTechObj->getValue($tech);
                     if ($reqTech >= 2000) {

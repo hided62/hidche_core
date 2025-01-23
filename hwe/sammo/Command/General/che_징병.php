@@ -281,7 +281,7 @@ class che_징병 extends Command\GeneralCommand
 
                 $crewObj->id = $unit->id;
                 /** @var ?\sammo\GameUnitConstraints\ReqTech */
-                $reqTechObj = $unit->reqConstraints['reqTech'] ?? null;
+                $reqTechObj = $unit->reqConstraints['ReqTech'] ?? null;
                 $crewObj->reqTech = $reqTechObj ? $reqTechObj->reqTech : 0;
 
                 /** @var ?\sammo\GameUnitConstraint\ReqMinRelYear */
