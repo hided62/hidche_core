@@ -159,9 +159,11 @@ class che_초토화 extends Command\NationCommand{
         $josaYiNation = JosaUtil::pick($nationName, '이');
 
         $amount = $this->calcReturnAmount($destCity);
-
         $aux = $this->nation['aux'];
-        $aux[NationAuxKey::did_특성초토화->value] = $aux[NationAuxKey::did_특성초토화->value] ?? 0 + 1;
+
+        if($destCity['level'] >= 8){
+            $aux[NationAuxKey::did_특성초토화->value] = $aux[NationAuxKey::did_특성초토화->value] ?? 0 + 1;
+        }
 
         $db->update('general', [
             'experience'=>$db->sqleval('experience * 0.9')
