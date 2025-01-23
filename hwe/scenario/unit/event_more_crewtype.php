@@ -176,7 +176,7 @@ class GameUnitConst extends GameUnitConstBase
             [
                 91201, self::T_ARCHER, '화시병',
                 225, 100, 7, 10, 0,  14, 14,
-                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '위례'), new ReqNationAux(NationAuxKey::can_화시병사용, '==', 1)],
+                [new ReqTech(4000), new ReqCitiesWithCityLevel(8, '장사'), new ReqNationAux(NationAuxKey::can_화시병사용, '==', 1)],
                 [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
                 [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
                 ['불이 붙은 화살을 날립니다.'],
