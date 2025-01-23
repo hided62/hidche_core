@@ -34,6 +34,16 @@ class event_상병연구 extends Command\NationCommand{
         ];
     }
 
+    public function getCommandDetailTitle():string{
+        $name = $this->getName();
+
+        [$reqGold, $reqRice] = array_map('number_format', $this->getCost());
+        $amount = number_format($this->env['develcost'] * 5);
+        $reqTurn = $this->getPreReqTurn()+1;
+
+        return "{$name}/{$reqTurn}턴(금 {$reqGold}, 쌀 {$reqRice})";
+    }
+
     public function getPreReqTurn():int{
         return 23;
     }
