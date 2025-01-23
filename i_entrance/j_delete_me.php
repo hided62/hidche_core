@@ -40,7 +40,7 @@ if($userInfo['delete_after']){
     ]);
 }
 
-$penaltyList = JSON::decode($userInfo['penalty']??'{}');
+$penaltyList = Json::decode($userInfo['penalty']??'{}');
 foreach($penaltyList as $penaltyKey=>$penaltyValue){
     if($penaltyValue['expire'] ?? 0 > TimeUtil::now()){
         Json::die([
