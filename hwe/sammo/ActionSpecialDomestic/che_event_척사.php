@@ -21,7 +21,7 @@ class che_event_척사 extends \sammo\BaseSpecial{
 
     public function getWarPowerMultiplier(WarUnit $unit):array{
         $opposeCrewType = $unit->getOppose()->getCrewType();
-        if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
+        if($opposeCrewType->reqCities() || $opposeCrewType->reqRegions()){
             return [1.2, 0.8];
         }
         return [1, 1];

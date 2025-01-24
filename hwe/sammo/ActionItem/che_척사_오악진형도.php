@@ -15,7 +15,7 @@ class che_척사_오악진형도 extends \sammo\BaseItem{
 
     public function getWarPowerMultiplier(WarUnit $unit):array{
         $opposeCrewType = $unit->getOppose()->getCrewType();
-        if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
+        if($opposeCrewType->reqCities() || $opposeCrewType->reqRegions()){
             return [1.15, 0.85];
         }
         return [1, 1];
