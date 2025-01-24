@@ -80,6 +80,33 @@ class GameUnitDetail implements iAction
         }
     }
 
+    public function reqTech(): int {
+        $reqTechObj = $this->reqConstraints['ReqTech'] ?? null;
+
+        if($reqTechObj === null){
+            return 0;
+        }
+        return $reqTechObj->reqTech;
+    }
+
+    public function reqRegions(): ?array {
+        $reqRegionsObj = $this->reqConstraints['ReqRegions'] ?? null;
+
+        if($reqRegionsObj === null){
+            return null;
+        }
+        return $reqRegionsObj->reqRegions;
+    }
+
+    public function reqCities(): ?array {
+        $reqCitiesObj = $this->reqConstraints['ReqCities'] ?? null;
+
+        if($reqCitiesObj === null){
+            return null;
+        }
+        return $reqCitiesObj->reqCities;
+    }
+
     public function getInfo(): string
     {
         return join("\n<br>", $this->info);
