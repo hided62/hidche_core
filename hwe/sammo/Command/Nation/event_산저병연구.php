@@ -11,6 +11,7 @@ use \sammo\JosaUtil;
 use sammo\Json;
 use sammo\LastTurn;
 use sammo\StaticEventHandler;
+use sammo\GameConst;
 
 class event_산저병연구 extends Command\NationCommand{
     static protected $actionName = '산저병 연구';
@@ -27,10 +28,13 @@ class event_산저병연구 extends Command\NationCommand{
 
         $name = static::$actionName;
 
+        [$reqGold, $reqRice] = $this->getCost();
         $this->minConditionConstraints = [
             ConstraintHelper::OccupiedCity(),
             ConstraintHelper::BeChief(),
             ConstraintHelper::ReqNationAuxValue(static::$auxType->value, 0, "<", 1, "{$name}가 이미 완료되었습니다."),
+            ConstraintHelper::ReqNationGold(GameConst::$basegold + $reqGold),
+            ConstraintHelper::ReqNationRice(GameConst::$baserice + $reqRice),
         ];
 
         $this->fullConditionConstraints = $this->minConditionConstraints;
