@@ -2587,7 +2587,7 @@ class GeneralAI
             if ($currCrewType->isValid($general, $cities, $regions, $relYear, $tech, $this->nation['aux'])) {
                 $reqTechObj = $currCrewType->reqConstraints['ReqTech'] ?? null;
                 if($reqTechObj){
-                    $reqTech = $reqTechObj->getValue($tech);
+                    $reqTech = $reqTechObj->reqTech;
                     if ($reqTech >= 2000) {
                         $type = $currCrewType->id;
                     } else if ($currCrewType->armType != $armType && $reqTech >= 1000) {
