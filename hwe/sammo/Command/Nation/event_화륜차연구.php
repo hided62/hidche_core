@@ -43,11 +43,13 @@ class event_화륜차연구 extends Command\NationCommand{
     public function getCommandDetailTitle():string{
         $name = $this->getName();
 
-        [$reqGold, $reqRice] = array_map('number_format', $this->getCost());
-        $amount = number_format($this->env['develcost'] * 5);
+        [$reqGold, $reqRice] = $this->getCost();
         $reqTurn = $this->getPreReqTurn()+1;
 
-        return "{$name}/{$reqTurn}턴(금 {$reqGold}, 쌀 {$reqRice})";
+        $reqGoldD5 = number_format($reqGold / 10000);
+        $reqRiceD5 = number_format($reqRice / 10000);
+
+        return "{$name}/{$reqTurn}턴(금/쌀 {$reqGoldD5}만)";
     }
 
     public function getPreReqTurn():int{
