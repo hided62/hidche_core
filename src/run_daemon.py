@@ -21,8 +21,17 @@ def run(webPath):
         print(now.strftime("%Y-%m-%d %H:%M:%S"), webPath, flush=True)
         startTime = getCurrentMillisecTime()
 
-        obj = urllib.request.urlopen(webPath)
-        obj.read()
+        try:
+            obj = urllib.request.urlopen(webPath, timeout=60)
+            obj.read()
+        except urllib.error.HTTPError as e:
+            print('HTTPError:', e.code, webPath)
+        except urllib.error.URLError as e:
+            print('URLError:', e.reason, webPath)
+        except Exception as e:
+            print('Exception:', str(e), webPath)
+        else:
+            pass
 
         timeGap = getCurrentMillisecTime() - startTime
         if timeGap < RETRY_SEC * 1000:
