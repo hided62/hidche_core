@@ -7,6 +7,15 @@
     "history":[
         "<C>●</>180년 1월:<L><b>【이벤트】</b></>많은 제한치가 더 높게 풀려있습니다."
     ],
+    "stat": {
+        "total": 200,
+        "min": 20,
+        "max": 100,
+        "chiefMin": 20,
+        "npcTotal": 165,
+        "npcMin": 15,
+        "npcMax": 80
+    },
     "const": {
         "joinRuinedNPCProp":0,
         "npcBanMessageProb":1,
