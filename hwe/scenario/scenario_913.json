@@ -31,6 +31,7 @@
         "expandCityPopIncreaseAmount": 150000,
         "expandCityDevelIncreaseAmount": 3000,
         "expandCityWallIncreaseAmount": 3000,
+        "defaultCityWall": 3000,
         "maxResourceActionAmount": 30000,
         "resourceActionAmountGuide": [
             100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
