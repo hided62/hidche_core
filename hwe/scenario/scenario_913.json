@@ -11,10 +11,7 @@
         "total": 200,
         "min": 20,
         "max": 100,
-        "chiefMin": 20,
-        "npcTotal": 165,
-        "npcMin": 15,
-        "npcMax": 80
+        "chiefMin": 20
     },
     "const": {
         "joinRuinedNPCProp":0,
