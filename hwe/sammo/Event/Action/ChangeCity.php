@@ -120,6 +120,16 @@ class ChangeCity extends \sammo\Event\Action{
             return DB::db()->sqleval('ROUND(%b * %d, 0)', $keyMax, $value/100);
         }
 
+        if(Util::ends_with($key, '_max') && preg_match(self::REGEXP_MATH, $value, $matches)){
+            //key가 아예 최대치에 대한 값이면 연산은 결과값이 0보다만 높게.
+            $op = $matches[1];
+            $value = $matches[2];
+            if($op == '/' && $value == 0){
+                throw new \InvalidArgumentException('0으로 나눌 수 없습니다.');
+            }
+            return DB::db()->sqleval('greatest(0, ROUND(%b '.$op.' %i, 0))', $key, $value);
+        }
+
         if(preg_match(self::REGEXP_MATH, $value, $matches)){
             $op = $matches[1];
             $value = $matches[2];
