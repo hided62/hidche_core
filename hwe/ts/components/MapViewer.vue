@@ -170,7 +170,7 @@ import { joinYearMonth } from "@/util/joinYearMonth";
 import { parseYearMonth } from "@/util/parseYearMonth";
 import type { GameConstStore } from "@/GameConstStore";
 import { unwrap_err } from "@/util/unwrap_err";
-import { getMaxRelativeTechLevel, TECH_LEVEL_YEAR_GAP } from "@/utilGame/techLevel";
+import { getMaxRelativeTechLevel } from "@/utilGame/techLevel";
 import { deviceType } from "detect-it";
 import MapCityBasic from "./MapCityBasic.vue";
 import MapCityDetail from "./MapCityDetail.vue";
@@ -289,12 +289,14 @@ const titleTooltip = computed(()=>{
   const { startYear, year } = mapData.value;
 
   const maxTechLevel = gameConstStore.value.gameConst.maxTechLevel;
-  const currentTechLimit = getMaxRelativeTechLevel(startYear, year, maxTechLevel);
+  const initialAllowedTechLevel = gameConstStore.value.gameConst.initialAllowedTechLevel;
+  const techLevelIncYear = gameConstStore.value.gameConst.techLevelIncYear;
+  const currentTechLimit = getMaxRelativeTechLevel(startYear, year, maxTechLevel, initialAllowedTechLevel, techLevelIncYear);
 
   if (currentTechLimit == maxTechLevel) {
     result.push(`기술등급 제한 : ${currentTechLimit}등급 (최종)`);
   } else {
-    const nextTechLimitYear = currentTechLimit * TECH_LEVEL_YEAR_GAP + startYear;
+    const nextTechLimitYear = currentTechLimit * techLevelIncYear + startYear;
     result.push(`기술등급 제한 : ${currentTechLimit}등급 (${nextTechLimitYear}년 해제)`);
   }
 

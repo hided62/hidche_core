@@ -57,6 +57,9 @@ export type GameConstType = {
     maxTechLevel: number;
     maxBetrayCnt: number;
 
+    techLevelIncYear: number;
+    initialAllowedTechLevel: number;
+
     basePopIncreaseAmount: number;
     expandCityPopIncreaseAmount: number;
     expandCityDevelIncreaseAmount: number;

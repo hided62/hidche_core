@@ -124,9 +124,12 @@ watch(
   (nation) => {
     const { startyear, year } = global.value;
     console.log(gameConstStore);
-    maxTechLevel.value = getMaxRelativeTechLevel(startyear, year, gameConstStore.value.gameConst.maxTechLevel);
+    
+    const initialAllowedTechLevel = gameConstStore.value.gameConst.initialAllowedTechLevel;
+    const techLevelIncYear = gameConstStore.value.gameConst.techLevelIncYear;
+    maxTechLevel.value = getMaxRelativeTechLevel(startyear, year, gameConstStore.value.gameConst.maxTechLevel, initialAllowedTechLevel, techLevelIncYear);
     currentTechLevel.value = convTechLevel(nation.tech, maxTechLevel.value);
-    onTechLimit.value = isTechLimited(startyear, year, nation.tech, gameConstStore.value.gameConst.maxTechLevel);
+    onTechLimit.value = isTechLimited(startyear, year, nation.tech, gameConstStore.value.gameConst.maxTechLevel, initialAllowedTechLevel, techLevelIncYear);
   },
   { immediate: true }
 );
