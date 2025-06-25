@@ -175,6 +175,22 @@
             ["OpenNationBetting", 1, 2000],
             ["DeleteEvent"]
         ],
+                [
+            "month", 1000,
+            ["Date", "==", 182, 1],
+            ["ChangeCity", "occupied", {
+                "trade":100
+            }],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 1000,
+            ["Date", "==", 182, 7],
+            ["ChangeCity", "occupied", {
+                "trade":100
+            }],
+            ["DeleteEvent"]
+        ],
         [
             "month", 999,
             ["and",
