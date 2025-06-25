@@ -785,8 +785,8 @@ function ConquerCity(array $admin, General $general, array $city, array $defende
         'officer_set' => 0,
     ];
     if ($city['level'] > 3) {
-        $query['def'] = 1000;
-        $query['wall'] = 1000;
+        $query['def'] = GameConst::$defaultCityWall;
+        $query['wall'] = GameConst::$defaultCityWall;
     } else {
         $query['def'] = $db->sqleval('def_max/2');
         $query['wall'] = $db->sqleval('wall_max/2');

@@ -114,6 +114,9 @@ class GameConstBase
     /** @var int 징병 허용 최소 인구 */
     public static $minAvailableRecruitPop = 30000;
 
+    /** @var int 점령 후 일반 도시 성벽 */
+    public static $defaultCityWall = 1000;
+
     /** @var int 초기 제한시 장수 제한 */
     public static $initialNationGenLimit = 10;
 
