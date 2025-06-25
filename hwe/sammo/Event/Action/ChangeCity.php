@@ -14,6 +14,13 @@ class ChangeCity extends \sammo\Event\Action{
         'def'=>true,
         'wall'=>true,
         'trade'=>true,
+        
+        'pop_max'=>true,
+        'agri_max'=>true,
+        'comm_max'=>true,
+        'secu_max'=>true,
+        'def_max'=>true,
+        'wall_max'=>true,
     ];
     const REGEXP_PERCENT = '/^(\d+(\.\d+)?)%$/';// 123.5%   [1]=float
     const REGEXP_MATH = '/^([\+\-\/\*])(\d+(\.\d+)?)$/'; //+30 [1]=기호, [2]=float
