@@ -686,7 +686,7 @@ function TechLimit($startYear, $year, $tech) : bool {
     $relYear = $year - $startYear;
 
     $relMaxTech = Util::valueFit(
-        floor($relYear / 5) + 1,
+        floor($relYear / GameConst::$techLevelIncYear) + GameConst::$initialAllowedTechLevel,
         1,
         GameConst::$maxTechLevel
     );

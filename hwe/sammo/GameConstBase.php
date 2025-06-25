@@ -94,6 +94,11 @@ class GameConstBase
     /** @var int 최대 레벨 */
     public static $maxLevel = 255;
 
+    /** @var int 기술등급 허용 증가 단위 년 */
+    public static $techLevelIncYear = 5;
+    /** @var int 초기 기술등급 */
+    public static $initialAllowedTechLevel = 1;
+
     /** @var int 최소 인구 증가량 */
     public static $basePopIncreaseAmount = 5000;
     /** @var int 증축시 인구 증가량 */
