@@ -18,7 +18,7 @@
     },
     "const": {
         "joinRuinedNPCProp":0,
-        "npcBanMessageProb":1,
+        "npcBanMessageProb":0.005,
         "scenarioEffect": "event_MoreEffect",
         "availableInstantAction": {
             "instantRetreat": true
