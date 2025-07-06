@@ -99,7 +99,10 @@ function logError(string $err, string $errstr, string $errpath, array $trace)
     $err = str_replace(ROOT, '{ROOT}', $err);
     $errstr = str_replace(ROOT, '{ROOT}', $errstr);
     $errpath = str_replace(ROOT, '{ROOT}', $errpath);
-    $trace = array_map(function (string $text) {
+    $trace = array_map(function (string|array $text) {
+        if (is_array($text)) {
+            $text = Json::encode($text);
+        }
         return str_replace(ROOT, '{ROOT}', $text);
     }, $trace);
 
