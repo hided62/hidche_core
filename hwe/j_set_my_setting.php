@@ -88,7 +88,7 @@ $penaltyInfo = array_merge($memberPenalty['any'] ?? [], $memberPenalty[DB::prefi
 
 $penalty = [];
 foreach ($penaltyInfo as $penaltyKey => $penaltyValue) {
-    if ($penaltyValue['expire'] ?? 0 > TimeUtil::now()) {
+    if (($penaltyValue['expire'] ?? 0) > TimeUtil::now()) {
         $penalty[$penaltyKey] = $penaltyValue['value'];
     }
 }

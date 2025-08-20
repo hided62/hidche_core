@@ -42,7 +42,7 @@ if($userInfo['delete_after']){
 
 $penaltyList = Json::decode($userInfo['penalty']??'{}');
 foreach($penaltyList as $penaltyKey=>$penaltyValue){
-    if($penaltyValue['expire'] ?? 0 > TimeUtil::now()){
+    if(($penaltyValue['expire'] ?? 0) > TimeUtil::now()){
         Json::die([
             'result'=>false,
             'reason'=>"징계가 남아있어 탈퇴할 수 없습니다."

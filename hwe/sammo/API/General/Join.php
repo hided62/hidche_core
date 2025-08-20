@@ -157,7 +157,7 @@ class Join extends \sammo\BaseAPI
 
         $penalty = [];
         foreach($penaltyInfo as $penaltyKey => $penaltyValue){
-            if($penaltyValue['expire'] ?? 0 > TimeUtil::now()){
+            if(($penaltyValue['expire'] ?? 0) > TimeUtil::now()){
                 $penalty[$penaltyKey] = $penaltyValue['value'];
             }
         }

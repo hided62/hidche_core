@@ -162,7 +162,7 @@ class che_초토화 extends Command\NationCommand{
         $aux = $this->nation['aux'];
 
         if($destCity['level'] >= 8){
-            $aux[NationAuxKey::did_특성초토화->value] = $aux[NationAuxKey::did_특성초토화->value] ?? 0 + 1;
+            $aux[NationAuxKey::did_특성초토화->value] = ($aux[NationAuxKey::did_특성초토화->value] ?? 0) + 1;
         }
 
         $db->update('general', [

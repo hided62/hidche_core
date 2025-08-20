@@ -509,7 +509,7 @@ function updateCommandList() {
   const turnTime = parseTime(props.turnTime);
   let nextTurnTime = new Date(turnTime);
 
-  const autorunLimitYearMonth = autorun_limit.value ?? yearMonth - 1;
+  const autorunLimitYearMonth = (autorun_limit.value ?? yearMonth) - 1;
   const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(autorunLimitYearMonth);
 
   for (const obj of props.turn) {

@@ -133,7 +133,7 @@ $userInfo = $RootDB->queryFirstRow(
 if (!$userInfo) {
     if(!$oauthID){
         $me = $restAPI->meWithEmail();
-        if ($me['code']??0 < 0) {
+        if (($me['code']??0) < 0) {
             Json::die([
                 'result' => false,
                 'reqOTP' => false,

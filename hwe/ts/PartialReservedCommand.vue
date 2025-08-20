@@ -510,7 +510,7 @@ async function reloadCommandList() {
   const turnTime = parseTime(result.turnTime);
   let nextTurnTime = new Date(turnTime);
 
-  const autorunLimitYearMonth = result.autorun_limit ?? yearMonth - 1;
+  const autorunLimitYearMonth = (result.autorun_limit ?? yearMonth) - 1;
   const [autorunLimitYear, autorunLimitMonth] = parseYearMonth(autorunLimitYearMonth);
 
   reservedCommandList.value = [];
