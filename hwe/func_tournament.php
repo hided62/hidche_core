@@ -1153,21 +1153,25 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type)
         ];
 
         //막판 분노
+        $factor1 = 1.0;
+        $factor2 = 1.0;
         $ratio = rand() % 300;
         if ($e1 / 5 > $energy1 && $damage1 > $damage2 && $gen1[$tp] >= $ratio) {
-            $damage2 *= Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
+            $factor2 = Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
             $critical1 = 1;
             $str = Util::choiceRandom($crticialSkillMap[$tnmt_type]);
             $log[] = "<S>●</> <Y>{$gen1['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         $ratio = rand() % 300;
         if ($e2 / 5 > $energy2 && $damage2 > $damage1 && $gen2[$tp] >= $ratio) {
-            $damage1 *= Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
+            $factor1 = Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
             $critical2 = 1;
-
             $str = Util::choiceRandom($crticialSkillMap[$tnmt_type]);
             $log[] = "<S>●</> <Y>{$gen2['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
+        $damage1 *= $factor1;
+        $damage2 *= $factor2;
+        
         //1합 승부
         if ($phase == 1) {
 
