@@ -144,7 +144,7 @@ function do도시임명(General $general, int $cityID, int $targetOfficerLevel):
         return '올바르지 않은 도시입니다';
     }
 
-    if ($general->getVar(GeneralColumn::officer_level) >= 4 && $myPenalty[PenaltyKey::NoChiefChange->value] ?? false) {
+    if ($general->getVar(GeneralColumn::officer_level) >= 4 && ($myPenalty[PenaltyKey::NoChiefChange->value] ?? false)) {
         return '수뇌인 장수를 변경할 수 없는 상태입니다.';
     }
 
