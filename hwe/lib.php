@@ -51,8 +51,9 @@ function MessageBox($str)
 
 function LogText($prefix, $variable)
 {
-    $text = sprintf('%s : %s'."\r\n", $prefix, TVarDumper::dump($variable));
-    file_put_contents(ROOT.'/d_log/'.UniqueConst::$serverName.'_dbg_logs.txt', $text, FILE_APPEND);
+    return;
+    //$text = sprintf('%s : %s'."\r\n", $prefix, TVarDumper::dump($variable));
+    //file_put_contents(ROOT.'/d_log/'.UniqueConst::$serverName.'_dbg_logs.txt', $text, FILE_APPEND);
 }
 
 function prepareDir(string $dirPath, bool $forceCreate=true):bool{
