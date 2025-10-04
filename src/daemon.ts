@@ -4,6 +4,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
 
 // ============ 환경설정 ============
 const REQUIRE_PUBLIC = (process.env.REQUIRE_PUBLIC ?? "true").toLowerCase() === "true";
