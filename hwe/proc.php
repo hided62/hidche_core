@@ -8,4 +8,12 @@ $session = Session::getInstance()->setReadOnly();
 
 $db = DB::db();
 
-TurnExecutionHelper::executeAllCommand();
+$updated = false;
+$locked = false;
+$lastExecuted = TurnExecutionHelper::executeAllCommand($updated, $locked);
+Json::die([
+    'result' => true,
+    'updated' => $updated,
+    'locked' => $locked,
+    'lastExecuted' => $lastExecuted,
+]);
