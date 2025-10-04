@@ -422,7 +422,7 @@ class TurnExecutionHelper
 
         $date = TimeUtil::now(true);
         // 최종 처리 월턴의 다음 월턴시간 구함
-        $lastExecuted = $gameStor->turntime;
+        //$lastExecuted = $gameStor->turntime;
         $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
 
@@ -455,9 +455,6 @@ class TurnExecutionHelper
                     $gameStor->turntime = $currentTurn;
                 }
                 unlock();
-                if($lastExecuted !== $currentTurn){
-                    $executed = true;
-                }
                 return $gameStor->turntime;
             }
 
@@ -515,10 +512,6 @@ class TurnExecutionHelper
 
         $gameStor->resetCache();
         unlock();
-
-        if($lastExecuted !== $currentTurn){
-            $executed = true;
-        }
 
         return $turntime;
     }
