@@ -81,7 +81,8 @@
   },
   "include": [
     "hwe/ts/**/*",
-    "hwe/ts/**/*.vue"
+    "hwe/ts/**/*.vue",
+    "src/*.ts",
   ],
   "exclude": [
     "**/*.test.ts"
