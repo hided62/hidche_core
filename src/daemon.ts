@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-import fs from "node:fs";
-import fsPromise from "node:fs/promises";
+import fs from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
@@ -46,22 +45,24 @@ function nowStr() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function log(...args: any[]) { console.log(nowStr(), ...args); }
 
-async function fileExistsAsync(fp: string): Promise<boolean> {
-    try { await fsPromise.access(fp, fs.constants.F_OK); return true; } catch { return false; }
+async function fileExists(fp: string): Promise<boolean> {
+    try { await fs.access(fp, fs.constants.F_OK); return true; } catch { return false; }
 }
 
-async function readFileSafeAsync(fp: string): Promise<string | null> {
-    try { return await fsPromise.readFile(fp, "utf8"); } catch { return null; }
+async function readFileSafe(fp: string): Promise<string | null> {
+    try { return await fs.readFile(fp, "utf8"); } catch { return null; }
 }
 
-function listDirsOnce(base: string): string[] {
+async function listDirsOnceAsync(base: string): Promise<string[]> {
     const out: string[] = [];
-    for (const name of fs.readdirSync(base)) {
+    const names = await fs.readdir(base);
+    for (const name of names) {
         const p = path.join(base, name);
-        try { if (fs.statSync(p).isDirectory()) out.push(p); } catch { /* empty */ }
+        try { if ((await fs.stat(p)).isDirectory()) out.push(p); } catch { /* empty */ }
     }
     return out;
 }
+
 function joinUrl(base: string, suffix: string): string {
     if (base.endsWith("/") && suffix.startsWith("/")) return base + suffix.slice(1);
     if (!base.endsWith("/") && !suffix.startsWith("/")) return base + "/" + suffix;
@@ -80,7 +81,7 @@ function msUntilNextMinuteZero(jitterMs = 0): number {
 const basepath = path.dirname(path.dirname(path.resolve(__filename)));
 async function parseWebBaseFromCommonPath(base: string): Promise<string> {
     const jsPath = path.join(base, "d_shared", "common_path.js");
-    const text = await readFileSafeAsync(jsPath);
+    const text = await readFileSafe(jsPath);
     if (!text) { log("[WARN] common_path.js 읽기 실패 → fallback=http://127.0.0.1"); return "http://127.0.0.1"; }
     for (const line of text.split(/\r?\n/)) {
         if (line.includes("root:")) {
@@ -106,17 +107,17 @@ type ServerEntry = {
 };
 
 async function scanOnce(): Promise<ServerEntry[]> {
-    const dirs = listDirsOnce(basepath); // 깊이는 1단계만
+    const dirs = await listDirsOnceAsync(basepath); // 깊이는 1단계만
     const out: ServerEntry[] = [];
     for (const dir of dirs) {
         if (BASE_SCAN_DEPTH_ONE === false) {
             // 필요하면 확장 로직 배치
         }
         const dbphp = path.join(dir, "d_setting", "DB.php");
-        if (!await fileExistsAsync(dbphp)) continue;
+        if (!await fileExists(dbphp)) continue;
 
         const name = path.relative(basepath, dir);
-        const isHidden = () => fileExistsAsync(path.join(dir, ".htaccess"));
+        const isHidden = () => fileExists(path.join(dir, ".htaccess"));
 
         out.push({
             name,
