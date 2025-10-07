@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 
 import fs from "node:fs";
+import fsPromise from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
@@ -15,10 +16,10 @@ const FETCH_TIMEOUT_MS = nenv("FETCH_TIMEOUT_MS", 60_000);
 const IF_LOCKED_WAIT_MS = nenv("IF_LOCKED_WAIT_MS", 10_000);
 const IF_UPDATED_WAIT_MS = nenv("IF_UPDATED_WAIT_MS", 1_000);
 const DEFAULT_WAIT_MS = nenv("DEFAULT_WAIT_MS", 8_000);
-const AUTO_RESET_PERIOD_MS = nenv("AUTO_RESET_PERIOD_MS", 60_000);
 const BASE_SCAN_DEPTH_ONE = (process.env.BASE_SCAN_DEPTH_ONE ?? "true").toLowerCase() === "true";
 const RESCAN_INTERVAL_MS = nenv("RESCAN_INTERVAL_MS", 300_000); // 5분
 const SHUTDOWN_TIMEOUT_MS = nenv("SHUTDOWN_TIMEOUT_MS", 15_000);
+const AUTO_RESET_JITTER_MS = nenv("AUTO_RESET_JITTER_MS", 0); // 0초 직후 지연(밀리초)
 
 function nenv(key: string, def: number): number {
     const v = process.env[key];
@@ -45,12 +46,14 @@ function nowStr() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function log(...args: any[]) { console.log(nowStr(), ...args); }
 
-function fileExists(fp: string): boolean {
-    try { fs.accessSync(fp, fs.constants.F_OK); return true; } catch { return false; }
+async function fileExistsAsync(fp: string): Promise<boolean> {
+    try { await fsPromise.access(fp, fs.constants.F_OK); return true; } catch { return false; }
 }
-function readFileSafe(fp: string): string | null {
-    try { return fs.readFileSync(fp, "utf8"); } catch { return null; }
+
+async function readFileSafeAsync(fp: string): Promise<string | null> {
+    try { return await fsPromise.readFile(fp, "utf8"); } catch { return null; }
 }
+
 function listDirsOnce(base: string): string[] {
     const out: string[] = [];
     for (const name of fs.readdirSync(base)) {
@@ -65,11 +68,19 @@ function joinUrl(base: string, suffix: string): string {
     return base + suffix;
 }
 
+// 분 0초 정렬 대기 시간 계산: 지금 시각에서 다음 분의 0초(+지터)까지 남은 ms
+function msUntilNextMinuteZero(jitterMs = 0): number {
+    const now = Date.now();
+    const nextMinuteStart = Math.ceil(now / 60_000) * 60_000;
+    const target = nextMinuteStart + Math.max(0, jitterMs);
+    return Math.max(0, target - now);
+}
+
 // ============ 경로/루트 URL ============
 const basepath = path.dirname(path.dirname(path.resolve(__filename)));
-function parseWebBaseFromCommonPath(base: string): string {
+async function parseWebBaseFromCommonPath(base: string): Promise<string> {
     const jsPath = path.join(base, "d_shared", "common_path.js");
-    const text = readFileSafe(jsPath);
+    const text = await readFileSafeAsync(jsPath);
     if (!text) { log("[WARN] common_path.js 읽기 실패 → fallback=http://127.0.0.1"); return "http://127.0.0.1"; }
     for (const line of text.split(/\r?\n/)) {
         if (line.includes("root:")) {
@@ -81,7 +92,7 @@ function parseWebBaseFromCommonPath(base: string): string {
     log("[WARN] root: 항목 없음 → fallback=http://127.0.0.1");
     return "http://127.0.0.1";
 }
-const webBase = process.env.PUBLIC_CHECK_URL || parseWebBaseFromCommonPath(basepath);
+const webBase = process.env.PUBLIC_CHECK_URL || await parseWebBaseFromCommonPath(basepath);
 log("BASEPATH =", basepath);
 log("WEBBASE  =", webBase);
 
@@ -89,13 +100,12 @@ log("WEBBASE  =", webBase);
 type ServerEntry = {
     name: string;                 // servRelPath
     abs: string;                  // 절대 경로
-    isHidden: () => boolean;      // .htaccess 존재 여부
-    hasAutoReset: boolean;        // j_autoreset.php 파일 존재
+    isHidden: () => Promise<boolean>;      // .htaccess 존재 여부
     procUrl: string;
-    autoresetUrl: string | null;
+    autoresetUrl: string;
 };
 
-function scanOnce(): ServerEntry[] {
+async function scanOnce(): Promise<ServerEntry[]> {
     const dirs = listDirsOnce(basepath); // 깊이는 1단계만
     const out: ServerEntry[] = [];
     for (const dir of dirs) {
@@ -103,20 +113,17 @@ function scanOnce(): ServerEntry[] {
             // 필요하면 확장 로직 배치
         }
         const dbphp = path.join(dir, "d_setting", "DB.php");
-        if (!fileExists(dbphp)) continue;
+        if (!await fileExistsAsync(dbphp)) continue;
 
         const name = path.relative(basepath, dir);
-        const isHidden = () => fileExists(path.join(dir, ".htaccess"));
-        const resetAbs = path.join(dir, "j_autoreset.php");
-        const hasAutoReset = fileExists(resetAbs);
+        const isHidden = () => fileExistsAsync(path.join(dir, ".htaccess"));
 
         out.push({
             name,
             abs: dir,
             isHidden,
-            hasAutoReset,
             procUrl: joinUrl(webBase, `/${name}/proc.php`),
-            autoresetUrl: hasAutoReset ? joinUrl(webBase, `/${name}/j_autoreset.php`) : null,
+            autoresetUrl:joinUrl(webBase, `/${name}/j_autoreset.php`),
         });
     }
     return out;
@@ -132,7 +139,7 @@ async function isPublicReachable(signal?: AbortSignal): Promise<boolean> {
         const res = await fetch(webBase, { method: "GET", signal: composite });
         if (!res.ok) { log(`[PUBLIC] 응답 ${res.status} → 비공개로 간주`); return false; }
         return true;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         if (e?.name !== "AbortError") log(`[PUBLIC] 체크 실패: ${e?.name || e}`);
         return false;
@@ -217,23 +224,23 @@ class ServerRunner {
                 const pub = await isPublicReachable(this.#stopCtrl.signal);
                 if (!pub) { await delay(15_000, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ }); continue; }
 
-                const hidden = this.#entry.isHidden();
+                const hidden = await this.#entry.isHidden();
 
                 if (hidden) {
-                    // 닫힘: autoreset
-                    if (this.#entry.autoresetUrl) {
-                        const now = Date.now();
-                        if (now - this.#lastAutoResetAt >= AUTO_RESET_PERIOD_MS) {
-                            log(`[${this.name()}] 닫힘 - autoreset 호출`);
-                            await httpGetJson<Json>(this.#entry.autoresetUrl, this.#stopCtrl.signal);
-                            this.#lastAutoResetAt = now;
-                        }
-                    } else {
-                        log(`[${this.name()}] 닫힘 - autoreset 없음`);
+                    // ★ 매 분 0초에 맞춰 호출
+                    const waitMs = msUntilNextMinuteZero(AUTO_RESET_JITTER_MS);
+                    if (waitMs > 0) {
+                        // 신호 안전하게 대기
+                        await delay(waitMs, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ });
+                        if (this.#stopCtrl.signal.aborted) break;
                     }
-                    await delay(1000, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ });
+                    log(`[${this.name()}] 닫힘 - (정렬) autoreset 호출 @ mm:00${AUTO_RESET_JITTER_MS ? `+${AUTO_RESET_JITTER_MS}ms` : ""}`);
+                    await httpGetJson<Json>(this.#entry.autoresetUrl, this.#stopCtrl.signal);
+                    // 같은 분에 중복 호출 방지: 0초 직후 잠깐 쉬고 다음 루프는 자연스럽게 다음 분으로 정렬됨
+                    await delay(200, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ });
                     continue;
                 }
+
 
                 // 열림: proc
                 const data = await httpGetJson<ProcResult>(this.#entry.procUrl, this.#stopCtrl.signal);
@@ -306,7 +313,7 @@ class DaemonManager {
     }
 
     async #rescanOnce() {
-        const entries = scanOnce();
+        const entries = await scanOnce();
         log(`[RESCAN] 서버 ${entries.length}개 발견`);
 
         // 추가/갱신/삭제 판정
