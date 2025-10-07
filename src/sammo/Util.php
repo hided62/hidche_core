@@ -3,7 +3,7 @@ namespace sammo;
 
 use Iterator;
 
-class Util extends \utilphp\util
+class Util
 {
 
     /**
@@ -888,5 +888,111 @@ class Util extends \utilphp\util
             }
         }
         return join('|', $result);
+    }
+
+
+/** 
+ * http://github.com/brandonwamboldt/utilphp/ 의 구버전 코드에서 이식함
+ * 일부 코드는 수정
+ * 해당 라이선스: MIT
+ */
+
+    /**
+     * Returns the first element in an array.
+     * PHP 8.5부터 array_first 사용 가능
+     *
+     * @param  array $array
+     * @return mixed
+     */
+    public static function array_first(array $array)
+    {
+        return $array[array_key_first($array)];
+    }
+
+    /**
+     * Returns the last element in an array.
+     * PHP 8.5부터 array_last 사용 가능
+     *
+     * @param  array $array
+     * @return mixed
+     */
+    public static function array_last(array $array)
+    {
+        return $array[array_key_last($array)];
+    }
+
+    /**
+     * Flatten a multi-dimensional array into a one dimensional array.
+     *
+     * Contributed by Theodore R. Smith of PHP Experts, Inc. <http://www.phpexperts.pro/>
+     *
+     * @param  array   $array         The array to flatten
+     * @param  boolean $preserve_keys Whether or not to preserve array keys.
+     *                                Keys from deeply nested arrays will
+     *                                overwrite keys from shallowy nested arrays
+     * @return array
+     */
+    public static function array_flatten(array $array, $preserve_keys = true)
+    {
+        $flattened = array();
+
+        array_walk_recursive($array, function($value, $key) use (&$flattened, $preserve_keys) {
+            if ($preserve_keys && !is_int($key)) {
+                $flattened[$key] = $value;
+            } else {
+                $flattened[] = $value;
+            }
+        });
+
+        return $flattened;
+    }
+
+    /**
+     * Returns the IP address of the client.
+     *
+     * @param   boolean $trust_proxy_headers Whether or not to trust the
+     *                                       proxy headers HTTP_CLIENT_IP
+     *                                       and HTTP_X_FORWARDED_FOR. ONLY
+     *                                       use if your server is behind a
+     *                                       proxy that sets these values
+     * @return  string
+     */
+    public static function get_client_ip($trust_proxy_headers = false)
+    {
+        if (!$trust_proxy_headers) {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        return $ip;
+    }
+
+    /**
+     * Access an array index, retrieving the value stored there if it
+     * exists or a default if it does not. This function allows you to
+     * concisely access an index which may or may not exist without
+     * raising a warning.
+     * 
+     * @deprecated PHP 7.0 이상에서는 null 병합 연산자 사용을 권장
+     *
+     * @param  array  $var     Array value to access
+     * @param  mixed  $default Default value to return if the key is not
+     *                         present in the array
+     * @return mixed
+     */
+    public static function array_get(&$var, $default = null)
+    {
+        if (isset($var)) {
+            return $var;
+        }
+
+        return $default;
     }
 };

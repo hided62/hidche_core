@@ -28,7 +28,7 @@ class event_전투특기_궁병 extends \sammo\BaseItem{
         if($statName === 'warAvoidRatio'){
             return $value + 0.2;
         }
-        if(\sammo\Util::starts_with($statName, 'dex')){
+        if(str_starts_with($statName, 'dex')){
             $myArmType = 'dex'.GameUnitConst::T_ARCHER;
             $opposeArmType = 'dex'.$aux['opposeType']->armType;;
             if($aux['isAttacker'] && $opposeArmType === $statName){

@@ -109,16 +109,16 @@ if($expires < $nowDate){
     $access_token = $result['access_token'];
     $expires = TimeUtil::nowAddSeconds($result['expires_in']);
     if(isset($result['refresh_token'])){
-        $refresh_token = Util::array_get($result['refresh_token']);
+        $refresh_token = $result['refresh_token'] ?? null;
         $refresh_token_expires = TimeUtil::nowAddSeconds($result['refresh_token_expires_in']);
     }
 }
 
 
 $signupResult = $restAPI->signup();
-$kakaoID = Util::array_get($signupResult['id']);
+$kakaoID = $signupResult['id'] ?? null;
 
-if(!$kakaoID && Util::array_get($signupResult['msg'])!='already registered'){
+if(!$kakaoID && ($signupResult['msg'] ?? null) !='already registered'){
     Json::die([
         'result'=>false,
         'reason'=>'카카오 로그인 과정 중 앱 연결 절차를 실패했습니다'.Json::encode($signupResult)
@@ -126,7 +126,7 @@ if(!$kakaoID && Util::array_get($signupResult['msg'])!='already registered'){
 }
 
 $me = $restAPI->meWithEmail();
-$me['code'] = Util::array_get($me['code'], 0);
+$me['code'] = $me['code'] ?? 0;
 $kakao_account = $me['kakao_account']??[];
 if ($me['code']< 0) {
     $restAPI->unlink();

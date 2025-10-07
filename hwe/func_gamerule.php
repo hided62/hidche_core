@@ -559,7 +559,7 @@ function checkStatistic()
 
     $nationHist = '';
     foreach (GameConst::$availableNationType as $nationType) {
-        if (!Util::array_get($nationHists[$nationType])) {
+        if (!($nationHists[$nationType] ?? null)) {
             $nationHists[$nationType] = '-';
         }
         $nationHist .= getNationType($nationType) . "({$nationHists[$nationType]}), ";

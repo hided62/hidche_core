@@ -2084,7 +2084,7 @@ class GeneralAI
             }
         }
 
-        $finalCityID = Util::array_first_key($cityScoreList);
+        $finalCityID = array_key_first($cityScoreList);
         $dist = $distanceList[$capital][$finalCityID];
         $targetCityID = $finalCityID;
         if ($dist > 1) {

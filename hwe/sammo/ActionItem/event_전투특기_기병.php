@@ -32,7 +32,7 @@ class event_전투특기_기병 extends \sammo\BaseItem{
     }
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
-        if(\sammo\Util::starts_with($statName, 'dex')){
+        if(str_starts_with($statName, 'dex')){
             $myArmType = 'dex'.GameUnitConst::T_CAVALRY;
             $opposeArmType = 'dex'.$aux['opposeType']->armType;;
             if($aux['isAttacker'] && $opposeArmType === $statName){

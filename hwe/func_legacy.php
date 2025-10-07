@@ -138,7 +138,7 @@ function JSCitiesBasedOnDistance(int $cityNo, int $maxDistance = 1): array{
     $distanceList = searchDistance($cityNo, $maxDistance, true);
     $result = [];
     for ($dist = 1; $dist <= $maxDistance; $dist++) {
-        $result[$dist] = Util::array_get($distanceList[$dist], []);
+        $result[$dist] = $distanceList[$dist] ?? [];
     }
     return $result;
 }
@@ -152,7 +152,7 @@ function printCitiesBasedOnDistance(int $cityNo, int $maxDistance = 1): string
     for ($dist = 1; $dist <= $maxDistance; $dist++) {
         $cityList = array_map(function ($cityID) {
             return CityConst::byID($cityID)->name;
-        }, Util::array_get($distanceList[$dist], []));
+        }, $distanceList[$dist] ?? []);
 
         $cityStr = join(', ', $cityList);
 

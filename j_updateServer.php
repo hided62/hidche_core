@@ -174,7 +174,7 @@ function tryNpmInstall()
 
 tryComposerInstall();
 if (tryNpmInstall()) {
-    genJS(Util::array_last_key(ServConfig::getServerList()));
+    genJS(array_key_last(ServConfig::getServerList()));
 }
 $session = Session::requireLogin(null)->setReadOnly();
 
@@ -227,7 +227,7 @@ if (!$allowFullUpdate || !$target) {
     $target = $request['target'];
 }
 
-$baseServerName = Util::array_last_key(ServConfig::getServerList());
+$baseServerName = array_key_last(ServConfig::getServerList());
 
 if (!$target && $server != $baseServerName) {
     Json::die([

@@ -88,9 +88,9 @@ class Setting
         $tail = new FileTail($this->versionFile);
         $version = 'noVersionJson';
         foreach ($tail->smart(5, 100, true) as $line) {
-            if (Util::starts_with($line, '//{')) {
+            if (str_starts_with($line, '//{')) {
                 $version = Json::decode(substr($line, 2));
-                $version = Util::array_get($version['version'], 'noVersionValue');
+                $version = $version['version'] ?? 'noVersionValue';
                 break;
             }
         }
@@ -106,8 +106,8 @@ class Setting
         $templates = new \League\Plates\Engine(__DIR__.'/templates');
         //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
         $allow_ip = Util::get_client_ip(false);
-        if (Util::starts_with($allow_ip, '192.168.') ||
-            Util::starts_with($allow_ip, '10.')) {
+        if (str_starts_with($allow_ip, '192.168.') ||
+            str_starts_with($allow_ip, '10.')) {
             //172.16~172.31은 코딩하기 귀찮으니까 안할거다
             $allow_ip = Util::get_client_ip(true);
         }

@@ -62,7 +62,7 @@ abstract class TriggerCaller{
             return $this;
         }
 
-        $lastKey = Util::array_last_key($this->triggerListByPriority);
+        $lastKey = array_key_last($this->triggerListByPriority);
         if($lastKey < $priority){
             $this->triggerListByPriority[$priority] = [$uniqueID=>$trigger];
             return $this;

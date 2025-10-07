@@ -127,7 +127,7 @@ class ChangeCity extends \sammo\Event\Action{
             return DB::db()->sqleval('ROUND(%b * %d, 0)', $keyMax, $value/100);
         }
 
-        if(Util::ends_with($key, '_max') && preg_match(self::REGEXP_MATH, $value, $matches)){
+        if(str_ends_with($key, '_max') && preg_match(self::REGEXP_MATH, $value, $matches)){
             //key가 아예 최대치에 대한 값이면 연산은 결과값이 0보다만 높게.
             $op = $matches[1];
             $value = $matches[2];

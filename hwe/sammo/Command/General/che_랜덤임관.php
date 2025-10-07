@@ -208,7 +208,7 @@ class che_랜덤임관 extends Command\GeneralCommand
             foreach ($rawGeneralsCnt as $nation) {
                 $calcCnt = $nation['warpower'] + $nation['develpower'];
 
-                if ($general->getNPCType() < 2 && Util::starts_with($nation['name'], 'ⓤ')) {
+                if ($general->getNPCType() < 2 && str_starts_with($nation['name'], 'ⓤ')) {
                     $calcCnt *= 100;
                 }
 
