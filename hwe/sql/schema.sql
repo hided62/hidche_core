@@ -583,6 +583,20 @@ CREATE TABLE IF NOT EXISTS `nation_env` (
 	UNIQUE INDEX `key` (`namespace`, `key`),
 	CONSTRAINT `json` CHECK (json_valid(`value`))
 ) COLLATE = 'utf8mb4_bin' ENGINE = Aria;
+CREATE TABLE IF NOT EXISTS `inheritance_result` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`server_id` CHAR(20) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`owner` INT(11) NOT NULL,
+	`general_id` INT(11) NOT NULL,
+	`year` INT(11) NOT NULL,
+	`month` INT(11) NOT NULL,
+	`value` LONGTEXT NOT NULL COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`id`),
+	INDEX `by_owner` (`server_id`, `owner`, `general_id`, `year`, `month`)
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=Aria
+;
 
 ##############################
 ## 명장일람
