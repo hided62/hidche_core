@@ -340,8 +340,8 @@ class InheritancePointManager
     $month = $gameStor->month;
 
     $db->insert('inheritance_result', [
+      'server_id'=>$serverID,
       'owner'=>$ownerID,
-      'server'=>$serverID,
       'general_id'=>$general->getID(),
       'year'=>$year,
       'month'=>$month,
