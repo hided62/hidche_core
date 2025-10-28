@@ -334,11 +334,19 @@ class InheritancePointManager
       $inheritStor->setValue($key, [$point, $aux]);
     }
 
-    $oldInheritStor = KVStorage::getStorage(DB::db(), "inheritance_result");
+    $db = DB::db();
     $serverID = UniqueConst::$serverID;
     $year = $gameStor->year;
     $month = $gameStor->month;
-    $oldInheritStor->setValue("{$serverID}_{$ownerID}_{$general->getID()}_{$year}_{$month}", $inheritStor->getAll(true));
+
+    $db->insert('inheritance_result', [
+      'owner'=>$ownerID,
+      'server'=>$serverID,
+      'general_id'=>$general->getID(),
+      'year'=>$year,
+      'month'=>$month,
+      'value'=>$inheritStor->getAll(true)
+    ]);
   }
 
 

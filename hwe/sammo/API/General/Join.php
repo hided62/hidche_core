@@ -99,7 +99,7 @@ class Join extends \sammo\BaseAPI
         }
 
         $gameID = UniqueConst::$serverID;
-        $alreadyJoined = $db->queryFirstField('SELECT count(*) FROM `storage` WHERE `namespace` = %s AND `key` LIKE %s', 'inheritance_result', "{$gameID}_{$userID}_%");
+        $alreadyJoined = $db->queryFirstField('SELECT COUNT(*) FROM `inheritance_result` WHERE `server_id` = %s AND `owner` = %i', $gameID, $userID);
         if ($alreadyJoined) {
             //이미 받았음
             return 0;
