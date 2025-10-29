@@ -12,7 +12,6 @@
         }
     },
     "require": {
-        "brandonwamboldt/utilphp": "^1.1",
         "sergeytsalkov/meekrodb": "^2.5",
         "league/plates": "^3.5",
         "vlucas/valitron": "^1.4",
