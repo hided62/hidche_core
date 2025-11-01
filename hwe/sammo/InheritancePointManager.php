@@ -345,7 +345,7 @@ class InheritancePointManager
       'general_id'=>$general->getID(),
       'year'=>$year,
       'month'=>$month,
-      'value'=>$inheritStor->getAll(true)
+      'value'=>Json::encode($inheritStor->getAll(true))
     ]);
   }
 
