@@ -3134,7 +3134,7 @@ class GeneralAI
                 $rawCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $this->general->getCityID());
                 $this->general->setRawCity($rawCity);
             }
-            if (!in_array($this->general->getRawCity()['level'], [5, 6])) {
+            if (in_array($this->general->getRawCity()['level'], [5, 6])) {
                 return null;
             }
         }
