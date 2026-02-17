@@ -37,6 +37,7 @@ function regNextToken(tokenInfo: [number, string]) {
 function getToken(): [number, string] | undefined {
     const trialToken = localStorage.getItem(LOGIN_TOKEN_KEY);
     if (!trialToken) {
+        console.log('no token');
         return;
     }
     const tokenItems = JSON.parse(trialToken) as [number, [number, string], string];
@@ -45,6 +46,7 @@ function getToken(): [number, string] | undefined {
         resetToken();
         return;
     }
+    console.debug(localStorage.getItem(LOGIN_TOKEN_KEY));
     const [, token,] = tokenItems;
     return token;
 }
@@ -75,6 +77,7 @@ async function tryAutoLogin() {
         }
 
         const nonce = result.loginNonce;
+        console.debug('try auto login with token', tokenID, token, nonce);
 
         const hashedToken = sha512(token + nonce);
         const loginResult = await SammoRootAPI.Login.LoginByToken({
