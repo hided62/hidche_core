@@ -36,6 +36,57 @@ type ProcResult = {
     lastExecuted?: string;
 };
 
+class CookieJar {
+    #cookies = new Map<string, string>();
+
+    getCookieHeader(): string | undefined {
+        if (this.#cookies.size === 0) {
+            return undefined;
+        }
+        return [...this.#cookies.entries()].map(([key, value]) => `${key}=${value}`).join("; ");
+    }
+
+    ingestSetCookie(setCookieHeaders: string[]): void {
+        for (const setCookie of setCookieHeaders) {
+            const cookiePart = setCookie.split(";", 1)[0]?.trim();
+            if (!cookiePart) {
+                continue;
+            }
+
+            const eqPos = cookiePart.indexOf("=");
+            if (eqPos <= 0) {
+                continue;
+            }
+
+            const key = cookiePart.slice(0, eqPos).trim();
+            const value = cookiePart.slice(eqPos + 1).trim();
+
+            if (!key) {
+                continue;
+            }
+
+            if (value === "") {
+                this.#cookies.delete(key);
+                continue;
+            }
+            this.#cookies.set(key, value);
+        }
+    }
+}
+
+function getSetCookieHeaders(headers: Headers): string[] {
+    const headerObj = headers as unknown as { getSetCookie?: () => string[] };
+    if (typeof headerObj.getSetCookie === "function") {
+        return headerObj.getSetCookie();
+    }
+
+    const fallback = headers.get("set-cookie");
+    if (!fallback) {
+        return [];
+    }
+    return [fallback];
+}
+
 function nowStr() {
     const d = new Date();
     const pad = (n: number) => n.toString().padStart(2, "0");
@@ -131,13 +182,19 @@ async function scanOnce(): Promise<ServerEntry[]> {
 }
 
 // ============ 공개 접근 체크 ============
-async function isPublicReachable(signal?: AbortSignal): Promise<boolean> {
+async function isPublicReachable(signal?: AbortSignal, cookieJar?: CookieJar): Promise<boolean> {
     if (!REQUIRE_PUBLIC) return true;
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), Math.min(5_000, FETCH_TIMEOUT_MS));
     const composite = anySignal([ctrl.signal, signal].filter(Boolean) as AbortSignal[]);
     try {
-        const res = await fetch(webBase, { method: "GET", signal: composite });
+        const cookieHeader = cookieJar?.getCookieHeader();
+        const res = await fetch(webBase, {
+            method: "GET",
+            signal: composite,
+            headers: cookieHeader ? { cookie: cookieHeader } : undefined,
+        });
+        cookieJar?.ingestSetCookie(getSetCookieHeaders(res.headers));
         if (!res.ok) { log(`[PUBLIC] 응답 ${res.status} → 비공개로 간주`); return false; }
         return true;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,14 +207,20 @@ async function isPublicReachable(signal?: AbortSignal): Promise<boolean> {
 }
 
 // ============ HTTP ============
-async function httpGetJson<T extends Json>(url: string, outerSignal?: AbortSignal): Promise<T | null> {
+async function httpGetJson<T extends Json>(url: string, outerSignal?: AbortSignal, cookieJar?: CookieJar): Promise<T | null> {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
     const signal = anySignal([ctrl.signal, outerSignal].filter(Boolean) as AbortSignal[]);
 
     const t0 = performance.now();
     try {
-        const res = await fetch(url, { signal, cache: "no-store" });
+        const cookieHeader = cookieJar?.getCookieHeader();
+        const res = await fetch(url, {
+            signal,
+            cache: "no-store",
+            headers: cookieHeader ? { cookie: cookieHeader } : undefined,
+        });
+        cookieJar?.ingestSetCookie(getSetCookieHeaders(res.headers));
         const dt = Math.round(performance.now() - t0);
         if (!res.ok) { log("HTTPError:", res.status, url); return null; }
         try {
@@ -195,6 +258,7 @@ class ServerRunner {
     #stopCtrl = new AbortController();
     #stopped = false;
     #lastAutoResetAt = 0;
+    #cookieJar = new CookieJar();
 
     constructor(entry: ServerEntry) {
         this.#entry = entry;
@@ -222,7 +286,7 @@ class ServerRunner {
         while (!this.#stopCtrl.signal.aborted) {
             try {
                 // 공개 접근 체크
-                const pub = await isPublicReachable(this.#stopCtrl.signal);
+                const pub = await isPublicReachable(this.#stopCtrl.signal, publicCookieJar);
                 if (!pub) { await delay(15_000, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ }); continue; }
 
                 const hidden = await this.#entry.isHidden();
@@ -236,7 +300,7 @@ class ServerRunner {
                         if (this.#stopCtrl.signal.aborted) break;
                     }
                     log(`[${this.name()}] 닫힘 - (정렬) autoreset 호출 @ mm:00${AUTO_RESET_JITTER_MS ? `+${AUTO_RESET_JITTER_MS}ms` : ""}`);
-                    await httpGetJson<Json>(this.#entry.autoresetUrl, this.#stopCtrl.signal);
+                    await httpGetJson<Json>(this.#entry.autoresetUrl, this.#stopCtrl.signal, this.#cookieJar);
                     // 같은 분에 중복 호출 방지: 0초 직후 잠깐 쉬고 다음 루프는 자연스럽게 다음 분으로 정렬됨
                     await delay(200, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ });
                     continue;
@@ -244,7 +308,7 @@ class ServerRunner {
 
 
                 // 열림: proc
-                const data = await httpGetJson<ProcResult>(this.#entry.procUrl, this.#stopCtrl.signal);
+                const data = await httpGetJson<ProcResult>(this.#entry.procUrl, this.#stopCtrl.signal, this.#cookieJar);
                 if (!data) {
                     await delay(IF_LOCKED_WAIT_MS, undefined, { signal: this.#stopCtrl.signal }).catch(() => { /* empty */ });
                     continue;
@@ -348,6 +412,7 @@ class DaemonManager {
 
 // ============ 메인 ============
 const manager = new DaemonManager();
+const publicCookieJar = new CookieJar();
 
 async function main() {
     // 신호 처리: SIGINT/SIGTERM → graceful shutdown
