@@ -1047,7 +1047,7 @@ function increaseRefresh($type = "", $cnt = 1)
 
     $logDB = FileDB::db($logPath, $serverPath . '/../f_install/sql/api_log.sql');
 
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'local';
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'local';
     $date = date('Y-m-d H:i:s');
 
     $logDB->insert('api_log', [

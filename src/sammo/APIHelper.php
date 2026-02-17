@@ -73,7 +73,7 @@ class APIHelper
             $logPath = "{$rootPath}/d_log/{$realYearMonth}_api_log.db";
         }
         $logDB = FileDB::db($logPath, __DIR__ . '/../../f_install/sql/api_log.sql');
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'local';
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'local';
         $date = date('Y-m-d H:i:s');
 
         //NOTE: array_merge([], {})의 상황이 가능함.

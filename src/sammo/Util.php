@@ -947,31 +947,13 @@ class Util
         return $flattened;
     }
 
-    /**
-     * Returns the IP address of the client.
-     *
-     * @param   boolean $trust_proxy_headers Whether or not to trust the
-     *                                       proxy headers HTTP_CLIENT_IP
-     *                                       and HTTP_X_FORWARDED_FOR. ONLY
-     *                                       use if your server is behind a
-     *                                       proxy that sets these values
-     * @return  string
-     */
     public static function get_client_ip($trust_proxy_headers = false)
     {
         if (!$trust_proxy_headers) {
             return $_SERVER['REMOTE_ADDR'];
         }
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        return $ip;
+        return $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'local';
     }
 
     /**
