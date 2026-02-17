@@ -13,6 +13,8 @@ use sammo\TimeUtil;
 use sammo\Util;
 use sammo\Validator;
 
+use function sammo\logError;
+
 class LoginByToken extends LoginByID
 {
     static array $sensitiveArgs = ['hashedToken'];
@@ -42,6 +44,32 @@ class LoginByToken extends LoginByID
         $loginNonce = $session->loginNonce ?? null;
         $loginNonceExpired = $session->loginNonceExpired ?? null;
         if (!is_string($loginNonce) || !is_string($loginNonceExpired)) {
+            logError(
+                'AutoLoginProcedureError',
+                Json::encode([
+                    'phase' => 'missing_nonce',
+                    'sid' => session_id(),
+                    'cookie_sid' => $_COOKIE[session_name()] ?? null,
+                    'checked_at' => TimeUtil::now(true),
+                    'host' => gethostname() ?: php_uname('n'),
+                    'php' => PHP_VERSION,
+                    'session_status' => session_status(),
+                    'session_save_handler' => ini_get('session.save_handler') ?: null,
+                    'session_save_path' => ini_get('session.save_path') ?: null,
+                    'session_use_strict_mode' => ini_get('session.use_strict_mode') ?: null,
+                    'session_cookie_samesite' => ini_get('session.cookie_samesite') ?: null,
+                    'session_cookie_secure' => ini_get('session.cookie_secure') ?: null,
+                    'request_method' => $_SERVER['REQUEST_METHOD'] ?? null,
+                    'request_uri' => $_SERVER['REQUEST_URI'] ?? null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+                    'token_id' => $this->args['token_id'] ?? null,
+                    'nonce_type' => gettype($loginNonce),
+                    'nonce_expired_type' => gettype($loginNonceExpired),
+                    'reqnonce_context' => $session->loginNonceDebug ?? null,
+                ]),
+                __FILE__,
+                []
+            );
             return '자동 로그인: 절차 오류';
         }
 

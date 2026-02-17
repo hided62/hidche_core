@@ -1,6 +1,6 @@
 import type { AutoLoginFailed, AutoLoginNonceResponse, AutoLoginResponse, LoginFailed, LoginResponse } from "./defs/API/Login";
 import { APIPathGen } from "./util/APIPathGen";
-import { callSammoAPI, extractHttpMethod, GET, POST, type APICallT, type APITail, type InvalidResponse, type RawArgType, type ValidResponse } from "./util/callSammoAPI";
+import { callSammoAPI, extractHttpMethod, POST, type APICallT, type APITail, type InvalidResponse, type RawArgType, type ValidResponse } from "./util/callSammoAPI";
 export type { ValidResponse, InvalidResponse };
 
 const apiRealPath = {
@@ -18,7 +18,7 @@ const apiRealPath = {
             hashedToken: string,
             token_id: number,
         }, AutoLoginResponse, AutoLoginFailed>,
-        ReqNonce: GET as APICallT<undefined, AutoLoginNonceResponse, AutoLoginFailed>
+        ReqNonce: POST as APICallT<undefined, AutoLoginNonceResponse, AutoLoginFailed>
     },
 } as const;
 

@@ -40,7 +40,7 @@ function getToken(): [number, string] | undefined {
         console.log('no token');
         return;
     }
-    const tokenItems = JSON.parse(trialToken) as [number, [number, string], string];
+    const tokenItems = JSON.parse(trialToken) as [number, [number, string], number];
     if (tokenItems[0] != TOKEN_VERSION) {
         console.log(tokenItems);
         resetToken();
@@ -64,40 +64,54 @@ async function tryAutoLogin() {
 
         const [tokenID, token] = tokenInfo;
 
-        const result = await SammoRootAPI.Login.ReqNonce(undefined, true);
+        for (let attempt = 0; attempt < 2; attempt++) {
+            const reqNonceStartAt = Date.now();
+            const nonceResult = await SammoRootAPI.Login.ReqNonce(undefined, true);
 
-        if (!result) {
-            //api 에러.
-            return;
-        }
-
-        if (!result.result) {
-            resetToken();
-            return;
-        }
-
-        const nonce = result.loginNonce;
-        console.debug('try auto login with token', tokenID, token, nonce);
-
-        const hashedToken = sha512(token + nonce);
-        const loginResult = await SammoRootAPI.Login.LoginByToken({
-            'hashedToken': hashedToken,
-            'token_id': tokenID,
-        }, true);
-
-        if (!loginResult.result) {
-            if (!loginResult.silent) {
-                alert(loginResult.reason);
+            if (!nonceResult) {
+                //api 에러.
+                return;
             }
-            console.error(loginResult.reason);
+
+            if (!nonceResult.result) {
+                resetToken();
+                return;
+            }
+
+            const nonce = nonceResult.loginNonce;
+            console.debug(
+                'try auto login with token',
+                tokenID,
+                `attempt:${attempt + 1}`,
+                `reqNonceElapsed:${Date.now() - reqNonceStartAt}ms`
+            );
+
+            const hashedToken = sha512(token + nonce);
+            const loginResult = await SammoRootAPI.Login.LoginByToken({
+                'hashedToken': hashedToken,
+                'token_id': tokenID,
+            }, true);
+
+            if (!loginResult.result) {
+                if (loginResult.reason === '자동 로그인: 절차 오류' && attempt === 0) {
+                    console.warn('auto login failed by procedure error. retrying once.');
+                    await delay(150);
+                    continue;
+                }
+
+                if (!loginResult.silent) {
+                    alert(loginResult.reason);
+                }
+                console.error(loginResult.reason);
+                return;
+            }
+
+            if (loginResult.nextToken) {
+                regNextToken(loginResult.nextToken);
+            }
+            window.location.href = "./";
             return;
         }
-
-        if (loginResult.nextToken) {
-            regNextToken(loginResult.nextToken);
-        }
-        window.location.href = "./";
-
     }
     catch (e) {
         if (isString(e)) {
@@ -106,8 +120,6 @@ async function tryAutoLogin() {
         console.error(e);
         return;
     }
-
-
 }
 
 function getOAuthToken(mode: string, scope_list?: string[] | string) {
