@@ -28,6 +28,11 @@ type CardItem = {
 
     personal?: string,
     personalText?: string,
+    event100Growth?: boolean,
+    leadership?: number,
+    strength?: number,
+    intel?: number,
+    dex?: number[],
 }
 
 type GeneralPoolResponse = {
@@ -45,6 +50,7 @@ declare const validCustomOption: string[];
 const templateGeneralCard = '<div class="general_card">\
     <h4 class="bg1 with_border"><%generalName%></h4>\
     <h4><img src="<%iconPath%>" height=64 width=64></h4><p>\
+    <%if(event100Growth){%><b>195년 최종 동조 목표</b><br><%}%>\
     <%if(leadership){%>\
     <%leadership%> / <%strength%> / <%intel%><br>\
     <%}%>\
@@ -140,8 +146,12 @@ async function buildGeneral(e: JQuery.Event) {
                 pick: unwrap(currentGeneralInfo).uniqueName,
                 use_own_picture: $('#use_own_picture').is(':checked'),
                 leadership: parseInt(unwrap_any<string>($('#leadership').val())),
-                strength: parseInt(unwrap_any<string>($('#leadership').val())),
-                intel: parseInt(unwrap_any<string>($('#leadership').val())),
+                strength: parseInt(unwrap_any<string>(
+                    $(unwrap(currentGeneralInfo).event100Growth ? '#strength' : '#leadership').val()
+                )),
+                intel: parseInt(unwrap_any<string>(
+                    $(unwrap(currentGeneralInfo).event100Growth ? '#intel' : '#leadership').val()
+                )),
                 personal: unwrap_any<string>($('#selChar').val())
             })
         })

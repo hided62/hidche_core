@@ -8,8 +8,17 @@ WebUtil::requireAJAX();
 
 $pick = Util::getPost('pick');
 $leadership = Util::getPost('leadership', 'int', GameConst::$defaultStatMin);
-$strength = Util::getPost('leadership', 'int', GameConst::$defaultStatMin);
-$intel = Util::getPost('leadership', 'int', GameConst::$defaultStatMin);
+$isCentennialAllStar = CentennialAllStarGrowthService::isActive();
+$strength = Util::getPost(
+    $isCentennialAllStar ? 'strength' : 'leadership',
+    'int',
+    GameConst::$defaultStatMin
+);
+$intel = Util::getPost(
+    $isCentennialAllStar ? 'intel' : 'leadership',
+    'int',
+    GameConst::$defaultStatMin
+);
 $personal = Util::getPost('personal', 'string', null);
 $use_own_picture = Util::getPost('use_own_picture', 'bool', false);
 
@@ -80,7 +89,17 @@ if ($gencount >= $maxgeneral) {
 
 $poolClass = getGeneralPoolClass(GameConst::$targetGeneralPool);
 /** @var AbsGeneralPool */
-$pickedGeneral = new $poolClass($db, $selectInfo, $now);
+if ($isCentennialAllStar) {
+    $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
+        UniqueConst::$hiddenSeed,
+        'selectPickedGeneral',
+        $userID,
+        $pick
+    )));
+    $pickedGeneral = new $poolClass($db, $rng, $selectInfo, $now);
+} else {
+    $pickedGeneral = new $poolClass($db, $selectInfo, $now);
+}
 
 $builder = $pickedGeneral->getGeneralBuilder();
 
@@ -105,7 +124,10 @@ foreach(GameConst::$generalPoolAllowOption as $allowOption){
         if(!$personal || $personal == 'Random'){
             $personal =  Util::choiceRandom(GameConst::$availablePersonality);
         }
-        if(!array_search($personal, GameConst::$availablePersonality)){
+        $invalidPersonal = $isCentennialAllStar
+            ? !in_array($personal, GameConst::$availablePersonality, true)
+            : !array_search($personal, GameConst::$availablePersonality);
+        if($invalidPersonal){
             Json::die([
                 'result'=>false,
                 'reason'=>'올바르지 않은 성격입니다.'

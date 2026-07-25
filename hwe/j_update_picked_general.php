@@ -35,10 +35,11 @@ if(!$generalID){
 list(
     $year,
     $month,
+    $startYear,
     $maxgeneral,
     $npcmode,
     $turnterm
-) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode', 'turnterm']);
+) = $gameStor->getValuesAsArray(['year', 'month', 'startyear', 'maxgeneral', 'npcmode', 'turnterm']);
 
 if($npcmode!=2){
     Json::die([
@@ -101,10 +102,35 @@ $db->update('select_pool',[
     'reserved_until'=>null,
 ], '(owner=%i or reserved_until < %s) AND general_id is NULL', $userID, $now);
 
-if(key_exists('leadership', $info)){
-    $generalObj->updateVar('leadership', $info['leadership']);
-    $generalObj->updateVar('strength', $info['strength']);
-    $generalObj->updateVar('intel', $info['intel']);
+$isCentennialAllStar = CentennialAllStarGrowthService::isActive();
+if ($isCentennialAllStar) {
+    CentennialAllStarGrowthService::applyTarget($generalObj, $info, [
+        'startyear' => $startYear,
+        'year' => $year,
+        'month' => $month,
+    ]);
+} else {
+    if(key_exists('leadership', $info)){
+        $generalObj->updateVar('leadership', $info['leadership']);
+        $generalObj->updateVar('strength', $info['strength']);
+        $generalObj->updateVar('intel', $info['intel']);
+    }
+    if(key_exists('dex', $info)){
+        $generalObj->updateVar('dex1', $info['dex'][0]);
+        $generalObj->updateVar('dex2', $info['dex'][1]);
+        $generalObj->updateVar('dex3', $info['dex'][2]);
+        $generalObj->updateVar('dex4', $info['dex'][3]);
+        $generalObj->updateVar('dex5', $info['dex'][4]);
+    }
+    if(key_exists('ego', $info)){
+        $generalObj->updateVar('personal', $info['ego']);
+    }
+    if(key_exists('specialDomestic', $info)){
+        $generalObj->updateVar('special', $info['specialDomestic']);
+    }
+    if(key_exists('specialWar', $info)){
+        $generalObj->updateVar('special2', $info['specialWar']);
+    }
 }
 if(key_exists('picture', $info)){
     $generalObj->updateVar('imgsvr', $info['imgsvr']);
@@ -112,22 +138,6 @@ if(key_exists('picture', $info)){
 }
 if(key_exists('generalName', $info)){
     $generalObj->updateVar('name', $info['generalName']);
-}
-if(key_exists('dex', $info)){
-    $generalObj->updateVar('dex1', $info['dex'][0]);
-    $generalObj->updateVar('dex2', $info['dex'][1]);
-    $generalObj->updateVar('dex3', $info['dex'][2]);
-    $generalObj->updateVar('dex4', $info['dex'][3]);
-    $generalObj->updateVar('dex5', $info['dex'][4]);
-}
-if(key_exists('ego', $info)){
-    $generalObj->updateVar('personal', $info['ego']);
-}
-if(key_exists('specialDomestic', $info)){
-    $generalObj->updateVar('special', $info['specialDomestic']);
-}
-if(key_exists('specialWar', $info)){
-    $generalObj->updateVar('special2', $info['specialWar']);
 }
 $generalObj->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $turnterm));
 

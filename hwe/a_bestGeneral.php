@@ -243,11 +243,14 @@ $templates = new \League\Plates\Engine(__DIR__ . '/templates');
             "SELECT nation,no,name,owner_name as ownerName, owner, picture, imgsvr,
     experience, dedication,
     dex1, dex2, dex3, dex4, dex5,
-    horse, weapon, book, item
+    horse, weapon, book, item, aux
     FROM general WHERE %l",
             $btn == "NPC 보기" ? "npc>=2" : "npc<2"
         ) as $general) {
             $generalID = $general['no'];
+            foreach (['dex1', 'dex2', 'dex3', 'dex4', 'dex5'] as $dexKey) {
+                $general[$dexKey] = CentennialAllStarGrowthService::recordableRawValue($general, $dexKey);
+            }
             $general['bgColor'] = $nationColor[$general['nation']] ?? GameConst::$basecolor4;
             $general['fgColor'] = newColor($general['bgColor']);
             $general['nationName'] = $nationName[$general['nation']];

@@ -1403,6 +1403,9 @@ function CheckHall($no)
 
         if ($valueType === 'natural') {
             $value = $generalObj->getVar($typeName);
+            if (in_array($typeName, ['dex1', 'dex2', 'dex3', 'dex4', 'dex5'], true)) {
+                $value = CentennialAllStarGrowthService::recordableValue($generalObj, $typeName);
+            }
         } else if ($valueType === 'rank') {
             $value = $generalObj->getRankVar(RankColumn::from($typeName));
         } else if ($valueType === 'calc') {

@@ -5,7 +5,7 @@
   "main": "js/index.js",
   "scripts": {
     "test": "npm-run-all test-php-gateway test-ts",
-    "test-php-gateway": "vendor/bin/phpunit --bootstrap vendor/autoload.php tests",
+    "test-php-gateway": "vendor/bin/phpunit --do-not-cache-result --bootstrap vendor/autoload.php tests",
     "test-ts": "mocha",
     "build": "webpack",
     "buildDev": "webpack --mode=development",
