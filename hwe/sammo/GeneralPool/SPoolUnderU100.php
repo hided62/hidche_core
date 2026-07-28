@@ -38,9 +38,7 @@ class SPoolUnderU100 extends AbsFromUserPool
 
     public static function initPool(\MeekroDB $db)
     {
-        // 현재 ref 저장소에 보존된 공식 클래식 명장 자료는 1~29기 자료다.
-        // 풀 형식과 event100Unique는 이후 30~99기 자료를 같은 형태로 합칠 수 있다.
-        $jsonData = Json::decode(file_get_contents(__DIR__ . '/Pool/UnderS30.json'));
+        $jsonData = Json::decode(file_get_contents(__DIR__ . '/Pool/UnderS100.json'));
         $columns = $jsonData['columns'];
         $sqlValues = [];
         foreach ($jsonData['data'] as $idx => $rawItem) {
