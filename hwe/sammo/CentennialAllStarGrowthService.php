@@ -105,6 +105,41 @@ final class CentennialAllStarGrowthService
         return $result;
     }
 
+    /**
+     * Returns the event stat baseline that a newly selected target receives at
+     * the supplied game date. Organic growth can still leave the actual stat
+     * above this baseline.
+     *
+     * @return array{leadership:int,strength:int,intel:int}
+     */
+    public static function calculateUserCurrentTargetStats(
+        array $targetInfo,
+        array $env
+    ): array {
+        $initialStats = self::calculateUserInitialStats($targetInfo);
+        $progress = self::calculateProgress(
+            (int) $env['startyear'],
+            (int) $env['year'],
+            (int) $env['month']
+        );
+        $result = [];
+        foreach (self::STAT_KEYS as $key) {
+            $target = min(
+                GameConst::$maxLevel,
+                max(0, (int) ($targetInfo[$key] ?? 0))
+            );
+            $result[$key] = max(
+                $initialStats[$key],
+                CentennialAllStarGrowth::statFloor(
+                    $target,
+                    GameConst::$defaultStatMin,
+                    $progress
+                )
+            );
+        }
+        return $result;
+    }
+
     public static function prepareInitialUser(
         GeneralBuilder $builder,
         array $targetInfo
@@ -224,6 +259,9 @@ final class CentennialAllStarGrowthService
         $nextUserInitialStats = $targetChanged && $isUserTarget
             ? self::calculateUserInitialStats($targetInfo)
             : ($aux['userInitialStats'] ?? null);
+        $userCurrentTargetStats = $isUserTarget
+            ? self::calculateUserCurrentTargetStats($targetInfo, $env)
+            : null;
         $changed = false;
 
         foreach (self::STAT_KEYS as $key) {
@@ -236,8 +274,8 @@ final class CentennialAllStarGrowthService
                 GameConst::$defaultStatMin,
                 $progress
             );
-            if ($nextUserInitialStats !== null) {
-                $floor = max($floor, (int) ($nextUserInitialStats[$key] ?? 0));
+            if ($userCurrentTargetStats !== null) {
+                $floor = $userCurrentTargetStats[$key];
             }
             $current = (int) $general->getVar($key);
             if ($targetChanged) {

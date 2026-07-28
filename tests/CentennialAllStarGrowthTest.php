@@ -100,6 +100,40 @@ final class CentennialAllStarGrowthTest extends TestCase
         ]));
     }
 
+    public function testCurrentReselectionBaselineUsesCurrentYearProgress(): void
+    {
+        $target = [
+            'leadership' => 100,
+            'strength' => 15,
+            'intel' => 100,
+        ];
+
+        self::assertSame([
+            'leadership' => 75,
+            'strength' => 15,
+            'intel' => 75,
+        ], CentennialAllStarGrowthService::calculateUserCurrentTargetStats(
+            $target,
+            ['startyear' => 180, 'year' => 180, 'month' => 1]
+        ));
+        self::assertSame([
+            'leadership' => 83,
+            'strength' => 15,
+            'intel' => 83,
+        ], CentennialAllStarGrowthService::calculateUserCurrentTargetStats(
+            $target,
+            ['startyear' => 180, 'year' => 192, 'month' => 1]
+        ));
+        self::assertSame([
+            'leadership' => 100,
+            'strength' => 15,
+            'intel' => 100,
+        ], CentennialAllStarGrowthService::calculateUserCurrentTargetStats(
+            $target,
+            ['startyear' => 180, 'year' => 195, 'month' => 1]
+        ));
+    }
+
     public function testInitialUserGrantMakesInitialAllocationReplaceable(): void
     {
         $initial = CentennialAllStarGrowthService::calculateUserInitialStats([

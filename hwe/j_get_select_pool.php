@@ -10,12 +10,21 @@ function sortTokens(&$tokens){
     });
 }
 
-function putInfoText(&$info){
+function putInfoText(&$info, ?array $currentTargetEnv){
     if (($info['event100Growth'] ?? false) === true) {
-        $initialStats = CentennialAllStarGrowthService::calculateUserInitialStats($info);
-        $info['initialLeadership'] = $initialStats['leadership'];
-        $info['initialStrength'] = $initialStats['strength'];
-        $info['initialIntel'] = $initialStats['intel'];
+        if ($currentTargetEnv === null) {
+            $displayStats = CentennialAllStarGrowthService::calculateUserInitialStats($info);
+            $info['selectionStatLabel'] = '시작 능력치';
+        } else {
+            $displayStats = CentennialAllStarGrowthService::calculateUserCurrentTargetStats(
+                $info,
+                $currentTargetEnv
+            );
+            $info['selectionStatLabel'] = '현재 변경 기준 능력치';
+        }
+        $info['selectionLeadership'] = $displayStats['leadership'];
+        $info['selectionStrength'] = $displayStats['strength'];
+        $info['selectionIntel'] = $displayStats['intel'];
     }
 
     if(key_exists('specialDomestic', $info)){
@@ -41,7 +50,8 @@ $now = $oNow->format('Y-m-d H:i:s');
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$npcmode = $gameStor->getValue('npcmode');
+$eventEnv = $gameStor->getValues(['npcmode', 'startyear', 'year', 'month']);
+$npcmode = $eventEnv['npcmode'];
 if($npcmode!=2){
     Json::die([
         'result'=>false,
@@ -50,6 +60,7 @@ if($npcmode!=2){
 }
 
 $rawGeneral = $db->queryFirstRow('SELECT no, aux FROM general WHERE `owner` = %i', $userID);
+$currentTargetEnv = $rawGeneral ? $eventEnv : null;
 if($rawGeneral){
     $generalAux = Json::decode($rawGeneral['aux']);
     if(key_exists('next_change', $generalAux)&& $generalAux['next_change'] > $now){
@@ -69,7 +80,7 @@ if($tokens){
     foreach($tokens as $token){
         $valid_until = $token['reserved_until'];
         $info = Json::decode($token['info']);
-        putInfoText($info);
+        putInfoText($info, $currentTargetEnv);
         $info['uniqueName'] = $token['unique_name'];
         $pick[] = $info;
     }
@@ -90,7 +101,7 @@ $valid_until = null;
 foreach(pickGeneralFromPool($db, $rng, $userID, 14) as $pickObj){
     $valid_until = $pickObj->getValidUntil();
     $info = $pickObj->getInfo();
-    putInfoText($info);
+    putInfoText($info, $currentTargetEnv);
     $pick[] = $info;
 }
 sortTokens($pick);//좀 무식하지만..

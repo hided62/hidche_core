@@ -32,9 +32,10 @@ type CardItem = {
     leadership?: number,
     strength?: number,
     intel?: number,
-    initialLeadership?: number,
-    initialStrength?: number,
-    initialIntel?: number,
+    selectionStatLabel?: string,
+    selectionLeadership?: number,
+    selectionStrength?: number,
+    selectionIntel?: number,
     dex?: number[],
 }
 
@@ -58,9 +59,9 @@ const templateGeneralCard = '<div class="general_card">\
     <%if(leadership){%>\
     <%leadership%> / <%strength%> / <%intel%><br>\
     <%}%>\
-    <%if(initialLeadership){%>\
-    <b>시작 능력치</b><br>\
-    <%initialLeadership%> / <%initialStrength%> / <%initialIntel%><br>\
+    <%if(selectionStatLabel){%>\
+    <b><%selectionStatLabel%></b><br>\
+    <%selectionLeadership%> / <%selectionStrength%> / <%selectionIntel%><br>\
     <%}%>\
     <%if(personalText){%><%personalText%><br><%}%>\
     <%if(specialDomesticText||specialWarText){%>\
@@ -215,9 +216,10 @@ function printGenerals(value: GeneralPoolResponse) {
         'leadership': null,
         'strength': null,
         'intel': null,
-        'initialLeadership': null,
-        'initialStrength': null,
-        'initialIntel': null,
+        'selectionStatLabel': null,
+        'selectionLeadership': null,
+        'selectionStrength': null,
+        'selectionIntel': null,
         'personalText': null,
         'specialDomesticText': null,
         'specialWarText': null,
