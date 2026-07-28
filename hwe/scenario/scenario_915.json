@@ -11,7 +11,8 @@
     ],
     "const": {
         "npcBanMessageProb":0.005,
-        "defaultMaxGeneral": 800
+        "defaultMaxGeneral": 800,
+        "uniqueTrialCoef": 2
     },
     "events": [
         [
