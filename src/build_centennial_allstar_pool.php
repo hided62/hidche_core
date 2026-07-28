@@ -26,6 +26,11 @@ const OUTPUT_COLUMNS = [
     'selectionReasons',
 ];
 
+const EXCLUDED_EVENT_PHASES = [
+    5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+    55, 60, 65, 70, 75, 80, 85, 90, 95,
+];
+
 const LEGACY_SPECIAL_WAR_MAP = [
     40 => 'che_event_귀병',
     41 => 'che_event_신산',
@@ -158,6 +163,7 @@ $rows = [];
 $seenSources = [];
 $nameIndexes = [];
 $phaseCounts = [];
+$chiefCounts = [];
 $reasonCounts = [];
 $lineNo = 0;
 
@@ -182,6 +188,9 @@ while (($line = fgets(STDIN)) !== false) {
     foreach ($row[11] as $reason) {
         $reasonGroup = str_starts_with($reason, 'chief:') ? 'chief' : 'hall';
         $reasonCounts[$reasonGroup] = ($reasonCounts[$reasonGroup] ?? 0) + 1;
+        if ($reasonGroup === 'chief') {
+            $chiefCounts[$row[8]] = ($chiefCounts[$row[8]] ?? 0) + 1;
+        }
     }
     $rows[] = $row;
 }
@@ -201,11 +210,18 @@ foreach ($nameIndexes as $generalName => $indexes) {
     }
 }
 ksort($phaseCounts, SORT_NUMERIC);
-if (array_keys($phaseCounts) !== range(1, 99)) {
-    fail('input does not cover every phase from 1 through 99');
+$expectedPhases = array_values(array_diff(range(1, 99), EXCLUDED_EVENT_PHASES));
+if (array_keys($phaseCounts) !== $expectedPhases) {
+    fail('input does not cover every non-event phase from 1 through 99');
+}
+foreach ($expectedPhases as $phase) {
+    if (($chiefCounts[$phase] ?? 0) !== 8) {
+        fail("phase {$phase}: expected 8 unification chiefs including the ruler");
+    }
 }
 
 $payload = [
+    'excludedEventPhases' => EXCLUDED_EVENT_PHASES,
     'columns' => OUTPUT_COLUMNS,
     'data' => $rows,
 ];

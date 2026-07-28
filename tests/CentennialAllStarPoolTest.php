@@ -6,7 +6,7 @@ final class CentennialAllStarPoolTest extends TestCase
 {
     private const POOL_PATH = __DIR__ . '/../hwe/sammo/GeneralPool/Pool/UnderS100.json';
 
-    public function testPoolCoversEveryCompletedPhase(): void
+    public function testPoolCoversEveryCompletedNonEventPhase(): void
     {
         $pool = json_decode(
             file_get_contents(self::POOL_PATH),
@@ -31,10 +31,18 @@ final class CentennialAllStarPoolTest extends TestCase
             ],
             $pool['columns']
         );
-        self::assertCount(5757, $pool['data']);
+        self::assertCount(4682, $pool['data']);
+        self::assertSame(
+            [
+                5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+                55, 60, 65, 70, 75, 80, 85, 90, 95,
+            ],
+            $pool['excludedEventPhases']
+        );
 
         $column = array_flip($pool['columns']);
         $phases = [];
+        $chiefCounts = [];
         $sourceKeys = [];
         $generalNames = [];
         foreach ($pool['data'] as $row) {
@@ -57,11 +65,25 @@ final class CentennialAllStarPoolTest extends TestCase
                     '/^(hall:[a-z0-9_]+|chief:(?:5|6|7|8|9|10|11|12))$/',
                     $reason
                 );
+                if (str_starts_with($reason, 'chief:')) {
+                    $chiefCounts[$phase] = ($chiefCounts[$phase] ?? 0) + 1;
+                }
             }
         }
 
         ksort($phases, SORT_NUMERIC);
-        self::assertSame(range(1, 99), array_keys($phases));
+        $expectedPhases = array_values(array_diff(
+            range(1, 99),
+            $pool['excludedEventPhases']
+        ));
+        self::assertSame($expectedPhases, array_keys($phases));
+        foreach ($expectedPhases as $phase) {
+            self::assertSame(
+                8,
+                $chiefCounts[$phase] ?? 0,
+                "phase {$phase} must include the ruler and seven chiefs"
+            );
+        }
     }
 
     public function testEveryHistoricalEventSpecialHasAnImplementation(): void

@@ -23,6 +23,7 @@ phases AS (
     FROM emperior e
     LEFT JOIN ng_games g ON g.server_id = e.server_id
     WHERE e.no BETWEEN 1 AND 99
+      AND MOD(e.no, 5) <> 0
 ),
 hall_eligible AS (
     SELECT
