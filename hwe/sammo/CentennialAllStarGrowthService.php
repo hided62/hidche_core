@@ -19,21 +19,154 @@ final class CentennialAllStarGrowthService
         return GameConst::$targetGeneralPool === self::POOL_CLASS;
     }
 
-    public static function initialAux(array $targetInfo): array
+    public static function initialAux(array $targetInfo, ?array $userInitialStats = null): array
     {
+        $granted = array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0);
+        if ($userInitialStats !== null) {
+            foreach (self::STAT_KEYS as $key) {
+                $initial = (int) ($userInitialStats[$key] ?? GameConst::$defaultStatMin);
+                $granted[$key] = max(0, $initial - min($initial, GameConst::$defaultStatMin));
+            }
+        }
+
         return [
             'targetId' => (string) ($targetInfo['uniqueName'] ?? ''),
-            'granted' => array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0),
+            'granted' => $granted,
             'progressMonth' => -1,
             'milestone' => 0,
             'naturalSpecialDomestic' => null,
             'eventSpecialDomestic' => null,
+            'userInitialStats' => $userInitialStats,
         ];
     }
 
     public static function attachInitialTarget(GeneralBuilder $builder, array $targetInfo): void
     {
         $builder->setAuxVar(self::AUX_KEY, self::initialAux($targetInfo));
+    }
+
+    /**
+     * Builds an ordinary-user stat total while preserving the selected
+     * candidate's relative strengths as closely as integer stats allow.
+     *
+     * @return array{leadership:int,strength:int,intel:int}
+     */
+    public static function calculateUserInitialStats(array $targetInfo): array
+    {
+        $targets = [];
+        $bases = [];
+        foreach (self::STAT_KEYS as $key) {
+            $target = min(
+                GameConst::$defaultStatMax,
+                max(0, (int) ($targetInfo[$key] ?? 0))
+            );
+            $targets[$key] = $target;
+            $bases[$key] = min($target, GameConst::$defaultStatMin);
+        }
+
+        $targetTotal = array_sum($targets);
+        $desiredTotal = min(GameConst::$defaultStatTotal, $targetTotal);
+        $baseTotal = array_sum($bases);
+        $capacityTotal = $targetTotal - $baseTotal;
+        if ($capacityTotal <= 0 || $desiredTotal <= $baseTotal) {
+            return $bases;
+        }
+
+        $ratio = ($desiredTotal - $baseTotal) / $capacityTotal;
+        $result = [];
+        $fractions = [];
+        foreach (self::STAT_KEYS as $idx => $key) {
+            $raw = $bases[$key] + ($targets[$key] - $bases[$key]) * $ratio;
+            $result[$key] = (int) floor($raw);
+            $fractions[] = [
+                'key' => $key,
+                'fraction' => $raw - $result[$key],
+                'order' => $idx,
+            ];
+        }
+
+        usort($fractions, static function (array $lhs, array $rhs): int {
+            $fractionOrder = $rhs['fraction'] <=> $lhs['fraction'];
+            return $fractionOrder !== 0 ? $fractionOrder : $lhs['order'] <=> $rhs['order'];
+        });
+        $remainder = $desiredTotal - array_sum($result);
+        foreach ($fractions as $fraction) {
+            if ($remainder <= 0) {
+                break;
+            }
+            $key = $fraction['key'];
+            if ($result[$key] >= $targets[$key]) {
+                continue;
+            }
+            $result[$key]++;
+            $remainder--;
+        }
+
+        return $result;
+    }
+
+    public static function prepareInitialUser(
+        GeneralBuilder $builder,
+        array $targetInfo
+    ): void {
+        $initialStats = self::calculateUserInitialStats($targetInfo);
+        $builder->setStat(
+            $initialStats['leadership'],
+            $initialStats['strength'],
+            $initialStats['intel']
+        );
+        $builder->setAuxVar(
+            self::AUX_KEY,
+            self::initialAux($targetInfo, $initialStats)
+        );
+    }
+
+    /**
+     * Old 100th-season characters did not distinguish their form-entered
+     * initial stats from organic growth. Before their first reselection, treat
+     * the ordinary creation range as the replaceable initial allocation.
+     */
+    public static function prepareLegacyUserReselection(General $general): void
+    {
+        $aux = $general->getAuxVar(self::AUX_KEY);
+        if (!is_array($aux) || is_array($aux['userInitialStats'] ?? null)) {
+            return;
+        }
+
+        $granted = is_array($aux['granted'] ?? null)
+            ? $aux['granted']
+            : array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0);
+        $legacyInitialStats = [];
+        foreach (self::STAT_KEYS as $key) {
+            $current = (int) $general->getVar($key);
+            $granted[$key] = self::calculateLegacyUserGrant(
+                $current,
+                (int) ($granted[$key] ?? 0)
+            );
+            $beforeEventGrant = max(
+                0,
+                $current - max(0, (int) ($aux['granted'][$key] ?? 0))
+            );
+            $legacyInitialStats[$key] = min(
+                $beforeEventGrant,
+                GameConst::$defaultStatMax
+            );
+        }
+        $aux['granted'] = $granted;
+        $aux['userInitialStats'] = $legacyInitialStats;
+        $general->setAuxVar(self::AUX_KEY, $aux);
+    }
+
+    public static function calculateLegacyUserGrant(int $current, int $eventGrant): int
+    {
+        $eventGrant = max(0, $eventGrant);
+        $beforeEventGrant = max(0, $current - $eventGrant);
+        $replaceableInitialGrant = max(
+            0,
+            min($beforeEventGrant, GameConst::$defaultStatMax)
+                - min($beforeEventGrant, GameConst::$defaultStatMin)
+        );
+        return $eventGrant + $replaceableInitialGrant;
     }
 
     public static function calculateProgress(
@@ -87,6 +220,10 @@ final class CentennialAllStarGrowthService
             ? $aux['granted']
             : array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0);
         $targetChanged = ($aux['targetId'] ?? '') !== $targetId;
+        $isUserTarget = is_array($aux['userInitialStats'] ?? null);
+        $nextUserInitialStats = $targetChanged && $isUserTarget
+            ? self::calculateUserInitialStats($targetInfo)
+            : ($aux['userInitialStats'] ?? null);
         $changed = false;
 
         foreach (self::STAT_KEYS as $key) {
@@ -99,6 +236,9 @@ final class CentennialAllStarGrowthService
                 GameConst::$defaultStatMin,
                 $progress
             );
+            if ($nextUserInitialStats !== null) {
+                $floor = max($floor, (int) ($nextUserInitialStats[$key] ?? 0));
+            }
             $current = (int) $general->getVar($key);
             if ($targetChanged) {
                 $result = CentennialAllStarGrowth::replaceTarget(
@@ -178,6 +318,7 @@ final class CentennialAllStarGrowthService
         $aux['granted'] = $granted;
         $aux['progressMonth'] = max((int) ($aux['progressMonth'] ?? -1), $progressMonth);
         $aux['milestone'] = max($previousMilestone, $milestone);
+        $aux['userInitialStats'] = $nextUserInitialStats;
         $general->setAuxVar(self::AUX_KEY, $aux);
 
         return [

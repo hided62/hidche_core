@@ -21,6 +21,7 @@ $intel = Util::getPost(
 );
 $personal = Util::getPost('personal', 'string', null);
 $use_own_picture = Util::getPost('use_own_picture', 'bool', false);
+$pictureSource = Util::getPost('picture_source', 'string', 'selected');
 
 
 if(!$pick){
@@ -69,12 +70,35 @@ if(!$selectInfo){
 }
 $selectInfo = Json::decode($selectInfo);
 
-$ownerInfo = RootDB::db()->queryFirstRow('SELECT `name`,`picture`,`imgsvr` FROM member WHERE `NO`=%i',$userID);
+$ownerInfo = RootDB::db()->queryFirstRow(
+    'SELECT `name`,`picture`,`imgsvr`,`grade` FROM member WHERE `NO`=%i',
+    $userID
+);
 if(!$ownerInfo){
     Json::die([
         'result'=>false,
         'reason'=>'멤버 정보를 가져오지 못했습니다.'
     ]);
+}
+if ($isCentennialAllStar) {
+    if (!in_array($pictureSource, ['selected', 'own'], true)) {
+        Json::die([
+            'result' => false,
+            'reason' => '올바르지 않은 전콘 선택입니다.',
+        ]);
+    }
+    if ($pictureSource === 'own') {
+        $canUseOwnPicture = in_array('picture', GameConst::$generalPoolAllowOption, true)
+            && $env['show_img_level'] >= 1
+            && $ownerInfo['grade'] >= 1
+            && $ownerInfo['picture'] !== '';
+        if (!$canUseOwnPicture) {
+            Json::die([
+                'result' => false,
+                'reason' => '사용할 수 있는 내 전콘이 없습니다.',
+            ]);
+        }
+    }
 }
 
 
@@ -102,9 +126,12 @@ if ($isCentennialAllStar) {
 }
 
 $builder = $pickedGeneral->getGeneralBuilder();
+if ($isCentennialAllStar) {
+    CentennialAllStarGrowthService::prepareInitialUser($builder, $selectInfo);
+}
 
 foreach(GameConst::$generalPoolAllowOption as $allowOption){
-    if($allowOption == 'stat'){
+    if($allowOption == 'stat' && !$isCentennialAllStar){
         $leadership = Util::valueFit($leadership, GameConst::$defaultStatMin, GameConst::$defaultStatMax);
         $strength = Util::valueFit($strength, GameConst::$defaultStatMin, GameConst::$defaultStatMax);
         $intel = Util::valueFit($intel, GameConst::$defaultStatMin, GameConst::$defaultStatMax);
@@ -117,7 +144,13 @@ foreach(GameConst::$generalPoolAllowOption as $allowOption){
         }
         $builder->setStat($leadership, $strength, $intel);
     }
-    else if($allowOption == 'picture' && $use_own_picture){
+    else if(
+        $allowOption == 'picture'
+        && (
+            (!$isCentennialAllStar && $use_own_picture)
+            || ($isCentennialAllStar && $pictureSource === 'own')
+        )
+    ){
         $builder->setPicture($ownerInfo['imgsvr'], $ownerInfo['picture']);
     }
     else if($allowOption == 'ego'){

@@ -32,6 +32,9 @@ type CardItem = {
     leadership?: number,
     strength?: number,
     intel?: number,
+    initialLeadership?: number,
+    initialStrength?: number,
+    initialIntel?: number,
     dex?: number[],
 }
 
@@ -43,6 +46,7 @@ type GeneralPoolResponse = {
 
 declare const characterInfo: Record<string, { name: string, info: string }>;
 declare const hasGeneralID: number;
+declare const isCentennialAllStar: boolean;
 declare let currentGeneralInfo: CardItem | undefined;
 declare const cards: Record<string, CardItem>;
 declare const validCustomOption: string[];
@@ -53,6 +57,10 @@ const templateGeneralCard = '<div class="general_card">\
     <%if(event100Growth){%><b>195년 최종 동조 목표</b><br><%}%>\
     <%if(leadership){%>\
     <%leadership%> / <%strength%> / <%intel%><br>\
+    <%}%>\
+    <%if(initialLeadership){%>\
+    <b>시작 능력치</b><br>\
+    <%initialLeadership%> / <%initialStrength%> / <%initialIntel%><br>\
     <%}%>\
     <%if(personalText){%><%personalText%><br><%}%>\
     <%if(specialDomesticText||specialWarText){%>\
@@ -108,7 +116,10 @@ async function pickGeneral(this: HTMLElement, e: JQuery.Event) {
             method: 'post',
             responseType: 'json',
             data: convertFormData({
-                pick: unwrap_any<string>($btn.val())
+                pick: unwrap_any<string>($btn.val()),
+                picture_source: unwrap_any<string>(
+                    $('input[name="reselect_picture_source"]:checked').val() ?? 'selected'
+                )
             })
         });
         result = response.data;
@@ -138,22 +149,24 @@ async function buildGeneral(e: JQuery.Event) {
 
     let result: InvalidResponse;
     try {
+        const formData: Record<string, string|number|boolean> = {
+            pick: unwrap(currentGeneralInfo).uniqueName,
+            use_own_picture: $('#use_own_picture').is(':checked'),
+            picture_source: unwrap_any<string>(
+                $('input[name="picture_source"]:checked').val() ?? 'selected'
+            ),
+            personal: unwrap_any<string>($('#selChar').val())
+        };
+        if (!isCentennialAllStar) {
+            formData.leadership = parseInt(unwrap_any<string>($('#leadership').val()));
+            formData.strength = parseInt(unwrap_any<string>($('#leadership').val()));
+            formData.intel = parseInt(unwrap_any<string>($('#leadership').val()));
+        }
         const response = await axios({
             url: 'j_select_picked_general.php',
             method: 'post',
             responseType: 'json',
-            data: convertFormData({
-                pick: unwrap(currentGeneralInfo).uniqueName,
-                use_own_picture: $('#use_own_picture').is(':checked'),
-                leadership: parseInt(unwrap_any<string>($('#leadership').val())),
-                strength: parseInt(unwrap_any<string>(
-                    $(unwrap(currentGeneralInfo).event100Growth ? '#strength' : '#leadership').val()
-                )),
-                intel: parseInt(unwrap_any<string>(
-                    $(unwrap(currentGeneralInfo).event100Growth ? '#intel' : '#leadership').val()
-                )),
-                personal: unwrap_any<string>($('#selChar').val())
-            })
+            data: convertFormData(formData)
         })
         result = response.data;
         if (!result.result) {
@@ -202,6 +215,9 @@ function printGenerals(value: GeneralPoolResponse) {
         'leadership': null,
         'strength': null,
         'intel': null,
+        'initialLeadership': null,
+        'initialStrength': null,
+        'initialIntel': null,
         'personalText': null,
         'specialDomesticText': null,
         'specialWarText': null,

@@ -7,6 +7,7 @@ include "func.php";
 WebUtil::requireAJAX();
 
 $pick = Util::getPost('pick');
+$pictureSource = Util::getPost('picture_source', 'string', 'selected');
 
 if(!$pick){
     Json::die([
@@ -38,8 +39,17 @@ list(
     $startYear,
     $maxgeneral,
     $npcmode,
-    $turnterm
-) = $gameStor->getValuesAsArray(['year', 'month', 'startyear', 'maxgeneral', 'npcmode', 'turnterm']);
+    $turnterm,
+    $showImgLevel
+) = $gameStor->getValuesAsArray([
+    'year',
+    'month',
+    'startyear',
+    'maxgeneral',
+    'npcmode',
+    'turnterm',
+    'show_img_level',
+]);
 
 if($npcmode!=2){
     Json::die([
@@ -56,7 +66,10 @@ if(!$info){
     ]);
 }
 
-$ownerInfo = RootDB::db()->queryFirstRow('SELECT `name`,`picture`,`imgsvr` FROM member WHERE `NO`=%i',$userID);
+$ownerInfo = RootDB::db()->queryFirstRow(
+    'SELECT `name`,`picture`,`imgsvr`,`grade` FROM member WHERE `NO`=%i',
+    $userID
+);
 if(!$ownerInfo){
     Json::die([
         'result'=>false,
@@ -65,6 +78,27 @@ if(!$ownerInfo){
 }
 
 $info = Json::decode($info);
+$isCentennialAllStar = CentennialAllStarGrowthService::isActive();
+if ($isCentennialAllStar) {
+    if (!in_array($pictureSource, ['current', 'own', 'selected'], true)) {
+        Json::die([
+            'result' => false,
+            'reason' => '올바르지 않은 전콘 선택입니다.',
+        ]);
+    }
+    if ($pictureSource === 'own') {
+        $canUseOwnPicture = in_array('picture', GameConst::$generalPoolAllowOption, true)
+            && $showImgLevel >= 1
+            && $ownerInfo['grade'] >= 1
+            && $ownerInfo['picture'] !== '';
+        if (!$canUseOwnPicture) {
+            Json::die([
+                'result' => false,
+                'reason' => '사용할 수 있는 내 전콘이 없습니다.',
+            ]);
+        }
+    }
+}
 
 
 $generalObj = General::createObjFromDB($generalID);
@@ -102,8 +136,8 @@ $db->update('select_pool',[
     'reserved_until'=>null,
 ], '(owner=%i or reserved_until < %s) AND general_id is NULL', $userID, $now);
 
-$isCentennialAllStar = CentennialAllStarGrowthService::isActive();
 if ($isCentennialAllStar) {
+    CentennialAllStarGrowthService::prepareLegacyUserReselection($generalObj);
     CentennialAllStarGrowthService::applyTarget($generalObj, $info, [
         'startyear' => $startYear,
         'year' => $year,
@@ -132,7 +166,15 @@ if ($isCentennialAllStar) {
         $generalObj->updateVar('special2', $info['specialWar']);
     }
 }
-if(key_exists('picture', $info)){
+if ($isCentennialAllStar) {
+    if ($pictureSource === 'own') {
+        $generalObj->updateVar('imgsvr', $ownerInfo['imgsvr']);
+        $generalObj->updateVar('picture', $ownerInfo['picture']);
+    } elseif ($pictureSource === 'selected' && key_exists('picture', $info)) {
+        $generalObj->updateVar('imgsvr', $info['imgsvr']);
+        $generalObj->updateVar('picture', $info['picture']);
+    }
+} elseif(key_exists('picture', $info)){
     $generalObj->updateVar('imgsvr', $info['imgsvr']);
     $generalObj->updateVar('picture', $info['picture']);
 }

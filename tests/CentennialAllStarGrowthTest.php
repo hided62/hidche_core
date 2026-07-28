@@ -4,6 +4,9 @@ use PHPUnit\Framework\TestCase;
 use sammo\CentennialAllStarGrowth;
 use sammo\CentennialAllStarGrowthService;
 
+require_once __DIR__ . '/../hwe/sammo/ActionLogger.php';
+require_once __DIR__ . '/../hwe/sammo/GameConstBase.php';
+require_once __DIR__ . '/../hwe/d_setting/GameConst.php';
 require_once __DIR__ . '/../hwe/sammo/CentennialAllStarGrowthService.php';
 
 final class CentennialAllStarGrowthTest extends TestCase
@@ -62,6 +65,77 @@ final class CentennialAllStarGrowthTest extends TestCase
         self::assertSame(
             ['value' => 60, 'granted' => 10, 'delta' => 10],
             CentennialAllStarGrowth::advance(50, 0, $floor)
+        );
+    }
+
+    public function testUserInitialStatsPreserveCandidateShapeAtOrdinaryTotal(): void
+    {
+        $initial = CentennialAllStarGrowthService::calculateUserInitialStats([
+            'leadership' => 80,
+            'strength' => 70,
+            'intel' => 50,
+        ]);
+
+        self::assertSame([
+            'leadership' => 65,
+            'strength' => 58,
+            'intel' => 42,
+        ], $initial);
+        self::assertSame(165, array_sum($initial));
+        self::assertLessThanOrEqual(80, $initial['leadership']);
+        self::assertLessThanOrEqual(70, $initial['strength']);
+        self::assertLessThanOrEqual(50, $initial['intel']);
+    }
+
+    public function testUserInitialStatsDoNotRaiseCandidateBelowOrdinaryTotal(): void
+    {
+        self::assertSame([
+            'leadership' => 60,
+            'strength' => 45,
+            'intel' => 30,
+        ], CentennialAllStarGrowthService::calculateUserInitialStats([
+            'leadership' => 60,
+            'strength' => 45,
+            'intel' => 30,
+        ]));
+    }
+
+    public function testInitialUserGrantMakesInitialAllocationReplaceable(): void
+    {
+        $initial = CentennialAllStarGrowthService::calculateUserInitialStats([
+            'uniqueName' => 'A1000001',
+            'leadership' => 80,
+            'strength' => 70,
+            'intel' => 50,
+        ]);
+        $aux = CentennialAllStarGrowthService::initialAux([
+            'uniqueName' => 'A1000001',
+        ], $initial);
+
+        self::assertSame('A1000001', $aux['targetId']);
+        self::assertSame($initial, $aux['userInitialStats']);
+        self::assertSame(50, $aux['granted']['leadership']);
+        self::assertSame(43, $aux['granted']['strength']);
+        self::assertSame(27, $aux['granted']['intel']);
+    }
+
+    public function testLegacyInitialGrantKeepsOnlyGrowthBeyondCreationRange(): void
+    {
+        self::assertSame(
+            35,
+            CentennialAllStarGrowthService::calculateLegacyUserGrant(50, 0)
+        );
+        self::assertSame(
+            75,
+            CentennialAllStarGrowthService::calculateLegacyUserGrant(90, 40)
+        );
+        self::assertSame(
+            105,
+            CentennialAllStarGrowthService::calculateLegacyUserGrant(140, 40)
+        );
+        self::assertSame(
+            35,
+            140 - CentennialAllStarGrowthService::calculateLegacyUserGrant(140, 40)
         );
     }
 

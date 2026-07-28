@@ -51,6 +51,22 @@
     display: none;
 }
 
+.picture_choice {
+    margin: 8px auto;
+}
+
+.picture_choice label,
+.event_picture label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 4px 8px;
+}
+
+.picture_choice img {
+    object-fit: cover;
+}
+
 .custom_picture {
     display: none;
 }

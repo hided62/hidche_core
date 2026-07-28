@@ -19,8 +19,16 @@ if ($admin['npcmode'] != 2) {
 
 $member = RootDB::db()->queryFirstRow("SELECT no,name,picture,imgsvr,grade from member where no= %i", $userID);
 
-$generalID = $db->queryFirstField('SELECT no FROM general WHERE owner = %i', $userID);
+$currentGeneral = $db->queryFirstRow(
+    'SELECT no,picture,imgsvr FROM general WHERE owner = %i',
+    $userID
+);
+$generalID = $currentGeneral['no'] ?? null;
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
+$isCentennialAllStar = CentennialAllStarGrowthService::isActive();
+$canUseOwnPicture = $admin['show_img_level'] >= 1
+    && $member['grade'] >= 1
+    && $member['picture'] != "";
 
 $nationList = $db->query('SELECT nation,`name`,color,scout FROM nation');
 shuffle($nationList);
@@ -54,6 +62,7 @@ foreach (getCharacterList(false) as $id => [$name, $info]) {
 
     <script>
         var hasGeneralID = <?= $generalID === null ? 'false' : 'true' ?>;
+        var isCentennialAllStar = <?= $isCentennialAllStar ? 'true' : 'false' ?>;
         var defaultStatTotal = <?= GameConst::$defaultStatTotal ?>;
         var defaultStatMin = <?= GameConst::$defaultStatMin ?>;
         var defaultStatMax = <?= GameConst::$defaultStatMax ?>;
@@ -104,6 +113,27 @@ if ($gencount >= $admin['maxgeneral']) {
                 <small id="valid_until">(<span id="valid_until_text"></span>까지 유효)</small><small id="outdate_token">- 만료 -</small><br>
                 <form class="card_holder">
                 </form>
+                <?php if ($isCentennialAllStar && $generalID !== null) : ?>
+                    <div id="reselect_picture_plate" class="picture_choice">
+                        <strong>변경 후 전콘</strong>
+                        <label>
+                            <input type="radio" name="reselect_picture_source" value="selected" checked>
+                            새로 선택할 장수 전콘
+                        </label>
+                        <label>
+                            <input type="radio" name="reselect_picture_source" value="current">
+                            <img width="32" height="32" src="<?= GetImageURL($currentGeneral['imgsvr']) ?>/<?= $currentGeneral['picture'] ?>" border="0">
+                            현재 장수 전콘
+                        </label>
+                        <?php if ($canUseOwnPicture) : ?>
+                            <label>
+                                <input type="radio" name="reselect_picture_source" value="own">
+                                <img width="32" height="32" src="<?= GetImageURL($member['imgsvr']) ?>/<?= $member['picture'] ?>" border="0">
+                                내 원래 전콘
+                            </label>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -117,7 +147,28 @@ if ($gencount >= $admin['maxgeneral']) {
                     <form id='custom_form'>
                         <table class='tb_layout' style='width:100%;text-align:left;'>
                             <?php
-                            if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
+                            if ($isCentennialAllStar) {
+                                echo "
+        <tr class='event_picture'>
+            <td align=right class='bg1'>전콘 선택</td>
+            <td colspan=2>
+                <label><input type=radio name=picture_source value=selected checked> 선택한 장수 전콘</label>
+    ";
+                                if ($canUseOwnPicture) {
+                                    $imageTemp = GetImageURL($member['imgsvr']);
+                                    echo "
+                <label>
+                    <input type=radio name=picture_source value=own>
+                    <img width='64' height='64' src='{$imageTemp}/{$member['picture']}' border='0'>
+                    내 전콘
+                </label>
+    ";
+                                }
+                                echo "
+            </td>
+        </tr>
+    ";
+                            } elseif ($canUseOwnPicture) {
                                 $imageTemp = GetImageURL($member['imgsvr']);
                                 echo "
         <tr class='custom_picture'>
@@ -144,36 +195,42 @@ if ($gencount >= $admin['maxgeneral']) {
                                     </select> <span id="charInfoText"></span>
                                 </td>
                             </tr>
-                            <tr class='custom_stat'>
-                                <td align=right class='bg1'>통솔</td>
-                                <td colspan=2><input type="number" name="leadership" id="leadership" value="50"></td>
-                            </tr>
-                            <tr class='custom_stat'>
-                                <td align=right class='bg1'>무력</td>
-                                <td colspan=2><input type="number" name="strength" id="strength" value="50"></td>
-                            </tr>
-                            <tr class='custom_stat'>
-                                <td align=right class='bg1'>지력</td>
-                                <td colspan=2><input type="number" name="intel" id="intel" value="50"></td>
-                            </tr>
-                            <tr class='custom_stat'>
-                                <td align=right class='bg1'>능력치 조정</td>
-                                <td colspan=2>
-                                    <input type=button value=랜덤형 onclick=abilityRand()>
-                                    <input type=button value=통솔무력형 onclick=abilityLeadpow()>
-                                    <input type=button value=통솔지력형 onclick=abilityLeadint()>
-                                    <input type=button value=무력지력형 onclick=abilityPowint()>
-                                </td>
-                            </tr>
-                            <tr class='custom_stat'>
-                                <td align=center colspan=3>
-                                    <font color=orange>모든 능력치는 ( <?= GameConst::$defaultStatMin ?> <= 능력치 <=<?= GameConst::$defaultStatMax ?> ) 사이로 잡으셔야 합니다.<br>
-                                            그 외의 능력치는 가입되지 않습니다.</font>
-                                </td>
-                            </tr>
+                            <?php if (!$isCentennialAllStar) : ?>
+                                <tr class='custom_stat'>
+                                    <td align=right class='bg1'>통솔</td>
+                                    <td colspan=2><input type="number" name="leadership" id="leadership" value="50"></td>
+                                </tr>
+                                <tr class='custom_stat'>
+                                    <td align=right class='bg1'>무력</td>
+                                    <td colspan=2><input type="number" name="strength" id="strength" value="50"></td>
+                                </tr>
+                                <tr class='custom_stat'>
+                                    <td align=right class='bg1'>지력</td>
+                                    <td colspan=2><input type="number" name="intel" id="intel" value="50"></td>
+                                </tr>
+                                <tr class='custom_stat'>
+                                    <td align=right class='bg1'>능력치 조정</td>
+                                    <td colspan=2>
+                                        <input type=button value=랜덤형 onclick=abilityRand()>
+                                        <input type=button value=통솔무력형 onclick=abilityLeadpow()>
+                                        <input type=button value=통솔지력형 onclick=abilityLeadint()>
+                                        <input type=button value=무력지력형 onclick=abilityPowint()>
+                                    </td>
+                                </tr>
+                                <tr class='custom_stat'>
+                                    <td align=center colspan=3>
+                                        <font color=orange>모든 능력치는 ( <?= GameConst::$defaultStatMin ?> <= 능력치 <=<?= GameConst::$defaultStatMax ?> ) 사이로 잡으셔야 합니다.<br>
+                                                그 외의 능력치는 가입되지 않습니다.</font>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                             <tr>
                                 <td align=center colspan=3>
-                                    <span class='custom_stat'>능력치의 총합은 <?= GameConst::$defaultStatTotal ?>입니다. 가입후 0~10의 능력치 보너스를 받게 됩니다.<br></span>
+                                    <?php if ($isCentennialAllStar) : ?>
+                                        선택한 장수의 최종 능력치 비율을 반영한 약화 능력치로 시작합니다.<br>
+                                    <?php else : ?>
+                                        <span class='custom_stat'>능력치의 총합은 <?= GameConst::$defaultStatTotal ?>입니다. 가입후 0~10의 능력치 보너스를 받게 됩니다.<br></span>
+                                    <?php endif; ?>
                                     임의의 도시에서 재야로 시작하며 건국과 임관은 게임 내에서 실행합니다.
                                 </td>
                             </tr>

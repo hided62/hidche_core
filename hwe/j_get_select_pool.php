@@ -11,6 +11,13 @@ function sortTokens(&$tokens){
 }
 
 function putInfoText(&$info){
+    if (($info['event100Growth'] ?? false) === true) {
+        $initialStats = CentennialAllStarGrowthService::calculateUserInitialStats($info);
+        $info['initialLeadership'] = $initialStats['leadership'];
+        $info['initialStrength'] = $initialStats['strength'];
+        $info['initialIntel'] = $initialStats['intel'];
+    }
+
     if(key_exists('specialDomestic', $info)){
         $class = buildGeneralSpecialDomesticClass($info['specialDomestic']);
         $info['specialDomesticName'] = $class->getName();
