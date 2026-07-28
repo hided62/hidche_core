@@ -10,7 +10,8 @@
         "<C>●</>180년 1월:<L><b>【100기 이벤트】</b></> 역대 장수들이 평범한 능력으로 다시 모여, 지난 전성기의 힘과 서서히 동조하기 시작했다!"
     ],
     "const": {
-        "npcBanMessageProb": 1
+        "npcBanMessageProb":0.005,
+        "defaultMaxGeneral": 800
     },
     "events": [
         [
@@ -31,13 +32,29 @@
             ["DeleteEvent"]
         ],
         [
-            "month", 1000,
-            ["Date", "==", 181, 12],
-            ["ChangeCity", "occupied", {
-                "pop": "+60000",
-                "agri": "+1200",
-                "comm": "+1200"
-            }]
+            "destroy_nation", 1000,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "==", 1]
+            ],
+            ["BlockScoutAction"],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["Date", "==", 181, 1],
+            ["OpenNationBetting", 4, 5000],
+            ["OpenNationBetting", 1, 2000],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 999,
+            ["and",
+                ["Date", ">=", 183, 1],
+                ["RemainNation", "<=", 8]
+            ],
+            ["OpenNationBetting", 1, 1000],
+            ["DeleteEvent"]
         ],
         [
             "destroy_nation", 1000,
