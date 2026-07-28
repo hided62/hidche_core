@@ -1,6 +1,11 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use sammo\GeneralPool\SPoolUnderU100;
+
+require_once __DIR__ . '/../hwe/sammo/AbsGeneralPool.php';
+require_once __DIR__ . '/../hwe/sammo/AbsFromUserPool.php';
+require_once __DIR__ . '/../hwe/sammo/GeneralPool/SPoolUnderU100.php';
 
 final class CentennialAllStarPoolTest extends TestCase
 {
@@ -57,6 +62,13 @@ final class CentennialAllStarPoolTest extends TestCase
             $generalName = $row[$column['generalName']];
             self::assertArrayNotHasKey($generalName, $generalNames);
             $generalNames[$generalName] = true;
+            self::assertMatchesRegularExpression('/^(\d{1,2})·.+$/u', $generalName);
+            self::assertSame(
+                1,
+                preg_match('/^(\d{1,2})·/u', $generalName, $nameMatch)
+            );
+            self::assertSame($phase, (int) $nameMatch[1]);
+            self::assertLessThanOrEqual(32, mb_strlen($generalName));
 
             self::assertCount(5, $row[$column['dex']]);
             self::assertNotEmpty($row[$column['selectionReasons']]);
@@ -84,6 +96,29 @@ final class CentennialAllStarPoolTest extends TestCase
                 "phase {$phase} must include the ruler and seven chiefs"
             );
         }
+    }
+
+    public function testCentennialSelectionWeightFavorsUserStatsAndKeepsZeroDexEligible(): void
+    {
+        $method = new ReflectionMethod(SPoolUnderU100::class, 'getCandidateWeight');
+        $method->setAccessible(true);
+        $low = [
+            'leadership' => 80,
+            'strength' => 70,
+            'intel' => 10,
+            'dex' => [0, 0, 0, 0, 0],
+        ];
+        $high = [
+            'leadership' => 95,
+            'strength' => 85,
+            'intel' => 10,
+            'dex' => [0, 0, 0, 0, 0],
+        ];
+
+        self::assertSame(100000, $method->invoke(null, $low, 0));
+        self::assertSame(100000.0, $method->invoke(null, $low, 1));
+        self::assertSame(150000.0, $method->invoke(null, $high, 1));
+        self::assertSame(100000, $method->invoke(null, $high, 0));
     }
 
     public function testEveryHistoricalEventSpecialHasAnImplementation(): void

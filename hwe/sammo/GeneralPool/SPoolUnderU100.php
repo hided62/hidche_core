@@ -9,6 +9,11 @@ use sammo\RandUtil;
 
 class SPoolUnderU100 extends AbsFromUserPool
 {
+    private const MIN_DEX_WEIGHT = 100000;
+    private const STAT_BONUS_MIN_TOTAL = 160;
+    private const STAT_BONUS_MAX_TOTAL = 190;
+    private const STAT_BONUS_MAX_MULTIPLIER = 1.5;
+
     public function __construct(\MeekroDB $db, RandUtil $rng, array $info, string $validUntil)
     {
         $targetInfo = $info;
@@ -34,6 +39,32 @@ class SPoolUnderU100 extends AbsFromUserPool
     public static function getPoolName(): string
     {
         return '100기 올스타 클래식';
+    }
+
+    protected static function getCandidateWeight(array $info, int $owner): int|float
+    {
+        $dexWeight = max(
+            self::MIN_DEX_WEIGHT,
+            array_sum($info['dex'] ?? [])
+        );
+        if ($owner <= 0) {
+            return $dexWeight;
+        }
+
+        $statTotal = array_sum([
+            (int) ($info['leadership'] ?? 0),
+            (int) ($info['strength'] ?? 0),
+            (int) ($info['intel'] ?? 0),
+        ]);
+        $normalizedStat = min(1, max(
+            0,
+            ($statTotal - self::STAT_BONUS_MIN_TOTAL)
+                / (self::STAT_BONUS_MAX_TOTAL - self::STAT_BONUS_MIN_TOTAL)
+        ));
+        $statMultiplier = 1
+            + (self::STAT_BONUS_MAX_MULTIPLIER - 1) * $normalizedStat;
+
+        return $dexWeight * $statMultiplier;
     }
 
     public static function initPool(\MeekroDB $db)

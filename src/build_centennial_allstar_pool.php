@@ -115,7 +115,7 @@ function decodeSourceRow(string $line, int $lineNo): array
     if ($sourceName === '') {
         fail("line {$lineNo}: empty general name");
     }
-    $generalName = sprintf('【%d기】%s', $phaseNo, $sourceName);
+    $generalName = sprintf('%d·%s', $phaseNo, $sourceName);
     if (mb_strlen($generalName) > 32) {
         fail("line {$lineNo}: generated name exceeds 32 characters: {$generalName}");
     }

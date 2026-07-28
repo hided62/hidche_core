@@ -25,7 +25,12 @@ class AdvanceCentennialAllStar extends \sammo\Event\Action
         ) as $row) {
             $general = General::createObjFromDB((int) $row['no']);
             $targetInfo = Json::decode($row['info']);
-            $result = CentennialAllStarGrowthService::applyTarget($general, $targetInfo, $env);
+            $result = CentennialAllStarGrowthService::applyTarget(
+                $general,
+                $targetInfo,
+                $env,
+                CentennialAllStarGrowthService::progressMultiplierFor($general)
+            );
 
             if ($result['milestone'] > $result['previousMilestone']) {
                 $percent = $result['milestone'] * 20;

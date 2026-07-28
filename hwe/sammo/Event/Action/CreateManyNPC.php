@@ -5,6 +5,7 @@ namespace sammo\Event\Action;
 use \sammo\GameConst;
 use \sammo\Util;
 use \sammo\DB;
+use sammo\CentennialAllStarGrowthService;
 use sammo\LiteHashDRBG;
 use sammo\RandUtil;
 use sammo\UniqueConst;
@@ -35,7 +36,8 @@ class CreateManyNPC extends \sammo\Event\Action
         )));
 
         $result = [];
-        foreach (pickGeneralFromPool(DB::db(), $rng, 0, $cnt) as $pickedNPC) {
+        $db = DB::db();
+        foreach (pickGeneralFromPool($db, $rng, 0, $cnt) as $pickedNPC) {
             $age = $rng->nextRangeInt(20, 25);
             $birthYear = $env['year'] - $age;
             $deathYear = $env['year'] + $rng->nextRangeInt(10, 50);
@@ -50,6 +52,12 @@ class CreateManyNPC extends \sammo\Event\Action
             }
             $newNPC->fillRemainSpecAsZero($env);
             $newNPC->build($env);
+            CentennialAllStarGrowthService::applyCurrentTargetToBuiltNPC(
+                $db,
+                $newNPC,
+                $pickedNPC->getInfo(),
+                $env
+            );
             $pickedNPC->occupyGeneralName();
             $result[] = [
                 $newNPC->getGeneralName(), $newNPC->getGeneralID()

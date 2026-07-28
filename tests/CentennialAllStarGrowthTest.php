@@ -17,6 +17,40 @@ final class CentennialAllStarGrowthTest extends TestCase
         self::assertSame(1.0, CentennialAllStarGrowth::progress(180, 210, 1));
     }
 
+    public function testMAndGGeneralsAdvanceAtNinetyPercentProgress(): void
+    {
+        self::assertSame(
+            CentennialAllStarGrowthService::NPC_PROGRESS_MULTIPLIER,
+            CentennialAllStarGrowthService::progressMultiplierForNPCType(3)
+        );
+        self::assertSame(
+            CentennialAllStarGrowthService::NPC_PROGRESS_MULTIPLIER,
+            CentennialAllStarGrowthService::progressMultiplierForNPCType(4)
+        );
+        self::assertSame(1.0, CentennialAllStarGrowthService::progressMultiplierForNPCType(2));
+        self::assertEqualsWithDelta(
+            0.36,
+            CentennialAllStarGrowthService::calculateProgress(180, 186, 1, 0.9),
+            0.000001
+        );
+        self::assertEqualsWithDelta(
+            0.9,
+            CentennialAllStarGrowthService::calculateProgress(180, 195, 1, 0.9),
+            0.000001
+        );
+        self::assertEqualsWithDelta(
+            0.9,
+            CentennialAllStarGrowthService::calculateProgress(180, 210, 1, 0.9),
+            0.000001
+        );
+    }
+
+    public function testProgressMultiplierMustStayWithinUnitInterval(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        CentennialAllStarGrowthService::calculateProgress(180, 195, 1, 1.01);
+    }
+
     public function testLowStatGrowsWhileHigherStatStays(): void
     {
         $floor = CentennialAllStarGrowth::statFloor(90, 15, 0.6);

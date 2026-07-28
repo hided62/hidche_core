@@ -145,6 +145,23 @@ $builder->setKillturn(5);
 $builder->setNPCType(0);
 $builder->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $env['turnterm']));
 $builder->fillRemainSpecAsZero($env);
+if ($isCentennialAllStar) {
+    $candidateCities = $db->queryFirstColumn(
+        'SELECT city FROM city WHERE level >= 5 AND level <= 6 AND nation = 0'
+    );
+    if (!$candidateCities) {
+        $candidateCities = $db->queryFirstColumn(
+            'SELECT city FROM city WHERE level >= 5 AND level <= 6'
+        );
+    }
+    if (!$candidateCities) {
+        Json::die([
+            'result' => false,
+            'reason' => '장수를 생성할 소·중성이 없습니다.',
+        ]);
+    }
+    $builder->setCityID($rng->choice($candidateCities));
+}
 $builder->build($env);
 $generalID = $builder->getGeneralID();
 if(!$generalID){

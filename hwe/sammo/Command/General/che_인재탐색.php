@@ -7,6 +7,7 @@ use \sammo\Util;
 use \sammo\JosaUtil;
 use \sammo\General;
 use \sammo\ActionLogger;
+use \sammo\CentennialAllStarGrowthService;
 use \sammo\GameConst;
 use \sammo\LastTurn;
 use \sammo\GameUnitConst;
@@ -190,6 +191,12 @@ class che_인재탐색 extends Command\GeneralCommand
         $newNPC->fillRemainSpecAsRandom($pickTypeList, $avgGen, $env);
 
         $newNPC->build($this->env);
+        CentennialAllStarGrowthService::applyCurrentTargetToBuiltNPC(
+            $db,
+            $newNPC,
+            $pickedNPC->getInfo(),
+            $this->env
+        );
         $pickedNPC->occupyGeneralName();
         $npcName = $newNPC->getGeneralName();
         $josaRa = JosaUtil::pick($npcName, '라');

@@ -8,6 +8,11 @@ use sammo\Util;
 
 abstract class AbsFromUserPool extends AbsGeneralPool{
 
+    protected static function getCandidateWeight(array $info, int $owner): int|float
+    {
+        return array_sum($info['dex'] ?? []);
+    }
+
     public function occupyGeneralName(): bool
     {
         $generalID = $this->getGeneralBuilder()->getGeneralID();
@@ -36,8 +41,7 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
         $pool = [];
         foreach($db->query('SELECT id, unique_name, info FROM select_pool WHERE reserved_until IS NULL AND general_id IS NULL', $pickCnt) as $cand){
             $cand['info'] = Json::decode($cand['info']);
-            $dexTotal = array_sum($cand['info']['dex']);
-            $pool[] = [$cand, $dexTotal];
+            $pool[] = [$cand, static::getCandidateWeight($cand['info'], $owner)];
         }
 
         if(count($pool) < $pickCnt){

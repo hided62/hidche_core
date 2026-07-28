@@ -9,6 +9,7 @@ final class CentennialAllStarGrowthService
     public const POOL_CLASS = 'SPoolUnderU100';
     public const AUX_KEY = 'event100_allstar';
     public const TRAIT_UNLOCK_PROGRESS = 0.4;
+    public const NPC_PROGRESS_MULTIPLIER = 0.9;
 
     private const STAT_KEYS = ['leadership', 'strength', 'intel'];
     private const DEX_KEYS = ['dex1', 'dex2', 'dex3', 'dex4', 'dex5'];
@@ -35,18 +36,47 @@ final class CentennialAllStarGrowthService
         $builder->setAuxVar(self::AUX_KEY, self::initialAux($targetInfo));
     }
 
+    public static function calculateProgress(
+        int $startYear,
+        int $year,
+        int $month,
+        float $progressMultiplier = 1.0
+    ): float {
+        if ($progressMultiplier < 0 || $progressMultiplier > 1) {
+            throw new \InvalidArgumentException('progress multiplier must be between 0 and 1');
+        }
+        return min(
+            1,
+            CentennialAllStarGrowth::progress($startYear, $year, $month)
+                * $progressMultiplier
+        );
+    }
+
     /**
      * Mutates the General object but leaves persistence to the caller.
      *
      * @return array{progress:float,milestone:int,previousMilestone:int,targetChanged:bool,changed:bool}
      */
-    public static function applyTarget(General $general, array $targetInfo, array $env): array
+    public static function applyTarget(
+        General $general,
+        array $targetInfo,
+        array $env,
+        float $progressMultiplier = 1.0
+    ): array
     {
         $startYear = (int) $env['startyear'];
         $year = (int) $env['year'];
         $month = (int) $env['month'];
-        $progress = CentennialAllStarGrowth::progress($startYear, $year, $month);
-        $progressMonth = max(0, ($year - $startYear) * 12 + $month - 1);
+        $progress = self::calculateProgress(
+            $startYear,
+            $year,
+            $month,
+            $progressMultiplier
+        );
+        $progressMonth = (int) floor(
+            max(0, ($year - $startYear) * 12 + $month - 1)
+                * $progressMultiplier
+        );
         $targetId = (string) ($targetInfo['uniqueName'] ?? '');
 
         $aux = $general->getAuxVar(self::AUX_KEY);
@@ -157,6 +187,42 @@ final class CentennialAllStarGrowthService
             'targetChanged' => $targetChanged,
             'changed' => $changed || $targetChanged || $milestone > $previousMilestone,
         ];
+    }
+
+    public static function progressMultiplierFor(General $general): float
+    {
+        return self::progressMultiplierForNPCType($general->getNPCType());
+    }
+
+    public static function progressMultiplierForNPCType(int $npcType): float
+    {
+        return in_array($npcType, [3, 4], true)
+            ? self::NPC_PROGRESS_MULTIPLIER
+            : 1.0;
+    }
+
+    public static function applyCurrentTargetToBuiltNPC(
+        \MeekroDB $db,
+        GeneralBuilder $builder,
+        array $targetInfo,
+        array $env
+    ): ?array {
+        if (!self::isActive()) {
+            return null;
+        }
+
+        $general = General::createObjFromDB($builder->getGeneralID());
+        if (!in_array($general->getNPCType(), [3, 4], true)) {
+            return null;
+        }
+        $result = self::applyTarget(
+            $general,
+            $targetInfo,
+            $env,
+            self::NPC_PROGRESS_MULTIPLIER
+        );
+        $general->applyDB($db);
+        return $result;
     }
 
     public static function recordableValue(General $general, string $key): int
