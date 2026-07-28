@@ -26,6 +26,12 @@
         ],
         [
             "month", 1000,
+            ["Date", "==", 181, 1],
+            ["RaiseNPCNation"],
+            ["DeleteEvent"]
+        ],
+        [
+            "month", 1000,
             ["Date", "==", 181, 12],
             ["ChangeCity", "occupied", {
                 "pop": "+60000",
