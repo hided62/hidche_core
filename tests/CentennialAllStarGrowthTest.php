@@ -516,6 +516,151 @@ final class CentennialAllStarGrowthTest extends TestCase
         self::assertSame(129600, CentennialAllStarGrowthService::recordableValue($general, 'dex2'));
     }
 
+    public function testMixedDexConversionSplitsEventAndNaturalPointsByTotalShare(): void
+    {
+        $vars = [
+            'dex1' => 360000,
+            'dex2' => 600000,
+        ];
+        $aux = [
+            'targetId' => 'archer',
+            'granted' => [
+                'dex1' => 0,
+                'dex2' => 900000,
+            ],
+            'dexConsumed' => [
+                'dex1' => 0,
+                'dex2' => 0,
+            ],
+            'dexFloor' => [
+                'dex1' => 0,
+                'dex2' => 900000,
+            ],
+        ];
+        $general = $this->createStateGeneralMock($vars, $aux);
+
+        CentennialAllStarGrowthService::reconcileDexConversion(
+            $general,
+            'dex2',
+            'dex1',
+            1000000,
+            600000,
+            0,
+            360000,
+            0.9
+        );
+
+        self::assertSame(540000, $aux['granted']['dex2']);
+        self::assertSame(324000, $aux['granted']['dex1']);
+        self::assertSame(60_000, CentennialAllStarGrowthService::recordableValue($general, 'dex2'));
+        self::assertSame(36_000, CentennialAllStarGrowthService::recordableValue($general, 'dex1'));
+        self::assertSame(864000, $aux['granted']['dex1'] + $aux['granted']['dex2']);
+        self::assertSame(
+            96000,
+            CentennialAllStarGrowthService::recordableValue($general, 'dex1')
+                + CentennialAllStarGrowthService::recordableValue($general, 'dex2')
+        );
+    }
+
+    public function testArcherCavalryGhostConversionChainKeepsOnlyCurrentTargetBudget(): void
+    {
+        $vars = $this->emptyGeneralVars();
+        $aux = CentennialAllStarGrowthService::initialAux(
+            $this->singleDexTarget('archer', 1),
+            []
+        );
+        $general = $this->createStateGeneralMock($vars, $aux);
+        $env = ['startyear' => 180, 'year' => 195, 'month' => 1];
+
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('archer', 1),
+            $env
+        );
+        $this->convertDex($general, $vars, 'dex2', 'dex1');
+        self::assertSame([324000, 540000, 0, 0, 0], $this->dexValues($vars));
+
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('cavalry', 2),
+            $env
+        );
+        self::assertSame([0, 0, 900000, 0, 0], $this->dexValues($vars));
+        $this->convertDex($general, $vars, 'dex3', 'dex1');
+        self::assertSame([324000, 0, 540000, 0, 0], $this->dexValues($vars));
+
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('ghost', 3),
+            $env
+        );
+        self::assertSame([0, 0, 0, 900000, 0], $this->dexValues($vars));
+        $this->convertDex($general, $vars, 'dex4', 'dex1');
+
+        self::assertSame([324000, 0, 0, 540000, 0], $this->dexValues($vars));
+        self::assertSame(864000, array_sum($this->dexValues($vars)));
+        foreach (['dex1', 'dex2', 'dex3', 'dex4', 'dex5'] as $key) {
+            self::assertSame(0, CentennialAllStarGrowthService::recordableValue($general, $key));
+        }
+    }
+
+    public function testSelectingInfantryAfterConversionReplacesOldEventBudget(): void
+    {
+        $vars = $this->emptyGeneralVars();
+        $aux = CentennialAllStarGrowthService::initialAux(
+            $this->singleDexTarget('archer', 1),
+            []
+        );
+        $general = $this->createStateGeneralMock($vars, $aux);
+        $env = ['startyear' => 180, 'year' => 195, 'month' => 1];
+
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('archer', 1),
+            $env
+        );
+        $this->convertDex($general, $vars, 'dex2', 'dex1');
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('infantry', 0),
+            $env
+        );
+
+        self::assertSame([900000, 0, 0, 0, 0], $this->dexValues($vars));
+        self::assertSame(900000, array_sum($aux['granted']));
+        self::assertSame(0, CentennialAllStarGrowthService::recordableValue($general, 'dex1'));
+    }
+
+    public function testMixedConversionThenReselectionPreservesOnlyPostLossNaturalTotal(): void
+    {
+        $vars = $this->emptyGeneralVars();
+        $aux = CentennialAllStarGrowthService::initialAux(
+            $this->singleDexTarget('archer', 1),
+            []
+        );
+        $general = $this->createStateGeneralMock($vars, $aux);
+        $env = ['startyear' => 180, 'year' => 195, 'month' => 1];
+
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('archer', 1),
+            $env
+        );
+        $vars['dex2'] += 100000;
+        $this->convertDex($general, $vars, 'dex2', 'dex1');
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $this->singleDexTarget('infantry', 0),
+            $env
+        );
+
+        self::assertSame([900000, 60000, 0, 0, 0], $this->dexValues($vars));
+        self::assertSame(864000, $aux['granted']['dex1']);
+        self::assertSame(0, $aux['granted']['dex2']);
+        self::assertSame(96000, array_sum($this->recordableDexValues($general)));
+        self::assertSame(960000, array_sum($this->dexValues($vars)));
+    }
+
     public function testReselectionResetsConsumedDexFloorAndTransferredGrant(): void
     {
         $vars = [
@@ -637,5 +782,79 @@ final class CentennialAllStarGrowthTest extends TestCase
             }
         );
         return $general;
+    }
+
+    private function emptyGeneralVars(): array
+    {
+        return [
+            'leadership' => 100,
+            'strength' => 100,
+            'intel' => 100,
+            'dex1' => 0,
+            'dex2' => 0,
+            'dex3' => 0,
+            'dex4' => 0,
+            'dex5' => 0,
+            'special' => 'None',
+        ];
+    }
+
+    private function singleDexTarget(string $id, int $dexIndex): array
+    {
+        $dex = [0, 0, 0, 0, 0];
+        $dex[$dexIndex] = 900000;
+        return [
+            'uniqueName' => $id,
+            'leadership' => 100,
+            'strength' => 100,
+            'intel' => 100,
+            'dex' => $dex,
+        ];
+    }
+
+    private function convertDex(
+        General $general,
+        array &$vars,
+        string $sourceKey,
+        string $destinationKey
+    ): void {
+        $sourceBefore = $vars[$sourceKey];
+        $destinationBefore = $vars[$destinationKey];
+        $cut = (int) ($sourceBefore * 0.4);
+        $add = (int) ($cut * 0.9);
+        $vars[$sourceKey] -= $cut;
+        $vars[$destinationKey] += $add;
+        CentennialAllStarGrowthService::reconcileDexConversion(
+            $general,
+            $sourceKey,
+            $destinationKey,
+            $sourceBefore,
+            $vars[$sourceKey],
+            $destinationBefore,
+            $vars[$destinationKey],
+            0.9
+        );
+    }
+
+    private function dexValues(array $vars): array
+    {
+        return [
+            $vars['dex1'],
+            $vars['dex2'],
+            $vars['dex3'],
+            $vars['dex4'],
+            $vars['dex5'],
+        ];
+    }
+
+    private function recordableDexValues(General $general): array
+    {
+        return array_map(
+            static fn(string $key): int => CentennialAllStarGrowthService::recordableValue(
+                $general,
+                $key
+            ),
+            ['dex1', 'dex2', 'dex3', 'dex4', 'dex5']
+        );
     }
 }

@@ -506,20 +506,28 @@ final class CentennialAllStarGrowthService
             max(0, $sourceBefore),
             max(0, (int) ($granted[$sourceKey] ?? 0))
         );
-        $sourceOrganicBefore = max(0, $sourceBefore - $sourceGrantedBefore);
-        $sourceGrantedAfter = max(
-            0,
-            $sourceAfter - min($sourceAfter, $sourceOrganicBefore)
-        );
-        $eventGrantRemoved = max(0, $sourceGrantedBefore - $sourceGrantedAfter);
+        /*
+         * A dex value can contain both organic and event-backed points. Split
+         * the actual command deltas by their share of the source total instead
+         * of consuming either bucket first. This keeps the combined ownership
+         * stable when conversion and target reselection are interleaved.
+         */
+        $eventGrantRemoved = $sourceBefore > 0
+            ? intdiv($sourceDecrease * $sourceGrantedBefore, $sourceBefore)
+            : 0;
+        $sourceGrantedAfter = max(0, $sourceGrantedBefore - $eventGrantRemoved);
 
         $destinationGrantedBefore = min(
             max(0, $destinationBefore),
             max(0, (int) ($granted[$destinationKey] ?? 0))
         );
+        $eventGrantTransferred = $sourceBefore > 0
+            ? intdiv($destinationIncrease * $sourceGrantedBefore, $sourceBefore)
+            : 0;
         $eventGrantTransferred = min(
             $destinationIncrease,
-            (int) floor($eventGrantRemoved * $convertCoeff)
+            $eventGrantRemoved,
+            $eventGrantTransferred
         );
         $granted[$sourceKey] = $sourceGrantedAfter;
         $granted[$destinationKey] = min(
