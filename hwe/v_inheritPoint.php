@@ -105,6 +105,7 @@ $lastInheritPointLogs = $db->query('SELECT id, server_id, year, month, date, tex
             'availableUnique' => $availableUnique,
             'lastInheritPointLogs' => $lastInheritPointLogs,
             'availableTargetGeneral' => $availableTargetGeneral,
+            'canResetStat' => CentennialAllStarGrowthService::isStatResetAllowed(),
             'currentStat' => [
                 'leadership' => Util::clamp($me->getVar('leadership'), GameConst::$defaultStatMin, GameConst::$defaultStatMax),
                 'strength' => Util::clamp($me->getVar('strength'), GameConst::$defaultStatMin, GameConst::$defaultStatMax),

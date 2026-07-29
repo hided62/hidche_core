@@ -172,7 +172,7 @@
           <BButton class="col-6 offset-6" variant="primary" @click="checkOwner"> 소유자 찾기 </BButton>
         </div>
       </div>
-      <div class="col col-lg-4 col-sm-6 col-12 py-2">
+      <div v-if="canResetStat" class="col col-lg-4 col-sm-6 col-12 py-2">
         <div class="row px-4">
           <div class="a-right col-6 align-self-center">능력치 초기화</div>
           <div class="col-6">
@@ -220,6 +220,17 @@
 
         <div class="row px-4">
           <BButton class="col-6 offset-6" variant="primary" @click="resetStat"> 능력치 초기화</BButton>
+        </div>
+      </div>
+      <div v-else class="col col-lg-4 col-sm-6 col-12 py-2">
+        <div class="row px-4">
+          <div class="a-right col-6 align-self-center">능력치 초기화</div>
+          <div class="col-6 align-self-center">사용 불가</div>
+        </div>
+        <div class="a-right">
+          <small class="form-text text-muted">
+            100기 올스타 장수는 장수 전환 시 능력치 성장 기록을 보존하기 위해 능력치 초기화를 사용할 수 없습니다.
+          </small>
         </div>
       </div>
     </div>
@@ -297,6 +308,7 @@ declare const staticValues: {
     }
   >;
   availableTargetGeneral: Record<number, string>;
+  canResetStat: boolean;
   currentStat: {
     leadership: number;
     strength: number;
@@ -447,6 +459,7 @@ const {
   availableSpecialWar,
   availableUnique,
   availableTargetGeneral,
+  canResetStat,
   currentStat
 } = staticValues;
 

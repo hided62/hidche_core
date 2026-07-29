@@ -4,6 +4,7 @@ namespace sammo\API\InheritAction;
 
 use sammo\Session;
 use DateTimeInterface;
+use sammo\CentennialAllStarGrowthService;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\RankColumn;
@@ -96,6 +97,10 @@ class ResetStat extends \sammo\BaseAPI
 
         if($general->getNPCType() != 0){
             return 'NPC는 능력치 초기화를 할 수 없습니다.';
+        }
+
+        if (!CentennialAllStarGrowthService::isStatResetAllowed()) {
+            return '100기 올스타 장수는 능력치 초기화를 사용할 수 없습니다.';
         }
 
 

@@ -25,6 +25,20 @@ final class CentennialAllStarGrowthTest extends TestCase
         self::assertSame(1.0, CentennialAllStarGrowth::progress(180, 210, 1));
     }
 
+    public function testStatResetIsDisabledOnlyForCentennialAllStarPool(): void
+    {
+        $previousPool = GameConst::$targetGeneralPool;
+        try {
+            GameConst::$targetGeneralPool = CentennialAllStarGrowthService::POOL_CLASS;
+            self::assertFalse(CentennialAllStarGrowthService::isStatResetAllowed());
+
+            GameConst::$targetGeneralPool = 'RandomNameGeneral';
+            self::assertTrue(CentennialAllStarGrowthService::isStatResetAllowed());
+        } finally {
+            GameConst::$targetGeneralPool = $previousPool;
+        }
+    }
+
     public function testMAndGGeneralsAdvanceAtNinetyPercentProgress(): void
     {
         self::assertSame(

@@ -19,6 +19,11 @@ final class CentennialAllStarGrowthService
         return GameConst::$targetGeneralPool === self::POOL_CLASS;
     }
 
+    public static function isStatResetAllowed(): bool
+    {
+        return !self::isActive();
+    }
+
     public static function initialAux(array $targetInfo, ?array $userInitialStats = null): array
     {
         $granted = array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0);
