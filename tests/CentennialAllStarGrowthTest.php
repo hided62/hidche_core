@@ -3,6 +3,11 @@
 use PHPUnit\Framework\TestCase;
 use sammo\CentennialAllStarGrowth;
 use sammo\CentennialAllStarGrowthService;
+use sammo\General;
+use sammo\GameConst;
+
+$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader->addPsr4('sammo\\', __DIR__ . '/../hwe/sammo', true);
 
 require_once __DIR__ . '/../hwe/sammo/ActionLogger.php';
 require_once __DIR__ . '/../hwe/sammo/GameConstBase.php';
@@ -45,6 +50,22 @@ final class CentennialAllStarGrowthTest extends TestCase
             0.9,
             CentennialAllStarGrowthService::calculateProgress(180, 210, 1, 0.9),
             0.000001
+        );
+        self::assertSame(
+            91,
+            CentennialAllStarGrowth::statFloor(100, 15, 0.9)
+        );
+        self::assertSame(
+            0.4,
+            CentennialAllStarGrowthService::dexTargetRatioForNPCType(3)
+        );
+        self::assertSame(
+            0.4,
+            CentennialAllStarGrowthService::dexTargetRatioForNPCType(4)
+        );
+        self::assertSame(
+            1.0,
+            CentennialAllStarGrowthService::dexTargetRatioForNPCType(2)
         );
     }
 
@@ -148,6 +169,7 @@ final class CentennialAllStarGrowthTest extends TestCase
 
         self::assertSame('A1000001', $aux['targetId']);
         self::assertSame($initial, $aux['userInitialStats']);
+        self::assertSame(1.0, $aux['dexTargetRatio']);
         self::assertSame(50, $aux['granted']['leadership']);
         self::assertSame(43, $aux['granted']['strength']);
         self::assertSame(27, $aux['granted']['intel']);
@@ -201,6 +223,161 @@ final class CentennialAllStarGrowthTest extends TestCase
         self::assertSame(36000, CentennialAllStarGrowth::dexFloor(900000, 0.2));
         self::assertSame(144000, CentennialAllStarGrowth::dexFloor(900000, 0.4));
         self::assertSame(900000, CentennialAllStarGrowth::dexFloor(900000, 1));
+    }
+
+    public function testNpcDexStopsAtFortyPercentOfHistoricalTarget(): void
+    {
+        $target = 900000;
+        $ratio = GameConst::$centennialNpcDexTargetRatio;
+
+        self::assertSame(0.4, $ratio);
+        self::assertSame(
+            57600,
+            CentennialAllStarGrowthService::calculateDexTargetFloor(
+                $target,
+                ['startyear' => 180, 'year' => 186, 'month' => 1],
+                $ratio
+            )
+        );
+        self::assertSame(
+            360000,
+            CentennialAllStarGrowthService::calculateDexTargetFloor(
+                $target,
+                ['startyear' => 180, 'year' => 195, 'month' => 1],
+                $ratio
+            )
+        );
+        self::assertSame(
+            360000,
+            CentennialAllStarGrowthService::calculateDexTargetFloor(
+                $target,
+                ['startyear' => 180, 'year' => 210, 'month' => 1],
+                $ratio
+            )
+        );
+    }
+
+    public function testScenarioConfigKeepsNpcDexTargetRatioAtFortyPercent(): void
+    {
+        $scenario = json_decode(
+            file_get_contents(__DIR__ . '/../hwe/scenario/scenario_915.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        self::assertSame(
+            GameConst::$centennialNpcDexTargetRatio,
+            $scenario['map']['centennialNpcDexTargetRatio']
+        );
+    }
+
+    public function testNpcDexRatioChangeRemovesOnlyOldEventGrant(): void
+    {
+        self::assertSame(
+            ['value' => 360000, 'granted' => 360000, 'organic' => 0],
+            CentennialAllStarGrowth::replaceTarget(810000, 810000, 360000)
+        );
+        self::assertSame(
+            ['value' => 360000, 'granted' => 310000, 'organic' => 50000],
+            CentennialAllStarGrowth::replaceTarget(860000, 810000, 360000)
+        );
+        self::assertSame(
+            ['value' => 400000, 'granted' => 0, 'organic' => 400000],
+            CentennialAllStarGrowth::replaceTarget(1210000, 810000, 360000)
+        );
+    }
+
+    public function testExistingNpcDexGrantIsRebasedWithoutChangingFinalStats(): void
+    {
+        $vars = [
+            'leadership' => 91,
+            'strength' => 91,
+            'intel' => 91,
+            'dex1' => 810000,
+            'dex2' => 810000,
+            'dex3' => 810000,
+            'dex4' => 810000,
+            'dex5' => 810000,
+            'special' => 'None',
+        ];
+        $aux = [
+            'targetId' => 'A1000001',
+            'granted' => [
+                'leadership' => 76,
+                'strength' => 76,
+                'intel' => 76,
+                'dex1' => 810000,
+                'dex2' => 810000,
+                'dex3' => 810000,
+                'dex4' => 810000,
+                'dex5' => 810000,
+            ],
+            'progressMonth' => 162,
+            'milestone' => 4,
+            'naturalSpecialDomestic' => null,
+            'eventSpecialDomestic' => null,
+            'userInitialStats' => null,
+        ];
+        $general = $this->getMockBuilder(General::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAuxVar', 'setAuxVar', 'getVar', 'updateVar'])
+            ->getMock();
+        $general->method('getAuxVar')->willReturnCallback(
+            static fn(string $key) => $key === CentennialAllStarGrowthService::AUX_KEY
+                ? $aux
+                : null
+        );
+        $general->method('getVar')->willReturnCallback(
+            static fn(string $key) => $vars[$key] ?? null
+        );
+        $general->method('updateVar')->willReturnCallback(
+            static function (string $key, $value) use (&$vars): void {
+                $vars[$key] = $value;
+            }
+        );
+        $general->method('setAuxVar')->willReturnCallback(
+            static function (string $key, $value) use (&$aux): void {
+                if ($key === CentennialAllStarGrowthService::AUX_KEY) {
+                    $aux = $value;
+                }
+            }
+        );
+
+        $result = CentennialAllStarGrowthService::applyTarget(
+            $general,
+            [
+                'uniqueName' => 'A1000001',
+                'leadership' => 100,
+                'strength' => 100,
+                'intel' => 100,
+                'dex' => [900000, 900000, 900000, 900000, 900000],
+            ],
+            ['startyear' => 180, 'year' => 195, 'month' => 1],
+            CentennialAllStarGrowthService::NPC_PROGRESS_MULTIPLIER,
+            GameConst::$centennialNpcDexTargetRatio
+        );
+
+        self::assertTrue($result['changed']);
+        self::assertSame(91, $vars['leadership']);
+        self::assertSame(91, $vars['strength']);
+        self::assertSame(91, $vars['intel']);
+        foreach (['dex1', 'dex2', 'dex3', 'dex4', 'dex5'] as $key) {
+            self::assertSame(360000, $vars[$key]);
+            self::assertSame(360000, $aux['granted'][$key]);
+        }
+        self::assertSame(0.4, $aux['dexTargetRatio']);
+    }
+
+    public function testUserDexStillReachesFullHistoricalTarget(): void
+    {
+        self::assertSame(
+            900000,
+            CentennialAllStarGrowthService::calculateDexTargetFloor(
+                900000,
+                ['startyear' => 180, 'year' => 195, 'month' => 1]
+            )
+        );
     }
 
     public function testUntrackedGeneralKeepsFullHallValue(): void

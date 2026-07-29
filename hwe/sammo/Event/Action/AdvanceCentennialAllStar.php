@@ -29,7 +29,10 @@ class AdvanceCentennialAllStar extends \sammo\Event\Action
                 $general,
                 $targetInfo,
                 $env,
-                CentennialAllStarGrowthService::progressMultiplierFor($general)
+                CentennialAllStarGrowthService::progressMultiplierFor($general),
+                CentennialAllStarGrowthService::dexTargetRatioForNPCType(
+                    $general->getNPCType()
+                )
             );
 
             if ($result['milestone'] > $result['previousMilestone']) {

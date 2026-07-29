@@ -4,7 +4,8 @@
     "map": {
         "mapName": "miniche",
         "targetGeneralPool": "SPoolUnderU100",
-        "generalPoolAllowOption": ["stat", "ego", "picture"]
+        "generalPoolAllowOption": ["stat", "ego", "picture"],
+        "centennialNpcDexTargetRatio": 0.4
     },
     "history": [
         "<C>●</>180년 1월:<L><b>【100기 이벤트】</b></> 역대 장수들이 평범한 능력으로 다시 모여, 지난 전성기의 힘과 서서히 동조하기 시작했다!"

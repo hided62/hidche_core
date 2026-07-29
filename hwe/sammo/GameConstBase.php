@@ -420,6 +420,8 @@ class GameConstBase
     public static $retirementYear = 80;
 
     public static $targetGeneralPool = 'RandomNameGeneral';
+    /** @var float 100기 올스타 NPC의 원본 목표 대비 최종 숙련 비율 */
+    public static $centennialNpcDexTargetRatio = 0.4;
     public static $generalPoolAllowOption = ['stat', 'ego', 'picture'];
 
     public static $randGenFirstName = [

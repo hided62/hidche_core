@@ -37,6 +37,7 @@ final class CentennialAllStarGrowthService
             'naturalSpecialDomestic' => null,
             'eventSpecialDomestic' => null,
             'userInitialStats' => $userInitialStats,
+            'dexTargetRatio' => 1.0,
         ];
     }
 
@@ -220,6 +221,24 @@ final class CentennialAllStarGrowthService
         );
     }
 
+    public static function calculateDexTargetFloor(
+        int $target,
+        array $env,
+        float $targetRatio = 1.0
+    ): int {
+        if ($targetRatio < 0 || $targetRatio > 1) {
+            throw new \InvalidArgumentException('dex target ratio must be between 0 and 1');
+        }
+        $target = min(GameConst::$dexLimit, max(0, $target));
+        $scaledTarget = (int) floor($target * $targetRatio);
+        $progress = self::calculateProgress(
+            (int) $env['startyear'],
+            (int) $env['year'],
+            (int) $env['month']
+        );
+        return CentennialAllStarGrowth::dexFloor($scaledTarget, $progress);
+    }
+
     /**
      * Mutates the General object but leaves persistence to the caller.
      *
@@ -229,7 +248,8 @@ final class CentennialAllStarGrowthService
         General $general,
         array $targetInfo,
         array $env,
-        float $progressMultiplier = 1.0
+        float $progressMultiplier = 1.0,
+        float $dexTargetRatio = 1.0
     ): array
     {
         $startYear = (int) $env['startyear'];
@@ -259,10 +279,14 @@ final class CentennialAllStarGrowthService
         $nextUserInitialStats = $targetChanged && $isUserTarget
             ? self::calculateUserInitialStats($targetInfo)
             : ($aux['userInitialStats'] ?? null);
+        $previousDexTargetRatio = is_numeric($aux['dexTargetRatio'] ?? null)
+            ? (float) $aux['dexTargetRatio']
+            : 1.0;
+        $dexTargetRatioChanged = $previousDexTargetRatio !== $dexTargetRatio;
         $userCurrentTargetStats = $isUserTarget
             ? self::calculateUserCurrentTargetStats($targetInfo, $env)
             : null;
-        $changed = false;
+        $changed = $dexTargetRatioChanged;
 
         foreach (self::STAT_KEYS as $key) {
             if (!array_key_exists($key, $targetInfo)) {
@@ -303,10 +327,13 @@ final class CentennialAllStarGrowthService
             if (!array_key_exists($idx, $targetDex)) {
                 continue;
             }
-            $target = min(GameConst::$dexLimit, max(0, (int) $targetDex[$idx]));
-            $floor = CentennialAllStarGrowth::dexFloor($target, $progress);
+            $floor = self::calculateDexTargetFloor(
+                (int) $targetDex[$idx],
+                $env,
+                $dexTargetRatio
+            );
             $current = (int) $general->getVar($key);
-            if ($targetChanged) {
+            if ($targetChanged || $dexTargetRatioChanged) {
                 $result = CentennialAllStarGrowth::replaceTarget(
                     $current,
                     (int) ($granted[$key] ?? 0),
@@ -357,6 +384,7 @@ final class CentennialAllStarGrowthService
         $aux['progressMonth'] = max((int) ($aux['progressMonth'] ?? -1), $progressMonth);
         $aux['milestone'] = max($previousMilestone, $milestone);
         $aux['userInitialStats'] = $nextUserInitialStats;
+        $aux['dexTargetRatio'] = $dexTargetRatio;
         $general->setAuxVar(self::AUX_KEY, $aux);
 
         return [
@@ -380,6 +408,13 @@ final class CentennialAllStarGrowthService
             : 1.0;
     }
 
+    public static function dexTargetRatioForNPCType(int $npcType): float
+    {
+        return in_array($npcType, [3, 4], true)
+            ? GameConst::$centennialNpcDexTargetRatio
+            : 1.0;
+    }
+
     public static function applyCurrentTargetToBuiltNPC(
         \MeekroDB $db,
         GeneralBuilder $builder,
@@ -398,7 +433,8 @@ final class CentennialAllStarGrowthService
             $general,
             $targetInfo,
             $env,
-            self::NPC_PROGRESS_MULTIPLIER
+            self::NPC_PROGRESS_MULTIPLIER,
+            GameConst::$centennialNpcDexTargetRatio
         );
         $general->applyDB($db);
         return $result;
