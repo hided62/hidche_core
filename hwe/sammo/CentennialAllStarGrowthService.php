@@ -32,6 +32,8 @@ final class CentennialAllStarGrowthService
         return [
             'targetId' => (string) ($targetInfo['uniqueName'] ?? ''),
             'granted' => $granted,
+            'dexConsumed' => array_fill_keys(self::DEX_KEYS, 0),
+            'dexFloor' => array_fill_keys(self::DEX_KEYS, 0),
             'progressMonth' => -1,
             'milestone' => 0,
             'naturalSpecialDomestic' => null,
@@ -275,6 +277,15 @@ final class CentennialAllStarGrowthService
             ? $aux['granted']
             : array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0);
         $targetChanged = ($aux['targetId'] ?? '') !== $targetId;
+        $dexConsumed = is_array($aux['dexConsumed'] ?? null)
+            ? $aux['dexConsumed']
+            : array_fill_keys(self::DEX_KEYS, 0);
+        if ($targetChanged) {
+            $dexConsumed = array_fill_keys(self::DEX_KEYS, 0);
+        }
+        $dexFloor = is_array($aux['dexFloor'] ?? null)
+            ? $aux['dexFloor']
+            : array_fill_keys(self::DEX_KEYS, 0);
         $isUserTarget = is_array($aux['userInitialStats'] ?? null);
         $nextUserInitialStats = $targetChanged && $isUserTarget
             ? self::calculateUserInitialStats($targetInfo)
@@ -327,11 +338,15 @@ final class CentennialAllStarGrowthService
             if (!array_key_exists($idx, $targetDex)) {
                 continue;
             }
-            $floor = self::calculateDexTargetFloor(
-                (int) $targetDex[$idx],
-                $env,
-                $dexTargetRatio
+            $floor = max(
+                0,
+                self::calculateDexTargetFloor(
+                    (int) $targetDex[$idx],
+                    $env,
+                    $dexTargetRatio
+                ) - max(0, (int) ($dexConsumed[$key] ?? 0))
             );
+            $dexFloor[$key] = $floor;
             $current = (int) $general->getVar($key);
             if ($targetChanged || $dexTargetRatioChanged) {
                 $result = CentennialAllStarGrowth::replaceTarget(
@@ -381,6 +396,8 @@ final class CentennialAllStarGrowthService
         $milestone = min(5, (int) floor($progress * 5 + 0.0000001));
         $aux['targetId'] = $targetId;
         $aux['granted'] = $granted;
+        $aux['dexConsumed'] = $dexConsumed;
+        $aux['dexFloor'] = $dexFloor;
         $aux['progressMonth'] = max((int) ($aux['progressMonth'] ?? -1), $progressMonth);
         $aux['milestone'] = max($previousMilestone, $milestone);
         $aux['userInitialStats'] = $nextUserInitialStats;
@@ -438,6 +455,93 @@ final class CentennialAllStarGrowthService
         );
         $general->applyDB($db);
         return $result;
+    }
+
+    /**
+     * Moves the event-backed part of a dex conversion with the converted
+     * value and consumes any guaranteed floor crossed by the source value.
+     * This keeps the monthly floor from refilling points already converted.
+     */
+    public static function reconcileDexConversion(
+        General $general,
+        string $sourceKey,
+        string $destinationKey,
+        int $sourceBefore,
+        int $sourceAfter,
+        int $destinationBefore,
+        int $destinationAfter,
+        float $convertCoeff
+    ): void {
+        if (!in_array($sourceKey, self::DEX_KEYS, true)
+            || !in_array($destinationKey, self::DEX_KEYS, true)
+            || $sourceKey === $destinationKey
+        ) {
+            throw new \InvalidArgumentException('invalid dex conversion keys');
+        }
+        if ($convertCoeff < 0 || $convertCoeff > 1) {
+            throw new \InvalidArgumentException('dex conversion coefficient must be between 0 and 1');
+        }
+
+        $sourceDecrease = max(0, $sourceBefore - $sourceAfter);
+        $destinationIncrease = max(0, $destinationAfter - $destinationBefore);
+        if ($sourceDecrease === 0 && $destinationIncrease === 0) {
+            return;
+        }
+
+        $aux = $general->getAuxVar(self::AUX_KEY);
+        if (!is_array($aux)) {
+            return;
+        }
+        $granted = is_array($aux['granted'] ?? null)
+            ? $aux['granted']
+            : array_fill_keys(array_merge(self::STAT_KEYS, self::DEX_KEYS), 0);
+        $dexConsumed = is_array($aux['dexConsumed'] ?? null)
+            ? $aux['dexConsumed']
+            : array_fill_keys(self::DEX_KEYS, 0);
+        $dexFloor = is_array($aux['dexFloor'] ?? null)
+            ? $aux['dexFloor']
+            : [];
+
+        $sourceGrantedBefore = min(
+            max(0, $sourceBefore),
+            max(0, (int) ($granted[$sourceKey] ?? 0))
+        );
+        $sourceOrganicBefore = max(0, $sourceBefore - $sourceGrantedBefore);
+        $sourceGrantedAfter = max(
+            0,
+            $sourceAfter - min($sourceAfter, $sourceOrganicBefore)
+        );
+        $eventGrantRemoved = max(0, $sourceGrantedBefore - $sourceGrantedAfter);
+
+        $destinationGrantedBefore = min(
+            max(0, $destinationBefore),
+            max(0, (int) ($granted[$destinationKey] ?? 0))
+        );
+        $eventGrantTransferred = min(
+            $destinationIncrease,
+            (int) floor($eventGrantRemoved * $convertCoeff)
+        );
+        $granted[$sourceKey] = $sourceGrantedAfter;
+        $granted[$destinationKey] = min(
+            max(0, $destinationAfter),
+            $destinationGrantedBefore + $eventGrantTransferred
+        );
+
+        $sourceFloor = max(
+            0,
+            (int) ($dexFloor[$sourceKey] ?? $sourceBefore)
+        );
+        $gapBefore = max(0, $sourceFloor - $sourceBefore);
+        $gapAfter = max(0, $sourceFloor - $sourceAfter);
+        $dexConsumed[$sourceKey] = max(
+            0,
+            (int) ($dexConsumed[$sourceKey] ?? 0)
+                + max(0, $gapAfter - $gapBefore)
+        );
+
+        $aux['granted'] = $granted;
+        $aux['dexConsumed'] = $dexConsumed;
+        $general->setAuxVar(self::AUX_KEY, $aux);
     }
 
     public static function recordableValue(General $general, string $key): int

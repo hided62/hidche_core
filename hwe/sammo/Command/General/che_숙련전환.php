@@ -14,6 +14,7 @@ use function \sammo\tryUniqueItemLottery;
 
 use \sammo\Constraint\ConstraintHelper;
 use sammo\StaticEventHandler;
+use sammo\CentennialAllStarGrowthService;
 
 class che_숙련전환 extends Command\GeneralCommand
 {
@@ -157,6 +158,7 @@ class che_숙련전환 extends Command\GeneralCommand
         $logger = $general->getLogger();
 
         $srcDex = $general->getVar('dex' . $this->srcArmType);
+        $destDex = $general->getVar('dex' . $this->destArmType);
         $cutDex = Util::toInt($srcDex * static::$decreaseCoeff);
         $cutDexText = number_format($cutDex);
         $addDex = Util::toInt($cutDex * static::$convertCoeff);
@@ -164,6 +166,19 @@ class che_숙련전환 extends Command\GeneralCommand
 
         $general->increaseVar('dex' . $this->srcArmType, -$cutDex);
         $general->increaseVar('dex' . $this->destArmType, $addDex);
+        // 100기 이벤트 지급분을 목적 숙련으로 옮기고 소비한 성장 하한은 다시 채우지 않는다.
+        if (CentennialAllStarGrowthService::isActive()) {
+            CentennialAllStarGrowthService::reconcileDexConversion(
+                $general,
+                'dex' . $this->srcArmType,
+                'dex' . $this->destArmType,
+                $srcDex,
+                $general->getVar('dex' . $this->srcArmType),
+                $destDex,
+                $general->getVar('dex' . $this->destArmType),
+                static::$convertCoeff
+            );
+        }
 
         $josaUl = JosaUtil::pick($cutDex, '을');
         $josaRo = JosaUtil::pick($addDex, '로');
