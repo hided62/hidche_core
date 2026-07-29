@@ -184,6 +184,10 @@ class GameConstBase
     /** @var array 선택할 수 없으나 게임 내에 유효한 장수 내정 특기 */
     public static $optionalSpecialDomestic = [
         'None',
+        'che_event_귀병', 'che_event_신산', 'che_event_환술', 'che_event_집중', 'che_event_신중',
+        'che_event_반계', 'che_event_보병', 'che_event_궁병', 'che_event_기병', 'che_event_공성',
+        'che_event_돌격', 'che_event_무쌍', 'che_event_견고', 'che_event_위압', 'che_event_저격',
+        'che_event_필살', 'che_event_징병', 'che_event_의술', 'che_event_격노', 'che_event_척사',
     ];
 
     /** @var string 기본 전투 특기 */

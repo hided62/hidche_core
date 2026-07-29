@@ -1,11 +1,15 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use sammo\GameConst;
 use sammo\GeneralPool\SPoolUnderU100;
 
 require_once __DIR__ . '/../hwe/sammo/AbsGeneralPool.php';
 require_once __DIR__ . '/../hwe/sammo/AbsFromUserPool.php';
 require_once __DIR__ . '/../hwe/sammo/GeneralPool/SPoolUnderU100.php';
+require_once __DIR__ . '/../hwe/sammo/ActionLogger.php';
+require_once __DIR__ . '/../hwe/sammo/GameConstBase.php';
+require_once __DIR__ . '/../hwe/d_setting/GameConst.php';
 
 final class CentennialAllStarPoolTest extends TestCase
 {
@@ -138,6 +142,33 @@ final class CentennialAllStarPoolTest extends TestCase
             }
             self::assertFileExists(
                 __DIR__ . "/../hwe/sammo/ActionSpecialDomestic/{$special}.php"
+            );
+        }
+    }
+
+    public function testEveryHistoricalEventSpecialIsExposedToTheFrontend(): void
+    {
+        $pool = json_decode(
+            file_get_contents(self::POOL_PATH),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+        $column = array_flip($pool['columns']);
+        $registeredSpecials = array_flip(array_merge(
+            GameConst::$availableSpecialDomestic,
+            GameConst::$optionalSpecialDomestic
+        ));
+
+        foreach ($pool['data'] as $row) {
+            $special = $row[$column['specialDomestic']];
+            if ($special === null || $special === '') {
+                continue;
+            }
+            self::assertArrayHasKey(
+                $special,
+                $registeredSpecials,
+                "{$special} must be included in GetConst iActionInfo.specialDomestic"
             );
         }
     }
