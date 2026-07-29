@@ -19,14 +19,17 @@ const context = await browser.newContext({
     viewport: {width: 1280, height: 960},
     deviceScaleFactor: 1,
 });
-const page = await context.newPage();
 const browserMessages = [];
-page.on('console', message => {
-    browserMessages.push({type: message.type(), text: message.text()});
-});
-page.on('pageerror', error => {
-    browserMessages.push({type: 'pageerror', text: error.message});
-});
+const attachPageListeners = targetPage => {
+    targetPage.on('console', message => {
+        browserMessages.push({type: message.type(), text: message.text()});
+    });
+    targetPage.on('pageerror', error => {
+        browserMessages.push({type: 'pageerror', text: error.message});
+    });
+};
+let page = await context.newPage();
+attachPageListeners(page);
 
 await page.goto(baseURL, {waitUntil: 'domcontentloaded', timeout: 60_000});
 const salt = await page.locator('#global_salt').inputValue();
@@ -50,6 +53,10 @@ if (!gameLoginResponse.ok() || gameLoginResult.result !== true) {
     throw new Error(`game login failed: ${JSON.stringify(gameLoginResult)}`);
 }
 
+await page.close();
+browserMessages.length = 0;
+page = await context.newPage();
+attachPageListeners(page);
 await page.goto(
     new URL('hwe/v_inheritPoint.php', baseURL).href,
     {waitUntil: 'networkidle', timeout: 60_000},
