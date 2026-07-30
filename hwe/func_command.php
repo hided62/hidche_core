@@ -42,15 +42,21 @@ function pushGeneralCommand(int $generalID, int $turnCnt=1){
 
     $db = DB::db();
 
-    $db->update('general_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
-    ], 'general_id=%i ORDER BY turn_idx DESC', $generalID);
-    $db->update('general_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxTurn),
-        'action'=>'휴식',
-        'arg'=>'{}',
-        'brief'=>'휴식'
-    ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxTurn);
+    $db->query(
+        'UPDATE general_turn AS dst
+        LEFT JOIN general_turn AS src
+          ON src.general_id = dst.general_id
+         AND src.turn_idx = dst.turn_idx - %i
+        SET dst.action = IF(src.id IS NULL, %s, src.action),
+            dst.arg = IF(src.id IS NULL, %s, src.arg),
+            dst.brief = IF(src.id IS NULL, %s, src.brief)
+        WHERE dst.general_id = %i',
+        $turnCnt,
+        '휴식',
+        '{}',
+        '휴식',
+        $generalID
+    );
 }
 
 function pullGeneralCommand(int $generalID, int $turnCnt=1){
@@ -67,15 +73,21 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
 
     $db = DB::db();
 
-    $db->update('general_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxTurn),
-        'action'=>'휴식',
-        'arg'=>'{}',
-        'brief'=>'휴식'
-    ], 'general_id=%i AND turn_idx < %i', $generalID, $turnCnt);
-    $db->update('general_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
-    ], 'general_id=%i ORDER BY turn_idx ASC', $generalID);
+    $db->query(
+        'UPDATE general_turn AS dst
+        LEFT JOIN general_turn AS src
+          ON src.general_id = dst.general_id
+         AND src.turn_idx = dst.turn_idx + %i
+        SET dst.action = IF(src.id IS NULL, %s, src.action),
+            dst.arg = IF(src.id IS NULL, %s, src.arg),
+            dst.brief = IF(src.id IS NULL, %s, src.brief)
+        WHERE dst.general_id = %i',
+        $turnCnt,
+        '휴식',
+        '{}',
+        '휴식',
+        $generalID
+    );
 }
 
 function repeatGeneralCommand(int $generalId, int $turnCnt){
@@ -126,15 +138,23 @@ function pushNationCommand(int $nationID, int $officerLevel, int $turnCnt=1){
 
     $db = DB::db();
 
-    $db->update('nation_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
-    ], 'nation_id=%i AND officer_level=%i ORDER BY turn_idx DESC', $nationID, $officerLevel);
-    $db->update('nation_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxChiefTurn),
-        'action'=>'휴식',
-        'arg'=>'{}',
-        'brief'=>'휴식'
-    ], 'nation_id=%i AND officer_level=%i AND turn_idx >= %i ORDER BY turn_idx ASC', $nationID, $officerLevel, GameConst::$maxChiefTurn);
+    $db->query(
+        'UPDATE nation_turn AS dst
+        LEFT JOIN nation_turn AS src
+          ON src.nation_id = dst.nation_id
+         AND src.officer_level = dst.officer_level
+         AND src.turn_idx = dst.turn_idx - %i
+        SET dst.action = IF(src.id IS NULL, %s, src.action),
+            dst.arg = IF(src.id IS NULL, %s, src.arg),
+            dst.brief = IF(src.id IS NULL, %s, src.brief)
+        WHERE dst.nation_id = %i AND dst.officer_level = %i',
+        $turnCnt,
+        '휴식',
+        '{}',
+        '휴식',
+        $nationID,
+        $officerLevel
+    );
 }
 
 function pullNationCommand(int $nationID, int $officerLevel, int $turnCnt=1){
@@ -157,15 +177,23 @@ function pullNationCommand(int $nationID, int $officerLevel, int $turnCnt=1){
 
     $db = DB::db();
 
-    $db->update('nation_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxChiefTurn),
-        'action'=>'휴식',
-        'arg'=>'{}',
-        'brief'=>'휴식',
-    ], 'nation_id=%i AND officer_level=%i AND turn_idx < %i', $nationID, $officerLevel, $turnCnt);
-    $db->update('nation_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
-    ], 'nation_id=%i AND officer_level=%i ORDER BY turn_idx ASC', $nationID, $officerLevel);
+    $db->query(
+        'UPDATE nation_turn AS dst
+        LEFT JOIN nation_turn AS src
+          ON src.nation_id = dst.nation_id
+         AND src.officer_level = dst.officer_level
+         AND src.turn_idx = dst.turn_idx + %i
+        SET dst.action = IF(src.id IS NULL, %s, src.action),
+            dst.arg = IF(src.id IS NULL, %s, src.arg),
+            dst.brief = IF(src.id IS NULL, %s, src.brief)
+        WHERE dst.nation_id = %i AND dst.officer_level = %i',
+        $turnCnt,
+        '휴식',
+        '{}',
+        '휴식',
+        $nationID,
+        $officerLevel
+    );
 }
 
 function repeatNationCommand(int $nationID, int $officerLevel, int $turnCnt){

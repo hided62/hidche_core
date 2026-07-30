@@ -1045,18 +1045,64 @@ class General extends GeneralBase implements iAction
 
         /** @var Map<GeneralAccessLog,int>|null */
         $rawAccessLog = null;
+        $rankColumnValues = array_map(fn (\BackedEnum $e) => $e->value, $rankColumn);
 
         if (!$accessLogColumn) {
-            $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
+            if ($rankColumn) {
+                $rawGeneral = $db->queryFirstRow(
+                    'SELECT %l, (
+                        SELECT GROUP_CONCAT(
+                            CONCAT(`type`, CHAR(61), `value`)
+                            ORDER BY `type`
+                        )
+                        FROM rank_data
+                        WHERE rank_data.general_id = general.no
+                          AND `type` IN %ls
+                    ) AS `_rank_values`
+                    FROM general WHERE no = %i',
+                    Util::formatListOfBackticks($column),
+                    $rankColumnValues,
+                    $generalID
+                );
+            } else {
+                $rawGeneral = $db->queryFirstRow(
+                    'SELECT %l FROM general WHERE no = %i',
+                    Util::formatListOfBackticks($column),
+                    $generalID
+                );
+            }
         } else {
-            $rawGeneral = $db->queryFirstRow(
-                'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
-                    ON general.no = general_access_log.general_id WHERE no = %i',
-                Util::formatListOfBackticks($column),
-                Util::formatListOfBackticks($accessLogColumn),
-                $generalID
-            );
+            if ($rankColumn) {
+                $rawGeneral = $db->queryFirstRow(
+                    'SELECT %l, %l, (
+                        SELECT GROUP_CONCAT(
+                            CONCAT(`type`, CHAR(61), `value`)
+                            ORDER BY `type`
+                        )
+                        FROM rank_data
+                        WHERE rank_data.general_id = general.no
+                          AND `type` IN %ls
+                    ) AS `_rank_values`
+                    FROM `general` LEFT JOIN general_access_log
+                      ON general.no = general_access_log.general_id
+                    WHERE no = %i',
+                    Util::formatListOfBackticks($column),
+                    Util::formatListOfBackticks($accessLogColumn),
+                    $rankColumnValues,
+                    $generalID
+                );
+            } else {
+                $rawGeneral = $db->queryFirstRow(
+                    'SELECT %l, %l FROM `general` LEFT JOIN general_access_log
+                      ON general.no = general_access_log.general_id WHERE no = %i',
+                    Util::formatListOfBackticks($column),
+                    Util::formatListOfBackticks($accessLogColumn),
+                    $generalID
+                );
+            }
+        }
 
+        if ($accessLogColumn) {
             $rawAccessLog = new Map();
             foreach ($accessLogColumn as $accessLogKey) {
                 if (!key_exists($accessLogKey->value, $rawGeneral)) {
@@ -1076,15 +1122,16 @@ class General extends GeneralBase implements iAction
 
         $rawRankValues = new Map();
         if ($rankColumn) {
-            $rawValue = $db->queryAllLists(
-                'SELECT `type`, `value` FROM rank_data WHERE general_id = %i AND `type` IN %ls',
-                $generalID,
-                array_map(fn (\BackedEnum $e) => $e->value, $rankColumn)
-            );
-            foreach ($rawValue as [$rawRankType, $rankValue]) {
-                $rankType = RankColumn::tryFrom($rawRankType);
-                $rawRankValues->put($rankType, $rankValue);
+            $rawRankPairs = $rawGeneral['_rank_values'];
+            foreach ($rawRankPairs === null || $rawRankPairs === ''
+                ? []
+                : explode(',', $rawRankPairs) as $rawRankPair
+            ) {
+                [$rawRankType, $rankValue] = explode('=', $rawRankPair, 2);
+                $rankType = RankColumn::from($rawRankType);
+                $rawRankValues->put($rankType, (int) $rankValue);
             }
+            unset($rawGeneral['_rank_values']);
         }
 
 
