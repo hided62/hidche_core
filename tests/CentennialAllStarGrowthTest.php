@@ -83,12 +83,12 @@ final class CentennialAllStarGrowthTest extends TestCase
         );
     }
 
-    public function testGeneratedNpcUsesExactCreationDateTargetInsteadOfRandomBase(): void
+    public function testGeneratedNpcKeepsOrdinaryTotalAndUsesCreationDateTargetFloor(): void
     {
         $vars = [
             'leadership' => 72,
-            'strength' => 61,
-            'intel' => 32,
+            'strength' => 66,
+            'intel' => 12,
             'dex1' => 120000,
             'dex2' => 240000,
             'dex3' => 360000,
@@ -117,15 +117,102 @@ final class CentennialAllStarGrowthTest extends TestCase
 
         self::assertSame(91, $vars['leadership']);
         self::assertSame(73, $vars['strength']);
-        self::assertSame(10, $vars['intel']);
+        self::assertSame(12, $vars['intel']);
+        self::assertSame(176, $vars['leadership'] + $vars['strength'] + $vars['intel']);
         self::assertSame(
             [360000, 320000, 280000, 240000, 200000],
             $this->dexValues($vars)
         );
-        self::assertSame(76, $aux['granted']['leadership']);
-        self::assertSame(58, $aux['granted']['strength']);
+        self::assertSame(19, $aux['granted']['leadership']);
+        self::assertSame(7, $aux['granted']['strength']);
         self::assertSame(0, $aux['granted']['intel']);
         self::assertSame(360000, $aux['granted']['dex1']);
+    }
+
+    public function testFernandoAndUmaMusumeStartAtOrdinaryNpcTotal(): void
+    {
+        $pool = json_decode(
+            file_get_contents(__DIR__ . '/../hwe/sammo/GeneralPool/Pool/UnderS100.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+        $columns = array_flip($pool['columns']);
+        $targets = [];
+        foreach ($pool['data'] as $row) {
+            $name = $row[$columns['generalName']];
+            if (!in_array($name, ['43·페르난도', '47·우마무스메'], true)) {
+                continue;
+            }
+            $targets[$name] = [
+                'leadership' => $row[$columns['leadership']],
+                'strength' => $row[$columns['strength']],
+                'intel' => $row[$columns['intel']],
+            ];
+        }
+        self::assertCount(2, $targets);
+
+        $generated = [
+            'leadership' => 73,
+            'strength' => 10,
+            'intel' => 67,
+        ];
+        $fernando = CentennialAllStarGrowthService::calculateGeneratedNPCInitialStats(
+            $targets['43·페르난도'],
+            $generated
+        );
+        $umaMusume = CentennialAllStarGrowthService::calculateGeneratedNPCInitialStats(
+            $targets['47·우마무스메'],
+            $generated
+        );
+
+        self::assertSame([
+            'leadership' => 67,
+            'strength' => 73,
+            'intel' => 10,
+        ], $fernando);
+        self::assertSame([
+            'leadership' => 10,
+            'strength' => 67,
+            'intel' => 73,
+        ], $umaMusume);
+        self::assertSame(GameConst::$defaultStatNPCTotal, array_sum($fernando));
+        self::assertSame(GameConst::$defaultStatNPCTotal, array_sum($umaMusume));
+    }
+
+    public function testEveryCandidateKeepsTheGeneratedNpcStatTotal(): void
+    {
+        $pool = json_decode(
+            file_get_contents(__DIR__ . '/../hwe/sammo/GeneralPool/Pool/UnderS100.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+        $columns = array_flip($pool['columns']);
+        $generated = [
+            'leadership' => 73,
+            'strength' => 67,
+            'intel' => 10,
+        ];
+
+        foreach ($pool['data'] as $row) {
+            $target = [
+                'leadership' => $row[$columns['leadership']],
+                'strength' => $row[$columns['strength']],
+                'intel' => $row[$columns['intel']],
+            ];
+            $initial = CentennialAllStarGrowthService::calculateGeneratedNPCInitialStats(
+                $target,
+                $generated
+            );
+            self::assertSame(
+                GameConst::$defaultStatNPCTotal,
+                array_sum($initial),
+                $row[$columns['generalName']]
+            );
+            sort($initial, SORT_NUMERIC);
+            self::assertSame([10, 67, 73], array_values($initial));
+        }
     }
 
     public function testProgressMultiplierMustStayWithinUnitInterval(): void
