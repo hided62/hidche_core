@@ -464,33 +464,64 @@ final class CentennialAllStarGrowthService
     }
 
     /**
-     * Discards the builder's generic random stat/dex values before applying
-     * the selected all-star target. A newly generated NPC has no organic
-     * growth yet, so those temporary values must not mask the creation-date
-     * event baseline.
+     * Keeps the ordinary M/G-general stat total while aligning its strong,
+     * middle, and weak stats with the selected all-star target. The target's
+     * creation-date growth floor is applied immediately afterwards.
      */
     public static function initializeGeneratedNPC(
         General $general,
         array $targetInfo
     ): void {
+        $generatedStats = [];
         foreach (self::STAT_KEYS as $key) {
-            $target = min(
-                GameConst::$maxLevel,
-                max(0, (int) ($targetInfo[$key] ?? 0))
-            );
-            $general->updateVar(
-                $key,
-                CentennialAllStarGrowth::statFloor(
-                    $target,
-                    GameConst::$defaultStatMin,
-                    0
-                )
-            );
+            $generatedStats[$key] = (int) $general->getVar($key);
+        }
+        $initialStats = self::calculateGeneratedNPCInitialStats(
+            $targetInfo,
+            $generatedStats
+        );
+        foreach (self::STAT_KEYS as $key) {
+            $general->updateVar($key, $initialStats[$key]);
         }
         foreach (self::DEX_KEYS as $key) {
             $general->updateVar($key, 0);
         }
         $general->setAuxVar(self::AUX_KEY, self::initialAux($targetInfo));
+    }
+
+    /**
+     * @param array<string, mixed> $targetInfo
+     * @param array{leadership:int,strength:int,intel:int} $generatedStats
+     * @return array{leadership:int,strength:int,intel:int}
+     */
+    public static function calculateGeneratedNPCInitialStats(
+        array $targetInfo,
+        array $generatedStats
+    ): array {
+        $targetOrder = self::STAT_KEYS;
+        $keyOrder = array_flip(self::STAT_KEYS);
+        usort(
+            $targetOrder,
+            static function (string $lhs, string $rhs) use ($targetInfo, $keyOrder): int {
+                $targetCompare = (int) ($targetInfo[$rhs] ?? 0)
+                    <=> (int) ($targetInfo[$lhs] ?? 0);
+                return $targetCompare !== 0
+                    ? $targetCompare
+                    : $keyOrder[$lhs] <=> $keyOrder[$rhs];
+            }
+        );
+
+        $generatedValues = array_map(
+            static fn (string $key): int => (int) ($generatedStats[$key] ?? 0),
+            self::STAT_KEYS
+        );
+        rsort($generatedValues, SORT_NUMERIC);
+
+        $result = array_fill_keys(self::STAT_KEYS, 0);
+        foreach ($targetOrder as $idx => $key) {
+            $result[$key] = $generatedValues[$idx];
+        }
+        return $result;
     }
 
     /**
