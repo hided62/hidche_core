@@ -39,6 +39,10 @@ class DieOnPrestart extends \sammo\BaseAPI
     $gameStor->cacheValues(['turnterm', 'opentime', 'turntime', 'year', 'month']);
 
     $general = $db->queryFirstRow('SELECT no,name,nation,owner_name,npc FROM general WHERE owner=%i AND npc = 0', $userID);
+    if (!$general) {
+      return '장수가 없습니다';
+    }
+
     $lastRefresh = $db->queryFirstField(
       'SELECT %b FROM general_access_log WHERE %b = %i',
       GeneralAccessLogColumn::lastRefresh->value,
@@ -46,8 +50,9 @@ class DieOnPrestart extends \sammo\BaseAPI
       $general['no']
     );
 
-    if (!$general) {
-      return '장수가 없습니다';
+    $generalObj = General::createObjFromDB($general['no']);
+    if ($generalObj instanceof DummyGeneral) {
+      trigger_error("올바르지 않은 삭제 프로세스 $userID", E_USER_WARNING);
     }
 
     increaseRefresh("장수 삭제", 1);
@@ -61,16 +66,21 @@ class DieOnPrestart extends \sammo\BaseAPI
       return '이미 국가에 소속되어있습니다.';
     }
 
+    $targetTime = $generalObj->getAuxVar('prestart_delete_after');
+    if (!is_string($targetTime) || $targetTime === '') {
+      $targetTime = addTurn(
+        $lastRefresh ?: TimeUtil::now(),
+        $gameStor->turnterm,
+        GameConst::$minTurnDieOnPrestart
+      );
+      $generalObj->setAuxVar('prestart_delete_after', $targetTime);
+      $generalObj->applyDB($db);
+    }
+
     //서버 가오픈시 할 수 있는 행동
-    $targetTime = addTurn($lastRefresh, $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
     if ($targetTime > TimeUtil::now()) {
       $targetTimeShort = substr($targetTime, 0, 19);
       return "아직 삭제할 수 없습니다. {$targetTimeShort} 부터 가능합니다.";
-    }
-
-    $generalObj = General::createObjFromDB($general['no']);
-    if ($generalObj instanceof DummyGeneral) {
-      trigger_error("올바르지 않은 삭제 프로세스 $userID", E_USER_WARNING);
     }
 
     $generalName = $generalObj->getName();

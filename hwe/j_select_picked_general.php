@@ -177,6 +177,10 @@ $builder->setOwnerName($userNick);
 $builder->setKillturn(5);
 $builder->setNPCType(0);
 $builder->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $env['turnterm']));
+$builder->setAuxVar(
+    'prestart_delete_after',
+    addTurn($now, $env['turnterm'], GameConst::$minTurnDieOnPrestart)
+);
 $builder->fillRemainSpecAsZero($env);
 if ($isCentennialAllStar) {
     $candidateCities = $db->queryFirstColumn(

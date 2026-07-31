@@ -451,6 +451,7 @@ final class CentennialAllStarGrowthService
         if (!in_array($general->getNPCType(), [3, 4], true)) {
             return null;
         }
+        self::initializeGeneratedNPC($general, $targetInfo);
         $result = self::applyTarget(
             $general,
             $targetInfo,
@@ -460,6 +461,36 @@ final class CentennialAllStarGrowthService
         );
         $general->applyDB($db);
         return $result;
+    }
+
+    /**
+     * Discards the builder's generic random stat/dex values before applying
+     * the selected all-star target. A newly generated NPC has no organic
+     * growth yet, so those temporary values must not mask the creation-date
+     * event baseline.
+     */
+    public static function initializeGeneratedNPC(
+        General $general,
+        array $targetInfo
+    ): void {
+        foreach (self::STAT_KEYS as $key) {
+            $target = min(
+                GameConst::$maxLevel,
+                max(0, (int) ($targetInfo[$key] ?? 0))
+            );
+            $general->updateVar(
+                $key,
+                CentennialAllStarGrowth::statFloor(
+                    $target,
+                    GameConst::$defaultStatMin,
+                    0
+                )
+            );
+        }
+        foreach (self::DEX_KEYS as $key) {
+            $general->updateVar($key, 0);
+        }
+        $general->setAuxVar(self::AUX_KEY, self::initialAux($targetInfo));
     }
 
     /**
