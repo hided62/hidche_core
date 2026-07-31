@@ -435,6 +435,13 @@ class Join extends \sammo\BaseAPI
             'specage2' => $specage2,
             'special2' => $special2,
             'penalty' => Json::encode($penalty),
+            'aux' => Json::encode([
+                'prestart_delete_after' => addTurn(
+                    $now,
+                    $admin['turnterm'],
+                    GameConst::$minTurnDieOnPrestart
+                ),
+            ]),
         ]);
         $generalID = $db->insertId();
         $db->insert('general_access_log', [

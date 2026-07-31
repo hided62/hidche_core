@@ -83,6 +83,51 @@ final class CentennialAllStarGrowthTest extends TestCase
         );
     }
 
+    public function testGeneratedNpcUsesExactCreationDateTargetInsteadOfRandomBase(): void
+    {
+        $vars = [
+            'leadership' => 72,
+            'strength' => 61,
+            'intel' => 32,
+            'dex1' => 120000,
+            'dex2' => 240000,
+            'dex3' => 360000,
+            'dex4' => 480000,
+            'dex5' => 600000,
+            'special' => 'None',
+        ];
+        $target = [
+            'uniqueName' => 'A1000001',
+            'leadership' => 100,
+            'strength' => 80,
+            'intel' => 10,
+            'dex' => [900000, 800000, 700000, 600000, 500000],
+        ];
+        $aux = CentennialAllStarGrowthService::initialAux($target);
+        $general = $this->createStateGeneralMock($vars, $aux);
+
+        CentennialAllStarGrowthService::initializeGeneratedNPC($general, $target);
+        CentennialAllStarGrowthService::applyTarget(
+            $general,
+            $target,
+            ['startyear' => 180, 'year' => 195, 'month' => 1],
+            CentennialAllStarGrowthService::NPC_PROGRESS_MULTIPLIER,
+            GameConst::$centennialNpcDexTargetRatio
+        );
+
+        self::assertSame(91, $vars['leadership']);
+        self::assertSame(73, $vars['strength']);
+        self::assertSame(10, $vars['intel']);
+        self::assertSame(
+            [360000, 320000, 280000, 240000, 200000],
+            $this->dexValues($vars)
+        );
+        self::assertSame(76, $aux['granted']['leadership']);
+        self::assertSame(58, $aux['granted']['strength']);
+        self::assertSame(0, $aux['granted']['intel']);
+        self::assertSame(360000, $aux['granted']['dex1']);
+    }
+
     public function testProgressMultiplierMustStayWithinUnitInterval(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -22,8 +22,6 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $gameStor->cacheValues(['turntime', 'opentime', 'autorun_user', 'npcmode']);
 
-increaseRefresh("내정보", 1);
-
 $me = General::createObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
 
 $myset = $me->getVar('myset');
@@ -41,8 +39,24 @@ $lastRefresh = $db->queryFirstField(
     $generalID
 );
 
-$targetTime = addTurn($lastRefresh, $gameStor->turnterm, GameConst::$minTurnDieOnPrestart);
+$nextChange = $me->getAuxVar('next_change');
+if (!is_string($nextChange) || $nextChange === '') {
+    $nextChange = null;
+}
+
+increaseRefresh("내정보", 1);
 if ($gameStor->turntime <= $gameStor->opentime) {
+    $targetTime = $me->getAuxVar('prestart_delete_after');
+    if (!is_string($targetTime) || $targetTime === '') {
+        $targetTime = addTurn(
+            $lastRefresh ?: TimeUtil::now(),
+            $gameStor->turnterm,
+            GameConst::$minTurnDieOnPrestart
+        );
+        $me->setAuxVar('prestart_delete_after', $targetTime);
+        $me->applyDB($db);
+    }
+
     //서버 가오픈시 할 수 있는 행동
     if ($me->getNPCType() == 0 && $me->getNationID() == 0) {
         $showDieOnPrestartBtn = true;
@@ -174,7 +188,7 @@ $changeDefence999Atmos = $me->onCalcDomestic('changeDefenceTrain', "atmos999", $
                         <?php endif; ?>
 
                         <?php if ($gameStor->npcmode == 2 && $me->getNPCType() == 0) : ?>
-                            다른 장수 선택 (<?= substr($me->getAuxVar('next_change') ?? TimeUtil::now(), 0, 19) ?> 부터)<br>
+                            다른 장수 선택 (<?= $nextChange ? substr($nextChange, 0, 19) : '지금' ?>부터)<br>
                             <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>다른 장수 선택</button></a><br><br>
                         <?php endif; ?>
 
