@@ -3727,7 +3727,7 @@ class GeneralAI
                 $src,
                 $src,
                 $general->getVar('npcmsg'),
-                new \DateTime(),
+                Message::gameNow(),
                 new \DateTime('9999-12-31'),
                 []
             );

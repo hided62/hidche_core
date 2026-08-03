@@ -25,20 +25,23 @@ if(!$reserved){
     ]);
 }
 
-$reservedDate = new \DateTime($reserved['date']);
-$now = new \DateTime();
+$reservedDate = new \DateTimeImmutable($reserved['date']);
+$now = GameClock::readWallTime();
 
 
 $status = 'not_yet';
 
-list($isUnited, $lastTurn) = $gameStor->getValuesAsArray(['isunited', 'turntime']);
-if($isUnited === null || $lastTurn === null){
+list($isUnited, $unitedWallAnchor) = $gameStor->getValuesAsArray(['isunited', 'autoreset_united_wall_anchor']);
+if($isUnited === null){
     $isUnited = 2;
-    $lastTurn = '2000-01-01';
 }
-
-if($lastTurn !== null){
-    $lastTurn = new \DateTime($lastTurn);
+$lastTurn = null;
+if($isUnited > 0){
+    if(!is_string($unitedWallAnchor) || $unitedWallAnchor === ''){
+        $unitedWallAnchor = TimeUtil::format($now, true);
+        $gameStor->autoreset_united_wall_anchor = $unitedWallAnchor;
+    }
+    $lastTurn = new \DateTimeImmutable($unitedWallAnchor);
 }
 
 if($lastTurn === null){

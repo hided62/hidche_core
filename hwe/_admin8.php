@@ -100,8 +100,6 @@ $sel[$type] = "selected";
                     throw new \Exception("알 수 없는 외교 상태: {$dip['state']}");
             }
 
-            $date = TimeUtil::now();
-
             echo "
     <tr>
         <td align=center style=color:" . newColor($nationColor[$me]) . ";background-color:{$nationColor[$me]};>$nationName[$me]</td>

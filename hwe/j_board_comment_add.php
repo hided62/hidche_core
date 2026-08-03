@@ -10,6 +10,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
 $articleNo = Util::getPost('articleNo', 'int');
 $text = Util::getPost('text');
@@ -73,7 +74,7 @@ else if ($isSecretBoard && $permission < 2) {
 $db->insert('comment', [
     'nation_no'=>$me['nation'],
     'is_secret'=>$isSecretBoard,
-    'date'=>TimeUtil::now(),
+    'date'=>$clock->formatNow(),
     'document_no'=>$articleNo,
     'general_no'=>$me['no'],
     'author'=>$me['name'],

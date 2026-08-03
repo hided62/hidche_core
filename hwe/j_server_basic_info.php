@@ -76,6 +76,7 @@ $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
 $admin['isUnited'] = $admin['isunited'];
+$admin['isOpen'] = $clock->nowTick() >= Util::toInt($admin['opentime']);
 $admin['starttime'] = substr($clock->formatTick(Util::toInt($admin['opentime'])), 5, 11);
 $admin['turntime'] = substr($clock->formatTick(Util::toInt($admin['turntime'])), 5, 11);
 unset($admin['npcmode']);

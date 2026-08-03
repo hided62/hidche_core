@@ -27,7 +27,7 @@
         <div class="row gx-1 gy-1 py-1">
           <div class="col-lg-4 mx-0 mb-0 mt-1 d-grid">
             <div class="alert alert-primary mb-0 center" style="padding: 0.5rem 0">
-              <SimpleClock :serverTime="parseTime(props.date)" />
+              <SimpleClock :serverTime="parseTime(props.date)" :running="props.clockMode === 'realtime'" />
             </div>
           </div>
 
@@ -289,6 +289,10 @@ const props = defineProps({
   maxTurn: VueTypes.integer.isRequired,
   maxPushTurn: VueTypes.integer.isRequired,
   date: VueTypes.string.isRequired,
+  clockMode: {
+    type: String as PropType<"realtime" | "manual">,
+    required: true,
+  },
   year: VueTypes.integer.isRequired,
   month: VueTypes.integer.isRequired,
   turnTerm: VueTypes.integer.isRequired,

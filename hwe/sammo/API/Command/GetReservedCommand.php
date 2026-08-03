@@ -10,7 +10,6 @@ use sammo\GameConst;
 use sammo\GameClock;
 use sammo\Json;
 use sammo\KVStorage;
-use sammo\TimeUtil;
 use sammo\Util;
 
 use function sammo\cutTurn;
@@ -33,6 +32,7 @@ class GetReservedCommand extends \sammo\BaseAPI
 
         $commandList = [];
         $gameStor = KVStorage::getStorage($db, 'game_env');
+        $clock = GameClock::fromStorage($gameStor);
         $generalID = $session->generalID;
 
         $invalidTurnList = 0;
@@ -85,11 +85,12 @@ class GetReservedCommand extends \sammo\BaseAPI
         return [
             'result' => true,
             'turnTimeTick' => Util::toInt($turnTime),
-            'turnTime' => GameClock::fromStorage($gameStor)->formatTick(Util::toInt($turnTime)),
+            'turnTime' => $clock->formatTick(Util::toInt($turnTime)),
             'turnTerm' => $turnTerm,
             'year' => $year,
             'month' => $month,
-            'date' => GameClock::fromStorage($gameStor)->formatTick(GameClock::fromStorage($gameStor)->nowTick(), true),
+            'date' => $clock->formatTick($clock->nowTick(), true),
+            'clockMode' => $clock->getMode(),
             'turn' => $commandList,
             'autorun_limit' => $generalAux['autorun_limit'] ?? null,
         ];

@@ -8,6 +8,7 @@ use sammo\DB;
 use sammo\DTO\VoteComment;
 use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
+use sammo\GameClock;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\Validator;
@@ -35,13 +36,16 @@ class GetVoteDetail extends \sammo\BaseAPI
   {
     $voteID = $this->args['voteID'];
     $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
     $voteStor = KVStorage::getStorage($db, 'vote');
     $rawVote = $voteStor->getValue("vote_{$voteID}");
     if (!$rawVote) {
       return '설문조사가 없습니다.';
     }
-    $voteInfo = VoteInfo::fromArray($rawVote);
+    $rawVote = VoteInfo::normalizeGameStorage($rawVote, $clock);
+    $voteInfo = VoteInfo::fromGameStorage($rawVote, $clock);
+    $isOpen = $rawVote['endTick'] === null || $rawVote['endTick'] >= $clock->nowTick();
 
 
     $votes = array_map(fn ($arr) => [Json::decode($arr[0]), $arr[1]], $db->queryAllLists(
@@ -70,6 +74,7 @@ class GetVoteDetail extends \sammo\BaseAPI
       'comments' => $comments,
       'myVote' => $myVote,
       'userCnt' => $userCnt,
+      'isOpen' => $isOpen,
     ];
   }
 }

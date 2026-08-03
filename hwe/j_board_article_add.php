@@ -10,6 +10,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
 $isSecretBoard = Util::getPost('isSecret', 'bool', false);
 $title = Util::getPost('title');
@@ -67,7 +68,7 @@ $icon = GetImageURL($me['imgsvr'], $me['picture']);
 $db->insert('board', [
     'nation_no'=>$me['nation'],
     'is_secret'=>$isSecretBoard,
-    'date'=>TimeUtil::now(),
+    'date'=>$clock->formatNow(),
     'general_no'=>$me['no'],
     'author'=>$me['name'],
     'author_icon'=>$icon,

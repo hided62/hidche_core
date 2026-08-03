@@ -12,7 +12,6 @@ use sammo\GameClock;
 use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
-use sammo\TimeUtil;
 use sammo\Util;
 
 use function sammo\checkLimit;
@@ -40,6 +39,7 @@ class GetReservedCommand extends \sammo\BaseAPI
         increaseRefresh("사령부", 1);
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
+        $clock = GameClock::fromStorage($gameStor);
         $userID = $session->userID;
 
         $me = $db->queryFirstRow(
@@ -158,7 +158,8 @@ class GetReservedCommand extends \sammo\BaseAPI
             'year' => $year,
             'month' => $month,
             'turnTerm' => $turnTerm,
-            'date' => TimeUtil::now(true),
+            'date' => $clock->formatTick($clock->nowTick(), true),
+            'clockMode' => $clock->getMode(),
             'chiefList' => $nationChiefList,
             'troopList' => $troopList,
             'isChief' => ($me['officer_level'] > 4),

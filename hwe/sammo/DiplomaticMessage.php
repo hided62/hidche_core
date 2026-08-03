@@ -215,7 +215,7 @@ class DiplomaticMessage extends Message{
             $this->dest,
             $this->src,
             "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}",
-            new \DateTime(),
+            Message::gameNow(),
             new \DateTime('9999-12-31'),
             [
                 'delete'=>$this->id,
@@ -231,7 +231,7 @@ class DiplomaticMessage extends Message{
             $this->dest,
             $this->src,
             "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}",
-            new \DateTime(),
+            Message::gameNow(),
             new \DateTime('9999-12-31'),
             [
                 'delete'=>$this->id,

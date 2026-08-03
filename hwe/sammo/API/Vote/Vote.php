@@ -8,6 +8,7 @@ use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\GeneralQueryMode;
 use sammo\General;
+use sammo\GameClock;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\LiteHashDRBG;
@@ -54,15 +55,17 @@ class Vote extends \sammo\BaseAPI
             return '선택한 항목이 없습니다.';
         }
         $db = DB::db();
+        $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
         $voteStor = KVStorage::getStorage($db, 'vote');
 
         $rawVoteInfo = $voteStor->getValue("vote_{$voteID}");
         if (!$rawVoteInfo) {
             return '설문조사가 없습니다.';
         }
-        $voteInfo = VoteInfo::fromArray($rawVoteInfo);
+        $rawVoteInfo = VoteInfo::normalizeGameStorage($rawVoteInfo, $clock);
+        $voteInfo = VoteInfo::fromGameStorage($rawVoteInfo, $clock);
 
-        if ($voteInfo->endDate && $voteInfo->endDate < new \DateTimeImmutable()) {
+        if ($rawVoteInfo['endTick'] !== null && $rawVoteInfo['endTick'] < $clock->nowTick()) {
             return '설문조사가 종료되었습니다.';
         }
 

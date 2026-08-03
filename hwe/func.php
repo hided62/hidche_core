@@ -1087,7 +1087,7 @@ function updateTraffic()
         'month' => $admin['month'],
         'refresh' => $admin['refresh'],
         'online' => $online,
-        'date' => TimeUtil::now(),
+        'date' => GameClock::fromStorage($gameStor)->formatNow(),
     ];
     $gameStor->recentTraffic = $recentTraffic;
 
@@ -1376,12 +1376,14 @@ function CheckHall($no)
         return;
     }
 
-    $unitedDate = TimeUtil::now();
+    $clock = GameClock::fromStorage($gameStor);
+    $unitedDate = $clock->formatTick($clock->nowTick());
     $nation = $generalObj->getStaticNation();
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
 
-    [$scenarioIdx, $scenarioName, $startTime] = $gameStor->getValuesAsArray(['scenario', 'scenario_text', 'starttime']);
+    [$scenarioIdx, $scenarioName, $startTick] = $gameStor->getValuesAsArray(['scenario', 'scenario_text', 'starttime']);
+    $startTime = $clock->formatTick(Util::toInt($startTick));
 
     $ownerName = $generalObj->getVar('owner_name');
     if ($generalObj->getVar('owner')) {
@@ -1787,9 +1789,11 @@ function deleteNation(General $lord, bool $applyDB): array
     $db->delete('troop', 'nation=%i', $nationID);
 
     // 국가 삭제
+    $gameDate = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->formatNow();
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => $nationID,
+        'date' => $gameDate,
         'data' => Json::encode($nation)
     ]);
     $db->delete('nation', 'nation=%i', $nationID);

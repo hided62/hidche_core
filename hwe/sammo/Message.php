@@ -26,6 +26,12 @@ class Message
     ) {
     }
 
+    public static function gameNow(): \DateTime
+    {
+        $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+        return \DateTime::createFromImmutable($clock->nowDateTime());
+    }
+
     public function setSentInfo(int $mailbox, int $messageID) : self
     {
         if(!Message::isValidMailBox($mailbox)){
@@ -78,6 +84,15 @@ class Message
     }
 
     public function toArray():array{
+        $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+        $messageTick = $clock->dateTimeToTick($this->date);
+        $deleteUntilTick = GameClock::addTicks($messageTick, $clock->ticksFromMinutes(5));
+        $deleteRemainingTicks = max(0, $deleteUntilTick - $clock->nowTick());
+        $deleteRemainingTicks = min($deleteRemainingTicks, $clock->ticksFromSeconds(2_147_483));
+        $deleteRemainingMilliseconds = intdiv(
+            $deleteRemainingTicks * 1000,
+            $clock->ticksPerSecond(),
+        );
         if($this->msgType === MessageType::public){
             $src = $this->src->toArray();
             $dest = null;
@@ -98,7 +113,9 @@ class Message
             'dest'=>$dest,
             'text'=>$this->msg,
             'option'=>$this->msgOption,
-            'time'=>$this->date->format('Y-m-d H:i:s')
+            'time'=>$this->date->format('Y-m-d H:i:s'),
+            'deleteRemainingMilliseconds'=>$deleteRemainingMilliseconds,
+            'clockMode'=>$clock->getMode(),
         ];
     }
 
@@ -446,7 +463,7 @@ class Message
                 $src,
                 $dest,
                 $msg,
-                new \DateTime(),
+                self::gameNow(),
                 new \DateTime('9999-12-31'),
                 []
               );
@@ -480,6 +497,8 @@ class Message
     }
 
     public function invalidate(?array $newMsgOption=null, bool $hideMsg=true){
+        $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+        $validUntilTick = $clock->dateTimeToTick($this->validUntil);
         if($newMsgOption !== null){
             $this->msgOption = $newMsgOption;
         }
@@ -487,7 +506,8 @@ class Message
         $this->msgOption['invalid'] = true;
 
         if($hideMsg){
-            $this->validUntil = new \DateTime('2000-12-31');
+            $validUntilTick = GameClock::addTicks($clock->nowTick(), -1);
+            $this->validUntil = \DateTime::createFromImmutable($clock->tickToDateTime($validUntilTick));
         }
         else{
             if(key_exists('receiverMessageID', $this->msgOption)){
@@ -505,8 +525,7 @@ class Message
                 'text' => $this->msg,
                 'option' => $this->msgOption
             ]),
-            'valid_until'=>GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))
-                ->dateTimeToTick($this->validUntil),
+            'valid_until'=>$validUntilTick,
         ], 'id=%i', $this->id);
 
     }

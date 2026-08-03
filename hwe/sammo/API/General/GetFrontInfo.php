@@ -21,7 +21,6 @@ use sammo\LastTurn;
 use sammo\Validator;
 
 use sammo\Session;
-use sammo\TimeUtil;
 use sammo\Util;
 
 use function sammo\buildNationCommandClass;
@@ -185,8 +184,9 @@ class GetFrontInfo extends \sammo\BaseAPI
     $lastVote = null;
     if ($lastVoteID) {
       $voteStor = KVStorage::getStorage($db, 'vote');
-      $lastVote = VoteInfo::fromArray($voteStor->getValue("vote_{$lastVoteID}"));
-      if ($lastVote->endDate && $lastVote->endDate < TimeUtil::now()) {
+      $rawLastVote = VoteInfo::normalizeGameStorage($voteStor->getValue("vote_{$lastVoteID}"), $clock);
+      $lastVote = VoteInfo::fromGameStorage($rawLastVote, $clock);
+      if ($rawLastVote['endTick'] !== null && $rawLastVote['endTick'] < $clock->nowTick()) {
         $lastVote = null;
       }
     }

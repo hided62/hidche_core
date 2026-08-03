@@ -297,7 +297,7 @@ CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 	`server_id` CHAR(20) NOT NULL DEFAULT '0',
 	`nation` INT(11) NOT NULL DEFAULT '0',
 	`data` LONGTEXT NOT NULL DEFAULT '{}' COLLATE 'utf8mb4_bin',
-	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date` DATETIME NOT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `server_id` (`server_id`, `nation`),
 	CONSTRAINT `json` CHECK (json_valid(`data`))
@@ -395,7 +395,7 @@ CREATE TABLE `ng_diplomacy` (
 	`state` ENUM('proposed', 'activated', 'cancelled', 'replaced') NOT NULL DEFAULT 'proposed',
 	`text_brief` TEXT NOT NULL,
 	`text_detail` TEXT NOT NULL,
-	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`date` DATETIME NOT NULL,
 	`src_signer` INT(11) NOT NULL,
 	`dest_signer` INT(11) NULL DEFAULT NULL,
 	`aux` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',

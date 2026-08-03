@@ -55,7 +55,8 @@ class UserLogger
         }
 
         $db = DB::db();
-        $date = TimeUtil::now();
+        $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+        $date = $clock->formatTick($clock->nowTick());
         $serverID = UniqueConst::$serverID;
         $request = array_map(function ($textAndType) use ($date, $serverID) {
             [$text, $type] = $textAndType;

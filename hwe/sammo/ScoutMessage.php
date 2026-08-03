@@ -108,7 +108,7 @@ class ScoutMessage extends Message
             $this->src,
             $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 수락",
-            new \DateTime(),
+            Message::gameNow(),
             new \DateTime('9999-12-31'),
             [
                 'delete' => $this->id
@@ -156,7 +156,7 @@ class ScoutMessage extends Message
             $this->src,
             $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 거부",
-            new \DateTime(),
+            Message::gameNow(),
             new \DateTime('9999-12-31'),
             [
                 'delete' => $this->id
@@ -206,7 +206,7 @@ class ScoutMessage extends Message
         $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM general WHERE `no`=%i', $srcGeneralID);
         $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `officer_level` FROM general WHERE `no`=%i', $destGeneralID);
         if ($date === null) {
-            $date = new \DateTime();
+            $date = Message::gameNow();
         }
 
         if ($destGeneral['officer_level'] == 12) {

@@ -25,13 +25,15 @@ if (!$v->validate()) {
 $msg = Util::getPost('msg');
 $btn = Util::getPost('btn');
 $log = Util::getPost('log');
-$starttime = Util::getPost('starttime', 'string', (new \DateTime())->format('Y-m-d H:i:s'));
+$starttime = Util::getPost('starttime', 'string', null);
 $maxgeneral = Util::getPost('maxgeneral', 'int', GameConst::$defaultMaxGeneral);
 $maxnation = Util::getPost('maxnation', 'int', GameConst::$defaultMaxNation);
 $startyear = Util::getPost('startyear', 'int', GameConst::$defaultStartYear);
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$clock = GameClock::fromStorage($gameStor);
+$starttime ??= $clock->formatTick($clock->nowTick());
 
 $admin = getAdmin();
 
@@ -43,7 +45,6 @@ switch ($btn) {
         pushGlobalHistoryLog(["<R>★</><S>{$log}</>"]);
         break;
     case "변경1":
-        $clock = GameClock::fromStorage($gameStor);
         $gameStor->clock_base_time = TimeUtil::format(GameClock::baseTimeForProjection(
             new \DateTimeImmutable($starttime),
             Util::toInt($gameStor->starttime),

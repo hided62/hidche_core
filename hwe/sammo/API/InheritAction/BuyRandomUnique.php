@@ -10,7 +10,6 @@ use sammo\Enums\RankColumn;
 use sammo\GameConst;
 use sammo\General;
 use sammo\KVStorage;
-use sammo\TimeUtil;
 use sammo\UserLogger;
 
 class BuyRandomUnique extends \sammo\BaseAPI
@@ -56,7 +55,7 @@ class BuyRandomUnique extends \sammo\BaseAPI
         $userLogger->push("{$reqAmount} 포인트로 랜덤 유니크 구입", "inheritPoint");
         $userLogger->flush();
 
-        $general->setAuxVar('inheritRandomUnique', TimeUtil::now());
+        $general->setAuxVar('inheritRandomUnique', true);
         $inheritStor->setValue('previous', [$previousPoint - $reqAmount, null]);
         $general->increaseRankVar(RankColumn::inherit_point_spent_dynamic, $reqAmount);
         $general->applyDB($db);

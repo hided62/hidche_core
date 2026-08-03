@@ -86,7 +86,9 @@ if($tokens){
     Json::die([
         'result'=>true,
         'pick'=>$pick,
-        'validUntil'=>$clock->formatTick(Util::toInt($valid_until))
+        'validUntil'=>$clock->formatTick(Util::toInt($valid_until)),
+        'validForSeconds'=>max(0, intdiv(Util::toInt($valid_until) - $now, $clock->ticksPerSecond())),
+        'clockMode'=>$clock->getMode(),
     ]);
 }
 
@@ -106,5 +108,7 @@ sortTokens($pick);//좀 무식하지만..
 Json::die([
     'result'=>true,
     'pick'=>$pick,
-    'validUntil'=>$valid_until === null ? null : $clock->formatTick(Util::toInt($valid_until))
+    'validUntil'=>$valid_until === null ? null : $clock->formatTick(Util::toInt($valid_until)),
+    'validForSeconds'=>$valid_until === null ? 0 : max(0, intdiv(Util::toInt($valid_until) - $now, $clock->ticksPerSecond())),
+    'clockMode'=>$clock->getMode(),
 ]);

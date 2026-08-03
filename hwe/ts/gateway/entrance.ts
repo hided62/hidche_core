@@ -5,7 +5,6 @@ import axios from 'axios';
 import { initTooltip } from "@/legacy/initTooltip";
 import { TemplateEngine } from '@util/TemplateEngine';
 import type { InvalidResponse } from '@/defs';
-import { getDateTimeNow } from '@util/getDateTimeNow';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { loadPlugin as loadAdminPlugin } from '@/gateway/admin_server';
 import '@/gateway/common';
@@ -108,6 +107,7 @@ type ReservedGameInfo = {
 
 type GameInfo = {
     isUnited: number,
+    isOpen: boolean,
     npcMode: '불가' | '가능' | '선택 생성',
     year: number,
     month: number,
@@ -175,7 +175,6 @@ async function Entrance_UpdateServer() {
 
 async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
     const $serverList = $('#server_list');
-    const now = getDateTimeNow();
 
     const serverDetailInfoP: Record<string, Promise<ServerDetailResponse>> = {};
 
@@ -239,7 +238,7 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
         } else if (game.isUnited == 2) {
             $serverHtml.find('.n_country').html('§천하통일§');
             $serverHtml.find('.server_date').html(`${game.starttime} <br>~ ${game.turntime}`);
-        } else if (game.opentime <= now) {
+        } else if (game.isOpen) {
             $serverHtml.find('.n_country').html(`<${game.nationCnt}국 경쟁중>`);
             $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         } else {
@@ -247,7 +246,7 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
             $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         }
 
-        if (game.opentime <= now) {
+        if (game.isOpen) {
             $serverHtml.append(
                 TemplateEngine(serverTextInfo, game)
             );

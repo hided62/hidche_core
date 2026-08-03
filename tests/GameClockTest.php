@@ -5,6 +5,7 @@ namespace sammo;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../src/sammo/GameClock.php';
+require_once __DIR__ . '/../hwe/sammo/TurnExecutionHelper.php';
 
 final class GameClockTest extends TestCase
 {
@@ -58,6 +59,7 @@ final class GameClockTest extends TestCase
         );
 
         self::assertSame(123_456, $clock->nowTick());
+        self::assertSame($clock->formatTick(123_456), $clock->formatNow());
         self::assertFalse($wallRead);
     }
 
@@ -95,5 +97,11 @@ final class GameClockTest extends TestCase
 
         $this->expectException(\OverflowException::class);
         GameClock::addTicks(GameClock::MAX_SAFE_TICK, 1);
+    }
+
+    public function testGlobalCompletionTickIsMonotonicAcrossSubTickExecution(): void
+    {
+        self::assertSame(36_000_000, TurnExecutionHelper::monotonicCompletionTick(36_000_000, 35_500_000));
+        self::assertSame(36_500_000, TurnExecutionHelper::monotonicCompletionTick(36_000_000, 36_500_000));
     }
 }

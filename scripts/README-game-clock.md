@@ -35,7 +35,12 @@ anchor에 고정하므로 표시 시각이 튀지 않습니다.
 
 ```bash
 php scripts/verify-game-clock-engine.php --apply --engine-calls=2
+php scripts/verify-game-clock-engine.php --apply --until-unification --max-months=2400
 ```
 
 이 검증기는 manual mode만 허용하고, 엔진 호출 전후 clock tick이 벽시계 때문에
 변하지 않았는지와 마지막 처리 tick이 현재 tick을 넘지 않았는지 검사합니다.
+`--until-unification`은 달력이나 DB 시각을 고쳐 쓰지 않고, 매월 manual clock만
+정확히 다음 turn tick으로 옮긴 뒤 실제 `TurnExecutionHelper`를 반복 호출합니다.
+각 호출에서 시계 고정과 처리 tick 상한을 재검사하고 `isunited=2|3`이 되지 않으면
+성공으로 취급하지 않습니다. 반드시 격리 복제 DB에서 실행하세요.

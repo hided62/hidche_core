@@ -43,7 +43,11 @@ type GeneralPoolResponse = {
     result: true,
     pick: CardItem[],
     validUntil: string,
+    validForSeconds: number,
+    clockMode: "realtime" | "manual",
 }
+
+let logicalClockRunning = true;
 
 declare const characterInfo: Record<string, { name: string, info: string }>;
 declare const hasGeneralID: number;
@@ -186,6 +190,9 @@ async function buildGeneral(e: JQuery.Event) {
 }
 
 function updateOutdateTimer() {
+    if (!logicalClockRunning) {
+        return;
+    }
     const $validUntilText = $('#valid_until_text');
     const now = Date.now();
     const validUntil = $validUntilText.data('until');
@@ -205,9 +212,10 @@ function updateOutdateTimer() {
 }
 
 function printGenerals(value: GeneralPoolResponse) {
+    logicalClockRunning = value.clockMode === "realtime";
     $('.card_holder').empty();
     $('#valid_until').show();
-    $('#valid_until_text').html(value.validUntil).data('until', (new Date(value.validUntil)).getTime()).css('color', 'white');
+    $('#valid_until_text').html(value.validUntil).data('until', Date.now() + value.validForSeconds * 1000).css('color', 'white');
     $('#outdate_token').hide();
 
     const pick = value.pick.map(v => v);//XXX: 의도가 뭐였지? clone?

@@ -9,6 +9,7 @@ include "func.php";
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$clock = GameClock::fromStorage($gameStor);
 
 increaseRefresh("갱신정보", 1);
 
@@ -23,7 +24,7 @@ $recentTraffic[] = [
     'month'   => $admin['month'],
     'refresh' => $admin['refresh'],
     'online'  => $curonline,
-    'date' => TimeUtil::now()
+    'date' => $clock->formatNow()
 ];
 
 if ($admin['maxrefresh'] == 0) {

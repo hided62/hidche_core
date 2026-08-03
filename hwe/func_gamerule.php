@@ -840,10 +840,12 @@ function checkEmperior()
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
+    $gameDate = GameClock::fromStorage($gameStor)->formatNow();
 
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => $nation['nation'],
+        'date' => $gameDate,
         'data' => Json::encode($nation)
     ]);
 
@@ -851,6 +853,7 @@ function checkEmperior()
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => 0,
+        'date' => $gameDate,
         'data' => Json::encode([
             'nation' => 0,
             'name' => '재야',

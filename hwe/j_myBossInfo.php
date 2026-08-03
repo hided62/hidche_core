@@ -290,7 +290,7 @@ function do추방(General $general, int $myOfficerLevel): ?string
                 $src,
                 $src,
                 $str,
-                new \DateTime(),
+                Message::gameNow(),
                 new \DateTime('9999-12-31'),
                 []
             );

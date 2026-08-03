@@ -79,7 +79,9 @@ if($token && !$refresh){
         'pick'=>Json::decode($token['pick_result']),
         'pickMoreFrom'=>$clock->formatTick($pickMoreFrom),
         'pickMoreSeconds'=>intdiv($pickMoreFrom - $now, $clock->ticksPerSecond()),
-        'validUntil'=>$clock->formatTick(Util::toInt($token['valid_until']))
+        'validUntil'=>$clock->formatTick(Util::toInt($token['valid_until'])),
+        'validForSeconds'=>max(0, intdiv(Util::toInt($token['valid_until']) - $now, $clock->ticksPerSecond())),
+        'clockMode'=>$clock->getMode(),
     ]);
 }
 
@@ -171,5 +173,7 @@ Json::die([
     'pick'=>$pickResult,
     'pickMoreFrom'=>$clock->formatTick(($inserted===-1)?$pickMoreFrom:$now),
     'pickMoreSeconds'=>($inserted===-1)?$pickMoreSecond:0,
-    'validUntil'=>$clock->formatTick($validUntil)
+    'validUntil'=>$clock->formatTick($validUntil),
+    'validForSeconds'=>max(0, intdiv($validUntil - $now, $clock->ticksPerSecond())),
+    'clockMode'=>$clock->getMode(),
 ]);

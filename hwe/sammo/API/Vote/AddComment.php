@@ -10,8 +10,9 @@ use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
 use sammo\General;
 use sammo\GeneralLite;
+use sammo\GameClock;
+use sammo\KVStorage;
 use sammo\Session;
-use sammo\TimeUtil;
 use sammo\Validator;
 
 class AddComment extends \sammo\BaseAPI
@@ -47,7 +48,8 @@ class AddComment extends \sammo\BaseAPI
     $generalName = $general->getName();
     $nationID = $general->getNationID();
     $nationName = $general->getStaticNation()['name'];
-    $date = TimeUtil::now();
+    $db = DB::db();
+    $date = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->formatNow();
 
 
     $comment = new VoteComment(
@@ -61,7 +63,6 @@ class AddComment extends \sammo\BaseAPI
       date: $date
     );
 
-    $db = DB::db();
     $db->insert('vote_comment', $comment->toArray());
 
     return null;

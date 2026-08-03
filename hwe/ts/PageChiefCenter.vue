@@ -42,6 +42,7 @@
             :maxTurn="maxChiefTurn"
             :maxPushTurn="Math.floor(maxChiefTurn / 2)"
             :date="date"
+            :clockMode="clockMode"
             :officer="officer"
             @raiseReload="reloadTable()"
           />
@@ -139,6 +140,7 @@ const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
   month: undefined,
   turnTerm: undefined,
   date: undefined,
+  clockMode: undefined,
   troopList: undefined,
   chiefList: undefined,
   isChief: undefined,
@@ -149,7 +151,7 @@ const tableObj = reactive<Omit<OptionalFull<ChiefResponse>, "result">>({
   unitSet: undefined,
 });
 
-const { year, month, turnTerm, date, chiefList, troopList, officerLevel, commandList } = toRefs(tableObj);
+const { year, month, turnTerm, date, clockMode, chiefList, troopList, officerLevel, commandList } = toRefs(tableObj);
 
 let postFilterNationCommand = function (turnObj: TurnObj): TurnObj {
   return turnObj;

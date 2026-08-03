@@ -64,6 +64,7 @@ if ($permission < 3) {
 function applyNationPolicy($policy, $nationID, $generalName): ?string
 {
     $db = DB::db();
+    $gameNow = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->formatNow();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
 
     $defaultPolicy = AutorunNationPolicy::$defaultPolicy;
@@ -139,7 +140,7 @@ function applyNationPolicy($policy, $nationID, $generalName): ?string
 
     $nationPolicyRoot['values'] = $nationPolicy;
     $nationPolicyRoot['valueSetter'] = $generalName;
-    $nationPolicyRoot['valueSetTime'] = TimeUtil::now();
+    $nationPolicyRoot['valueSetTime'] = $gameNow;
     $nationStor->npc_nation_policy = $nationPolicyRoot;
     return null;
 }
@@ -147,6 +148,7 @@ function applyNationPolicy($policy, $nationID, $generalName): ?string
 function applyNationPriority($priority, $nationID, $generalName): ?string
 {
     $db = DB::db();
+    $gameNow = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->formatNow();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
     $nationPolicyRoot = $nationStor->npc_nation_policy;
 
@@ -158,7 +160,7 @@ function applyNationPriority($priority, $nationID, $generalName): ?string
     }
     $nationPolicyRoot['priority'] = $priority;
     $nationPolicyRoot['prioritySetter'] = $generalName;
-    $nationPolicyRoot['prioritySetTime'] = TimeUtil::now();
+    $nationPolicyRoot['prioritySetTime'] = $gameNow;
     $nationStor->npc_nation_policy = $nationPolicyRoot;
     return null;
 }
@@ -166,6 +168,7 @@ function applyNationPriority($priority, $nationID, $generalName): ?string
 function applyGeneralPriority($priority, $nationID, $generalName): ?string
 {
     $db = DB::db();
+    $gameNow = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->formatNow();
     $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
     $generalPolicyRoot = $nationStor->npc_general_policy;
 
@@ -206,7 +209,7 @@ function applyGeneralPriority($priority, $nationID, $generalName): ?string
 
     $generalPolicyRoot['priority'] = $priority;
     $generalPolicyRoot['prioritySetter'] = $generalName;
-    $generalPolicyRoot['prioritySetTime'] = TimeUtil::now();
+    $generalPolicyRoot['prioritySetTime'] = $gameNow;
     $nationStor->npc_general_policy = $generalPolicyRoot;
     return null;
 }

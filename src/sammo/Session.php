@@ -239,13 +239,16 @@ class Session
         $loginDate = $this->get($serverID.static::GAME_KEY_DATE);
         $generalID = $this->get($serverID.static::GAME_KEY_GENERAL_ID);
         $generalName = $this->get($serverID.static::GAME_KEY_GENERAL_NAME);
-        $deadTime = $this->get($serverID.static::GAME_KEY_EXPECTED_DEADTIME);
+        $deadTick = $this->get($serverID.static::GAME_KEY_EXPECTED_DEADTIME);
 
-        $now = time();
+        $wallNow = time();
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $gameNowTick = GameClock::fromStorage($gameStor)->nowTick();
         if (
             $globalLoginDate < $loginDate &&
-            $generalID && $generalName && $loginDate && $deadTime
-            && $loginDate + 1800 > $now && $deadTime > $now
+            $generalID && $generalName && $loginDate && $deadTick
+            && $loginDate + 1800 > $wallNow && $deadTick > $gameNowTick
         ) {
             //로그인 정보는 30분간 유지한다.
             if ($result !== null) {
@@ -254,12 +257,9 @@ class Session
             return $this;
         }
 
-        if ($generalID || $generalName || $loginDate || $deadTime) {
+        if ($generalID || $generalName || $loginDate || $deadTick) {
             $this->logoutGame();
         }
-
-        $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $general = $db->queryFirstRow(
             'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i',
@@ -272,16 +272,15 @@ class Session
             return $this;
         }
 
-        $turnterm = $gameStor->turnterm;
         $isUnited = $gameStor->isunited != 0;
 
         $generalID = $general['no'];
         $generalName = $general['name'];
-        $nextTurn = new \DateTime($general['turntime']);
-        $nextTurn = $nextTurn->getTimestamp();
-
-        $deadTime = $nextTurn + $general['killturn'] * $turnterm;
-        if ($deadTime < $now && !$isUnited) {
+        $deadTick = GameClock::addTicks(
+            Util::toInt($general['turntime']),
+            Util::toInt($general['killturn']) * GameClock::TICKS_PER_TURN,
+        );
+        if ($deadTick < $gameNowTick && !$isUnited) {
             $locked = $db->queryFirstField('SELECT plock FROM plock WHERE `type` = "GAME" LIMIT 1');
             if (!$locked) {
                 if ($result !== null) {
@@ -291,10 +290,10 @@ class Session
             }
         }
 
-        $this->set($serverID.static::GAME_KEY_DATE, $now);
+        $this->set($serverID.static::GAME_KEY_DATE, $wallNow);
         $this->set($serverID.static::GAME_KEY_GENERAL_ID, $generalID);
         $this->set($serverID.static::GAME_KEY_GENERAL_NAME, $generalName);
-        $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, $deadTime);
+        $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, $deadTick);
         return $this;
     }
 

@@ -16,6 +16,11 @@ class TurnExecutionHelper
         $this->generalObj = $general;
     }
 
+    public static function monotonicCompletionTick(int $completedTick, int $candidateTick): int
+    {
+        return max($completedTick, $candidateTick);
+    }
+
     public function __destruct()
     {
         $this->applyDB();
@@ -452,7 +457,10 @@ class TurnExecutionHelper
             if ($executionOver) {
                 if ($currentTurn !== null) {
                     $executed = true;
-                    $gameStor->turntime = $currentTurn;
+                    $gameStor->turntime = self::monotonicCompletionTick(
+                        Util::toInt($gameStor->turntime),
+                        $currentTurn,
+                    );
                 }
                 unlock();
                 return $gameStor->turntime;
@@ -499,7 +507,13 @@ class TurnExecutionHelper
 
         if ($currentTurn !== null) {
             $executed = true;
-            $gameStor->turntime = $currentTurn;
+            // A general's sub-tick can be just before the monthly boundary that
+            // was completed above. Never move the global completion cursor back
+            // behind an already-applied monthly event.
+            $gameStor->turntime = self::monotonicCompletionTick(
+                Util::toInt($gameStor->turntime),
+                $currentTurn,
+            );
         }
 
         //토너먼트 처리

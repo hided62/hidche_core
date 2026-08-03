@@ -140,6 +140,8 @@ else{
 
 $me['icon'] = GetImageURL($me['imgsvr'], $me['picture']);
 
+$clock = GameClock::fromStorage($gameStor);
+$gameNow = $clock->nowDateTime();
 $db->insert('ng_diplomacy', [
     'src_nation_id'=>$srcNation['nation'],
     'dest_nation_id'=>$destNation['nation'],
@@ -147,7 +149,7 @@ $db->insert('ng_diplomacy', [
     'state'=>'proposed',
     'text_brief'=>$textBrief,
     'text_detail'=>$textDetail,
-    'date'=>TimeUtil::now(),
+    'date'=>TimeUtil::format($gameNow),
     'src_signer'=>$me['no'],
     'dest_signer'=>null,
     'aux'=>Json::encode([
@@ -168,7 +170,7 @@ $newLetterNo = $db->insertId();
 $src = new MessageTarget($me['no'], $me['name'], $srcNation['nation'], $srcNation['name'], $srcNation['color'], $me['icon']);
 $dest = new MessageTarget(0, '', $destNation['nation'], $destNation['name'], $destNation['color']);
 
-$now = new \DateTime();
+$now = \DateTime::createFromImmutable($gameNow);
 $unlimited = new \DateTime('9999-12-31');
 
 $josaYi = JosaUtil::pick($newLetterNo, '이');

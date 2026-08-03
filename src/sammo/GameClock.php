@@ -117,6 +117,11 @@ final class GameClock
         return self::addTicks($this->anchorTick, $this->ticksBetween($this->wallAnchor, $this->wallNow()));
     }
 
+    public function nowDateTime(): \DateTimeImmutable
+    {
+        return $this->tickToDateTime($this->nowTick());
+    }
+
     public function ticksFromSeconds(int|float $seconds): int
     {
         if (is_int($seconds)) {
@@ -207,6 +212,11 @@ final class GameClock
         return TimeUtil::format($this->tickToDateTime($tick), $withFraction);
     }
 
+    public function formatNow(bool $withFraction = false): string
+    {
+        return $this->formatTick($this->nowTick(), $withFraction);
+    }
+
     public static function baseTimeForProjection(
         \DateTimeInterface $projectedTime,
         int $tick,
@@ -249,7 +259,7 @@ final class GameClock
 
     public function advance(KVStorage $gameStor, int $deltaTick): int
     {
-        $nextTick = $this->nowTick() + $deltaTick;
+        $nextTick = self::addTicks($this->nowTick(), $deltaTick);
         $this->persistTick($gameStor, $nextTick);
         return $nextTick;
     }

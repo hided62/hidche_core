@@ -4,6 +4,7 @@
 declare(strict_types=1);
 
 use sammo\DB;
+use sammo\DTO\VoteInfo;
 use sammo\GameClock;
 use sammo\Json;
 use sammo\KVStorage;
@@ -269,6 +270,30 @@ try {
             'last천도Trial',
         );
     }
+    foreach ($db->query(
+        'SELECT `key`, value FROM storage WHERE namespace = %s AND `key` LIKE %s AND `key` NOT LIKE %s',
+        'vote',
+        'vote\_%',
+        '%\_wall\_backup',
+    ) as $row) {
+        $rawVote = Json::decode((string)$row['value']);
+        if (!is_array($rawVote)) {
+            throw new RuntimeException("{$row['key']} vote 저장값이 객체가 아닙니다.");
+        }
+        $db->insertUpdate('storage', [
+            'namespace' => 'vote',
+            'key' => "{$row['key']}_wall_backup",
+            'value' => Json::encode($rawVote),
+        ]);
+        $db->update('storage', [
+            'value' => Json::encode(VoteInfo::normalizeGameStorage($rawVote, $conversionClock)),
+        ], 'namespace = %s AND `key` = %s', 'vote', $row['key']);
+    }
+
+    // Historical/display DATETIME columns remain dates, but inserts must always
+    // receive a GameClock-projected value rather than silently reading MariaDB time.
+    $db->query('ALTER TABLE ng_old_nations MODIFY `date` DATETIME NOT NULL');
+    $db->query('ALTER TABLE ng_diplomacy MODIFY `date` DATETIME NOT NULL');
 
     $db->query(
         'ALTER TABLE general '

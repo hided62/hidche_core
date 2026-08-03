@@ -7,6 +7,7 @@ export type ChiefResponse = {
     month: number;
     turnTerm: number;
     date: string;
+    clockMode: "realtime" | "manual";
     chiefList: Record<
         number,
         {

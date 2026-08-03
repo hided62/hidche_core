@@ -6,6 +6,7 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\DTO\VoteInfo;
 use sammo\Enums\APIRecoveryType;
+use sammo\GameClock;
 use sammo\KVStorage;
 use sammo\Session;
 
@@ -25,16 +26,17 @@ class GetVoteList extends \sammo\BaseAPI
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
     $voteStor = KVStorage::getStorage($db, 'vote');
 
     $votes = [];
     foreach($voteStor->getAll() as $voteKey => $rawVote){
-      if(!str_starts_with($voteKey, 'vote_')){
+      if(preg_match('/^vote_(\d+)$/D', $voteKey, $matches) !== 1){
         continue;
       }
-      $voteID = (int)substr($voteKey, 5);
-      $votes[$voteID] = VoteInfo::fromArray($rawVote);
+      $voteID = (int)$matches[1];
+      $votes[$voteID] = VoteInfo::fromGameStorage($rawVote, $clock);
     }
 
     return [

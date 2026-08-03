@@ -193,7 +193,7 @@ class che_몰수 extends Command\NationCommand
                 $src,
                 $src,
                 $text,
-                new \DateTime(),
+                Message::gameNow(),
                 new \DateTime('9999-12-31'),
                 []
             );

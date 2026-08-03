@@ -44,7 +44,7 @@ class SendMessage extends \sammo\BaseAPI
 
   private function genPublicMessage(MessageTarget $src, string $text): Message
   {
-    $now = new \DateTime();
+    $now = Message::gameNow();
     $unlimited = new \DateTime('9999-12-31');
 
     $msg = new Message(
@@ -62,7 +62,7 @@ class SendMessage extends \sammo\BaseAPI
 
   private function genNationalMessage(MessageTarget $src, string $text): Message
   {
-    $now = new \DateTime();
+    $now = Message::gameNow();
     $unlimited = new \DateTime('9999-12-31');
 
     $dest = new MessageTarget(0, '', $src->nationID, $src->nationName, $src->color);
@@ -82,7 +82,7 @@ class SendMessage extends \sammo\BaseAPI
 
   private function genDiplomacyMessage(MessageTarget $src, int $destNationID, string $text): Message|string
   {
-    $now = new \DateTime();
+    $now = Message::gameNow();
     $unlimited = new \DateTime('9999-12-31');
 
     $destNation = getNationStaticInfo($destNationID);
@@ -107,7 +107,7 @@ class SendMessage extends \sammo\BaseAPI
 
   private function genPrivateMessage(MessageTarget $src, int $destGeneralID, int $permission, string $text): Message|string
   {
-    $now = new \DateTime();
+    $now = Message::gameNow();
     $unlimited = new \DateTime('9999-12-31');
 
     $db = DB::db();

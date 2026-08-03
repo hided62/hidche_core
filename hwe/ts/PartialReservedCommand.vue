@@ -13,7 +13,7 @@
         class="col alert alert-primary m-0 p-0"
         style="text-align: center; display: flex; justify-content: center; align-items: center"
       >
-        <SimpleClock :serverTime="serverNow" />
+        <SimpleClock :serverTime="serverNow" :running="clockRunning" />
       </div>
       <div class="col d-grid">
         <BDropdown right text="반복">
@@ -467,6 +467,7 @@ async function pushGeneralCommand(amount: number) {
 }
 
 const serverNow = ref(new Date());
+const clockRunning = ref(true);
 
 function pushGeneralCommandSingle(e: Event) {
   //NOTE: split 구현에 버그가 있어서, 수동으로 구분해야함
@@ -548,6 +549,7 @@ async function reloadCommandList() {
   }
 
   serverNow.value = parseTime(result.date);
+  clockRunning.value = result.clockMode === "realtime";
 }
 
 async function reserveCommandDirect(args: [number[], TurnObj][], reload = true): Promise<boolean> {
