@@ -16,7 +16,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 increaseRefresh("현재도시", 1);
 
-$lastExecute = substr($gameStor->turntime, 5, 14);
+$lastExecute = substr(GameClock::fromStorage($gameStor)->formatTick(Util::toInt($gameStor->turntime)), 5, 14);
 
 $me = $db->queryFirstRow('SELECT no,nation,officer_level,city from general where owner=%i', $userID);
 $myNation = $db->queryFirstRow('SELECT nation,level,spy FROM nation WHERE nation=%i', $me['nation']) ?? [

@@ -37,8 +37,8 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $rootDB = RootDB::db();
-$oNow = new \DateTimeImmutable();
-$now = $oNow->format('Y-m-d H:i:s');
+$clock = GameClock::fromStorage($gameStor);
+$now = $clock->nowTick();
 
 $hasGeneralID = $db->queryFirstField('SELECT no FROM general WHERE owner = %i', $userID);
 if($hasGeneralID){
@@ -176,7 +176,7 @@ $builder->setOwner($userID);
 $builder->setOwnerName($userNick);
 $builder->setKillturn(5);
 $builder->setNPCType(0);
-$builder->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $env['turnterm']));
+$builder->setAuxVar('next_change', $now + GameClock::TICKS_PER_TURN * 12);
 $builder->setAuxVar(
     'prestart_delete_after',
     addTurn($now, $env['turnterm'], GameConst::$minTurnDieOnPrestart)

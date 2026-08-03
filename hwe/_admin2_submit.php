@@ -99,7 +99,7 @@ switch ($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "강제 사망":
-        $date = TimeUtil::now(true);
+        $date = GameClock::fromStorage($gameStor)->nowTick();
         $db->update('general', [
             'killturn' => 0,
             'turntime' => $date,

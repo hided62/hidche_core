@@ -35,7 +35,7 @@ class ScoutMessage extends Message
             $this->validScout = false;
         }
 
-        if ($this->validUntil <= new \DateTime()) {
+        if ($this->validUntil <= $this->date) {
             $this->validScout = false;
         }
     }
@@ -122,11 +122,11 @@ class ScoutMessage extends Message
     public static function invalidateAll(int $generalID, ?int $exceptMsgID = null)
     {
         $db = DB::db();
-        $now = TimeUtil::now();
+        $now = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->nowTick();
         //XXX: 뭔가 기존 쿼리가 애매하다. invalid 관련해서 다른 옵션이 가능한가?
         $rawMsgList = Util::convertArrayToDict($db->query(
             'SELECT * FROM `message` WHERE
-            `mailbox` = %i AND `type` = "private" AND `dest` = `mailbox` AND `valid_until` > %s AND
+            `mailbox` = %i AND `type` = "private" AND `dest` = `mailbox` AND `valid_until` > %i AND
             JSON_VALUE(message, "$.option.action") = %s',
             $generalID,
             $now,

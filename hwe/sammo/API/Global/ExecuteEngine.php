@@ -8,6 +8,8 @@ use DateTimeInterface;
 use sammo\Enums\APIRecoveryType;
 use sammo\TurnExecutionHelper;
 use sammo\UniqueConst;
+use sammo\GameClock;
+use sammo\KVStorage;
 
 class ExecuteEngine extends \sammo\BaseAPI
 {
@@ -35,11 +37,13 @@ class ExecuteEngine extends \sammo\BaseAPI
       $updated = false;
       $locked = false;
       $lastExecuted = TurnExecutionHelper::executeAllCommand($updated, $locked);
+      $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
       return [
         'result' => true,
         'updated' => $updated,
         'locked' => $locked,
-        'lastExecuted' => $lastExecuted,
+        'lastExecutedTick' => $lastExecuted,
+        'lastExecuted' => $clock->formatTick($lastExecuted, true),
       ];
     }
 }

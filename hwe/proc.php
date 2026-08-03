@@ -11,9 +11,11 @@ $db = DB::db();
 $updated = false;
 $locked = false;
 $lastExecuted = TurnExecutionHelper::executeAllCommand($updated, $locked);
+$clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 Json::die([
     'result' => true,
     'updated' => $updated,
     'locked' => $locked,
-    'lastExecuted' => $lastExecuted,
+    'lastExecutedTick' => $lastExecuted,
+    'lastExecuted' => $clock->formatTick($lastExecuted, true),
 ]);

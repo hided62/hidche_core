@@ -14,6 +14,7 @@ use sammo\Enums\GeneralColumn;
 use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
+use sammo\GameClock;
 use sammo\General;
 use sammo\KVStorage;
 use sammo\LastTurn;
@@ -105,6 +106,7 @@ class GetFrontInfo extends \sammo\BaseAPI
     $db = DB::db();
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
     $gameStor->cacheValues(['isunited', 'opentime', 'refresh']);
 
     $lastHistoryID = $this->args['lastWorldHistoryID'];
@@ -158,6 +160,7 @@ class GetFrontInfo extends \sammo\BaseAPI
   private function generateGlobalInfo(MeekroDB $db): array
   {
     $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
 
     [
       $scenarioText, $extendedGeneral, $isFiction, $npcMode,
@@ -210,7 +213,8 @@ class GetFrontInfo extends \sammo\BaseAPI
       'month' => $month,
       'autorunUser' => $autorunUser,
       'turnterm' => $turnterm,
-      'lastExecuted' => $lastExecuted,
+      'lastExecutedTick' => $lastExecuted,
+      'lastExecuted' => $clock->formatTick(Util::toInt($lastExecuted), true),
       'lastVoteID' => $lastVoteID,
       'develCost' => $develCost,
       'noticeMsg' => $noticeMsg,
@@ -224,7 +228,8 @@ class GetFrontInfo extends \sammo\BaseAPI
       'isLocked' => $isLocked,
       'tournamentType' => $tournamentType,
       'tournamentState' => $tournamentState,
-      'tournamentTime' => $tournamentTime,
+      'tournamentTimeTick' => $tournamentTime,
+      'tournamentTime' => $tournamentTime === null ? null : $clock->formatTick(Util::toInt($tournamentTime)),
       'genCount' => $globalGenCount,
       'generalCntLimit' => $generalCntLimit,
       'serverCnt' => $serverCnt,
@@ -361,6 +366,7 @@ class GetFrontInfo extends \sammo\BaseAPI
 
   public function generateGeneralInfo(MeekroDB $db, General $general, array $rawNation): array
   {
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
     $permission = checkSecretPermission($general->getRaw());
 
@@ -425,8 +431,12 @@ class GetFrontInfo extends \sammo\BaseAPI
       'crew' => $general->getVar(GeneralColumn::crew), // number;
       'train' => $general->getVar(GeneralColumn::train), // number;
       'atmos' => $general->getVar(GeneralColumn::atmos), // number;
-      'turntime' => $general->getVar(GeneralColumn::turntime), // string;
-      'recent_war' => $general->getVar(GeneralColumn::recent_war), // string;
+      'turntimeTick' => $general->getTurnTick(), // number;
+      'turntime' => $general->getTurnTime(), // string;
+      'recent_war_tick' => $general->getVar(GeneralColumn::recent_war), // number|null;
+      'recent_war' => $general->getVar(GeneralColumn::recent_war) === null
+        ? null
+        : $clock->formatTick(Util::toInt($general->getVar(GeneralColumn::recent_war)), true), // string|null;
       'horse' => $general->getVar(GeneralColumn::horse), // GameObjClassKey;
       'weapon' => $general->getVar(GeneralColumn::weapon), // GameObjClassKey;
       'book' => $general->getVar(GeneralColumn::book), // GameObjClassKey;
@@ -544,7 +554,7 @@ class GetFrontInfo extends \sammo\BaseAPI
         'result' => false,
         'reason' => '접속 제한중입니다.',
         'recovery' => APIRecoveryType::GameQuota,
-        'recovery_arg' => $general->getVar('turntime'),
+        'recovery_arg' => $general->getTurnTime(),
       ];
     }
 

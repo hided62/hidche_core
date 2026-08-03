@@ -60,6 +60,16 @@ abstract class GeneralBase
             return null;
         }
 
+        $rawTurnTime = $this->getVar('turntime');
+        // 비교용 Dummy와 과거 fixture는 문자열을 잠시 허용하되 제품 DB는 tick만 사용합니다.
+        if (is_string($rawTurnTime) && !ctype_digit(ltrim($rawTurnTime, '-'))) {
+            $formattedTurnTime = $rawTurnTime;
+        } else {
+            $db = DB::db();
+            $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+            $formattedTurnTime = $clock->formatTick(Util::toInt($rawTurnTime), true);
+        }
+
         return [
             self::TURNTIME_FULL_MS => function ($turntime) {
                 return $turntime;
@@ -73,7 +83,20 @@ abstract class GeneralBase
             self::TURNTIME_HM => function ($turntime) {
                 return substr($turntime, 11, 5);
             },
-        ][$short]($this->getVar('turntime'));
+        ][$short]($formattedTurnTime);
+    }
+
+    function getTurnTick(): ?int
+    {
+        if (!key_exists('turntime', $this->raw)) {
+            return null;
+        }
+        $rawTurnTime = $this->getVar('turntime');
+        if (is_string($rawTurnTime) && !ctype_digit(ltrim($rawTurnTime, '-'))) {
+            $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+            return $clock->dateTimeToTick(new \DateTimeImmutable($rawTurnTime));
+        }
+        return Util::toInt($rawTurnTime);
     }
 
     function getNPCType(): int

@@ -43,7 +43,12 @@ switch ($btn) {
         pushGlobalHistoryLog(["<R>★</><S>{$log}</>"]);
         break;
     case "변경1":
-        $gameStor->starttime = (new \DateTime($starttime))->format('Y-m-d H:i:s');
+        $clock = GameClock::fromStorage($gameStor);
+        $gameStor->clock_base_time = TimeUtil::format(GameClock::baseTimeForProjection(
+            new \DateTimeImmutable($starttime),
+            Util::toInt($gameStor->starttime),
+            $clock->getTurnTermMinutes(),
+        ), true);
         break;
     case "변경2":
         $gameStor->maxgeneral = $maxgeneral;

@@ -7,9 +7,11 @@ use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\GameConst;
+use sammo\GameClock;
 use sammo\Json;
 use sammo\KVStorage;
 use sammo\TimeUtil;
+use sammo\Util;
 
 use function sammo\cutTurn;
 
@@ -82,11 +84,12 @@ class GetReservedCommand extends \sammo\BaseAPI
 
         return [
             'result' => true,
-            'turnTime' => $turnTime,
+            'turnTimeTick' => Util::toInt($turnTime),
+            'turnTime' => GameClock::fromStorage($gameStor)->formatTick(Util::toInt($turnTime)),
             'turnTerm' => $turnTerm,
             'year' => $year,
             'month' => $month,
-            'date' => TimeUtil::now(true),
+            'date' => GameClock::fromStorage($gameStor)->formatTick(GameClock::fromStorage($gameStor)->nowTick(), true),
             'turn' => $commandList,
             'autorun_limit' => $generalAux['autorun_limit'] ?? null,
         ];

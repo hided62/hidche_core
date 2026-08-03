@@ -56,10 +56,11 @@ abstract class AuctionBasicResource extends Auction
     }
 
 
-    $now = new \DateTimeImmutable();
     $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
+    $nowTick = $clock->nowTick();
     $turnTerm = $gameStor->getValue('turnterm');
-    $closeDate = $now->add(TimeUtil::secondsToDateInterval($closeTurnCnt * $turnTerm * 60));
+    $closeTick = $nowTick + GameClock::TICKS_PER_TURN * $closeTurnCnt;
 
     $openResult = static::openAuction(new AuctionInfo(
       null,
@@ -68,8 +69,8 @@ abstract class AuctionBasicResource extends Auction
       "$amount",
       $general->getId(),
       $bidderRes,
-      $now,
-      $closeDate,
+      $nowTick,
+      $closeTick,
       new AuctionInfoDetail(
         "{$hostResName} {$amount} 경매",
         $general->getName(),
@@ -145,12 +146,13 @@ abstract class AuctionBasicResource extends Auction
 
     //TODO: 전역 알림이 나타나야한다. 일반 메시지보다는 중요하고, 메시지보단 약하게..
     //TODO: 바로가기를 제공하는 편이 좋을 것 같다.
+    $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
     $msg = new Message(
       MessageType::private,
       $src,
       $dest,
       "{$this->auctionID}번 {$hostResName} 경매에 입찰이 없어 취소되었습니다.",
-      new \DateTime(),
+      \DateTime::createFromImmutable($clock->tickToDateTime($clock->nowTick())),
       new \DateTime('9999-12-31'),
       []
     );
@@ -246,8 +248,8 @@ abstract class AuctionBasicResource extends Auction
       $db = DB::db();
       $gameStor = KVStorage::getStorage($db, 'game_env');
       $turnTerm = $gameStor->getValue('turnterm');
-      $date = (new DateTimeImmutable())->add(TimeUtil::secondsToDateInterval($turnTerm * 60));
-      $this->shrinkCloseDate($date);
+      $clock = GameClock::fromStorage($gameStor);
+      $this->shrinkCloseTick($clock->nowTick() + GameClock::TICKS_PER_TURN);
     }
 
     return null;

@@ -49,7 +49,7 @@ class DiplomaticMessage extends Message{
             $this->validDiplomacy = false;
         }
 
-        if($this->validUntil < (new \DateTime())){
+        if($this->validUntil < $this->date){
             $this->validDiplomacy = false;
         }
     }

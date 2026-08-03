@@ -281,16 +281,13 @@ class General extends GeneralBase implements iAction
             $this->calcCache[$cacheKey] = $result;
             return $result;
         }
-        $recwar = new \DateTimeImmutable($this->getVar('recent_war'));
-        $turnNow = new \DateTimeImmutable($this->getVar('turntime'));
-        $secDiff = TimeUtil::DateIntervalToSeconds($recwar->diff($turnNow));
-
-        if ($secDiff <= 0) {
+        $tickDiff = Util::toInt($this->getVar('turntime')) - Util::toInt($this->getVar('recent_war'));
+        if ($tickDiff <= 0) {
             $this->calcCache[$cacheKey] = 0;
             return 0;
         }
 
-        $result = intdiv(Util::toInt($secDiff), 60 * $turnTerm);
+        $result = intdiv($tickDiff, GameClock::TICKS_PER_TURN);
         $this->calcCache[$cacheKey] = $result;
         return $result;
     }

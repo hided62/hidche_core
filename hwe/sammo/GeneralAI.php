@@ -302,7 +302,7 @@ class GeneralAI
         $this->calcWarRoute();
         $troopCandidate = [];
 
-        $chiefTurn = cutTurn($this->general->getTurnTime(), $this->env['turnterm']);
+        $chiefTurn = cutTurn($this->general->getTurnTick(), $this->env['turnterm']);
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
 
         foreach ($this->troopLeaders as $troopLeader) {
@@ -319,7 +319,7 @@ class GeneralAI
 
             $last발령 = $troopLeader->getAuxVar('last발령');
             if ($last발령) {
-                $leaderTurn = cutTurn($troopLeader->getTurnTime(), $this->env['turnterm']);
+                $leaderTurn = cutTurn($troopLeader->getTurnTick(), $this->env['turnterm']);
                 $compYearMonth = $yearMonth;
                 if ($chiefTurn < $leaderTurn) {
                     $compYearMonth += 1;
@@ -405,7 +405,7 @@ class GeneralAI
             return null;
         }
 
-        $chiefTurn = cutTurn($this->general->getTurnTime(), $this->env['turnterm']);
+        $chiefTurn = cutTurn($this->general->getTurnTick(), $this->env['turnterm']);
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
 
         $troopCandidate = [];
@@ -428,7 +428,7 @@ class GeneralAI
 
             $last발령 = $troopLeader->getAuxVar('last발령');
             if ($last발령) {
-                $leaderTurn = cutTurn($troopLeader->getTurnTime(), $this->env['turnterm']);
+                $leaderTurn = cutTurn($troopLeader->getTurnTick(), $this->env['turnterm']);
                 $compYearMonth = $yearMonth;
                 if ($chiefTurn < $leaderTurn) {
                     $compYearMonth += 1;
@@ -586,8 +586,8 @@ class GeneralAI
                 continue;
             }
 
-            $generalTurnTime = $userGeneral->getTurnTime();
-            $troopTurnTime =  $troopLeader->getTurnTime();
+            $generalTurnTime = $userGeneral->getTurnTick();
+            $troopTurnTime =  $troopLeader->getTurnTick();
 
             if ($generalTurnTime < $troopTurnTime) { //NOTE: 어차피 수뇌 턴이 제일 빠르다
                 $generalCadidates[$generalID] = $userGeneral;
@@ -782,7 +782,7 @@ class GeneralAI
 
                 if (
                     key_exists($troopLeader->getCityID(), $this->supplyCities) &&
-                    $this->troopLeaders[$troopID]->getTurnTime() < $lostGeneral->getTurnTime()
+                    $this->troopLeaders[$troopID]->getTurnTick() < $lostGeneral->getTurnTick()
                 ) {
                     //이미 탈출 가능한 부대를 탔다
                     continue;
@@ -1986,7 +1986,7 @@ class GeneralAI
         if ($lastTurn->getCommand() === '천도' && $lastTurn->getArg()['destCityID'] != $this->nation['capital']) {
             $cmd = buildNationCommandClass('che_천도', $this->general, $this->env, $lastTurn, $lastTurn->getArg());
             if ($cmd->hasFullConditionMet()) {
-                $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
+                $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTick()];
                 $this->reqUpdateInstance = true;
                 return $cmd;
             }
@@ -1995,12 +1995,9 @@ class GeneralAI
         $lastTrial = $nationStor->last천도Trial;
         if ($lastTrial) {
             [$lastTrialLevel, $lastTrialTurnTime] = $lastTrial;
-            $timeDiffSeconds = TimeUtil::DateIntervalToSeconds(
-                date_create_immutable($lastTrialTurnTime)->diff(
-                    date_create_immutable($general->getTurnTime())
-                )
-            );
-            if ($timeDiffSeconds < $turnTerm * 30 && $lastTrialLevel !== $general->getVar('officer_level')) { //0.5Turn
+            $timeDiffTick = abs($general->getTurnTick() - Util::toInt($lastTrialTurnTime));
+            if ($timeDiffTick < intdiv(GameClock::TICKS_PER_TURN, 2)
+                && $lastTrialLevel !== $general->getVar('officer_level')) { //0.5Turn
                 return null;
             }
         }
@@ -2109,7 +2106,7 @@ class GeneralAI
         }
 
 
-        $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTime()];
+        $nationStor->last천도Trial = [$general->getVar('officer_level'), $general->getTurnTick()];
         $this->reqUpdateInstance = true;
         return $cmd;
     }

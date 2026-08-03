@@ -22,8 +22,8 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $rootDB = RootDB::db();
-$oNow = new \DateTimeImmutable();
-$now = $oNow->format('Y-m-d H:i:s');
+$clock = GameClock::fromStorage($gameStor);
+$now = $clock->nowTick();
 
 $generalID = $db->queryFirstField('SELECT no FROM general WHERE owner = %i', $userID);
 if(!$generalID){
@@ -181,7 +181,7 @@ if ($isCentennialAllStar) {
 if(key_exists('generalName', $info)){
     $generalObj->updateVar('name', $info['generalName']);
 }
-$generalObj->setAuxVar('next_change', TimeUtil::nowAddMinutes(12 * $turnterm));
+$generalObj->setAuxVar('next_change', $now + GameClock::TICKS_PER_TURN * 12);
 
 $userNick = $ownerInfo['name'];
 $generalObj->setVar('owner_name', $userNick);

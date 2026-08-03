@@ -14,6 +14,8 @@ use sammo\Enums\GeneralQueryMode;
 use sammo\Enums\InheritanceKey;
 use sammo\InheritancePointManager;
 use sammo\TimeUtil;
+use sammo\GameClock;
+use sammo\KVStorage;
 use sammo\Validator;
 use sammo\General;
 
@@ -42,6 +44,7 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
     $generalID = $session->generalID;
     $auctionID = $this->args['auctionID'];
@@ -92,9 +95,11 @@ class GetUniqueItemAuctionDetail extends \sammo\BaseAPI
         'target' => $auction->target,
         'isCallerHost' => $auction->hostGeneralID === $generalID,
         'hostName' => $auction->detail->hostName,
-        'closeDate' => TimeUtil::format($auction->closeDate, false),
+        'closeDate' => $clock->formatTick($auction->closeTick),
         'remainCloseDateExtensionCnt' => $auction->detail->remainCloseDateExtensionCnt,
-        'availableLatestBidCloseDate' => TimeUtil::format($auction->detail->availableLatestBidCloseDate, false),
+        'availableLatestBidCloseDate' => $auction->detail->availableLatestBidCloseTick === null
+          ? null
+          : $clock->formatTick($auction->detail->availableLatestBidCloseTick),
       ],
       'bidList' => $responseBid,
       'obfuscatedName' => $obfuscatedName,

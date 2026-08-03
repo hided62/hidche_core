@@ -104,6 +104,7 @@ class Message
 
     public static function buildFromArray(array $row) : Message
     {
+        $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
         $dbMessage = Json::decode($row['message']);
 
         $msgType = MessageType::from($row['type']);
@@ -116,8 +117,8 @@ class Message
             $src,
             $dest,
             $dbMessage['text'],
-            new \DateTime($row['time']),
-            new \DateTime($row['valid_until']),
+            \DateTime::createFromImmutable($clock->tickToDateTime(Util::toInt($row['time']))),
+            \DateTime::createFromImmutable($clock->tickToDateTime(Util::toInt($row['valid_until']))),
             $option
         ];
 
@@ -151,9 +152,12 @@ class Message
     public static function getMessageByID(int $messageID) : ?Message
     {
         $db = DB::db();
-        $now = new \DateTime();
-        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i AND valid_until', $messageID);
-        //FIXME: $now가 들어가야 하는데 안 들어가있는데?
+        $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+        $row = $db->queryFirstRow(
+            'SELECT * FROM `message` WHERE `id` = %i AND valid_until > %i',
+            $messageID,
+            $clock->nowTick(),
+        );
         if (!$row) {
             return null;
         }
@@ -171,12 +175,12 @@ class Message
     {
         $db = DB::db();
 
-        $date = (new \DateTime())->format('Y-m-d H:i:s');
+        $date = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->nowTick();
 
         $where = new \WhereClause('and');
         $where->add('mailbox = %i', $mailbox);
         $where->add('type = %s', $msgType->value);
-        $where->add('valid_until > %s', $date);
+        $where->add('valid_until > %i', $date);
         if ($fromSeq > 0) {
             $where->add('id >= %i', $fromSeq);
         }
@@ -203,12 +207,12 @@ class Message
     {
         $db = DB::db();
 
-        $date = (new \DateTime())->format('Y-m-d H:i:s');
+        $date = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->nowTick();
 
         $where = new \WhereClause('and');
         $where->add('mailbox = %i', $mailbox);
         $where->add('type = %s', $msgType->value);
-        $where->add('valid_until > %s', $date);
+        $where->add('valid_until > %i', $date);
         $where->add('id < %i', $toSeq);
 
         if ($limit > 0) {
@@ -236,7 +240,8 @@ class Message
             return '시스템 외교 메시지는 삭제할 수 없습니다.';
         }
 
-        $prev5min = new \DateTime();
+        $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+        $prev5min = \DateTime::createFromImmutable($clock->tickToDateTime($clock->nowTick()));
         $prev5min->sub(new \DateInterval('PT5M'));
 
         if($msgObj->date < $prev5min){
@@ -265,14 +270,15 @@ class Message
 
         }
 
-        $in1min = new \DateTime();
+        $now = \DateTime::createFromImmutable($clock->tickToDateTime($clock->nowTick()));
+        $in1min = clone $now;
         $in1min->add(new \DateInterval('PT1M'));
         $newMsg = new Message(
             $msgObj->msgType,
             $msgObj->src,
             $msgObj->dest,
             "req_del_msg",
-            new \DateTime(),
+            $now,
             $in1min,
             $msgOption
         );
@@ -300,13 +306,23 @@ class Message
 
 
         $db = DB::db();
+        $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+        $timeTick = $clock->nowTick();
+        if (Util::toInt($this->validUntil->format('Y')) >= 9000) {
+            $validUntilTick = GameClock::MAX_SAFE_TICK;
+        } else {
+            $validitySeconds = $this->validUntil->getTimestamp() - $this->date->getTimestamp();
+            $validUntilTick = $timeTick + $clock->ticksFromSeconds($validitySeconds);
+        }
+        $this->date = \DateTime::createFromImmutable($clock->tickToDateTime($timeTick));
+        $this->validUntil = \DateTime::createFromImmutable($clock->tickToDateTime($validUntilTick));
         $db->insert('message', [
             'mailbox' => $mailbox,
             'type' => $this->msgType->value,
             'src' => $src_id,
             'dest' => $dest_id,
-            'time' => $this->date->format('Y-m-d H:i:s'),
-            'valid_until' => $this->validUntil->format('Y-m-d H:i:s'),
+            'time' => $timeTick,
+            'valid_until' => $validUntilTick,
             'message' => Json::encode([
                 'src'=>($this->src)?($this->src->toArray()):[],
                 'dest'=>($this->dest)?($this->dest->toArray()):[],
@@ -489,7 +505,8 @@ class Message
                 'text' => $this->msg,
                 'option' => $this->msgOption
             ]),
-            'valid_until'=>$this->validUntil->format('Y-m-d H:i:s'),
+            'valid_until'=>GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))
+                ->dateTimeToTick($this->validUntil),
         ], 'id=%i', $this->id);
 
     }

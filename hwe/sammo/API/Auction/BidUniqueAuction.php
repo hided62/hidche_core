@@ -21,7 +21,7 @@ class BidUniqueAuction extends \sammo\BaseAPI
     ])
       ->rule('int', 'amount')
       ->rule('int', 'auctionID')
-      ->rule('boolean', 'extendCloseDate');
+      ->rule('boolean', 'extendCloseTick');
 
     if (!$v->validate()) {
       return $v->errorStr();
@@ -38,7 +38,7 @@ class BidUniqueAuction extends \sammo\BaseAPI
   {
     $auctionID = $this->args['auctionID'];
     $amount = $this->args['amount'];
-    $tryExtendCloseDate = $this->args['extendCloseDate'] ?? false;
+    $tryExtendCloseDate = $this->args['extendCloseTick'] ?? false;
 
     $generalID = $session->generalID;
     $general = General::createObjFromDB($generalID);

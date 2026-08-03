@@ -57,16 +57,16 @@ class WarUnitGeneral extends WarUnit
         $this->general->increaseRankVar(RankColumn::warnum, 1);
 
         if ($this->isAttacker) {
-            $semiTurn = $general->getTurnTime();
+            $semiTurn = $general->getTurnTick();
         } else if ($oppose !== null) {
-            $semiTurn = $oppose->getGeneral()->getTurnTime();
+            $semiTurn = $oppose->getGeneral()->getTurnTick();
         } else {
             LogText("WarUnitGeneral::setOppose", "defender인데 oppose가 null {$general->getID()}, {$general->getTurnTime()}");
-            $semiTurn = $general->getTurnTime();
+            $semiTurn = $general->getTurnTick();
         }
         $phase = $this->getRealPhase();
-        $semiTurn = substr($semiTurn, 0, strlen($semiTurn) - 2);
-        $semiTurn .=  sprintf("%02d", Util::valueFit($phase, 0, 99));
+        $semiTurn -= $semiTurn % 100;
+        $semiTurn += Util::valueFit($phase, 0, 99);
         $general->setVar('recent_war', $semiTurn);
     }
 

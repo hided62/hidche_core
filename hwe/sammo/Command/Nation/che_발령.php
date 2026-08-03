@@ -159,7 +159,7 @@ class che_발령 extends Command\NationCommand
         $destGeneral->getLogger()->pushGeneralActionLog("<Y>{$generalName}</>에 의해 <G><b>{$destCityName}</b></>{$josaRo} 발령됐습니다. <1>$date</>");
 
         $yearMonth = Util::joinYearMonth($this->env['year'], $this->env['month']);
-        if (cutTurn($general->getTurnTime(), $this->env['turnterm']) != cutTurn($destGeneral->getTurnTime(), $this->env['turnterm'])) {
+        if (cutTurn($general->getTurnTick(), $this->env['turnterm']) != cutTurn($destGeneral->getTurnTick(), $this->env['turnterm'])) {
             $yearMonth += 1;
         }
         $destGeneral->setAuxVar('last발령', $yearMonth);

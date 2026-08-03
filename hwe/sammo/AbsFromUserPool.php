@@ -30,8 +30,9 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
     }
 
     static public function pickGeneralFromPool(\MeekroDB $db, RandUtil $rng, int $owner, int $pickCnt, ?string $prefix=null):array{
-        $oNow = new \DateTimeImmutable();
-        $now = $oNow->format('Y-m-d H:i:s');
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $clock = GameClock::fromStorage($gameStor);
+        $now = $clock->nowTick();
 
         $db->update('select_pool', [
             'reserved_until'=>null,
@@ -48,9 +49,8 @@ abstract class AbsFromUserPool extends AbsGeneralPool{
             throw new \RuntimeException('pool 부족');
         }
 
-        $gameStor = KVStorage::getStorage($db, 'game_env');
         $result = [];
-        $validUntil = TimeUtil::nowAddMinutes(2 * $gameStor->turnterm);
+        $validUntil = $now + GameClock::TICKS_PER_TURN * 2;
         while(count($result) < $pickCnt){
             $cand = $rng->choiceUsingWeightPair($pool);
             $poolID = $cand['id'];

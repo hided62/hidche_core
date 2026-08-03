@@ -129,6 +129,7 @@ $templates = new \League\Plates\Engine('templates');
     );
 
     $generalTurnList = [];
+    $clock = GameClock::fromStorage($gameStor);
 
     foreach ($db->queryAllLists(
         'SELECT general_id, turn_idx, brief FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC',
@@ -142,6 +143,7 @@ $templates = new \League\Plates\Engine('templates');
 
     $genCntEff = 0;
     foreach ($generals as &$general) {
+        $general['turntime'] = $clock->formatTick(Util::toInt($general['turntime']), true);
         $general['cityText'] = CityConst::byID($general['city'])->name;
         $general['troopText'] = $troopName[$general['troop']] ?? '-';
 

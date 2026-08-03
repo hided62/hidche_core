@@ -228,10 +228,10 @@ if($btn == "자동개최설정") {
     $phase = 0;
     startBetting($admin['tnmt_type'], 720);
 } elseif($btn == "베팅마감") {
-    $dt = date("Y-m-d H:i:s", time() + 60);
+    $clock = GameClock::fromStorage($gameStor);
     $gameStor->tournament=7;
     $gameStor->phase=0;
-    $gameStor->tnmt_time = $dt;
+    $gameStor->tnmt_time = $clock->nowTick() + $clock->ticksFromSeconds(60);
 } elseif($btn == "16강") {
     finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 16);
 } elseif($btn == "8강") {

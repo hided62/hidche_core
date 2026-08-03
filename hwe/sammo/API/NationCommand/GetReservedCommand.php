@@ -8,6 +8,7 @@ use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\GeneralQueryMode;
 use sammo\GameConst;
+use sammo\GameClock;
 use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
@@ -51,7 +52,8 @@ class GetReservedCommand extends \sammo\BaseAPI
         $nationID = $me['nation'];
         $limitState = checkLimit($me['refresh_score']);
         if ($limitState >= 2) {
-            return "접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 갱신 가능 시각 : {$me['turntime']})";
+            $limitTime = GameClock::fromStorage($gameStor)->formatTick(Util::toInt($me['turntime']), true);
+            return "접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 갱신 가능 시각 : {$limitTime})";
         }
 
         $permission = checkSecretPermission($me);

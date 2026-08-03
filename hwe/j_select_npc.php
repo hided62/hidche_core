@@ -24,8 +24,8 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $rootDB = RootDB::db();
 
-$oNow = new \DateTimeImmutable();
-$now = $oNow->format('Y-m-d H:i:s');
+$clock = GameClock::fromStorage($gameStor);
+$now = $clock->nowTick();
 
 $member = $rootDB->queryFirstRow('SELECT `name`, `penalty` FROM member WHERE `NO`=%i', $userID);
 if(!$member){

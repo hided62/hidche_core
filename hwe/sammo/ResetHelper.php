@@ -245,14 +245,16 @@ class ResetHelper{
             true
         );
 
+        $requestedTime = new \DateTimeImmutable($turntime);
         if($sync == 0) {
             // 현재 시간을 1월로 맞춤
-            $starttime = cutTurn($turntime, $turnterm);
+            $baseTime = new \DateTimeImmutable(cutTurnDateTime($turntime, $turnterm));
             $month = 1;
             $year = $startyear;
         } else {
             // 현재 시간과 동기화
-            [$starttime, $yearPulled, $month] = cutDay($turntime, $turnterm);
+            [$baseTimeString, $yearPulled, $month] = cutDay($turntime, $turnterm);
+            $baseTime = new \DateTimeImmutable($baseTimeString);
             if($yearPulled){
                 $year = $startyear-1;
             }
@@ -260,6 +262,18 @@ class ResetHelper{
                 $year = $startyear;
             }
         }
+
+        $wallNow = GameClock::readWallTime();
+        $initialClock = new GameClock(
+            $baseTime,
+            $turnterm,
+            0,
+            GameClock::MODE_REALTIME,
+            $wallNow,
+            fn (): \DateTimeImmutable => $wallNow,
+        );
+        $requestedTick = $initialClock->dateTimeToTick($requestedTime);
+        $currentTick = $initialClock->dateTimeToTick($wallNow);
 
         $killturn = 4800 / $turnterm;
         if($npcmode == 1) { $killturn = intdiv($killturn, 3); }
@@ -283,10 +297,14 @@ class ResetHelper{
             'maxnation'=>GameConst::$defaultMaxNation,
             'refreshLimit'=>30000,
             'develcost'=>$develcost,
-            'turntime'=>$turntime,
-            'starttime'=>$starttime,
-            'opentime'=>$turntime,
+            'turntime'=>$requestedTick,
+            'starttime'=>0,
+            'opentime'=>$requestedTick,
             'turnterm'=>$turnterm,
+            'clock_base_time'=>TimeUtil::format($baseTime, true),
+            'clock_tick'=>$currentTick,
+            'clock_mode'=>GameClock::MODE_REALTIME,
+            'clock_wall_anchor'=>TimeUtil::format($wallNow, true),
             'killturn'=>$killturn,
             'genius'=>GameConst::$defaultMaxGenius,
             'show_img_level'=>$show_img_level,
@@ -308,7 +326,7 @@ class ResetHelper{
                 'name'=>$admin['name'],
                 'picture'=>$admin['picture'],
                 'imgsvr'=>$admin['imgsvr'],
-                'turntime'=>$turntime,
+                'turntime'=>$requestedTick,
                 'killturn'=>9999,
                 'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE
             ]);
@@ -344,7 +362,7 @@ class ResetHelper{
 
         $db->insert('ng_games', [
             'server_id'=>$serverID,
-            'date'=>$turntime,
+            'date'=>TimeUtil::format($requestedTime, false),
             'winner_nation'=>null,
             'map'=>$scenarioObj->getMapTheme(),
             'season'=>$seasonIdx,

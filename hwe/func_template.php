@@ -63,6 +63,10 @@ function chiefTurnTable()
 
 function templateLimitMsg(string $turntime): string
 {
+    if (ctype_digit(ltrim($turntime, '-'))) {
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        $turntime = GameClock::fromStorage($gameStor)->formatTick(Util::toInt($turntime), true);
+    }
     return "이미 너무 많은 접속을 하셨습니다. 다음 턴에 다시 시도해주세요. (턴시간: {$turntime})";
 }
 

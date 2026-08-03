@@ -40,34 +40,22 @@ final class ServerTool
             $locked = tryLock();
         }
 
-        $oldunit = $admin['turnterm'] * 60;
-        $unit = $turnterm * 60;
-
-        if($unit == $oldunit){
+        if($turnterm == $admin['turnterm']){
             if($locked){
                 unlock();
             }
             return null;
         }
 
-        $unitDiff = $unit / $oldunit;
-
-        $servTurnTime = new \DateTimeImmutable($admin['turntime']);
-        foreach ($db->query('SELECT no,turntime FROM general') as $gen) {
-            $genTurnTime = new \DateTimeImmutable($gen['turntime']);
-            $timeDiff = TimeUtil::DateIntervalToSeconds($genTurnTime->diff($servTurnTime));
-            $timeDiff *= $unitDiff;
-            $newGenTurnTime = $servTurnTime->add(TimeUtil::secondsToDateInterval($timeDiff));
-
-            $db->update('general', [
-                'turntime' => $newGenTurnTime->format('Y-m-d H:i:s.u')
-            ], 'no=%i', $gen['no']);
-        }
-        $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
-        $starttime = $servTurnTime->sub(TimeUtil::secondsToDateInterval($turn * $unit))->format('Y-m-d H:i:s');
-        $starttime = cutTurn($starttime, $turnterm, false);
+        $oldClock = GameClock::fromStorage($gameStor);
+        $currentTick = $oldClock->nowTick();
+        $currentDisplay = $oldClock->tickToDateTime($currentTick);
+        $oldClock->persistTick($gameStor, $currentTick);
         $gameStor->turnterm = $turnterm;
-        $gameStor->starttime = $starttime;
+        $gameStor->clock_base_time = TimeUtil::format(
+            GameClock::baseTimeForProjection($currentDisplay, $currentTick, $turnterm),
+            true,
+        );
         pushGlobalHistoryLog(["<R>★</>턴시간이 <C>{$turnterm}분</>으로 변경됩니다."]);
 
         if($locked){

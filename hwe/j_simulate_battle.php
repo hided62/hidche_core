@@ -77,7 +77,8 @@ $month = $query['month'];
 $repeatCnt = $query['repeatCnt'];
 
 $rawAttacker = $query['attackerGeneral'];
-$rawAttacker['turntime'] = TimeUtil::now();
+$battleClock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+$rawAttacker['turntime'] = $battleClock->formatTick($battleClock->nowTick());
 $rawAttackerCity = $query['attackerCity'];
 $rawAttackerNation = $query['attackerNation'];
 

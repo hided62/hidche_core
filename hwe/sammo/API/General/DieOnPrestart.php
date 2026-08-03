@@ -11,7 +11,8 @@ use sammo\Session;
 use sammo\General;
 use sammo\JosaUtil;
 use sammo\KVStorage;
-use sammo\TimeUtil;
+use sammo\GameClock;
+use sammo\Util;
 
 use function sammo\addTurn;
 use function sammo\increaseRefresh;
@@ -37,6 +38,8 @@ class DieOnPrestart extends \sammo\BaseAPI
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->cacheValues(['turnterm', 'opentime', 'turntime', 'year', 'month']);
+    $clock = GameClock::fromStorage($gameStor);
+    $nowTick = $clock->nowTick();
 
     $general = $db->queryFirstRow('SELECT no,name,nation,owner_name,npc FROM general WHERE owner=%i AND npc = 0', $userID);
     if (!$general) {
@@ -67,9 +70,9 @@ class DieOnPrestart extends \sammo\BaseAPI
     }
 
     $targetTime = $generalObj->getAuxVar('prestart_delete_after');
-    if (!is_string($targetTime) || $targetTime === '') {
+    if (!is_int($targetTime)) {
       $targetTime = addTurn(
-        $lastRefresh ?: TimeUtil::now(),
+        $lastRefresh === null ? $nowTick : Util::toInt($lastRefresh),
         $gameStor->turnterm,
         GameConst::$minTurnDieOnPrestart
       );
@@ -78,8 +81,8 @@ class DieOnPrestart extends \sammo\BaseAPI
     }
 
     //서버 가오픈시 할 수 있는 행동
-    if ($targetTime > TimeUtil::now()) {
-      $targetTimeShort = substr($targetTime, 0, 19);
+    if ($targetTime > $nowTick) {
+      $targetTimeShort = $clock->formatTick($targetTime);
       return "아직 삭제할 수 없습니다. {$targetTimeShort} 부터 가능합니다.";
     }
 

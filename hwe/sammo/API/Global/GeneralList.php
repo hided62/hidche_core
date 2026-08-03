@@ -3,6 +3,7 @@
 namespace sammo\API\Global;
 
 use sammo\DB;
+use sammo\GameClock;
 use sammo\Enums\APIRecoveryType;
 use sammo\Json;
 use sammo\KVStorage;
@@ -145,7 +146,8 @@ class GeneralList extends \sammo\BaseAPI
 
 
         if (static::$withToken) {
-            $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+            $now = GameClock::fromStorage($gameStor)->nowTick();
             $tokens = [];
             foreach ($db->query('SELECT * FROM select_npc_token WHERE `valid_until`>=%s', $now) as $token) {
                 $validUntil = $token['valid_until'];

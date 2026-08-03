@@ -630,7 +630,11 @@ function generalInfo(General $generalObj)
         $injury = "건강";
     }
 
-    $remaining = (new \DateTimeImmutable($generalObj->getTurnTime()))->diff(new \DateTimeImmutable())->i;
+    $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+    $remaining = max(0, intdiv(
+        $generalObj->getTurnTick() - $clock->nowTick(),
+        $clock->ticksFromMinutes(1),
+    ));
 
     if ($nation['color'] == "") {
         $nation['color'] = "#000000";
@@ -921,44 +925,36 @@ function banner()
     );
 }
 
-function addTurn($date, int $turnterm, int $turn = 1, bool $withFraction = true)
+function addTurn(int $tick, int $turnterm, int $turn = 1, bool $withFraction = true): int
 {
-    $date = new \DateTime($date);
-    $target = $turnterm * $turn;
-    $date->add(new \DateInterval("PT{$target}M"));
-    if ($withFraction) {
-        return $date->format('Y-m-d H:i:s.u');
-    }
-    return $date->format('Y-m-d H:i:s');
+    return $tick + GameClock::TICKS_PER_TURN * $turn;
 }
 
-function subTurn($date, int $turnterm, int $turn = 1, bool $withFraction = true)
+function subTurn(int $tick, int $turnterm, int $turn = 1, bool $withFraction = true): int
 {
-    $date = new \DateTime($date);
-    $target = $turnterm * $turn;
-    $date->sub(new \DateInterval("PT{$target}M"));
-    if ($withFraction) {
-        return $date->format('Y-m-d H:i:s.u');
-    }
-    return $date->format('Y-m-d H:i:s');
+    return $tick - GameClock::TICKS_PER_TURN * $turn;
 }
 
-function cutTurn($date, int $turnterm, bool $withFraction = true)
+function cutTurn(int $tick, int $turnterm, bool $withFraction = true): int
 {
-    $date = new \DateTime($date);
+    $remainder = $tick % GameClock::TICKS_PER_TURN;
+    if ($remainder < 0) {
+        $remainder += GameClock::TICKS_PER_TURN;
+    }
+    return $tick - $remainder;
+}
 
-    $baseDate = new \DateTime($date->format('Y-m-d'));
-    $baseDate->sub(new \DateInterval("P1D"));
-    $baseDate->add(new \DateInterval("PT1H"));
-
-    $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
+/** 시나리오 초기화 입력인 벽시계를 기존 01:00 기준 월 경계로 정렬합니다. */
+function cutTurnDateTime(string $date, int $turnterm, bool $withFraction = true): string
+{
+    $dateObj = new \DateTime($date);
+    $baseDate = new \DateTime($dateObj->format('Y-m-d'));
+    $baseDate->sub(new \DateInterval('P1D'));
+    $baseDate->add(new \DateInterval('PT1H'));
+    $diffMin = intdiv($dateObj->getTimestamp() - $baseDate->getTimestamp(), 60);
     $diffMin -= $diffMin % $turnterm;
-
     $baseDate->add(new \DateInterval("PT{$diffMin}M"));
-    if ($withFraction) {
-        return $baseDate->format('Y-m-d H:i:s.u');
-    }
-    return $baseDate->format('Y-m-d H:i:s');
+    return $baseDate->format($withFraction ? 'Y-m-d H:i:s.u' : 'Y-m-d H:i:s');
 }
 
 function cutDay($date, int $turnterm, bool $withFraction = true)
@@ -1001,11 +997,9 @@ function increaseRefresh($type = "", $cnt = 1)
     $generalID = $session->generalID;
     $userGrade = $session->userGrade;
 
-    $dateObj = new \DateTimeImmutable();
-    $date = TimeUtil::format($dateObj, false);
-
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
+    $date = GameClock::fromStorage($gameStor)->nowTick();
     $isunited = $gameStor->isunited;
     $opentime = $gameStor->opentime;
 
@@ -1151,12 +1145,13 @@ function timeover(): bool
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     list($turnterm, $turntime) = $gameStor->getValuesAsArray(['turnterm', 'turntime']);
-    $diff = (new \DateTime())->getTimestamp() - (new \DateTime($turntime))->getTimestamp();
+    $clock = GameClock::fromStorage($gameStor);
+    $diff = $clock->nowTick() - Util::toInt($turntime);
 
     $t = min($turnterm, 5);
 
-    $term = $diff;
-    if ($term >= $t || $term < 0) {
+    $term = $clock->ticksFromSeconds($t);
+    if ($diff >= $term || $diff < 0) {
         return true;
     } else {
         return false;
@@ -1169,9 +1164,8 @@ function checkDelay()
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     //서버정보
-    $now = new \DateTimeImmutable();
-    $turntime = new \DateTimeImmutable($gameStor->turntime);
-    $timeMinDiff = intdiv($now->getTimestamp() - $turntime->getTimestamp(), 60);
+    $clock = GameClock::fromStorage($gameStor);
+    $timeMinDiff = intdiv($clock->nowTick() - Util::toInt($gameStor->turntime), $clock->ticksFromMinutes(1));
 
     // 1턴이상 갱신 없었으면 서버 지연
     $term = $gameStor->turnterm;
@@ -1186,18 +1180,15 @@ function checkDelay()
     $iter = intdiv($timeMinDiff, $term);
     if ($iter > $threshold) {
         $minute = $iter * $term;
-        $newTurntime = $turntime->add(new \DateInterval("PT{$minute}M"));
-        $newNextTurntime = $turntime->add(new \DateInterval("PT{$term}M"));
-        $gameStor->turntime = $newTurntime->format('Y-m-d H:i:s');
-        $gameStor->starttime = (new \DateTimeImmutable($gameStor->starttime))
-            ->add(new \DateInterval("PT{$minute}M"))
-            ->format('Y-m-d H:i:s');
+        $delayTick = $clock->ticksFromMinutes($minute);
+        $gameStor->turntime = Util::toInt($gameStor->turntime) + $delayTick;
+        $gameStor->starttime = Util::toInt($gameStor->starttime) + $delayTick;
 
         $db->update('general', [
-            'turntime' => $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
-        ], 'turntime<=DATE_ADD(turntime, INTERVAL %i MINUTE)', $term);
+            'turntime' => $db->sqleval('turntime + %i', $delayTick)
+        ], true);
         $db->update('ng_auction', [
-            'close_date' => $db->sqleval('DATE_ADD(close_date, INTERVAL %i MINUTE)', $minute)
+            'close_tick' => $db->sqleval('close_tick + %i', $delayTick)
         ], 'finished = 0');
     }
 }
@@ -1254,10 +1245,8 @@ function turnDate($curtime)
     $admin = $gameStor->getValues(['startyear', 'starttime', 'turnterm', 'year', 'month']);
 
     $turn = $admin['starttime'];
-    $curturn = cutTurn($curtime, $admin['turnterm']);
-    $term = $admin['turnterm'];
-
-    $num = intdiv((strtotime($curturn) - strtotime($turn)), $term * 60);
+    $curturn = cutTurn(Util::toInt($curtime), $admin['turnterm']);
+    $num = intdiv($curturn - Util::toInt($turn), GameClock::TICKS_PER_TURN);
 
     $date = $admin['startyear'] * 12;
     $date += $num;
@@ -1709,7 +1698,16 @@ function getAdmin()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    return $gameStor->getAll();
+    $admin = $gameStor->getAll();
+    $clock = GameClock::fromStorage($gameStor);
+    foreach (['turntime', 'starttime', 'opentime', 'tnmt_time'] as $key) {
+        if (($admin[$key] ?? null) !== null) {
+            $admin["{$key}_display"] = $clock->formatTick(Util::toInt($admin[$key]), true);
+        }
+    }
+    $admin['clock_now_tick'] = $clock->nowTick();
+    $admin['clock_now_display'] = $clock->formatTick($admin['clock_now_tick'], true);
+    return $admin;
 }
 
 /** @return General[] */
@@ -2199,35 +2197,29 @@ function SabotageInjury(RandUtil $rng, array $cityGeneralList, string $reason): 
     return $injuryCount;
 }
 
-function getRandTurn(RandUtil $rng, $term, ?\DateTimeInterface $baseDateTime = null)
+function getRandTurn(RandUtil $rng, int $term, ?int $baseTick = null): int
 {
-    if ($baseDateTime === null) {
-        $baseDateTime = new \DateTimeImmutable();
-    } else if ($baseDateTime instanceof \DateTime) {
-        $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
-    } else if ($baseDateTime instanceof \DateTimeImmutable) {
-        //do Nothing
-    } else {
-        throw new MustNotBeReachedException();
-    }
+    $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+    $baseTick ??= $clock->nowTick();
 
     $randSecond = $rng->nextRangeInt(0, 60 * $term - 1);
-    $randFraction = $rng->nextRangeInt(0, 999999) / 1000000; //6자리 소수
+    $randMicrosecond = $rng->nextRangeInt(0, 999999); // 레거시 RNG 소비 6자리 유지
 
-    return TimeUtil::format($baseDateTime->add(TimeUtil::secondsToDateInterval($randSecond + $randFraction)), true);
+    return $baseTick
+        + $clock->ticksFromSeconds($randSecond)
+        + intdiv($randMicrosecond * $clock->ticksPerSecond(), 1_000_000);
 }
 
-function getRandTurn2(RandUtil $rng, $term, ?\DateTimeInterface $baseDateTime = null)
+function getRandTurn2(RandUtil $rng, int $term, ?int $baseTick = null): int
 {
-    if ($baseDateTime === null) {
-        $baseDateTime = new \DateTimeImmutable();
-    } else if ($baseDateTime instanceof \DateTime) {
-        $baseDateTime = \DateTimeImmutable::createFromMutable($baseDateTime);
-    } else {
-        throw new MustNotBeReachedException();
-    }
+    $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+    $baseTick ??= $clock->nowTick();
     $randSecond = $rng->nextRangeInt(0, 60 * $term - 1);
-    $randFraction = $rng->nextRangeInt(0, 999999) / 1000000; //6자리 소수
+    $randMicrosecond = $rng->nextRangeInt(0, 999999); // 레거시 RNG 소비 6자리 유지
 
-    return $baseDateTime->sub(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s.u');
+    return $baseTick
+        - $clock->ticksFromSeconds($randSecond)
+        - intdiv($randMicrosecond * $clock->ticksPerSecond(), 1_000_000);
 }

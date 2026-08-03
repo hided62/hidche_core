@@ -19,6 +19,7 @@ if(!class_exists('\\sammo\\DB')){
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$clock = GameClock::fromStorage($gameStor);
 
 if(file_exists(__DIR__.'/.htaccess')){
     $reserved = $db->queryFirstRow(
@@ -75,8 +76,8 @@ $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
 $admin['isUnited'] = $admin['isunited'];
-$admin['starttime'] = substr($admin['opentime'], 5, 11);
-$admin['turntime'] = substr($admin['turntime'], 5, 11);
+$admin['starttime'] = substr($clock->formatTick(Util::toInt($admin['opentime'])), 5, 11);
+$admin['turntime'] = substr($clock->formatTick(Util::toInt($admin['turntime'])), 5, 11);
 unset($admin['npcmode']);
 unset($admin['maxgeneral']);
 unset($admin['turnterm']);

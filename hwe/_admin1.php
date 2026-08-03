@@ -40,7 +40,7 @@ $admin = getAdmin();
     </tr>
     <tr>
         <td width=110 align=right>시작시간변경</td>
-        <td width=285><input type=text size=20 maxlength=20 style=color:white;background-color:black;text-align:right; name=starttime value='<?=substr($admin['starttime'], 0, 19)?>'><input type=submit name=btn value=변경1></td>
+        <td width=285><input type=text size=20 maxlength=20 style=color:white;background-color:black;text-align:right; name=starttime value='<?=substr($admin['starttime_display'], 0, 19)?>'><input type=submit name=btn value=변경1></td>
     </tr>
     <tr>
         <td width=110 align=right>최대 장수</td>
@@ -52,7 +52,7 @@ $admin = getAdmin();
         <td width=110 align=right>시작 년도</td>
         <td width=285><input type=text size=3 maxlength=3 style=color:white;background-color:black;text-align:right; name=startyear value='<?=$admin['startyear']?>'><input type=submit name=btn value=변경4></td>
         <td width=110 align=right>최근 갱신 시간</td>
-        <td width=285>&nbsp;<?=$admin['turntime']?></td>
+        <td width=285>&nbsp;<?=$admin['turntime_display']?> (tick <?=$admin['turntime']?>)</td>
     </tr>
     <tr>
         <td width=110 align=right>턴시간</td>
