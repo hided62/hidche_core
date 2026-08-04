@@ -43,13 +43,10 @@ final class GameClock
 
     public static function fromStorage(KVStorage $gameStor, ?callable $wallNowProvider = null): self
     {
-        $values = $gameStor->getValues([
-            'clock_base_time',
-            'clock_tick',
-            'clock_mode',
-            'clock_wall_anchor',
-            'turnterm',
-        ]);
+        $values = self::readStorageValues($gameStor);
+        if (!self::areStorageValuesInitialized($values)) {
+            throw new \RuntimeException('game clock storage가 초기화되지 않았습니다. migration 상태를 확인해 주세요.');
+        }
 
         $baseTime = new \DateTimeImmutable((string)$values['clock_base_time']);
         $wallAnchor = new \DateTimeImmutable((string)$values['clock_wall_anchor']);
@@ -62,6 +59,54 @@ final class GameClock
             $wallAnchor,
             $wallNowProvider,
         );
+    }
+
+    /**
+     * 공용 src가 아직 migration하지 않은 wall-clock profile과 함께 배포될 수
+     * 있으므로 호출부가 저장 형식을 먼저 판별할 수 있게 합니다.
+     */
+    public static function isInitialized(KVStorage $gameStor): bool
+    {
+        $values = self::readStorageValues($gameStor);
+        $clockKeys = ['clock_base_time', 'clock_tick', 'clock_mode', 'clock_wall_anchor'];
+        $presentClockKeys = array_filter(
+            $clockKeys,
+            static fn (string $key): bool => array_key_exists($key, $values)
+                && $values[$key] !== null
+                && $values[$key] !== '',
+        );
+        if (!$presentClockKeys) {
+            return false;
+        }
+        if (!self::areStorageValuesInitialized($values)) {
+            throw new \RuntimeException('game clock storage가 부분 초기화 상태입니다. migration 상태를 확인해 주세요.');
+        }
+        return true;
+    }
+
+    /** @return array<string, mixed> */
+    private static function readStorageValues(KVStorage $gameStor): array
+    {
+        return $gameStor->getValues([
+            'clock_base_time',
+            'clock_tick',
+            'clock_mode',
+            'clock_wall_anchor',
+            'turnterm',
+        ]);
+    }
+
+    /** @param array<string, mixed> $values */
+    private static function areStorageValuesInitialized(array $values): bool
+    {
+        foreach (['clock_base_time', 'clock_tick', 'clock_mode', 'clock_wall_anchor', 'turnterm'] as $key) {
+            if (!array_key_exists($key, $values) || $values[$key] === null || $values[$key] === '') {
+                return false;
+            }
+        }
+        return in_array((string)$values['clock_mode'], [self::MODE_REALTIME, self::MODE_MANUAL], true)
+            && is_numeric($values['clock_tick'])
+            && is_numeric($values['turnterm']);
     }
 
     public static function initializeStorage(

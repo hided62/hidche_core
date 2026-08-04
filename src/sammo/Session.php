@@ -36,6 +36,7 @@ class Session
     const GAME_KEY_GENERAL_ID = '_g_no';
     const GAME_KEY_GENERAL_NAME = '_g_name';
     const GAME_KEY_EXPECTED_DEADTIME = '_g_deadtime';
+    const GAME_KEY_CLOCK_STORAGE = '_g_clock_storage';
 
 
     protected $writeClosed = false;
@@ -239,16 +240,22 @@ class Session
         $loginDate = $this->get($serverID.static::GAME_KEY_DATE);
         $generalID = $this->get($serverID.static::GAME_KEY_GENERAL_ID);
         $generalName = $this->get($serverID.static::GAME_KEY_GENERAL_NAME);
-        $deadTick = $this->get($serverID.static::GAME_KEY_EXPECTED_DEADTIME);
+        $deadAt = $this->get($serverID.static::GAME_KEY_EXPECTED_DEADTIME);
+        $sessionClockStorage = $this->get($serverID.static::GAME_KEY_CLOCK_STORAGE);
 
         $wallNow = time();
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $gameNowTick = GameClock::fromStorage($gameStor)->nowTick();
+        $usesLogicalClock = GameClock::isInitialized($gameStor);
+        $clockStorage = $usesLogicalClock ? 'logical' : 'wall';
+        $gameNow = $usesLogicalClock
+            ? GameClock::fromStorage($gameStor)->nowTick()
+            : $wallNow;
         if (
             $globalLoginDate < $loginDate &&
-            $generalID && $generalName && $loginDate && $deadTick
-            && $loginDate + 1800 > $wallNow && $deadTick > $gameNowTick
+            $generalID && $generalName && $loginDate && $deadAt
+            && $sessionClockStorage === $clockStorage
+            && $loginDate + 1800 > $wallNow && $deadAt > $gameNow
         ) {
             //로그인 정보는 30분간 유지한다.
             if ($result !== null) {
@@ -257,7 +264,7 @@ class Session
             return $this;
         }
 
-        if ($generalID || $generalName || $loginDate || $deadTick) {
+        if ($generalID || $generalName || $loginDate || $deadAt) {
             $this->logoutGame();
         }
 
@@ -276,11 +283,18 @@ class Session
 
         $generalID = $general['no'];
         $generalName = $general['name'];
-        $deadTick = GameClock::addTicks(
-            Util::toInt($general['turntime']),
-            Util::toInt($general['killturn']) * GameClock::TICKS_PER_TURN,
-        );
-        if ($deadTick < $gameNowTick && !$isUnited) {
+        if ($usesLogicalClock) {
+            $deadAt = GameClock::addTicks(
+                Util::toInt($general['turntime']),
+                Util::toInt($general['killturn']) * GameClock::TICKS_PER_TURN,
+            );
+        } else {
+            // migration 전 profile은 기존 DATETIME과 wall-clock 판정을 그대로
+            // 유지합니다. 공용 src 배포가 기존 서버의 DB 형식을 바꾸지 않습니다.
+            $deadAt = (new \DateTimeImmutable((string)$general['turntime']))->getTimestamp()
+                + Util::toInt($general['killturn']) * Util::toInt($gameStor->turnterm);
+        }
+        if ($deadAt < $gameNow && !$isUnited) {
             $locked = $db->queryFirstField('SELECT plock FROM plock WHERE `type` = "GAME" LIMIT 1');
             if (!$locked) {
                 if ($result !== null) {
@@ -293,7 +307,8 @@ class Session
         $this->set($serverID.static::GAME_KEY_DATE, $wallNow);
         $this->set($serverID.static::GAME_KEY_GENERAL_ID, $generalID);
         $this->set($serverID.static::GAME_KEY_GENERAL_NAME, $generalName);
-        $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, $deadTick);
+        $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, $deadAt);
+        $this->set($serverID.static::GAME_KEY_CLOCK_STORAGE, $clockStorage);
         return $this;
     }
 
@@ -307,6 +322,7 @@ class Session
         $this->set($serverID.static::GAME_KEY_GENERAL_ID, null);
         $this->set($serverID.static::GAME_KEY_GENERAL_NAME, null);
         $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, null);
+        $this->set($serverID.static::GAME_KEY_CLOCK_STORAGE, null);
         return $this;
     }
 

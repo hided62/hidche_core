@@ -114,7 +114,11 @@ final class GameClockBoundaryTest extends TestCase
         $source = file_get_contents(__DIR__ . '/../src/sammo/Session.php');
         self::assertIsString($source);
         self::assertMatchesRegularExpression(
-            '/function loginGame\(.*?GameClock::fromStorage\(\$gameStor\)->nowTick\(\).*?GameClock::TICKS_PER_TURN.*?function logoutGame\(/s',
+            '/function loginGame\(.*?GameClock::isInitialized\(\$gameStor\).*?GameClock::fromStorage\(\$gameStor\)->nowTick\(\).*?GameClock::TICKS_PER_TURN.*?function logoutGame\(/s',
+            $source,
+        );
+        self::assertMatchesRegularExpression(
+            '/function loginGame\(.*?new \\\\DateTimeImmutable.*?getTimestamp\(\).*?function logoutGame\(/s',
             $source,
         );
         self::assertDoesNotMatchRegularExpression(
@@ -128,7 +132,7 @@ final class GameClockBoundaryTest extends TestCase
         $expectations = [
             'hwe/ts/PageVote.vue' => ['currentVote.value.isOpen'],
             'hwe/ts/components/MessagePlate.vue' => ['msg.clockMode === "manual"'],
-            'hwe/ts/gateway/entrance.ts' => ['game.isOpen'],
+            'hwe/ts/gateway/entrance.ts' => ['resolveGatewayOpenState(game.isOpen, game.opentime, now)'],
             'hwe/ts/select_npc.ts' => ['logicalClockRunning'],
             'hwe/ts/select_general_from_pool.ts' => ['logicalClockRunning'],
         ];
@@ -140,7 +144,16 @@ final class GameClockBoundaryTest extends TestCase
             }
         }
         self::assertStringNotContainsString('formatTime(new Date())', file_get_contents(__DIR__ . '/../hwe/ts/PageVote.vue'));
-        self::assertStringNotContainsString('game.opentime <= now', file_get_contents(__DIR__ . '/../hwe/ts/gateway/entrance.ts'));
+    }
+
+    public function testGatewayFormatsLogicalOpenTimeBeforeReturningIt(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../hwe/j_server_basic_info.php');
+        self::assertIsString($source);
+        self::assertStringContainsString(
+            '$admin[\'opentime\'] = $clock->formatTick(Util::toInt($admin[\'opentime\']));',
+            $source,
+        );
     }
 
 }

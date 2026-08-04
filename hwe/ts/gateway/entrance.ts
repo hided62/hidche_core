@@ -5,8 +5,10 @@ import axios from 'axios';
 import { initTooltip } from "@/legacy/initTooltip";
 import { TemplateEngine } from '@util/TemplateEngine';
 import type { InvalidResponse } from '@/defs';
+import { getDateTimeNow } from '@util/getDateTimeNow';
 import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
 import { loadPlugin as loadAdminPlugin } from '@/gateway/admin_server';
+import { resolveGatewayOpenState } from '@/gateway/resolveGatewayOpenState';
 import '@/gateway/common';
 
 declare const isAdmin: boolean;
@@ -107,7 +109,7 @@ type ReservedGameInfo = {
 
 type GameInfo = {
     isUnited: number,
-    isOpen: boolean,
+    isOpen?: boolean,
     npcMode: '불가' | '가능' | '선택 생성',
     year: number,
     month: number,
@@ -175,6 +177,7 @@ async function Entrance_UpdateServer() {
 
 async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
     const $serverList = $('#server_list');
+    const now = getDateTimeNow();
 
     const serverDetailInfoP: Record<string, Promise<ServerDetailResponse>> = {};
 
@@ -225,6 +228,8 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
         }
 
         const game = response.game;
+        // 구버전 wall-clock profile은 isOpen을 아직 반환하지 않습니다.
+        const isOpen = resolveGatewayOpenState(game.isOpen, game.opentime, now);
 
         //TODO: 서버 폐쇄 방식을 새롭게 변경
         $serverHtml.find('.server_down').detach();
@@ -238,7 +243,7 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
         } else if (game.isUnited == 2) {
             $serverHtml.find('.n_country').html('§천하통일§');
             $serverHtml.find('.server_date').html(`${game.starttime} <br>~ ${game.turntime}`);
-        } else if (game.isOpen) {
+        } else if (isOpen) {
             $serverHtml.find('.n_country').html(`<${game.nationCnt}국 경쟁중>`);
             $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         } else {
@@ -246,7 +251,7 @@ async function Entrance_drawServerList(serverInfos: ServerResponseItem[]) {
             $serverHtml.find('.server_date').html(`${game.starttime} ~`);
         }
 
-        if (game.isOpen) {
+        if (isOpen) {
             $serverHtml.append(
                 TemplateEngine(serverTextInfo, game)
             );

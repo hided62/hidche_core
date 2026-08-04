@@ -91,6 +91,33 @@ final class GameClockTest extends TestCase
         self::assertSame(7_600, $clock->nowTick());
     }
 
+    public function testStorageInitializationDetectionSupportsMixedLegacyProfiles(): void
+    {
+        $logicalStorage = $this->createMock(KVStorage::class);
+        $logicalStorage->method('getValues')->willReturn([
+            'clock_base_time' => '2026-08-03 00:00:00.000000',
+            'clock_tick' => 0,
+            'clock_mode' => GameClock::MODE_REALTIME,
+            'clock_wall_anchor' => '2026-08-03 00:00:00.000000',
+            'turnterm' => 60,
+        ]);
+        self::assertTrue(GameClock::isInitialized($logicalStorage));
+
+        $legacyStorage = $this->createMock(KVStorage::class);
+        $legacyStorage->method('getValues')->willReturn([
+            'turnterm' => 60,
+        ]);
+        self::assertFalse(GameClock::isInitialized($legacyStorage));
+
+        $partialStorage = $this->createMock(KVStorage::class);
+        $partialStorage->method('getValues')->willReturn([
+            'clock_tick' => 0,
+            'turnterm' => 60,
+        ]);
+        $this->expectException(\RuntimeException::class);
+        GameClock::isInitialized($partialStorage);
+    }
+
     public function testTickArithmeticRejectsValuesThatJavaScriptCannotRepresentExactly(): void
     {
         self::assertSame(GameClock::MAX_SAFE_TICK, GameClock::addTicks(GameClock::MAX_SAFE_TICK - 1, 1));
