@@ -136,12 +136,12 @@ class GeneralBuilder{
             $this->specialWar = GameConst::$defaultSpecialWar;
         }
         try{
-            $this->specialDomestic = SpecialityHelper::getDomesticClassByName($special);
-            $this->specialWar = GameConst::$defaultSpecialWar;
-        }
-        catch (\Exception $e){
             $this->specialDomestic = GameConst::$defaultSpecialDomestic;
             $this->specialWar = SpecialityHelper::getWarClassByName($special);
+        }
+        catch (\Exception $e){
+            $this->specialDomestic = SpecialityHelper::getDomesticClassByName($special);
+            $this->specialWar = GameConst::$defaultSpecialWar;
         }
         return $this;
     }
