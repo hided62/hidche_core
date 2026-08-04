@@ -15,6 +15,9 @@ class Message
 
     protected $sendCnt = 0;
 
+    private ?int $sendTimeTick = null;
+    private ?int $sendValidUntilTick = null;
+
     public function __construct(
         public MessageType $msgType,
         public MessageTarget $src,
@@ -324,15 +327,7 @@ class Message
 
         $db = DB::db();
         $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
-        $timeTick = $clock->nowTick();
-        if (Util::toInt($this->validUntil->format('Y')) >= 9000) {
-            $validUntilTick = GameClock::MAX_SAFE_TICK;
-        } else {
-            $validitySeconds = $this->validUntil->getTimestamp() - $this->date->getTimestamp();
-            $validUntilTick = $timeTick + $clock->ticksFromSeconds($validitySeconds);
-        }
-        $this->date = \DateTime::createFromImmutable($clock->tickToDateTime($timeTick));
-        $this->validUntil = \DateTime::createFromImmutable($clock->tickToDateTime($validUntilTick));
+        [$timeTick, $validUntilTick] = $this->resolveSendTicks($clock);
         $db->insert('message', [
             'mailbox' => $mailbox,
             'type' => $this->msgType->value,
@@ -348,6 +343,32 @@ class Message
             ])
         ]);
         return [$mailbox, $db->insertId()];
+    }
+
+    /** @return array{0:int, 1:int} */
+    protected function resolveSendTicks(GameClock $clock): array
+    {
+        if ($this->sendTimeTick !== null && $this->sendValidUntilTick !== null) {
+            return [$this->sendTimeTick, $this->sendValidUntilTick];
+        }
+
+        $timeTick = $clock->nowTick();
+        if (Util::toInt($this->validUntil->format('Y')) >= 9000) {
+            $validUntilTick = GameClock::MAX_SAFE_TICK;
+        } else {
+            $validitySeconds = $this->validUntil->getTimestamp() - $this->date->getTimestamp();
+            $validUntilTick = GameClock::addTicks(
+                $timeTick,
+                $clock->ticksFromSeconds($validitySeconds),
+            );
+        }
+
+        $this->sendTimeTick = $timeTick;
+        $this->sendValidUntilTick = $validUntilTick;
+        $this->date = \DateTime::createFromImmutable($clock->tickToDateTime($timeTick));
+        $this->validUntil = \DateTime::createFromImmutable($clock->tickToDateTime($validUntilTick));
+
+        return [$timeTick, $validUntilTick];
     }
 
     private function sendToSender():array{
