@@ -42,6 +42,7 @@ if ($session->userGrade < 6) {
 }
 
 $db = DB::db();
+$clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
 if ($btn == '정렬하기') {
     $gen = 0;
@@ -111,7 +112,7 @@ $generalObj = General::createObjFromDB($gen, null, GeneralQueryMode::FullWithAcc
                     대상장수 :
                     <select name=gen size=1>
                         <?php foreach ($generalBasicList as $general) : ?>
-                            <option <?= $gen == $general['no'] ? 'selected' : '' ?> value='<?= $general['no'] ?>'><?= $general['name'] ?> (<?= substr($general['turntime'], 14, 5) ?>)</option>
+                            <option <?= $gen == $general['no'] ? 'selected' : '' ?> value='<?= $general['no'] ?>'><?= $general['name'] ?> (<?= substr($clock->formatTick(Util::toInt($general['turntime'])), 14, 5) ?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <input type=submit name=btn value='조회하기'>

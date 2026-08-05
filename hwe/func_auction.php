@@ -62,11 +62,12 @@ function processAuction()
 {
     $db = DB::db();
 
-    $now = TimeUtil::now();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $nowTick = GameClock::fromStorage($gameStor)->nowTick();
 
     $auctionList = $db->queryAllLists(
-        'SELECT id, `type` FROM ng_auction WHERE `close_date` <= %s AND finished = 0',
-        $now
+        'SELECT id, `type` FROM ng_auction WHERE `close_tick` <= %i AND finished = 0',
+        $nowTick
     );
 
     if (!$auctionList) {

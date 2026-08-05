@@ -30,4 +30,5 @@ export type VoteDetailResult = ValidResponse & {
   comments: VoteComment[],
   myVote: null|number[],
   userCnt: number,
+  isOpen: boolean,
 }

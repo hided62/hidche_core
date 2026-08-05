@@ -34,6 +34,8 @@ export type MsgItem = {
     delete?: number;
   };
   time: string;
+  deleteRemainingMilliseconds: number;
+  clockMode: "realtime" | "manual";
 };
 
 export type MsgPrintItem = MsgItem & {

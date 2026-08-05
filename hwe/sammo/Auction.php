@@ -146,40 +146,35 @@ abstract class Auction
     return $this->info;
   }
 
-  public function shrinkCloseDate(?DateTimeInterface $date): ?string
+  public function shrinkCloseTick(?int $tick): ?string
   {
-    if ($date === null) {
-      $date = new DateTimeImmutable();
-    }
-
-    $this->info->closeDate = $date;
     $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
+    $this->info->closeTick = $tick ?? $clock->nowTick();
     $db->update('ng_auction', $this->info->toArray('id'), 'id = %i', $this->info->id);
 
     return null;
   }
 
-  public function extendLatestBidCloseDate(?DateTimeInterface $date): ?string
+  public function extendLatestBidCloseTick(?int $tick): ?string
   {
-    if ($date === null) {
+    if ($tick === null) {
       $db = DB::db();
       $gameStor = KVStorage::getStorage($db, 'game_env');
+      $clock = GameClock::fromStorage($gameStor);
       $turnTerm = $gameStor->getValue('turnterm');
-      $date = $this->info->closeDate->add(TimeUtil::secondsToDateInterval(
-        max(static::MIN_EXTENSION_MINUTES_PER_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_PER_BID) * 60
-      ));
+      $tick = $this->info->closeTick + $clock->ticksFromMinutes(
+        max(static::MIN_EXTENSION_MINUTES_PER_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_PER_BID)
+      );
     }
-    else{
-      $date = DateTimeImmutable::createFromInterface($date);
-    }
-    if ($this->info->detail->availableLatestBidCloseDate !== null && $date < $this->info->detail->availableLatestBidCloseDate) {
+    if ($this->info->detail->availableLatestBidCloseTick !== null && $tick < $this->info->detail->availableLatestBidCloseTick) {
       return '기간보다 짧습니다.';
     }
-    $this->info->detail->availableLatestBidCloseDate = $date;
+    $this->info->detail->availableLatestBidCloseTick = $tick;
     return null;
   }
 
-  public function extendCloseDate(DateTimeInterface $date, bool $force = false): ?string
+  public function extendCloseTick(int $tick, bool $force = false): ?string
   {
     if (!$force) {
       if ($this->info->detail->remainCloseDateExtensionCnt === null) {
@@ -193,12 +188,11 @@ abstract class Auction
       }
     }
 
-    if ($date < $this->info->closeDate) {
+    if ($tick < $this->info->closeTick) {
       return '종료 기간보다 짧습니다.';
     }
 
-    $closeDate = DateTimeImmutable::createFromInterface($date);
-    $this->info->closeDate = $closeDate;
+    $this->info->closeTick = $tick;
     return null;
   }
 
@@ -245,12 +239,13 @@ abstract class Auction
 
     //TODO: 전역 알림이 나타나야한다. 일반 메시지보다는 중요하고, 메시지보단 약하게..
     //TODO: 바로가기를 제공하는 편이 좋을 것 같다.
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
     $msg = new Message(
       MessageType::private,
       $src,
       $dest,
       $reason,
-      new DateTime(),
+      DateTime::createFromImmutable($clock->tickToDateTime($clock->nowTick())),
       new DateTime('9999-12-31'),
       []
     );
@@ -275,7 +270,12 @@ abstract class Auction
     $db->update('ng_auction', $this->info->toArray('id'), 'id = %i', $this->info->id);
   }
 
-  private function bidInheritPoint(int $amount, \DateTimeImmutable $now, bool $tryExtendCloseDate): ?string
+  private function bidInheritPoint(
+    int $amount,
+    int $nowTick,
+    \DateTimeImmutable $nowDate,
+    bool $tryExtendCloseDate,
+  ): ?string
   {
     $db = DB::db();
 
@@ -311,7 +311,7 @@ abstract class Auction
       $general->getVar('owner'),
       $general->getID(),
       $amount,
-      $now,
+      $nowDate,
       new AuctionBidItemData(
         $general->getVar('owner_name'),
         $obfuscatedName,
@@ -324,15 +324,16 @@ abstract class Auction
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
     $turnTerm = $gameStor->getValue('turnterm');
 
-    if ($this->info->detail->availableLatestBidCloseDate !== null) {
-      $extendedCloseDate = $now->add(TimeUtil::secondsToDateInterval(
-        max(static::MIN_EXTENSION_MINUTES_PER_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_PER_BID) * 60
-      ));
+    if ($this->info->detail->availableLatestBidCloseTick !== null) {
+      $extendedCloseTick = $nowTick + $clock->ticksFromMinutes(
+        max(static::MIN_EXTENSION_MINUTES_PER_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_PER_BID)
+      );
 
-      if ($extendedCloseDate > $this->info->closeDate && $this->info->closeDate < $this->info->detail->availableLatestBidCloseDate) {
-        $this->extendCloseDate(min($extendedCloseDate, $this->info->detail->availableLatestBidCloseDate), true);
+      if ($extendedCloseTick > $this->info->closeTick && $this->info->closeTick < $this->info->detail->availableLatestBidCloseTick) {
+        $this->extendCloseTick(min($extendedCloseTick, $this->info->detail->availableLatestBidCloseTick), true);
         $this->applyDB();
       }
     }
@@ -356,12 +357,16 @@ abstract class Auction
       return '경매가 이미 끝났습니다.';
     }
 
-    $now = new \DateTimeImmutable();
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
+    $nowTick = $clock->nowTick();
+    $nowDate = $clock->tickToDateTime($nowTick);
 
-    if ($auctionInfo->closeDate < $now) {
+    if ($auctionInfo->closeTick < $nowTick) {
       return '경매가 이미 끝났습니다.';
     }
-    if ($auctionInfo->openDate > $now) {
+    if ($auctionInfo->openTick > $nowTick) {
       return '경매가 아직 시작되지 않았습니다.';
     }
 
@@ -377,12 +382,10 @@ abstract class Auction
 
 
     if ($auctionInfo->reqResource === ResourceType::inheritancePoint) {
-      return $this->bidInheritPoint($amount, $now, $tryExtendCloseDate);
+      return $this->bidInheritPoint($amount, $nowTick, $nowDate, $tryExtendCloseDate);
     }
 
     //reqResource는 말 그대로 '구매자가 내야하는 자원'이다.
-
-    $db = DB::db();
 
     $highestBid = $this->getHighestBid();
     if (!$auctionInfo->detail->isReverse) {
@@ -421,7 +424,7 @@ abstract class Auction
       $general->getVar('owner'),
       $general->getID(),
       $amount,
-      $now,
+      $nowDate,
       new AuctionBidItemData(
         $general->getVar('owner_name'),
         $general->getName(),
@@ -436,14 +439,13 @@ abstract class Auction
 
     $general->increaseVar($resType->value, -$morePoint);
 
-    $gameStor = KVStorage::getStorage($db, 'game_env');
     $turnTerm = $gameStor->getValue('turnterm');
-    $extendedCloseDate = $now->add(TimeUtil::secondsToDateInterval(
-      max(static::MIN_EXTENSION_MINUTES_PER_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_PER_BID) * 60
-    ));
+    $extendedCloseTick = $nowTick + $clock->ticksFromMinutes(
+      max(static::MIN_EXTENSION_MINUTES_PER_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_PER_BID)
+    );
 
-    if ($extendedCloseDate > $this->info->closeDate) {
-      $this->extendCloseDate($extendedCloseDate, true);
+    if ($extendedCloseTick > $this->info->closeTick) {
+      $this->extendCloseTick($extendedCloseTick, true);
       $this->applyDB();
     }
 
@@ -456,10 +458,10 @@ abstract class Auction
 
   public function tryFinish(): ?bool
   {
-    $now = new DateTimeImmutable();
-    if ($now < $this->info->closeDate) {
-      return null;
-    }
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
+    if ($clock->nowTick() < $this->info->closeTick) return null;
 
     //경매를 닫아야한다.
     $highestBid = $this->getHighestBid();
@@ -469,17 +471,15 @@ abstract class Auction
     }
 
     if ($highestBid->aux->tryExtendCloseDate) {
-      $db = DB::db();
-      $gameStor = KVStorage::getStorage($db, 'game_env');
       $turnTerm = $gameStor->getValue('turnterm');
 
       //연장 요청이 있었다.
-      $extendedCloseDate = $this->info->closeDate->add(TimeUtil::secondsToDateInterval(
-        max(static::MIN_EXTENSION_MINUTES_BY_EXTENSION_QUERY, $turnTerm * static::COEFF_EXTENSION_MINUTES_BY_EXTENSION_QUERY) * 60
-      ));
+      $extendedCloseTick = $this->info->closeTick + $clock->ticksFromMinutes(
+        max(static::MIN_EXTENSION_MINUTES_BY_EXTENSION_QUERY, $turnTerm * static::COEFF_EXTENSION_MINUTES_BY_EXTENSION_QUERY)
+      );
 
-      if ($this->extendCloseDate($extendedCloseDate) === null) {
-        $this->extendLatestBidCloseDate(null);
+      if ($this->extendCloseTick($extendedCloseTick) === null) {
+        $this->extendLatestBidCloseTick(null);
         $this->applyDB();
         return false;
       }
@@ -509,12 +509,13 @@ abstract class Auction
 
     //TODO: 전역 알림이 나타나야한다. 일반 메시지보다는 중요하고, 메시지보단 약하게..
     //TODO: 바로가기를 제공하는 편이 좋을 것 같다.
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
     $msg = new Message(
       MessageType::private,
       $src,
       $dest,
       $failReason,
-      new \DateTime(),
+      DateTime::createFromImmutable($clock->tickToDateTime($clock->nowTick())),
       new \DateTime('9999-12-31'),
       []
     );

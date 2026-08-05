@@ -70,7 +70,11 @@ type NPCToken = {
     pickMoreFrom: string,
     pickMoreSeconds: number,
     validUntil: string,
+    validForSeconds: number,
+    clockMode: "realtime" | "manual",
 }
+
+let logicalClockRunning = true;
 
 const templateGeneralCard =
     '<div class="general_card">\
@@ -147,6 +151,9 @@ async function pickGeneral(this: HTMLElement, e: JQuery.Event) {
 }
 
 function updateOutdateTimer() {
+    if (!logicalClockRunning) {
+        return;
+    }
     const $validUntilText = $('#valid_until_text');
     const now = Date.now();
     const validUntil = $validUntilText.data('until');
@@ -168,6 +175,13 @@ function updateOutdateTimer() {
 function updatePickMoreTimer() {
     const $btn = $('#btn_pick_more');
 
+    if (!logicalClockRunning) {
+        const remain = Number($btn.data('remaining'));
+        $btn.prop('disabled', remain > 0);
+        $btn.html(remain > 0 ? '다른 장수 보기(논리 시계 대기)' : '다른 장수 보기');
+        return;
+    }
+
     const now = Date.now();
     const remain = ($btn.data('available') - now) / 1000;
     if (remain <= 0) {
@@ -182,12 +196,13 @@ function updatePickMoreTimer() {
 }
 
 function printGenerals(value: NPCToken) {
+    logicalClockRunning = value.clockMode === "realtime";
     $('.card_holder').empty();
     $('#valid_until').show();
-    $('#valid_until_text').html(value.validUntil).data('until', (new Date(value.validUntil)).getTime()).css('color', 'white');
+    $('#valid_until_text').html(value.validUntil).data('until', Date.now() + value.validForSeconds * 1000).css('color', 'white');
     $('#outdate_token').hide();
     const time = Date.now() + value.pickMoreSeconds * 1000;
-    $('#btn_pick_more').data('available', time).prop('disabled', true);
+    $('#btn_pick_more').data('available', time).data('remaining', value.pickMoreSeconds).prop('disabled', true);
 
     const pick = $.map(value.pick, function (value) {
         return value;

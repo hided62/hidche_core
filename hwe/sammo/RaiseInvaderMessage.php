@@ -142,7 +142,7 @@ class RaiseInvaderMessage extends Message
         $srcTarget = MessageTarget::buildSystemTarget();
         $destTarget = MessageTarget::buildQuick($destGeneralID);
         if ($date === null) {
-            $date = new \DateTime();
+            $date = Message::gameNow();
         }
 
         /**

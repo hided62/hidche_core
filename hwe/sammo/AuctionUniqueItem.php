@@ -72,16 +72,15 @@ class AuctionUniqueItem extends Auction
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $now = new DateTimeImmutable();
-
     [$turnTerm, $year, $month] = $gameStor->getValuesAsArray(['turnterm', 'year', 'month']);
-
-    $closeDate = $now->add(TimeUtil::secondsToDateInterval(
-      max(static::MIN_AUCTION_CLOSE_MINUTES, $turnTerm * static::COEFF_AUCTION_CLOSE_MINUTES) * 60
-    ));
-    $availableLatestBidCloseDate = $closeDate->add(TimeUtil::secondsToDateInterval(
-      max(static::MIN_EXTENSION_MINUTES_LIMIT_BY_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_BY_BID) * 60
-    ));
+    $clock = GameClock::fromStorage($gameStor);
+    $nowTick = $clock->nowTick();
+    $closeTick = $nowTick + $clock->ticksFromMinutes(
+      max(static::MIN_AUCTION_CLOSE_MINUTES, $turnTerm * static::COEFF_AUCTION_CLOSE_MINUTES)
+    );
+    $availableLatestBidCloseTick = $closeTick + $clock->ticksFromMinutes(
+      max(static::MIN_EXTENSION_MINUTES_LIMIT_BY_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_BY_BID)
+    );
 
     $info = new AuctionInfo(
       null,
@@ -90,8 +89,8 @@ class AuctionUniqueItem extends Auction
       $itemKey,
       $general->getID(),
       ResourceType::inheritancePoint,
-      $now,
-      $closeDate,
+      $nowTick,
+      $closeTick,
       new AuctionInfoDetail(
         "{$item->getName()} 경매",
         static::genObfuscatedName($general->getID()),
@@ -100,7 +99,7 @@ class AuctionUniqueItem extends Auction
         $startAmount,
         null,
         1,
-        $availableLatestBidCloseDate,
+        $availableLatestBidCloseTick,
       )
     );
 
@@ -267,21 +266,22 @@ class AuctionUniqueItem extends Auction
 
     if ($availableEquipUniqueCnt <= 0) {
       $turnTerm = $gameStor->getValue('turnterm');
+      $clock = GameClock::fromStorage($gameStor);
       //제한에 걸렸다면 자동 연장
-      $extendedCloseDate = $this->info->closeDate->add(TimeUtil::secondsToDateInterval(
-        max(static::MIN_EXTENSION_MINUTES_BY_EXTENSION_QUERY, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_UNIQUE_CNT) * 60
-      ));
+      $extendedCloseTick = $this->info->closeTick + $clock->ticksFromMinutes(
+        max(static::MIN_EXTENSION_MINUTES_BY_EXTENSION_QUERY, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_UNIQUE_CNT)
+      );
 
       if($bidder->getID() != $this->info->hostGeneralID){
         $this->setHostAsNeutral();
       }
-      $this->extendCloseDate($extendedCloseDate, true);
-      $this->extendLatestBidCloseDate(null);
+      $this->extendCloseTick($extendedCloseTick, true);
+      $this->extendLatestBidCloseTick(null);
       $this->applyDB();
       return '유니크 아이템 소유 제한 상태입니다. 종료 시간이 연장됩니다.';
     }
 
-    $isExtendCloseDateRequired = false;
+    $isExtendCloseTickRequired = false;
     foreach (GameConst::$allItems as $itemType => $itemList) {
       //아직은 그런 경우는 없지만 동일 유니크를 여러 부위에 장착할 수 있을지도 모름
       if (!key_exists($itemKey, $itemList)) {
@@ -291,13 +291,13 @@ class AuctionUniqueItem extends Auction
       $ownItem = $general->getItem($itemType);
       if ($ownItem->getRawClassName() == $itemKey) {
         //FIXME: 이 경우에는 환불이 되던가 해야함.
-        $isExtendCloseDateRequired = true;
+        $isExtendCloseTickRequired = true;
         $reasons[] = '이미 그 유니크를 가지고 있습니다.';
         continue;
       }
 
       if (!$ownItem->isBuyable()) {
-        $isExtendCloseDateRequired = true;
+        $isExtendCloseTickRequired = true;
         $reasons[] = '이미 다른 유니크를 가지고 있습니다.';
         continue;
       }
@@ -313,18 +313,19 @@ class AuctionUniqueItem extends Auction
     }
 
     if (!$availableItemTypes) {
-      if ($isExtendCloseDateRequired) {
+      if ($isExtendCloseTickRequired) {
         $turnTerm = $gameStor->getValue('turnterm');
+        $clock = GameClock::fromStorage($gameStor);
         //동일 부위 제한에 걸렸다면 자동 연장
-        $extendedCloseDate = $this->info->closeDate->add(TimeUtil::secondsToDateInterval(
-          max(static::MIN_EXTENSION_MINUTES_LIMIT_BY_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_BY_BID) * 60
-        ));
+        $extendedCloseTick = $this->info->closeTick + $clock->ticksFromMinutes(
+          max(static::MIN_EXTENSION_MINUTES_LIMIT_BY_BID, $turnTerm * static::COEFF_EXTENSION_MINUTES_LIMIT_BY_BID)
+        );
 
         if($bidder->getID() != $this->info->hostGeneralID){
           $this->setHostAsNeutral();
         }
-        $this->extendCloseDate($extendedCloseDate, true);
-        $this->extendLatestBidCloseDate(null);
+        $this->extendCloseTick($extendedCloseTick, true);
+        $this->extendLatestBidCloseTick(null);
         $this->applyDB();
       }
       return join(' ', $reasons);

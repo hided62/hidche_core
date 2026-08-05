@@ -59,7 +59,7 @@ class RandomNameGeneral extends AbsGeneralPool{
             'generalName'=>$generalName,
             'imgsvr'=>0,
             'picture'=>null
-        ], '9999-12-31 12:00:00');
+        ], PHP_INT_MAX);
     }
 
     static public function pickGeneralFromPool(MeekroDB $db, RandUtil $rng, int $owner, int $pickCnt, ?string $prefix = null): array
@@ -68,26 +68,25 @@ class RandomNameGeneral extends AbsGeneralPool{
         $result = [];
         $dbInsert = [];
 
-        $oNow = new \DateTimeImmutable();
-
-
         for($i=0;$i<$pickCnt;$i++){
             $result[] = static::pickGeneral1FromPool($db, $rng, $owner, $prefix);
         }
 
         if($owner){
-            $now = $oNow->format('Y-m-d H:i:s');
+            $gameStor = \sammo\KVStorage::getStorage($db, 'game_env');
+            $clock = \sammo\GameClock::fromStorage($gameStor);
+            $now = $clock->nowTick();
             $db->delete('select_pool', [
                 'reserved_until'=>null,
                 'owner'=>null,
             ],'(reserved_until < %s OR reserved_until IS NULL) AND general_id IS null', $now);
-            $validUntil = $oNow->add(new \DateInterval(sprintf('PT%dS', 30)));
+            $validUntil = $now + $clock->ticksFromSeconds(30);
             foreach($result as $pickedGeneral){
                 $dbInsert[] = [
                     'owner'=>$owner,
                     'uniqueName'=>$pickedGeneral->getUniqueName(),
                     'info'=>$pickedGeneral->getInfo(),
-                    'reserved_until'=>$validUntil->format(('Y-m-d H:i:s'))
+                    'reserved_until'=>$validUntil
                 ];
             }
             $db->insert('select_pool', $dbInsert);

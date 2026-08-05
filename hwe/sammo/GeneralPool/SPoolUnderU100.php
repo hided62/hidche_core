@@ -14,7 +14,7 @@ class SPoolUnderU100 extends AbsFromUserPool
     private const STAT_BONUS_MAX_TOTAL = 190;
     private const STAT_BONUS_MAX_MULTIPLIER = 1.5;
 
-    public function __construct(\MeekroDB $db, RandUtil $rng, array $info, string $validUntil)
+    public function __construct(\MeekroDB $db, RandUtil $rng, array $info, int $validUntil)
     {
         $targetInfo = $info;
         $initialInfo = $info;

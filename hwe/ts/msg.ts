@@ -1,15 +1,11 @@
 
 import $ from 'jquery';
 import type { InvalidResponse } from '@/defs';
-import { getDateTimeNow } from '@util/getDateTimeNow';
 import axios from 'axios';
 import { convertFormData } from '@util/convertFormData';
 import { isBrightColor } from "@util/isBrightColor";
 import { unwrap } from '@util/unwrap';
 import _, { isError, isString } from 'lodash-es';
-import { addMinutes } from 'date-fns';
-import { parseTime } from '@util/parseTime';
-import { formatTime } from '@util/formatTime';
 import { TemplateEngine } from '@util/TemplateEngine';
 import { isNotNull } from '@util/isNotNull';
 import { unwrap_any } from '@util/unwrap_any';
@@ -32,8 +28,8 @@ const messageTemplate = `<div
     </div>
     <div class="msg_body">
         <div class="msg_header">
-            <%if(!this.option.action && src.id == myGeneralID && now <= last5min && invalidType == 'msg_valid' && !deletable){%>
-                <button type="button" data-erase_until="<%last5min%>" class="btn btn btn-outline-warning btn-sm btn-delete-msg" style='float:right'>❌</button>
+            <%if(!this.option.action && src.id == myGeneralID && deleteRemainingMilliseconds > 0 && invalidType == 'msg_valid' && !deletable){%>
+                <button type="button" data-erase_until="<%eraseUntil%>" class="btn btn btn-outline-warning btn-sm btn-delete-msg" style='float:right'>❌</button>
             <%}%>
             <%if(msgType == 'private') {%>
                 <%if(src.name == generalName){%>
@@ -101,8 +97,7 @@ type MsgPrintItem = MsgItem & {
     nationType: 'local' | 'src' | 'dest';
     myGeneralID: number;
     allowButton: boolean;
-    last5min: string;
-    now: string;
+    eraseUntil: number;
     invalidType: 'msg_invalid' | 'msg_valid';
     deletable: boolean;
     src: MsgTarget & { colorType: 'bright' | 'dark' },
@@ -217,7 +212,7 @@ async function showOldMsg(msgType: MsgType): Promise<MsgResponse> {
 function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
     function checkErasable(obj: MsgResponse) {
 
-        const now = getDateTimeNow();
+        const now = Date.now();
         $('.btn-delete-msg').each(function () {
             const $btn = $(this);
             const eraseUntil = $btn.data('erase_until');
@@ -257,7 +252,6 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
 
             let needRefreshLastContact = (msgType == 'private');
 
-            const now = getDateTimeNow();
             //list의 맨 앞이 가장 최신 메시지임.
             const $msgs: JQuery<HTMLElement>[] = msgSource.map(function (msg) {
 
@@ -311,7 +305,9 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
                     allowButton = true;
                 }
 
-                const last5min = formatTime(addMinutes(parseTime(msg.time), 5));
+                const eraseUntil = msg.clockMode === "manual"
+                    ? Number.MAX_SAFE_INTEGER
+                    : Date.now() + msg.deleteRemainingMilliseconds;
                 let invalidType: MsgPrintItem['invalidType'];
                 if (msg.option && msg.option.invalid) {
                     invalidType = 'msg_invalid';
@@ -336,9 +332,8 @@ function redrawMsg(msgResponse: MsgResponse, addFront: boolean): MsgResponse {
                     myGeneralID: unwrap(myGeneralID),
                     src,
                     dest,
-                    now,
                     allowButton,
-                    last5min,
+                    eraseUntil,
                     invalidType,
                     deletable,
                     defaultIcon,

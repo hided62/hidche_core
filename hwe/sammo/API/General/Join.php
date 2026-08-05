@@ -11,6 +11,7 @@ use sammo\Enums\APIRecoveryType;
 use sammo\Enums\GeneralAccessLogColumn;
 use sammo\Enums\RankColumn;
 use sammo\GameConst;
+use sammo\GameClock;
 use sammo\GameUnitConst;
 use sammo\General;
 use sammo\InheritancePointManager;
@@ -165,6 +166,7 @@ class Join extends \sammo\BaseAPI
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->cacheValues(['year', 'month', 'maxgeneral', 'scenario', 'show_img_level', 'block_general_create', 'turnterm', 'turntime', 'genius', 'npcmode']);
+        $clock = GameClock::fromStorage($gameStor);
         ########## 동일 정보 존재여부 확인. ##########
 
         $block_general_create = $gameStor->getValue('block_general_create');
@@ -222,7 +224,7 @@ class Join extends \sammo\BaseAPI
 
         $userLogger = new UserLogger($userID, $admin['year'], $admin['month'], false);
 
-        $now = TimeUtil::now(false);
+        $now = $clock->nowTick();
         $rng = new RandUtil(new LiteHashDRBG(Util::simpleSerialize(
             UniqueConst::$hiddenSeed,
             'MakeGeneral',
@@ -360,17 +362,14 @@ class Join extends \sammo\BaseAPI
 
             $userLogger->push(sprintf("턴 시간 %02d:%02d 로 지정", intdiv($inheritTurntime, 60), $inheritTurntime % 60), "inheritPoint");
 
-            $inheritTurntime += $rng->nextRangeInt(0, 999999) / 1000000;
-
-            $turntime = new \DateTimeImmutable(cutTurn($admin['turntime'], $admin['turnterm']));
-            $turntime = $turntime->add(TimeUtil::secondsToDateInterval($inheritTurntime));
-            $turntime = TimeUtil::format($turntime, true);
+            $inheritTurnMicrosecond = $rng->nextRangeInt(0, 999999);
+            $turntime = cutTurn(Util::toInt($admin['turntime']), $admin['turnterm'])
+                + $clock->ticksFromSeconds($inheritTurntime)
+                + intdiv($inheritTurnMicrosecond * $clock->ticksPerSecond(), 1_000_000);
         } else {
-            $turntime = getRandTurn($rng, $admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
+            $turntime = getRandTurn($rng, $admin['turnterm'], Util::toInt($admin['turntime']));
         }
 
-
-        $now = TimeUtil::now(true);
         if ($now >= $turntime) {
             $turntime = addTurn($turntime, $admin['turnterm']);
         }

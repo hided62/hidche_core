@@ -21,6 +21,8 @@ $generalID = $session->generalID;
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $gameStor->cacheValues(['turntime', 'opentime', 'autorun_user', 'npcmode']);
+$clock = GameClock::fromStorage($gameStor);
+$nowTick = $clock->nowTick();
 
 $me = General::createObjFromDB($generalID, null, GeneralQueryMode::FullWithAccessLog);
 
@@ -40,27 +42,29 @@ $lastRefresh = $db->queryFirstField(
 );
 
 $nextChange = $me->getAuxVar('next_change');
-if (!is_string($nextChange) || $nextChange === '') {
+if (!is_int($nextChange)) {
     $nextChange = null;
 }
+$nextChangeDisplay = $nextChange === null ? null : $clock->formatTick($nextChange);
 
 increaseRefresh("내정보", 1);
 if ($gameStor->turntime <= $gameStor->opentime) {
     $targetTime = $me->getAuxVar('prestart_delete_after');
-    if (!is_string($targetTime) || $targetTime === '') {
+    if (!is_int($targetTime)) {
         $targetTime = addTurn(
-            $lastRefresh ?: TimeUtil::now(),
+            $lastRefresh === null ? $nowTick : Util::toInt($lastRefresh),
             $gameStor->turnterm,
             GameConst::$minTurnDieOnPrestart
         );
         $me->setAuxVar('prestart_delete_after', $targetTime);
         $me->applyDB($db);
     }
+    $targetTimeDisplay = $clock->formatTick($targetTime);
 
     //서버 가오픈시 할 수 있는 행동
     if ($me->getNPCType() == 0 && $me->getNationID() == 0) {
         $showDieOnPrestartBtn = true;
-        if ($targetTime <= TimeUtil::now()) {
+        if ($targetTime <= $nowTick) {
             $availableDieOnPrestart = true;
         }
     }
@@ -173,7 +177,7 @@ $changeDefence999Atmos = $me->onCalcDomestic('changeDefenceTrain', "atmos999", $
             <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>빙의 해체 요청</button></a>-->
 
                         <?php if ($showDieOnPrestartBtn) : ?>
-                            가오픈 기간 내 장수 삭제 (<?= substr($targetTime, 0, 19) ?> 부터)<br>
+                            가오픈 기간 내 장수 삭제 (<?= $targetTimeDisplay ?> 부터)<br>
                             <button type="button" id='dieOnPrestart' style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>장수 삭제</button><br><br>
                         <?php endif; ?>
 
@@ -188,7 +192,7 @@ $changeDefence999Atmos = $me->onCalcDomestic('changeDefenceTrain', "atmos999", $
                         <?php endif; ?>
 
                         <?php if ($gameStor->npcmode == 2 && $me->getNPCType() == 0) : ?>
-                            다른 장수 선택 (<?= $nextChange ? substr($nextChange, 0, 19) : '지금' ?>부터)<br>
+                            다른 장수 선택 (<?= $nextChangeDisplay ?? '지금' ?>부터)<br>
                             <a href="select_general_from_pool.php" id='select_general_from_pool'><button type="button" style=background-color:<?= GameConst::$basecolor2 ?>;color:white;width:160px;height:30px;font-size:14px;>다른 장수 선택</button></a><br><br>
                         <?php endif; ?>
 

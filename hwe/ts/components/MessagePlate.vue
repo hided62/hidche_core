@@ -126,8 +126,6 @@
 
 <script setup lang="ts">
 import type { MsgItem, MsgTarget, MsgType } from "@/defs/API/Message";
-import { parseTime } from "@/util/parseTime";
-import { differenceInMilliseconds, addMinutes } from "date-fns/esm";
 import { computed, onMounted, ref, toRef, watch, type ComputedRef, type Ref } from "vue";
 import linkifyStr from "linkify-string";
 import { SammoAPI } from "@/SammoAPI";
@@ -205,11 +203,10 @@ function testDeletable(msg: MsgItem): boolean {
   if (msg.option.invalid) return false;
   if (!(msg.option.deletable ?? true)) return false;
 
-  const now = new Date();
-  const last5min = addMinutes(parseTime(msg.time), 5);
-  const timeDiff = differenceInMilliseconds(last5min, now);
+  const timeDiff = msg.deleteRemainingMilliseconds;
 
   if (timeDiff <= 0) return false;
+  if (msg.clockMode === "manual") return true;
 
   deletableTimer.value = window.setTimeout(() => {
     deletable.value = testDeletable(msg);

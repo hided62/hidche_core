@@ -6,8 +6,8 @@ use sammo\Session;
 use DateTimeInterface;
 use sammo\DB;
 use sammo\Enums\APIRecoveryType;
+use sammo\GameClock;
 use sammo\KVStorage;
-use sammo\TimeUtil;
 use sammo\Validator;
 use sammo\WebUtil;
 
@@ -51,8 +51,9 @@ class SetNotice extends \sammo\BaseAPI
         $nationID = $me['nation'];
 
         $nationStor = KVStorage::getStorage($db, $nationID, 'nation_env');
+        $gameNow = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->formatNow();
         $nationStor->nationNotice = [
-            'date'=>TimeUtil::now(),
+            'date'=>$gameNow,
             'msg'=>WebUtil::htmlPurify($msg),
             'author'=>$me['name'],
             'authorID'=>$me['no'],

@@ -34,7 +34,7 @@ abstract class AbsGeneralPool{
      * specialWar
      */
 
-    public function __construct(\MeekroDB $db, RandUtil $rng, array $info, string $validUntil)
+    public function __construct(\MeekroDB $db, RandUtil $rng, array $info, int $validUntil)
     {
         $this->db = $db;
         $this->info = $info;
@@ -92,7 +92,7 @@ abstract class AbsGeneralPool{
         return $this->builder;
     }
 
-    public function getValidUntil():string{
+    public function getValidUntil():int{
         return $this->validUntil;
     }
 

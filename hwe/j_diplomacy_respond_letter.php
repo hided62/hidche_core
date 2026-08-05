@@ -69,7 +69,7 @@ $destNation = getNationStaticInfo($letter['dest_nation_id']);
 $src = new MessageTarget($me['no'], $me['name'], $destNation['nation'], $destNation['name'], $destNation['color'], $me['icon']);
 $dest = new MessageTarget(0, '', $srcNation['nation'], $srcNation['name'], $srcNation['color']);
 
-$now = new \DateTime();
+$now = Message::gameNow();
 $unlimited = new \DateTime('9999-12-31');
 
 if($isAgree){

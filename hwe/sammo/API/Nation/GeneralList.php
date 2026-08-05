@@ -8,6 +8,7 @@ use sammo\Enums\APIRecoveryType;
 use sammo\Enums\GeneralLiteQueryMode;
 use sammo\Enums\GeneralQueryMode;
 use sammo\General;
+use sammo\GameClock;
 use sammo\GeneralLite;
 use sammo\Session;
 use sammo\Util;
@@ -264,8 +265,11 @@ class GeneralList extends \sammo\BaseAPI
             'honorText' => fn ($rawGeneral) => getHonor($rawGeneral['experience']),
             'dedLevelText' => fn ($rawGeneral) => getDedLevelText($rawGeneral['dedlevel']),
             //'0000-00-00 11:23';
-            'turntime' => fn ($rawGeneral) => substr($rawGeneral['turntime'], 0, 19),
-            'recent_war' => fn ($rawGeneral) => substr($rawGeneral['recent_war'], 0, 19),
+            'turntime' => fn ($rawGeneral) => GameClock::fromStorage($gameStor)
+                ->formatTick(Util::toInt($rawGeneral['turntime'])),
+            'recent_war' => fn ($rawGeneral) => $rawGeneral['recent_war'] === null
+                ? null
+                : GameClock::fromStorage($gameStor)->formatTick(Util::toInt($rawGeneral['recent_war'])),
             'bill' => fn ($rawGeneral) => getBillByLevel($rawGeneral['dedlevel']),
             'reservedCommand' => fn ($rawGeneral) => $reservedCommand[$rawGeneral['no']] ?? null,
             'autorun_limit' => fn ($rawGeneral) => ($rawGeneral['aux'] ?? [])['autorun_limit'] ?? 0,

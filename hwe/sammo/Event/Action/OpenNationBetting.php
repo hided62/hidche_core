@@ -123,7 +123,7 @@ class OpenNationBetting extends \sammo\Event\Action
         }
 
         $logger->flush();
-        $now = new DateTime();
+        $now = Message::gameNow();
         $text = "새로운 {$name} 내기가 열렸습니다. 천통국 베팅란을 확인해주세요.";
 
         $src = new MessageTarget(0, '', 0, 'System', '#000000');

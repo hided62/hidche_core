@@ -653,7 +653,7 @@ class GeneralBuilder{
             $officerLevel = $nationID?1:0;
         }
 
-        $turntime = \sammo\getRandTurn($this->rng, $env['turnterm'], new \DateTimeImmutable($env['turntime']));
+        $turntime = \sammo\getRandTurn($this->rng, $env['turnterm'], Util::toInt($env['turntime']));
 
         if($this->killturn){
             $killturn = $this->killturn;

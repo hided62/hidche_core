@@ -16,6 +16,11 @@ class TurnExecutionHelper
         $this->generalObj = $general;
     }
 
+    public static function monotonicCompletionTick(int $completedTick, int $candidateTick): int
+    {
+        return max($completedTick, $candidateTick);
+    }
+
     public function __destruct()
     {
         $this->applyDB();
@@ -215,14 +220,13 @@ class TurnExecutionHelper
             $general->rebirth();
         }
 
-        $turntime = addTurn($general->getTurnTime(), $gameStor->turnterm);
+        $turntime = addTurn($general->getTurnTick(), $gameStor->turnterm);
 
         $nextTurnTimeBase = $general->getAuxVar('nextTurnTimeBase');
         if($nextTurnTimeBase !== null){
             $turntime = cutTurn($turntime, $gameStor->turnterm);
-            $turntimeObj = new \DateTimeImmutable($turntime);
-            $turntimeObj = $turntimeObj->add(TimeUtil::secondsToDateInterval($nextTurnTimeBase));
-            $turntime = TimeUtil::format($turntimeObj, true);
+            $clock = GameClock::fromStorage($gameStor);
+            $turntime += $clock->ticksFromSeconds($nextTurnTimeBase);
             $general->setAuxVar('nextTurnTimeBase', null);
         }
 
@@ -230,7 +234,7 @@ class TurnExecutionHelper
     }
 
 
-    static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month)
+    static public function executeGeneralCommandUntil(int $date, \DateTimeInterface $limitActionTime, int $year, int $month)
     {
         $db = DB::db();
         $generalsTodo = $db->query(
@@ -244,7 +248,7 @@ class TurnExecutionHelper
         $autorun_user = $gameStor->autorun_user;
 
         foreach ($generalsTodo as $rawGeneral) {
-            $currActionTime = new \DateTimeImmutable();
+            $currActionTime = GameClock::readWallTime();
             if ($currActionTime > $limitActionTime) {
                 return [true, $currentTurn];
             }
@@ -350,7 +354,7 @@ class TurnExecutionHelper
             pullNationCommand($general->getVar('nation'), $general->getVar('officer_level'));
             pullGeneralCommand($general->getID());
 
-            $currentTurn = $general->getTurnTime();
+            $currentTurn = $general->getTurnTick();
             $general->increaseVarWithLimit('myset', GameConst::$incDefSettingChange, null, GameConst::$maxDefSettingChange);
 
             if (($autorun_user['limit_minutes'] ?? false) && $general->getNPCType() < 2 && $hasReservedTurn) {
@@ -390,13 +394,14 @@ class TurnExecutionHelper
         return true;
     }
 
-    static public function executeAllCommand(&$executed = false, &$locked = false): string
+    static public function executeAllCommand(&$executed = false, &$locked = false): int
     {
         $db = DB::db();
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        if (TimeUtil::now(true) < $gameStor->turntime) {
+        $clock = GameClock::fromStorage($gameStor);
+        if ($clock->nowTick() < $gameStor->turntime) {
             //턴 시각 이전이면 아무것도 하지 않음
             return $gameStor->turntime;
         }
@@ -420,7 +425,7 @@ class TurnExecutionHelper
         //접속자 수 따라서 갱신제한 변경
         CheckOverhead();
 
-        $date = TimeUtil::now(true);
+        $date = $clock->nowTick();
         // 최종 처리 월턴의 다음 월턴시간 구함
         //$lastExecuted = $gameStor->turntime;
         $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
@@ -433,7 +438,7 @@ class TurnExecutionHelper
             $maxActionTime = max($maxActionTime * 2 / 3, $maxActionTime - 10);
         }
 
-        $limitActionTime = (new \DateTimeImmutable())->add(TimeUtil::secondsToDateInterval($maxActionTime));
+        $limitActionTime = GameClock::readWallTime()->add(TimeUtil::secondsToDateInterval($maxActionTime));
 
         // 현재 턴 이전 월턴까지 모두처리.
         //최종 처리 이후 다음 월턴이 현재 시간보다 전이라면
@@ -452,7 +457,10 @@ class TurnExecutionHelper
             if ($executionOver) {
                 if ($currentTurn !== null) {
                     $executed = true;
-                    $gameStor->turntime = $currentTurn;
+                    $gameStor->turntime = self::monotonicCompletionTick(
+                        Util::toInt($gameStor->turntime),
+                        $currentTurn,
+                    );
                 }
                 unlock();
                 return $gameStor->turntime;
@@ -499,7 +507,13 @@ class TurnExecutionHelper
 
         if ($currentTurn !== null) {
             $executed = true;
-            $gameStor->turntime = $currentTurn;
+            // A general's sub-tick can be just before the monthly boundary that
+            // was completed above. Never move the global completion cursor back
+            // behind an already-applied monthly event.
+            $gameStor->turntime = self::monotonicCompletionTick(
+                Util::toInt($gameStor->turntime),
+                $currentTurn,
+            );
         }
 
         //토너먼트 처리

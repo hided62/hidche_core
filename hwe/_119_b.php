@@ -38,21 +38,9 @@ switch ($btn) {
             usleep(500000);
         }
 
-        $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
-        $turntime = (new \DateTimeImmutable($gameStor->turntime))->sub(new \DateInterval("PT{$minute}M"));
-        $starttime = (new \DateTimeImmutable($gameStor->starttime))->sub(new \DateInterval("PT{$minute}M"));
-        $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->sub(new \DateInterval("PT{$minute}M"));
-
-        $gameStor->turntime = $turntime->format('Y-m-d H:i:s.u');
-        $gameStor->starttime = $starttime->format('Y-m-d H:i:s');
-        $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
-
-        $db->update('general', [
-            'turntime' => $db->sqleval('DATE_SUB(turntime, INTERVAL %i MINUTE)', $minute)
-        ], true);
-        $db->update('ng_auction', [
-            'close_date' => $db->sqleval('DATE_SUB(close_date, INTERVAL %i MINUTE)', $minute)
-        ], 'finished = 0');
+        $clock = GameClock::fromStorage($gameStor);
+        // 스케줄 전체를 벽시계에서 빼지 않고 논리 현재 tick만 앞으로 이동합니다.
+        $clock->advance($gameStor, $clock->ticksFromMinutes($minute));
         if ($locked) {
             unlock();
         }
@@ -66,34 +54,19 @@ switch ($btn) {
             }
             usleep(500000);
         }
-        $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
-        $turntime = (new \DateTimeImmutable($gameStor->turntime))->add(new \DateInterval("PT{$minute}M"));
-        $starttime = (new \DateTimeImmutable($gameStor->starttime))->add(new \DateInterval("PT{$minute}M"));
-        $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->add(new \DateInterval("PT{$minute}M"));
-
-        $gameStor->turntime = $turntime->format('Y-m-d H:i:s.u');
-        $gameStor->starttime = $starttime->format('Y-m-d H:i:s');
-        $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
-
-        $db->update('general', [
-            'turntime' => $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
-        ], true);
-        $db->update('ng_auction', [
-            'close_date' => $db->sqleval('DATE_ADD(close_date, INTERVAL %i MINUTE)', $minute)
-        ], 'finished = 0');
+        $clock = GameClock::fromStorage($gameStor);
+        $clock->advance($gameStor, -$clock->ticksFromMinutes($minute));
         if ($locked) {
             unlock();
         }
         break;
     case "토너분당김":
-        $tnmt_time = new \DateTime($gameStor->tnmt_time);
-        $tnmt_time->sub(new \DateInterval("PT{$minute2}M"));
-        $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
+        $clock = GameClock::fromStorage($gameStor);
+        $gameStor->tnmt_time = Util::toInt($gameStor->tnmt_time) - $clock->ticksFromMinutes($minute2);
         break;
     case "토너분지연":
-        $tnmt_time = new \DateTimeImmutable($gameStor->tnmt_time);
-        $tnmt_time->add(new \DateInterval("PT{$minute2}M"));
-        $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
+        $clock = GameClock::fromStorage($gameStor);
+        $gameStor->tnmt_time = Util::toInt($gameStor->tnmt_time) + $clock->ticksFromMinutes($minute2);
         break;
     case "금지급":
         processGoldIncome();

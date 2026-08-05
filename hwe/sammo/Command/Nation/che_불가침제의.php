@@ -198,8 +198,9 @@ class che_불가침제의 extends Command\NationCommand
             $destNation['color']
         );
 
-        $now = new \DateTime($date);
-        $validUntil = new \DateTime($date);
+        $clock = \sammo\GameClock::fromStorage(\sammo\KVStorage::getStorage($db, 'game_env'));
+        $now = \DateTime::createFromImmutable($clock->tickToDateTime($general->getTurnTick()));
+        $validUntil = clone $now;
         $validMinutes = max(30, $env['turnterm'] * 3);
         $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 

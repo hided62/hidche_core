@@ -15,6 +15,8 @@ use sammo\General;
 use sammo\Json;
 use sammo\TimeUtil;
 use sammo\Util;
+use sammo\GameClock;
+use sammo\KVStorage;
 
 use function sammo\getAuctionLogRecent;
 
@@ -33,12 +35,13 @@ class GetActiveResourceAuctionList extends \sammo\BaseAPI
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
     $buyRiceList = [];
     $sellRiceList = [];
     /** @var AuctionInfo[] */
     $auctions = array_map(fn ($raw) => AuctionInfo::fromArray($raw), $db->query(
-      'SELECT * FROM `ng_auction` WHERE `type` IN %ls AND `finished` = 0 ORDER BY `close_date` ASC',
+      'SELECT * FROM `ng_auction` WHERE `type` IN %ls AND `finished` = 0 ORDER BY `close_tick` ASC',
       [
         AuctionType::BuyRice->value,
         AuctionType::SellRice->value,
@@ -87,8 +90,8 @@ class GetActiveResourceAuctionList extends \sammo\BaseAPI
         'type' => $auction->type->value,
         'hostGeneralID' => $auction->hostGeneralID,
         'hostName' => $auction->detail->hostName,
-        'openDate' => TimeUtil::format($auction->openDate, false),
-        'closeDate' => TimeUtil::format($auction->closeDate, false),
+        'openDate' => $clock->formatTick($auction->openTick),
+        'closeDate' => $clock->formatTick($auction->closeTick),
         'amount' => $auction->detail->amount,
         'startBidAmount' => $auction->detail->startBidAmount,
         'finishBidAmount' => $auction->detail->finishBidAmount,

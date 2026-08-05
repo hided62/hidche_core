@@ -8,10 +8,10 @@ use sammo\DB;
 use sammo\Enums\APIRecoveryType;
 use sammo\Enums\GeneralQueryMode;
 use sammo\GameConst;
+use sammo\GameClock;
 use sammo\General;
 use sammo\Json;
 use sammo\KVStorage;
-use sammo\TimeUtil;
 use sammo\Util;
 
 use function sammo\checkLimit;
@@ -39,6 +39,7 @@ class GetReservedCommand extends \sammo\BaseAPI
         increaseRefresh("사령부", 1);
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
+        $clock = GameClock::fromStorage($gameStor);
         $userID = $session->userID;
 
         $me = $db->queryFirstRow(
@@ -51,7 +52,8 @@ class GetReservedCommand extends \sammo\BaseAPI
         $nationID = $me['nation'];
         $limitState = checkLimit($me['refresh_score']);
         if ($limitState >= 2) {
-            return "접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 갱신 가능 시각 : {$me['turntime']})";
+            $limitTime = GameClock::fromStorage($gameStor)->formatTick(Util::toInt($me['turntime']), true);
+            return "접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 갱신 가능 시각 : {$limitTime})";
         }
 
         $permission = checkSecretPermission($me);
@@ -156,7 +158,8 @@ class GetReservedCommand extends \sammo\BaseAPI
             'year' => $year,
             'month' => $month,
             'turnTerm' => $turnTerm,
-            'date' => TimeUtil::now(true),
+            'date' => $clock->formatTick($clock->nowTick(), true),
+            'clockMode' => $clock->getMode(),
             'chiefList' => $nationChiefList,
             'troopList' => $troopList,
             'isChief' => ($me['officer_level'] > 4),

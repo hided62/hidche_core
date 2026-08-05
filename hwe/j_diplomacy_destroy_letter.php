@@ -83,7 +83,7 @@ else{
 }
 
 
-$now = new \DateTime();
+$now = Message::gameNow();
 $unlimited = new \DateTime('9999-12-31');
 
 if(in_array($stateOpt, ['try_destroy_src', 'try_destroy_dest'])){

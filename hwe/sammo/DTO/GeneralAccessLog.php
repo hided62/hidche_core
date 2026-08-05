@@ -2,10 +2,8 @@
 
 namespace sammo\DTO;
 
-use LDTO\Attr\Convert;
 use LDTO\Attr\NullIsUndefined;
 use LDTO\Attr\RawName;
-use LDTO\Converter\DateTimeConverter;
 
 class GeneralAccessLog extends \LDTO\DTO
 {
@@ -20,8 +18,7 @@ class GeneralAccessLog extends \LDTO\DTO
     public ?int $userID,
 
     #[RawName('last_refresh')]
-    #[Convert(DateTimeConverter::class)]
-    public \DateTimeImmutable $lastRefresh,
+    public ?int $lastRefresh,
 
     public int $refresh,
 

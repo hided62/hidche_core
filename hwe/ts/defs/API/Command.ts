@@ -7,6 +7,7 @@ export type ReservedCommandResponse = {
   year: number;
   month: number;
   date: string;
+  clockMode: "realtime" | "manual";
   turn: TurnObj[];
   autorun_limit: null | number;
 };

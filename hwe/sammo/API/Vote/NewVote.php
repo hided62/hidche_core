@@ -9,7 +9,7 @@ use sammo\Enums\APIRecoveryType;
 use sammo\KVStorage;
 use sammo\RootDB;
 use sammo\Session;
-use sammo\TimeUtil;
+use sammo\GameClock;
 use sammo\Util;
 use sammo\Validator;
 
@@ -37,7 +37,7 @@ class NewVote extends \sammo\BaseAPI
         return null;
     }
 
-    function closeOldVote(int $voteID, KVStorage $voteStor)
+    function closeOldVote(int $voteID, KVStorage $voteStor, GameClock $clock)
     {
         $db = DB::db();
         $voteStor = KVStorage::getStorage($db, 'vote');
@@ -45,13 +45,14 @@ class NewVote extends \sammo\BaseAPI
         if (!$rawLastVoteInfo) {
             return;
         }
-        $lastVoteInfo = VoteInfo::fromArray($rawLastVoteInfo);
-        if ($lastVoteInfo->endDate) {
+        $rawLastVoteInfo = VoteInfo::normalizeGameStorage($rawLastVoteInfo, $clock);
+        if ($rawLastVoteInfo['endTick'] !== null) {
             return;
         }
 
-        $lastVoteInfo->endDate = TimeUtil::now();
-        $voteStor->setValue("vote_{$voteID}", $lastVoteInfo->toArray());
+        $rawLastVoteInfo['endTick'] = $clock->nowTick();
+        $rawLastVoteInfo['endDate'] = $clock->formatTick($rawLastVoteInfo['endTick']);
+        $voteStor->setValue("vote_{$voteID}", $rawLastVoteInfo);
     }
 
     function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
@@ -71,7 +72,11 @@ class NewVote extends \sammo\BaseAPI
             $multipleOptions = 0;
         }
 
-        $now = TimeUtil::now();
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $clock = GameClock::fromStorage($gameStor);
+        $nowTick = $clock->nowTick();
+        $now = $clock->formatTick($nowTick);
         /** @var ?string */
         $endDate = $this->args['endDate'] ?? null;
         /** @var string[] */
@@ -83,9 +88,9 @@ class NewVote extends \sammo\BaseAPI
 
         if($endDate !== null){
             try{
-                $oNow = new \DateTimeImmutable($now);
                 $oEndDate = new \DateTimeImmutable($endDate);
-                if($oEndDate < $oNow){
+                $endTick = $clock->dateTimeToTick($oEndDate);
+                if($endTick < $nowTick){
                     return '종료일이 이미 지났습니다.';
                 }
             }
@@ -96,17 +101,13 @@ class NewVote extends \sammo\BaseAPI
 
         $userName = $session->userName;
 
-        $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-
-
         $lastVote = $gameStor->getValue('lastVote') ?? 0;
         $voteID = $lastVote + 1;
 
         $voteStor = KVStorage::getStorage($db, 'vote');
 
         if (!($this->args['keepOldVote'] ?? false)) {
-            $this->closeOldVote($lastVote, $voteStor);
+            $this->closeOldVote($lastVote, $voteStor, $clock);
         }
 
         $multipleOptions = Util::valueFit($multipleOptions, 0, count($options));
@@ -122,7 +123,10 @@ class NewVote extends \sammo\BaseAPI
             options: $options,
         );
 
-        $voteStor->setValue("vote_{$voteID}", $voteInfo->toArray());
+        $voteStor->setValue("vote_{$voteID}", $voteInfo->toArray() + [
+            'startTick' => $nowTick,
+            'endTick' => $endDate === null ? null : $clock->dateTimeToTick(new \DateTimeImmutable($endDate)),
+        ]);
         $gameStor->setValue('lastVote', $voteID);
 
         $db->update('general', [

@@ -7,6 +7,7 @@ include "func.php";
 Session::requireLogin()->loginGame()->setReadOnly();
 
 $mapName = GameConst::$mapName;
+$frontClock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
 
 ?>
 <!DOCTYPE html>
@@ -28,7 +29,7 @@ $mapName = GameConst::$mapName;
 
           'maxTurn' => GameConst::$maxTurn,
           'maxPushTurn' => 12,
-          'serverNow' => TimeUtil::now(false),
+          'serverNow' => $frontClock->formatTick($frontClock->nowTick()),
         ]
     ], false) ?>
     <?= WebUtil::printJS('../d_shared/common_path.js') ?>

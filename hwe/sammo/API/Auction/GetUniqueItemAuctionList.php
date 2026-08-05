@@ -12,6 +12,8 @@ use sammo\Enums\APIRecoveryType;
 use sammo\Enums\AuctionType;
 use sammo\TimeUtil;
 use sammo\Util;
+use sammo\GameClock;
+use sammo\KVStorage;
 
 class GetUniqueItemAuctionList extends \sammo\BaseAPI
 {
@@ -28,12 +30,13 @@ class GetUniqueItemAuctionList extends \sammo\BaseAPI
   public function launch(Session $session, ?DateTimeInterface $modifiedSince, ?string $reqEtag): null | string | array | APIRecoveryType
   {
     $db = DB::db();
+    $clock = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'));
 
     $generalID = $session->generalID;
 
     /** @var AuctionInfo[] */
     $auctions = array_map(fn($raw)=>AuctionInfo::fromArray($raw), $db->query(
-      'SELECT * FROM `ng_auction` WHERE `type` = %s ORDER BY `close_date` ASC',
+      'SELECT * FROM `ng_auction` WHERE `type` = %s ORDER BY `close_tick` ASC',
       AuctionType::UniqueItem->value
     ) ?? []);
 
@@ -85,9 +88,11 @@ class GetUniqueItemAuctionList extends \sammo\BaseAPI
         'target' => $auction->target,
         'isCallerHost' => $auction->hostGeneralID === $generalID,
         'hostName' => $auction->detail->hostName,
-        'closeDate' => TimeUtil::format($auction->closeDate, false),
+        'closeDate' => $clock->formatTick($auction->closeTick),
         'remainCloseDateExtensionCnt' => $auction->detail->remainCloseDateExtensionCnt,
-        'availableLatestBidCloseDate' => TimeUtil::format($auction->detail->availableLatestBidCloseDate, false),
+        'availableLatestBidCloseDate' => $auction->detail->availableLatestBidCloseTick === null
+          ? null
+          : $clock->formatTick($auction->detail->availableLatestBidCloseTick),
         'highestBid' => [
           'generalName' => $highestBid->aux->generalName,
           'amount' => $highestBid->amount,

@@ -116,7 +116,7 @@ class CheckOwner extends \sammo\BaseAPI
                 $src,
                 $dest,
                 "{$destGeneralName}의 소유자는 {$destGeneralOwnerName} 입니다.",
-                new \DateTime(),
+                Message::gameNow(),
                 new \DateTime('9999-12-31'),
                 []
             );
@@ -142,7 +142,7 @@ class CheckOwner extends \sammo\BaseAPI
                 $src,
                 $dest,
                 "소유자명이 누군가에 의해 확인되었습니다.",
-                new \DateTime(),
+                Message::gameNow(),
                 new \DateTime('9999-12-31'),
                 []
             );

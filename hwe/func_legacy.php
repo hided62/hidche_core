@@ -4,6 +4,10 @@ namespace sammo;
 
 function printLimitMsg($turntime)
 {
+    if (is_int($turntime) || (is_string($turntime) && ctype_digit(ltrim($turntime, '-')))) {
+        $gameStor = KVStorage::getStorage(DB::db(), 'game_env');
+        $turntime = GameClock::fromStorage($gameStor)->formatTick(Util::toInt($turntime), true);
+    }
     //FIXME: template로 이동.
 ?>
     <!DOCTYPE html>

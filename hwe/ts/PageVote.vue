@@ -195,7 +195,6 @@ import { onMounted, reactive, ref, watch, computed } from "vue";
 import type { VoteInfo, VoteDetailResult } from "@/defs/API/Vote";
 import { SammoAPI } from "@/SammoAPI";
 import { isString, range, sum } from "lodash-es";
-import { formatTime } from "@/util/formatTime";
 import { isBrightColor } from "@/util/isBrightColor";
 import { formatVoteColor } from "@/utilGame/formatVoteColor";
 
@@ -239,14 +238,7 @@ const canVote = computed(() => {
   if (currentVote.value.myVote) {
     return false;
   }
-  const endDate = currentVote.value.voteInfo.endDate;
-  if (endDate) {
-    const now = formatTime(new Date());
-    if (now > endDate) {
-      return false;
-    }
-  }
-  return true;
+  return currentVote.value.isOpen;
 });
 
 const currentVoteID = ref<number>();

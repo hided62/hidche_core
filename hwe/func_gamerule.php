@@ -654,13 +654,21 @@ function checkStatistic()
 function convForOldGeneral(array $general, int $year, int $month)
 {
     $general['history'] = getGeneralHistoryLogAll($general['no']);
+    $clock = GameClock::fromStorage(KVStorage::getStorage(DB::db(), 'game_env'));
+    $turnTimeDisplay = $clock->formatTick(Util::toInt($general['turntime']), true);
+    $general['turntime_tick'] = Util::toInt($general['turntime']);
+    $general['turntime'] = $turnTimeDisplay;
+    if ($general['recent_war'] !== null) {
+        $general['recent_war_tick'] = Util::toInt($general['recent_war']);
+        $general['recent_war'] = $clock->formatTick(Util::toInt($general['recent_war']), true);
+    }
     return [
         'server_id' => UniqueConst::$serverID,
         'general_no' => $general['no'],
         'owner' => $general['owner'],
         'name' => $general['name'],
         'last_yearmonth' => $year * 100 + $month,
-        'turntime' => $general['turntime'],
+        'turntime' => $turnTimeDisplay,
         'data' => Json::encode($general)
     ];
 }
@@ -734,7 +742,7 @@ function checkEmperior()
 
     /** @var int[] */
     $auctionList = $db->queryFirstColumn(
-        'SELECT `id` FROM `ng_auction` WHERE `type` = %s AND `finished` = 0 ORDER BY `close_date` ASC',
+        'SELECT `id` FROM `ng_auction` WHERE `type` = %s AND `finished` = 0 ORDER BY `close_tick` ASC',
         AuctionType::UniqueItem->value
     );
     foreach($auctionList as $auctionID){
@@ -832,10 +840,12 @@ function checkEmperior()
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
+    $gameDate = GameClock::fromStorage($gameStor)->formatNow();
 
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => $nation['nation'],
+        'date' => $gameDate,
         'data' => Json::encode($nation)
     ]);
 
@@ -843,6 +853,7 @@ function checkEmperior()
     $db->insert('ng_old_nations', [
         'server_id' => UniqueConst::$serverID,
         'nation' => 0,
+        'date' => $gameDate,
         'data' => Json::encode([
             'nation' => 0,
             'name' => '재야',

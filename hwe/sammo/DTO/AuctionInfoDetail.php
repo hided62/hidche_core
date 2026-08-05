@@ -2,9 +2,7 @@
 
 namespace sammo\DTO;
 
-use LDTO\Attr\Convert;
 use LDTO\Attr\NullIsUndefined;
-use LDTO\Converter\DateTimeConverter;
 
 class AuctionInfoDetail extends \LDTO\DTO
 {
@@ -21,8 +19,7 @@ class AuctionInfoDetail extends \LDTO\DTO
 		#[NullIsUndefined]
 		public ?int $remainCloseDateExtensionCnt,
 		#[NullIsUndefined]
-		#[Convert(DateTimeConverter::class)]
-		public ?\DateTimeImmutable $availableLatestBidCloseDate,
+		public ?int $availableLatestBidCloseTick,
 	) {
 	}
 }

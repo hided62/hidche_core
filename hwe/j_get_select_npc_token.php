@@ -16,12 +16,10 @@ $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 
-$oNow = new \DateTimeImmutable();
-
-$now = $oNow->format('Y-m-d H:i:s');
-
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$clock = GameClock::fromStorage($gameStor);
+$now = $clock->nowTick();
 
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 if($oldGeneral !== null){
@@ -44,15 +42,14 @@ if($npcmode!=1){
     ]);
 }
 
-$token = $db->queryFirstRow('SELECT * FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%s', $userID, $now);
+$token = $db->queryFirstRow('SELECT * FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%i', $userID, $now);
 $pickResult = [];
 
 
 if($token && $refresh){
-    $pickMoreFrom = (new \DateTime($token['pick_more_from']))->getTimestamp();
-    $nowT = $oNow->getTimestamp();
+    $pickMoreFrom = Util::toInt($token['pick_more_from']);
 
-    if($nowT >= $pickMoreFrom){
+    if($now >= $pickMoreFrom){
         $oldPickResult = Json::decode($token['pick_result']);
 
         foreach($keepResult as $keepId){
@@ -75,15 +72,16 @@ if($token && $refresh){
 }
 
 if($token && !$refresh){
-    $pickMoreFrom = (new \DateTime($token['pick_more_from']))->getTimestamp();
-    $nowT = $oNow->getTimestamp();
+    $pickMoreFrom = Util::toInt($token['pick_more_from']);
 
     Json::die([
         'result'=>true,
         'pick'=>Json::decode($token['pick_result']),
-        'pickMoreFrom'=>$token['pick_more_from'],
-        'pickMoreSeconds'=>$pickMoreFrom-$nowT,
-        'validUntil'=>$token['valid_until']
+        'pickMoreFrom'=>$clock->formatTick($pickMoreFrom),
+        'pickMoreSeconds'=>intdiv($pickMoreFrom - $now, $clock->ticksPerSecond()),
+        'validUntil'=>$clock->formatTick(Util::toInt($token['valid_until'])),
+        'validForSeconds'=>max(0, intdiv(Util::toInt($token['valid_until']) - $now, $clock->ticksPerSecond())),
+        'clockMode'=>$clock->getMode(),
     ]);
 }
 
@@ -100,7 +98,7 @@ foreach($db->query('SELECT `no`, `name`, leadership, strength, intel, nation, im
     $weight[$general['no']] = pow($allStat, 1.5);
 }
 
-foreach($db->queryFirstColumn('SELECT pick_result FROM select_npc_token WHERE `owner`!=%i AND valid_until >=%s', $userID, $now) as $reserved){
+foreach($db->queryFirstColumn('SELECT pick_result FROM select_npc_token WHERE `owner`!=%i AND valid_until >=%i', $userID, $now) as $reserved){
     $reserved = Json::decode($reserved);
     foreach(array_keys($reserved) as $reservedNPC){
         if(key_exists($reservedNPC, $weight)){
@@ -131,8 +129,8 @@ $newNonce = random_int(0, 0xfffffff);
 $validSecond = max(VALID_SECOND, $turnterm*40);
 $pickMoreSecond = max(PICK_MORE_SECOND, Util::round(pow($turnterm, 0.672)*8));
 
-$validUntil = $oNow->add(new \DateInterval(sprintf('PT%dS', $validSecond)));
-$pickMoreFrom = $oNow->add(new \DateInterval(sprintf('PT%dS', $pickMoreSecond)));
+$validUntil = $now + $clock->ticksFromSeconds($validSecond);
+$pickMoreFrom = $now + $clock->ticksFromSeconds($pickMoreSecond);
 
 $db->delete('select_npc_token', 'valid_until < %s', $now);
 
@@ -140,8 +138,8 @@ $inserted = 0;
 
 if($token){
     $db->update('select_npc_token', [
-        'valid_until'=>$validUntil->format('Y-m-d H:i:s'),
-        'pick_more_from'=>$pickMoreFrom->format('Y-m-d H:i:s'),
+        'valid_until'=>$validUntil,
+        'pick_more_from'=>$pickMoreFrom,
         'pick_result'=>Json::encode($pickResult),
         'nonce'=>$newNonce
     ], 'owner = %i AND nonce = %i', $userID, $token['nonce']);
@@ -152,8 +150,8 @@ if($token){
 else{
     $db->insertIgnore('select_npc_token', [
         'owner'=>$userID,
-        'valid_until'=>$validUntil->format('Y-m-d H:i:s'),
-        'pick_more_from'=>'2000-01-01 01:00:00',
+        'valid_until'=>$validUntil,
+        'pick_more_from'=>$now,
         'pick_result'=>Json::encode($pickResult),
         'nonce'=>$newNonce
     ]);
@@ -173,7 +171,9 @@ if($inserted === 0){
 Json::die([
     'result'=>true,
     'pick'=>$pickResult,
-    'pickMoreFrom'=>($inserted===-1)?$pickMoreFrom->format('Y-m-d H:i:s'):'2000-01-01 01:00:00',
+    'pickMoreFrom'=>$clock->formatTick(($inserted===-1)?$pickMoreFrom:$now),
     'pickMoreSeconds'=>($inserted===-1)?$pickMoreSecond:0,
-    'validUntil'=>$validUntil->format('Y-m-d H:i:s')
+    'validUntil'=>$clock->formatTick($validUntil),
+    'validForSeconds'=>max(0, intdiv($validUntil - $now, $clock->ticksPerSecond())),
+    'clockMode'=>$clock->getMode(),
 ]);

@@ -2,11 +2,9 @@
 
 namespace sammo\DTO;
 
-use LDTO\Attr\Convert;
 use LDTO\Attr\JsonString;
 use LDTO\Attr\NullIsUndefined;
 use LDTO\Attr\RawName;
-use LDTO\Converter\DateTimeConverter;
 use sammo\Enums\AuctionType;
 use sammo\Enums\ResourceType;
 
@@ -23,12 +21,10 @@ class AuctionInfo extends \LDTO\DTO
 		#[RawName('req_resource')]
 		public ResourceType $reqResource,
 
-		#[RawName('open_date')]
-		#[Convert(DateTimeConverter::class)]
-		public \DateTimeImmutable $openDate,
-		#[RawName('close_date')]
-		#[Convert(DateTimeConverter::class)]
-		public \DateTimeImmutable $closeDate,
+		#[RawName('open_tick')]
+		public int $openTick,
+		#[RawName('close_tick')]
+		public int $closeTick,
 
 		#[JsonString]
 		public AuctionInfoDetail $detail,

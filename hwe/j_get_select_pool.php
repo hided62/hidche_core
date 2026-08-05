@@ -43,12 +43,10 @@ function putInfoText(&$info, ?array $currentTargetEnv){
 $session = Session::requireLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
-$oNow = new \DateTimeImmutable();
-
-$now = $oNow->format('Y-m-d H:i:s');
-
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$clock = GameClock::fromStorage($gameStor);
+$now = $clock->nowTick();
 
 $eventEnv = $gameStor->getValues(['npcmode', 'startyear', 'year', 'month']);
 $npcmode = $eventEnv['npcmode'];
@@ -88,7 +86,9 @@ if($tokens){
     Json::die([
         'result'=>true,
         'pick'=>$pick,
-        'validUntil'=>$valid_until
+        'validUntil'=>$clock->formatTick(Util::toInt($valid_until)),
+        'validForSeconds'=>max(0, intdiv(Util::toInt($valid_until) - $now, $clock->ticksPerSecond())),
+        'clockMode'=>$clock->getMode(),
     ]);
 }
 
@@ -108,5 +108,7 @@ sortTokens($pick);//좀 무식하지만..
 Json::die([
     'result'=>true,
     'pick'=>$pick,
-    'validUntil'=>$valid_until
+    'validUntil'=>$valid_until === null ? null : $clock->formatTick(Util::toInt($valid_until)),
+    'validForSeconds'=>$valid_until === null ? 0 : max(0, intdiv(Util::toInt($valid_until) - $now, $clock->ticksPerSecond())),
+    'clockMode'=>$clock->getMode(),
 ]);

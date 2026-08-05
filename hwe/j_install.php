@@ -211,7 +211,7 @@ try{
         $show_img_level,
         !!$tournament_trig,
         $join_mode,
-        TimeUtil::now(),
+        TimeUtil::format(GameClock::readWallTime(), false),
         $autorun_user
     ));
 }

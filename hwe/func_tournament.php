@@ -17,10 +17,10 @@ function processTournament()
 {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
+    $clock = GameClock::fromStorage($gameStor);
 
     $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time', 'turnterm', 'last_tournament_betting_id']);
-    $now = new \DateTime();
-    $offset = $now->getTimestamp() - (new \DateTime($admin['tnmt_time']))->getTimestamp();
+    $offset = intdiv($clock->nowTick() - Util::toInt($admin['tnmt_time']), $clock->ticksPerSecond());
 
     //수동일땐 무시
     if (!$admin['tnmt_auto']) {
@@ -122,10 +122,10 @@ function processTournament()
         if ($tnmt == 6) {
             $betTerm = Util::valueFit($unit * 60, null, 3600);
             //처리 초 더한 날짜
-            $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
             $gameStor->tournament = $tnmt;
             $gameStor->phase = $phase;
-            $gameStor->tnmt_time = $dt;
+            $gameStor->tnmt_time = Util::toInt($admin['tnmt_time'])
+                + $clock->ticksFromSeconds($unit * $i + $betTerm);
             return;
         }
     }
@@ -133,7 +133,7 @@ function processTournament()
     $second = $unit * $iter;
     $gameStor->tournament = $tnmt;
     $gameStor->phase = $phase;
-    $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
+    $gameStor->tnmt_time = Util::toInt($admin['tnmt_time']) + $clock->ticksFromSeconds($second);
 }
 
 function getTournamentTermText(int $turnTerm)
@@ -160,7 +160,8 @@ function getTournamentTime()
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     list($tnmt, $tnmt_time) = $gameStor->getValuesAsArray(['tournament', 'tnmt_time']);
-    $dt = substr($tnmt_time, 11, 5);
+    $clock = GameClock::fromStorage($gameStor);
+    $dt = substr($clock->formatTick(Util::toInt($tnmt_time)), 11, 5);
     switch ($tnmt) {
         case 1:
             $tnmt = "개막시간 {$dt}";
@@ -284,9 +285,11 @@ function startTournament($type)
     $admin = $gameStor->getValues(['year', 'month', 'turnterm']);
     $turnTerm = $admin['turnterm'];
     $unit = calcTournamentTerm($turnTerm);
+    $clock = GameClock::fromStorage($gameStor);
 
     $gameStor->tnmt_auto = true;
-    $gameStor->tnmt_time = (new \DateTimeImmutable())->add(new \DateInterval("PT{$unit}M"))->format('Y-m-d H:i:s');
+    // 기존 startTournament은 unit을 분으로 더하므로 그 계약을 유지합니다.
+    $gameStor->tnmt_time = $clock->nowTick() + $clock->ticksFromMinutes($unit);
     $gameStor->tournament = 1;
     $gameStor->tnmt_type = $type;
     $gameStor->last_tournament_betting_id = 0;
@@ -1171,7 +1174,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type)
         }
         $damage1 *= $factor1;
         $damage2 *= $factor2;
-        
+
         //1합 승부
         if ($phase == 1) {
 

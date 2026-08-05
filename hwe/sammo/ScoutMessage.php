@@ -35,7 +35,7 @@ class ScoutMessage extends Message
             $this->validScout = false;
         }
 
-        if ($this->validUntil <= new \DateTime()) {
+        if ($this->validUntil <= $this->date) {
             $this->validScout = false;
         }
     }
@@ -108,7 +108,7 @@ class ScoutMessage extends Message
             $this->src,
             $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 수락",
-            new \DateTime(),
+            Message::gameNow(),
             new \DateTime('9999-12-31'),
             [
                 'delete' => $this->id
@@ -122,11 +122,11 @@ class ScoutMessage extends Message
     public static function invalidateAll(int $generalID, ?int $exceptMsgID = null)
     {
         $db = DB::db();
-        $now = TimeUtil::now();
+        $now = GameClock::fromStorage(KVStorage::getStorage($db, 'game_env'))->nowTick();
         //XXX: 뭔가 기존 쿼리가 애매하다. invalid 관련해서 다른 옵션이 가능한가?
         $rawMsgList = Util::convertArrayToDict($db->query(
             'SELECT * FROM `message` WHERE
-            `mailbox` = %i AND `type` = "private" AND `dest` = `mailbox` AND `valid_until` > %s AND
+            `mailbox` = %i AND `type` = "private" AND `dest` = `mailbox` AND `valid_until` > %i AND
             JSON_VALUE(message, "$.option.action") = %s',
             $generalID,
             $now,
@@ -156,7 +156,7 @@ class ScoutMessage extends Message
             $this->src,
             $this->dest,
             "{$this->src->nationName}{$josaRo} 등용 제의 거부",
-            new \DateTime(),
+            Message::gameNow(),
             new \DateTime('9999-12-31'),
             [
                 'delete' => $this->id
@@ -206,7 +206,7 @@ class ScoutMessage extends Message
         $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM general WHERE `no`=%i', $srcGeneralID);
         $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `officer_level` FROM general WHERE `no`=%i', $destGeneralID);
         if ($date === null) {
-            $date = new \DateTime();
+            $date = Message::gameNow();
         }
 
         if ($destGeneral['officer_level'] == 12) {
