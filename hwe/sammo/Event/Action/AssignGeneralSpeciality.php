@@ -37,7 +37,7 @@ class AssignGeneralSpeciality extends \sammo\Event\Action
       $month,
     )));
 
-    foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,aux from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general) {
+    foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,aux from general where specage<=age and special=%s ORDER BY no ASC', GameConst::$defaultSpecialDomestic) as $general) {
       $generalID = $general['no'];
       $special = SpecialityHelper::pickSpecialDomestic(
         $rng,
@@ -57,7 +57,7 @@ class AssignGeneralSpeciality extends \sammo\Event\Action
       $logger->pushGeneralHistoryLog("특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
     }
 
-    foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5,aux from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general) {
+    foreach ($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex1,dex2,dex3,dex4,dex5,aux from general where specage2<=age and special2=%s ORDER BY no ASC', GameConst::$defaultSpecialWar) as $general) {
       $generalID = $general['no'];
       $generalAux = Json::decode($general['aux']);
 
