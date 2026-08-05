@@ -37,7 +37,7 @@ function processWar(string $warSeed, General $attackerGeneral, array $rawAttacke
 
     $city = new WarUnitCity($rng, $rawDefenderCity, $rawDefenderNation, $year, $month, $startYear);
 
-    $defenderCityGeneralIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0', $city->getVar('nation'), $city->getVar('city'));
+    $defenderCityGeneralIDList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND city=%i AND nation!=0 ORDER BY no', $city->getVar('nation'), $city->getVar('city'));
     $defenderCityGeneralList = General::createObjListFromDB($defenderCityGeneralIDList, null);
 
     /** @var WarUnit[] */

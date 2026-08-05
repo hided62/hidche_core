@@ -1734,7 +1734,7 @@ function deleteNation(General $lord, bool $applyDB): array
 
     $nationGeneralList = General::createObjListFromDB(
         $db->queryFirstColumn(
-            'SELECT `no` FROM general WHERE nation=%i AND no != %i',
+            'SELECT `no` FROM general WHERE nation=%i AND no != %i ORDER BY no ASC',
             $nationID,
             $lordID
         ),
