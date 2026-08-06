@@ -109,6 +109,10 @@ final class GameClockTest extends TestCase
         ]);
         self::assertFalse(GameClock::isInitialized($legacyStorage));
 
+        $reservedResetStorage = $this->createMock(KVStorage::class);
+        $reservedResetStorage->method('getValues')->willReturn([]);
+        self::assertFalse(GameClock::isInitialized($reservedResetStorage));
+
         $partialStorage = $this->createMock(KVStorage::class);
         $partialStorage->method('getValues')->willReturn([
             'clock_tick' => 0,
