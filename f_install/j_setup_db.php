@@ -212,6 +212,9 @@ $result = Util::generateFileUsingSimpleTemplate(
         'gameImagePath' => $gameImagePath,
         'imageRequestPath' => $imageRequestPath,
         'imageRequestKey' => $imageRequestKey,
+        'remoteUserIconUploadEnabled' => 'false',
+        'remoteUserIconUploadPath' => 'https://sam-image.hided.net',
+        'remoteUserIconUploadSecretFile' => 'd_setting/image_upload_core_secret',
         'serverList' => [
             ['che', '체', 'white'],
             ['kwe', '퀘', 'yellow'],

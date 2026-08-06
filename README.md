@@ -51,6 +51,23 @@ IMAGE_SYNC_SECRET_FILE=/run/secrets/image_sync_core_secret \
 php scripts/sync-image-repository.php
 ```
 
+Ref의 사용자 아이콘 원격 업로드 구현은 기본적으로 꺼져 있습니다. 이미지 서버의
+`image_upload_core_secret`과 동일한 값을 Git 제외 파일
+`d_setting/image_upload_core_secret`에 저장한 뒤 실제
+`d_setting/ServConfig.php`에서 다음 값만 변경하면 기존 화면을 그대로 둔 채
+원격 bind 저장소로 전환됩니다.
+
+```php
+public static $remoteUserIconUploadEnabled = true;
+public static $remoteUserIconUploadPath = 'https://sam-image.hided.net';
+public static $remoteUserIconUploadSecretFile = 'd_setting/image_upload_core_secret';
+```
+
+플래그가 `false`이면 기존 `d_pic` 및 `IMGSVR=1` 동작을 유지합니다. `true`이면
+PHP 서버가 인증 사용자와 이미지 규격을 먼저 검사한 후 60초 HMAC 권한으로
+이미지 서버에 직접 업로드하고 `IMGSVR=0` 공유 이미지 경로를 저장합니다. 공유
+비밀값은 브라우저나 Cloudflare로 보내지 않습니다.
+
 ### 설치
 
 이후 해당 경로를 웹 브라우저를 통해 접근하여 설치를 진행할 수 있습니다.

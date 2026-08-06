@@ -33,7 +33,12 @@ if ($servHost) {
         [
             'serverBasePath' => $servHost,
             'sharedIconPath' => $sharedIconPath,
-            'gameImagePath' => $gameImagePath
+            'gameImagePath' => $gameImagePath,
+            'imageRequestPath' => ServConfig::$imageRequestPath,
+            'imageRequestKey' => ServConfig::$imageRequestKey,
+            'remoteUserIconUploadEnabled' => ServConfig::$remoteUserIconUploadEnabled ? 'true' : 'false',
+            'remoteUserIconUploadPath' => ServConfig::$remoteUserIconUploadPath,
+            'remoteUserIconUploadSecretFile' => ServConfig::$remoteUserIconUploadSecretFile
         ],
         true
     );
@@ -64,7 +69,12 @@ if ($servHost) {
         [
             'serverBasePath' => $servHost,
             'sharedIconPath' => $sharedIconPath,
-            'gameImagePath' => $gameImagePath
+            'gameImagePath' => $gameImagePath,
+            'imageRequestPath' => ServConfig::$imageRequestPath,
+            'imageRequestKey' => ServConfig::$imageRequestKey,
+            'remoteUserIconUploadEnabled' => ServConfig::$remoteUserIconUploadEnabled ? 'true' : 'false',
+            'remoteUserIconUploadPath' => ServConfig::$remoteUserIconUploadPath,
+            'remoteUserIconUploadSecretFile' => ServConfig::$remoteUserIconUploadSecretFile
         ],
         true
     );

@@ -13,6 +13,9 @@ class ServConfig
     public static $gameImagePath = "_tK_gameImagePath_";
     public static $imageRequestPath = "_tK_imageRequestPath_";
     public static $imageRequestKey = '_tK_imageRequestKey_';
+    public static $remoteUserIconUploadEnabled = _tK_remoteUserIconUploadEnabled_;
+    public static $remoteUserIconUploadPath = '_tK_remoteUserIconUploadPath_';
+    public static $remoteUserIconUploadSecretFile = '_tK_remoteUserIconUploadSecretFile_';
     private static $serverList = null;
 
     public static function getSharedIconPath(string $filepath = ''): string
@@ -39,6 +42,32 @@ class ServConfig
     public static function getImagePullURI(): string
     {
         return static::$imageRequestPath;
+    }
+
+    public static function isRemoteUserIconUploadEnabled(): bool
+    {
+        return static::$remoteUserIconUploadEnabled;
+    }
+
+    public static function getRemoteUserIconUploadURI(string $filename): string
+    {
+        return rtrim(static::$remoteUserIconUploadPath, '/') . '/v1/uploads/user-icons/core/' . $filename;
+    }
+
+    public static function getRemoteUserIconUploadSecret(): string
+    {
+        $path = static::$remoteUserIconUploadSecretFile;
+        if ($path === '' || str_contains($path, "\0")) {
+            throw new \RuntimeException('Remote user icon upload secret file is not configured');
+        }
+        if ($path[0] !== '/') {
+            $path = ROOT . '/' . $path;
+        }
+        $secret = trim((string)file_get_contents($path));
+        if (strlen($secret) < 32) {
+            throw new \RuntimeException('Remote user icon upload secret must be at least 32 characters');
+        }
+        return $secret;
     }
 
     /**

@@ -78,14 +78,36 @@ if(!is_uploaded_file($image['tmp_name'])) {
         break;
     }
 
-    if(!move_uploaded_file($image['tmp_name'], $dest)) {
+    if (RemoteUserIconUploadClient::isConfiguredEnabled()) {
+        try {
+            $remoteName = bin2hex(random_bytes(16)).$newExt;
+            $contentType = image_type_to_mime_type($imageType);
+            RemoteUserIconUploadClient::uploadConfigured(
+                $remoteName,
+                $contentType,
+                (string)file_get_contents($image['tmp_name'])
+            );
+            $newPicName = "users/core/{$remoteName}";
+            $storedRemotely = true;
+        } catch (\Throwable $error) {
+            error_log('Remote user icon upload failed: ' . $error->getMessage());
+            $storedRemotely = false;
+        }
+    } else {
+        $storedRemotely = null;
+    }
+
+    if($storedRemotely === false) {
+        $response['reason'] = '원격 이미지 저장소 업로드에 실패했습니다!';
+        $response['result'] = false;
+    } elseif($storedRemotely === null && !move_uploaded_file($image['tmp_name'], $dest)) {
         $response['reason'] = '업로드에 실패했습니다!';
         $response['result'] = false;
     } else {
         $pic = "{$newPicName}?={$rf}";
         RootDB::db()->update('member',[
             'PICTURE' => $pic,
-            'IMGSVR' => 1
+            'IMGSVR' => $storedRemotely === true ? 0 : 1
         ], 'NO=%i', $userID);
 
         $servers = [];
