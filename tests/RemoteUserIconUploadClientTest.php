@@ -42,4 +42,18 @@ final class RemoteUserIconUploadClientTest extends TestCase
             'body'
         );
     }
+
+    public function testBuildRequestAcceptsScopedEditorContent(): void
+    {
+        $request = RemoteUserIconUploadClient::buildRequest(
+            'https://sam-image.hided.net/v1/uploads/content/core/' . str_repeat('b', 32) . '.jpeg',
+            'core',
+            str_repeat('u', 32),
+            'image/jpeg',
+            "\xff\xd8\xffbody",
+            1786012860,
+            'core-content-1234'
+        );
+        self::assertStringContainsString('X-Image-Client: core', implode("\n", $request['headers']));
+    }
 }

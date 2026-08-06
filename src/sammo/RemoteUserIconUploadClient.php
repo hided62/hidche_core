@@ -13,6 +13,38 @@ final class RemoteUserIconUploadClient
     /** @return array<string,mixed> */
     public static function uploadConfigured(string $filename, string $contentType, string $body): array
     {
+        [$baseUrl, $secret] = self::configuredBaseUrlAndSecret();
+        return self::upload(
+            "{$baseUrl}/v1/uploads/user-icons/core/{$filename}",
+            'core',
+            $secret,
+            $contentType,
+            $body
+        );
+    }
+
+    /** @return array<string,mixed> */
+    public static function uploadContentConfigured(string $filename, string $contentType, string $body): array
+    {
+        [$baseUrl, $secret] = self::configuredBaseUrlAndSecret();
+        return self::upload(
+            "{$baseUrl}/v1/uploads/content/core/{$filename}",
+            'core',
+            $secret,
+            $contentType,
+            $body
+        );
+    }
+
+    public static function getConfiguredContentPublicUrl(string $filename): string
+    {
+        [$baseUrl] = self::configuredBaseUrlAndSecret();
+        return "{$baseUrl}/uploads/core/{$filename}";
+    }
+
+    /** @return array{string,string} */
+    private static function configuredBaseUrlAndSecret(): array
+    {
         if (!self::isConfiguredEnabled()
             || !property_exists(ServConfig::class, 'remoteUserIconUploadPath')
             || !property_exists(ServConfig::class, 'remoteUserIconUploadSecretFile')) {
@@ -26,14 +58,7 @@ final class RemoteUserIconUploadClient
             $secretPath = ROOT . '/' . $secretPath;
         }
         $secret = trim((string)file_get_contents($secretPath));
-        return self::upload(
-            rtrim((string)ServConfig::$remoteUserIconUploadPath, '/')
-                . '/v1/uploads/user-icons/core/' . $filename,
-            'core',
-            $secret,
-            $contentType,
-            $body
-        );
+        return [rtrim((string)ServConfig::$remoteUserIconUploadPath, '/'), $secret];
     }
 
     /** @return array{headers:list<string>,requestId:string,expires:string} */
@@ -53,7 +78,7 @@ final class RemoteUserIconUploadClient
             throw new \InvalidArgumentException('Image upload secret must be at least 32 characters');
         }
         $path = parse_url($url, PHP_URL_PATH);
-        if (!is_string($path) || !preg_match('#^/v1/uploads/user-icons/' . preg_quote($client, '#') . '/[a-f0-9]{32}\.(?:avif|webp|jpg|png|gif)$#', $path)) {
+        if (!is_string($path) || !preg_match('#^/v1/uploads/(?:user-icons|content)/' . preg_quote($client, '#') . '/[a-f0-9]{32}\.(?:avif|webp|jpe?g|png|gif)$#', $path)) {
             throw new \InvalidArgumentException('Invalid image upload URL');
         }
         $expiresText = (string)($expires ?? time() + 60);
@@ -110,7 +135,11 @@ final class RemoteUserIconUploadClient
             throw new \RuntimeException("Image upload rejected ({$status}): " . ($decoded['reason'] ?? 'unknown error'));
         }
         $filename = basename((string)parse_url($url, PHP_URL_PATH));
-        if (($decoded['path'] ?? null) !== "icons/users/{$client}/{$filename}") {
+        $category = str_contains((string)parse_url($url, PHP_URL_PATH), '/content/') ? 'content' : 'user-icons';
+        $expectedPath = $category === 'content'
+            ? "uploads/{$client}/{$filename}"
+            : "icons/users/{$client}/{$filename}";
+        if (($decoded['path'] ?? null) !== $expectedPath) {
             throw new \RuntimeException('Image upload returned an unexpected path');
         }
         return $decoded;

@@ -65,8 +65,9 @@ public static $remoteUserIconUploadSecretFile = 'd_setting/image_upload_core_sec
 
 플래그가 `false`이면 기존 `d_pic` 및 `IMGSVR=1` 동작을 유지합니다. `true`이면
 PHP 서버가 인증 사용자와 이미지 규격을 먼저 검사한 후 60초 HMAC 권한으로
-이미지 서버에 직접 업로드하고 `IMGSVR=0` 공유 이미지 경로를 저장합니다. 공유
-비밀값은 브라우저나 Cloudflare로 보내지 않습니다.
+이미지 서버에 직접 업로드하고 `IMGSVR=0` 공유 이미지 경로를 저장합니다.
+국방·외교 등 TipTap 편집기 첨부 이미지도 같은 플래그로 `/uploads/core/` bind
+저장소로 전환됩니다. 공유 비밀값은 브라우저나 Cloudflare로 보내지 않습니다.
 
 ### 설치
 
