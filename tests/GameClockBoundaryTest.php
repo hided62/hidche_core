@@ -146,12 +146,39 @@ final class GameClockBoundaryTest extends TestCase
         self::assertStringNotContainsString('formatTime(new Date())', file_get_contents(__DIR__ . '/../hwe/ts/PageVote.vue'));
     }
 
-    public function testGatewayFormatsLogicalOpenTimeBeforeReturningIt(): void
+    public function testGatewayReadsClockOnlyAfterClosedReservationResponse(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../hwe/j_server_basic_info.php');
+        self::assertIsString($source);
+
+        $closedBranch = strpos($source, "if(file_exists(__DIR__.'/.htaccess'))");
+        $closedBranchEnd = strpos($source, '//TODO: 천통시에도 예약 오픈 알림이 필요..?');
+        $clockDetection = strpos($source, 'GameClock::isInitialized($gameStor)');
+        $clockRead = strpos($source, 'GameClock::fromStorage($gameStor)');
+
+        self::assertNotFalse($closedBranch);
+        self::assertNotFalse($closedBranchEnd);
+        self::assertNotFalse($clockDetection);
+        self::assertNotFalse($clockRead);
+        self::assertGreaterThan($closedBranch, $closedBranchEnd);
+        self::assertGreaterThan($closedBranchEnd, $clockDetection);
+        self::assertGreaterThan($closedBranchEnd, $clockRead);
+    }
+
+    public function testGatewayPreservesWallClockProfilesAndFormatsLogicalOpenTime(): void
     {
         $source = file_get_contents(__DIR__ . '/../hwe/j_server_basic_info.php');
         self::assertIsString($source);
         self::assertStringContainsString(
+            '$usesLogicalClock = GameClock::isInitialized($gameStor);',
+            $source,
+        );
+        self::assertStringContainsString(
             '$admin[\'opentime\'] = $clock->formatTick(Util::toInt($admin[\'opentime\']));',
+            $source,
+        );
+        self::assertStringContainsString(
+            '$admin[\'isOpen\'] = new \\DateTimeImmutable((string)$admin[\'opentime\']) <= GameClock::readWallTime();',
             $source,
         );
     }

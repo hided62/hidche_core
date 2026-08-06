@@ -19,7 +19,6 @@ if(!class_exists('\\sammo\\DB')){
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$clock = GameClock::fromStorage($gameStor);
 
 if(file_exists(__DIR__.'/.htaccess')){
     $reserved = $db->queryFirstRow(
@@ -71,15 +70,24 @@ if(file_exists(__DIR__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
+$usesLogicalClock = GameClock::isInitialized($gameStor);
 $admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction', 'block_general_create', 'autorun_user']);
 $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
 $admin['isUnited'] = $admin['isunited'];
-$admin['isOpen'] = $clock->nowTick() >= Util::toInt($admin['opentime']);
-$admin['opentime'] = $clock->formatTick(Util::toInt($admin['opentime']));
-$admin['starttime'] = substr($admin['opentime'], 5, 11);
-$admin['turntime'] = substr($clock->formatTick(Util::toInt($admin['turntime'])), 5, 11);
+if($usesLogicalClock){
+    $clock = GameClock::fromStorage($gameStor);
+    $admin['isOpen'] = $clock->nowTick() >= Util::toInt($admin['opentime']);
+    $admin['opentime'] = $clock->formatTick(Util::toInt($admin['opentime']));
+    $admin['starttime'] = substr($admin['opentime'], 5, 11);
+    $admin['turntime'] = substr($clock->formatTick(Util::toInt($admin['turntime'])), 5, 11);
+}
+else{
+    $admin['isOpen'] = new \DateTimeImmutable((string)$admin['opentime']) <= GameClock::readWallTime();
+    $admin['starttime'] = substr((string)$admin['opentime'], 5, 11);
+    $admin['turntime'] = substr((string)$admin['turntime'], 5, 11);
+}
 unset($admin['npcmode']);
 unset($admin['maxgeneral']);
 unset($admin['turnterm']);
