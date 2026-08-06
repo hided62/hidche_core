@@ -86,21 +86,28 @@ require(__DIR__ . '/../vendor/autoload.php');
                             <div class="form-group row">
                                 <label for="shared_icon_path" class="col-sm-4 col-form-label">공용 아이콘 주소</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="shared_icon_path" id="shared_icon_path" placeholder="공용 아이콘 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)" value="../image/icons" />
+                                    <input type="text" class="form-control" name="shared_icon_path" id="shared_icon_path" placeholder="공용 아이콘 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)" value="https://sam-image.hided.net/icons" />
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="game_image_path" class="col-sm-4 col-form-label">게임 이미지 주소</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="game_image_path" id="game_image_path" placeholder="게임 이미지 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)" value="../image/game" />
+                                    <input type="text" class="form-control" name="game_image_path" id="game_image_path" placeholder="게임 이미지 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)" value="https://sam-image.hided.net/game" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="image_request_path" class="col-sm-4 col-form-label">이미지 갱신 API</label>
+                                <div class="col-sm-8">
+                                    <input type="url" class="form-control" name="image_request_path" id="image_request_path" value="https://sam-image.hided.net/v1/sync" required />
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="image_request_key" class="col-sm-4 col-form-label">이미지 갱신 키</label>
                                 <div class="input-group col-sm-8">
-                                    <input type="text" class="form-control" name="image_request_key" id="image_request_key" placeholder="이미지 서버의 hook/HashKey.php의 값과 동일하게" value="" />
+                                    <input type="text" class="form-control" name="image_request_key" id="image_request_key" placeholder="이미지 서버의 core 동기화 비밀값과 동일하게" value="" />
                                     <div class="input-group-text">
                                         <button id="btn_random_generate_key" class="btn btn-secondary" type="button">랜덤 생성</button>
                                     </div>

@@ -69,11 +69,8 @@ function setupDBForm() {
 
     $('#btn_random_generate_key').on('click', function (e) {
         e.preventDefault();
-        let token = '';
-        while (token.length < 24) {
-            token += (Math.random() + 1).toString(36).substring(7);
-        }
-        token = token.substr(0, 24);
+        const bytes = crypto.getRandomValues(new Uint8Array(32));
+        const token = Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
         $('#image_request_key').val(token);
     });
 
@@ -86,6 +83,7 @@ function setupDBForm() {
         serv_host: string,
         shared_icon_path: string,
         game_image_path: string,
+        image_request_path: string,
         image_request_key: string,
         kakao_rest_key: string,
         kakao_admin_key: string,
@@ -124,10 +122,14 @@ function setupDBForm() {
             required: true,
             type: 'string',
         },
+        image_request_path: {
+            required: true,
+            type: 'string',
+        },
         image_request_key: {
             required: false,
             type: 'string',
-            min: 16,
+            min: 32,
         },
         kakao_rest_key: {
             required: false,
@@ -163,6 +165,7 @@ function setupDBForm() {
                     serv_host: values.serv_host,
                     shared_icon_path: values.shared_icon_path,
                     game_image_path: values.game_image_path,
+                    image_request_path: values.image_request_path,
                     image_request_key: values.image_request_key,
                     kakao_rest_key: values.kakao_rest_key,
                     kakao_admin_key: values.kakao_admin_key,

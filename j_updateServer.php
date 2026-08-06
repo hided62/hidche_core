@@ -335,20 +335,18 @@ if ($server == $baseServerName) {
 
     if (ServConfig::$imageRequestKey) {
         try {
-            $imagePullPath = ServConfig::getImagePullURI();
-            $pullResult = @file_get_contents($imagePullPath);
-            if ($pullResult === false) {
-                throw new \ErrorException('Invalid URI');
-            }
-            $pullResult = Json::decode($pullResult);
-            if ($pullResult['result']) {
-                $imgResult = true;
-                $imgDetail = $pullResult['version'];
-            } else {
-                $imgResult = false;
-                $imgDetail = $pullResult['reason'];
-            }
-        } catch (\Exception $e) {
+            $configuredPath = ServConfig::$imageRequestPath;
+            $legacyPath = str_ends_with((string)parse_url($configuredPath, PHP_URL_PATH), '.php');
+            $imageSyncPath = getenv('SAMMO_IMAGE_SYNC_URL')
+                ?: ($legacyPath ? 'https://sam-image.hided.net/v1/sync' : $configuredPath);
+            $pullResult = ImageSyncClient::sync(
+                $imageSyncPath,
+                'core',
+                ServConfig::$imageRequestKey
+            );
+            $imgResult = true;
+            $imgDetail = $pullResult['lastSuccess']['commit'] ?? ($pullResult['changed'] ? 'updated' : 'current');
+        } catch (\Throwable $e) {
             $imgResult = false;
             $imgDetail = $e->getMessage();
         }

@@ -38,9 +38,7 @@ class ServConfig
 
     public static function getImagePullURI(): string
     {
-        $now = time();
-        $req_hash = Util::hashPassword(sprintf("%016x", $now), static::$imageRequestKey);
-        return static::$imageRequestPath . "?req={$req_hash}&time={$now}";
+        return static::$imageRequestPath;
     }
 
     /**

@@ -42,7 +42,14 @@ sudo -u www-data git clone https://storage.hided.net/gitea/devsam/core.git
 sudo -u www-data git clone https://storage.hided.net/gitea/devsam/image.git
 ```
 
-> 이미지는 hook/git_hook.php을 통해 동기화되며, 서버 설치 과정에 이미지 갱신 키를 지정하는 것으로 '훼' 서버 업데이트 시 동기화됩니다. 이미지 서버가 게임 서버와 별개여도 동작하나, php와 git을 지원해야합니다.
+> 이미지는 Gitea webhook을 기본으로 동기화합니다. Webhook 전달이 누락된 경우에도 서버 설치 과정에서 이미지 갱신 API와 `core` 전용 비밀값을 지정하면 게임 서버 업데이트 명령이 서명된 동기화를 요청합니다. 이미지 서버의 브랜치 변경 권한은 부여되지 않습니다.
+
+CLI에서 수동으로 복구 동기화를 요청할 수도 있습니다.
+
+```sh
+IMAGE_SYNC_SECRET_FILE=/run/secrets/image_sync_core_secret \
+php scripts/sync-image-repository.php
+```
 
 ### 설치
 

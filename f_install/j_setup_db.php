@@ -12,13 +12,14 @@ $dbName = Util::getPost('db_name');
 $servHost = Util::getPost('serv_host');
 $sharedIconPath = Util::getPost('shared_icon_path');
 $gameImagePath = Util::getPost('game_image_path');
+$imageRequestPath = Util::getPost('image_request_path');
 $imageRequestKey = Util::getPost('image_request_key');
 
 $kakaoRESTKey = Util::getPost('kakao_rest_key', 'string', '');
 $kakaoAdminKey = Util::getPost('kakao_admin_key', 'string', '');
 
 
-if (!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath) {
+if (!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath || !$imageRequestPath) {
     Json::die([
         'result' => false,
         'reason' => '입력 값이 올바르지 않습니다'
@@ -29,6 +30,21 @@ if (!filter_var($servHost, FILTER_VALIDATE_URL)) {
     Json::die([
         'result' => false,
         'reason' => '접속 경로가 올바르지 않습니다.'
+    ]);
+}
+
+if (!filter_var($imageRequestPath, FILTER_VALIDATE_URL)
+    || parse_url($imageRequestPath, PHP_URL_SCHEME) !== 'https') {
+    Json::die([
+        'result' => false,
+        'reason' => '이미지 갱신 API는 HTTPS URL이어야 합니다.'
+    ]);
+}
+
+if ($imageRequestKey !== null && $imageRequestKey !== '' && strlen($imageRequestKey) < 32) {
+    Json::die([
+        'result' => false,
+        'reason' => '이미지 동기화 비밀값은 32자 이상이어야 합니다.'
     ]);
 }
 
@@ -185,8 +201,7 @@ $globalSalt = bin2hex(random_bytes(16));
 
 $sharedIconPath = WebUtil::resolveRelativePath($sharedIconPath, $servHost);
 $gameImagePath = WebUtil::resolveRelativePath($gameImagePath, $servHost);
-$imageRequestPath = WebUtil::resolveRelativePath($gameImagePath . '/../hook/git_pull.php', $servHost);
-$imageKeyInstallPath = WebUtil::resolveRelativePath($gameImagePath . '/../hook/InstallKey.php', $servHost);
+$imageRequestPath = WebUtil::resolveRelativePath($imageRequestPath, $servHost);
 
 $result = Util::generateFileUsingSimpleTemplate(
     __DIR__ . '/templates/ServConfig.orig.php',
@@ -208,10 +223,6 @@ $result = Util::generateFileUsingSimpleTemplate(
     ],
     true
 );
-
-if ($imageRequestKey) {
-    @file_get_contents($imageKeyInstallPath . '?key=' . $imageRequestKey);
-}
 
 if ($result !== true) {
     Json::die([
