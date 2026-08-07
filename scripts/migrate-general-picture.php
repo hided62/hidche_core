@@ -10,7 +10,7 @@ if (PHP_SAPI !== 'cli') {
     exit(1);
 }
 
-$options = getopt('', ['help', 'server:', 'status', 'apply', 'backup:']);
+$options = getopt('', ['help', 'server:', 'status', 'apply', 'backup:', 'server-closed']);
 if (isset($options['help'])) {
     pictureMigrationUsage();
 }
@@ -47,6 +47,7 @@ function pictureMigrationUsage(int $exitCode = 0): void
 Usage:
   php scripts/migrate-general-picture.php --server=PREFIX --status
   php scripts/migrate-general-picture.php --server=PREFIX --apply --backup=/absolute/path/to/pre-migration.sql
+  php scripts/migrate-general-picture.php --server=PREFIX --apply --server-closed --backup=/absolute/path/to/pre-migration.sql
 
 PREFIX is one configured game directory such as che, kwe, or hwe. Run status,
 backup, apply, and verification separately for every game database; this script
@@ -57,7 +58,10 @@ chief picture columns to VARCHAR(64), adds nullable l12imgsvr through l5imgsvr,
 and backfills only uniquely matched historical values from ng_old_generals.
 It requires a pre-existing, non-empty SQL backup whenever a schema or data
 change is needed. Stop web and daemon traffic before applying; MariaDB/Aria DDL
-is not transactional. Unmatched or ambiguous historical values remain NULL.
+is not transactional. Normally the script acquires and releases the GAME lock.
+Use --server-closed only after independently stopping web and daemon traffic;
+that flag skips the GAME lock without changing its existing state. Unmatched or
+ambiguous historical values remain NULL.
 
 TEXT);
     exit($exitCode);
@@ -245,6 +249,22 @@ function requirePictureMigrationBackup(mixed $backup): string
     return $backup;
 }
 
+function acquirePictureMigrationLock(\MeekroDB $db, string $server): bool
+{
+    return (int)$db->queryFirstField(
+        'SELECT GET_LOCK(%s, 0)',
+        "sammo-picture-migration-$server",
+    ) === 1;
+}
+
+function releasePictureMigrationLock(\MeekroDB $db, string $server): void
+{
+    $db->queryFirstField(
+        'SELECT RELEASE_LOCK(%s)',
+        "sammo-picture-migration-$server",
+    );
+}
+
 $db = DB::db();
 if (isset($options['status'])) {
     exit(printPictureMigrationStatus($db, $server) === 'unsupported' ? 2 : 0);
@@ -264,12 +284,32 @@ if ($state === 'ready' && $recoverableBefore === 0) {
 }
 
 requirePictureMigrationBackup($options['backup'] ?? null);
-if (!\sammo\tryLock()) {
-    fwrite(STDERR, "Unable to acquire the GAME lock.\n");
+$serverClosed = isset($options['server-closed']);
+if ($serverClosed) {
+    fwrite(
+        STDERR,
+        "WARNING: --server-closed skips the GAME lock. Continue only if web and daemon traffic for $server is already stopped.\n",
+    );
+}
+if (!acquirePictureMigrationLock($db, $server)) {
+    fwrite(STDERR, "Another picture migration is already running for $server.\n");
     exit(3);
 }
 
 $backfilled = 0;
+$acquiredGameLock = false;
+if (!$serverClosed && !\sammo\tryLock()) {
+    releasePictureMigrationLock($db, $server);
+    fwrite(
+        STDERR,
+        "Unable to acquire the GAME lock. If the server is intentionally closed and all web/daemon traffic is stopped, rerun with --server-closed.\n",
+    );
+    exit(3);
+}
+if (!$serverClosed) {
+    $acquiredGameLock = true;
+}
+
 try {
     if (pictureColumnCapacity($db, 'general', 'picture') === 40) {
         $db->query('ALTER TABLE general MODIFY picture VARCHAR(64) NOT NULL');
@@ -292,7 +332,10 @@ try {
 
     $backfilled = backfillEmperiorImgsvr($db);
 } finally {
-    \sammo\unlock();
+    if ($acquiredGameLock) {
+        \sammo\unlock();
+    }
+    releasePictureMigrationLock($db, $server);
 }
 
 if (printPictureMigrationStatus($db, $server) !== 'ready') {

@@ -70,13 +70,18 @@ final class GeneralPictureSchemaTest extends TestCase
         self::assertStringContainsString("ALTER TABLE emperior", $migration);
         self::assertStringContainsString("ADD COLUMN `\$imgsvrField` INT(1) NULL DEFAULT NULL", $migration);
         self::assertStringContainsString('HAVING COUNT(*) = 1', $migration);
-        self::assertStringContainsString('Unmatched or ambiguous historical values remain NULL', $migration);
+        self::assertStringContainsString('ambiguous historical values remain NULL', $migration);
         self::assertStringContainsString("? 'picture_capacity'", $migration);
-        self::assertStringContainsString("['help', 'server:', 'status', 'apply', 'backup:']", $migration);
+        self::assertStringContainsString("['help', 'server:', 'status', 'apply', 'backup:', 'server-closed']", $migration);
         self::assertStringContainsString("require \$serverDirectory . '/lib.php'", $migration);
         self::assertStringContainsString("require \$serverDirectory . '/func.php'", $migration);
         self::assertStringNotContainsString("'/hwe/lib.php'", $migration);
         self::assertStringNotContainsString("'/hwe/func.php'", $migration);
+        self::assertStringContainsString('SELECT GET_LOCK(%s, 0)', $migration);
+        self::assertStringContainsString('SELECT RELEASE_LOCK(%s)', $migration);
+        self::assertStringContainsString('if (!$serverClosed && !\\sammo\\tryLock())', $migration);
+        self::assertStringContainsString('if ($acquiredGameLock)', $migration);
+        self::assertStringContainsString('--server-closed skips the GAME lock', $migration);
         self::assertStringNotContainsString('UPDATE general', $migration);
         self::assertStringContainsString("\$state === 'ready'", $migration);
     }
@@ -104,6 +109,7 @@ final class GeneralPictureSchemaTest extends TestCase
         [$helpExit, $helpOutput, $helpError] = $this->runMigrationCommand(['--help']);
         self::assertSame(0, $helpExit);
         self::assertStringContainsString('--server=PREFIX', $helpOutput);
+        self::assertStringContainsString('--server-closed', $helpOutput);
         self::assertSame('', $helpError);
 
         [$missingExit, $missingOutput, $missingError] = $this->runMigrationCommand(['--status']);
