@@ -90,7 +90,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
             $newPicName = "users/core/{$remoteName}";
             $storedRemotely = true;
         } catch (\Throwable $error) {
-            error_log('Remote user icon upload failed: ' . $error->getMessage());
+            RemoteUserIconUploadClient::logFailure('user-icon', $error);
             $storedRemotely = false;
         }
     } else {

@@ -67,7 +67,7 @@ class UploadImage extends \sammo\BaseAPI
                 RemoteUserIconUploadClient::uploadContentConfigured($imgFullName, $contentType, $imageData);
                 $remotePath = RemoteUserIconUploadClient::getConfiguredContentPublicUrl($imgFullName);
             } catch (\Throwable $error) {
-                error_log('Remote content image upload failed: ' . $error->getMessage());
+                RemoteUserIconUploadClient::logFailure('content-image', $error);
                 return '원격 이미지 저장소 업로드에 실패했습니다!';
             }
         } else {

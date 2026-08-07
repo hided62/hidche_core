@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use sammo\RemoteImageUploadException;
 use sammo\RemoteUserIconUploadClient;
 
 require_once dirname(__DIR__) . '/src/sammo/RemoteUserIconUploadClient.php';
@@ -55,5 +56,69 @@ final class RemoteUserIconUploadClientTest extends TestCase
             'core-content-1234'
         );
         self::assertStringContainsString('X-Image-Client: core', implode("\n", $request['headers']));
+    }
+
+    public function testLogFailureWritesSafeOperatorEntryWithoutTraceOrSecret(): void
+    {
+        $secret = 'secret-' . str_repeat('z', 64);
+        $systemMessages = [];
+        $structuredEntries = [];
+
+        RemoteUserIconUploadClient::logFailure(
+            'user-icon',
+            new RuntimeException("request failed with {$secret}"),
+            static function (string $message) use (&$systemMessages): void {
+                $systemMessages[] = $message;
+            },
+            static function (string $type, string $message, string $path, array $trace) use (&$structuredEntries): void {
+                $structuredEntries[] = compact('type', 'message', 'path', 'trace');
+            }
+        );
+
+        self::assertSame(['Remote user icon upload failed: Unexpected RuntimeException'], $systemMessages);
+        self::assertCount(1, $structuredEntries);
+        self::assertSame('RemoteImageUploadFailure', $structuredEntries[0]['type']);
+        self::assertSame($systemMessages[0], $structuredEntries[0]['message']);
+        self::assertSame([], $structuredEntries[0]['trace']);
+        self::assertStringNotContainsString($secret, json_encode($structuredEntries, JSON_THROW_ON_ERROR));
+    }
+
+    public function testLogFailureKeepsOnlyClientGeneratedSafeReason(): void
+    {
+        $structuredEntries = [];
+        RemoteUserIconUploadClient::logFailure(
+            'content-image',
+            new RemoteImageUploadException('Image upload rejected (401)'),
+            static function (): void {},
+            static function (string $type, string $message, string $path, array $trace) use (&$structuredEntries): void {
+                $structuredEntries[] = compact('type', 'message', 'path', 'trace');
+            }
+        );
+
+        self::assertSame(
+            'Remote content image upload failed: Image upload rejected (401)',
+            $structuredEntries[0]['message']
+        );
+        self::assertSame([], $structuredEntries[0]['trace']);
+    }
+
+    public function testLogFailureRejectsAnUnapprovedClientExceptionMessage(): void
+    {
+        $secret = 'secret-' . str_repeat('q', 64);
+        $structuredEntries = [];
+        RemoteUserIconUploadClient::logFailure(
+            'user-icon',
+            new RemoteImageUploadException("unexpected response {$secret}"),
+            static function (): void {},
+            static function (string $type, string $message, string $path, array $trace) use (&$structuredEntries): void {
+                $structuredEntries[] = compact('type', 'message', 'path', 'trace');
+            }
+        );
+
+        self::assertSame(
+            'Remote user icon upload failed: Unexpected sammo\\RemoteImageUploadException',
+            $structuredEntries[0]['message']
+        );
+        self::assertStringNotContainsString($secret, json_encode($structuredEntries, JSON_THROW_ON_ERROR));
     }
 }
