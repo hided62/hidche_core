@@ -25,17 +25,43 @@ Usage:
   php scripts/migrate-general-picture.php --status
   php scripts/migrate-general-picture.php --apply --backup=/absolute/path/to/pre-migration.sql
 
---status is read-only. --apply widens general.picture from VARCHAR(40) to
-VARCHAR(64), and requires a pre-existing, non-empty SQL backup. Stop web and
-daemon traffic before applying; MariaDB/Aria DDL is not transactional.
+--status is read-only. --apply widens general.picture and the eight emperior
+chief picture columns to VARCHAR(64), adds nullable l12imgsvr through l5imgsvr,
+and backfills only uniquely matched historical values from ng_old_generals.
+It requires a pre-existing, non-empty SQL backup whenever a schema or data
+change is needed. Stop web and daemon traffic before applying; MariaDB/Aria DDL
+is not transactional. Unmatched or ambiguous historical values remain NULL.
 
 TEXT);
     exit($exitCode);
 }
 
-function pictureColumnCapacity(\MeekroDB $db): ?int
+/** @return list<int> */
+function emperiorPictureLevels(): array
 {
-    $column = $db->queryFirstRow('SHOW COLUMNS FROM general WHERE Field = %s', 'picture');
+    return [12, 11, 10, 9, 8, 7, 6, 5];
+}
+
+/** @return list<array{string, string, int}> */
+function pictureMigrationColumns(): array
+{
+    $columns = [['general', 'picture', 40]];
+    foreach (emperiorPictureLevels() as $level) {
+        $columns[] = ['emperior', "l{$level}pic", 32];
+    }
+    return $columns;
+}
+
+/** @return array<string, mixed>|null */
+function migrationColumnInfo(\MeekroDB $db, string $table, string $field): ?array
+{
+    $column = $db->queryFirstRow("SHOW COLUMNS FROM `$table` WHERE Field = %s", $field);
+    return is_array($column) ? $column : null;
+}
+
+function pictureColumnCapacity(\MeekroDB $db, string $table, string $field): ?int
+{
+    $column = migrationColumnInfo($db, $table, $field);
     if (!$column || !is_string($column['Type'] ?? null)) {
         return null;
     }
@@ -45,24 +71,150 @@ function pictureColumnCapacity(\MeekroDB $db): ?int
     return (int)$matches[1];
 }
 
+function imgsvrColumnIsCompatible(\MeekroDB $db, int $level): bool
+{
+    $column = migrationColumnInfo($db, 'emperior', "l{$level}imgsvr");
+    if (!$column || !is_string($column['Type'] ?? null)) {
+        return false;
+    }
+    return preg_match('/^(?:tinyint|smallint|mediumint|int|bigint)\(\d+\)(?: unsigned)?$/i', $column['Type']) === 1
+        && strtoupper((string)($column['Null'] ?? '')) === 'YES';
+}
+
 function pictureMigrationState(\MeekroDB $db): string
 {
-    $capacity = pictureColumnCapacity($db);
-    if ($capacity === 40) {
-        return 'legacy';
+    $needsMigration = false;
+    foreach (pictureMigrationColumns() as [$table, $field, $legacyCapacity]) {
+        $capacity = pictureColumnCapacity($db, $table, $field);
+        if ($capacity === $legacyCapacity) {
+            $needsMigration = true;
+            continue;
+        }
+        if ($capacity === null || $capacity < 64) {
+            return 'unsupported';
+        }
     }
-    if ($capacity !== null && $capacity >= 64) {
-        return 'ready';
+
+    foreach (emperiorPictureLevels() as $level) {
+        if (migrationColumnInfo($db, 'emperior', "l{$level}imgsvr") === null) {
+            $needsMigration = true;
+            continue;
+        }
+        if (!imgsvrColumnIsCompatible($db, $level)) {
+            return 'unsupported';
+        }
     }
-    return 'unsupported';
+
+    return $needsMigration ? 'legacy' : 'ready';
+}
+
+function imgsvrColumnsExist(\MeekroDB $db): bool
+{
+    foreach (emperiorPictureLevels() as $level) {
+        if (migrationColumnInfo($db, 'emperior', "l{$level}imgsvr") === null) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function unresolvedEmperiorImgsvrCount(\MeekroDB $db): ?int
+{
+    if (!imgsvrColumnsExist($db)) {
+        return null;
+    }
+    $terms = array_map(
+        static fn(int $level): string => "(`l{$level}imgsvr` IS NULL)",
+        emperiorPictureLevels(),
+    );
+    $count = $db->queryFirstField('SELECT SUM(' . implode(' + ', $terms) . ') FROM emperior');
+    return $count === null ? 0 : (int)$count;
+}
+
+/** @return list<array{no: int|string, imgsvr: int|string}> */
+function recoverableEmperiorImgsvrRows(\MeekroDB $db, int $level): array
+{
+    $nameField = "l{$level}name";
+    $pictureField = "l{$level}pic";
+    $imgsvrField = "l{$level}imgsvr";
+    return $db->query(
+        "SELECT e.`no`, MIN(CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(og.`data`, '$.imgsvr')), '-1') AS SIGNED)) AS `imgsvr`
+         FROM `emperior` e
+         JOIN `ng_old_generals` og
+           ON og.`server_id` = e.`server_id`
+          AND og.`name` = e.`$nameField`
+          AND SUBSTRING_INDEX(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(og.`data`, '$.picture')), ''), '?=', 1)
+              = SUBSTRING_INDEX(COALESCE(e.`$pictureField`, ''), '?=', 1)
+          AND CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(og.`data`, '$.officer_level')), '-1') AS SIGNED) = %i
+         WHERE e.`$imgsvrField` IS NULL
+         GROUP BY e.`no`
+         HAVING COUNT(*) = 1 AND `imgsvr` IN (0, 1)",
+        $level,
+    );
+}
+
+function recoverableEmperiorImgsvrCount(\MeekroDB $db): int
+{
+    if (!imgsvrColumnsExist($db)) {
+        return 0;
+    }
+    $count = 0;
+    foreach (emperiorPictureLevels() as $level) {
+        $count += count(recoverableEmperiorImgsvrRows($db, $level));
+    }
+    return $count;
+}
+
+function backfillEmperiorImgsvr(\MeekroDB $db): int
+{
+    $updated = 0;
+    foreach (emperiorPictureLevels() as $level) {
+        $field = "l{$level}imgsvr";
+        foreach (recoverableEmperiorImgsvrRows($db, $level) as $row) {
+            $db->update(
+                'emperior',
+                [$field => (int)$row['imgsvr']],
+                "`no`=%i AND `$field` IS NULL",
+                (int)$row['no'],
+            );
+            $updated++;
+        }
+    }
+    return $updated;
 }
 
 function printPictureMigrationStatus(\MeekroDB $db): string
 {
     $state = pictureMigrationState($db);
-    $capacity = pictureColumnCapacity($db);
-    printf("schema_state=%s\npicture_capacity=%s\n", $state, $capacity ?? 'unknown');
+    printf("schema_state=%s\n", $state);
+    foreach (pictureMigrationColumns() as [$table, $field]) {
+        $capacity = pictureColumnCapacity($db, $table, $field);
+        $statusKey = $table === 'general' && $field === 'picture'
+            ? 'picture_capacity'
+            : "{$table}_{$field}_capacity";
+        printf("%s=%s\n", $statusKey, $capacity ?? 'unknown');
+    }
+    foreach (emperiorPictureLevels() as $level) {
+        $field = "l{$level}imgsvr";
+        $column = migrationColumnInfo($db, 'emperior', $field);
+        printf(
+            "emperior_%s=%s\n",
+            $field,
+            $column === null ? 'missing' : strtolower((string)$column['Type']),
+        );
+    }
+    $unresolved = unresolvedEmperiorImgsvrCount($db);
+    printf("unresolved_emperior_imgsvr=%s\n", $unresolved ?? 'unknown');
     return $state;
+}
+
+function requirePictureMigrationBackup(mixed $backup): string
+{
+    if (!is_string($backup) || $backup === '' || $backup[0] !== '/' || !is_file($backup) || filesize($backup) === 0) {
+        fwrite(STDERR, "--backup must name a pre-existing, non-empty absolute SQL backup made immediately before migration.\n");
+        exit(2);
+    }
+    return $backup;
 }
 
 $options = getopt('', ['help', 'status', 'apply', 'backup:']);
@@ -79,33 +231,52 @@ if (isset($options['status'])) {
 }
 
 $state = pictureMigrationState($db);
-if ($state === 'ready') {
-    fwrite(STDOUT, "general.picture is already VARCHAR(64) or wider; nothing to do.\n");
-    exit(0);
-}
-if ($state !== 'legacy') {
-    fwrite(STDERR, "general.picture is not the supported VARCHAR(40) schema; inspect --status first.\n");
+if ($state === 'unsupported') {
+    fwrite(STDERR, "One or more picture columns have an unsupported schema; inspect --status first.\n");
     exit(2);
 }
 
-$backup = $options['backup'] ?? null;
-if (!is_string($backup) || $backup === '' || $backup[0] !== '/' || !is_file($backup) || filesize($backup) === 0) {
-    fwrite(STDERR, "--backup must name a pre-existing, non-empty absolute SQL backup made immediately before migration.\n");
-    exit(2);
+$recoverableBefore = $state === 'ready' ? recoverableEmperiorImgsvrCount($db) : 0;
+if ($state === 'ready' && $recoverableBefore === 0) {
+    fwrite(STDOUT, "Picture schema is ready and no deterministic IMGSVR backfill candidates remain; nothing to do.\n");
+    printPictureMigrationStatus($db);
+    exit(0);
 }
+
+requirePictureMigrationBackup($options['backup'] ?? null);
 if (!\sammo\tryLock()) {
     fwrite(STDERR, "Unable to acquire the GAME lock.\n");
     exit(3);
 }
 
+$backfilled = 0;
 try {
-    $db->query('ALTER TABLE general MODIFY picture VARCHAR(64) NOT NULL');
+    if (pictureColumnCapacity($db, 'general', 'picture') === 40) {
+        $db->query('ALTER TABLE general MODIFY picture VARCHAR(64) NOT NULL');
+    }
+
+    $emperiorClauses = [];
+    foreach (emperiorPictureLevels() as $level) {
+        $pictureField = "l{$level}pic";
+        $imgsvrField = "l{$level}imgsvr";
+        if (pictureColumnCapacity($db, 'emperior', $pictureField) === 32) {
+            $emperiorClauses[] = "MODIFY `$pictureField` VARCHAR(64) NULL DEFAULT ''";
+        }
+        if (migrationColumnInfo($db, 'emperior', $imgsvrField) === null) {
+            $emperiorClauses[] = "ADD COLUMN `$imgsvrField` INT(1) NULL DEFAULT NULL AFTER `$pictureField`";
+        }
+    }
+    if ($emperiorClauses !== []) {
+        $db->query('ALTER TABLE emperior ' . implode(', ', $emperiorClauses));
+    }
+
+    $backfilled = backfillEmperiorImgsvr($db);
 } finally {
     \sammo\unlock();
 }
 
 if (printPictureMigrationStatus($db) !== 'ready') {
-    fwrite(STDERR, "general.picture migration verification failed; restore the supplied backup.\n");
+    fwrite(STDERR, "Picture-column migration verification failed; restore the supplied backup.\n");
     exit(4);
 }
-fwrite(STDOUT, "general.picture migration completed.\n");
+printf("Picture-column migration completed; backfilled_imgsvr=%d.\n", $backfilled);

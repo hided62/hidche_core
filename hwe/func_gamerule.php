@@ -780,7 +780,7 @@ function checkEmperior()
 
     $chiefs = Util::convertArrayToDict(
         $db->query(
-            'SELECT no,npc,name,picture,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
+            'SELECT no,npc,name,picture,imgsvr,belong,officer_level FROM general WHERE nation=%i AND officer_level >= 5',
             $nationID
         ),
         'officer_level'
@@ -893,20 +893,28 @@ function checkEmperior()
         'rice' => $nation['rice'],
         'l12name' => $chiefs[12]['name'],
         'l12pic' => $chiefs[12]['picture'],
+        'l12imgsvr' => $chiefs[12]['imgsvr'],
         'l11name' => $chiefs[11]['name'],
         'l11pic' => $chiefs[11]['picture'],
+        'l11imgsvr' => $chiefs[11]['imgsvr'],
         'l10name' => $chiefs[10]['name'],
         'l10pic' => $chiefs[10]['picture'],
+        'l10imgsvr' => $chiefs[10]['imgsvr'],
         'l9name' => $chiefs[9]['name'],
         'l9pic' => $chiefs[9]['picture'],
+        'l9imgsvr' => $chiefs[9]['imgsvr'],
         'l8name' => $chiefs[8]['name'],
         'l8pic' => $chiefs[8]['picture'],
+        'l8imgsvr' => $chiefs[8]['imgsvr'],
         'l7name' => $chiefs[7]['name'],
         'l7pic' => $chiefs[7]['picture'],
+        'l7imgsvr' => $chiefs[7]['imgsvr'],
         'l6name' => $chiefs[6]['name'],
         'l6pic' => $chiefs[6]['picture'],
+        'l6imgsvr' => $chiefs[6]['imgsvr'],
         'l5name' => $chiefs[5]['name'],
         'l5pic' => $chiefs[5]['picture'],
+        'l5imgsvr' => $chiefs[5]['imgsvr'],
         'tiger' => $tigerstr,
         'eagle' => $eaglestr,
         'gen' => $gen,

@@ -6,20 +6,28 @@ phases AS (
         g.winner_nation,
         e.l12name,
         e.l12pic,
+        e.l12imgsvr,
         e.l11name,
         e.l11pic,
+        e.l11imgsvr,
         e.l10name,
         e.l10pic,
+        e.l10imgsvr,
         e.l9name,
         e.l9pic,
+        e.l9imgsvr,
         e.l8name,
         e.l8pic,
+        e.l8imgsvr,
         e.l7name,
         e.l7pic,
+        e.l7imgsvr,
         e.l6name,
         e.l6pic,
+        e.l6imgsvr,
         e.l5name,
-        e.l5pic
+        e.l5pic,
+        e.l5imgsvr
     FROM emperior e
     LEFT JOIN ng_games g ON g.server_id = e.server_id
     WHERE e.no BETWEEN 1 AND 99
@@ -63,21 +71,21 @@ selection_reasons AS (
     WHERE hall_rank <= 10
 ),
 chief_slots AS (
-    SELECT phase_no, server_id, winner_nation, 12 AS officer_level, l12name AS name, l12pic AS picture FROM phases
+    SELECT phase_no, server_id, winner_nation, 12 AS officer_level, l12name AS name, l12pic AS picture, l12imgsvr AS imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 11, l11name, l11pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 11, l11name, l11pic, l11imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 10, l10name, l10pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 10, l10name, l10pic, l10imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 9, l9name, l9pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 9, l9name, l9pic, l9imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 8, l8name, l8pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 8, l8name, l8pic, l8imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 7, l7name, l7pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 7, l7name, l7pic, l7imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 6, l6name, l6pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 6, l6name, l6pic, l6imgsvr FROM phases
     UNION ALL
-    SELECT phase_no, server_id, winner_nation, 5, l5name, l5pic FROM phases
+    SELECT phase_no, server_id, winner_nation, 5, l5name, l5pic, l5imgsvr FROM phases
 ),
 chief_reasons AS (
     SELECT
@@ -94,6 +102,10 @@ chief_reasons AS (
              '?=',
              1
          ) = SUBSTRING_INDEX(COALESCE(c.picture, ''), '?=', 1)
+     AND (
+         c.imgsvr IS NULL
+         OR CAST(COALESCE(JSON_VALUE(og.data, '$.imgsvr'), -1) AS SIGNED) = c.imgsvr
+     )
      AND (
          CAST(COALESCE(JSON_VALUE(og.data, '$.officer_level'), -1) AS SIGNED) = c.officer_level
          OR (
