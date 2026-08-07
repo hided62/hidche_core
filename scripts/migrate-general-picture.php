@@ -10,11 +10,34 @@ if (PHP_SAPI !== 'cli') {
     exit(1);
 }
 
-$_SERVER['REMOTE_ADDR'] ??= '127.0.0.1';
-$_SERVER['REQUEST_URI'] ??= '/cli/migrate-general-picture';
+$options = getopt('', ['help', 'server:', 'status', 'apply', 'backup:']);
+if (isset($options['help'])) {
+    pictureMigrationUsage();
+}
+if (isset($options['status']) === isset($options['apply'])) {
+    pictureMigrationUsage(2);
+}
 
-require dirname(__DIR__) . '/hwe/lib.php';
-require dirname(__DIR__) . '/hwe/func.php';
+$server = $options['server'] ?? null;
+if (!is_string($server) || preg_match('/^[a-z][a-z0-9_-]*$/', $server) !== 1) {
+    fwrite(STDERR, "--server must name one game-server directory, for example che, kwe, or hwe.\n");
+    exit(2);
+}
+
+$projectRoot = dirname(__DIR__);
+$serverDirectory = $projectRoot . '/' . $server;
+foreach (['lib.php', 'func.php', 'd_setting/DB.php'] as $requiredFile) {
+    if (!is_file($serverDirectory . '/' . $requiredFile)) {
+        fwrite(STDERR, "Server directory '$server' is not a configured game server: missing $requiredFile.\n");
+        exit(2);
+    }
+}
+
+$_SERVER['REMOTE_ADDR'] ??= '127.0.0.1';
+$_SERVER['REQUEST_URI'] ??= "/cli/migrate-general-picture/$server";
+
+require $serverDirectory . '/lib.php';
+require $serverDirectory . '/func.php';
 
 /** @return never */
 function pictureMigrationUsage(int $exitCode = 0): void
@@ -22,8 +45,12 @@ function pictureMigrationUsage(int $exitCode = 0): void
     $stream = $exitCode === 0 ? STDOUT : STDERR;
     fwrite($stream, <<<'TEXT'
 Usage:
-  php scripts/migrate-general-picture.php --status
-  php scripts/migrate-general-picture.php --apply --backup=/absolute/path/to/pre-migration.sql
+  php scripts/migrate-general-picture.php --server=PREFIX --status
+  php scripts/migrate-general-picture.php --server=PREFIX --apply --backup=/absolute/path/to/pre-migration.sql
+
+PREFIX is one configured game directory such as che, kwe, or hwe. Run status,
+backup, apply, and verification separately for every game database; this script
+never loops over all servers implicitly.
 
 --status is read-only. --apply widens general.picture and the eight emperior
 chief picture columns to VARCHAR(64), adds nullable l12imgsvr through l5imgsvr,
@@ -183,9 +210,10 @@ function backfillEmperiorImgsvr(\MeekroDB $db): int
     return $updated;
 }
 
-function printPictureMigrationStatus(\MeekroDB $db): string
+function printPictureMigrationStatus(\MeekroDB $db, string $server): string
 {
     $state = pictureMigrationState($db);
+    printf("server=%s\n", $server);
     printf("schema_state=%s\n", $state);
     foreach (pictureMigrationColumns() as [$table, $field]) {
         $capacity = pictureColumnCapacity($db, $table, $field);
@@ -217,17 +245,9 @@ function requirePictureMigrationBackup(mixed $backup): string
     return $backup;
 }
 
-$options = getopt('', ['help', 'status', 'apply', 'backup:']);
-if (isset($options['help'])) {
-    pictureMigrationUsage();
-}
-if (isset($options['status']) === isset($options['apply'])) {
-    pictureMigrationUsage(2);
-}
-
 $db = DB::db();
 if (isset($options['status'])) {
-    exit(printPictureMigrationStatus($db) === 'unsupported' ? 2 : 0);
+    exit(printPictureMigrationStatus($db, $server) === 'unsupported' ? 2 : 0);
 }
 
 $state = pictureMigrationState($db);
@@ -238,8 +258,8 @@ if ($state === 'unsupported') {
 
 $recoverableBefore = $state === 'ready' ? recoverableEmperiorImgsvrCount($db) : 0;
 if ($state === 'ready' && $recoverableBefore === 0) {
-    fwrite(STDOUT, "Picture schema is ready and no deterministic IMGSVR backfill candidates remain; nothing to do.\n");
-    printPictureMigrationStatus($db);
+    fwrite(STDOUT, "Picture schema for $server is ready and no deterministic IMGSVR backfill candidates remain; nothing to do.\n");
+    printPictureMigrationStatus($db, $server);
     exit(0);
 }
 
@@ -275,8 +295,8 @@ try {
     \sammo\unlock();
 }
 
-if (printPictureMigrationStatus($db) !== 'ready') {
+if (printPictureMigrationStatus($db, $server) !== 'ready') {
     fwrite(STDERR, "Picture-column migration verification failed; restore the supplied backup.\n");
     exit(4);
 }
-printf("Picture-column migration completed; backfilled_imgsvr=%d.\n", $backfilled);
+printf("Picture-column migration for %s completed; backfilled_imgsvr=%d.\n", $server, $backfilled);

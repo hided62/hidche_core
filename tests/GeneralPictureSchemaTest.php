@@ -6,6 +6,33 @@ use PHPUnit\Framework\TestCase;
 
 final class GeneralPictureSchemaTest extends TestCase
 {
+    /**
+     * @param list<string> $arguments
+     * @return array{int, string, string}
+     */
+    private function runMigrationCommand(array $arguments): array
+    {
+        $command = array_merge(
+            [PHP_BINARY, __DIR__ . '/../scripts/migrate-general-picture.php'],
+            $arguments,
+        );
+        $pipes = [];
+        $process = proc_open(
+            $command,
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+        );
+        self::assertIsResource($process);
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
+        self::assertIsString($stdout);
+        self::assertIsString($stderr);
+        return [$exitCode, $stdout, $stderr];
+    }
+
     public function testGameAndAccountSchemasAcceptRemoteUserIconPaths(): void
     {
         $gameSchema = file_get_contents(__DIR__ . '/../hwe/sql/schema.sql');
@@ -45,6 +72,11 @@ final class GeneralPictureSchemaTest extends TestCase
         self::assertStringContainsString('HAVING COUNT(*) = 1', $migration);
         self::assertStringContainsString('Unmatched or ambiguous historical values remain NULL', $migration);
         self::assertStringContainsString("? 'picture_capacity'", $migration);
+        self::assertStringContainsString("['help', 'server:', 'status', 'apply', 'backup:']", $migration);
+        self::assertStringContainsString("require \$serverDirectory . '/lib.php'", $migration);
+        self::assertStringContainsString("require \$serverDirectory . '/func.php'", $migration);
+        self::assertStringNotContainsString("'/hwe/lib.php'", $migration);
+        self::assertStringNotContainsString("'/hwe/func.php'", $migration);
         self::assertStringNotContainsString('UPDATE general', $migration);
         self::assertStringContainsString("\$state === 'ready'", $migration);
     }
@@ -65,6 +97,27 @@ final class GeneralPictureSchemaTest extends TestCase
         }
         self::assertStringContainsString('c.imgsvr IS NULL', $candidateSql);
         self::assertStringContainsString("JSON_VALUE(og.data, '$.imgsvr')", $candidateSql);
+    }
+
+    public function testMigrationRequiresAnExplicitSafeServerPrefixBeforeLoadingConfiguration(): void
+    {
+        [$helpExit, $helpOutput, $helpError] = $this->runMigrationCommand(['--help']);
+        self::assertSame(0, $helpExit);
+        self::assertStringContainsString('--server=PREFIX', $helpOutput);
+        self::assertSame('', $helpError);
+
+        [$missingExit, $missingOutput, $missingError] = $this->runMigrationCommand(['--status']);
+        self::assertSame(2, $missingExit);
+        self::assertSame('', $missingOutput);
+        self::assertStringContainsString('--server must name one game-server directory', $missingError);
+
+        [$traversalExit, $traversalOutput, $traversalError] = $this->runMigrationCommand([
+            '--server=../hwe',
+            '--status',
+        ]);
+        self::assertSame(2, $traversalExit);
+        self::assertSame('', $traversalOutput);
+        self::assertStringContainsString('--server must name one game-server directory', $traversalError);
     }
 
     public function testScriptsDirectoryIsDeniedOverApache(): void
