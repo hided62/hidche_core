@@ -151,6 +151,11 @@ class GeneralList extends \sammo\BaseAPI
 
         $gameStor = \sammo\KVStorage::getStorage($db, 'game_env');
         $env = $gameStor->getValues(['year', 'month', 'turntime', 'turnterm', 'autorun_user', 'killturn']);
+        $clock = GameClock::isInitialized($gameStor) ? GameClock::fromStorage($gameStor) : null;
+        $formatStoredTime = static fn (mixed $value): string => $clock === null
+            ? (string)$value
+            : $clock->formatTick(Util::toInt($value));
+        $env['turntime'] = $formatStoredTime($env['turntime']);
 
         $me = $db->queryFirstRow(
             'SELECT refresh_score, turntime, belong, nation, officer_level, permission, penalty FROM `general`
@@ -187,7 +192,7 @@ class GeneralList extends \sammo\BaseAPI
             if (!key_exists($troopLeaderID, $rawGeneralList)) {
                 continue;
             }
-            $troopTurnTime = $rawGeneralList[$troopLeaderID]['turntime'];
+            $troopTurnTime = $formatStoredTime($rawGeneralList[$troopLeaderID]['turntime']);
             $troops[$troopLeaderID] = new ArrayObject([
                 'id' => $troopLeaderID,
                 'name' => $troopName,
@@ -265,11 +270,10 @@ class GeneralList extends \sammo\BaseAPI
             'honorText' => fn ($rawGeneral) => getHonor($rawGeneral['experience']),
             'dedLevelText' => fn ($rawGeneral) => getDedLevelText($rawGeneral['dedlevel']),
             //'0000-00-00 11:23';
-            'turntime' => fn ($rawGeneral) => GameClock::fromStorage($gameStor)
-                ->formatTick(Util::toInt($rawGeneral['turntime'])),
+            'turntime' => fn ($rawGeneral) => substr($formatStoredTime($rawGeneral['turntime']), 0, 19),
             'recent_war' => fn ($rawGeneral) => $rawGeneral['recent_war'] === null
                 ? null
-                : GameClock::fromStorage($gameStor)->formatTick(Util::toInt($rawGeneral['recent_war'])),
+                : substr($formatStoredTime($rawGeneral['recent_war']), 0, 19),
             'bill' => fn ($rawGeneral) => getBillByLevel($rawGeneral['dedlevel']),
             'reservedCommand' => fn ($rawGeneral) => $reservedCommand[$rawGeneral['no']] ?? null,
             'autorun_limit' => fn ($rawGeneral) => ($rawGeneral['aux'] ?? [])['autorun_limit'] ?? 0,

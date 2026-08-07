@@ -183,4 +183,27 @@ final class GameClockBoundaryTest extends TestCase
         );
     }
 
+    public function testNationGeneralListProjectsStoredTimesAtApiBoundary(): void
+    {
+        $source = file_get_contents(__DIR__ . '/../hwe/sammo/API/Nation/GeneralList.php');
+        self::assertIsString($source);
+
+        self::assertStringContainsString(
+            '$clock = GameClock::isInitialized($gameStor) ? GameClock::fromStorage($gameStor) : null;',
+            $source,
+        );
+        self::assertStringContainsString(
+            '$env[\'turntime\'] = $formatStoredTime($env[\'turntime\']);',
+            $source,
+        );
+        self::assertStringContainsString(
+            '$troopTurnTime = $formatStoredTime($rawGeneralList[$troopLeaderID][\'turntime\']);',
+            $source,
+        );
+        self::assertStringContainsString(
+            "? (string)\$value",
+            $source,
+        );
+    }
+
 }
