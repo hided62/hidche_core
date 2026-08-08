@@ -19,6 +19,30 @@ class LoginByToken extends LoginByID
 {
     static array $sensitiveArgs = ['hashedToken'];
 
+    public static function kakaoFailureResponse(bool $reqOTP, string $reason): string | array
+    {
+        if (!$reqOTP) {
+            return $reason;
+        }
+
+        return [
+            'result' => false,
+            'silent' => false,
+            'reqOTP' => true,
+            'reason' => $reason,
+        ];
+    }
+
+    public static function shouldDiscardTokenAfterKakaoFailure(bool $reqOTP): bool
+    {
+        return !$reqOTP;
+    }
+
+    public static function pendingSessionTokenID(bool $reqOTP, int $tokenID): ?int
+    {
+        return $reqOTP ? $tokenID : null;
+    }
+
     public function getRequiredSessionMode(): int
     {
         return \sammo\BaseAPI::NO_LOGIN;
@@ -117,13 +141,24 @@ class LoginByToken extends LoginByID
         if ($userInfo['oauth_type'] == 'KAKAO') {
             $oauthFailResult = KakaoUtil::kakaoOAuthCheck($userInfo);
             if ($oauthFailResult !== null) {
-                $session->login($userInfo['no'], $userInfo['name'], $userInfo['grade'], true, $userInfo['token_valid_until'], null, Json::decode($userInfo['acl'] ?? '{}'));
                 [$oauthReqOTP, $oauthFailReason] = $oauthFailResult;
-                $RootDB->delete(
-                    'login_token',
-                    'id = %i', $token_id
+                $session->login(
+                    $userInfo['no'],
+                    $userInfo['name'],
+                    $userInfo['grade'],
+                    true,
+                    $userInfo['token_valid_until'],
+                    static::pendingSessionTokenID($oauthReqOTP, $token_id),
+                    Json::decode($userInfo['acl'] ?? '{}')
                 );
-                return $oauthFailReason;
+                if (static::shouldDiscardTokenAfterKakaoFailure($oauthReqOTP)) {
+                    $RootDB->delete(
+                        'login_token',
+                        'id = %i',
+                        $token_id
+                    );
+                }
+                return static::kakaoFailureResponse($oauthReqOTP, $oauthFailReason);
             }
         }
 

@@ -36,5 +36,6 @@ export type AutoLoginResponse = {
 export type AutoLoginFailed = {
     result: false,
     silent: boolean,
+    reqOTP?: boolean,
     reason: string,
 }

@@ -14,6 +14,7 @@ import '@/gateway/common';
 import { isString } from 'lodash-es';
 import { SammoRootAPI, type InvalidResponse } from '@/SammoRootAPI';
 import type { LoginFailed, LoginResponse, LoginResponseWithKakao, OTPResponse } from '@/defs/API/Login';
+import { classifyAutoLoginFailure, OTP_REQUIRED_MESSAGE } from '@/gateway/loginFlow';
 declare global {
     interface Window {
         getOAuthToken: (mode: string, scope_list: string[]) => void;
@@ -55,6 +56,17 @@ function resetToken() {
     localStorage.removeItem(LOGIN_TOKEN_KEY);
 }
 
+function showOTPModal() {
+    const modalEl = unwrap(document.querySelector('#modalOTP'));
+    if (!modalOTP) {
+        modalOTP = new Modal(modalEl);
+        modalEl.addEventListener('shown.bs.modal', function () {
+            unwrap(document.querySelector<HTMLElement>('#otp_code')).focus();
+        });
+    }
+    modalOTP.show();
+}
+
 async function tryAutoLogin() {
     try {
         const tokenInfo = getToken();
@@ -93,13 +105,18 @@ async function tryAutoLogin() {
             }, true);
 
             if (!loginResult.result) {
-                if (loginResult.reason === '자동 로그인: 절차 오류' && attempt === 0) {
+                const failureAction = classifyAutoLoginFailure(loginResult, attempt);
+                if (failureAction === 'retry') {
                     console.warn('auto login failed by procedure error. retrying once.');
                     await delay(150);
                     continue;
                 }
-
-                if (!loginResult.silent) {
+                if (failureAction === 'prompt_otp') {
+                    alert(OTP_REQUIRED_MESSAGE);
+                    showOTPModal();
+                    return;
+                }
+                if (failureAction === 'alert') {
                     alert(loginResult.reason);
                 }
                 console.error(loginResult.reason);
@@ -208,14 +225,7 @@ async function doLoginUsingOAuth() {
         return;
     }
 
-    const modalEl = unwrap(document.querySelector('#modalOTP'))
-    if (!modalOTP) {
-        modalOTP = new Modal(modalEl);
-        modalEl.addEventListener('shown.bs.modal', function () {
-            unwrap(document.querySelector<HTMLElement>('#otp_code')).focus();
-        });
-    }
-    modalOTP.show();
+    showOTPModal();
 }
 
 function postOAuthResult(mode: string) {
@@ -314,14 +324,7 @@ $(async function ($) {
             return;
         }
 
-        const modalEl = unwrap(document.querySelector('#modalOTP'))
-        if (!modalOTP) {
-            modalOTP = new Modal(modalEl);
-            modalEl.addEventListener('shown.bs.modal', function () {
-                unwrap(document.querySelector<HTMLElement>('#otp_code')).focus();
-            });
-        }
-        modalOTP.show();
+        showOTPModal();
     });
 
     $('#otp_form').on('submit', async function (e) {
