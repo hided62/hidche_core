@@ -46,7 +46,6 @@ function pictureMigrationUsage(int $exitCode = 0): void
     fwrite($stream, <<<'TEXT'
 Usage:
   php scripts/migrate-general-picture.php --server=PREFIX --status
-  php scripts/migrate-general-picture.php --server=PREFIX --apply --backup=/absolute/path/to/pre-migration.sql
   php scripts/migrate-general-picture.php --server=PREFIX --apply --server-closed --backup=/absolute/path/to/pre-migration.sql
 
 PREFIX is one configured game directory such as che, kwe, or hwe. Run status,
@@ -58,9 +57,10 @@ chief picture columns to VARCHAR(64), adds nullable l12imgsvr through l5imgsvr,
 and backfills only uniquely matched historical values from ng_old_generals.
 It requires a pre-existing, non-empty SQL backup whenever a schema or data
 change is needed. Stop web and daemon traffic before applying; MariaDB/Aria DDL
-is not transactional. Normally the script acquires and releases the GAME lock.
-Use --server-closed only after independently stopping web and daemon traffic;
-that flag skips the GAME lock without changing its existing state. Unmatched or
+is not transactional. --apply requires --server-closed as an explicit operator
+confirmation that web and daemon traffic has already been stopped. The script
+does not acquire or alter the GAME lock; it only takes a separate MariaDB named
+lock to prevent two picture migrations from running together. Unmatched or
 ambiguous historical values remain NULL.
 
 TEXT);
@@ -285,31 +285,23 @@ if ($state === 'ready' && $recoverableBefore === 0) {
 
 requirePictureMigrationBackup($options['backup'] ?? null);
 $serverClosed = isset($options['server-closed']);
-if ($serverClosed) {
+if (!$serverClosed) {
     fwrite(
         STDERR,
-        "WARNING: --server-closed skips the GAME lock. Continue only if web and daemon traffic for $server is already stopped.\n",
+        "WARNING: Picture migration must run while $server web and daemon traffic is stopped. After stopping them, rerun with --server-closed.\n",
     );
+    exit(3);
 }
+fwrite(
+    STDERR,
+    "WARNING: --server-closed is an operator confirmation; this script cannot verify that $server web and daemon traffic is stopped.\n",
+);
 if (!acquirePictureMigrationLock($db, $server)) {
     fwrite(STDERR, "Another picture migration is already running for $server.\n");
     exit(3);
 }
 
 $backfilled = 0;
-$acquiredGameLock = false;
-if (!$serverClosed && !\sammo\tryLock()) {
-    releasePictureMigrationLock($db, $server);
-    fwrite(
-        STDERR,
-        "Unable to acquire the GAME lock. If the server is intentionally closed and all web/daemon traffic is stopped, rerun with --server-closed.\n",
-    );
-    exit(3);
-}
-if (!$serverClosed) {
-    $acquiredGameLock = true;
-}
-
 try {
     if (pictureColumnCapacity($db, 'general', 'picture') === 40) {
         $db->query('ALTER TABLE general MODIFY picture VARCHAR(64) NOT NULL');
@@ -332,9 +324,6 @@ try {
 
     $backfilled = backfillEmperiorImgsvr($db);
 } finally {
-    if ($acquiredGameLock) {
-        \sammo\unlock();
-    }
     releasePictureMigrationLock($db, $server);
 }
 

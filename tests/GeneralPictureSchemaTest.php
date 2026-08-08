@@ -79,9 +79,10 @@ final class GeneralPictureSchemaTest extends TestCase
         self::assertStringNotContainsString("'/hwe/func.php'", $migration);
         self::assertStringContainsString('SELECT GET_LOCK(%s, 0)', $migration);
         self::assertStringContainsString('SELECT RELEASE_LOCK(%s)', $migration);
-        self::assertStringContainsString('if (!$serverClosed && !\\sammo\\tryLock())', $migration);
-        self::assertStringContainsString('if ($acquiredGameLock)', $migration);
-        self::assertStringContainsString('--server-closed skips the GAME lock', $migration);
+        self::assertStringContainsString('if (!$serverClosed)', $migration);
+        self::assertStringContainsString('--server-closed is an operator confirmation', $migration);
+        self::assertStringNotContainsString('\\sammo\\tryLock()', $migration);
+        self::assertStringNotContainsString('\\sammo\\unlock()', $migration);
         self::assertStringNotContainsString('UPDATE general', $migration);
         self::assertStringContainsString("\$state === 'ready'", $migration);
     }
