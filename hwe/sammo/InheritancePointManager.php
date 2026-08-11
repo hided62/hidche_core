@@ -152,19 +152,7 @@ class InheritancePointManager
     };
     switch ($key) {
       case InheritanceKey::dex:
-        $extractFn = function () use ($general, $multiplier) {
-          $dexLimit = Util::array_last(getDexLevelList())[0];
-          $totalDex = 0;
-          foreach (array_keys(GameUnitConst::allType()) as $armType) {
-            $subDex = $general->getVar("dex{$armType}");
-            if ($subDex > $dexLimit) {
-              $totalDex += ($subDex - $dexLimit) / 3;
-              $subDex = $dexLimit;
-            }
-            $totalDex += $subDex;
-          }
-          return [$totalDex * $multiplier, null];
-        };
+        $extractFn = fn () => [$this->getDexInheritancePoint($general), null];
         break;
       case InheritanceKey::betting:
         $extractFn = function () use ($general, $multiplier) {
@@ -187,6 +175,28 @@ class InheritancePointManager
 
     [$value, $aux] = ($extractFn)();
     return $value;
+  }
+
+  /** @param null|int[] $armTypes */
+  public function getDexInheritancePoint(
+    General $general,
+    ?int $dexLimit = null,
+    ?array $armTypes = null
+  ): float
+  {
+    $dexLimit ??= Util::array_last(getDexLevelList())[0];
+    $armTypes ??= array_keys(GameUnitConst::allType());
+    $multiplier = $this->getInheritancePointType(InheritanceKey::dex)->pointCoeff;
+    $totalDex = 0;
+    foreach ($armTypes as $armType) {
+      $subDex = CentennialAllStarGrowthService::recordableValue($general, "dex{$armType}");
+      if ($subDex > $dexLimit) {
+        $totalDex += ($subDex - $dexLimit) / 3;
+        $subDex = $dexLimit;
+      }
+      $totalDex += $subDex;
+    }
+    return $totalDex * $multiplier;
   }
 
 

@@ -5,6 +5,7 @@ use sammo\CentennialAllStarGrowth;
 use sammo\CentennialAllStarGrowthService;
 use sammo\General;
 use sammo\GameConst;
+use sammo\InheritancePointManager;
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
 $loader->addPsr4('sammo\\', __DIR__ . '/../hwe/sammo', true);
@@ -369,6 +370,28 @@ final class CentennialAllStarGrowthTest extends TestCase
         self::assertSame(36000, CentennialAllStarGrowth::dexFloor(900000, 0.2));
         self::assertSame(144000, CentennialAllStarGrowth::dexFloor(900000, 0.4));
         self::assertSame(900000, CentennialAllStarGrowth::dexFloor(900000, 1));
+    }
+
+    public function testSynchronizedDexDoesNotIncreaseInheritancePoint(): void
+    {
+        $vars = $this->emptyGeneralVars();
+        $vars['dex1'] = 1_300_000;
+        $vars['dex2'] = 1_300_000;
+        $aux = CentennialAllStarGrowthService::initialAux(
+            $this->singleDexTarget('inheritance', 0),
+            []
+        );
+        $aux['granted']['dex1'] = 1_000_000;
+        $general = $this->createStateGeneralMock($vars, $aux);
+
+        self::assertSame(
+            1_400.0,
+            InheritancePointManager::getInstance()->getDexInheritancePoint(
+                $general,
+                1_000_000,
+                [1, 2, 3, 4, 5]
+            )
+        );
     }
 
     public function testNpcDexStopsAtFortyPercentOfHistoricalTarget(): void
