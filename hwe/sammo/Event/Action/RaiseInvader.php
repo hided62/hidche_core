@@ -4,6 +4,7 @@ namespace sammo\Event\Action;
 
 use Ds\Set;
 use sammo\ActionLogger;
+use sammo\AutoResetProgress;
 use sammo\CityConst;
 use sammo\DB;
 use sammo\Json;
@@ -119,6 +120,7 @@ class RaiseInvader extends \sammo\Event\Action
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
         $gameStor->setValue('isunited', 1);
+        AutoResetProgress::record($gameStor);
 
         $turnterm = $gameStor->turnterm;
         $generalCnt = $db->queryFirstField('SELECT count(*) FROM general');

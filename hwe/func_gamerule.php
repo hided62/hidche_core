@@ -769,6 +769,7 @@ function checkEmperior()
 
     $gameStor->isunited = 2;
     $gameStor->refreshLimit = $gameStor->refreshLimit * 100;
+    AutoResetProgress::record($gameStor);
 
     foreach ($db->queryFirstColumn('SELECT no FROM general WHERE npc<2 AND age>=%i', GameConst::$minPushHallAge) as $hallGeneralNo) {
         CheckHall($hallGeneralNo);

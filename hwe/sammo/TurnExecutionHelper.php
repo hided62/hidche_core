@@ -21,6 +21,18 @@ class TurnExecutionHelper
         return max($completedTick, $candidateTick);
     }
 
+    private static function recordInvaderProgress(KVStorage $gameStorage, int $beforeTick): void
+    {
+        if (Util::toInt($gameStorage->isunited) !== 1) {
+            return;
+        }
+        AutoResetProgress::recordIfAdvanced(
+            $gameStorage,
+            $beforeTick,
+            Util::toInt($gameStorage->turntime),
+        );
+    }
+
     public function __destruct()
     {
         $this->applyDB();
@@ -417,6 +429,8 @@ class TurnExecutionHelper
             return $gameStor->turntime;
         }
 
+        $completionTickBeforeRun = Util::toInt($gameStor->turntime);
+
         $gameStor->cacheAll();
         // 1턴이상 갱신 없었으면 서버 지연
         checkDelay();
@@ -462,6 +476,7 @@ class TurnExecutionHelper
                         $currentTurn,
                     );
                 }
+                self::recordInvaderProgress($gameStor, $completionTickBeforeRun);
                 unlock();
                 return $gameStor->turntime;
             }
@@ -520,6 +535,7 @@ class TurnExecutionHelper
         processTournament();
         //거래 처리
         processAuction();
+        self::recordInvaderProgress($gameStor, $completionTickBeforeRun);
         // 잠금 해제
 
         $turntime = $gameStor->turntime;

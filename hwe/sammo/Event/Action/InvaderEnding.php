@@ -2,6 +2,7 @@
 namespace sammo\Event\Action;
 
 use sammo\ActionLogger;
+use sammo\AutoResetProgress;
 use sammo\CityConst;
 use sammo\DB;
 use sammo\KVStorage;
@@ -61,6 +62,7 @@ class InvaderEnding extends \sammo\Event\Action{
             $logger->pushGlobalHistoryLog("<L><b>【이벤트】</b></>백성은 언젠가 영웅이 나타나길 기다립니다.");
         }
         $gameStor->setValue('isunited', 3);
+        AutoResetProgress::record($gameStor);
         $logger->flush();
 
         $gameStor->refreshLimit = $gameStor->refreshLimit * 100;
