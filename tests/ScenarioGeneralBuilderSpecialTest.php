@@ -18,6 +18,16 @@ require_once __DIR__ . '/../hwe/sammo/Scenario/GeneralBuilder.php';
 
 final class ScenarioGeneralBuilderSpecialTest extends TestCase
 {
+    public function testPreparedStoredIconsAreReusedWithoutChangingTheEnvironment(): void
+    {
+        $environment = [
+            'stored_icons' => ['.' => ['default.jpg']],
+            'icon_path' => '.',
+        ];
+
+        self::assertSame($environment, GeneralBuilder::prepareEnvironment($environment));
+    }
+
     public function testAsiaPossessionScenarioWarSpecialsUseWarSlot(): void
     {
         $scenario = json_decode(
