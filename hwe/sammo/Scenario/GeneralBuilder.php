@@ -539,11 +539,8 @@ class GeneralBuilder{
         return $this->death;
     }
 
-    public function build($env){
-        //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
-
-
-
+    public static function prepareEnvironment(array $env): array
+    {
         if(!key_exists('stored_icons', $env)){
             try{
                 $text = \file_get_contents(\sammo\ServConfig::getSharedIconPath('../hook/list.json?1'));
@@ -555,6 +552,16 @@ class GeneralBuilder{
 
             $env['stored_icons'] = $storedIcons;
         }
+
+        return $env;
+    }
+
+    public function build($env){
+        //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
+
+
+
+        $env = static::prepareEnvironment($env);
 
         $isFictionMode = (Util::array_get($env['fiction'], 0)!=0);
 

@@ -101,6 +101,17 @@ class RaiseInvader extends \sammo\Event\Action
 
     public function run(array $env)
     {
+        $previousIgnoreUserAbort = ignore_user_abort(true);
+        try {
+            return $this->runToCompletion($env);
+        }
+        finally {
+            ignore_user_abort($previousIgnoreUserAbort !== 0);
+        }
+    }
+
+    private function runToCompletion(array $env)
+    {
         $db = DB::db();
 
         $npcEachCount = $this->npcEachCount;
@@ -196,6 +207,7 @@ class RaiseInvader extends \sammo\Event\Action
         ], true);
 
         $invaderNationIDList = [];
+        $env = GeneralBuilder::prepareEnvironment($env);
         refreshNationStaticInfo();
         foreach ($cities as $cityObj) {
             if ($cityObj->level != 4) {
